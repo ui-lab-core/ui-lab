@@ -38,7 +38,7 @@ const countries = [
 export default function Example() {
   return (
     <Select>
-      <Searchable.Trigger placeholder="Search countries..." />
+      <Searchable.Input placeholder="Search countries..." />
       <Searchable.Content searchPlaceholder="Type to filter...">
         {countries.map((country) => (
           <Select.Item key={country.value} value={country.value} textValue={country.label}>

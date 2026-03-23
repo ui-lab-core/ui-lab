@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import type { Metadata } from 'next';
 import { getPackageById, getElementsInPackage, getAllPackages } from 'ui-lab-registry';
 import { ContentHeader } from '@/features/navigation/components/content-header';
@@ -65,9 +65,7 @@ export default async function PackageElementsPage({
   return (
     <div className='pt-(--header-height)'>
       <div className="w-full bg-background-950 px-4 mx-auto pt-4 pb-12">
-        <Suspense fallback={<div className="py-12">Loading...</div>}>
-          <PackageContent packageId={packageId} />
-        </Suspense>
+        <PackageContent packageId={packageId} />
       </div>
     </div>
   );

@@ -7,13 +7,13 @@ import {
 
 export type DocsSourceDomain = DocsDomain;
 export type DocsSourcePageMetadata = GeneratedDocsPageManifest;
-export type DocsSourcePageTree = GeneratedDocsPageTreeSection[];
+type DocsSourcePageTree = GeneratedDocsPageTreeSection[];
 
 export interface DocsSourcePage extends DocsSourcePageMetadata {
   body: string;
 }
 
-export interface DocsSource {
+interface DocsSource {
   getPageMetadata(domain: DocsSourceDomain, slug: string): DocsSourcePageMetadata | null;
   getRootPageMetadata(domain: DocsSourceDomain): DocsSourcePageMetadata | null;
   getPageBody(domain: DocsSourceDomain, slug: string): Promise<string | null>;

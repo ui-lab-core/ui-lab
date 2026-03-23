@@ -31,7 +31,7 @@ function createFallbackDescription(title: string | undefined, type: 'component' 
   return `Learn about the ${title} ${type}.`;
 }
 
-export function extractDocMetadata(doc: DocMetadata): ExtractedMetadata {
+function extractDocMetadata(doc: DocMetadata): ExtractedMetadata {
   return {
     title: doc.title,
     description: truncateDescription(doc.description),

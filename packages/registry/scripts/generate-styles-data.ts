@@ -21,7 +21,7 @@ function getCssFile(componentDirName: string): string | null {
   return fs.existsSync(cssPath) ? cssPath : null;
 }
 
-export function extractComponentStyles(componentDirName: string): string | null {
+function extractComponentStyles(componentDirName: string): string | null {
   const cssFile = getCssFile(componentDirName);
   if (!cssFile) return null;
 

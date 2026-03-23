@@ -200,7 +200,7 @@ function SearchTriggerTemplatePreview() {
           onSelectionChange={setTemplate}
           className="w-120"
         >
-          <Searchable.Trigger placeholder="Search templates..." />
+          <Searchable.Input placeholder="Search templates..." />
           <Select.Content>
             <Select.List>
               {starterTemplates.map((item) => {

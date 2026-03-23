@@ -119,7 +119,7 @@ export function DevComponentClient({ componentId }: { componentId: string }) {
         {component.variants && component.variants.length > 0 && (
           <div className="mt-16 space-y-8">
             <h2 className="text-xl font-semibold text-foreground-100 border-b border-background-700 pb-4">Variants</h2>
-            <Grid columns="2" gap="md">
+            <Grid columns={2} gap="md">
               {component.variants.map((variant) => (
                 <div key={variant.id} className="border border-background-700 rounded-lg overflow-hidden">
                   <div className="p-6 bg-background-900 flex items-center justify-center min-h-32">

@@ -102,7 +102,7 @@ export function FileBrowser() {
             value={state.search}
             className="w-full! flex-1"
             onChange={(e) => dispatch({ type: 'SET_SEARCH', payload: e.target.value })}
-            prefixIcon={<FaMagnifyingGlass size={12} className="text-foreground-500" />}
+            icon={<FaMagnifyingGlass size={12} className="text-foreground-500" />}
           />
           <Divider orientation="vertical" />
           <Group.Select

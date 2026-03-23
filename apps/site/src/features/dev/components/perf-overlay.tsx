@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 
 const MAX_NAVIGATIONS = 10;
 const RESOURCE_WINDOW_MS = 5_000;
@@ -456,7 +455,7 @@ function updateNavigationMetrics(record: NavigationLog): NavigationLog {
 }
 
 export function PerfOverlay() {
-  const pathname = usePathname() ?? "";
+  const [pathname, setPathname] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isNetworkExpanded, setIsNetworkExpanded] = useState(true);
@@ -596,6 +595,33 @@ export function PerfOverlay() {
 
     window.addEventListener(PERF_OVERLAY_TOGGLE_EVENT, handleToggle);
     return () => window.removeEventListener(PERF_OVERLAY_TOGGLE_EVENT, handleToggle);
+  }, []);
+
+  useEffect(() => {
+    setPathname(window.location.pathname);
+
+    const sync = () => setTimeout(() => setPathname(window.location.pathname), 0);
+
+    const originalPushState = history.pushState.bind(history);
+    const originalReplaceState = history.replaceState.bind(history);
+
+    history.pushState = (...args: Parameters<typeof history.pushState>) => {
+      originalPushState(...args);
+      sync();
+    };
+
+    history.replaceState = (...args: Parameters<typeof history.replaceState>) => {
+      originalReplaceState(...args);
+      sync();
+    };
+
+    window.addEventListener("popstate", sync);
+
+    return () => {
+      history.pushState = originalPushState;
+      history.replaceState = originalReplaceState;
+      window.removeEventListener("popstate", sync);
+    };
   }, []);
 
   useEffect(() => {

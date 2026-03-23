@@ -59,7 +59,7 @@ export function IntegrationsPanel() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search integrations..."
-            prefixIcon={<FaMagnifyingGlass />}
+            icon={<FaMagnifyingGlass />}
             className="flex-1"
           />
           <Divider />

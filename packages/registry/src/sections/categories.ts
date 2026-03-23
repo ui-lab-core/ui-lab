@@ -84,14 +84,14 @@ export function groupSectionsByCategory(sections: Array<{ id: string; category: 
   return grouped;
 }
 
-export function getSectionsInCategory(
+function getSectionsInCategory(
   sections: Array<{ id: string; category: SectionCategoryId }>,
   categoryId: SectionCategoryId
 ) {
   return sections.filter(s => s.category === categoryId);
 }
 
-export function getCategoriesWithSections(
+function getCategoriesWithSections(
   sections: Array<{ id: string; category: SectionCategoryId }>
 ): SectionCategoryDefinition[] {
   const grouped = groupSectionsByCategory(sections);

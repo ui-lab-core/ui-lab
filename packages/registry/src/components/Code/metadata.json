@@ -1,7 +1,7 @@
 {
   "id": "code",
   "name": "Code",
-  "description": "Syntax-highlighted code display with horizontal scroll, line expand, and copy button.",
+  "description": "Displays syntax-highlighted code with a built-in copy button.",
   "category": "display",
   "experimental": true,
   "source": {

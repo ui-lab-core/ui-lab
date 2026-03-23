@@ -1,7 +1,7 @@
 {
   "id": "flex",
   "name": "Flex",
-  "description": "Flexible layout component with container query support for responsive designs.",
+  "description": "Flexbox layout primitive with container query support for UIs.",
   "category": "layout",
   "source": {
     "packageName": "ui-lab-components",

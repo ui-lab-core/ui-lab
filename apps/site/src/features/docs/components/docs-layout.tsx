@@ -38,7 +38,7 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
             className={`flex flex-col justify-center min-w-0 ${banner ? "" : "mt-(--header-height)"}`}
           >
             <div className="flex items-center w-full min-w-0">
-              <div className="py-12 px-4 md:px-6 mx-auto max-w-3xl w-full min-w-0">
+              <div className="py-12 px-4 md:px-6 mx-auto max-w-(--content-width) w-full min-w-0">
                 {children}
               </div>
             </div>

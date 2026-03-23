@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Color } from 'ui-lab-components';
 
-export const metadata = {
+const metadata = {
   title: 'Format Switching',
   description: 'Color picker with format toggle between hex and RGB to copy colors in different formats.'
 };

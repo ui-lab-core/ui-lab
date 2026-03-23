@@ -1,7 +1,7 @@
 {
   "id": "list",
   "name": "List",
-  "description": "Compound component for displaying item collections with selection and actions.",
+  "description": "Displays item collections with built-in selection and actions.",
   "category": "composition",
   "experimental": true,
   "source": {

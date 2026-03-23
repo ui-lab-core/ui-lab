@@ -21,7 +21,7 @@
 }
 
 
-#docs h3, strong {
+#docs h3, #docs strong {
   font-size: var(--text-sm);
   font-weight: 500;
   margin: 3.2rem 0 0.2rem 0;

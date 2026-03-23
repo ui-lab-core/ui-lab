@@ -213,7 +213,7 @@ export interface CategoryDefinition {
   iconName: string;
 }
 
-export interface StarterPreset {
+interface StarterPreset {
   templateName: 'next' | 'vite' | 'tauri';
   components: string[];
   description: string;

@@ -4,7 +4,7 @@ export const componentRegistry: ComponentRegistry = {
   anchor: {
     id: "anchor",
     name: "Anchor",
-    description: "Styled link with custom underline animation and popover preview on hover.",
+    description: "Styled link with animated underline and hover popover preview.",
     category: "information",
     source: {
   "packageName": "ui-lab-components",
@@ -53,7 +53,7 @@ export const componentRegistry: ComponentRegistry = {
   banner: {
     id: "banner",
     name: "Banner",
-    description: "Full-width banner for displaying important information, notifications, and alerts.",
+    description: "Full-width strip for surfacing alerts, notices, and messages.",
     category: "information",
     source: {
   "packageName": "ui-lab-components",
@@ -140,7 +140,7 @@ export const componentRegistry: ComponentRegistry = {
   code: {
     id: "code",
     name: "Code",
-    description: "Syntax-highlighted code display with horizontal scroll, line expand, and copy button.",
+    description: "Displays syntax-highlighted code with a built-in copy button.",
     category: "display",
     experimental: true,
     source: {
@@ -178,11 +178,6 @@ export const componentRegistry: ComponentRegistry = {
         "title": "Opacity Slider",
         "description": "Color picker with opacity/alpha slider enabled for transparent color selection.",
         "code": "import React, { useState } from 'react';\nimport { Color } from 'ui-lab-components';\n\nexport default function Example() {\n  const [color, setColor] = useState('rgba(106, 90, 205, 0.75)');\n\n  return (\n    <div className=\"p-4 space-y-4\">\n      <div>\n        <p className=\"text-sm text-foreground-300 mb-3\">Selected color: <code className=\"text-accent-500 font-mono\">{color}</code></p>\n        <Color\n          value={color}\n          onChange={setColor}\n          showOpacity\n          format=\"rgb\"\n          defaultValue=\"rgba(106, 90, 205, 0.75)\"\n        />\n      </div>\n    </div>\n  );\n}"
-    },
-    {
-        "title": "Format Switching",
-        "description": "Color picker with format toggle between hex and RGB to copy colors in different formats.",
-        "code": "import React, { useState } from 'react';\nimport { Color } from 'ui-lab-components';\n\nexport default function Example() {\n  const [color, setColor] = useState('#3B82F6');\n  const [format, setFormat] = useState<'hex' | 'rgb'>('hex');\n\n  const handleFormatChange = () => {\n    setFormat(format === 'hex' ? 'rgb' : 'hex');\n  };\n\n  return (\n    <div className=\"p-4 space-y-4\">\n      <div>\n        <div className=\"flex items-center justify-between mb-3\">\n          <p className=\"text-sm text-foreground-300\">\n            Selected color: <code className=\"text-accent-500 font-mono\">{color}</code>\n          </p>\n          <button\n            onClick={handleFormatChange}\n            className=\"px-3 py-1 text-xs bg-foreground-400 hover:bg-foreground-400 text-foreground-100 rounded transition-colors\"\n          >\n            Format: {format.toUpperCase()}\n          </button>\n        </div>\n        <Color\n          value={color}\n          onChange={setColor}\n          format={format}\n          defaultValue=\"#3B82F6\"\n        />\n      </div>\n      <div className=\"mt-4 p-3 bg-foreground-400 rounded border border-foreground-400\">\n        <p className=\"text-xs text-foreground-300\">\n          <strong>Tip:</strong> Click the format button to switch between hex and RGB output formats.\n          This is useful when you need to copy colors in different formats for different contexts.\n        </p>\n      </div>\n    </div>\n  );\n}"
     }
 ],
   },
@@ -205,7 +200,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Basic Command Palette",
         "description": "A searchable command palette with keyboard shortcuts. Use Cmd+K (or Ctrl+K) to open.",
-        "code": "'use client';\n\nimport React from 'react';\nimport { Command, Button, Badge } from 'ui-lab-components';\n\nexport default function Example() {\n  const [open, setOpen] = React.useState(false);\n\n  const commands = [\n    {\n      id: 'search',\n      label: 'Search',\n      description: 'Search documents',\n      shortcut: '⌘F',\n      action: () => console.log('Search'),\n    },\n    {\n      id: 'create',\n      label: 'Create new',\n      description: 'Create a new document',\n      shortcut: '⌘N',\n      action: () => console.log('Create'),\n    },\n    {\n      id: 'settings',\n      label: 'Settings',\n      description: 'Open application settings',\n      shortcut: '⌘,',\n      action: () => console.log('Settings'),\n    },\n  ];\n\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>\n        Open Palette (⌘K)\n      </Button>\n      <Command\n        open={open}\n        onOpenChange={setOpen}\n        items={commands}\n      >\n        <Command.SearchInput placeholder=\"Search commands...\" />\n        <Command.List>\n          <Command.Groups\n            renderCategory={(category) =>\n              category ? <Command.Category>{category}</Command.Category> : null\n            }\n            renderItem={(cmd) => (\n              <Command.Item\n                key={cmd.id}\n                value={cmd.id}\n                textValue={cmd.label}\n                action={cmd.action}\n                hint={cmd.shortcut}\n              >\n                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>\n                  <div>\n                    <div style={{ fontWeight: 500 }}>{cmd.label}</div>\n                    {cmd.description && (\n                      <div style={{ fontSize: '0.875em', opacity: 0.7 }}>\n                        {cmd.description}\n                      </div>\n                    )}\n                  </div>\n                </div>\n              </Command.Item>\n            )}\n          />\n        </Command.List>\n      </Command>\n    </>\n  );\n}"
+        "code": "'use client';\n\nimport React from 'react';\nimport { Command, Button, Badge } from 'ui-lab-components';\n\nexport default function Example() {\n  const [open, setOpen] = React.useState(false);\n\n  const commands = [\n    {\n      id: 'search',\n      label: 'Search',\n      description: 'Search documents',\n      shortcut: '⌘F',\n      action: () => console.log('Search'),\n    },\n    {\n      id: 'create',\n      label: 'Create new',\n      description: 'Create a new document',\n      shortcut: '⌘N',\n      action: () => console.log('Create'),\n    },\n    {\n      id: 'settings',\n      label: 'Settings',\n      description: 'Open application settings',\n      shortcut: '⌘,',\n      action: () => console.log('Settings'),\n    },\n  ];\n\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>\n        Open Palette (⌘K)\n      </Button>\n      <Command\n        open={open}\n        onOpenChange={setOpen}\n        items={commands}\n      >\n        <Command.Input placeholder=\"Search commands...\" />\n        <Command.List>\n          <Command.Groups\n            renderCategory={(category) =>\n              category ? <Command.Category>{category}</Command.Category> : null\n            }\n            renderItem={(cmd) => (\n              <Command.Item\n                key={cmd.id}\n                value={cmd.id}\n                textValue={cmd.label}\n                action={cmd.action}\n                hint={cmd.shortcut}\n              >\n                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>\n                  <div>\n                    <div style={{ fontWeight: 500 }}>{cmd.label}</div>\n                    {cmd.description && (\n                      <div style={{ fontSize: '0.875em', opacity: 0.7 }}>\n                        {cmd.description}\n                      </div>\n                    )}\n                  </div>\n                </div>\n              </Command.Item>\n            )}\n          />\n        </Command.List>\n      </Command>\n    </>\n  );\n}"
     }
 ],
   },
@@ -235,7 +230,7 @@ export const componentRegistry: ComponentRegistry = {
   date: {
     id: "date",
     name: "Date",
-    description: "Minimal date picker with keyboard navigation and full accessibility support.",
+    description: "Calendar date picker with keyboard navigation and accessibility.",
     category: "input",
     source: {
   "packageName": "ui-lab-components",
@@ -305,7 +300,7 @@ export const componentRegistry: ComponentRegistry = {
   flex: {
     id: "flex",
     name: "Flex",
-    description: "Flexible layout component with container query support for responsive designs.",
+    description: "Flexbox layout primitive with container query support for UIs.",
     category: "layout",
     source: {
   "packageName": "ui-lab-components",
@@ -359,7 +354,7 @@ export const componentRegistry: ComponentRegistry = {
   gallery: {
     id: "gallery",
     name: "Gallery",
-    description: "Responsive grid layout for displaying media content, images, videos, and product cards.",
+    description: "Responsive grid layout for displaying images and media items.",
     category: "layout",
     source: {
   "packageName": "ui-lab-components",
@@ -395,7 +390,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Basic Grid",
         "description": "A simple grid layout with multiple cells. Use this for organizing content in a responsive grid structure.",
-        "code": "import React from 'react';\nimport { Grid } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Grid columns=\"3\" gap=\"md\">\n      <div style={{ padding: '1rem', background: '#e0e0e0' }}>Cell 1</div>\n      <div style={{ padding: '1rem', background: '#d0d0d0' }}>Cell 2</div>\n      <div style={{ padding: '1rem', background: '#c0c0c0' }}>Cell 3</div>\n      <div style={{ padding: '1rem', background: '#b0b0b0' }}>Cell 4</div>\n      <div style={{ padding: '1rem', background: '#a0a0a0' }}>Cell 5</div>\n      <div style={{ padding: '1rem', background: '#909090' }}>Cell 6</div>\n    </Grid>\n  );\n}"
+        "code": "import React from 'react';\nimport { Grid } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Grid columns={3} gap=\"md\">\n      <div style={{ padding: '1rem', background: '#e0e0e0' }}>Cell 1</div>\n      <div style={{ padding: '1rem', background: '#d0d0d0' }}>Cell 2</div>\n      <div style={{ padding: '1rem', background: '#c0c0c0' }}>Cell 3</div>\n      <div style={{ padding: '1rem', background: '#b0b0b0' }}>Cell 4</div>\n      <div style={{ padding: '1rem', background: '#a0a0a0' }}>Cell 5</div>\n      <div style={{ padding: '1rem', background: '#909090' }}>Cell 6</div>\n    </Grid>\n  );\n}"
     }
 ],
   },
@@ -403,7 +398,7 @@ export const componentRegistry: ComponentRegistry = {
   group: {
     id: "group",
     name: "Group",
-    description: "Flexible container for grouping Button, Input, and Select components with unified styling.",
+    description: "Groups Button, Input, and Select with unified border styling.",
     category: "composition",
     experimental: true,
     source: {
@@ -445,7 +440,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Validation States",
         "description": "Input fields with error and success validation states, including helper text for user feedback.",
-        "code": "import React from 'react';\nimport { Input, Label } from 'ui-lab-components';\nimport { FaCircleExclamation, FaCircleCheck } from 'react-icons/fa6';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-6 w-full max-w-sm\">\n      {/* Error State */}\n      <div className=\"flex flex-col gap-1.5\">\n        <Label error helperText=\"Please enter a valid email address\" helperTextError>\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          error\n          defaultValue=\"invalid-email\"\n          suffixIcon={<FaCircleExclamation className=\"text-danger-600\" size={14} />}\n        />\n      </div>\n\n      {/* Success State */}\n      <div className=\"flex flex-col gap-1.5\">\n        <Label helperText=\"Email address is available\">\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          defaultValue=\"user@example.com\"\n          suffixIcon={<FaCircleCheck className=\"text-success-600\" size={14} />}\n          className=\"border-success-600 focus:border-success-600\"\n        />\n      </div>\n\n      {/* Default State with Helper Text */}\n      <div className=\"flex flex-col gap-1.5\">\n        <Label required helperText=\"We'll never share your email with anyone else.\">\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n        />\n      </div>\n    </div>\n  );\n}"
+        "code": "import React from 'react';\nimport { Input, Label } from 'ui-lab-components';\nimport { FaCircleExclamation, FaCircleCheck } from 'react-icons/fa6';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-6 w-full max-w-sm\">\n      {/* Error State */}\n      <div className=\"flex flex-col gap-1.5\">\n        <Label error helperText=\"Please enter a valid email address\" helperTextError>\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          error\n          defaultValue=\"invalid-email\"\n          icon={{ suffix: <FaCircleExclamation className=\"text-danger-600\" size={14} /> }}\n        />\n      </div>\n\n      {/* Success State */}\n      <div className=\"flex flex-col gap-1.5\">\n        <Label helperText=\"Email address is available\">\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          defaultValue=\"user@example.com\"\n          icon={{ suffix: <FaCircleCheck className=\"text-success-600\" size={14} /> }}\n          className=\"border-success-600 focus:border-success-600\"\n        />\n      </div>\n\n      {/* Default State with Helper Text */}\n      <div className=\"flex flex-col gap-1.5\">\n        <Label required helperText=\"We'll never share your email with anyone else.\">\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n        />\n      </div>\n    </div>\n  );\n}"
     }
 ],
   },
@@ -475,7 +470,7 @@ export const componentRegistry: ComponentRegistry = {
   list: {
     id: "list",
     name: "List",
-    description: "Compound component for displaying item collections with selection and actions.",
+    description: "Displays item collections with built-in selection and actions.",
     category: "composition",
     experimental: true,
     source: {
@@ -581,7 +576,7 @@ export const componentRegistry: ComponentRegistry = {
   page: {
     id: "page",
     name: "Page",
-    description: "A lightweight page container that provides page-level context, constraints, and semantic structure.",
+    description: "Top-level page container with constraints and semantic structure.",
     category: "container",
     experimental: true,
     source: {
@@ -598,7 +593,7 @@ export const componentRegistry: ComponentRegistry = {
   panel: {
     id: "panel",
     name: "Panel",
-    description: "A flexible region coordinator that manages header, footer, and content areas with responsive stacking behavior.",
+    description: "Region container managing header, content, and footer areas.",
     category: "layout",
     experimental: true,
     source: {
@@ -626,11 +621,6 @@ export const componentRegistry: ComponentRegistry = {
     tags: ["navigation","path","hierarchy","parent-pages"],
     accessibility: {"hasAriaSupport":true,"notes":["Uses nav element with landmark role","Semantic ordered list structure","Current page marked with aria-current","Full keyboard navigation support","Screen reader friendly labels"]},
     examples: [
-    {
-        "title": "Basic Path",
-        "description": "A simple path navigation showing the current page location. Use this to help users understand their position in the site hierarchy.",
-        "code": "import { PathItem, Path } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Path>\n      <PathItem href=\"/\">Home</PathItem>\n      <PathItem href=\"/products\">Products</PathItem>\n      <PathItem href=\"/products/electronics\">Electronics</PathItem>\n      <PathItem>Laptop</PathItem>\n    </Path>\n  );\n}"
-    },
     {
         "title": "Basic Path",
         "description": "A simple path navigation showing the current page location. Use this to help users understand their position in the site hierarchy.",
@@ -755,7 +745,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Searchable Select",
         "description": "A filterable select component with search input. Type to filter through a large list of options.",
-        "code": "import React from 'react';\nimport { Select, Searchable } from 'ui-lab-components';\n\nconst countries = [\n  { value: 'us', label: 'United States' },\n  { value: 'ca', label: 'Canada' },\n  { value: 'mx', label: 'Mexico' },\n  { value: 'br', label: 'Brazil' },\n  { value: 'ar', label: 'Argentina' },\n  { value: 'uk', label: 'United Kingdom' },\n  { value: 'fr', label: 'France' },\n  { value: 'de', label: 'Germany' },\n  { value: 'it', label: 'Italy' },\n  { value: 'es', label: 'Spain' },\n  { value: 'pt', label: 'Portugal' },\n  { value: 'nl', label: 'Netherlands' },\n  { value: 'be', label: 'Belgium' },\n  { value: 'ch', label: 'Switzerland' },\n  { value: 'at', label: 'Austria' },\n  { value: 'se', label: 'Sweden' },\n  { value: 'no', label: 'Norway' },\n  { value: 'dk', label: 'Denmark' },\n  { value: 'fi', label: 'Finland' },\n  { value: 'pl', label: 'Poland' },\n  { value: 'jp', label: 'Japan' },\n  { value: 'cn', label: 'China' },\n  { value: 'kr', label: 'South Korea' },\n  { value: 'in', label: 'India' },\n  { value: 'au', label: 'Australia' },\n  { value: 'nz', label: 'New Zealand' },\n];\n\nexport default function Example() {\n  return (\n    <Select>\n      <Searchable.Trigger placeholder=\"Search countries...\" />\n      <Searchable.Content searchPlaceholder=\"Type to filter...\">\n        {countries.map((country) => (\n          <Select.Item key={country.value} value={country.value} textValue={country.label}>\n            {country.label}\n          </Select.Item>\n        ))}\n      </Searchable.Content>\n    </Select>\n  );\n}"
+        "code": "import React from 'react';\nimport { Select, Searchable } from 'ui-lab-components';\n\nconst countries = [\n  { value: 'us', label: 'United States' },\n  { value: 'ca', label: 'Canada' },\n  { value: 'mx', label: 'Mexico' },\n  { value: 'br', label: 'Brazil' },\n  { value: 'ar', label: 'Argentina' },\n  { value: 'uk', label: 'United Kingdom' },\n  { value: 'fr', label: 'France' },\n  { value: 'de', label: 'Germany' },\n  { value: 'it', label: 'Italy' },\n  { value: 'es', label: 'Spain' },\n  { value: 'pt', label: 'Portugal' },\n  { value: 'nl', label: 'Netherlands' },\n  { value: 'be', label: 'Belgium' },\n  { value: 'ch', label: 'Switzerland' },\n  { value: 'at', label: 'Austria' },\n  { value: 'se', label: 'Sweden' },\n  { value: 'no', label: 'Norway' },\n  { value: 'dk', label: 'Denmark' },\n  { value: 'fi', label: 'Finland' },\n  { value: 'pl', label: 'Poland' },\n  { value: 'jp', label: 'Japan' },\n  { value: 'cn', label: 'China' },\n  { value: 'kr', label: 'South Korea' },\n  { value: 'in', label: 'India' },\n  { value: 'au', label: 'Australia' },\n  { value: 'nz', label: 'New Zealand' },\n];\n\nexport default function Example() {\n  return (\n    <Select>\n      <Searchable.Input placeholder=\"Search countries...\" />\n      <Searchable.Content searchPlaceholder=\"Type to filter...\">\n        {countries.map((country) => (\n          <Select.Item key={country.value} value={country.value} textValue={country.label}>\n            {country.label}\n          </Select.Item>\n        ))}\n      </Searchable.Content>\n    </Select>\n  );\n}"
     }
 ],
   },

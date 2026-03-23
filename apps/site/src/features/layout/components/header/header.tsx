@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useState, useMemo, memo } from "react";
 import { ThemeToggle, SettingsPanel } from "@/features/landing";
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 const CommandPalette = dynamic(
   () => import("@/features/command-palette").then(mod => ({ default: mod.CommandPalette })),
-  { ssr: false }
+  { ssr: false, loading: () => null }
 );
 import { Logo } from "@/shared";
 import { Input, Divider, Tabs, TabsList, TabsTrigger, Button, Tooltip } from "ui-lab-components";
@@ -128,8 +127,7 @@ export default function Header({
               <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k" className="w-full">
                 <Input
                   placeholder="Search..."
-                  prefixIcon={<LuSearch strokeWidth={3.0} className="text-foreground-400 -translate-y-px" size={16} />}
-                  styles="text-xs w-full py-1.5 pb-2 pr-1 pl-10! font-medium bg-background-800/40 border-background-700 focus:ring-1 focus:ring-accent-500/50"
+                  icon={<LuSearch strokeWidth={3.0} className="-translate-y-px" size={16} />}
                   onClick={() => setIsCommandPaletteOpen(true)}
                   readOnly
                 />
@@ -156,7 +154,7 @@ export default function Header({
               <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
                 <Button
                   variant="ghost"
-                  className="text-foreground-400 hover:text-foreground-300 transition-colors"
+                  className="text-foreground-300 hover:text-foreground-300 transition-colors"
                   styles="p-2"
                   icon={{ left: <LuSearch strokeWidth={3.0} size={16} /> }}
                   onClick={() => setIsCommandPaletteOpen(true)}
@@ -176,7 +174,7 @@ export default function Header({
                 <Button
                   variant="ghost"
                   aria-label="GitHub Repository"
-                  className="hover:text-foreground-300 transition-colors text-foreground-400 p-2"
+                  className="hover:text-foreground-300 transition-colors text-foreground-300 p-2"
                   size="sm"
                 >
                   <FaCodeBranch className="mr-1" size={16} />
@@ -192,7 +190,7 @@ export default function Header({
               <Button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
                 variant="ghost"
-                className="text-foreground-400 md:hidden flex items-center justify-center p-2"
+                className="text-foreground-300 md:hidden flex items-center justify-center p-2"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               >
                 {isMobileMenuOpen ? <HiX size={16} /> : <FaBars size={16} />}
@@ -202,7 +200,7 @@ export default function Header({
         </div>
       </header>
 
-      <Suspense fallback={null}><CommandPalette /></Suspense>
+      <CommandPalette />
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} pathname={pathname} />
     </>
   );

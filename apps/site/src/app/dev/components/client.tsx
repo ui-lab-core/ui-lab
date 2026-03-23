@@ -53,7 +53,7 @@ export default function DevComponentsIndexPage() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <Link href="/dev" className="inline-flex items-center gap-2 text-sm text-foreground-400 hover:text-foreground-200 mb-8">
           <FaArrowLeft className="w-3 h-3" /> Back to Dev
         </Link>

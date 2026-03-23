@@ -235,9 +235,8 @@ export function InputAnimation() {
             <g
               style={{
                 opacity: isCompleted ? 1 : 0,
-                transform: isCompleted ? `translate(${inputX + inputW - 32}px, ${inputY + 14}px) scale(1)` : `translate(${inputX + inputW - 32}px, ${inputY + 14}px) scale(0.5)`,
+                transform: `translate(${inputX + inputW - 32}px, ${inputY + 14}px)`,
                 transition: config.transition,
-                transformOrigin: "center"
               }}
               className={config.highlight.hoverClass}
             >

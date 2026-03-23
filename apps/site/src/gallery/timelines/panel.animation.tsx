@@ -147,9 +147,9 @@ export function PanelAnimation() {
                 fill="currentColor"
                 className={config.highlight.hoverClass}
                 style={{
-                  transition: config.transition,
+                  transition: isHovered ? `opacity 0.25s ease` : `opacity 0.15s ease`,
                   opacity: isHovered ? config.bar.secondaryOpacity : 0,
-                  transitionDelay: isHovered ? `${i * 30}ms` : "0s",
+                  transitionDelay: isHovered ? `${400 + i * 60}ms` : "0s",
                 }}
               />
             ))}
