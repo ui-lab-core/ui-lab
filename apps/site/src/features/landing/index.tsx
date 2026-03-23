@@ -13,7 +13,7 @@ import { Button } from "ui-lab-components";
 function HeroSection() {
   return (
     <>
-      <div className="z-10 mt-12 sm:mt-0 overflow-hidden border-l ">
+      <div className="z-10 mt-12 sm:mt-0 overflow-hidden">
         <div
           className="grid-paper relative h-full flex flex-col justify-between md:justify-center">
 
@@ -29,6 +29,7 @@ function HeroSection() {
               <Button
                 size="sm"
                 variant="primary"
+                styles="px-8!"
                 // icon={{ left: <FaBrain />, right: <FaPaintbrush /> }}
                 // className={cn("flex gap-4", 'mb-40')}
                 // styles={{ root: ["border-2 border-gray-500", 'my-2 mx-18'], icon: { left: "bg-red-500", right: "bg-blue-500" } }}
@@ -37,7 +38,7 @@ function HeroSection() {
                 Documentation
               </Button>
               <Button
-                icon={{ left: <FaCube className="text-foreground-200 mr-1 mb-px" /> }}
+                icon={{ left: <FaCube className="text-foreground-300 mr-1 mb-px" /> }}
                 variant="secondary" size="sm" className="font-semibold" href="/components">
                 View Components
               </Button>

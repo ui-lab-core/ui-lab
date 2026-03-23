@@ -58,11 +58,11 @@ export const corePeerDependencies = [
   'react-dom',
 ] as const
 
-export function getComponentDeps(componentId: string): ComponentDeps | undefined {
+function getComponentDeps(componentId: string): ComponentDeps | undefined {
   return componentDependencies[componentId]
 }
 
-export function getAllComponentIds(): string[] {
+function getAllComponentIds(): string[] {
   return Object.keys(componentDependencies)
 }
 
@@ -70,7 +70,7 @@ export function getAllComponentIds(): string[] {
  * Build a reverse mapping from npm packages to the components that use them
  * Used for annotating npm packages in installation plans
  */
-export function buildNpmPackageComponentMap(): Record<string, string[]> {
+function buildNpmPackageComponentMap(): Record<string, string[]> {
   const map: Record<string, string[]> = {}
 
   Object.entries(componentDependencies).forEach(([componentId, deps]) => {
@@ -88,6 +88,6 @@ export function buildNpmPackageComponentMap(): Record<string, string[]> {
 /**
  * Get the components that depend on a specific npm package
  */
-export function getComponentsForNpmPackage(npmPackage: string): string[] {
+function getComponentsForNpmPackage(npmPackage: string): string[] {
   return buildNpmPackageComponentMap()[npmPackage] ?? []
 }

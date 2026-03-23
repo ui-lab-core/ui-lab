@@ -90,7 +90,7 @@ function getComponentFiles(componentDirName: string): string[] {
     .map(f => path.join(componentDir, f));
 }
 
-export function extractComponentAPI(componentDirName: string): ComponentAPI | null {
+function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   const files = getComponentFiles(componentDirName);
   if (files.length === 0) return null;
 

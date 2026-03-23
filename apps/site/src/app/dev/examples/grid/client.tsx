@@ -37,7 +37,7 @@ const examples: DevExample[] = [
     id: "interactive",
     title: "Interactive Grid",
     description: "Adjust properties to see how they affect the container.",
-    preview: <InteractivePreview columns="3" gap="md" />,
+    preview: <InteractivePreview columns={3} gap="md" />,
     previewLayout: "start",
   },
 ];

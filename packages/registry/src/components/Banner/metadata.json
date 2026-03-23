@@ -1,7 +1,7 @@
 {
   "id": "banner",
   "name": "Banner",
-  "description": "Full-width banner for displaying important information, notifications, and alerts.",
+  "description": "Full-width strip for surfacing alerts, notices, and messages.",
   "category": "information",
   "source": {
     "packageName": "ui-lab-components",

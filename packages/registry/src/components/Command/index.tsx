@@ -51,7 +51,7 @@ export function Example() {
         onOpenChange={setOpen}
         items={commands}
       >
-        <Command.SearchInput placeholder="Search..." />
+        <Command.Input placeholder="Search..." />
         <Command.List>
           <Command.Groups
             renderItem={(cmd) => (
@@ -95,7 +95,7 @@ const CommandPreview = () => {
     <>
       <Button onClick={() => setOpen(true)}>Open Palette</Button>
       <Command open={open} onOpenChange={setOpen} items={commands}>
-        <Command.SearchInput placeholder="Search..." />
+        <Command.Input placeholder="Search..." />
         <Command.List>
           <Command.Groups
             renderItem={(cmd) => (
@@ -146,7 +146,7 @@ const CommandRenderPreview = (props: any) => {
         }}
         items={commands}
       >
-        <Command.SearchInput placeholder="Search..." />
+        <Command.Input placeholder="Search..." />
         <Command.List>
           <Command.Groups
             renderItem={(cmd) => (

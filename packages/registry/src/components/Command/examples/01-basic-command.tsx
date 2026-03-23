@@ -45,7 +45,7 @@ export default function Example() {
         onOpenChange={setOpen}
         items={commands}
       >
-        <Command.SearchInput placeholder="Search commands..." />
+        <Command.Input placeholder="Search commands..." />
         <Command.List>
           <Command.Groups
             renderCategory={(category) =>

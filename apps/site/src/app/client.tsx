@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   AppProvider,
   useApp,
@@ -87,7 +87,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
     <AppProvider>
       <ChatProvider>
         <KeyboardShortcuts />
-        <Suspense><PerfOverlay /></Suspense>
+        <PerfOverlay />
         {children}
       </ChatProvider>
     </AppProvider>

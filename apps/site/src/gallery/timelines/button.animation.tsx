@@ -81,7 +81,7 @@ export function ButtonAnimation() {
 
   const press = {
     idle: { transform: "translateY(0px)" },
-    hover: { transform: "translateY(2px)" },
+    hover: { transform: "translateY(0px)" },
   };
 
   return (

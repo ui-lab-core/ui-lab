@@ -439,7 +439,7 @@ export default function ConfigPage() {
           </div>
         </div>
 
-        <Scroll ref={scrollRef} className="flex-1 min-h-[calc(100vh-var(--header-height))]" maxHeight="100%" fadeY>
+        <Scroll ref={scrollRef} className="flex-1 min-h-[calc(100vh-var(--header-height))]" maxHeight="100%" fade-y>
           {activeSection === "preview" && <PreviewSection />}
           {activeSection === "export" && (
             <ExportSection

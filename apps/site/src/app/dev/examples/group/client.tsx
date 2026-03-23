@@ -11,7 +11,7 @@ function FilterBarPreview() {
 
   return (
     <Group orientation="horizontal">
-      <Group.Input prefixIcon={<FaMagnifyingGlass />} placeholder="Search...">
+      <Group.Input icon={<FaMagnifyingGlass />} placeholder="Search...">
       </Group.Input>
       <Divider />
       <Group.Select selectedKey={status} onSelectionChange={setStatus} className="w-36">

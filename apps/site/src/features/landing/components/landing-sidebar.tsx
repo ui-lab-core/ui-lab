@@ -150,7 +150,7 @@ export function LandingSidebar() {
             </nav>
           </div>
 
-          <Scroll className="h-[calc(100vh-var(--header-height))]" maxHeight="100%" fadeY>
+          <Scroll className="h-[calc(100vh-var(--header-height))]" maxHeight="100%" fade-y>
             <div className="py-7 px-5 space-y-8">
               <div>
                 <span className="text-xs font-semibold text-foreground-400">Quick Links</span>

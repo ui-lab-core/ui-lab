@@ -106,7 +106,7 @@ export function GridCTA({ contentType, onSubmit }: GridCTAProps) {
             <Group.Input
               type="email"
               placeholder="Enter your email"
-              prefixIcon={<FaEnvelope />}
+              icon={<FaEnvelope />}
               value={email}
               onChange={(e) => {
                 setEmail(e.currentTarget.value);

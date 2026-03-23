@@ -20,7 +20,7 @@ export default function Example() {
           placeholder="Enter your email"
           error
           defaultValue="invalid-email"
-          suffixIcon={<FaCircleExclamation className="text-danger-600" size={14} />}
+          icon={{ suffix: <FaCircleExclamation className="text-danger-600" size={14} /> }}
         />
       </div>
 
@@ -33,7 +33,7 @@ export default function Example() {
           type="email"
           placeholder="Enter your email"
           defaultValue="user@example.com"
-          suffixIcon={<FaCircleCheck className="text-success-600" size={14} />}
+          icon={{ suffix: <FaCircleCheck className="text-success-600" size={14} /> }}
           className="border-success-600 focus:border-success-600"
         />
       </div>

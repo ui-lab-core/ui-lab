@@ -23,7 +23,7 @@ function matchesSearch(cmd: CommandItem, query: string): boolean {
 function CommandPaletteContent({ itemCount }: { itemCount: number }) {
   return (
     <>
-      <Command.SearchInput placeholder="Search commands, components, docs..." />
+      <Command.Input placeholder="Search commands, components, docs..." />
 
       <Command.List emptyMessage="No commands found.">
         <Command.Groups renderCategory={(category) => category && (

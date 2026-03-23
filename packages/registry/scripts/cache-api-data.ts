@@ -87,7 +87,7 @@ function getComponentsMtime(componentDirName: string, componentsDir: string): nu
 /**
  * Checks if a component's cache entry is still valid
  */
-export function isCacheValid(
+function isCacheValid(
   componentDirName: string,
   cache: ApiCache,
   componentsDir: string
@@ -170,7 +170,7 @@ export function pruneCache(cache: ApiCache, componentsDir: string): ApiCache {
 /**
  * Clears the entire cache
  */
-export function clearCache(): void {
+function clearCache(): void {
   try {
     if (fs.existsSync(CACHE_FILE)) {
       fs.unlinkSync(CACHE_FILE);

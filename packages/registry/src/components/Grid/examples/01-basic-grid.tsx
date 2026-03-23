@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function Example() {
   return (
-    <Grid columns="3" gap="md">
+    <Grid columns={3} gap="md">
       <div style={{ padding: '1rem', background: '#e0e0e0' }}>Cell 1</div>
       <div style={{ padding: '1rem', background: '#d0d0d0' }}>Cell 2</div>
       <div style={{ padding: '1rem', background: '#c0c0c0' }}>Cell 3</div>

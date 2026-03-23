@@ -259,7 +259,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic" }: Table
 
   return (
     <>
-      <aside className="pr-4 w-[20rem] top-(--header-height) sticky lg:block self-start">
+      <aside className="w-full max-w-70 top-(--header-height) sticky lg:block self-start">
         <nav className="space-y-6 px-4 py-5">
           <div>
             <span className="text-md font-semibold text-foreground-50">
@@ -267,7 +267,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic" }: Table
             </span>
             <Divider size="sm" variant="dashed" spacing="lg" />
             <div className="mt-2 h-140">
-              <Scroll fadeY ref={scrollRef} maxHeight="100%">
+              <Scroll inset fade-y ref={scrollRef} maxHeight="100%">
                 <div className="flex flex-col space-y-0">
                   {visibleItems.map((item) => (
                     <button

@@ -82,7 +82,7 @@ const gridBasicCode = `import { Grid } from "ui-lab-components";
 
 export function Example() {
   return (
-    <Grid columns="3" gap="md">
+    <Grid columns={3} gap="md">
       <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">1</div>
       <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">2</div>
       <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">3</div>
@@ -147,7 +147,7 @@ export const gridDetail: ComponentDetail = {
       description: 'Standard grid with 3 columns and medium gap.',
       code: gridBasicCode,
       preview: (
-        <Grid columns="3" gap="md">
+        <Grid columns={3} gap="md">
           <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">1</div>
           <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">2</div>
           <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">3</div>

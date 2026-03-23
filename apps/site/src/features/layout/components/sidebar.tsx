@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useRef, useMemo, memo, useState, type ReactNode } from 'react';
 import { Scroll, Select } from 'ui-lab-components';
-import { SiAstro, SiReact, SiSvelte } from 'react-icons/si';
+import { SiAstro, SiFlutter, SiReact, SiSvelte } from 'react-icons/si';
 import { cn, usePrefetchOnHover } from '@/shared';
 import { useSidebarToggle } from '@/features/layout/hooks/sidebar-context';
 import {
@@ -17,10 +17,9 @@ import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation
 import { getActiveElementsNavFromPathname } from '@/features/packages/lib/sidebar-sections';
 import { ElementsList } from '@/features/packages/components/sidebar-content';
 import { RiExpandUpDownFill } from "react-icons/ri";
-import { FaArrowsUpDown } from 'react-icons/fa6';
 
 type FrameworkOption = {
-  value: 'react' | 'svelte' | 'astro';
+  value: 'react' | 'svelte' | 'astro' | 'flutter';
   label: string;
   icon: ReactNode;
 };
@@ -30,17 +29,17 @@ const FRAMEWORK_OPTIONS: FrameworkOption[] = [
   {
     value: 'react',
     label: 'React',
-    icon: <SiReact className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
+    icon: <SiReact className="aspect-square min-w-5 h-5 text-foreground-300" />,
+  },
+  {
+    value: 'flutter',
+    label: 'Flutter',
+    icon: <SiFlutter className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
   },
   {
     value: 'svelte',
     label: 'Svelte',
     icon: <SiSvelte className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-    icon: <SiAstro className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
   },
 ];
 
@@ -239,7 +238,7 @@ export function Sidebar() {
             ref={scrollContainerRef}
             className="flex-1"
             maxHeight="100%"
-            fadeY
+            fade-y
           >
             {isElementsOrSectionsOrStarters ? (
               <div className="px-4">

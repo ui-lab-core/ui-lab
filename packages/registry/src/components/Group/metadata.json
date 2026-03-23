@@ -1,7 +1,7 @@
 {
   "id": "group",
   "name": "Group",
-  "description": "Flexible container for grouping Button, Input, and Select components with unified styling.",
+  "description": "Groups Button, Input, and Select with unified border styling.",
   "category": "composition",
   "experimental": true,
   "source": {

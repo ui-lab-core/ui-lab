@@ -96,7 +96,7 @@ export function MemberRolePanel() {
         <Group>
           <Group.Input
             placeholder="Search members..."
-            prefixIcon={<FaMagnifyingGlass />}
+            icon={<FaMagnifyingGlass />}
             className="w-[220px]"
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch({ type: 'SET_SEARCH', value: e.target.value })}
@@ -191,7 +191,7 @@ export function MemberRolePanel() {
           <Group.Input
             placeholder="Email address..."
             className="flex-1"
-            prefixIcon={<FaEnvelope />}
+            icon={<FaEnvelope />}
             value={inviteEmail}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch({ type: 'SET_INVITE_EMAIL', value: e.target.value })}
           />

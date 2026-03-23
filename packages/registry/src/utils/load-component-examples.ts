@@ -1,7 +1,7 @@
 import React from 'react';
 import type { SiteComponentExample } from '@/types';
 
-export interface ExampleData {
+interface ExampleData {
   id: string;
   Component: React.ComponentType;
   metadata: {
@@ -10,7 +10,7 @@ export interface ExampleData {
   };
 }
 
-export interface ExamplesJsonEntry {
+interface ExamplesJsonEntry {
   title: string;
   description: string;
   code: string;
