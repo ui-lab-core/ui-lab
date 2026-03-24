@@ -59,17 +59,12 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "toc": [
           {
             "id": "what-is-ui-lab",
-            "title": "What is UI Lab",
+            "title": "What is UI Lab?",
             "level": 2
           },
           {
             "id": "the-problem-it-solves",
             "title": "The problem it solves",
-            "level": 2
-          },
-          {
-            "id": "four-levels-of-abstraction",
-            "title": "Four levels of abstraction",
             "level": 2
           },
           {
@@ -148,9 +143,19 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
+            "id": "important-components-are-unstyled-by-default",
+            "title": "Important: Components are unstyled by default",
+            "level": 2
+          },
+          {
             "id": "import-styles-in-the-right-order",
             "title": "Import styles in the right order",
             "level": 2
+          },
+          {
+            "id": "using-a-custom-theme-instead",
+            "title": "Using a custom theme instead",
+            "level": 3
           },
           {
             "id": "optional-wire-up-theme-switching",
@@ -168,8 +173,13 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
-            "id": "styles-look-wrong-or-missing",
-            "title": "Styles look wrong or missing",
+            "id": "components-have-no-visual-styles",
+            "title": "Components have no visual styles",
+            "level": 3
+          },
+          {
+            "id": "styles-look-wrong-or-partially-applied",
+            "title": "Styles look wrong or partially applied",
             "level": 3
           },
           {
