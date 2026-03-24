@@ -94,7 +94,7 @@ export function GenericContentGrid<T extends ContentItem>({
     );
   };
 
-  const galleryColumns = fullWidth ? { sm: "1" as const, md: "1" as const, xl: "1" as const } : { sm: "1" as const, md: "2" as const, xl: "3" as const };
+  const galleryColumns = fullWidth ? { sm: 1, md: 1, xl: 1 } : { sm: 1, md: 2, xl: 3 };
 
   // If no categorization, render flat grid
   if (!getCategory) {
