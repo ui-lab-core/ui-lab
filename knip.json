@@ -16,7 +16,9 @@
     "apps/site": {
       "entry": ["content/**/*.mdx"]
     },
-    "packages/@ui": {},
+    "packages/@ui": {
+      "entry": ["src/index.ts"]
+    },
     "packages/@mcp": {},
     "packages/registry": {},
     "packages/themes/onyx": {}
