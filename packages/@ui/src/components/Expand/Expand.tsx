@@ -195,10 +195,6 @@ export interface ExpandProps
   isDisabled?: boolean;
   /** Compound sub-components or content nodes */
   children?: React.ReactNode;
-  /** Additional CSS class for the trigger button */
-  triggerClassName?: string;
-  /** Additional CSS class for the content area */
-  contentClassName?: string;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, or slot object. */
   styles?: ExpandStylesProp;
 }
@@ -223,7 +219,7 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
       onChange: onExpandedChange || onChange,
     });
 
-    const { title, triggerClassName, contentClassName, styles: expandStyles, ...divProps } = props;
+    const { title, styles: expandStyles, ...divProps } = props;
     const resolved = resolveExpandBaseStyles(expandStyles);
 
     return (
@@ -252,8 +248,7 @@ const Expand = React.forwardRef<
     Icon?: typeof ExpandIcon;
   }
 >((props, ref) => {
-  const { title, children, triggerClassName, contentClassName, ...rootProps } =
-    props;
+  const { title, children, ...rootProps } = props;
   const resolved = resolveExpandBaseStyles(props.styles);
 
   // If title is provided, use the "Preset" structure (Backward Compatibility)
@@ -268,9 +263,9 @@ const Expand = React.forwardRef<
 
     return (
       <ExpandRoot ref={ref} {...rootProps}>
-        <ExpandTrigger className={cn(triggerClassName, resolved.trigger)}>{title}</ExpandTrigger>
+        <ExpandTrigger className={resolved.trigger}>{title}</ExpandTrigger>
         {customDivider || <ExpandDivider />}
-        <ExpandContent className={cn(contentClassName, resolved.content)}>
+        <ExpandContent className={resolved.content}>
           {filteredChildren}
         </ExpandContent>
       </ExpandRoot>

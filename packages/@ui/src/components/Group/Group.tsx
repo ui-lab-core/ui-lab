@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils"
 import { Button, type ButtonProps } from "../Button"
 import { Input, type InputProps } from "../Input"
 import { Select, type SelectProps } from "../Select"
-import { SelectTriggerContext } from "../Select/Select.Trigger"
 import styles from "./Group.module.css"
 
 type Orientation = "horizontal" | "vertical"
@@ -129,12 +128,11 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
             const isFirst = index === 0
             const isLast = index === childrenArray.length - 1
             const isDividerChild = isDivider(child)
-            
+
             // Extract layout-related classes from child to apply to the item wrapper
             const childProps = React.isValidElement(child) ? (child.props as any) : {}
             const childClassName = childProps.className || ""
             const shouldGrow = childClassName.includes('w-full') || childClassName.includes('flex-1')
-
             return (
               <div
                 key={`item-${index}`}
@@ -145,7 +143,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
                   isFirst && styles.first,
                   isLast && styles.last,
                   isDividerChild && styles.divider,
-                  shouldGrow && styles.grow
+                  shouldGrow && styles.grow,
                 )}
               >
                 {child}
@@ -167,52 +165,16 @@ interface GroupButtonProps extends ButtonProps {
   value?: string
 }
 
-type GroupButtonIconSlots = {
-  left?: React.ReactNode
-  right?: React.ReactNode
-}
-
-function isGroupButtonIconSlots(icon: ButtonProps["icon"]): icon is GroupButtonIconSlots {
-  return typeof icon === "object" && icon !== null && !React.isValidElement(icon) && ('left' in icon || 'right' in icon)
-}
-
-function resolveGroupButtonIcon(icon: ButtonProps["icon"]): GroupButtonIconSlots | undefined {
-  if (!icon) return undefined
-  if (isGroupButtonIconSlots(icon)) {
-    return icon
-  }
-
-  return { left: icon as React.ReactNode, right: undefined }
-}
-
 /** Button styled to merge seamlessly with adjacent group items */
 const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
   ({ active, value, variant, className, onPress, ...restProps }, ref) => {
     const context = useGroupContext()
-    const isInSelectTrigger = React.useContext(SelectTriggerContext)
-
     // Merge disabled state from group context
     const isDisabled = restProps.isDisabled ?? context.groupIsDisabled
 
     // Derive active and onPress from toggle group context when value is provided
-    const isActive = value !== undefined && context.groupValue !== undefined
-      ? value === context.groupValue
-      : active
-    const handlePress = value !== undefined && context.groupOnChange !== undefined
-      ? () => context.groupOnChange!(value)
-      : onPress
-
-    if (isInSelectTrigger) {
-      const icon = resolveGroupButtonIcon(restProps.icon)
-
-      return (
-        <span className={cn(styles['group-item'], className)}>
-          {icon?.left}
-          {restProps.children}
-          {icon?.right}
-        </span>
-      )
-    }
+    const isActive = value !== undefined && context.groupValue !== undefined ? value === context.groupValue : active
+    const handlePress = value !== undefined && context.groupOnChange !== undefined ? () => context.groupOnChange!(value) : onPress
 
     let buttonVariant = variant
     if (variant === undefined) {
@@ -306,7 +268,7 @@ const GroupSelect = React.forwardRef<HTMLDivElement, GroupSelectProps>(
         ref={ref}
         {...props}
         isDisabled={disabled}
-        className={cn('groupSelectWrapper', styles['group-select-wrapper'], className)}
+        className={cn('group-select-wrapper', styles['group-select-wrapper'], className)}
       />
     )
   }
