@@ -4,7 +4,7 @@ import { Button } from 'ui-lab-components'
 export const metadata = {
   title: 'Button Variants',
   description: 'All available button variants including primary, default, secondary, outline, and ghost styles.'
-}
+};
 
 export default function Example() {
   return (

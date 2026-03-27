@@ -74,6 +74,21 @@ function extractPropsFromDoc(doc: ComponentDoc): PropDefinition[] {
   });
 }
 
+function shouldHideLegacySlotClassNameProp(
+  prop: PropDefinition,
+  hasStylesProp: boolean
+): boolean {
+  if (!hasStylesProp) return false;
+  if (prop.name === 'className') return false;
+  return /.+ClassName$/.test(prop.name);
+}
+
+function normalizeExtractedProps(props: PropDefinition[]): PropDefinition[] {
+  const hasStylesProp = props.some((prop) => prop.name === 'styles');
+
+  return props.filter((prop) => !shouldHideLegacySlotClassNameProp(prop, hasStylesProp));
+}
+
 function getComponentFiles(componentDirName: string): string[] {
   const componentDir = path.join(COMPONENTS_DIR, componentDirName);
   if (!fs.existsSync(componentDir)) return [];
@@ -108,14 +123,14 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
 
   // Prefer the doc whose displayName matches the component directory name (e.g. "Modal" for Modal dir)
   const mainDoc = allDocs.find(d => d.displayName === componentDirName) || allDocs[0];
-  const mainProps = extractPropsFromDoc(mainDoc);
+  const mainProps = normalizeExtractedProps(extractPropsFromDoc(mainDoc));
 
   const subComponents: Record<string, { description?: string; props: PropDefinition[] }> = {};
   for (const doc of allDocs) {
     if (doc.displayName && doc.displayName !== mainDoc.displayName) {
       subComponents[doc.displayName] = {
         description: doc.description || undefined,
-        props: extractPropsFromDoc(doc),
+        props: normalizeExtractedProps(extractPropsFromDoc(doc)),
       };
     }
   }

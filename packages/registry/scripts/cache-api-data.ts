@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const CACHE_DIR = path.resolve(__dirname, '../.cache');
 const CACHE_FILE = path.resolve(CACHE_DIR, 'api-data.json');
+const CACHE_VERSION = '1.1.0';
 
 interface CacheEntry {
   mtime: number;
@@ -35,14 +36,20 @@ function ensureCacheDir(): void {
 export function loadApiCache(): ApiCache {
   try {
     if (!fs.existsSync(CACHE_FILE)) {
-      return { timestamp: 0, version: '1.0.0', files: {} };
+      return { timestamp: 0, version: CACHE_VERSION, files: {} };
     }
 
     const content = fs.readFileSync(CACHE_FILE, 'utf-8');
-    return JSON.parse(content);
+    const cache = JSON.parse(content) as ApiCache;
+
+    if (cache.version !== CACHE_VERSION) {
+      return { timestamp: 0, version: CACHE_VERSION, files: {} };
+    }
+
+    return cache;
   } catch (error) {
     console.warn('Failed to load API cache, starting fresh:', error);
-    return { timestamp: 0, version: '1.0.0', files: {} };
+    return { timestamp: 0, version: CACHE_VERSION, files: {} };
   }
 }
 

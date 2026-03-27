@@ -2,12 +2,20 @@ import React from 'react';
 import { Button } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 import Example1, { metadata as metadata1 } from './examples/01-variants.js';
+import Example2, { metadata as metadata2 } from './examples/02-multi-actions.js';
+import Example3, { metadata as metadata3 } from './examples/03-joined-toggle.js';
+import Example4, { metadata as metadata4 } from './examples/04-sub-stack-actions.js';
+import Example5, { metadata as metadata5 } from './examples/05-split-action-button.js';
 import examplesJson from './examples.json' with { type: 'json' };
 import { loadComponentExamples } from '../../utils/load-component-examples.js';
 
 // Define examplesData locally
 const examplesData = [
   { id: '01-variants', Component: Example1, metadata: metadata1 },
+  { id: '02-multi-actions', Component: Example2, metadata: metadata2 },
+  { id: '03-joined-toggle', Component: Example3, metadata: metadata3 },
+  { id: '04-sub-stack-actions', Component: Example4, metadata: metadata4 },
+  { id: '05-split-action-button', Component: Example5, metadata: metadata5 },
 ];
 
 const buttonControls: ControlDef[] = [
