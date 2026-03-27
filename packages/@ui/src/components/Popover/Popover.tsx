@@ -72,10 +72,8 @@ export interface PopoverProps {
   position?: PopoverPosition;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: PopoverStylesProp;
-  /** Additional CSS class for the trigger element. Merged with `styles.root`. */
+  /** Additional CSS class for the trigger element. */
   className?: string;
-  /** Additional CSS class for the popover content panel. Merged with `styles.content`. */
-  contentClassName?: string;
   /** Controlled open state */
   isOpen?: boolean;
   /** Called when the popover opens or closes */
@@ -85,7 +83,7 @@ export interface PopoverProps {
 }
 
 const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
-  ({ children, content, position = "bottom", styles, className: externalClassName, contentClassName: externalContentClassName, isOpen: controlledIsOpen, onOpenChange, showArrow = false }, ref) => {
+  ({ children, content, position = "bottom", styles, className: externalClassName, isOpen: controlledIsOpen, onOpenChange, showArrow = false }, ref) => {
 
     const resolvePopoverBaseStyles = createStylesResolver([
       'root',
@@ -228,7 +226,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
             <div
               ref={mergedContentRef}
               {...asElementProps<"div">(mergeProps(overlayProps, dialogProps))}
-              className={cn(css.root)}
+              className={cn(css.root, resolved.root)}
               style={{
                 ...floatingStyles,
               }}
@@ -249,7 +247,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                   pathWidth={showArrow ? ARROW_WIDTH : undefined}
                   cornerRadius={8}
                   padding="none"
-                  className={cn('popover', 'frame', css.frame, externalContentClassName, resolved.content)}
+                  className={cn('popover', 'frame', css.frame, resolved.content)}
                 >
                   {content}
                 </Frame>

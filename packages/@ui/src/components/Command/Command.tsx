@@ -10,7 +10,8 @@ import { FocusScope } from "@react-aria/focus";
 import { useOverlayTriggerState } from "@react-stately/overlays";
 
 import { filterDOMProps } from "@react-aria/utils";
-import { cn } from "@/lib/utils";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Search } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
@@ -21,6 +22,18 @@ import { Input, type InputProps } from "../Input";
 
 import type { Key } from "react-aria";
 import styles from "./Command.module.css";
+
+interface CommandStyleSlots {
+  root?: StyleValue;
+  overlay?: StyleValue;
+}
+
+type CommandStylesProp = StylesProp<CommandStyleSlots>;
+
+const resolveCommandBaseStyles = createStylesResolver([
+  "root",
+  "overlay",
+] as const);
 
 export interface CommandItem {
   id: string;
@@ -91,8 +104,8 @@ export interface CommandProps {
   onOpenChange?: (open: boolean) => void;
   /** Additional CSS class for the palette dialog */
   className?: string;
-  /** Additional CSS class for the backdrop overlay */
-  overlayClassName?: string;
+  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, or slot object. */
+  styles?: CommandStylesProp;
   /** List of command items to display */
   items?: CommandItem[];
   /** Custom filter function for commands against the query */
@@ -103,7 +116,7 @@ export interface CommandProps {
 
 const Command = React.forwardRef<HTMLDivElement, CommandProps>(
   (
-    { open = false, onOpenChange, className, overlayClassName, items = [], filter, children },
+    { open = false, onOpenChange, className, styles: commandStyles, items = [], filter, children },
     ref,
   ) => {
     const [mounted, setMounted] = React.useState(false);
@@ -116,6 +129,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     const paletteRef = React.useRef<HTMLDivElement>(null);
     const searchInputRef = React.useRef<HTMLInputElement>(null);
     const scrollableRef = React.useRef<HTMLDivElement>(null);
+    const resolved = resolveCommandBaseStyles(commandStyles);
 
     useScrollLock(overlayState.isOpen, scrollableRef.current);
     const itemsRef = React.useRef<Map<Key, string>>(new Map());
@@ -308,14 +322,14 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
           className={cn(
             "command",
             styles["overlay"],
-            overlayClassName,
+            resolved.overlay,
           )}
           onClick={handleOverlayClick}
         >
           <Card
             {...filterDOMProps(dialogProps)}
             ref={modalRef}
-            className={cn("content", styles["content"], className)}
+            className={cn("content", styles["content"], className, resolved.root)}
             role="dialog"
             aria-modal="true"
           >

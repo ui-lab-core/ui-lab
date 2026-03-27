@@ -34,6 +34,14 @@ interface TabsContextValue {
 }
 
 const TabsContext = React.createContext<TabsContextValue | null>(null)
+const TABS_INDICATOR_INSET = 4
+const TABS_UNDERLINE_THICKNESS = 2
+
+interface TabsListContextValue {
+  indicatorClassName: string
+}
+
+const TabsListContext = React.createContext<TabsListContextValue | null>(null)
 
 function useTabsContext() {
   const context = React.useContext(TabsContext)
@@ -41,6 +49,24 @@ function useTabsContext() {
     throw new Error("Tabs component must be used within Tabs root")
   }
   return context
+}
+
+function useTabsListContext() {
+  return React.useContext(TabsListContext)
+}
+
+function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
+  return cn(
+    "tabs",
+    "indicator",
+    variant === "underline" && "underline",
+    variant === "underline" && "indicator-underline",
+    css.indicator,
+    {
+      [css["indicator-underline"]]: variant === "underline",
+    },
+    indicator
+  )
 }
 
 interface TabsStyleSlots {
@@ -171,7 +197,7 @@ const resolveTabsListBaseStyles = createStylesResolver(['root', 'indicator'] as 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
     const { selectedValue, variant, orientation, setIndicatorReady } = useTabsContext()
-    const { root, indicator } = resolveTabsListBaseStyles(stylesProp);
+    const { root, indicator } = resolveTabsListBaseStyles(stylesProp)
     const listRef = React.useRef<HTMLDivElement>(null)
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
@@ -184,6 +210,14 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       height: 0,
     })
 
+    const indicatorClassName = React.useMemo(
+      () => getTabsIndicatorClassName(indicator, variant),
+      [indicator, variant]
+    )
+    const tabsListContext = React.useMemo(
+      () => ({ indicatorClassName }),
+      [indicatorClassName]
+    )
 
     const measureTrigger = React.useCallback((element: HTMLElement | null) => {
       if (!element) return null
@@ -269,6 +303,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         willChange: "transform",
         pointerEvents: "none",
+        margin: 0,
         opacity: indicatorPosition.width === 0 && indicatorPosition.height === 0 ? 0 : 1,
       }
 
@@ -282,12 +317,11 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
             ...baseStyle,
             left: 0,
             top: indicatorPosition.top,
-            width: 2,
+            width: TABS_UNDERLINE_THICKNESS,
             height: indicatorPosition.height,
           }
         }
-        // Apply horizontal padding to indicator for vertical orientation
-        const horizontalPadding = 4
+        const horizontalPadding = TABS_INDICATOR_INSET
         const adjustedWidth = Math.max(0, listDimensions.width - horizontalPadding * 2)
         return {
           ...baseStyle,
@@ -302,14 +336,13 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         return {
           ...baseStyle,
           left: indicatorPosition.left,
-          top: indicatorPosition.top + indicatorPosition.height - 2,
+          top: indicatorPosition.top + indicatorPosition.height - TABS_UNDERLINE_THICKNESS,
           width: indicatorPosition.width,
-          height: 2,
+          height: TABS_UNDERLINE_THICKNESS,
         }
       }
 
-      // Apply vertical padding to indicator (matches --indicator-padding CSS variable)
-      const verticalPadding = 4
+      const verticalPadding = TABS_INDICATOR_INSET
       const adjustedHeight = Math.max(0, listDimensions.height - verticalPadding * 2)
       return {
         ...baseStyle,
@@ -330,29 +363,27 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     )
 
     return (
-      <div
-        ref={mergedRef}
-        role="tablist"
-        aria-label={ariaLabel}
-        aria-orientation={orientation}
-        className={cn("tabs", "list", css.list, root, className)}
-        data-variant={variant}
-        data-orientation={orientation}
-        style={{ position: "relative" }}
-      >
-        {indicatorPosition.width > 0 && (
-          <div
-            className={cn("tabs", "indicator",
-              variant === "underline" && "underline",
-              variant === "underline" && "indicator-underline",
-              css.indicator, {
-              [css["indicator-underline"]]: variant === "underline",
-            }, indicator)}
-            style={getIndicatorStyle}
-          />
-        )}
-        {children}
-      </div>
+      <TabsListContext.Provider value={tabsListContext}>
+        <div
+          ref={mergedRef}
+          role="tablist"
+          aria-label={ariaLabel}
+          aria-orientation={orientation}
+          className={cn("tabs", "list", css.list, root, className)}
+          data-variant={variant}
+          data-orientation={orientation}
+          style={{ position: "relative" }}
+        >
+          {children}
+          {indicatorPosition.width > 0 && (
+            <div
+              aria-hidden="true"
+              className={indicatorClassName}
+              style={getIndicatorStyle}
+            />
+          )}
+        </div>
+      </TabsListContext.Provider>
     )
   }
 )
@@ -396,10 +427,40 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     },
     ref
   ) => {
-    const { selectedValue, setSelectedValue, indicatorReady } = useTabsContext()
-    const { root, icon: iconStyles } = resolveTabsTriggerBaseStyles(stylesProp);
+    const { selectedValue, setSelectedValue, indicatorReady, orientation, variant } = useTabsContext()
+    const tabsListContext = useTabsListContext()
+    const { root, icon: iconStyles } = resolveTabsTriggerBaseStyles(stylesProp)
     const buttonRef = React.useRef<HTMLButtonElement>(null)
     const isSelected = value === selectedValue
+    const showIndicatorFallback = isSelected && !indicatorReady && !!tabsListContext
+    const fallbackIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
+      if (variant === "underline") {
+        if (orientation === "vertical") {
+          return {
+            top: 0,
+            bottom: 0,
+            left: -TABS_UNDERLINE_THICKNESS,
+            width: TABS_UNDERLINE_THICKNESS,
+            height: "100%",
+            margin: 0,
+          }
+        }
+
+        return {
+          left: 0,
+          right: 0,
+          bottom: -TABS_UNDERLINE_THICKNESS,
+          width: "100%",
+          height: TABS_UNDERLINE_THICKNESS,
+          margin: 0,
+        }
+      }
+
+      return {
+        inset: 0,
+        margin: 0,
+      }
+    }, [orientation, variant])
 
     const { focusProps, isFocusVisible } = useFocusRing()
 
@@ -485,9 +546,17 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         data-disabled={disabled ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
         data-indicator-ready={isSelected && indicatorReady ? "true" : undefined}
+        data-indicator-fallback={showIndicatorFallback ? "true" : undefined}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
       >
+        {showIndicatorFallback && tabsListContext && (
+          <span
+            aria-hidden="true"
+            className={cn(tabsListContext.indicatorClassName, css["indicator-fallback"])}
+            style={fallbackIndicatorStyle}
+          />
+        )}
         {icon && <span className={cn(css["trigger-icon"], iconStyles)}>{icon}</span>}
         {children}
       </button>

@@ -2,6 +2,7 @@ declare const styles: {
   tabs: string;
   list: string;
   indicator: string;
+  "indicator-fallback": string;
   "indicator-underline": string;
   trigger: string;
   "trigger-icon": string;
