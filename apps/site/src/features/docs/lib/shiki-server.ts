@@ -106,7 +106,7 @@ export async function highlightCode(code: string, lang: string) {
     try {
       const html = await codeToHtml(code, {
         lang,
-        theme: shikiTheme,
+        theme: shikiTheme as any,
         transformers: [transformerRenderIndentGuides()],
       })
 
