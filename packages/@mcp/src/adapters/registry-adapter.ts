@@ -13,10 +13,45 @@ import {
   searchComponents,
   getAllComponentIds as getAllComponentIdsFromRegistry,
   generatedAPI,
+  generatedStyles,
   getProviderById as getProviderByIdFromRegistry,
 } from 'ui-lab-registry';
 
 import type { ComponentMetadata } from 'ui-lab-registry';
+
+function enrichComponentApi(id: string, api: ComponentMetadata['api']) {
+  if (!api) return api;
+
+  const styleableParts =
+    generatedStyles[id as keyof typeof generatedStyles]?.styleableParts?.map((part) => part.name) ?? [];
+  const hasStylesProp = api.props.some((prop) => prop.name === 'styles');
+
+  const props = api.props
+    .filter((prop) => !(hasStylesProp && prop.name !== 'className' && /.+ClassName$/.test(prop.name)))
+    .map((prop) => {
+      if (prop.name !== 'styles' || styleableParts.length === 0) {
+        return prop;
+      }
+
+      const slotsDescription = `Available slots: ${styleableParts.map((part) => `"${part}"`).join(', ')}.`;
+      const description = prop.description?.includes('Available slots:')
+        ? prop.description
+        : prop.description
+          ? `${prop.description} ${slotsDescription}`
+          : slotsDescription;
+
+      return {
+        ...prop,
+        description,
+      };
+    });
+
+  return {
+    ...api,
+    props,
+    styleableParts,
+  };
+}
 
 /**
  * Get a single component by ID with enriched metadata
@@ -32,7 +67,7 @@ function getComponentById(id: string): ComponentMetadata | null {
     const generatedAPIKey = generatedAPIAliases[id] ?? id;
     const api = generatedAPI[generatedAPIKey as keyof typeof generatedAPI];
     if (api) {
-      component.api = api;
+      component.api = enrichComponentApi(generatedAPIKey, api);
     }
 
     return component;
