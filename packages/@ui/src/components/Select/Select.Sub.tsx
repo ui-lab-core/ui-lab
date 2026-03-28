@@ -259,7 +259,6 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
     const [mounted, setMounted] = React.useState(false)
     const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null)
     const floatingRootRef = React.useRef<HTMLDivElement | null>(null)
-    const [needsScroll, setNeedsScroll] = React.useState(false)
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
     const { refs, floatingStyles, x, y, placement } = useFloating({
@@ -347,22 +346,6 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
         window.removeEventListener("mousemove", handleWindowMouseMove)
       }
     }, [submenuContext?.isOpen])
-
-    React.useEffect(() => {
-      if (!submenuContext?.isOpen || !contentElement) return
-      const maxHeightPx = 384
-      const measure = () => {
-        const listElement = contentElement.querySelector('[role="list"]') as HTMLElement | null
-        if (!listElement) return
-        const scrollContainer = listElement.parentElement?.parentElement as HTMLElement | null
-        if (!scrollContainer) return
-        setNeedsScroll(scrollContainer.scrollHeight > maxHeightPx)
-      }
-      measure()
-      const observer = new ResizeObserver(measure)
-      observer.observe(contentElement)
-      return () => observer.disconnect()
-    }, [submenuContext?.isOpen, contentElement])
 
     const submenuContextRef = React.useRef(submenuContext)
     submenuContextRef.current = submenuContext
@@ -481,7 +464,6 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
                 className={styles.list}
                 direction="vertical"
                 fade-y
-                enabled={needsScroll}
                 hide={false}
               >
                 <div style={{ padding: "0.25rem" }}>

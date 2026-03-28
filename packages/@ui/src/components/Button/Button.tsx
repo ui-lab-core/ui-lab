@@ -11,7 +11,7 @@ import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Button.module.css";
 
-type ButtonSize = "sm" | "md" | "lg" | (string & {});
+type ButtonSize = (string & {});
 type ButtonIconSlots = {
   left?: React.ReactNode;
   right?: React.ReactNode;

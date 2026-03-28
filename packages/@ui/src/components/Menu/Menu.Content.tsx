@@ -73,7 +73,6 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
     useScrollLock(isOpen)
     const [mounted, setMounted] = React.useState(false)
     const [floatingElement, setFloatingElement] = React.useState<HTMLDivElement | null>(null)
-    const [needsScroll, setNeedsScroll] = React.useState(false)
     const wasJustOpenedRef = React.useRef(false)
 
     const { refs, floatingStyles, x, y, placement } = useFloating({
@@ -150,22 +149,6 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       if (el) scrollItemIntoView(el)
     }, [focusedKey, isOpen, floatingElement, mouseMoveDetectedRef])
 
-    React.useEffect(() => {
-      if (!isOpen || !floatingElement) return
-      const maxHeightPx = 384
-      const measure = () => {
-        const listElement = floatingElement.querySelector('[role="list"]') as HTMLElement | null
-        if (!listElement) return
-        const scrollContainer = listElement.parentElement?.parentElement as HTMLElement | null
-        if (!scrollContainer) return
-        setNeedsScroll(scrollContainer.scrollHeight > maxHeightPx)
-      }
-      measure()
-      const observer = new ResizeObserver(measure)
-      observer.observe(floatingElement)
-      return () => observer.disconnect()
-    }, [isOpen, floatingElement])
-
     const mergedRef = useMergedRef<HTMLDivElement>(refs.setFloating, setFloatingElement, ref)
 
     const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
@@ -227,7 +210,6 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
               className={css.list}
               direction="vertical"
               fade-y
-              enabled={needsScroll}
               hide={false}
             >
               <div style={{ padding: "0.25rem" }}>

@@ -139,7 +139,7 @@ export type { ConfirmProps } from "./components/Confirm";
 export { Path, PathItem } from "./components/Path";
 export type { PathProps, PathItemProps } from "./components/Path";
 
-export { Anchor } from "./components/Anchor";
+export { Anchor, AnchorPreview } from "./components/Anchor";
 export type { AnchorProps, AnchorPreviewProps } from "./components/Anchor";
 
 export { Gallery, GalleryItem, GalleryView, GalleryBody } from "./components/Gallery";

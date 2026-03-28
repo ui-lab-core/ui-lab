@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { Mask } from "../Mask";
 import css from "./Scroll.module.css";
 import {
   SCROLL_RESTORE_AXIS_ATTR,
@@ -57,6 +58,25 @@ const resolveScrollBaseStyles = createStylesResolver([
   "vertical",
 ] as const);
 
+function getInitialScrollFadeVars(
+  direction: ScrollProps["direction"],
+  fadeY: boolean,
+  fadeSize: number,
+): React.CSSProperties {
+  if (direction !== "vertical" || !fadeY) {
+    return {
+      "--mask-top-fade": "0%",
+      "--mask-bottom-fade": "0%",
+    } as React.CSSProperties;
+  }
+
+  // SSR cannot know overflow or scroll position, so default to a bottom-only hint.
+  return {
+    "--mask-top-fade": "0%",
+    "--mask-bottom-fade": `${fadeSize}%`,
+  } as React.CSSProperties;
+}
+
 function readStoredScrollOffset(storageKey: string): number | null {
   if (typeof window === "undefined") return null;
 
@@ -90,8 +110,8 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     {
       children,
       className,
-      maxHeight = "100%",
-      maxWidth = "100%",
+      maxHeight,
+      maxWidth,
       direction = "vertical",
       paddingY = 4,
       "fade-y": fadeY = false,
@@ -122,6 +142,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
 
     const containerRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
+    const maskRef = useRef<HTMLDivElement>(null);
     const thumbRef = useRef<HTMLDivElement>(null);
     const mergedRef = useMergedRef(ref, containerRef);
 
@@ -165,15 +186,17 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       thumbSizeRef.current = newThumbSize;
       setThumbPosition(newThumbPos);
 
-      if (!isHoriz && fadeY && needs) {
-        const topP = Math.min(1, Math.max(0, currentScroll / fadeDistance));
-        const botP = Math.min(1, Math.max(0, (maxScroll - currentScroll) / fadeDistance));
-        const gradient = `linear-gradient(to bottom, transparent 0%, black ${topP * fadeSize}%, black ${100 - botP * fadeSize}%, transparent 100%)`;
-        content.style.maskImage = gradient;
-        content.style.webkitMaskImage = gradient;
-      } else if (!isHoriz) {
-        content.style.maskImage = "";
-        content.style.webkitMaskImage = "";
+      if (!isHoriz && maskRef.current) {
+        const maskNode = maskRef.current;
+        if (fadeY && needs) {
+          const topP = Math.min(1, Math.max(0, currentScroll / fadeDistance));
+          const botP = Math.min(1, Math.max(0, (maxScroll - currentScroll) / fadeDistance));
+          maskNode.style.setProperty("--mask-top-fade", `${topP * fadeSize}%`);
+          maskNode.style.setProperty("--mask-bottom-fade", `${botP * fadeSize}%`);
+        } else {
+          maskNode.style.setProperty("--mask-top-fade", "0%");
+          maskNode.style.setProperty("--mask-bottom-fade", "0%");
+        }
       }
     }, [isHoriz, clientSizeKey, scrollSizeKey, scrollPosKey, numPaddingY, fadeY, fadeDistance, fadeSize]);
 
@@ -428,6 +451,12 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       connectObservers();
     }, [restoreStoredScrollPosition, connectObservers, enabled]);
 
+    const axisConstraintStyle = {
+      ...(isHoriz
+        ? (maxWidth ? { maxWidth } : {})
+        : (maxHeight ? { maxHeight } : {})),
+    };
+
     if (!enabled) {
       return (
         <div
@@ -435,7 +464,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           className={cn("scroll", css.root, resolved.root, className)}
           style={{
             [isHoriz ? "width" : "height"]: "100%",
-            [isHoriz ? "maxWidth" : "maxHeight"]: isHoriz ? maxWidth : maxHeight,
+            ...axisConstraintStyle,
             ...propsStyle,
           }}
           {...restProps}
@@ -445,7 +474,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       );
     }
 
-    const showOpacity = !hide || (needsScrollbar && (isHoveredRight || isDragging || isScrolling)) ? 1 : 0;
+    const showOpacity = needsScrollbar && (!hide || isHoveredRight || isDragging || isScrolling) ? 1 : 0;
 
     return (
       <div
@@ -460,7 +489,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         )}
         style={{
           [isHoriz ? "width" : "height"]: "100%",
-          [isHoriz ? "maxWidth" : "maxHeight"]: isHoriz ? maxWidth : maxHeight,
+          ...axisConstraintStyle,
           ...(!isHoriz && strPaddingY ? { "--scroll-padding-y": strPaddingY } : {}),
           ...propsStyle,
         } as React.CSSProperties}
@@ -470,21 +499,35 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         data-inline={String(inline)}
         {...restProps}
       >
-        <div
-          ref={handleContentRef}
-          className={cn(css.content, resolved.content)}
-          onScroll={handleScroll}
-          onWheel={isHoriz ? handleWheel : undefined}
-          style={{ [isHoriz ? "maxWidth" : "maxHeight"]: "inherit" }}
-          {...(storageKey
-            ? {
-              [SCROLL_RESTORE_STORAGE_KEY_ATTR]: storageKey,
-              [SCROLL_RESTORE_AXIS_ATTR]: direction,
-            }
-            : {})}
+        <Mask
+          ref={maskRef}
+          style={{
+            [isHoriz ? "maxWidth" : "maxHeight"]: "inherit",
+            overflow: "hidden",
+            ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
+          } as React.CSSProperties}
         >
-          {children}
-        </div>
+          {!isHoriz && fadeY ? <Mask.Fade /> : null}
+          <div
+            ref={handleContentRef}
+            className={cn(css.content, resolved.content)}
+            onScroll={handleScroll}
+            onWheel={isHoriz ? handleWheel : undefined}
+            style={{
+              [isHoriz ? "maxWidth" : "maxHeight"]: "inherit",
+              minHeight: 0,
+              minWidth: 0,
+            }}
+            {...(storageKey
+              ? {
+                [SCROLL_RESTORE_STORAGE_KEY_ATTR]: storageKey,
+                [SCROLL_RESTORE_AXIS_ATTR]: direction,
+              }
+              : {})}
+          >
+            {children}
+          </div>
+        </Mask>
 
         <div
           className={cn(css.track, resolved.track)}
@@ -495,7 +538,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           }}
           onMouseDown={handleTrackClick}
         >
-          {(needsScrollbar || !hide) && (
+          {needsScrollbar && (
             <div
               ref={thumbRef}
               className={cn(css.thumb, resolved.thumb)}

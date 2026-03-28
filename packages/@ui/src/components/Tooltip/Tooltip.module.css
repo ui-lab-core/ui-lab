@@ -2,7 +2,7 @@
 
 @layer components {
   .trigger {
-    @apply inline-block;
+    display: contents;
   }
 
   .root {
