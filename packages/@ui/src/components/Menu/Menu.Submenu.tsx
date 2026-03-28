@@ -222,7 +222,6 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
     const contentRef = React.useRef<HTMLDivElement>(null)
     const [mounted, setMounted] = React.useState(false)
     const [floatingElement, setFloatingElement] = React.useState<HTMLDivElement | null>(null)
-    const [needsScroll, setNeedsScroll] = React.useState(false)
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
     const { refs, floatingStyles, x, y, placement } = useFloating({
@@ -312,22 +311,6 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
       }
     }, [submenuContext?.isOpen])
 
-    React.useEffect(() => {
-      if (!submenuContext?.isOpen || !floatingElement) return
-      const maxHeightPx = 384
-      const measure = () => {
-        const listElement = floatingElement.querySelector('[role="list"]') as HTMLElement | null
-        if (!listElement) return
-        const scrollContainer = listElement.parentElement?.parentElement as HTMLElement | null
-        if (!scrollContainer) return
-        setNeedsScroll(scrollContainer.scrollHeight > maxHeightPx)
-      }
-      measure()
-      const observer = new ResizeObserver(measure)
-      observer.observe(floatingElement)
-      return () => observer.disconnect()
-    }, [submenuContext?.isOpen, floatingElement])
-
     const mergedRef = useMergedRef<HTMLDivElement>(refs.setFloating, setFloatingElement, contentRef, (el: HTMLDivElement | null) => {
       if (submenuContext) submenuContext.contentRef.current = el
     }, ref)
@@ -400,7 +383,6 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
               className={css.list}
               direction="vertical"
               fade-y
-              enabled={needsScroll}
               hide={false}
             >
               <div style={{ padding: "0.25rem" }}>

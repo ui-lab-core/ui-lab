@@ -1,12 +1,8 @@
 @reference "tailwindcss";
 
 @layer components {
-  .anchor {
-    @apply inline;
-  }
-
-  .preview {
-    @apply inline;
+  .preview, .anchor {
+    display: inline
   }
 
   .trigger {

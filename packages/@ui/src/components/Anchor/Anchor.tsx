@@ -1,9 +1,7 @@
-"use client";
-
 import * as React from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { Popover } from "@/components/Popover";
+import { Tooltip } from "@/components/Tooltip";
 import css from "./Anchor.module.css";
 
 type Orientation = "horizontal" | "vertical";
@@ -18,6 +16,8 @@ interface AnchorStyleSlots {
 type AnchorStylesProp = StylesProp<AnchorStyleSlots>;
 
 const resolveAnchorBaseStyles = createStylesResolver(['root', 'underline', 'preview'] as const);
+const ANCHOR_PREVIEW_DISPLAY_NAME = "Anchor.Preview";
+const ANCHOR_UNDERLINE_DISPLAY_NAME = "Anchor.Underline";
 
 const DASHED_DIMENSIONS = {
   sm: { thickness: 1, dashLength: 8, gapLength: 4 },
@@ -50,6 +50,42 @@ function getDottedMaskSvg(orientation: Orientation, size: Size): string {
   return `%3Csvg width='${thickness}' height='${spacing}' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='${radius}' cy='${radius}' r='${radius}' fill='%23ffffff'/%3E%3C/svg%3E`;
 }
 
+type CompoundComponentType = {
+  displayName?: string;
+  name?: string;
+  render?: {
+    displayName?: string;
+    name?: string;
+  };
+};
+
+function matchesCompoundComponent(
+  childType: React.JSXElementConstructor<any> | string | undefined,
+  component: React.JSXElementConstructor<any>,
+  displayName: string,
+): boolean {
+  if (!childType) {
+    return false;
+  }
+
+  if (childType === component) {
+    return true;
+  }
+
+  if (typeof childType === "string") {
+    return false;
+  }
+
+  const componentType = childType as CompoundComponentType;
+
+  return (
+    componentType.displayName === displayName ||
+    componentType.name === displayName ||
+    componentType.render?.displayName === displayName ||
+    componentType.render?.name === displayName
+  );
+}
+
 // --- Sub-components ---
 
 export interface AnchorPreviewProps
@@ -57,12 +93,10 @@ export interface AnchorPreviewProps
   children: React.ReactNode;
 }
 
-const AnchorPreview = React.forwardRef<HTMLSpanElement, AnchorPreviewProps>(
-  ({ children }, ref) => {
-    return <span ref={ref as React.Ref<HTMLSpanElement>} style={{ display: "none" }}>{children}</span>;
-  },
-);
-AnchorPreview.displayName = "Anchor.Preview";
+export function AnchorPreview({ children }: AnchorPreviewProps) {
+  return null;
+}
+AnchorPreview.displayName = ANCHOR_PREVIEW_DISPLAY_NAME;
 
 interface AnchorUnderlineProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Controls the line style of the underline */
@@ -99,12 +133,12 @@ const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
     );
   }
 );
-AnchorUnderline.displayName = "Anchor.Underline";
+AnchorUnderline.displayName = ANCHOR_UNDERLINE_DISPLAY_NAME;
 
 // --- Main Anchor Component ---
 
 export interface AnchorProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
   children?: React.ReactNode;
   /** Additional CSS class for the anchor element */
   className?: string;
@@ -114,12 +148,13 @@ export interface AnchorProps
   target?: string;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: AnchorStylesProp;
+  /** Preview content to show in a tooltip on hover. Use this in server components instead of <Anchor.Preview>. */
+  preview?: React.ReactNode;
 }
 
 const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorProps>(
-  ({ className, children, href, target = "_blank", styles, ...props }, ref) => {
-    const [isOpen, setIsOpen] = React.useState(false);
-    let previewContent: React.ReactNode = null;
+  ({ className, children, href, target = "_blank", styles, preview: previewProp, ...props }, ref) => {
+    let previewContent: React.ReactNode = previewProp ?? null;
     let hasUnderline = false;
 
     const childrenArray = React.Children.toArray(children);
@@ -130,10 +165,10 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
     // Extract preview content and filter it out from rendered children
     React.Children.forEach(childrenArray, (child) => {
       if (React.isValidElement(child)) {
-        if (child.type === AnchorPreview) {
-          previewContent = (child.props as any).children;
+        if (matchesCompoundComponent(child.type, AnchorPreview, ANCHOR_PREVIEW_DISPLAY_NAME)) {
+          if (!previewProp) previewContent = (child.props as any).children;
           // Don't add to filteredChildren
-        } else if (child.type === AnchorUnderline) {
+        } else if (matchesCompoundComponent(child.type, AnchorUnderline, ANCHOR_UNDERLINE_DISPLAY_NAME)) {
           hasUnderline = true;
           // Clone AnchorUnderline to inject resolved.underline
           const underlineChild = child as React.ReactElement<AnchorUnderlineProps>;
@@ -159,42 +194,45 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
         href={href}
         target={target}
         rel={target === "_blank" ? "noopener noreferrer" : undefined}
-        className={cn('anchor', 'trigger', css.trigger, resolved.root)}
+        className={cn("anchor", "trigger", css.trigger, className, resolved.root)}
+        {...props}
       >
         {filteredChildren}
       </a>
     ) : (
-      <span ref={ref as React.Ref<HTMLSpanElement>} className={cn('anchor', 'trigger', css.trigger, resolved.root)}>{filteredChildren}</span>
+      <span
+        ref={ref as React.Ref<HTMLSpanElement>}
+        className={cn("anchor", "trigger", css.trigger, className, resolved.root)}
+        {...props}
+      >
+        {filteredChildren}
+      </span>
     );
 
-    // If no preview content, render trigger directly without popover
+    // If no preview content, render trigger directly without a tooltip wrapper.
     if (!previewContent) {
       return triggerElement;
     }
 
     return (
-      <Popover
+      <Tooltip
         content={previewContent}
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        position="bottom"
-        className={cn('preview', css.preview, className, resolved.preview)}
-        {...props}
+        showArrow
+        position="top"
+        className={cn("preview", css.preview)}
+        styles={{ content: resolved.preview }}
       >
         {triggerElement}
-      </Popover>
+      </Tooltip>
     );
   },
 );
 AnchorRoot.displayName = "Anchor";
 
 // Compound component with attached sub-components
-const Anchor = React.forwardRef<HTMLDivElement, AnchorProps & { Preview: typeof AnchorPreview; Underline: typeof AnchorUnderline }>((props, ref) => {
-  return <AnchorRoot ref={ref} {...props} />;
-}) as React.ForwardRefExoticComponent<AnchorProps & React.RefAttributes<HTMLDivElement>> & { Preview: typeof AnchorPreview; Underline: typeof AnchorUnderline };
-
-Anchor.displayName = "Anchor";
-Anchor.Preview = AnchorPreview;
-Anchor.Underline = AnchorUnderline;
+const Anchor = Object.assign(AnchorRoot, {
+  Preview: AnchorPreview,
+  Underline: AnchorUnderline,
+});
 
 export { Anchor };

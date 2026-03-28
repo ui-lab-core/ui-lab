@@ -74,7 +74,6 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const [mounted, setMounted] = React.useState(false)
     const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null)
     const floatingRootRef = React.useRef<HTMLDivElement | null>(null)
-    const [needsScroll, setNeedsScroll] = React.useState(false)
     const inputRef = React.useRef<HTMLInputElement>(null)
     const isKeyboardNavRef = React.useRef(false)
     const justOpenedRef = React.useRef(false)
@@ -203,31 +202,6 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       const el = contentElement.querySelector('[data-highlighted="true"]') as HTMLElement
       if (el) scrollItemIntoView(el)
     }, [focusedKey, isOpen, contentElement, mouseMoveDetectedRef])
-
-    // Measure actual content height to determine if scrolling is needed.
-    // This is more reliable than item count (e.g. items with descriptions exceed maxHeight even when count ≤ maxItems)
-    React.useEffect(() => {
-      if (!isOpen || !contentElement) return
-
-      const maxHeightPx = maxItems * 36 + 8
-      const measure = () => {
-        // The List element has role="list", find it and walk up to the scrollable container
-        const listElement = contentElement.querySelector('[role="list"]') as HTMLElement | null
-        if (!listElement) return
-
-        // Walk up 2 levels: List -> padding div -> Scroll content div
-        const scrollContainer = listElement.parentElement?.parentElement as HTMLElement | null
-        if (!scrollContainer) return
-
-        // Check if content exceeds the maxHeight constraint
-        setNeedsScroll(scrollContainer.scrollHeight > maxHeightPx)
-      }
-
-      measure()
-      const observer = new ResizeObserver(measure)
-      observer.observe(contentElement)
-      return () => observer.disconnect()
-    }, [isOpen, contentElement, maxItems])
 
     const mergedContentRef = useMergedRef<HTMLDivElement>(setContentElement, contentRef, ref)
     const mergedFloatingRef = React.useCallback((el: HTMLDivElement | null) => {
@@ -371,7 +345,6 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
               direction="vertical"
               fade-y={!searchable}
               inline={!searchable}
-              enabled={needsScroll}
               hide={false}
             >
               <div className={cn(resolved.listPaddingWrapper)} style={{ padding: "0.25rem" }}>

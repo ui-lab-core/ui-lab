@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
 
 import { createPortal } from "react-dom";
-import { useTooltipTrigger, useTooltip, mergeProps } from "react-aria";
+import { useTooltip, mergeProps } from "react-aria";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
 import { offset } from "../../hooks/useFloat/core/middleware/offset";
@@ -136,7 +136,8 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     },
     _ref
   ) => {
-    const triggerRef = useRef<HTMLDivElement>(null);
+    const triggerWrapperRef = useRef<HTMLSpanElement>(null);
+    const triggerRef = useRef<HTMLElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
     const [shouldRender, setShouldRender] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
@@ -161,11 +162,6 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       isDisabled,
     });
 
-    const { triggerProps, tooltipProps } = useTooltipTrigger(
-      { isDisabled },
-      state,
-      triggerRef
-    );
     const { tooltipProps: ariaTooltipProps } = useTooltip({}, state);
 
     const { refs, floatingStyles, placement } = useFloating({
@@ -239,8 +235,8 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       }
     }, [shouldRender, state.isOpen, isPositioned, isInstant]);
 
-    const mergedTriggerRef = useCallback((el: HTMLDivElement | null) => {
-      (triggerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    const mergedTriggerRef = useCallback((el: HTMLElement | null) => {
+      (triggerRef as React.MutableRefObject<HTMLElement | null>).current = el;
       refs.setReference(el);
     }, [refs]);
 
@@ -249,24 +245,78 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       refs.setFloating(el);
     }, [refs]);
 
+    useLayoutEffect(() => {
+      const wrapper = triggerWrapperRef.current;
+      const reference = wrapper?.firstElementChild instanceof HTMLElement
+        ? wrapper.firstElementChild
+        : wrapper;
+
+      (triggerRef as React.MutableRefObject<HTMLElement | null>).current = reference;
+      refs.setReference(reference);
+    }, [children, refs]);
+
+    useEffect(() => {
+      const trigger = triggerRef.current;
+      if (!trigger || isDisabled) {
+        return;
+      }
+
+      const handleMouseEnter = () => state.open();
+      const handleMouseLeave = () => state.close();
+      const handleFocusIn = () => state.open(true);
+      const handleFocusOut = (event: FocusEvent) => {
+        if (event.relatedTarget instanceof Node && trigger.contains(event.relatedTarget)) {
+          return;
+        }
+
+        state.close(true);
+      };
+
+      trigger.addEventListener("mouseenter", handleMouseEnter);
+      trigger.addEventListener("mouseleave", handleMouseLeave);
+      trigger.addEventListener("focusin", handleFocusIn);
+      trigger.addEventListener("focusout", handleFocusOut);
+
+      return () => {
+        trigger.removeEventListener("mouseenter", handleMouseEnter);
+        trigger.removeEventListener("mouseleave", handleMouseLeave);
+        trigger.removeEventListener("focusin", handleFocusIn);
+        trigger.removeEventListener("focusout", handleFocusOut);
+      };
+    }, [children, isDisabled, state]);
+
     const trigger = triggerRef.current;
     const isTriggerVisible = !!(trigger && (trigger.offsetWidth > 0 || trigger.offsetHeight > 0));
+    const child = React.Children.only(children);
+
+    const triggerElement = React.isValidElement(child) && child.type !== React.Fragment
+      ? (
+        <span
+          ref={triggerWrapperRef}
+          className={cn(css.trigger, className, resolved.trigger)}
+        >
+          {child}
+        </span>
+      )
+      : (
+        <span
+          ref={mergedTriggerRef}
+          className={cn(css.trigger, className, resolved.trigger)}
+          style={{ display: "inline-block" }}
+        >
+          {children}
+        </span>
+      );
 
     return (
       <>
-        <div
-          ref={mergedTriggerRef}
-          {...asElementProps<"div">(mergeProps(triggerProps))}
-          className={cn(css.trigger, className, resolved.trigger)}
-        >
-          {children}
-        </div>
+        {triggerElement}
 
         {shouldRender &&
           createPortal(
             <div
               ref={mergedFloatingRef}
-              {...asElementProps<"div">(mergeProps(tooltipProps, ariaTooltipProps))}
+              {...asElementProps<"div">(mergeProps(ariaTooltipProps))}
               className={cn(css.root, resolved.root)}
               style={{
                 ...floatingStyles,
