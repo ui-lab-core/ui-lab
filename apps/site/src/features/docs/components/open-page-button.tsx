@@ -26,8 +26,8 @@ export function OpenPage({ componentId }: { componentId?: string }) {
 
   return (
     <Expand isExpanded={isOpen} onExpandedChange={setIsOpen} className='w-65'>
-      <Expand.Trigger>
-        <Group className='w-full'>
+      <Expand.Trigger className='border-b border-background-700 rounded-none'>
+        <Group variant='ghost' className='w-full h-12'>
           <div className="flex justify-center items-center pl-3 text-foreground-400 text-sm font-medium">
             <FaArrowUpRightFromSquare size={13} />
           </div>
@@ -37,7 +37,7 @@ export function OpenPage({ componentId }: { componentId?: string }) {
               if (e.key === 'Enter' || e.key === ' ') setIsOpen(o => !o);
             }}
             title="Open this page in another app"
-            className="flex text-foreground-300 text-xs font-medium pl-4 h-10 w-55 items-center justify-start"
+            className="flex text-foreground-300 text-xs font-medium pl-4 w-55 items-center justify-start"
             role="button"
             tabIndex={0}
           >
@@ -46,15 +46,15 @@ export function OpenPage({ componentId }: { componentId?: string }) {
           </div>
         </Group>
       </Expand.Trigger>
-      <Expand.Content from="below" className='w-[calc(100%-var(--radius-md))] mx-auto -mt-(--border-width-base)'>
-        <div className="flex flex-col pt-2 overflow-hidden">
+      <Expand.Content from="below" className='mx-0 border-b border-background-700 -mt-(--border-width-base)'>
+        <div className="flex flex-col overflow-hidden">
           {options.map(({ label, Icon, href }) => (
             <a
               key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex rounded-sm items-center text-xs text-foreground-400 hover:text-foreground-50 hover:bg-background-800 active:bg-background-700"
+              className="flex items-center text-xs text-foreground-400 hover:text-foreground-50 hover:bg-background-800 active:bg-background-700"
             >
               <span className="flex items-center justify-center mr-2 px-3 py-2 text-sm">
                 <Icon className='w-5 h-5' />

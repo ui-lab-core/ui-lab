@@ -7,7 +7,7 @@ import { CopyComponentPage } from "@/features/docs";
 import { OpenPage } from "@/features/docs";
 import { cn } from "@/shared";
 import { Code, InlineCodeHighlight } from "@/features/docs";
-import { Toaster, Tabs, Button, Flex, Tooltip } from "ui-lab-components";
+import { Toaster, Tabs, Button, Flex, Tooltip, Divider } from "ui-lab-components";
 import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
 import { FaFlask, FaGithub } from "react-icons/fa6";
@@ -180,9 +180,9 @@ export function ComponentClient({ componentId, api, styles, controls, reactAriaU
         <Footer />
       </div>
       {!isChatOpen && (
-        <div className="sticky top-(--header-height) flex  flex-col justify-between h-[calc(100vh-var(--header-height))]">
+        <div className="sticky top-(--header-height) flex flex-col justify-between h-[calc(100vh-var(--header-height))]">
           <TableOfContents items={tocItems} mode="static" />
-          <div className="space-y-3 px-4 pb-4">
+          <div className="w-fit mb-2 border border-background-700 rounded-sm">
             <OpenPage componentId={componentId} />
             <CopyComponentPage componentId={componentId} />
           </div>

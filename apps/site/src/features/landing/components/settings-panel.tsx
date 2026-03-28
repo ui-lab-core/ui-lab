@@ -1,6 +1,6 @@
 "use client";
 
-import { FaPaintRoller } from "react-icons/fa6";
+import { FaEye, FaGear, FaPaintRoller, FaRegEye } from "react-icons/fa6";
 import { Button, Tooltip } from "ui-lab-components";
 import { useRef } from "react";
 import dynamic from "next/dynamic";
@@ -18,6 +18,7 @@ export const SettingsPanel = () => {
           ref={buttonRef}
           variant="ghost"
           aria-label="Settings panel"
+          size="icon"
           className="hover:text-foreground-300 transition-colors text-foreground-300 p-2 hover:bg-theme-border/30"
           onClick={() => setIsSettingsPanelOpen(!isSettingsPanelOpen)}
         >

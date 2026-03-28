@@ -83,9 +83,9 @@ export function CopyComponentPage({ componentId, component }: { componentId: str
   };
 
   return (
-    <Expand isExpanded={isOpen} onExpandedChange={setIsOpen} className='w-65'>
-      <Expand.Trigger>
-        <Group className='w-full'>
+    <Expand isExpanded={isOpen} onExpandedChange={setIsOpen} className='px-0 w-65 overflow-y-hidden'>
+      <Expand.Trigger className='flex py-1 flex-col border-b border-background-700 rounded-none'>
+        <Group variant='ghost' className='w-full'>
           <div className="flex justify-center items-center pl-3 text-foreground-400 text-sm font-medium">
             {copied ? <FaCheck size={12} className="text-foreground-400" /> : <FaRegClipboard />}
           </div>
@@ -104,13 +104,14 @@ export function CopyComponentPage({ componentId, component }: { componentId: str
           </div>
         </Group>
       </Expand.Trigger>
-      <Expand.Content from="below" className='w-[calc(100%-var(--radius-md))] mx-auto -mt-(--border-width-base)'>
-        <div className="text-xs flex flex-col pt-2 overflow-hidden rounded-b-sm">
+
+      <Expand.Content from="below" className='-mt-(--border-width-base)'>
+        <div className="flex flex-col overflow-hidden">
           {copyOptions.map(({ label, source }) => (
             <button
               key={source}
               onClick={() => handleCopy(source)}
-              className="flex items-center rounded-sm text-foreground-400 hover:text-foreground-50 hover:bg-background-800 active:bg-background-700 text-left"
+              className="flex text-xs font-medium cursor-pointer items-center text-foreground-400 hover:text-foreground-50 hover:bg-background-800 active:bg-background-700 text-left"
             >
               <span className="flex-1 py-2 px-3">{label}</span>
             </button>

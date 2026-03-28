@@ -40,6 +40,7 @@ export const LandingThemeToggle = () => {
         <Button
           variant="ghost"
           aria-label="Toggle theme"
+          size="icon"
           className="p-2 hover:text-foreground-300 transition-colors text-foreground-300"
           onClick={toggleTheme}
         >
