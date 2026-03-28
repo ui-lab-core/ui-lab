@@ -33,7 +33,7 @@ export function CopyPage() {
   };
 
   return (
-    <Group className='w-full cursor-pointer'>
+    <Group variant='ghost' className='w-full cursor-pointer'>
       <div className="flex justify-center items-center pl-3 text-foreground-400 text-sm font-medium">
         <FaFileLines />
       </div>
