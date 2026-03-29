@@ -57,7 +57,7 @@ const Menu = ({
   const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map())
   const mouseMoveDetectedRef = React.useRef(true)
   const clickPositionRef = React.useRef({ x: 0, y: 0 })
-  const triggerRef = React.useRef<HTMLDivElement | null>(null)
+  const triggerRef = React.useRef<HTMLElement | null>(null)
 
   const registerItem = React.useCallback((key: Key, textValue: string, isDisabled?: boolean, onSelect?: () => void, isSubmenuTrigger?: boolean) => {
     nav.registerItem(key, textValue, isDisabled)

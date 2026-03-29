@@ -171,7 +171,7 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
       }
     }, [isOpen])
 
-    const displayValue = isSearchActive ? searchValue : (selectedTextValue || "")
+    const displayValue = isOpen && isSearchActive ? searchValue : (selectedTextValue || "")
     const resolved = resolveSearchableTriggerBaseStyles(stylesProp);
 
     const focusInput = React.useCallback((selectValue = false) => {

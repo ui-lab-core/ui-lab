@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
-import { renderSelectWithItems, selectItem, openSelect, getSelectTrigger } from './Select.test-utils'
+import * as React from 'react'
+import { renderSelectWithItems, renderSelectWithChildren, selectItem, openSelect, getSelectTrigger } from './Select.test-utils'
 import { createMockSelectItems, getAllElementsByRole, clickElement, pressArrowDown } from '@/tests/utils'
+import { Select } from '..'
 
 describe('Select.edgeCases', () => {
 
@@ -63,6 +65,65 @@ describe('Select.edgeCases', () => {
 
       const focusedItem = document.querySelector('[data-focused="true"]')
       expect(focusedItem).toBeInTheDocument()
+    })
+
+    it('does not mount scroll chrome when the content is below maxItems', async () => {
+      const items = [
+        {
+          value: 'github',
+          label: 'GitHub',
+          description: "The world's leading software development platform",
+        },
+        {
+          value: 'gitlab',
+          label: 'GitLab',
+          description: 'Complete DevOps platform with built-in CI/CD',
+        },
+        {
+          value: 'bitbucket',
+          label: 'Bitbucket',
+          description: 'Git solution for professional teams by Atlassian',
+        },
+      ]
+
+      const container = renderSelectWithChildren(
+        React.createElement(
+          React.Fragment,
+          null,
+          React.createElement(Select.Trigger, null, React.createElement(Select.Value, { placeholder: 'Select provider' })),
+          React.createElement(
+            Select.Content,
+            null,
+            React.createElement(
+              Select.List,
+              null,
+              items.map((item) =>
+                React.createElement(
+                  Select.Item,
+                  {
+                    key: item.value,
+                    value: item.value,
+                    textValue: item.label,
+                    description: item.description,
+                  },
+                  item.label
+                )
+              )
+            )
+          )
+        ),
+        {
+          selectedKey: 'github',
+          valueLabel: 'GitHub',
+          onSelectionChange: vi.fn(),
+          className: 'w-80',
+        }
+      )
+
+      const trigger = getSelectTrigger(container)
+      await openSelect(trigger)
+
+      expect(document.querySelector('[data-hide]')).toBeNull()
     })
   })
 

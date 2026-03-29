@@ -5,17 +5,30 @@
     --radius-basis: calc(var(--spacing) * 1.5);
     --padding: var(--radius-basis);
     --radius: var(--radius-sm, 0.375rem);
+
     --group-border-width: var(--border-width-base, 1px);
     --inner-radius: calc(var(--radius) - var(--group-border-width));
-    
-    --control-height: calc((0.80em * var(--leading-tight, 1.25)) + (var(--spacing) * 4) + (var(--group-border-width) * 2));
-    --item-height: max(calc(var(--control-height) - (var(--padding) * 2) - (var(--group-border-width) * 2)), 0px);
-    
-    --button-padding-x: max(calc(var(--spacing) * 2.5 - var(--padding)), 0px);
-    --button-padding-y: max(calc(var(--spacing) * 2 - var(--padding)), 0px);
-    --input-padding-x: max(calc(var(--spacing) * 3 - var(--padding)), 0px);
-    --input-padding-y: max(calc(var(--spacing) * 1.5 - var(--padding)), 0px);
 
+    --text-box-height: calc(0.80em * var(--leading-tight, 1.25));
+    --vertical-spacing: calc(var(--spacing) * 4);
+    --total-border-height: calc(var(--group-border-width) * 2);
+    --total-padding-height: calc(var(--padding) * 2);
+
+    --control-height: calc(
+      var(--text-box-height) + 
+      var(--vertical-spacing) + 
+      var(--total-border-height)
+    );
+
+    --item-height: max(
+      calc(
+        var(--control-height) - 
+        var(--total-padding-height) - 
+        var(--total-border-height)
+      ), 
+      0px
+    );
+    
     @apply flex overflow-hidden shrink-0 box-border;
     color: var(--foreground);
     background-color: var(--background);
@@ -27,18 +40,27 @@
       @apply flex-row items-stretch;
       height: var(--control-height);
 
-      /* Fixed: Use margin-block (top/bottom) for horizontal layouts */
-      .item.divider { margin-block: calc(var(--padding) * -1); }
-      .item.divider > [role="separator"] { height: 100%; }
+      .item.divider { 
+        margin-block: calc(var(--padding) * -1); 
+      }
+      .item.divider > [role="separator"] { 
+        height: 100%; 
+      }
     }
 
     &.vertical {
       @apply flex-col;
       
-      .item .group-item { @apply w-full; }
-      /* Fixed: Use margin-inline (left/right) for vertical layouts */
-      .item.divider { margin-inline: calc(var(--padding) * -1); }
-      .item.divider > [role="separator"] { width: 100%; }
+      .item .group-item { 
+        @apply w-full; 
+      }
+      
+      .item.divider { 
+        margin-inline: calc(var(--padding) * -1); 
+      }
+      .item.divider > [role="separator"] { 
+        width: 100%; 
+      }
     }
 
     &.none {
@@ -56,25 +78,28 @@
       @apply space-x-1;
     }
 
-    /* --- Ghost Variant --- */
     &.ghost {
       @apply gap-1 border-none overflow-visible;
       
-      &.none { @apply gap-0; }
+      &.none { 
+        @apply gap-0; 
+      }
     }
   }
 
   .item {
     @apply flex items-stretch;
 
-    &.grow { flex: 1; }
+    &.grow { 
+      flex: 1; 
+    }
+    
     &.divider { 
       @apply p-0 shrink-0 flex-none; 
       > [role="separator"] { flex: 0 0 auto; }
     }
   }
 
-  /* Shared Height Logic */
   :is(.group-item, .group-input-wrapper, .group-select-wrapper) {
     height: 100%;
     min-height: var(--item-height);
@@ -82,7 +107,7 @@
 
   .group-item {
     @apply flex box-border;
-    padding: var(--button-padding-y) var(--button-padding-x);
+    width: 100%;
 
     &.active {
       @apply relative;
@@ -93,50 +118,90 @@
 
   .group-input-wrapper {
     @apply flex flex-1 items-stretch overflow-visible;
+
     input { 
-      @apply h-full; 
-      padding: var(--input-padding-y) var(--input-padding-x); 
+      @apply h-full px-2; 
     }
   }
 
   .group-select-wrapper {
     @apply flex items-stretch p-0 bg-transparent border-none;
-    .select { @apply h-full w-full; }
+    
+    .select { 
+      @apply h-full w-full; 
+    }
   }
 
-  .trigger { border: none; }
+  .trigger { 
+    border: none; 
+  }
 
   .group:not(.ghost) {
-    .item :is(.group-item, .group-select-wrapper) { border: none; }
+    .item :is(.group-item, .group-select-wrapper) { 
+      border: none; 
+    }
     
-    .group-item.active { font-weight: 500; }
+    .group-item.active { 
+      font-weight: 500; 
+    }
     
     .group-input-wrapper {
+      --input-border-width: 0px;
       --input-border-color: transparent;
       --input-active-border-color: transparent;
       --input-active-box-shadow: none;
     }
 
     &.none {
-      :is(.group-item, .trigger, .group-select-wrapper) { border-radius: 0; --radius: 0; --inner-radius: 0; }
-      .group-input-wrapper { --input-border-radius: 0; }
+      :is(.group-item, .trigger, .group-select-wrapper) { 
+        border-radius: 0; 
+        --radius: 0; 
+        --inner-radius: 0; 
+      }
+      
+      .group-input-wrapper { 
+        --input-border-radius: 0; 
+      }
 
       &.horizontal {
-        .item:first-child :is(.group-item, .trigger, .group-input-wrapper > *, .group-select-wrapper > *) {
+        .item:first-child :is(
+          .group-item, 
+          .trigger, 
+          .group-input-wrapper > *, 
+          .group-select-wrapper > *
+        ) {
           border-top-left-radius: var(--inner-radius);
           border-bottom-left-radius: var(--inner-radius);
         }
-        .item:last-child :is(.group-item, .trigger, .group-input-wrapper > *, .group-select-wrapper > *) {
+        
+        .item:last-child :is(
+          .group-item, 
+          .trigger, 
+          .group-input-wrapper > *, 
+          .group-select-wrapper > *
+        ) {
           border-top-right-radius: var(--inner-radius);
           border-bottom-right-radius: var(--inner-radius);
         }
       }
+      
       &.vertical {
-        .item:first-child :is(.group-item, .trigger, .group-input-wrapper > *, .group-select-wrapper > *) {
+        .item:first-child :is(
+          .group-item, 
+          .trigger, 
+          .group-input-wrapper > *, 
+          .group-select-wrapper > *
+        ) {
           border-top-left-radius: var(--inner-radius);
           border-top-right-radius: var(--inner-radius);
         }
-        .item:last-child :is(.group-item, .trigger, .group-input-wrapper > *, .group-select-wrapper > *) {
+        
+        .item:last-child :is(
+          .group-item, 
+          .trigger, 
+          .group-input-wrapper > *, 
+          .group-select-wrapper > *
+        ) {
           border-bottom-left-radius: var(--inner-radius);
           border-bottom-right-radius: var(--inner-radius);
         }
@@ -144,14 +209,20 @@
     }
 
     &:is(.xs, .sm) {
-      :is(.group-item, .trigger, .group-select-wrapper > *) { border-radius: var(--inner-radius); }
-      .group-input-wrapper { --input-border-radius: var(--inner-radius); }
+      :is(.group-item, .trigger, .group-select-wrapper > *) { 
+        border-radius: var(--inner-radius); 
+      }
+      
+      .group-input-wrapper { 
+        --input-border-radius: var(--inner-radius); 
+      }
     }
   }
 
-  /* Ghost overrides */
   .group.ghost {
-    .group-item.active { border-radius: var(--inner-radius); }
+    .group-item.active { 
+      border-radius: var(--inner-radius); 
+    }
     
     &:not(.none) .item .group-item:not(.active) {
       border-radius: var(--inner-radius);
@@ -159,8 +230,17 @@
     }
 
     &.none {
-      :is(.group-item, .group-select-wrapper) { border: none; border-radius: 0; --radius: 0; --inner-radius: 0; }
-      .group-input-wrapper { --input-border-color: transparent; --input-border-radius: 0; }
+      :is(.group-item, .group-select-wrapper) { 
+        border: none; 
+        border-radius: 0; 
+        --radius: 0; 
+        --inner-radius: 0; 
+      }
+      
+      .group-input-wrapper { 
+        --input-border-color: transparent; 
+        --input-border-radius: 0; 
+      }
     }
   }
 

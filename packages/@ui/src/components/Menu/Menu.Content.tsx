@@ -1,5 +1,6 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
+import { mergeProps } from "react-aria"
 import { useFloating } from "../../hooks/useFloat/react/useFloating"
 import { flip } from "../../hooks/useFloat/core/middleware/flip"
 import { offset as offsetMiddleware } from "../../hooks/useFloat/core/middleware/offset"
@@ -17,7 +18,7 @@ import { useScrollLock } from "../../hooks/useScrollLock"
 const resolveMenuContentBaseStyles = createStylesResolver(['root'] as const);
 
 /** Wrapper element that opens the context menu on right-click */
-const MenuTrigger = React.forwardRef<HTMLDivElement, MenuTriggerProps>(
+const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
   ({ children, disabled = false, className }, ref) => {
     const { isOpen, setIsOpen, type, clickPositionRef, triggerRef: contextTriggerRef } = useMenuContext()
 
@@ -34,16 +35,40 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, MenuTriggerProps>(
       setIsOpen(prev => !prev)
     }, [disabled, type, setIsOpen, clickPositionRef])
 
-    const mergedRef = useMergedRef<HTMLDivElement>(contextTriggerRef, ref)
+    const mergedRef = useMergedRef<HTMLElement>(contextTriggerRef, ref)
+
+    const triggerProps = {
+      onContextMenu: handleContextMenu,
+      onClickCapture: handleClick,
+      className: cn('menu', 'trigger', css.trigger, className),
+      'data-active': isOpen || undefined,
+      'data-type': type,
+    }
+
+    const [child] = React.Children.toArray(children)
+
+    if (React.isValidElement(child) && child.type !== React.Fragment) {
+      const childElement = child as React.ReactElement<any>
+
+      return React.cloneElement(childElement, {
+        ...mergeProps(triggerProps, childElement.props),
+        className: cn(
+          childElement.props.className,
+          'menu',
+          'trigger',
+          css.trigger,
+          className,
+        ),
+        ref: mergedRef,
+        'data-active': isOpen || undefined,
+        'data-type': type,
+      } as any)
+    }
 
     return (
       <div
-        ref={mergedRef}
-        onContextMenu={handleContextMenu}
-        onClickCapture={handleClick}
-        className={cn('menu', 'trigger', css.trigger, className)}
-        data-active={isOpen || undefined}
-        data-type={type}
+        ref={mergedRef as React.Ref<HTMLDivElement>}
+        {...triggerProps}
       >
         {children}
       </div>

@@ -1,7 +1,9 @@
+import * as React from 'react'
 import { describe, it, expect } from 'vitest'
 import { act } from '@testing-library/react'
 import { renderSelectWithItems, renderMultiSelectWithItems, openSelect, selectItem, toggleItem, getSelectTrigger, getSelectedItems } from './Select.test-utils'
-import { createMockSelectItems, pressArrowDown, pressEnter, pressEscape, focusWithKeyboard, waitForCondition } from '@/tests/utils'
+import { createMockSelectItems, pressArrowDown, pressEnter, pressEscape, focusWithKeyboard, waitForCondition, render as utilRender } from '@/tests/utils'
+import { Searchable, Select } from '../'
 
 describe('Select.integration', () => {
   describe('complete user flows - single select', () => {
@@ -75,6 +77,42 @@ describe('Select.integration', () => {
       await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'false', { timeout: 500 })
 
       expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    })
+
+    it('searchable trigger keeps the selected label visible when Enter closes the list', async () => {
+      const items = createMockSelectItems(3)
+
+      function ControlledSearchableSelect() {
+        const [selectedKey, setSelectedKey] = React.useState<string | number | null>(null)
+        const selected = items.find(item => item.key === selectedKey)
+
+        return (
+          <Select selectedKey={selectedKey} valueLabel={selected?.label} onSelectionChange={setSelectedKey}>
+            <Searchable.Input placeholder="Search items..." />
+            <Searchable.Content>
+              <Select.List>
+                {items.map(item => (
+                  <Select.Item key={item.key} value={item.key} textValue={item.label}>
+                    {item.label}
+                  </Select.Item>
+                ))}
+              </Select.List>
+            </Searchable.Content>
+          </Select>
+        )
+      }
+
+      const { container } = utilRender(<ControlledSearchableSelect />)
+      const trigger = getSelectTrigger(container) as HTMLInputElement
+
+      await act(async () => {
+        trigger.focus()
+      })
+      await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true', { timeout: 500 })
+      await pressEnter(trigger)
+
+      expect(trigger.getAttribute('aria-expanded')).toBe('false')
+      expect(trigger.value).toBe(items[0].label)
     })
   })
 

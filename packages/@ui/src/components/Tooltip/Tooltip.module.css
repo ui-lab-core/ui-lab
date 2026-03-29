@@ -23,6 +23,10 @@
     pointer-events: auto;
   }
 
+  .content[data-instant="true"] {
+    transition: none;
+  }
+
   .frame {
     @apply flex items-center gap-1.5 px-2 py-1 whitespace-nowrap;;
     color: var(--foreground);

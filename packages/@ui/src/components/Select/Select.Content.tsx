@@ -292,6 +292,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     if (!mounted) return null
 
     const resolved = resolveSelectContentBaseStyles(stylesProp);
+    const shouldConstrainListHeight = filteredItems.length > maxItems;
+    const scrollMaxHeight = shouldConstrainListHeight
+      ? `calc(${maxItems} * 36px + 8px)`
+      : undefined;
 
     return createPortal(
       <>
@@ -339,20 +343,28 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
                 />
               </div>
             )}
-            <Scroll
-              className="viewport"
-              maxHeight={`calc(${maxItems} * 36px + 8px)`}
-              direction="vertical"
-              fade-y={!searchable}
-              inline={!searchable}
-              hide={false}
-            >
+            {shouldConstrainListHeight ? (
+              <Scroll
+                className="viewport"
+                maxHeight={scrollMaxHeight}
+                direction="vertical"
+                fade-y={!searchable}
+                inline
+                hide={false}
+              >
+                <div className={cn(resolved.listPaddingWrapper)} style={{ padding: "0.25rem" }}>
+                  <List items={filteredItems}>
+                    {children}
+                  </List>
+                </div>
+              </Scroll>
+            ) : (
               <div className={cn(resolved.listPaddingWrapper)} style={{ padding: "0.25rem" }}>
                 <List items={filteredItems}>
                   {children}
                 </List>
               </div>
-            </Scroll>
+            )}
           </div>
         </div>
       </>,
