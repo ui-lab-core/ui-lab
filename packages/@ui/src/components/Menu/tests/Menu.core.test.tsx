@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { renderMenuWithItems, renderMenuWithChildren, openMenu, selectMenuItem, getMenuTrigger } from './Menu.test-utils'
 import { createMockMenuItems } from '@/tests/utils'
 import { Menu } from '../'
+import { Button } from '@/components/Button'
 import * as React from 'react'
 
 describe('Menu.core', () => {
@@ -28,6 +29,43 @@ describe('Menu.core', () => {
       const content = document.querySelector('[role="menu"]')
       expect(content).toBeInTheDocument()
       expect(trigger).toHaveAttribute('data-type', 'pop-over')
+    })
+
+    it('uses the child element as the trigger when given JSX children', async () => {
+      const container = renderMenuWithChildren(
+        <>
+          <Menu.Trigger>
+            <Button className="custom-trigger">Open Menu</Button>
+          </Menu.Trigger>
+          <Menu.Content>
+            <Menu.Item>Item 1</Menu.Item>
+          </Menu.Content>
+        </>
+      , { type: 'pop-over' }
+      )
+      const trigger = getMenuTrigger(container)
+
+      expect(trigger.tagName).toBe('BUTTON')
+      expect(trigger).toHaveClass('custom-trigger')
+
+      await openMenu(trigger, 'pop-over')
+
+      expect(document.querySelector('[role="menu"]')).toBeInTheDocument()
+    })
+
+    it('renders the fallback trigger for non-element children', () => {
+      const container = renderMenuWithChildren(
+        <>
+          <Menu.Trigger>Open Menu</Menu.Trigger>
+          <Menu.Content>
+            <Menu.Item>Item 1</Menu.Item>
+          </Menu.Content>
+        </>
+      )
+      const trigger = getMenuTrigger(container)
+
+      expect(trigger.tagName).toBe('DIV')
+      expect(trigger.textContent).toContain('Open Menu')
     })
   })
 

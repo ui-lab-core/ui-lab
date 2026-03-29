@@ -60,7 +60,7 @@
     align-items: center;
     width: 100%;
     background-color: var(--background);
-    border: var(--border-width-base) solid var(--input-border-color, var(--border));
+    border: var(--input-border-width, var(--border-width-base)) solid var(--input-border-color, var(--border));
     border-radius: var(--input-border-radius, var(--radius-sm));
     box-sizing: border-box;
     overflow: hidden;
@@ -106,6 +106,7 @@
   .start-adornments,
   .end-adornments {
     @apply flex items-center gap-1;
+    align-self: stretch;
     flex-shrink: 0;
     pointer-events: none;
   }
@@ -116,6 +117,10 @@
 
   .end-adornments {
     @apply pr-1.5;
+
+    &:has(.number-controls) {
+      padding-right: 0;
+    }
   }
 
   .actions {
@@ -135,7 +140,9 @@
   }
 
   .number-controls {
-    @apply flex w-6 flex-col;
+    @apply flex w-7.5 flex-col;
+    align-self: stretch;
+    border-left: 1px solid var(--border);
     pointer-events: auto;
   }
 
@@ -151,6 +158,10 @@
     border: none;
     color: var(--spin-color);
     transition: color 150ms ease-out, background-color 150ms ease-out;
+
+    & + .spin-button {
+      border-top: 1px solid var(--border);
+    }
 
     &:hover:not(:disabled) {
       background-color: var(--spin-hover-background);

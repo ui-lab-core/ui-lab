@@ -66,11 +66,12 @@ const variantMap: Record<Variant, string | undefined> = {
   ghost: styles.ghost,
 }
 
-// Detect Divider elements by checking for separator role or orientation prop
+// Detect Divider elements by checking for separator role, orientation prop, or displayName
 function isDivider(child: React.ReactNode): boolean {
   if (!React.isValidElement(child)) return false
   const props = (child.props || {}) as Record<string, unknown>
-  return props.role === "separator" || "orientation" in props
+  const type = child.type as any
+  return props.role === "separator" || "orientation" in props || type?.displayName === "Divider"
 }
 
 // Root component

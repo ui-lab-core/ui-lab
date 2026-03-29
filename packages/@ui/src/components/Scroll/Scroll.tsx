@@ -58,6 +58,8 @@ const resolveScrollBaseStyles = createStylesResolver([
   "vertical",
 ] as const);
 
+const SCROLLBAR_VISIBILITY_EPSILON = 1;
+
 function getInitialScrollFadeVars(
   direction: ScrollProps["direction"],
   fadeY: boolean,
@@ -167,18 +169,18 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       const container = containerRef.current;
       const content = contentRef.current;
 
-      const containerSize = container[clientSizeKey];
-      const contentSize = content[scrollSizeKey] || containerSize;
+      const viewportSize = content[clientSizeKey] || container[clientSizeKey];
+      const contentSize = content[scrollSizeKey] || viewportSize;
       const currentScroll = content[scrollPosKey];
-      const trackSize = isHoriz ? containerSize : containerSize - numPaddingY * 2;
+      const trackSize = isHoriz ? container[clientSizeKey] : container[clientSizeKey] - numPaddingY * 2;
 
-      const needs = contentSize > containerSize;
+      const maxScroll = Math.max(0, contentSize - viewportSize);
+      const needs = maxScroll > SCROLLBAR_VISIBILITY_EPSILON;
       setNeedsScrollbar(needs);
 
       const scrollRatio = trackSize / Math.max(1, contentSize);
       const newThumbSize = Math.max(20, Math.min(trackSize, trackSize * scrollRatio));
-      const maxScroll = contentSize - containerSize;
-      const scrollProgress = needs ? currentScroll / maxScroll : 0;
+      const scrollProgress = needs && maxScroll > 0 ? currentScroll / maxScroll : 0;
       const maxThumbPos = trackSize - newThumbSize;
       const newThumbPos = scrollProgress * maxThumbPos;
 
@@ -356,9 +358,9 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         if (!contentRef.current || !containerRef.current) return;
 
         const delta = e[clientPosKey] - dragStartRef.current.origin;
-        const containerSize = containerRef.current[clientSizeKey];
-        const maxScroll = contentRef.current[scrollSizeKey] - containerSize;
-        const scrollRatio = maxScroll / (containerSize - thumbSizeRef.current);
+        const viewportSize = contentRef.current[clientSizeKey] || containerRef.current[clientSizeKey];
+        const maxScroll = Math.max(0, contentRef.current[scrollSizeKey] - viewportSize);
+        const scrollRatio = maxScroll / Math.max(1, viewportSize - thumbSizeRef.current);
 
         contentRef.current[scrollPosKey] = Math.max(
           0,
@@ -407,17 +409,19 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         // Ignore clicks directly on the thumb (handled by handleMouseDown)
         if (clickPos >= relThumbStart && clickPos <= relThumbEnd) return;
 
-        const containerSize = containerRef.current[clientSizeKey];
+        const viewportSize = contentRef.current[clientSizeKey] || containerRef.current[clientSizeKey];
         const contentSize = contentRef.current[scrollSizeKey];
-        const maxScroll = contentSize - containerSize;
-        const trackSize = isHoriz ? containerSize : containerSize - numPaddingY * 2;
+        const maxScroll = Math.max(0, contentSize - viewportSize);
+        const trackSize = isHoriz
+          ? containerRef.current[clientSizeKey]
+          : containerRef.current[clientSizeKey] - numPaddingY * 2;
 
         const newThumbSize = Math.max(20, trackSize * (trackSize / contentSize));
         const targetThumbStart = clickPos - newThumbSize / 2;
         const maxThumbPos = trackSize - newThumbSize;
         const clampedThumbStart = Math.max(0, Math.min(maxThumbPos, targetThumbStart));
 
-        const scrollProgress = clampedThumbStart / maxThumbPos;
+        const scrollProgress = maxThumbPos > 0 ? clampedThumbStart / maxThumbPos : 0;
         contentRef.current[scrollPosKey] = Math.max(0, Math.min(maxScroll, scrollProgress * maxScroll));
 
         dragStartRef.current = {
@@ -496,7 +500,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         onMouseMove={handleContainerMouseMove}
         onMouseLeave={handleContainerMouseLeave}
         data-dragging={String(isDragging)}
-        data-inline={String(inline)}
+        data-inline={String(inline && needsScrollbar)}
         {...restProps}
       >
         <Mask

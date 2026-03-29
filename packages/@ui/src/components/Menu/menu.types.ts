@@ -33,7 +33,7 @@ export interface MenuContextValue {
   radioGroups: Map<string, Key | null>
   setRadioGroupValue: (groupName: string, value: Key | null) => void
   getRadioGroupValue: (groupName: string) => Key | null
-  triggerRef: React.MutableRefObject<HTMLDivElement | null>
+  triggerRef: React.MutableRefObject<HTMLElement | null>
   mouseMoveDetectedRef: React.MutableRefObject<boolean>
   clickPositionRef: React.MutableRefObject<{ x: number; y: number }>
   activeSubmenuKey: Key | null
@@ -43,7 +43,7 @@ export interface MenuContextValue {
 export interface MenuSubmenuContextValue {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  triggerRef: React.MutableRefObject<HTMLDivElement | null>
+  triggerRef: React.MutableRefObject<HTMLElement | null>
   parentMenuRef: React.MutableRefObject<HTMLDivElement | null>
   submenuLevel: number
   items: ItemData[]
