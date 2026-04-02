@@ -181,6 +181,51 @@ export interface StarterRegistry {
   [starterId: string]: StarterMetadata;
 }
 
+export type GuideCategory =
+  | 'setup'
+  | 'migration'
+  | 'integration'
+  | 'workflow'
+  | 'theming';
+
+export interface GuideStep {
+  title: string;
+  goal?: string;
+  instructions: string[];
+  code?: string;
+  language?: 'bash' | 'tsx' | 'json' | 'css' | 'md' | 'text';
+  path?: string;
+  relatedTools?: string[];
+}
+
+export interface GuideExamplePrompt {
+  title: string;
+  prompt: string;
+}
+
+export interface GuideMetadata {
+  id: string;
+  name: string;
+  description: string;
+  category: GuideCategory;
+  summary: string;
+  tags: string[];
+  whenToUse: string[];
+  notFor?: string[];
+  taskMatchers: string[];
+  prerequisites?: string[];
+  steps: GuideStep[];
+  validation: string[];
+  relatedTools: string[];
+  relatedResources?: string[];
+  relatedGuides?: string[];
+  examplePrompts?: GuideExamplePrompt[];
+}
+
+export interface GuideRegistry {
+  [guideId: string]: GuideMetadata;
+}
+
 export interface ComponentMetadata {
   id: string;
   name: string;

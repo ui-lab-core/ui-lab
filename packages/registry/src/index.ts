@@ -95,6 +95,11 @@ export type {
   StarterMetadata,
   StarterVariant,
   StarterRegistry,
+  GuideCategory,
+  GuideStep,
+  GuideExamplePrompt,
+  GuideMetadata,
+  GuideRegistry,
   LayoutConfig,
   ControlOption,
   ControlDef,
@@ -182,6 +187,16 @@ export {
   getAllStarterTags,
 } from './starters/index.js';
 
+// Guides
+export {
+  guideRegistry,
+  getAllGuides,
+  getGuideById,
+  getGuidesByCategory,
+  getGuidesByTag,
+  searchGuides,
+} from './guides/index.js';
+
 // Patterns
 export {
   patternRegistry,
@@ -222,4 +237,3 @@ export type {
   ProviderFeature,
   ProviderRegistry,
 } from './providers/index.js';
-

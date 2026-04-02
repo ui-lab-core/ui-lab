@@ -3,7 +3,7 @@
  * Implements the Model Context Protocol for UI Lab
  */
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
@@ -16,17 +16,19 @@ import {
   TextResourceContents,
 } from '@modelcontextprotocol/sdk/types.js';
 
-import { tools, handleTool } from './tools.js';
+import { tools } from './tools/index.js';
+import { handleTool } from './handlers/index.js';
 import { registryAdapter } from './adapters/registry-adapter.js';
 import { patternsAdapter } from './adapters/patterns-adapter.js';
 import { packagesAdapter } from './adapters/packages-adapter.js';
 import { sectionsAdapter } from './adapters/sections-adapter.js';
+import { guidesAdapter } from './adapters/guides-adapter.js';
 
 /**
  * Create and configure the MCP server
  */
-async function createServer(): Promise<Server> {
-  const server = new Server(
+async function createServer(): Promise<McpServer> {
+  const mcp = new McpServer(
     {
       name: 'ui-lab-mcp',
       version: '0.1.0',
@@ -43,7 +45,7 @@ async function createServer(): Promise<Server> {
    * Handle ListTools requests
    * Returns the list of available tools
    */
-  server.setRequestHandler(ListToolsRequestSchema, async () => {
+  mcp.server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools,
     };
@@ -53,7 +55,7 @@ async function createServer(): Promise<Server> {
    * Handle CallTool requests
    * Executes a tool and returns results
    */
-  server.setRequestHandler(CallToolRequestSchema, async (request: { params: { name: string; arguments?: Record<string, unknown> } }) => {
+  mcp.server.setRequestHandler(CallToolRequestSchema, async (request: { params: { name: string; arguments?: Record<string, unknown> } }) => {
     const { name, arguments: args = {} } = request.params;
 
     try {
@@ -76,9 +78,9 @@ async function createServer(): Promise<Server> {
 
   /**
    * Handle ListResources requests
-   * Returns the list of available components as resources
+   * Returns the list of available resources
    */
-  server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  mcp.server.setRequestHandler(ListResourcesRequestSchema, async () => {
     const componentIds = registryAdapter.getAllComponentIds();
     const componentResources: Resource[] = componentIds.map((id: string) => {
       const component = registryAdapter.getComponentById(id);
@@ -111,16 +113,23 @@ async function createServer(): Promise<Server> {
       mimeType: 'application/json',
     }));
 
+    const guideResources: Resource[] = guidesAdapter.getAll().map((g: any) => ({
+      uri: `guide://${g.id}`,
+      name: g.name,
+      description: g.description || `UI Lab ${g.id} guide`,
+      mimeType: 'application/json',
+    }));
+
     return {
-      resources: [...componentResources, ...patternResources, ...elementResources, ...sectionResources],
+      resources: [...componentResources, ...patternResources, ...elementResources, ...sectionResources, ...guideResources],
     };
   });
 
   /**
    * Handle ReadResource requests
-   * Returns resource details for component://, pattern://, element://, section:// URIs
+   * Returns resource details for component://, pattern://, element://, section://, guide:// URIs
    */
-  server.setRequestHandler(ReadResourceRequestSchema, async (request: { params: { uri: string } }) => {
+  mcp.server.setRequestHandler(ReadResourceRequestSchema, async (request: { params: { uri: string } }) => {
     const uri = request.params.uri;
 
     const componentMatch = uri.match(/^component:\/\/(.+)$/);
@@ -159,10 +168,19 @@ async function createServer(): Promise<Server> {
       return { contents: [{ uri, text: JSON.stringify(section, null, 2), mimeType: 'application/json' } as TextResourceContents] };
     }
 
+    const guideMatch = uri.match(/^guide:\/\/(.+)$/);
+    if (guideMatch) {
+      const guide = guidesAdapter.getById(guideMatch[1]);
+      if (!guide) {
+        throw new McpError(ErrorCode.InvalidRequest, `Guide not found: ${guideMatch[1]}`);
+      }
+      return { contents: [{ uri, text: JSON.stringify(guide, null, 2), mimeType: 'application/json' } as TextResourceContents] };
+    }
+
     throw new McpError(ErrorCode.InvalidRequest, `Invalid resource URI: ${uri}`);
   });
 
-  return server;
+  return mcp;
 }
 
 /**

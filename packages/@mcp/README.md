@@ -7,6 +7,7 @@ A Model Context Protocol (MCP) server for the UI Lab component library that enab
 The UI Lab MCP Server bridges the gap between component metadata and AI agent capabilities, allowing agents to:
 
 - **Discover Components**: Search for components by name, description, or category
+- **Follow Task Guides**: Find workflow guides for setup, migration, translation, and theming work
 - **Understand APIs**: Get complete type information for component props and sub-components
 - **Generate Code**: Produce working TSX code with proper imports and type safety
 - **Resolve Dependencies**: Understand what npm packages and internal components are required
@@ -19,9 +20,15 @@ The UI Lab MCP Server bridges the gap between component metadata and AI agent ca
 1. **search_components** - Search for components by query and category
 2. **get_component** - Get full metadata for a specific component
 3. **get_semantic_color** - Get recommended color for a component with intent
-4. **generate_component** - Generate TSX code for a component
-5. **transform_ui** - Transform entire UI file to use UI Lab components
-6. **get_theme_setup** - Get theme system setup instructions and code for light/dark mode
+4. **get_theme_setup** - Get theme system setup instructions and code for light/dark mode
+5. **search_guides** - Find a workflow guide for setup, migration, translation, or theming tasks
+6. **get_guide** - Get a full guide with prerequisites, steps, and validation checks
+7. **search_patterns** - Search for reusable UI patterns
+8. **get_pattern** - Get full pattern metadata and code
+9. **search_elements** - Search multi-component UI blocks
+10. **get_element** - Get a full element definition
+11. **search_sections** - Search landing-page sections
+12. **get_section** - Get a full section definition
 
 ### Quick Start
 
