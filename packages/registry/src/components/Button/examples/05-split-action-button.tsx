@@ -6,7 +6,7 @@ import { FaBox, FaSpinner, FaCheck, FaEllipsisVertical, FaCopy, FaTags, FaTrash 
 
 type BulkAction = "archive" | "duplicate" | "tag" | "delete";
 
-const selectedCount = 12;
+const selectedCount: number = 12;
 
 const bulkActions: Record<BulkAction, {
   label: string;

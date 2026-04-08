@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ComponentClient } from "./client";
 import { generateMetadata as generateSiteMetadata } from "@/shared";
 import { extractComponentMetadata } from "@/shared/lib/metadata-extractors";
-import { componentRegistry, generatedAPI, generatedStyles, generatedControls, reactAriaUrls, sourceUrls } from "ui-lab-registry";
+import { componentRegistry, generatedAPI, generatedStyles, reactAriaUrls, sourceUrls } from "ui-lab-registry";
 
 const componentIds = [
   "button", "input", "label", "select", "textarea",
@@ -39,7 +39,7 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
       componentId={componentId}
       api={generatedAPI[componentId] ?? null}
       styles={generatedStyles[componentId] ?? null}
-      controls={generatedControls[componentId] ?? []}
+      controls={[]}
       reactAriaUrl={reactAriaUrls[componentId] ?? null}
       sourceUrl={sourceUrls[componentId] ?? null}
       name={component?.name ?? ""}

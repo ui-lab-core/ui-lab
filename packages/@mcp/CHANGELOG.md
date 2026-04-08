@@ -1,5 +1,11 @@
 # ui-lab-mcp
 
+## 0.1.612
+
+### Patch Changes
+
+- Refreshed styles across List, Table, Divider, Frame, Popover, Tooltip, and Badge components. Added a new List.Title component.
+
 ## 0.1.611
 
 ### Patch Changes
