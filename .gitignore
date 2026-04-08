@@ -24,3 +24,4 @@ packages/registry/.cache
 .agents/
 .reports/
 .references/
+.env*.local
