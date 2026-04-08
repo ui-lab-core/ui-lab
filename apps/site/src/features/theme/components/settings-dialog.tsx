@@ -11,8 +11,8 @@ interface FloatingSettingsDialogProps {
   triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
-const DIALOG_WIDTH = 400;
-const DIALOG_HEIGHT = 500;
+const DIALOG_WIDTH = 450;
+const DIALOG_HEIGHT = 550;
 const GAP = 12;
 const EDGE_PADDING = 16;
 

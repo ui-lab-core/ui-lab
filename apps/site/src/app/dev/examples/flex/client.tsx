@@ -12,44 +12,16 @@ type FlexGap = NonNullable<FlexProps["gap"]>;
 type FlexWrap = NonNullable<FlexProps["wrap"]>;
 
 const BASE_CELL_STYLE = {
-  "--frame-fill": "transparent",
-  "--frame-stroke-color": "color-mix(in srgb, var(--background-700) 88%, var(--foreground-500) 12%)",
+  "--frame-fill": "var(--background-900)",
+  "--frame-stroke-color": "var(--background-600)",
 } as CSSProperties;
 
-const AXIS_ROW_STYLES: CSSProperties[] = [
-  { width: "4rem", height: "auto" },
-  { width: "5.25rem", height: "auto" },
-  { width: "3.5rem", height: "auto" },
-  { width: "4.5rem", height: "auto" },
-];
+type FrameSpec = {
+  className?: string;
+  style: CSSProperties;
+};
 
-const AXIS_COLUMN_STYLES: CSSProperties[] = [
-  { width: "auto", minWidth: "4rem", height: "3rem" },
-  { width: "auto", minWidth: "5.25rem", height: "4.25rem" },
-  { width: "auto", minWidth: "3.5rem", height: "2.75rem" },
-  { width: "auto", minWidth: "4.5rem", height: "3.5rem" },
-];
-
-const WRAP_STYLES: CSSProperties[] = [
-  { width: "6.5rem", height: "3.5rem" },
-  { width: "4.5rem", height: "3.5rem" },
-  { width: "7.5rem", height: "3.5rem" },
-  { width: "5rem", height: "3.5rem" },
-  { width: "6rem", height: "3.5rem" },
-  { width: "4rem", height: "3.5rem" },
-  { width: "7rem", height: "3.5rem" },
-  { width: "5.5rem", height: "3.5rem" },
-];
-
-const RESPONSIVE_STYLES: CSSProperties[] = [
-  { width: "5.5rem", height: "3.25rem" },
-  { width: "7.5rem", height: "3.25rem" },
-  { width: "4.75rem", height: "3.25rem" },
-  { width: "8rem", height: "3.25rem" },
-  { width: "6rem", height: "3.25rem" },
-];
-
-const arrangementControls: DevExample["controls"] = [
+const arrangementControlsBase: NonNullable<DevExample["controls"]> = [
   {
     name: "direction",
     label: "Main Axis",
@@ -101,6 +73,15 @@ const arrangementControls: DevExample["controls"] = [
     defaultValue: "md",
   },
   {
+    name: "frameCount",
+    label: "Frames",
+    type: "stepper",
+    defaultValue: 4,
+    min: 4,
+    max: 10,
+    step: 1,
+  },
+  {
     name: "wrap",
     label: "Overflow Strategy",
     type: "select",
@@ -111,6 +92,14 @@ const arrangementControls: DevExample["controls"] = [
     defaultValue: "nowrap",
   },
 ];
+
+const axisControls: DevExample["controls"] = arrangementControlsBase;
+
+const wrapControls: DevExample["controls"] = arrangementControlsBase.map((control) => (
+  control.name === "frameCount"
+    ? { ...control, defaultValue: 7, max: 12 }
+    : control
+));
 
 const responsiveControls: DevExample["controls"] = [
   {
@@ -125,6 +114,15 @@ const responsiveControls: DevExample["controls"] = [
       { label: "Extra Large", value: "xl" },
     ],
     defaultValue: "md",
+  },
+  {
+    name: "frameCount",
+    label: "Frames",
+    type: "stepper",
+    defaultValue: 5,
+    min: 5,
+    max: 10,
+    step: 1,
   },
   {
     name: "justify",
@@ -159,21 +157,17 @@ const responsiveControls: DevExample["controls"] = [
 function FrameCell({
   className,
   style,
-  innerClassName,
 }: {
   className?: string;
   style?: CSSProperties;
-  innerClassName?: string;
 }) {
   return (
     <Frame
       pathStroke="dashed"
-      className={cn("shrink-0", className)}
+      className={cn(className)}
       style={{ ...BASE_CELL_STYLE, ...style }}
     >
-      <div
-        className={cn(innerClassName)}
-      />
+      <div className="size-full" />
     </Frame>
   );
 }
@@ -218,34 +212,198 @@ function getWrap(value: unknown): FlexWrap {
   return value === "wrap" ? "wrap" : "nowrap";
 }
 
+function getFrameCount(value: unknown, min: number, max: number, fallback: number) {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (Number.isNaN(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, Math.round(numericValue)));
+}
+
+function repeatFrameSpecs(count: number, pattern: FrameSpec[]) {
+  return Array.from({ length: count }, (_, index) => {
+    const template = pattern[index % pattern.length];
+    return {
+      className: template.className,
+      style: { ...template.style },
+    } satisfies FrameSpec;
+  });
+}
+
+function getAxisColumnActionSpecs(frameCount: number) {
+  const totalActions = Math.max(frameCount - 2, 1);
+
+  return repeatFrameSpecs(totalActions, [
+    { className: "min-w-[4.75rem] flex-1", style: { width: "auto", minWidth: "4.75rem", height: "2.75rem" } },
+    { className: "min-w-[5.5rem] flex-1", style: { width: "auto", minWidth: "5.5rem", height: "2.75rem" } },
+    { className: "min-w-[4rem] flex-1", style: { width: "auto", minWidth: "4rem", height: "3rem" } },
+  ]);
+}
+
+function getAxisRowGroups(frameCount: number) {
+  const groupCount = Math.max(Math.ceil(frameCount / 4), 1);
+
+  return Array.from({ length: groupCount }, (_, groupIndex) => {
+    const remaining = frameCount - groupIndex * 4;
+    const itemCount = Math.min(Math.max(remaining, 0), 4);
+
+    return {
+      rail: itemCount >= 1,
+      canvas: itemCount >= 2,
+      actionTop: itemCount >= 3,
+      actionBottom: itemCount >= 4,
+    };
+  });
+}
+
+function getToolbarFlowSpecs(direction: FlexDirection, frameCount: number) {
+  if (direction === "column") {
+    return repeatFrameSpecs(frameCount, [
+      { className: "w-full", style: { width: "100%", height: "3.25rem" } },
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      { className: "w-full", style: { width: "100%", height: "3.25rem" } },
+      { className: "w-full", style: { width: "100%", height: "2.75rem" } },
+    ]);
+  }
+
+  return [
+    {
+      className: "min-w-[12rem]",
+      style: { width: "auto", minWidth: "12rem", flex: "1.6 1 14rem", height: "3.25rem" },
+    },
+    ...repeatFrameSpecs(Math.max(frameCount - 1, 0), [
+      { className: "shrink-0", style: { width: "6rem", height: "3.25rem" } },
+      { className: "shrink-0", style: { width: "6.75rem", height: "3.25rem" } },
+      { className: "shrink-0", style: { width: "5.5rem", height: "3.25rem" } },
+      { className: "shrink-0", style: { width: "6.5rem", height: "3.25rem" } },
+      { className: "shrink-0", style: { width: "4.5rem", height: "3.25rem" } },
+      { className: "shrink-0", style: { width: "5.5rem", height: "3.25rem" } },
+    ]),
+  ];
+}
+
+function getResponsiveDistribution(frameCount: number) {
+  let metadataCount = 2;
+  let sidebarCount = 1;
+  let remainingFrames = Math.max(frameCount - 5, 0);
+
+  while (remainingFrames > 0) {
+    metadataCount += 1;
+    remainingFrames -= 1;
+
+    if (remainingFrames > 0) {
+      sidebarCount += 1;
+      remainingFrames -= 1;
+    }
+  }
+
+  return { metadataCount, sidebarCount };
+}
+
 function renderAxisPreview(props: Record<string, unknown>) {
   const direction = getDirection(props.direction);
-  const cellStyles = direction === "column" ? AXIS_COLUMN_STYLES : AXIS_ROW_STYLES;
-  const cellInnerClassName =
-    direction === "column"
-      ? "min-w-[3.5rem] justify-end"
-      : "min-h-[2.75rem] items-end";
+  const frameCount = getFrameCount(props.frameCount, 4, 10, 4);
+
+  if (direction === "row") {
+    const groups = getAxisRowGroups(frameCount);
+
+    return (
+      <Flex
+        direction="column"
+        justify={getJustify(props.justify)}
+        align={getAlign(props.align)}
+        gap={getGap(props.gap)}
+        wrap="nowrap"
+        className="w-full"
+      >
+        {groups.map((group, index) => (
+          <Flex
+            key={`axis-row-group-${index}`}
+            direction="row"
+            gap="md"
+            align="stretch"
+            className="w-full"
+          >
+            {group.rail && (
+              <FrameCell
+                className="shrink-0"
+                style={{ width: "4.5rem", height: "8.5rem" }}
+              />
+            )}
+            {group.canvas && (
+              <FrameCell
+                className="min-w-[11rem] flex-1"
+                style={{ width: "auto", minWidth: "11rem", flex: "1.4 1 12rem", height: "8.5rem" }}
+              />
+            )}
+            {(group.actionTop || group.actionBottom) && (
+              <Flex
+                direction="column"
+                gap="sm"
+                className="w-[5.5rem] shrink-0"
+              >
+                {group.actionTop && (
+                  <FrameCell
+                    className="shrink-0"
+                    style={{ width: "5.5rem", height: "4.5rem" }}
+                  />
+                )}
+                {group.actionBottom && (
+                  <FrameCell
+                    className="shrink-0"
+                    style={{ width: "5.5rem", height: "3.25rem" }}
+                  />
+                )}
+              </Flex>
+            )}
+          </Flex>
+        ))}
+      </Flex>
+    );
+  }
+
+  const actions = getAxisColumnActionSpecs(frameCount);
 
   return (
     <Flex
-      direction={direction}
+      direction="column"
       justify={getJustify(props.justify)}
       align={getAlign(props.align)}
       gap={getGap(props.gap)}
       wrap={getWrap(props.wrap)}
+      className="w-full"
     >
-      {cellStyles.map((style, index) => (
-        <FrameCell
-          key={`${direction}-${index}`}
-          style={style}
-          innerClassName={cellInnerClassName}
-        />
-      ))}
+      <FrameCell
+        className="w-full"
+        style={{ width: "100%", height: "2.75rem" }}
+      />
+      <FrameCell
+        className="w-full"
+        style={{ width: "100%", height: "8rem" }}
+      />
+      <Flex
+        direction="row"
+        wrap="wrap"
+        gap="sm"
+        className="w-full"
+      >
+        {actions.map((action, index) => (
+          <FrameCell
+            key={`column-action-${index}`}
+            className={action.className}
+            style={action.style}
+          />
+        ))}
+      </Flex>
     </Flex>
   );
 }
 
 function renderResponsivePreview(props: Record<string, unknown>) {
+  const frameCount = getFrameCount(props.frameCount, 5, 10, 5);
+  const { metadataCount, sidebarCount } = getResponsiveDistribution(frameCount);
+
   return (
     <Flex
       justify={getJustify(props.justify)}
@@ -255,42 +413,72 @@ function renderResponsivePreview(props: Record<string, unknown>) {
       containerQueryResponsive={Boolean(props.containerQueryResponsive)}
       className="w-full"
     >
-      {RESPONSIVE_STYLES.map((style, index) => (
-        <FrameCell key={index} style={style} />
-      ))}
+      <FrameCell className="shrink-0" style={{ width: "5rem", height: "7rem" }} />
+      <Flex direction="column" gap="sm" className="min-w-[14rem] flex-[2_1_15rem]">
+        <FrameCell style={{ width: "100%", height: "4.5rem" }} />
+        <Flex gap="sm" wrap="wrap" className="w-full">
+          {repeatFrameSpecs(metadataCount, [
+            { className: "min-w-[4.75rem] flex-1", style: { width: "auto", minWidth: "4.75rem", height: "2rem" } },
+            { className: "min-w-[4rem] flex-1", style: { width: "auto", minWidth: "4rem", height: "2rem" } },
+            { className: "min-w-[5.25rem] flex-1", style: { width: "auto", minWidth: "5.25rem", height: "2rem" } },
+          ]).map((frame, index) => (
+            <FrameCell
+              key={`responsive-meta-${index}`}
+              className={frame.className}
+              style={frame.style}
+            />
+          ))}
+        </Flex>
+      </Flex>
+      <Flex direction="column" gap="sm" className="min-w-[10rem] flex-1">
+        {repeatFrameSpecs(sidebarCount, [
+          { className: "w-full", style: { width: "100%", height: "7rem" } },
+          { className: "w-full", style: { width: "100%", height: "3rem" } },
+          { className: "w-full", style: { width: "100%", height: "2.5rem" } },
+        ]).map((frame, index) => (
+          <FrameCell
+            key={`responsive-sidebar-${index}`}
+            className={frame.className}
+            style={frame.style}
+          />
+        ))}
+      </Flex>
     </Flex>
   );
 }
 
-const wrapPreview = (
-  <Flex
-    direction="row"
-    justify="flex-start"
-    align="center"
-    gap="md"
-    wrap="wrap"
-  >
-    {WRAP_STYLES.map((style, index) => (
-      <FrameCell key={index} style={style} />
-    ))}
-  </Flex>
-);
-
 function renderWrapPreview(props: Record<string, unknown>) {
+  const direction = getDirection(props.direction);
+  const frameCount = getFrameCount(props.frameCount, 4, 12, 7);
+
   return (
     <Flex
-      direction={getDirection(props.direction)}
+      direction={direction}
       justify={getJustify(props.justify)}
       align={getAlign(props.align)}
       gap={getGap(props.gap)}
       wrap={getWrap(props.wrap)}
+      className="w-full"
     >
-      {WRAP_STYLES.map((style, index) => (
-        <FrameCell key={index} style={style} />
+      {getToolbarFlowSpecs(direction, frameCount).map((frame, index) => (
+        <FrameCell
+          key={`${direction}-toolbar-${index}`}
+          className={frame.className}
+          style={frame.style}
+        />
       ))}
     </Flex>
   );
 }
+
+const wrapPreview = renderWrapPreview({
+  direction: "row",
+  justify: "flex-start",
+  align: "center",
+  gap: "md",
+  frameCount: 7,
+  wrap: "wrap",
+});
 
 const examples: DevExample[] = [
   {
@@ -298,7 +486,7 @@ const examples: DevExample[] = [
     title: "Axis Control",
     description: "",
     preview: null,
-    controls: arrangementControls,
+    controls: axisControls,
     renderPreview: renderAxisPreview,
     previewLayout: "start",
     resizable: true,
@@ -308,7 +496,7 @@ const examples: DevExample[] = [
     title: "Wrap Overflow Into Rows",
     description: "",
     preview: wrapPreview,
-    controls: arrangementControls,
+    controls: wrapControls,
     renderPreview: renderWrapPreview,
     previewLayout: "start",
     resizable: true,

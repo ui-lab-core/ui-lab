@@ -179,7 +179,7 @@ export function PreviewContainer({
         </div>
 
         <div className="flex items-center gap-3 mb-2">
-          <Group spacing="xs" className="w-28 *:w-10 [&_.button]:px-0">
+          <Group spacing="xs" className="[&_.button]:w-8  [&_.button]:px-0">
             <Group.Button
               variant={deviceVariant === "mobile" ? "secondary" : "ghost"}
               onClick={() => onDeviceVariantChange("mobile")}

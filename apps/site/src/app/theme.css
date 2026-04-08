@@ -198,4 +198,18 @@
   --color-info-400: var(--info-400);
   --color-info-500: var(--info-500);
   --color-info-600: var(--info-600);
+};
+
+@layer utilities {
+  .background-950 {  background: var(--background-950) };
+  .background-900 {  background: var(--background-900) };
+  .background-800 {  background: var(--background-800) };
+  .background-700 {  background: var(--background-700) };
+  .background-600 {  background: var(--background-600) };
+  .background-500 {  background: var(--background-500) }
+  .foreground-400 {  color: var(--foreground-400) };
+  .foreground-300 {  color: var(--foreground-300) };
+  .foreground-200 {  color: var(--foreground-200) };
+  .foreground-100 {  color: var(--foreground-100) };
+  .foreground-50  {  color: var(--foreground-50) };
 }

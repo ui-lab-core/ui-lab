@@ -8,6 +8,7 @@ import { useApp } from "@/features/theme/lib/app-context";
 import { resolveShikiLanguage } from "@/features/docs/lib/shiki-language";
 import { CopyButton } from "./copy-button";
 import { FaSort } from "react-icons/fa6";
+import { LuChevronsDownUp } from "react-icons/lu";
 import { cn } from "@/shared";
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
@@ -36,7 +37,7 @@ interface CodeProps {
   preHighlightedDark?: string;
 }
 
-const MAX_HEIGHT_LINES = 20;
+const MAX_HEIGHT_LINES = 15;
 type CodeToHtmlOptions = any;
 
 export function Code({
@@ -166,19 +167,27 @@ export function Code({
 
   const hasHorizontalOverflow = dimensions.contentScrollWidth > dimensions.viewportWidth;
   const hiddenCodeLines = totalCodeLines - MAX_HEIGHT_LINES;
-  const expanded = isExpanded || (totalCodeLines > MAX_HEIGHT_LINES && hiddenCodeLines < 30);
-  const shouldShowExpandButton = totalCodeLines > MAX_HEIGHT_LINES && hiddenCodeLines >= 30;
+  const expanded = isExpanded;
+  const shouldShowExpandButton = totalCodeLines > MAX_HEIGHT_LINES;
 
   return (
-    <div className={cn("max-h-210 rounded-sm border border-background-700 flex flex-col overflow-hidden w-full min-w-0", className)}>
+    <div className={cn("rounded-sm border border-background-700 flex flex-col overflow-hidden w-full min-w-0", className)}>
       {(filename || heading) && (
-        <div className="flex-none bg-background-900/90 flex text-sm font-semibold items-center justify-between border-b border-background-700 px-3 py-1.5 text-foreground-400">
+        <div className="flex-none bg-background-900/90 flex text-sm font-semibold items-center justify-between border-b border-background-700 px-3 text-foreground-400">
           <span>{heading || filename}</span>
           {!heading && <span className="text-foreground-400">{language}</span>}
         </div>
       )}
 
       <div className="relative group flex-1 min-h-0 flex flex-col">
+        {expanded && shouldShowExpandButton && (
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="absolute right-8 top-2 z-10 rounded p-1 text-foreground-400 opacity-0 transition-opacity hover:bg-background-800 hover:text-foreground-300 focus:opacity-100 group-hover:opacity-100"
+          >
+            <LuChevronsDownUp size={14} />
+          </button>
+        )}
         <CopyButton code={children} />
         <div
           ref={viewportRef}
@@ -199,6 +208,7 @@ export function Code({
             `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_span]:!text-inherit")}
           style={{
             overflowY: expanded ? 'auto' : 'hidden',
+            maxHeight: !expanded ? `calc(${MAX_HEIGHT_LINES} * 1.5em + 2rem)` : undefined,
             maskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
             WebkitMaskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
           }}

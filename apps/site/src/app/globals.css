@@ -6,7 +6,7 @@
 
 :root {
   /* Border Radius Scale */
-  --radius-xs: 0.04rem;
+  --radius-xs: 0.05rem;
   --radius-sm: 0.1rem;
   --radius-base: 0.2rem;
   --radius-md: 0.3rem;
@@ -120,7 +120,7 @@
   --border-width-8: 8px;
 
   --header-height: 3.50rem;
-  --page-width: 1300px;
+  --page-width: 1500px;
   --content-width: 755px;
   --logo-width: 250px;
   --banner-height: 52px;
@@ -136,12 +136,7 @@
 
 @layer base {
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     margin: 0 0 0.6rem 0;
     font-weight: var(--font-weight-header-semibold);
     line-height: var(--leading-header);

@@ -58,6 +58,7 @@ export function IntegrationsPanel() {
           <Group.Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            variant="ghost"
             placeholder="Search integrations..."
             icon={<FaMagnifyingGlass />}
             className="flex-1"

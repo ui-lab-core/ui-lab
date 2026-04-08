@@ -33,7 +33,7 @@ const TabItem = memo(({ tab }: { tab: TabConfig }) => {
       <Tabs.Trigger
         value={tab.id}
         disabled={tab.isPlaceholder}
-        className="text-xs pb-[15px] pt-[17px]"
+        className="text-xs py-[9px]"
       >
         {tab.label}
       </Tabs.Trigger>
@@ -101,25 +101,27 @@ export default function Header({
               <PanelRight strokeWidth={2.4} size={20} />
             </button>
 
-            {pathname === "/" && homeNavTabs && (
-              <Tabs className="hidden ml-8 lg:block" value={activeHomeTab || ""} variant="underline">
-                <Tabs.List>
-                  {homeNavTabs.map((tab) => (
-                    <TabItem key={tab.id} tab={tab} />
-                  ))}
-                </Tabs.List>
-              </Tabs>
-            )}
+            <div className="pt-3 ">
+              {pathname === "/" && homeNavTabs && (
+                <Tabs className="hidden ml-8 lg:block" value={activeHomeTab || ""} variant="underline">
+                  <Tabs.List>
+                    {homeNavTabs.map((tab) => (
+                      <TabItem key={tab.id} tab={tab} />
+                    ))}
+                  </Tabs.List>
+                </Tabs>
+              )}
 
-            {hasRevealCollapse && tabGroup && activeTabId && (
-              <Tabs className="w-fit ml-8 hidden md:block" value={activeTabId} variant="underline">
-                <Tabs.List>
-                  {tabGroup.tabs.map((tab) => (
-                    <TabItem key={tab.id} tab={tab} />
-                  ))}
-                </Tabs.List>
-              </Tabs>
-            )}
+              {hasRevealCollapse && tabGroup && activeTabId && (
+                <Tabs className="w-fit ml-8 hidden md:block" value={activeTabId} variant="underline">
+                  <Tabs.List>
+                    {tabGroup.tabs.map((tab) => (
+                      <TabItem key={tab.id} tab={tab} />
+                    ))}
+                  </Tabs.List>
+                </Tabs>
+              )}
+            </div>
           </div>
 
           <div className="flex-1 flex justify-center md:pr-6 pl-4 lg:pr-0 lg:pr-12  max-w-sm">

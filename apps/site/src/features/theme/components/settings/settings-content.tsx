@@ -299,25 +299,24 @@ export const SettingsContent = () => {
     <div className="w-full h-full select-none flex flex-col bg-background-950 text-foreground">
       <div className="pr-[8px] flex items-center justify-between border-b border-background-700 shrink-0">
         <Tabs
-          variant="underline"
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as ConfigTab)}
         >
-          <Tabs.List className="h-[28px] mt-[10px] border-none">
+          <Tabs.List className="px-[5px] h-[40px] border-none *:hover:bg-transparent">
             <Tabs.Trigger
-              className="text-sm pb-[9px] mb-[6px] w-[80px]"
+              className="w-[80px]"
               value="colors"
             >
               Theme
             </Tabs.Trigger>
             <Tabs.Trigger
-              className="text-sm pb-[9px] mb-[6px] w-[80px]"
+              className="w-[80px]"
               value="fonts"
             >
               Fonts
             </Tabs.Trigger>
             <Tabs.Trigger
-              className="text-sm pb-[9px] mb-[6px] w-[80px]"
+              className="w-[80px]"
               value="layout"
             >
               Layout
@@ -326,7 +325,7 @@ export const SettingsContent = () => {
         </Tabs>
       </div>
 
-      <div className="border-b border-background-700 flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         <Scroll>
           <Tabs
             value={activeTab}
@@ -387,11 +386,13 @@ export const SettingsContent = () => {
         </Scroll>
       </div>
 
-      <Link href="/config" className="ml-auto m-2" >
-        <Button size="sm">
-          Configuration
-        </Button>
-      </Link>
+      <div className="bg-background-900/90 p-1.5 border-t border-background-700">
+        <Link href="/config" className="ml-auto m-2" >
+          <Button size="sm">
+            Configuration
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 };

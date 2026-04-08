@@ -4,13 +4,11 @@ import { useState, useMemo } from "react";
 import { cn } from "@/shared";
 import { Code } from "@/features/docs/components/code-display/code";
 import { DEVICE_PRESETS, PreviewContainer, calculateVariantFromWidth } from "@/features/preview";
-import { Button } from "ui-lab-components";
-import {
-  Select,
-  Tabs,
-} from "ui-lab-components";
+import { Button, Divider, Group } from "ui-lab-components";
+import { Select } from "ui-lab-components";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
+import { FaMinus, FaPlus } from "react-icons/fa6";
 
 
 
@@ -22,9 +20,12 @@ interface ControlOption {
 interface ControlDef {
   name: string;
   label: string;
-  type: "select" | "toggle" | "text";
+  type: "select" | "toggle" | "text" | "stepper";
   options?: ControlOption[];
   defaultValue?: string | number | boolean;
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 type RenderPreviewProps = Record<string, unknown> & {
@@ -65,6 +66,19 @@ interface ComponentConfiguratorProps {
 const EMPTY_TABS: Array<{ label: string; code: string }> = [];
 const EMPTY_CONTROLS: ControlDef[] = [];
 
+function getStepperBounds(control: ControlDef) {
+  return {
+    min: typeof control.min === "number" ? control.min : 0,
+    max: typeof control.max === "number" ? control.max : 99,
+    step: typeof control.step === "number" ? control.step : 1,
+  };
+}
+
+function clampStepperValue(value: number, control: ControlDef) {
+  const { min, max } = getStepperBounds(control);
+  return Math.min(max, Math.max(min, value));
+}
+
 export function ComponentConfigurator({
   title,
   description,
@@ -89,7 +103,6 @@ export function ComponentConfigurator({
     return initialValues;
   }, [controls]);
   const [controlValues, setControlValues] = useState<Record<string, ControlValue>>(initialControlValues);
-  const [showCode, setShowCode] = useState<boolean>(false);
   const [selectedEasing, setSelectedEasing] = useState<EasingKey>("snappyPop");
   const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.desktop);
   const hasCode = Boolean(code || tabs.length > 0);
@@ -130,29 +143,31 @@ export function ComponentConfigurator({
     </div>
   );
   const codeContent = hasCode ? (
-    <div className="p-0">
+    <div className="bg-background-950/40">
       {allTabs.length > 1 && (
-        <div className="flex gap-2 bg-background-950 px-4 pt-2 border-b border-background-700">
-          {allTabs.map((tab, index) => (
-            <Button
-              key={`${tab.label}-${tab.code}`}
-              size="sm"
-              onClick={() => setActiveTab(index)}
-              className={activeTab === index ? "text-accent-500" : "text-foreground-400"}
-            >
-              {tab.label}
-            </Button>
-          ))}
+        <div className="border-b border-background-700/80 px-3 py-2">
+          <div className="flex flex-wrap gap-2">
+            {allTabs.map((tab, index) => (
+              <Button
+                key={`${tab.label}-${tab.code}`}
+                size="sm"
+                onClick={() => setActiveTab(index)}
+                className={activeTab === index ? "text-accent-500" : "text-foreground-400"}
+              >
+                {tab.label}
+              </Button>
+            ))}
+          </div>
         </div>
       )}
-      <Code className="border-0" language={language}>{currentCode}</Code>
+      <Code className="rounded-none border-0" language={language}>{currentCode}</Code>
     </div>
   ) : null;
 
   // If custom renderer is provided, use it instead of default layout
   if (CustomRenderer) {
     const renderContext: RenderContext = {
-      showCode,
+      showCode: false,
       activeTab,
       controlValues,
       handleControlChange,
@@ -177,38 +192,37 @@ export function ComponentConfigurator({
 
       <div className="flex-1 rounded-sm overflow-hidden">
         {!hidePreviewToggle && resizable && (
-          <PreviewContainer
-            deviceVariant={previewVariant}
-            width={previewWidth}
-            onWidthChange={setPreviewWidth}
-            activeTab={hasCode && showCode ? "code" : "preview"}
-            onTabChange={(tab) => setShowCode(hasCode && tab === "code")}
-            onDeviceVariantChange={(device) => setPreviewWidth(DEVICE_PRESETS[device])}
-            previewClassName={previewLayout === "center" ? "min-h-[20rem]" : "min-h-[16rem]"}
-            showWidthLabel={!showCode || !hasCode}
-            showCodeTab={hasCode}
-          >
-            {hasCode && showCode ? codeContent : previewContent}
-          </PreviewContainer>
+          <div className="space-y-3">
+            <PreviewContainer
+              deviceVariant={previewVariant}
+              width={previewWidth}
+              onWidthChange={setPreviewWidth}
+              activeTab="preview"
+              onTabChange={() => undefined}
+              onDeviceVariantChange={(device) => setPreviewWidth(DEVICE_PRESETS[device])}
+              previewClassName={previewLayout === "center" ? "min-h-[25rem]" : "min-h-[21rem]"}
+              showWidthLabel
+              showCodeTab={false}
+            >
+              {previewContent}
+            </PreviewContainer>
+            {codeContent && (
+              <div className="overflow-hidden rounded-sm border border-background-700">
+                {codeContent}
+              </div>
+            )}
+          </div>
         )}
 
         {!hidePreviewToggle && !resizable && hasCode && (
-          <Tabs variant="underline" default="preview" onValueChange={(value) => setShowCode(value === "code")}>
-            <Tabs.List className="rounded-none px-[calc(var(--radius-sm)*1.2)]">
-              <Tabs.Trigger value="preview">Preview</Tabs.Trigger>
-              <Tabs.Trigger value="code">Code</Tabs.Trigger>
-            </Tabs.List>
-
-            <div className="border border-background-700 rounded-sm">
-              <Tabs.Content value="preview" className="overflow-hidden mt-0">
-                {previewContent}
-              </Tabs.Content>
-
-              <Tabs.Content value="code" className="mt-0 p-0">
-                {codeContent}
-              </Tabs.Content>
+          <div className="overflow-hidden rounded-sm border border-background-700">
+            <div className="py-4">
+              {previewContent}
             </div>
-          </Tabs>
+            <div className="border-t border-background-700">
+              {codeContent}
+            </div>
+          </div>
         )}
 
         {!hidePreviewToggle && !resizable && !hasCode && (
@@ -219,7 +233,7 @@ export function ComponentConfigurator({
 
         {hidePreviewToggle && (
           <div className="overflow-hidden">
-            <div className="p-10">
+            <div className="px-10 py-15">
               {previewContent}
             </div>
           </div>
@@ -288,8 +302,57 @@ export function ComponentConfigurator({
                       onChange={(e) =>
                         handleControlChange(control.name, e.target.value)
                       }
-                      className="w-full px-3 py-2 text-xs bg-background-800/50 border border-background-700 rounded-sm text-foreground-50 placeholder-foreground-400 hover:border-background-600 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                      className="w-full px-2 py-2 text-xs bg-background-800/50 border border-background-700 rounded-sm text-foreground-50 placeholder-foreground-400 hover:border-background-600 focus:outline-none focus:ring-2 focus:ring-accent-500"
                     />
+                  )}
+                  {control.type === "stepper" && (
+                    <Group spacing="none" className="h-9 w-fit max-w-max">
+                      <Group.Button
+                        variant="secondary"
+                        size="sm"
+                        isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) <= getStepperBounds(control).min}
+                        onClick={() =>
+                          handleControlChange(
+                            control.name,
+                            clampStepperValue(
+                              Number(controlValues[control.name] ?? control.defaultValue ?? 0) - getStepperBounds(control).step,
+                              control
+                            )
+                          )
+                        }
+                      >
+                        <FaMinus size={10} />
+                      </Group.Button>
+                      <Divider />
+                      <Group.Input
+                        value={Number(controlValues[control.name] ?? control.defaultValue ?? 0)}
+                        variant="default"
+                        onChange={(e) => {
+                          const nextValue = Number(e.target.value);
+                          if (!Number.isNaN(nextValue)) {
+                            handleControlChange(control.name, clampStepperValue(nextValue, control));
+                          }
+                        }}
+                        className="w-12"
+                      />
+                      <Divider />
+                      <Group.Button
+                        variant="secondary"
+                        size="sm"
+                        isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) >= getStepperBounds(control).max}
+                        onClick={() =>
+                          handleControlChange(
+                            control.name,
+                            clampStepperValue(
+                              Number(controlValues[control.name] ?? control.defaultValue ?? 0) + getStepperBounds(control).step,
+                              control
+                            )
+                          )
+                        }
+                      >
+                        <FaPlus size={10} />
+                      </Group.Button>
+                    </Group>
                   )}
                 </div>
               );

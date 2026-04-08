@@ -3,12 +3,14 @@ import { useRouter } from "next/navigation";
 import {
   FaBook,
   FaWrench,
-  FaPlug,
   FaGithub,
   FaMoon,
   FaSun,
 } from "react-icons/fa6";
-import { componentRegistry, getCategoryIcon } from "@/features/component-docs";
+import {
+  componentRegistry as registryData,
+  getCategoryIcon,
+} from "ui-lab-registry";
 import { useDocsNavigationData } from "@/features/navigation/lib/docs-navigation-context";
 import { getPagesForDomain } from "@/features/navigation/lib/sidebar-registry-resolver";
 import { toolsItems } from "@/features/layout/components/header/data";
@@ -57,7 +59,7 @@ export function useCommands({
       });
     });
 
-    componentRegistry.forEach((component) => {
+    Object.values(registryData).forEach((component) => {
       cmds.push({
         id: `component-${component.id}`,
         label: component.name,

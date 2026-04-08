@@ -12,26 +12,16 @@ type GridAlignItems = NonNullable<GridProps["alignItems"]>;
 type GridAutoFlow = NonNullable<GridProps["autoFlow"]>;
 
 const BASE_CELL_STYLE = {
-  width: "3.5rem",
-  height: "3.5rem",
-  "--frame-fill": "transparent",
-  "--frame-stroke-color": "color-mix(in srgb, var(--background-700) 88%, var(--foreground-500) 12%)",
+  "--frame-fill": "var(--background-900)",
+  "--frame-stroke-color": "var(--background-600)",
 } as CSSProperties;
 
-const BASIC_CELL_STYLES: CSSProperties[] = Array.from({ length: 8 }, () => ({}));
+type FrameSpec = {
+  className?: string;
+  style: CSSProperties;
+};
 
-const SPAN_CELL_STYLES: CSSProperties[] = [
-  { gridColumn: "span 2", width: "100%" },
-  {},
-  {},
-  {},
-  { gridColumn: "span 2", width: "100%" },
-  {},
-];
-
-const RESPONSIVE_CELL_STYLES: CSSProperties[] = Array.from({ length: 6 }, () => ({}));
-
-const arrangementControls: DevExample["controls"] = [
+const arrangementControlsBase: NonNullable<DevExample["controls"]> = [
   {
     name: "columns",
     label: "Columns",
@@ -98,7 +88,31 @@ const arrangementControls: DevExample["controls"] = [
     ],
     defaultValue: "row",
   },
+  {
+    name: "frameCount",
+    label: "Panels",
+    type: "stepper",
+    defaultValue: 6,
+    min: 4,
+    max: 12,
+    step: 1,
+  },
 ];
+
+const placementControls: DevExample["controls"] = arrangementControlsBase;
+
+const editorialControls: DevExample["controls"] = arrangementControlsBase.map((control) => {
+  if (control.name === "columns") {
+    return { ...control, defaultValue: "4" };
+  }
+  if (control.name === "frameCount") {
+    return { ...control, defaultValue: 7, min: 5 };
+  }
+  if (control.name === "autoFlow") {
+    return { ...control, defaultValue: "row-dense" };
+  }
+  return control;
+});
 
 const responsiveControls: DevExample["controls"] = [
   {
@@ -151,6 +165,15 @@ const responsiveControls: DevExample["controls"] = [
     defaultValue: "inherit",
   },
   {
+    name: "frameCount",
+    label: "Cards",
+    type: "stepper",
+    defaultValue: 6,
+    min: 4,
+    max: 10,
+    step: 1,
+  },
+  {
     name: "responsive",
     label: "Enable Responsive Object",
     type: "toggle",
@@ -168,10 +191,10 @@ function FrameCell({
   return (
     <Frame
       pathStroke="dashed"
-      className={cn("shrink-0", className)}
+      className={cn(className)}
       style={{ ...BASE_CELL_STYLE, ...style }}
     >
-      <div className="size-full bg-background-950/50" />
+      <div className="size-full" />
     </Frame>
   );
 }
@@ -194,6 +217,13 @@ function getColumns(value: unknown): GridColumnsValue {
 function toColumns(value: GridColumnsValue): number | "auto-fit" | "auto-fill" {
   if (value === "auto-fit" || value === "auto-fill") {
     return value;
+  }
+  return Number(value);
+}
+
+function getApproxColumnCount(value: GridColumnsValue) {
+  if (value === "auto-fit" || value === "auto-fill") {
+    return 4;
   }
   return Number(value);
 }
@@ -233,9 +263,119 @@ function getOptionalGap(value: unknown): GridGap | undefined {
   return getGap(value);
 }
 
+function getFrameCount(value: unknown, min: number, max: number, fallback: number) {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (Number.isNaN(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, Math.round(numericValue)));
+}
+
+function repeatFrameSpecs(count: number, pattern: FrameSpec[]) {
+  return Array.from({ length: count }, (_, index) => {
+    const template = pattern[index % pattern.length];
+    return {
+      className: template.className,
+      style: { ...template.style },
+    } satisfies FrameSpec;
+  });
+}
+
+function spanColumns(trackCount: number, desired: number) {
+  return `span ${Math.max(1, Math.min(desired, trackCount))}`;
+}
+
+function getPlacementSpecs(trackCount: number, frameCount: number) {
+  if (trackCount <= 2) {
+    return [
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      { className: "w-full", style: { width: "100%", height: "8rem" } },
+      ...repeatFrameSpecs(Math.max(frameCount - 2, 0), [
+        { className: "w-full", style: { width: "100%", height: "5rem" } },
+        { className: "w-full", style: { width: "100%", height: "3rem" } },
+        { className: "w-full", style: { width: "100%", height: "4.5rem" } },
+      ]),
+    ];
+  }
+
+  if (trackCount === 3) {
+    return [
+      { className: "w-full", style: { width: "100%", height: "9rem", gridColumn: "span 1", gridRow: "span 2" } },
+      { className: "w-full", style: { width: "100%", height: "5rem", gridColumn: "span 2" } },
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      ...repeatFrameSpecs(Math.max(frameCount - 4, 0), [
+        { className: "w-full", style: { width: "100%", height: "6rem", gridColumn: "span 2" } },
+        { className: "w-full", style: { width: "100%", height: "3rem" } },
+        { className: "w-full", style: { width: "100%", height: "4.5rem" } },
+      ]),
+    ];
+  }
+
+  return [
+    { className: "w-full", style: { width: "100%", height: "10rem", gridRow: "span 2" } },
+    {
+      className: "w-full",
+      style: { width: "100%", height: "6rem", gridColumn: spanColumns(trackCount - 1, trackCount - 1) },
+    },
+    { className: "w-full", style: { width: "100%", height: "3rem" } },
+    { className: "w-full", style: { width: "100%", height: "3rem" } },
+    ...repeatFrameSpecs(Math.max(frameCount - 4, 0), [
+      { className: "w-full", style: { width: "100%", height: "6.5rem", gridColumn: spanColumns(trackCount, 2) } },
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      { className: "w-full", style: { width: "100%", height: "4rem" } },
+      { className: "w-full", style: { width: "100%", height: "5rem", gridColumn: spanColumns(trackCount, 2) } },
+    ]),
+  ];
+}
+
+function getEditorialSpecs(trackCount: number, frameCount: number) {
+  if (trackCount <= 2) {
+    return [
+      { className: "w-full", style: { width: "100%", height: "8rem" } },
+      ...repeatFrameSpecs(Math.max(frameCount - 1, 0), [
+        { className: "w-full", style: { width: "100%", height: "4rem" } },
+        { className: "w-full", style: { width: "100%", height: "5.5rem" } },
+        { className: "w-full", style: { width: "100%", height: "3rem" } },
+      ]),
+    ];
+  }
+
+  return [
+    {
+      className: "w-full",
+      style: { width: "100%", height: "8rem", gridColumn: spanColumns(trackCount, Math.max(trackCount - 1, 2)) },
+    },
+    { className: "w-full", style: { width: "100%", height: "8rem" } },
+    { className: "w-full", style: { width: "100%", height: "3rem" } },
+    { className: "w-full", style: { width: "100%", height: "5rem", gridColumn: spanColumns(trackCount, 2) } },
+    { className: "w-full", style: { width: "100%", height: "5rem" } },
+    ...repeatFrameSpecs(Math.max(frameCount - 5, 0), [
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      { className: "w-full", style: { width: "100%", height: "6.5rem", gridColumn: spanColumns(trackCount, 2) } },
+      { className: "w-full", style: { width: "100%", height: "4rem" } },
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+    ]),
+  ];
+}
+
+function getResponsiveSpecs(frameCount: number) {
+  return [
+    { className: "w-full", style: { width: "100%", height: "9rem" } },
+    { className: "w-full", style: { width: "100%", height: "4rem" } },
+    ...repeatFrameSpecs(Math.max(frameCount - 2, 0), [
+      { className: "w-full", style: { width: "100%", height: "3rem" } },
+      { className: "w-full", style: { width: "100%", height: "5rem" } },
+      { className: "w-full", style: { width: "100%", height: "3.5rem" } },
+      { className: "w-full", style: { width: "100%", height: "6rem" } },
+    ]),
+  ];
+}
+
 function renderGridPreview(
   props: Record<string, unknown>,
-  cellStyles: CSSProperties[],
+  frameSpecs: FrameSpec[],
 ) {
   return (
     <Grid
@@ -246,40 +386,43 @@ function renderGridPreview(
       autoFlow={getAutoFlow(props.autoFlow)}
       className="w-full"
     >
-      {cellStyles.map((style, index) => (
-        <FrameCell key={index} style={style} />
+      {frameSpecs.map((frame, index) => (
+        <FrameCell
+          key={index}
+          className={frame.className}
+          style={frame.style}
+        />
       ))}
     </Grid>
   );
 }
 
-function renderBasicGridPreview(props: Record<string, unknown>) {
-  return renderGridPreview(props, BASIC_CELL_STYLES);
+function renderPlacementPreview(props: Record<string, unknown>) {
+  const columns = getColumns(props.columns);
+  const frameCount = getFrameCount(props.frameCount, 4, 12, 6);
+
+  return renderGridPreview(
+    props,
+    getPlacementSpecs(getApproxColumnCount(columns), frameCount),
+  );
 }
 
-const spanPreview = (
-  <Grid
-    columns={3}
-    gap="md"
-    justifyItems="stretch"
-    alignItems="stretch"
-    autoFlow="row"
-    className="w-full"
-  >
-    {SPAN_CELL_STYLES.map((style, index) => (
-      <FrameCell key={index} style={style} />
-    ))}
-  </Grid>
-);
+function renderEditorialPreview(props: Record<string, unknown>) {
+  const columns = getColumns(props.columns);
+  const frameCount = getFrameCount(props.frameCount, 5, 12, 7);
 
-function renderSpanGridPreview(props: Record<string, unknown>) {
-  return renderGridPreview(props, SPAN_CELL_STYLES);
+  return renderGridPreview(
+    props,
+    getEditorialSpecs(getApproxColumnCount(columns), frameCount),
+  );
 }
 
 function renderResponsiveGridPreview(props: Record<string, unknown>) {
-  const baseColumns = toColumns(getColumns(props.columns));
+  const columns = getColumns(props.columns);
+  const baseColumns = toColumns(columns);
   const gap = getGap(props.gap);
   const responsive = Boolean(props.responsive);
+  const frameCount = getFrameCount(props.frameCount, 4, 10, 6);
 
   return (
     <Grid
@@ -290,37 +433,50 @@ function renderResponsiveGridPreview(props: Record<string, unknown>) {
       responsive={responsive}
       className="w-full"
     >
-      {RESPONSIVE_CELL_STYLES.map((style, index) => (
-        <FrameCell key={index} style={style} />
+      {getResponsiveSpecs(frameCount).map((frame, index) => (
+        <FrameCell
+          key={index}
+          className={frame.className}
+          style={frame.style}
+        />
       ))}
     </Grid>
   );
 }
 
+const editorialPreview = renderEditorialPreview({
+  columns: "4",
+  gap: "md",
+  justifyItems: "stretch",
+  alignItems: "stretch",
+  autoFlow: "row-dense",
+  frameCount: 7,
+});
+
 const examples: DevExample[] = [
   {
-    id: "basic-grid",
-    title: "Basic Grid",
+    id: "track-placement",
+    title: "Track Placement",
     description: "",
     preview: null,
-    controls: arrangementControls,
-    renderPreview: renderBasicGridPreview,
+    controls: placementControls,
+    renderPreview: renderPlacementPreview,
     previewLayout: "start",
     resizable: true,
   },
   {
-    id: "span-grid",
-    title: "Span Grid",
+    id: "editorial-spans",
+    title: "Editorial Spans",
     description: "",
-    preview: spanPreview,
-    controls: arrangementControls,
-    renderPreview: renderSpanGridPreview,
+    preview: editorialPreview,
+    controls: editorialControls,
+    renderPreview: renderEditorialPreview,
     previewLayout: "start",
     resizable: true,
   },
   {
-    id: "responsive-grid",
-    title: "Responsive Grid",
+    id: "responsive-card-rail",
+    title: "Responsive Card Rail",
     description: "",
     preview: null,
     controls: responsiveControls,
