@@ -1,12 +1,12 @@
 # ui-lab-components
 
-## 0.3.412
+## 0.3.42
 
 ### Patch Changes
 
 - Refreshed styles across List, Table, Divider, Frame, Popover, Tooltip, and Badge components. Added a new List.Title component.
 
-## 0.3.411
+## 0.3.411 (deprecated)
 
 ### Patch Changes
 
