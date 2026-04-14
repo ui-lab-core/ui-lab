@@ -126,7 +126,7 @@ export function PreviewContainer({
           <Badge
             size="sm"
             variant="secondary"
-            className="pointer-events-none absolute top-3 right-3 z-10"
+            className="pointer-events-none absolute top-3 right-3 z-999"
           >
             {Math.round(width)}px
           </Badge>
@@ -139,15 +139,15 @@ export function PreviewContainer({
         <button
           type="button"
           onMouseDown={startDrag}
-          className="absolute right-0 top-1/2 w-6 h-12 bg-background-700 border border-background-600 rounded-sm flex items-center justify-center cursor-ew-resize hover:bg-background-600 hover:border-background-500 transition-colors z-20"
+          className="absolute -right-[3px] top-1/2 w-6 h-12 bg-background-900 border border-background-700 rounded-xs flex items-center justify-center cursor-ew-resize hover:bg-background-600 hover:border-background-500 transition-colors z-20"
           style={{ transform: "translate(50%, -50%)" }}
           title="Drag to resize"
           aria-label="Drag to resize preview"
         >
-          <div className="flex flex-col gap-0.5">
-            <div className="w-1 h-1 bg-background-400 rounded-sm" />
-            <div className="w-1 h-1 bg-background-400 rounded-sm" />
-            <div className="w-1 h-1 bg-background-400 rounded-sm" />
+          <div className="flex flex-col justify-center items-center">
+            <div className="w-3 h-[2px] bg-background-500" />
+            <div className="w-3 h-[2px] my-[2px] bg-background-500" />
+            <div className="w-3 h-[2px] bg-background-500" />
           </div>
         </button>
       </div>

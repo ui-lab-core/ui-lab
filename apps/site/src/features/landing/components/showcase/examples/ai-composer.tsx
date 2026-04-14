@@ -156,14 +156,8 @@ export function AIComposer() {
 
         <div className="flex-1" />
 
-        <Group variant="ghost" spacing="sm">
-          <Group.Button aria-label="Attach file">
-            <HiPaperClip className="w-4.5 h-4.5 text-foreground-400" />
-          </Group.Button>
-          <Group.Button aria-label="Attach file">
-            <HiMicrophone className="w-4.5 h-4.5 text-foreground-400" />
-          </Group.Button>
-        </Group>
+        <Button icon={<HiPaperClip />} size="sm" variant="ghost" aria-label="Attach file" />
+        <Button icon={<HiMicrophone />} size="sm" variant="ghost" aria-label="Attach file" />
 
         <Button className="py-1.5! px-2" size="sm" isDisabled={!text.trim()} aria-label="Send">
           <FaArrowRight className="w-4.5 h-4.5" />

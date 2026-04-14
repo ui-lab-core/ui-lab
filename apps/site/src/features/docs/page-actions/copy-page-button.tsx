@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Group } from 'ui-lab-components';
+import { Expand, Flex, Group } from 'ui-lab-components';
 import { FaCheck, FaFileLines } from 'react-icons/fa6';
 
 export function CopyPage() {
@@ -33,29 +33,32 @@ export function CopyPage() {
   };
 
   return (
-    <Group variant="ghost" className="h-12 w-full cursor-pointer">
-      <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
-        <FaFileLines />
-      </div>
-      <div
-        onClick={handleCopy}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') handleCopy();
-        }}
-        title="Copy rendered content as Markdown"
-        className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300"
-        role="button"
-        tabIndex={0}
-      >
-        {copiedLines !== null ? (
-          <>
-            Copied {copiedLines} lines!
-            <FaCheck size={12} className="ml-auto mr-3 text-foreground-400" />
-          </>
-        ) : (
-          <>Copy Markdown</>
-        )}
-      </div>
-    </Group>
+    <Group.Expand styles="w-full">
+      <Expand.Trigger className="rounded-none">
+        <Flex className="h-12 w-full cursor-pointer">
+          <span className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
+            {copiedLines !== null ? <FaCheck size={12} className="text-foreground-400" /> : <FaFileLines />}
+          </span>
+          <span className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300">
+            {copiedLines !== null ? `Copied ${copiedLines} lines!` : 'Copy Markdown'}
+            <Expand.Icon className="ml-auto bg-transparent text-foreground-400" />
+          </span>
+        </Flex>
+      </Expand.Trigger>
+
+      <Expand.Content from="below" className="-mt-(--border-width-base)">
+        <div className="flex flex-col overflow-hidden">
+          <button
+            type="button"
+            onClick={() => {
+              void handleCopy();
+            }}
+            className="flex py-2.5 cursor-pointer items-center text-left text-xs font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
+          >
+            <span className="flex-1 px-3">Copy rendered content as Markdown</span>
+          </button>
+        </div>
+      </Expand.Content>
+    </Group.Expand>
   );
 }

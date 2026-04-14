@@ -1,6 +1,15 @@
 /* Onyx Theme - Button Styles */
 
 @layer components {
+  [data-ring="true"] {
+    --ring: #0f74c5;
+    --ring-width: 2px;
+    --ring-border: var(--ring);
+    --ring-border-visible: var(--ring-border);
+    --ring-shadow: 0 0 0 var(--ring-width) var(--ring);
+    --ring-z: 10;
+  }
+
   .button {
     --background: var(--background-800);
     --foreground: var(--foreground-200);
@@ -71,7 +80,8 @@
 
   /* Gallery Styles */
 
-  .gallery.item {
+  .gallery.item,
+  [data-focus-surface="true"] {
     --background: var(--background-950);
     --background-border: var(--background-700);
     --background-hover-border: var(--background-600);
@@ -137,7 +147,6 @@
   .group {
     --background: var(--background-950);
     --background-border: var(--background-700);
-    --focus-visible: var(--accent-500);
   }
 
   .group.button {
@@ -224,7 +233,7 @@
     --background-border: var(--background-700);
     --background-hover: color-mix(in srgb, var(--background-500) 10%, transparent);
     --background-hover-border: var(--background-600);
-    --focus-visible: var(--accent-500);
+    --ring: var(--accent-500);
   }
 
   .checkbox[data-selected="true"] {
@@ -307,8 +316,9 @@
     --foreground: var(--foreground-50);
     --placeholder: var(--foreground-400);
     --background-border: var(--background-700);
-    --background-focused-border: var(--accent-500);
-    --focus-visible: var(--accent-500);
+    --ring: var(--accent-500);
+    --ring-border: var(--ring);
+    --ring-border-visible: var(--ring-border);
     --disabled-background: var(--background-900);
     --disabled-foreground: var(--foreground-400);
     font-size: var(--text-xs);
@@ -316,8 +326,9 @@
   }
 
   .input[data-error] {
-    --background-focused-border: var(--danger-600);
-    --focus-visible: var(--danger-600);
+    --ring: var(--danger-600);
+    --ring-border: var(--ring);
+    --ring-border-visible: var(--ring-border);
   }
 
   .input[data-variant="ghost"] {
@@ -440,19 +451,19 @@
 
   /* Slider Styles */
 
-  .slider.track {
-    --track-background: var(--background-800);
+  .slider .track {
+    --background: var(--background-800);
   }
 
-  .slider.range {
-    --range-background: color-mix(in srgb, var(--accent-500) 60%, transparent);
-    --range-disabled-background: var(--background-600);
+  .slider .range {
+    --background: color-mix(in srgb, var(--accent-500) 60%, transparent);
+    --background-disabled: var(--background-600);
   }
 
-  .slider.thumb {
-    --thumb-background: var(--accent-500);
-    --thumb-focused-background: var(--accent-400);
-    --thumb-disabled-background: var(--background-500);
+  .slider .thumb {
+    --background: var(--accent-500);
+    --background-focused: var(--accent-400);
+    --background-disabled: var(--background-500);
     --focus-visible: color-mix(in srgb, var(--accent-500) 40%, transparent);
   }
 
@@ -479,30 +490,26 @@
     --foreground: var(--foreground-50);
     --placeholder: var(--foreground-400);
     --background-border: var(--background-700);
-    --background-focused-border: var(--accent-500);
-    --focus-visible: var(--accent-500);
+    --background-hover: var(--background-900);
     --background-disabled: var(--background-900);
     --foreground-disabled: var(--foreground-400);
+    --disabled-opacity: 0.6;
   }
 
   .textarea[data-error] {
     --background-error-border: var(--danger-600);
-    --background-error-focused-border: var(--danger-600);
-    --focus-visible: var(--danger-600);
   }
 
   .textarea.scroll-wrapper {
     --background: var(--background-950);
     --background-border: var(--background-700);
-    --background-focused-border: var(--accent-500);
-    --focus-visible: var(--accent-500);
+    --background-hover: var(--background-900);
     --background-disabled: var(--background-900);
+    --disabled-opacity: 0.6;
   }
 
   .textarea.scroll-wrapper[data-error] {
     --background-error-border: var(--danger-600);
-    --background-error-focused-border: var(--danger-600);
-    --focus-visible: var(--danger-600);
   }
 
   .textarea.resize-handle {
@@ -802,6 +809,27 @@
   .menu.label,
   .menu.shortcut {
     --foreground-muted: var(--foreground-400);
+  }
+
+  /* Path Styles */
+
+  .path.link {
+    --foreground: var(--foreground-300);
+    --foreground-hover: var(--accent-300);
+    --foreground-selected: var(--foreground-400);
+    --foreground-disabled: var(--foreground-400);
+    --background-hover: color-mix(in srgb, var(--background-700) 50%, transparent);
+    --background-pressed: color-mix(in srgb, var(--background-700) 70%, transparent);
+    --focus-visible: var(--accent-500);
+    --disabled-opacity: 0.6;
+  }
+
+  .path.separator {
+    --separator-foreground: var(--background-700);
+  }
+
+  .path.item {
+    --separator-foreground: var(--background-700);
   }
 
   /* Tabs Styles */

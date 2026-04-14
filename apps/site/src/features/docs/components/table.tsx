@@ -189,14 +189,18 @@ export function Table<T extends object>({
                       ))}
                       {expandRender && (
                         <td className="px-4 py-3 text-right">
-                          <Expand.Icon
-                            style={{
-                              transform: isExpanded
-                                ? "rotate(180deg)"
-                                : "rotate(0deg)",
-                              transition: "transform 250ms ease",
-                            }}
-                          />
+                          <Expand
+                            isExpanded={isExpanded}
+                            onExpandedChange={() => toggleRow(rowKey)}
+                          >
+                            <Expand.Trigger
+                              aria-label={`Toggle details for row ${String(rowKey)}`}
+                              onClick={(event) => event.stopPropagation()}
+                              className="ml-auto w-auto justify-end bg-transparent p-0"
+                            >
+                              <Expand.Icon className="px-0 py-0" />
+                            </Expand.Trigger>
+                          </Expand>
                         </td>
                       )}
                     </tr>
@@ -206,7 +210,9 @@ export function Table<T extends object>({
                           colSpan={columns.length + 1}
                           className="px-4 py-3"
                         >
-                          {expandRender(row)}
+                          <Expand isExpanded={isExpanded}>
+                            <Expand.Content>{expandRender(row)}</Expand.Content>
+                          </Expand>
                         </td>
                       </tr>
                     )}

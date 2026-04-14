@@ -1,15 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Expand, Group } from 'ui-lab-components';
+import { Expand, Flex, Group } from 'ui-lab-components';
 import { FaGithub, FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import { SiClaude, SiOpenai, SiGooglegemini } from 'react-icons/si';
 import { sourceUrls } from 'ui-lab-registry';
 
 export function OpenPage({ componentId }: { componentId?: string }) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
 
   const githubUrl = componentId
     ? sourceUrls[componentId]
@@ -25,26 +23,20 @@ export function OpenPage({ componentId }: { componentId?: string }) {
   ];
 
   return (
-    <Expand isExpanded={isOpen} onExpandedChange={setIsOpen} className="w-full min-w-65">
-      <Expand.Trigger className="rounded-none border-b border-background-700">
-        <Group variant="ghost" className="w-full h-12">
+    <Group.Expand styles="w-full">
+      <Expand.Trigger className="rounded-none">
+        <Flex className="h-12 cursor-pointer border-b border-background-700">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             <FaArrowUpRightFromSquare size={13} />
           </div>
           <div
-            onClick={() => setIsOpen((o) => !o)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') setIsOpen((o) => !o);
-            }}
             title="Open this page in another app"
             className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300"
-            role="button"
-            tabIndex={0}
           >
             Open Page
             <Expand.Icon className="ml-auto bg-transparent text-foreground-400" />
           </div>
-        </Group>
+        </Flex>
       </Expand.Trigger>
       <Expand.Content from="below" className="-mt-(--border-width-base) mx-0 border-b border-background-700">
         <div className="flex flex-col overflow-hidden">
@@ -67,6 +59,6 @@ export function OpenPage({ componentId }: { componentId?: string }) {
           ))}
         </div>
       </Expand.Content>
-    </Expand>
+    </Group.Expand>
   );
 }

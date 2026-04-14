@@ -39,7 +39,6 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
       componentId={componentId}
       api={generatedAPI[componentId] ?? null}
       styles={generatedStyles[componentId] ?? null}
-      controls={[]}
       reactAriaUrl={reactAriaUrls[componentId] ?? null}
       sourceUrl={sourceUrls[componentId] ?? null}
       name={component?.name ?? ""}

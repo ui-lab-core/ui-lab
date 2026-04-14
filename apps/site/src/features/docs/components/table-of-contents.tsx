@@ -217,7 +217,8 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
 
   useEffect(() => {
     if (!activeId || !scrollRef.current) return;
-    const scrollContent = scrollRef.current.firstElementChild as HTMLElement;
+    const maskEl = scrollRef.current.firstElementChild as HTMLElement;
+    const scrollContent = maskEl?.firstElementChild as HTMLElement;
     if (!scrollContent) return;
     const activeButton = scrollContent.querySelector(
       `button[data-toc-id="${activeId}"]`

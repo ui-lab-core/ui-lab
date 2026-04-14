@@ -30,7 +30,8 @@ function Stepper({
       </Group.Button>
       <Divider />
       <Group.Input
-        // type="number"
+        type="number"
+        hide-controls
         value={value}
         variant="default"
         onChange={(e) => {

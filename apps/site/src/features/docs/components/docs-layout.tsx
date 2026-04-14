@@ -4,6 +4,7 @@ import { CopyPage, OpenPage } from "../page-actions";
 import { DocsLayoutChatSync } from "./docs-layout-chat-sync";
 import "../../../app/docs.css";
 import { Footer } from "@/features/layout";
+import { Group } from "ui-lab-components";
 
 interface DocsLayoutProps {
   children: React.ReactNode;
@@ -45,10 +46,14 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
 
           <div className="docs-toc sticky px-4 top-(--header-height) grid h-[calc(100vh-var(--header-height))] min-h-0 grid-rows-[minmax(0,1fr)_auto] overflow-visible">
             <TableOfContents items={tocItems} className="min-h-0" />
-            <div className="mb-4 ml-auto w-65 shrink-0 overflow-hidden rounded-sm border border-background-700">
+            <Group
+              orientation="vertical"
+              spacing="none"
+              className="mb-4 ml-auto w-full shrink-0 overflow-hidden [--background-border:var(--background-700)]"
+            >
               <OpenPage />
               <CopyPage />
-            </div>
+            </Group>
           </div>
         </div>
       </div>

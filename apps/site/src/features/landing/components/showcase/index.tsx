@@ -1,12 +1,17 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Grid } from "ui-lab-components";
 import { IntegrationsPanel } from "./examples/integrations";
 import { AIComposer } from "./examples/ai-composer";
-import { SessionConfigPanel } from "./examples/session-config";
 import { MemberRolePanel } from "./examples/team-members";
 import { TextEditor } from "./examples/text-editor";
 import { FileBrowser } from "./examples/media-browser";
+
+const SessionConfigPanel = dynamic(
+  () => import("./examples/session-config").then((mod) => mod.SessionConfigPanel),
+  { ssr: false }
+);
 
 export function Showcase() {
   return (

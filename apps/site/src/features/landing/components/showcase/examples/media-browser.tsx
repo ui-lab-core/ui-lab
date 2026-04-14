@@ -95,7 +95,7 @@ export function FileBrowser() {
         <span className="text-foreground-500">{filteredFiles.length} files</span>
       </div>
 
-      <div className="border-b border-background-700 flex items-center gap-2">
+      <div className="border-b border-background-700 flex items-center gap-2 p-2">
         <Group spacing="none" variant="ghost" className="justify-between w-full">
           <Group.Input
             placeholder="Search files..."
@@ -132,7 +132,7 @@ export function FileBrowser() {
       {selectedCount > 0 && (
         <div className="px-3 py-2 border-b border-background-700 bg-background-300 flex items-center justify-between">
           <span className="text-foreground-300">{selectedCount} file{selectedCount !== 1 ? 's' : ''} selected</span>
-          <Group variant="ghost" spacing="none">
+          <Group spacing="none">
             <Group.Button onClick={() => { }} aria-label="Delete selected">
               <FaTrash size={12} />
             </Group.Button>
@@ -212,7 +212,7 @@ export function FileBrowser() {
 
       <div className="px-3 py-2 border-t border-background-700 flex items-center justify-between">
         <span className="text-foreground-500">Page {state.page} of {TOTAL_PAGES}</span>
-        <Group variant="ghost" spacing="none">
+        <Group spacing="none">
           <Group.Button isDisabled={state.page === 1} onClick={() => dispatch({ type: 'SET_PAGE', payload: Math.max(1, state.page - 1) })} aria-label="Previous">
             <FaChevronLeft size={11} />
           </Group.Button>

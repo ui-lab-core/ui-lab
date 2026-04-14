@@ -10,11 +10,51 @@ import { CopyButton } from "./copy-button";
 import { FaSort } from "react-icons/fa6";
 import { LuChevronsDownUp } from "react-icons/lu";
 import { cn } from "@/shared";
+import { Button } from "ui-lab-components";
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
 
+function renderFallbackLine(line: string): string {
+  if (line.length === 0) return " ";
+
+  const leadingWhitespace = line.match(/^[\t ]+/)?.[0] ?? "";
+  const content = line.slice(leadingWhitespace.length);
+
+  let indentMarkup = "";
+  let pendingSpaces = 0;
+
+  for (const char of leadingWhitespace) {
+    if (char === "\t") {
+      if (pendingSpaces > 0) {
+        indentMarkup += " ".repeat(pendingSpaces);
+        pendingSpaces = 0;
+      }
+      indentMarkup += '<span class="indent">\t</span>';
+      continue;
+    }
+
+    pendingSpaces += 1;
+    if (pendingSpaces === 2) {
+      indentMarkup += '<span class="indent">  </span>';
+      pendingSpaces = 0;
+    }
+  }
+
+  if (pendingSpaces > 0) {
+    indentMarkup += " ".repeat(pendingSpaces);
+  }
+
+  const escapedContent = escapeHtml(content);
+  return `${indentMarkup}${escapedContent || " "}`;
+}
+
 function generateFallbackHtml(code: string): string {
-  return `<pre><code style="display: block; padding: 1rem">${escapeHtml(code)}</code></pre>`;
+  const lines = code.split("\n");
+  const lineMarkup = lines
+    .map((line) => `<span class="line">${renderFallbackLine(line)}</span>`)
+    .join("\n");
+
+  return `<pre class="shiki"><code style="display: block; padding: 1rem;">${lineMarkup}</code></pre>`;
 }
 
 function stripSyntaxColorStyles(html: string): string {
@@ -23,10 +63,15 @@ function stripSyntaxColorStyles(html: string): string {
     .replace(/(?<!-)color:\s*[^;"]+;?/g, "");
 }
 
+function stripPreTabIndex(html: string): string {
+  return html.replace(/<pre([^>]*)\s+tabindex="[^"]*"([^>]*)>/gi, "<pre$1$2>");
+}
+
 interface CodeProps {
   children: string;
   language?: string;
   className?: string;
+  showLineNumbers?: boolean;
   filename?: string;
   heading?: string;
   backgroundColor?: OklchColor;
@@ -44,6 +89,7 @@ export function Code({
   children,
   language = "ts",
   className,
+  showLineNumbers = false,
   filename,
   heading,
   preHighlightedLight,
@@ -94,7 +140,8 @@ export function Code({
   const preferredHighlighted = currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark;
   const themedHtml = preferredHighlighted ?? highlightedCode;
   const hasResolvedSyntax = isThemeInitialized && themedHtml !== fallbackHtml;
-  const displayHtml = hasResolvedSyntax ? themedHtml : stripSyntaxColorStyles(themedHtml);
+  const normalizedHtml = useMemo(() => stripPreTabIndex(themedHtml), [themedHtml]);
+  const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
 
   const handleScrollTrack = useCallback(() => {
     if (viewportRef.current && scrollTrackRef.current) {
@@ -140,6 +187,7 @@ export function Code({
           '<code style="display: block; padding: 1rem;">'
         );
         styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, '');
+        styledHtml = stripPreTabIndex(styledHtml);
         setHighlightedCode(styledHtml);
       } catch (error) {
         console.error("Failed to highlight code:", error);
@@ -171,9 +219,15 @@ export function Code({
   const shouldShowExpandButton = totalCodeLines > MAX_HEIGHT_LINES;
 
   return (
-    <div className={cn("rounded-sm border border-background-700 flex flex-col overflow-hidden w-full min-w-0", className)}>
+    <div
+      className={cn(
+        "rounded-sm border border-background-700 flex flex-col overflow-hidden w-full min-w-0",
+        showLineNumbers && "code-block--line-numbers",
+        className
+      )}
+    >
       {(filename || heading) && (
-        <div className="flex-none bg-background-900/90 flex text-sm font-semibold items-center justify-between border-b border-background-700 px-3 text-foreground-400">
+        <div className="flex-none bg-background-900/90 flex text-xs font-medium items-center justify-between border-b border-background-700 py-1.5 px-3 text-foreground-400">
           <span>{heading || filename}</span>
           {!heading && <span className="text-foreground-400">{language}</span>}
         </div>
@@ -181,12 +235,14 @@ export function Code({
 
       <div className="relative group flex-1 min-h-0 flex flex-col">
         {expanded && shouldShowExpandButton && (
-          <button
+          <Button
             onClick={() => setIsExpanded(false)}
-            className="absolute right-8 top-2 z-10 rounded p-1 text-foreground-400 opacity-0 transition-opacity hover:bg-background-800 hover:text-foreground-300 focus:opacity-100 group-hover:opacity-100"
+            variant="ghost"
+            size="icon"
+            className="absolute right-11 top-2 p-1"
           >
             <LuChevronsDownUp size={14} />
-          </button>
+          </Button>
         )}
         <CopyButton code={children} />
         <div

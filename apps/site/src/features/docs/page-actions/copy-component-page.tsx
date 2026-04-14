@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Expand, Group } from 'ui-lab-components';
+import { Expand, Flex, Group } from 'ui-lab-components';
 import { FaCheck, FaRegClipboard } from 'react-icons/fa6';
 import { generatedAPI, generatedStyles } from 'ui-lab-registry';
 import type { ComponentDetail } from '@/types/component';
@@ -66,7 +66,7 @@ const copyOptions: { label: string; source: CopySource }[] = [
   { label: 'Copy Styles', source: 'styles' },
 ];
 
-export function CopyComponentPage({ componentId, component }: { componentId: string; component?: ComponentDetail }) {
+export function CopyComponentPage({ componentId, component, grouped = false }: { componentId: string; component?: ComponentDetail; grouped?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState<{ source: CopySource; lines: number } | null>(null);
 
@@ -83,21 +83,15 @@ export function CopyComponentPage({ componentId, component }: { componentId: str
   };
 
   return (
-    <Expand isExpanded={isOpen} onExpandedChange={setIsOpen} className="w-full min-w-65 overflow-y-hidden px-0">
+    <Group.Expand styles="w-full">
       <Expand.Trigger className="flex flex-col rounded-none border-b border-background-700">
-        <Group variant="ghost" className="h-12 w-full">
+        <Flex className="h-12 cursor-pointer">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             {copied ? <FaCheck size={12} className="text-foreground-400" /> : <FaRegClipboard />}
           </div>
           <div
-            onClick={() => setIsOpen((o) => !o)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') setIsOpen((o) => !o);
-            }}
             title="Copy component context as Markdown"
             className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300"
-            role="button"
-            tabIndex={0}
           >
             {copied ? (
               <>
@@ -109,7 +103,7 @@ export function CopyComponentPage({ componentId, component }: { componentId: str
             )}
             {!copied && <Expand.Icon className="ml-auto bg-transparent text-foreground-400" />}
           </div>
-        </Group>
+        </Flex>
       </Expand.Trigger>
 
       <Expand.Content from="below" className="-mt-(--border-width-base)">
@@ -126,6 +120,6 @@ export function CopyComponentPage({ componentId, component }: { componentId: str
           ))}
         </div>
       </Expand.Content>
-    </Expand>
+    </Group.Expand>
   );
 }

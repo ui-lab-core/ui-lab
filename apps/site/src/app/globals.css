@@ -411,6 +411,26 @@ pre.shiki .indent::before {
   background-color: currentColor;
 }
 
+.code-block--line-numbers .shiki code {
+  counter-reset: step;
+  counter-increment: step 0;
+  display: block;
+  width: fit-content;
+  min-width: 100%;
+  white-space: pre;
+}
+
+.code-block--line-numbers .shiki .line::before {
+  content: counter(step);
+  counter-increment: step;
+  width: 1rem;
+  margin-right: 1rem;
+  display: inline-block;
+  text-align: right;
+  color: color-mix(in srgb, var(--foreground-400) 40%, transparent); 
+}
+
+
 @layer utilities {
   .text-sm {
     font-size: var(--text-sm)

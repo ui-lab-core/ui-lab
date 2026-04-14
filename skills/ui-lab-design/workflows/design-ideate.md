@@ -23,19 +23,26 @@ Answer these questions explicitly before proceeding:
 
 Write this as 2–4 sentences. Everything after this step must be informed by your answers here.
 
-## Step 2.5 — Inspiration Discovery
+## Step 2.5 — Discovery via MCP
 
-If source code was provided, generate 3–5 targeted search queries based on:
-- **Domain** (Step 2): e.g., "file browser" → "file list", "file grid"
-- **Components seen**: e.g., Select + Input → "filter dropdown", "search input"
-- **Suspected gaps**: e.g., no selection UI → "checkbox selection", "multi-select"
-- **Structure patterns**: e.g., toolbar-like controls → "toolbar", "action bar", "icon action bar"
+Generate 3–5 search queries based on domain, components seen, and suspected gaps. Use the right tool for the job:
 
-For each query, call `get_inspiration(query)`. Each result includes `purpose`, `codeStructureHint` (component/sub-component shape), `bestFor`, and `variationsSummary` (variation names + identifiers, no code).
+- **search_patterns**: Atomic use cases (e.g., "delete confirmation", "empty state", "filter controls")
+- **search_elements**: Multi-component UI blocks (e.g., "chat interface", "sidebar", "file browser")
+- **search_sections**: Landing page blocks (e.g., "hero", "pricing", "testimonials")
+- **search_guides**: Setup/migration/theming workflows (e.g., "translate existing page", "add dark mode", "setup ui lab")
+- **search_components**: Individual components (e.g., "button", "input", "checkbox")
 
-**Selective drill-down**: If a result's `variationsSummary` shows a variation that directly addresses a gap you've already spotted, call `get_variation_code(type, id, variation)` to read that specific implementation. Use this sparingly — only when a particular variation is clearly applicable, not out of curiosity. The `variation` argument accepts a 1-based index ("2"), name substring ("filter toolbar"), or demoPath.
+For each result, note `purpose`, `codeStructureHint`, `bestFor`, and `variationsSummary`.
 
-Store what you learn as working material. Do not output a list of results — weave findings into later reasoning naturally. If MCP calls fail, continue without them.
+**Selective drill-down**: When a variation directly addresses a spotted gap, call the appropriate getter:
+- `get_pattern(id)` for patterns
+- `get_element(id)` for elements
+- `get_section(id)` for sections
+- `get_guide(id)` for guides
+- `get_component(id, detail="examples")` for component usage examples
+
+Use sparingly — only when clearly applicable. Store findings as working material; weave into later reasoning naturally. If MCP calls fail, continue without them.
 
 ## Step 3 — Deconstruct into atomic elements
 

@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { cn } from "@/shared";
 import { Code } from "@/features/docs/components/code-display/code";
 import { DEVICE_PRESETS, PreviewContainer, calculateVariantFromWidth } from "@/features/preview";
-import { Button, Divider, Group } from "ui-lab-components";
+import { Button, Divider, Group, Scroll } from "ui-lab-components";
 import { Select } from "ui-lab-components";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
@@ -125,22 +125,24 @@ export function ComponentConfigurator({
   const PreviewRenderer = renderPreview;
   const CustomRenderer = customRenderer;
   const previewContent = (
-    <div
-      className={cn(
-        resizable ? "w-full p-10" : "mx-auto w-fit min-w-xs px-10 py-20",
-        previewLayout === "center" ? "flex items-center justify-center" : "flex flex-col"
-      )}
-      style={{ "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties}
-    >
-      {PreviewRenderer ? (
-        <PreviewRenderer
-          {...controlValues}
-          handleControlChange={handleControlChange}
-          previewWidth={previewWidth}
-          setPreviewWidth={resizable ? setPreviewWidth : undefined}
-        />
-      ) : children}
-    </div>
+    <Scroll styles={{ track: "pr-6 " }} inline maxHeight="24rem">
+      <div
+        className={cn(
+          resizable ? "w-full p-10" : "mx-auto w-fit min-w-xs px-10 py-20",
+          previewLayout === "center" ? "flex items-center justify-center" : "flex flex-col"
+        )}
+        style={{ "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties}
+      >
+        {PreviewRenderer ? (
+          <PreviewRenderer
+            {...controlValues}
+            handleControlChange={handleControlChange}
+            previewWidth={previewWidth}
+            setPreviewWidth={resizable ? setPreviewWidth : undefined}
+          />
+        ) : children}
+      </div>
+    </Scroll>
   );
   const codeContent = hasCode ? (
     <div className="bg-background-950/40">
@@ -160,7 +162,7 @@ export function ComponentConfigurator({
           </div>
         </div>
       )}
-      <Code className="rounded-none border-0" language={language}>{currentCode}</Code>
+      <Code className="rounded-none border-0" language={language} showLineNumbers>{currentCode}</Code>
     </div>
   ) : null;
 

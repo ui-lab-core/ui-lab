@@ -46,8 +46,12 @@ function removePreBackgroundOnly(html: string): string {
   })
 }
 
+function removePreTabIndex(html: string): string {
+  return html.replace(/<pre([^>]*)\s+tabindex="[^"]*"([^>]*)>/gi, '<pre$1$2>')
+}
+
 function normalizeShikiHtml(html: string): string {
-  return removePreBackgroundOnly(addCodePadding(html))
+  return removePreTabIndex(removePreBackgroundOnly(addCodePadding(html)))
 }
 
 function getPrecomputedThemes() {

@@ -31,7 +31,7 @@ function HeroSection() {
                 Documentation
               </Button>
               <Button
-                variant="secondary" size="sm" className="font-semibold" href="/components">
+                variant="secondary" size="sm" href="/components">
                 View Components
               </Button>
             </div>

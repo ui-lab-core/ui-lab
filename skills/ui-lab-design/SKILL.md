@@ -46,11 +46,16 @@ When trigger words match both `design-ideate` and `design-audit`:
 
 **Spawning:** Use the Task tool with subagent_type "general-purpose". Read the agent's `spawn_prompt_file` and pass its content as the prompt, appending the user's code, description, or file path at the end.
 
+**MCP Usage:** Both agents leverage ui-lab-mcp tools to query the registry:
+- **design-audit**: Validates components/props against registry via `search_components` → `get_component(detail="api")`. Uses `search_guides("theme")` → `get_guide` for theme/color setup validation instead of hardcoded rules.
+- **design-ideate**: Discovers patterns/elements/sections/guides via search tools (`search_patterns`, `search_elements`, `search_sections`, `search_guides`) before suggesting gaps. Queries component examples via `get_component(detail="examples")` when needed.
+
 </orchestration>
 
 <success_criteria>
 
-**design-audit**: A audit is complete when:
+**design-audit**: An audit is complete when:
+- Components validated against registry via `search_components` → `get_component(detail="api")`
 - Native HTML elements checked first (`<button>`, `<a>`, `<input>`, `<select>`, `<div className="...">`, etc.) — any found are CRITICAL violations in the Adherence pillar
 - Each of the 5 pillars has been independently evaluated
 - Star rating assigned based on violation severity and count (5 stars = no violations, 1 star = critical failures)
@@ -59,6 +64,7 @@ When trigger words match both `design-ideate` and `design-audit`:
 - Output follows star-rated format (no code generation)
 
 **design-ideate**: A brief is complete when:
+- Registry queried via appropriate search tools (`search_patterns`, `search_elements`, `search_sections`, `search_guides`)
 - Domain context, user mental model, and workflow reasoning documented (2–4 sentences)
 - Element inventory flat-listed with role, load-bearing status, and value rating
 - Gaps classified into CRITICAL, LAYOUT COHERENCE, PROGRESSIVE DISCLOSURE categories

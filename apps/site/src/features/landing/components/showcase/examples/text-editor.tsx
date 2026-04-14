@@ -53,7 +53,7 @@ export function TextEditor() {
   return (
     <div className="w-full bg-background-200 border border-background-700 rounded-sm overflow-hidden">
       <div className="border-b border-background-700">
-        <Group variant="ghost" spacing="xs" className="[&_.button]:aspect-square [&_.button]:p-0! h-12 px-1 items-center justify-between w-full">
+        <div className="[&_.button]:aspect-square [&_.button]:p-0! px-1.5 h-14 flex items-center justify-between w-full">
           <Group className="flex">
             <Group.Select selectedKey={state.textStyle} onSelectionChange={(v) => dispatch({ type: 'SET_TEXT_STYLE', payload: v })} className="w-40">
               <Select.Trigger>
@@ -91,7 +91,7 @@ export function TextEditor() {
           </Group>
 
 
-          <Divider />
+          <Divider orientation="vertical" />
           <Group spacing="xs">
             <Tooltip content="Bold">
               <Group.Button active={state.bold} onClick={() => dispatch({ type: 'SET_BOLD', payload: !state.bold })}><FaBold size={13} /></Group.Button>
@@ -115,7 +115,7 @@ export function TextEditor() {
             <Tooltip content="Align Center"><Group.Button active={state.align === "center"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "center" })}><FaAlignCenter size={13} /></Group.Button></Tooltip>
             <Tooltip content="Align Right"><Group.Button active={state.align === "right"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "right" })}><FaAlignRight size={13} /></Group.Button></Tooltip>
           </Group>
-        </Group>
+        </div>
       </div>
 
       <textarea

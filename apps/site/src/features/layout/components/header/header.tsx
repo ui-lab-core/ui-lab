@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useMemo, memo } from "react";
 import { ThemeToggle, SettingsPanel } from "@/features/landing";
 import dynamic from "next/dynamic";
@@ -29,15 +30,13 @@ import { useLandingSidebarToggle } from "@/features/layout/hooks/landing-sidebar
 
 const TabItem = memo(({ tab }: { tab: TabConfig }) => {
   return (
-    <Link href={tab.path}>
-      <Tabs.Trigger
-        value={tab.id}
-        disabled={tab.isPlaceholder}
-        className="text-xs py-[9px]"
-      >
-        {tab.label}
-      </Tabs.Trigger>
-    </Link>
+    <Tabs.Trigger
+      value={tab.id}
+      disabled={tab.isPlaceholder}
+      className="text-xs py-[9px]"
+    >
+      {tab.label}
+    </Tabs.Trigger>
   );
 });
 
@@ -50,6 +49,7 @@ interface HeaderProps {
 export default function Header({
   pathname,
 }: HeaderProps) {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { setIsCommandPaletteOpen } = useApp();
   const { toggleChat, isOpen: isChatOpen } = useChat();
@@ -79,6 +79,16 @@ export default function Header({
     })), []);
 
   const activeHomeTab = pathname === "/docs" ? "documentation" : pathname === "/packages" ? "elements" : pathname === "/components" ? "components" : undefined;
+  const handleTabsNavigation = (tabs: TabConfig[]) => (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement | null;
+    const trigger = target?.closest("[data-tabs-value]");
+    const value = trigger?.getAttribute("data-tabs-value");
+    const tab = tabs.find((item) => item.id === value);
+
+    if (tab && !tab.isPlaceholder) {
+      router.push(tab.path);
+    }
+  };
 
   return (
     <>
@@ -104,21 +114,25 @@ export default function Header({
             <div className="pt-3 ">
               {pathname === "/" && homeNavTabs && (
                 <Tabs className="hidden ml-8 lg:block" value={activeHomeTab || ""} variant="underline">
-                  <Tabs.List>
-                    {homeNavTabs.map((tab) => (
-                      <TabItem key={tab.id} tab={tab} />
-                    ))}
-                  </Tabs.List>
+                  <div onClickCapture={handleTabsNavigation(homeNavTabs)}>
+                    <Tabs.List>
+                      {homeNavTabs.map((tab) => (
+                        <TabItem key={tab.id} tab={tab} />
+                      ))}
+                    </Tabs.List>
+                  </div>
                 </Tabs>
               )}
 
               {hasRevealCollapse && tabGroup && activeTabId && (
                 <Tabs className="w-fit ml-8 hidden md:block" value={activeTabId} variant="underline">
-                  <Tabs.List>
-                    {tabGroup.tabs.map((tab) => (
-                      <TabItem key={tab.id} tab={tab} />
-                    ))}
-                  </Tabs.List>
+                  <div onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
+                    <Tabs.List>
+                      {tabGroup.tabs.map((tab) => (
+                        <TabItem key={tab.id} tab={tab} />
+                      ))}
+                    </Tabs.List>
+                  </div>
                 </Tabs>
               )}
             </div>

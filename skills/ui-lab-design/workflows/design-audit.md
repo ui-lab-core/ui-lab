@@ -22,7 +22,17 @@ Accept whatever the user provides: a file path, TSX/JSX code, or description.
 - **If code is pasted**: Parse the imports, component structure, interactive elements, and styling.
 - **If a description only**: Infer from context.
 
-### Step 2 — Audit Each Pillar
+### Step 2 — Validate Against UI Lab Registry
+
+Before auditing pillars, validate components against the registry:
+
+1. For each component found in code, call `search_components(component_name)` to confirm it exists
+2. If found, call `get_component(id, detail="api")` to retrieve the actual prop signature
+3. Compare props used in code against the API schema to identify mismatches
+4. For native HTML elements (`<button>`, `<input>`, `<select>`, etc.), query the UI Lab replacement component
+5. For theme/color setup questions, use `search_guides("theme")` to reference registry guides
+
+### Step 3 — Audit Each Pillar
 
 For each pillar (in order):
 
@@ -41,7 +51,7 @@ For each pillar (in order):
    - **0 stars:** Pillar completely absent or unusable
 5. **List violations** under the pillar rating (only if violations exist)
 
-### Step 3 — Generate Report
+### Step 4 — Generate Report
 
 Return exactly this format:
 
@@ -137,9 +147,9 @@ First, scan for native HTML elements. These are ALWAYS violations:
 ### Secondary Checks
 - Check all color usage (token names, not hex/rgba)
 - Verify component imports from 'ui-lab-components'
-- Validate React Aria conventions (isDisabled, onPress, onOpenChange)
+- Validate React Aria conventions (isDisabled, onPress, onOpenChange) using API data from `get_component`
 - Ensure compound sub-components are used (Card.Header, Modal.Footer, etc.)
-- Confirm theme setup matches `get_theme_setup` from MCP
+- For theme setup validation, use `search_guides("theme")` → `get_guide` to reference registry guides
 - Flag non-semantic color usage for feedback states
 - Check for AI slop patterns (redundant labels, verbose copy, etc.)
 
