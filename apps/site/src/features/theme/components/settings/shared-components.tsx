@@ -95,7 +95,6 @@ export const SliderControl = memo(
           min={min}
           max={max}
           step={step}
-          size="md"
         />
       </div>
     );
@@ -133,7 +132,6 @@ const GlobalSlider = memo(
           min={min}
           max={max}
           step={step}
-          size="sm"
         />
       </div>
     );
@@ -268,7 +266,6 @@ const TypeScaleSlider = memo(
             min={1.067}
             max={1.2}
             step={0.001}
-            size="md"
           />
         </div>
       </div>

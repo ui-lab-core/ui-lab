@@ -424,7 +424,7 @@ export const componentRegistry: ComponentRegistry = {
   group: {
     id: "group",
     name: "Group",
-    description: "Groups Button, Input, and Select with unified border styling.",
+    description: "Groups Button, Input, Select, and Expand with unified border styling.",
     category: "composition",
     experimental: true,
     source: {
@@ -432,7 +432,7 @@ export const componentRegistry: ComponentRegistry = {
   "exportName": "Group",
   "packagePath": "dist/index.d.ts"
 },
-    relatedComponents: ["button","input","select"],
+    relatedComponents: ["button","input","select","expand"],
     tags: ["composition","grouped","compound","form"],
     accessibility: {"hasAriaSupport":true,"notes":["Uses role=\"group\" for semantic grouping","Propagates disabled state to children","Maintains keyboard navigation for all child components"]},
     examples: [

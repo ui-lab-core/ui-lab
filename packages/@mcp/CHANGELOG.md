@@ -1,5 +1,11 @@
 # ui-lab-mcp
 
+## 0.1.64
+
+### Patch Changes
+
+- Add focus indicator infrastructure and improve accessibility across components with style refinements
+
 ## 0.1.63
 
 ### Patch Changes

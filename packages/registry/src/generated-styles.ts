@@ -99,6 +99,71 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
       }
     ]
   },
+  "tabs": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .tabs {\n    @apply flex w-full flex-col;\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: row;\n    }\n  }\n\n  .list {\n    @apply relative flex w-full flex-row items-center gap-3 py-1;\n    border-radius: var(--radius-sm);\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: column;\n      width: auto;\n      min-width: 120px;\n      height: 100%;\n    }\n\n    &[data-variant=\"underline\"] {\n      background-color: transparent;\n      border-radius: 0;\n      padding: 0 0 4px;\n    }\n\n    &[data-variant=\"underline\"][data-orientation=\"vertical\"] {\n      border-bottom: none;\n      border-left: var(--border-width-base) solid var(--border-color);\n      align-items: stretch;\n      padding: 0 0 0 4px;\n    }\n  }\n\n  .indicator {\n    @apply absolute;\n    background-color: var(--background);\n    box-sizing: border-box;\n    border-radius: var(--radius-sm);\n    z-index: 0;\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    pointer-events: none;\n  }\n\n  .indicator-fallback {\n    z-index: -1;\n  }\n\n  .indicator-underline {\n    border-radius: 0;\n  }\n\n  .trigger {\n    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;\n    height: 100%;\n    background-color: var(--background);\n    border: none;\n    color: var(--foreground);\n    outline: none;\n    box-shadow: none;\n    transition: color 0.15s ease, background-color 0.15s ease;\n\n\n    &:not([data-disabled]):not([data-selected=\"true\"]) {\n      &:hover {\n        background-color: var(--background-hover);\n        color: var(--foreground-hover);\n      }\n\n      &:active {\n        background-color: var(--background-pressed);\n        color: var(--foreground-pressed);\n      }\n    }\n\n    &[data-selected=\"true\"] {\n      background-color: var(--background-selected);\n      color: var(--foreground-selected);\n    }\n\n    &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      .list & {\n        background-color: var(--background-selected);\n      }\n\n      .list[data-variant=\"underline\"] & {\n        background-color: transparent;\n        border-bottom-color: var(--underline-border);\n      }\n\n      .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n        border-bottom-color: transparent;\n        border-left-color: var(--underline-border);\n      }\n    }\n\n    &:focus,\n    &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    &[data-disabled=\"true\"] {\n      --disabled-opacity: 0.5;\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n\n    .list[data-variant=\"underline\"] & {\n      background-color: var(--background);\n      background-clip: padding-box;\n      border-radius: var(--radius-sm);\n      border-bottom: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"] &:not([data-disabled]):not([data-selected=\"true\"]):hover {\n      background-color: var(--background-hover);\n    }\n\n    .list[data-variant=\"underline\"] &:not([data-disabled]):not([data-selected=\"true\"]):active {\n      background-color: var(--background-pressed);\n    }\n\n    .list[data-variant=\"underline\"] &[data-selected=\"true\"] {\n      background-color: var(--background-selected);\n    }\n\n    .list[data-variant=\"underline\"] &:focus,\n    .list[data-variant=\"underline\"] &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n      border-bottom: none;\n      border-left: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      border-left-color: var(--underline-border);\n      border-bottom: none;\n    }\n  }\n\n  .icon {\n    @apply flex h-4 w-4 shrink-0 items-center justify-center;\n  }\n\n  .content {\n    @apply w-full p-0 outline-none;\n    flex: 1;\n    padding-top: 1rem;\n\n    &[data-orientation=\"vertical\"] {\n      flex: 1;\n      width: 100%;\n    }\n\n    &:focus-visible {\n      outline: 2px solid var(--focus-visible);\n      outline-offset: 2px;\n    }\n  }\n\n  @media (max-width: 640px) {\n    .list {\n      padding: 0.125rem;\n\n      &[data-variant=\"underline\"] {\n        padding: 0 0 4px;\n      }\n    }\n\n    .trigger {\n      @apply px-1 py-1;\n      .list[data-variant=\"underline\"] & {\n        margin: 0.5rem 0.75rem;\n      }\n    }\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "indicator"
+      },
+      {
+        "name": "icon.left"
+      },
+      {
+        "name": "icon.right"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--disabled-opacity",
+        "value": "0.5",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".trigger[data-disabled=\"true\"]"
+      }
+    ]
+  },
+  "table": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .root {\n    @apply w-full;\n  }\n\n  .container {\n    @apply overflow-x-auto rounded-md;\n    border: 1px solid var(--table-border, var(--background-800));\n  }\n\n  .table {\n    @apply w-full text-sm;\n    background-color: var(--table-background, transparent);\n    color: var(--table-foreground, currentColor);\n  }\n\n  .thead {\n    @apply contents;\n  }\n\n  .headerRow {\n    @apply contents;\n  }\n\n  .headerCell {\n    @apply px-4 py-3 text-left font-semibold;\n    background-color: var(--table-header-background, var(--background-900));\n    color: var(--table-header-foreground, var(--foreground-200));\n    border-bottom: 1px solid var(--table-border, var(--background-800));\n  }\n\n  .tbody {\n    @apply contents;\n  }\n\n  .bodyRow {\n    @apply contents;\n\n    &[data-interactive=\"true\"] {\n      @apply cursor-pointer;\n\n      & td {\n        @apply transition-colors;\n      }\n\n      &:hover td {\n        background-color: var(--table-body-background-hover, var(--background-900));\n      }\n    }\n  }\n\n  .interactive {\n    @apply cursor-pointer;\n  }\n\n  .cell {\n    @apply px-4 py-3;\n    background-color: var(--table-cell-background, transparent);\n    color: var(--table-cell-foreground, var(--foreground-300));\n    border-bottom: 1px solid var(--table-border, var(--background-800));\n\n    &:last-child {\n      border-bottom: none;\n    }\n  }\n\n  .emptyState {\n    @apply px-4 py-8 text-center;\n    color: var(--table-empty-foreground, var(--foreground-400));\n    display: table-cell !important;\n  }\n\n  .filterBar {\n    @apply mb-4 rounded-sm border p-4;\n    background-color: var(--table-filter-background, var(--background-900));\n    border-color: var(--table-filter-border, var(--background-800));\n  }\n\n  .filterGrid {\n    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;\n  }\n\n  .filterLabel {\n    @apply mb-2 block text-sm font-medium;\n    color: var(--table-filter-label-color, var(--foreground-300));\n  }\n\n  .filterInput {\n    @apply w-full rounded-md border px-3 py-2 transition-all;\n    background-color: var(--table-filter-input-background, var(--background-950));\n    border-color: var(--table-filter-input-border, var(--background-700));\n    color: var(--table-filter-input-foreground, var(--foreground-50));\n\n    &::placeholder {\n      color: var(--table-filter-input-placeholder, var(--foreground-400));\n    }\n\n    &:hover {\n      border-color: var(--table-filter-input-border-hover, var(--background-600));\n    }\n\n    &:focus {\n      outline: none;\n      border-color: var(--table-filter-input-border-focus, var(--accent-500));\n      box-shadow: 0 0 0 2px var(--table-filter-input-ring, rgba(99, 102, 241, 0.2));\n    }\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "container"
+      },
+      {
+        "name": "filterBar"
+      },
+      {
+        "name": "table"
+      },
+      {
+        "name": "thead"
+      },
+      {
+        "name": "tbody"
+      },
+      {
+        "name": "headerRow"
+      },
+      {
+        "name": "headerCell"
+      },
+      {
+        "name": "bodyRow"
+      },
+      {
+        "name": "cell"
+      },
+      {
+        "name": "emptyState"
+      }
+    ],
+    "cssVariables": []
+  },
   "textarea": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .textarea {\n    --padding-inline: 0.75rem;\n    --padding-block: 0.5rem;\n\n    @apply block w-full px-3 py-2;\n    box-sizing: border-box;\n    resize: none;\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-sm, 0.375rem);\n    background-color: var(--background);\n    color: var(--foreground);\n    font-family: inherit;\n    font-size: var(--text-sm);\n    line-height: var(--leading-snug);\n    outline: none;\n    transition:\n      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),\n      border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),\n      color 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n\n    &::placeholder {\n      color: var(--placeholder);\n    }\n\n    &:hover:not([data-disabled]),\n    &[data-hovered=\"true\"]:not([data-disabled]) {\n      background-color: var(--background-hover);\n    }\n\n    &[data-disabled=\"true\"] {\n      background-color: var(--background-disabled);\n      color: var(--foreground-disabled);\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity);\n    }\n\n    &[data-error=\"true\"] {\n      border-color: var(--background-error-border);\n    }\n\n    &[data-resize-axis=\"x\"],\n    &[data-resize-axis=\"both\"] {\n      padding-inline-end: calc(var(--padding-inline) + 1rem);\n    }\n\n    &[data-resize-axis=\"y\"],\n    &[data-resize-axis=\"both\"] {\n      padding-block-end: calc(var(--padding-block) + 1rem);\n    }\n\n    &[data-scroll=\"true\"] {\n      border: none;\n      border-radius: 0;\n      background: transparent;\n      box-shadow: none;\n      overflow: hidden;\n\n      &[data-disabled=\"true\"] {\n        background-color: transparent;\n        opacity: 1;\n      }\n\n      &[data-error=\"true\"] {\n        border-color: transparent;\n      }\n    }\n  }\n\n  .size-sm {\n    min-height: 5rem;\n    --padding-inline: 0.5rem;\n    --padding-block: 0.25rem;\n    font-size: var(--text-sm);\n    @apply px-2 py-1;\n  }\n\n  .size-md {\n    min-height: 6rem;\n    --padding-inline: 0.75rem;\n    --padding-block: 0.5rem;\n    font-size: var(--text-sm);\n    @apply px-3 py-2;\n  }\n\n  .size-lg {\n    min-height: 8rem;\n    --padding-inline: 1rem;\n    --padding-block: 0.75rem;\n    font-size: var(--text-md);\n    @apply px-4 py-3;\n  }\n\n  .container {\n    @apply w-full;\n  }\n\n  .surface {\n    @apply relative w-full;\n  }\n\n  .scroll-wrapper {\n    @apply w-full overflow-hidden;\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-sm, 0.375rem);\n    background-color: var(--background);\n\n    &:hover:not([data-disabled=\"true\"]),\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]) {\n      background-color: var(--background-hover);\n    }\n\n    &[data-disabled=\"true\"] {\n      background-color: var(--background-disabled);\n      opacity: var(--disabled-opacity);\n    }\n\n    &[data-error=\"true\"] {\n      border-color: var(--background-error-border);\n    }\n  }\n\n  .resize-handle {\n    position: absolute;\n    z-index: 1;\n    touch-action: none;\n    user-select: none;\n\n    &::before,\n    &::after {\n      content: \"\";\n      position: absolute;\n      border-radius: var(--radius-full);\n      background-color: var(--handle-background);\n      transition: background-color 150ms;\n    }\n\n    &:hover::before,\n    &:hover::after {\n      background-color: var(--handle-hover-background);\n    }\n  }\n\n  .resize-handle-both {\n    right: 3px;\n    bottom: 3px;\n    width: 1.5rem;\n    height: 1.5rem;\n    cursor: nwse-resize;\n\n    &::before {\n      right: 0.15rem;\n      bottom: 0.35rem;\n      width: 0.5rem;\n      height: 0.125rem;\n      transform: rotate(-45deg);\n      transform-origin: center;\n    }\n\n    &::after {\n      right: 0.2rem;\n      bottom: 0.6rem;\n      width: 1rem;\n      height: 0.125rem;\n      transform: rotate(-45deg);\n      transform-origin: center;\n    }\n  }\n\n  .resize-handle-x {\n    top: 50%;\n    right: 0;\n    width: 0.75rem;\n    height: 2rem;\n    cursor: ew-resize;\n    transform: translateY(-50%);\n\n    &::before {\n      top: 50%;\n      left: 50%;\n      width: 0.125rem;\n      height: 1.5rem;\n      transform: translate(-50%, -50%);\n    }\n\n    &::after {\n      display: none;\n    }\n  }\n\n  .resize-handle-y {\n    left: 50%;\n    bottom: 0;\n    width: 2rem;\n    height: 0.75rem;\n    cursor: ns-resize;\n    transform: translateX(-50%);\n\n    &::before {\n      top: 50%;\n      left: 50%;\n      width: 1.5rem;\n      height: 0.125rem;\n      transform: translate(-50%, -50%);\n    }\n\n    &::after {\n      display: none;\n    }\n  }\n\n  .character-count {\n    @apply mt-1;\n    color: var(--count-foreground);\n    font-size: var(--text-sm);\n    transition: color 0.15s var(--ease-snappy-pop);\n  }\n\n  .character-count[data-over-limit=\"true\"] {\n    color: var(--count-over-limit-foreground);\n  }\n}\n",
     "styleableParts": [
@@ -185,71 +250,6 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
         "variant": ".size-lg"
       }
     ]
-  },
-  "tabs": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .tabs {\n    @apply flex w-full flex-col;\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: row;\n    }\n  }\n\n  .list {\n    @apply relative flex w-full flex-row items-center gap-3 py-1;\n    border-radius: var(--radius-sm);\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: column;\n      width: auto;\n      min-width: 120px;\n      height: 100%;\n    }\n\n    &[data-variant=\"underline\"] {\n      background-color: transparent;\n      border-radius: 0;\n      padding: 0 0 4px;\n    }\n\n    &[data-variant=\"underline\"][data-orientation=\"vertical\"] {\n      border-bottom: none;\n      border-left: var(--border-width-base) solid var(--border-color);\n      align-items: stretch;\n      padding: 0 0 0 4px;\n    }\n  }\n\n  .indicator {\n    @apply absolute;\n    background-color: var(--background);\n    box-sizing: border-box;\n    border-radius: var(--radius-sm);\n    z-index: 0;\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    pointer-events: none;\n  }\n\n  .indicator-fallback {\n    z-index: -1;\n  }\n\n  .indicator-underline {\n    border-radius: 0;\n  }\n\n  .trigger {\n    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 rounded-sm px-2 py-1.5 cursor-pointer select-none;\n    height: 100%;\n    background-color: var(--background);\n    border: none;\n    color: var(--foreground);\n    outline: none;\n    box-shadow: none;\n    transition: color 0.15s ease, background-color 0.15s ease;\n\n\n    &:not([data-disabled]):not([data-selected=\"true\"]) {\n      &:hover {\n        background-color: var(--background-hover);\n        color: var(--foreground-hover);\n      }\n\n      &:active {\n        background-color: var(--background-pressed);\n        color: var(--foreground-pressed);\n      }\n    }\n\n    &[data-selected=\"true\"] {\n      background-color: var(--background-selected);\n      color: var(--foreground-selected);\n    }\n\n    &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      .list & {\n        background-color: var(--background-selected);\n      }\n\n      .list[data-variant=\"underline\"] & {\n        background-color: transparent;\n        border-bottom-color: var(--underline-border);\n      }\n\n      .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n        border-bottom-color: transparent;\n        border-left-color: var(--underline-border);\n      }\n    }\n\n    &:focus,\n    &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    &[data-disabled=\"true\"] {\n      --disabled-opacity: 0.5;\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n\n    .list[data-variant=\"underline\"] & {\n      background-color: var(--background);\n      background-clip: padding-box;\n      border-radius: var(--radius-xs);\n      border-bottom: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"] &:not([data-disabled]):not([data-selected=\"true\"]):hover {\n      background-color: var(--background-hover);\n    }\n\n    .list[data-variant=\"underline\"] &:not([data-disabled]):not([data-selected=\"true\"]):active {\n      background-color: var(--background-pressed);\n    }\n\n    .list[data-variant=\"underline\"] &[data-selected=\"true\"] {\n      background-color: var(--background-selected);\n    }\n\n    .list[data-variant=\"underline\"] &:focus,\n    .list[data-variant=\"underline\"] &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n      border-bottom: none;\n      border-left: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      border-left-color: var(--underline-border);\n      border-bottom: none;\n    }\n  }\n\n  .icon {\n    @apply flex h-4 w-4 shrink-0 items-center justify-center;\n  }\n\n  .content {\n    @apply w-full p-0 outline-none;\n    flex: 1;\n    padding-top: 1rem;\n\n    &[data-orientation=\"vertical\"] {\n      flex: 1;\n      width: 100%;\n    }\n\n    &:focus-visible {\n      outline: 2px solid var(--focus-visible);\n      outline-offset: 2px;\n    }\n  }\n\n  @media (max-width: 640px) {\n    .list {\n      padding: 0.125rem;\n\n      &[data-variant=\"underline\"] {\n        padding: 0 0 4px;\n      }\n    }\n\n    .trigger {\n      @apply px-1 py-1;\n      .list[data-variant=\"underline\"] & {\n        margin: 0.5rem 0.75rem;\n      }\n    }\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "indicator"
-      },
-      {
-        "name": "icon.left"
-      },
-      {
-        "name": "icon.right"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--disabled-opacity",
-        "value": "0.5",
-        "defaultValue": null,
-        "referencedVars": [],
-        "variant": ".trigger[data-disabled=\"true\"]"
-      }
-    ]
-  },
-  "table": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .root {\n    @apply w-full;\n  }\n\n  .container {\n    @apply overflow-x-auto rounded-md;\n    border: 1px solid var(--table-border, var(--background-800));\n  }\n\n  .table {\n    @apply w-full text-sm;\n    background-color: var(--table-background, transparent);\n    color: var(--table-foreground, currentColor);\n  }\n\n  .thead {\n    @apply contents;\n  }\n\n  .headerRow {\n    @apply contents;\n  }\n\n  .headerCell {\n    @apply px-4 py-3 text-left font-semibold;\n    background-color: var(--table-header-background, var(--background-900));\n    color: var(--table-header-foreground, var(--foreground-200));\n    border-bottom: 1px solid var(--table-border, var(--background-800));\n  }\n\n  .tbody {\n    @apply contents;\n  }\n\n  .bodyRow {\n    @apply contents;\n\n    &[data-interactive=\"true\"] {\n      @apply cursor-pointer;\n\n      & td {\n        @apply transition-colors;\n      }\n\n      &:hover td {\n        background-color: var(--table-body-background-hover, var(--background-900));\n      }\n    }\n  }\n\n  .interactive {\n    @apply cursor-pointer;\n  }\n\n  .cell {\n    @apply px-4 py-3;\n    background-color: var(--table-cell-background, transparent);\n    color: var(--table-cell-foreground, var(--foreground-300));\n    border-bottom: 1px solid var(--table-border, var(--background-800));\n\n    &:last-child {\n      border-bottom: none;\n    }\n  }\n\n  .emptyState {\n    @apply px-4 py-8 text-center;\n    color: var(--table-empty-foreground, var(--foreground-400));\n    display: table-cell !important;\n  }\n\n  .filterBar {\n    @apply mb-4 rounded-sm border p-4;\n    background-color: var(--table-filter-background, var(--background-900));\n    border-color: var(--table-filter-border, var(--background-800));\n  }\n\n  .filterGrid {\n    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;\n  }\n\n  .filterLabel {\n    @apply mb-2 block text-sm font-medium;\n    color: var(--table-filter-label-color, var(--foreground-300));\n  }\n\n  .filterInput {\n    @apply w-full rounded-md border px-3 py-2 transition-all;\n    background-color: var(--table-filter-input-background, var(--background-950));\n    border-color: var(--table-filter-input-border, var(--background-700));\n    color: var(--table-filter-input-foreground, var(--foreground-50));\n\n    &::placeholder {\n      color: var(--table-filter-input-placeholder, var(--foreground-400));\n    }\n\n    &:hover {\n      border-color: var(--table-filter-input-border-hover, var(--background-600));\n    }\n\n    &:focus {\n      outline: none;\n      border-color: var(--table-filter-input-border-focus, var(--accent-500));\n      box-shadow: 0 0 0 2px var(--table-filter-input-ring, rgba(99, 102, 241, 0.2));\n    }\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "container"
-      },
-      {
-        "name": "filterBar"
-      },
-      {
-        "name": "table"
-      },
-      {
-        "name": "thead"
-      },
-      {
-        "name": "tbody"
-      },
-      {
-        "name": "headerRow"
-      },
-      {
-        "name": "headerCell"
-      },
-      {
-        "name": "bodyRow"
-      },
-      {
-        "name": "cell"
-      },
-      {
-        "name": "emptyState"
-      }
-    ],
-    "cssVariables": []
   },
   "switch": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .switch {\n    --radius: 9999px;\n    --inner-radius: calc(var(--radius) - var(--border-width-base));\n\n    --width: 2.75rem;\n    --height: 1.5rem;\n    --thumb-size: 1rem;\n    --thumb-offset: 0.25rem;\n\n    --disabled-opacity: 0.6;\n\n    @apply relative inline-flex cursor-pointer items-center;\n    user-select: none;\n    border-radius: var(--radius);\n    width: var(--width);\n    height: var(--height);\n  }\n\n  .switch-track {\n    @apply absolute inset-0;\n    transition: background-color 180ms var(--ease-snappy-pop), border-color 180ms var(--ease-snappy-pop), transform 180ms var(--ease-snappy-pop);\n    background-color: var(--background);\n    border: var(--border-width-base) solid var(--border-color);\n    border-radius: var(--radius);\n  }\n\n  .switch:active:not([data-disabled]) .switch-track {\n    transform: scale(0.98);\n  }\n\n  .switch-thumb {\n    @apply absolute top-0 bottom-0 my-auto;\n    left: var(--thumb-offset);\n    width: var(--thumb-size);\n    height: var(--thumb-size);\n    transition: left 180ms var(--ease-snappy-pop), background-color 180ms var(--ease-snappy-pop);\n    background-color: var(--foreground);\n    border-radius: var(--inner-radius);\n    z-index: 1;\n    pointer-events: none;\n  }\n\n  .switch[data-selected] .switch-track {\n    background-color: var(--background-active);\n    border-color: var(--border-color-active);\n  }\n\n  .switch[data-selected] .switch-thumb {\n    background-color: var(--foreground-active);\n    left: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));\n  }\n\n  @media (hover: hover) {\n    .switch[data-selected]:not([data-disabled]):hover .switch-track {\n      border-color: var(--border-color-hover);\n    }\n  }\n\n  .switch[data-selected]:not([data-disabled]):active .switch-track {\n    border-color: var(--border-color-pressed);\n  }\n\n  .switch[data-disabled] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n\n  .switch-sm {\n    --width: 1.75rem;\n    --height: 1rem;\n    --thumb-size: 0.625rem;\n    --thumb-offset: 0.1875rem;\n  }\n}\n",
@@ -684,7 +684,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ]
   },
   "path": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .path {\n    @apply block;\n  }\n\n  .list {\n    @apply m-0 flex flex-wrap items-center gap-2 p-0;\n    list-style: none;\n  }\n\n  .list[data-separator=\"custom\"] .item:not(:last-child)::after {\n    content: none;\n  }\n\n  .item {\n    @apply m-0 flex items-center gap-2 p-0;\n  }\n\n  .item:not(:last-child)::after {\n    content: \"/\";\n    margin-inline-start: 0.5rem;\n    color: var(--path-separator-foreground, var(--border-secondary));\n    pointer-events: none;\n    user-select: none;\n  }\n\n  .separator {\n    @apply m-0 flex items-center p-0;\n    list-style: none;\n    color: var(--path-separator-foreground, var(--border-secondary));\n    pointer-events: none;\n    user-select: none;\n  }\n\n  .link {\n    --path-link-foreground: var(--foreground-primary);\n    --path-link-hover-foreground: var(--accent-600);\n    --path-link-selected-foreground: var(--foreground-secondary);\n    --path-link-disabled-foreground: var(--foreground-secondary);\n    --path-link-hover-background: rgba(0, 0, 0, 0.04);\n    --path-link-pressed-background: rgba(0, 0, 0, 0.08);\n    --path-link-disabled-opacity: 0.6;\n\n    @apply relative cursor-pointer px-2 py-1;\n    border: 0;\n    background-color: transparent;\n    color: var(--path-link-foreground);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-medium, 500);\n    line-height: var(--leading-normal, 1.5);\n    text-decoration: none;\n    transition:\n      color 0.2s cubic-bezier(0.4, 0, 0.2, 1),\n      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    outline: none;\n  }\n\n  button.link {\n    font: inherit;\n  }\n\n  .link:focus,\n  .link:focus-visible {\n    outline: none;\n  }\n\n  .link[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n    background-color: var(--path-link-hover-background);\n    color: var(--path-link-hover-foreground);\n  }\n\n  .link[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n    background-color: var(--path-link-pressed-background);\n  }\n\n  .link[data-selected=\"true\"] {\n    color: var(--path-link-selected-foreground);\n    cursor: default;\n  }\n\n  .link[data-selected=\"true\"][data-hovered=\"true\"] {\n    background-color: transparent;\n  }\n\n  .link[data-disabled=\"true\"] {\n    color: var(--path-link-disabled-foreground);\n    cursor: not-allowed;\n    opacity: var(--path-link-disabled-opacity);\n  }\n\n  .link[data-disabled=\"true\"][data-hovered=\"true\"] {\n    background-color: transparent;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .path {\n    @apply block;\n  }\n\n  .list {\n    @apply m-0 flex flex-wrap items-center gap-2 p-0;\n    list-style: none;\n  }\n\n  .list[data-separator=\"custom\"] .item:not(:last-child)::after {\n    content: none;\n  }\n\n  .item {\n    @apply m-0 flex items-center gap-2 p-0;\n  }\n\n  .item:not(:last-child)::after {\n    content: \"/\";\n    margin-inline-start: 0.5rem;\n    color: var(--separator-foreground);\n    pointer-events: none;\n    user-select: none;\n  }\n\n  .separator {\n    @apply m-0 flex items-center p-0;\n    list-style: none;\n    color: var(--separator-foreground);\n    pointer-events: none;\n    user-select: none;\n  }\n\n  .link {\n    @apply relative cursor-pointer px-2 py-1;\n    border: 0;\n    background-color: transparent;\n    color: var(--foreground);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-medium, 500);\n    line-height: var(--leading-normal, 1.5);\n    text-decoration: none;\n    transition:\n      color 0.2s cubic-bezier(0.4, 0, 0.2, 1),\n      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    outline: none;\n  }\n\n  button.link {\n    font: inherit;\n  }\n\n  .link:focus,\n  .link:focus-visible {\n    outline: none;\n  }\n\n  .link[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n    background-color: var(--background-hover);\n    color: var(--foreground-hover);\n  }\n\n  .link[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n    background-color: var(--background-pressed);\n  }\n\n  .link[data-selected=\"true\"] {\n    color: var(--foreground-selected);\n    cursor: default;\n  }\n\n  .link[data-selected=\"true\"][data-hovered=\"true\"] {\n    background-color: transparent;\n  }\n\n  .link[data-disabled=\"true\"] {\n    color: var(--foreground-disabled);\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity);\n  }\n\n  .link[data-disabled=\"true\"][data-hovered=\"true\"] {\n    background-color: transparent;\n  }\n}\n",
     "styleableParts": [
       {
         "name": "root"
@@ -699,65 +699,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
         "name": "separator"
       }
     ],
-    "cssVariables": [
-      {
-        "name": "--path-link-foreground",
-        "value": "var(--foreground-primary)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--foreground-primary"
-        ],
-        "variant": ".link"
-      },
-      {
-        "name": "--path-link-hover-foreground",
-        "value": "var(--accent-600)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--accent-600"
-        ],
-        "variant": ".link"
-      },
-      {
-        "name": "--path-link-selected-foreground",
-        "value": "var(--foreground-secondary)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--foreground-secondary"
-        ],
-        "variant": ".link"
-      },
-      {
-        "name": "--path-link-disabled-foreground",
-        "value": "var(--foreground-secondary)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--foreground-secondary"
-        ],
-        "variant": ".link"
-      },
-      {
-        "name": "--path-link-hover-background",
-        "value": "rgba(0, 0, 0, 0.04)",
-        "defaultValue": null,
-        "referencedVars": [],
-        "variant": ".link"
-      },
-      {
-        "name": "--path-link-pressed-background",
-        "value": "rgba(0, 0, 0, 0.08)",
-        "defaultValue": null,
-        "referencedVars": [],
-        "variant": ".link"
-      },
-      {
-        "name": "--path-link-disabled-opacity",
-        "value": "0.6",
-        "defaultValue": null,
-        "referencedVars": [],
-        "variant": ".link"
-      }
-    ]
+    "cssVariables": []
   },
   "panel": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .panel {\n    @apply flex h-full w-full min-h-0 min-w-0 flex-row;\n    background: inherit;\n  }\n\n  .panel[data-stacked=\"true\"] { flex-direction: column; }\n\n  .header,\n  .footer {\n    @apply shrink-0;\n    background: inherit;\n  }\n\n  .sticky {\n    position: sticky;\n    top: 0;\n    z-index: 10;\n  }\n\n  .content {\n    @apply flex min-h-0 min-w-0;\n    flex: 1;\n    overflow: auto;\n  }\n\n  .fixed {\n    position: fixed;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 5;\n  }\n\n  /* Sidebar */\n  .sidebar {\n    @apply shrink-0 overflow-hidden;\n    overflow: hidden;\n    transition: width 0.2s ease;\n    border-right: var(--border-width-base) solid var(--panel-border-color);\n  }\n\n  .sidebar[data-side=\"right\"] {\n    border-right: none;\n    border-left: var(--border-width-base) solid var(--panel-border-color);\n  }\n\n  /* Toggle */\n  .toggle {\n    @apply flex items-center;\n  }\n\n  /* Group */\n  .group {\n    @apply flex w-full h-full;\n    background: inherit;\n  }\n\n  .group[data-direction=\"vertical\"] { flex-direction: column; }\n\n  /* Resize handle */\n  .resize {\n    @apply relative shrink-0;\n    cursor: col-resize;\n    background: transparent;\n    width: 10px;\n  }\n\n  .resize::before {\n    content: '';\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 50%;\n    width: 1px;\n    background: var(--panel-divider-color, #374151);\n    transform: translateX(-50%);\n    transition: width 0.15s ease;\n  }\n\n  .resize[data-direction=\"vertical\"] {\n    cursor: row-resize;\n    height: 10px;\n  }\n\n  .resize[data-direction=\"vertical\"]::before {\n    top: 50%;\n    bottom: auto;\n    left: 0;\n    right: 0;\n    width: auto;\n    height: 1px;\n    transform: translateY(-50%);\n  }\n\n  .resize:hover::before,\n  .resize[data-resizing=\"true\"]::before { width: 2px; }\n\n  .resize[data-direction=\"vertical\"]:hover::before,\n  .resize[data-direction=\"vertical\"][data-resizing=\"true\"]::before {\n    width: auto;\n    height: 2px;\n  }\n\n  /* Spacing variants */\n  .spacingNone,\n  .spacing-none { gap: 0; }\n\n  .spacingSm,\n  .spacing-sm { gap: var(--spacing-sm, 0.5rem); }\n\n  .spacingMd,\n  .spacing-md { gap: var(--spacing-md, 1rem); }\n\n  .spacingLg,\n  .spacing-lg { gap: var(--spacing-lg, 1.5rem); }\n\n  /* Compact variant */\n  .compact {\n    gap: calc(var(--spacing-sm, 0.5rem) / 2);\n  }\n\n  /* Responsive stacking (mobile) */\n  @media (max-width: 767px) {\n    .stacked { flex-direction: column; }\n  }\n}\n",
@@ -1118,7 +1060,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ]
   },
   "group": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .group {\n    --layout-radius-size: calc(var(--spacing) * 1.5);\n    --layout-padding-size: var(--layout-radius-size);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-border-width: var(--border-width-base, 1px);\n    --background-inner-radius: calc(var(--background-radius) - var(--background-border-width));\n    --layout-text-height: calc(0.8em * var(--leading-tight, 1.25));\n    --layout-vertical-spacing: calc(var(--spacing) * 4);\n    --layout-border-height: calc(var(--background-border-width) * 2);\n    --layout-padding-height: calc(var(--layout-padding-size) * 2);\n    --layout-control-height: calc(\n      var(--layout-text-height) +\n      var(--layout-vertical-spacing) +\n      var(--layout-border-height)\n    );\n    --item-height: max(\n      calc(\n        var(--layout-control-height) -\n        var(--layout-padding-height) -\n        var(--layout-border-height)\n      ),\n      0px\n    );\n\n    @apply flex overflow-hidden shrink-0 box-border;\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    border: var(--background-border-width) solid var(--background-border, transparent);\n    border-radius: var(--background-radius);\n    padding: var(--layout-padding-size);\n\n    &.horizontal {\n      @apply flex-row items-stretch;\n      height: var(--layout-control-height);\n\n      .item.divider {\n        margin-block: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        height: 100%;\n      }\n    }\n\n    &.vertical {\n      @apply flex-col;\n\n      .item .button {\n        @apply w-full;\n      }\n\n      .item.divider {\n        margin-inline: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        width: 100%;\n      }\n    }\n\n    &.none {\n      --layout-padding-size: 0px;\n      @apply gap-0;\n    }\n\n    &.xs {\n      --layout-radius-size: calc(var(--spacing) * 0.875);\n      @apply space-x-0.5;\n    }\n\n    &.sm {\n      --layout-radius-size: calc(var(--spacing) * 1.25);\n      @apply space-x-1;\n    }\n\n  }\n\n  .item {\n    @apply flex items-stretch;\n    position: relative;\n    isolation: isolate;\n    border-radius: var(--group-item-radius, 0);\n    overflow: visible;\n\n    &.grow {\n      flex: 1;\n    }\n\n    &.divider {\n      @apply p-0 shrink-0 flex-none;\n\n      > [role=\"separator\"] {\n        flex: 0 0 auto;\n      }\n    }\n  }\n\n  :is(.button, .input, .select) {\n    height: 100%;\n    min-height: var(--item-height);\n    position: relative;\n    isolation: isolate;\n    overflow: visible;\n  }\n\n  .button {\n    @apply flex box-border;\n    width: auto;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    &[data-selected=\"true\"] {\n      @apply relative;\n      background-color: var(--button-selected-background, var(--background-800));\n      color: var(--button-selected-foreground, var(--foreground-100));\n    }\n  }\n\n  .input {\n    @apply flex flex-1 items-stretch overflow-visible;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    > [data-ring=\"true\"] {\n      border-radius: inherit;\n    }\n\n    input {\n      @apply h-full px-2;\n    }\n  }\n\n  .select {\n    @apply flex items-stretch p-0 bg-transparent border-none;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .trigger {}\n\n  .group {\n    .item :is(.button, .select) {\n      border: none;\n    }\n\n    .button[data-selected=\"true\"] {\n      font-weight: 500;\n    }\n\n    .input {\n      --border-width-base: 0px;\n      --background-border: transparent;\n      --background-focused-border: transparent;\n    }\n\n    &.none {\n      .item:not(.divider) {\n        overflow: hidden;\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: 0;\n        --background-radius: 0;\n        --background-inner-radius: 0;\n      }\n\n      .input {\n        --radius-sm: 0;\n      }\n\n      .item:first-child {\n        --group-item-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n      }\n\n      .item:last-child {\n        --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n      }\n\n      &.horizontal {\n        .item:first-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-bottom-left-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child .trigger .icon-section {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n\n      &.vertical {\n        .item:first-child {\n          --group-item-radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;\n        }\n\n        .item:last-child {\n          --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);\n        }\n\n        .item:first-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-top-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-bottom-left-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n    }\n\n    &:is(.xs, .sm) {\n      .item {\n        --group-item-radius: var(--background-inner-radius);\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: var(--background-inner-radius);\n      }\n\n      .input {\n        --radius-sm: var(--background-inner-radius);\n      }\n    }\n  }\n\n  .group [data-ring=\"true\"] {\n    --ring-shadow: none;\n    --ring-border: transparent;\n    --ring-border-visible: transparent;\n  }\n\n  .group :global(.focus-indicator) {\n    display: none;\n  }\n\n  :is(.button[data-focus-visible=\"true\"], .trigger[data-focus-visible=\"true\"]) {\n    @apply outline-none;\n    box-shadow: none;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .group {\n    --layout-radius-size: calc(var(--spacing) * 1.5);\n    --layout-padding-size: var(--layout-radius-size);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-border-width: var(--border-width-base, 1px);\n    --background-inner-radius: calc(var(--background-radius) - var(--background-border-width));\n    --layout-text-height: calc(0.8em * var(--leading-tight, 1.25));\n    --layout-vertical-spacing: calc(var(--spacing) * 4);\n    --layout-border-height: calc(var(--background-border-width) * 2);\n    --layout-padding-height: calc(var(--layout-padding-size) * 2);\n    --layout-control-height: calc(\n      var(--layout-text-height) +\n      var(--layout-vertical-spacing) +\n      var(--layout-border-height)\n    );\n    --item-height: max(\n      calc(\n        var(--layout-control-height) -\n        var(--layout-padding-height) -\n        var(--layout-border-height)\n      ),\n      0px\n    );\n\n    @apply flex overflow-hidden shrink-0 box-border;\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    border: var(--background-border-width) solid var(--background-border, transparent);\n    border-radius: var(--background-radius);\n    padding: var(--layout-padding-size);\n\n    &.horizontal {\n      @apply flex-row items-stretch;\n      height: var(--layout-control-height);\n\n      .item.divider {\n        margin-block: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        height: 100%;\n      }\n    }\n\n    &.vertical {\n      @apply flex-col;\n\n      .item .button {\n        @apply w-full;\n      }\n\n      .item.divider {\n        margin-inline: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        width: 100%;\n      }\n    }\n\n    &.none {\n      --layout-padding-size: 0px;\n      @apply gap-0;\n    }\n\n    &.xs {\n      --layout-radius-size: calc(var(--spacing) * 0.875);\n      @apply space-x-0.5;\n    }\n\n    &.sm {\n      --layout-radius-size: calc(var(--spacing) * 1.25);\n      @apply space-x-1;\n    }\n\n  }\n\n  .item {\n    @apply flex items-stretch;\n    position: relative;\n    isolation: isolate;\n    border-radius: var(--group-item-radius, 0);\n    overflow: visible;\n\n    &.grow {\n      flex: 1;\n    }\n\n    &.divider {\n      @apply p-0 shrink-0 flex-none;\n\n      > [role=\"separator\"] {\n        flex: 0 0 auto;\n      }\n    }\n  }\n\n  :is(.button, .input, .select, .expand) {\n    height: 100%;\n    min-height: var(--item-height);\n    position: relative;\n    isolation: isolate;\n    overflow: visible;\n  }\n\n  .button {\n    @apply flex box-border;\n    width: auto;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    &[data-selected=\"true\"] {\n      @apply relative;\n      background-color: var(--button-selected-background, var(--background-800));\n      color: var(--button-selected-foreground, var(--foreground-100));\n    }\n  }\n\n  .input {\n    @apply flex flex-1 items-stretch overflow-visible;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    > [data-ring=\"true\"] {\n      border-radius: inherit;\n    }\n\n    input {\n      @apply h-full px-2;\n    }\n  }\n\n  .select {\n    @apply flex items-stretch p-0 bg-transparent border-none;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .expand {\n    @apply flex items-stretch;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .expand :global(.expand-scope),\n  .expand :global(.expand) {\n    @apply flex w-full h-full;\n  }\n\n  .expand :global(.expand) {\n    @apply flex-col;\n    border-radius: inherit;\n  }\n\n  .expand :global(.trigger) {\n    @apply min-h-0;\n    border-radius: inherit;\n  }\n\n  .trigger {}\n\n  .group {\n    .item :is(.button, .select) {\n      border: none;\n    }\n\n    .button[data-selected=\"true\"] {\n      font-weight: 500;\n    }\n\n    .input {\n      --border-width-base: 0px;\n      --background-border: transparent;\n      --background-focused-border: transparent;\n    }\n\n    &.none {\n      .item:not(.divider) {\n        overflow: hidden;\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: 0;\n        --background-radius: 0;\n        --background-inner-radius: 0;\n      }\n\n      .input {\n        --radius-sm: 0;\n      }\n\n      .item:first-child {\n        --group-item-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n      }\n\n      .item:last-child {\n        --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n      }\n\n      &.horizontal {\n        .item:first-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-bottom-left-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child .trigger .icon-section {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n\n      &.vertical {\n        .item:first-child {\n          --group-item-radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;\n        }\n\n        .item:last-child {\n          --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);\n        }\n\n        .item:first-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-top-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-bottom-left-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n    }\n\n    &:is(.xs, .sm) {\n      .item {\n        --group-item-radius: var(--background-inner-radius);\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: var(--background-inner-radius);\n      }\n\n      .input {\n        --radius-sm: var(--background-inner-radius);\n      }\n    }\n  }\n\n  .group [data-ring=\"true\"] {\n    --ring-shadow: none;\n    --ring-border: transparent;\n    --ring-border-visible: transparent;\n  }\n\n  .group :global(.focus-indicator) {\n    display: none;\n  }\n\n  .group [data-focus-indicator=\"local\"] {\n    display: none;\n  }\n\n  :is(.button[data-focus-visible=\"true\"], .trigger[data-focus-visible=\"true\"]) {\n    @apply outline-none;\n    box-shadow: none;\n  }\n}\n",
     "styleableParts": [
       {
         "name": "root"
@@ -1143,6 +1085,9 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
       },
       {
         "name": "select"
+      },
+      {
+        "name": "expand"
       }
     ],
     "cssVariables": [
@@ -1394,34 +1339,6 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
       }
     ]
   },
-  "gallery": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .item {\n    @apply flex flex-col border overflow-hidden no-underline cursor-pointer;\n\n    background: var(--background);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-sm, 0.375rem);\n\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    color: inherit;\n  }\n\n  .item:focus {\n    outline: none;\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    box-shadow: 0 0 0 1.5px var(--focus-visible);\n    outline: none;\n  }\n\n  .item[data-hovered=\"true\"] {\n    border-color: var(--background-hover-border);\n  }\n\n  .item[data-pressed=\"true\"] {\n    border-color: var(--background-pressed-border, var(--background-hover-border, var(--background-border)));\n  }\n\n  .item[data-orientation=\"horizontal\"] {\n    @apply flex-row;\n  }\n\n  .item[data-orientation=\"horizontal\"] .view {\n    width: var(--gallery-horizontal-view-width, 200px);\n  }\n\n  .view {\n    --aspect-ratio: var(--gallery-aspect-ratio, 16/9);\n\n    @apply relative overflow-hidden;\n    aspect-ratio: var(--aspect-ratio);\n    background: var(--background, transparent);\n  }\n\n  .view > img,\n  .view > video {\n    @apply w-full h-full object-cover;\n  }\n\n  .body {\n    @apply flex flex-col gap-1 p-3 self-start min-w-0;\n  }\n\n  .item[data-orientation=\"horizontal\"] .body {\n    flex: 1;\n    align-self: stretch;\n  }\n\n  .body > :first-child {\n    font-weight: var(--font-weight-medium, 500);\n    color: var(--foreground);\n  }\n\n  .body > :not(:first-child) {\n    font-size: var(--text-sm, 0.875rem);\n    color: var(--foreground-muted, var(--foreground));\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "item"
-      },
-      {
-        "name": "view"
-      },
-      {
-        "name": "body"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--aspect-ratio",
-        "value": "var(--gallery-aspect-ratio, 16/9)",
-        "defaultValue": "16/9",
-        "referencedVars": [
-          "--gallery-aspect-ratio"
-        ],
-        "variant": ".view"
-      }
-    ]
-  },
   "grid": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .grid {\n    --background: transparent;\n    --foreground: inherit;\n\n    @apply grid w-full;\n    background-color: var(--background);\n    color: var(--foreground);\n    grid-template-columns: var(--grid-tpl, repeat(3, 1fr));\n    grid-template-rows: var(--grid-rows, auto);\n    gap: var(--grid-gap, calc(var(--spacing, 0.25rem) * 4));\n    justify-items: var(--grid-ji, stretch);\n    align-items: var(--grid-ai, stretch);\n    justify-content: var(--grid-jc, start);\n    align-content: var(--grid-ac, start);\n    grid-auto-flow: var(--grid-flow, row);\n  }\n\n  .container {\n    container-type: inline-size;\n    container-name: grid-ctx;\n  }\n\n  .grid.responsive-cols {\n    grid-template-columns: var(--grid-tpl-sm, 1fr);\n  }\n\n  @media (min-width: 640px) {\n    .grid.responsive-cols {\n      grid-template-columns: var(--grid-tpl-md, var(--grid-tpl-sm, 1fr));\n    }\n  }\n\n  @media (min-width: 1024px) {\n    .grid.responsive-cols {\n      grid-template-columns: var(--grid-tpl-lg, var(--grid-tpl-md, var(--grid-tpl-sm, 1fr)));\n    }\n  }\n\n  @media (min-width: 1280px) {\n    .grid.responsive-cols {\n      grid-template-columns: var(--grid-tpl-xl, var(--grid-tpl-lg, var(--grid-tpl-md, var(--grid-tpl-sm, 1fr))));\n    }\n  }\n\n  .grid.responsive-gap {\n    gap: var(--grid-gap-sm, calc(var(--spacing, 0.25rem) * 2));\n  }\n\n  @media (min-width: 640px) {\n    .grid.responsive-gap {\n      gap: var(--grid-gap-md, var(--grid-gap-sm, calc(var(--spacing, 0.25rem) * 4)));\n    }\n  }\n\n  @media (min-width: 1024px) {\n    .grid.responsive-gap {\n      gap: var(--grid-gap-lg, var(--grid-gap-md, var(--grid-gap-sm, calc(var(--spacing, 0.25rem) * 4))));\n    }\n  }\n\n  @media (min-width: 1280px) {\n    .grid.responsive-gap {\n      gap: var(--grid-gap-xl, var(--grid-gap-lg, var(--grid-gap-md, var(--grid-gap-sm, calc(var(--spacing, 0.25rem) * 4)))));\n    }\n  }\n\n  .grid.responsive-rows {\n    grid-template-rows: var(--grid-rows-sm, auto);\n  }\n\n  @media (min-width: 640px) {\n    .grid.responsive-rows {\n      grid-template-rows: var(--grid-rows-md, var(--grid-rows-sm, auto));\n    }\n  }\n\n  @media (min-width: 1024px) {\n    .grid.responsive-rows {\n      grid-template-rows: var(--grid-rows-lg, var(--grid-rows-md, var(--grid-rows-sm, auto)));\n    }\n  }\n\n  @media (min-width: 1280px) {\n    .grid.responsive-rows {\n      grid-template-rows: var(--grid-rows-xl, var(--grid-rows-lg, var(--grid-rows-md, var(--grid-rows-sm, auto))));\n    }\n  }\n\n  .grid.has-row-gap { row-gap: var(--grid-row-gap); }\n  .grid.has-col-gap { column-gap: var(--grid-col-gap); }\n\n  @container grid-ctx (width < 400px) {\n    .container .grid {\n      grid-template-columns: 1fr;\n      gap: calc(var(--spacing, 0.25rem) * 2);\n    }\n  }\n}\n",
     "styleableParts": [
@@ -1443,6 +1360,107 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
         "defaultValue": null,
         "referencedVars": [],
         "variant": ".grid"
+      }
+    ]
+  },
+  "gallery": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .item-scope {\n    @apply block min-w-0;\n  }\n\n  .item {\n    --border-width: var(--border-width-base, 1px);\n    --radius: var(--radius-sm, 0.375rem);\n    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    --view-width: 200px;\n\n    @apply flex flex-col overflow-hidden no-underline cursor-pointer w-full;\n\n    color: inherit;\n    background: var(--background);\n    border: var(--border-width) solid var(--background-border);\n    border-radius: var(--radius);\n    transition:\n      border-color var(--transition),\n      transform var(--transition),\n      background-color var(--transition),\n      box-shadow var(--transition);\n  }\n\n  .item:focus {\n    outline: none;\n  }\n\n  .item[data-disabled=\"true\"] {\n    @apply cursor-not-allowed;\n  }\n\n  .item[data-hovered=\"true\"] {\n    border-color: var(--background-hover-border);\n  }\n\n  .item[data-pressed=\"true\"] {\n    border-color: var(--background-pressed-border, var(--background-hover-border));\n  }\n\n  .item[data-orientation=\"horizontal\"] {\n    @apply flex-row;\n  }\n\n  .item[data-orientation=\"horizontal\"] .view {\n    width: var(--view-width);\n  }\n\n  .view {\n    --aspect-ratio: 16/9;\n    --background: transparent;\n\n    @apply relative overflow-hidden;\n\n    aspect-ratio: var(--aspect-ratio);\n    background: var(--background);\n  }\n\n  .view > img,\n  .view > video {\n    @apply w-full h-full object-cover;\n  }\n\n  .body {\n    --gap: calc(var(--spacing, 0.25rem) * 1);\n    --padding: calc(var(--spacing, 0.25rem) * 3);\n    --title-color: var(--foreground);\n    --description-color: var(--foreground-muted, var(--foreground));\n\n    @apply flex flex-col self-start min-w-0;\n\n    gap: var(--gap);\n    padding: var(--padding);\n  }\n\n  .item[data-orientation=\"horizontal\"] .body {\n    flex: 1;\n    align-self: stretch;\n  }\n\n  .body > :first-child {\n    color: var(--title-color);\n    font-weight: var(--font-weight-medium, 500);\n  }\n\n  .body > :not(:first-child) {\n    color: var(--description-color);\n    font-size: var(--text-sm, 0.875rem);\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "item"
+      },
+      {
+        "name": "view"
+      },
+      {
+        "name": "body"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--border-width",
+        "value": "var(--border-width-base, 1px)",
+        "defaultValue": "1px",
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "variant": ".item"
+      },
+      {
+        "name": "--radius",
+        "value": "var(--radius-sm, 0.375rem)",
+        "defaultValue": "0.375rem",
+        "referencedVars": [
+          "--radius-sm"
+        ],
+        "variant": ".item"
+      },
+      {
+        "name": "--transition",
+        "value": "0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".item"
+      },
+      {
+        "name": "--view-width",
+        "value": "200px",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".item"
+      },
+      {
+        "name": "--aspect-ratio",
+        "value": "16/9",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".view"
+      },
+      {
+        "name": "--background",
+        "value": "transparent",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".view"
+      },
+      {
+        "name": "--gap",
+        "value": "calc(var(--spacing, 0.25rem) * 1)",
+        "defaultValue": "0.25rem",
+        "referencedVars": [
+          "--spacing"
+        ],
+        "variant": ".body"
+      },
+      {
+        "name": "--padding",
+        "value": "calc(var(--spacing, 0.25rem) * 3)",
+        "defaultValue": "0.25rem",
+        "referencedVars": [
+          "--spacing"
+        ],
+        "variant": ".body"
+      },
+      {
+        "name": "--title-color",
+        "value": "var(--foreground)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--foreground"
+        ],
+        "variant": ".body"
+      },
+      {
+        "name": "--description-color",
+        "value": "var(--foreground-muted, var(--foreground))",
+        "defaultValue": "var(--foreground",
+        "referencedVars": [
+          "--foreground-muted"
+        ],
+        "variant": ".body"
       }
     ]
   },
@@ -1484,7 +1502,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     "cssVariables": []
   },
   "expand": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .expand {\n    --disabled-opacity: 0.6;\n\n    @apply flex flex-col;\n  }\n\n  .expand[data-disabled] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .trigger {\n    @apply flex w-full items-stretch justify-between p-0 text-left cursor-pointer;\n\n    font-size: var(--text-sm);\n    line-height: var(--leading-snug);\n    color: var(--foreground);\n    background-color: var(--background);\n\n    border: none;\n    border-radius: var(--radius-sm);\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n\n    &[data-disabled] {\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity);\n    }\n  }\n\n  .icon {\n    @apply flex shrink-0 items-center justify-center px-3 py-2;\n    color: inherit;\n    border-radius: var(--radius-sm);\n\n    @media (hover: hover) {\n      .trigger:not([data-disabled]):hover & {\n        background-color: var(--background-hover);\n        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;\n      }\n\n      /* When the icon itself is hovered, it should be isolated and fully rounded */\n      .trigger:not([data-disabled]) &:hover {\n        border-radius: var(--radius-sm);\n      }\n    }\n  }\n\n  .icon > * {\n    transition: transform 250ms var(--ease-smooth-settle);\n  }\n\n  .expand:has(.trigger[data-expanded=\"true\"]) .icon > *,\n  .icon[data-expanded=\"true\"] > * {\n    transform: rotate(180deg);\n  }\n\n  /* from=\"above\": content expands upward above the trigger */\n  .expand:has(.content[data-from=\"above\"]) {\n    flex-direction: column-reverse;\n\n    .icon > * {\n      transform: rotate(180deg);\n    }\n\n    &:has(.trigger[data-expanded=\"true\"]) .icon > * {\n      transform: rotate(0deg);\n    }\n  }\n\n  /* from=\"left\": content appears left of trigger */\n  .expand:has(.content[data-from=\"left\"]) {\n    @apply flex-row-reverse items-start;\n\n    .trigger {\n      @apply w-auto flex-col;\n    }\n\n    .icon > * {\n      transform: rotate(-90deg);\n    }\n\n    &:has(.trigger[data-expanded=\"true\"]) .icon > * {\n      transform: rotate(90deg);\n    }\n  }\n\n  /* from=\"right\": content appears right of trigger */\n  .expand:has(.content[data-from=\"right\"]) {\n    @apply flex-row items-start;\n\n    .trigger {\n      @apply w-auto flex-col;\n    }\n\n    .icon > * {\n      transform: rotate(90deg);\n    }\n\n    &:has(.trigger[data-expanded=\"true\"]) .icon > * {\n      transform: rotate(-90deg);\n    }\n  }\n\n  /* Horizontal content animation */\n  .content[data-from=\"left\"],\n  .content[data-from=\"right\"] {\n    grid-template-rows: 1fr;\n    grid-template-columns: 0fr;\n    transition: grid-template-columns 300ms var(--ease-smooth-settle);\n\n    &[data-expanded=\"true\"] {\n      grid-template-columns: 1fr;\n    }\n\n    .content-inner {\n      min-height: unset;\n      min-width: 0;\n    }\n  }\n\n  .title {\n    @apply flex flex-1 min-w-0 items-center overflow-hidden py-2 pl-3;\n\n    font-weight: var(--font-weight-medium);\n    border-radius: var(--radius-sm) 0 0 var(--radius-sm);\n    color: inherit;\n\n    @media (hover: hover) {\n      .trigger:not([data-disabled]):hover & {\n        background-color: var(--background-hover);\n      }\n\n      /* When icon is hovered, remove background from title */\n      .trigger:not([data-disabled]):has(.icon:hover) & {\n        background-color: transparent;\n      }\n    }\n\n    .trigger:not([data-disabled]) {\n      background-color: transparent;\n    }\n  }\n\n  .content {\n    @apply grid overflow-hidden;\n    grid-template-rows: 0fr;\n    transition: grid-template-rows 300ms var(--ease-smooth-settle);\n\n    &[data-expanded=\"true\"] {\n      grid-template-rows: 1fr;\n    }\n  }\n\n  .content-inner {\n    @apply min-h-0 overflow-hidden;\n    color: var(--foreground-content);\n    background-color: var(--background-content);\n  }\n\n  .expand:has(.trigger[data-disabled]) {\n    pointer-events: none;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .scope {\n    position: relative;\n    display: block;\n    width: 100%;\n  }\n\n  .expand {\n    --expand-disabled-opacity: 0.6;\n    --expand-trigger-padding-x: 0.75rem;\n    --expand-trigger-padding-y: 0.5rem;\n    --expand-divider-spacing: 0.5rem;\n\n    @apply flex w-full flex-col;\n  }\n\n  .expand[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--expand-disabled-opacity);\n  }\n\n  .trigger {\n    @apply flex w-full items-stretch justify-between border-0 p-0 text-left;\n\n    appearance: none;\n    color: var(--foreground);\n    background-color: var(--background);\n    cursor: pointer;\n    border-radius: 0;\n    font-size: var(--text-sm);\n    line-height: var(--leading-snug);\n    outline: none;\n    box-shadow: none;\n    transition:\n      background-color 200ms var(--ease-smooth-settle),\n      opacity 200ms var(--ease-smooth-settle)\n  }\n\n  .trigger:focus,\n  .trigger:focus-visible {\n    outline: none;\n    box-shadow: none;\n  }\n\n  .trigger[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--expand-disabled-opacity);\n  }\n\n  .title {\n    @apply flex min-w-0 flex-1 items-center overflow-hidden;\n\n    padding: var(--expand-trigger-padding-y) 0 var(--expand-trigger-padding-y)\n      var(--expand-trigger-padding-x);\n    font-weight: var(--font-weight-medium);\n    border-radius: 0;\n    color: inherit;\n    background-color: transparent;\n  }\n\n  .trigger:not([data-disabled=\"true\"]):has(.icon:hover) .title {\n    background-color: transparent;\n  }\n\n  .icon {\n    @apply flex shrink-0 items-center justify-center;\n\n    padding: var(--expand-trigger-padding-y) var(--expand-trigger-padding-x);\n    color: inherit;\n    border-radius: 0;\n  }\n\n  @media (hover: hover) {\n    .trigger:not([data-disabled=\"true\"]):hover .title,\n    .trigger:not([data-disabled=\"true\"]):hover .icon {\n      background-color: var(--background-hover);\n    }\n\n    .trigger:not([data-disabled=\"true\"]):has(.icon:hover) .title {\n      background-color: transparent;\n    }\n\n    .trigger:not([data-disabled=\"true\"]) .icon:hover {\n      border-radius: 0;\n    }\n  }\n\n  .icon > * {\n    transition: transform 250ms var(--ease-smooth-settle);\n  }\n\n  .icon[data-selected=\"true\"] > * {\n    transform: rotate(180deg);\n  }\n\n  .expand:has(.content[data-from=\"above\"]) {\n    flex-direction: column-reverse;\n  }\n\n  .expand:has(.content[data-from=\"above\"]) .icon > * {\n    transform: rotate(180deg);\n  }\n\n  .expand:has(.content[data-from=\"above\"]) .icon[data-selected=\"true\"] > * {\n    transform: rotate(0deg);\n  }\n\n  .expand:has(.content[data-from=\"left\"]) {\n    @apply flex-row-reverse items-start;\n  }\n\n  .expand:has(.content[data-from=\"left\"]) .trigger {\n    @apply w-auto flex-col;\n  }\n\n  .expand:has(.content[data-from=\"left\"]) .icon > * {\n    transform: rotate(-90deg);\n  }\n\n  .expand:has(.content[data-from=\"left\"]) .icon[data-selected=\"true\"] > * {\n    transform: rotate(90deg);\n  }\n\n  .expand:has(.content[data-from=\"right\"]) {\n    @apply flex-row items-start;\n  }\n\n  .expand:has(.content[data-from=\"right\"]) .trigger {\n    @apply w-auto flex-col;\n  }\n\n  .expand:has(.content[data-from=\"right\"]) .icon > * {\n    transform: rotate(90deg);\n  }\n\n  .expand:has(.content[data-from=\"right\"]) .icon[data-selected=\"true\"] > * {\n    transform: rotate(-90deg);\n  }\n\n  .content {\n    display: grid;\n    overflow: hidden;\n    grid-template-rows: 0fr;\n    transition: grid-template-rows 300ms var(--ease-smooth-settle);\n  }\n\n  .content[data-selected=\"true\"] {\n    grid-template-rows: 1fr;\n  }\n\n  .content[data-from=\"left\"],\n  .content[data-from=\"right\"] {\n    grid-template-rows: 1fr;\n    grid-template-columns: 0fr;\n    transition: grid-template-columns 300ms var(--ease-smooth-settle);\n  }\n\n  .content[data-from=\"left\"][data-selected=\"true\"],\n  .content[data-from=\"right\"][data-selected=\"true\"] {\n    grid-template-columns: 1fr;\n  }\n\n  .content-inner {\n    @apply min-h-0 overflow-hidden;\n\n    min-width: 0;\n    color: var(--foreground-content);\n    background-color: var(--background-content);\n  }\n\n  .divider {\n    margin-top: var(--expand-divider-spacing);\n  }\n}\n",
     "styleableParts": [
       {
         "name": "root"
@@ -1493,13 +1511,49 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
         "name": "trigger"
       },
       {
+        "name": "icon.collapsed"
+      },
+      {
+        "name": "icon.expanded"
+      },
+      {
+        "name": "title"
+      },
+      {
         "name": "content"
+      },
+      {
+        "name": "contentInner"
+      },
+      {
+        "name": "divider"
       }
     ],
     "cssVariables": [
       {
-        "name": "--disabled-opacity",
+        "name": "--expand-disabled-opacity",
         "value": "0.6",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".expand"
+      },
+      {
+        "name": "--expand-trigger-padding-x",
+        "value": "0.75rem",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".expand"
+      },
+      {
+        "name": "--expand-trigger-padding-y",
+        "value": "0.5rem",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".expand"
+      },
+      {
+        "name": "--expand-divider-spacing",
+        "value": "0.5rem",
         "defaultValue": null,
         "referencedVars": [],
         "variant": ".expand"
@@ -1838,6 +1892,52 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
       }
     ]
   },
+  "code": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .code {\n    --border-color: var(--background-700);\n    --header-bg: mix(var(--background-900) 90%, transparent);\n    --scroll-track-bg: mix(var(--background-950) 50%, transparent);\n\n    max-height: 52.5rem;\n    border-radius: var(--radius-sm);\n    border: 1px solid var(--border-color);\n    @apply flex w-full min-w-0 flex-col overflow-hidden;\n  }\n\n  .header {\n    flex: none;\n    background-color: var(--header-bg);\n    @apply flex items-center justify-between px-3 py-1.5;\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-semibold);\n    border-bottom: 1px solid var(--border-color);\n    color: var(--foreground-400);\n  }\n\n\n  .body {\n    @apply relative flex min-h-0 flex-1 flex-col;\n    flex: 1;\n  }\n\n  .viewport { @apply overflow-hidden; }\n\n  .viewport :global(pre) {\n    background: transparent;\n    @apply m-0 p-0;\n    width: fit-content;\n  }\n\n  .viewport :global(code) {\n    color: var(--foreground-300);\n    white-space: pre;\n  }\n\n  .viewport::-webkit-scrollbar {\n    width: 0.5rem;\n  }\n\n  .viewport::-webkit-scrollbar-track {\n    background: transparent;\n  }\n\n  .viewport::-webkit-scrollbar-thumb {\n    background: var(--background-700);\n    border-radius: 9999px;\n  }\n\n  .viewport::-webkit-scrollbar-thumb:hover {\n    background: var(--background-600);\n  }\n\n  .scroll-track {\n    flex: none;\n    @apply w-full;\n    overflow-x: auto;\n    background-color: var(--scroll-track-bg);\n    backdrop-filter: blur(4px);\n  }\n\n  .expand-button {\n    @apply flex w-full items-center gap-3 px-4 py-2 cursor-pointer;\n    color: var(--foreground-300);\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-medium);\n    transition: background-color 0.15s ease-out;\n    border-top: 1px solid var(--border-color);\n    background: transparent;\n    border-left: none;\n    border-right: none;\n    border-bottom: none;\n    font-family: inherit;\n  }\n\n  .expand-button:hover { background-color: var(--background-800); }\n\n  .expand-icon { @apply shrink-0; color: var(--foreground-400); }\n\n  .copy-button {\n    @apply absolute right-2 top-2 flex items-center justify-center p-1 cursor-pointer;\n    border-radius: var(--radius-sm);\n    color: var(--foreground-400);\n    opacity: 0;\n    transition: opacity 0.15s ease-out, background-color 0.15s ease-out, color 0.15s ease-out;\n    background: transparent;\n    border: none;\n    z-index: 1;\n  }\n\n  .copy-button:hover { background-color: var(--background-800); color: var(--foreground-300); }\n\n  .copy-button:focus, .body:hover .copy-button { opacity: 1; }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "header"
+      },
+      {
+        "name": "body"
+      },
+      {
+        "name": "viewport"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--border-color",
+        "value": "var(--background-700)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--background-700"
+        ],
+        "variant": ".code"
+      },
+      {
+        "name": "--header-bg",
+        "value": "mix(var(--background-900) 90%, transparent)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--background-900"
+        ],
+        "variant": ".code"
+      },
+      {
+        "name": "--scroll-track-bg",
+        "value": "mix(var(--background-950) 50%, transparent)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--background-950"
+        ],
+        "variant": ".code"
+      }
+    ]
+  },
   "color": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --background-border: var(--background-700);\n    --focus-visible: var(--accent-500);\n\n    display: flex;\n    flex-direction: column;\n    gap: 1rem;\n    background-color: var(--background);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-sm, 0.375rem);\n    width: 260px;\n  }\n\n  .color[data-disabled=\"true\"] {\n    opacity: 0.5;\n    pointer-events: none;\n  }\n\n  .controls {\n    @apply pb-3 px-3 space-y-3;\n  }\n\n  .input-group {\n    width: 100%;\n  }\n\n  .input-group > div:first-child {\n    flex: 1;\n    min-width: 0;\n  }\n\n  .input {\n    width: 100%;\n  }\n\n  .format {\n    flex-shrink: 0;\n    width: 85px;\n  }\n\n  .color[data-size=\"sm\"] .format {\n    width: 75px;\n  }\n\n  .canvas {\n    position: relative;\n    width: 96%;\n    @apply mx-auto mt-2;\n    cursor: crosshair;\n    touch-action: none;\n    display: flex;\n    flex-direction: column;\n    min-height: 160px;\n  }\n\n  .canvas[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .canvas-inner {\n    position: relative;\n    width: 100%;\n    flex: 1;\n    overflow: hidden;\n  }\n\n  .canvas-gradient-hue {\n    position: absolute;\n    inset: 0;\n    overflow: hidden;\n  }\n\n  .canvas-gradient-saturation {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to right, rgb(255, 255, 255), transparent);\n  }\n\n  .canvas-gradient-brightness {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to top, rgb(0, 0, 0), transparent);\n  }\n\n  .canvas-pointer {\n    --pointer-border: color-mix(in srgb, var(--foreground-200) 50%, transparent);\n\n    position: absolute;\n    width: 12px;\n    height: 12px;\n    border-radius: var(--radius-full);\n    border: 2px solid var(--pointer-border);\n    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 2px 4px rgb(0 0 0 / 0.3);\n    pointer-events: none;\n    transform: translate(-50%, -50%);\n    z-index: 10;\n  }\n\n  .hue-slider {\n    display: flex;\n    align-items: center;\n    height: 16px;\n    border-radius: var(--radius-full);\n    position: relative;\n    cursor: pointer;\n    touch-action: none;\n    overflow: hidden;\n  }\n\n  .hue-track {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    border-radius: var(--radius-full);\n    background: linear-gradient(\n      to right,\n      hsl(0, 100%, 50%),\n      hsl(60, 100%, 50%),\n      hsl(120, 100%, 50%),\n      hsl(180, 100%, 50%),\n      hsl(240, 100%, 50%),\n      hsl(300, 100%, 50%),\n      hsl(360, 100%, 50%)\n    );\n    border: var(--border-width-base, 1px) solid var(--background-border);\n  }\n\n  .hue-thumb {\n    --thumb-border: white;\n    --thumb-background: white;\n\n    position: absolute;\n    width: 12px;\n    height: 12px;\n    border-radius: var(--radius-full);\n    border: 2px solid var(--thumb-border);\n    box-shadow: 0 2px 4px rgb(0 0 0 / 0.3);\n    top: 50%;\n    transform: translateY(-50%) translateX(-50%);\n    background: var(--thumb-background);\n    pointer-events: none;\n  }\n\n  .hue-slider[data-focus-visible=\"true\"] .hue-thumb {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .hue-thumb:hover {\n    box-shadow: 0 2px 6px rgb(0 0 0 / 0.4);\n  }\n\n  .hue-thumb:active {\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);\n  }\n\n  .opacity-slider {\n    display: flex;\n    align-items: center;\n    height: 12px;\n    border-radius: var(--radius-full);\n    position: relative;\n    cursor: pointer;\n    touch-action: none;\n    overflow: hidden;\n  }\n\n  .opacity-track {\n    --checkerboard-dark: var(--background-800);\n    --checkerboard-light: var(--background-700);\n\n    position: relative;\n    width: 100%;\n    height: 100%;\n    border-radius: var(--radius-full);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    overflow: hidden;\n  }\n\n  .opacity-thumb {\n    --thumb-border: white;\n    --thumb-background: white;\n\n    position: absolute;\n    width: 10px;\n    height: 10px;\n    border-radius: var(--radius-full);\n    border: 2px solid var(--thumb-border);\n    box-shadow: 0 2px 4px rgb(0 0 0 / 0.3);\n    top: 50%;\n    transform: translateY(-50%) translateX(-50%);\n    background: var(--thumb-background);\n    pointer-events: none;\n  }\n\n  .opacity-slider[data-focus-visible=\"true\"] .opacity-thumb {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .opacity-thumb:hover {\n    box-shadow: 0 2px 6px rgb(0 0 0 / 0.4);\n  }\n\n  .opacity-thumb:active {\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);\n  }\n\n  .recent-colors {\n    display: flex;\n    gap: 0.5rem;\n    overflow-x: auto;\n    padding-bottom: 0.25rem;\n  }\n\n  .recent-color-swatch {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: var(--radius-sm);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    cursor: pointer;\n    background: none;\n    padding: 0;\n    outline: none;\n  }\n\n  .recent-color-swatch:hover {\n    transform: scale(1.1);\n    box-shadow: 0 0 0 2px var(--focus-visible);\n  }\n\n  .recent-color-swatch:active {\n    transform: scale(0.95);\n  }\n\n  .recent-color-swatch:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .preview-swatch {\n    --checkerboard-dark: var(--background-700);\n    --checkerboard-light: var(--background-800);\n\n    position: relative;\n    width: 36px;\n    height: 36px;\n    border-radius: var(--radius-sm);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);\n    overflow: hidden;\n    flex-shrink: 0;\n  }\n\n  .preview-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      var(--checkerboard-dark),\n      var(--checkerboard-dark) 6px,\n      var(--checkerboard-light) 6px,\n      var(--checkerboard-light) 12px\n    );\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 1;\n  }\n\n  .preview-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 2;\n  }\n\n  .preview {\n    --checkerboard-dark: var(--background-700);\n    --checkerboard-light: var(--background-800);\n\n    position: relative;\n    width: 64px;\n    height: 64px;\n    border-radius: var(--radius-sm);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);\n    overflow: hidden;\n  }\n\n  .preview::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      var(--checkerboard-dark),\n      var(--checkerboard-dark) 10px,\n      var(--checkerboard-light) 10px,\n      var(--checkerboard-light) 20px\n    );\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 1;\n  }\n}\n",
     "styleableParts": [
@@ -2020,52 +2120,6 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
           "--background-800"
         ],
         "variant": ".preview"
-      }
-    ]
-  },
-  "code": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .code {\n    --border-color: var(--background-700);\n    --header-bg: mix(var(--background-900) 90%, transparent);\n    --scroll-track-bg: mix(var(--background-950) 50%, transparent);\n\n    max-height: 52.5rem;\n    border-radius: var(--radius-sm);\n    border: 1px solid var(--border-color);\n    @apply flex w-full min-w-0 flex-col overflow-hidden;\n  }\n\n  .header {\n    flex: none;\n    background-color: var(--header-bg);\n    @apply flex items-center justify-between px-3 py-1.5;\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-semibold);\n    border-bottom: 1px solid var(--border-color);\n    color: var(--foreground-400);\n  }\n\n\n  .body {\n    @apply relative flex min-h-0 flex-1 flex-col;\n    flex: 1;\n  }\n\n  .viewport { @apply overflow-hidden; }\n\n  .viewport :global(pre) {\n    background: transparent;\n    @apply m-0 p-0;\n    width: fit-content;\n  }\n\n  .viewport :global(code) {\n    color: var(--foreground-300);\n    white-space: pre;\n  }\n\n  .viewport::-webkit-scrollbar {\n    width: 0.5rem;\n  }\n\n  .viewport::-webkit-scrollbar-track {\n    background: transparent;\n  }\n\n  .viewport::-webkit-scrollbar-thumb {\n    background: var(--background-700);\n    border-radius: 9999px;\n  }\n\n  .viewport::-webkit-scrollbar-thumb:hover {\n    background: var(--background-600);\n  }\n\n  .scroll-track {\n    flex: none;\n    @apply w-full;\n    overflow-x: auto;\n    background-color: var(--scroll-track-bg);\n    backdrop-filter: blur(4px);\n  }\n\n  .expand-button {\n    @apply flex w-full items-center gap-3 px-4 py-2 cursor-pointer;\n    color: var(--foreground-300);\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-medium);\n    transition: background-color 0.15s ease-out;\n    border-top: 1px solid var(--border-color);\n    background: transparent;\n    border-left: none;\n    border-right: none;\n    border-bottom: none;\n    font-family: inherit;\n  }\n\n  .expand-button:hover { background-color: var(--background-800); }\n\n  .expand-icon { @apply shrink-0; color: var(--foreground-400); }\n\n  .copy-button {\n    @apply absolute right-2 top-2 flex items-center justify-center p-1 cursor-pointer;\n    border-radius: var(--radius-sm);\n    color: var(--foreground-400);\n    opacity: 0;\n    transition: opacity 0.15s ease-out, background-color 0.15s ease-out, color 0.15s ease-out;\n    background: transparent;\n    border: none;\n    z-index: 1;\n  }\n\n  .copy-button:hover { background-color: var(--background-800); color: var(--foreground-300); }\n\n  .copy-button:focus, .body:hover .copy-button { opacity: 1; }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "header"
-      },
-      {
-        "name": "body"
-      },
-      {
-        "name": "viewport"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--border-color",
-        "value": "var(--background-700)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--background-700"
-        ],
-        "variant": ".code"
-      },
-      {
-        "name": "--header-bg",
-        "value": "mix(var(--background-900) 90%, transparent)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--background-900"
-        ],
-        "variant": ".code"
-      },
-      {
-        "name": "--scroll-track-bg",
-        "value": "mix(var(--background-950) 50%, transparent)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--background-950"
-        ],
-        "variant": ".code"
       }
     ]
   },

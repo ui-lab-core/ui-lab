@@ -96,7 +96,7 @@ export function FileBrowser() {
       </div>
 
       <div className="border-b border-background-700 flex items-center gap-2 p-2">
-        <Group spacing="none" variant="ghost" className="justify-between w-full">
+        <Group spacing="none" className="justify-between w-full">
           <Group.Input
             placeholder="Search files..."
             value={state.search}

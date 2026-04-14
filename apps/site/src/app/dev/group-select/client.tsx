@@ -218,7 +218,7 @@ export default function Test() {
         <div className="space-y-6">
           <div>
             <h3 className="text-sm font-semibold mb-3">Tight Spacing (Primary)</h3>
-            <Group orientation="vertical" spacing="none" variant="primary" className="inline-flex rounded border border-border overflow-hidden">
+            <Group orientation="vertical" spacing="none" className="inline-flex rounded border border-border overflow-hidden">
               <Group.Button variant="secondary" size="sm">Button 1</Group.Button>
               <Group.Button variant="secondary" size="sm">Button 2</Group.Button>
               <Group.Button variant="secondary" size="sm">Button 3</Group.Button>
@@ -227,19 +227,19 @@ export default function Test() {
 
           <div>
             <h3 className="text-sm font-semibold mb-3">Normal Spacing (Outline)</h3>
-            <Group orientation="horizontal" spacing="sm" variant="outline">
+            <Group orientation="horizontal" spacing="sm">
               <Group.Button variant="outline" size="md">Option A</Group.Button>
               <Group.Button variant="outline" size="md">Option B</Group.Button>
               <Group.Button variant="outline" size="md">Option C</Group.Button>
             </Group>
-            <Group orientation="vertical" spacing="sm" variant="outline">
+            <Group orientation="vertical" spacing="sm">
               <Group.Button variant="outline" size="md"><FaPencil /></Group.Button>
               <Group.Button variant="outline" size="md"><FaStar /></Group.Button>
               <Group.Button variant="outline" size="md"><FaCircle /></Group.Button>
             </Group>
           </div>
 
-          <Group orientation="horizontal" spacing="sm" variant="ghost">
+          <Group orientation="horizontal" spacing="sm">
             <Group.Button variant="ghost" size="md">Link One</Group.Button>
             <Group.Button variant="ghost" size="md">Link Two</Group.Button>
             <Group.Button variant="ghost" size="md">Link Three</Group.Button>

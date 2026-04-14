@@ -1,5 +1,11 @@
 # ui-lab-registry
 
+## 0.3.44
+
+### Patch Changes
+
+- Add focus indicator infrastructure and improve accessibility across components with style refinements
+
 ## 0.3.43
 
 ### Patch Changes
