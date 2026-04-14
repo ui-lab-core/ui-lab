@@ -74,17 +74,14 @@
       @apply space-x-1;
     }
 
-    &.ghost {
-      @apply gap-1 border-none overflow-visible;
-
-      &.none {
-        @apply gap-0;
-      }
-    }
   }
 
   .item {
     @apply flex items-stretch;
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--group-item-radius, 0);
+    overflow: visible;
 
     &.grow {
       flex: 1;
@@ -99,14 +96,18 @@
     }
   }
 
-  :is(.button, .input, .select) {
+  :is(.button, .input, .select, .expand) {
     height: 100%;
     min-height: var(--item-height);
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
   }
 
   .button {
     @apply flex box-border;
     width: auto;
+    border-radius: var(--group-item-radius, var(--background-inner-radius));
 
     &[data-selected="true"] {
       @apply relative;
@@ -117,6 +118,11 @@
 
   .input {
     @apply flex flex-1 items-stretch overflow-visible;
+    border-radius: var(--group-item-radius, var(--background-inner-radius));
+
+    > [data-ring="true"] {
+      border-radius: inherit;
+    }
 
     input {
       @apply h-full px-2;
@@ -125,9 +131,32 @@
 
   .select {
     @apply flex items-stretch p-0 bg-transparent border-none;
+    border-radius: var(--group-item-radius, var(--background-inner-radius));
   }
 
-  .group:not(.ghost) {
+  .expand {
+    @apply flex items-stretch;
+    border-radius: var(--group-item-radius, var(--background-inner-radius));
+  }
+
+  .expand :global(.expand-scope),
+  .expand :global(.expand) {
+    @apply flex w-full h-full;
+  }
+
+  .expand :global(.expand) {
+    @apply flex-col;
+    border-radius: inherit;
+  }
+
+  .expand :global(.trigger) {
+    @apply min-h-0;
+    border-radius: inherit;
+  }
+
+  .trigger {}
+
+  .group {
     .item :is(.button, .select) {
       border: none;
     }
@@ -140,10 +169,13 @@
       --border-width-base: 0px;
       --background-border: transparent;
       --background-focused-border: transparent;
-      --focus-visible: transparent;
     }
 
     &.none {
+      .item:not(.divider) {
+        overflow: hidden;
+      }
+
       :is(.button, .trigger, .select) {
         border-radius: 0;
         --background-radius: 0;
@@ -152,6 +184,14 @@
 
       .input {
         --radius-sm: 0;
+      }
+
+      .item:first-child {
+        --group-item-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+      }
+
+      .item:last-child {
+        --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
       }
 
       &.horizontal {
@@ -174,9 +214,22 @@
           border-top-right-radius: var(--background-inner-radius);
           border-bottom-right-radius: var(--background-inner-radius);
         }
+
+        .item:last-child .trigger .icon-section {
+          border-top-right-radius: var(--background-inner-radius);
+          border-bottom-right-radius: var(--background-inner-radius);
+        }
       }
 
       &.vertical {
+        .item:first-child {
+          --group-item-radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;
+        }
+
+        .item:last-child {
+          --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);
+        }
+
         .item:first-child :is(
           .button,
           .trigger,
@@ -200,6 +253,10 @@
     }
 
     &:is(.xs, .sm) {
+      .item {
+        --group-item-radius: var(--background-inner-radius);
+      }
+
       :is(.button, .trigger, .select) {
         border-radius: var(--background-inner-radius);
       }
@@ -210,40 +267,22 @@
     }
   }
 
-  .group.ghost {
-    .button[data-selected="true"] {
-      border-radius: var(--background-inner-radius);
-    }
-
-    &:not(.none) .item .button[data-selected="false"] {
-      border-radius: var(--background-inner-radius);
-      border: var(--border-width-base) solid transparent;
-    }
-
-    &.none {
-      :is(.button, .select) {
-        border: none;
-        border-radius: 0;
-        --background-radius: 0;
-        --background-inner-radius: 0;
-      }
-
-      .input {
-        --background-border: transparent;
-        --radius-sm: 0;
-      }
-    }
+  .group [data-ring="true"] {
+    --ring-shadow: none;
+    --ring-border: transparent;
+    --ring-border-visible: transparent;
   }
 
-  :is(.button[data-focus-visible="true"], .trigger[data-focus-visible="true"], .input > [data-focus-visible="true"]) {
-    @apply relative outline-none z-10;
+  .group :global(.focus-indicator) {
+    display: none;
   }
 
-  .group:not(.ghost) :is(.button[data-focus-visible="true"], .trigger[data-focus-visible="true"], .input > [data-focus-visible="true"]) {
-    box-shadow: inset 0 0 0 1px var(--focus-visible, var(--accent-500));
+  .group [data-focus-indicator="local"] {
+    display: none;
   }
 
-  .group.ghost :is(.button[data-focus-visible="true"], .trigger[data-focus-visible="true"], .input > [data-focus-visible="true"]) {
-    box-shadow: 0 0 0 1px var(--focus-visible, var(--accent-500));
+  :is(.button[data-focus-visible="true"], .trigger[data-focus-visible="true"]) {
+    @apply outline-none;
+    box-shadow: none;
   }
 }

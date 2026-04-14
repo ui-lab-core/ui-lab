@@ -53,12 +53,13 @@
   }
 
   .trigger {
-    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 rounded-sm px-2 py-1.5 cursor-pointer select-none;
+    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;
     height: 100%;
     background-color: var(--background);
     border: none;
     color: var(--foreground);
     outline: none;
+    box-shadow: none;
     transition: color 0.15s ease, background-color 0.15s ease;
 
 
@@ -95,9 +96,10 @@
       }
     }
 
-    &[data-focus-visible] {
-      background-color: var(--background-focused);
-      outline: none;
+    &:focus,
+    &:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
     }
 
     &[data-disabled="true"] {
@@ -110,7 +112,7 @@
     .list[data-variant="underline"] & {
       background-color: var(--background);
       background-clip: padding-box;
-      border-radius: var(--radius-xs);
+      border-radius: var(--radius-sm);
       border-bottom: 2px solid transparent;
     }
 
@@ -126,8 +128,10 @@
       background-color: var(--background-selected);
     }
 
-    .list[data-variant="underline"] &[data-focus-visible] {
-      background-color: var(--background-focused);
+    .list[data-variant="underline"] &:focus,
+    .list[data-variant="underline"] &:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
     }
 
     .list[data-variant="underline"][data-orientation="vertical"] & {

@@ -1,6 +1,11 @@
 import * as React from "react";
+import { useFocusRing } from "@react-aria/focus";
+import { useHover } from "@react-aria/interactions";
+import { mergeProps } from "@react-aria/utils";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Tooltip } from "@/components/Tooltip";
 import css from "./Anchor.module.css";
 
@@ -16,6 +21,11 @@ interface AnchorStyleSlots {
 type AnchorStylesProp = StylesProp<AnchorStyleSlots>;
 
 const resolveAnchorBaseStyles = createStylesResolver(['root', 'underline', 'preview'] as const);
+
+function resolveAnchorStyles(styles: AnchorStylesProp | undefined) {
+  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveAnchorBaseStyles(styles);
+  return resolveAnchorBaseStyles(styles);
+}
 const ANCHOR_PREVIEW_DISPLAY_NAME = "Anchor.Preview";
 const ANCHOR_UNDERLINE_DISPLAY_NAME = "Anchor.Underline";
 
@@ -154,11 +164,23 @@ export interface AnchorProps
 
 const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorProps>(
   ({ className, children, href, target = "_blank", styles, preview: previewProp, ...props }, ref) => {
+    const rootRef = React.useRef<HTMLAnchorElement | HTMLSpanElement>(null);
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const { hoverProps, isHovered } = useHover({});
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef: rootRef,
+      containerRef: rootRef,
+      surfaceSelector: '[data-anchor-focus-surface="true"]',
+      radiusSource: "surface",
+      mode: "self",
+    });
+    const mergedRef = useMergeRefs(rootRef, ref);
+
     let previewContent: React.ReactNode = previewProp ?? null;
     let hasUnderline = false;
 
     const childrenArray = React.Children.toArray(children);
-    const resolved = resolveAnchorBaseStyles(styles);
+    const resolved = resolveAnchorStyles(styles);
 
     let filteredChildren: React.ReactNode[] = [];
 
@@ -188,23 +210,39 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
       filteredChildren.push(<AnchorUnderline key="__default_underline" className={resolved.underline} />);
     }
 
+    const { onChange, onChangeCapture, ...otherProps } = props as any;
+    const mergedFocusProps = mergeProps(focusProps, hoverProps) as any;
+    const { onChange: _, onChangeCapture: __, ...safeFocusProps } = mergedFocusProps;
+
     const triggerElement = href ? (
       <a
-        ref={ref as React.Ref<HTMLAnchorElement>}
+        ref={mergedRef as React.Ref<HTMLAnchorElement>}
         href={href}
         target={target}
         rel={target === "_blank" ? "noopener noreferrer" : undefined}
-        className={cn("anchor", css.root, className, resolved.root)}
-        {...props}
+        className={cn("anchor", css.root, className, resolved.root, scopeProps.className)}
+        data-anchor-focus-surface="true"
+        data-focused={isFocused ? "true" : undefined}
+        data-focus-visible={isFocusVisible ? "true" : undefined}
+        data-hovered={isHovered ? "true" : undefined}
+        {...(otherProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        {...(safeFocusProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
+        <span {...indicatorProps} data-focus-indicator="local" aria-hidden="true" />
         {filteredChildren}
       </a>
     ) : (
       <span
-        ref={ref as React.Ref<HTMLSpanElement>}
-        className={cn("anchor", css.root, className, resolved.root)}
-        {...props}
+        ref={mergedRef as React.Ref<HTMLSpanElement>}
+        className={cn("anchor", css.root, className, resolved.root, scopeProps.className)}
+        data-anchor-focus-surface="true"
+        data-focused={isFocused ? "true" : undefined}
+        data-focus-visible={isFocusVisible ? "true" : undefined}
+        data-hovered={isHovered ? "true" : undefined}
+        {...(otherProps as React.HTMLAttributes<HTMLSpanElement>)}
+        {...(safeFocusProps as React.HTMLAttributes<HTMLSpanElement>)}
       >
+        <span {...indicatorProps} data-focus-indicator="local" aria-hidden="true" />
         {filteredChildren}
       </span>
     );

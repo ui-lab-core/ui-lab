@@ -24,7 +24,8 @@ import css from "./Menu.module.css"
 import { cn } from "@/lib/utils"
 import { createStylesResolver } from "@/lib/styles"
 import { asElementProps } from "@/lib/react-aria"
-import { useListNavigation, useMergedRef, handleListKeyDown, scrollItemIntoView } from "../../utils/list-navigation"
+import { useMergeRefs } from "@/hooks/useMergeRefs"
+import { useListNavigation, handleListKeyDown, scrollItemIntoView } from "../../utils/list-navigation"
 
 import type { MenuItemExtras } from "./menu.types"
 import { Scroll } from "../Scroll"
@@ -188,16 +189,14 @@ const MenuSubTrigger = React.forwardRef<HTMLDivElement, MenuSubTriggerProps>(
       }
     }, [])
 
-    const mergedRef = React.useCallback(
+    const mergedRef = useMergeRefs(
+      triggerRef,
       (el: HTMLDivElement | null) => {
-        (triggerRef as React.MutableRefObject<HTMLDivElement | null>).current = el
         if (submenuContext) {
           submenuContext.triggerRef.current = el
         }
-        if (typeof ref === "function") ref(el)
-        else if (ref) ref.current = el
       },
-      [ref, submenuContext]
+      ref
     )
 
     const resolved = resolveMenuSubTriggerStyles(stylesProp);
@@ -325,7 +324,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
       }
     }, [submenuContext?.isOpen])
 
-    const mergedRef = useMergedRef<HTMLDivElement>(refs.setFloating, setFloatingElement, contentRef, (el: HTMLDivElement | null) => {
+    const mergedRef = useMergeRefs<HTMLDivElement>(refs.setFloating, setFloatingElement, contentRef, (el: HTMLDivElement | null) => {
       if (submenuContext) submenuContext.contentRef.current = el
     }, ref)
 

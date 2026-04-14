@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { act, screen } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { Select, Searchable } from '../'
 import { List } from '../../List'
 import { renderSelectWithItems, renderSelectWithChildren, openSelect, getSelectTrigger, getSelectContent } from './Select.test-utils'
@@ -26,6 +26,25 @@ describe('Select.focus', () => {
         trigger.focus()
       })
       expect(document.activeElement).toBe(trigger)
+    })
+
+    it('renders the shared focus indicator and shows it on keyboard focus', async () => {
+      const items = createMockSelectItems(3)
+      const user = userEvent.setup()
+      const container = renderSelectWithItems(items)
+      const root = container.querySelector('[data-mode="single"]') as HTMLElement
+
+      const indicator = container.querySelector('[data-focus-indicator="local"]')
+      expect(indicator).toBeInTheDocument()
+      expect(container.querySelector('.focus-scope')).not.toBeInTheDocument()
+      expect(root).toContainElement(indicator)
+
+      await user.tab()
+
+      expect(getSelectTrigger(container)).toHaveFocus()
+      await waitFor(() => {
+        expect(indicator).toHaveAttribute('data-visible', 'true')
+      })
     })
 
     it('trigger is focusable', async () => {

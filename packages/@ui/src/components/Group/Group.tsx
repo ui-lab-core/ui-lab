@@ -3,14 +3,16 @@
 import * as React from "react"
 import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
+import { useFocusIndicator } from "@/hooks/useFocusIndicator"
+import { useMergeRefs } from "@/hooks/useMergeRefs"
 import { Button, type ButtonProps } from "../Button"
+import { Expand, type ExpandProps } from "../Expand"
 import { Input, type InputProps } from "../Input"
 import { Select, type SelectProps } from "../Select"
 import css from "./Group.module.css"
 
 type Orientation = "horizontal" | "vertical"
 type Spacing = "none" | "xs" | "sm"
-type Variant = "primary" | "secondary" | "outline" | "ghost"
 
 type GroupItemStyles = {
   first?: StyleValue
@@ -25,6 +27,7 @@ export interface GroupStyleSlots {
   button?: StyleValue;
   input?: StyleValue;
   select?: StyleValue;
+  expand?: StyleValue;
 }
 
 export type GroupStylesProp = StylesProp<GroupStyleSlots>;
@@ -34,8 +37,6 @@ export interface GroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   orientation?: Orientation
   /** Controls the gap between group items */
   spacing?: Spacing
-  /** Controls the shared visual style applied to group items */
-  variant?: Variant
   /** Whether all items in the group are non-interactive */
   isDisabled?: boolean
   /** The currently active button value for toggle group behavior */
@@ -48,13 +49,17 @@ export interface GroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
 
 interface GroupContextValue {
   isInGroup: boolean
-  groupVariant: Variant
   groupOrientation: Orientation
   groupSpacing: Spacing
   groupIsDisabled: boolean
   groupValue?: string
   groupOnChange?: (value: string) => void
   groupStyles: ReturnType<typeof resolveGroupStyles>
+  registerInput?: (containerRef: React.RefObject<HTMLDivElement | null>, inputRef: React.RefObject<HTMLInputElement | null>) => void
+  unregisterInput?: (containerRef: React.RefObject<HTMLDivElement | null>) => void
+  activateInput?: () => void
+  registerFocusableSurface?: (ref: React.RefObject<HTMLElement | null>) => void
+  unregisterFocusableSurface?: (ref: React.RefObject<HTMLElement | null>) => void
 }
 
 // Context
@@ -78,11 +83,12 @@ const resolveGroupBaseStyles = createStylesResolver([
   "button",
   "input",
   "select",
+  "expand",
 ] as const)
 
 function resolveGroupStyles(styles: GroupStylesProp | undefined) {
   if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveGroupBaseStyles(styles)
-  const { root, item, button, input, select } = styles
+  const { root, item, button, input, select, expand } = styles
 
   let itemResolved: StyleValue | undefined
   let itemFirst: StyleValue | undefined
@@ -115,10 +121,11 @@ function resolveGroupStyles(styles: GroupStylesProp | undefined) {
     button,
     input,
     select,
+    expand,
   })
 }
 
-// Variant and orientation maps
+// Orientation and spacing maps
 const orientationMap: Record<Orientation, string> = {
   horizontal: css.horizontal,
   vertical: css.vertical,
@@ -130,19 +137,16 @@ const spacingMap: Record<Spacing, string> = {
   sm: css.sm,
 }
 
-const variantMap: Record<Variant, string | undefined> = {
-  primary: undefined,
-  secondary: undefined,
-  outline: undefined,
-  ghost: css.ghost,
-}
-
 // Detect Divider elements by checking for separator role, orientation prop, or displayName
 function isDivider(child: React.ReactNode): boolean {
   if (!React.isValidElement(child)) return false
   const props = (child.props || {}) as Record<string, unknown>
   const type = child.type as any
   return props.role === "separator" || "orientation" in props || type?.displayName === "Divider"
+}
+
+function isHTMLElement(value: Element | null): value is HTMLElement {
+  return value instanceof HTMLElement
 }
 
 // Root component
@@ -153,7 +157,6 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
       className,
       orientation = "horizontal",
       spacing = "none",
-      variant = "primary",
       children,
       isDisabled = false,
       value,
@@ -163,71 +166,179 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
     },
     ref
   ) => {
+    const scopeRef = React.useRef<HTMLDivElement>(null)
+    const groupRef = React.useRef<HTMLDivElement>(null)
+    const inputsRef = React.useRef<Map<React.RefObject<HTMLDivElement | null>, React.RefObject<HTMLInputElement | null>>>(new Map())
+    const focusableSurfacesRef = React.useRef<React.RefObject<HTMLElement | null>[]>([])
+
     const childrenArray = React.Children.toArray(children).filter(
       (child) => child !== null && child !== undefined
     )
 
     const resolved = resolveGroupStyles(stylesProp)
+    const mergedRef = useMergeRefs<HTMLDivElement>(ref, groupRef)
+
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef,
+      containerRef: groupRef,
+      surfaceSelector: '[data-focus-surface="true"]',
+      radiusSource: "item",
+      dependencies: [childrenArray.length, orientation, spacing],
+    })
+
+    const registerInput = React.useCallback((containerRef: React.RefObject<HTMLDivElement | null>, inputRef: React.RefObject<HTMLInputElement | null>) => {
+      inputsRef.current.set(containerRef, inputRef)
+    }, [])
+
+    const unregisterInput = React.useCallback((containerRef: React.RefObject<HTMLDivElement | null>) => {
+      inputsRef.current.delete(containerRef)
+    }, [])
+
+    const activateInput = React.useCallback(() => {
+      const firstEntry = Array.from(inputsRef.current.entries())[0]
+      if (firstEntry) {
+        const [containerRef, inputRef] = firstEntry
+        if (containerRef.current && inputRef.current) {
+          // Focus the actual input for keyboard interaction
+          inputRef.current.focus()
+
+          // Force focus-visible state by finding the input container inside the wrapper
+          // The Input component renders a container div with data-input-focus-surface
+          const inputContainer = containerRef.current.querySelector('[data-input-focus-surface="true"]') as HTMLElement
+          if (inputContainer) {
+            inputContainer.setAttribute('data-focus-visible', 'true')
+            inputContainer.setAttribute('data-focused', 'true')
+          }
+        }
+      }
+    }, [])
+
+    const registerFocusableSurface = React.useCallback((ref: React.RefObject<HTMLElement | null>) => {
+      focusableSurfacesRef.current.push(ref)
+    }, [])
+
+    const unregisterFocusableSurface = React.useCallback((ref: React.RefObject<HTMLElement | null>) => {
+      focusableSurfacesRef.current = focusableSurfacesRef.current.filter(r => r !== ref)
+    }, [])
+
+
+    const handleGroupKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft" && e.key !== "ArrowDown" && e.key !== "ArrowUp") {
+        return
+      }
+
+      const focusedElement = document.activeElement
+      if (!focusedElement || !groupRef.current?.contains(focusedElement as Node)) {
+        return
+      }
+
+      const focusableElements = focusableSurfacesRef.current
+        .map(ref => ref.current)
+        .filter((el): el is HTMLElement => el !== null && !!groupRef.current?.contains(el))
+
+      if (focusableElements.length === 0) {
+        return
+      }
+
+      const currentIndex = focusableElements.findIndex(el => el.contains(focusedElement as Node))
+      if (currentIndex === -1) {
+        return
+      }
+
+      const isHorizontal = orientation === "horizontal"
+      const isNavigatingInline = (e.key === "ArrowRight" || e.key === "ArrowLeft") && isHorizontal
+      const isNavigatingBlock = (e.key === "ArrowDown" || e.key === "ArrowUp") && !isHorizontal
+
+      if (!isNavigatingInline && !isNavigatingBlock) {
+        return
+      }
+
+      e.preventDefault()
+
+      let nextIndex = currentIndex
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        nextIndex = (currentIndex + 1) % focusableElements.length
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        nextIndex = currentIndex === 0 ? focusableElements.length - 1 : currentIndex - 1
+      }
+
+      const nextElement = focusableElements[nextIndex]
+      if (nextElement) {
+        // Try to focus an interactive element within the surface
+        const focusableChild = nextElement.querySelector('button, input, [role="button"]') as HTMLElement | null
+        if (focusableChild) {
+          focusableChild.focus()
+        } else {
+          nextElement.focus()
+        }
+      }
+    }, [orientation])
 
     const contextValue: GroupContextValue = {
       isInGroup: true,
-      groupVariant: variant,
       groupOrientation: orientation,
       groupSpacing: spacing,
       groupIsDisabled: isDisabled,
       groupValue: value,
       groupOnChange: onChange,
       groupStyles: resolved,
+      registerInput,
+      unregisterInput,
+      activateInput,
+      registerFocusableSurface,
+      unregisterFocusableSurface,
     }
 
     return (
       <GroupContext.Provider value={contextValue}>
-        <div
-          ref={ref}
-          className={cn(
-            'group',
-            orientation,
-            variant,
-            css.group,
-            orientationMap[orientation],
-            spacingMap[spacing],
-            variantMap[variant],
-            resolved.root,
-            className
-          )}
-          role="group"
-          aria-disabled={isDisabled || undefined}
-          data-disabled={isDisabled ? "true" : undefined}
-          {...props}
-        >
-          {childrenArray.map((child, index) => {
-            const isFirst = index === 0
-            const isLast = index === childrenArray.length - 1
-            const isDividerChild = isDivider(child)
+        <div ref={scopeRef} className={cn("group-scope", scopeProps.className)}>
+          <div {...indicatorProps} />
+          <div
+            ref={mergedRef}
+            className={cn(
+              'group',
+              orientation,
+              css.group,
+              orientationMap[orientation],
+              spacingMap[spacing],
+              resolved.root,
+              className
+            )}
+            role="group"
+            aria-disabled={isDisabled || undefined}
+            data-disabled={isDisabled ? "true" : undefined}
+            onKeyDown={handleGroupKeyDown}
+            {...props}
+          >
+            {childrenArray.map((child, index) => {
+              const isFirst = index === 0
+              const isLast = index === childrenArray.length - 1
+              const isDividerChild = isDivider(child)
 
-            // Extract layout-related classes from child to apply to the item wrapper
-            const childProps = React.isValidElement(child) ? (child.props as any) : {}
-            const childClassName = childProps.className || ""
-            const shouldGrow = childClassName.includes('w-full') || childClassName.includes('flex-1')
-            return (
-              <div
-                key={`item-${index}`}
-                className={cn(
-                  'item',
-                  css.item,
-                  isFirst && resolved.itemFirst,
-                  isLast && resolved.itemLast,
-                  isDividerChild && css.divider,
-                  isDividerChild && resolved.itemDivider,
-                  shouldGrow && css.grow,
-                  shouldGrow && resolved.itemGrow,
-                  resolved.item,
-                )}
-              >
-                {child}
-              </div>
-            )
-          })}
+              // Extract layout-related classes from child to apply to the item wrapper
+              const childProps = React.isValidElement(child) ? (child.props as any) : {}
+              const childClassName = childProps.className || ""
+              const shouldGrow = childClassName.includes('w-full') || childClassName.includes('flex-1')
+              return (
+                <div
+                  key={`item-${index}`}
+                  className={cn(
+                    'item',
+                    css.item,
+                    isFirst && resolved.itemFirst,
+                    isLast && resolved.itemLast,
+                    isDividerChild && css.divider,
+                    isDividerChild && resolved.itemDivider,
+                    shouldGrow && css.grow,
+                    shouldGrow && resolved.itemGrow,
+                    resolved.item,
+                  )}
+                >
+                  {child}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </GroupContext.Provider>
     )
@@ -245,29 +356,47 @@ interface GroupButtonProps extends ButtonProps {
 
 /** Button styled to merge seamlessly with adjacent group items */
 const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
-  ({ active, value, variant, className, onPress, ...restProps }, ref) => {
+  ({ active, value, variant, className, onPress, onPointerDown, ...restProps }, ref) => {
     const context = useGroupContext()
+    const buttonRef = React.useRef<HTMLButtonElement>(null)
+    const mergedRef = useMergeRefs(buttonRef, ref)
+
     // Merge disabled state from group context
     const isDisabled = restProps.isDisabled ?? context.groupIsDisabled
 
     // Derive active and onPress from toggle group context when value is provided
     const isActive = value !== undefined && context.groupValue !== undefined ? value === context.groupValue : active
-    const handlePress = value !== undefined && context.groupOnChange !== undefined ? () => context.groupOnChange!(value) : onPress
+    const baseHandlePress = value !== undefined && context.groupOnChange !== undefined ? () => context.groupOnChange!(value) : onPress
 
-    let buttonVariant = variant
-    if (variant === undefined) {
-      if (context.groupVariant === "ghost") {
-        buttonVariant = isActive ? "default" : "ghost"
-      } else {
-        buttonVariant = "ghost"
+    const handlePress = React.useCallback((e: { target: EventTarget | null }) => {
+      baseHandlePress?.(e)
+    }, [baseHandlePress])
+
+    // Activate input on pointer down to avoid focus ring flicker
+    const handlePointerDown = React.useCallback((e: React.PointerEvent<HTMLButtonElement>) => {
+      if (!isDisabled) {
+        // Pre-activate the input before button loses focus
+        context.activateInput?.()
       }
-    }
+      onPointerDown?.(e)
+    }, [context, isDisabled, onPointerDown])
+
+    React.useEffect(() => {
+      context.registerFocusableSurface?.(buttonRef)
+      return () => {
+        context.unregisterFocusableSurface?.(buttonRef)
+      }
+    }, [context])
+
+    const buttonVariant = variant ?? "ghost"
 
     const buttonProps = {
       ...restProps,
       onPress: handlePress,
+      onPointerDown: handlePointerDown,
       variant: buttonVariant,
       isDisabled,
+      "data-focus-surface": "true",
       "data-selected": isActive ? "true" : "false",
       className: cn(
         "group",
@@ -278,7 +407,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
       ),
     }
 
-    return <Button ref={ref} {...buttonProps} />
+    return <Button ref={mergedRef} {...buttonProps} />
   }
 )
 GroupButton.displayName = "Group.Button"
@@ -290,14 +419,36 @@ interface GroupInputProps extends InputProps { }
 const GroupInput = React.forwardRef<HTMLInputElement, GroupInputProps>(
   ({ className, disabled, ...props }, ref) => {
     const context = useGroupContext()
+    const inputRef = React.useRef<HTMLInputElement>(null)
+    const containerRef = React.useRef<HTMLDivElement>(null)
+    const mergedRef = useMergeRefs(ref, inputRef)
+
+    // Register and unregister the input ref with the group context
+    React.useEffect(() => {
+      context.registerInput?.(containerRef, inputRef)
+      return () => {
+        context.unregisterInput?.(containerRef)
+      }
+    }, [context])
+
+    React.useEffect(() => {
+      context.registerFocusableSurface?.(containerRef)
+      return () => {
+        context.unregisterFocusableSurface?.(containerRef)
+      }
+    }, [context])
 
     // Merge disabled state from group context
     const inputDisabled = disabled ?? context.groupIsDisabled
 
     return (
-      <div className={cn("group", "input", css.input, context.groupStyles.input, className)}>
+      <div
+        ref={containerRef}
+        className={cn("group", "input", css.input, context.groupStyles.input, className)}
+        data-focus-surface="true"
+      >
         <Input
-          ref={ref}
+          ref={mergedRef}
           {...props}
           disabled={inputDisabled}
           className="w-full"
@@ -315,14 +466,36 @@ interface GroupInputWrapperProps extends InputProps { }
 const GroupInputWrapper = React.forwardRef<HTMLInputElement, GroupInputWrapperProps>(
   ({ className, disabled, ...props }, ref) => {
     const context = useGroupContext()
+    const inputRef = React.useRef<HTMLInputElement>(null)
+    const containerRef = React.useRef<HTMLDivElement>(null)
+    const mergedRef = useMergeRefs(ref, inputRef)
+
+    // Register and unregister the input ref with the group context
+    React.useEffect(() => {
+      context.registerInput?.(containerRef, inputRef)
+      return () => {
+        context.unregisterInput?.(containerRef)
+      }
+    }, [context])
+
+    React.useEffect(() => {
+      context.registerFocusableSurface?.(containerRef)
+      return () => {
+        context.unregisterFocusableSurface?.(containerRef)
+      }
+    }, [context])
 
     // Merge disabled state from group context
     const inputDisabled = disabled ?? context.groupIsDisabled
 
     return (
-      <div className={cn("group", "input", css.input, context.groupStyles.input, className)}>
+      <div
+        ref={containerRef}
+        className={cn("group", "input", css.input, context.groupStyles.input, className)}
+        data-focus-surface="true"
+      >
         <Input
-          ref={ref}
+          ref={mergedRef}
           {...props}
           disabled={inputDisabled}
           className="w-full"
@@ -340,15 +513,25 @@ interface GroupSelectProps extends SelectProps<any> { }
 const GroupSelect = React.forwardRef<HTMLDivElement, GroupSelectProps>(
   ({ className, isDisabled, ...props }, ref) => {
     const context = useGroupContext()
+    const selectRef = React.useRef<HTMLDivElement>(null)
+    const mergedRef = useMergeRefs(selectRef, ref)
 
     // Merge disabled state from group context
     const disabled = isDisabled ?? context.groupIsDisabled
 
+    React.useEffect(() => {
+      context.registerFocusableSurface?.(selectRef)
+      return () => {
+        context.unregisterFocusableSurface?.(selectRef)
+      }
+    }, [context])
+
     return (
       <Select
-        ref={ref}
+        ref={mergedRef}
         {...props}
         isDisabled={disabled}
+        data-focus-surface="true"
         className={cn("group", "select", css.select, context.groupStyles.select, className)}
       />
     )
@@ -356,12 +539,51 @@ const GroupSelect = React.forwardRef<HTMLDivElement, GroupSelectProps>(
 )
 GroupSelect.displayName = "Group.Select"
 
+// Group.Expand component
+interface GroupExpandProps extends ExpandProps { }
+
+/** Expand primitive integrated into the group */
+const GroupExpand = React.forwardRef<HTMLDivElement, GroupExpandProps>(
+  ({ className, isDisabled, styles: stylesProp, ...props }, ref) => {
+    const context = useGroupContext()
+    const surfaceRef = React.useRef<HTMLDivElement>(null)
+    const disabled = isDisabled ?? context.groupIsDisabled
+    const surfaceStyles = typeof stylesProp === "string" || Array.isArray(stylesProp) ? stylesProp : undefined
+    const expandStyles = surfaceStyles ? undefined : stylesProp
+
+    React.useEffect(() => {
+      context.registerFocusableSurface?.(surfaceRef)
+      return () => {
+        context.unregisterFocusableSurface?.(surfaceRef)
+      }
+    }, [context])
+
+    return (
+      <div
+        ref={surfaceRef}
+        data-focus-surface="true"
+        className={cn("group", "expand", css.expand, context.groupStyles.expand, surfaceStyles)}
+      >
+        <Expand
+          ref={ref}
+          {...props}
+          className={className}
+          styles={expandStyles}
+          isDisabled={disabled}
+        />
+      </div>
+    )
+  }
+)
+GroupExpand.displayName = "Group.Expand"
+
 // Assemble compound component
 const Group = Object.assign(GroupRoot, {
   Button: GroupButton,
   Input: GroupInput,
   InputWrapper: GroupInputWrapper,
   Select: GroupSelect,
+  Expand: GroupExpand,
 })
 
 export { Group, GroupContext }

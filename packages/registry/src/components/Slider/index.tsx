@@ -11,17 +11,6 @@ const examplesData = [
 
 const sliderControls: ControlDef[] = [
   {
-    name: "size",
-    label: "Size",
-    type: "select",
-    options: [
-      { label: "Small", value: "sm" },
-      { label: "Medium", value: "md" },
-      { label: "Large", value: "lg" },
-    ],
-    defaultValue: "md",
-  },
-  {
     name: "disabled",
     label: "Disabled",
     type: "toggle",
@@ -45,7 +34,7 @@ export const sliderDetail: ComponentDetail = {
         The Slider component provides a clean, minimal range input for selecting values within a specified range. It features custom styling that completely overrides native HTML range input appearance, offering a consistent look across all browsers.
       </p>
       <p>
-        Perfect for volume controls, brightness adjustment, price ranges, and other value selection scenarios. Available in three sizes: small, medium, and large.
+        Perfect for volume controls, brightness adjustment, price ranges, and other value selection scenarios.
       </p>
     </div>
   ),
@@ -62,7 +51,6 @@ export const sliderDetail: ComponentDetail = {
           min={0}
           max={100}
           defaultValue={[50]}
-          size={props.size as any}
           disabled={props.disabled}
         />
       ),

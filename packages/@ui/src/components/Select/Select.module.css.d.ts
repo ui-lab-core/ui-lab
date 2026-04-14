@@ -1,4 +1,5 @@
 declare const styles: {
+  scope: string;
   select: string;
   "select-split": string;
   trigger: string;

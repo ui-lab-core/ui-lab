@@ -9,6 +9,9 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Tooltip } from "@/components/Tooltip";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { GroupContext } from "@/components/Group/Group";
 import css from "./Input.module.css";
 
 type Variant = "default" | "ghost";
@@ -95,6 +98,8 @@ export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "siz
   hint?: React.ReactNode;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: InputStylesProp;
+  /** Hides the spinner controls for number inputs */
+  "hide-controls"?: boolean;
 }
 
 function isInputIconSlots(icon: InputProps["icon"]): icon is InputIconSlots {
@@ -129,16 +134,6 @@ function resolveInputActions(actions: InputProps["actions"]): InputActionSlots {
   return { right: actions };
 }
 
-function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> {
-  return React.useCallback((value: T) => {
-    refs.forEach((ref) => {
-      if (typeof ref === "function") ref(value);
-      else if (ref && typeof ref === "object") (ref as React.MutableRefObject<T | null>).current = value;
-    });
-  }, refs);
-}
-
-
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -153,10 +148,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onFocus,
       onBlur,
       styles: stylesProp,
+      "hide-controls": hideControls = false,
       ...props
     },
     ref
   ) => {
+    const groupContext = React.useContext(GroupContext);
     const resolvedActions = resolveInputActions(actions);
     const resolvedIcon = resolveInputIcon(icon);
     const leftActions = resolvedActions.left ?? [];
@@ -171,9 +168,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const [isFocused, setIsFocused] = React.useState(false);
 
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const mergedRef = useMergedRef(ref, inputRef);
+    const containerRef = React.useRef<HTMLDivElement>(null);
+    const scopeRef = React.useRef<HTMLDivElement>(null);
+    const mergedRef = useMergeRefs(ref, inputRef);
 
     const { focusProps, isFocusVisible } = useFocusRing();
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef,
+      containerRef,
+      surfaceSelector: '[data-input-focus-surface="true"]',
+      radiusSource: "surface",
+    });
 
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(true);
@@ -202,7 +207,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     const resolved = resolveInputStyles(stylesProp);
-    const hasEndAdornment = hasSuffix || hasRightActions || hasHint || isNumberType;
+    const showControls = isNumberType && !hideControls;
+    const hasEndAdornment = hasSuffix || hasRightActions || hasHint || showControls;
     const adornmentPadding = "var(--adornment-offset)";
     const inputPaddingStyle: React.CSSProperties = {
       ...(hasStartAdornment ? { paddingLeft: adornmentPadding } : {}),
@@ -228,9 +234,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       );
     };
 
-    return (
+    const inputRoot = (
       <div
+        ref={containerRef}
         className={cn('input', css.container, resolved.root)}
+        data-input-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
         data-disabled={disabled || undefined}
@@ -285,7 +293,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               </div>
             )}
             {hasHint && <span className={css.hint} data-hint>{hint}</span>}
-            {isNumberType && (
+            {showControls && (
               <div
                 className={(css as any).controls}
                 data-disabled={disabled || undefined}
@@ -314,6 +322,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </div>
         )}
+      </div>
+    );
+
+    if (groupContext) {
+      return inputRoot;
+    }
+
+    return (
+      <div
+        ref={scopeRef}
+        className={cn("input-scope", scopeProps.className, css.scope)}
+      >
+        <div {...indicatorProps} data-focus-indicator="local" />
+        {inputRoot}
       </div>
     );
   }

@@ -217,12 +217,13 @@ describe('Select.edgeCases', () => {
   })
 
   describe('memory and cleanup', () => {
-    it('ref forwarding: ref prop on Select points to wrapper div', async () => {
+    it('ref forwarding: ref prop on Select points to the root div', async () => {
       const items = createMockSelectItems(3)
       const container = renderSelectWithItems(items)
 
-      const wrapperDiv = container.querySelector('[data-mode="single"]')
-      expect(wrapperDiv).toBeInTheDocument()
+      const rootDiv = container.querySelector('[data-mode="single"]')
+      expect(rootDiv).toBeInTheDocument()
+      expect(container.querySelector('.focus-scope')).not.toBeInTheDocument()
     })
 
   })

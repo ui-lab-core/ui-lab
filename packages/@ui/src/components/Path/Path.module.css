@@ -2,88 +2,87 @@
 
 @layer components {
   .path {
-    --foreground: var(--foreground-primary);
-    --foreground-muted: var(--foreground-secondary);
-    --separator-color: var(--border-secondary);
-    --focus-ring-color: var(--accent-500);
-    --disabled-opacity: 0.6;
-
     @apply block;
   }
 
-  .path-list {
-    list-style: none;
+  .list {
     @apply m-0 flex flex-wrap items-center gap-2 p-0;
-    flex-wrap: wrap;
+    list-style: none;
   }
 
-  .path-list.with-custom-separator .path-item:not(:last-child)::after {
+  .list[data-separator="custom"] .item:not(:last-child)::after {
     content: none;
   }
 
-  .path-item {
+  .item {
     @apply m-0 flex items-center gap-2 p-0;
   }
 
-  /* Separator after each item except the last */
-  .path-item:not(:last-child)::after {
-    content: '/';
-    color: var(--separator-color);
-    margin-left: 0.5rem;
-    user-select: none;
+  .item:not(:last-child)::after {
+    content: "/";
+    margin-inline-start: 0.5rem;
+    color: var(--separator-foreground);
     pointer-events: none;
+    user-select: none;
   }
 
-  /* Custom separator element */
   .separator {
-    list-style: none;
     @apply m-0 flex items-center p-0;
-    color: var(--separator-color);
-    user-select: none;
+    list-style: none;
+    color: var(--separator-foreground);
     pointer-events: none;
+    user-select: none;
   }
 
-  .path-item-link {
-    @apply relative cursor-pointer rounded-sm px-2 py-1;
+  .link {
+    @apply relative cursor-pointer px-2 py-1;
+    border: 0;
+    background-color: transparent;
     color: var(--foreground);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-medium, 500);
+    line-height: var(--leading-normal, 1.5);
     text-decoration: none;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+  }
 
-    &:hover:not([data-disabled='true']) {
-      background-color: var(--background-hover, rgba(0, 0, 0, 0.04));
-      color: var(--accent-600);
-    }
+  button.link {
+    font: inherit;
+  }
 
-    &:active:not([data-disabled='true']) {
-      background-color: var(--background-active, rgba(0, 0, 0, 0.08));
-    }
+  .link:focus,
+  .link:focus-visible {
+    outline: none;
+  }
 
-    &:focus-visible {
-      outline: 2px solid var(--focus-ring-color);
-      outline-offset: 2px;
-    }
+  .link[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
+    background-color: var(--background-hover);
+    color: var(--foreground-hover);
+  }
 
-    &[data-current='true'] {
-      color: var(--foreground-muted);
-      cursor: default;
-      font-weight: var(--font-weight-medium);
+  .link[data-pressed="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
+    background-color: var(--background-pressed);
+  }
 
-      &:hover {
-        background-color: transparent;
-      }
-    }
+  .link[data-selected="true"] {
+    color: var(--foreground-selected);
+    cursor: default;
+  }
 
-    &[data-disabled='true'] {
-      color: var(--foreground-muted);
-      cursor: not-allowed;
-      opacity: var(--disabled-opacity);
+  .link[data-selected="true"][data-hovered="true"] {
+    background-color: transparent;
+  }
 
-      &:hover {
-        background-color: transparent;
-      }
-    }
+  .link[data-disabled="true"] {
+    color: var(--foreground-disabled);
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .link[data-disabled="true"][data-hovered="true"] {
+    background-color: transparent;
   }
 }

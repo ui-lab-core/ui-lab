@@ -48,4 +48,28 @@ describe('Expand', () => {
     expect(content).toHaveClass(styles.content)
     expect(content).toHaveClass('custom-content')
   })
+
+  it('resolves nested icon and content inner slot styles', () => {
+    render(
+      <Expand
+        title="Details"
+        isExpanded
+        styles={{
+          icon: { collapsed: 'icon-collapsed', expanded: 'icon-expanded' },
+          contentInner: 'slot-content-inner',
+        }}
+      >
+        <p>Preset content</p>
+      </Expand>
+    )
+
+    const trigger = screen.getByRole('button', { name: 'Details' })
+    const icon = trigger.querySelector(`.${styles.icon}`)
+    const contentInner = screen.getByText('Preset content').closest(`.${styles['content-inner']}`)
+
+    expect(icon).toHaveClass('icon-expanded')
+    expect(icon).not.toHaveClass('icon-collapsed')
+    expect(contentInner).toHaveClass(styles['content-inner'])
+    expect(contentInner).toHaveClass('slot-content-inner')
+  })
 })

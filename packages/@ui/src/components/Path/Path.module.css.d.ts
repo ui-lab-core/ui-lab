@@ -1,10 +1,9 @@
 export interface Styles {
   "path": string;
-  "path-list": string;
-  "with-custom-separator": string;
-  "path-item": string;
+  "list": string;
+  "item": string;
   "separator": string;
-  "path-item-link": string;
+  "link": string;
 }
 
 export default styles;

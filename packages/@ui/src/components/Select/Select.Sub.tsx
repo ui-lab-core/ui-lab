@@ -12,6 +12,7 @@ import styles from "./Select.module.css"
 import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
 import { asElementProps } from "@/lib/react-aria"
+import { useMergeRefs } from "@/hooks/useMergeRefs"
 import { useListNavigation, handleListKeyDown } from "./Select.shared"
 import type { ItemData } from "./Select.shared"
 import { Scroll } from "../Scroll"
@@ -267,21 +268,20 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
       }
     }, [])
 
-    const mergedRef = React.useCallback(
+    const mergedRef = useMergeRefs(
+      triggerRef,
       (el: HTMLDivElement | null) => {
-        (triggerRef as React.MutableRefObject<HTMLDivElement | null>).current = el
         if (submenuContext) {
           submenuContext.triggerRef.current = el
         }
-        if (typeof ref === "function") ref(el)
-        else if (ref) ref.current = el
       },
-      [ref, submenuContext]
+      ref
     )
 
     return (
-      <div
+      <List.Item
         ref={mergedRef}
+        focusable={false}
         role="option"
         aria-haspopup="listbox"
         aria-expanded={submenuContext?.isOpen}
@@ -289,6 +289,7 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
         aria-disabled={disabled || undefined}
         className={cn('select', 'sub-trigger', styles["sub-trigger"], className, resolved.root)}
         data-highlighted={isHighlighted ? "true" : "false"}
+        data-focused={isHighlighted ? "true" : "false"}
         data-disabled={disabled || undefined}
         data-open={submenuContext?.isOpen ? "true" : "false"}
         onClick={() => handleSelectRef.current?.()}
@@ -296,7 +297,7 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
       >
         {children}
         <ChevronRight className={cn(styles["sub-trigger-chevron"], resolved.iconRight)} />
-      </div>
+      </List.Item>
     )
   }
 )
@@ -412,19 +413,18 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
       submenuContextRef.current?.unregisterItem(key)
     }, [])
 
-    const mergedContentRef = React.useCallback((el: HTMLDivElement | null) => {
-      setContentElement(el)
-      contentRef.current = el
-      if (submenuContextRef.current) submenuContextRef.current.contentRef.current = el
-      const fRef = forwardedRefRef.current
-      if (typeof fRef === "function") fRef(el)
-      else if (fRef) fRef.current = el
-    }, [])
+    const mergedContentRef = useMergeRefs(
+      setContentElement,
+      contentRef,
+      (el: HTMLDivElement | null) => {
+        if (submenuContextRef.current) submenuContextRef.current.contentRef.current = el
+        const fRef = forwardedRefRef.current
+        if (typeof fRef === "function") fRef(el)
+        else if (fRef) fRef.current = el
+      }
+    )
 
-    const mergedFloatingRef = React.useCallback((el: HTMLDivElement | null) => {
-      floatingRootRef.current = el
-      refs.setFloating(el)
-    }, [refs])
+    const mergedFloatingRef = useMergeRefs(floatingRootRef, refs.setFloating)
 
     const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
       if (!submenuContext) return

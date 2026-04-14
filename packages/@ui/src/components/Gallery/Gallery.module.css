@@ -1,24 +1,35 @@
 @reference "tailwindcss";
 
 @layer components {
+  .item-scope {
+    @apply block min-w-0;
+  }
+
   .item {
-    @apply flex flex-col border overflow-hidden no-underline cursor-pointer;
+    --border-width: var(--border-width-base, 1px);
+    --radius: var(--radius-sm, 0.375rem);
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --view-width: 200px;
 
-    background: var(--background);
-    border: var(--border-width-base, 1px) solid var(--background-border);
-    border-radius: var(--radius-sm, 0.375rem);
+    @apply flex flex-col overflow-hidden no-underline cursor-pointer w-full;
 
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     color: inherit;
+    background: var(--background);
+    border: var(--border-width) solid var(--background-border);
+    border-radius: var(--radius);
+    transition:
+      border-color var(--transition),
+      transform var(--transition),
+      background-color var(--transition),
+      box-shadow var(--transition);
   }
 
   .item:focus {
     outline: none;
   }
 
-  .item[data-focus-visible="true"] {
-    box-shadow: 0 0 0 1.5px var(--focus-visible);
-    outline: none;
+  .item[data-disabled="true"] {
+    @apply cursor-not-allowed;
   }
 
   .item[data-hovered="true"] {
@@ -26,7 +37,7 @@
   }
 
   .item[data-pressed="true"] {
-    border-color: var(--background-pressed-border, var(--background-hover-border, var(--background-border)));
+    border-color: var(--background-pressed-border, var(--background-hover-border));
   }
 
   .item[data-orientation="horizontal"] {
@@ -34,15 +45,17 @@
   }
 
   .item[data-orientation="horizontal"] .view {
-    width: var(--gallery-horizontal-view-width, 200px);
+    width: var(--view-width);
   }
 
   .view {
-    --aspect-ratio: var(--gallery-aspect-ratio, 16/9);
+    --aspect-ratio: 16/9;
+    --background: transparent;
 
     @apply relative overflow-hidden;
+
     aspect-ratio: var(--aspect-ratio);
-    background: var(--background, transparent);
+    background: var(--background);
   }
 
   .view > img,
@@ -51,7 +64,15 @@
   }
 
   .body {
-    @apply flex flex-col gap-1 p-3 self-start min-w-0;
+    --gap: calc(var(--spacing, 0.25rem) * 1);
+    --padding: calc(var(--spacing, 0.25rem) * 3);
+    --title-color: var(--foreground);
+    --description-color: var(--foreground-muted, var(--foreground));
+
+    @apply flex flex-col self-start min-w-0;
+
+    gap: var(--gap);
+    padding: var(--padding);
   }
 
   .item[data-orientation="horizontal"] .body {
@@ -60,12 +81,12 @@
   }
 
   .body > :first-child {
+    color: var(--title-color);
     font-weight: var(--font-weight-medium, 500);
-    color: var(--foreground);
   }
 
   .body > :not(:first-child) {
+    color: var(--description-color);
     font-size: var(--text-sm, 0.875rem);
-    color: var(--foreground-muted, var(--foreground));
   }
 }

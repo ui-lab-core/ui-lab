@@ -10,16 +10,6 @@ export interface ItemData {
   icon?: React.ReactNode
 }
 
-export function useMergedRef<T>(...refs: any[]) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return React.useCallback((el: T | null) => {
-    for (const ref of refs) {
-      if (typeof ref === "function") ref(el)
-      else if (ref) ref.current = el
-    }
-  }, refs)
-}
-
 export function scrollItemIntoView(el: HTMLElement, behavior: ScrollBehavior = 'smooth') {
   let scroller: HTMLElement | null = el.parentElement
   while (scroller && scroller !== document.body && scroller.scrollHeight <= scroller.clientHeight) {

@@ -7,6 +7,13 @@
 
   .radio-item {
     @apply flex items-start gap-3 cursor-pointer select-none;
+    position: relative;
+    overflow: visible;
+  }
+
+  .radio-surface {
+    @apply inline-flex shrink-0;
+    border-radius: 9999px;
   }
 
   .radio-input {
@@ -36,7 +43,6 @@
     }
 
     &[data-focus-visible="true"] {
-      box-shadow: 0 0 0 1.5px var(--focus-visible);
       outline: none;
     }
   }

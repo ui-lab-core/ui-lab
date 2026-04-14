@@ -8,8 +8,10 @@ import { useButton } from "@react-aria/button";
 
 import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Select.module.css"
-import { useListNavigation, useMergedRef, handleListKeyDown, focusAdjacentTabStop, type ItemData } from "./Select.shared"
+import { useListNavigation, handleListKeyDown, focusAdjacentTabStop, type ItemData } from "./Select.shared"
 
 export type SelectItemData = ItemData
 
@@ -79,7 +81,7 @@ export function useSelectContext() {
   return context
 }
 
-export interface SelectProps<T = any> extends React.PropsWithChildren {
+export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElement> {
   /** Selection mode: "single" for one item, "multiple" for multi-item selection */
   mode?: SelectMode
   /** External items array — used when items are provided as data rather than JSX */
@@ -93,7 +95,7 @@ export interface SelectProps<T = any> extends React.PropsWithChildren {
   /** Default selected keys for uncontrolled multi-select */
   defaultSelectedKeys?: Key[]
   /** Default display text shown in the trigger when nothing is selected */
-  defaultValue?: string | null
+  defaultValue?: string
   /** Display text for the currently selected value — used for SSR/SSG to avoid
    * flash of placeholder before items register. Provide alongside selectedKey or
    * defaultSelectedKey so the correct label renders on the first pass. */
@@ -144,11 +146,13 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       trigger: triggerMode = "click",
       filter,
       styles: stylesProp,
+      ...domProps
     },
     ref
   ) => {
     const triggerRef = React.useRef<HTMLElement>(null)
-    const wrapperRef = React.useRef<HTMLElement>(null)
+    const scopeRef = React.useRef<HTMLDivElement>(null)
+    const wrapperRef = React.useRef<HTMLDivElement>(null)
     const contentRef = React.useRef<HTMLElement>(null)
     const mouseMoveDetectedRef = React.useRef(true)
     const itemExtrasRef = React.useRef<Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>>(new Map())
@@ -361,12 +365,11 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         }
 
         if (e.key === 'Tab') {
+          e.preventDefault()
+          const direction = e.shiftKey ? -1 : 1
           setIsOpen(false)
           nav.setSearchValue("")
-          const direction = e.shiftKey ? -1 : 1
-          if (moveFocusFromTrigger(direction as 1 | -1)) {
-            e.preventDefault()
-          }
+          moveFocusFromTrigger(direction as 1 | -1)
           return
         }
 
@@ -412,8 +415,6 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       }
     }, [selectedKey, nav.items, mode, defaultValue, valueLabel])
 
-    const rootRef = useMergedRef<HTMLDivElement>(wrapperRef, ref)
-
     const childrenArray = React.Children.toArray(children)
     const trigger = childrenArray.find(child => React.isValidElement(child) && (
       (child.type as any)?.displayName === 'SelectTrigger' ||
@@ -434,6 +435,15 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       : 'button'
 
     const resolvedStyles = resolveSelectStyles(stylesProp);
+    const mergedRootRef = useMergeRefs<HTMLDivElement>(scopeRef, wrapperRef, ref)
+    const { indicatorProps } = useFocusIndicator({
+      scopeRef,
+      containerRef: wrapperRef,
+      surfaceSelector: '[data-select-focus-surface="true"]',
+      radiusSource: "surface",
+      mode: "self",
+      dependencies: [mode],
+    });
 
     return (
       <SelectContext.Provider
@@ -485,10 +495,15 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         }}
       >
         <div
-          ref={rootRef}
+          ref={mergedRootRef}
           className={cn('select', styles.select, className, resolvedStyles.root)}
           data-mode={mode}
+          data-select-focus-surface="true"
+          data-focused={isFocused ? "true" : "false"}
+          data-focus-visible={isFocusVisible ? "true" : "false"}
+          {...domProps}
         >
+          <div {...indicatorProps} data-focus-indicator="local" />
           {otherContent}
           {trigger}
           {contentItems}

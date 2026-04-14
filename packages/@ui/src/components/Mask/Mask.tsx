@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Mask.module.css";
 
 interface MaskStyleSlots {
@@ -93,7 +94,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
 
       return React.cloneElement(child, {
         ...props,
-        ref: mergeRefs(ref, child.props.ref),
+        ref: useMergeRefs(ref, child.props.ref),
         className: cn("mask", styles.mask, resolved.root, className, child.props.className),
         style: {
           ...child.props.style,
@@ -156,23 +157,6 @@ interface MaskFadeProps {
 
 const MaskFade: React.FC<MaskFadeProps> = () => null;
 MaskFade.displayName = "MaskFade";
-
-function mergeRefs<T>(
-  ...refs: Array<React.Ref<T> | undefined>
-): React.RefCallback<T> {
-  return (value) => {
-    refs.forEach((ref) => {
-      if (!ref) return;
-
-      if (typeof ref === "function") {
-        ref(value);
-        return;
-      }
-
-      (ref as React.MutableRefObject<T | null>).current = value;
-    });
-  };
-}
 
 function isScrollFade(props: MaskFadeProps): boolean {
   return props.direction === undefined && props.intensity === undefined && props.fixed === undefined;

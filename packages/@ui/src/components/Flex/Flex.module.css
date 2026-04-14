@@ -2,11 +2,7 @@
 
 @layer components {
   .flex {
-    @apply flex w-full flex-row;
-    flex-wrap: nowrap;
-    gap: var(--spacing-md);
-    justify-content: flex-start;
-    align-items: stretch;
+    @apply flex w-full;
   }
 
   /* Direction variants */

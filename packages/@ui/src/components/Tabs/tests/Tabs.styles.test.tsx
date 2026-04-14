@@ -71,7 +71,7 @@ describe('Tabs.styles', () => {
       </Tabs>
     )
 
-    expect(html).toContain('bottom:-6px')
+    expect(html).toContain('bottom:-4px')
     expect(html).toContain('height:2px')
     expect(html).toContain('data-indicator-fallback="true"')
   })
@@ -94,7 +94,7 @@ describe('Tabs.styles', () => {
       </Tabs>
     )
 
-    expect(html).toContain('left:-6px')
+    expect(html).toContain('left:-4px')
     expect(html).toContain('width:2px')
     expect(html).toContain('data-indicator-fallback="true"')
   })

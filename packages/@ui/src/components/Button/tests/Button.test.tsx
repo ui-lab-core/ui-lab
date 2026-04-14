@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { renderToString } from 'react-dom/server'
 import userEvent from '@testing-library/user-event'
 import { Button } from '../Button'
 import {
@@ -174,6 +175,12 @@ describe('Button - Component Specific', () => {
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('data-disabled', 'true')
+  })
+
+  it('renders disabled in SSR markup when isDisabled is true', () => {
+    const html = renderToString(<Button isDisabled aria-label="Send">Send</Button>)
+
+    expect(html).toContain('disabled=""')
   })
 
   it('renders a custom variant string as a root class', () => {

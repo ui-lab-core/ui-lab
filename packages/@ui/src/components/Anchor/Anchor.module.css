@@ -7,6 +7,7 @@
 
   .root {
     @apply inline-block relative cursor-pointer;
+    display: inline-block;
     color: var(--foreground, currentColor);
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -15,7 +16,7 @@
       background: var(--underline-background-hover, var(--foreground-400));
     }
 
-    &:focus-visible {
+    &[data-focus-visible="true"] {
       outline: 2px solid var(--focus-visible, var(--focus-ring));
       outline-offset: 2px;
       border-radius: 2px;

@@ -43,4 +43,14 @@ describe("TextArea", () => {
     expect(textarea).toHaveAttribute("data-resize-axis", "none");
     expect(container.querySelector('[data-slot="resize-handle"]')).toBeNull();
   });
+
+  it("uses the scroll wrapper as the focus surface when maxHeight is set", () => {
+    const { container } = render(<TextArea aria-label="Scrollable" maxHeight="12rem" />);
+
+    const textarea = screen.getByRole("textbox", { name: "Scrollable" });
+    const scrollWrapper = container.querySelector('[data-textarea-focus-surface="true"]');
+
+    expect(textarea).not.toHaveAttribute("data-textarea-focus-surface", "true");
+    expect(scrollWrapper).toHaveClass("scroll-wrapper");
+  });
 });

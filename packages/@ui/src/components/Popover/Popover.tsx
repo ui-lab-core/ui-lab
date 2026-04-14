@@ -12,6 +12,7 @@ import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import { cn } from "@/lib/utils";
 import { type StyleValue } from "@/lib/utils";
 import { asElementProps } from "@/lib/react-aria";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Frame } from "../Frame";
 import css from "./Popover.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
@@ -177,23 +178,9 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       return () => document.removeEventListener("keydown", handleKeyDown);
     }, [state.isOpen, state]);
 
-    const mergedRef = React.useCallback(
-      (el: HTMLDivElement | null) => {
-        (triggerRef as React.RefObject<HTMLDivElement | null>).current = el;
-        refs.setReference(el);
-        if (typeof ref === "function") ref(el);
-        else if (ref) ref.current = el;
-      },
-      [refs, ref]
-    );
+    const mergedRef = useMergeRefs(triggerRef, refs.setReference, ref);
 
-    const mergedContentRef = React.useCallback(
-      (el: HTMLDivElement | null) => {
-        (popoverContentRef as React.RefObject<HTMLDivElement | null>).current = el;
-        refs.setFloating(el);
-      },
-      [refs]
-    );
+    const mergedContentRef = useMergeRefs(popoverContentRef, refs.setFloating);
 
     // Convert React Aria's onPress to onClick for native HTML elements
     const nativeProps = React.useMemo(() => {

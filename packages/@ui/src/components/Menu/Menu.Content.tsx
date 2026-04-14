@@ -11,11 +11,11 @@ import css from "./Menu.module.css"
 import { useMenuContext } from "./Menu"
 import type { MenuTriggerProps, MenuContentProps } from "./menu.types"
 import {
-  useMergedRef,
   handleListKeyDown,
   useListPointerModality,
   useListScrollIntoView,
 } from "../../utils/list-navigation"
+import { useMergeRefs as useMergedRef } from "../../hooks/useMergeRefs"
 import { Scroll } from "../Scroll"
 import { List } from "../List"
 import { useScrollLock } from "../../hooks/useScrollLock"

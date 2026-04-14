@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Mask } from "../Mask";
 import css from "./Scroll.module.css";
 import {
@@ -148,7 +149,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     const contentRef = useRef<HTMLDivElement>(null);
     const maskRef = useRef<HTMLDivElement>(null);
     const thumbRef = useRef<HTMLDivElement>(null);
-    const mergedRef = useMergedRef(ref, containerRef);
+    const mergedRef = useMergeRefs(ref, containerRef);
 
     const resolved = resolveScrollStyles(styles);
 
@@ -561,14 +562,5 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
 );
 
 Scroll.displayName = "Scroll";
-
-function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> {
-  return (value: T) => {
-    refs.forEach((ref) => {
-      if (typeof ref === "function") ref(value);
-      else if (ref && typeof ref === "object") (ref as React.MutableRefObject<T | null>).current = value;
-    });
-  };
-}
 
 export { Scroll };

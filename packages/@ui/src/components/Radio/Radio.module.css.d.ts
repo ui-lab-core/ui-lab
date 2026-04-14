@@ -1,6 +1,7 @@
 declare const styles: {
   "radio-group": string;
   "radio-item": string;
+  "radio-surface": string;
   "radio-input": string;
   radio: string;
   "radio-dot": string;

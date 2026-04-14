@@ -1,4 +1,5 @@
 declare const styles: {
+  scope: string;
   input: string;
   "icon-wrapper": string;
   "prefix-icon": string;

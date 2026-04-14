@@ -12,6 +12,7 @@ import { useOverlayTriggerState } from "@react-stately/overlays";
 import { filterDOMProps } from "@react-aria/utils";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Search } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
@@ -428,16 +429,7 @@ const CommandListComponent = React.forwardRef<
   return (
     <div className={cn(styles["inner"], className)}>
       <Scroll
-        ref={(el) => {
-          if (ref) {
-            if (typeof ref === "function") {
-              ref(el);
-            } else {
-              ref.current = el;
-            }
-          }
-          scrollableRef.current = el;
-        }}
+        ref={useMergeRefs(ref, scrollableRef)}
         className={styles["list"]}
         maxHeight="44dvh"
         fade-y

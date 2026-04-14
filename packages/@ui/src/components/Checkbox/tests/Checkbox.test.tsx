@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Checkbox } from '../Checkbox'
 import {
@@ -85,12 +85,27 @@ describe('Checkbox - Interactions', () => {
 describe('Checkbox - Focus', () => {
   it('can be focused with keyboard', async () => {
     const user = userEvent.setup()
-    render(<Checkbox aria-label="Focusable" />)
+    const { container } = render(<Checkbox aria-label="Focusable" />)
 
     const checkbox = screen.getByRole('checkbox')
     await user.tab()
     expect(checkbox).toHaveFocus()
     expect(checkbox).toHaveAttribute('data-focused', 'true')
+    expect(checkbox).toHaveAttribute('data-focus-visible', 'true')
+    await waitFor(() => {
+      expect(container.querySelector('[data-focus-indicator="local"]')).toHaveAttribute('data-visible', 'true')
+    })
+  })
+
+  it('does not mark pointer focus as focus-visible', async () => {
+    const user = userEvent.setup()
+    render(<Checkbox aria-label="Pointer focus" />)
+
+    const checkbox = screen.getByRole('checkbox')
+    await user.click(checkbox)
+    expect(checkbox).toHaveFocus()
+    expect(checkbox).toHaveAttribute('data-focused', 'true')
+    expect(checkbox).not.toHaveAttribute('data-focus-visible')
   })
 
   it('supports indeterminate state', () => {

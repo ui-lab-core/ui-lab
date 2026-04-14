@@ -11,7 +11,9 @@ import { useRadioGroup, useRadio } from "@react-aria/radio";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
-import styles from "./Radio.module.css";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import css from "./Radio.module.css";
 
 type Size = "sm" | "md" | "lg";
 
@@ -145,7 +147,7 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
         <div ref={ref} className={cn(className, resolved.root)} role="group">
           {label && (
             <label
-              className={cn("radio", "radio-label", styles["radio-label"], resolved.label)}
+              className={cn("radio", "radio-label", css["radio-label"], resolved.label)}
               data-disabled={disabled ? "true" : undefined}
             >
               {label}
@@ -153,12 +155,12 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
           )}
           {description && (
             <p
-              className={cn("radio", "radio-description", styles["radio-description"], resolved.description)}
+              className={cn("radio", "radio-description", css["radio-description"], resolved.description)}
             >
               {description}
             </p>
           )}
-          <div className={cn(styles["radio-group"], resolved.group)}>{children}</div>
+          <div className={cn(css["radio-group"], resolved.group)}>{children}</div>
         </div>
       </RadioGroupContext.Provider>
     );
@@ -219,7 +221,8 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
     const isSelected = state.selectedValue === value;
 
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const mergedRef = useMergedRef(ref, inputRef);
+    const rootRef = React.useRef<HTMLDivElement>(null);
+    const mergedRef = useMergeRefs(ref, inputRef);
 
     const ariaLabelFromProps = props["aria-label"];
     const ariaLabelValue = ariaLabelFromProps || (typeof label === "string" ? label : undefined);
@@ -236,65 +239,77 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef: rootRef,
+      containerRef: rootRef,
+      surfaceSelector: '[data-radio-focus-surface="true"]',
+      radiusSource: "surface",
+    });
     const resolved = resolveRadioStyles(stylesProp);
 
     return (
-      <div className="w-full">
-        <div className={cn(styles["radio-item"], resolved.item)} data-disabled={disabled ? "true" : undefined}>
-          <div className="relative">
-            <div
-              className={cn("radio", styles.radio, styles[size], className, resolved.root)}
-              data-selected={isSelected ? "true" : "false"}
-              data-disabled={disabled ? "true" : undefined}
-              data-error={error ? "true" : undefined}
-              data-hovered={isHovered ? "true" : "false"}
-              data-focused={isFocused ? "true" : "false"}
-              data-focus-visible={isFocusVisible ? "true" : "false"}
-              role="presentation"
-            >
-              <div className={cn(styles["radio-dot"], styles[size], resolved.dot)} />
-            </div>
-            <input
-              {...asElementProps<"input">(mergeProps(inputProps, focusProps, hoverProps))}
-              ref={mergedRef}
-              type="radio"
-              id={radioId}
-              className={cn(styles["radio-input"], resolved.input)}
-              suppressHydrationWarning
-              {...props}
-            />
+      <div
+        ref={rootRef}
+        className={cn("w-full", css["radio-item"], scopeProps.className, resolved.item)}
+        data-disabled={disabled ? "true" : undefined}
+      >
+        <div {...indicatorProps} data-focus-indicator="local" />
+        <div
+          className={cn("relative", css["radio-surface"])}
+          data-focused={isFocused ? "true" : "false"}
+          data-focus-visible={isFocusVisible ? "true" : "false"}
+          data-radio-focus-surface="true"
+        >
+          <div
+            className={cn("radio", css.radio, css[size], className, resolved.root)}
+            data-selected={isSelected ? "true" : "false"}
+            data-disabled={disabled ? "true" : undefined}
+            data-error={error ? "true" : undefined}
+            data-hovered={isHovered ? "true" : "false"}
+            role="presentation"
+          >
+            <div className={cn(css["radio-dot"], css[size], resolved.dot)} />
           </div>
-          {(label || description) && (
-            <div className="flex flex-col gap-1">
-              {label && (
-                <label
-                  htmlFor={radioId}
-                  className={cn("radio", "radio-label", styles["radio-label"], resolved.label)}
-                  data-disabled={disabled ? "true" : undefined}
-                  suppressHydrationWarning
-                >
-                  {label}
-                </label>
-              )}
-              {description && (
-                <p
-                  className={cn(
-                    "radio",
-                    "radio-description",
-                    styles["radio-description"],
-                    resolved.description
-                  )}
-                  data-error={error ? "true" : undefined}
-                >
-                  {description}
-                </p>
-              )}
-            </div>
-          )}
+          <input
+            {...asElementProps<"input">(mergeProps(inputProps, focusProps, hoverProps))}
+            ref={mergedRef}
+            type="radio"
+            id={radioId}
+            className={cn(css["radio-input"], resolved.input)}
+            suppressHydrationWarning
+            {...props}
+          />
         </div>
+        {(label || description) && (
+          <div className="flex flex-col gap-1">
+            {label && (
+              <label
+                htmlFor={radioId}
+                className={cn("radio", "radio-label", css["radio-label"], resolved.label)}
+                data-disabled={disabled ? "true" : undefined}
+                suppressHydrationWarning
+              >
+                {label}
+              </label>
+            )}
+            {description && (
+              <p
+                className={cn(
+                  "radio",
+                  "radio-description",
+                  css["radio-description"],
+                  resolved.description
+                )}
+                data-error={error ? "true" : undefined}
+              >
+                {description}
+              </p>
+            )}
+          </div>
+        )}
         {helperText && (
           <p
-            className={cn("radio", "helper-text", styles["helper-text"], resolved.helperText)}
+            className={cn("radio", "helper-text", css["helper-text"], resolved.helperText)}
             data-error={helperTextError ? "true" : undefined}
           >
             {helperText}
@@ -363,70 +378,83 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
 
     const radioId = id || `radio-${generatedId}`;
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const mergedRef = useMergedRef(ref, inputRef);
+    const rootRef = React.useRef<HTMLDivElement>(null);
+    const mergedRef = useMergeRefs(ref, inputRef);
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef: rootRef,
+      containerRef: rootRef,
+      surfaceSelector: '[data-radio-focus-surface="true"]',
+      radiusSource: "surface",
+    });
     const resolved = resolveRadioStyles(stylesProp);
 
     return (
-      <div className="w-full">
-        <div className={cn(styles["radio-item"], resolved.item)} data-disabled={disabled ? "true" : undefined}>
-          <div className="relative">
-            <div
-              className={cn("radio", styles.radio, styles[size], className, resolved.root)}
-              data-selected={checked ? "true" : "false"}
-              data-disabled={disabled ? "true" : undefined}
-              data-error={error ? "true" : undefined}
-              data-hovered={isHovered ? "true" : "false"}
-              data-focused={isFocused ? "true" : "false"}
-              data-focus-visible={isFocusVisible ? "true" : "false"}
-              role="presentation"
-            >
-              <div className={cn(styles["radio-dot"], styles[size], resolved.dot)} />
-            </div>
-            <input
-              {...asElementProps<"input">(mergeProps(focusProps, hoverProps))}
-              ref={mergedRef}
-              type="radio"
-              id={radioId}
-              checked={checked}
-              onChange={handleChange}
-              disabled={disabled ?? false}
-              className={cn(styles["radio-input"], resolved.input)}
-              aria-label={typeof label === "string" ? label : undefined}
-              suppressHydrationWarning
-              {...props}
-            />
+      <div
+        ref={rootRef}
+        className={cn("w-full", css["radio-item"], scopeProps.className, resolved.item)}
+        data-disabled={disabled ? "true" : undefined}
+      >
+        <div {...indicatorProps} data-focus-indicator="local" />
+        <div
+          className={cn("relative", css["radio-surface"])}
+          data-focused={isFocused ? "true" : "false"}
+          data-focus-visible={isFocusVisible ? "true" : "false"}
+          data-radio-focus-surface="true"
+        >
+          <div
+            className={cn("radio", css.radio, css[size], className, resolved.root)}
+            data-selected={checked ? "true" : "false"}
+            data-disabled={disabled ? "true" : undefined}
+            data-error={error ? "true" : undefined}
+            data-hovered={isHovered ? "true" : "false"}
+            role="presentation"
+          >
+            <div className={cn(css["radio-dot"], css[size], resolved.dot)} />
           </div>
-          {(label || description) && (
-            <div className="flex flex-col gap-1">
-              {label && (
-                <label
-                  htmlFor={radioId}
-                  className={cn("radio", "radio-label", styles["radio-label"], resolved.label)}
-                  data-disabled={disabled ? "true" : undefined}
-                  suppressHydrationWarning
-                >
-                  {label}
-                </label>
-              )}
-              {description && (
-                <p
-                  className={cn(
-                    "radio",
-                    "radio-description",
-                    styles["radio-description"],
-                    resolved.description
-                  )}
-                  data-error={error ? "true" : undefined}
-                >
-                  {description}
-                </p>
-              )}
-            </div>
-          )}
+          <input
+            {...asElementProps<"input">(mergeProps(focusProps, hoverProps))}
+            ref={mergedRef}
+            type="radio"
+            id={radioId}
+            checked={checked}
+            onChange={handleChange}
+            disabled={disabled ?? false}
+            className={cn(css["radio-input"], resolved.input)}
+            aria-label={typeof label === "string" ? label : undefined}
+            suppressHydrationWarning
+            {...props}
+          />
         </div>
+        {(label || description) && (
+          <div className="flex flex-col gap-1">
+            {label && (
+              <label
+                htmlFor={radioId}
+                className={cn("radio", "radio-label", css["radio-label"], resolved.label)}
+                data-disabled={disabled ? "true" : undefined}
+                suppressHydrationWarning
+              >
+                {label}
+              </label>
+            )}
+            {description && (
+              <p
+                className={cn(
+                  "radio",
+                  "radio-description",
+                  css["radio-description"],
+                  resolved.description
+                )}
+                data-error={error ? "true" : undefined}
+              >
+                {description}
+              </p>
+            )}
+          </div>
+        )}
         {helperText && (
           <p
-            className={cn("radio", "helper-text", styles["helper-text"], resolved.helperText)}
+            className={cn("radio", "helper-text", css["helper-text"], resolved.helperText)}
             data-error={helperTextError ? "true" : undefined}
           >
             {helperText}
@@ -438,18 +466,6 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
 );
 
 RadioBase.displayName = "Radio";
-
-function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> {
-  return (value: T) => {
-    refs.forEach((slotRef) => {
-      if (typeof slotRef === "function") {
-        slotRef(value);
-      } else if (slotRef && typeof slotRef === "object") {
-        (slotRef as React.MutableRefObject<T | null>).current = value;
-      }
-    });
-  };
-}
 
 const Radio = Object.assign(RadioBase, {
   Group: RadioGroup,

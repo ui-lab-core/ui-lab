@@ -1,8 +1,12 @@
 "use client";
 
 import React, { forwardRef, useState } from "react";
+import { useFocusRing } from "@react-aria/focus";
+import { mergeProps } from "@react-aria/utils";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Checkbox.module.css";
 
 type Size = "sm" | "md" | "lg";
@@ -108,15 +112,19 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
     ref
   ) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const [isFocused, setIsFocused] = useState(false);
+    const rootRef = React.useRef<HTMLDivElement>(null);
     // Track pressed state for tactile feedback animation (data-pressed attribute)
     const [isPressed, setIsPressed] = useState(false);
     const [internalChecked, setInternalChecked] = useState(() =>
       checked !== undefined ? checked : (defaultChecked ?? false)
     );
-
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => setIsFocused(false);
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef: rootRef,
+      containerRef: rootRef,
+      surfaceSelector: '[data-checkbox-focus-surface="true"]',
+      radiusSource: "surface",
+    });
 
     // React Aria press state handlers for tactile scale animation (mouse)
     const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLInputElement>) => {
@@ -169,14 +177,25 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       Object.entries(props).filter(([, value]) => typeof value !== 'boolean')
     );
 
+    const inputProps = mergeProps(domProps, focusProps, {
+      onChange: handleChange,
+      onMouseDown: handleMouseDown,
+      onMouseUp: handleMouseUp,
+      onMouseLeave: handleMouseLeave,
+      onKeyDown: handleKeyDown,
+      onKeyUp: handleKeyUp,
+    }) as React.InputHTMLAttributes<HTMLInputElement>;
+
     // Determine if this is a controlled component
     const isControlled = checked !== undefined;
     const displayChecked = isControlled ? checked : internalChecked;
 
     const resolved = resolveCheckboxStyles(styles);
+    const mergedRootRef = useMergeRefs(rootRef, ref);
 
     return (
-      <div ref={ref} className={cn("checkbox-root", css['checkbox-root'], resolved.root)}>
+      <div ref={mergedRootRef} className={cn("checkbox-root", scopeProps.className, css['checkbox-root'], resolved.root)}>
+        <div {...indicatorProps} data-focus-indicator="local" />
         <div className={cn(css.container, sizeMap[size])}>
           <input
             ref={inputRef}
@@ -184,14 +203,6 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             id={id}
             disabled={disabled}
             {...(isControlled ? { checked } : { defaultChecked: internalChecked })}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-            onKeyDown={handleKeyDown}
-            onKeyUp={handleKeyUp}
             className={cn(
               'checkbox',
               css.checkbox,
@@ -203,9 +214,10 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             data-disabled={disabled ? "true" : undefined}
             data-indeterminate={isIndeterminate ? "true" : undefined}
             data-focused={isFocused ? "true" : undefined}
-            data-focus-visible={isFocused ? "true" : undefined}
+            data-focus-visible={isFocusVisible ? "true" : undefined}
             data-pressed={isPressed ? "true" : undefined}
-            {...domProps}
+            data-checkbox-focus-surface="true"
+            {...inputProps}
           />
           {displayChecked && !isIndeterminate && (
             <svg

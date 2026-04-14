@@ -10,6 +10,7 @@ import { useSwitch } from "@react-aria/switch";
 import { useToggleState } from "react-stately";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
 
 import styles from "./Switch.module.css";
 
@@ -63,6 +64,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     });
 
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const rootRef = React.useRef<HTMLDivElement>(null);
 
     // Extract aria-label from props if provided
     const { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledby, ...otherProps } = props;
@@ -76,10 +78,16 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       state,
       inputRef
     );
-    const { focusProps, isFocusVisible } = useFocusRing();
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled });
 
-
+    const { indicatorProps } = useFocusIndicator({
+      scopeRef: rootRef,
+      containerRef: rootRef,
+      surfaceSelector: '[data-switch-focus-surface="true"]',
+      radiusSource: "surface",
+      mode: "self",
+    });
 
     React.useImperativeHandle(ref, () => inputRef.current!);
 
@@ -87,6 +95,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
 
     return (
       <div
+        ref={rootRef}
         className={cn(
           'switch',
           styles.switch,
@@ -94,11 +103,14 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
           className,
           resolved.root
         )}
+        data-switch-focus-surface="true"
         data-selected={isSelected || undefined}
         data-disabled={isDisabled || undefined}
-        data-focus-visible={isFocusVisible || undefined}
+        data-focused={isFocused ? "true" : "false"}
+        data-focus-visible={isFocusVisible ? "true" : "false"}
         data-hovered={isHovered || undefined}
       >
+        <div {...indicatorProps} data-focus-indicator="local" />
         <div
           className={cn(
             'switch-track',

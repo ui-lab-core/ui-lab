@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useFocusRing } from "@react-aria/focus";
 import { asElementProps } from "@/lib/react-aria";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { hsvToRgb } from "./color-utils";
 import styles from "./Color.module.css";
 
@@ -38,14 +39,7 @@ export const ColorCanvas = React.forwardRef<
     const containerRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
 
-    const mergedRef = React.useCallback(
-      (el: HTMLDivElement | null) => {
-        if (typeof ref === "function") ref(el);
-        else if (ref) ref.current = el;
-        if (el) containerRef.current = el;
-      },
-      [ref]
-    );
+    const mergedRef = useMergeRefs(ref, containerRef);
 
     const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
       if (disabled) return;

@@ -42,3 +42,25 @@
   --info-500: var(--color-info-500, oklch(60% 0.105 255));
   --info-600: var(--color-info-600, oklch(81% 0.19  255));
 }
+
+@layer components {
+  [data-ring="true"] {
+    outline: none;
+  }
+
+  [data-ring="true"][data-focus-visible="true"] {
+    position: relative;
+    z-index: var(--ring-z, auto);
+    outline: none;
+    border-color: var(
+      --ring-border-visible,
+      var(--ring-border, transparent)
+    );
+    box-shadow: var(--ring-shadow, none);
+  }
+
+  [data-ring="true"][data-focused="true"] {
+    outline: none;
+    border-color: var(--ring-border, transparent);
+  }
+}

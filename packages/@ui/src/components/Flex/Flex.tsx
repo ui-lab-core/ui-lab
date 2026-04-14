@@ -87,11 +87,11 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
     {
       className,
       styles: stylesProp,
-      direction = "row",
-      wrap = "nowrap",
-      gap = "md",
-      justify = "flex-start",
-      align = "stretch",
+      direction,
+      wrap,
+      gap,
+      justify,
+      align,
       containerQueryResponsive = false,
       children,
       ...props
@@ -110,11 +110,11 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
           <div
             className={cn(
               styles.flex,
-              directionMap[direction],
-              wrapMap[wrap],
-              gapMap[gap],
-              justifyMap[justify],
-              alignMap[align],
+              direction && directionMap[direction],
+              wrap && wrapMap[wrap],
+              gap && gapMap[gap],
+              justify && justifyMap[justify],
+              align && alignMap[align],
               styles["container-responsive"]
             )}
             data-direction={direction}
@@ -134,11 +134,11 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
         ref={ref}
         className={cn(
           styles.flex,
-          directionMap[direction],
-          wrapMap[wrap],
-          gapMap[gap],
-          justifyMap[justify],
-          alignMap[align],
+          direction && directionMap[direction],
+          wrap && wrapMap[wrap],
+          gap && gapMap[gap],
+          justify && justifyMap[justify],
+          align && alignMap[align],
           className,
           resolved.root
         )}

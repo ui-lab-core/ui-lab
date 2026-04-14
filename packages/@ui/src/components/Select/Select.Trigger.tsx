@@ -1,13 +1,14 @@
 import * as React from "react"
 import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
+import { useMergeRefs } from "@/hooks/useMergeRefs"
 import { Input, type InputProps } from "../Input"
 import { ChevronDown } from "lucide-react"
 import styles from "./Select.module.css"
 import { useSelectContext } from "./Select"
 import { GroupContext } from "../Group/Group"
 import groupStyles from "../Group/Group.module.css"
-import { useMergedRef, handleListKeyDown } from "./Select.shared"
+import { handleListKeyDown } from "./Select.shared"
 
 export const SelectTriggerContext = React.createContext<boolean>(false)
 
@@ -89,7 +90,10 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
       isFocusVisible,
       isDisabled,
     } = useSelectContext()
-    const mergedRef = useMergedRef<HTMLButtonElement>(triggerRef, ref)
+    const setTriggerRef = React.useCallback((element: HTMLButtonElement | null) => {
+      triggerRef.current = element
+    }, [triggerRef])
+    const mergedRef = useMergeRefs<HTMLButtonElement>(setTriggerRef, ref)
     const isSplitTrigger = hasExternalValue && children === undefined && mode === "single"
 
     const resolvedChevron = icon?.chevron !== undefined ? icon.chevron : chevron !== undefined ? chevron : <ChevronDown size={14} />
@@ -196,9 +200,12 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
     } = useSelectContext()
     const inputRef = React.useRef<HTMLInputElement>(null)
     const [isSearchActive, setIsSearchActive] = React.useState(false)
-    const mergedRef = useMergedRef<HTMLInputElement>(
+    const setTriggerRef = React.useCallback((element: HTMLInputElement | null) => {
+      triggerRef.current = element
+    }, [triggerRef])
+    const mergedRef = useMergeRefs<HTMLInputElement>(
       inputRef,
-      triggerRef as React.MutableRefObject<HTMLInputElement | null>,
+      setTriggerRef,
       ref
     )
 

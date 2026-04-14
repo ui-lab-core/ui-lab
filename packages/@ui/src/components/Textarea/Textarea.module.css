@@ -4,65 +4,41 @@
   .textarea {
     --padding-inline: 0.75rem;
     --padding-block: 0.5rem;
-    --background: var(--background-950);
-    --background-border: var(--background-700);
-    --background-hover: var(--background-900);
-    --background-focused: var(--background-900);
-    --background-focused-border: var(--accent-500);
-    --background-disabled: var(--background-900);
-    --foreground: var(--foreground-50);
-    --foreground-disabled: var(--foreground-400);
-    --placeholder: var(--foreground-400);
-    --focus-visible: var(--accent-500);
-    --disabled-opacity: 0.6;
 
     @apply block w-full px-3 py-2;
+    box-sizing: border-box;
+    resize: none;
+    border: var(--border-width-base, 1px) solid var(--background-border);
+    border-radius: var(--radius-sm, 0.375rem);
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: inherit;
     font-size: var(--text-sm);
     line-height: var(--leading-snug);
-    color: var(--foreground);
-    background-color: var(--background);
-    border: var(--border-width-base, 1px) solid var(--background-border);
-    border-radius: var(--radius-sm, 0.375rem);
-    box-sizing: border-box;
-    resize: none;
     outline: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &::placeholder {
       color: var(--placeholder);
     }
 
-    &:hover:not([data-disabled]) {
+    &:hover:not([data-disabled]),
+    &[data-hovered="true"]:not([data-disabled]) {
       background-color: var(--background-hover);
     }
 
-    &[data-focused="true"] {
-      border-color: var(--background-focused-border);
-      background-color: var(--background-focused);
-    }
-
-    &[data-focus-visible="true"] {
-      outline: none;
-      border-color: var(--background-focused-border);
-      box-shadow: 0 0 0 1px var(--focus-visible);
-      background-color: var(--background-focused);
-    }
-
-    &[data-disabled] {
+    &[data-disabled="true"] {
       background-color: var(--background-disabled);
       color: var(--foreground-disabled);
       cursor: not-allowed;
       opacity: var(--disabled-opacity);
     }
 
-    &[data-error] {
-      border-color: var(--background-error-border, var(--background-border));
-
-      &[data-focused="true"],
-      &[data-focus-visible="true"] {
-        border-color: var(--background-error-focused-border, var(--background-focused-border));
-      }
+    &[data-error="true"] {
+      border-color: var(--background-error-border);
     }
 
     &[data-resize-axis="x"],
@@ -76,57 +52,83 @@
     }
 
     &[data-scroll="true"] {
-      overflow: hidden;
-      resize: none;
-      background: transparent;
       border: none;
       border-radius: 0;
+      background: transparent;
       box-shadow: none;
+      overflow: hidden;
 
-      &[data-focused="true"],
-      &[data-focus-visible="true"] {
-        border-color: transparent;
-        box-shadow: none;
-      }
-
-      &[data-disabled] {
+      &[data-disabled="true"] {
         background-color: transparent;
         opacity: 1;
       }
 
-      &[data-error] {
+      &[data-error="true"] {
         border-color: transparent;
-
-        &[data-focused="true"],
-        &[data-focus-visible="true"] {
-          border-color: transparent;
-          box-shadow: none;
-        }
       }
     }
+  }
+
+  .size-sm {
+    min-height: 5rem;
+    --padding-inline: 0.5rem;
+    --padding-block: 0.25rem;
+    font-size: var(--text-sm);
+    @apply px-2 py-1;
+  }
+
+  .size-md {
+    min-height: 6rem;
+    --padding-inline: 0.75rem;
+    --padding-block: 0.5rem;
+    font-size: var(--text-sm);
+    @apply px-3 py-2;
+  }
+
+  .size-lg {
+    min-height: 8rem;
+    --padding-inline: 1rem;
+    --padding-block: 0.75rem;
+    font-size: var(--text-md);
+    @apply px-4 py-3;
+  }
+
+  .container {
+    @apply w-full;
   }
 
   .surface {
     @apply relative w-full;
   }
 
-  .resize-handle {
-    --handle-background: color-mix(in srgb, var(--foreground-400) 72%, transparent);
-    --handle-hover-background: color-mix(in srgb, var(--foreground-200) 90%, transparent);
+  .scroll-wrapper {
+    @apply w-full overflow-hidden;
+    border: var(--border-width-base, 1px) solid var(--background-border);
+    border-radius: var(--radius-sm, 0.375rem);
+    background-color: var(--background);
 
+    &:hover:not([data-disabled="true"]),
+    &[data-hovered="true"]:not([data-disabled="true"]) {
+      background-color: var(--background-hover);
+    }
+
+    &[data-disabled="true"] {
+      background-color: var(--background-disabled);
+      opacity: var(--disabled-opacity);
+    }
+
+    &[data-error="true"] {
+      border-color: var(--background-error-border);
+    }
+  }
+
+  .resize-handle {
     position: absolute;
     z-index: 1;
     touch-action: none;
     user-select: none;
 
-    &::before {
-      content: "";
-      position: absolute;
-      border-radius: var(--radius-full);
-      background-color: var(--handle-background);
-      transition: background-color 150ms;
-    }
-
+    &::before,
     &::after {
       content: "";
       position: absolute;
@@ -139,153 +141,84 @@
     &:hover::after {
       background-color: var(--handle-hover-background);
     }
+  }
 
-    &[data-axis="both"] {
-      right: 3px;
-      bottom: 3px;
-      width: 1.5rem;
-      height: 1.5rem;
-      cursor: nwse-resize;
+  .resize-handle-both {
+    right: 3px;
+    bottom: 3px;
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: nwse-resize;
 
-      &::before {
-        bottom: 0.35rem;
-        right: 0.15rem;
-        width: 0.5rem;
-        height: 0.125rem;
-        transform: rotate(-45deg);
-        transform-origin: center;
-      }
-
-      &::after {
-        bottom: 0.6rem;
-        right: 0.2rem;
-        width: 1rem;
-        height: 0.125rem;
-        transform: rotate(-45deg);
-        transform-origin: center;
-      }
+    &::before {
+      right: 0.15rem;
+      bottom: 0.35rem;
+      width: 0.5rem;
+      height: 0.125rem;
+      transform: rotate(-45deg);
+      transform-origin: center;
     }
 
-    &[data-axis="x"] {
+    &::after {
+      right: 0.2rem;
+      bottom: 0.6rem;
+      width: 1rem;
+      height: 0.125rem;
+      transform: rotate(-45deg);
+      transform-origin: center;
+    }
+  }
+
+  .resize-handle-x {
+    top: 50%;
+    right: 0;
+    width: 0.75rem;
+    height: 2rem;
+    cursor: ew-resize;
+    transform: translateY(-50%);
+
+    &::before {
       top: 50%;
-      right: 0;
-      width: 0.75rem;
-      height: 2rem;
-      cursor: ew-resize;
-      transform: translateY(-50%);
-
-      &::before {
-        top: 50%;
-        left: 50%;
-        width: 0.125rem;
-        height: 1.5rem;
-        transform: translate(-50%, -50%);
-      }
-    }
-
-    &[data-axis="y"] {
       left: 50%;
-      bottom: 0;
-      width: 2rem;
-      height: 0.75rem;
-      cursor: ns-resize;
-      transform: translateX(-50%);
+      width: 0.125rem;
+      height: 1.5rem;
+      transform: translate(-50%, -50%);
+    }
 
-      &::before {
-        top: 50%;
-        left: 50%;
-        width: 1.5rem;
-        height: 0.125rem;
-        transform: translate(-50%, -50%);
-      }
+    &::after {
+      display: none;
     }
   }
 
-  .scroll-wrapper {
-    --background: var(--background-950);
-    --background-border: var(--background-700);
-    --background-hover: var(--background-900);
-    --background-focused: var(--background-900);
-    --background-focused-border: var(--accent-500);
-    --background-disabled: var(--background-900);
-    --focus-visible: var(--accent-500);
-    --disabled-opacity: 0.6;
+  .resize-handle-y {
+    left: 50%;
+    bottom: 0;
+    width: 2rem;
+    height: 0.75rem;
+    cursor: ns-resize;
+    transform: translateX(-50%);
 
-    @apply w-full overflow-hidden;
-    background-color: var(--background);
-    border: var(--border-width-base, 1px) solid var(--background-border);
-    border-radius: var(--radius-sm, 0.375rem);
-
-    &:hover:not([data-disabled]) {
-      background-color: var(--background-hover);
+    &::before {
+      top: 50%;
+      left: 50%;
+      width: 1.5rem;
+      height: 0.125rem;
+      transform: translate(-50%, -50%);
     }
 
-    &[data-focused="true"] {
-      border-color: var(--background-focused-border);
-      background-color: var(--background-focused);
+    &::after {
+      display: none;
     }
-
-    &[data-focus-visible="true"] {
-      outline: none;
-      border-color: var(--background-focused-border);
-      box-shadow: 0 0 0 1px var(--focus-visible);
-      background-color: var(--background-focused);
-    }
-
-    &[data-disabled] {
-      background-color: var(--background-disabled);
-      opacity: var(--disabled-opacity);
-    }
-
-    &[data-error] {
-      border-color: var(--background-error-border, var(--background-border));
-
-      &[data-focused="true"],
-      &[data-focus-visible="true"] {
-        border-color: var(--background-error-focused-border, var(--background-focused-border));
-      }
-    }
-  }
-
-  .textarea[data-size="sm"] {
-    min-height: 5rem;
-    --padding-inline: 0.5rem;
-    --padding-block: 0.25rem;
-    font-size: var(--text-sm);
-    @apply px-2 py-1;
-  }
-
-  .textarea[data-size="md"] {
-    min-height: 6rem;
-    --padding-inline: 0.75rem;
-    --padding-block: 0.5rem;
-    font-size: var(--text-sm);
-    @apply px-3 py-2;
-  }
-
-  .textarea[data-size="lg"] {
-    min-height: 8rem;
-    --padding-inline: 1rem;
-    --padding-block: 0.75rem;
-    font-size: var(--text-md);
-    @apply px-4 py-3;
-  }
-
-  .container {
-    @apply w-full;
   }
 
   .character-count {
-    --count-foreground: var(--foreground-400);
-    --count-over-limit-foreground: var(--danger-600);
-
-    font-size: var(--text-sm);
-    color: var(--count-foreground);
     @apply mt-1;
+    color: var(--count-foreground);
+    font-size: var(--text-sm);
     transition: color 0.15s var(--ease-snappy-pop);
   }
 
-  .character-count[data-over-limit] {
+  .character-count[data-over-limit="true"] {
     color: var(--count-over-limit-foreground);
   }
 }

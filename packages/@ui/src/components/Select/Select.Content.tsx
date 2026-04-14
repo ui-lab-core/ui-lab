@@ -6,13 +6,14 @@ import { offset } from "../../hooks/useFloat/core/middleware/offset"
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
 import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
+import { useMergeRefs } from "@/hooks/useMergeRefs"
 import styles from "./Select.module.css"
 import { useSelectContext } from "./Select"
 import { GroupContext } from "../Group/Group"
 import { Scroll } from "../Scroll"
 import { Input } from "../Input"
 import { List } from "../List"
-import { handleListKeyDown, scrollItemIntoView, useListPointerModality, useMergedRef } from "./Select.shared"
+import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared"
 
 export interface SelectContentStyleSlots {
   root?: StyleValue;
@@ -197,7 +198,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       keyboardScrollIntentRef.current = false
     }, [contentElement, focusedKey, isOpen, keyboardScrollIntentRef, mouseMoveDetectedRef])
 
-    const mergedContentRef = useMergedRef<HTMLDivElement>(setContentElement, contentRef, ref)
+    const setSharedContentRef = React.useCallback((element: HTMLDivElement | null) => {
+      contentRef.current = element
+    }, [contentRef])
+    const mergedContentRef = useMergeRefs<HTMLDivElement>(setContentElement, setSharedContentRef, ref)
     const mergedFloatingRef = React.useCallback((el: HTMLDivElement | null) => {
       floatingRootRef.current = el
       refs.setFloating(el)
@@ -210,12 +214,13 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     }, [restoreFocus, setIsOpen, setSearchValue])
 
     const handleTabNavigation = React.useCallback((e: React.KeyboardEvent) => {
+      e.preventDefault()
+      const direction = e.shiftKey ? -1 : 1
       setIsOpen(false)
       setSearchValue("")
-      const direction = e.shiftKey ? -1 : 1
-      if (moveFocusFromTrigger(direction as 1 | -1)) {
-        e.preventDefault()
-      }
+      requestAnimationFrame(() => {
+        moveFocusFromTrigger(direction as 1 | -1)
+      })
     }, [moveFocusFromTrigger, setIsOpen, setSearchValue])
 
     const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {

@@ -1,7 +1,7 @@
 {
   "id": "group",
   "name": "Group",
-  "description": "Groups Button, Input, and Select with unified border styling.",
+  "description": "Groups Button, Input, Select, and Expand with unified border styling.",
   "category": "composition",
   "experimental": true,
   "source": {
@@ -12,7 +12,8 @@
   "relatedComponents": [
     "button",
     "input",
-    "select"
+    "select",
+    "expand"
   ],
   "tags": [
     "composition",

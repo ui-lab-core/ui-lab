@@ -2,10 +2,13 @@
 
 import * as React from "react"
 import { useFocusRing } from "react-aria"
+import { useInteractionModality } from "@react-aria/interactions"
 import { cn } from "@/lib/utils"
 import { StyleValue } from "@/lib/utils"
 import { asElementProps } from "@/lib/react-aria"
 import { StylesProp, createStylesResolver } from "@/lib/styles"
+import { useFocusIndicator } from "@/hooks/useFocusIndicator"
+import { useMergeRefs } from "@/hooks/useMergeRefs"
 import css from "./Tabs.module.css"
 
 type TabsVariant = "underline"
@@ -201,7 +204,16 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
     const { selectedValue, variant, orientation, setIndicatorReady } = useTabsContext()
     const { root, indicator } = resolveTabsListBaseStyles(stylesProp)
+    const scopeRef = React.useRef<HTMLDivElement>(null)
     const listRef = React.useRef<HTMLDivElement>(null)
+    const { scopeProps: focusScopeProps, indicatorProps: focusIndicatorProps } = useFocusIndicator({
+      scopeRef,
+      containerRef: listRef,
+      surfaceSelector: '[data-focus-surface="true"]',
+      radiusSource: "surface",
+      mode: "ring",
+      dependencies: [selectedValue, orientation, variant],
+    })
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
       top: 0,
@@ -354,35 +366,31 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       }
     }, [indicatorPosition, listDimensions, variant, orientation])
 
-    const mergedRef = React.useCallback(
-      (el: HTMLDivElement | null) => {
-        listRef.current = el
-        if (typeof ref === "function") ref(el)
-        else if (ref) ref.current = el
-      },
-      [ref]
-    )
+    const mergedRef = useMergeRefs(listRef, ref)
 
     return (
       <TabsListContext.Provider value={tabsListContext}>
-        <div
-          ref={mergedRef}
-          role="tablist"
-          aria-label={ariaLabel}
-          aria-orientation={orientation}
-          className={cn("tabs", "list", css.list, root, className)}
-          data-variant={variant}
-          data-orientation={orientation}
-          style={{ position: "relative" }}
-        >
-          {children}
-          {indicatorPosition.width > 0 && (
-            <div
-              aria-hidden="true"
-              className={indicatorClassName}
-              style={getIndicatorStyle}
-            />
-          )}
+        <div ref={scopeRef} className={cn("tabs-scope", focusScopeProps.className)}>
+          <div {...focusIndicatorProps} />
+          <div
+            ref={mergedRef}
+            role="tablist"
+            aria-label={ariaLabel}
+            aria-orientation={orientation}
+            className={cn("tabs", "list", css.list, root, className)}
+            data-variant={variant}
+            data-orientation={orientation}
+            style={{ position: "relative" }}
+          >
+            {children}
+            {indicatorPosition.width > 0 && (
+              <div
+                aria-hidden="true"
+                className={indicatorClassName}
+                style={getIndicatorStyle}
+              />
+            )}
+          </div>
         </div>
       </TabsListContext.Provider>
     )
@@ -504,7 +512,9 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       }
     }, [orientation, variant])
 
-    const { focusProps, isFocusVisible } = useFocusRing()
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing()
+    const interactionModality = useInteractionModality()
+    const showFocusVisible = isFocused && interactionModality !== "pointer" && isFocusVisible
 
     React.useEffect(() => {
       if (disabled) {
@@ -533,6 +543,17 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         const currentIndex = triggers.findIndex((el) => el.getAttribute("data-tabs-value") === value)
 
         let nextValue: string | null = null
+
+        if (e.key === "Tab") {
+          const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1
+          const nextTrigger = triggers[nextIndex]
+
+          if (nextTrigger) {
+            e.preventDefault()
+            nextTrigger.focus()
+          }
+          return
+        }
 
         if (e.key === "ArrowRight" || e.key === "ArrowDown") {
           e.preventDefault()
@@ -563,17 +584,10 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       [value, disabled, setSelectedValue]
     )
 
-    const mergedRef = React.useCallback(
-      (el: HTMLButtonElement | null) => {
-        buttonRef.current = el
-        if (typeof ref === "function") ref(el)
-        else if (ref) ref.current = el
-      },
-      [ref]
-    )
+    const mergedRef = useMergeRefs(buttonRef, ref)
 
     return (
-      <button
+        <button
         {...asElementProps<"button">(focusProps)}
         ref={mergedRef}
         id={`${value}-trigger`}
@@ -583,10 +597,11 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         tabIndex={isSelected ? 0 : -1}
         disabled={disabled}
         data-tabs-value={value}
+        data-focus-surface="true"
         className={cn("tabs", "trigger", css.trigger, resolved.root, className)}
         data-selected={isSelected ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
-        data-focus-visible={isFocusVisible ? "true" : undefined}
+        data-focus-visible={showFocusVisible ? "true" : "false"}
         data-indicator-ready={isSelected && indicatorReady ? "true" : undefined}
         data-indicator-fallback={showIndicatorFallback ? "true" : undefined}
         onClick={handleClick}

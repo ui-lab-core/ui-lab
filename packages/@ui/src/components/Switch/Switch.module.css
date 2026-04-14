@@ -14,6 +14,7 @@
 
     @apply relative inline-flex cursor-pointer items-center;
     user-select: none;
+    border-radius: var(--radius);
     width: var(--width);
     height: var(--height);
   }
@@ -67,9 +68,6 @@
     cursor: not-allowed;
   }
 
-  .switch[data-focus-visible] {
-    box-shadow: var(--focus-visible);
-  }
 
   .switch-sm {
     --width: 1.75rem;

@@ -9,6 +9,8 @@ import { useButton } from "@react-aria/button";
 
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Button.module.css";
 
 type ButtonSize = (string & {});
@@ -96,8 +98,9 @@ function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   ({ className, styles, variant = "default", size = "md", children, onClick, onPress, isDisabled, disabled, icon, href, target, rel, ...props }, ref) => {
+    const scopeRef = React.useRef<HTMLDivElement>(null);
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
-    const mergedRef = useMergedRef(ref, buttonRef);
+    const mergedRef = useMergeRefs(ref, buttonRef);
     const isButtonDisabled = isDisabled ?? disabled ?? false;
     const [isPressed, setIsPressed] = React.useState(false);
     const isAnchor = !!href;
@@ -137,14 +140,48 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const iconSizeClassName = resolveButtonIconSizeClass(size);
     const buttonClassName = cn("button", variant, size, css.button, className, resolved.root);
 
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef,
+      containerRef: buttonRef as React.RefObject<HTMLElement>,
+      surfaceSelector: "button, a",
+      radiusSource: "surface",
+    });
+
     if (isAnchor) {
       return (
-        <a
-          {...mergeProps(focusProps, hoverProps, props as any)}
-          ref={mergedRef as unknown as React.RefObject<HTMLAnchorElement>}
-          href={href}
-          target={target}
-          rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
+        <div ref={scopeRef} className={cn("button-scope", scopeProps.className)}>
+          <div {...indicatorProps} />
+          <a
+            {...mergeProps(focusProps, hoverProps, props as any)}
+            ref={mergedRef as unknown as React.RefObject<HTMLAnchorElement>}
+            href={href}
+            target={target}
+            rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+            className={buttonClassName}
+            data-disabled={isButtonDisabled ? "true" : undefined}
+            data-pressed={isPressed ? "true" : "false"}
+            data-hovered={isHovered ? "true" : "false"}
+            data-focused={isFocused ? "true" : "false"}
+            data-focus-visible={isFocusVisible ? "true" : "false"}
+          >
+            {resolvedIcon?.left && <span className={cn(iconSizeClassName, resolved.iconLeft)}>{resolvedIcon.left}</span>}
+            {children}
+            {resolvedIcon?.right && <span className={cn(iconSizeClassName, resolved.iconRight)}>{resolvedIcon.right}</span>}
+          </a>
+        </div>
+      );
+    }
+
+    return (
+      <div ref={scopeRef} className={cn("button-scope", scopeProps.className)}>
+        <div {...indicatorProps} />
+        <button
+          {...mergeProps(buttonProps, focusProps, hoverProps, props)}
+          disabled={isButtonDisabled}
+          ref={mergedRef as unknown as React.RefObject<HTMLButtonElement>}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
@@ -158,40 +195,11 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           {resolvedIcon?.left && <span className={cn(iconSizeClassName, resolved.iconLeft)}>{resolvedIcon.left}</span>}
           {children}
           {resolvedIcon?.right && <span className={cn(iconSizeClassName, resolved.iconRight)}>{resolvedIcon.right}</span>}
-        </a>
-      );
-    }
-
-    return (
-      <button
-        {...mergeProps(buttonProps, focusProps, hoverProps, props)}
-        ref={mergedRef as unknown as React.RefObject<HTMLButtonElement>}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-        className={buttonClassName}
-        data-disabled={isButtonDisabled ? "true" : undefined}
-        data-pressed={isPressed ? "true" : "false"}
-        data-hovered={isHovered ? "true" : "false"}
-        data-focused={isFocused ? "true" : "false"}
-        data-focus-visible={isFocusVisible ? "true" : "false"}
-      >
-        {resolvedIcon?.left && <span className={cn(iconSizeClassName, resolved.iconLeft)}>{resolvedIcon.left}</span>}
-        {children}
-        {resolvedIcon?.right && <span className={cn(iconSizeClassName, resolved.iconRight)}>{resolvedIcon.right}</span>}
-      </button>
+        </button>
+      </div>
     );
   }
 );
-
-function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> {
-  return (value: T) => {
-    refs.forEach((ref) => {
-      if (typeof ref === "function") ref(value);
-      else if (ref && typeof ref === "object") (ref as React.MutableRefObject<T | null>).current = value;
-    });
-  };
-}
 
 Button.displayName = "Button";
 

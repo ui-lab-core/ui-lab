@@ -12,6 +12,7 @@ import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import { cn } from "@/lib/utils";
 import { useTooltipTriggerState } from "react-stately";
 import { asElementProps } from "@/lib/react-aria";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Frame } from "../Frame";
 import { Badge } from "../Badge";
 import css from "./Tooltip.module.css";
@@ -244,17 +245,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       }
     }, [shouldRender, state.isOpen, isPositioned, isInstant]);
 
-    const mergedTriggerRef = useCallback((el: HTMLElement | null) => {
-      (triggerRef as React.MutableRefObject<HTMLElement | null>).current = el;
-      refs.setReference(el);
-    }, [refs]);
+    const mergedTriggerRef = useMergeRefs(triggerRef, refs.setReference);
 
-    const mergedFloatingRef = useCallback((el: HTMLDivElement | null) => {
-      (tooltipRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-      refs.setFloating(el);
-      if (typeof _ref === "function") _ref(el);
-      else if (_ref && typeof _ref === "object") _ref.current = el;
-    }, [_ref, refs]);
+    const mergedFloatingRef = useMergeRefs(tooltipRef, refs.setFloating, _ref);
 
     useLayoutEffect(() => {
       const wrapper = triggerWrapperRef.current;

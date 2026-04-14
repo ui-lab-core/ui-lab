@@ -1,12 +1,28 @@
 import * as React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Input } from '../Input'
 import { Button } from '@/components/Button'
 
 const CopyIcon = () => <svg data-testid="copy-icon" />
 
 describe('Input actions', () => {
+  it('renders a shared focus indicator and activates it on keyboard focus', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<Input aria-label="Search" />)
+
+    const indicator = container.querySelector('[data-focus-indicator="local"]')
+    expect(indicator).toBeInTheDocument()
+
+    await user.tab()
+
+    expect(screen.getByRole('textbox')).toHaveFocus()
+    await waitFor(() => {
+      expect(indicator).toHaveAttribute('data-visible', 'true')
+    })
+  })
+
   it('renders hint content in a badge on the right side of the input', () => {
     const { container } = render(
       <Input aria-label="Search" hint="Ctrl+K" />
@@ -117,7 +133,7 @@ describe('Input actions', () => {
       />
     )
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingRight: 'var(--input-adornment-offset)' })
+    expect(screen.getByRole('textbox')).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
   })
 
   it('adds inline start padding when left actions are rendered', () => {
@@ -128,7 +144,7 @@ describe('Input actions', () => {
       />
     )
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingLeft: 'var(--input-adornment-offset)' })
+    expect(screen.getByRole('textbox')).toHaveStyle({ paddingLeft: 'var(--adornment-offset)' })
   })
 
   it('adds inline end padding when hint is rendered', () => {
@@ -136,6 +152,6 @@ describe('Input actions', () => {
       <Input aria-label="Search" hint="Ctrl+K" />
     )
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingRight: 'var(--input-adornment-offset)' })
+    expect(screen.getByRole('textbox')).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
   })
 })

@@ -1,132 +1,195 @@
 "use client";
 
 import * as React from "react";
-import { useToggleState, ToggleState } from "react-stately";
-import { useButton, useFocusRing, mergeProps } from "react-aria";
-import { cn, type StyleValue } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { Divider, DividerProps } from "@/components/Divider";
-import styles from "./Expand.module.css";
+
+import { useButton } from "@react-aria/button";
+import { useFocusRing } from "@react-aria/focus";
+import { useHover } from "@react-aria/interactions";
+import { mergeProps } from "@react-aria/utils";
+import { useToggleState, type ToggleState } from "react-stately";
 import { ChevronDown } from "lucide-react";
 
-interface ExpandStyleSlots {
-  root?: StyleValue;
-  trigger?: StyleValue;
-  content?: StyleValue;
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { Divider, type DividerProps } from "@/components/Divider";
+import { useFocusIndicator } from "@/hooks/useFocusIndicator";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import styles from "./Expand.module.css";
+
+type ExpandDirection = "below" | "above" | "left" | "right";
+
+interface ExpandIconStyles {
+  collapsed?: StyleValue;
+  expanded?: StyleValue;
 }
 
-type ExpandStylesProp = StylesProp<ExpandStyleSlots>;
+export interface ExpandStyleSlots {
+  root?: StyleValue;
+  trigger?: StyleValue;
+  icon?: StyleValue | ExpandIconStyles;
+  title?: StyleValue;
+  content?: StyleValue;
+  contentInner?: StyleValue;
+  divider?: StyleValue;
+}
 
-const resolveExpandBaseStyles = createStylesResolver(['root', 'trigger', 'content'] as const);
+export type ExpandStylesProp = StylesProp<ExpandStyleSlots>;
+
+const resolveExpandBaseStyles = createStylesResolver([
+  "root",
+  "trigger",
+  "icon",
+  "iconCollapsed",
+  "iconExpanded",
+  "title",
+  "content",
+  "contentInner",
+  "divider",
+] as const);
+
+function resolveExpandStyles(stylesProp: ExpandStylesProp | undefined) {
+  if (!stylesProp || typeof stylesProp === "string" || Array.isArray(stylesProp)) {
+    return resolveExpandBaseStyles(stylesProp);
+  }
+
+  const { root, trigger, icon, title, content, contentInner, divider } = stylesProp;
+
+  let iconClassName: StyleValue | undefined;
+  let iconCollapsed: StyleValue | undefined;
+  let iconExpanded: StyleValue | undefined;
+
+  if (icon) {
+    if (typeof icon === "string" || Array.isArray(icon)) {
+      iconClassName = icon;
+      iconCollapsed = icon;
+      iconExpanded = icon;
+    } else {
+      iconCollapsed = icon.collapsed;
+      iconExpanded = icon.expanded;
+    }
+  }
+
+  return resolveExpandBaseStyles({
+    root,
+    trigger,
+    icon: iconClassName,
+    iconCollapsed,
+    iconExpanded,
+    title,
+    content,
+    contentInner,
+    divider,
+  });
+}
 
 interface ExpandContextValue {
   state: ToggleState;
   isDisabled: boolean;
+  resolvedStyles: ReturnType<typeof resolveExpandStyles>;
 }
 
 const ExpandContext = React.createContext<ExpandContextValue | null>(null);
 
-const useExpandContext = () => {
+function useExpandContext() {
   const context = React.useContext(ExpandContext);
   if (!context) {
-    throw new Error(
-      "Expand compound components must be used within an Expand component",
-    );
+    throw new Error("Expand compound components must be used within Expand");
   }
+
   return context;
-};
+}
 
-// --- Sub-components ---
-
-export interface ExpandIconProps
-  extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Custom icon element; defaults to a chevron */
+export interface ExpandIconProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Custom icon element rendered inside the icon wrapper */
   children?: React.ReactNode;
 }
 
-/** Animated chevron icon that rotates when the section is open */
 const ExpandIcon = React.forwardRef<HTMLSpanElement, ExpandIconProps>(
   ({ children, className, ...props }, ref) => {
-    const context = React.useContext(ExpandContext);
+    const { state, resolvedStyles } = useExpandContext();
+
     return (
       <span
         ref={ref}
-        className={cn(styles.icon, className)}
-        data-expanded={context?.state.isSelected || undefined}
+        className={cn(
+          "icon",
+          styles.icon,
+          resolvedStyles.icon,
+          state.isSelected ? resolvedStyles.iconExpanded : resolvedStyles.iconCollapsed,
+          className,
+        )}
+        data-selected={state.isSelected ? "true" : undefined}
+        data-expanded={state.isSelected ? "true" : undefined}
+        aria-hidden="true"
         {...props}
       >
-        {children ?? <ChevronDown size={16} className="text-foreground-400" />}
+        {children ?? <ChevronDown size={16} />}
       </span>
     );
   },
 );
 ExpandIcon.displayName = "Expand.Icon";
 
-interface ExpandTriggerProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "title"> {
-  /** Label or content of the trigger button */
+interface ExpandTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "title"> {
+  /** Label or content rendered inside the trigger */
   children?: React.ReactNode;
-  /** ReactNode label rendered in the title span (overrides HTML title tooltip) */
+  /** Optional title element rendered in the trigger's text slot */
   title?: React.ReactNode;
 }
 
-/** Clickable button that toggles the expand/collapse state */
 const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
   ({ children, className, title, ...props }, ref) => {
-    const { state, isDisabled } = useExpandContext();
+    const { state, isDisabled, resolvedStyles } = useExpandContext();
     const triggerRef = React.useRef<HTMLButtonElement>(null);
-    React.useImperativeHandle(
-      ref,
-      () => triggerRef.current as HTMLButtonElement,
-    );
+    const mergedRef = useMergeRefs(triggerRef, ref);
 
     const { buttonProps, isPressed } = useButton(
       {
         isDisabled,
         onPress: () => state.toggle(),
-        // Filter out form-related props that useButton doesn't support
-        ...Object.fromEntries(
-          Object.entries(props).filter(
-            ([key]) =>
-              ![
-                "formAction",
-                "formEncType",
-                "formMethod",
-                "formNoValidate",
-                "formTarget",
-              ].includes(key),
-          ),
-        ),
       },
       triggerRef,
     );
-
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const { hoverProps, isHovered } = useHover({ isDisabled });
 
     const hasElementChildren = React.Children.toArray(children).some(
       (child) => React.isValidElement(child),
     );
+    const shouldRenderCompositeLabel = title !== undefined || !hasElementChildren;
 
-    // Default: styled button with title span + auto-injected chevron
     return (
       <button
-        ref={triggerRef}
-        {...mergeProps(buttonProps, focusProps)}
-        className={cn(styles.trigger, className)}
+        ref={mergedRef}
+        {...mergeProps(buttonProps, focusProps, hoverProps, props)}
+        className={cn(
+          "trigger",
+          styles.trigger,
+          resolvedStyles.trigger,
+          className,
+        )}
+        type="button"
         aria-expanded={state.isSelected}
-        data-expanded={state.isSelected || undefined}
-        data-disabled={isDisabled || undefined}
-        data-focused={isFocused || undefined}
-        data-focus-visible={isFocusVisible || undefined}
-        data-pressed={isPressed || undefined}
+        data-selected={state.isSelected ? "true" : undefined}
+        data-expanded={state.isSelected ? "true" : undefined}
+        data-disabled={isDisabled ? "true" : undefined}
+        data-focused={isFocused ? "true" : undefined}
+        data-focus-visible={isFocusVisible ? "true" : undefined}
+        data-pressed={isPressed ? "true" : undefined}
+        data-hovered={isHovered ? "true" : undefined}
+        data-expand-focus-surface="true"
       >
-        {hasElementChildren && title === undefined ? (
-          children
-        ) : (
+        {shouldRenderCompositeLabel ? (
           <>
-            <span className={styles.title}>{title ?? children}</span>
+            <span
+              className={cn("title", styles.title, resolvedStyles.title)}
+            >
+              {title ?? children}
+            </span>
             <ExpandIcon />
           </>
+        ) : (
+          children
         )}
       </button>
     );
@@ -134,42 +197,57 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
 );
 ExpandTrigger.displayName = "Expand.Trigger";
 
-interface ExpandContentProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ExpandContentProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Content shown when the expand is open */
   children: React.ReactNode;
   /** Direction the content reveals from the trigger */
-  from?: "below" | "above" | "left" | "right";
+  from?: ExpandDirection;
 }
 
-/** Collapsible content area revealed when expanded */
 const ExpandContent = React.forwardRef<HTMLDivElement, ExpandContentProps>(
   ({ children, className, from, ...props }, ref) => {
-    const { state } = useExpandContext();
+    const { state, resolvedStyles } = useExpandContext();
 
     return (
       <div
         ref={ref}
-        className={cn(styles.content, className)}
-        data-expanded={state.isSelected || undefined}
+        className={cn(
+          "content",
+          styles.content,
+          resolvedStyles.content,
+          className,
+        )}
+        data-selected={state.isSelected ? "true" : undefined}
+        data-expanded={state.isSelected ? "true" : undefined}
         data-from={from && from !== "below" ? from : undefined}
         aria-hidden={!state.isSelected}
         {...props}
       >
-        <div className={styles["content-inner"]}>{children}</div>
+        <div
+          className={cn(
+            "content-inner",
+            styles["content-inner"],
+            resolvedStyles.contentInner,
+          )}
+        >
+          {children}
+        </div>
       </div>
     );
   },
 );
 ExpandContent.displayName = "Expand.Content";
 
-/** Separator line between expand sections */
 const ExpandDivider = React.forwardRef<HTMLDivElement, DividerProps>(
-  ({ className, spacing = "none", ...props }, ref) => {
+  ({ className, spacing = "none", styles: dividerStyles, ...props }, ref) => {
+    const { resolvedStyles } = useExpandContext();
+
     return (
       <Divider
         ref={ref}
-        className={cn("mt-2", className)}
         spacing={spacing}
+        styles={dividerStyles}
+        className={cn("divider", styles.divider, resolvedStyles.divider, className)}
         {...props}
       />
     );
@@ -177,11 +255,9 @@ const ExpandDivider = React.forwardRef<HTMLDivElement, DividerProps>(
 );
 ExpandDivider.displayName = "Expand.Divider";
 
-// --- Main Expand Component ---
-
 export interface ExpandProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onChange"> {
-  /** Header text or element for the trigger button in preset (non-compound) mode */
+  /** Header content rendered in preset mode */
   title?: React.ReactNode;
   /** Controlled expanded state */
   isExpanded?: boolean;
@@ -195,20 +271,22 @@ export interface ExpandProps
   isDisabled?: boolean;
   /** Compound sub-components or content nodes */
   children?: React.ReactNode;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, or slot object. */
+  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: ExpandStylesProp;
 }
 
 const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
   (
     {
+      className,
+      title,
       isExpanded,
       defaultExpanded = false,
       onExpandedChange,
       onChange,
       isDisabled = false,
-      className,
       children,
+      styles: stylesProp,
       ...props
     },
     ref,
@@ -216,21 +294,62 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
     const state = useToggleState({
       isSelected: isExpanded,
       defaultSelected: defaultExpanded,
-      onChange: onExpandedChange || onChange,
+      onChange: onExpandedChange ?? onChange,
     });
 
-    const { title, styles: expandStyles, ...divProps } = props;
-    const resolved = resolveExpandBaseStyles(expandStyles);
+    const resolvedStyles = resolveExpandStyles(stylesProp);
+    const rootRef = React.useRef<HTMLDivElement>(null);
+    const scopeRef = React.useRef<HTMLDivElement>(null);
+    const mergedRootRef = useMergeRefs(rootRef, ref);
+    const childrenArray = React.Children.toArray(children);
+
+    const { scopeProps, indicatorProps } = useFocusIndicator({
+      scopeRef,
+      containerRef: rootRef,
+      surfaceSelector: '[data-expand-focus-surface="true"]',
+      radiusSource: "surface",
+      mode: "ring",
+    });
+
+    const contextValue = React.useMemo<ExpandContextValue>(
+      () => ({
+        state,
+        isDisabled,
+        resolvedStyles,
+      }),
+      [state, isDisabled, resolvedStyles],
+    );
 
     return (
-      <ExpandContext.Provider value={{ state, isDisabled }}>
-        <div
-          ref={ref}
-          className={cn("expand", styles.expand, className, resolved.root)}
-          data-disabled={isDisabled || undefined}
-          {...divProps}
-        >
-          {children}
+      <ExpandContext.Provider value={contextValue}>
+        <div ref={scopeRef} className={cn("expand-scope", scopeProps.className, styles.scope)}>
+          <div {...indicatorProps} data-focus-indicator="local" />
+          <div
+            ref={mergedRootRef}
+            className={cn("expand", styles.expand, className, resolvedStyles.root)}
+            data-selected={state.isSelected ? "true" : undefined}
+            data-expanded={state.isSelected ? "true" : undefined}
+            data-disabled={isDisabled ? "true" : undefined}
+            {...props}
+          >
+            {title !== undefined ? (
+              <>
+                <ExpandTrigger>{title}</ExpandTrigger>
+                {childrenArray.find(
+                  (child) =>
+                    React.isValidElement(child) && child.type === ExpandDivider,
+                ) ?? <ExpandDivider />}
+                <ExpandContent>
+                  {childrenArray.filter(
+                    (child) =>
+                      !(React.isValidElement(child) && child.type === ExpandDivider),
+                  )}
+                </ExpandContent>
+              </>
+            ) : (
+              children
+            )}
+          </div>
         </div>
       </ExpandContext.Provider>
     );
@@ -238,61 +357,13 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
 );
 ExpandRoot.displayName = "Expand";
 
-// Compatibility wrapper to support both old API and new Compound API
-const Expand = React.forwardRef<
-  HTMLDivElement,
-  ExpandProps & {
-    Trigger?: typeof ExpandTrigger;
-    Content?: typeof ExpandContent;
-    Divider?: typeof ExpandDivider;
-    Icon?: typeof ExpandIcon;
-  }
->((props, ref) => {
-  const { title, children, ...rootProps } = props;
-  const resolved = resolveExpandBaseStyles(props.styles);
-
-  // If title is provided, use the "Preset" structure (Backward Compatibility)
-  if (title !== undefined) {
-    const childrenArray = React.Children.toArray(children);
-    const customDivider = childrenArray.find(
-      (child) => React.isValidElement(child) && child.type === ExpandDivider,
-    );
-    const filteredChildren = childrenArray.filter(
-      (child) => !(React.isValidElement(child) && child.type === ExpandDivider),
-    );
-
-    return (
-      <ExpandRoot ref={ref} {...rootProps}>
-        <ExpandTrigger className={resolved.trigger}>{title}</ExpandTrigger>
-        {customDivider || <ExpandDivider />}
-        <ExpandContent className={resolved.content}>
-          {filteredChildren}
-        </ExpandContent>
-      </ExpandRoot>
-    );
-  }
-
-  // Otherwise, use Compound structure (children are expected to include Trigger/Content/Divider)
-  return (
-    <ExpandRoot ref={ref} {...rootProps}>
-      {children}
-    </ExpandRoot>
-  );
-}) as React.ForwardRefExoticComponent<
-  ExpandProps & React.RefAttributes<HTMLDivElement>
-> & {
-  Trigger: typeof ExpandTrigger;
-  Content: typeof ExpandContent;
-  Divider: typeof ExpandDivider;
-  Icon: typeof ExpandIcon;
-};
+const Expand = Object.assign(ExpandRoot, {
+  Trigger: ExpandTrigger,
+  Content: ExpandContent,
+  Divider: ExpandDivider,
+  Icon: ExpandIcon,
+});
 
 Expand.displayName = "Expand";
-
-// Attach sub-components
-Expand.Trigger = ExpandTrigger;
-Expand.Content = ExpandContent;
-Expand.Divider = ExpandDivider;
-Expand.Icon = ExpandIcon;
 
 export { Expand };

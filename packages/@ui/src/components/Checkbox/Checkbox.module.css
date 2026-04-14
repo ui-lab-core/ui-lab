@@ -23,11 +23,6 @@
       border-color: var(--background-hover-border);
     }
 
-    &[data-focus-visible="true"] {
-      outline: 2px solid transparent;
-      box-shadow: 0 0 0 3px var(--focus-visible);
-    }
-
     &[data-selected="true"] {
       background-color: var(--background-selected);
       border-color: var(--background-selected-border);
