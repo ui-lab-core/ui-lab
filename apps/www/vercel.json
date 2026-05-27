@@ -1,3 +1,7 @@
 {
-  "installCommand": "GPR_TOKEN_CLEAN=$(printf '%s' \"$GPR_TOKEN\" | tr -d '\\r\\n') && printf '%s\\n' '@ui-lab-core:registry=https://npm.pkg.github.com' \"//npm.pkg.github.com/:_authToken=${GPR_TOKEN_CLEAN}\" 'always-auth=true' > .npmrc && pnpm install"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "GPR_TOKEN_CLEAN=$(printf '%s' \"$GPR_TOKEN\" | tr -d '\\r\\n') && printf '%s\\n' '@ui-lab-core:registry=https://npm.pkg.github.com' \"//npm.pkg.github.com/:_authToken=${GPR_TOKEN_CLEAN}\" 'always-auth=true' > .npmrc && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm run build",
+  "outputDirectory": ".next"
 }
