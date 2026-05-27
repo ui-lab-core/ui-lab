@@ -1,5 +1,13 @@
 # ui-lab-mcp
 
+## 0.3.46
+
+### Patch Changes
+
+- 2789280: Updated site routes, live previews for patterns and sections, and Convex/Clerk authentication integration with premium entitlement support. Removed legacy dev example pages and added new theme configuration options including custom Shiki code themes.
+- Updated dependencies [2789280]
+  - ui-lab-registry@0.3.46
+
 ## 0.1.65
 
 ### Patch Changes
