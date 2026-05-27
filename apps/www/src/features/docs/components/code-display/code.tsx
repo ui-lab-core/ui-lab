@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { generateThemePalettes, type OklchColor } from "@/features/theme/lib/color-utils";
-import { generateShikiTheme, type ShikiTheme } from "@/features/theme/lib/themes/shiki/generator";
-import { generateSyntaxPalettes } from "@/features/theme/lib/themes/syntax-colors";
+import { type OklchColor } from "@/features/theme/lib/color-utils";
 import { useApp } from "@/features/theme/lib/app-context";
+import { resolveCodeThemeSelection } from "@/features/theme/lib/themes/shiki/resolve-code-theme";
 import { resolveShikiLanguage } from "@/features/docs/lib/shiki-language";
 import { CopyButton } from "./copy-button";
 import { FaSort } from "react-icons/fa6";
@@ -107,40 +106,22 @@ export function Code({
     return generateFallbackHtml(children);
   });
 
-  const shikiTheme = useMemo<ShikiTheme | null>(() => {
-    if (!currentThemeColors) return null;
-    const palettes = generateThemePalettes(
-      currentThemeColors.background,
-      currentThemeColors.foreground,
-      currentThemeColors.accent,
-      currentThemeMode,
-      0,
-      currentThemeColors.semantic,
-      currentThemeColors.accentChromaLimit ?? 0.30,
-      currentThemeColors.accentEasing,
-      currentThemeColors.accentChromaScaling
-    );
-    const syntaxPalettes = generateSyntaxPalettes(
-      currentThemeColors.background,
-      currentThemeColors.accent,
-      currentThemeMode,
-      currentThemeColors.syntaxVariation ?? 0
-    );
-    return generateShikiTheme(
-      { ...palettes, ...syntaxPalettes },
-      currentThemeMode,
-      `custom-${currentThemeMode}`
-    );
-  }, [currentThemeColors, currentThemeMode]);
+  const shikiTheme = useMemo(
+    () =>
+      resolveCodeThemeSelection(
+        currentThemeColors,
+        currentThemeMode,
+        `custom-${currentThemeMode}`,
+      ),
+    [currentThemeColors, currentThemeMode],
+  );
   const [dimensions, setDimensions] = useState({ contentScrollWidth: 0, viewportWidth: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
 
   const fallbackHtml = useMemo(() => generateFallbackHtml(children), [children]);
   const totalCodeLines = children.split('\n').length;
-  const preferredHighlighted = currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark;
-  const themedHtml = preferredHighlighted ?? highlightedCode;
-  const hasResolvedSyntax = isThemeInitialized && themedHtml !== fallbackHtml;
-  const normalizedHtml = useMemo(() => stripPreTabIndex(themedHtml), [themedHtml]);
+  const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
+  const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
   const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
 
   const handleScrollTrack = useCallback(() => {
@@ -168,17 +149,27 @@ export function Code({
   }, []);
 
   useEffect(() => {
-    if (preferredHighlighted) return;
+    if (currentThemeMode === "light" && preHighlightedLight) {
+      setHighlightedCode(preHighlightedLight);
+      return;
+    }
 
+    if (currentThemeMode === "dark" && preHighlightedDark) {
+      setHighlightedCode(preHighlightedDark);
+      return;
+    }
+
+    setHighlightedCode(generateFallbackHtml(children));
+  }, [children, currentThemeMode, preHighlightedDark, preHighlightedLight]);
+
+  useEffect(() => {
     const highlight = async () => {
       try {
         const { bundledLanguages, bundledLanguagesAlias, codeToHtml } = await import("shiki");
         const { transformerRenderIndentGuides } = await import("@shikijs/transformers");
-
-        const theme = shikiTheme || (currentThemeMode === "light" ? "github-light" : "github-dark");
         const html = await codeToHtml(children, {
           lang: resolveShikiLanguage(language, bundledLanguages, bundledLanguagesAlias) as CodeToHtmlOptions["lang"],
-          theme,
+          theme: shikiTheme,
           transformers: [transformerRenderIndentGuides()],
         });
 
@@ -196,7 +187,7 @@ export function Code({
     };
 
     highlight();
-  }, [children, language, currentThemeMode, preferredHighlighted, shikiTheme]);
+  }, [children, language, shikiTheme]);
 
   useEffect(() => {
     const measure = () => {

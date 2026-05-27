@@ -9,6 +9,7 @@ import "@fontsource-variable/jetbrains-mono";
 import localFont from "next/font/local";
 import { Metadata } from "next";
 
+import { AuthProviders } from "./auth-providers";
 import { RootLayoutClient } from "./client";
 import { generateMetadata } from "@/shared/lib/metadata";
 import { getInitialThemeScript } from "@/features/theme/lib/initial-theme-script";
@@ -53,7 +54,9 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <RootLayoutClient>{children}</RootLayoutClient>
+        <AuthProviders>
+          <RootLayoutClient>{children}</RootLayoutClient>
+        </AuthProviders>
       </body>
     </html>
   );

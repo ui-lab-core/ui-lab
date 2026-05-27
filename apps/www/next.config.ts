@@ -1,15 +1,18 @@
 import path from "path";
 import type { NextConfig } from "next";
 
-const workspaceRoot = path.resolve(__dirname, "../..");
+const repoRoot = path.resolve(__dirname, "../../..");
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  transpilePackages: ['beautiful-mermaid'],
+  transpilePackages: ['beautiful-mermaid', '@ui-lab-core/library'],
+  experimental: {
+    externalDir: true,
+  },
   productionBrowserSourceMaps: false,
-  outputFileTracingRoot: workspaceRoot,
+  outputFileTracingRoot: repoRoot,
   turbopack: {
-    root: workspaceRoot,
+    root: repoRoot,
   },
 };
 

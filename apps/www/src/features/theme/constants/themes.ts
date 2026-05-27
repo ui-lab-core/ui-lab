@@ -1,4 +1,8 @@
 import { type OklchColor, type ShadeScale, type SemanticColors, type EasingFunction, type ChromaScalingFunction, type GlobalColorAdjustments, DEFAULT_GLOBAL_ADJUSTMENTS } from '../lib/color-utils';
+import {
+  DEFAULT_CODE_THEME,
+  type CodeThemeOptionId,
+} from "../lib/themes/shiki/code-theme-options";
 
 export const DEFAULT_THEME_NAME = "Vitesse";
 
@@ -20,6 +24,7 @@ export interface SimpleThemeColors {
   semantic?: SemanticColors;
   globalAdjustments?: GlobalColorAdjustments;
   syntaxVariation?: number;
+  codeTheme?: CodeThemeOptionId;
 }
 
 export { DEFAULT_GLOBAL_ADJUSTMENTS };
@@ -47,6 +52,7 @@ export const themes: Record<string, ThemeVariants> = {
       accent: { l: 0.5, c: 0, h: 0 },
       accentShade: 500,
       accentChromaLimit: 0.35,
+      codeTheme: DEFAULT_CODE_THEME,
       semantic: {
         success: {
           light: { color: { l: 0.90, c: 0.20, h: 142 }, chromaLimit: 0.25 },
@@ -79,6 +85,7 @@ export const themes: Record<string, ThemeVariants> = {
       accent: { l: 0.5, c: 0, h: 0 },
       accentShade: 500,
       accentChromaLimit: 0.35,
+      codeTheme: DEFAULT_CODE_THEME,
       semantic: {
         success: {
           light: { color: { l: 0.90, c: 0.20, h: 142 }, chromaLimit: 0.25 },

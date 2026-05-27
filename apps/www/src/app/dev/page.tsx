@@ -10,7 +10,6 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const devRoutes = [
-  { slug: "examples", title: "Examples" },
   { slug: "color", title: "Color" },
   { slug: "pattern", title: "Pattern" },
   { slug: "sidebar", title: "Sidebar" },

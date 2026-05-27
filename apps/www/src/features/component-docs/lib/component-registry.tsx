@@ -1,23 +1,27 @@
 "use client";
 
 import React from "react";
-import { elementRegistry as privateElementRegistry, getElementPreview } from "@private";
-import type { ElementSourceEntry } from "@private";
-import { buttonDetail as _buttonDetail } from "ui-lab-registry/components/Button";
+import {
+  canViewElementEntry,
+  listElements as listPrivateElements,
+  type ElementSourceEntry,
+} from "@ui-lab-core/library/registry";
+import { getElementPreview, getElementPreviewConfig } from "@ui-lab-core/library/previews";
+import { buttonDetail } from "ui-lab-registry/components/Button";
 import { dateDetail } from "ui-lab-registry/components/Date";
 import { anchorDetail } from "ui-lab-registry/components/Anchor";
 import { bannerDetail } from "ui-lab-registry/components/Banner";
 import { badgeDetail } from "ui-lab-registry/components/Badge";
 import { pathDetail } from "ui-lab-registry/components/Path";
 import { cardDetail } from "ui-lab-registry/components/Card";
-import { checkboxDetail as _checkboxDetail } from "ui-lab-registry/components/Checkbox";
+import { checkboxDetail } from "ui-lab-registry/components/Checkbox";
 import { colorDetail } from "ui-lab-registry/components/Color";
 import { dividerDetail } from "ui-lab-registry/components/Divider";
 import { flexDetail } from "ui-lab-registry/components/Flex";
 import { expandDetail } from "ui-lab-registry/components/Expand";
 import { galleryDetail } from "ui-lab-registry/components/Gallery";
 import { gridDetail } from "ui-lab-registry/components/Grid";
-import { groupDetail as _groupDetail } from "ui-lab-registry/components/Group";
+import { groupDetail } from "ui-lab-registry/components/Group";
 import { inputDetail } from "ui-lab-registry/components/Input";
 import { labelDetail } from "ui-lab-registry/components/Label";
 import { menuDetail } from "ui-lab-registry/components/Menu";
@@ -27,13 +31,13 @@ import { pageDetail } from "ui-lab-registry/components/Page";
 import { maskDetail } from "ui-lab-registry/components/Mask";
 import { popoverDetail } from "ui-lab-registry/components/Popover";
 import { confirmDetail } from "ui-lab-registry/components/Confirm";
-import { progressDetail as _progressDetail } from "ui-lab-registry/components/Progress";
+import { progressDetail } from "ui-lab-registry/components/Progress";
 import { radioDetail } from "ui-lab-registry/components/Radio";
 import { commandDetail } from "ui-lab-registry/components/Command";
 import { scrollDetail } from "ui-lab-registry/components/Scroll";
 import { selectDetail } from "ui-lab-registry/components/Select";
 import { sliderDetail } from "ui-lab-registry/components/Slider";
-import { switchDetail as _switchDetail } from "ui-lab-registry/components/Switch";
+import { switchDetail } from "ui-lab-registry/components/Switch";
 import { tableDetail } from "ui-lab-registry/components/Table";
 import { codeDetail } from "ui-lab-registry/components/Code";
 import { tabsDetail } from "ui-lab-registry/components/Tabs";
@@ -65,51 +69,6 @@ export type { SiteComponentCategory };
 interface ComponentMetadata extends RegistryMetadata {
   preview: React.ReactNode;
   experimental?: boolean;
-}
-
-type ExamplesJson = Record<string, { title: string; description: string; code: string }>;
-
-function getPrivateExampleCode(entry: ElementSourceEntry): string {
-  if ("code" in entry && typeof entry.code === "string") {
-    return entry.code;
-  }
-
-  return "";
-}
-
-function getPrivateComponentExamples(componentId: string): ExamplesJson {
-  const componentExamples =
-    (privateElementRegistry as Record<string, Record<string, ElementSourceEntry>>).components ?? {};
-
-  return Object.fromEntries(
-    Object.entries(componentExamples)
-      .filter(([, entry]) => entry.groupPath[0] === componentId && entry.previewable)
-      .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
-      .map(([id, entry]) => [
-        id,
-        {
-          title: entry.displayName,
-          description: entry.description ?? "",
-          code: getPrivateExampleCode(entry),
-        },
-      ]),
-  );
-}
-
-function withPrivateExamples(detail: ComponentDetail, examplesJson: ExamplesJson): ComponentDetail {
-  const privateExamples = Object.entries(examplesJson).flatMap(([id, json], i) => {
-    const Component = getElementPreview('components', id);
-    if (!Component) return [];
-    return [{
-      id: `private-${i + 1}`,
-      title: json.title ?? id,
-      description: json.description,
-      code: json.code ?? '',
-      preview: React.createElement(Component),
-    }];
-  });
-
-  return { ...detail, examples: [...detail.examples, ...privateExamples] };
 }
 
 export const categoryMap = {
@@ -168,12 +127,6 @@ export const getComponentsInCategoryOrder =
       .filter((c): c is ComponentMetadata => c !== undefined);
   };
 
-const buttonDetail = withPrivateExamples(_buttonDetail, getPrivateComponentExamples("button"));
-const switchDetail = withPrivateExamples(_switchDetail, getPrivateComponentExamples("switch"));
-const checkboxDetail = withPrivateExamples(_checkboxDetail, getPrivateComponentExamples("checkbox"));
-const groupDetail = withPrivateExamples(_groupDetail, getPrivateComponentExamples("group"));
-const progressDetail = withPrivateExamples(_progressDetail, getPrivateComponentExamples("progress"));
-
 const componentDetails: Record<string, ComponentDetail> = {
   button: buttonDetail,
   date: dateDetail,
@@ -216,8 +169,77 @@ const componentDetails: Record<string, ComponentDetail> = {
   code: codeDetail,
 };
 
+function isPublicFreeComponentExample(entry: ElementSourceEntry, componentId: string) {
+  return (
+    entry.package === "components" &&
+    entry.previewEligible &&
+    entry.groupPath[0] === componentId &&
+    canViewElementEntry(entry, { premium: false })
+  );
+}
+
+function getPrivateComponentExamples(componentId: string): ComponentDetail["examples"] {
+  return listPrivateElements("components")
+    .filter((entry) => isPublicFreeComponentExample(entry, componentId))
+    .sort((a, b) => {
+      const aOrder = typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
+      const bOrder = typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
+
+      if (aOrder !== bOrder) {
+        return aOrder - bOrder;
+      }
+
+      return a.id.localeCompare(b.id, undefined, { numeric: true });
+    })
+    .flatMap((entry) => {
+      const Preview = getElementPreview(entry.package, entry.id);
+      const previewConfig = getElementPreviewConfig(entry.package, entry.id);
+
+      if (!Preview) {
+        return [];
+      }
+
+      return [{
+        id: entry.id,
+        title: entry.displayName,
+        description: entry.description,
+        code: entry.code,
+        preview: React.createElement(Preview),
+        controls: previewConfig?.controls,
+        renderPreview: previewConfig?.renderPreview as ComponentDetail["examples"][number]["renderPreview"],
+        previewLayout: previewConfig?.previewLayout,
+        resizable: previewConfig?.resizable,
+      }];
+    });
+}
+
+function withPrivateComponentExamples(detail: ComponentDetail): ComponentDetail {
+  const privateExamples = getPrivateComponentExamples(detail.id);
+
+  if (privateExamples.length === 0) {
+    return detail;
+  }
+
+  const privateExampleIds = new Set(privateExamples.map((example) => example.id));
+
+  return {
+    ...detail,
+    examples: [
+      ...detail.examples.filter((example) => !privateExampleIds.has(example.id)),
+      ...privateExamples,
+    ],
+  };
+}
+
+const componentDetailsWithPrivateExamples = Object.fromEntries(
+  Object.entries(componentDetails).map(([id, detail]) => [
+    id,
+    withPrivateComponentExamples(detail),
+  ]),
+) as Record<string, ComponentDetail>;
+
 export const getComponentById = (id: string): ComponentDetail | undefined =>
-  componentDetails[id];
+  componentDetailsWithPrivateExamples[id];
 
 export const getComponentMetadata = (id: string): ComponentMetadata | undefined =>
   componentRegistry.find((component) => component.id === id);

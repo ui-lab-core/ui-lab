@@ -213,7 +213,7 @@ export function ElementPreviewContent({
               )}
 
               <div className="max-h-220">
-                <Code className="border-0 h-full" language={currentFile.language} filename={currentFile.filename}>
+                <Code className="font-mono border-0 h-full" language={currentFile.language} filename={currentFile.filename}>
                   {currentFile.code}
                 </Code>
               </div>

@@ -1,3 +1,5 @@
+'use client';
+
 export { SectionPreviewContent } from "./components/section-preview-content";
 
 export { getLayoutConfig } from "./lib/layout-registry";

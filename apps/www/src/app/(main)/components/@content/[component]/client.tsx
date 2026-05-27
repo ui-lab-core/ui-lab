@@ -185,7 +185,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
             className="mb-4 w-full shrink-0 overflow-hidden"
           >
             <OpenPage componentId={componentId} />
-            <CopyComponentPage componentId={componentId} grouped />
+            <CopyComponentPage componentId={componentId} component={component} grouped />
           </Group>
         </div>
       )}

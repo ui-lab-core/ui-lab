@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { ElementFile } from "ui-lab-registry";
-import { getSectionById } from "ui-lab-registry";
-import { SectionPreviewContent } from "@/features/sections";
+import type { ElementFile, SectionMetadata } from "ui-lab-registry";
+import { SectionPreviewContent } from "@/features/sections/components/section-preview-content";
 import { PreviewDeviceVariant } from "@/features/preview";
-import { getPreviewComponent } from "@/features/sections";
 import { DetailPageShell } from "@/features/layout";
+import { SectionLivePreview } from "@/features/sections/components/section-live-preview";
 
 interface VariantWithCode {
   name: string;
@@ -20,13 +19,13 @@ interface VariantWithCode {
 
 interface SectionDetailClientProps {
   sectionId: string;
+  section: SectionMetadata | null;
 }
 
 export default function SectionDetailClient({
   sectionId,
+  section,
 }: SectionDetailClientProps) {
-  const section = useMemo(() => getSectionById(sectionId), [sectionId]);
-
   const variantsWithCode = useMemo(() => {
     if (!section) return [];
     return section.variants.map((variant, index) => ({
@@ -68,7 +67,7 @@ export default function SectionDetailClient({
     >
       {variantsWithCode.map((variant) => {
         const DemoComponent = variant.demoPath
-          ? getPreviewComponent(variant.demoPath) ?? undefined
+          ? () => <SectionLivePreview demoId={variant.demoPath!} />
           : undefined;
         const currentTab = getActiveTab(variant.index);
         const currentFile = getActiveFile(variant.index, variant);

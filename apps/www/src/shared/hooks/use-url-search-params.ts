@@ -3,6 +3,8 @@
 import { useMemo, useSyncExternalStore } from 'react';
 
 const URL_SEARCH_CHANGE_EVENT = 'ui-lab:url-search-change';
+let currentSearch = '';
+let hasPendingDispatch = false;
 
 declare global {
   interface Window {
@@ -11,13 +13,28 @@ declare global {
 }
 
 function dispatchUrlSearchChange() {
-  window.dispatchEvent(new Event(URL_SEARCH_CHANGE_EVENT));
+  const nextSearch = window.location.search;
+
+  if (nextSearch === currentSearch || hasPendingDispatch) {
+    currentSearch = nextSearch;
+    return;
+  }
+
+  currentSearch = nextSearch;
+  hasPendingDispatch = true;
+
+  queueMicrotask(() => {
+    hasPendingDispatch = false;
+    window.dispatchEvent(new Event(URL_SEARCH_CHANGE_EVENT));
+  });
 }
 
 function patchHistoryMethods() {
   if (window.__uiLabUrlSearchPatched) {
     return;
   }
+
+  currentSearch = window.location.search;
 
   const originalPushState = window.history.pushState.bind(window.history);
   const originalReplaceState = window.history.replaceState.bind(window.history);

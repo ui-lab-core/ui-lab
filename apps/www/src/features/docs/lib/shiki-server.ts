@@ -1,9 +1,8 @@
 import { transformerRenderIndentGuides } from '@shikijs/transformers'
-import { generateThemePalettes } from '@/features/theme/lib/color-utils'
-import { generateShikiTheme } from '@/features/theme/lib/themes/shiki/generator'
-import { generateSyntaxPalettes } from '@/features/theme/lib/themes/syntax-colors'
 import { themes, DEFAULT_THEME_NAME } from '@/features/theme/constants/themes'
+import { DEFAULT_CODE_THEME } from '@/features/theme/lib/themes/shiki/code-theme-options'
 import { ensureSemanticColorIntegrity } from '@/features/theme/lib/color/semantic'
+import { resolveCodeThemeSelection } from '@/features/theme/lib/themes/shiki/resolve-code-theme'
 import { resolveShikiLanguage } from '@/features/docs/lib/shiki-language'
 
 // Shiki theme object type is complex to import directly from Shiki 3.x
@@ -64,33 +63,10 @@ function getPrecomputedThemes() {
     const preset = themes[DEFAULT_THEME_NAME][mode]
     const colors = {
       ...preset,
+      codeTheme: preset.codeTheme ?? DEFAULT_CODE_THEME,
       semantic: preset.semantic ? ensureSemanticColorIntegrity(preset.semantic) : undefined,
     }
-
-    const palettes = generateThemePalettes(
-      colors.background,
-      colors.foreground,
-      colors.accent,
-      mode,
-      0,
-      colors.semantic,
-      colors.accentChromaLimit ?? 0.30,
-      colors.accentEasing,
-      colors.accentChromaScaling
-    )
-
-    const syntaxPalettes = generateSyntaxPalettes(
-      colors.background,
-      colors.accent,
-      mode,
-      colors.syntaxVariation ?? 0
-    )
-
-    result[mode] = generateShikiTheme(
-      { ...palettes, ...syntaxPalettes },
-      mode,
-      `server-${mode}`
-    )
+    result[mode] = resolveCodeThemeSelection(colors, mode, `server-${mode}`)
   }
 
   precomputedThemes = result

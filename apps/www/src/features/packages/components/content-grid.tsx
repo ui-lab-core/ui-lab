@@ -17,7 +17,7 @@ interface GenericContentGridProps<T extends ContentItem> {
   basePath: string;
   layoutConfigs: Record<string, LayoutConfig>;
   previews: Record<string, React.ReactNode>;
-  onItemClick?: (item: T) => void;
+  onItemClick?: (item: T) => boolean | void;
   getCategory?: (item: T) => string;
   categoryLabels?: Record<string, string>;
   fullWidth?: boolean;
@@ -53,8 +53,10 @@ export function GenericContentGrid<T extends ContentItem>({
 
     const handlePress = (passedHref?: string) => {
       if (onItemClick) {
-        onItemClick(item);
-        return;
+        const handled = onItemClick(item);
+        if (handled !== false) {
+          return;
+        }
       }
       router.push(passedHref || href);
     };

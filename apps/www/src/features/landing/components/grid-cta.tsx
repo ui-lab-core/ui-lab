@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Divider, Group } from 'ui-lab-components';
-import { FaEnvelope, FaScrewdriverWrench } from 'react-icons/fa6';
+import { Bell, CheckCircle2, Mail } from 'lucide-react';
 
-type ContentType = 'packages' | 'starters' | 'sections' | 'patterns';
+type ContentType = 'packages' | 'starters' | 'sections' | 'patterns' | 'elements';
 
 interface GridCTAProps {
   contentType: ContentType;
@@ -15,18 +15,6 @@ interface StoredSubmission {
   timestamp: number;
   source: ContentType;
 }
-
-const BellIcon = () => (
-  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-  </svg>
-);
 
 export function GridCTA({ contentType, onSubmit }: GridCTAProps) {
   const [email, setEmail] = useState('');
@@ -90,21 +78,33 @@ export function GridCTA({ contentType, onSubmit }: GridCTAProps) {
   const contentTypeLabel = contentType.charAt(0).toUpperCase() + contentType.slice(1);
 
   return (
-    <div>
-      <h3 className='flex items-center gap-4'><FaScrewdriverWrench /> Under Construction</h3>
+    <div className="flex min-h-[140px] w-full items-center justify-between gap-6 rounded border border-background-700 bg-background-900 px-5 py-4">
+      <div className="flex min-w-0 items-center gap-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-background-700 bg-background-800 text-accent-400">
+          <Bell className="h-4 w-4" />
+        </div>
+        <div className="min-w-0">
+          <h3 className="text-base font-semibold text-foreground-50">
+            More {contentTypeLabel.toLowerCase()} are in development
+          </h3>
+          <p className="mt-1 text-sm text-foreground-400">
+            Be notified when we add new content.
+          </p>
+        </div>
+      </div>
 
       {isSubmitted ? (
-        <div >
-          <CheckIcon />
-          <span>Thanks! We'll keep you updated</span>
+        <div className="flex shrink-0 items-center gap-2 text-sm font-medium text-success-500">
+          <CheckCircle2 className="h-4 w-4" />
+          <span>Thanks. We'll keep you updated.</span>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} >
-          <Group orientation="horizontal" className='hidden'>
+        <form onSubmit={handleSubmit} className="w-full max-w-md shrink-0">
+          <Group orientation="horizontal" className="w-full">
             <Group.Input
               type="email"
               placeholder="Enter your email"
-              icon={<FaEnvelope />}
+              icon={<Mail className="h-4 w-4" />}
               value={email}
               onChange={(e) => {
                 setEmail(e.currentTarget.value);
@@ -112,14 +112,13 @@ export function GridCTA({ contentType, onSubmit }: GridCTAProps) {
               }}
               disabled={isSubmitting}
               aria-label="Email address"
-
             />
             <Divider orientation='vertical' />
             <Group.Button type="submit" disabled={isSubmitting} isDisabled={isSubmitting}>
               {isSubmitting ? 'Subscribing...' : 'Subscribe'}
             </Group.Button>
           </Group>
-          {error && <div >{error}</div>}
+          {error && <div className="mt-2 text-sm text-danger-500">{error}</div>}
         </form>
       )}
     </div>

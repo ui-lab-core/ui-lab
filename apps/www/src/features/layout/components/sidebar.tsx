@@ -24,6 +24,8 @@ type FrameworkOption = {
   icon: ReactNode;
 };
 
+type ElementsNavType = 'packages' | 'sections' | 'starters' | 'patterns';
+
 const FRAMEWORK_STORAGE_KEY = 'ui-lab-selected-framework';
 const FRAMEWORK_OPTIONS: FrameworkOption[] = [
   {
@@ -82,12 +84,18 @@ const SidebarItemLink = memo(function SidebarItemLink({
   );
 });
 
-export function Sidebar() {
+export function Sidebar({
+  activeDomain: activeDomainProp,
+  activeElementsNav: activeElementsNavProp,
+}: {
+  activeDomain?: 'docs' | 'components' | 'packages' | 'sections' | 'starters' | 'patterns' | 'design-system';
+  activeElementsNav?: ElementsNavType;
+} = {}) {
   const { isOpen, closeSidebar } = useSidebarToggle();
   const docsNavigationData = useDocsNavigationData();
   const pathname = usePathname();
   const [selectedFramework, setSelectedFramework] = useState<FrameworkOption['value']>('react');
-  const activeDomain = getActiveDomainForPathname(pathname);
+  const activeDomain = activeDomainProp ?? getActiveDomainForPathname(pathname);
   const activeNavItem = getActiveNavItemForDomain(activeDomain);
   const mainNavItems = useMemo(() => getMainNavItemsForDomain(activeDomain), [activeDomain]);
   const sections = useMemo(() => {
@@ -98,7 +106,10 @@ export function Sidebar() {
   }, [activeDomain, activeNavItem, docsNavigationData]);
 
   const isElementsOrSectionsOrStarters = activeDomain === 'packages' || activeDomain === 'sections' || activeDomain === 'starters' || activeDomain === 'patterns';
-  const activeElementsNav = useMemo(() => (isElementsOrSectionsOrStarters ? getActiveElementsNavFromPathname(pathname) : 'packages'), [isElementsOrSectionsOrStarters, pathname]);
+  const activeElementsNav = useMemo(
+    () => (isElementsOrSectionsOrStarters ? activeElementsNavProp ?? getActiveElementsNavFromPathname(pathname) : 'packages'),
+    [activeElementsNavProp, isElementsOrSectionsOrStarters, pathname]
+  );
   const scrollStorageKey = useMemo(
     () => (isElementsOrSectionsOrStarters ? `sidebar-scroll-${activeElementsNav}` : `sidebar-scroll-${activeNavItem}`),
     [activeElementsNav, activeNavItem, isElementsOrSectionsOrStarters]
@@ -227,7 +238,7 @@ export function Sidebar() {
             storageKey={scrollStorageKey}
           >
             {isElementsOrSectionsOrStarters ? (
-              <div className="px-4 opacity-20 pointer-events-none">
+              <div className="px-4">
                 <ElementsList
                   activeNav={activeElementsNav}
                   pathname={pathname}

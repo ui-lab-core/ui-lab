@@ -99,6 +99,10 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
       ? {
         ...defaultSourceConfig,
         ...sourceConfig,
+        colors: {
+          ...defaultSourceConfig.colors,
+          ...(sourceConfig.colors || {}),
+        },
         typography: {
           ...defaultSourceConfig.typography,
           ...(sourceConfig.typography || {}),

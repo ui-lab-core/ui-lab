@@ -165,5 +165,3 @@ pnpm build:packages
 | Icons | Lucide React |
 | Package manager | pnpm 10.21.0 |
 | Node.js | >= 18 |
-
-<!-- The best UIs are built with intention, not convention -->

@@ -27,6 +27,10 @@ const NAV_LINK_BASE = 'block px-3 py-1.5 text-xs font-medium rounded-sm cursor-p
 const LINK_ACTIVE = 'text-foreground-50 bg-background-800 font-medium';
 const LINK_INACTIVE = 'text-foreground-200 hover:text-foreground-200 hover:bg-background-800/50';
 
+function getPathSegments(pathname: string) {
+  return pathname.split('/').filter(Boolean);
+}
+
 function NavLink({ href, isActive, children }: { href: string; isActive: boolean; children: React.ReactNode }) {
   return (
     <SidebarItemLink href={href} className={cn(NAV_LINK_BASE, isActive ? LINK_ACTIVE : LINK_INACTIVE)}>
@@ -72,32 +76,29 @@ function ElementsListContent({
   }, []);
 
   const currentItemId = useMemo(() => {
+    const segments = getPathSegments(pathname);
     if (activeNav === 'sections') {
-      const match = pathname.match(/\/sections\/([^/?]+)/);
-      return match ? match[1] : null;
+      return segments[0] === 'sections' ? segments[1] ?? null : null;
     }
     if (activeNav === 'starters') {
-      const match = pathname.match(/\/starters\/([^/?]+)/);
-      return match ? match[1] : null;
+      return segments[0] === 'starters' ? segments[1] ?? null : null;
     }
     if (activeNav === 'patterns') {
-      const match = pathname.match(/\/patterns\/([^/?]+)/);
-      return match ? match[1] : null;
+      return segments[0] === 'patterns' ? segments[1] ?? null : null;
     }
-    const match = pathname.match(/\/elements\/([^/?]+)/);
-    return match ? match[1] : null;
+    return segments[0] === 'packages' ? segments[1] ?? null : null;
   }, [pathname, activeNav]);
 
   const currentPackageId = useMemo(() => {
     if (activeNav !== 'packages') return null;
-    const match = pathname.match(/\/elements\/([^/?]+)/);
-    return match ? match[1] : null;
+    const segments = getPathSegments(pathname);
+    return segments[0] === 'packages' ? segments[1] ?? null : null;
   }, [pathname, activeNav]);
 
   const currentElementId = useMemo(() => {
     if (activeNav !== 'packages') return null;
-    const match = pathname.match(/\/elements\/[^/?]+\/([^/?]+)/);
-    return match ? match[1] : null;
+    const segments = getPathSegments(pathname);
+    return segments[0] === 'packages' ? segments[2] ?? null : null;
   }, [pathname, activeNav]);
 
   const isOnPackageRoute = useMemo(() => {

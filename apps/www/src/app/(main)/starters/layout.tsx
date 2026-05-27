@@ -11,5 +11,5 @@ export default function StartersLayout({
   sidebar: ReactNode;
   content: ReactNode;
 }) {
-  return <ContentSectionLayout sidebar={sidebar} content={content} minHeight />;
+  return <ContentSectionLayout sidebar={sidebar} content={content} />;
 }

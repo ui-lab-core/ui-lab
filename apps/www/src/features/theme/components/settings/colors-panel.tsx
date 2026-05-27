@@ -4,7 +4,6 @@ import { memo } from "react";
 import {
   type OklchColor,
   type SemanticColorType,
-  type SemanticColorConfig,
   type GlobalColorAdjustments,
 } from "../../lib/color-utils";
 import {
@@ -14,11 +13,15 @@ import {
 import {
   ColorRow,
   GlobalAdjustmentsPanel,
-  type ColorRowProps,
 } from "./shared-components";
-import { Divider } from "ui-lab-components";
+import { Divider, Select } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 import { ThemeColors } from "../../constants/themes";
+import {
+  CODE_THEME_OPTIONS,
+  DEFAULT_CODE_THEME,
+  type CodeThemeOptionId,
+} from "../../lib/themes/shiki/code-theme-options";
 
 const MICRO_LABEL = "text-sm font-semibold text-foreground-400";
 
@@ -29,6 +32,7 @@ interface ColorsPanelProps {
   onExpandedColorChange: (colorType: string | null) => void;
   onColorChange: (type: string, newColor: OklchColor) => void;
   onChromaLimitChange: (type: SemanticColorType, chromaLimit: number) => void;
+  onCodeThemeChange: (themeId: CodeThemeOptionId) => void;
   onGlobalAdjustmentChange: (key: keyof GlobalColorAdjustments, value: number) => void;
 }
 
@@ -40,6 +44,7 @@ export const ColorsPanel = memo(
     onExpandedColorChange,
     onColorChange,
     onChromaLimitChange,
+    onCodeThemeChange,
     onGlobalAdjustmentChange,
   }: ColorsPanelProps) => {
     const { currentThemeMode } = useApp();
@@ -56,6 +61,31 @@ export const ColorsPanel = memo(
             onGlobalAdjustmentChange("chromaBoost", v)
           }
         />
+        <div className="mx-[6px] mb-1 rounded-[12px] border border-background-700 bg-background-900/40 p-3">
+          <div className={`${MICRO_LABEL} mb-2 block opacity-70`}>
+            Code Theme
+          </div>
+          <Select
+            selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
+            defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}
+            onSelectionChange={(key) => onCodeThemeChange(key as CodeThemeOptionId)}
+          >
+            <Select.Trigger className="w-full">
+              <Select.Value placeholder="Select code theme" />
+            </Select.Trigger>
+            <Select.Content>
+              {CODE_THEME_OPTIONS.map((theme) => (
+                <Select.Item
+                  key={theme.id}
+                  value={theme.id}
+                  textValue={theme.label}
+                >
+                  {theme.label}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select>
+        </div>
         <Divider />
         <div className={`${MICRO_LABEL} px-2 pt-2 opacity-70`}>
           Core Colors

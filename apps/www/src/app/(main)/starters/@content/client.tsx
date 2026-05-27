@@ -1,9 +1,10 @@
 'use client';
 import React from 'react';
 import { getAllStarters } from 'ui-lab-registry';
-import { GenericContentGrid } from '@/features/layout';
+import { ContentIndex, GenericContentGrid } from '@/features/layout';
 import { getLayoutConfig as getStarterLayoutConfig, getPreviewComponent as getStarterPreview } from '@/features/starters';
 import { GridCTA } from '@/features/landing/components/grid-cta';
+import { PurchaseModalClient, usePurchaseModal } from '@/features/packages';
 import type { StarterMetadata } from 'ui-lab-registry';
 
 const placeholderStarters: StarterMetadata[] = [
@@ -31,9 +32,10 @@ const placeholderStarters: StarterMetadata[] = [
   }
 ];
 
-export default function StartersPage() {
+function StartersPageContent() {
   const allStarters = getAllStarters();
   const combinedStarters = [...allStarters, ...placeholderStarters];
+  const modalContext = usePurchaseModal();
   const previews: Record<string, React.ReactNode> = {};
   const layoutConfigs: Record<string, import('ui-lab-registry').LayoutConfig> = {};
   for (const starter of combinedStarters) {
@@ -43,23 +45,29 @@ export default function StartersPage() {
   }
 
   return (
-    <div className='mt-20 pt-(header-height)  pointer-events-none'>
-      <div className="w-full bg-background-950 px-4 mx-auto pb-12">
-        <div className="relative overflow-hidden h-screen">
-          <div className="space-y-6">
-            <GenericContentGrid
-              items={combinedStarters}
-              basePath="/starters"
-              layoutConfigs={layoutConfigs}
-              previews={previews}
-            />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-background-950/60 from-0% via-background-950/90 via-40% to-background-950 pointer-events-none z-20" />
-          <div className="absolute left-0 right-0 top-1/3 -translate-y-1/2 flex justify-center z-30 pointer-events-auto px-6 py-16">
-            <GridCTA contentType="starters" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <ContentIndex cta={<GridCTA contentType="starters" />}>
+      <GenericContentGrid
+        items={combinedStarters}
+        basePath="/starters"
+        layoutConfigs={layoutConfigs}
+        previews={previews}
+        onItemClick={(starter) => {
+          if (starter.pricing?.price != null) {
+            modalContext.openModal(starter);
+            return true;
+          }
+
+          return false;
+        }}
+      />
+    </ContentIndex>
+  );
+}
+
+export default function StartersPage() {
+  return (
+    <PurchaseModalClient type="starter">
+      <StartersPageContent />
+    </PurchaseModalClient>
   );
 }

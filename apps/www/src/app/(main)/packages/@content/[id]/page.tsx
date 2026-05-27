@@ -50,7 +50,7 @@ async function PackageContent({ packageId }: { packageId: string }) {
           })()}
         </div>
       </ContentHeader>
-      <PackageElementsClientWrapper packageId={packageId} elementIds={elementIds} isPremium={pkg.pricing?.price !== null} />
+      <PackageElementsClientWrapper packageId={packageId} elementIds={elementIds} isPremium={pkg.pricing?.price != null} />
     </>
   );
 }
@@ -63,10 +63,8 @@ export default async function PackageElementsPage({
   const { id: packageId } = await params;
 
   return (
-    <div className='pt-(--header-height)'>
-      <div className="w-full bg-background-950 px-4 mx-auto pt-4 pb-12">
-        <PackageContent packageId={packageId} />
-      </div>
+    <div className="w-full bg-background-950 px-4 mx-auto pt-4 pb-12">
+      <PackageContent packageId={packageId} />
     </div>
   );
 }

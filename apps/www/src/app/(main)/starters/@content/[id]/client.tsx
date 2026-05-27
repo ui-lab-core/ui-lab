@@ -188,9 +188,8 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
   const isPremium = starter.pricing && starter.pricing.price !== null;
 
   return (
-    <div className="pt-(--header-height)">
-      <div className="w-full bg-background-950 mx-auto min-h-screen flex flex-col pt-4 pb-12">
-        <div className="w-full mx-auto px-4 flex flex-col flex-1">
+    <div className="w-full bg-background-950 mx-auto min-h-screen flex flex-col pt-4 pb-12">
+      <div className="w-full mx-auto px-4 flex flex-col flex-1">
           <div className="mb-8">
             <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 md:gap-8 mb-12">
               <div className="flex items-center justify-center">
@@ -278,7 +277,6 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

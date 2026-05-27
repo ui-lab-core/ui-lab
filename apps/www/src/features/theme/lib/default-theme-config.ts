@@ -10,6 +10,7 @@ import {
   themes,
   type SimpleThemeColors,
 } from "../constants/themes";
+import { DEFAULT_CODE_THEME } from "./themes/shiki/code-theme-options";
 import { type LayoutScaleConfig } from "../config/shared/layout-variables";
 import { ensureSemanticColorIntegrity } from "./color/semantic";
 import { DEFAULT_TYPOGRAPHY_CONFIG } from "./typography-config";
@@ -35,6 +36,7 @@ function getDefaultThemeColors(
 
   return {
     ...preset,
+    codeTheme: preset.codeTheme ?? DEFAULT_CODE_THEME,
     semantic: preset.semantic
       ? ensureSemanticColorIntegrity(preset.semantic)
       : undefined,

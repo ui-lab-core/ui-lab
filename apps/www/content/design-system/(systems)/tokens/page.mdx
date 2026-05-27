@@ -1,6 +1,6 @@
 ---
 title: "Design Tokens"
-description: "Complete reference of design tokens including colors, typography, spacing, and more"
+description: "Role-based guidance for using UI Lab foreground, background, accent, and semantic tokens"
 category: "Systems"
 publishedOn: "2026-12-15"
 tags: ["tokens", "design-tokens", "reference"]
@@ -8,306 +8,142 @@ tags: ["tokens", "design-tokens", "reference"]
 
 # Design Tokens
 
-Design tokens are named design values that represent design decisions as reusable, centrally-managed variables. Use tokens instead of hardcoding values to enable theme swapping and maintain consistency.
+UI Lab tokens are role decisions, not a generic light-to-dark palette. A class such as `text-foreground-300` or `bg-background-900` should explain what the element is doing in the interface: normal text, muted support text, page depth, elevated surface, passive selection, primary action, or feedback.
 
-**Instead of:**
-```css
-.button {
-  background-color: #4F46E5;
-  padding: 8px 16px;
-  font-size: 16px;
-}
-```
-
-**Use:**
-```css
-.button {
-  background-color: var(--accent-600);
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--font-size-md);
-}
-```
+Using a token is only the first check. The token also needs to fit the UI role. A selected filter chip should usually become a clearer neutral surface; it should not automatically become an accent-filled primary object.
 
 ---
 
-## Token Categories
+## Color Token Families
 
-Colors, typography, spacing, shadows, borders, and motion
+UI Lab's main color work happens through four families:
 
----
+| Family | Use For | Avoid |
+|---|---|---|
+| `foreground-*` | Text, icons, labels, code, metadata | Background fills |
+| `background-*` | Page layers, surfaces, borders, dividers, neutral states | High-emphasis brand or feedback color |
+| `accent-*` | Primary actions, brand emphasis, current product/location indicators, focus or small active cues | Passive selected chips, generic filter state, decorative fills |
+| `success-*`, `danger-*`, `warning-*`, `info-*` | Real feedback, validation, status, destructive or caution semantics | Decoration or arbitrary category coloring |
 
-## Color Tokens
-
-All colors use OKLCH color space (perceptually uniform). Pattern: `{family}-{shade}` where shade ranges 50 (lightest) to 950 (darkest).
-
-**Core families**: Background, Foreground, Accent
-**Semantic**: Success (green), Danger (red), Warning (yellow), Info (blue)
-
-### Shade Selection Guide
-
-
-| Shade Range | Use Case | Examples |
-|-------------|----------|----------|
-| **50-100** | Light backgrounds, hover states | Card backgrounds, tooltips |
-| **200-300** | Light accents, borders | Input borders, dividers |
-| **400-500** | Medium, interactive states | Button backgrounds, links |
-| **600-700** | Bold accents, dark mode backgrounds | Primary buttons, section backgrounds |
-| **800-900** | Dark text, dark backgrounds | Text color, dark mode text |
-| **950** | Darkest, text on light | Headlines, strong emphasis |
-
+The background and foreground scales are bounded role scales. Do not read them as "50 is a light background and 950 is dark text." In this site, `foreground-50` is the brightest foreground and `background-950` is a deep page/root layer in the dark theme.
 
 ---
 
-## Typography Tokens
+## Foreground Tokens
 
-**Families:**
-- `--font-family-sans`: System fonts (primary)
-- `--font-family-mono`: Monospace (code, data)
+| Token | Role | Common Use |
+|---|---|---|
+| `foreground-50` | Maximum emphasis | Page titles, strong headings, labels on dark primary fills, rare high-contrast needs |
+| `foreground-100` | Strong emphasis | Active navigation text, important labels, compact headings when `foreground-50` is too loud |
+| `foreground-200` | High-readable emphasis | Selected neutral states, section labels, important control text |
+| `foreground-300` | Default readable foreground | Body text, default control labels, table or list content |
+| `foreground-400` | Muted foreground | Descriptions, metadata, placeholders, comments, quiet secondary labels, empty states |
 
-### Font Size Tokens
-
-
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--font-size-xs` | 0.75rem (12px) | Captions, metadata |
-| `--font-size-sm` | 0.875rem (14px) | Small text, help |
-| `--font-size-md` | 1rem (16px) | Body text, default |
-| `--font-size-lg` | 1.25rem (20px) | Large labels |
-| `--font-size-xl` | 1.5rem (24px) | Subheadings |
-| `--font-size-2xl` | 1.875rem (30px) | Page titles |
-| `--font-size-3xl` | 2.25rem (36px) | Display headings |
-
-
-### Font Weight Tokens
-
-
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--font-weight-regular` | 400 | Body text |
-| `--font-weight-medium` | 500 | Labels, emphasis |
-| `--font-weight-bold` | 700 | Headings, strong |
-
-
-### Line Height Tokens
-
-
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--line-height-tight` | 1.25 | Headings, compact |
-| `--line-height-normal` | 1.5 | Body text, standard |
-| `--line-height-relaxed` | 1.75 | Long-form, accessibility |
-
-
-### Complete Text Style Tokens
-
-Pre-combined typography tokens:
-
-
-| Token | Includes | Use Case |
-|-------|----------|----------|
-| `--text-h1` | 2.25rem, 700, 1.25 | Page titles |
-| `--text-h2` | 1.875rem, 700, 1.25 | Section titles |
-| `--text-h3` | 1.5rem, 700, 1.5 | Subsections |
-| `--text-h4` | 1.25rem, 700, 1.5 | Minor headings |
-| `--text-body-lg` | 1rem, 400, 1.5 | Lead paragraphs |
-| `--text-body` | 1rem, 400, 1.5 | Standard body |
-| `--text-body-sm` | 0.875rem, 400, 1.5 | Secondary text |
-| `--text-label` | 0.875rem, 500, 1.25 | Form labels |
-| `--text-caption` | 0.75rem, 400, 1.25 | Metadata |
-| `--text-code` | 0.875rem mono, 400, 1.5 | Code blocks |
-
+Use `foreground-50` sparingly. It is often too bright for compact controls, filter chips, metadata, secondary actions, and repeated list rows. Most ordinary UI text should start at `foreground-300`; supporting text usually belongs at `foreground-400`.
 
 ---
 
-## Spacing Tokens
+## Background Tokens
 
-All spacing tokens use 4px as the base unit with a 1.5x ratio between steps.
+| Token | Role | Common Use |
+|---|---|---|
+| `background-500` | Strong or intentionally brighter surface | Rare highlights, generated diagrams, theme tooling where a noticeably brighter neutral is needed |
+| `background-600` | Secondary/highlight background | Strong hover borders, emphasized neutral fills, active support surfaces |
+| `background-700` | Default border and strong divider | Borders, dividers, selected neutral fills, scrollbar thumbs |
+| `background-800` | Elevated or interactive surface | Cards, panels, controls, hover fills, selected neutral rows |
+| `background-900` | First application layer | Secondary page layer, code headers, subdued panels, unselected chips |
+| `background-950` | Depth/root layer | Page backgrounds, header/sidebar roots, deep surrounding areas |
 
-
-| Token | Pixels | REM | Use Case |
-|-------|--------|-----|----------|
-| `--space-0.5` | 2px | 0.125rem | Minimal gaps |
-| `--space-1` | 4px | 0.25rem | Tight spacing |
-| `--space-2` | 8px | 0.5rem | Button padding |
-| `--space-3` | 12px | 0.75rem | Component padding |
-| `--space-4` | 16px | 1rem | Standard spacing |
-| `--space-6` | 24px | 1.5rem | Section spacing |
-| `--space-8` | 32px | 2rem | Major sections |
-| `--space-12` | 48px | 3rem | Large sections |
-| `--space-16` | 64px | 4rem | Hero sections |
-| `--space-20` | 80px | 5rem | Page spacing |
-| `--space-24` | 96px | 6rem | Full-width sections |
-
+The site commonly layers `background-950` as the page or app shell, `background-900` as a secondary layer, and `background-800` for elevated panels, cards, popovers, and controls. Borders and dividers commonly use `background-700`, moving toward `background-600` for stronger hover or selected edges.
 
 ---
 
-## Border Radius Tokens
+## Accent Restraint
 
-Consistent corner rounding throughout the interface:
+Accent is load-bearing. It should draw attention to the thing the product wants users to understand or do.
 
+Appropriate accent uses:
 
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--radius-sm` | 2px | Subtle rounding |
-| `--radius-md` | 4px | Small components |
-| `--radius-lg` | 8px | Cards, buttons |
-| `--radius-xl` | 12px | Large cards, modals |
-| `--radius-2xl` | 16px | Extra large elements |
-| `--radius-full` | 9999px | Fully rounded (pills, circles) |
+- Primary actions and CTAs: `bg-accent-600 text-foreground-50`
+- Links or brand emphasis: `text-accent-500`
+- Current product/location navigation when it needs brand weight
+- Focus rings and small active indicators
+- Compact badges that communicate a special product state
 
+Usually inappropriate accent uses:
 
----
+- Passive selected filter chips with `bg-accent-*` or `border-accent-*`
+- Category rows, generic selected pills, inactive toolbar controls, or filter popovers
+- Decorative swatches that do not mean primary, brand, focus, or active product state
+- Hover states that make an inactive item look more important than the selected item
 
-## Shadow/Elevation Tokens
+For passive selected filters, chips, category rows, and toggles, prefer neutral state changes first:
 
-Depth system using box shadows:
-
-
-| Token | Usage | Use Case |
-|-------|-------|----------|
-| `--shadow-sm` | Small shadow | Subtle elevation |
-| `--shadow-md` | Medium shadow | Standard elevation |
-| `--shadow-lg` | Large shadow | Prominent elevation |
-| `--shadow-xl` | Extra large shadow | High elevation |
-
-
----
-
-## Motion/Animation Tokens
-
-### Duration Tokens
-
-
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--duration-fast` | 100ms | Quick interactions |
-| `--duration-base` | 200ms | Standard animations |
-| `--duration-slow` | 300ms | Complex animations |
-
-
-### Easing Tokens
-
-
-| Token | Timing Function | Use Case |
-|-------|-----------------|----------|
-| `--ease-in` | cubic-bezier(0.4, 0, 1, 1) | Exiting animations |
-| `--ease-out` | cubic-bezier(0, 0, 0.2, 1) | Entering animations |
-| `--ease-in-out` | cubic-bezier(0.4, 0, 0.2, 1) | Continuous animations |
-
-
----
-
-## Using Tokens
-
-**CSS:** `color: var(--foreground-400); padding: var(--space-4);`
-
-**Tailwind:** `<div class="bg-accent-600 p-4">Content</div>`
-
-**JavaScript:** `getComputedStyle(document.documentElement).getPropertyValue('--space-4')`
-
----
-
-## Naming Conventions
-
-### Color Tokens
-
-**Pattern**: `--{family}-{shade}`
-
-Examples:
-- `--background-50`, `--background-950`
-- `--success-600`
-- `--danger-300`
-
-### Typography Tokens
-
-**Pattern**: `--font-{property}` or `--text-{style}`
-
-Examples:
-- `--font-family-sans`
-- `--font-size-md`
-- `--font-weight-bold`
-- `--text-body`
-- `--text-h1`
-
-### Spacing Tokens
-
-**Pattern**: `--space-{multiplier}`
-
-Examples:
-- `--space-1`, `--space-4`, `--space-12`
-
-### Other Tokens
-
-**Pattern**: `--{category}-{descriptor}`
-
-Examples:
-- `--radius-lg`
-- `--shadow-md`
-- `--duration-base`
-- `--ease-in-out`
-
----
-
-## Semantic vs. Descriptive
-
-### Semantic Naming (Preferred)
-
-Token names describe their **purpose** or **meaning**:
-```
---success-600 (used for success states)
---danger-500 (used for errors)
---foreground-400 (used for text)
-```
-
-### Descriptive Naming (Avoid)
-
-Token names describe their **appearance**:
-```
---green-600 (color doesn't indicate purpose)
---red-500 (red could mean danger or warm)
---dark-text (not specific enough)
-```
-
-**Why semantic is better:**
-- Easy to swap themes without changing code
-- More maintainable across the project
-- Clearer intent for developers
-- Facilitates accessibility (e.g., danger colors can change if needed)
-
----
-
-## Token Inheritance & Composition
-
-### Single Value Tokens
-Basic tokens representing a single decision:
-```
---space-4: 1rem
---font-size-md: 1rem
---accent-600: oklch(50% 0.15 260)
-```
-
-### Composite Tokens
-Tokens combining multiple values for efficiency:
-```
---text-body: 1rem / 1.5 "system-ui, ..."
---shadow-md: 0 4px 6px rgba(0,0,0,0.1)
-```
-
-### Token Combinations
-Using multiple tokens together:
-```css
-.card {
-  padding: var(--space-6);
-  background-color: var(--background-50);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
+```tsx
+className={isSelected
+  ? "bg-background-700 border-background-600 text-foreground-200"
+  : "bg-background-900 border-background-700 text-foreground-400 hover:bg-background-800 hover:border-background-600 hover:text-foreground-200"}
 ```
 
 ---
 
-## Accessibility Considerations
+## Semantic Tokens
 
-- **Color Contrast**: Minimum 4.5:1 for text, 3:1 for graphics
-- **Font Sizes**: Body 16px+, small text 14px+, captions 12px+
-- **Touch Targets**: Minimum 44px × 44px with 8px gaps
+Use semantic families only when the UI is communicating that semantic meaning.
+
+| Family | Use For | Example |
+|---|---|---|
+| `success-*` | Completed, saved, valid, healthy, available | Successful purchase, synced state, positive status |
+| `danger-*` | Error, destructive, failed, invalid | Validation error, delete action, failed request |
+| `warning-*` | Caution, pending, risk, needs attention | Unsaved change, degraded state, warning notice |
+| `info-*` | Neutral information or guidance | Informational message, help state, neutral note |
+
+Do not use semantic colors as decoration or as substitute brand colors. If a status needs only low emphasis, pair a subtle semantic fill such as `bg-success-600/10` with readable semantic text and a restrained border.
+
+---
+
+## State Recipes
+
+| Role | Preferred Tokens |
+|---|---|
+| Default text | `text-foreground-300` |
+| Muted text | `text-foreground-400` |
+| High-emphasis heading | `text-foreground-50` or `text-foreground-100` |
+| Page/root layer | `bg-background-950` |
+| Secondary application layer | `bg-background-900` |
+| Floating panels/popovers/cards | `bg-background-800` or component defaults, with `border-background-700` |
+| Borders/dividers | `border-background-700`, stronger as `border-background-600` |
+| Hover/highlight | `hover:bg-background-800`, `hover:border-background-600`, `hover:text-foreground-200` |
+| Passive selected filter/chip/category | `bg-background-700` or `bg-background-800`, `border-background-600` or `border-background-700`, `text-foreground-200` or `text-foreground-300` |
+| Primary action or brand emphasis | `bg-accent-600 text-foreground-50`, `text-accent-500`, or a small `accent-*` indicator |
+| Error or destructive state | `danger-*` text, border, or fill with supporting copy/icon |
+| Success state | `success-*` text, border, or fill with supporting copy/icon |
+
+Hover states should clarify affordance without outranking active or selected states. If an unselected item hovers to `text-foreground-50` while the selected item sits at `text-foreground-300`, the hierarchy is backwards.
+
+---
+
+## Token Class Hygiene
+
+Avoid conflicting token classes on the same element or within a single conditional branch:
+
+```tsx
+// Avoid: two background classes compete.
+className={isActive ? "bg-background-700 bg-background-800 text-foreground-300" : ""}
+
+// Prefer: one class per role.
+className={isActive ? "bg-background-700 text-foreground-300" : ""}
+```
+
+The same rule applies to `text-*`, `border-*`, and state variants such as `hover:bg-*`. Competing classes make the intended role harder to audit and easier to break during refactors.
+
+---
+
+## Anti-Pattern Checklist
+
+- Accent used as a generic selected chip, filter, category, or toolbar background
+- `foreground-50` applied everywhere, especially on compact controls and metadata
+- Hover state brighter, stronger, or more colorful than the selected state
+- Multiple competing `bg-*`, `text-*`, or `border-*` token classes on one element
+- Semantic colors used decoratively instead of for status, feedback, validation, or destructive actions
+- A token chosen only because it is valid, not because it fits the element's UI role

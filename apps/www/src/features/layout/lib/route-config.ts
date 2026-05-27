@@ -1,6 +1,6 @@
-import { FaBook, FaShapes, FaRegWindowMaximize, FaBox, FaCube, FaTableCells } from 'react-icons/fa6';
+import { FaBook, FaShapes, FaRegWindowMaximize, FaBox, FaCube, FaSeedling, FaTableCells } from 'react-icons/fa6';
 
-type DomainId = 'docs' | 'components' | 'packages' | 'sections' | 'patterns';
+type DomainId = 'docs' | 'components' | 'packages' | 'sections' | 'starters' | 'patterns';
 
 interface DomainConfig {
   id: DomainId;
@@ -33,6 +33,12 @@ const DOMAINS: Record<DomainId, DomainConfig> = {
     id: 'sections',
     label: 'Sections',
     icon: FaRegWindowMaximize,
+    headerType: 'search',
+  },
+  starters: {
+    id: 'starters',
+    label: 'Starters',
+    icon: FaSeedling,
     headerType: 'search',
   },
   patterns: {
@@ -120,7 +126,7 @@ const ROUTES: Record<string, RouteConfig> = {
   },
   starters: {
     path: '/starters',
-    domainId: 'docs',
+    domainId: 'starters',
   },
   changelog: {
     path: '/changelog',
@@ -139,7 +145,7 @@ export const shouldApplyRevealCollapse = (pathname: string): boolean => {
   const domainId = getDomainForPathname(pathname);
   if (!domainId) return false;
   const domain = DOMAINS[domainId];
-  return domain?.headerType === 'tabs' || domainId === 'packages' || domainId === 'sections' || domainId === 'patterns';
+  return domain?.headerType === 'tabs' || domainId === 'packages' || domainId === 'sections' || domainId === 'starters' || domainId === 'patterns';
 };
 
 export const getTabGroupForPathname = (pathname: string): TabGroup | undefined => {

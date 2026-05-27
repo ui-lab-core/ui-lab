@@ -24,6 +24,7 @@ import {
   normalizeTypographyLineHeight,
 } from "./typography-config";
 import { getDefaultAppPreferences } from "./default-theme-config";
+import { normalizeCodeThemeId } from "./themes/shiki/code-theme-options";
 
 interface AppContextType {
   isSettingsPanelOpen: boolean;
@@ -168,6 +169,7 @@ function getPersistedPreferences(
 ): PersistedAppPreferences {
   const validatedColors: SimpleThemeColors = {
     ...sourceConfig.colors,
+    codeTheme: normalizeCodeThemeId(sourceConfig.colors.codeTheme),
     semantic: sourceConfig.colors.semantic
       ? ensureSemanticColorIntegrity(sourceConfig.colors.semantic)
       : undefined,

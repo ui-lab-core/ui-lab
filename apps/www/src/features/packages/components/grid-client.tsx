@@ -10,6 +10,7 @@ import { getPackageById } from 'ui-lab-registry';
 interface ElementsGridClientProps {
   elements: ElementMetadata[];
   packageId?: string;
+  isPremium?: boolean;
 }
 
 function buildPreviews(elements: ElementMetadata[]) {
@@ -68,6 +69,10 @@ function FreeElementsGrid({ elements, packageId }: ElementsGridClientProps) {
   );
 }
 
-export function ElementsGridClient({ elements, packageId }: ElementsGridClientProps) {
+export function ElementsGridClient({ elements, packageId, isPremium }: ElementsGridClientProps) {
+  if (packageId && isPremium) {
+    return <PremiumElementsGrid elements={elements} packageId={packageId} />;
+  }
+
   return <FreeElementsGrid elements={elements} packageId={packageId} />;
 }

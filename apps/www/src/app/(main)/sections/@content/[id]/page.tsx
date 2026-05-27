@@ -1,25 +1,23 @@
 import SectionDetailClient from './client';
-import { sectionRegistry, getAllSections } from 'ui-lab-registry';
+import { getElementEntry, listElements } from '@ui-lab-core/library/metadata';
+import { getSectionById } from 'ui-lab-registry';
 import { generateMetadata as generateSiteMetadata } from '@/shared';
 
-const sectionIds = Object.keys(sectionRegistry);
-
 export function generateStaticParams() {
-  return sectionIds.map((id) => ({ id }));
+  return listElements('sections').map((section) => ({ id: section.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id: sectionId } = await params;
-  const sections = getAllSections();
-  const section = sections.find(s => s.id === sectionId);
+  const section = getElementEntry('sections', sectionId);
 
   if (!section) {
     return generateSiteMetadata({ title: 'Section Not Found' });
   }
 
   return generateSiteMetadata({
-    title: section.name,
-    description: section.description,
+    title: section.displayName,
+    description: section.description ?? '',
   });
 }
 
@@ -29,5 +27,7 @@ export default async function SectionDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id: sectionId } = await params;
-  return <SectionDetailClient sectionId={sectionId} />;
+  const section = getSectionById(sectionId) ?? null;
+
+  return <SectionDetailClient sectionId={sectionId} section={section} />;
 }

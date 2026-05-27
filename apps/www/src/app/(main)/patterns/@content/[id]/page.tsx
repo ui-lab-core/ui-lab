@@ -1,22 +1,23 @@
 import PatternDetailClient from './client';
-import { getAllPatterns, getPatternById } from 'ui-lab-registry';
+import { getElementEntry, listElements } from '@ui-lab-core/library/metadata';
+import { getPatternById } from 'ui-lab-registry';
 import { generateMetadata as generateSiteMetadata } from '@/shared';
 
 export function generateStaticParams() {
-  return getAllPatterns().map((p) => ({ id: p.id }));
+  return listElements('patterns').map((pattern) => ({ id: pattern.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id: patternId } = await params;
-  const pattern = getPatternById(patternId);
+  const pattern = getElementEntry('patterns', patternId);
 
   if (!pattern) {
     return generateSiteMetadata({ title: 'Pattern Not Found' });
   }
 
   return generateSiteMetadata({
-    title: `${pattern.name} — UI Lab Patterns`,
-    description: pattern.description,
+    title: `${pattern.displayName} — UI Lab Patterns`,
+    description: pattern.description ?? '',
   });
 }
 
@@ -26,5 +27,7 @@ export default async function PatternDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id: patternId } = await params;
-  return <PatternDetailClient patternId={patternId} />;
+  const pattern = getPatternById(patternId) ?? null;
+
+  return <PatternDetailClient patternId={patternId} pattern={pattern} />;
 }

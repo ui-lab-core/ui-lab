@@ -136,6 +136,43 @@ Scan code for native HTML elements first. Severities:
 | `<div className="grid">` | `<Grid>` | WARNING |
 | `<div>` with padding/bg className | `<Card>` / `<Group>` | WARNING |
 
+### Token Usage
+
+Evaluate token role fit, not just token validity. A class can use an allowed UI Lab token and still be wrong if it misstates hierarchy, selection, or feedback semantics.
+
+Compact token guide:
+
+- `foreground-50` is the strongest foreground; reserve it for true high-emphasis text, headings on dark surfaces, primary labels, or very bright foreground needs.
+- `foreground-100` and `foreground-200` are preferred bright foregrounds when high emphasis is needed but `foreground-50` would be too loud.
+- `foreground-300` is the usual default for normal readable interface text.
+- `foreground-400` is muted foreground for placeholders, comments, metadata, descriptions, disabled-adjacent text, and quiet secondary labels.
+- `background-500` is rare; use only for intentionally brighter neutral backgrounds or strong highlighted surfaces.
+- `background-600` is a secondary/highlight background and strong hover or selected edge.
+- `background-700` is the common default border/divider token and can be a selected neutral fill.
+- `background-800` is for floating elements, cards, panels, popovers, elevated surfaces, and neutral hover fills.
+- `background-900` is a secondary background and common first application layer.
+- `background-950` is the depth/root layer around `background-900` or elevated surfaces.
+- `accent-*` is rare and load-bearing: primary actions, brand emphasis, current product/location navigation, focus, or a small active indicator.
+- `success-*`, `danger-*`, `warning-*`, and `info-*` are only for real feedback/status semantics.
+
+Specific checks:
+
+- Flag `accent-*` backgrounds or borders on passive selected/filter surfaces, category rows, inactive toolbar controls, or generic selected pills unless the design clearly intends primary emphasis.
+- Flag `foreground-50` on compact controls, metadata, chips, secondary actions, and filter states when it makes those elements too bright for their role.
+- For passive selected filters/chips/categories, prefer neutral selected states: `bg-background-700/800`, `border-background-600/700`, `text-foreground-200/300`.
+- Hover states must not visually outrank active or selected states. If an inactive hover becomes brighter, stronger, or more colorful than the selected state, flag it.
+- Flag conflicting token classes on the same element or within the same conditional branch, such as multiple `bg-*`, `text-*`, or `border-*` utilities that compete for the same role.
+- Do not document existing usage as correct solely because it appears in the codebase; judge whether the token matches the UI role.
+
+Severity guidance:
+
+- `WARNING` for wrong token role that makes hierarchy or state misleading.
+- `WARNING` for `accent-*` used as a passive selection background or border.
+- `SUGGESTION` for foreground that is too bright or dim when hierarchy remains understandable.
+- `CRITICAL` only when token misuse breaks accessibility, theme compatibility, or state comprehension.
+
+Keep token misuse inside **Design System Adherence**. Also mention it under **Visual Consistency** when it affects state hierarchy, but do not add a seventh pillar or alter the output contract.
+
 Then apply `design-system.md` rules: token usage (no hex/rgba), semantic tokens for feedback, React Aria props, compound sub-components, shade ranges, styling prohibitions (`shadow-*`, gradients, `dark:`), and anti-patterns (typography smell, over-specified rhythm, transition noise).
 
 ## Slop Avoidance pillar specifics

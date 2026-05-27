@@ -3,77 +3,67 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo } from 'react';
-import { getAllSections, searchSections } from 'ui-lab-registry';
-import type { SectionMetadata } from 'ui-lab-registry';
-import { GenericContentGrid } from '@/features/layout';
-import { getLayoutConfig as getSectionLayoutConfig, getPreviewComponent as getSectionPreview } from '@/features/sections';
-import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover } from '@/features/packages';
+import type { LayoutConfig } from 'ui-lab-registry';
+import { ContentIndex, GenericContentGrid } from '@/features/layout';
+import { getLayoutConfig as getSectionLayoutConfig } from '@/features/sections/lib/layout-registry';
+import {
+  filterSections,
+  type SectionGridFilters,
+  type SectionGridItem,
+} from '@/features/sections/lib/section-grid-data';
+import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover, PurchaseModalClient, usePurchaseModal } from '@/features/packages';
 import { GridCTA } from '@/features/landing/components/grid-cta';
+import { SectionLivePreview } from '@/features/sections/components/section-live-preview';
 
-const placeholderSections: SectionMetadata[] = [
-  {
-    id: 'advanced-hero',
-    name: 'Advanced Hero',
-    description: 'Premium hero section with animated backgrounds and sophisticated typography.',
-    category: 'hero',
-    tags: ['premium', 'advanced', 'animation'],
-    variants: []
-  },
-  {
-    id: 'custom-cta',
-    name: 'Custom CTA',
-    description: 'Advanced call-to-action section with interactive elements and conversion optimization.',
-    category: 'cta',
-    tags: ['premium', 'conversion', 'interactive'],
-    variants: []
-  }
-];
-
-function sortSections(sections: SectionMetadata[], sortBy: string): SectionMetadata[] {
-  const sorted = [...sections];
-  switch (sortBy) {
-    case 'az':
-      return sorted.sort((a, b) => a.name.localeCompare(b.name));
-    case 'za':
-      return sorted.sort((a, b) => b.name.localeCompare(a.name));
-    case 'default':
-    case 'newest':
-    default:
-      return sorted.reverse();
-  }
+interface SectionsPageProps {
+  allSections: SectionGridItem[];
+  initialSections: SectionGridItem[];
+  initialFilters: SectionGridFilters;
+  initialLayoutConfigs: Record<string, LayoutConfig>;
 }
 
-export default function SectionsPage() {
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('default');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+function buildLayoutConfigs(sections: SectionGridItem[]): Record<string, LayoutConfig> {
+  return Object.fromEntries(sections.map(s => [s.id, { ...getSectionLayoutConfig(s), columnSpan: 1 }]));
+}
 
-  const allSections = useMemo(() => {
-    const sections = getAllSections();
-    return [...placeholderSections, ...sections];
-  }, []);
+function SectionsPageContent({
+  allSections,
+  initialSections,
+  initialFilters,
+  initialLayoutConfigs,
+}: SectionsPageProps) {
+  const router = useRouter();
+  const modalContext = usePurchaseModal();
+  const [searchQuery, setSearchQuery] = useState(initialFilters.searchQuery);
+  const [sortBy, setSortBy] = useState(initialFilters.sortBy);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialFilters.selectedCategory);
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialFilters.selectedTags);
 
   const filteredSections = useMemo(() => {
-    let sections = allSections;
-    if (searchQuery.trim()) {
-      sections = searchSections(searchQuery);
-      sections = [...sections, ...placeholderSections.filter(s =>
-        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )];
+    if (
+      searchQuery === initialFilters.searchQuery &&
+      sortBy === initialFilters.sortBy &&
+      selectedCategory === initialFilters.selectedCategory &&
+      selectedTags.join(',') === initialFilters.selectedTags.join(',')
+    ) {
+      return initialSections;
     }
-    if (selectedCategory) {
-      sections = sections.filter((s) => s.category === selectedCategory);
-    }
-    if (selectedTags.length > 0) {
-      sections = sections.filter((s) =>
-        selectedTags.some((tag) => s.tags.includes(tag))
-      );
-    }
-    return sortSections(sections, sortBy);
+
+    return filterSections(allSections, {
+      searchQuery,
+      sortBy,
+      selectedCategory,
+      selectedTags,
+    });
   }, [allSections, searchQuery, selectedCategory, selectedTags, sortBy]);
+
+  const layoutConfigs = useMemo(() => {
+    if (filteredSections === initialSections) {
+      return initialLayoutConfigs;
+    }
+
+    return buildLayoutConfigs(filteredSections);
+  }, [filteredSections, initialLayoutConfigs, initialSections]);
 
   const buildParams = useCallback((updates: Record<string, string | null>) => {
     const params = new URLSearchParams();
@@ -125,49 +115,57 @@ export default function SectionsPage() {
   }, [router]);
 
   return (
-    <div className='mt-20 pt-(header-height) pointer-events-none'>
-      <div className="w-full bg-background-950 px-4 mx-auto pb-12">
-        <div className="space-y-6">
-          <div className="relative overflow-hidden h-screen">
-            <div>
-              <div className="grid grid-cols-[400px_1fr] items-center pb-3 pt-2">
-                <div className="flex justify-center">
-                  <ElementsSearchHeader
-                    className="lg:w-[400px]"
-                    currentQuery={searchQuery}
-                    pathname="/sections"
-                    onSearch={handleSearch}
-                  />
-                </div>
-                <div className="flex items-center justify-end gap-2">
-                  <ElementsSortDropdown
-                    currentSort={sortBy}
-                    onSortChange={handleSortChange}
-                  />
-                  <div className="h-4 w-[1px] bg-background-700 mx-1" />
-                  <ElementsFilterPopover
-                    selectedCategory={selectedCategory}
-                    selectedTags={selectedTags}
-                    onCategoryChange={handleCategoryChange}
-                    onTagsChange={handleTagsChange}
-                    onClearAll={handleClearAll}
-                  />
-                </div>
-              </div>
-              <GenericContentGrid
-                items={filteredSections}
-                basePath="/sections"
-                layoutConfigs={Object.fromEntries(filteredSections.map(s => [s.id, { ...getSectionLayoutConfig(s), columnSpan: 1 }]))}
-                previews={Object.fromEntries(filteredSections.map(s => { const C = getSectionPreview(s.id); return [s.id, C ? <C key={s.id} /> : null]; }))}
-              />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-b from-background-950/60 from-0% via-background-950/90 via-40% to-background-950 pointer-events-none z-20" />
-            <div className="absolute left-0 right-0 top-1/3 -translate-y-1/2 flex justify-center z-30 pointer-events-auto px-6 py-16">
-              <GridCTA contentType="sections" />
-            </div>
+    <ContentIndex
+      controls={
+        <>
+          <div className="flex justify-center lg:justify-start">
+            <ElementsSearchHeader
+              className="lg:w-[400px]"
+              currentQuery={searchQuery}
+              pathname="/sections"
+              onSearch={handleSearch}
+            />
           </div>
-        </div>
-      </div>
-    </div>
+          <div className="flex items-center justify-end gap-2">
+            <ElementsSortDropdown
+              currentSort={sortBy}
+              onSortChange={handleSortChange}
+            />
+            <div className="h-4 w-[1px] bg-background-700 mx-1" />
+            <ElementsFilterPopover
+              selectedCategory={selectedCategory}
+              selectedTags={selectedTags}
+              onCategoryChange={handleCategoryChange}
+              onTagsChange={handleTagsChange}
+              onClearAll={handleClearAll}
+            />
+          </div>
+        </>
+      }
+      cta={<GridCTA contentType="sections" />}
+    >
+      <GenericContentGrid
+        items={filteredSections}
+        basePath="/sections"
+        layoutConfigs={layoutConfigs}
+        previews={Object.fromEntries(filteredSections.map(s => [s.id, <SectionLivePreview key={s.id} demoId={s.id} />]))}
+        onItemClick={(section) => {
+          if (section.pricing?.price != null) {
+            modalContext.openModal(section);
+            return true;
+          }
+
+          return false;
+        }}
+      />
+    </ContentIndex>
+  );
+}
+
+export default function SectionsPage(props: SectionsPageProps) {
+  return (
+    <PurchaseModalClient type="section">
+      <SectionsPageContent {...props} />
+    </PurchaseModalClient>
   );
 }

@@ -119,7 +119,7 @@ export function PreviewContainer({
     <div className="flex w-full flex-col items-center">
       <div
         ref={wrapperRef}
-        className="relative max-w-full shrink-0 border-x border-background-700/40"
+        className="relative max-w-full shrink-0"
         style={{ width }}
       >
         {showWidthLabel && (
@@ -138,15 +138,13 @@ export function PreviewContainer({
         <button
           type="button"
           onMouseDown={startDrag}
-          className="absolute -right-[3px] top-1/2 w-6 h-12 bg-background-900 border border-background-700 rounded-xs flex items-center justify-center cursor-ew-resize hover:bg-background-600 hover:border-background-500 transition-colors z-20"
+          className="absolute right-[3px] top-1/2 w-6 h-12 rounded-xs flex items-center justify-center cursor-ew-resize hover:border-background-500 transition-colors z-20"
           style={{ transform: "translate(50%, -50%)" }}
           title="Drag to resize"
           aria-label="Drag to resize preview"
         >
           <div className="flex flex-col justify-center items-center">
-            <div className="w-3 h-[2px] bg-background-500" />
-            <div className="w-3 h-[2px] my-[2px] bg-background-500" />
-            <div className="w-3 h-[2px] bg-background-500" />
+            <div className="w-[2px] h-[28px] bg-background-500" />
           </div>
         </button>
       </div>

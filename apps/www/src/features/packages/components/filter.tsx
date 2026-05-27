@@ -1,103 +1,10 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Button, Popover, Expand } from 'ui-lab-components';
-import { FaSliders, FaX } from 'react-icons/fa6';
+import { Badge, Button, Flex, Grid, Popover } from 'ui-lab-components';
+import { FaX } from 'react-icons/fa6';
 import { getAllCategories, getAllTags } from 'ui-lab-registry';
 import { cn } from '@/shared';
-
-// ElementFilter
-
-interface ElementFilterProps {
-  categories: string[];
-  selectedCategory: string | null;
-  onCategoryChange: (category: string | null) => void;
-  tags: string[];
-  selectedTags: string[];
-  onTagsChange: (tags: string[]) => void;
-}
-
-function ElementFilter({
-  categories,
-  selectedCategory,
-  onCategoryChange,
-  tags,
-  selectedTags,
-  onTagsChange,
-}: ElementFilterProps) {
-  const toggleTag = (tag: string) => {
-    setSelectedTags(
-      selectedTags.includes(tag)
-        ? selectedTags.filter((t) => t !== tag)
-        : [...selectedTags, tag]
-    );
-  };
-
-  const setSelectedTags = onTagsChange;
-
-  return (
-    <div className="space-y-6">
-      <Expand title="Category" defaultExpanded={true}>
-        <div className="space-y-2 pt-3">
-          <button
-            onClick={() => onCategoryChange(null)}
-            className={`block w-full text-left px-3 py-2 rounded transition-colors text-sm ${selectedCategory === null
-              ? 'bg-accent-500 text-foreground-50 font-medium'
-              : 'text-foreground-400 hover:bg-background-800'
-              }`}
-          >
-            All
-          </button>
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => onCategoryChange(category)}
-              className={`block w-full text-left px-3 py-2 rounded transition-colors text-sm ${selectedCategory === category
-                ? 'bg-accent-500 text-foreground-50 font-medium'
-                : 'text-foreground-400 hover:bg-background-800'
-                }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </Expand>
-
-      <Expand title="Tags" defaultExpanded={false}>
-        <div className="space-y-2 pt-3">
-          {tags.map((tag) => (
-            <label
-              key={tag}
-              className="flex items-center gap-2 cursor-pointer group"
-            >
-              <input
-                type="checkbox"
-                checked={selectedTags.includes(tag)}
-                onChange={() => toggleTag(tag)}
-                className="rounded border-background-600 text-accent-500 focus:ring-accent-500"
-              />
-              <span className="text-sm text-foreground-400 group-hover:text-foreground-300 transition-colors">
-                {tag}
-              </span>
-            </label>
-          ))}
-        </div>
-      </Expand>
-
-      {(selectedCategory !== null || selectedTags.length > 0) && (
-        <button
-          onClick={() => {
-            onCategoryChange(null);
-            onTagsChange([]);
-          }}
-          className="w-full px-3 py-2 text-sm text-foreground-400 hover:text-foreground-300 rounded border border-background-700 hover:border-background-600 transition-colors"
-        >
-          Clear Filters
-        </button>
-      )}
-    </div>
-  );
-}
 
 // ElementsFilterPopover
 
@@ -127,61 +34,141 @@ export function ElementsFilterPopover({
 
   const activeFilterCount = (selectedCategory ? 1 : 0) + selectedTags.length;
 
+  const toggleTag = (tag: string) => {
+    onTagsChange(
+      selectedTags.includes(tag)
+        ? selectedTags.filter((selectedTag) => selectedTag !== tag)
+        : [...selectedTags, tag]
+    );
+  };
+
   return (
     <Popover
       isOpen={isOpen}
       onOpenChange={setIsOpen}
       position="bottom"
-      styles={{ content: "w-72 max-h-96 overflow-y-auto" }}
+      styles={{
+        content: 'w-[20rem] max-w-[calc(100vw-1rem)]',
+        frame: 'block max-h-[70vh] overflow-y-auto p-3',
+      }}
       content={
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground-50">Filters</h3>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-foreground-400 hover:text-foreground-200 transition-colors"
-            >
-              <FaX className="w-3 h-3" />
-            </button>
-          </div>
+        <Flex direction="column" gap="md">
+          <Flex align="center" justify="between" styles="gap-3">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground-50">Filters</h3>
+              {activeFilterCount > 0 && (
+                <p className="mt-0.5 text-xs font-normal text-foreground-400">
+                  {activeFilterCount} active
+                </p>
+              )}
+            </div>
+            <Flex align="center" gap="xs">
+              {activeFilterCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onPress={onClearAll}
+                  styles="text-foreground-400 hover:text-foreground-100"
+                >
+                  Clear
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onPress={() => setIsOpen(false)}
+                aria-label="Close filters"
+                styles="min-h-11 min-w-11 px-0 text-foreground-400 hover:bg-background-800 hover:text-foreground-100"
+              >
+                <FaX className="size-3" />
+              </Button>
+            </Flex>
+          </Flex>
 
-          <ElementFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={onCategoryChange}
-            tags={tags}
-            selectedTags={selectedTags}
-            onTagsChange={onTagsChange}
-          />
+          <Flex direction="column" gap="xs">
+            <p className="text-xs font-medium text-foreground-400">
+              Category
+            </p>
+            <Grid columns={1} gap="xs" role="radiogroup" aria-label="Category">
+              <Button
+                variant={selectedCategory === null ? 'secondary' : 'ghost'}
+                size="sm"
+                onPress={() => onCategoryChange(null)}
+                aria-pressed={selectedCategory === null}
+                styles={cn(
+                  'w-full justify-start text-left',
+                  selectedCategory === null
+                    ? 'bg-background-700 text-foreground-200'
+                    : 'text-foreground-400 hover:bg-background-800 hover:text-foreground-100',
+                )}
+              >
+                All
+              </Button>
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onPress={() => onCategoryChange(category)}
+                  aria-pressed={selectedCategory === category}
+                  styles={cn(
+                    'w-full justify-start text-left',
+                    selectedCategory === category
+                      ? 'bg-background-700 text-foreground-200'
+                      : 'text-foreground-400 hover:text-foreground-100',
+                  )}
+                >
+                  {category}
+                </Button>
+              ))}
+            </Grid>
+          </Flex>
 
-          {activeFilterCount > 0 && (
-            <button
-              onClick={onClearAll}
-              className="w-full px-3 py-2 text-sm text-foreground-400 hover:text-foreground-300 rounded-md border border-background-700 hover:border-background-600 transition-colors"
-            >
-              Clear All Filters
-            </button>
-          )}
-        </div>
+          <Flex direction="column" gap="xs" styles="border-t border-background-700 pt-4">
+            <p className="text-xs font-medium text-foreground-400">
+              Tags
+            </p>
+            <Flex wrap="wrap" gap="xs" role="group" aria-label="Tags">
+              {tags.map((tag) => {
+                const isSelected = selectedTags.includes(tag);
+
+                return (
+                  <Button
+                    key={tag}
+                    variant={isSelected ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onPress={() => toggleTag(tag)}
+                    aria-pressed={isSelected}
+                    styles={cn(
+                      'border text-xs',
+                      isSelected
+                        ? 'border-background-600 bg-background-700 text-foreground-200'
+                        : 'border-background-700 text-foreground-400 hover:border-background-600 hover:bg-background-700 hover:text-foreground-200',
+                    )}
+                  >
+                    {tag}
+                  </Button>
+                );
+              })}
+            </Flex>
+          </Flex>
+        </Flex>
       }
     >
       <Button
         variant='secondary'
         size="sm"
-        className={cn(
-          'flex items-center gap-2 rounded-md border transition-colors',
+        styles={cn(
+          'border',
           activeFilterCount > 0
-            ? 'border-accent-500 bg-accent-500/10 text-accent-400'
-            : 'border-background-700 bg-background-800 text-foreground-300 hover:border-background-600',
+            ? 'bg-background-700 bg-background-800 text-foreground-300 hover:border-accent-400'
+            : 'border-background-700 bg-background-900 text-foreground-300 hover:border-background-600 hover:bg-background-800',
           className
         )}
       >
-        <FaSliders className="w-4 h-4" />
         <span className="text-sm font-medium">Filters</span>
         {activeFilterCount > 0 && (
-          <span className="ml-1 px-1.5 py-0.5 rounded-full bg-background-800 text-foreground-50 text-sm font-bold">
-            {activeFilterCount}
-          </span>
+          <Badge variant="default" count={activeFilterCount} pill styles="ml-1 bg-background-600 text-foreground-50" />
         )}
       </Button>
     </Popover>

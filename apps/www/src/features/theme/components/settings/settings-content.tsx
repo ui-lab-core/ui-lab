@@ -23,6 +23,7 @@ import {
   Button,
   Scroll,
 } from "ui-lab-components";
+import { type CodeThemeOptionId } from "../../lib/themes/shiki/code-theme-options";
 import { ColorsPanel } from "./colors-panel";
 import { TypographyPanel } from "./typography-panel";
 import { LayoutPanel } from "./layout-panel";
@@ -133,6 +134,12 @@ function useSettingsHandlers(
     applyAndPersistFonts(fonts);
   };
 
+  const handleCodeThemeChange = (codeTheme: CodeThemeOptionId) => {
+    const updated = { ...localColors, codeTheme };
+    setLocalColors(updated);
+    applyAndPersistColors(updated);
+  };
+
   const handleBodyFontChange = (fontName: string) => {
     const fontConfig = getFontConfig(fontName as FontKey, "body");
     if (fontConfig) {
@@ -202,7 +209,16 @@ function useSettingsHandlers(
     });
   };
 
-  return { handleGlobalAdjustmentChange, handleColorChange, handleChromaLimitChange, handleBodyFontChange, handleHeaderFontChange, handleMonoFontChange, updateTypography };
+  return {
+    handleGlobalAdjustmentChange,
+    handleColorChange,
+    handleChromaLimitChange,
+    handleCodeThemeChange,
+    handleBodyFontChange,
+    handleHeaderFontChange,
+    handleMonoFontChange,
+    updateTypography,
+  };
 }
 
 interface SettingsContentProps {
@@ -326,7 +342,16 @@ export const SettingsContent = ({
     globalMinFontSizePx,
   };
 
-  const { handleGlobalAdjustmentChange, handleColorChange, handleChromaLimitChange, handleBodyFontChange, handleHeaderFontChange, handleMonoFontChange, updateTypography } = useSettingsHandlers(
+  const {
+    handleGlobalAdjustmentChange,
+    handleColorChange,
+    handleChromaLimitChange,
+    handleCodeThemeChange,
+    handleBodyFontChange,
+    handleHeaderFontChange,
+    handleMonoFontChange,
+    updateTypography,
+  } = useSettingsHandlers(
     localColors,
     localGlobalAdjustments,
     currentThemeMode,
@@ -390,6 +415,7 @@ export const SettingsContent = ({
                 onExpandedColorChange={setExpandedColor}
                 onColorChange={handleColorChange}
                 onChromaLimitChange={handleChromaLimitChange}
+                onCodeThemeChange={handleCodeThemeChange}
                 onGlobalAdjustmentChange={handleGlobalAdjustmentChange}
               />
             </Tabs.Content>
