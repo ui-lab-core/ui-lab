@@ -58,7 +58,4 @@ export function getPreview(): React.ReactNode {
 export const metadata = baseMetadata;
 export default elementMetadata;
 
-export { BasicChat } from './variations/index.js';
-export type { ChatVariations } from './variations/index.js';
 
-export { DEMO_MAP, variationComponentMap } from './variations/index.js';

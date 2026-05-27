@@ -1,15 +1,7 @@
 import React from 'react';
 import { Mask } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1 } from './examples/01-read-more-fade.js';
-import Example2, { metadata as metadata2 } from './examples/02-text-gradient.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
 
-const examplesData = [
-  { id: '01-read-more-fade', Component: Example1, metadata: metadata1 },
-  { id: '02-text-gradient', Component: Example2, metadata: metadata2 },
-];
 
 const maskControls: ControlDef[] = [
   {
@@ -120,10 +112,8 @@ export const maskDetail: ComponentDetail = {
           </div>
         );
       },
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
 };
 
 export { maskControls };
-export * from './examples/index.js';

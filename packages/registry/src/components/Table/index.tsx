@@ -1,13 +1,7 @@
 import { Table } from "ui-lab-components";
 import { ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1 } from './examples/01-basic-table.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
 
 // Define examplesData locally
-const examplesData = [
-  { id: '01-basic-table', Component: Example1, metadata: metadata1 },
-];
 
 interface SampleData {
   id: number;
@@ -81,8 +75,7 @@ export const tableDetail: ComponentDetail = {
           ]}
         />
       ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
   variants: [
     {
@@ -104,4 +97,3 @@ export const tableDetail: ComponentDetail = {
   ],
 };
 
-export * from './examples/index.js';

@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const registryRoot = path.join(__dirname, '..');
+const elementsPath = path.join(registryRoot, 'src', 'elements');
 
 interface DiscoveredElement {
   folderName: string;
@@ -13,8 +15,6 @@ interface DiscoveredElement {
 }
 
 function discoverAllElements(): DiscoveredElement[] {
-  const elementsPath = path.join(__dirname, '..', 'src', 'elements');
-
   if (!fs.existsSync(elementsPath)) {
     console.error(`Elements directory not found at ${elementsPath}`);
     process.exit(1);
@@ -43,12 +43,13 @@ function discoverAllElements(): DiscoveredElement[] {
                         fs.existsSync(indexTsxPath) ? indexTsxPath : null;
 
       const variationsPath = path.join(elementPath, 'variations');
-      const hasVariations = fs.existsSync(variationsPath);
+      const variationsJsonPath = path.join(elementPath, 'variations.json');
+      const hasVariations = fs.existsSync(variationsPath) || fs.existsSync(variationsJsonPath);
 
       if (indexPath && hasVariations) {
-        const variationFolders = fs
-          .readdirSync(variationsPath)
-          .filter((f) => /^\d{2}-/.test(f));
+        const variationFolders = fs.existsSync(variationsPath)
+          ? fs.readdirSync(variationsPath).filter((f) => /^\d{2}-/.test(f))
+          : Object.keys(JSON.parse(fs.readFileSync(variationsJsonPath, 'utf-8')));
 
         if (variationFolders.length === 0) {
           console.error(`  ✗ ${folderName}: No variations found in variations/`);
@@ -194,7 +195,7 @@ async function main() {
 
     console.log('\n📝 Generating element registry...\n');
 
-    const indexPath = path.join(__dirname, '..', 'src', 'elements', 'index.ts');
+    const indexPath = path.join(elementsPath, 'index.ts');
     const content = generateIndexFile(elements);
 
     fs.writeFileSync(indexPath, content);

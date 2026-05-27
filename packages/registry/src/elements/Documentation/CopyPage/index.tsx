@@ -40,7 +40,4 @@ export function getPreview(): React.ReactNode {
 export const metadata = baseMetadata;
 export default elementMetadata;
 
-export { BasicCopyPage } from './variations/index.js';
-export type { CopyPageVariations } from './variations/index.js';
 
-export { DEMO_MAP, variationComponentMap } from './variations/index.js';

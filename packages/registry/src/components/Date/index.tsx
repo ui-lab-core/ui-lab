@@ -1,15 +1,6 @@
 import React from 'react'
 import { Date } from 'ui-lab-components'
 import { ControlDef, ComponentDetail } from '@/types'
-import Example1, { metadata as metadata1 } from './examples/01-basic-date.js'
-import Example2, { metadata as metadata2 } from './examples/02-with-disabled-dates.js'
-import examplesJson from './examples.json' with { type: 'json' }
-import { loadComponentExamples } from '../../utils/load-component-examples.js'
-
-const examplesData = [
-  { id: '01-basic-date', Component: Example1, metadata: metadata1 },
-  { id: '02-with-disabled-dates', Component: Example2, metadata: metadata2 },
-]
 
 const dateControls: ControlDef[] = []
 
@@ -46,7 +37,6 @@ export const dateDetail: ComponentDetail = {
       renderPreview: (props: any) => (
         <Date />
       ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
 }

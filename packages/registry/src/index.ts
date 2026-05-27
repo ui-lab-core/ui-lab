@@ -1,24 +1,6 @@
 // Registry
 export { componentRegistry, componentMetadata } from './registry.js';
 
-// Design tokens
-export {
-  getColorRecommendation,
-  getAllColorRecommendations,
-  hasColorFamily,
-  getColorFamilyInfo,
-  hasColorShade,
-  getColorCssVar,
-  getAllColorFamilies,
-  getColorFamilyShades,
-  getColorFamilyWCAGLevel,
-} from './design-tokens/index.js';
-export type {
-  ColorFamilyInfo,
-  ColorRecommendation,
-  ColorRecommendationRegistry,
-} from './design-tokens/index.js';
-
 // Generated data (auto-populated by scripts)
 export { generatedAPI, generatedSourceCode, reactAriaUrls, generatedComponentDependencies, generatedCoreNpmDependencies, packageMetadata } from './generated-data.js';
 export { generatedStyles } from './generated-styles.js';

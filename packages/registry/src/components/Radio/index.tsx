@@ -1,15 +1,7 @@
 import React from 'react';
 import { Radio } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1 } from './examples/01-basic-radio.js';
-import Example2, { metadata as metadata2 } from './examples/02-radio-with-descriptions.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
 
-const examplesData = [
-  { id: '01-basic-radio', Component: Example1, metadata: metadata1 },
-  { id: '02-radio-with-descriptions', Component: Example2, metadata: metadata2 },
-];
 
 
 const radioControls: ControlDef[] = [
@@ -88,8 +80,7 @@ export const radioDetail: ComponentDetail = {
           label={props.label}
         />
       ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
 
   variants: [
@@ -111,4 +102,3 @@ export const radioDetail: ComponentDetail = {
 };
 
 export { radioControls };
-export * from './examples/index.js';

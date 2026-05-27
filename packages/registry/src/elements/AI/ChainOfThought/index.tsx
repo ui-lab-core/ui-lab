@@ -50,7 +50,4 @@ export function getPreview(): React.ReactNode {
 export const metadata = baseMetadata;
 export default elementMetadata;
 
-export { BasicChainOfThought } from './variations/index.js';
-export type { ChainOfThoughtVariations } from './variations/index.js';
 
-export { DEMO_MAP, variationComponentMap } from './variations/index.js';

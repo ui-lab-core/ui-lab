@@ -50,7 +50,4 @@ export function getPreview(): React.ReactNode {
 export const metadata = baseMetadata;
 export default elementMetadata;
 
-export { BasicSidebar } from './variations/index.js';
-export type { SidebarVariations } from './variations/index.js';
 
-export { DEMO_MAP, variationComponentMap } from './variations/index.js';

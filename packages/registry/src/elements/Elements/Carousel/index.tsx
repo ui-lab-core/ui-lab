@@ -39,7 +39,4 @@ export function getPreview(): React.ReactNode {
 export const metadata = baseMetadata;
 export default elementMetadata;
 
-export { BasicCarousel } from './variations/index.js';
-export type { CarouselVariations } from './variations/index.js';
 
-export { DEMO_MAP, variationComponentMap } from './variations/index.js';

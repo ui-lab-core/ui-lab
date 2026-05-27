@@ -1,14 +1,1 @@
-export { default as Example1 } from './01-variants.js';
-export { metadata as metadata1 } from './01-variants.js';
-
-export { default as Example2 } from './02-dismissible.js';
-export { metadata as metadata2 } from './02-dismissible.js';
-
-export { default as Example3 } from './03-form-feedback.js';
-export { metadata as metadata3 } from './03-form-feedback.js';
-
-export { default as Example4 } from './04-settings-panel.js';
-export { metadata as metadata4 } from './04-settings-panel.js';
-
-export { default as Example5 } from './05-body-only.js';
-export { metadata as metadata5 } from './05-body-only.js';
+// Banner examples are served from @ui-lab-core/library (private registry)

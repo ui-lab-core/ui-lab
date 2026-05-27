@@ -193,18 +193,8 @@ function getAllPatterns(): PatternInfo[] {
 }
 
 function generateDemoRegistryContent(sections: SectionInfo[]): string {
-  const elements = getAllElements();
   const patterns = getAllPatterns();
   const elementDemoEntries: string[] = [];
-
-  for (const element of elements) {
-    for (const variation of element.variations) {
-      const demoPath = `${element.id}-${variation.folderName.split('-').slice(1).join('-')}`;
-      elementDemoEntries.push(
-        `'${demoPath}': () => dynamic(() => import('./elements/${element.importPath}/variations/${variation.folderName}').then(m => ({ default: m.${variation.exportName} })))`
-      );
-    }
-  }
 
   const patternDemoEntries: string[] = [];
 
@@ -236,12 +226,6 @@ function generateDemoRegistryContent(sections: SectionInfo[]): string {
       `  ${section.id}: () => dynamic(() => import('./sections/${section.folderName}').then(mod => ({ default: () => mod.getPreview() })))`
     );
 
-    for (const variation of section.variations) {
-      const demoPath = `${section.id}-${variation.folderName.split('-').slice(1).join('-')}`;
-      sectionPreviewEntries.push(
-        `  '${demoPath}': () => dynamic(() => import('./sections/${section.folderName}/variations/${variation.folderName}').then(m => ({ default: m.${variation.exportName} })))`
-      );
-    }
   }
 
   return `import dynamic from 'next/dynamic';
@@ -251,7 +235,7 @@ export type DemoComponent = React.ComponentType<object>;
 
 // Lazy-loaded element demos - dynamic() called on demand
 const elementDemoLoaders: Record<string, () => DemoComponent> = {
-  ${elementDemoEntries.join(',\n  ')},
+${elementDemoEntries.join(',\n')}
 };
 
 // Lazy-loaded section previews - dynamic() called on demand

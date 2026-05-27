@@ -1,0 +1,16 @@
+{
+  "01-nested-structure": {
+    "name": "Nested Test Structure",
+    "description": "Nested Test Structure variation",
+    "demoPath": "teststructure-nested-structure",
+    "exportName": "NestedTestStructure",
+    "files": [
+      {
+        "filename": "index.tsx",
+        "language": "typescript",
+        "code": "\"use client\";\n\nimport React from 'react';\nimport { AppShell } from './shell/AppShell.js';\n\nexport function NestedTestStructure() {\n  return <AppShell />;\n}\n",
+        "isEntryPoint": true
+      }
+    ]
+  }
+}

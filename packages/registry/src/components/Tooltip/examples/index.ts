@@ -1,2 +1,1 @@
-export { default as Example1 } from './01-basic-tooltip.js';
-export { metadata as metadata1 } from './01-basic-tooltip.js';
+// Tooltip examples are served from @ui-lab-core/library (private registry)

@@ -25,6 +25,7 @@ import treeviewElement from './Elements/TreeView/index.js';
 import headerElement from './foundation/Header/index.js';
 import pageElement from './foundation/Page/index.js';
 import sidebarElement from './foundation/Sidebar/index.js';
+import teststructureElement from './foundation/TestStructure/index.js';
 
 // Type exports (preserved)
 export type { ElementMetadata, ElementVariant, ElementPackageMetadata } from '../types.js';
@@ -65,6 +66,7 @@ export const elementRegistry: ElementRegistry = {
   [headerElement.id]: headerElement,
   [pageElement.id]: pageElement,
   [sidebarElement.id]: sidebarElement,
+  [teststructureElement.id]: teststructureElement,
 };
 
 // Helper functions (preserved)

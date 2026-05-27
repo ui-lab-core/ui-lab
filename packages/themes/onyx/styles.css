@@ -388,8 +388,8 @@
 
   .input {
     --background: var(--background-950);
-    --foreground: var(--foreground-50);
-    --placeholder: var(--foreground-400);
+    --foreground: var(--foreground-300);
+    --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
     --background-border: var(--background-700);
     --ring: var(--accent-500);
     --ring-border: var(--ring);
@@ -417,7 +417,7 @@
 
   .input > [data-start-adornments] > .icon-wrapper > .icon,
   .input > [data-end-adornments] > .icon-wrapper > .icon {
-    --foreground: var(--foreground-400);
+    --foreground: var(--foreground-300);
   }
 
   .input > [data-end-adornments] > div > .stepper {
@@ -851,7 +851,7 @@
 
   .path-link[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
     --background: color-mix(in srgb, var(--background-700) 50%, transparent);
-    --foreground: var(--accent-300);
+    --foreground: var(--foreground-200);
   }
 
   .path-link[data-pressed="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
@@ -860,7 +860,7 @@
 
   .path-link[data-selected="true"] {
     --background: transparent;
-    --foreground: var(--foreground-400);
+    --foreground: var(--foreground-100);
   }
 
   .path-link[data-selected="true"][data-hovered="true"]:not([data-disabled="true"]) {
@@ -873,11 +873,11 @@
   }
 
   .path-separator {
-    --foreground: var(--background-700);
+    --foreground: var(--foreground-400);
   }
 
   .path-item {
-    --foreground: var(--background-700);
+    --foreground: var(--foreground-400);
   }
 
   .tabs.indicator {

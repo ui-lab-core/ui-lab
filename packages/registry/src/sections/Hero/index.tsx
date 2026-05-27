@@ -41,5 +41,3 @@ export function getPreview(): React.ReactNode {
 export const metadata = baseMetadata;
 export default sectionMetadata;
 
-export { SimpleHero, HeroWithCTA } from './variations/index.js';
-export { DEMO_MAP } from './variations/index.js';

@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { Command, Button, type Command as CommandType } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1 } from './examples/01-basic-command.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
 
-const examplesData = [
-  { id: '01-basic-command', Component: Example1, metadata: metadata1 },
-];
 
 const commandControls: ControlDef[] = [
   {
@@ -191,8 +185,7 @@ export const commandDetail: ComponentDetail = {
       preview: <CommandPreview />,
       controls: commandControls,
       renderPreview: CommandRenderPreview,
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
   variants: [
     {
@@ -206,4 +199,3 @@ export const commandDetail: ComponentDetail = {
 };
 
 export { commandControls };
-export * from './examples/index.js';

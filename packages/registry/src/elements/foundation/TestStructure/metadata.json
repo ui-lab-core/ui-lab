@@ -1,0 +1,7 @@
+{
+  "id": "test-structure",
+  "name": "Test Structure",
+  "description": "Nested multi-file layout fixture used to verify the workshop file tree panel.",
+  "category": "layout",
+  "tags": ["test", "nested", "layout", "tree"]
+}

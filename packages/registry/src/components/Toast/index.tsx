@@ -2,22 +2,8 @@
 
 import { Button, toast, Toaster } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1 } from './examples/01-basic-toast.js';
-import Example2, { metadata as metadata2 } from './examples/02-success-toast.js';
-import Example3, { metadata as metadata3 } from './examples/03-danger-toast.js';
-import Example4, { metadata as metadata4 } from './examples/04-info-toast.js';
-import Example5, { metadata as metadata5 } from './examples/05-warning-toast.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
 
 // Define examplesData locally
-const examplesData = [
-  { id: '01-basic-toast', Component: Example1, metadata: metadata1 },
-  { id: '02-success-toast', Component: Example2, metadata: metadata2 },
-  { id: '03-danger-toast', Component: Example3, metadata: metadata3 },
-  { id: '04-info-toast', Component: Example4, metadata: metadata4 },
-  { id: '05-warning-toast', Component: Example5, metadata: metadata5 },
-];
 
 const toastControls: ControlDef[] = [
   {
@@ -116,10 +102,8 @@ export const toastDetail: ComponentDetail = {
           <Toaster />
         </>
       ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
 };
 
 export { toastControls };
-export * from './examples/index.js';

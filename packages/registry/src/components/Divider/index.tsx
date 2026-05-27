@@ -1,24 +1,6 @@
 import React from 'react';
 import { Divider } from "ui-lab-components";
 import { ControlDef, ComponentDetail } from "@/types";
-import Example1, {
-  metadata as metadata1,
-} from "./examples/01-basic-divider.js";
-import Example2, {
-  metadata as metadata2,
-} from "./examples/02-pattern-variants.js";
-import Example3, {
-  metadata as metadata3,
-} from "./examples/03-vertical-divider.js";
-import examplesJson from "./examples.json";
-import { loadComponentExamples } from "../../utils/load-component-examples.js";
-
-// Define examplesData locally
-const examplesData = [
-  { id: "01-basic-divider", Component: Example1, metadata: metadata1 },
-  { id: "02-pattern-variants", Component: Example2, metadata: metadata2 },
-  { id: "03-vertical-divider", Component: Example3, metadata: metadata3 },
-];
 
 const dividerControls: ControlDef[] = [
   {
@@ -79,8 +61,7 @@ export const dividerDetail: ComponentDetail = {
           orientation={props.orientation as any}
         />
       ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
   variants: [
     {
@@ -107,4 +88,3 @@ export const dividerDetail: ComponentDetail = {
 };
 
 export { dividerControls };
-export * from "./examples/index.js";

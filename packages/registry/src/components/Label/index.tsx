@@ -1,14 +1,8 @@
 import React from 'react';
 import { Label } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1 } from './examples/01-basic-label.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
 import { FaEnvelope } from 'react-icons/fa6';
 
-const examplesData = [
-  { id: '01-basic-label', Component: Example1, metadata: metadata1 },
-];
 
 
 const labelControls: ControlDef[] = [
@@ -82,8 +76,7 @@ export const labelDetail: ComponentDetail = {
           {props.label || "Label"}
         </Label>
       ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
+    }
   ],
 
   variants: [
@@ -105,4 +98,3 @@ export const labelDetail: ComponentDetail = {
 };
 
 export { labelControls };
-export * from './examples/index.js';

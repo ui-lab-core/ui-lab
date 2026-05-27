@@ -215,7 +215,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
             <div
               ref={mergedContentRef}
               {...asElementProps<"div">(mergeProps(overlayProps, dialogProps))}
-              className={cn(css.root, resolved.root)}
+              className={cn("popover", css.root, resolved.root)}
               style={{
                 ...floatingStyles,
               }}

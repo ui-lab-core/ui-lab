@@ -5,6 +5,12 @@ import { Project, Node } from 'ts-morph';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const registryRoot = path.join(__dirname, '..');
+const elementsPath = path.join(registryRoot, 'src', 'elements');
+const privateElementsPath = path.resolve(
+  registryRoot,
+  '../../../private/packages/library/content/registry/elements'
+);
 
 interface ElementFile {
   filename: string;
@@ -223,10 +229,8 @@ function discoverElementVariations(
 }
 
 function discoverAllElements(): Record<string, DiscoveredVariation[]> {
-  const elementsPath = path.join(__dirname, '..', 'src', 'elements');
-
-  if (!fs.existsSync(elementsPath)) {
-    console.error(`Elements directory not found at ${elementsPath}`);
+  if (!fs.existsSync(privateElementsPath)) {
+    console.error(`Private elements directory not found at ${privateElementsPath}`);
     process.exit(1);
   }
 
@@ -275,7 +279,7 @@ function discoverAllElements(): Record<string, DiscoveredVariation[]> {
     }
   }
 
-  walkDirectory(elementsPath);
+  walkDirectory(privateElementsPath);
 
   return discovered;
 }
@@ -306,8 +310,6 @@ async function main() {
     const discovered = discoverAllElements();
 
     console.log('\n📝 Generating variations.json files...\n');
-
-    const elementsPath = path.join(__dirname, '..', 'src', 'elements');
 
     for (const [elementName, variations] of Object.entries(discovered)) {
       const elementPath = path.join(elementsPath, elementName);
