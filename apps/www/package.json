@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "pnpm --dir ../../../private --filter @ui-lab-core/library build && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build",
+    "prebuild": "([ -d ../../../private ] && pnpm --dir ../../../private --filter @ui-lab-core/library build || true) && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build",
     "dev": "npm run generate:docs && next dev",
     "build": "npm run generate:docs && next build --webpack",
     "start": "next start",
