@@ -2,11 +2,10 @@
 
 import React from "react";
 import {
-  canViewElementEntry,
+  getElementPreview,
   listElements as listPrivateElements,
   type ElementSourceEntry,
-} from "@ui-lab-core/library/registry";
-import { getElementPreview, getElementPreviewConfig } from "@ui-lab-core/library/previews";
+} from "@ui-lab-core/library";
 import { buttonDetail } from "ui-lab-registry/components/Button";
 import { dateDetail } from "ui-lab-registry/components/Date";
 import { anchorDetail } from "ui-lab-registry/components/Anchor";
@@ -174,7 +173,8 @@ function isPublicFreeComponentExample(entry: ElementSourceEntry, componentId: st
     entry.package === "components" &&
     entry.previewEligible &&
     entry.groupPath[0] === componentId &&
-    canViewElementEntry(entry, { premium: false })
+    entry.visibility === "public" &&
+    entry.access === "free"
   );
 }
 
@@ -182,8 +182,8 @@ function getPrivateComponentExamples(componentId: string): ComponentDetail["exam
   return listPrivateElements("components")
     .filter((entry) => isPublicFreeComponentExample(entry, componentId))
     .sort((a, b) => {
-      const aOrder = typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
-      const bOrder = typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
+      const aOrder = getElementOrder(a);
+      const bOrder = getElementOrder(b);
 
       if (aOrder !== bOrder) {
         return aOrder - bOrder;
@@ -193,7 +193,6 @@ function getPrivateComponentExamples(componentId: string): ComponentDetail["exam
     })
     .flatMap((entry) => {
       const Preview = getElementPreview(entry.package, entry.id);
-      const previewConfig = getElementPreviewConfig(entry.package, entry.id);
 
       if (!Preview) {
         return [];
@@ -205,12 +204,13 @@ function getPrivateComponentExamples(componentId: string): ComponentDetail["exam
         description: entry.description,
         code: entry.code,
         preview: React.createElement(Preview),
-        controls: previewConfig?.controls,
-        renderPreview: previewConfig?.renderPreview as ComponentDetail["examples"][number]["renderPreview"],
-        previewLayout: previewConfig?.previewLayout,
-        resizable: previewConfig?.resizable,
       }];
     });
+}
+
+function getElementOrder(entry: ElementSourceEntry) {
+  const { order } = entry as ElementSourceEntry & { order?: unknown };
+  return typeof order === "number" ? order : Number.POSITIVE_INFINITY;
 }
 
 function withPrivateComponentExamples(detail: ComponentDetail): ComponentDetail {

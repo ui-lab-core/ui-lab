@@ -7,10 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const registryRoot = path.join(__dirname, '..');
 const elementsPath = path.join(registryRoot, 'src', 'elements');
-const privateElementsPath = path.resolve(
-  registryRoot,
-  '../../../private/packages/library/content/registry/elements'
-);
+const privateContentRoot =
+  process.env.UI_LAB_PRIVATE_REGISTRY_CONTENT_ROOT ??
+  path.resolve(registryRoot, '../../../private/packages/library/content/registry');
+const privateElementsPath = path.join(privateContentRoot, 'elements');
 
 interface ElementFile {
   filename: string;
@@ -230,8 +230,11 @@ function discoverElementVariations(
 
 function discoverAllElements(): Record<string, DiscoveredVariation[]> {
   if (!fs.existsSync(privateElementsPath)) {
-    console.error(`Private elements directory not found at ${privateElementsPath}`);
-    process.exit(1);
+    console.warn(
+      `Private elements directory not found at ${privateElementsPath}; ` +
+        'keeping checked-in element variations.json files.'
+    );
+    return {};
   }
 
   const discovered: Record<string, DiscoveredVariation[]> = {};
@@ -308,6 +311,10 @@ function generateVariationsJson(
 async function main() {
   try {
     const discovered = discoverAllElements();
+
+    if (Object.keys(discovered).length === 0) {
+      return;
+    }
 
     console.log('\n📝 Generating variations.json files...\n');
 

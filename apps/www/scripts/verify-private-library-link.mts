@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import type {
   ElementPackage,
   ElementSourceEntry,
-} from "@ui-lab-core/library/registry";
+} from "@ui-lab-core/library";
 
 type RegistryModule = {
   getElementEntry(packageId: string, elementId: string): ElementSourceEntry | null;
@@ -179,9 +179,7 @@ async function main() {
     process.exit(1);
   }
 
-  const registry = (await import(
-    "@ui-lab-core/library/registry"
-  )) as RegistryModule;
+  const registry = (await import("@ui-lab-core/library")) as RegistryModule;
 
   printRegistryCounts(registry);
   printKnownPremiumPublicElements(registry);

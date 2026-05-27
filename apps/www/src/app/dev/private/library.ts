@@ -5,7 +5,6 @@ import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
-  canViewElementEntry,
   getElementEntry,
   listElements as listPrivateElements,
   listPackages as listPrivatePackages,
@@ -13,7 +12,7 @@ import {
   type ElementPackage,
   type ElementSourceEntry,
   type ElementVisibility,
-} from "@ui-lab-core/library/registry";
+} from "@ui-lab-core/library";
 
 import type { ViewerEntitlement } from "@/features/auth/server-entitlements";
 
@@ -90,6 +89,20 @@ const PREMIUM_GATE_FIXTURE = {
 
 function isPublicPackage(pkg: ElementPackage) {
   return pkg.visibility === "public";
+}
+
+function canViewElementEntry(
+  entry: Pick<ElementSourceEntry, "access">,
+  entitlement: Pick<ViewerEntitlement, "premium">,
+) {
+  return entry.access === "free" || entitlement.premium;
+}
+
+function countPackageElements(
+  packageId: string,
+  predicate: (entry: ElementSourceEntry) => boolean,
+) {
+  return listPrivateElements(packageId).filter(predicate).length;
 }
 
 function serializeElement(entry: ElementSourceEntry): ElementEntry {
@@ -194,15 +207,18 @@ export function getPrivateLibrarySourceInfo(): PrivateLibrarySourceInfo {
     packageCount: packages.length,
     elementCount: packages.reduce((count, pkg) => count + pkg.elementCount, 0),
     publicElementCount: packages.reduce(
-      (count, pkg) => count + pkg.publicElementCount,
+      (count, pkg) =>
+        count + countPackageElements(pkg.id, (entry) => entry.visibility === "public"),
       0,
     ),
     freeElementCount: packages.reduce(
-      (count, pkg) => count + pkg.freeElementCount,
+      (count, pkg) =>
+        count + countPackageElements(pkg.id, (entry) => entry.access === "free"),
       0,
     ),
     premiumElementCount: packages.reduce(
-      (count, pkg) => count + pkg.premiumElementCount,
+      (count, pkg) =>
+        count + countPackageElements(pkg.id, (entry) => entry.access === "premium"),
       0,
     ),
   };

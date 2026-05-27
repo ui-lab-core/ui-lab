@@ -13,7 +13,7 @@ import {
 } from '@/features/sections/lib/section-grid-data';
 import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover, PurchaseModalClient, usePurchaseModal } from '@/features/packages';
 import { GridCTA } from '@/features/landing/components/grid-cta';
-import { SectionLivePreview } from '@/features/sections/components/section-live-preview';
+import { getCardPreviewComponent as getSectionCardPreviewComponent } from '@/features/sections/lib/get-section-preview';
 
 interface SectionsPageProps {
   allSections: SectionGridItem[];
@@ -64,6 +64,17 @@ function SectionsPageContent({
 
     return buildLayoutConfigs(filteredSections);
   }, [filteredSections, initialLayoutConfigs, initialSections]);
+
+  const previews = useMemo(() => {
+    const nextPreviews: Record<string, React.ReactNode> = {};
+
+    for (const section of filteredSections) {
+      const Preview = getSectionCardPreviewComponent(section.id);
+      if (Preview) nextPreviews[section.id] = <Preview />;
+    }
+
+    return nextPreviews;
+  }, [filteredSections]);
 
   const buildParams = useCallback((updates: Record<string, string | null>) => {
     const params = new URLSearchParams();
@@ -148,7 +159,7 @@ function SectionsPageContent({
         items={filteredSections}
         basePath="/sections"
         layoutConfigs={layoutConfigs}
-        previews={Object.fromEntries(filteredSections.map(s => [s.id, <SectionLivePreview key={s.id} demoId={s.id} />]))}
+        previews={previews}
         onItemClick={(section) => {
           if (section.pricing?.price != null) {
             modalContext.openModal(section);

@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import type { ReactNode } from "react";
 
 import {
-  assertProductionPremiumAuthSetup,
   getPremiumAuthSetup,
 } from "@/features/auth/auth-setup";
 
@@ -11,23 +10,26 @@ import { ConvexClientProvider } from "./convex-client-provider";
 
 export function AuthProviders({ children }: { children: ReactNode }) {
   const setup = getPremiumAuthSetup();
-  assertProductionPremiumAuthSetup(setup);
+  const allowPartialDevAuth = process.env.NODE_ENV !== "production";
+  const enableClerkProvider =
+    setup.clerkPublishableKeyConfigured &&
+    (allowPartialDevAuth || setup.fullAuthConfigured);
+  const enableConvexProvider =
+    setup.convexConfigured && (allowPartialDevAuth || setup.fullAuthConfigured);
 
   let tree = children;
 
-  if (setup.convexConfigured) {
+  if (enableConvexProvider) {
     tree = (
       <Suspense fallback={tree}>
-        <ConvexClientProvider
-          withClerkAuth={setup.clerkPublishableKeyConfigured}
-        >
+        <ConvexClientProvider withClerkAuth={enableClerkProvider}>
           {tree}
         </ConvexClientProvider>
       </Suspense>
     );
   }
 
-  if (setup.clerkPublishableKeyConfigured) {
+  if (enableClerkProvider) {
     tree = <ClerkProvider>{tree}</ClerkProvider>;
   }
 

@@ -1604,147 +1604,47 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "url": "/design-system/tokens",
         "title": "Design Tokens",
         "label": "Design Tokens",
-        "description": "Complete reference of design tokens including colors, typography, spacing, and more",
+        "description": "Role-based guidance for using UI Lab foreground, background, accent, and semantic tokens",
         "section": "Systems",
         "toc": [
           {
-            "id": "token-categories",
-            "title": "Token Categories",
+            "id": "color-token-families",
+            "title": "Color Token Families",
             "level": 2
           },
           {
-            "id": "color-tokens",
-            "title": "Color Tokens",
+            "id": "foreground-tokens",
+            "title": "Foreground Tokens",
             "level": 2
           },
           {
-            "id": "shade-selection-guide",
-            "title": "Shade Selection Guide",
-            "level": 3
-          },
-          {
-            "id": "typography-tokens",
-            "title": "Typography Tokens",
+            "id": "background-tokens",
+            "title": "Background Tokens",
             "level": 2
           },
           {
-            "id": "font-size-tokens",
-            "title": "Font Size Tokens",
-            "level": 3
-          },
-          {
-            "id": "font-weight-tokens",
-            "title": "Font Weight Tokens",
-            "level": 3
-          },
-          {
-            "id": "line-height-tokens",
-            "title": "Line Height Tokens",
-            "level": 3
-          },
-          {
-            "id": "complete-text-style-tokens",
-            "title": "Complete Text Style Tokens",
-            "level": 3
-          },
-          {
-            "id": "spacing-tokens",
-            "title": "Spacing Tokens",
+            "id": "accent-restraint",
+            "title": "Accent Restraint",
             "level": 2
           },
           {
-            "id": "border-radius-tokens",
-            "title": "Border Radius Tokens",
+            "id": "semantic-tokens",
+            "title": "Semantic Tokens",
             "level": 2
           },
           {
-            "id": "shadowelevation-tokens",
-            "title": "Shadow/Elevation Tokens",
+            "id": "state-recipes",
+            "title": "State Recipes",
             "level": 2
           },
           {
-            "id": "motionanimation-tokens",
-            "title": "Motion/Animation Tokens",
+            "id": "token-class-hygiene",
+            "title": "Token Class Hygiene",
             "level": 2
           },
           {
-            "id": "duration-tokens",
-            "title": "Duration Tokens",
-            "level": 3
-          },
-          {
-            "id": "easing-tokens",
-            "title": "Easing Tokens",
-            "level": 3
-          },
-          {
-            "id": "using-tokens",
-            "title": "Using Tokens",
-            "level": 2
-          },
-          {
-            "id": "naming-conventions",
-            "title": "Naming Conventions",
-            "level": 2
-          },
-          {
-            "id": "color-tokens-2",
-            "title": "Color Tokens",
-            "level": 3
-          },
-          {
-            "id": "typography-tokens-2",
-            "title": "Typography Tokens",
-            "level": 3
-          },
-          {
-            "id": "spacing-tokens-2",
-            "title": "Spacing Tokens",
-            "level": 3
-          },
-          {
-            "id": "other-tokens",
-            "title": "Other Tokens",
-            "level": 3
-          },
-          {
-            "id": "semantic-vs-descriptive",
-            "title": "Semantic vs. Descriptive",
-            "level": 2
-          },
-          {
-            "id": "semantic-naming-preferred",
-            "title": "Semantic Naming (Preferred)",
-            "level": 3
-          },
-          {
-            "id": "descriptive-naming-avoid",
-            "title": "Descriptive Naming (Avoid)",
-            "level": 3
-          },
-          {
-            "id": "token-inheritance-composition",
-            "title": "Token Inheritance & Composition",
-            "level": 2
-          },
-          {
-            "id": "single-value-tokens",
-            "title": "Single Value Tokens",
-            "level": 3
-          },
-          {
-            "id": "composite-tokens",
-            "title": "Composite Tokens",
-            "level": 3
-          },
-          {
-            "id": "token-combinations",
-            "title": "Token Combinations",
-            "level": 3
-          },
-          {
-            "id": "accessibility-considerations",
-            "title": "Accessibility Considerations",
+            "id": "anti-pattern-checklist",
+            "title": "Anti-Pattern Checklist",
             "level": 2
           }
         ],

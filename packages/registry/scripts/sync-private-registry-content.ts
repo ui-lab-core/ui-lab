@@ -4,22 +4,19 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const registryRoot = path.resolve(__dirname, '..');
-const privateContentRoot = path.resolve(
-  registryRoot,
-  '../../../private/packages/library/content/registry'
-);
+const privateContentRoot =
+  process.env.UI_LAB_PRIVATE_REGISTRY_CONTENT_ROOT ??
+  path.resolve(registryRoot, '../../../private/packages/library/content/registry');
 const publicContentRoot = path.resolve(registryRoot, 'src');
 
 const CONTENT_DIRECTORIES = ['elements', 'patterns', 'sections'] as const;
 
-async function assertDirectoryExists(directory: string) {
+async function directoryExists(directory: string) {
   try {
     await access(directory);
+    return true;
   } catch {
-    throw new Error(
-      `Private registry content directory not found: ${directory}\n` +
-        'Expected private/packages/library/content/registry to contain elements, patterns, and sections.'
-    );
+    return false;
   }
 }
 
@@ -59,7 +56,6 @@ async function syncDirectory(directoryName: (typeof CONTENT_DIRECTORIES)[number]
   const source = path.join(privateContentRoot, directoryName);
   const destination = path.join(publicContentRoot, directoryName);
 
-  await assertDirectoryExists(source);
   await rm(destination, { recursive: true, force: true });
   await mkdir(destination, { recursive: true });
   await cp(source, destination, {
@@ -76,6 +72,24 @@ async function syncDirectory(directoryName: (typeof CONTENT_DIRECTORIES)[number]
 }
 
 async function main() {
+  const hasPrivateContent = await Promise.all(
+    CONTENT_DIRECTORIES.map((directoryName) =>
+      directoryExists(path.join(privateContentRoot, directoryName))
+    )
+  );
+
+  if (hasPrivateContent.some((exists) => !exists)) {
+    const missingDirectories = CONTENT_DIRECTORIES.filter(
+      (_, index) => !hasPrivateContent[index]
+    );
+
+    console.warn(
+      `Private registry content not found at ${privateContentRoot}; ` +
+        `using checked-in registry content. Missing: ${missingDirectories.join(', ')}.`
+    );
+    return;
+  }
+
   for (const directoryName of CONTENT_DIRECTORIES) {
     await syncDirectory(directoryName);
   }

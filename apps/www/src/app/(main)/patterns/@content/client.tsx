@@ -3,7 +3,7 @@ import React from 'react';
 import type { LayoutConfig } from 'ui-lab-registry';
 import { ContentIndex, GenericContentGrid } from '@/features/layout';
 import { GridCTA } from '@/features/landing/components/grid-cta';
-import { PatternLivePreview } from '@/features/patterns/components/pattern-live-preview';
+import { getCardPreviewComponent } from '@/features/patterns/lib/get-pattern-preview';
 
 type PatternGridItem = {
   id: string;
@@ -23,7 +23,8 @@ export default function PatternsPage({
   const previews: Record<string, React.ReactNode> = {};
 
   for (const pattern of patterns) {
-    previews[pattern.id] = <PatternLivePreview scope="pattern" id={pattern.id} />;
+    const Preview = getCardPreviewComponent(pattern.id);
+    if (Preview) previews[pattern.id] = <Preview />;
   }
 
   return (

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { listElements as listPrivateElements } from "@ui-lab-core/library/metadata";
-import type { LayoutConfig } from "ui-lab-registry";
+import { getAllPatterns, type LayoutConfig } from "ui-lab-registry";
 import ClientPage from "./client";
 
 export const metadata: Metadata = {
@@ -9,10 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const patterns = listPrivateElements("patterns").map((entry) => ({
-    id: entry.id,
-    name: entry.displayName,
-    description: entry.description ?? "",
+  const patterns = getAllPatterns().map((pattern) => ({
+    id: pattern.id,
+    name: pattern.name,
+    description: pattern.description,
   }));
   const layoutConfigs: Record<string, LayoutConfig> = {};
 
