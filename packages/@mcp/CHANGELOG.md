@@ -1,5 +1,13 @@
 # ui-lab-mcp
 
+## 0.3.47
+
+### Patch Changes
+
+- 4e98bff: Improved Group, Select, Checkbox, and Radio styling behavior, including cleaner single-child grouping, stable Select value rendering, and reduced motion in form controls.
+- Updated dependencies [4e98bff]
+  - ui-lab-registry@0.3.47
+
 ## 0.3.46
 
 ### Patch Changes
