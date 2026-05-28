@@ -101,7 +101,7 @@ const SelectValue = React.forwardRef<HTMLDivElement, SelectValueProps>(
     return (
       <div
         ref={ref}
-        className={cn(styles.value, className, resolved.root)}
+        className={cn("value", styles.value, className, resolved.root)}
       >
         {renderContent()}
       </div>

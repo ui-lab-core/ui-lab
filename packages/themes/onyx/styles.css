@@ -43,7 +43,7 @@
     --background-border: var(--background-600);
   }
 
-  .button.sq { @apply aspect-square  inline-flex items-center justify-center }
+  .button.icon { @apply p-[5px] aspect-square inline-flex items-center justify-center }
   .button.sm { @apply px-2.5 py-1.5 text-xs font-semibold }
   .button.md { @apply px-3 py-1.5 }
   .button.lg { @apply px-10 py-2 }
@@ -141,26 +141,43 @@
     --background-border: var(--background-700);
   }
 
-  .group > .input {
+  .group > .input,
+  .group > .item > .input {
     --background: var(--background-950);
     --background-border: var(--background-700);
   }
 
-  .group > .divider {
+  .group > .divider,
+  .group > .item > .divider {
     --background: var(--background-border);
   }
 
-  .group.outline > .divider {
+  .group.outline > .divider,
+  .group.outline > .item > .divider {
     --background: var(--background-border);
   }
 
-  .group.outline > .input {
+  .group.outline > .input,
+  .group.outline > .item > .input {
     --background: transparent;
   }
 
-  .group > .button {
+  .group > .button,
+  .group > .item > .button {
     --button-selected-background: var(--background-800);
     --button-selected-foreground: var(--foreground-100);
+  }
+
+  .group > .select > .value > .button,
+  .group > .item > .select > .value > .button {
+    height: 100%;
+    padding-inline: calc(var(--spacing) * 3) !important;
+    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+  }
+
+  .group > .select > .value,
+  .group > .item > .select > .value {
+    padding-inline: calc(var(--spacing) * 1.5);
   }
 
   .command {

@@ -1,27 +1,50 @@
 ---
 name: ui-lab
-description: Audit, ideate, overhaul UI with UI Lab's component library. Routes to ideate (holistic feedback), audit (6-pillar validation), or overhaul (mechanical UI swap to UI Lab components without changing product logic or redesigning). Requires ui-lab-mcp server.
+description: >
+  Use only for explicit front-end UI design work: auditing visual/interface
+  design, ideating screen/component layouts, or overhauling an existing UI to
+  UI Lab components. Do not use for backend, CLI, tests, data/model logic, API
+  work, bug fixes, code review, refactors, docs, or general frontend tasks
+  unless the user specifically asks to change or evaluate UI design/visual
+  components. Requires ui-lab-mcp server.
 ---
 
 <objective>
-Route UI Lab tasks to specialized agents. ideate produces design briefs. audit validates against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports. overhaul performs a mechanical UI swap to UI Lab components while preserving product logic (no redesign).
+Route explicit front-end UI design tasks to specialized agents. ideate produces design briefs. audit validates visual/interface design against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports. overhaul performs a mechanical UI swap to UI Lab components while preserving product logic (no redesign).
 </objective>
 
 <quick_start>
-Paste your code or describe your UI. The skill routes to the right agent automatically. If you want a mechanical swap, say “overhaul our project UI with UI Lab components”.
+Use this skill only when the user is asking about UI design, visual/interface quality, layout, design-system adherence, or a UI Lab component migration. If the task is not about changing or evaluating the front-end UI, do not use this skill.
 </quick_start>
+
+<activation_guardrails>
+
+Invoke this skill only when the user's current request clearly concerns front-end UI design. Acceptable requests include:
+- Auditing, critiquing, or improving the visual/interface design of an app, page, component, or screen.
+- Ideating what a UI should contain, how a screen should be laid out, or which UI Lab components/patterns should be used.
+- Replacing, migrating, or overhauling an existing front-end UI with UI Lab components.
+
+Do not invoke this skill for:
+- Backend, API, database, infrastructure, CLI, scripting, tests, build tooling, documentation, or repository maintenance.
+- General code review, bug fixing, refactoring, performance work, type errors, lint errors, dependency updates, or product logic.
+- Front-end tasks that are behavioral or data-flow oriented but not design oriented, such as fixing a React state bug, wiring an API call, adding validation logic, or changing routing.
+- Ambiguous words like "review", "fix", "improve", "frontend", "component", or "React" unless the request explicitly mentions UI design, visual layout, styling, accessibility/usability of the interface, design-system adherence, or UI Lab.
+
+If a request mixes UI design with non-design engineering work, use this skill only for the UI design portion and handle the rest normally.
+
+</activation_guardrails>
 
 <routing>
 
 | Intent | Agent | Trigger words |
 |--------|-------|---------------|
 | Ideate / critique | `ideate` | what should this have, what am I missing, ideate, is this the right design, what would make this better, design critique |
-| Audit | `audit` | review, what's wrong, audit, fix, violations |
+| Audit | `audit` | UI design review, visual audit, interface audit, design-system violations, layout/accessibility/usability critique |
 | Overhaul / replace UI | `overhaul` | overhaul, replace our ui, swap ui to ui lab, migrate project ui, convert ui to ui lab, refactor UI to UI Lab |
 
 **Routing disambiguation:**
 When trigger words match both `ideate` and `audit`:
-- User provides existing code + asks "what's wrong / fix / review" → `audit`
+- User provides existing UI code/screenshots + asks for visual/interface/design review → `audit`
 - User asks "what should this have / what am I missing / is this right" with or without code → `ideate`
 - User says "improve" without qualifying: ask "Do you want design system violations checked, or holistic design feedback on what should exist?"
 
@@ -41,7 +64,7 @@ When trigger words match `overhaul` and anything else:
 
 <agent id="audit">
 
-<trigger>User provides existing code and wants it reviewed, improved, or audited.</trigger>
+<trigger>User provides existing UI code, screenshots, or a UI description and wants the visual/interface design reviewed, improved, or audited.</trigger>
 
 <spawn_prompt_file>workflows/audit.md</spawn_prompt_file>
 

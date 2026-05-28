@@ -192,6 +192,10 @@
         --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
       }
 
+      .item:only-child {
+        --group-item-radius: var(--background-inner-radius);
+      }
+
       &.horizontal {
         .item:first-child :is( .button, .trigger, .input > *, .select) {
           border-top-left-radius: var(--background-inner-radius);
