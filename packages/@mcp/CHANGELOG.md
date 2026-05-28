@@ -1,5 +1,13 @@
 # ui-lab-mcp
 
+## 0.3.48
+
+### Patch Changes
+
+- a667765: Refreshed the public registry and site metadata from the latest private library examples so live elements, sections, and patterns match the current source content.
+- Updated dependencies [a667765]
+  - ui-lab-registry@0.3.48
+
 ## 0.3.47
 
 ### Patch Changes
