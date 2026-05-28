@@ -116,8 +116,6 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
     const helperId = `${inputId}-helper`;
     const resolvedHelper = helper ?? helperText;
     const resolvedIndeterminate = indeterminate || isIndeterminate;
-    // Track pressed state for tactile feedback animation (data-pressed attribute)
-    const [isPressed, setIsPressed] = useState(false);
     const [internalChecked, setInternalChecked] = useState(() =>
       checked !== undefined ? checked : (defaultChecked ?? false)
     );
@@ -128,39 +126,6 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       surfaceSelector: '[data-checkbox-focus-surface="true"]',
       radiusSource: "surface",
     });
-
-    // React Aria press state handlers for tactile scale animation (mouse)
-    const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-      if (!disabled) {
-        setIsPressed(true);
-      }
-      props.onMouseDown?.(e);
-    }, [disabled, props]);
-
-    const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-      setIsPressed(false);
-      props.onMouseUp?.(e);
-    }, [props]);
-
-    const handleMouseLeave = React.useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-      setIsPressed(false);
-      props.onMouseLeave?.(e);
-    }, [props]);
-
-    // React Aria press state handlers for keyboard interactions (Space/Enter)
-    const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (!disabled && (e.key === " " || e.key === "Enter")) {
-        setIsPressed(true);
-      }
-      props.onKeyDown?.(e);
-    }, [disabled, props]);
-
-    const handleKeyUp = React.useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === " " || e.key === "Enter") {
-        setIsPressed(false);
-      }
-      props.onKeyUp?.(e);
-    }, [props]);
 
     React.useEffect(() => {
       if (checked !== undefined) {
@@ -183,11 +148,6 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
 
     const inputProps = mergeProps(props, focusProps, {
       onChange: handleChange,
-      onMouseDown: handleMouseDown,
-      onMouseUp: handleMouseUp,
-      onMouseLeave: handleMouseLeave,
-      onKeyDown: handleKeyDown,
-      onKeyUp: handleKeyUp,
     }) as React.InputHTMLAttributes<HTMLInputElement>;
 
     // Determine if this is a controlled component
@@ -238,7 +198,6 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             data-indeterminate={resolvedIndeterminate ? "true" : undefined}
             data-focused={isFocused ? "true" : undefined}
             data-focus-visible={isFocusVisible ? "true" : undefined}
-            data-pressed={isPressed ? "true" : undefined}
             data-checkbox-focus-surface="true"
             aria-invalid={resolvedInvalid || undefined}
             aria-checked={resolvedIndeterminate ? "mixed" : props["aria-checked"]}

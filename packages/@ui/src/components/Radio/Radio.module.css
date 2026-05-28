@@ -25,12 +25,6 @@
     @apply relative flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center;
     border: var(--border-width-base, 1px) solid var(--background-border);
     border-radius: 9999px;
-    transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     background-color: var(--background);
     color: var(--foreground);
 
@@ -47,8 +41,6 @@
     border-radius: 9999px;
     background-color: var(--background);
     transform: scale(0);
-    transform-origin: center;
-    transition: transform 200ms var(--ease-snappy-pop), background-color 200ms var(--ease-snappy-pop);
   }
 
   .radio[data-selected="true"] .dot {
@@ -57,7 +49,6 @@
 
   @media (hover: hover) {
     .radio-item:not([data-disabled="true"]):hover .radio {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
       opacity: 0.9;
     }
   }
@@ -73,7 +64,6 @@
     font-size: inherit;
     font-weight: var(--font-weight-medium, 500);
     line-height: inherit;
-    transition: color 200ms var(--ease-snappy-pop);
     user-select: none;
 
     &[data-disabled="true"] {
@@ -86,7 +76,6 @@
     color: var(--foreground);
     font-size: var(--text-sm, 0.875rem);
     margin-top: 0.125rem;
-    transition: color 200ms var(--ease-snappy-pop);
   }
 
   .helper-text {
@@ -94,7 +83,6 @@
     font-size: var(--text-sm, 0.875rem);
     margin-top: 0.5rem;
     margin-left: 2rem;
-    transition: color 200ms var(--ease-snappy-pop);
   }
 
   .radio.sm {

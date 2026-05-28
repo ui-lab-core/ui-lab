@@ -18,15 +18,6 @@
     border: var(--border-width-base, 1px) solid var(--background-border);
     border-radius: var(--radius-xs, 0.25rem);
     outline: none;
-    transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-
-    &:hover:not([data-disabled="true"]) {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
-    }
 
     &[data-invalid="true"] {
       border-color: var(--background-error-border, var(--danger-600));
@@ -51,25 +42,12 @@
     width: 65%;
     height: 65%;
     transform: translate(-50%, -50%);
-    transform-origin: center;
-    animation: checkbox-icon-pop 200ms var(--ease-snappy-pop, ease-out);
     color: var(--foreground);
     pointer-events: none;
   }
 
-  @keyframes checkbox-icon-pop {
-    from {
-      transform: translate(-50%, -50%) scale(0);
-    }
-
-    to {
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-
   .label {
     @apply cursor-pointer select-none;
-    transition: color 200ms var(--ease-snappy-pop);
 
     &[data-disabled="true"] {
       @apply opacity-60 cursor-not-allowed;
@@ -84,7 +62,6 @@
   .helper-text {
     @apply text-xs;
     grid-column: 2;
-    transition: color 200ms var(--ease-snappy-pop);
     color: var(--helper-foreground);
 
     &[data-error="true"] {
