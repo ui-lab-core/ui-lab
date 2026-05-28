@@ -1,7 +1,28 @@
-import path from "path";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import type { NextConfig } from "next";
 
-const repoRoot = path.resolve(__dirname, "../..");
+const appRoot = path.resolve(__dirname, "../..");
+const workspaceRoot = path.resolve(__dirname, "../../..");
+const localPrivateLibrarySpecifier = "link:../../../private/packages/library";
+
+function usesLocalPrivateLibrary() {
+  try {
+    const sitePackage = JSON.parse(
+      readFileSync(path.join(__dirname, "package.json"), "utf8"),
+    ) as { dependencies?: Record<string, string> };
+
+    return (
+      sitePackage.dependencies?.["@ui-lab-core/library"] ===
+        localPrivateLibrarySpecifier &&
+      existsSync(path.join(workspaceRoot, "private/packages/library/package.json"))
+    );
+  } catch {
+    return false;
+  }
+}
+
+const nextRoot = usesLocalPrivateLibrary() ? workspaceRoot : appRoot;
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -10,9 +31,9 @@ const nextConfig: NextConfig = {
     externalDir: true,
   },
   productionBrowserSourceMaps: false,
-  outputFileTracingRoot: repoRoot,
+  outputFileTracingRoot: nextRoot,
   turbopack: {
-    root: repoRoot,
+    root: nextRoot,
   },
 };
 

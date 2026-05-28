@@ -82,8 +82,8 @@ importers:
         specifier: ^3.20.0
         version: 3.20.0
       '@ui-lab-core/library':
-        specifier: 0.1.2
-        version: 0.1.2(lucide-react@0.577.0(react@19.2.4))(next@16.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react-icons@5.6.0(react@19.2.4))(react@19.2.4)(ui-lab-components@packages+@ui)
+        specifier: link:../../../private/packages/library
+        version: link:../../../private/packages/library
       beautiful-mermaid:
         specifier: ^1.0.2
         version: 1.0.2
@@ -3063,16 +3063,6 @@ packages:
   '@typescript-eslint/visitor-keys@8.51.0':
     resolution: {integrity: sha512-mM/JRQOzhVN1ykejrvwnBRV3+7yTKK8tVANVN3o1O0t0v7o+jqdVu9crPy5Y9dov15TJk/FTIgoUGHrTOVL3Zg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@ui-lab-core/library@0.1.2':
-    resolution: {integrity: sha512-IylSqh60MpuOmWcszupujWhqsum98F5vVZodG3rCuCg5DgqGSy2nkq9imypkt3ixhlymx9NfZ5g8vpnUJuWjHw==, tarball: https://npm.pkg.github.com/download/@ui-lab-core/library/0.1.2/455bcfb72f24584a34a15b7971609723020e1c70}
-    peerDependencies:
-      lucide-react: ^0.577.0
-      next: ^16.2.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
-      react-icons: ^5.6.0
-      ui-lab-components: '*'
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -11372,15 +11362,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.51.0
       eslint-visitor-keys: 4.2.1
-
-  '@ui-lab-core/library@0.1.2(lucide-react@0.577.0(react@19.2.4))(next@16.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react-icons@5.6.0(react@19.2.4))(react@19.2.4)(ui-lab-components@packages+@ui)':
-    dependencies:
-      lucide-react: 0.577.0(react@19.2.4)
-      next: 16.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      react-icons: 5.6.0(react@19.2.4)
-      ui-lab-components: link:packages/@ui
 
   '@ungap/structured-clone@1.3.0': {}
 
