@@ -97,7 +97,7 @@ function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
 }
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  ({ className, styles, variant = "default", size = "md", children, onClick, onPress, isDisabled, disabled, icon, href, target, rel, ...props }, ref) => {
+  ({ className, styles, variant = "default", size, children, onClick, onPress, isDisabled, disabled, icon, href, target, rel, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
     const mergedRef = useMergeRefs(ref, buttonRef);
     const isButtonDisabled = isDisabled ?? disabled ?? false;
@@ -134,11 +134,24 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const { focusProps, isFocused, isFocusVisible } = useFocusRing({ autoFocus: props.autoFocus });
     const { hoverProps, isHovered } = useHover({ isDisabled: isButtonDisabled });
 
+    const actualSize = size ?? "md";
+    const isIconOnly = !children && !!icon;
+
     const resolved = resolveButtonStyles(styles);
     const resolvedIcon = resolveButtonIcon(icon);
-    const iconSizeClassName = resolveButtonIconSizeClass(size);
-    const iconSlotClassName = size === "icon" ? "icon" : undefined;
-    const buttonClassName = cn("button", variant, size, css.button, className, resolved.root);
+
+    const iconSizeClassName = resolveButtonIconSizeClass(actualSize);
+    const iconSlotClassName = isIconOnly ? "icon" : undefined;
+
+    const buttonClassName = cn(
+      "button",
+      variant,
+      actualSize,
+      isIconOnly && "icon",
+      css.button,
+      className,
+      resolved.root
+    );
 
     const { targetProps } = useFocus({ mode: "target" });
 

@@ -5,7 +5,7 @@
     --disabled-opacity: 0.5;
 
     @apply inline-flex p-1.5 flex-col overflow-hidden gap-0;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-sm);
     background-color: var(--background);
     border: var(--border-width-base) solid var(--border);
   }
@@ -16,13 +16,13 @@
     background: var(--background);
     border: var(--border-width-base) solid var(--border);
     border-bottom: none;
-    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   }
 
   .day-header {
     @apply flex items-center justify-center;
     font-weight: var(--font-weight-medium);
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
     color: var(--foreground);
   }
 
@@ -40,7 +40,7 @@
 
   .nav-button {
     @apply inline-flex min-h-8 min-w-8 items-center justify-center cursor-pointer;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-sm);
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: 1px solid transparent;
@@ -64,7 +64,7 @@
     @apply grid gap-1 px-4 pb-4;
     grid-template-columns: repeat(7, 1fr);  /* 7 days only */
     background: var(--background);
-    border-radius: 0 0 var(--radius-xs) var(--radius-xs);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
     border: var(--border-width-base) solid var(--border);
   }
 
@@ -74,7 +74,7 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: 2px solid transparent;
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
     font-weight: 400;
     transition:
       background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),

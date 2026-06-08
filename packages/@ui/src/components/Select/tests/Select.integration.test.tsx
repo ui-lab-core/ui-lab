@@ -87,12 +87,12 @@ describe('Select.integration', () => {
         const selected = items.find(item => item.key === selectedKey)
 
         return (
-          <Select selectedKey={selectedKey} valueLabel={selected?.label} onSelectionChange={setSelectedKey}>
+          <Select selectedKey={selectedKey} label={selected?.label} onSelectionChange={setSelectedKey}>
             <Searchable.Input placeholder="Search items..." />
             <Searchable.Content>
               <Select.List>
                 {items.map(item => (
-                  <Select.Item key={item.key} value={item.key} textValue={item.label}>
+                  <Select.Item key={item.key} label={item.key} textValue={item.label}>
                     {item.label}
                   </Select.Item>
                 ))}
@@ -197,7 +197,7 @@ describe('Select.integration', () => {
   })
 
   describe('multiple instances', () => {
-    it('multiple Select instances do not interfere with each other', async () => {
+    it('opening a Select closes any previously open Select', async () => {
       const items1 = createMockSelectItems(3)
       const items2 = createMockSelectItems(3)
 
@@ -212,12 +212,13 @@ describe('Select.integration', () => {
       expect(trigger1.getAttribute('aria-expanded')).toBe('true')
       expect(trigger2.getAttribute('aria-expanded')).toBe('false')
 
-      // Open second
+      // Open second should close first
       await openSelect(trigger2)
       expect(trigger2.getAttribute('aria-expanded')).toBe('true')
 
-      // First should still be open
-      expect(trigger1.getAttribute('aria-expanded')).toBe('true')
+      // Wait for trigger1 to close
+      await waitForCondition(() => trigger1.getAttribute('aria-expanded') === 'false', { timeout: 500 })
+      expect(trigger1.getAttribute('aria-expanded')).toBe('false')
     })
   })
 

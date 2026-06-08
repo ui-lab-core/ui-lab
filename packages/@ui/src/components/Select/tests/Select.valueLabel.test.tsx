@@ -7,16 +7,16 @@ import { Select } from '../'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-/** Renders Select with valueLabel and returns the trigger element */
+/** Renders Select with label and returns the trigger element */
 function renderWithValueLabel(
-  valueLabel: string,
+  label: string,
   selectedKey: string,
   items = createMockSelectItems(3),
   extra: Partial<React.ComponentProps<typeof Select>> = {}
 ) {
   const element = React.createElement(
     Select,
-    { defaultSelectedKey: selectedKey, valueLabel, ...extra },
+    { defaultSelectedKey: selectedKey, label, ...extra },
     React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
     React.createElement(
       Select.Content,
@@ -32,28 +32,28 @@ function renderWithValueLabel(
 
 // ─── tests ──────────────────────────────────────────────────────────────────
 
-describe('Select.valueLabel', () => {
+describe('Select.label', () => {
   describe('initial render display', () => {
-    it('shows valueLabel text on initial render', () => {
+    it('shows label text on initial render', () => {
       const items = createMockSelectItems(3)
-      // Real-world usage: valueLabel matches the item's label (known at SSR time)
+      // Real-world usage: label matches the item's label (known at SSR time)
       const container = renderWithValueLabel(items[0].label, items[0].key, items)
       const trigger = getSelectTrigger(container)
       expect(trigger.textContent).toContain(items[0].label)
     })
 
-    it('shows valueLabel with defaultSelectedKey', () => {
+    it('shows label with defaultSelectedKey', () => {
       const items = createMockSelectItems(3)
       const container = renderWithValueLabel(items[1].label, items[1].key, items)
       const trigger = getSelectTrigger(container)
       expect(trigger.textContent).toContain(items[1].label)
     })
 
-    it('shows valueLabel with controlled selectedKey', () => {
+    it('shows label with controlled selectedKey', () => {
       const items = createMockSelectItems(3)
       const element = React.createElement(
         Select,
-        { selectedKey: items[0].key, valueLabel: items[0].label },
+        { selectedKey: items[0].key, label: items[0].label },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -68,22 +68,22 @@ describe('Select.valueLabel', () => {
       expect(trigger.textContent).toContain(items[0].label)
     })
 
-    it('shows placeholder when neither valueLabel nor defaultSelectedKey provided', () => {
+    it('shows placeholder when neither label nor defaultSelectedKey provided', () => {
       const items = createMockSelectItems(3)
       const container = renderSelectWithItems(items)
       const trigger = getSelectTrigger(container)
-      // Without a selected key or valueLabel, placeholder should appear
+      // Without a selected key or label, placeholder should appear
       expect(trigger.textContent).toContain('Select an option')
     })
   })
 
-  describe('valueLabel when key has no matching item', () => {
-    it('shows valueLabel even when key does not match any rendered item', () => {
+  describe('label when key has no matching item', () => {
+    it('shows label even when key does not match any rendered item', () => {
       const items = createMockSelectItems(3)
       // Use a key that doesn't exist in items
       const element = React.createElement(
         Select,
-        { defaultSelectedKey: 'non-existent-key', valueLabel: 'External Model' },
+        { defaultSelectedKey: 'non-existent-key', label: 'External Model' },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -98,7 +98,7 @@ describe('Select.valueLabel', () => {
       expect(trigger.textContent).toContain('External Model')
     })
 
-    it('falls back to placeholder when key has no match and no valueLabel', () => {
+    it('falls back to placeholder when key has no match and no label', () => {
       const items = createMockSelectItems(3)
       const element = React.createElement(
         Select,
@@ -118,8 +118,8 @@ describe('Select.valueLabel', () => {
     })
   })
 
-  describe('valueLabel priority', () => {
-    it('item textValue takes precedence over valueLabel once items register', async () => {
+  describe('label priority', () => {
+    it('item textValue takes precedence over label once items register', async () => {
       const items = createMockSelectItems(3)
       // item label is what SelectItem renders; textValue defaults to children string
       const container = renderWithValueLabel('Override Label', items[0].key, items)
@@ -130,11 +130,11 @@ describe('Select.valueLabel', () => {
       expect(trigger.textContent).toContain(items[0].label)
     })
 
-    it('valueLabel persists when no item matches selectedKey after registration', async () => {
+    it('label persists when no item matches selectedKey after registration', async () => {
       const items = createMockSelectItems(3)
       const element = React.createElement(
         Select,
-        { selectedKey: 'external-key', valueLabel: 'External Value' },
+        { selectedKey: 'external-key', label: 'External Value' },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -146,18 +146,18 @@ describe('Select.valueLabel', () => {
       )
       const { container } = rtlRender(element)
       const trigger = getSelectTrigger(container)
-      // key doesn't match any item, so valueLabel should persist
+      // key doesn't match any item, so label should persist
       await waitForCondition(() => !!trigger.textContent)
       expect(trigger.textContent).toContain('External Value')
     })
   })
 
-  describe('controlled mode with valueLabel', () => {
-    it('updates display when selectedKey changes and new valueLabel provided', async () => {
+  describe('controlled mode with label', () => {
+    it('updates display when selectedKey changes and new label provided', async () => {
       const items = createMockSelectItems(3)
       const element = React.createElement(
         Select,
-        { selectedKey: items[0].key, valueLabel: items[0].label },
+        { selectedKey: items[0].key, label: items[0].label },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -171,11 +171,11 @@ describe('Select.valueLabel', () => {
       const trigger = getSelectTrigger(container)
       expect(trigger.textContent).toContain(items[0].label)
 
-      // Rerender with new selectedKey and valueLabel
+      // Rerender with new selectedKey and label
       rerender(
         React.createElement(
           Select,
-          { selectedKey: items[1].key, valueLabel: items[1].label },
+          { selectedKey: items[1].key, label: items[1].label },
           React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
           React.createElement(
             Select.Content,
@@ -198,7 +198,7 @@ describe('Select.valueLabel', () => {
       const items = createMockSelectItems(3)
       const element = React.createElement(
         Select,
-        { defaultSelectedKey: items[0].key, valueLabel: items[0].label },
+        { defaultSelectedKey: items[0].key, label: items[0].label },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -209,7 +209,7 @@ describe('Select.valueLabel', () => {
         )
       )
       const html = renderToString(element)
-      // The server-rendered HTML should contain the valueLabel text
+      // The server-rendered HTML should contain the label text
       expect(html).toContain(items[0].label)
     })
   })

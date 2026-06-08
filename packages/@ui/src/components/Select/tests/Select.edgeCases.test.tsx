@@ -128,7 +128,7 @@ describe('Select.edgeCases', () => {
           <Select.Content searchable>
             <Select.List>
               {items.map((item) => (
-                <Select.Item key={item.key} value={item.key} textValue={item.label}>
+                <Select.Item key={item.key} label={item.key} textValue={item.label}>
                   {item.label}
                 </Select.Item>
               ))}
@@ -159,17 +159,17 @@ describe('Select.edgeCases', () => {
     it('does not mount scroll chrome when the content is below maxItems', async () => {
       const items = [
         {
-          value: 'github',
+          label: 'github',
           label: 'GitHub',
           description: "The world's leading software development platform",
         },
         {
-          value: 'gitlab',
+          label: 'gitlab',
           label: 'GitLab',
           description: 'Complete DevOps platform with built-in CI/CD',
         },
         {
-          value: 'bitbucket',
+          label: 'bitbucket',
           label: 'Bitbucket',
           description: 'Git solution for professional teams by Atlassian',
         },
@@ -191,7 +191,7 @@ describe('Select.edgeCases', () => {
                   Select.Item,
                   {
                     key: item.value,
-                    value: item.value,
+                    label: item.value,
                     textValue: item.label,
                     description: item.description,
                   },
@@ -203,7 +203,7 @@ describe('Select.edgeCases', () => {
         ),
         {
           selectedKey: 'github',
-          valueLabel: 'GitHub',
+          label: 'GitHub',
           onSelectionChange: vi.fn(),
           className: 'w-80',
         }
@@ -243,7 +243,7 @@ describe('Select.edgeCases', () => {
               Select.List,
               null,
               createMockSelectItems(3).map((item) =>
-                React.createElement(Select.Item, { key: item.key, value: item.key }, item.label)
+                React.createElement(Select.Item, { key: item.key, label: item.key }, item.label)
               )
             )
           )

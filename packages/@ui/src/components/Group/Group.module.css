@@ -47,10 +47,6 @@
     &.vertical {
       @apply flex-col;
 
-      .item .button {
-        @apply w-full;
-      }
-
       .item.divider {
         margin-inline: calc(var(--layout-padding-size) * -1);
       }
@@ -114,6 +110,27 @@
       background-color: var(--button-selected-background, var(--background-pressed, var(--background-hover, var(--background))));
       color: var(--button-selected-foreground, var(--foreground));
     }
+  }
+
+  .horizontal .item.icon-button-item {
+    @apply flex-1;
+  }
+
+  .item.icon-button-item > .button {
+    @apply w-full;
+    aspect-ratio: auto;
+  }
+
+  .item.icon-button-item > .button:global(.icon) {
+    padding-inline: calc(var(--spacing) * 2);
+  }
+
+  .item.icon-button-item > .button:global(.icon):global(.sm) {
+    padding-inline: calc(var(--spacing) * 1.5);
+  }
+
+  .item.icon-button-item > .button:global(.icon):global(.lg) {
+    padding-inline: calc(var(--spacing) * 2.5);
   }
 
   .input {
@@ -222,22 +239,12 @@
           --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);
         }
 
-        .item:first-child :is(
-          .button,
-          .trigger,
-          .input > *,
-          .select
-        ) {
+        .item:first-child :is(.button, .trigger, .input > *, .select) {
           border-top-left-radius: var(--background-inner-radius);
           border-top-right-radius: var(--background-inner-radius);
         }
 
-        .item:last-child :is(
-          .button,
-          .trigger,
-          .input > *,
-          .select
-        ) {
+        .item:last-child :is(.button, .trigger, .input > *, .select) {
           border-bottom-left-radius: var(--background-inner-radius);
           border-bottom-right-radius: var(--background-inner-radius);
         }

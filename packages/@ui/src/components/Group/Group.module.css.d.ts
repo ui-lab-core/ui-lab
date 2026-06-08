@@ -8,6 +8,7 @@ declare const styles: {
   xs: string;
   sm: string;
   item: string;
+  "icon-button-item": string;
   grow: string;
   divider: string;
   button: string;

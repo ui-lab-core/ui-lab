@@ -327,6 +327,8 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
               const childProps = React.isValidElement(child) ? (child.props as any) : {}
               const childClassName = childProps.className || ""
               const shouldGrow = childClassName.includes('w-full') || childClassName.includes('flex-1')
+              const childType = React.isValidElement(child) ? (child.type as any) : null
+              const isIconGroupButton = childType?.displayName === "Group.Button" && childProps.size === "icon"
               return (
                 <div
                   key={`item-${index}`}
@@ -340,6 +342,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
                     isDividerChild && resolved.itemDivider,
                     shouldGrow && css.grow,
                     shouldGrow && resolved.itemGrow,
+                    isIconGroupButton && css["icon-button-item"],
                     resolved.item,
                   )}
                 >

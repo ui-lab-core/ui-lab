@@ -12,6 +12,7 @@ import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Select.module.css"
 import { useListNavigation, handleListKeyDown, focusAdjacentTabStop, type ItemData } from "./Select.shared"
+import { registerSelectCloseCallback, unregisterSelectCloseCallback, closeOtherSelects, clearSelectRegistry } from "./Select.registry"
 
 export type SelectItemData = ItemData
 
@@ -99,7 +100,7 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   /** Display text for the currently selected value — used for SSR/SSG to avoid
    * flash of placeholder before items register. Provide alongside selectedKey or
    * defaultSelectedKey so the correct label renders on the first pass. */
-  valueLabel?: string
+  label?: string
   /** Called when selection changes; receives a single key (single) or key array (multiple) */
   onSelectionChange?: (value: any) => void
   /** Disables the entire select and prevents interaction */
@@ -136,7 +137,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       selectedKeys: controlledSelectedKeys,
       defaultSelectedKeys = [],
       defaultValue,
-      valueLabel,
+      label,
       onSelectionChange,
       isDisabled = false,
       autoFocus = false,
@@ -159,6 +160,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     const [isOpen, setIsOpen] = React.useState(false)
     const [contentPlacement, setContentPlacement] = React.useState<"top" | "bottom">("bottom")
     const contentId = React.useId()
+    const selectId = React.useId()
     const hoverTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
     const keyboardScrollIntentRef = React.useRef(false)
 
@@ -205,13 +207,31 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       }
     }, [])
 
+    React.useEffect(() => {
+      registerSelectCloseCallback(selectId, (shouldClose) => {
+        if (shouldClose) {
+          setIsOpen(false)
+        }
+      })
+      return () => {
+        unregisterSelectCloseCallback(selectId)
+        clearSelectRegistry(selectId)
+      }
+    }, [selectId])
+
+    React.useEffect(() => {
+      if (isOpen) {
+        closeOtherSelects(selectId)
+      }
+    }, [isOpen, selectId])
+
     const [uncontrolledSelectedKey, setUncontrolledSelectedKey] = React.useState<Key | null>(
       defaultSelectedKey ?? null
     )
     const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = React.useState<Set<Key>>(
       new Set(defaultSelectedKeys)
     )
-    const [selectedTextValue, setSelectedTextValue] = React.useState(valueLabel ?? defaultValue ?? "")
+    const [selectedTextValue, setSelectedTextValue] = React.useState(label ?? defaultValue ?? "")
     const selectedKey = controlledSelectedKey !== undefined ? controlledSelectedKey : uncontrolledSelectedKey
     const selectedKeys = controlledSelectedKeys !== undefined ? new Set(controlledSelectedKeys) : uncontrolledSelectedKeys
 
@@ -406,14 +426,14 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
           const selectedItem = nav.items.find(item => item.key === selectedKey)
           if (selectedItem) {
             setSelectedTextValue(selectedItem.textValue)
-          } else if (valueLabel !== undefined) {
-            setSelectedTextValue(valueLabel)
+          } else if (label !== undefined) {
+            setSelectedTextValue(label)
           } else if (defaultValue !== undefined && defaultValue !== null) {
             setSelectedTextValue(defaultValue)
           }
         }
       }
-    }, [selectedKey, nav.items, mode, defaultValue, valueLabel])
+    }, [selectedKey, nav.items, mode, defaultValue, label])
 
     const childrenArray = React.Children.toArray(children)
     const trigger = childrenArray.find(child => React.isValidElement(child) && (
