@@ -398,7 +398,7 @@
     --error-foreground: var(--danger-600);
   }
 
-  .label > label > .required-indicator {
+  .label > .text > .required-indicator {
     --required-color: var(--danger-600);
   }
 

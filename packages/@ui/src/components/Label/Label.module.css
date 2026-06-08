@@ -4,48 +4,45 @@
   .label {
     --background: transparent;
     --foreground: var(--foreground-primary);
-    --foreground-disabled: var(--foreground-secondary);
-    --foreground-error: var(--danger-600);
+    --disabled-foreground: var(--foreground-secondary);
+    --error-foreground: var(--danger-600);
+    --helper-color: var(--foreground-secondary);
+    --helper-error-color: var(--danger-600);
+    --required-color: var(--danger-600);
   }
 
-  .label > label {
+  .text {
     display: block;
     font-family: inherit;
     font-size: var(--text-sm);
     color: var(--foreground);
     transition: color 150ms ease;
 
-    &[data-size="sm"] { font-size: var(--text-sm); }
-    &[data-size="lg"] { font-size: var(--text-md); }
-
     &[data-disabled] {
-      color: var(--foreground-disabled);
+      color: var(--disabled-foreground);
       opacity: 0.6;
       cursor: not-allowed;
     }
 
     &[data-error] {
-      color: var(--foreground-error);
+      color: var(--error-foreground);
     }
   }
 
-  .label > .required-indicator {
+  .required-indicator {
     margin-left: 0.25rem;
     color: var(--required-color);
   }
 
-  .label > .helper-text {
-    --helper-foreground: var(--foreground-secondary);
-    --helper-foreground-error: var(--danger-600);
-
+  .helper-text {
     display: block;
     font-size: var(--text-sm);
     margin-top: 0.25rem;
     transition: color 150ms ease;
-    color: var(--helper-foreground);
+    color: var(--helper-color);
 
     &[data-error] {
-      color: var(--helper-foreground-error);
+      color: var(--helper-error-color);
     }
   }
 }

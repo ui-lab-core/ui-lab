@@ -15,6 +15,8 @@ import { getScaleName } from "../../config";
 import {
   Slider,
   Divider,
+  Label,
+  Badge,
 } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 
@@ -116,15 +118,13 @@ const GlobalSlider = memo(
     const isNeutral = Math.abs(value - (label === "Lightness" ? 0 : 1)) < 0.01;
     return (
       <div className="space-y-1.5 group">
-        <div className="flex justify-between items-center">
-          <label className="text-sm font-medium text-foreground-400 group-hover:text-foreground-300 transition-colors">
+        <div className="space-y-1 flex justify-between items-center">
+          <Label styles={{ root: "mt-1.5", text: "text-xs font-medium" }}>
             {label}
-          </label>
-          <span
-            className={`text-sm px-1.5 py-0.5 rounded-[4px] ${isNeutral ? "text-foreground-400" : "text-accent-400 bg-accent-600/30"}`}
-          >
+          </Label>
+          <Badge>
             {formatValue(value)}
-          </span>
+          </Badge>
         </div>
         <Slider.Root
           value={[value]}

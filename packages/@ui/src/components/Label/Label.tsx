@@ -4,13 +4,14 @@ import css from "./Label.module.css";
 
 interface LabelStyleSlots {
   root?: StyleValue;
+  text?: StyleValue;
   requiredIndicator?: StyleValue;
   helperText?: StyleValue;
 }
 
 type LabelStylesProp = StylesProp<LabelStyleSlots>;
 
-const resolveLabelBaseStyles = createStylesResolver(['root', 'requiredIndicator', 'helperText'] as const);
+const resolveLabelBaseStyles = createStylesResolver(["root", "text", "requiredIndicator", "helperText"] as const);
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement> {
@@ -46,6 +47,7 @@ const Label = ({
   return (
     <div className={cn('label', css.label, 'w-full', className, resolved.root)}>
       <label
+        className={cn("text", css.text, resolved.text)}
         data-size={size ?? 'md'}
         data-disabled={disabled || undefined}
         data-error={error || undefined}
@@ -53,14 +55,14 @@ const Label = ({
       >
         {children}
         {required && (
-          <span className={cn('required-indicator', css['required-indicator'], resolved.requiredIndicator)} aria-label="required">
+          <span className={cn("required-indicator", css["required-indicator"], resolved.requiredIndicator)} aria-label="required">
             *
           </span>
         )}
       </label>
       {helperText && (
         <p
-          className={cn('helper-text', css['helper-text'], resolved.helperText)}
+          className={cn("helper-text", css["helper-text"], resolved.helperText)}
           data-error={helperTextError || undefined}
         >
           {helperText}
