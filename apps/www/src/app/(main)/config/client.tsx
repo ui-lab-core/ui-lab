@@ -143,7 +143,7 @@ function PreviewCanvas() {
       </ExampleCard>
 
       <ExampleCard>
-        <Select defaultSelectedKey="pro" valueLabel="Pro">
+        <Select defaultSelectedKey="pro" label="Pro">
           <Select.Trigger>
             <Select.Value placeholder="Plan" />
           </Select.Trigger>
@@ -401,9 +401,12 @@ export default function ConfigPage() {
     bodyFontWeightScale,
     headerLineHeight,
     bodyLineHeight,
+    headerTypeSizeRatio,
+    headerFontSizeScale,
     bodyTypeSizeRatio,
     bodyFontSizeScale,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
     radius,
     borderWidth,
     spacingScale,
@@ -442,18 +445,26 @@ export default function ConfigPage() {
         headerFont: selectedHeaderFont,
         monoFont: selectedMonoFont,
       },
-      globalMinFontSizePx,
+      {
+        bodyMinFontSizePx,
+        headerMinFontSizePx,
+        headerTypeSizeRatio,
+        headerFontSizeScale,
+      },
     );
   }, [
     currentThemeColors,
     currentThemeMode,
     bodyTypeSizeRatio,
     bodyFontSizeScale,
+    headerTypeSizeRatio,
+    headerFontSizeScale,
     headerFontWeightScale,
     bodyFontWeightScale,
     headerLineHeight,
     bodyLineHeight,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
     radius,
     borderWidth,
     spacingScale,

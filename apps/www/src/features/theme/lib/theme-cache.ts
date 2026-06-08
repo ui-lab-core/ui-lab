@@ -92,6 +92,14 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
   const sourceConfig = d.sourceConfig as
     | (Partial<ThemeSourceConfig> & { fonts?: LegacyThemeFontsConfig })
     | undefined;
+  const sourceTypography = sourceConfig?.typography as
+    | (Partial<ThemeSourceConfig["typography"]> & {
+        globalMinFontSizePx?: number;
+      })
+    | undefined;
+  const legacyMinFontSizePx = sourceTypography?.globalMinFontSizePx;
+  const currentTypography = { ...(sourceTypography ?? {}) };
+  delete currentTypography.globalMinFontSizePx;
   return {
     cssVariables: vars as Record<string, string>,
     themeMode,
@@ -105,7 +113,15 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
         },
         typography: {
           ...defaultSourceConfig.typography,
-          ...(sourceConfig.typography || {}),
+          ...currentTypography,
+          bodyMinFontSizePx:
+            sourceTypography?.bodyMinFontSizePx ??
+            legacyMinFontSizePx ??
+            defaultSourceConfig.typography.bodyMinFontSizePx,
+          headerMinFontSizePx:
+            sourceTypography?.headerMinFontSizePx ??
+            legacyMinFontSizePx ??
+            defaultSourceConfig.typography.headerMinFontSizePx,
         },
         layout: {
           ...defaultSourceConfig.layout,

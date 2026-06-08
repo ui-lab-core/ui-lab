@@ -1,11 +1,11 @@
 import { generateTypeScaleFromRatio } from "../config";
 import {
-  DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  DEFAULT_BODY_MIN_FONT_SIZE_PX,
   TYPOGRAPHY_FONT_SIZE_SCALE_MAX,
   TYPOGRAPHY_FONT_SIZE_SCALE_MIN,
   TYPOGRAPHY_TYPE_SIZE_RATIO_MAX,
   TYPOGRAPHY_TYPE_SIZE_RATIO_MIN,
-  clampGlobalMinFontSizePx,
+  clampMinFontSizePx,
 } from "./typography-config";
 
 interface TypographyConstraintInput {
@@ -14,7 +14,7 @@ interface TypographyConstraintInput {
 }
 
 interface TypographyConstraintResult extends TypographyConstraintInput {
-  globalMinFontSizePx: number;
+  minFontSizePx: number;
 }
 
 const FONT_SCALE_SEARCH_STEP = 0.001;
@@ -22,10 +22,10 @@ const FONT_SCALE_SEARCH_STEP = 0.001;
 function getSmallestMinSize(
   typeSizeRatio: number,
   fontSizeScale: number,
-  globalMinFontSizePx: number = DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  minFontSizePx: number = DEFAULT_BODY_MIN_FONT_SIZE_PX,
 ): number {
   const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
-    globalMinFontSizePx,
+    minFontSizePx,
   });
   const minSizes = typeScale.map((item) => item.minSize);
   return Math.min(...minSizes);
@@ -34,22 +34,22 @@ function getSmallestMinSize(
 export function isValidTypographyConfig(
   typeSizeRatio: number,
   fontSizeScale: number,
-  globalMinFontSizePx: number = DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  minFontSizePx: number = DEFAULT_BODY_MIN_FONT_SIZE_PX,
 ): boolean {
   const smallestMin = getSmallestMinSize(
     typeSizeRatio,
     fontSizeScale,
-    globalMinFontSizePx,
+    minFontSizePx,
   );
-  return smallestMin >= globalMinFontSizePx / 16;
+  return smallestMin >= minFontSizePx / 16;
 }
 
 export function findClosestValidFontSizeScale(
   typeSizeRatio: number,
   targetFontSizeScale: number,
-  globalMinFontSizePx: number = DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  minFontSizePx: number = DEFAULT_BODY_MIN_FONT_SIZE_PX,
 ): number {
-  const normalizedGlobalMinFontSizePx = clampGlobalMinFontSizePx(globalMinFontSizePx);
+  const normalizedMinFontSizePx = clampMinFontSizePx(minFontSizePx);
   const clampedTargetScale = Math.max(
     TYPOGRAPHY_FONT_SIZE_SCALE_MIN,
     Math.min(TYPOGRAPHY_FONT_SIZE_SCALE_MAX, targetFontSizeScale),
@@ -59,7 +59,7 @@ export function findClosestValidFontSizeScale(
     isValidTypographyConfig(
       typeSizeRatio,
       clampedTargetScale,
-      normalizedGlobalMinFontSizePx,
+      normalizedMinFontSizePx,
     )
   ) {
     return clampedTargetScale;
@@ -79,7 +79,7 @@ export function findClosestValidFontSizeScale(
       !isValidTypographyConfig(
         typeSizeRatio,
         roundedScale,
-        normalizedGlobalMinFontSizePx,
+        normalizedMinFontSizePx,
       )
     ) {
       continue;
@@ -98,33 +98,33 @@ export function findClosestValidFontSizeScale(
 export function clampTypographyConfig(
   typeSizeRatio: number,
   fontSizeScale: number,
-  globalMinFontSizePx: number = DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  minFontSizePx: number = DEFAULT_BODY_MIN_FONT_SIZE_PX,
 ): TypographyConstraintResult {
   const clampedRatio = Math.max(
     TYPOGRAPHY_TYPE_SIZE_RATIO_MIN,
     Math.min(TYPOGRAPHY_TYPE_SIZE_RATIO_MAX, typeSizeRatio),
   );
-  const normalizedGlobalMinFontSizePx = clampGlobalMinFontSizePx(globalMinFontSizePx);
+  const normalizedMinFontSizePx = clampMinFontSizePx(minFontSizePx);
   const clampedScale = findClosestValidFontSizeScale(
     clampedRatio,
     fontSizeScale,
-    normalizedGlobalMinFontSizePx,
+    normalizedMinFontSizePx,
   );
 
   return {
     typeSizeRatio: clampedRatio,
     fontSizeScale: clampedScale,
-    globalMinFontSizePx: normalizedGlobalMinFontSizePx,
+    minFontSizePx: normalizedMinFontSizePx,
   };
 }
 
 function clampTypographySettings(
   input: TypographyConstraintInput,
-  globalMinFontSizePx: number = DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  minFontSizePx: number = DEFAULT_BODY_MIN_FONT_SIZE_PX,
 ): TypographyConstraintResult {
   return clampTypographyConfig(
     input.typeSizeRatio,
     input.fontSizeScale,
-    globalMinFontSizePx,
+    minFontSizePx,
   );
 }

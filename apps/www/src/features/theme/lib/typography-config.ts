@@ -1,8 +1,13 @@
 const ROOT_FONT_SIZE_PX = 16;
 
-export const DEFAULT_GLOBAL_MIN_FONT_SIZE_PX = 14.75;
-export const MIN_GLOBAL_MIN_FONT_SIZE_PX = 10.0;
-export const MAX_GLOBAL_MIN_FONT_SIZE_PX = 18.0;
+export const DEFAULT_BODY_MIN_FONT_SIZE_PX = 14.75;
+export const DEFAULT_HEADER_MIN_FONT_SIZE_PX = 14.75;
+export const MIN_MIN_FONT_SIZE_PX = 10.0;
+export const MAX_MIN_FONT_SIZE_PX = 18.0;
+
+export const DEFAULT_GLOBAL_MIN_FONT_SIZE_PX = DEFAULT_BODY_MIN_FONT_SIZE_PX;
+export const MIN_GLOBAL_MIN_FONT_SIZE_PX = MIN_MIN_FONT_SIZE_PX;
+export const MAX_GLOBAL_MIN_FONT_SIZE_PX = MAX_MIN_FONT_SIZE_PX;
 
 export const TYPOGRAPHY_TYPE_SIZE_RATIO_MIN = 1.067;
 export const TYPOGRAPHY_TYPE_SIZE_RATIO_MAX = 1.333;
@@ -24,7 +29,9 @@ export interface TypographyConfig {
   bodyFontWeightScale: number;
   bodyLetterSpacingScale: number;
   bodyLineHeight: number;
-  globalMinFontSizePx: number;
+  bodyMinFontSizePx: number;
+  headerMinFontSizePx: number;
+  globalMinFontSizePx?: number;
 }
 
 export const DEFAULT_TYPOGRAPHY_CONFIG: TypographyConfig = {
@@ -38,22 +45,34 @@ export const DEFAULT_TYPOGRAPHY_CONFIG: TypographyConfig = {
   bodyFontWeightScale: 1,
   bodyLetterSpacingScale: 1,
   bodyLineHeight: DEFAULT_BODY_LINE_HEIGHT,
-  globalMinFontSizePx: DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  bodyMinFontSizePx: DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  headerMinFontSizePx: DEFAULT_HEADER_MIN_FONT_SIZE_PX,
 };
 
-export function clampGlobalMinFontSizePx(value: number): number {
+export function clampMinFontSizePx(value: number): number {
   return Math.max(
-    MIN_GLOBAL_MIN_FONT_SIZE_PX,
-    Math.min(MAX_GLOBAL_MIN_FONT_SIZE_PX, value),
+    MIN_MIN_FONT_SIZE_PX,
+    Math.min(MAX_MIN_FONT_SIZE_PX, value),
   );
 }
 
-export function normalizeGlobalMinFontSizePx(value: unknown): number {
+export function clampGlobalMinFontSizePx(value: number): number {
+  return clampMinFontSizePx(value);
+}
+
+export function normalizeMinFontSizePx(
+  value: unknown,
+  fallback: number = DEFAULT_BODY_MIN_FONT_SIZE_PX,
+): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
-    return DEFAULT_GLOBAL_MIN_FONT_SIZE_PX;
+    return fallback;
   }
 
-  return clampGlobalMinFontSizePx(value);
+  return clampMinFontSizePx(value);
+}
+
+export function normalizeGlobalMinFontSizePx(value: unknown): number {
+  return normalizeMinFontSizePx(value, DEFAULT_GLOBAL_MIN_FONT_SIZE_PX);
 }
 
 function clampTypographyLineHeight(value: number): number {

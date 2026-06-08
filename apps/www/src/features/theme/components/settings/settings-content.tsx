@@ -41,7 +41,8 @@ function useSettingsHandlers(
   selectedBodyFont: string,
   selectedHeaderFont: string,
   selectedMonoFont: string,
-  globalMinFontSizePx: number,
+  bodyMinFontSizePx: number,
+  headerMinFontSizePx: number,
   headerLineHeight: number,
   bodyLineHeight: number,
   currentTypography: TypographyConfig,
@@ -153,11 +154,11 @@ function useSettingsHandlers(
         bodyTypeSizeRatio = ratio,
       } = fontConfig.metrics;
       let finalScale = bodyFontSizeScale;
-      if (!isValidTypographyConfig(bodyTypeSizeRatio, bodyFontSizeScale, globalMinFontSizePx)) {
+      if (!isValidTypographyConfig(bodyTypeSizeRatio, bodyFontSizeScale, bodyMinFontSizePx)) {
         finalScale = findClosestValidFontSizeScale(
           bodyTypeSizeRatio,
           bodyFontSizeScale,
-          globalMinFontSizePx,
+          bodyMinFontSizePx,
         );
       }
       updateTypography({
@@ -186,9 +187,20 @@ function useSettingsHandlers(
         fontWeightScale,
         headerLineHeight: nextHeaderLineHeight = headerLineHeight,
       } = fontConfig.metrics;
+      const finalHeaderScale = isValidTypographyConfig(
+        typeSizeRatio,
+        fontSizeScale,
+        headerMinFontSizePx,
+      )
+        ? fontSizeScale
+        : findClosestValidFontSizeScale(
+            typeSizeRatio,
+            fontSizeScale,
+            headerMinFontSizePx,
+          );
       updateTypography({
         headerTypeSizeRatio: typeSizeRatio,
-        headerFontSizeScale: fontSizeScale,
+        headerFontSizeScale: finalHeaderScale,
         headerFontWeightScale: headerFontWeightScale ?? fontWeightScale ?? 1,
         headerLetterSpacingScale: headerSpacing,
         headerLineHeight: nextHeaderLineHeight,
@@ -267,8 +279,10 @@ export const SettingsContent = ({
     setBodyLetterSpacingScale,
     bodyLineHeight,
     setBodyLineHeight,
-    globalMinFontSizePx,
-    setGlobalMinFontSizePx,
+    bodyMinFontSizePx,
+    setBodyMinFontSizePx,
+    headerMinFontSizePx,
+    setHeaderMinFontSizePx,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<ConfigTab>("colors");
@@ -313,7 +327,8 @@ export const SettingsContent = ({
       setBodyFontWeightScale(config.bodyFontWeightScale);
       setBodyLetterSpacingScale(config.bodyLetterSpacingScale);
       setBodyLineHeight(config.bodyLineHeight);
-      setGlobalMinFontSizePx(config.globalMinFontSizePx);
+      setBodyMinFontSizePx(config.bodyMinFontSizePx);
+      setHeaderMinFontSizePx(config.headerMinFontSizePx);
     },
     onLayoutChange: (config: LayoutConfig) => {
       setRadius(config.radius);
@@ -339,7 +354,8 @@ export const SettingsContent = ({
     bodyFontWeightScale,
     bodyLetterSpacingScale,
     bodyLineHeight,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
   };
 
   const {
@@ -361,7 +377,8 @@ export const SettingsContent = ({
     selectedBodyFont,
     selectedHeaderFont,
     selectedMonoFont,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
     headerLineHeight,
     bodyLineHeight,
     currentTypography,

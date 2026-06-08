@@ -20,7 +20,8 @@ import {
 import {
   DEFAULT_BODY_LINE_HEIGHT,
   DEFAULT_HEADER_LINE_HEIGHT,
-  DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+  DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   type TypographyConfig,
 } from "@/features/theme/lib/typography-config";
 import { Button, Divider, Switch, Slider, Select, Label } from "ui-lab-components";
@@ -57,7 +58,23 @@ interface FontTuningState {
 
 type FontTuningByFont = Record<string, FontTuningState>;
 
-const SAMPLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&@!?$%";
+interface PointSizeMetrics {
+  capHeight: number;
+  xHeight: number;
+  ascender: number;
+  descender: number;
+  stem: number;
+  bowlWidth: number;
+  counterProxy: number;
+}
+
+interface ComparisonRow {
+  pointSize: number;
+  target: PointSizeMetrics;
+  reference: PointSizeMetrics;
+}
+
+const SAMPLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&@!?$%";
 const KERNING_PAIRS = ["AV", "VA", "To", "Wa", "Yo", "Ta", "LT", "FA"] as const;
 const CONTEXT_PARAGRAPHS = [
   "Interface typography needs to stay readable while labels, values, and nested actions compete for attention.",
@@ -83,6 +100,20 @@ const SPACING_CONTROLS = [
   step: number;
   unit: string;
 }>;
+
+const COMPARISON_SIZES = [12, 14, 16, 18, 20, 24] as const;
+const COMPARISON_METRIC_KEYS: Array<keyof PointSizeMetrics> = [
+  "capHeight", "xHeight", "ascender", "descender", "stem", "bowlWidth", "counterProxy",
+];
+const COMPARISON_METRIC_LABELS: Record<keyof PointSizeMetrics, string> = {
+  capHeight: "Cap Height",
+  xHeight: "X-height",
+  ascender: "Ascender",
+  descender: "Descender",
+  stem: "Stem",
+  bowlWidth: "Bowl Width",
+  counterProxy: "Counter",
+};
 
 interface GlyphMeasurement {
   character: string;
@@ -135,7 +166,8 @@ function getFontPreviewState(fontConfig?: FontConfig): PreviewTypographyState {
     bodyFontWeightScale: metrics?.bodyFontWeightScale ?? metrics?.fontWeightScale ?? 1,
     bodyLetterSpacingScale: metrics?.bodyLetterSpacingScale ?? 1,
     bodyLineHeight: metrics?.bodyLineHeight ?? DEFAULT_BODY_LINE_HEIGHT,
-    globalMinFontSizePx: DEFAULT_GLOBAL_MIN_FONT_SIZE_PX,
+    bodyMinFontSizePx: DEFAULT_BODY_MIN_FONT_SIZE_PX,
+    headerMinFontSizePx: DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   };
 }
 
@@ -258,7 +290,7 @@ function buildPreviewVars(
     typography.bodyTypeSizeRatio,
     typography.bodyFontSizeScale,
     1,
-    { globalMinFontSizePx: typography.globalMinFontSizePx },
+    { minFontSizePx: typography.bodyMinFontSizePx },
   ).forEach(({ name, cssValue }) => {
     vars[`--text-${name}`] = cssValue;
   });
@@ -267,7 +299,7 @@ function buildPreviewVars(
     typography.headerTypeSizeRatio,
     typography.headerFontSizeScale,
     1,
-    { globalMinFontSizePx: typography.globalMinFontSizePx },
+    { minFontSizePx: typography.headerMinFontSizePx },
   ).forEach(({ name, cssValue }) => {
     vars[`--header-text-${name}`] = cssValue;
   });
@@ -382,12 +414,14 @@ function BodyPreviewContent() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-header-xl font-bold text-foreground-50" style={headingStyle}>Heading 1 — The quick brown fox</h1>
-      <h2 className="text-header-xl font-bold text-foreground-50" style={headingStyle}>Heading 2 — jumps over the lazy</h2>
-      <h3 className="text-header-lg font-bold text-foreground-50" style={headingStyle}>Heading 3 — dog near the riverbank</h3>
-      <h4 className="text-header-md font-bold text-foreground-50" style={headingStyle}>Heading 4 — Pack my box with five</h4>
-      <h5 className="text-header-md font-bold text-foreground-50" style={headingStyle}>Heading 5 — dozen liquor jugs</h5>
-      <h6 className="text-header-sm font-bold text-foreground-50" style={headingStyle}>Heading 6 — How vexingly quick</h6>
+      <div className="h-70">
+        <h1 className="text-header-xl font-bold text-foreground-50" style={headingStyle}>Heading 1 — The quick brown fox</h1>
+        <h2 className="text-header-xl font-bold text-foreground-50" style={headingStyle}>Heading 2 — jumps over the lazy</h2>
+        <h3 className="text-header-lg font-bold text-foreground-50" style={headingStyle}>Heading 3 — dog near the riverbank</h3>
+        <h4 className="text-header-md font-bold text-foreground-50" style={headingStyle}>Heading 4 — Pack my box with five</h4>
+        <h5 className="text-header-md font-bold text-foreground-50" style={headingStyle}>Heading 5 — dozen liquor jugs</h5>
+        <h6 className="text-header-sm font-bold text-foreground-50" style={headingStyle}>Heading 6 — How vexingly quick</h6>
+      </div>
       <p className="text-foreground-100">
         Body text. The five boxing wizards jump quickly. Sphinx of black quartz, judge my vow.
         How vexingly quick daft zebras jump! The job requires extra pluck and zeal from every
@@ -486,6 +520,9 @@ function GlyphInspector({
 }) {
   const displayFontSize = 180;
   const baselineY = 200;
+  const uppercaseChar = character.toUpperCase();
+  const lowercaseChar = character.toLowerCase();
+  const displayText = uppercaseChar === lowercaseChar ? character : `${uppercaseChar}${lowercaseChar}`;
 
   return (
     <div className="relative min-h-[330px] overflow-hidden rounded border border-background-700 bg-background-900 p-6">
@@ -504,7 +541,7 @@ function GlyphInspector({
           displayFontSize={displayFontSize}
           metrics={metrics}
         />
-        <svg className="absolute inset-0 h-full w-full overflow-visible" role="img" aria-label={`${fontName} glyph ${character}`}>
+        <svg className="absolute inset-0 h-full w-full overflow-visible" role="img" aria-label={`${fontName} glyph ${displayText}`}>
           <text
             x="50%"
             y={baselineY}
@@ -517,7 +554,7 @@ function GlyphInspector({
               letterSpacing: style.letterSpacing,
             }}
           >
-            {character}
+            {displayText}
           </text>
         </svg>
       </div>
@@ -544,11 +581,10 @@ function GlyphGrid({
             key={character}
             type="button"
             onClick={() => onSelectCharacter(character)}
-            className={`aspect-square rounded border text-center text-3xl leading-none transition-colors ${
-              isSelected
-                ? "border-foreground-200 bg-background-700 text-foreground-50"
-                : "border-background-700 bg-background-900 text-foreground-200 hover:border-background-500 hover:bg-background-800"
-            }`}
+            className={`aspect-square rounded border text-center text-3xl leading-none transition-colors ${isSelected
+              ? "border-foreground-200 bg-background-700 text-foreground-50"
+              : "border-background-700 bg-background-900 text-foreground-200 hover:border-background-500 hover:bg-background-800"
+              }`}
             style={{ ...style, fontSize: 30, lineHeight: 1 }}
           >
             {character}
@@ -625,6 +661,242 @@ function MetricReadout({
   );
 }
 
+function ComparisonLab({
+  targetFamily,
+  referenceFamily,
+  targetName,
+  referenceName = "Karla",
+  onAlign,
+}: {
+  targetFamily: string;
+  referenceFamily: string;
+  targetName: string;
+  referenceName?: string;
+  onAlign: (updates: Partial<PreviewTypographyState>) => void;
+}) {
+  const [rows, setRows] = useState<ComparisonRow[] | null>(null);
+  const [running, setRunning] = useState(false);
+  const [appliedScale, setAppliedScale] = useState<number | null>(null);
+
+  const run = async () => {
+    setRunning(true);
+    setRows(null);
+    setAppliedScale(null);
+
+    const sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    await Promise.all([
+      ...COMPARISON_SIZES.map((sz) =>
+        document.fonts.load(`400 ${sz}px ${targetFamily}`, sample).catch(() => { }),
+      ),
+      ...COMPARISON_SIZES.map((sz) =>
+        document.fonts.load(`400 ${sz}px ${referenceFamily}`, sample).catch(() => { }),
+      ),
+    ]);
+    await document.fonts.ready;
+
+    const toMetrics = (m: RenderedFontMetrics | null): PointSizeMetrics => ({
+      capHeight: m?.capHeight ?? 0,
+      xHeight: m?.xHeight ?? 0,
+      ascender: m?.ascender ?? 0,
+      descender: m?.descender ?? 0,
+      stem: m?.stem ?? 0,
+      bowlWidth: m?.bowlWidth ?? 0,
+      counterProxy: m?.counterProxy ?? 0,
+    });
+
+    const result = COMPARISON_SIZES.map((pointSize) => ({
+      pointSize,
+      target: toMetrics(measureRenderedFontMetrics(targetFamily, pointSize, "H")),
+      reference: toMetrics(measureRenderedFontMetrics(referenceFamily, pointSize, "H")),
+    }));
+
+    setRows(result);
+
+    const baseline = result.find((r) => r.pointSize === 18) ?? result[result.length - 1];
+    if (baseline && baseline.target.capHeight > 0) {
+      const scale = roundMetric(baseline.reference.capHeight / baseline.target.capHeight, 4);
+      onAlign({ bodyFontSizeScale: scale, headerFontSizeScale: scale });
+      setAppliedScale(scale);
+    }
+
+    setRunning(false);
+  };
+
+  const baseline18 = rows?.find((r) => r.pointSize === 18) ?? rows?.[rows.length - 1];
+
+  const deltaPct = (t: number, r: number) => (r !== 0 ? ((t - r) / r) * 100 : 0);
+  const fmtPct = (pct: number) => `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`;
+  const deltaClass = (pct: number) =>
+    Math.abs(pct) > 3 ? "text-warning-400" : "text-success-500";
+
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="text-sm font-medium text-foreground-400">Comparison Lab</div>
+          <p className="mt-1 text-sm text-foreground-500">
+            Measures {targetName} vs {referenceName} at {COMPARISON_SIZES.join("/")}px, then
+            applies the derived fontSizeScale to the preview.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onPress={run} isDisabled={running}>
+          {running ? "Measuring…" : rows ? "Re-align to Karla" : "Align to Karla"}
+        </Button>
+      </div>
+
+      {rows && baseline18 && (
+        <div className="space-y-4">
+          {appliedScale !== null && (
+            <div className="grid gap-3 rounded border border-background-700 bg-background-900 p-4 sm:grid-cols-2">
+              <div>
+                <div className="mb-1 text-xs font-medium text-foreground-500">Applied fontSizeScale</div>
+                <div className="font-mono text-xl font-semibold text-foreground-100">
+                  {appliedScale}
+                </div>
+                <div className="mt-1 text-xs text-foreground-500">
+                  bodyFontSizeScale and headerFontSizeScale updated in preview
+                </div>
+              </div>
+              <div>
+                <div className="mb-1 text-xs font-medium text-foreground-500">Formula</div>
+                <div className="font-mono text-sm text-foreground-400">
+                  {referenceName}.capHeight / {targetName}.capHeight
+                </div>
+                <div className="font-mono text-sm text-foreground-300">
+                  {baseline18.reference.capHeight.toFixed(3)} /{" "}
+                  {baseline18.target.capHeight.toFixed(3)} = {appliedScale}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="overflow-x-auto rounded border border-background-700">
+            <table className="w-full text-sm">
+              <thead className="bg-background-900">
+                <tr className="border-b border-background-700">
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-foreground-500">
+                    Metric at 18px
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-xs font-medium text-foreground-500">
+                    {targetName}
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-xs font-medium text-foreground-500">
+                    {referenceName}
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-xs font-medium text-foreground-500">
+                    Delta
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON_METRIC_KEYS.map((key, i) => {
+                  const t = baseline18.target[key];
+                  const r = baseline18.reference[key];
+                  const pct = deltaPct(t, r);
+                  return (
+                    <tr
+                      key={key}
+                      className={`border-b border-background-800 ${i % 2 !== 0 ? "bg-background-900/30" : ""}`}
+                    >
+                      <td className="px-3 py-2 text-foreground-400">
+                        {COMPARISON_METRIC_LABELS[key]}
+                      </td>
+                      <td className="px-3 py-2 text-center font-mono text-foreground-200">
+                        {t.toFixed(3)}
+                      </td>
+                      <td className="px-3 py-2 text-center font-mono text-foreground-500">
+                        {r.toFixed(3)}
+                      </td>
+                      <td className={`px-3 py-2 text-center font-mono ${deltaClass(pct)}`}>
+                        {fmtPct(pct)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="overflow-x-auto rounded border border-background-700">
+            <table className="w-full text-sm">
+              <thead className="bg-background-900">
+                <tr className="border-b border-background-700">
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-foreground-500">
+                    Size
+                  </th>
+                  <th
+                    colSpan={3}
+                    className="border-l border-background-700 px-3 py-2.5 text-center text-xs font-medium text-foreground-500"
+                  >
+                    Cap Height
+                  </th>
+                  <th
+                    colSpan={3}
+                    className="border-l border-background-700 px-3 py-2.5 text-center text-xs font-medium text-foreground-500"
+                  >
+                    X-height
+                  </th>
+                </tr>
+                <tr className="border-b border-background-700 bg-background-950/50">
+                  <th />
+                  <th className="border-l border-background-700 px-2 py-1.5 text-center text-[10px] text-foreground-600">
+                    {targetName.slice(0, 5)}
+                  </th>
+                  <th className="px-2 py-1.5 text-center text-[10px] text-foreground-600">
+                    {referenceName}
+                  </th>
+                  <th className="px-2 py-1.5 text-center text-[10px] text-foreground-600">Δ%</th>
+                  <th className="border-l border-background-700 px-2 py-1.5 text-center text-[10px] text-foreground-600">
+                    {targetName.slice(0, 5)}
+                  </th>
+                  <th className="px-2 py-1.5 text-center text-[10px] text-foreground-600">
+                    {referenceName}
+                  </th>
+                  <th className="px-2 py-1.5 text-center text-[10px] text-foreground-600">Δ%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, i) => {
+                  const capPct = deltaPct(row.target.capHeight, row.reference.capHeight);
+                  const xPct = deltaPct(row.target.xHeight, row.reference.xHeight);
+                  return (
+                    <tr
+                      key={row.pointSize}
+                      className={`border-b border-background-800 ${i % 2 !== 0 ? "bg-background-900/30" : ""}`}
+                    >
+                      <td className="px-3 py-2 font-mono text-foreground-400">
+                        {row.pointSize}px
+                      </td>
+                      <td className="border-l border-background-800 px-2 py-2 text-center font-mono text-foreground-200">
+                        {row.target.capHeight.toFixed(3)}
+                      </td>
+                      <td className="px-2 py-2 text-center font-mono text-foreground-500">
+                        {row.reference.capHeight.toFixed(3)}
+                      </td>
+                      <td className={`px-2 py-2 text-center font-mono ${deltaClass(capPct)}`}>
+                        {fmtPct(capPct)}
+                      </td>
+                      <td className="border-l border-background-800 px-2 py-2 text-center font-mono text-foreground-200">
+                        {row.target.xHeight.toFixed(3)}
+                      </td>
+                      <td className="px-2 py-2 text-center font-mono text-foreground-500">
+                        {row.reference.xHeight.toFixed(3)}
+                      </td>
+                      <td className={`px-2 py-2 text-center font-mono ${deltaClass(xPct)}`}>
+                        {fmtPct(xPct)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function TypographyDevPage() {
   const [selectedBodyFont, setSelectedBodyFont] = useState<string>(defaultBodyFont.name);
   const [selectedHeaderFont, setSelectedHeaderFont] = useState<string>(defaultHeaderFont.name);
@@ -654,7 +926,8 @@ export default function TypographyDevPage() {
     bodyFontWeightScale,
     bodyLetterSpacingScale,
     bodyLineHeight,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
   } = activeBodyTypography;
 
   const updateSelectedBodyTypography = (updates: Partial<PreviewTypographyState>) => {
@@ -762,7 +1035,8 @@ export default function TypographyDevPage() {
       bodyFontWeightScale,
       bodyLetterSpacingScale,
       bodyLineHeight,
-      globalMinFontSizePx,
+      bodyMinFontSizePx,
+      headerMinFontSizePx,
     },
   );
   const bodyConfigSnippet = `{
@@ -913,6 +1187,18 @@ export default function TypographyDevPage() {
               </div>
               <ContextPreview style={tuningStyle} headerStyle={headerTuningStyle} />
             </section>
+
+            {!isKarlaSelected && (
+              <>
+                <Divider size="sm" variant="dashed" className="my-12" />
+                <ComparisonLab
+                  targetName={selectedBodyFont}
+                  targetFamily={bodyFamily}
+                  referenceFamily={KARLA_BODY_FAMILY}
+                  onAlign={updateSelectedBodyTypography}
+                />
+              </>
+            )}
 
             <Divider size="sm" variant="dashed" className="my-12" />
 

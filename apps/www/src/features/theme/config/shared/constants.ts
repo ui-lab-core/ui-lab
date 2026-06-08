@@ -1,39 +1,39 @@
 export const SEMANTIC_HTML_STYLES = `
   h1 {
-    font-size: var(--text-3xl);
+    font-size: var(--header-text-3xl);
     line-height: var(--leading-header);
     font-weight: var(--font-weight-bold);
     letter-spacing: var(--letter-spacing-tight);
   }
 
   h2 {
-    font-size: var(--text-2xl);
+    font-size: var(--header-text-2xl);
     line-height: var(--leading-header);
     font-weight: var(--font-weight-semibold);
     letter-spacing: var(--letter-spacing-tight);
   }
 
   h3 {
-    font-size: var(--text-xl);
+    font-size: var(--header-text-xl);
     line-height: var(--leading-header);
     font-weight: var(--font-weight-semibold);
     letter-spacing: var(--letter-spacing-snug);
   }
 
   h4 {
-    font-size: var(--text-lg);
+    font-size: var(--header-text-lg);
     line-height: var(--leading-header);
     font-weight: var(--font-weight-medium);
   }
 
   h5 {
-    font-size: var(--text-md);
+    font-size: var(--header-text-md);
     line-height: var(--leading-header);
     font-weight: var(--font-weight-medium);
   }
 
   h6 {
-    font-size: var(--text-md);
+    font-size: var(--header-text-md);
     line-height: var(--leading-header);
     font-weight: var(--font-weight-medium);
   }

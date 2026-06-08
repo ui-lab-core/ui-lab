@@ -11,12 +11,11 @@ import {
   FaRulerHorizontal,
   FaArrowsLeftRight,
 } from "react-icons/fa6";
-import { SliderControl } from "./shared-components";
 import { Divider, Select, Slider } from "ui-lab-components";
 import { BODY_FONTS, HEADER_FONTS, MONO_FONTS } from "../../constants/font-config";
 import {
-  MAX_GLOBAL_MIN_FONT_SIZE_PX,
-  MIN_GLOBAL_MIN_FONT_SIZE_PX,
+  MAX_MIN_FONT_SIZE_PX,
+  MIN_MIN_FONT_SIZE_PX,
   TYPOGRAPHY_FONT_SIZE_SCALE_MAX,
   TYPOGRAPHY_FONT_SIZE_SCALE_MIN,
   TYPOGRAPHY_LINE_HEIGHT_MAX,
@@ -110,7 +109,7 @@ const TypographySection = memo(
           </div>
 
           <div
-            className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[560px] opacity-100" : "max-h-0 opacity-0"}`}
+            className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[660px] opacity-100" : "max-h-0 opacity-0"}`}
           >
             <div className="px-3 pb-4 pt-0">
               <div className="h-px w-full bg-background-700/30 mb-4" />
@@ -205,7 +204,8 @@ export const TypographyPanel = memo(
       bodyFontWeightScale,
       bodyLetterSpacingScale,
       bodyLineHeight,
-      globalMinFontSizePx,
+      bodyMinFontSizePx,
+      headerMinFontSizePx,
     } = typography;
     const [expandedSection, setExpandedSection] =
       useState<TypographySectionKey | null>(null);
@@ -283,6 +283,16 @@ export const TypographyPanel = memo(
                 unit=""
                 onChange={(lineHeight) => onTypographyChange({ headerLineHeight: lineHeight })}
               />
+              <SliderRow
+                icon={<FaTextWidth size={13} />}
+                label="Minimum Font Size"
+                value={headerMinFontSizePx}
+                min={MIN_MIN_FONT_SIZE_PX}
+                max={MAX_MIN_FONT_SIZE_PX}
+                step={0.05}
+                unit="px"
+                onChange={(size) => onTypographyChange({ headerMinFontSizePx: size })}
+              />
             </div>
           </TypographySection>
 
@@ -356,6 +366,16 @@ export const TypographyPanel = memo(
                 unit=""
                 onChange={(lineHeight) => onTypographyChange({ bodyLineHeight: lineHeight })}
               />
+              <SliderRow
+                icon={<FaTextWidth size={13} />}
+                label="Minimum Font Size"
+                value={bodyMinFontSizePx}
+                min={MIN_MIN_FONT_SIZE_PX}
+                max={MAX_MIN_FONT_SIZE_PX}
+                step={0.05}
+                unit="px"
+                onChange={(size) => onTypographyChange({ bodyMinFontSizePx: size })}
+              />
             </div>
           </TypographySection>
         </div>
@@ -382,16 +402,6 @@ export const TypographyPanel = memo(
               </Select.Content>
             </Select>
           </div>
-
-          <SliderControl
-            label="Global Min Font Size"
-            value={globalMinFontSizePx}
-            min={MIN_GLOBAL_MIN_FONT_SIZE_PX}
-            max={MAX_GLOBAL_MIN_FONT_SIZE_PX}
-            step={0.05}
-            unit="px"
-            onChange={(size) => onTypographyChange({ globalMinFontSizePx: size })}
-          />
         </div>
       </div>
     );

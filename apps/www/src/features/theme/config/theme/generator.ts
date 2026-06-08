@@ -25,6 +25,13 @@ interface ThemeFontSelections {
   monoFont: FontKey
 }
 
+export interface ThemeTypographyOptions {
+  bodyMinFontSizePx?: number
+  headerMinFontSizePx?: number
+  headerTypeSizeRatio?: number
+  headerFontSizeScale?: number
+}
+
 function renderCssVariables(variables: Record<string, string>): string {
   return Object.entries(variables)
     .map(([name, value]) => `  ${name}: ${value};`)
@@ -121,13 +128,27 @@ export function generateThemeSetupFiles(
   spacingScale?: number,
   maxWidthScale?: number,
   fonts?: ThemeFontSelections,
-  globalMinFontSizePx?: number,
+  typographyOptions?: number | ThemeTypographyOptions,
 ): GeneratedThemeSetupFiles {
-  const typographyCSS = generateTypographyCSS(
+  const resolvedTypographyOptions =
+    typeof typographyOptions === "number"
+      ? {
+          bodyMinFontSizePx: typographyOptions,
+          headerMinFontSizePx: typographyOptions,
+        }
+      : (typographyOptions ?? {});
+  const bodyTypographyCSS = generateTypographyCSS(
     typeSizeRatio,
     fontSizeScale,
-    globalMinFontSizePx,
+    resolvedTypographyOptions.bodyMinFontSizePx,
   );
+  const headerTypographyCSS = generateTypographyCSS(
+    resolvedTypographyOptions.headerTypeSizeRatio ?? typeSizeRatio,
+    resolvedTypographyOptions.headerFontSizeScale ?? fontSizeScale,
+    resolvedTypographyOptions.headerMinFontSizePx,
+    "header-text",
+  );
+  const typographyCSS = `${bodyTypographyCSS}\n${headerTypographyCSS}`;
   const leadingCSS = renderCssVariables(
     generateLineHeightCSS(headerLineHeight ?? 1.5, bodyLineHeight ?? 1.3),
   );

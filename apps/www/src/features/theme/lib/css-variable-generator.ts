@@ -23,11 +23,11 @@ function generateTextSizeVars(
   prefix: string,
   typeSizeRatio: number,
   fontSizeScale: number,
-  globalMinFontSizePx: number,
+  minFontSizePx: number,
 ): Record<string, string> {
   // Use new centralized typography generator to ensure consistency with React application layer
   const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
-    globalMinFontSizePx,
+    minFontSizePx,
   });
   const vars: Record<string, string> = {};
 
@@ -50,7 +50,8 @@ function computeTypographyVars(typography: ThemeConfig['typography']): Record<st
     bodyLetterSpacingScale,
     bodyLineHeight,
     headerLetterSpacingScale,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
   } = typography;
 
   const vars: Record<string, string> = {};
@@ -67,7 +68,7 @@ function computeTypographyVars(typography: ThemeConfig['typography']): Record<st
       'text',
       bodyTypeSizeRatio,
       bodyFontSizeScale,
-      globalMinFontSizePx,
+      bodyMinFontSizePx,
     ),
   );
   Object.assign(
@@ -76,7 +77,7 @@ function computeTypographyVars(typography: ThemeConfig['typography']): Record<st
       'header-text',
       headerTypeSizeRatio,
       headerFontSizeScale,
-      globalMinFontSizePx,
+      headerMinFontSizePx,
     ),
   );
 

@@ -41,12 +41,12 @@ export function useThemeConfiguration(config: ThemeConfigurationInput) {
     applyDynamicFontSizeScalesWithRatio(
       typography.bodyTypeSizeRatio,
       typography.bodyFontSizeScale,
-      typography.globalMinFontSizePx,
+      typography.bodyMinFontSizePx,
     );
     applyDynamicHeaderFontSizeScales(
       typography.headerTypeSizeRatio,
       typography.headerFontSizeScale,
-      typography.globalMinFontSizePx,
+      typography.headerMinFontSizePx,
     );
     applyDynamicLineHeightScales(
       typography.headerLineHeight,
@@ -68,7 +68,8 @@ export function useThemeConfiguration(config: ThemeConfigurationInput) {
     typography.headerTypeSizeRatio,
     typography.headerFontSizeScale,
     typography.headerLineHeight,
-    typography.globalMinFontSizePx,
+    typography.bodyMinFontSizePx,
+    typography.headerMinFontSizePx,
     typography.bodyLineHeight,
     typography.bodyLetterSpacingScale,
     typography.headerLetterSpacingScale,

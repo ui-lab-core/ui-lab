@@ -20,7 +20,9 @@ import {
 } from "./typography-constraints";
 import { type FontKey } from "../constants/font-config";
 import {
-  normalizeGlobalMinFontSizePx,
+  DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+  normalizeMinFontSizePx,
   normalizeTypographyLineHeight,
 } from "./typography-config";
 import { getDefaultAppPreferences } from "./default-theme-config";
@@ -72,8 +74,10 @@ interface AppContextType {
   setBodyLetterSpacingScale: (scale: number) => void;
   bodyLineHeight: number;
   setBodyLineHeight: (lineHeight: number) => void;
-  globalMinFontSizePx: number;
-  setGlobalMinFontSizePx: (size: number) => void;
+  bodyMinFontSizePx: number;
+  setBodyMinFontSizePx: (size: number) => void;
+  headerMinFontSizePx: number;
+  setHeaderMinFontSizePx: (size: number) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -104,7 +108,8 @@ interface AppState {
   bodyFontWeightScale: number;
   bodyLetterSpacingScale: number;
   bodyLineHeight: number;
-  globalMinFontSizePx: number;
+  bodyMinFontSizePx: number;
+  headerMinFontSizePx: number;
 }
 
 type PersistedAppPreferences = Omit<
@@ -147,7 +152,8 @@ const initialAppState: AppState = {
   bodyFontWeightScale: defaultPreferences.bodyFontWeightScale,
   bodyLetterSpacingScale: defaultPreferences.bodyLetterSpacingScale,
   bodyLineHeight: defaultPreferences.bodyLineHeight,
-  globalMinFontSizePx: defaultPreferences.globalMinFontSizePx,
+  bodyMinFontSizePx: defaultPreferences.bodyMinFontSizePx,
+  headerMinFontSizePx: defaultPreferences.headerMinFontSizePx,
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -175,8 +181,14 @@ function getPersistedPreferences(
       : undefined,
   };
 
-  const globalMinFontSizePx = normalizeGlobalMinFontSizePx(
-    sourceConfig.typography.globalMinFontSizePx,
+  const legacyMinFontSizePx = sourceConfig.typography.globalMinFontSizePx;
+  const bodyMinFontSizePx = normalizeMinFontSizePx(
+    sourceConfig.typography.bodyMinFontSizePx ?? legacyMinFontSizePx,
+    DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  );
+  const headerMinFontSizePx = normalizeMinFontSizePx(
+    sourceConfig.typography.headerMinFontSizePx ?? legacyMinFontSizePx,
+    DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   );
   const bodyTypeSizeRatio =
     sourceConfig.typography.bodyTypeSizeRatio ??
@@ -184,27 +196,54 @@ function getPersistedPreferences(
   const bodyFontSizeScale =
     sourceConfig.typography.bodyFontSizeScale ??
     defaultPreferences.bodyFontSizeScale;
+  const headerTypeSizeRatio =
+    sourceConfig.typography.headerTypeSizeRatio ??
+    defaultPreferences.headerTypeSizeRatio;
+  const headerFontSizeScale =
+    sourceConfig.typography.headerFontSizeScale ??
+    defaultPreferences.headerFontSizeScale;
 
   let finalBodyTypeSizeRatio = bodyTypeSizeRatio;
   let finalBodyFontSizeScale = bodyFontSizeScale;
+  let finalHeaderTypeSizeRatio = headerTypeSizeRatio;
+  let finalHeaderFontSizeScale = headerFontSizeScale;
 
   if (
     !isValidTypographyConfig(
       bodyTypeSizeRatio,
       bodyFontSizeScale,
-      globalMinFontSizePx,
+      bodyMinFontSizePx,
     )
   ) {
     const clamped = clampTypographyConfig(
       bodyTypeSizeRatio,
       bodyFontSizeScale,
-      globalMinFontSizePx,
+      bodyMinFontSizePx,
     );
     console.warn(
-      `[AppContext] Body typography config violated the ${globalMinFontSizePx}px minimum. Clamped from ratio=${bodyTypeSizeRatio}, scale=${bodyFontSizeScale} to ratio=${clamped.typeSizeRatio.toFixed(3)}, scale=${clamped.fontSizeScale.toFixed(3)}`,
+      `[AppContext] Body typography config violated the ${bodyMinFontSizePx}px minimum. Clamped from ratio=${bodyTypeSizeRatio}, scale=${bodyFontSizeScale} to ratio=${clamped.typeSizeRatio.toFixed(3)}, scale=${clamped.fontSizeScale.toFixed(3)}`,
     );
     finalBodyTypeSizeRatio = clamped.typeSizeRatio;
     finalBodyFontSizeScale = clamped.fontSizeScale;
+  }
+
+  if (
+    !isValidTypographyConfig(
+      headerTypeSizeRatio,
+      headerFontSizeScale,
+      headerMinFontSizePx,
+    )
+  ) {
+    const clamped = clampTypographyConfig(
+      headerTypeSizeRatio,
+      headerFontSizeScale,
+      headerMinFontSizePx,
+    );
+    console.warn(
+      `[AppContext] Header typography config violated the ${headerMinFontSizePx}px minimum. Clamped from ratio=${headerTypeSizeRatio}, scale=${headerFontSizeScale} to ratio=${clamped.typeSizeRatio.toFixed(3)}, scale=${clamped.fontSizeScale.toFixed(3)}`,
+    );
+    finalHeaderTypeSizeRatio = clamped.typeSizeRatio;
+    finalHeaderFontSizeScale = clamped.fontSizeScale;
   }
 
   return {
@@ -221,12 +260,8 @@ function getPersistedPreferences(
       defaultPreferences.selectedHeaderFont) as FontKey,
     selectedMonoFont: (sourceConfig.fonts?.monoFont ??
       defaultPreferences.selectedMonoFont) as FontKey,
-    headerTypeSizeRatio:
-      sourceConfig.typography.headerTypeSizeRatio ??
-      defaultPreferences.headerTypeSizeRatio,
-    headerFontSizeScale:
-      sourceConfig.typography.headerFontSizeScale ??
-      defaultPreferences.headerFontSizeScale,
+    headerTypeSizeRatio: finalHeaderTypeSizeRatio,
+    headerFontSizeScale: finalHeaderFontSizeScale,
     headerFontWeightScale:
       sourceConfig.typography.headerFontWeightScale ??
       defaultPreferences.headerFontWeightScale,
@@ -249,7 +284,8 @@ function getPersistedPreferences(
       sourceConfig.typography.bodyLineHeight,
       defaultPreferences.bodyLineHeight,
     ),
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
   };
 }
 
@@ -275,7 +311,8 @@ function ThemeConfigurationApplier() {
     bodyFontWeightScale,
     bodyLetterSpacingScale,
     bodyLineHeight,
-    globalMinFontSizePx,
+    bodyMinFontSizePx,
+    headerMinFontSizePx,
     radius,
     borderWidth,
     spacingScale,
@@ -296,7 +333,8 @@ function ThemeConfigurationApplier() {
       bodyFontWeightScale,
       bodyLetterSpacingScale,
       bodyLineHeight,
-      globalMinFontSizePx,
+      bodyMinFontSizePx,
+      headerMinFontSizePx,
     },
     layout: { radius, borderWidth, spacingScale },
     fonts: {
@@ -426,9 +464,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       bodyLineHeight: state.bodyLineHeight,
       setBodyLineHeight: (lineHeight) =>
         dispatch({ type: "set", key: "bodyLineHeight", value: lineHeight }),
-      globalMinFontSizePx: state.globalMinFontSizePx,
-      setGlobalMinFontSizePx: (size) =>
-        dispatch({ type: "set", key: "globalMinFontSizePx", value: size }),
+      bodyMinFontSizePx: state.bodyMinFontSizePx,
+      setBodyMinFontSizePx: (size) =>
+        dispatch({ type: "set", key: "bodyMinFontSizePx", value: size }),
+      headerMinFontSizePx: state.headerMinFontSizePx,
+      setHeaderMinFontSizePx: (size) =>
+        dispatch({ type: "set", key: "headerMinFontSizePx", value: size }),
     }),
     [state, dispatch],
   );
