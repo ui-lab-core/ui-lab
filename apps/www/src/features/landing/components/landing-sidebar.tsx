@@ -100,7 +100,7 @@ export function LandingSidebar() {
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
         <div className="flex bg-background-950 flex-col sticky md:sticky top-(--header-height) z-20 h-screen md:h-auto">
-          <div className="z-10">
+          <div className="z-10 ">
             <nav className="py-3 px-2 space-y-1">
               {LANDING_NAV_ITEMS.map((navItem) => {
                 const Icon = navItem.icon;

@@ -39,6 +39,7 @@ const setupUiLabInProjectGuide: GuideMetadata = {
     'The app uses Tailwind v4 or another setup that can import UI Lab CSS.',
     'The agent can edit the app stylesheet entrypoint such as app/globals.css, src/index.css, or src/main.css.',
     'The package manager for the repo is known before writing install commands.',
+    'theme.css must be created (via get_theme_setup) before the stylesheet entrypoint is edited — the import will be broken otherwise.',
   ],
   steps: [
     {
@@ -52,25 +53,35 @@ const setupUiLabInProjectGuide: GuideMetadata = {
       ],
     },
     {
-      title: 'Install the base package and a theme package',
-      goal: 'Add the minimum packages required for styled components.',
+      title: 'Install the base package',
+      goal: 'Add the minimum package required for styled components.',
       instructions: [
-        'Install ui-lab-components and ui-lab-theme-onyx unless the repo already ships a custom UI Lab token layer.',
+        'Install ui-lab-components. Do not install ui-lab-theme-onyx — the app uses an app-owned theme.css as the token layer instead.',
         'Match the repo package manager instead of introducing a different one.',
       ],
-      code: `pnpm add ui-lab-components ui-lab-theme-onyx`,
+      code: `pnpm add ui-lab-components`,
       language: 'bash',
+    },
+    {
+      title: 'Create the app-owned theme.css token file',
+      goal: 'Provide the design token layer that UI Lab components depend on for color.',
+      instructions: [
+        'Call get_theme_setup to get the canonical theme.css content and creation instructions.',
+        'Create the file at app/theme.css (Next.js) or src/theme.css (Vite) using the code returned by get_theme_setup.',
+        'Do not skip this step — if theme.css is missing, components will render without tokens and the site will look broken.',
+      ],
+      relatedTools: ['get_theme_setup'],
     },
     {
       title: 'Import styles in the correct order',
       goal: 'Ensure tokens are defined before UI Lab component styles consume them.',
       instructions: [
         'Edit the app stylesheet entrypoint rather than scattering imports across components.',
-        'Keep the order exactly: tailwind, token/theme layer, then ui-lab-components styles.',
-        'If the app already owns its own token file, import that file instead of ui-lab-theme-onyx/styles.css.',
+        'Keep the order exactly: tailwind, theme.css, then ui-lab-components styles.',
+        'Do not import ui-lab-theme-onyx/styles.css — theme.css replaces it as the token layer.',
       ],
       code: `@import "tailwindcss";
-@import "ui-lab-theme-onyx/styles.css";
+@import "./theme.css";
 @import "ui-lab-components/styles.css";`,
       language: 'css',
       path: 'app/globals.css',
@@ -114,12 +125,13 @@ export default function Home() {
     },
   ],
   validation: [
+    'theme.css exists in the project and was created using the content from get_theme_setup.',
     'A page renders at least one UI Lab component with non-default visual styling.',
-    'The stylesheet import order is token layer before ui-lab-components/styles.css.',
-    'There is no duplicate theme import path unless the repo intentionally supports multiple themes.',
+    'The stylesheet import order is: tailwindcss → theme.css → ui-lab-components/styles.css.',
+    'ui-lab-theme-onyx is not installed or imported — theme.css replaces it.',
     'The chosen install command matches the repo package manager.',
   ],
-  relatedTools: ['search_components', 'get_component', 'get_theme_setup'],
+  relatedTools: ['search_components', 'get_component', 'get_theme_setup', 'search_guides', 'get_guide'],
   relatedResources: ['component://button', 'component://card', 'component://input'],
   relatedGuides: ['theme-switching-nextjs', 'translate-existing-ui-to-ui-lab'],
   examplePrompts: [

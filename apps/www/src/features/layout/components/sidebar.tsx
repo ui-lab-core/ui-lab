@@ -19,7 +19,7 @@ import { ElementsList } from '@/features/packages/components/sidebar-content';
 import { RiExpandUpDownFill } from "react-icons/ri";
 
 type FrameworkOption = {
-  value: 'react' | 'svelte' | 'astro' | 'flutter';
+  label: 'react' | 'svelte' | 'astro' | 'flutter';
   label: string;
   icon: ReactNode;
 };
@@ -29,17 +29,17 @@ type ElementsNavType = 'packages' | 'sections' | 'starters' | 'patterns';
 const FRAMEWORK_STORAGE_KEY = 'ui-lab-selected-framework';
 const FRAMEWORK_OPTIONS: FrameworkOption[] = [
   {
-    value: 'react',
+    label: 'react',
     label: 'React',
     icon: <SiReact className="aspect-square min-w-5 h-5 text-foreground-300" />,
   },
   {
-    value: 'flutter',
+    label: 'flutter',
     label: 'Flutter',
     icon: <SiFlutter className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
   },
   {
-    value: 'svelte',
+    label: 'svelte',
     label: 'Svelte',
     icon: <SiSvelte className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
   },
@@ -165,7 +165,7 @@ export function Sidebar({
           {false && <div className="px-2 pt-4">
             <Select
               selectedKey={selectedFramework}
-              valueLabel={selectedFrameworkOption.label}
+              label={selectedFrameworkOption.label}
               onSelectionChange={handleFrameworkChange}
             >
               <Select.Trigger
@@ -182,7 +182,7 @@ export function Sidebar({
                   {FRAMEWORK_OPTIONS.map((option) => (
                     <Select.Item
                       key={option.value}
-                      value={option.value}
+                      label={option.value}
                       textValue={option.label}
                       icon={option.icon}
                       styles={{ iconWrapper: "w-6 h-6" }}

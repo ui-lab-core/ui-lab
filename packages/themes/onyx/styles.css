@@ -43,10 +43,17 @@
     --background-border: var(--background-600);
   }
 
-  .button.icon { @apply p-[5px] aspect-square inline-flex items-center justify-center }
   .button.sm { @apply px-2.5 py-1.5 text-xs font-semibold }
   .button.md { @apply px-3 py-1.5 }
   .button.lg { @apply px-10 py-2 }
+
+  .button.icon { 
+    @apply aspect-square; 
+  }
+
+  .button.icon.sm { @apply p-1.5 }
+  .button.icon.md { @apply p-1.5 }
+  .button.icon.lg { @apply p-2 }
 
   .gallery.item,
   [data-focus-surface="true"] {

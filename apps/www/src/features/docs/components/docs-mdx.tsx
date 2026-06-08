@@ -12,6 +12,7 @@ import { Banner, BannerTitle, BannerBody } from './mdx/client-banner'
 import { Anchor } from './mdx/client-anchor'
 import { Divider } from './mdx/client-divider'
 import { MermaidDiagramWrapper as MermaidDiagram } from './mdx/mermaid-diagram-wrapper'
+import { SkillFiles } from './mdx/skill-files'
 import Icon from '@/shared/components/Icon'
 import { highlightCode } from '../lib/shiki-server'
 import rehypeSlug from 'rehype-slug'
@@ -57,6 +58,7 @@ const components = {
   Banner: Object.assign(Banner, { Title: BannerTitle, Body: BannerBody }),
   Divider,
   MermaidDiagram,
+  SkillFiles,
   pre: async ({ children }: any) => {
     if (typeof children === 'object' && children !== null && 'props' in children) {
       const code = children.props?.children as string || ''

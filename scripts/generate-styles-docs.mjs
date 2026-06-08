@@ -4,10 +4,11 @@ import path from 'path';
 import postcss from 'postcss';
 import ts from 'typescript'; // Import TypeScript
 
-const UI_COMPONENTS_PATH = 'packages/@ui/src/components';
-const REGISTRY_PATH = 'packages/registry/src';
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const UI_COMPONENTS_PATH = path.join(ROOT, 'packages/@ui/src/components');
+const REGISTRY_PATH = path.join(ROOT, 'packages/registry/src');
 const OUTPUT_FILE = path.join(REGISTRY_PATH, 'generated-styles.ts');
-const REGISTRY_DIST_PATH = 'packages/registry/dist';
+const REGISTRY_DIST_PATH = path.join(ROOT, 'packages/registry/dist');
 const OUTPUT_JSON_FILE = path.join(REGISTRY_DIST_PATH, 'generated-styles.json');
 
 // Helper to extract referenced variables and default values from a CSS value string
