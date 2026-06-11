@@ -14,6 +14,7 @@ import { Scroll } from "../Scroll"
 import { Input } from "../Input"
 import { List } from "../List"
 import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared"
+import { useScrollLock } from "../../hooks/useScrollLock"
 
 export interface SelectContentStyleSlots {
   root?: StyleValue;
@@ -176,6 +177,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       isOpen,
       mouseMoveDetectedRef,
     })
+
+    useScrollLock(isOpen, contentElement)
 
     React.useEffect(() => {
       if (isOpen) {

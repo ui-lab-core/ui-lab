@@ -10,6 +10,7 @@ import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { X } from "lucide-react";
+import { useScrollLock } from "../../hooks/useScrollLock";
 import css from "./Modal.module.css";
 
 const useModalKeyboard = (
@@ -125,6 +126,11 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
     ref
   ) => {
     const modalRef = React.useRef<HTMLDivElement>(null);
+    const [panelElement, setPanelElement] = React.useState<HTMLDivElement | null>(null);
+    const setPanelRef = React.useCallback((el: HTMLDivElement | null) => {
+      modalRef.current = el;
+      setPanelElement(el);
+    }, []);
     const [mounted, setMounted] = React.useState(false);
     const [isClosePressed, setIsClosePressed] = React.useState(false);
     const [isCloseHovered, setIsCloseHovered] = React.useState(false);
@@ -161,6 +167,8 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
     const { focusProps: modalFocusProps, isFocused: isModalFocused, isFocusVisible: isModalFocusVisible } = useFocusRing();
 
     const handleClose = () => state.close();
+
+    useScrollLock(state.isOpen, panelElement);
 
     if (!mounted || !state.isOpen) return null;
 
@@ -266,7 +274,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
         <div
           {...asElementProps<"div">(mergeProps(dialogProps, modalFocusProps))}
           aria-modal="true"
-          ref={modalRef}
+          ref={setPanelRef}
           className={cn(
             "panel",
             css.panel,

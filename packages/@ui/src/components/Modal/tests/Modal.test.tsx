@@ -61,3 +61,23 @@ describe('Modal focus management', () => {
     expect(bodyContent?.nextElementSibling).toBe(footer)
   })
 })
+
+describe('Modal scroll lock', () => {
+  it('locks body scroll while open and restores it on close', () => {
+    const { rerender } = render(
+      <Modal isOpen title="Test">
+        <div>Content</div>
+      </Modal>
+    )
+
+    expect(document.documentElement.style.overflow).toBe('hidden')
+
+    rerender(
+      <Modal isOpen={false} title="Test">
+        <div>Content</div>
+      </Modal>
+    )
+
+    expect(document.documentElement.style.overflow).toBe('')
+  })
+})
