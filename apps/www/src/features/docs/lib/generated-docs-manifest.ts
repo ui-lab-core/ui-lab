@@ -614,23 +614,23 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
-            "id": "1-trigger",
-            "title": "1. Trigger",
+            "id": "trigger",
+            "title": "Trigger",
             "level": 2
           },
           {
-            "id": "2-route",
-            "title": "2. Route",
+            "id": "route",
+            "title": "Route",
             "level": 2
           },
           {
-            "id": "3-load-context",
-            "title": "3. Load context",
+            "id": "load-context",
+            "title": "Load context",
             "level": 2
           },
           {
-            "id": "4-query-the-registry",
-            "title": "4. Query the registry",
+            "id": "query-the-registry",
+            "title": "Query the registry",
             "level": 2
           },
           {

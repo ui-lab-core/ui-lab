@@ -1,7 +1,7 @@
 import type { BundledTheme } from "shiki";
 
 export type CodeThemeOptionId =
-  | "xeno"
+  | "adaptive"
   | "github"
   | "one-dark"
   | "vitesse"
@@ -21,12 +21,12 @@ export interface CodeThemeOption {
   } | null;
 }
 
-export const DEFAULT_CODE_THEME: CodeThemeOptionId = "xeno";
+export const DEFAULT_CODE_THEME: CodeThemeOptionId = "adaptive";
 
 export const CODE_THEME_OPTIONS: CodeThemeOption[] = [
   {
-    id: "xeno",
-    label: "Xeno",
+    id: "adaptive",
+    label: "Adaptive",
     themes: null,
   },
   {

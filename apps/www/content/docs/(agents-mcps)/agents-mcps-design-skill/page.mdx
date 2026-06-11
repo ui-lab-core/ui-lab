@@ -14,7 +14,7 @@ Install the skill by placing the `skills/ui-lab/` directory in your project root
 
 <Timeline>
 
-## 1. Trigger
+## Trigger
 
 Type `/ui-lab` followed by your request in Claude Code. The skill activates whenever you're working on UI design — auditing existing components, ideating new layouts, or migrating to UI Lab.
 
@@ -22,15 +22,15 @@ Type `/ui-lab` followed by your request in Claude Code. The skill activates when
 /ui-lab audit the navbar component in src/components/Navbar.tsx
 ```
 
-## 2. Route
+## Route
 
 Claude reads `SKILL.md` (120 lines) and matches your intent to a sub-agent. Routing is keyword-driven: "audit", "what's wrong", "violations" → audit agent; "what should this have", "what am I missing" → ideate agent; "overhaul", "migrate", "swap to UI Lab" → overhaul agent.
 
-## 3. Load context
+## Load context
 
 The routed sub-agent reads its workflow file and any reference documents it needs. An audit loads ~950 lines across 5 files before touching any code.
 
-## 4. Query the registry
+## Query the registry
 
 The agent makes targeted MCP calls to validate components and discover patterns live:
 
