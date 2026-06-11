@@ -14,6 +14,8 @@
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
   --radius-full: 9999px;
+
+  --background-1000: oklch(from var(--background-950) calc(l * 1.5 - 0.125) c h / 0.5);
 }
 
 @theme {
@@ -606,7 +608,10 @@ pre.shiki .indent::before {
   pointer-events: none;
 }
 
-body {
+html { background: var(--background-950); }
+body { background: var(--background-1000); }
+
+article {
   max-width: var(--page-width);
   margin: 0 auto;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useReducer } from "react";
+import { Fragment, useMemo, useReducer } from "react";
 import { List, Group, Select, Badge, Divider, Button } from "ui-lab-components";
 import { FaEnvelope, FaMagnifyingGlass, FaGear, FaUsers, FaArrowTurnUp } from "react-icons/fa6";
 
@@ -130,7 +130,7 @@ export function MemberRolePanel() {
         {filtered.map((member, i) => {
           const originalIndex = members.indexOf(member);
           return (
-            <div key={member.email} className="group">
+            <Fragment key={member.email}>
               <List.Item value={member.email} className="px-4 py-3">
                 <List.Media>
                   <div
@@ -165,7 +165,7 @@ export function MemberRolePanel() {
                 </Select>
               </List.Item>
               {i < filtered.length - 1 && <List.Divider spacing="none" />}
-            </div>
+            </Fragment>
           );
         })}
 

@@ -15,8 +15,8 @@ const SessionConfigPanel = dynamic(
 
 export function Showcase() {
   return (
-    <div className="bg-background-950 min-h-250">
-      <Grid className="rounded-t-md bg-background-950 border-background-700" columns={{ sm: 1, md: 2 }} rows="masonry" alignItems="start" gap="md">
+    <div className="min-h-250">
+      <Grid className="rounded-t-md border-background-700" columns={{ sm: 1, md: 2 }} rows="masonry" alignItems="start" gap="md">
         <IntegrationsPanel />
         <AIComposer />
         <FileBrowser />

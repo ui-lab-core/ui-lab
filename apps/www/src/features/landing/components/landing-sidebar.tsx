@@ -92,14 +92,14 @@ export function LandingSidebar() {
       )}
 
       <aside className={cn(
-        'w-64 flex flex-col lg:-mt-4',
+        'w-68 flex flex-col lg:-mt-4',
         'fixed lg:static left-0 top-0 h-screen lg:h-auto border-r border-background-700/40',
         'z-[55] lg:z-20',
         'transition-transform duration-300 ease-out',
         'lg:transition-none lg:transform-none',
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
-        <div className="flex bg-background-950 flex-col sticky md:sticky top-(--header-height) z-20 h-screen md:h-auto">
+        <div className="flex flex-col sticky md:sticky top-(--header-height) z-20 h-screen md:h-auto">
           <div className="z-10 ">
             <nav className="py-3 px-2 space-y-1">
               {LANDING_NAV_ITEMS.map((navItem) => {

@@ -30,11 +30,11 @@ export function NodeSection({
             aria-hidden="true"
           />
           <div
-            className="absolute top-[-7px] -left-px w-[16px] h-[16px] rounded-[5px] border border-background-700 bg-background-950 -translate-x-1/2"
+            className="absolute top-[-7px] -left-px w-[16px] h-[16px] rounded-[5px] border border-background-700 -translate-x-1/2"
             aria-hidden="true"
           />
           <div
-            className="absolute top-[-7px] -right-px w-[17px] h-[16px] rounded-[5px] border border-background-700 bg-background-950 translate-x-1/2"
+            className="absolute top-[-7px] -right-px w-[17px] h-[16px] rounded-[5px] border border-background-700 translate-x-1/2"
             aria-hidden="true"
           />
         </>

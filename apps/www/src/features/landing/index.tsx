@@ -11,7 +11,7 @@ import {
   FaArrowRight,
   FaChevronRight,
 } from "react-icons/fa6";
-import { Button, Input } from "ui-lab-components";
+import { Button } from "ui-lab-components";
 
 function HeroSection() {
   return (
@@ -20,24 +20,26 @@ function HeroSection() {
         <div
           className="grid-paper relative h-full flex flex-col justify-between md:justify-center">
 
-          <div className="flex items-center text-center flex-col pt-8 md:pt-0">
-            <h1 className="isolate mb-2 text-xl max-w-[25ch] sm:max-w-[38ch] text-foreground-200">
-              Beautiful Software Built for Everyone.
-            </h1>
-            <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch] px-4">
-              Accessible, production-ready React components with intelligent
-              metadata that enable AI to generate perfectly consistent interfaces.
-            </p>
-
-            <div className="w-90 flex gap-2 mt-6 mb-6 md:mt-8 md:mb-0">
-              <Button size="sm" variant="primary" href="/docs" >
-                Documentation
-              </Button>
-              <Button
-                variant="secondary" icon={{ right: <FaChevronRight className="text-foreground-300" /> }} styles="w-full" size="sm" href="/components">
-                View Components
-              </Button>
+          <div className="flex items-center text-left flex-col pt-8 md:pt-0">
+            <div>
+              <h1 className="isolate mb-2 text-xl max-w-[25ch] sm:max-w-[28ch] text-foreground-200">
+                Give your agents better design taste, ship beautiful interfaces.
+              </h1>
+              <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch]">
+                Accessible, production-ready React components with intelligent
+                metadata that enable AI to generate perfectly consistent interfaces.
+              </p>
+              <div className="w-90 flex gap-2 mt-6 mb-6 md:mt-8 md:mb-0">
+                <Button size="sm" variant="primary" href="/docs" >
+                  Documentation
+                </Button>
+                <Button
+                  variant="secondary" icon={{ right: <FaChevronRight className="text-foreground-300" /> }} styles="w-full" size="sm" href="/components">
+                  View Components
+                </Button>
+              </div>
             </div>
+
           </div>
           <div className="flex flex-col-reverse sm:flex-row gap-4 sm:gap-6 w-full md:absolute md:bottom-0 md:left-0">
             <div className="hidden p-3  text-foreground-400 flex gap-4 sm:gap-0 sm:space-x-[28px] w-full">
@@ -53,7 +55,7 @@ function HeroSection() {
             </div>
 
             <div className="hidden flex gap-2 ml-6">
-              <span className="flex h-[32px] font-medium items-center overflow-hidden gap-[9px] bg-background-950 border border-background-700 rounded-[8px] text-foreground-300 text-sm pl-[3px]">
+              <span className="flex h-[32px] font-medium items-center overflow-hidden gap-[9px] border border-background-700 rounded-[8px] text-foreground-300 text-sm pl-[3px]">
                 <div className="flex p-1.5 text-foreground-400 rounded-[5px] border-background-700">
                   <FaRocket size={13} />
                 </div>
@@ -71,7 +73,7 @@ function HeroSection() {
 
           <div
             className="-z-1 pointer-events-none absolute inset-x-0 top-0 h-50"
-            style={{ boxShadow: "inset 0 50px 50px 20px var(--color-background-950)" }}
+            style={{ boxShadow: "inset 0 50px 50px 20px var(--background-1000)" }}
           />
         </div>
       </div>

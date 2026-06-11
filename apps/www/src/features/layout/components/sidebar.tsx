@@ -137,7 +137,7 @@ export function Sidebar({
     window.localStorage.setItem(FRAMEWORK_STORAGE_KEY, value);
   };
 
-  const sidebarWidth = isElementsOrSectionsOrStarters ? 'w-74 md:w-62 lg:w-48 xl:w-58' : 'w-74 md:w-58 lg:w-44 xl:w-58';
+  const sidebarWidth = isElementsOrSectionsOrStarters ? 'w-78 md:w-66 lg:w-52 xl:w-62' : 'w-76 md:w-60 lg:w-46 xl:w-62';
 
   return (
     <>
@@ -161,7 +161,7 @@ export function Sidebar({
         'lg:transition-none lg:transform-none',
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
-        <div className="flex border-r bg-background-950 border-background-700/40 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
+        <div className="flex border-r border-background-700/40 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
           {false && <div className="px-2 pt-4">
             <Select
               selectedKey={selectedFramework}
@@ -217,7 +217,7 @@ export function Sidebar({
                       {Icon && <div
                         className={cn(
                           '-ml-4 w-10 rounded-sm flex items-center justify-center',
-                          isActive ? 'bg-transparent text-foreground-100' : 'text-foreground-400'
+                          isActive ? 'bg-transparent text-foreground-300' : 'text-foreground-400 opacity-80'
                         )}
                       >
                         <Icon className="w-5 h-5" />

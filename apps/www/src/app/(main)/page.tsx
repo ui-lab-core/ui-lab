@@ -13,12 +13,12 @@ export const metadata: Metadata = buildMetadata({
 export default function Home() {
   return (
     <>
-      <div className="w-full pt-16 flex flex-col md:flex-row">
+      <article className="w-full pt-16 flex flex-col md:flex-row">
         <Toaster />
         <LandingSidebar />
         <main className="flex-1 h-full border-r border-background-700/40 w-full flex flex-col items-center md:overflow-x-hidden">
 
-          <section className="w-full border-t-0 relative isolate after:content-[''] bg-background-950 ml-auto">
+          <section className="w-full border-t-0 relative isolate after:content-[''] ml-auto">
             <div className="grid mt-[-2px] grid-cols-[1fr] grid-rows-[424px]">
               <HeroSection />
             </div>
@@ -27,11 +27,11 @@ export default function Home() {
             <div className="hidden bg-background-500">
               <div
                 className="z-99 pointer-events-none absolute inset-x-0 bottom-50 h-200"
-                style={{ boxShadow: "inset 0 -100px 100px 20px var(--color-background-950)" }}
+                style={{ boxShadow: "inset 0 -100px 100px 20px var(--background-1000)" }}
               >
               </div>
               <div
-                className="z-99 bg-background-950 pointer-events-none absolute inset-x-0 bottom-0 h-50"
+                className="z-99 pointer-events-none absolute inset-x-0 bottom-0 h-50"
               >
               </div>
             </div>
@@ -47,7 +47,7 @@ export default function Home() {
           </div>
 
         </main>
-      </div>
+      </article>
       <Footer />
     </>
   );
