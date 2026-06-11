@@ -1,5 +1,13 @@
 # ui-lab-registry
 
+## 0.3.49
+
+### Patch Changes
+
+- f4e0226: Landing page redesign, sidebar layout improvements, improved scroll lock behavior in Modal and Select, typography metrics API, and font configuration overhaul.
+- Updated dependencies [f4e0226]
+  - ui-lab-components@0.3.49
+
 ## 0.3.48
 
 ### Patch Changes

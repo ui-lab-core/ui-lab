@@ -101,102 +101,6 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
       }
     ]
   },
-  "tabs": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .tabs {\n    @apply flex w-full flex-col;\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: row;\n    }\n  }\n\n  .list {\n    @apply relative flex w-full flex-row items-center gap-3 py-1;\n    border-radius: var(--radius-sm);\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: column;\n      width: fit-content;\n      min-width: 0;\n      height: auto;\n      align-self: flex-start;\n    }\n\n    &[data-variant=\"underline\"] {\n      background-color: transparent;\n      border-radius: 0;\n      padding: 0 0 4px;\n    }\n\n    &[data-variant=\"underline\"][data-orientation=\"vertical\"] {\n      border-bottom: none;\n      border-left: var(--border-width-base) solid var(--border);\n      align-items: stretch;\n      padding: 0 0 0 4px;\n    }\n  }\n\n  .indicator {\n    @apply absolute;\n    background-color: var(--background);\n    box-sizing: border-box;\n    border-radius: var(--radius-sm);\n    z-index: 0;\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    pointer-events: none;\n  }\n\n  .indicator-fallback {\n    z-index: -1;\n  }\n\n  .indicator-underline {\n    border-radius: 0;\n  }\n\n  .trigger {\n    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;\n    height: auto;\n    background-color: var(--background);\n    border: none;\n    color: var(--foreground);\n    outline: none;\n    box-shadow: none;\n    transition:\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n\n    &[data-selected=\"true\"] {\n      cursor: pointer;\n    }\n\n    &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      .list[data-variant=\"underline\"] & {\n        border-bottom-color: var(--underline-border);\n      }\n\n      .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n        border-bottom-color: transparent;\n        border-left-color: var(--underline-border);\n      }\n    }\n\n    &:focus,\n    &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    &[data-disabled=\"true\"] {\n      --disabled-opacity: 0.5;\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n\n    .list[data-variant=\"underline\"] & {\n      background-color: var(--background);\n      background-clip: padding-box;\n      border-radius: var(--radius-sm);\n      border-bottom: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"] &:focus,\n    .list[data-variant=\"underline\"] &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n      border-bottom: none;\n      border-left: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      border-left-color: var(--underline-border);\n      border-bottom: none;\n    }\n  }\n\n  .icon {\n    @apply flex h-4 w-4 shrink-0 items-center justify-center;\n  }\n\n  .content {\n    @apply w-full p-0 outline-none;\n    flex: 1;\n    padding-top: 1rem;\n\n    &[data-orientation=\"vertical\"] {\n      flex: 1;\n      width: 100%;\n    }\n\n    &:focus-visible {\n      outline: 2px solid var(--focus-visible);\n      outline-offset: 2px;\n    }\n  }\n\n  @media (max-width: 640px) {\n    .list {\n      padding: 0.125rem;\n\n      &[data-variant=\"underline\"] {\n        padding: 0 0 4px;\n      }\n    }\n\n    .trigger {\n      @apply px-1 py-1;\n      .list[data-variant=\"underline\"] & {\n        margin: 0.5rem 0.75rem;\n      }\n    }\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "indicator"
-      },
-      {
-        "name": "icon.left"
-      },
-      {
-        "name": "icon.right"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--hover-transition-duration",
-        "value": "var(--hover-transition-enter-duration, 0ms)",
-        "defaultValue": "0ms",
-        "referencedVars": [
-          "--hover-transition-enter-duration"
-        ],
-        "variant": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])"
-      },
-      {
-        "name": "--disabled-opacity",
-        "value": "0.5",
-        "defaultValue": null,
-        "referencedVars": [],
-        "variant": ".trigger[data-disabled=\"true\"]"
-      }
-    ]
-  },
-  "table": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .root {\n    @apply w-full;\n  }\n\n  .container {\n    @apply w-full overflow-x-auto rounded-sm;\n    border: var(--border-width-base) solid var(--border, var(--background-border));\n    background-color: var(--container-background, var(--background));\n  }\n\n  .container {\n    display: block;\n    max-width: none;\n  }\n\n  .table {\n    @apply w-full;\n    display: table;\n    border-collapse: collapse;\n    min-width: max-content;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    font-size: var(--text-xs);\n  }\n\n  .header {\n    display: table-header-group;\n    background-color: var(--background);\n  }\n\n  .body {\n    display: table-row-group;\n    background-color: var(--background);\n  }\n\n  .headerRow {\n    display: table-row;\n    background-color: var(--background);\n  }\n\n  .headerCell {\n    @apply px-4 py-3 text-left;\n    display: table-cell;\n    background-color: var(--background);\n    color: var(--foreground);\n    font-weight: var(--header-font-weight, var(--font-weight-semibold));\n    white-space: nowrap;\n    border-bottom: var(--border-width-base) solid var(--border, var(--background-border));\n  }\n\n  .headerCell:first-child {\n    border-top-left-radius: var(--radius-xs);\n  }\n\n  .headerCell:last-child {\n    border-top-right-radius: var(--radius-xs);\n  }\n\n  .row {\n    display: table-row;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row[data-interactive=\"true\"] {\n    @apply cursor-pointer;\n  }\n\n  .row:hover:not([data-disabled=\"true\"]) .cell {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .row[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity, 0.5);\n  }\n\n  .row:focus-visible {\n    outline: 2px solid var(--focus-ring);\n    outline-offset: -2px;\n  }\n\n  .interactive {\n    @apply cursor-pointer;\n  }\n\n  .cell {\n    @apply px-4 py-3 align-middle;\n    display: table-cell;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border-bottom: var(--border-width-base) solid var(--border, var(--background-border));\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row:last-child .cell {\n    border-bottom: none;\n  }\n\n  .row:last-child .cell:first-child {\n    border-bottom-left-radius: var(--radius-xs);\n  }\n\n  .row:last-child .cell:last-child {\n    border-bottom-right-radius: var(--radius-xs);\n  }\n\n  .emptyRow {\n    border-bottom: none;\n  }\n\n  .emptyRow {\n    display: table-row;\n  }\n\n  .emptyState {\n    @apply px-4 py-8 text-center;\n    background-color: var(--background);\n    color: var(--foreground);\n  }\n\n  .emptyState {\n    display: table-cell;\n  }\n\n  .filterBar {\n    @apply mb-4 rounded-xs border p-4;\n    border: var(--border-width-base) solid var(--background-border);\n    background-color: var(--background);\n  }\n\n  .filterBar {\n    display: block;\n  }\n\n  .filterGrid {\n    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;\n    background-color: var(--background);\n  }\n\n  .filterGrid {\n    display: grid;\n  }\n\n  .filterField {\n    @apply min-w-0;\n  }\n\n  .filterLabel {\n    @apply mb-2 block;\n    color: var(--foreground);\n    font-size: var(--filter-label-font-size, var(--text-xs));\n    font-weight: var(--filter-label-font-weight, var(--font-weight-medium));\n  }\n\n  .filterLabel {\n    display: block;\n  }\n\n  .filterInput {\n    @apply w-full;\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "container"
-      },
-      {
-        "name": "filterBar"
-      },
-      {
-        "name": "filterGrid"
-      },
-      {
-        "name": "filterLabel"
-      },
-      {
-        "name": "filterInput"
-      },
-      {
-        "name": "table"
-      },
-      {
-        "name": "header"
-      },
-      {
-        "name": "body"
-      },
-      {
-        "name": "headerRow"
-      },
-      {
-        "name": "headerCell"
-      },
-      {
-        "name": "row"
-      },
-      {
-        "name": "cell"
-      },
-      {
-        "name": "emptyRow"
-      },
-      {
-        "name": "emptyState"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--hover-transition-duration",
-        "value": "var(--hover-transition-enter-duration, 0ms)",
-        "defaultValue": "0ms",
-        "referencedVars": [
-          "--hover-transition-enter-duration"
-        ],
-        "variant": ".row:hover:not([data-disabled=\"true\"]) .cell"
-      }
-    ]
-  },
   "textarea": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .textarea {\n    --padding-inline: 0.75rem;\n    --padding-block: 0.5rem;\n\n    @apply block w-full px-3 py-2;\n    box-sizing: border-box;\n    resize: none;\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-sm, 0.375rem);\n    background-color: var(--background);\n    color: var(--foreground);\n    font-family: inherit;\n    font-size: var(--text-xs);\n    line-height: var(--leading-snug);\n    outline: none;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &::placeholder {\n      color: var(--placeholder);\n    }\n\n    &[data-disabled=\"true\"] {\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity);\n    }\n\n    &[data-resize-axis=\"x\"],\n    &[data-resize-axis=\"both\"] {\n      padding-inline-end: calc(var(--padding-inline) + 1rem);\n    }\n\n    &[data-resize-axis=\"y\"],\n    &[data-resize-axis=\"both\"] {\n      padding-block-end: calc(var(--padding-block) + 1rem);\n    }\n\n    &[data-scroll=\"true\"] {\n      border: none;\n      border-radius: 0;\n      background: transparent;\n      box-shadow: none;\n      overflow: hidden;\n\n      &[data-disabled=\"true\"] {\n        opacity: 1;\n      }\n    }\n  }\n\n  .size-sm {\n    min-height: 5rem;\n    --padding-inline: 0.5rem;\n    --padding-block: 0.25rem;\n    font-size: var(--text-sm);\n    @apply px-2 py-1;\n  }\n\n  .size-md {\n    min-height: 6rem;\n    --padding-inline: 0.75rem;\n    --padding-block: 0.5rem;\n    font-size: var(--text-sm);\n    @apply px-3 py-2;\n  }\n\n  .size-lg {\n    min-height: 8rem;\n    --padding-inline: 1rem;\n    --padding-block: 0.75rem;\n    font-size: var(--text-md);\n    @apply px-4 py-3;\n  }\n\n  .container {\n    min-width: 0;\n    @apply w-full;\n  }\n\n  .scope {\n    @apply relative flex w-full;\n    overflow: visible;\n  }\n\n  .surface {\n    min-width: 0;\n    @apply relative w-full;\n  }\n\n  .scroll-wrapper {\n    @apply w-full overflow-hidden;\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-sm, 0.375rem);\n    background-color: var(--background);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity);\n    }\n  }\n\n  .resize-handle {\n    position: absolute;\n    z-index: 1;\n    touch-action: none;\n    user-select: none;\n\n    &::before,\n    &::after {\n      content: \"\";\n      position: absolute;\n      border-radius: var(--radius-full);\n      background-color: var(--background);\n      transition:\n        background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    }\n\n    &:hover::before,\n    &:hover::after {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n  }\n\n  .resize-handle-both {\n    right: 3px;\n    bottom: 3px;\n    width: 1.5rem;\n    height: 1.5rem;\n    cursor: nwse-resize;\n\n    &::before {\n      right: 0.15rem;\n      bottom: 0.35rem;\n      width: 0.5rem;\n      height: 0.125rem;\n      transform: rotate(-45deg);\n      transform-origin: center;\n    }\n\n    &::after {\n      right: 0.2rem;\n      bottom: 0.6rem;\n      width: 1rem;\n      height: 0.125rem;\n      transform: rotate(-45deg);\n      transform-origin: center;\n    }\n  }\n\n  .resize-handle-x {\n    top: 50%;\n    right: 0;\n    width: 0.75rem;\n    height: 2rem;\n    cursor: ew-resize;\n    transform: translateY(-50%);\n\n    &::before {\n      top: 50%;\n      left: 50%;\n      width: 0.125rem;\n      height: 1.5rem;\n      transform: translate(-50%, -50%);\n    }\n\n    &::after {\n      display: none;\n    }\n  }\n\n  .resize-handle-y {\n    left: 50%;\n    bottom: 0;\n    width: 2rem;\n    height: 0.75rem;\n    cursor: ns-resize;\n    transform: translateX(-50%);\n\n    &::before {\n      top: 50%;\n      left: 50%;\n      width: 1.5rem;\n      height: 0.125rem;\n      transform: translate(-50%, -50%);\n    }\n\n    &::after {\n      display: none;\n    }\n  }\n\n  .character-count {\n    @apply mt-1;\n    color: var(--foreground);\n    font-size: var(--text-sm);\n    transition: color 0.15s var(--ease-snappy-pop);\n  }\n\n  .character-count[data-over-limit=\"true\"] {\n    color: var(--foreground-error);\n  }\n}\n",
     "styleableParts": [
@@ -290,6 +194,102 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
           "--hover-transition-enter-duration"
         ],
         "variant": ".resize-handle:hover::before,\n    .resize-handle:hover::after"
+      }
+    ]
+  },
+  "tabs": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .tabs {\n    @apply flex w-full flex-col;\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: row;\n    }\n  }\n\n  .list {\n    @apply relative flex w-full flex-row items-center gap-3 py-1;\n    border-radius: var(--radius-sm);\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: column;\n      width: fit-content;\n      min-width: 0;\n      height: auto;\n      align-self: flex-start;\n    }\n\n    &[data-variant=\"underline\"] {\n      background-color: transparent;\n      border-radius: 0;\n      padding: 0 0 4px;\n    }\n\n    &[data-variant=\"underline\"][data-orientation=\"vertical\"] {\n      border-bottom: none;\n      border-left: var(--border-width-base) solid var(--border);\n      align-items: stretch;\n      padding: 0 0 0 4px;\n    }\n  }\n\n  .indicator {\n    @apply absolute;\n    background-color: var(--background);\n    box-sizing: border-box;\n    border-radius: var(--radius-sm);\n    z-index: 0;\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    pointer-events: none;\n  }\n\n  .indicator-fallback {\n    z-index: -1;\n  }\n\n  .indicator-underline {\n    border-radius: 0;\n  }\n\n  .trigger {\n    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;\n    height: auto;\n    background-color: var(--background);\n    border: none;\n    color: var(--foreground);\n    outline: none;\n    box-shadow: none;\n    transition:\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n\n    &[data-selected=\"true\"] {\n      cursor: pointer;\n    }\n\n    &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      .list[data-variant=\"underline\"] & {\n        border-bottom-color: var(--underline-border);\n      }\n\n      .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n        border-bottom-color: transparent;\n        border-left-color: var(--underline-border);\n      }\n    }\n\n    &:focus,\n    &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    &[data-disabled=\"true\"] {\n      --disabled-opacity: 0.5;\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n\n    .list[data-variant=\"underline\"] & {\n      background-color: var(--background);\n      background-clip: padding-box;\n      border-radius: var(--radius-sm);\n      border-bottom: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"] &:focus,\n    .list[data-variant=\"underline\"] &:focus-visible {\n      outline: none !important;\n      box-shadow: none !important;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] & {\n      border-bottom: none;\n      border-left: 2px solid transparent;\n    }\n\n    .list[data-variant=\"underline\"][data-orientation=\"vertical\"] &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not([data-indicator-fallback=\"true\"]) {\n      border-left-color: var(--underline-border);\n      border-bottom: none;\n    }\n  }\n\n  .icon {\n    @apply flex h-4 w-4 shrink-0 items-center justify-center;\n  }\n\n  .content {\n    @apply w-full p-0 outline-none;\n    flex: 1;\n    padding-top: 1rem;\n\n    &[data-orientation=\"vertical\"] {\n      flex: 1;\n      width: 100%;\n    }\n\n    &:focus-visible {\n      outline: 2px solid var(--focus-visible);\n      outline-offset: 2px;\n    }\n  }\n\n  @media (max-width: 640px) {\n    .list {\n      padding: 0.125rem;\n\n      &[data-variant=\"underline\"] {\n        padding: 0 0 4px;\n      }\n    }\n\n    .trigger {\n      @apply px-1 py-1;\n      .list[data-variant=\"underline\"] & {\n        margin: 0.5rem 0.75rem;\n      }\n    }\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "indicator"
+      },
+      {
+        "name": "icon.left"
+      },
+      {
+        "name": "icon.right"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--hover-transition-duration",
+        "value": "var(--hover-transition-enter-duration, 0ms)",
+        "defaultValue": "0ms",
+        "referencedVars": [
+          "--hover-transition-enter-duration"
+        ],
+        "variant": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])"
+      },
+      {
+        "name": "--disabled-opacity",
+        "value": "0.5",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".trigger[data-disabled=\"true\"]"
+      }
+    ]
+  },
+  "table": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .root {\n    @apply w-full;\n  }\n\n  .container {\n    @apply w-full overflow-x-auto rounded-sm;\n    border: var(--border-width-base) solid var(--border, var(--background-border));\n    background-color: var(--container-background, var(--background));\n  }\n\n  .container {\n    display: block;\n    max-width: none;\n  }\n\n  .table {\n    @apply w-full;\n    display: table;\n    border-collapse: collapse;\n    min-width: max-content;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    font-size: var(--text-xs);\n  }\n\n  .header {\n    display: table-header-group;\n    background-color: var(--background);\n  }\n\n  .body {\n    display: table-row-group;\n    background-color: var(--background);\n  }\n\n  .headerRow {\n    display: table-row;\n    background-color: var(--background);\n  }\n\n  .headerCell {\n    @apply px-4 py-3 text-left;\n    display: table-cell;\n    background-color: var(--background);\n    color: var(--foreground);\n    font-weight: var(--header-font-weight, var(--font-weight-semibold));\n    white-space: nowrap;\n    border-bottom: var(--border-width-base) solid var(--border, var(--background-border));\n  }\n\n  .headerCell:first-child {\n    border-top-left-radius: var(--radius-xs);\n  }\n\n  .headerCell:last-child {\n    border-top-right-radius: var(--radius-xs);\n  }\n\n  .row {\n    display: table-row;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row[data-interactive=\"true\"] {\n    @apply cursor-pointer;\n  }\n\n  .row:hover:not([data-disabled=\"true\"]) .cell {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .row[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity, 0.5);\n  }\n\n  .row:focus-visible {\n    outline: 2px solid var(--focus-ring);\n    outline-offset: -2px;\n  }\n\n  .interactive {\n    @apply cursor-pointer;\n  }\n\n  .cell {\n    @apply px-4 py-3 align-middle;\n    display: table-cell;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border-bottom: var(--border-width-base) solid var(--border, var(--background-border));\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row:last-child .cell {\n    border-bottom: none;\n  }\n\n  .row:last-child .cell:first-child {\n    border-bottom-left-radius: var(--radius-xs);\n  }\n\n  .row:last-child .cell:last-child {\n    border-bottom-right-radius: var(--radius-xs);\n  }\n\n  .emptyRow {\n    border-bottom: none;\n  }\n\n  .emptyRow {\n    display: table-row;\n  }\n\n  .emptyState {\n    @apply px-4 py-8 text-center;\n    background-color: var(--background);\n    color: var(--foreground);\n  }\n\n  .emptyState {\n    display: table-cell;\n  }\n\n  .filterBar {\n    @apply mb-4 rounded-xs border p-4;\n    border: var(--border-width-base) solid var(--background-border);\n    background-color: var(--background);\n  }\n\n  .filterBar {\n    display: block;\n  }\n\n  .filterGrid {\n    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;\n    background-color: var(--background);\n  }\n\n  .filterGrid {\n    display: grid;\n  }\n\n  .filterField {\n    @apply min-w-0;\n  }\n\n  .filterLabel {\n    @apply mb-2 block;\n    color: var(--foreground);\n    font-size: var(--filter-label-font-size, var(--text-xs));\n    font-weight: var(--filter-label-font-weight, var(--font-weight-medium));\n  }\n\n  .filterLabel {\n    display: block;\n  }\n\n  .filterInput {\n    @apply w-full;\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "container"
+      },
+      {
+        "name": "filterBar"
+      },
+      {
+        "name": "filterGrid"
+      },
+      {
+        "name": "filterLabel"
+      },
+      {
+        "name": "filterInput"
+      },
+      {
+        "name": "table"
+      },
+      {
+        "name": "header"
+      },
+      {
+        "name": "body"
+      },
+      {
+        "name": "headerRow"
+      },
+      {
+        "name": "headerCell"
+      },
+      {
+        "name": "row"
+      },
+      {
+        "name": "cell"
+      },
+      {
+        "name": "emptyRow"
+      },
+      {
+        "name": "emptyState"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--hover-transition-duration",
+        "value": "var(--hover-transition-enter-duration, 0ms)",
+        "defaultValue": "0ms",
+        "referencedVars": [
+          "--hover-transition-enter-duration"
+        ],
+        "variant": ".row:hover:not([data-disabled=\"true\"]) .cell"
       }
     ]
   },
@@ -446,7 +446,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ]
   },
   "select": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .scope {\n    @apply flex w-full;\n    position: relative;\n    overflow: visible;\n  }\n\n  .select {\n    --disabled-opacity: 0.5;\n    --trigger-padding-inline: calc(var(--spacing) * 1.60);\n    --trigger-padding-block: calc(var(--spacing) * 1.30);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - var(--border-width-base, 1px));\n    font-size: var(--foreground-size);\n    height: fit-content;\n    align-self: center;\n\n    @apply p-0 gap-0 w-full flex-row items-center;\n    position: relative;\n    overflow: visible;\n\n    background-color: var(--background);\n    color: var(--foreground);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--background-radius);\n\n    @apply select-none cursor-pointer;\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      background-color: var(--background-pressed, var(--background-hover, var(--background)));\n    }\n\n    &[data-open=\"true\"] {\n      background-color: var(--background-hover);\n    }\n\n    &:global(.group) {\n      height: 100%;\n      align-self: stretch;\n    }\n  }\n\n  .trigger {\n    @apply flex items-stretch flex-1 gap-0 w-full h-full min-h-0;\n\n    background: transparent;\n\n    @apply border-none cursor-pointer select-none;\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover .icon-section,\n      &:not([data-disabled]):hover .value-section:not(:empty) {\n        --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n        background-color: var(--background-hover);\n      }\n    }\n\n    &[data-focus-visible=\"true\"] {\n      @apply outline-none;\n    }\n  }\n\n  .trigger-compact {\n    @apply flex-none w-auto;\n  }\n\n  .select button.trigger { @apply p-0; }\n\n  .value-section {\n    @apply flex items-center flex-1 min-w-0 gap-0.5;\n\n    padding: var(--trigger-padding-block) var(--trigger-padding-inline);\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n    font-size: var(--foreground-size);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &:only-child {\n      border-radius: var(--background-inner-radius);\n      justify-content: center;\n    }\n    &:empty {\n      flex: 0;\n      padding: 0;\n      min-width: auto;\n    }\n  }\n\n  .icon-section {\n    @apply flex items-center justify-center shrink-0;\n    padding: var(--trigger-padding-block) var(--trigger-padding-inline);\n    border-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .icon {\n    @apply flex items-center justify-center w-4 h-4 opacity-70;\n  }\n\n  .select .trigger[data-open=\"true\"] .icon {\n    transform: rotate(180deg);\n  }\n\n  .value {\n    @apply flex items-center flex-1 min-w-0 gap-2 bg-transparent border-none;\n    cursor: inherit;\n  }\n\n  .value-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    color: var(--foreground);\n  }\n\n  .value-text {\n    font-weight: var(--font-weight-medium);\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content,\n  .sub-content {\n    --item-padding-inline: calc(var(--spacing) * 1.5);\n    --item-padding-block: var(--spacing);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - var(--border-width-base, 1px));\n    overflow: hidden;\n    background-color: var(--background);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--background-radius);\n  }\n\n  .content-root,\n  .sub-content-root {\n    position: absolute;\n  }\n\n  .content {\n    &[data-state=\"open\"][data-placement=\"bottom\"] { animation: slide-in-from-top 0.15s var(--ease-snappy-pop); }\n    &[data-state=\"open\"][data-placement=\"top\"] { animation: slide-in-from-bottom 0.15s var(--ease-snappy-pop); }\n    &[data-state=\"closed\"][data-placement=\"bottom\"] { animation: slide-out-from-top 0.15s var(--ease-snappy-pop); }\n    &[data-state=\"closed\"][data-placement=\"top\"] { animation: slide-out-from-bottom 0.15s var(--ease-snappy-pop); }\n  }\n\n  .list {\n    @apply space-y-1;\n  }\n\n  .item,\n  .sub-trigger {\n    @apply flex items-center gap-2 outline-none cursor-default select-none;\n    background-color: var(--background);\n    border-radius: var(--background-inner-radius);\n    font-size: var(--foreground-size);\n    font-weight: var(--font-weight-medium);\n    color: var(--foreground);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity, 0.5);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .item {\n    --item-padding-inline: var(--trigger-padding-inline);\n    --item-padding-block: calc(var(--trigger-padding-block) * 1.15);\n\n    padding: var(--item-padding-block) var(--item-padding-inline);\n\n    &[data-selected=\"true\"] {\n      color: var(--foreground);\n    }\n\n    &[data-highlighted=\"true\"] {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n  }\n\n  .item-content {\n    @apply flex flex-col flex-1 min-w-0;\n  }\n\n  .item-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item-description {\n    font-size: var(--foreground-size);\n    font-weight: var(--font-weight-medium);\n    color: var(--foreground-muted);\n    @apply min-w-0 whitespace-normal break-words;\n  }\n\n  .item-icon, .item-indicator {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n  }\n\n  .item-icon { color: var(--icon-foreground); }\n  .item-indicator { color: var(--indicator-foreground); margin-left: auto; }\n\n  .item-with-description { @apply items-start py-2; }\n  .item-icon-with-description, .item-indicator-with-description { @apply mt-0.5; }\n\n  .separator {\n    @apply my-1 -mx-1 h-px;\n    background-color: var(--background-border);\n  }\n\n  .placeholder {\n    color: var(--foreground-muted);\n  }\n\n  .icon-prefix {\n    @apply inline-flex items-center shrink-0;\n  }\n\n  .select[data-mode=\"multiple\"] .item { gap: 0.5rem; }\n\n  .search-trigger {\n    @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;\n    border-radius: var(--background-inner-radius);\n    transition: box-shadow 150ms var(--ease-snappy-pop), border-color 150ms var(--ease-snappy-pop);\n\n    &:focus-within {\n      @apply outline-none;\n      z-index: 1;\n    }\n  }\n\n  .search-trigger :global(.focus-indicator) {\n    display: none;\n  }\n\n  .search-value-section {\n    @apply p-0;\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n  }\n\n  .input {\n    padding-right: calc(var(--trigger-padding-inline) * 2 + 1rem);\n    @apply border-none rounded-none shadow-none bg-transparent;\n\n    &[data-focused], &[data-focus-visible] {\n      @apply border-none shadow-none;\n    }\n  }\n\n  .search-content-input {\n    @apply border-none rounded-none bg-transparent;\n  }\n\n  .search-icon-section {\n    @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;\n    padding-inline: var(--trigger-padding-inline);\n  }\n\n\n  .search-wrapper {\n    @apply overflow-hidden;\n    border-bottom: var(--border-width-base, 1px) solid var(--background-border);\n  }\n\n  .empty-state {\n    @apply px-3 py-2;\n    color: var(--foreground-muted);\n  }\n\n  .content[data-placement=\"top\"] .search-wrapper {\n    border-radius: 0;\n    border-bottom: none;\n    border-top: var(--border-width-base, 1px) solid var(--background-border);\n  }\n\n  .sub-trigger {\n    padding: var(--trigger-padding-block) var(--trigger-padding-inline);\n\n    &[data-highlighted=\"true\"],\n    &[data-open=\"true\"]:not([data-highlighted=\"true\"]) {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n  }\n\n  .sub-trigger-chevron {\n    @apply shrink-0 ml-auto w-4 h-4 opacity-60;\n  }\n\n  .sub-content {\n    min-width: 160px;\n    max-width: 320px;\n  }\n\n  @keyframes slide-in-from-top { from { opacity: 0; translate: 0 -2px; } to { opacity: 1; translate: 0 0; } }\n  @keyframes slide-in-from-bottom { from { opacity: 0; translate: 0 2px; } to { opacity: 1; translate: 0 0; } }\n  @keyframes slide-out-from-top { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 -2px; } }\n  @keyframes slide-out-from-bottom { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 2px; } }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .scope {\n    @apply flex w-full;\n    position: relative;\n    overflow: visible;\n  }\n\n  .select {\n    --disabled-opacity: 0.5;\n    --trigger-padding-inline: calc(var(--spacing) * 1.60);\n    --trigger-padding-block: calc(var(--spacing) * 1.30);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - var(--border-width-base, 1px));\n    font-size: var(--foreground-size);\n    height: fit-content;\n    align-self: center;\n\n    @apply p-0 gap-0 w-full flex-row items-center;\n    position: relative;\n    overflow: visible;\n\n    background-color: var(--background);\n    color: var(--foreground);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--background-radius);\n\n    @apply select-none cursor-pointer;\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      background-color: var(--background-pressed, var(--background-hover, var(--background)));\n    }\n\n    &[data-open=\"true\"] {\n      background-color: var(--background-hover);\n    }\n\n    &:global(.group) {\n      height: 100%;\n      align-self: stretch;\n    }\n  }\n\n  .trigger {\n    @apply flex items-stretch flex-1 gap-0 w-full h-full min-h-0;\n\n    background: transparent;\n\n    @apply border-none cursor-pointer select-none;\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover .icon-section,\n      &:not([data-disabled]):hover .value-section:not(:empty) {\n        --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n        background-color: var(--background-hover);\n      }\n    }\n\n    &[data-focus-visible=\"true\"] {\n      @apply outline-none;\n    }\n  }\n\n  .trigger-compact {\n    @apply flex-none w-auto;\n  }\n\n  .select button.trigger { @apply p-0; }\n\n  .value-section {\n    @apply flex items-center flex-1 min-w-0 gap-0.5;\n\n    padding: var(--trigger-padding-block) var(--trigger-padding-inline);\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n    font-size: var(--foreground-size);\n    &:only-child {\n      border-radius: var(--background-inner-radius);\n      justify-content: center;\n    }\n    &:empty {\n      flex: 0;\n      padding: 0;\n      min-width: auto;\n    }\n  }\n\n  .icon-section {\n    @apply flex items-center justify-center shrink-0;\n    padding: var(--trigger-padding-block) var(--trigger-padding-inline);\n    border-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n  }\n\n  .icon {\n    @apply flex items-center justify-center w-4 h-4 opacity-70;\n  }\n\n.value {\n    @apply flex items-center flex-1 min-w-0 gap-2 bg-transparent border-none;\n    cursor: inherit;\n  }\n\n  .value-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    color: var(--foreground);\n  }\n\n  .value-text {\n    font-weight: var(--font-weight-medium);\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content,\n  .sub-content {\n    --item-padding-inline: calc(var(--spacing) * 1.5);\n    --item-padding-block: var(--spacing);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - var(--border-width-base, 1px));\n    overflow: hidden;\n    background-color: var(--background);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--background-radius);\n  }\n\n  .content-root,\n  .sub-content-root {\n    position: absolute;\n  }\n\n  .content {}\n\n  .list {\n    @apply space-y-1;\n  }\n\n  .item,\n  .sub-trigger {\n    @apply flex items-center gap-2 outline-none cursor-default select-none;\n    background-color: var(--background);\n    border-radius: var(--background-inner-radius);\n    font-size: var(--foreground-size);\n    font-weight: var(--font-weight-medium);\n    color: var(--foreground);\n    &[data-disabled] {\n      opacity: var(--disabled-opacity, 0.5);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .item {\n    --item-padding-inline: var(--trigger-padding-inline);\n    --item-padding-block: calc(var(--trigger-padding-block) * 1.15);\n\n    padding: var(--item-padding-block) var(--item-padding-inline);\n\n    &[data-selected=\"true\"] {\n      color: var(--foreground);\n    }\n\n    &[data-highlighted=\"true\"] {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n  }\n\n  .item-content {\n    @apply flex flex-col flex-1 min-w-0;\n  }\n\n  .item-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item-description {\n    font-size: var(--foreground-size);\n    font-weight: var(--font-weight-medium);\n    color: var(--foreground-muted);\n    @apply min-w-0 whitespace-normal break-words;\n  }\n\n  .item-icon, .item-indicator {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n  }\n\n  .item-icon { color: var(--icon-foreground); }\n  .item-indicator { color: var(--indicator-foreground); margin-left: auto; }\n\n  .item-with-description { @apply items-start py-2; }\n  .item-icon-with-description, .item-indicator-with-description { @apply mt-0.5; }\n\n  .separator {\n    @apply my-1 -mx-1 h-px;\n    background-color: var(--background-border);\n  }\n\n  .placeholder {\n    color: var(--foreground-muted);\n  }\n\n  .icon-prefix {\n    @apply inline-flex items-center shrink-0;\n  }\n\n  .select[data-mode=\"multiple\"] .item { gap: 0.5rem; }\n\n  .search-trigger {\n    @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;\n    border-radius: var(--background-inner-radius);\n    &:focus-within {\n      @apply outline-none;\n      z-index: 1;\n    }\n  }\n\n  .search-trigger :global(.focus-indicator) {\n    display: none;\n  }\n\n  .search-value-section {\n    @apply p-0;\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n  }\n\n  .input {\n    padding-right: calc(var(--trigger-padding-inline) * 2 + 1rem);\n    @apply border-none rounded-none shadow-none bg-transparent;\n\n    &[data-focused], &[data-focus-visible] {\n      @apply border-none shadow-none;\n    }\n  }\n\n  .search-content-input {\n    @apply border-none rounded-none bg-transparent;\n  }\n\n  .search-icon-section {\n    @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;\n    padding-inline: var(--trigger-padding-inline);\n  }\n\n\n  .search-wrapper {\n    @apply overflow-hidden;\n    border-bottom: var(--border-width-base, 1px) solid var(--background-border);\n  }\n\n  .empty-state {\n    @apply px-3 py-2;\n    color: var(--foreground-muted);\n  }\n\n  .content[data-placement=\"top\"] .search-wrapper {\n    border-radius: 0;\n    border-bottom: none;\n    border-top: var(--border-width-base, 1px) solid var(--background-border);\n  }\n\n  .sub-trigger {\n    padding: var(--trigger-padding-block) var(--trigger-padding-inline);\n\n    &[data-highlighted=\"true\"],\n    &[data-open=\"true\"]:not([data-highlighted=\"true\"]) {\n      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    }\n  }\n\n  .sub-trigger-chevron {\n    @apply shrink-0 ml-auto w-4 h-4 opacity-60;\n  }\n\n  .sub-content {\n    min-width: 160px;\n    max-width: 320px;\n  }\n\n}\n",
     "styleableParts": [
       {
         "name": "root"
@@ -1055,76 +1055,8 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ],
     "cssVariables": []
   },
-  "label": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .label {\n    --background: transparent;\n    --foreground: var(--foreground-primary);\n    --foreground-disabled: var(--foreground-secondary);\n    --foreground-error: var(--danger-600);\n  }\n\n  .label > label {\n    display: block;\n    font-family: inherit;\n    font-size: var(--text-sm);\n    color: var(--foreground);\n    transition: color 150ms ease;\n\n    &[data-size=\"sm\"] { font-size: var(--text-sm); }\n    &[data-size=\"lg\"] { font-size: var(--text-md); }\n\n    &[data-disabled] {\n      color: var(--foreground-disabled);\n      opacity: 0.6;\n      cursor: not-allowed;\n    }\n\n    &[data-error] {\n      color: var(--foreground-error);\n    }\n  }\n\n  .label > .required-indicator {\n    margin-left: 0.25rem;\n    color: var(--required-color);\n  }\n\n  .label > .helper-text {\n    --helper-foreground: var(--foreground-secondary);\n    --helper-foreground-error: var(--danger-600);\n\n    display: block;\n    font-size: var(--text-sm);\n    margin-top: 0.25rem;\n    transition: color 150ms ease;\n    color: var(--helper-foreground);\n\n    &[data-error] {\n      color: var(--helper-foreground-error);\n    }\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "requiredIndicator"
-      },
-      {
-        "name": "helperText"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--background",
-        "value": "transparent",
-        "defaultValue": null,
-        "referencedVars": [],
-        "variant": ".label"
-      },
-      {
-        "name": "--foreground",
-        "value": "var(--foreground-primary)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--foreground-primary"
-        ],
-        "variant": ".label"
-      },
-      {
-        "name": "--foreground-disabled",
-        "value": "var(--foreground-secondary)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--foreground-secondary"
-        ],
-        "variant": ".label"
-      },
-      {
-        "name": "--foreground-error",
-        "value": "var(--danger-600)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--danger-600"
-        ],
-        "variant": ".label"
-      },
-      {
-        "name": "--helper-foreground",
-        "value": "var(--foreground-secondary)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--foreground-secondary"
-        ],
-        "variant": ".label > .helper-text"
-      },
-      {
-        "name": "--helper-foreground-error",
-        "value": "var(--danger-600)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--danger-600"
-        ],
-        "variant": ".label > .helper-text"
-      }
-    ]
-  },
   "list": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .container {\n    --gap-scale: 0.75;\n\n    color: var(--foreground);\n    @apply flex flex-col;\n    gap: calc(var(--spacing, 0.25rem) * var(--list-gap-step, 0) * var(--gap-scale, 1));\n  }\n\n  .container[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .header {\n    @apply flex items-center justify-between;\n    padding-left: 1.25rem;\n    padding-right: 1.25rem;\n    padding-top: 1rem;\n    padding-bottom: 1rem;\n    backdrop-filter: blur(12px);\n    z-index: 10;\n  }\n\n  .sticky {\n    position: sticky;\n    top: 0;\n  }\n\n  .header > :first-child {\n    font-weight: var(--font-weight-semibold);\n    font-size: 1.125rem;\n    color: var(--header-title-foreground);\n  }\n\n  .header > :last-child {\n    color: var(--header-subtitle-foreground);\n  }\n\n  .item {\n    --background: transparent;\n\n    @apply flex gap-3 px-2 py-1 cursor-pointer;\n    background-color: var(--background);\n    color: var(--foreground);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    box-shadow:\n      inset 0 0 0 1px var(--item-focus-visible-background, var(--focus-visible-background)),\n      0 0 0 2px var(--item-focus-visible, var(--focus-visible));\n    border-radius: var(--item-radius, var(--radius-sm, 0.375rem));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .container[data-keyboard-mode=\"true\"] .item[data-highlighted=\"true\"] {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity, 0.6);\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-left: auto;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-left: 0;\n  }\n\n  .media {\n    @apply h-8 w-8;\n  }\n\n  .title {\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-medium);\n    color: var(--foreground);\n    @apply truncate;\n  }\n\n  .desc {\n    font-size: var(--text-sm);\n    color: var(--desc-foreground);\n    @apply truncate;\n  }\n\n  .actionGroup {\n    @apply flex items-center;\n    padding-left: 0.25rem;\n    padding-right: 0.25rem;\n  }\n\n  .actionGroup[data-justify=\"between\"] { justify-content: space-between; }\n  .actionGroup[data-justify=\"start\"] { justify-content: flex-start; }\n  .actionGroup[data-justify=\"end\"] { justify-content: flex-end; }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-left: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100;\n  }\n\n  .action {\n    --background: transparent;\n\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: var(--background);\n    color: var(--foreground);\n    @apply p-2;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .footer {\n    @apply flex p-6 pb-12;\n  }\n\n  .footer[data-align=\"center\"] { justify-content: center; }\n  .footer[data-align=\"start\"] { justify-content: flex-start; }\n  .footer[data-align=\"end\"] { justify-content: flex-end; }\n\n  .container[data-spacing=\"sm\"] .footer {\n    padding: 0.375rem 0.75rem;\n    padding-bottom: 0.375rem;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .container {\n    --gap-scale: 0.75;\n\n    color: var(--foreground);\n    @apply flex flex-col;\n    gap: calc(var(--spacing, 0.25rem) * var(--list-gap-step, 0) * var(--gap-scale, 1));\n  }\n\n  .container[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .header {\n    @apply flex items-center justify-between;\n    padding-left: 1.25rem;\n    padding-right: 1.25rem;\n    padding-top: 1rem;\n    padding-bottom: 1rem;\n    backdrop-filter: blur(12px);\n    z-index: 10;\n  }\n\n  .sticky {\n    position: sticky;\n    top: 0;\n  }\n\n  .header > :first-child {\n    font-weight: var(--font-weight-semibold);\n    font-size: 1.125rem;\n    color: var(--header-title-foreground);\n  }\n\n  .header > :last-child {\n    color: var(--header-subtitle-foreground);\n  }\n\n  .item {\n    --background: transparent;\n\n    @apply flex gap-3 px-2 py-1 cursor-pointer;\n    background-color: var(--background);\n    color: var(--foreground);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    box-shadow:\n      inset 0 0 0 1px var(--item-focus-visible-background, var(--focus-visible-background)),\n      0 0 0 2px var(--item-focus-visible, var(--focus-visible));\n    border-radius: var(--item-radius, var(--radius-sm, 0.375rem));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .container[data-keyboard-mode=\"true\"] .item[data-highlighted=\"true\"] {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity, 0.6);\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-left: auto;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-left: 0;\n  }\n\n  .media {\n    @apply h-8 w-8;\n  }\n\n  .title {\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-medium);\n    color: var(--foreground);\n    @apply truncate;\n  }\n\n  .desc {\n    font-size: var(--text-sm);\n    color: var(--desc-foreground);\n    @apply truncate;\n  }\n\n  .actionGroup {\n    @apply flex items-center;\n    padding-left: 0.25rem;\n    padding-right: 0.25rem;\n  }\n\n  .actionGroup[data-justify=\"between\"] { justify-content: space-between; }\n  .actionGroup[data-justify=\"start\"] { justify-content: flex-start; }\n  .actionGroup[data-justify=\"end\"] { justify-content: flex-end; }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-left: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity;\n  }\n\n  .item:hover .actions,\n  .item:focus-within .actions {\n    opacity: 1;\n  }\n\n  .action {\n    --background: transparent;\n\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: var(--background);\n    color: var(--foreground);\n    @apply p-2;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .footer {\n    @apply flex p-6 pb-12;\n  }\n\n  .footer[data-align=\"center\"] { justify-content: center; }\n  .footer[data-align=\"start\"] { justify-content: flex-start; }\n  .footer[data-align=\"end\"] { justify-content: flex-end; }\n\n  .container[data-spacing=\"sm\"] .footer {\n    padding: 0.375rem 0.75rem;\n    padding-bottom: 0.375rem;\n  }\n}\n",
     "styleableParts": [
       {
         "name": "root"
@@ -1208,6 +1140,86 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
           "--hover-transition-enter-duration"
         ],
         "variant": ".action:hover"
+      }
+    ]
+  },
+  "label": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .label {\n    --background: transparent;\n    --foreground: var(--foreground-primary);\n    --disabled-foreground: var(--foreground-secondary);\n    --error-foreground: var(--danger-600);\n    --helper-color: var(--foreground-secondary);\n    --helper-error-color: var(--danger-600);\n    --required-color: var(--danger-600);\n  }\n\n  .text {\n    display: block;\n    font-family: inherit;\n    font-size: var(--text-sm);\n    color: var(--foreground);\n    transition: color 150ms ease;\n\n    &[data-disabled] {\n      color: var(--disabled-foreground);\n      opacity: 0.6;\n      cursor: not-allowed;\n    }\n\n    &[data-error] {\n      color: var(--error-foreground);\n    }\n  }\n\n  .required-indicator {\n    margin-left: 0.25rem;\n    color: var(--required-color);\n  }\n\n  .helper-text {\n    display: block;\n    font-size: var(--text-sm);\n    margin-top: 0.25rem;\n    transition: color 150ms ease;\n    color: var(--helper-color);\n\n    &[data-error] {\n      color: var(--helper-error-color);\n    }\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "text"
+      },
+      {
+        "name": "requiredIndicator"
+      },
+      {
+        "name": "helperText"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--background",
+        "value": "transparent",
+        "defaultValue": null,
+        "referencedVars": [],
+        "variant": ".label"
+      },
+      {
+        "name": "--foreground",
+        "value": "var(--foreground-primary)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--foreground-primary"
+        ],
+        "variant": ".label"
+      },
+      {
+        "name": "--disabled-foreground",
+        "value": "var(--foreground-secondary)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--foreground-secondary"
+        ],
+        "variant": ".label"
+      },
+      {
+        "name": "--error-foreground",
+        "value": "var(--danger-600)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--danger-600"
+        ],
+        "variant": ".label"
+      },
+      {
+        "name": "--helper-color",
+        "value": "var(--foreground-secondary)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--foreground-secondary"
+        ],
+        "variant": ".label"
+      },
+      {
+        "name": "--helper-error-color",
+        "value": "var(--danger-600)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--danger-600"
+        ],
+        "variant": ".label"
+      },
+      {
+        "name": "--required-color",
+        "value": "var(--danger-600)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--danger-600"
+        ],
+        "variant": ".label"
       }
     ]
   },
@@ -1300,7 +1312,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ]
   },
   "group": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .group {\n    --layout-radius-size: calc(var(--spacing) * 1.5);\n    --layout-padding-size: var(--layout-radius-size);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-border-width: var(--border-width-base, 1px);\n    --background-inner-radius: calc(var(--background-radius) - var(--background-border-width));\n    --layout-text-height: calc(0.8em * var(--leading-tight, 1.25));\n    --layout-vertical-spacing: calc(var(--spacing) * 4);\n    --layout-border-height: calc(var(--background-border-width) * 2);\n    --layout-padding-height: calc(var(--layout-padding-size) * 2);\n    --layout-control-height: calc(\n      var(--layout-text-height) +\n      var(--layout-vertical-spacing) +\n      var(--layout-border-height)\n    );\n    --item-height: max(\n      calc(\n        var(--layout-control-height) -\n        var(--layout-padding-height) -\n        var(--layout-border-height)\n      ),\n      0px\n    );\n\n    @apply flex overflow-hidden shrink-0 box-border;\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    border: var(--background-border-width) solid var(--background-border, transparent);\n    border-radius: var(--background-radius);\n    padding: var(--layout-padding-size);\n\n    &.horizontal {\n      @apply flex-row items-stretch;\n      height: var(--layout-control-height);\n\n      .item.divider {\n        margin-block: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        height: 100%;\n      }\n    }\n\n    &.vertical {\n      @apply flex-col;\n\n      .item .button {\n        @apply w-full;\n      }\n\n      .item.divider {\n        margin-inline: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        width: 100%;\n      }\n    }\n\n    &.none {\n      --layout-padding-size: 0px;\n      @apply gap-0;\n    }\n\n    &.xs {\n      --layout-radius-size: calc(var(--spacing) * 0.875);\n      @apply space-x-0.5;\n    }\n\n    &.sm {\n      --layout-radius-size: calc(var(--spacing) * 1.25);\n      @apply space-x-1;\n    }\n\n  }\n\n  .item {\n    @apply flex items-stretch;\n    position: relative;\n    isolation: isolate;\n    border-radius: var(--group-item-radius, 0);\n    overflow: visible;\n\n    &.grow {\n      flex: 1;\n    }\n\n    &.divider {\n      @apply p-0 shrink-0 flex-none;\n\n      > [role=\"separator\"] {\n        flex: 0 0 auto;\n      }\n    }\n  }\n\n  :is(.button, .input, .select, .expand) {\n    height: 100%;\n    min-height: var(--item-height);\n    position: relative;\n    isolation: isolate;\n    overflow: visible;\n  }\n\n  .button {\n    @apply flex box-border;\n    width: auto;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    &[data-selected=\"true\"] {\n      @apply relative;\n      background-color: var(--button-selected-background, var(--background-pressed, var(--background-hover, var(--background))));\n      color: var(--button-selected-foreground, var(--foreground));\n    }\n  }\n\n  .input {\n    @apply flex flex-1 items-stretch overflow-visible;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    > [data-ring=\"true\"] {\n      border-radius: inherit;\n    }\n  }\n\n  .select {\n    @apply flex items-stretch p-0 bg-transparent border-none;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .expand {\n    @apply flex items-stretch;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .expand :global(.expand-scope),\n  .expand :global(.expand) {\n    @apply flex w-full h-full;\n  }\n\n  .expand :global(.expand) {\n    @apply flex-col;\n    border-radius: inherit;\n  }\n\n  .expand :global(.trigger) {\n    @apply min-h-0;\n    border-radius: inherit;\n  }\n\n  .trigger {}\n\n  .group {\n    .item :is(.button, .select) {\n      border: none;\n    }\n\n    .input > [data-input-focus-surface=\"true\"] {\n      border: none;\n    }\n\n    .button[data-selected=\"true\"] {\n      font-weight: 500;\n    }\n\n    .item.divider > [role=\"separator\"] {\n      --divider-background: var(--background);\n    }\n\n    &.none {\n      .item:not(.divider) {\n        overflow: hidden;\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: 0;\n        --background-radius: 0;\n        --background-inner-radius: 0;\n      }\n\n      .input {\n        --radius-sm: 0;\n      }\n\n      .item:first-child {\n        --group-item-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n      }\n\n      .item:last-child {\n        --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n      }\n\n      .item:only-child {\n        --group-item-radius: var(--background-inner-radius);\n      }\n\n      &.horizontal {\n        .item:first-child :is( .button, .trigger, .input > *, .select) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-bottom-left-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is( .button, .trigger, .input > *, .select) {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child .trigger .icon-section {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n\n      &.vertical {\n        .item:first-child {\n          --group-item-radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;\n        }\n\n        .item:last-child {\n          --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);\n        }\n\n        .item:first-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-top-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(\n          .button,\n          .trigger,\n          .input > *,\n          .select\n        ) {\n          border-bottom-left-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n    }\n\n    &:is(.xs, .sm) {\n      .item {\n        --group-item-radius: var(--background-inner-radius);\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: var(--background-inner-radius);\n      }\n\n      .input {\n        --radius-sm: var(--background-inner-radius);\n      }\n    }\n  }\n\n  .group [data-ring=\"true\"] {\n    --ring-shadow: none;\n    --ring-border: transparent;\n    --ring-border-visible: transparent;\n  }\n\n  .group :global(.focus-indicator) {\n    display: none;\n  }\n\n  .group [data-focus-indicator=\"local\"] {\n    display: none;\n  }\n\n  :is(.button[data-focus-visible=\"true\"], .trigger[data-focus-visible=\"true\"]) {\n    @apply outline-none;\n    box-shadow: none;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .group {\n    --layout-radius-size: calc(var(--spacing) * 1.5);\n    --layout-padding-size: var(--layout-radius-size);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-border-width: var(--border-width-base, 1px);\n    --background-inner-radius: calc(var(--background-radius) - var(--background-border-width));\n    --layout-text-height: calc(0.8em * var(--leading-tight, 1.25));\n    --layout-vertical-spacing: calc(var(--spacing) * 4);\n    --layout-border-height: calc(var(--background-border-width) * 2);\n    --layout-padding-height: calc(var(--layout-padding-size) * 2);\n    --layout-control-height: calc(\n      var(--layout-text-height) +\n      var(--layout-vertical-spacing) +\n      var(--layout-border-height)\n    );\n    --item-height: max(\n      calc(\n        var(--layout-control-height) -\n        var(--layout-padding-height) -\n        var(--layout-border-height)\n      ),\n      0px\n    );\n\n    @apply flex overflow-hidden shrink-0 box-border;\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    border: var(--background-border-width) solid var(--background-border, transparent);\n    border-radius: var(--background-radius);\n    padding: var(--layout-padding-size);\n\n    &.horizontal {\n      @apply flex-row items-stretch;\n      height: var(--layout-control-height);\n\n      .item.divider {\n        margin-block: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        height: 100%;\n      }\n    }\n\n    &.vertical {\n      @apply flex-col;\n\n      .item.divider {\n        margin-inline: calc(var(--layout-padding-size) * -1);\n      }\n      .item.divider > [role=\"separator\"] {\n        width: 100%;\n      }\n    }\n\n    &.none {\n      --layout-padding-size: 0px;\n      @apply gap-0;\n    }\n\n    &.xs {\n      --layout-radius-size: calc(var(--spacing) * 0.875);\n      @apply space-x-0.5;\n    }\n\n    &.sm {\n      --layout-radius-size: calc(var(--spacing) * 1.25);\n      @apply space-x-1;\n    }\n\n  }\n\n  .item {\n    @apply flex items-stretch;\n    position: relative;\n    isolation: isolate;\n    border-radius: var(--group-item-radius, 0);\n    overflow: visible;\n\n    &.grow {\n      flex: 1;\n    }\n\n    &.divider {\n      @apply p-0 shrink-0 flex-none;\n\n      > [role=\"separator\"] {\n        flex: 0 0 auto;\n      }\n    }\n  }\n\n  :is(.button, .input, .select, .expand) {\n    height: 100%;\n    min-height: var(--item-height);\n    position: relative;\n    isolation: isolate;\n    overflow: visible;\n  }\n\n  .button {\n    @apply flex box-border;\n    width: auto;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    &[data-selected=\"true\"] {\n      @apply relative;\n      background-color: var(--button-selected-background, var(--background-pressed, var(--background-hover, var(--background))));\n      color: var(--button-selected-foreground, var(--foreground));\n    }\n  }\n\n  .horizontal .item.icon-button-item {\n    @apply flex-1;\n  }\n\n  .item.icon-button-item > .button {\n    @apply w-full;\n    aspect-ratio: auto;\n  }\n\n  .item.icon-button-item > .button:global(.icon) {\n    padding-inline: calc(var(--spacing) * 2);\n  }\n\n  .item.icon-button-item > .button:global(.icon):global(.sm) {\n    padding-inline: calc(var(--spacing) * 1.5);\n  }\n\n  .item.icon-button-item > .button:global(.icon):global(.lg) {\n    padding-inline: calc(var(--spacing) * 2.5);\n  }\n\n  .input {\n    @apply flex flex-1 items-stretch overflow-visible;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n\n    > [data-ring=\"true\"] {\n      border-radius: inherit;\n    }\n  }\n\n  .select {\n    @apply flex items-stretch p-0 bg-transparent border-none;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .expand {\n    @apply flex items-stretch;\n    border-radius: var(--group-item-radius, var(--background-inner-radius));\n  }\n\n  .expand :global(.expand-scope),\n  .expand :global(.expand) {\n    @apply flex w-full h-full;\n  }\n\n  .expand :global(.expand) {\n    @apply flex-col;\n    border-radius: inherit;\n  }\n\n  .expand :global(.trigger) {\n    @apply min-h-0;\n    border-radius: inherit;\n  }\n\n  .trigger {}\n\n  .group {\n    .item :is(.button, .select) {\n      border: none;\n    }\n\n    .input > [data-input-focus-surface=\"true\"] {\n      border: none;\n    }\n\n    .button[data-selected=\"true\"] {\n      font-weight: 500;\n    }\n\n    .item.divider > [role=\"separator\"] {\n      --divider-background: var(--background);\n    }\n\n    &.none {\n      .item:not(.divider) {\n        overflow: hidden;\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: 0;\n        --background-radius: 0;\n        --background-inner-radius: 0;\n      }\n\n      .input {\n        --radius-sm: 0;\n      }\n\n      .item:first-child {\n        --group-item-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n      }\n\n      .item:last-child {\n        --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n      }\n\n      .item:only-child {\n        --group-item-radius: var(--background-inner-radius);\n      }\n\n      &.horizontal {\n        .item:first-child :is( .button, .trigger, .input > *, .select) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-bottom-left-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is( .button, .trigger, .input > *, .select) {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child .trigger .icon-section {\n          border-top-right-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n\n      &.vertical {\n        .item:first-child {\n          --group-item-radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;\n        }\n\n        .item:last-child {\n          --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);\n        }\n\n        .item:first-child :is(.button, .trigger, .input > *, .select) {\n          border-top-left-radius: var(--background-inner-radius);\n          border-top-right-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(.button, .trigger, .input > *, .select) {\n          border-bottom-left-radius: var(--background-inner-radius);\n          border-bottom-right-radius: var(--background-inner-radius);\n        }\n      }\n    }\n\n    &:is(.xs, .sm) {\n      .item {\n        --group-item-radius: var(--background-inner-radius);\n      }\n\n      :is(.button, .trigger, .select) {\n        border-radius: var(--background-inner-radius);\n      }\n\n      .input {\n        --radius-sm: var(--background-inner-radius);\n      }\n    }\n  }\n\n  .group [data-ring=\"true\"] {\n    --ring-shadow: none;\n    --ring-border: transparent;\n    --ring-border-visible: transparent;\n  }\n\n  .group :global(.focus-indicator) {\n    display: none;\n  }\n\n  .group [data-focus-indicator=\"local\"] {\n    display: none;\n  }\n\n  :is(.button[data-focus-visible=\"true\"], .trigger[data-focus-visible=\"true\"]) {\n    @apply outline-none;\n    box-shadow: none;\n  }\n}\n",
     "styleableParts": [
       {
         "name": "root"
@@ -1917,7 +1929,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ]
   },
   "date": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .calendar {\n    --disabled-opacity: 0.5;\n\n    @apply inline-flex p-1.5 flex-col overflow-hidden gap-0;\n    border-radius: var(--radius-xs);\n    background-color: var(--background);\n    border: var(--border-width-base) solid var(--border);\n  }\n\n  .day-headers {\n    @apply grid gap-2 px-4 pt-3 pb-1;\n    grid-template-columns: repeat(7, 1fr);\n    background: var(--background);\n    border: var(--border-width-base) solid var(--border);\n    border-bottom: none;\n    border-radius: var(--radius-xs) var(--radius-xs) 0 0;\n  }\n\n  .day-header {\n    @apply flex items-center justify-center;\n    font-weight: var(--font-weight-medium);\n    font-size: var(--text-xs);\n    color: var(--foreground);\n  }\n\n  .header {\n    @apply flex items-center justify-between gap-4 pl-2 pr-1.5 py-1.5;\n    color: var(--foreground);\n  }\n\n  .month-year {\n    @apply ml-2;\n    font-weight: var(--font-weight-medium);\n    font-size: var(--text-sm);\n    text-align: center;\n  }\n\n  .nav-button {\n    @apply inline-flex min-h-8 min-w-8 items-center justify-center cursor-pointer;\n    border-radius: var(--radius-xs);\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 1px solid transparent;\n    font-size: var(--text-sm);\n    font-weight: 500;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .nav-button:focus-visible {\n    outline: none;\n  }\n\n  .nav-button:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .grid {\n    @apply grid gap-1 px-4 pb-4;\n    grid-template-columns: repeat(7, 1fr);  /* 7 days only */\n    background: var(--background);\n    border-radius: 0 0 var(--radius-xs) var(--radius-xs);\n    border: var(--border-width-base) solid var(--border);\n  }\n\n  .day-cell {\n    @apply flex min-h-8 items-center justify-center px-2.5 py-2 cursor-pointer;\n    border-radius: var(--radius-base);\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 2px solid transparent;\n    font-size: var(--text-xs);\n    font-weight: 400;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .day-cell:focus-visible {\n    outline: none;\n  }\n\n  .week-header {\n    display: none;\n  }\n\n  .week-number {\n    display: none;\n  }\n}\n\n/* Variant states - these are outside @layer */\n.day-cell[data-selected=\"true\"] {\n  font-weight: 500;\n}\n\n.day-cell[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-out-of-range=\"true\"]),\n.day-cell:hover:not([data-disabled=\"true\"]):not([data-out-of-range=\"true\"]) {\n  --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n}\n\n.day-cell[data-today=\"true\"] {\n  border-color: transparent;\n}\n\n.day-cell[data-disabled=\"true\"],\n.day-cell[data-out-of-range=\"true\"] {\n  opacity: var(--disabled-opacity);\n}\n\n.day-cell[data-disabled=\"true\"] { cursor: not-allowed; }\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .calendar {\n    --disabled-opacity: 0.5;\n\n    @apply inline-flex p-1.5 flex-col overflow-hidden gap-0;\n    border-radius: var(--radius-sm);\n    background-color: var(--background);\n    border: var(--border-width-base) solid var(--border);\n  }\n\n  .day-headers {\n    @apply grid gap-2 px-4 pt-3 pb-1;\n    grid-template-columns: repeat(7, 1fr);\n    background: var(--background);\n    border: var(--border-width-base) solid var(--border);\n    border-bottom: none;\n    border-radius: var(--radius-sm) var(--radius-sm) 0 0;\n  }\n\n  .day-header {\n    @apply flex items-center justify-center;\n    font-weight: var(--font-weight-medium);\n    font-size: var(--text-sm);\n    color: var(--foreground);\n  }\n\n  .header {\n    @apply flex items-center justify-between gap-4 pl-2 pr-1.5 py-1.5;\n    color: var(--foreground);\n  }\n\n  .month-year {\n    @apply ml-2;\n    font-weight: var(--font-weight-medium);\n    font-size: var(--text-sm);\n    text-align: center;\n  }\n\n  .nav-button {\n    @apply inline-flex min-h-8 min-w-8 items-center justify-center cursor-pointer;\n    border-radius: var(--radius-sm);\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 1px solid transparent;\n    font-size: var(--text-sm);\n    font-weight: 500;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .nav-button:focus-visible {\n    outline: none;\n  }\n\n  .nav-button:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n  }\n\n  .grid {\n    @apply grid gap-1 px-4 pb-4;\n    grid-template-columns: repeat(7, 1fr);  /* 7 days only */\n    background: var(--background);\n    border-radius: 0 0 var(--radius-sm) var(--radius-sm);\n    border: var(--border-width-base) solid var(--border);\n  }\n\n  .day-cell {\n    @apply flex min-h-8 items-center justify-center px-2.5 py-2 cursor-pointer;\n    border-radius: var(--radius-base);\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 2px solid transparent;\n    font-size: var(--text-sm);\n    font-weight: 400;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .day-cell:focus-visible {\n    outline: none;\n  }\n\n  .week-header {\n    display: none;\n  }\n\n  .week-number {\n    display: none;\n  }\n}\n\n/* Variant states - these are outside @layer */\n.day-cell[data-selected=\"true\"] {\n  font-weight: 500;\n}\n\n.day-cell[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-out-of-range=\"true\"]),\n.day-cell:hover:not([data-disabled=\"true\"]):not([data-out-of-range=\"true\"]) {\n  --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n}\n\n.day-cell[data-today=\"true\"] {\n  border-color: transparent;\n}\n\n.day-cell[data-disabled=\"true\"],\n.day-cell[data-out-of-range=\"true\"] {\n  opacity: var(--disabled-opacity);\n}\n\n.day-cell[data-disabled=\"true\"] { cursor: not-allowed; }\n",
     "styleableParts": [
       {
         "name": "root"
@@ -2246,88 +2258,6 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
           "--hover-transition-enter-duration"
         ],
         "variant": ".item:hover"
-      }
-    ]
-  },
-  "code": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .code {\n    --border-color: var(--background-700);\n    --header-bg: mix(var(--background-900) 90%, transparent);\n    --scroll-track-bg: mix(var(--background-950) 50%, transparent);\n\n    max-height: 52.5rem;\n    border-radius: var(--radius-sm);\n    border: 1px solid var(--border-color);\n    @apply flex w-full min-w-0 flex-col overflow-hidden;\n  }\n\n  .header {\n    flex: none;\n    background-color: var(--header-bg);\n    @apply flex items-center justify-between px-3 py-1.5;\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-semibold);\n    border-bottom: 1px solid var(--border-color);\n    color: var(--foreground-400);\n  }\n\n\n  .body {\n    @apply relative flex min-h-0 flex-1 flex-col;\n    flex: 1;\n  }\n\n  .viewport { @apply overflow-hidden; }\n\n  .viewport :global(pre) {\n    background: transparent;\n    @apply m-0 p-0;\n    width: fit-content;\n  }\n\n  .viewport :global(code) {\n    color: var(--foreground-300);\n    white-space: pre;\n  }\n\n  .viewport::-webkit-scrollbar {\n    width: 0.5rem;\n  }\n\n  .viewport::-webkit-scrollbar-track {\n    background: transparent;\n  }\n\n  .viewport::-webkit-scrollbar-thumb {\n    background-color: var(--background-700);\n    border-radius: 9999px;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .viewport::-webkit-scrollbar-thumb:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-600);\n  }\n\n  .scroll-track {\n    flex: none;\n    @apply w-full;\n    overflow-x: auto;\n    background-color: var(--scroll-track-bg);\n    backdrop-filter: blur(4px);\n  }\n\n  .expand-button {\n    @apply flex w-full items-center gap-3 px-4 py-2 cursor-pointer;\n    color: var(--foreground-300);\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-medium);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    border-top: 1px solid var(--border-color);\n    background: transparent;\n    border-left: none;\n    border-right: none;\n    border-bottom: none;\n    font-family: inherit;\n  }\n\n  .expand-button:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-800);\n  }\n\n  .expand-icon { @apply shrink-0; color: var(--foreground-400); }\n\n  .copy-button {\n    @apply absolute right-2 top-2 flex items-center justify-center p-1 cursor-pointer;\n    border-radius: var(--radius-sm);\n    color: var(--foreground-400);\n    opacity: 0;\n    transition:\n      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background: transparent;\n    border: none;\n    z-index: 1;\n  }\n\n  .copy-button:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-800);\n    color: var(--foreground-300);\n  }\n\n  .copy-button:focus,\n  .body:hover .copy-button {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    opacity: 1;\n  }\n}\n",
-    "styleableParts": [
-      {
-        "name": "root"
-      },
-      {
-        "name": "header"
-      },
-      {
-        "name": "body"
-      },
-      {
-        "name": "viewport"
-      }
-    ],
-    "cssVariables": [
-      {
-        "name": "--border-color",
-        "value": "var(--background-700)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--background-700"
-        ],
-        "variant": ".code"
-      },
-      {
-        "name": "--header-bg",
-        "value": "mix(var(--background-900) 90%, transparent)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--background-900"
-        ],
-        "variant": ".code"
-      },
-      {
-        "name": "--scroll-track-bg",
-        "value": "mix(var(--background-950) 50%, transparent)",
-        "defaultValue": null,
-        "referencedVars": [
-          "--background-950"
-        ],
-        "variant": ".code"
-      },
-      {
-        "name": "--hover-transition-duration",
-        "value": "var(--hover-transition-enter-duration, 0ms)",
-        "defaultValue": "0ms",
-        "referencedVars": [
-          "--hover-transition-enter-duration"
-        ],
-        "variant": ".viewport::-webkit-scrollbar-thumb:hover"
-      },
-      {
-        "name": "--hover-transition-duration",
-        "value": "var(--hover-transition-enter-duration, 0ms)",
-        "defaultValue": "0ms",
-        "referencedVars": [
-          "--hover-transition-enter-duration"
-        ],
-        "variant": ".expand-button:hover"
-      },
-      {
-        "name": "--hover-transition-duration",
-        "value": "var(--hover-transition-enter-duration, 0ms)",
-        "defaultValue": "0ms",
-        "referencedVars": [
-          "--hover-transition-enter-duration"
-        ],
-        "variant": ".copy-button:hover"
-      },
-      {
-        "name": "--hover-transition-duration",
-        "value": "var(--hover-transition-enter-duration, 0ms)",
-        "defaultValue": "0ms",
-        "referencedVars": [
-          "--hover-transition-enter-duration"
-        ],
-        "variant": ".copy-button:focus,\n  .body:hover .copy-button"
       }
     ]
   },
@@ -2840,6 +2770,88 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
       }
     ]
   },
+  "code": {
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .code {\n    --border-color: var(--background-700);\n    --header-bg: mix(var(--background-900) 90%, transparent);\n    --scroll-track-bg: mix(var(--background-950) 50%, transparent);\n\n    max-height: 52.5rem;\n    border-radius: var(--radius-sm);\n    border: 1px solid var(--border-color);\n    @apply flex w-full min-w-0 flex-col overflow-hidden;\n  }\n\n  .header {\n    flex: none;\n    background-color: var(--header-bg);\n    @apply flex items-center justify-between px-3 py-1.5;\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-semibold);\n    border-bottom: 1px solid var(--border-color);\n    color: var(--foreground-400);\n  }\n\n\n  .body {\n    @apply relative flex min-h-0 flex-1 flex-col;\n    flex: 1;\n  }\n\n  .viewport { @apply overflow-hidden; }\n\n  .viewport :global(pre) {\n    background: transparent;\n    @apply m-0 p-0;\n    width: fit-content;\n  }\n\n  .viewport :global(code) {\n    color: var(--foreground-300);\n    white-space: pre;\n  }\n\n  .viewport::-webkit-scrollbar {\n    width: 0.5rem;\n  }\n\n  .viewport::-webkit-scrollbar-track {\n    background: transparent;\n  }\n\n  .viewport::-webkit-scrollbar-thumb {\n    background-color: var(--background-700);\n    border-radius: 9999px;\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .viewport::-webkit-scrollbar-thumb:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-600);\n  }\n\n  .scroll-track {\n    flex: none;\n    @apply w-full;\n    overflow-x: auto;\n    background-color: var(--scroll-track-bg);\n    backdrop-filter: blur(4px);\n  }\n\n  .expand-button {\n    @apply flex w-full items-center gap-3 px-4 py-2 cursor-pointer;\n    color: var(--foreground-300);\n    font-size: var(--text-sm);\n    font-weight: var(--font-weight-medium);\n    transition:\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    border-top: 1px solid var(--border-color);\n    background: transparent;\n    border-left: none;\n    border-right: none;\n    border-bottom: none;\n    font-family: inherit;\n  }\n\n  .expand-button:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-800);\n  }\n\n  .expand-icon { @apply shrink-0; color: var(--foreground-400); }\n\n  .copy-button {\n    @apply absolute right-2 top-2 flex items-center justify-center p-1 cursor-pointer;\n    border-radius: var(--radius-sm);\n    color: var(--foreground-400);\n    opacity: 0;\n    transition:\n      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background: transparent;\n    border: none;\n    z-index: 1;\n  }\n\n  .copy-button:hover {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-800);\n    color: var(--foreground-300);\n  }\n\n  .copy-button:focus,\n  .body:hover .copy-button {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    opacity: 1;\n  }\n}\n",
+    "styleableParts": [
+      {
+        "name": "root"
+      },
+      {
+        "name": "header"
+      },
+      {
+        "name": "body"
+      },
+      {
+        "name": "viewport"
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--border-color",
+        "value": "var(--background-700)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--background-700"
+        ],
+        "variant": ".code"
+      },
+      {
+        "name": "--header-bg",
+        "value": "mix(var(--background-900) 90%, transparent)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--background-900"
+        ],
+        "variant": ".code"
+      },
+      {
+        "name": "--scroll-track-bg",
+        "value": "mix(var(--background-950) 50%, transparent)",
+        "defaultValue": null,
+        "referencedVars": [
+          "--background-950"
+        ],
+        "variant": ".code"
+      },
+      {
+        "name": "--hover-transition-duration",
+        "value": "var(--hover-transition-enter-duration, 0ms)",
+        "defaultValue": "0ms",
+        "referencedVars": [
+          "--hover-transition-enter-duration"
+        ],
+        "variant": ".viewport::-webkit-scrollbar-thumb:hover"
+      },
+      {
+        "name": "--hover-transition-duration",
+        "value": "var(--hover-transition-enter-duration, 0ms)",
+        "defaultValue": "0ms",
+        "referencedVars": [
+          "--hover-transition-enter-duration"
+        ],
+        "variant": ".expand-button:hover"
+      },
+      {
+        "name": "--hover-transition-duration",
+        "value": "var(--hover-transition-enter-duration, 0ms)",
+        "defaultValue": "0ms",
+        "referencedVars": [
+          "--hover-transition-enter-duration"
+        ],
+        "variant": ".copy-button:hover"
+      },
+      {
+        "name": "--hover-transition-duration",
+        "value": "var(--hover-transition-enter-duration, 0ms)",
+        "defaultValue": "0ms",
+        "referencedVars": [
+          "--hover-transition-enter-duration"
+        ],
+        "variant": ".copy-button:focus,\n  .body:hover .copy-button"
+      }
+    ]
+  },
   "checkbox": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .checkbox {\n    @apply inline-grid gap-x-3;\n    grid-template-columns: auto 1fr;\n    grid-template-rows: auto auto;\n  }\n\n  .container {\n    @apply relative inline-flex items-center justify-center;\n  }\n\n  .box {\n    @apply relative h-5 w-5 cursor-pointer appearance-none;\n\n    background-color: var(--background);\n    border: var(--border-width-base, 1px) solid var(--background-border);\n    border-radius: var(--radius-xs, 0.25rem);\n    outline: none;\n\n    &[data-invalid=\"true\"] {\n      border-color: var(--background-error-border, var(--danger-600));\n    }\n\n    &[data-invalid=\"true\"][data-selected=\"true\"],\n    &[data-invalid=\"true\"][data-indeterminate=\"true\"] {\n      border-color: var(--background-border);\n    }\n\n    &[data-disabled=\"true\"] {\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity, 0.6);\n      pointer-events: none;\n    }\n  }\n\n  .checkmark,\n  .indeterminate {\n    @apply absolute;\n    inset: 50%;\n    width: 65%;\n    height: 65%;\n    transform: translate(-50%, -50%);\n    color: var(--foreground);\n    pointer-events: none;\n  }\n\n  .label {\n    @apply cursor-pointer select-none;\n\n    &[data-disabled=\"true\"] {\n      @apply opacity-60 cursor-not-allowed;\n    }\n  }\n\n  .label-md {\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-medium, 500);\n  }\n\n  .helper-text {\n    @apply text-xs;\n    grid-column: 2;\n    color: var(--helper-foreground);\n\n    &[data-error=\"true\"] {\n      color: var(--helper-error-foreground, var(--foreground-error, var(--danger-600)));\n    }\n  }\n}\n",
     "styleableParts": [
@@ -2951,7 +2963,7 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
     ]
   },
   "badge": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .badge {\n    @apply inline-flex items-center justify-center gap-2 select-none whitespace-nowrap px-1.5;\n    height: fit-content;\n    width: fit-content;\n    background-color: var(--background, var(--background-800));\n    color: var(--foreground, var(--foreground-200));\n    border: var(--border-width-base, 1px) solid var(--background-border, var(--background-600));\n    border-radius: var(--radius-sm, 0.375rem);\n    font-weight: var(--font-weight-semibold, 600);\n    font-size: var(--text-xs, 0.75rem);\n    line-height: var(--leading-tight, 1.25);\n  }\n\n  .badge.dismissible {\n    @apply pr-0.5;\n  }\n\n  .pill {\n    border-radius: 9999px;\n  }\n\n  .icon {\n    @apply flex items-center shrink-0;\n  }\n\n  .dismiss {\n    @apply ml-1 flex shrink-0 items-center justify-center p-0 cursor-pointer;\n    width: 1em;\n    height: 1em;\n    line-height: 1;\n    border-radius: var(--radius-xs, 0.25rem);\n    background-color: var(--dismiss-background, var(--background, transparent));\n    color: var(--foreground, var(--foreground-400));\n    border: none;\n    transition:\n      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    outline: none;\n  }\n\n  .dismiss svg {\n    width: 100%;\n    height: 100%;\n  }\n\n  .dismiss[data-hovered=\"true\"] {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-hover, var(--dismiss-background, transparent));\n  }\n\n  .dismiss[data-pressed=\"true\"] {\n    background-color: var(\n      --background-pressed,\n      var(--background-hover, var(--dismiss-background, transparent))\n    );\n    transform: scale(0.95);\n  }\n\n  .dismiss[data-focus-visible=\"true\"] {\n    box-shadow: 0 0 0 1.5px var(--focus-visible, var(--foreground));\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components {\n  .badge {\n    @apply inline-flex items-center justify-center gap-2 select-none whitespace-nowrap px-1.5;\n    height: fit-content;\n    width: fit-content;\n    background-color: var(--background, var(--background-800));\n    color: var(--foreground, var(--foreground-200));\n    border: var(--border-width-base, 1px) solid var(--background-border, var(--background-600));\n    border-radius: var(--radius-sm, 0.375rem);\n    font-weight: var(--font-weight-medium, 500);\n    font-size: var(--text-xs, 0.75rem);\n    line-height: var(--leading-tight, 1.25);\n  }\n\n  .badge.dismissible {\n    @apply pr-0.5;\n  }\n\n  .pill {\n    border-radius: 9999px;\n  }\n\n  .icon {\n    @apply flex items-center shrink-0;\n  }\n\n  .dismiss {\n    @apply ml-1 flex shrink-0 items-center justify-center p-0 cursor-pointer;\n    width: 1em;\n    height: 1em;\n    line-height: 1;\n    border-radius: var(--radius-xs, 0.25rem);\n    background-color: var(--dismiss-background, var(--background, transparent));\n    color: var(--foreground, var(--foreground-400));\n    border: none;\n    transition:\n      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    outline: none;\n  }\n\n  .dismiss svg {\n    width: 100%;\n    height: 100%;\n  }\n\n  .dismiss[data-hovered=\"true\"] {\n    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);\n    background-color: var(--background-hover, var(--dismiss-background, transparent));\n  }\n\n  .dismiss[data-pressed=\"true\"] {\n    background-color: var(\n      --background-pressed,\n      var(--background-hover, var(--dismiss-background, transparent))\n    );\n    transform: scale(0.95);\n  }\n\n  .dismiss[data-focus-visible=\"true\"] {\n    box-shadow: 0 0 0 1.5px var(--focus-visible, var(--foreground));\n  }\n}\n",
     "styleableParts": [
       {
         "name": "root"

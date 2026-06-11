@@ -307,8 +307,8 @@ export function compareMeasuredMetrics(
   ];
 
   metricsKeys.forEach((key) => {
-    const targetValue = targetMetrics?.[key] ?? null;
-    const refValue = referenceMetrics?.[key] ?? null;
+    const targetValue = (targetMetrics?.[key] ?? null) as number | null;
+    const refValue = (referenceMetrics?.[key] ?? null) as number | null;
 
     let delta: number | null = null;
     let deltaPercent: number | null = null;
