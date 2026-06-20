@@ -11,11 +11,12 @@ const rootDir = path.resolve(__dirname, '..');
 const PACKAGES = {
   'ui-lab-registry': path.join(rootDir, 'packages/registry/package.json'),
   'ui-lab-components': path.join(rootDir, 'packages/@ui/package.json'),
+  'ui-lab-theme-onyx': path.join(rootDir, 'packages/themes/onyx/package.json'),
 };
 
 const TARGET_FILES = [
   path.join(rootDir, 'package.json'),
-  path.join(rootDir, 'apps/site/package.json'),
+  path.join(rootDir, 'apps/www/package.json'),
   path.join(rootDir, 'packages/registry/package.json'),
   path.join(rootDir, 'packages/@mcp/package.json'),
 ];
