@@ -3,12 +3,10 @@
 @layer components {
   .slider {
     --disabled-opacity: 0.6;
-    --slider-track-size: 0.375rem;
-    --slider-thumb-size: 1rem;
 
     @apply relative flex w-full items-center;
-    min-inline-size: var(--slider-min-inline-size, 12rem);
-    min-height: var(--slider-hit-size, 2rem);
+    min-inline-size: var(--inline-size, 12rem);
+    min-height: var(--hit-size, 2rem);
     touch-action: none;
     user-select: none;
   }
@@ -16,41 +14,43 @@
   .track {
     @apply relative flex grow items-center;
     flex-grow: 1;
-    height: var(--slider-track-size);
+    height: var(--track-size, calc(var(--spacing-md) * 0.80));
     overflow: visible;
-    border-radius: var(--slider-track-radius, var(--radius-xs, 0.25rem));
-    border: var(--slider-track-border, 0);
-    background: var(
-      --slider-track-background,
-      var(--background, var(--background-800, transparent))
-    );
+    border-radius: var(--track-radius, calc(var(--spacing-xs) * 0.50));
+    border: 0;
+    background: var(--background);
+  }
+
+  .range-clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
   }
 
   .range {
     @apply absolute;
-    display: var(--slider-range-display, block);
+    display: block;
     pointer-events: none;
-    border-radius: var(--slider-track-radius, var(--radius-xs, 0.25rem));
-    background: var(--slider-range-background, var(--background));
+    background: var(--background);
     transition:
       background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .thumb {
     @apply absolute block;
-    top: 50%;
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
-    transform: var(--slider-thumb-transform, translate(-50%, -50%));
-    border-radius: var(--radius-full, 9999px);
+    top: var(--thumb-top, 0);
+    width: var(--thumb-width, 12px);
+    height: var(--thumb-height, 100%);
+    transform: var(--thumb-transform, translateX(-50%));
+    border-radius: var(--thumb-radius, calc(var(--spacing-xs) * 0.35));
     outline: none;
-    background: var(--slider-thumb-background, var(--background));
-    border: var(--slider-thumb-border, 1px solid var(--background-border));
-    box-shadow: var(--slider-thumb-shadow, none);
+    background: var(--background);
+    border: none;
+    box-shadow: none;
     transition:
       background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      box-shadow var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
@@ -66,7 +66,7 @@
   }
 
   .slider[data-orientation="vertical"] .track {
-    width: var(--slider-track-size);
+    width: var(--track-size, calc(var(--spacing-md) * 0.80));
     height: 100%;
   }
 
@@ -78,7 +78,9 @@
   .slider[data-orientation="vertical"] .thumb {
     left: 50%;
     top: auto;
-    --slider-thumb-transform: translate(-50%, 50%);
+    width: var(--thumb-height, 100%);
+    height: var(--thumb-width, 12px);
+    transform: translate(-50%, 50%);
   }
 
   .slider[data-disabled="true"] {
@@ -87,19 +89,19 @@
   }
 
   .slider[data-disabled="true"] .range {
-    background: var(--slider-range-background-disabled, var(--background-disabled, var(--slider-range-background, var(--background))));
+    background: var(--disabled-background, var(--background));
   }
 
   .thumb[data-disabled="true"] {
     cursor: not-allowed;
-    background: var(--slider-thumb-background-disabled, var(--background-disabled, var(--slider-thumb-background, var(--background))));
+    background: var(--disabled-background, var(--background));
   }
 
   .thumb[data-pressed="true"] {
-    transform: var(--slider-thumb-transform, translate(-50%, -50%)) scale(var(--slider-thumb-scale-active, 1.08));
+    transform: var(--thumb-transform, translateX(-50%)) scale(1.08);
   }
 
   .slider[data-orientation="vertical"] .thumb[data-pressed="true"] {
-    transform: var(--slider-thumb-transform, translate(-50%, 50%)) scale(var(--slider-thumb-scale-active, 1.08));
+    transform: translate(-50%, 50%) scale(1.08);
   }
 }

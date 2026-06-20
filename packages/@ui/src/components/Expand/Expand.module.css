@@ -30,6 +30,7 @@
     border-radius: 0;
     font-size: var(--text-sm);
     line-height: var(--leading-snug);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     outline: none;
     box-shadow: none;
     transition:
@@ -53,7 +54,8 @@
 
     padding: var(--expand-trigger-padding-y) 0 var(--expand-trigger-padding-y)
       var(--expand-trigger-padding-x);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     border-radius: 0;
     color: inherit;
     background-color: transparent;

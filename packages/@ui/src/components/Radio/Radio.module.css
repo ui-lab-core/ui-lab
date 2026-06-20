@@ -62,7 +62,8 @@
     @apply cursor-pointer;
     color: var(--foreground);
     font-size: inherit;
-    font-weight: var(--font-weight-medium, 500);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     line-height: inherit;
     user-select: none;
 
@@ -75,12 +76,14 @@
   .radio-description {
     color: var(--foreground);
     font-size: var(--text-sm, 0.875rem);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     margin-top: 0.125rem;
   }
 
   .helper-text {
     color: var(--foreground);
     font-size: var(--text-sm, 0.875rem);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     margin-top: 0.5rem;
     margin-left: 2rem;
   }

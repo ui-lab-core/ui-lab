@@ -31,6 +31,7 @@
     --foreground: var(--foreground-200);
     --background-border: var(--background-700);
     --focus-visible: var(--accent-400);
+    --icon-foreground: var(--foreground-400);
     font-size: var(--text-xs);
   }
 
@@ -560,8 +561,8 @@
 
   .select > .content,
   .select > .sub-content {
-    --background: var(--background-900);
-    --background-border: var(--background-700);
+    --background: var(--background-700);
+    --background-border: var(--background-600);
   }
 
   .select > .content [role="option"].item,
@@ -581,7 +582,22 @@
   .select > .sub-content [role="option"].sub-trigger[data-highlighted="true"],
   .select > .content [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]),
   .select > .sub-content [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]) {
-    --background: color-mix(in srgb, var(--background-700) 50%, transparent);
+    --background: color-mix(in srgb, var(--background-500) 10%, var(--background-600));
+  }
+
+  .select > .content .scroll > .track > .thumb,
+  .select > .sub-content .scroll > .track > .thumb {
+    --background: var(--background-500);
+  }
+
+  .select > .content .scroll > .track > .thumb:hover,
+  .select > .sub-content .scroll > .track > .thumb:hover {
+    --background: color-mix(in srgb, var(--foreground-400) 80%, transparent);
+  }
+
+  .select > .content .scroll[data-pressed="true"] > .track > .thumb,
+  .select > .sub-content .scroll[data-pressed="true"] > .track > .thumb {
+    --background: color-mix(in srgb, var(--foreground-400) 60%, transparent);
   }
 
   .select > .placeholder {
@@ -597,20 +613,19 @@
   }
 
   .slider > .track {
-    --background: var(--background-800);
+    --background: var(--background-900);
   }
 
-  .slider > .track > .range {
-    --background: color-mix(in srgb, var(--accent-500) 60%, transparent);
-    --background-disabled: var(--background-600);
+  .slider > .track .range {
+    --background: color-mix(in srgb, var(--background-500) 20%, transparent);
+    --disabled-background: var(--background-600);
   }
 
   .slider > .track > .thumb {
-    --background: white;
+    --background: var(--foreground-400);
     --background-border: color-mix(in srgb, var(--background-500) 40%, transparent);
-    --background-focused: var(--accent-400);
-    --background-disabled: var(--background-500);
-    --focus-visible: color-mix(in srgb, var(--accent-500) 40%, transparent);
+    --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
+    --disabled-background: var(--background-500);
   }
 
   .switch {
@@ -618,6 +633,8 @@
     --foreground: var(--background-500);
     --background-border: var(--background-600);
     --focus-visible: 0 0 0 3px color-mix(in srgb, var(--accent-500) 40%, transparent);
+    --transition-duration: 120ms;
+    --transition-easing: linear;
   }
 
   .switch[data-selected="true"] {
@@ -729,32 +746,32 @@
     --foreground: var(--foreground-200);
   }
 
-  .progress {
+  .progress > .track {
     --background: var(--background-700);
-  }
-
-  .progress > .fill {
-    --background: color-mix(in srgb, var(--accent-600) 60%, var(--background-500));
   }
 
   .progress > .label-row {
     --foreground: var(--foreground-400);
   }
 
-  .progress > .bar[data-variant="default"] > .fill {
-    --background: var(--accent-500);
+  .progress > .track[data-variant="default"] .range {
+    --background: color-mix(in srgb, var(--background-500) 90%, transparent);
   }
 
-  .progress > .bar[data-variant="success"] > .fill {
-    --background: var(--success-500);
+  .progress > .track[data-variant="success"] .range {
+    --background: color-mix(in srgb, var(--success-500) 20%, transparent);
   }
 
-  .progress > .bar[data-variant="warning"] > .fill {
-    --background: var(--warning-500);
+  .progress > .track[data-variant="warning"] .range {
+    --background: color-mix(in srgb, var(--warning-500) 20%, transparent);
   }
 
-  .progress > .bar[data-variant="error"] > .fill {
-    --background: var(--danger-500);
+  .progress > .track[data-variant="error"] .range {
+    --background: color-mix(in srgb, var(--danger-500) 20%, transparent);
+  }
+
+  .progress > .track .thumb {
+    --background: var(--foreground-400);
   }
 
   .toast {
@@ -1022,7 +1039,8 @@
   .primary {
     --background: var(--foreground-100);
     --foreground: var(--background-900);
-    --background-border: var(--foreground-200);
+    --icon-foreground: var(--background-700);
+    border: none;
   }
 
   .primary[data-hovered="true"]:not([data-disabled="true"]) {
@@ -1036,9 +1054,9 @@
   }
 
   .secondary {
-    --background: var(--background-900);
-    --foreground: var(--foreground-200);
-    --background-border: var(--background-700);
+    --background: color-mix(in srgb, var(--background-900) 50%, transparent);
+    --foreground: var(--foreground-300);
+    --background-border: var(--background-800);
   }
 
   .secondary[data-hovered="true"]:not([data-disabled="true"]) {
@@ -1073,6 +1091,7 @@
     --foreground: var(--danger-600);
     --background-border: transparent;
     --focus-visible: var(--danger-400);
+    --icon-foreground: var(--danger-700);
   }
 
   .danger[data-hovered="true"]:not([data-disabled="true"]) {
@@ -1118,6 +1137,7 @@
     --foreground: var(--success-600);
     --background-border: color-mix(in srgb, var(--success-600) 20%, var(--background-900));
     --focus-visible: var(--success-400);
+    --icon-foreground: var(--success-700);
   }
 
   .success[data-hovered="true"]:not([data-disabled="true"]) {
@@ -1135,6 +1155,7 @@
     --foreground: var(--warning-600);
     --background-border: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));
     --focus-visible: var(--warning-400);
+    --icon-foreground: var(--warning-700);
   }
 
   .warning[data-hovered="true"]:not([data-disabled="true"]) {
@@ -1152,6 +1173,7 @@
     --foreground: var(--info-600);
     --background-border: color-mix(in srgb, var(--info-600) 20%, var(--background-900));
     --focus-visible: var(--info-400);
+    --icon-foreground: var(--info-700);
   }
 
   .info[data-hovered="true"]:not([data-disabled="true"]) {

@@ -1,14 +1,12 @@
-export interface Styles {
-  bar: string;
-  sm: string;
-  md: string;
-  lg: string;
-  fill: string;
-  wrapper: string;
-  "label-row": string;
-  label: string;
-  value: string;
-}
+declare const styles: {
+  readonly progress: string;
+  readonly "label-row": string;
+  readonly label: string;
+  readonly value: string;
+  readonly track: string;
+  readonly "range-clip": string;
+  readonly range: string;
+  readonly thumb: string;
+};
 
-declare const styles: Styles;
 export default styles;

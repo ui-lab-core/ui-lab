@@ -22,9 +22,9 @@
   .switch-track {
     @apply absolute inset-0;
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--transition-duration) var(--transition-easing),
+      border-color var(--transition-duration) var(--transition-easing),
+      transform var(--transition-duration) var(--transition-easing);
     background-color: var(--background);
     border: var(--border-width-base) solid var(--background-border);
     border-radius: var(--radius);
@@ -39,7 +39,7 @@
     left: var(--thumb-offset);
     width: var(--thumb-size);
     height: var(--thumb-size);
-    transition: left 180ms var(--ease-snappy-pop), background-color 180ms var(--ease-snappy-pop);
+    transition: left var(--transition-duration) var(--transition-easing), background-color var(--transition-duration) var(--transition-easing);
     background-color: var(--foreground);
     border-radius: var(--inner-radius);
     z-index: 1;
@@ -50,13 +50,7 @@
     left: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));
   }
 
-  @media (hover: hover) {
-    .switch[data-hovered="true"]:not([data-disabled]) .switch-track {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
-    }
-  }
-
-  .switch[data-disabled] {
+.switch[data-disabled] {
     opacity: var(--disabled-opacity);
     cursor: not-allowed;
   }

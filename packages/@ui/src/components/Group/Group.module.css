@@ -179,7 +179,8 @@
     }
 
     .button[data-selected="true"] {
-      font-weight: 500;
+      font-weight: var(--font-weight-body-medium, 500);
+      letter-spacing: var(--letter-spacing-md, -0.0050em);
     }
 
     .item.divider > [role="separator"] {

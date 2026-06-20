@@ -61,6 +61,7 @@
     color: var(--foreground);
     outline: none;
     box-shadow: none;
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     transition:
       color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));

@@ -10,7 +10,7 @@ import { useRadioGroup, useRadio } from "@react-aria/radio";
 
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { asElementProps } from "@/lib/react-aria";
+import { asElementProps, resolveAccessibleLabel } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Radio.module.css";
@@ -224,12 +224,17 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
 
     const ariaLabelFromProps = props["aria-label"];
     const ariaLabelValue = ariaLabelFromProps || (typeof label === "string" ? label : undefined);
+    const resolvedAriaLabel = resolveAccessibleLabel(
+      "Radio.Item",
+      ariaLabelValue,
+      `Radio option ${value}`
+    );
 
     const { inputProps } = useRadio(
       {
         value,
         isDisabled: disabled,
-        ...(ariaLabelValue && { "aria-label": ariaLabelValue }),
+        "aria-label": resolvedAriaLabel,
       },
       state,
       inputRef

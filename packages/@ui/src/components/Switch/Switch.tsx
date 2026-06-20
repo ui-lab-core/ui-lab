@@ -11,6 +11,7 @@ import { useToggleState } from "react-stately";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
+import { resolveAccessibleLabel } from "@/lib/react-aria";
 
 import styles from "./Switch.module.css";
 
@@ -68,11 +69,14 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
 
     // Extract aria-label from props if provided
     const { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledby, ...otherProps } = props;
+    const resolvedAriaLabel = ariaLabelledby
+      ? undefined
+      : resolveAccessibleLabel("Switch", ariaLabel, `Switch ${props.id ?? props.name ?? ""}`.trim());
 
     const { inputProps, isSelected } = useSwitch(
       {
         isDisabled,
-        ...(ariaLabel && { "aria-label": ariaLabel }),
+        ...(resolvedAriaLabel && { "aria-label": resolvedAriaLabel }),
         ...(ariaLabelledby && { "aria-labelledby": ariaLabelledby }),
       },
       state,
@@ -130,8 +134,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
           type="checkbox"
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           aria-checked={isSelected}
-          {...mergeProps(inputProps, focusProps, hoverProps)}
-          {...otherProps}
+          {...mergeProps(inputProps, focusProps, hoverProps, otherProps)}
         />
       </div>
     );

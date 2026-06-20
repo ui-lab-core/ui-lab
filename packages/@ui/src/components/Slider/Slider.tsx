@@ -541,12 +541,14 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
         >
-          <div
-            className={cn("range", css.range, resolved.range)}
-            data-slider-range="true"
-            data-disabled={disabled ? "true" : undefined}
-            style={rangeStyle}
-          />
+          <div className={css["range-clip"]}>
+            <div
+              className={cn("range", css.range, resolved.range)}
+              data-slider-range="true"
+              data-disabled={disabled ? "true" : undefined}
+              style={rangeStyle}
+            />
+          </div>
           {values.map((sliderValue, index) => (
             <SliderThumb
               key={index}

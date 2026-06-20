@@ -56,7 +56,8 @@
 
   .label-md {
     font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-medium, 500);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 
   .helper-text {

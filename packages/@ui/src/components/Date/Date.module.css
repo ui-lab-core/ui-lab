@@ -21,8 +21,9 @@
 
   .day-header {
     @apply flex items-center justify-center;
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-body-medium, 500);
     font-size: var(--text-sm);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--foreground);
   }
 
@@ -33,7 +34,7 @@
 
   .month-year {
     @apply ml-2;
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-body-medium, 500);
     font-size: var(--text-sm);
     text-align: center;
   }

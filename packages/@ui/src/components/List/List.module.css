@@ -29,8 +29,9 @@
   }
 
   .header > :first-child {
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-body-semibold, 600);
     font-size: 1.125rem;
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--header-title-foreground);
   }
 
@@ -92,12 +93,14 @@
   .title {
     font-size: var(--text-sm);
     font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--foreground);
     @apply truncate;
   }
 
   .desc {
     font-size: var(--text-sm);
+    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--desc-foreground);
     @apply truncate;
   }
