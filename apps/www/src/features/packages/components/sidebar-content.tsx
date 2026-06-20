@@ -2,7 +2,8 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { Expand } from 'ui-lab-components';
-import { cn, useUrlSearchParams } from '@/shared';
+import { useUrlSearchParams } from '@/shared/hooks/use-url-search-params';
+import { cn } from '@/shared/lib/utils';
 import { SidebarItemLink } from '@/features/navigation';
 import {
   getAllSections,

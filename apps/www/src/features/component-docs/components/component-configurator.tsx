@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { cn } from "@/shared";
+import { cn } from "@/shared/lib/utils";
 import { Code } from "@/features/docs/components/code-display/code";
 import { DEVICE_PRESETS, PreviewContainer, calculateVariantFromWidth } from "@/features/preview";
 import { Button, Divider, Group, Scroll } from "ui-lab-components";
 import { Select } from "ui-lab-components";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
-import { FaMinus, FaPlus } from "react-icons/fa6";
+import { FaMinus, FaPlus } from "@/shared/icons/fa6";
 
 
 
@@ -183,7 +183,7 @@ export function ComponentConfigurator({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-0">
       {/* Header */}
       {title && (
         <div className="border-b space-y-2 border-background-700 py-5">
@@ -195,7 +195,7 @@ export function ComponentConfigurator({
       )
       }
 
-      <div className="flex rounded-sm border border-background-700 flex-col md:flex-row h-full md:items-center">
+      <div className="flex rounded-sm border border-background-700 rounded-b-none flex-col md:flex-row h-full md:items-center">
         <div className="h-full border-background-700 flex-1 min-w-0 overflow-hidden">
           {!hidePreviewToggle && resizable && (
             <PreviewContainer
@@ -384,7 +384,7 @@ export function ComponentConfigurator({
       </div>
 
       {codeContent && (
-        <div className="overflow-hidden rounded-sm border border-background-700">
+        <div className="overflow-hidden rounded-sm border border-t-0! border-background-700 rounded-t-none">
           {codeContent}
         </div>
       )}

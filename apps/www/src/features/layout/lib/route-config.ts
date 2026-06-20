@@ -1,4 +1,4 @@
-import { FaBook, FaShapes, FaRegWindowMaximize, FaBox, FaCube, FaSeedling, FaTableCells } from 'react-icons/fa6';
+import { FaBook, FaShapes, FaRegWindowMaximize, FaBox, FaCube, FaSeedling, FaTableCells } from '@/shared/icons/fa6';
 
 type DomainId = 'docs' | 'components' | 'packages' | 'sections' | 'starters' | 'patterns';
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "ui-lab-components";
-import { FaFolder, FaFolderOpen, FaFile, FaExpand } from "react-icons/fa6";
+import { FaFolder, FaFolderOpen, FaFile, FaExpand } from "@/shared/icons/fa6";
 import { PreviewContainer, DEVICE_PRESETS, calculateVariantFromWidth, PreviewDeviceVariant } from "@/features/preview";
 import { Code } from "@/features/docs/components/code-display/code";
 import { useExternalWindow } from "@/features/preview/hooks/use-external-window";

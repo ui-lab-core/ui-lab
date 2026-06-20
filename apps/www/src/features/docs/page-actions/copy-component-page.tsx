@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Expand, Flex, Group } from 'ui-lab-components';
-import { FaCheck, FaRegClipboard } from 'react-icons/fa6';
+import { FaCheck, FaRegClipboard } from '@/shared/icons/fa6';
 import { generatedAPI, generatedStyles } from 'ui-lab-registry';
 import type { ComponentDetail } from '@/types/component';
 

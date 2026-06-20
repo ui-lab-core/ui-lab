@@ -5,7 +5,7 @@ import {
   FaChevronDown,
   FaCheck,
   FaSun,
-} from "react-icons/fa6";
+} from "@/shared/icons/fa6";
 import {
   type OklchColor,
   type HueRange,

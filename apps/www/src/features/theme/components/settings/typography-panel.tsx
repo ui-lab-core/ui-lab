@@ -10,7 +10,7 @@ import {
   FaScaleUnbalanced,
   FaRulerHorizontal,
   FaArrowsLeftRight,
-} from "react-icons/fa6";
+} from "@/shared/icons/fa6";
 import { Divider, Select, Slider } from "ui-lab-components";
 import { BODY_FONTS, HEADER_FONTS, MONO_FONTS } from "../../constants/font-config";
 import {

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { generateMetadata } from "@/shared";
+import { generateMetadata } from "@/shared/lib/metadata";
 
 interface ComponentsLayoutProps {
   children: ReactNode;

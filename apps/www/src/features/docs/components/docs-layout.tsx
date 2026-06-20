@@ -1,9 +1,9 @@
-import { Sidebar } from "@/shared";
+import { Sidebar } from "@/features/layout/components/sidebar";
 import { TableOfContents, type TableOfContentsItem } from "./table-of-contents";
 import { CopyPage, OpenPage } from "../page-actions";
 import { DocsLayoutChatSync } from "./docs-layout-chat-sync";
 import "../../../app/docs.css";
-import { Footer } from "@/features/layout";
+import { Footer } from "@/features/layout/components/footer";
 import { Group } from "ui-lab-components";
 
 interface DocsLayoutProps {

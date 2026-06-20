@@ -6,10 +6,10 @@ import { useApp } from "@/features/theme/lib/app-context";
 import { resolveCodeThemeSelection } from "@/features/theme/lib/themes/shiki/resolve-code-theme";
 import { resolveShikiLanguage } from "@/features/docs/lib/shiki-language";
 import { CopyButton } from "./copy-button";
-import { FaSort } from "react-icons/fa6";
-import { LuChevronsDownUp } from "react-icons/lu";
-import { cn } from "@/shared";
+import { LuChevronsDownUp } from "@/shared/icons/lu";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "ui-lab-components";
+import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
 
@@ -276,9 +276,9 @@ export function Code({
         {shouldShowExpandButton && !expanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="w-full px-4 flex items-center py-2 hover:bg-background-800 text-foreground-300 text-sm font-medium transition-colors border-t border-background-700"
+            className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-800 text-foreground-300 text-xs font-semibold transition-colors border-t border-background-700"
           >
-            <FaSort className="text-foreground-400 inline mr-3" /> Show {hiddenCodeLines} more lines
+            <HiOutlineChevronUpDown size={24} className="text-foreground-400 inline mr-3" /> Show {hiddenCodeLines} more lines
           </button>
         )}
       </div>

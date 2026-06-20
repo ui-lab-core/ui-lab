@@ -1,13 +1,10 @@
 'use client';
 
 import { useCallback, useEffect } from "react";
-import {
-  AppProvider,
-  useApp,
-  useThemeStorage,
-  themes,
-} from "@/features/theme";
-import { ChatProvider, useChat } from "@/features/chat";
+import { ChatProvider, useChat } from "@/features/chat/context/chat-context";
+import { themes } from "@/features/theme/constants/themes";
+import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
+import { AppProvider, useApp } from "@/features/theme/lib/app-context";
 // import { PERF_OVERLAY_TOGGLE_EVENT, PerfOverlay } from "@/features/dev/components/perf-overlay";
 
 function KeyboardShortcuts() {

@@ -8,7 +8,7 @@ import {
   FaSun,
   FaTree,
   FaCopy,
-} from "react-icons/fa6";
+} from "@/shared/icons/fa6";
 import { Divider } from "ui-lab-components";
 
 const features = [

@@ -14,7 +14,7 @@ export function ColorPreviewCell({ oklch, family, shade }: ColorPreviewCellProps
 
   return (
     <div
-      className="w-5 h-5 rounded-xs border border-background-700"
+      className="w-full h-10 rounded-xs border-[0.5] border-background-700"
       style={{ backgroundColor: cssValue }}
       title={`${family} ${shade}`}
     />

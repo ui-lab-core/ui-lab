@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { ElementPackageMetadata, LayoutConfig } from 'ui-lab-registry';
-import { GenericContentGrid } from '@/features/layout';
+import { GenericContentGrid } from '@/features/packages/components/content-grid';
 import {
   getPackageLayoutConfig,
   getPackagePreviewComponent,

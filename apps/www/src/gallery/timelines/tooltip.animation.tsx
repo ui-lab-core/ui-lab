@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import React from "react";
 import { Frame } from "ui-lab-components";
-import { FaQuestion } from "react-icons/fa6";
+import { FaQuestion } from "@/shared/icons/fa6";
 import config from "./config.json";
 import {
   Cursor,

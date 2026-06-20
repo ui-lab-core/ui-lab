@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { FaExpand } from "react-icons/fa6";
+import { FaExpand } from "@/shared/icons/fa6";
 import { Button } from "ui-lab-components";
 import { Code } from "@/features/docs/components/code-display/code";
 import { PreviewContainer } from "./resizable-preview-container";

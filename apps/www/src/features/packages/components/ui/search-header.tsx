@@ -1,8 +1,8 @@
 'use client';
 import { useRef, useCallback } from 'react';
 import { Input } from 'ui-lab-components';
-import { FaMagnifyingGlass, FaX } from 'react-icons/fa6';
-import { cn } from '@/shared';
+import { FaMagnifyingGlass, FaX } from '@/shared/icons/fa6';
+import { cn } from '@/shared/lib/utils';
 
 interface ElementsSearchHeaderProps {
   className: string;

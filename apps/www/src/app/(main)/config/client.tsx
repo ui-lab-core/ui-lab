@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useApp } from "@/features/theme";
+import { useApp } from "@/features/theme/lib/app-context";
 import { generateThemeSetupFiles } from "@/features/theme/config";
 import { Code } from "@/features/docs/components/code-display/code";
 import { SettingsSidebar } from "@/features/theme/components/settings-sidebar";
@@ -44,7 +44,7 @@ import {
   ShieldCheck,
   UserPlus,
 } from "lucide-react";
-import { SiGithub } from "react-icons/si";
+import { SiGithub } from "@/shared/icons/si";
 
 const SETUP_INSTALL = `pnpm add ui-lab-components`;
 

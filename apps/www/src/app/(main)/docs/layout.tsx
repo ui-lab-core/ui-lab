@@ -1,6 +1,6 @@
 import { DocsLayout } from "@/features/docs";
 import { YouTubeBanner } from "@/features/docs/components/youtube-banner";
-import { generateMetadata } from "@/shared";
+import { generateMetadata } from "@/shared/lib/metadata";
 import { Metadata } from "next";
 
 export const metadata: Metadata = generateMetadata({ pathname: '/docs' });

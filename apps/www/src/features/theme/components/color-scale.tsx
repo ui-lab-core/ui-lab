@@ -48,7 +48,7 @@ export function ColorScale({ family }: ColorScaleProps) {
           <tbody>
             {colorRows.map(({ shade, color }) => (
               <tr key={shade} className="border-b border-background-800 last:border-b-0">
-                <td className="px-4 text-sm py-3 text-foreground-300">
+                <td className="px-1 py-1 text-sm text-foreground-300">
                   <div className="flex justify-center">
                     <ColorPreviewCell oklch={color!} family={family} shade={shade.toString()} />
                   </div>

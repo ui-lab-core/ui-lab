@@ -2,8 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import { Expand, Flex, Group } from 'ui-lab-components';
-import { FaGithub, FaArrowUpRightFromSquare } from 'react-icons/fa6';
-import { SiClaude, SiOpenai, SiGooglegemini } from 'react-icons/si';
+import { FaGithub, FaArrowUpRightFromSquare } from '@/shared/icons/fa6';
+import { SiClaude, SiOpenai, SiGooglegemini } from '@/shared/icons/si';
 import { sourceUrls } from 'ui-lab-registry';
 
 export function OpenPage({ componentId }: { componentId?: string }) {

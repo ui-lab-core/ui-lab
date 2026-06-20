@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from '@/shared';
+import { cn } from '@/shared/lib/utils';
 import { useState } from 'react';
-import { FaTableCellsLarge, FaList } from 'react-icons/fa6';
+import { FaTableCellsLarge, FaList } from '@/shared/icons/fa6';
 
 export function ElementsLayoutToggle() {
   const [layout, setLayout] = useState('grid'); // Connect to your global state/URL

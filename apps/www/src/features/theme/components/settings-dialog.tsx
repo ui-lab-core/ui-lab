@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useReducer, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { SettingsContent } from "./settings/settings-content";
-import { HiX } from "react-icons/hi";
+import { HiX } from "@/shared/icons/hi";
 
 interface FloatingSettingsDialogProps {
   isOpen: boolean;

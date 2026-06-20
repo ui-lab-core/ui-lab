@@ -1,6 +1,6 @@
 'use client';
 
-import { AppProvider } from '@/features/theme';
+import { AppProvider } from '@/features/theme/lib/app-context';
 
 export default function PreviewLayout({
   children,

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { useChat } from '@/features/chat';
+import { useChat } from '@/features/chat/context/chat-context';
 
 interface DocsLayoutChatSyncProps {
   rootId: string;

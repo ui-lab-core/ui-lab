@@ -2,7 +2,7 @@ import { Toaster } from "ui-lab-components";
 import { HeroSection, Showcase, NodeSection } from "@/features/landing";
 import { FeaturesSection } from "@/features/landing/components/FeaturesSection";
 import { LandingSidebar } from "@/features/landing/components/landing-sidebar";
-import { Footer } from "@/features/layout";
+import { Footer } from "@/features/layout/components/footer";
 import { Metadata } from "next";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 

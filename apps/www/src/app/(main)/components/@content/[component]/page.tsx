@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ComponentClient } from "./client";
-import { generateMetadata as generateSiteMetadata } from "@/shared";
+import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
 import { extractComponentMetadata } from "@/shared/lib/metadata-extractors";
 import { componentRegistry, generatedAPI, generatedStyles, reactAriaUrls, sourceUrls } from "ui-lab-registry";
 

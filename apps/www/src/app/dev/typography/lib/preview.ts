@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { FontConfig } from "@/features/theme/constants/font-config";
 import {
+  generateDerivedTextSizeVars,
   generateLetterSpacingCSS,
   generateLineHeightCSS,
   generateTypeScaleFromRatio,
@@ -48,14 +49,17 @@ export function buildPreviewVars(
     fontFamily: "var(--font-body)",
   };
 
-  generateTypeScaleFromRatio(
+  const bodyTypeScale = generateTypeScaleFromRatio(
     typography.bodyTypeSizeRatio,
     typography.bodyFontSizeScale,
     1,
     { minFontSizePx: typography.bodyMinFontSizePx },
-  ).forEach(({ name, cssValue }) => {
+  );
+
+  bodyTypeScale.forEach(({ name, cssValue }) => {
     vars[`--text-${name}`] = cssValue;
   });
+  Object.assign(vars, generateDerivedTextSizeVars(bodyTypeScale));
 
   generateTypeScaleFromRatio(
     typography.headerTypeSizeRatio,

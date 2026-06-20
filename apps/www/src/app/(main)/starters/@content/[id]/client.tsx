@@ -6,7 +6,7 @@ import { getStarterById } from "ui-lab-registry";
 import { Code } from "@/features/docs/components/code-display/code";
 import { PurchaseModalClient, usePurchaseModal } from "@/features/packages";
 import { Button } from "ui-lab-components";
-import { FaShop } from "react-icons/fa6";
+import { FaShop } from "@/shared/icons/fa6";
 
 interface StarterDetailClientProps {
   starterId: string;

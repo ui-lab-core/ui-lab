@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { DocsAdjacentPages } from '../lib/docs-source'
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
+import { FaChevronLeft, FaChevronRight } from '@/shared/icons/fa6'
 
 interface DocsPaginationProps {
   adjacent: DocsAdjacentPages

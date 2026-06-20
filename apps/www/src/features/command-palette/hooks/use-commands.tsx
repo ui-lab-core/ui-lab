@@ -6,7 +6,7 @@ import {
   FaGithub,
   FaMoon,
   FaSun,
-} from "react-icons/fa6";
+} from "@/shared/icons/fa6";
 import {
   componentRegistry as registryData,
   getCategoryIcon,

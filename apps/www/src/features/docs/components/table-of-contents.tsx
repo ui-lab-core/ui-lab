@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/shared";
+import { cn } from "@/shared/lib/utils";
 import { Divider, Scroll } from "ui-lab-components";
 import { DOCS_MANIFEST } from "../lib/generated-docs-manifest";
 

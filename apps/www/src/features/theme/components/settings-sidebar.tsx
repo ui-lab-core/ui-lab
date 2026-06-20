@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/shared";
+import { cn } from "@/shared/lib/utils";
 import type { ReactNode } from "react";
 import { SettingsContent } from "./settings/settings-content";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { LandingSidebar } from "@/features/landing/components/landing-sidebar";
-import { Footer } from "@/features/layout";
+import { Footer } from "@/features/layout/components/footer";
 
 export default function ReleasesLayout({ children }: { children: React.ReactNode }) {
   return (

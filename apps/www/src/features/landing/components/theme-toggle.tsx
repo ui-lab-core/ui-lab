@@ -1,6 +1,8 @@
 "use client";
-import { themes, useApp, useThemeStorage } from "@/features/theme";
-import { FaCircleHalfStroke } from "react-icons/fa6";
+import { themes } from "@/features/theme/constants/themes";
+import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
+import { useApp } from "@/features/theme/lib/app-context";
+import { FaCircleHalfStroke } from "@/shared/icons/fa6";
 import { Button, Tooltip } from "ui-lab-components";
 
 export const LandingThemeToggle = () => {

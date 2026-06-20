@@ -20,7 +20,7 @@ import {
   Monitor,    // For display
   Image as ImageIcon,
 } from 'lucide-react';
-import { FaFlask, FaCircleXmark } from 'react-icons/fa6';
+import { FaFlask, FaCircleXmark } from '@/shared/icons/fa6';
 
 type IconComponent = ComponentType<{
   size?: number;

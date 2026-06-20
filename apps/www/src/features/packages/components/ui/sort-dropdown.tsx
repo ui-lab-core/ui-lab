@@ -7,7 +7,7 @@ import {
   FaFire,
   FaArrowDownAZ,
   FaArrowUpZA
-} from 'react-icons/fa6';
+} from '@/shared/icons/fa6';
 
 const SORT_OPTIONS = [
   { label: 'Default Order', value: 'default', icon: <FaSort /> },

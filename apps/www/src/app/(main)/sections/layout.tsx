@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { generateMetadata } from "@/shared";
-import { ContentSectionLayout } from "@/features/layout";
+import { generateMetadata } from "@/shared/lib/metadata";
+import { ContentSectionLayout } from "@/features/layout/components/content-section-layout";
 
 export const metadata = generateMetadata({ pathname: '/sections' });
 

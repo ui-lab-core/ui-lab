@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Button, Group, Select } from "ui-lab-components";
-import { FaGears, FaArrowRight } from "react-icons/fa6";
-import { SiOpenai, SiAnthropic, SiGooglegemini, SiClaude } from "react-icons/si";
+import { FaGears, FaArrowRight } from "@/shared/icons/fa6";
+import { SiOpenai, SiAnthropic, SiGooglegemini, SiClaude } from "@/shared/icons/si";
 import { Wand2, FileText, Languages, Braces, AlignLeft } from "lucide-react";
-import { HiMicrophone, HiPaperClip } from "react-icons/hi";
+import { HiMicrophone, HiPaperClip } from "@/shared/icons/hi";
 
 type Provider = "openai" | "anthropic" | "google";
 

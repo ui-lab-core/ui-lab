@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { Badge, Button, Flex, Grid, Popover } from 'ui-lab-components';
-import { FaX } from 'react-icons/fa6';
+import { FaX } from '@/shared/icons/fa6';
 import { getAllCategories, getAllTags } from 'ui-lab-registry';
-import { cn } from '@/shared';
+import { cn } from '@/shared/lib/utils';
 
 // ElementsFilterPopover
 

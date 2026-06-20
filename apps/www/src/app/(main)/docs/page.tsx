@@ -2,9 +2,9 @@ import { DocPage } from "@/features/docs/components/doc-page";
 import { getDocRoutePage, generateDocRouteMetadata } from "@/features/docs/lib/doc-routes";
 import { docsSource } from "@/features/docs/lib/docs-source";
 import { DocsPagination } from "@/features/docs/components/docs-pagination";
-import { Logo } from "@/shared";
+import { Logo } from "@/features/layout/components/logo";
 import { RequirementsSection } from "./requirements-section";
-import { SiReact, SiTailwindcss, SiTypescript } from "react-icons/si";
+import { SiReact, SiTailwindcss, SiTypescript } from "@/shared/icons/si";
 
 export async function generateMetadata() {
   return generateDocRouteMetadata('docs');

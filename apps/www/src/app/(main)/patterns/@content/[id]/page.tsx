@@ -1,6 +1,6 @@
 import PatternDetailClient from './client';
 import { getAllPatterns, getPatternById } from 'ui-lab-registry';
-import { generateMetadata as generateSiteMetadata } from '@/shared';
+import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 
 export function generateStaticParams() {
   return getAllPatterns().map((pattern) => ({ id: pattern.id }));

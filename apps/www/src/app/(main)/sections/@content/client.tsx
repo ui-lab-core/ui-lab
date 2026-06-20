@@ -4,7 +4,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo } from 'react';
 import type { LayoutConfig } from 'ui-lab-registry';
-import { ContentIndex, GenericContentGrid } from '@/features/layout';
+import { ContentIndex } from '@/features/layout/components/content-section-layout';
+import { GenericContentGrid } from '@/features/packages/components/content-grid';
 import { getLayoutConfig as getSectionLayoutConfig } from '@/features/sections/lib/layout-registry';
 import {
   filterSections,

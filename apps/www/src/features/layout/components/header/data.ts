@@ -3,7 +3,7 @@ import {
   FaFill,
   FaIcons,
   FaWandMagicSparkles,
-} from "react-icons/fa6";
+} from "@/shared/icons/fa6";
 import type { ComponentType } from "react";
 
 interface NavigationItem {

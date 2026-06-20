@@ -143,7 +143,7 @@ export function GET() {
     availableFonts: {
       body: ["Karla", "Geist Sans", "Inter", "Work Sans"],
       header: ["Karla", "Geist Sans", "Inter", "Work Sans"],
-      mono: ["Ioskeley Mono", "JetBrains Mono"],
+      mono: ["Ioskeley Mono", "Geist Mono", "JetBrains Mono"],
     },
     metricFields: {
       description: "Metrics that can be measured and adjusted",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Fragment } from "react";
-import { cn } from "@/shared";
+import { cn } from "@/shared/lib/utils";
 import { InlineCodeHighlight } from "@/features/docs";
 import { Expand } from "ui-lab-components";
 

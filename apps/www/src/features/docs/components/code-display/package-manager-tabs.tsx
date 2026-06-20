@@ -1,7 +1,7 @@
 'use client';
 
 import { Tabs } from 'ui-lab-components';
-import { FaNpm, FaYarn, FaBox } from 'react-icons/fa6';
+import { FaNpm, FaYarn, FaBox } from '@/shared/icons/fa6';
 
 type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
 

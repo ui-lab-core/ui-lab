@@ -1,5 +1,5 @@
 import { DocsLayout } from "@/features/docs";
-import { generateMetadata } from "@/shared";
+import { generateMetadata } from "@/shared/lib/metadata";
 
 export const metadata = generateMetadata({ pathname: '/design-system' });
 

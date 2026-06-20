@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { cn } from "@/shared";
-import { FaChevronDown, FaCodeBranch } from "react-icons/fa6";
+import { cn } from "@/shared/lib/utils";
+import { FaChevronDown, FaCodeBranch } from "@/shared/icons/fa6";
 import { Divider, Button } from "ui-lab-components";
-import { getTabGroupForPathname, shouldApplyRevealCollapse } from "@/shared";
+import { getTabGroupForPathname, shouldApplyRevealCollapse } from "@/features/layout/lib/route-config";
 import type { TabConfig } from "../../lib/route-config";
 import {
   navigationData,

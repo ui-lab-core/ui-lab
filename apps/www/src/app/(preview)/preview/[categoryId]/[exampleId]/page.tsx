@@ -1,4 +1,4 @@
-import { Dashboard } from '@/shared';
+import { Dashboard } from '@/shared/lib/demos/dashboard';
 import { getElementById, getSectionById } from 'ui-lab-registry';
 
 export const metadata = {

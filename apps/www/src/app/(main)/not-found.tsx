@@ -2,7 +2,7 @@ import { ClientShell } from "@/features/layout/components/client-shell";
 import { docsSource } from "@/features/docs/lib/docs-source";
 import { LandingSidebar } from "@/features/landing/components/landing-sidebar";
 import type { DocsNavigationData } from "@/features/navigation/lib/sidebar-registry-resolver";
-import { Logo } from "@/shared";
+import { Logo } from "@/features/layout/components/logo";
 import { Divider } from "ui-lab-components";
 
 function getNavigationPages(domain: "docs" | "design-system") {

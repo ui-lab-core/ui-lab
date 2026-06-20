@@ -1,4 +1,4 @@
-import { generateMetadata } from "@/shared";
+import { generateMetadata } from "@/shared/lib/metadata";
 import type { ReactNode } from "react";
 
 export const metadata = generateMetadata({ pathname: '/config' });

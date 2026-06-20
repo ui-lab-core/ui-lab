@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer } from 'react';
-import { FaApple, FaCircle, FaPencil, FaPercent, FaStar } from 'react-icons/fa6';
+import { FaApple, FaCircle, FaPencil, FaPercent, FaStar } from '@/shared/icons/fa6';
 import { Divider, Group, Select, Button, Slider } from 'ui-lab-components';
 
 interface State {

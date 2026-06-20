@@ -2,7 +2,7 @@
 
 import { useReducer } from "react";
 import { Group, Divider, Select, Tooltip } from "ui-lab-components";
-import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaAlignLeft, FaAlignCenter, FaAlignRight, FaListUl, FaLink } from "react-icons/fa6";
+import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaAlignLeft, FaAlignCenter, FaAlignRight, FaListUl, FaLink } from "@/shared/icons/fa6";
 
 interface EditorState {
   textStyle: string | number | null;

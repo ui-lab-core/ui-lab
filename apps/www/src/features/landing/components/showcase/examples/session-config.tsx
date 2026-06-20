@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Button, Group, Divider } from "ui-lab-components";
-import { FaClock, FaMicrochip, FaMemory, FaMinus, FaPlus, FaBoltLightning } from "react-icons/fa6";
-import { SiGnubash } from "react-icons/si";
+import { FaClock, FaMicrochip, FaMemory, FaMinus, FaPlus, FaBoltLightning } from "@/shared/icons/fa6";
+import { SiGnubash } from "@/shared/icons/si";
 
 function Stepper({
   value,

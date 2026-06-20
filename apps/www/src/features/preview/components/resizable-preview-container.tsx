@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, ReactNode } from "react";
-import { cn } from "@/shared";
+import { cn } from "@/shared/lib/utils";
 import { Badge, Group, Tabs } from "ui-lab-components";
-import { FaMobile, FaDesktop, FaTablet, FaFile } from "react-icons/fa6";
+import { FaMobile, FaDesktop, FaTablet, FaFile } from "@/shared/icons/fa6";
 
 type PreviewDeviceVariant = "mobile" | "tablet" | "desktop";
 

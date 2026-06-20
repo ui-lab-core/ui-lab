@@ -6,7 +6,7 @@ import {
   FaSeedling,
   FaPuzzlePiece,
   FaLayerGroup,
-} from 'react-icons/fa6';
+} from '@/shared/icons/fa6';
 
 type SidebarDomain =
   | 'docs'

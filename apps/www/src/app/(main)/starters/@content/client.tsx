@@ -1,7 +1,8 @@
 'use client';
 import React from 'react';
 import { getAllStarters } from 'ui-lab-registry';
-import { ContentIndex, GenericContentGrid } from '@/features/layout';
+import { ContentIndex } from '@/features/layout/components/content-section-layout';
+import { GenericContentGrid } from '@/features/packages/components/content-grid';
 import { getLayoutConfig as getStarterLayoutConfig, getPreviewComponent as getStarterPreview } from '@/features/starters';
 import { GridCTA } from '@/features/landing/components/grid-cta';
 import { PurchaseModalClient, usePurchaseModal } from '@/features/packages';

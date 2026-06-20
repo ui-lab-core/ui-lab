@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 
-import { generateMetadata as generateSiteMetadata } from '@/shared'
+import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata'
 
 import { docsSource, type DocsSourceDomain } from './docs-source'
 

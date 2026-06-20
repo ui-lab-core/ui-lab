@@ -1,6 +1,6 @@
 "use client";
 
-import { Logo } from "@/shared";
+import { Logo } from "@/features/layout/components/logo";
 
 export function Footer() {
   return (

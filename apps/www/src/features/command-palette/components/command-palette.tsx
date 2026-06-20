@@ -3,7 +3,7 @@
 import { Command, Divider, scoreCommandRelevance } from "ui-lab-components";
 import { Badge } from "ui-lab-components";
 import type { CommandItem } from "ui-lab-components";
-import { useApp } from "@/features/theme";
+import { useApp } from "@/features/theme/lib/app-context";
 import { useCommands } from "../hooks/use-commands";
 
 function matchesSearch(cmd: CommandItem, query: string): boolean {

@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import "@fontsource/geist-sans";
+import "@fontsource/geist-mono";
 import "@fontsource-variable/karla";
 import "@fontsource-variable/geist";
 import "@fontsource-variable/inter";

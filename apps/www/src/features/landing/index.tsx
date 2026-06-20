@@ -6,37 +6,31 @@ import {
   FaEye,
   FaRocket,
   FaArrowRightLong,
-  FaCube,
-  FaCubes,
-  FaArrowRight,
-  FaChevronRight,
-} from "react-icons/fa6";
-import { Button } from "ui-lab-components";
+} from "@/shared/icons/fa6";
+import { Anchor, Button } from "ui-lab-components";
 
 function HeroSection() {
   return (
     <>
-      <div className="z-10 mt-12 sm:mt-0 overflow-hidden">
+      <div className="p-4 z-10 mt-12 sm:mt-0 overflow-hidden">
         <div
-          className="grid-paper relative h-full flex flex-col justify-between md:justify-center">
+          className="grid-paper overflow-hidden border border-background-700 rounded-md relative h-full flex flex-col justify-between md:justify-center">
 
           <div className="flex items-center text-left flex-col pt-8 md:pt-0">
             <div>
-              <h1 className="isolate mb-2 text-xl max-w-[25ch] sm:max-w-[28ch] text-foreground-200">
-                Give your agents better design taste, ship beautiful interfaces.
+              <h1 className="isolate mb-2 text-4xl max-w-[18ch] sm:max-w-[20ch] text-foreground-200">
+                Make your interface stand out in the era of slop.
               </h1>
               <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch]">
-                Accessible, production-ready React components with intelligent
-                metadata that enable AI to generate perfectly consistent interfaces.
+                Your agent's favorite UI Library.
               </p>
-              <div className="w-90 flex gap-2 mt-6 mb-6 md:mt-8 md:mb-0">
+              <div className="flex gap-4 mt-6 mb-6 md:mt-8 md:mb-0">
                 <Button size="sm" variant="primary" href="/docs" >
                   Documentation
                 </Button>
-                <Button
-                  variant="secondary" icon={{ right: <FaChevronRight className="text-foreground-300" /> }} styles="w-full" size="sm" href="/components">
+                <Anchor href="/components">
                   View Components
-                </Button>
+                </Anchor>
               </div>
             </div>
 
@@ -86,5 +80,3 @@ export { Showcase } from "./components/showcase";
 export { SettingsPanel } from "./components/settings-panel";
 export { LandingThemeToggle as ThemeToggle } from "./components/theme-toggle";
 export { NodeSection } from "./components/node-section";
-
-

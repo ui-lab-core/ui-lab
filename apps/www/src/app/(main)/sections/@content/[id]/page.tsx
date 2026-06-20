@@ -1,6 +1,6 @@
 import SectionDetailClient from './client';
 import { getAllSections, getSectionById } from 'ui-lab-registry';
-import { generateMetadata as generateSiteMetadata } from '@/shared';
+import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 
 export function generateStaticParams() {
   return getAllSections().map((section) => ({ id: section.id }));

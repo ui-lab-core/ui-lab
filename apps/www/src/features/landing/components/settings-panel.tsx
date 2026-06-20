@@ -1,11 +1,11 @@
 "use client";
 
-import { FaEye, FaGear, FaPaintRoller, FaRegEye } from "react-icons/fa6";
+import { FaEye, FaGear, FaPaintRoller, FaRegEye } from "@/shared/icons/fa6";
 import { Button, Tooltip } from "ui-lab-components";
 import { useRef } from "react";
 import dynamic from "next/dynamic";
 const SettingsDialog = dynamic(() => import("@/features/theme/components/settings-dialog").then(mod => ({ default: mod.SettingsDialog })), { ssr: false, loading: () => null });
-import { useApp } from "@/features/theme";
+import { useApp } from "@/features/theme/lib/app-context";
 
 export const SettingsPanel = () => {
   const { isSettingsPanelOpen, setIsSettingsPanelOpen } = useApp();
@@ -25,11 +25,13 @@ export const SettingsPanel = () => {
           <FaPaintRoller size={14} />
         </Button>
       </Tooltip>
-      <SettingsDialog
-        isOpen={isSettingsPanelOpen}
-        onOpenChange={setIsSettingsPanelOpen}
-        triggerRef={buttonRef}
-      />
+      {isSettingsPanelOpen ? (
+        <SettingsDialog
+          isOpen={isSettingsPanelOpen}
+          onOpenChange={setIsSettingsPanelOpen}
+          triggerRef={buttonRef}
+        />
+      ) : null}
     </>
   );
 };

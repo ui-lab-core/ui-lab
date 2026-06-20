@@ -1,6 +1,6 @@
 import { getAllPackages } from 'ui-lab-registry';
 import { GridCTA } from '@/features/landing/components/grid-cta';
-import { ContentIndex } from '@/features/layout';
+import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import type { ElementPackageMetadata } from 'ui-lab-registry';
 import { Metadata } from 'next';
 import { generateMetadata as buildMetadata } from '@/shared/lib/metadata';

@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { List, Group, Select, Divider, Button } from "ui-lab-components";
-import { FaMagnifyingGlass } from "react-icons/fa6";
-import { SiGithub, SiSlack, SiFigma, SiLinear, SiNotion, SiVercel } from "react-icons/si";
+import { FaMagnifyingGlass } from "@/shared/icons/fa6";
+import { SiGithub, SiSlack, SiFigma, SiLinear, SiNotion, SiVercel } from "@/shared/icons/si";
 
 interface Integration {
   id: string;

@@ -1,4 +1,4 @@
-import { Sidebar } from "@/shared";
+import { Sidebar } from "@/features/layout/components/sidebar";
 
 export default function SidebarSlot() {
   return <Sidebar activeDomain="patterns" activeElementsNav="patterns" />;

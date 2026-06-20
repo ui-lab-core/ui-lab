@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { Button } from "ui-lab-components";
-import { HiX } from "react-icons/hi";
+import { HiX } from "@/shared/icons/hi";
 import { useChat } from "../context/chat-context";
 
 export function ChatWindow() {

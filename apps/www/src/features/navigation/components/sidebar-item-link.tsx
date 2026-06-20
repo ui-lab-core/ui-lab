@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { usePrefetchOnHover } from '@/shared';
+import { usePrefetchOnHover } from '@/shared/hooks/use-prefetch-on-hover';
 
 interface SidebarItemLinkProps {
   href: string;

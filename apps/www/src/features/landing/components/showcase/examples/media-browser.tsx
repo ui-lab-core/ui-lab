@@ -2,7 +2,7 @@
 
 import { useReducer, useMemo } from "react";
 import { Group, Divider, Select, Checkbox, Input } from "ui-lab-components";
-import { FaList, FaGrip, FaChevronLeft, FaChevronRight, FaMagnifyingGlass, FaTrash, FaEllipsis } from "react-icons/fa6";
+import { FaList, FaGrip, FaChevronLeft, FaChevronRight, FaMagnifyingGlass, FaTrash, FaEllipsis } from "@/shared/icons/fa6";
 
 const FILES = [
   { name: "hero-banner.png", type: "PNG", size: "2.4 MB", modified: "2h ago" },

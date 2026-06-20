@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useMemo, memo, useState, type ReactNode } from 'react';
 import { Divider, Scroll, Select } from 'ui-lab-components';
-import { SiAstro, SiFlutter, SiReact, SiSvelte } from 'react-icons/si';
-import { cn, usePrefetchOnHover } from '@/shared';
+import { SiAstro, SiFlutter, SiReact, SiSvelte } from '@/shared/icons/si';
+import { usePrefetchOnHover } from '@/shared/hooks/use-prefetch-on-hover';
+import { cn } from '@/shared/lib/utils';
 import { useSidebarToggle } from '@/features/layout/hooks/sidebar-context';
 import {
   getActiveDomainForPathname,
@@ -16,7 +17,7 @@ import { getSectionsForNav, getHrefForNavItem, isNavItemActive } from '@/feature
 import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation-context';
 import { getActiveElementsNavFromPathname } from '@/features/packages/lib/sidebar-sections';
 import { ElementsList } from '@/features/packages/components/sidebar-content';
-import { RiExpandUpDownFill } from "react-icons/ri";
+import { RiExpandUpDownFill } from "@/shared/icons/ri";
 
 type FrameworkOption = {
   value: 'react' | 'svelte' | 'astro' | 'flutter';
@@ -249,7 +250,7 @@ export function Sidebar({
               <div className="py-4 px-5 space-y-8">
                 {sections.map((section) => (
                   <div key={section.label}>
-                    <p className="text-xs font-body-semibold text-foreground-200">{section.label}</p>
+                    <h2 className="text-header-xs font-header-semibold text-foreground-200">{section.label}</h2>
                     <div className="relative mt-2.5">
                       <Divider orientation='vertical' size="sm" variant='dashed' spacing='none' className="absolute left-0.5 top-0 bottom-0 bg-foreground-400" />
                       <div className="pl-3">

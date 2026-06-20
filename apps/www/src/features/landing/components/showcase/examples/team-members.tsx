@@ -2,7 +2,7 @@
 
 import { Fragment, useMemo, useReducer } from "react";
 import { List, Group, Select, Badge, Divider, Button } from "ui-lab-components";
-import { FaEnvelope, FaMagnifyingGlass, FaGear, FaUsers, FaArrowTurnUp } from "react-icons/fa6";
+import { FaEnvelope, FaMagnifyingGlass, FaGear, FaUsers, FaArrowTurnUp } from "@/shared/icons/fa6";
 
 interface Member {
   name: string;

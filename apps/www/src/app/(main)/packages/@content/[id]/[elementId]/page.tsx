@@ -1,6 +1,6 @@
 import ElementDetailClient from './client';
 import { elementRegistry, getAllPackages, getElementsInPackage } from 'ui-lab-registry';
-import { generateMetadata as generateSiteMetadata } from '@/shared';
+import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 import { extractElementMetadata } from '@/shared/lib/metadata-extractors';
 
 export function generateStaticParams() {

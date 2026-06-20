@@ -1,8 +1,8 @@
 'use client';
 
 import type React from 'react';
-import { SiNextdotjs, SiVite, SiTauri, SiAstro } from 'react-icons/si';
-import { FaBook, FaCheck, FaBriefcase, FaPen } from 'react-icons/fa6';
+import { SiNextdotjs, SiVite, SiTauri, SiAstro } from '@/shared/icons/si';
+import { FaBook, FaCheck, FaBriefcase, FaPen } from '@/shared/icons/fa6';
 
 type PreviewComponent = React.ComponentType<object>;
 

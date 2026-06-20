@@ -3,7 +3,7 @@
 import { Button } from 'ui-lab-components';
 import { PricingBadge } from '@/features/landing/components/pricing-badge';
 import type { PricingInfo } from 'ui-lab-registry';
-import { FaShop } from 'react-icons/fa6';
+import { FaShop } from '@/shared/icons/fa6';
 
 interface ContentHeaderProps {
   title: string;

@@ -6,7 +6,7 @@ import { getElementById } from "ui-lab-registry";
 import { ElementPreviewContent } from "@/features/packages";
 import { getDemoComponent, getElementSourceCode } from "@/features/packages";
 import { PreviewDeviceVariant } from "@/features/preview";
-import { DetailPageShell } from "@/features/layout";
+import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 
 interface VariantWithCode {
   name: string;

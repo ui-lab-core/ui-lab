@@ -3,27 +3,28 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useMemo, memo } from "react";
-import { ThemeToggle, SettingsPanel } from "@/features/landing";
+import { SettingsPanel } from "@/features/landing/components/settings-panel";
+import { LandingThemeToggle as ThemeToggle } from "@/features/landing/components/theme-toggle";
 import dynamic from "next/dynamic";
 const CommandPalette = dynamic(
-  () => import("@/features/command-palette").then(mod => ({ default: mod.CommandPalette })),
+  () => import("@/features/command-palette/components/command-palette"),
   { ssr: false, loading: () => null }
 );
-import { Logo } from "@/shared";
+import { Logo } from "@/features/layout/components/logo";
 import { Input, Divider, Tabs, Button, Tooltip } from "ui-lab-components";
-import { useApp } from "@/features/theme";
-import { useChat } from "@/features/chat";
-import { cn } from "@/shared";
+import { useApp } from "@/features/theme/lib/app-context";
+import { useChat } from "@/features/chat/context/chat-context";
+import { cn } from "@/shared/lib/utils";
 import {
   FaBars,
   FaGithub,
   FaPlus,
-} from "react-icons/fa6";
-import { LuSearch } from "react-icons/lu";
-import { HiX } from "react-icons/hi";
-import { HiMiniSparkles } from "react-icons/hi2";
+} from "@/shared/icons/fa6";
+import { LuSearch } from "@/shared/icons/lu";
+import { HiX } from "@/shared/icons/hi";
+import { HiMiniSparkles } from "@/shared/icons/hi2";
 import { PanelRight } from "lucide-react";
-import { getTabGroupForPathname, getActiveTabForPathname, shouldApplyRevealCollapse, type TabConfig } from "@/shared";
+import { getTabGroupForPathname, getActiveTabForPathname, shouldApplyRevealCollapse, type TabConfig } from "@/features/layout/lib/route-config";
 import { MobileMenu } from "./mobile-menu";
 import { navigationData } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
@@ -52,7 +53,7 @@ export default function Header({
 }: HeaderProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { setIsCommandPaletteOpen } = useApp();
+  const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
   const { toggleChat, isOpen: isChatOpen } = useChat();
   const { toggleSidebar } = useSidebarToggle();
   const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
@@ -237,7 +238,7 @@ export default function Header({
         </div>
       </header>
 
-      <CommandPalette />
+      {isCommandPaletteOpen ? <CommandPalette /> : null}
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} pathname={pathname} />
     </>
   );

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Expand, Flex, Group } from 'ui-lab-components';
-import { FaCheck, FaFileLines } from 'react-icons/fa6';
+import { FaCheck, FaFileLines } from '@/shared/icons/fa6';
 
 export function CopyPage() {
   const [copiedLines, setCopiedLines] = useState<number | null>(null);

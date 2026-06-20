@@ -4,14 +4,14 @@ import { ComponentConfigurator } from "@/features/component-docs";
 import { getComponentById } from "@/features/component-docs";
 import { TableOfContents, Table, TableExpandedDetails, type Column, type TableExpandedDetail } from "@/features/docs";
 import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
-import { cn } from "@/shared";
+import { cn } from "@/shared/lib/utils";
 import { Code, InlineCodeHighlight } from "@/features/docs";
 import { Toaster, Tabs, Button, Flex, Tooltip, Group } from "ui-lab-components";
 import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
-import { FaFlask, FaGithub } from "react-icons/fa6";
-import { Footer } from "@/features/layout";
-import { useChat } from "@/features/chat";
+import { FaFlask, FaGithub } from "@/shared/icons/fa6";
+import { Footer } from "@/features/layout/components/footer";
+import { useChat } from "@/features/chat/context/chat-context";
 
 const ReactAriaSvg = () => (
   <svg
