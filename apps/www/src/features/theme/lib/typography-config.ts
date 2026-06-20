@@ -1,52 +1,71 @@
-const ROOT_FONT_SIZE_PX = 16;
+export const ROOT_FONT_SIZE_PX = 16;
 
-export const DEFAULT_BODY_MIN_FONT_SIZE_PX = 14.75;
-export const DEFAULT_HEADER_MIN_FONT_SIZE_PX = 14.75;
+export const DEFAULT_FONT_SIZE_ROUNDING_STEP_PX = 0.25;
+
+export const TYPOGRAPHY_TYPE_SIZE_RATIO_MIN = 1.067;
+export const TYPOGRAPHY_TYPE_SIZE_RATIO_MAX = 1.333;
+
+export const TYPOGRAPHY_FONT_SIZE_SCALE_MIN = 0.8;
+export const TYPOGRAPHY_FONT_SIZE_SCALE_MAX = 1.2;
+
+export const TYPOGRAPHY_LINE_HEIGHT_MIN = 1.0;
+export const TYPOGRAPHY_LINE_HEIGHT_MAX = 2.0;
+
 export const MIN_MIN_FONT_SIZE_PX = 10.0;
 export const MAX_MIN_FONT_SIZE_PX = 18.0;
+
+export const DEFAULT_HEADER_LINE_HEIGHT = 1.5;
+export const DEFAULT_HEADER_MIN_FONT_SIZE_PX = 12.0;
+export const DEFAULT_HEADING_TRACKING_EM = -0.012;
+
+export const DEFAULT_BODY_LINE_HEIGHT = 1.5;
+export const DEFAULT_BODY_MIN_FONT_SIZE_PX = 14.75;
 
 export const DEFAULT_GLOBAL_MIN_FONT_SIZE_PX = DEFAULT_BODY_MIN_FONT_SIZE_PX;
 export const MIN_GLOBAL_MIN_FONT_SIZE_PX = MIN_MIN_FONT_SIZE_PX;
 export const MAX_GLOBAL_MIN_FONT_SIZE_PX = MAX_MIN_FONT_SIZE_PX;
 
-export const TYPOGRAPHY_TYPE_SIZE_RATIO_MIN = 1.067;
-export const TYPOGRAPHY_TYPE_SIZE_RATIO_MAX = 1.333;
-export const TYPOGRAPHY_FONT_SIZE_SCALE_MIN = 0.8;
-export const TYPOGRAPHY_FONT_SIZE_SCALE_MAX = 1.2;
-export const TYPOGRAPHY_LINE_HEIGHT_MIN = 1.0;
-export const TYPOGRAPHY_LINE_HEIGHT_MAX = 2.0;
-export const DEFAULT_HEADER_LINE_HEIGHT = 1.5;
-export const DEFAULT_BODY_LINE_HEIGHT = 1.5;
-
 export interface TypographyConfig {
+  // Header
   headerTypeSizeRatio: number;
+  /** Header > Scale */
   headerFontSizeScale: number;
-  headerFontWeightScale: number;
   headerLetterSpacingScale: number;
+  headerFontWeightScale: number;
   headerLineHeight: number;
+  headerMinFontSizePx: number;
+
+  // Body
   bodyTypeSizeRatio: number;
+  /** Body > Scale */
   bodyFontSizeScale: number;
-  bodyFontWeightScale: number;
   bodyLetterSpacingScale: number;
+  bodyFontWeightScale: number;
   bodyLineHeight: number;
   bodyMinFontSizePx: number;
-  headerMinFontSizePx: number;
+
+  // Legacy
   globalMinFontSizePx?: number;
 }
 
 export const DEFAULT_TYPOGRAPHY_CONFIG: TypographyConfig = {
+  // Header
   headerTypeSizeRatio: 1.125,
-  headerFontSizeScale: 1,
-  headerFontWeightScale: 1,
+  // Header > Scale
+  headerFontSizeScale: 0.95,
   headerLetterSpacingScale: 1,
+  headerFontWeightScale: 1,
   headerLineHeight: DEFAULT_HEADER_LINE_HEIGHT,
+  headerMinFontSizePx: DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+
+  // Body
   bodyTypeSizeRatio: 1.2,
+  // Body > Scale
   bodyFontSizeScale: 1.0,
-  bodyFontWeightScale: 1,
   bodyLetterSpacingScale: 1,
+  bodyFontWeightScale: 1,
   bodyLineHeight: DEFAULT_BODY_LINE_HEIGHT,
   bodyMinFontSizePx: DEFAULT_BODY_MIN_FONT_SIZE_PX,
-  headerMinFontSizePx: DEFAULT_HEADER_MIN_FONT_SIZE_PX,
 };
 
 export function clampMinFontSizePx(value: number): number {
@@ -95,4 +114,8 @@ export function normalizeTypographyLineHeight(
 
 export function pxToRem(px: number): number {
   return px / ROOT_FONT_SIZE_PX;
+}
+
+export function remToPx(rem: number): number {
+  return rem * ROOT_FONT_SIZE_PX;
 }

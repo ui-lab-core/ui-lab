@@ -4,6 +4,7 @@ import { getFontConfig, type FontKey } from "../constants/font-config";
 import { getBorderWidthCssVariables, getRadiusCssVariables, getSpacingCssVariables } from "../config/shared/layout-variables";
 import { DEFAULT_FONT_CONFIG } from "./default-theme-config";
 import {
+  generateDerivedTextSizeVars,
   generateTypeScaleFromRatio,
   generateLetterSpacingCSS,
   generateLineHeightCSS,
@@ -34,6 +35,10 @@ function generateTextSizeVars(
   typeScale.forEach(({ name, cssValue }) => {
     vars[`--${prefix}-${name}`] = cssValue;
   });
+
+  if (prefix === "text") {
+    Object.assign(vars, generateDerivedTextSizeVars(typeScale));
+  }
 
   return vars;
 }

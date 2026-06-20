@@ -11,7 +11,10 @@ import {
   type ThemeSourceConfig,
 } from "../lib/theme-cache";
 import { type TypographyConfig } from "../lib/typography-config";
-import { getDefaultThemeSourceConfig } from "../lib/default-theme-config";
+import {
+  getDefaultThemeSourceConfig,
+  getTypographyConfigForFonts,
+} from "../lib/default-theme-config";
 interface LayoutConfig { radius: number; borderWidth: number; spacingScale: number }
 
 interface ThemeStorageOptions {
@@ -25,11 +28,15 @@ interface ThemeStorageOptions {
 
 function buildConfig(source: ThemeSourceConfig | null, mode: "light" | "dark"): ThemeConfig {
   const defaults = getDefaultThemeSourceConfig(mode);
+  const fonts = { ...defaults.fonts, ...(source?.fonts || {}) };
   return {
     colors: source?.colors || defaults.colors,
-    typography: { ...defaults.typography, ...(source?.typography || {}) },
+    typography: {
+      ...getTypographyConfigForFonts(fonts),
+      ...(source?.typography || {}),
+    },
     layout: { ...defaults.layout, ...(source?.layout || {}) },
-    fonts: { ...defaults.fonts, ...(source?.fonts || {}) },
+    fonts,
     mode,
   };
 }

@@ -1,13 +1,113 @@
 import { ExtendedTypeScale } from "../shared/types";
-import { minFontSizeConstraints, staticFontSizes, fluidSizes } from "./constants";
 import {
   DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+  DEFAULT_HEADING_TRACKING_EM,
   pxToRem,
+  remToPx,
 } from "../../lib/typography-config";
+import {
+  baseTextSizeIndex,
+  derivedTextSizes,
+  fluidSizes,
+  minFontSizeConstraints,
+  staticFontSizes,
+  textSizeNames,
+  type TextSizeName,
+} from "./constants";
 
-interface TypeScaleOptions {
+export interface TypeScaleOptions {
   minFontSizePx?: number;
   globalMinFontSizePx?: number;
+  fontSizeRoundingStepPx?: number;
+}
+
+type TypographyVariablePrefix = "text" | "header-text";
+
+function formatCssNumber(value: number, precision: number = 6): string {
+  return String(Number(value.toFixed(precision)));
+}
+
+function formatRem(value: number): string {
+  return `${formatCssNumber(value)}rem`;
+}
+
+function getStaticFontSize(name: TextSizeName): number | undefined {
+  return staticFontSizes[name as keyof typeof staticFontSizes];
+}
+
+export function roundFontSizePx(
+  valuePx: number,
+  stepPx: number = DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+): number {
+  if (!Number.isFinite(valuePx) || !Number.isFinite(stepPx) || stepPx <= 0) {
+    return valuePx;
+  }
+
+  return Math.round(valuePx / stepPx) * stepPx;
+}
+
+function roundFontSizeRem(
+  valueRem: number,
+  stepPx: number = DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+): number {
+  return pxToRem(roundFontSizePx(remToPx(valueRem), stepPx));
+}
+
+function scaleFluidSize(
+  size: ExtendedTypeScale,
+  multiplier: number,
+  roundingStepPx: number,
+): ExtendedTypeScale {
+  const minSize = roundFontSizeRem(size.minSize * multiplier, roundingStepPx);
+  const preferredSize = roundFontSizeRem(
+    size.fluidVw / 1.8 * multiplier,
+    roundingStepPx,
+  );
+  const maxSize = roundFontSizeRem(size.maxSize * multiplier, roundingStepPx);
+
+  return {
+    ...size,
+    minSize,
+    fluidVw: preferredSize * 1.8,
+    maxSize,
+  };
+}
+
+function getCssValue(size: ExtendedTypeScale): string {
+  if (!size.isFluid) return formatRem(size.minSize);
+
+  return `clamp(${formatRem(size.minSize)}, ${size.fluidVw.toFixed(2)}vw, ${formatRem(size.maxSize)})`;
+}
+
+export function generateDerivedTextSizeVars(
+  typeScale: ExtendedTypeScale[],
+  roundingStepPx: number = DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+): Record<string, string> {
+  const vars: Record<string, string> = {};
+
+  derivedTextSizes.forEach(({ name, source, multiplier }) => {
+    const sourceSize = typeScale.find((size) => size.name === source);
+    if (!sourceSize) return;
+
+    const size = sourceSize.isFluid
+      ? scaleFluidSize(sourceSize, multiplier, roundingStepPx)
+      : {
+          ...sourceSize,
+          minSize: roundFontSizeRem(
+            sourceSize.minSize * multiplier,
+            roundingStepPx,
+          ),
+          maxSize: roundFontSizeRem(
+            sourceSize.maxSize * multiplier,
+            roundingStepPx,
+          ),
+        };
+
+    vars[`--text-${name}`] = getCssValue(size);
+  });
+
+  return vars;
 }
 
 /**
@@ -28,50 +128,69 @@ export function generateTypeScaleFromRatio(
   options: TypeScaleOptions = {},
 ): ExtendedTypeScale[] {
   const scale: ExtendedTypeScale[] = [];
+  const fontSizeRoundingStepPx =
+    options.fontSizeRoundingStepPx ?? DEFAULT_FONT_SIZE_ROUNDING_STEP_PX;
   const minFontSizeRem = pxToRem(
     options.minFontSizePx ??
       options.globalMinFontSizePx ??
       DEFAULT_BODY_MIN_FONT_SIZE_PX,
   );
-  const names = ["xs", "sm", "md", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl"] as const;
-  const baseIndex = 3;
 
-  names.forEach((name, i) => {
+  textSizeNames.forEach((name, i) => {
     const isFluid = fluidSizes.has(name);
     const minConstraint =
       minFontSizeRem *
       (minFontSizeConstraints[name] / minFontSizeConstraints.xs);
 
     if (!isFluid) {
-      const staticSize = staticFontSizes[name as keyof typeof staticFontSizes];
-      const scaledSize = Math.max(staticSize * fontSizeScale, minConstraint);
+      const staticSize = getStaticFontSize(name);
+      if (staticSize === undefined) return;
 
-      scale.push({
+      const size = roundFontSizeRem(
+        Math.max(staticSize * fontSizeScale, minConstraint),
+        fontSizeRoundingStepPx,
+      );
+      const item: ExtendedTypeScale = {
         name,
-        minSize: scaledSize,
+        minSize: size,
         fluidVw: 0,
-        maxSize: scaledSize,
+        maxSize: size,
         isFluid: false,
-        cssValue: `${scaledSize.toFixed(3)}rem`,
-      });
+        cssValue: "",
+      };
+      item.cssValue = getCssValue(item);
+
+      scale.push(item);
     } else {
-      const stepsFromBase = i - baseIndex;
-      const size = baseSize * Math.pow(ratio, stepsFromBase);
-      const scaledSize = size * fontSizeScale;
+      const stepsFromBase = i - baseTextSizeIndex;
+      const scaledSize =
+        baseSize * Math.pow(ratio, stepsFromBase) * fontSizeScale;
+      const roundedPreferredSize = roundFontSizeRem(
+        scaledSize,
+        fontSizeRoundingStepPx,
+      );
 
       // Min constraint must scale with fontSizeScale to respect user's size adjustments
-      const minSize = Math.max(scaledSize * 0.85, minConstraint * fontSizeScale);
-      const maxSize = scaledSize * 1.15;
-      const fluidVw = scaledSize * 1.8;
-
-      scale.push({
+      const minSize = roundFontSizeRem(
+        Math.max(scaledSize * 0.85, minConstraint * fontSizeScale),
+        fontSizeRoundingStepPx,
+      );
+      const maxSize = roundFontSizeRem(
+        scaledSize * 1.15,
+        fontSizeRoundingStepPx,
+      );
+      const fluidVw = roundedPreferredSize * 1.8;
+      const item: ExtendedTypeScale = {
         name,
         minSize,
         fluidVw,
         maxSize,
         isFluid: true,
-        cssValue: `clamp(${minSize.toFixed(3)}rem, ${fluidVw.toFixed(2)}vw, ${maxSize.toFixed(3)}rem)`,
-      });
+        cssValue: "",
+      };
+      item.cssValue = getCssValue(item);
+
+      scale.push(item);
     }
   });
 
@@ -82,16 +201,29 @@ export function generateTypographyCSS(
   typeSizeRatio: number,
   fontSizeScale: number,
   minFontSizePx?: number,
-  prefix: "text" | "header-text" = "text",
+  prefix: TypographyVariablePrefix = "text",
+  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
 ): string {
   const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
     minFontSizePx,
+    ...options,
   });
   const lines: string[] = [];
 
   typeScale.forEach(({ name, cssValue }) => {
     lines.push(`  --${prefix}-${name}: ${cssValue};`);
   });
+
+  if (prefix === "text") {
+    Object.entries(
+      generateDerivedTextSizeVars(
+        typeScale,
+        options.fontSizeRoundingStepPx,
+      ),
+    ).forEach(([name, value]) => {
+      lines.push(`  ${name}: ${value};`);
+    });
+  }
 
   return lines.join("\n");
 }
@@ -119,14 +251,25 @@ export function applyDynamicFontSizeScalesWithRatio(
   typeSizeRatio: number,
   fontSizeScale: number,
   minFontSizePx?: number,
+  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
 ): void {
   const root = document.documentElement;
   const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
     minFontSizePx,
+    ...options,
   });
 
   typeScale.forEach(({ name, cssValue }) => {
     root.style.setProperty(`--text-${name}`, cssValue);
+  });
+
+  Object.entries(
+    generateDerivedTextSizeVars(
+      typeScale,
+      options.fontSizeRoundingStepPx,
+    ),
+  ).forEach(([name, value]) => {
+    root.style.setProperty(name, value);
   });
 }
 
@@ -140,13 +283,14 @@ export function applyDynamicHeaderFontSizeScales(
   headerTypeSizeRatio: number,
   headerFontSizeScale: number,
   minFontSizePx?: number,
+  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
 ): void {
   const root = document.documentElement;
   const typeScale = generateTypeScaleFromRatio(
     headerTypeSizeRatio,
     headerFontSizeScale,
     1,
-    { minFontSizePx },
+    { minFontSizePx, ...options },
   );
 
   typeScale.forEach(({ name, cssValue }) => {
@@ -176,11 +320,9 @@ export function generateLetterSpacingCSS(
 ): Record<string, string> {
   const vars: Record<string, string> = {};
   const baseLetterSpacingFactor = 0.020;
-  const textNames = ["xs", "sm", "md", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl"] as const;
-  const baseIndex = 3;
 
-  textNames.forEach((name, i) => {
-    const stepsFromBase = i - baseIndex;
+  textSizeNames.forEach((name, i) => {
+    const stepsFromBase = i - baseTextSizeIndex;
     const baseLetterSpacing = stepsFromBase * baseLetterSpacingFactor;
     const scaledLetterSpacing = baseLetterSpacing + (bodyLetterSpacingScale - 1) * baseLetterSpacingFactor;
     vars[`--letter-spacing-${name}`] = `${scaledLetterSpacing.toFixed(4)}em`;
@@ -188,7 +330,7 @@ export function generateLetterSpacingCSS(
 
   const headerSizeNames = ["sm", "md", "lg", "xl"];
   headerSizeNames.forEach((name) => {
-    const spacingValue = headerLetterSpacingScale * 0.006;
+    const spacingValue = DEFAULT_HEADING_TRACKING_EM + (headerLetterSpacingScale - 1) * baseLetterSpacingFactor;
     vars[`--letter-spacing-header-${name}`] = `${spacingValue.toFixed(4)}em`;
   });
 

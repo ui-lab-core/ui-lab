@@ -10,8 +10,15 @@ import {
   getDefaultHeaderFont,
   getDefaultMonoFont,
 } from "../constants/font-config";
-import { type TypographyConfig } from "./typography-config";
-import { DEFAULT_FONT_CONFIG, getDefaultThemeSourceConfig } from "./default-theme-config";
+import {
+  DEFAULT_TYPOGRAPHY_CONFIG,
+  type TypographyConfig,
+} from "./typography-config";
+import {
+  DEFAULT_FONT_CONFIG,
+  getDefaultThemeSourceConfig,
+  getTypographyConfigForFonts,
+} from "./default-theme-config";
 
 export interface ThemeFontsConfig {
   bodyFont: FontKey;
@@ -99,7 +106,19 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
     | undefined;
   const legacyMinFontSizePx = sourceTypography?.globalMinFontSizePx;
   const currentTypography = { ...(sourceTypography ?? {}) };
+  const normalizedFonts = normalizeThemeFontsConfig(sourceConfig?.fonts);
+  const fontTypography = getTypographyConfigForFonts(normalizedFonts);
   delete currentTypography.globalMinFontSizePx;
+
+  if (
+    currentTypography.headerLetterSpacingScale ===
+      DEFAULT_TYPOGRAPHY_CONFIG.headerLetterSpacingScale &&
+    fontTypography.headerLetterSpacingScale !==
+      DEFAULT_TYPOGRAPHY_CONFIG.headerLetterSpacingScale
+  ) {
+    delete currentTypography.headerLetterSpacingScale;
+  }
+
   return {
     cssVariables: vars as Record<string, string>,
     themeMode,
@@ -112,22 +131,22 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
           ...(sourceConfig.colors || {}),
         },
         typography: {
-          ...defaultSourceConfig.typography,
+          ...fontTypography,
           ...currentTypography,
           bodyMinFontSizePx:
             sourceTypography?.bodyMinFontSizePx ??
             legacyMinFontSizePx ??
-            defaultSourceConfig.typography.bodyMinFontSizePx,
+            fontTypography.bodyMinFontSizePx,
           headerMinFontSizePx:
             sourceTypography?.headerMinFontSizePx ??
             legacyMinFontSizePx ??
-            defaultSourceConfig.typography.headerMinFontSizePx,
+            fontTypography.headerMinFontSizePx,
         },
         layout: {
           ...defaultSourceConfig.layout,
           ...(sourceConfig.layout || {}),
         },
-        fonts: normalizeThemeFontsConfig(sourceConfig.fonts),
+        fonts: normalizedFonts,
       }
       : defaultSourceConfig,
     timestamp: typeof d.timestamp === "number" ? d.timestamp : Date.now(),

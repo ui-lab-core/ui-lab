@@ -970,6 +970,8 @@
     --foreground: var(--foreground-200);
     --underline-background: var(--background-600);
     --focus-ring: var(--color-background-600);
+    font-size: var(--text-xs);
+    @apply py-1.5;
   }
 
   .anchor[data-hovered="true"]:not([data-disabled="true"]),

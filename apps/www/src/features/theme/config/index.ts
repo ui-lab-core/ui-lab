@@ -4,6 +4,7 @@ export { getScaleName } from "./type-scale/generator";
 // Typography
 export {
   generateTypeScaleFromRatio,
+  roundFontSizePx,
   applyDynamicFontSizeScalesWithRatio,
   applyDynamicHeaderFontSizeScales,
   applyDynamicLineHeightScales,

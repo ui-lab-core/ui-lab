@@ -1,28 +1,324 @@
 import { BORDER_SCALE_STEPS, RADIUS_SCALE_STEPS, SPACING_SCALE_STEPS } from "../config/shared/layout-variables";
-import { minFontSizeConstraints, staticFontSizes } from "../config/typography/constants";
+import {
+  baseTextSizeIndex,
+  derivedTextSizes,
+  minFontSizeConstraints,
+  staticFontSizes,
+  textSizeNames,
+} from "../config/typography/constants";
 import { BODY_FONTS, HEADER_FONTS, MONO_FONTS } from "../constants/font-config";
-import { DEFAULT_FONT_CONFIG, DEFAULT_LAYOUT_CONFIG } from "./default-theme-config";
+import {
+  DEFAULT_FONT_CONFIG,
+  DEFAULT_LAYOUT_CONFIG,
+  getTypographyConfigForFonts,
+} from "./default-theme-config";
 import { THEME_CACHE_KEY } from "./theme-cache";
-import { DEFAULT_TYPOGRAPHY_CONFIG } from "./typography-config";
+import {
+  DEFAULT_HEADING_TRACKING_EM,
+  DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+  DEFAULT_TYPOGRAPHY_CONFIG,
+  ROOT_FONT_SIZE_PX,
+} from "./typography-config";
 
 const REQUIRED_CACHE_VARS = ["--background-500", "--text-md"];
 
 const FONT_FAMILY_MAP = Object.fromEntries(
   [...BODY_FONTS, ...HEADER_FONTS, ...MONO_FONTS].map((font) => [font.name, font.family]),
 );
+const HEADER_FONT_TYPOGRAPHY_MAP = Object.fromEntries(
+  HEADER_FONTS.map((font) => [
+    font.name,
+    getTypographyConfigForFonts({
+      ...DEFAULT_FONT_CONFIG,
+      headerFont: font.name,
+    }),
+  ]),
+);
 
 export function getInitialThemeScript(): string {
-  return `(function(){var p=${JSON.stringify({
+  const payload = {
     cacheKey: THEME_CACHE_KEY,
     requiredCacheVars: REQUIRED_CACHE_VARS,
     defaultLayout: DEFAULT_LAYOUT_CONFIG,
     defaultFonts: DEFAULT_FONT_CONFIG,
-    defaultTypography: DEFAULT_TYPOGRAPHY_CONFIG,
+    defaultTypography: getTypographyConfigForFonts(DEFAULT_FONT_CONFIG),
+    staticDefaultTypography: DEFAULT_TYPOGRAPHY_CONFIG,
+    headerFontTypographyMap: HEADER_FONT_TYPOGRAPHY_MAP,
     spacingSteps: SPACING_SCALE_STEPS,
     radiusSteps: RADIUS_SCALE_STEPS,
     borderSteps: BORDER_SCALE_STEPS,
     fontFamilyMap: FONT_FAMILY_MAP,
     staticFontSizes: staticFontSizes,
     minFontSizeConstraints: minFontSizeConstraints,
-  })};var r=document.documentElement;function t(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function a(v){if(!v||typeof v!=="object")return;Object.keys(v).forEach(function(n){r.style.setProperty(n,v[n])})}function l(s){return typeof s==="number"&&isFinite(s)?s:null}function c(layout){var radius=l(layout&&layout.radius);var borderWidth=l(layout&&layout.borderWidth);var spacingScale=l(layout&&layout.spacingScale);var resolved={radius:radius??p.defaultLayout.radius,borderWidth:borderWidth??p.defaultLayout.borderWidth,spacingScale:spacingScale??p.defaultLayout.spacingScale};var vars={"--spacing-scale":String(resolved.spacingScale)};p.spacingSteps.forEach(function(step){vars["--spacing-"+step.name]="clamp("+(step.min*resolved.spacingScale).toFixed(3)+"rem, "+(step.fluid*resolved.spacingScale).toFixed(2)+"vw, "+(step.max*resolved.spacingScale).toFixed(3)+"rem)"});vars["--spacing"]="clamp("+(0.2*resolved.spacingScale).toFixed(3)+"rem, "+(2.5*resolved.spacingScale).toFixed(2)+"vw, "+(0.25*resolved.spacingScale).toFixed(3)+"rem)";var radiusFactor=resolved.radius/0.2;p.radiusSteps.forEach(function(step){var value=step.value*radiusFactor;vars["--radius-"+step.name]=value>100?"9999px":value.toFixed(3)+"rem"});vars["--radius-full"]="9999px";vars["--radius-ratio"]=String((resolved.radius/0.2)*0.5);var borderFactor=resolved.borderWidth/1;p.borderSteps.forEach(function(step){vars["--border-width-"+step.name]=(step.value*borderFactor).toFixed(1)+"px"});return vars}function ty(typography){var dt=p.defaultTypography;var n=function(v,d){return typeof v==="number"&&isFinite(v)?v:d};var bRatio=n(typography&&typography.bodyTypeSizeRatio,dt.bodyTypeSizeRatio);var bScale=n(typography&&typography.bodyFontSizeScale,dt.bodyFontSizeScale);var hRatio=n(typography&&typography.headerTypeSizeRatio,dt.headerTypeSizeRatio);var hScale=n(typography&&typography.headerFontSizeScale,dt.headerFontSizeScale);var hLh=n(typography&&typography.headerLineHeight,dt.headerLineHeight);var bLh=n(typography&&typography.bodyLineHeight,dt.bodyLineHeight);var bLs=n(typography&&typography.bodyLetterSpacingScale,dt.bodyLetterSpacingScale);var hLs=n(typography&&typography.headerLetterSpacingScale,dt.headerLetterSpacingScale);var legacyMin=l(typography&&typography.globalMinFontSizePx);var bMinPx=n(typography&&typography.bodyMinFontSizePx,legacyMin??dt.bodyMinFontSizePx);var hMinPx=n(typography&&typography.headerMinFontSizePx,legacyMin??dt.headerMinFontSizePx);var vars={};var names=["xs","sm","md","base","lg","xl","2xl","3xl","4xl","5xl"];var baseIdx=3;var bGlobalMin=bMinPx/16;var hGlobalMin=hMinPx/16;names.forEach(function(nm,i){var bConstraint=bGlobalMin*(p.minFontSizeConstraints[nm]/p.minFontSizeConstraints.xs);var hConstraint=hGlobalMin*(p.minFontSizeConstraints[nm]/p.minFontSizeConstraints.xs);var sf=p.staticFontSizes[nm];if(sf!==undefined){vars["--text-"+nm]=Math.max(sf*bScale,bConstraint).toFixed(3)+"rem";vars["--header-text-"+nm]=Math.max(sf*hScale,hConstraint).toFixed(3)+"rem"}else{var steps=i-baseIdx;var bs=Math.pow(bRatio,steps)*bScale;var bMin=Math.max(bs*0.85,bConstraint*bScale);vars["--text-"+nm]="clamp("+bMin.toFixed(3)+"rem, "+(bs*1.8).toFixed(2)+"vw, "+(bs*1.15).toFixed(3)+"rem)";var hs=Math.pow(hRatio,steps)*hScale;var hMin=Math.max(hs*0.85,hConstraint*hScale);vars["--header-text-"+nm]="clamp("+hMin.toFixed(3)+"rem, "+(hs*1.8).toFixed(2)+"vw, "+(hs*1.15).toFixed(3)+"rem)"}});vars["--leading-header"]=String(hLh);vars["--leading-body"]=String(bLh);var baseLsf=0.020;names.forEach(function(nm,i){var ls=(i-baseIdx)*baseLsf+(bLs-1)*baseLsf;vars["--letter-spacing-"+nm]=ls.toFixed(4)+"em"});["sm","md","lg","xl"].forEach(function(nm){vars["--letter-spacing-header-"+nm]=(hLs*0.006).toFixed(4)+"em"});return vars}function f(fonts){var body=fonts&&(fonts.bodyFont||fonts.sansFont)||p.defaultFonts.bodyFont;var header=fonts&&(fonts.headerFont||fonts.bodyFont||fonts.sansFont)||p.defaultFonts.headerFont;var mono=fonts&&fonts.monoFont||p.defaultFonts.monoFont;var bodyFamily=p.fontFamilyMap[body]||p.fontFamilyMap[p.defaultFonts.bodyFont];var headerFamily=p.fontFamilyMap[header]||p.fontFamilyMap[p.defaultFonts.headerFont]||bodyFamily;var monoFamily=p.fontFamilyMap[mono]||p.fontFamilyMap[p.defaultFonts.monoFont];r.style.setProperty("--font-body",bodyFamily);r.style.setProperty("--font-header",headerFamily);r.style.setProperty("--font-sans",bodyFamily);r.style.setProperty("--font-mono",monoFamily)}function v(cache){if(!cache||typeof cache!=="object")throw new Error("Invalid cache format");if(cache.themeMode!=="light"&&cache.themeMode!=="dark")throw new Error("Invalid themeMode");if(!cache.cssVariables||typeof cache.cssVariables!=="object")throw new Error("Missing cssVariables");for(var i=0;i<p.requiredCacheVars.length;i++){var key=p.requiredCacheVars[i];if(typeof cache.cssVariables[key]!=="string")throw new Error("Missing: "+key)}return cache}try{var raw=localStorage.getItem(p.cacheKey);if(!raw){r.setAttribute("data-theme",t());a(c(p.defaultLayout));a(ty(p.defaultTypography));f(p.defaultFonts);return}var cache=v(JSON.parse(raw));r.setAttribute("data-theme",cache.themeMode);a(cache.cssVariables);a(c(cache.sourceConfig&&cache.sourceConfig.layout));a(ty(cache.sourceConfig&&cache.sourceConfig.typography));f(cache.sourceConfig&&cache.sourceConfig.fonts)}catch(e){r.setAttribute("data-theme",t());a(c(p.defaultLayout));a(ty(p.defaultTypography));f(p.defaultFonts);if(e&&e.message!=="Invalid cache format"){console.warn("[Theme] Cache invalid, using defaults:",e.message)}}})();`;
+    textSizeNames,
+    derivedTextSizes,
+    baseTextSizeIndex,
+    rootFontSizePx: ROOT_FONT_SIZE_PX,
+    fontSizeRoundingStepPx: DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+    headingTrackingEm: DEFAULT_HEADING_TRACKING_EM,
+  };
+
+  return `
+(function () {
+  var payload = ${JSON.stringify(payload)};
+  var root = document.documentElement;
+
+  function getPreferredTheme() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function applyVars(vars) {
+    if (!vars || typeof vars !== "object") return;
+    Object.keys(vars).forEach(function (name) {
+      root.style.setProperty(name, vars[name]);
+    });
+  }
+
+  function getNumber(value) {
+    return typeof value === "number" && isFinite(value) ? value : null;
+  }
+
+  function getNumberOrFallback(value, fallback) {
+    var number = getNumber(value);
+    return number === null ? fallback : number;
+  }
+
+  function formatRem(value) {
+    return String(Number(value.toFixed(6))) + "rem";
+  }
+
+  function roundFontSizeRem(value) {
+    var stepPx = payload.fontSizeRoundingStepPx;
+    if (!(stepPx > 0) || !isFinite(stepPx)) return value;
+    return Math.round((value * payload.rootFontSizePx) / stepPx) * stepPx / payload.rootFontSizePx;
+  }
+
+  function fontSizeRem(value) {
+    return formatRem(roundFontSizeRem(value));
+  }
+
+  function computeLayoutVars(layout) {
+    var radius = getNumber(layout && layout.radius);
+    var borderWidth = getNumber(layout && layout.borderWidth);
+    var spacingScale = getNumber(layout && layout.spacingScale);
+    var resolved = {
+      radius: radius === null ? payload.defaultLayout.radius : radius,
+      borderWidth: borderWidth === null ? payload.defaultLayout.borderWidth : borderWidth,
+      spacingScale: spacingScale === null ? payload.defaultLayout.spacingScale : spacingScale,
+    };
+    var vars = { "--spacing-scale": String(resolved.spacingScale) };
+
+    payload.spacingSteps.forEach(function (step) {
+      vars["--spacing-" + step.name] = "clamp("
+        + (step.min * resolved.spacingScale).toFixed(3)
+        + "rem, "
+        + (step.fluid * resolved.spacingScale).toFixed(2)
+        + "vw, "
+        + (step.max * resolved.spacingScale).toFixed(3)
+        + "rem)";
+    });
+    vars["--spacing"] = "clamp("
+      + (0.2 * resolved.spacingScale).toFixed(3)
+      + "rem, "
+      + (2.5 * resolved.spacingScale).toFixed(2)
+      + "vw, "
+      + (0.25 * resolved.spacingScale).toFixed(3)
+      + "rem)";
+
+    var radiusFactor = resolved.radius / 0.2;
+    payload.radiusSteps.forEach(function (step) {
+      var value = step.value * radiusFactor;
+      vars["--radius-" + step.name] = value > 100 ? "9999px" : value.toFixed(3) + "rem";
+    });
+    vars["--radius-full"] = "9999px";
+    vars["--radius-ratio"] = String((resolved.radius / 0.2) * 0.5);
+
+    var borderFactor = resolved.borderWidth / 1;
+    payload.borderSteps.forEach(function (step) {
+      vars["--border-width-" + step.name] = (step.value * borderFactor).toFixed(1) + "px";
+    });
+
+    return vars;
+  }
+
+  function getTypographyDefaults(fonts) {
+    var header = fonts && (fonts.headerFont || fonts.bodyFont || fonts.sansFont) || payload.defaultFonts.headerFont;
+    return payload.headerFontTypographyMap[header] || payload.defaultTypography;
+  }
+
+  function computeTypographyVars(typography, fonts) {
+    var defaults = getTypographyDefaults(fonts);
+    var staticDefaults = payload.staticDefaultTypography;
+    var bodyRatio = getNumberOrFallback(typography && typography.bodyTypeSizeRatio, defaults.bodyTypeSizeRatio);
+    var bodyScale = getNumberOrFallback(typography && typography.bodyFontSizeScale, defaults.bodyFontSizeScale);
+    var headerRatio = getNumberOrFallback(typography && typography.headerTypeSizeRatio, defaults.headerTypeSizeRatio);
+    var headerScale = getNumberOrFallback(typography && typography.headerFontSizeScale, defaults.headerFontSizeScale);
+    var headerLineHeight = getNumberOrFallback(typography && typography.headerLineHeight, defaults.headerLineHeight);
+    var bodyLineHeight = getNumberOrFallback(typography && typography.bodyLineHeight, defaults.bodyLineHeight);
+    var bodyLetterSpacingScale = getNumberOrFallback(typography && typography.bodyLetterSpacingScale, defaults.bodyLetterSpacingScale);
+    var headerLetterSpacingValue = typography && typography.headerLetterSpacingScale;
+    if (
+      headerLetterSpacingValue === staticDefaults.headerLetterSpacingScale &&
+      defaults.headerLetterSpacingScale !== staticDefaults.headerLetterSpacingScale
+    ) {
+      headerLetterSpacingValue = null;
+    }
+    var headerLetterSpacingScale = getNumberOrFallback(headerLetterSpacingValue, defaults.headerLetterSpacingScale);
+    var legacyMinFontSizePx = getNumber(typography && typography.globalMinFontSizePx);
+    var bodyMinFontSizePx = getNumberOrFallback(
+      typography && typography.bodyMinFontSizePx,
+      legacyMinFontSizePx === null ? defaults.bodyMinFontSizePx : legacyMinFontSizePx
+    );
+    var headerMinFontSizePx = getNumberOrFallback(
+      typography && typography.headerMinFontSizePx,
+      legacyMinFontSizePx === null ? defaults.headerMinFontSizePx : legacyMinFontSizePx
+    );
+    var vars = {};
+    var bodySizeMap = {};
+    var bodyGlobalMin = bodyMinFontSizePx / payload.rootFontSizePx;
+    var headerGlobalMin = headerMinFontSizePx / payload.rootFontSizePx;
+
+    payload.textSizeNames.forEach(function (name, index) {
+      var bodyConstraint = bodyGlobalMin * (
+        payload.minFontSizeConstraints[name] / payload.minFontSizeConstraints.xs
+      );
+      var headerConstraint = headerGlobalMin * (
+        payload.minFontSizeConstraints[name] / payload.minFontSizeConstraints.xs
+      );
+      var staticSize = payload.staticFontSizes[name];
+
+      if (staticSize !== undefined) {
+        var bodyStaticSize = roundFontSizeRem(Math.max(staticSize * bodyScale, bodyConstraint));
+        vars["--text-" + name] = formatRem(bodyStaticSize);
+        vars["--header-text-" + name] = fontSizeRem(Math.max(staticSize * headerScale, headerConstraint));
+        bodySizeMap[name] = {
+          isFluid: false,
+          minSize: bodyStaticSize,
+          fluidVw: 0,
+          maxSize: bodyStaticSize,
+        };
+        return;
+      }
+
+      var stepsFromBase = index - payload.baseTextSizeIndex;
+      var bodySize = Math.pow(bodyRatio, stepsFromBase) * bodyScale;
+      var bodyMin = Math.max(bodySize * 0.85, bodyConstraint * bodyScale);
+      var bodyMinSize = roundFontSizeRem(bodyMin);
+      var bodyPreferred = roundFontSizeRem(bodySize);
+      var bodyMaxSize = roundFontSizeRem(bodySize * 1.15);
+      vars["--text-" + name] = "clamp("
+        + formatRem(bodyMinSize)
+        + ", "
+        + (bodyPreferred * 1.8).toFixed(2)
+        + "vw, "
+        + formatRem(bodyMaxSize)
+        + ")";
+      bodySizeMap[name] = {
+        isFluid: true,
+        minSize: bodyMinSize,
+        fluidVw: bodyPreferred * 1.8,
+        maxSize: bodyMaxSize,
+      };
+
+      var headerSize = Math.pow(headerRatio, stepsFromBase) * headerScale;
+      var headerMin = Math.max(headerSize * 0.85, headerConstraint * headerScale);
+      var headerPreferred = roundFontSizeRem(headerSize);
+      vars["--header-text-" + name] = "clamp("
+        + fontSizeRem(headerMin)
+        + ", "
+        + (headerPreferred * 1.8).toFixed(2)
+        + "vw, "
+        + fontSizeRem(headerSize * 1.15)
+        + ")";
+    });
+
+    payload.derivedTextSizes.forEach(function (config) {
+      var source = bodySizeMap[config.source];
+      if (!source) return;
+
+      if (!source.isFluid) {
+        vars["--text-" + config.name] = fontSizeRem(source.minSize * config.multiplier);
+        return;
+      }
+
+      var preferredSize = roundFontSizeRem(source.fluidVw / 1.8 * config.multiplier);
+      vars["--text-" + config.name] = "clamp("
+        + fontSizeRem(source.minSize * config.multiplier)
+        + ", "
+        + (preferredSize * 1.8).toFixed(2)
+        + "vw, "
+        + fontSizeRem(source.maxSize * config.multiplier)
+        + ")";
+    });
+
+    vars["--leading-header"] = String(headerLineHeight);
+    vars["--leading-body"] = String(bodyLineHeight);
+
+    var baseLetterSpacingFactor = 0.020;
+    payload.textSizeNames.forEach(function (name, index) {
+      var letterSpacing = (index - payload.baseTextSizeIndex) * baseLetterSpacingFactor
+        + (bodyLetterSpacingScale - 1) * baseLetterSpacingFactor;
+      vars["--letter-spacing-" + name] = letterSpacing.toFixed(4) + "em";
+    });
+    ["sm", "md", "lg", "xl"].forEach(function (name) {
+      vars["--letter-spacing-header-" + name] = (payload.headingTrackingEm + (headerLetterSpacingScale - 1) * baseLetterSpacingFactor).toFixed(4) + "em";
+    });
+
+    return vars;
+  }
+
+  function applyFonts(fonts) {
+    var body = fonts && (fonts.bodyFont || fonts.sansFont) || payload.defaultFonts.bodyFont;
+    var header = fonts && (fonts.headerFont || fonts.bodyFont || fonts.sansFont) || payload.defaultFonts.headerFont;
+    var mono = fonts && fonts.monoFont || payload.defaultFonts.monoFont;
+    var bodyFamily = payload.fontFamilyMap[body] || payload.fontFamilyMap[payload.defaultFonts.bodyFont];
+    var headerFamily = payload.fontFamilyMap[header] || payload.fontFamilyMap[payload.defaultFonts.headerFont] || bodyFamily;
+    var monoFamily = payload.fontFamilyMap[mono] || payload.fontFamilyMap[payload.defaultFonts.monoFont];
+    root.style.setProperty("--font-body", bodyFamily);
+    root.style.setProperty("--font-header", headerFamily);
+    root.style.setProperty("--font-sans", bodyFamily);
+    root.style.setProperty("--font-mono", monoFamily);
+  }
+
+  function validateCache(cache) {
+    if (!cache || typeof cache !== "object") throw new Error("Invalid cache format");
+    if (cache.themeMode !== "light" && cache.themeMode !== "dark") throw new Error("Invalid themeMode");
+    if (!cache.cssVariables || typeof cache.cssVariables !== "object") throw new Error("Missing cssVariables");
+    for (var index = 0; index < payload.requiredCacheVars.length; index += 1) {
+      var key = payload.requiredCacheVars[index];
+      if (typeof cache.cssVariables[key] !== "string") throw new Error("Missing: " + key);
+    }
+    return cache;
+  }
+
+  try {
+    var raw = localStorage.getItem(payload.cacheKey);
+    if (!raw) {
+      root.setAttribute("data-theme", getPreferredTheme());
+      applyVars(computeLayoutVars(payload.defaultLayout));
+      applyVars(computeTypographyVars(payload.defaultTypography, payload.defaultFonts));
+      applyFonts(payload.defaultFonts);
+      return;
+    }
+
+    var cache = validateCache(JSON.parse(raw));
+    root.setAttribute("data-theme", cache.themeMode);
+    applyVars(cache.cssVariables);
+    applyVars(computeLayoutVars(cache.sourceConfig && cache.sourceConfig.layout));
+    applyVars(computeTypographyVars(
+      cache.sourceConfig && cache.sourceConfig.typography,
+      cache.sourceConfig && cache.sourceConfig.fonts
+    ));
+    applyFonts(cache.sourceConfig && cache.sourceConfig.fonts);
+  } catch (error) {
+    root.setAttribute("data-theme", getPreferredTheme());
+    applyVars(computeLayoutVars(payload.defaultLayout));
+    applyVars(computeTypographyVars(payload.defaultTypography, payload.defaultFonts));
+    applyFonts(payload.defaultFonts);
+    if (error && error.message !== "Invalid cache format") {
+      console.warn("[Theme] Cache invalid, using defaults:", error.message);
+    }
+  }
+})();
+`.trim();
 }

@@ -16,8 +16,6 @@
 }
 
 #docs h2 {
-  font-size: var(--text-sm);
-  font-weight: 600;
   margin: 4.0rem 0 0.4rem 0;
 }
 
@@ -45,18 +43,15 @@
 
 #docs .banner p {
   font-size: var(--text-xs);
+  line-height: calc(var(--leading-body) * 0.7)
 }
 
 #docs .banner .content {
-  @apply gap-1.5
+  @apply gap-3.5
 }
 
 #docs .banner .title {
   @apply m-0
-}
-
-#docs a {
-  font-size: calc(var(--text-sm)*1.025);
 }
 
 #docs .banner a {
@@ -69,7 +64,7 @@
 }
 
 #docs .title {
-  @apply m-0 mb-2;
+  @apply m-0;
 }
 
 @media (min-width: 1024px) {

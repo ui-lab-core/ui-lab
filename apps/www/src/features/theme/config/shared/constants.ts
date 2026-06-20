@@ -39,7 +39,7 @@ export const SEMANTIC_HTML_STYLES = `
   }
 
   p {
-    font-size: var(--text-md);
+    font-size: var(--text-body-size);
     line-height: var(--leading-body);
     font-weight: var(--font-weight-normal);
     letter-spacing: var(--letter-spacing-normal);
@@ -73,7 +73,7 @@ export const SEMANTIC_HTML_STYLES = `
 
   code {
     font-family: var(--font-mono);
-    font-size: var(--text-sm);
+    font-size: var(--text-code-size);
     background-color: var(--color-background-800);
     padding: 0.125rem 0.375rem;
     border-radius: var(--radius-xs);
@@ -81,7 +81,7 @@ export const SEMANTIC_HTML_STYLES = `
 
   pre {
     font-family: var(--font-mono);
-    font-size: var(--text-sm);
+    font-size: var(--text-code-size);
     background-color: var(--color-background-800);
     padding: 1rem;
     border-radius: var(--radius-sm);

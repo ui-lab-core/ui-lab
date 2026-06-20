@@ -1,3 +1,37 @@
+export const textSizeNames = [
+  "xs",
+  "sm",
+  "md",
+  "base",
+  "lg",
+  "xl",
+  "2xl",
+  "3xl",
+  "4xl",
+  "5xl",
+] as const;
+
+export type TextSizeName = (typeof textSizeNames)[number];
+
+export const baseTextSizeIndex = 3;
+
+export const derivedTextSizes = [
+  {
+    name: "body-size",
+    source: "sm",
+    multiplier: 1.025,
+  },
+  {
+    name: "code-size",
+    source: "xs",
+    multiplier: 1.01,
+  },
+] as const satisfies Array<{
+  name: string;
+  source: TextSizeName;
+  multiplier: number;
+}>;
+
 export const minFontSizeConstraints = {
   xs: 0.900,
   sm: 1.0,
@@ -18,4 +52,11 @@ export const staticFontSizes = {
   base: 1.0,
 } as const;
 
-export const fluidSizes = new Set(["lg", "xl", "2xl", "3xl", "4xl", "5xl"]);
+export const fluidSizes = new Set<TextSizeName>([
+  "lg",
+  "xl",
+  "2xl",
+  "3xl",
+  "4xl",
+  "5xl",
+]);
