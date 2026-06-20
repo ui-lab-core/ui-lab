@@ -5,6 +5,7 @@ export interface ComponentExample {
   code: string;
   preview: React.ReactNode;
   controls?: any[]; // ControlDef[]
+  factory?: (props: Record<string, unknown>) => { preview: React.ReactNode; code: string };
   renderPreview?: (props: Record<string, any>) => React.ReactNode;
   previewLayout?: "center" | "start";
   resizable?: boolean;

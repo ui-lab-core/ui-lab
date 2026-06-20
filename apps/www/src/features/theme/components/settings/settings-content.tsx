@@ -17,7 +17,10 @@ import {
 import { useThemeStorage } from "../../hooks/use-theme-storage";
 import { getFontConfig, type FontKey } from "../../constants/font-config";
 import { type ThemeFontsConfig } from "../../lib/theme-cache";
-import { type TypographyConfig } from "../../lib/typography-config";
+import {
+  DEFAULT_TYPOGRAPHY_CONFIG,
+  type TypographyConfig,
+} from "../../lib/typography-config";
 import {
   Tabs,
   Button,
@@ -41,10 +44,6 @@ function useSettingsHandlers(
   selectedBodyFont: string,
   selectedHeaderFont: string,
   selectedMonoFont: string,
-  bodyMinFontSizePx: number,
-  headerMinFontSizePx: number,
-  headerLineHeight: number,
-  bodyLineHeight: number,
   currentTypography: TypographyConfig,
   setLocalColors: (colors: SimpleThemeColors) => void,
   setLocalGlobalAdjustments: (adj: GlobalColorAdjustments) => void,
@@ -149,16 +148,25 @@ function useSettingsHandlers(
         typeSizeRatio: ratio,
         bodyLetterSpacingScale: bodySpacing = 1,
         bodyFontWeightScale: bodyWeight = 1,
-        bodyLineHeight: nextBodyLineHeight = bodyLineHeight,
+        bodyLineHeight:
+          nextBodyLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.bodyLineHeight,
+        bodyMinFontSizePx:
+          nextBodyMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
         bodyFontSizeScale = scale,
         bodyTypeSizeRatio = ratio,
       } = fontConfig.metrics;
       let finalScale = bodyFontSizeScale;
-      if (!isValidTypographyConfig(bodyTypeSizeRatio, bodyFontSizeScale, bodyMinFontSizePx)) {
+      if (
+        !isValidTypographyConfig(
+          bodyTypeSizeRatio,
+          bodyFontSizeScale,
+          nextBodyMinFontSizePx,
+        )
+      ) {
         finalScale = findClosestValidFontSizeScale(
           bodyTypeSizeRatio,
           bodyFontSizeScale,
-          bodyMinFontSizePx,
+          nextBodyMinFontSizePx,
         );
       }
       updateTypography({
@@ -167,6 +175,7 @@ function useSettingsHandlers(
         bodyFontWeightScale: bodyWeight,
         bodyLetterSpacingScale: bodySpacing,
         bodyLineHeight: nextBodyLineHeight,
+        bodyMinFontSizePx: nextBodyMinFontSizePx,
       });
     }
     persistFonts({
@@ -185,18 +194,21 @@ function useSettingsHandlers(
         headerLetterSpacingScale: headerSpacing = 1,
         headerFontWeightScale,
         fontWeightScale,
-        headerLineHeight: nextHeaderLineHeight = headerLineHeight,
+        headerLineHeight:
+          nextHeaderLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
+        headerMinFontSizePx:
+          nextHeaderMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
       } = fontConfig.metrics;
       const finalHeaderScale = isValidTypographyConfig(
         typeSizeRatio,
         fontSizeScale,
-        headerMinFontSizePx,
+        nextHeaderMinFontSizePx,
       )
         ? fontSizeScale
         : findClosestValidFontSizeScale(
             typeSizeRatio,
             fontSizeScale,
-            headerMinFontSizePx,
+            nextHeaderMinFontSizePx,
           );
       updateTypography({
         headerTypeSizeRatio: typeSizeRatio,
@@ -204,6 +216,7 @@ function useSettingsHandlers(
         headerFontWeightScale: headerFontWeightScale ?? fontWeightScale ?? 1,
         headerLetterSpacingScale: headerSpacing,
         headerLineHeight: nextHeaderLineHeight,
+        headerMinFontSizePx: nextHeaderMinFontSizePx,
       });
     }
     persistFonts({
@@ -377,10 +390,6 @@ export const SettingsContent = ({
     selectedBodyFont,
     selectedHeaderFont,
     selectedMonoFont,
-    bodyMinFontSizePx,
-    headerMinFontSizePx,
-    headerLineHeight,
-    bodyLineHeight,
     currentTypography,
     setLocalColors,
     setLocalGlobalAdjustments,

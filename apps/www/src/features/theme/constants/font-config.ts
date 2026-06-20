@@ -25,6 +25,8 @@ export interface FontMetrics {
   bodyFontWeightScale?: number;
   bodyFontSizeScale?: number;
   bodyLineHeight?: number;
+  bodyMinFontSizePx?: number;
+  headerMinFontSizePx?: number;
 }
 
 export interface FontConfig {
@@ -92,7 +94,8 @@ export const BODY_FONTS: FontConfig[] = [
       "pointSize": 18,
       "alignment": "left",
       "bodyLetterSpacingScale": 2.65,
-      "bodyLineHeight": 1.530
+      "bodyLineHeight": 1.530,
+      "bodyMinFontSizePx": 13.25
     },
   },
   {

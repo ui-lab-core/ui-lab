@@ -48,7 +48,7 @@ export function AnchorAnimation() {
 
   return (
     <div ref={containerRef} className="relative w-full h-full">
-      <div className="bg-background-950 flex items-center justify-center w-full h-full">
+      <div className="flex items-center justify-center w-full h-full">
         {/* Text block is the flow anchor — always centered */}
         <div className="relative flex flex-col gap-[7px] w-[148px]">
 

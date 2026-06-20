@@ -56,6 +56,7 @@ interface ComponentConfiguratorProps {
     code: string;
   }>;
   controls?: ControlDef[];
+  factory?: (props: Record<string, unknown>) => { preview: React.ReactNode; code: string };
   renderPreview?: (props: RenderPreviewProps) => React.ReactNode;
   customRenderer?: (context: RenderContext) => React.ReactNode;
   hidePreviewToggle?: boolean;
@@ -87,6 +88,7 @@ export function ComponentConfigurator({
   children,
   tabs = EMPTY_TABS,
   controls = EMPTY_CONTROLS,
+  factory,
   renderPreview,
   customRenderer,
   hidePreviewToggle = false,
@@ -105,14 +107,15 @@ export function ComponentConfigurator({
   const [controlValues, setControlValues] = useState<Record<string, ControlValue>>(initialControlValues);
   const [selectedEasing, setSelectedEasing] = useState<EasingKey>("snappyPop");
   const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.desktop);
-  const hasCode = Boolean(code || tabs.length > 0);
+  const factoryResult = factory ? factory(controlValues) : null;
+  const hasCode = Boolean(factoryResult || code || tabs.length > 0);
 
-  const allTabs = hasCode
+  const allTabs = hasCode && !factoryResult
     ? code
       ? [{ label: "Usage", code }, ...tabs]
       : tabs
     : EMPTY_TABS;
-  const currentCode = allTabs[activeTab]?.code ?? code ?? "";
+  const currentCode = factoryResult ? factoryResult.code : (allTabs[activeTab]?.code ?? code ?? "");
   const previewVariant = calculateVariantFromWidth(previewWidth);
 
   const handleControlChange = (name: string, value: ControlValue) => {
@@ -125,15 +128,15 @@ export function ComponentConfigurator({
   const PreviewRenderer = renderPreview;
   const CustomRenderer = customRenderer;
   const previewContent = (
-    <Scroll styles={{ track: "pr-6 " }} inline maxHeight="24rem">
+    <Scroll styles={{ track: "pr-6" }} inline maxHeight="40rem">
       <div
         className={cn(
-          "w-full min-w-xs px-10 py-20",
-          previewLayout === "center" ? "flex items-center justify-center" : "flex flex-col"
+          "flex p-8 w-full mx-auto min-h-80",
+          previewLayout === "center" ? "items-center justify-center" : "flex-col"
         )}
         style={{ "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties}
       >
-        {PreviewRenderer ? (
+        {factoryResult ? factoryResult.preview : PreviewRenderer ? (
           <PreviewRenderer
             {...controlValues}
             handleControlChange={handleControlChange}
@@ -146,7 +149,7 @@ export function ComponentConfigurator({
   );
   const codeContent = hasCode ? (
     <div className="bg-background-950/40">
-      {allTabs.length > 1 && (
+      {!factoryResult && allTabs.length > 1 && (
         <div className="border-b border-background-700/80 px-3 py-2">
           <div className="flex flex-wrap gap-2">
             {allTabs.map((tab, index) => (
@@ -180,10 +183,10 @@ export function ComponentConfigurator({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {/* Header */}
       {title && (
-        <div className="border-b space-y-2 border-background-700 py-8">
+        <div className="border-b space-y-2 border-background-700 py-5">
           <h4 className="text-foreground-50">{title}</h4>
           {description && (
             <p className="text-sm text-foreground-400">{description}</p>
@@ -192,9 +195,9 @@ export function ComponentConfigurator({
       )
       }
 
-      <div className="flex-1 rounded-sm overflow-hidden">
-        {!hidePreviewToggle && resizable && (
-          <div className="space-y-3">
+      <div className="flex rounded-sm border border-background-700 flex-col md:flex-row h-full md:items-center">
+        <div className="h-full border-background-700 flex-1 min-w-0 overflow-hidden">
+          {!hidePreviewToggle && resizable && (
             <PreviewContainer
               deviceVariant={previewVariant}
               width={previewWidth}
@@ -208,192 +211,181 @@ export function ComponentConfigurator({
             >
               {previewContent}
             </PreviewContainer>
-            {codeContent && (
-              <div className="overflow-hidden rounded-sm border border-background-700">
-                {codeContent}
+          )}
+
+          {!hidePreviewToggle && !resizable && (
+            <div className="rounded-sm">
+              {previewContent}
+            </div>
+          )}
+
+          {hidePreviewToggle && (
+            <div className="overflow-hidden">
+              <div className="px-10 py-15">
+                {previewContent}
               </div>
-            )}
-          </div>
-        )}
-
-        {!hidePreviewToggle && !resizable && hasCode && (
-          <div className="overflow-hidden rounded-sm border border-background-700">
-            <div className="py-4">
-              {previewContent}
             </div>
-            <div className="border-t border-background-700">
-              {codeContent}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
-        {!hidePreviewToggle && !resizable && !hasCode && (
-          <div className="border border-background-700 rounded-sm">
-            {previewContent}
-          </div>
-        )}
+        {controls.length > 0 && (
+          <>
+            <Divider orientation="vertical" />
 
-        {hidePreviewToggle && (
-          <div className="overflow-hidden">
-            <div className="px-10 py-15">
-              {previewContent}
+            <div className="p-4 w-full md:w-48 md:shrink-0 space-y-3">
+              {controls.map((control) => {
+                if (control.name === "easing") return null;
+
+                return (
+                  <div key={control.name} className="flex flex-col gap-2">
+                    <label className="text-xs font-medium text-foreground-400">
+                      {control.label}
+                    </label>
+                    {control.type === "select" && (
+                      <Select
+                        selectedKey={String(controlValues[control.name] ?? "")}
+                        defaultValue={control.options?.find(opt => opt.value === controlValues[control.name])?.label ?? control.options?.[0]?.label ?? ""}
+                        onSelectionChange={(key) =>
+                          handleControlChange(control.name, key)
+                        }
+                      >
+                        <Select.Trigger>
+                          <Select.Value />
+                        </Select.Trigger>
+                        <Select.Content>
+                          <Select.List>
+                            {control.options?.map((option) => (
+                              <Select.Item key={String(option.value)} value={String(option.value)}>
+                                {option.label}
+                              </Select.Item>
+                            ))}
+                          </Select.List>
+                        </Select.Content>
+                      </Select>
+                    )}
+                    {control.type === "toggle" && (
+                      <button
+                        onClick={() =>
+                          handleControlChange(
+                            control.name,
+                            !controlValues[control.name]
+                          )
+                        }
+                        className={cn(
+                          "w-full px-3 py-1.5 text-xs font-medium rounded-sm",
+                          controlValues[control.name]
+                            ? "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700"
+                            : "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700 opacity-50"
+                        )}
+                      >
+                        {controlValues[control.name]
+                          ? control.label
+                          : `${control.label} (Off)`}
+                      </button>
+                    )}
+                    {control.type === "text" && (
+                      <input
+                        type="text"
+                        value={String(controlValues[control.name] ?? "")}
+                        onChange={(e) =>
+                          handleControlChange(control.name, e.target.value)
+                        }
+                        className="w-full px-2 py-2 text-xs bg-background-800/50 border border-background-700 rounded-sm text-foreground-50 placeholder-foreground-400 hover:border-background-600 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                      />
+                    )}
+                    {control.type === "stepper" && (
+                      <Group spacing="none" className="h-9 w-fit max-w-max">
+                        <Group.Button
+                          variant="secondary"
+                          size="sm"
+                          isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) <= getStepperBounds(control).min}
+                          onClick={() =>
+                            handleControlChange(
+                              control.name,
+                              clampStepperValue(
+                                Number(controlValues[control.name] ?? control.defaultValue ?? 0) - getStepperBounds(control).step,
+                                control
+                              )
+                            )
+                          }
+                        >
+                          <FaMinus size={10} />
+                        </Group.Button>
+                        <Divider />
+                        <Group.Input
+                          value={Number(controlValues[control.name] ?? control.defaultValue ?? 0)}
+                          variant="default"
+                          onChange={(e) => {
+                            const nextValue = Number(e.target.value);
+                            if (!Number.isNaN(nextValue)) {
+                              handleControlChange(control.name, clampStepperValue(nextValue, control));
+                            }
+                          }}
+                          className="w-12"
+                        />
+                        <Divider />
+                        <Group.Button
+                          variant="secondary"
+                          size="sm"
+                          isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) >= getStepperBounds(control).max}
+                          onClick={() =>
+                            handleControlChange(
+                              control.name,
+                              clampStepperValue(
+                                Number(controlValues[control.name] ?? control.defaultValue ?? 0) + getStepperBounds(control).step,
+                                control
+                              )
+                            )
+                          }
+                        >
+                          <FaPlus size={10} />
+                        </Group.Button>
+                      </Group>
+                    )}
+                  </div>
+                );
+              })}
+              {controls.some((c) => c.name === "easing") && (
+                <div className="space-y-2">
+                  <label className="text-xs text-foreground-400" htmlFor="interaction-ease-select">
+                    Interaction Ease
+                  </label>
+                  <Select
+                    selectedKey={selectedEasing}
+                    defaultValue={EASING_FUNCTIONS[selectedEasing]?.name || ""}
+                    onSelectionChange={(key) =>
+                      setSelectedEasing(key as EasingKey)
+                    }
+                  >
+                    <Select.Trigger>
+                      <div className="flex items-center gap-2">
+                        <EasingPreview easing={selectedEasing} size="sm" className="text-accent-500" />
+                        <span>{EASING_FUNCTIONS[selectedEasing].name}</span>
+                      </div>
+                    </Select.Trigger>
+                    <Select.Content>
+                      <Select.List>
+                        {EASING_KEYS.map((easing: EasingKey) => (
+                          <Select.Item key={easing} value={easing}>
+                            <div className="flex items-center gap-2">
+                              <EasingPreview easing={easing} size="sm" className="text-accent-500" />
+                              <span>{EASING_FUNCTIONS[easing].name}</span>
+                            </div>
+                          </Select.Item>
+                        ))}
+                      </Select.List>
+                    </Select.Content>
+                  </Select>
+                </div>
+              )}
             </div>
-          </div>
+          </>
         )}
       </div>
 
-      {/* Controls Section */}
-      {controls.length > 0 && (
-        <div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {controls.map((control) => {
-              // Skip rendering easing control here - it will be handled separately
-              if (control.name === "easing") return null;
-
-              return (
-                <div key={control.name} className="space-y-2">
-                  <label className="text-xs font-medium text-foreground-400">
-                    {control.label}
-                  </label>
-                  {control.type === "select" && (
-                    <Select
-                      selectedKey={String(controlValues[control.name] ?? "")}
-                      defaultValue={control.options?.find(opt => opt.value === controlValues[control.name])?.label ?? control.options?.[0]?.label ?? ""}
-                      onSelectionChange={(key) =>
-                        handleControlChange(control.name, key)
-                      }
-                    >
-                      <Select.Trigger>
-                        <Select.Value />
-                      </Select.Trigger>
-                      <Select.Content>
-                        <Select.List>
-                          {control.options?.map((option) => (
-                            <Select.Item key={String(option.value)} value={String(option.value)}>
-                              {option.label}
-                            </Select.Item>
-                          ))}
-                        </Select.List>
-                      </Select.Content>
-                    </Select>
-                  )}
-                  {control.type === "toggle" && (
-                    <button
-                      onClick={() =>
-                        handleControlChange(
-                          control.name,
-                          !controlValues[control.name]
-                        )
-                      }
-                      className={cn(
-                        "w-full px-3 py-1.5 text-xs font-medium rounded-sm",
-                        controlValues[control.name]
-                          ? "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700"
-                          : "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700 opacity-50"
-                      )}
-                    >
-                      {controlValues[control.name]
-                        ? control.label
-                        : `${control.label} (Off)`}
-                    </button>
-                  )}
-                  {control.type === "text" && (
-                    <input
-                      type="text"
-                      value={String(controlValues[control.name] ?? "")}
-                      onChange={(e) =>
-                        handleControlChange(control.name, e.target.value)
-                      }
-                      className="w-full px-2 py-2 text-xs bg-background-800/50 border border-background-700 rounded-sm text-foreground-50 placeholder-foreground-400 hover:border-background-600 focus:outline-none focus:ring-2 focus:ring-accent-500"
-                    />
-                  )}
-                  {control.type === "stepper" && (
-                    <Group spacing="none" className="h-9 w-fit max-w-max">
-                      <Group.Button
-                        variant="secondary"
-                        size="sm"
-                        isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) <= getStepperBounds(control).min}
-                        onClick={() =>
-                          handleControlChange(
-                            control.name,
-                            clampStepperValue(
-                              Number(controlValues[control.name] ?? control.defaultValue ?? 0) - getStepperBounds(control).step,
-                              control
-                            )
-                          )
-                        }
-                      >
-                        <FaMinus size={10} />
-                      </Group.Button>
-                      <Divider />
-                      <Group.Input
-                        value={Number(controlValues[control.name] ?? control.defaultValue ?? 0)}
-                        variant="default"
-                        onChange={(e) => {
-                          const nextValue = Number(e.target.value);
-                          if (!Number.isNaN(nextValue)) {
-                            handleControlChange(control.name, clampStepperValue(nextValue, control));
-                          }
-                        }}
-                        className="w-12"
-                      />
-                      <Divider />
-                      <Group.Button
-                        variant="secondary"
-                        size="sm"
-                        isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) >= getStepperBounds(control).max}
-                        onClick={() =>
-                          handleControlChange(
-                            control.name,
-                            clampStepperValue(
-                              Number(controlValues[control.name] ?? control.defaultValue ?? 0) + getStepperBounds(control).step,
-                              control
-                            )
-                          )
-                        }
-                      >
-                        <FaPlus size={10} />
-                      </Group.Button>
-                    </Group>
-                  )}
-                </div>
-              );
-            })}
-            {/* Easing Selector - only show if easing control is defined */}
-            {controls.some((c) => c.name === "easing") && (
-              <div className="space-y-2">
-                <label className="text-xs text-foreground-400" htmlFor="interaction-ease-select">
-                  Interaction Ease
-                </label>
-                <Select
-                  selectedKey={selectedEasing}
-                  defaultValue={EASING_FUNCTIONS[selectedEasing]?.name || ""}
-                  onSelectionChange={(key) =>
-                    setSelectedEasing(key as EasingKey)
-                  }
-                >
-                  <Select.Trigger>
-                    <div className="flex items-center gap-2">
-                      <EasingPreview easing={selectedEasing} size="sm" className="text-accent-500" />
-                      <span>{EASING_FUNCTIONS[selectedEasing].name}</span>
-                    </div>
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.List>
-                      {EASING_KEYS.map((easing: EasingKey) => (
-                        <Select.Item key={easing} value={easing}>
-                          <div className="flex items-center gap-2">
-                            <EasingPreview easing={easing} size="sm" className="text-accent-500" />
-                            <span>{EASING_FUNCTIONS[easing].name}</span>
-                          </div>
-                        </Select.Item>
-                      ))}
-                    </Select.List>
-                  </Select.Content>
-                </Select>
-              </div>
-            )}
-          </div>
+      {codeContent && (
+        <div className="overflow-hidden rounded-sm border border-background-700">
+          {codeContent}
         </div>
       )}
     </div>

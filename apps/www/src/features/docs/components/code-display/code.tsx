@@ -73,6 +73,7 @@ interface CodeProps {
   showLineNumbers?: boolean;
   filename?: string;
   heading?: string;
+  maxHeightLines?: number;
   backgroundColor?: OklchColor;
   foregroundColor?: OklchColor;
   accentColor?: OklchColor;
@@ -81,7 +82,7 @@ interface CodeProps {
   preHighlightedDark?: string;
 }
 
-const MAX_HEIGHT_LINES = 15;
+const MAX_HEIGHT_LINES = 5;
 type CodeToHtmlOptions = any;
 
 export function Code({
@@ -92,7 +93,8 @@ export function Code({
   filename,
   heading,
   preHighlightedLight,
-  preHighlightedDark
+  preHighlightedDark,
+  maxHeightLines = MAX_HEIGHT_LINES,
 }: CodeProps) {
   const { currentThemeMode, currentThemeColors, isThemeInitialized } = useApp();
 
@@ -205,9 +207,9 @@ export function Code({
   }, [displayHtml]);
 
   const hasHorizontalOverflow = dimensions.contentScrollWidth > dimensions.viewportWidth;
-  const hiddenCodeLines = totalCodeLines - MAX_HEIGHT_LINES;
+  const hiddenCodeLines = totalCodeLines - maxHeightLines;
   const expanded = isExpanded;
-  const shouldShowExpandButton = totalCodeLines > MAX_HEIGHT_LINES;
+  const shouldShowExpandButton = totalCodeLines > maxHeightLines;
 
   return (
     <div
@@ -255,7 +257,7 @@ export function Code({
             `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_span]:!text-inherit")}
           style={{
             overflowY: expanded ? 'auto' : 'hidden',
-            maxHeight: !expanded ? `calc(${MAX_HEIGHT_LINES} * 1.5em + 2rem)` : undefined,
+            maxHeight: !expanded ? `calc(${maxHeightLines} * 1.5em + 2rem)` : undefined,
             maskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
             WebkitMaskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
           }}

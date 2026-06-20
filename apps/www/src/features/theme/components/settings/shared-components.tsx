@@ -17,6 +17,7 @@ import {
   Divider,
   Label,
   Badge,
+  Color,
 } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 
@@ -330,49 +331,81 @@ const ColorPicker = memo(
       return false;
     };
 
-    return (
-      <div className="grid grid-cols-4 gap-2">
-        {swatches.map((h) => {
-          const isNeutral = h === null;
-          const isSelected = color.c <= 0.005
-            ? isNeutral
-            : !isNeutral && Math.abs(h - color.h) < 2;
-          const displayColor = isNeutral
-            ? oklchToCss(getNeutralSwatchColor())
-            : oklchToCss(getSwatchColor(h));
+    const getMaxChroma = (): number => {
+      if (type === "background") return 0.008;
+      if (type === "foreground") return 0.04;
+      if (type === "accent") return 0.18;
+      return 0.20;
+    };
 
-          return (
-            <button
-              key={h ?? 'neutral'}
-              onClick={() => {
-                if (isNeutral) {
-                  onChange({ l: 1, c: 0, h: 0 });
-                } else {
-                  const isColorNeutral = color.c <= 0.005;
-                  const defaultChroma = type === "foreground" ? 0.01 : type === "accent" ? 0.20 : 0.008;
-                  let lightness = color.l;
-                  if (isColorNeutral) {
-                    if (type === "foreground") {
-                      lightness = currentThemeMode === "dark" ? 0.4 : 0.2;
-                    } else if (type === "accent") {
-                      lightness = 0.5;
+    const handleHueChange = (h: number) => {
+      const clampedH = hueRange
+        ? Math.min(hueRange.max, Math.max(hueRange.min, h))
+        : h;
+      const isColorNeutral = color.c <= 0.005;
+      const defaultChroma = type === "foreground" ? 0.01 : type === "accent" ? 0.20 : type === "background" ? 0.008 : 0.20;
+      let lightness = color.l;
+      if (isColorNeutral) {
+        if (type === "foreground") {
+          lightness = currentThemeMode === "dark" ? 0.4 : 0.2;
+        } else if (type === "accent") {
+          lightness = 0.5;
+        }
+      }
+      const chroma = Math.min(isColorNeutral ? defaultChroma : color.c, getMaxChroma());
+      onChange({ l: lightness, c: chroma, h: clampedH });
+    };
+
+    return (
+      <div className="space-y-3">
+        <div className="grid grid-cols-4 gap-2">
+          {swatches.map((h) => {
+            const isNeutral = h === null;
+            const isSelected = color.c <= 0.005
+              ? isNeutral
+              : !isNeutral && Math.abs(h - color.h) < 2;
+            const displayColor = isNeutral
+              ? oklchToCss(getNeutralSwatchColor())
+              : oklchToCss(getSwatchColor(h));
+
+            return (
+              <button
+                key={h ?? 'neutral'}
+                onClick={() => {
+                  if (isNeutral) {
+                    onChange({ l: 1, c: 0, h: 0 });
+                  } else {
+                    const isColorNeutral = color.c <= 0.005;
+                    const defaultChroma = type === "foreground" ? 0.01 : type === "accent" ? 0.20 : 0.008;
+                    let lightness = color.l;
+                    if (isColorNeutral) {
+                      if (type === "foreground") {
+                        lightness = currentThemeMode === "dark" ? 0.4 : 0.2;
+                      } else if (type === "accent") {
+                        lightness = 0.5;
+                      }
                     }
+                    onChange({ l: lightness, c: color.c === 0 ? defaultChroma : color.c, h });
                   }
-                  onChange({ l: lightness, c: color.c === 0 ? defaultChroma : color.c, h });
-                }
-              }}
-              className="relative h-10 rounded-[4px] flex items-center justify-center"
-              style={{ backgroundColor: displayColor }}
-            >
-              {isSelected && (
-                <FaCheck
-                  className={getCheckmarkDark(isNeutral) ? "text-background-950" : "text-accent-50"}
-                  size={14}
-                />
-              )}
-            </button>
-          );
-        })}
+                }}
+                className="relative h-10 rounded-[4px] flex items-center justify-center"
+                style={{ backgroundColor: displayColor }}
+              >
+                {isSelected && (
+                  <FaCheck
+                    className={getCheckmarkDark(isNeutral) ? "text-background-950" : "text-accent-50"}
+                    size={14}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <Color.Slider
+          type="hue"
+          value={color.c <= 0.005 ? 0 : color.h}
+          onChange={handleHueChange}
+        />
       </div>
     );
   },

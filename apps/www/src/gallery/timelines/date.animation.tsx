@@ -184,7 +184,7 @@ export function DateAnimation() {
   } satisfies Record<AnimPhase, CursorFrame>;
 
   return (
-    <div ref={containerRef} className="bg-background-950 flex items-center justify-center relative overflow-hidden font-sans">
+    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
       <div className="relative w-full">
         <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
           <defs>

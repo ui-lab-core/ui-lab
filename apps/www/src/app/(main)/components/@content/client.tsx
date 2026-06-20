@@ -57,7 +57,7 @@ export default function ComponentsPageClient() {
                               onClick={() => router.push(href)}
                             >
                               <Gallery.View
-                                className="w-full h-40 duration-200 flex items-center justify-center relative bg-background-950 group-hover:border-background-600 border-b border-background-700 shrink-0"
+                                className="w-full h-40 duration-200 flex items-center justify-center relative bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0"
                               >
                                 <div className='max-w-50 gap-2 flex items-center justify-center'>
                                   {previews[component.id] || <div />}
@@ -91,11 +91,11 @@ export default function ComponentsPageClient() {
                       {comingSoonInCategory.map((component) => (
                         <div key={component.id} className="opacity-40 pointer-events-none select-none">
                           <Gallery.Item
-                            className='group h-70 rounded-sm bg-background-950'
+                            className='group h-70 rounded-sm bg-background-1000'
                             orientation='vertical'
                           >
                             <Gallery.View
-                              className="w-full h-40 flex items-center justify-center relative bg-background-950 border-b border-background-700 shrink-0"
+                              className="w-full h-40 flex items-center justify-center relative bg-background-1000 border-b border-background-700 shrink-0"
                             >
                               <div className='max-w-65 px-4 gap-2 flex items-center justify-center'>
                                 {previews[component.id] || <div />}

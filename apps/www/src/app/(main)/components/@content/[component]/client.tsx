@@ -6,7 +6,7 @@ import { TableOfContents, Table, TableExpandedDetails, type Column, type TableEx
 import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
 import { cn } from "@/shared";
 import { Code, InlineCodeHighlight } from "@/features/docs";
-import { Toaster, Tabs, Button, Flex, Tooltip, Divider, Badge, Group } from "ui-lab-components";
+import { Toaster, Tabs, Button, Flex, Tooltip, Group } from "ui-lab-components";
 import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
 import { FaFlask, FaGithub } from "react-icons/fa6";
@@ -134,14 +134,14 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
             </div>
             <div className="space-y-4 mb-12">
               <ComponentConfigurator title="" description="" code={firstExample?.code ?? ""} language="typescript"
-                controls={firstExample?.controls} renderPreview={firstExample?.renderPreview}
+                controls={firstExample?.controls} factory={firstExample?.factory} renderPreview={firstExample?.renderPreview}
                 previewLayout={firstExample?.previewLayout} resizable={firstExample?.resizable}>
                 {!firstExample
                   ? <div className="h-10 w-32 bg-background-800 rounded animate-pulse" />
                   : firstExample.preview}
               </ComponentConfigurator>
             </div>
-            <Tabs variant="underline" value={activeTab} onValueChange={(tab) => { setActiveTab(tab); setVisitedTabs((prev) => new Set(prev).add(tab)); }} className="min-h-[calc(100vh-var(--header-height))]">
+            <Tabs variant="underline" value={activeTab} onValueChange={(tab) => { setActiveTab(tab); setVisitedTabs((prev) => new Set(prev).add(tab)); }}>
               <Flex direction="row" justify="between" className="border-b border-background-700">
                 <Tabs.List className="grid w-fit grid-cols-3">
                   <Tabs.Trigger value="examples">Examples</Tabs.Trigger>
@@ -156,7 +156,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
                       <div key={example.id} id={example.id}>
                         <ComponentConfigurator title={example.title} description={example.description}
                           code={example.code} language="typescript" controls={example.controls}
-                          renderPreview={example.renderPreview}
+                          factory={example.factory} renderPreview={example.renderPreview}
                           previewLayout={example.previewLayout} resizable={example.resizable}>
                           {example.preview}
                         </ComponentConfigurator>

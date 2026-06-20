@@ -145,7 +145,7 @@ export function TableAnimation() {
   return (
     <div
       ref={containerRef}
-      className="bg-background-950 flex items-center justify-center relative overflow-hidden font-sans"
+      className="flex items-center justify-center relative overflow-hidden font-sans"
     >
       <div className="relative w-full max-w-[190px]">
         <svg viewBox="0 0 300 200" className="w-full h-auto relative z-10 overflow-visible" aria-hidden="true">

@@ -87,7 +87,7 @@ export function ButtonAnimation() {
   return (
     <div
       ref={containerRef}
-      className="bg-background-950 flex items-center justify-center relative overflow-hidden font-sans"
+      className="flex items-center justify-center relative overflow-hidden font-sans"
     >
       <div className="relative w-full max-w-[400px]">
         <svg

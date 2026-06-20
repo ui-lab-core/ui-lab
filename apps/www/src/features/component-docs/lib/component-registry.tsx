@@ -174,7 +174,8 @@ function isPublicFreeComponentExample(entry: ElementSourceEntry, componentId: st
     entry.previewEligible &&
     entry.groupPath[0] === componentId &&
     entry.visibility === "public" &&
-    entry.access === "free"
+    entry.access === "free" &&
+    !entry.id.endsWith("-interactive")
   );
 }
 

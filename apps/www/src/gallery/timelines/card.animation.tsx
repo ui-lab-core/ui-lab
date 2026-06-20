@@ -169,7 +169,7 @@ export function CardAnimation() {
   const layoutTransition = "transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.5s ease-out";
 
   return (
-    <div ref={containerRef} className="bg-background-950 flex items-center justify-center relative overflow-hidden font-sans py-8">
+    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans py-8">
       <div className="relative w-full max-w-xs">
         <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
           <defs>

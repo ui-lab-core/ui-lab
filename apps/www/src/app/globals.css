@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source "../../node_modules/@ui-lab-core/library/src";
+@source "../../node_modules/ui-lab-registry/src";
 @import "./theme.css";
 
 @import "ui-lab-components/styles.css";
@@ -403,10 +405,10 @@ pre.shiki .indent {
   left: var(--indent-offset);
 }
 
-pre.shiki .indent:empty {
-  height: 1lh;
-  vertical-align: bottom;
-}
+/* pre.shiki .indent:empty { */
+/*   height: 1lh; */
+/*   vertical-align: bottom; */
+/* } */
 
 pre.shiki .indent::before {
   content: '';
@@ -426,15 +428,15 @@ pre.shiki .indent::before {
   white-space: pre;
 }
 
-.code-block--line-numbers .shiki .line::before {
-  content: counter(step);
-  counter-increment: step;
-  width: 1rem;
-  margin-right: 1rem;
-  display: inline-block;
-  text-align: right;
-  color: color-mix(in srgb, var(--foreground-400) 40%, transparent); 
-}
+/* .code-block--line-numbers .shiki .line::before { */
+/*   content: counter(step); */
+/*   counter-increment: step; */
+/*   width: 1rem; */
+/*   margin-right: 1rem; */
+/*   display: inline-block; */
+/*   text-align: right; */
+/*   color: color-mix(in srgb, var(--foreground-400) 40%, transparent);  */
+/* } */
 
 
 @layer utilities {

@@ -3,7 +3,7 @@ import type { OklchColor } from './types';
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 const rnd = (n: number, p = 1000) => Math.round(n * p) / p;
 
-function hexToOklch(hex: string): OklchColor {
+export function hexToOklch(hex: string): OklchColor {
   const n = parseInt(hex.replace('#', ''), 16);
   const toL = (c: number) => (c /= 255) <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   const [r, g, b] = [toL(n >> 16), toL((n >> 8) & 0xFF), toL(n & 0xFF)];

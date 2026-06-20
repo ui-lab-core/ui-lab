@@ -64,7 +64,7 @@ export function TooltipAnimation() {
 
   return (
     <div ref={containerRef} className="w-full h-full">
-      <div className="bg-background-950 flex flex-col items-center justify-center gap-2 relative overflow-hidden w-full h-full">
+      <div className="flex flex-col items-center justify-center gap-2 relative overflow-hidden w-full h-full">
         {/* Tooltip */}
         <div
           style={{
