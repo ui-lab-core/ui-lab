@@ -1,23 +1,7 @@
 import React from 'react';
 import { Divider, Scroll } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
+import { ComponentDetail } from '@/types';
 import { FaComputerMouse } from 'react-icons/fa6';
-
-
-
-const scrollControls: ControlDef[] = [
-  {
-    name: "maxHeight",
-    label: "Max Height",
-    type: "select",
-    options: [
-      { label: "200px", value: "200px" },
-      { label: "300px", value: "300px" },
-      { label: "400px", value: "400px" },
-    ],
-    defaultValue: "300px",
-  },
-];
 
 const scrollBasicCode = `import { Scroll } from "ui-lab-components";
 
@@ -51,40 +35,7 @@ export const scrollDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: scrollBasicCode,
-      preview: (
-        <Scroll maxHeight="300px" >
-          <div className="p-4 space-y-2">
-            {
-              Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="p-3 bg-background-700 rounded-md" >
-                  Item {i + 1}
-                </div>
-              ))
-            }
-          </div>
-        </Scroll>
-      ),
-      controls: scrollControls,
-      renderPreview: () => (
-        <Scroll style={{ height: "200px" }}>
-          <div className="p-4 space-y-2" >
-            {
-              Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="p-3 bg-background-700 rounded-md" >
-                  Item {i + 1}
-                </div>
-              ))}
-          </div>
-        </Scroll>
-      ),
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -116,5 +67,3 @@ export const scrollDetail: ComponentDetail = {
     },
   ],
 };
-
-export { scrollControls };

@@ -2,53 +2,6 @@ import React from 'react';
 import { Color } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
-// Define examplesData locally
-
-const colorControls: ControlDef[] = [
-  {
-    name: 'size',
-    label: 'Size',
-    type: 'select',
-    options: [
-      { label: 'Small', value: 'sm' },
-      { label: 'Medium', value: 'md' },
-      { label: 'Large', value: 'lg' },
-    ],
-    defaultValue: 'md',
-  },
-  {
-    name: 'showOpacity',
-    label: 'Show Opacity',
-    type: 'toggle',
-    defaultValue: false,
-  },
-  {
-    name: 'format',
-    label: 'Format',
-    type: 'select',
-    options: [
-      { label: 'Hex', value: 'hex' },
-      { label: 'RGB', value: 'rgb' },
-    ],
-    defaultValue: 'hex',
-  },
-  {
-    name: 'disabled',
-    label: 'Disabled',
-    type: 'toggle',
-    defaultValue: false,
-  },
-];
-
-const colorBasicCode = `import { Color } from "ui-lab-components";
-import { useState } from "react";
-
-export function Example() {
-  const [color, setColor] = useState("#FF6B6B");
-
-  return <Color value={color} onChange={setColor} />;
-}`;
-
 export const colorDetail: ComponentDetail = {
   id: 'color',
   name: 'Color',
@@ -71,25 +24,5 @@ export const colorDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Customize the Color component',
-      code: colorBasicCode,
-      preview: <Color defaultValue="#FF6B6B" />,
-      controls: colorControls,
-      renderPreview: (props: any) => (
-        <Color
-          defaultValue="#FF6B6B"
-          size={props.size as 'sm' | 'md' | 'lg'}
-          showOpacity={props.showOpacity}
-          format={props.format as 'hex' | 'rgb'}
-          disabled={props.disabled}
-        />
-      ),
-    }
-  ],
+  examples: [],
 };
-
-export { colorControls };

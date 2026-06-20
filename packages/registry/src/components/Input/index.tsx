@@ -2,39 +2,6 @@ import React from 'react';
 import { Input } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
-const inputControls: ControlDef[] = [
-  {
-    name: "type",
-    label: "Type",
-    type: "select",
-    options: [
-      { label: "Text", value: "text" },
-      { label: "Email", value: "email" },
-      { label: "Password", value: "password" },
-      { label: "Number", value: "number" },
-    ],
-    defaultValue: "text",
-  },
-  {
-    name: "disabled",
-    label: "Disabled",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "error",
-    label: "Error",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "placeholder",
-    label: "Placeholder",
-    type: "text",
-    defaultValue: "Enter text...",
-  },
-]
-
 const inputBasicCode = `import { Input } from "ui-lab-components";
 
 export function Example() {
@@ -56,24 +23,7 @@ export const inputDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: inputBasicCode,
-      preview: <Input placeholder="Enter your name..." />,
-      controls: inputControls,
-      renderPreview: (props: any) => (
-        <Input
-          type={props.type}
-          placeholder={props.placeholder}
-          disabled={props.disabled}
-          error={props.error}
-        />
-      ),
-    },
-  ],
+  examples: [],
 
   variants: [
     {
@@ -92,5 +42,3 @@ export const inputDetail: ComponentDetail = {
     },
   ],
 };
-
-export { inputControls };

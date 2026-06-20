@@ -2,15 +2,6 @@ import React from 'react';
 import { Expand } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
-const expandControls: ControlDef[] = [
-  {
-    name: 'expanded',
-    label: 'Default Expanded',
-    type: 'toggle',
-    defaultValue: false,
-  },
-];
-
 const basicExpandCode = `import { Expand } from "ui-lab-components";
 
 export function Example() {
@@ -36,30 +27,7 @@ export const expandDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: basicExpandCode,
-      preview: (
-        <Expand title="What is an Expand component?">
-          <p className="text-foreground-300">
-            An Expand component is a disclosure widget that expands and collapses content.
-          </p>
-        </Expand>
-      ),
-      controls: expandControls,
-      renderPreview: (props: any) => (
-        <Expand title="What is an Expand component?" defaultExpanded={props.expanded}>
-          <p className="text-foreground-300">
-            An Expand component is a disclosure widget that expands and collapses content.
-            It's built with React Aria for full accessibility support.
-          </p>
-        </Expand>
-      ),
-    },
-  ],
+  examples: [],
   variants: [
     {
       id: 'default',
@@ -87,5 +55,3 @@ export const expandDetail: ComponentDetail = {
     },
   ],
 };
-
-export { expandControls };

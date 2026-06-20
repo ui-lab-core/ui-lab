@@ -3,18 +3,6 @@ import { Frame } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
 
-const frameControls: ControlDef[] = [];
-
-const frameBasicCode = `import { Frame } from "ui-lab-components";
-
-export function Example() {
-  return (
-    <Frame>
-      <p className="text-foreground-300">Framed content</p>
-    </Frame>
-  );
-}`;
-
 export const frameDetail: ComponentDetail = {
   id: 'frame',
   name: 'Frame',
@@ -32,25 +20,5 @@ export const frameDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: frameBasicCode,
-      preview: (
-        <Frame>
-          <p className="text-sm text-foreground-300">Framed content</p>
-        </Frame>
-      ),
-      controls: frameControls,
-      renderPreview: () => (
-        <Frame>
-          <p className="text-sm text-foreground-300">Framed content</p>
-        </Frame>
-      ),
-    }
-  ],
+  examples: [],
 };
-
-export { frameControls };

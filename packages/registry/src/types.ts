@@ -334,6 +334,7 @@ export interface SiteComponentExample {
   code: string;
   preview: React.ReactNode;
   controls?: ControlDef[];
+  factory?: (props: Record<string, unknown>) => { preview: React.ReactNode; code: string };
   renderPreview?: (props: Record<string, any>) => React.ReactNode;
   previewLayout?: 'center' | 'start';
   resizable?: boolean;

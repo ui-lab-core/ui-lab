@@ -1,32 +1,6 @@
 import React from 'react';
 import { Switch } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
-const switchControls: ControlDef[] = [
-  {
-    name: "size",
-    label: "Size",
-    type: "select",
-    options: [
-      { label: "Small", value: "sm" },
-      { label: "Medium", value: "md" },
-      { label: "Large", value: "lg" },
-    ],
-    defaultValue: "md",
-  },
-  {
-    name: "selected",
-    label: "Selected",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "isDisabled",
-    label: "Disabled",
-    type: "toggle",
-    defaultValue: false,
-  },
-];
+import { ComponentDetail } from '@/types';
 
 const switchBasicCode = `import { Switch } from "ui-lab-components";
 
@@ -49,23 +23,7 @@ export const switchDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: switchBasicCode,
-      preview: <Switch />,
-      controls: switchControls,
-      renderPreview: (props: any) => (
-        <Switch
-          size={props.size as any}
-          isDisabled={props.isDisabled}
-          defaultSelected={props.selected}
-        />
-      ),
-    },
-  ],
+  examples: [],
   variants: [
     {
       id: "default",
@@ -83,5 +41,3 @@ export const switchDetail: ComponentDetail = {
     },
   ],
 };
-
-export { switchControls };

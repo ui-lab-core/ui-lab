@@ -3,21 +3,6 @@ import { Anchor, Divider } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
 
-const anchorControls: ControlDef[] = [];
-
-const anchorBasicCode = `import { Anchor } from "ui-lab-components";
-
-export function Example() {
-  return (
-    <Anchor>
-      Click me
-      <Anchor.Preview>
-        <div>Preview</div>
-      </Anchor.Preview>
-    </Anchor>
-  );
-}`;
-
 export const anchorDetail: ComponentDetail = {
   id: 'anchor',
   name: 'Anchor',
@@ -32,31 +17,5 @@ export const anchorDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Basic anchor with popover preview',
-      code: anchorBasicCode,
-      preview: (
-        <Anchor>
-          Hover me
-          <Anchor.Preview>
-            <div className="text-sm">Preview content</div>
-          </Anchor.Preview>
-        </Anchor>
-      ),
-      controls: anchorControls,
-      renderPreview: () => (
-        <Anchor>
-          Hover me
-          <Anchor.Preview>
-            <div className="text-sm">Preview content</div>
-          </Anchor.Preview>
-        </Anchor>
-      ),
-    }
-  ],
+  examples: [],
 };
-
-export { anchorControls };

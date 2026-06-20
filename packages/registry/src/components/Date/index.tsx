@@ -2,16 +2,6 @@ import React from 'react'
 import { Date } from 'ui-lab-components'
 import { ControlDef, ComponentDetail } from '@/types'
 
-const dateControls: ControlDef[] = []
-
-const dateBasicCode = `import React from 'react'
-import { Date } from "ui-lab-components"
-
-export function Example() {
-  const [date, setDate] = React.useState<Date | null>(null)
-  return <Date value={date} onChange={setDate} />
-}`
-
 export const dateDetail: ComponentDetail = {
   id: 'date',
   name: 'Date',
@@ -26,17 +16,5 @@ export const dateDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Interactive date for date selection',
-      code: dateBasicCode,
-      preview: <Date />,
-      controls: dateControls,
-      renderPreview: (props: any) => (
-        <Date />
-      ),
-    }
-  ],
+  examples: [],
 }

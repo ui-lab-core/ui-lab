@@ -3,15 +3,6 @@ import { Command, Button, type Command as CommandType } from 'ui-lab-components'
 import { ControlDef, ComponentDetail } from '@/types';
 
 
-const commandControls: ControlDef[] = [
-  {
-    name: 'open',
-    label: 'Open',
-    type: 'toggle',
-    defaultValue: false,
-  },
-];
-
 const commandBasicCode = `import { Command, Button, Badge } from "ui-lab-components";
 import { useState } from "react";
 
@@ -111,57 +102,6 @@ const CommandPreview = () => {
   );
 };
 
-const CommandRenderPreview = (props: any) => {
-  const [open, setOpen] = useState(props.open ?? false);
-  const commands = [
-    {
-      id: 'search',
-      label: 'Search',
-      description: 'Search documents',
-      shortcut: '⌘F',
-      action: () => console.log('Search'),
-    },
-    {
-      id: 'create',
-      label: 'Create new',
-      description: 'Create a new document',
-      shortcut: '⌘N',
-      action: () => console.log('Create'),
-    },
-  ];
-  return (
-    <>
-      <Button onClick={() => setOpen(true)}>Open Palette</Button>
-      <Command
-        open={open}
-        onOpenChange={(value) => {
-          setOpen(value);
-          props.handleControlChange('open', value);
-        }}
-        items={commands}
-      >
-        <Command.Input placeholder="Search..." />
-        <Command.List>
-          <Command.Groups
-            renderItem={(cmd) => (
-              <Command.Item
-                value={cmd.id}
-                textValue={cmd.label}
-                action={cmd.action}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>{cmd.label}</div>
-                  {cmd.shortcut && <span style={{ fontSize: '0.875em', opacity: 0.7 }}>{cmd.shortcut}</span>}
-                </div>
-              </Command.Item>
-            )}
-          />
-        </Command.List>
-      </Command>
-    </>
-  );
-};
-
 export const commandDetail: ComponentDetail = {
   id: 'command',
   name: 'Command',
@@ -176,17 +116,7 @@ export const commandDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: commandBasicCode,
-      preview: <CommandPreview />,
-      controls: commandControls,
-      renderPreview: CommandRenderPreview,
-    }
-  ],
+  examples: [],
   variants: [
     {
       id: 'default',
@@ -197,5 +127,3 @@ export const commandDetail: ComponentDetail = {
     },
   ],
 };
-
-export { commandControls };

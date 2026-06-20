@@ -1,29 +1,6 @@
 import React from 'react';
 import { TextArea } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
-// Define examplesData locally
-
-const textareaControls: ControlDef[] = [
-  {
-    name: 'rows',
-    label: 'Rows',
-    type: 'text',
-    defaultValue: '4',
-  },
-  {
-    name: 'placeholder',
-    label: 'Placeholder',
-    type: 'text',
-    defaultValue: 'Enter your text here...',
-  },
-  {
-    name: 'disabled',
-    label: 'Disabled',
-    type: 'toggle',
-    defaultValue: false,
-  },
-];
+import { ComponentDetail } from '@/types';
 
 const textareaBasicCode = `import { TextArea } from "ui-lab-components";
 
@@ -50,23 +27,5 @@ export const textareaDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: textareaBasicCode,
-      preview: <TextArea placeholder="Enter your text here..." rows={4} />,
-      controls: textareaControls,
-      renderPreview: (props: any) => (
-        <TextArea
-          placeholder={props.placeholder}
-          rows={props.rows}
-          disabled={props.disabled}
-        />
-      ),
-    }
-  ],
+  examples: [],
 };
-
-export { textareaControls };

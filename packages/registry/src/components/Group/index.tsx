@@ -2,36 +2,6 @@ import React from 'react';
 import { Group } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
-const groupControls: ControlDef[] = [
-  {
-    name: "orientation",
-    label: "Orientation",
-    type: "select",
-    options: [
-      { label: "Horizontal", value: "horizontal" },
-      { label: "Vertical", value: "vertical" },
-    ],
-    defaultValue: "horizontal",
-  },
-  {
-    name: "spacing",
-    label: "Spacing",
-    type: "select",
-    options: [
-      { label: "Tight", value: "tight" },
-      { label: "Normal", value: "normal" },
-      { label: "Relaxed", value: "relaxed" },
-    ],
-    defaultValue: "normal",
-  },
-  {
-    name: "isDisabled",
-    label: "Disabled",
-    type: "toggle",
-    defaultValue: false,
-  },
-]
-
 const groupBasicCode = `import { Group } from "ui-lab-components";
 
 export function Example() {
@@ -70,27 +40,7 @@ export const groupDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: groupBasicCode,
-      preview: (
-        <Group>
-          <Group.Button>Save</Group.Button>
-          <Group.Button variant="outline">Cancel</Group.Button>
-        </Group>
-      ),
-      controls: groupControls,
-      renderPreview: (props: any) => (
-        <Group orientation={props.orientation} spacing={props.spacing} isDisabled={props.isDisabled}>
-          <Group.Button>Save</Group.Button>
-          <Group.Button variant="outline">Cancel</Group.Button>
-        </Group>
-      ),
-    },
-  ],
+  examples: [],
 
   variants: [
     {
@@ -121,5 +71,3 @@ export const groupDetail: ComponentDetail = {
     },
   ],
 };
-
-export { groupControls };

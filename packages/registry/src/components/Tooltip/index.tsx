@@ -1,39 +1,6 @@
 import React from 'react';
-import { Button, Frame, Tooltip } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-import { FaQuestion } from 'react-icons/fa6';
-
-const TAIL_WIDTH = 18;
-const TAIL_PATH = "M 0.00 0.00 C 3.00 0.00 7.50 -6.00 9.00 -6.00 C 10.50 -6.00 13.50 0.00 18.00 0.00";
-
-// Define examplesData locally
-
-
-const tooltipControls: ControlDef[] = [
-  {
-    name: "position",
-    label: "Position",
-    type: "select",
-    options: [
-      { label: "Top", value: "top" },
-      { label: "Right", value: "right" },
-      { label: "Bottom", value: "bottom" },
-      { label: "Left", value: "left" },
-    ],
-    defaultValue: "top",
-  },
-  {
-    name: "delay",
-    label: "Delay (ms)",
-    type: "select",
-    options: [
-      { label: "No Delay", value: "0" },
-      { label: "200ms", value: "200" },
-      { label: "500ms", value: "500" },
-    ],
-    defaultValue: "200",
-  },
-]
+import { Button, Tooltip } from 'ui-lab-components';
+import { ComponentDetail } from '@/types';
 
 const tooltipBasicCode = `import { Tooltip } from "ui-lab-components";
 import { Button } from "ui-lab-components";
@@ -68,33 +35,7 @@ export const tooltipDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: tooltipBasicCode,
-      preview: (
-        <div className="flex justify-center p-8">
-          <Tooltip content="Click to perform action">
-            <Button>Hover me</Button>
-          </Tooltip>
-        </div>
-      ),
-      controls: tooltipControls,
-      renderPreview: (props: any) => (
-        <div className="flex justify-center p-8">
-          <Tooltip
-            content="Tooltip content"
-            position={props.position as any}
-            delay={parseInt(props.delay as string)}
-          >
-            <Button>Hover me</Button>
-          </Tooltip>
-        </div>
-      ),
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -125,5 +66,3 @@ export const tooltipDetail: ComponentDetail = {
     },
   ],
 };
-
-export { tooltipControls };

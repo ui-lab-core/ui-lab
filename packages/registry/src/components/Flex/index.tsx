@@ -1,18 +1,6 @@
 import React from 'react';
 import { Flex, Frame } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
-import Example1, { metadata as metadata1, controls as controls1, renderPreview as renderPreview1, previewLayout as previewLayout1, resizable as resizable1 } from './examples/01-axis-control.js';
-import Example2, { metadata as metadata2, controls as controls2, renderPreview as renderPreview2, previewLayout as previewLayout2, resizable as resizable2 } from './examples/02-wrap-overflow.js';
-import Example3, { metadata as metadata3, controls as controls3, renderPreview as renderPreview3, previewLayout as previewLayout3, resizable as resizable3 } from './examples/03-container-query-reflow.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
-
-// Define examplesData locally
-const examplesData = [
-  { id: '01-axis-control', Component: Example1, metadata: metadata1, controls: controls1, renderPreview: renderPreview1, previewLayout: previewLayout1, resizable: resizable1 },
-  { id: '02-wrap-overflow', Component: Example2, metadata: metadata2, controls: controls2, renderPreview: renderPreview2, previewLayout: previewLayout2, resizable: resizable2 },
-  { id: '03-container-query-reflow', Component: Example3, metadata: metadata3, controls: controls3, renderPreview: renderPreview3, previewLayout: previewLayout3, resizable: resizable3 },
-];
 
 const BASE_FRAME_STYLE = {
   '--frame-fill': 'var(--background-900)',
@@ -132,7 +120,6 @@ export const flexDetail: ComponentDetail = {
         );
       },
     },
-    ...loadComponentExamples(examplesData, examplesJson),
   ],
   variants: [
     {
@@ -173,4 +160,3 @@ export const flexDetail: ComponentDetail = {
 };
 
 export { flexControls };
-export * from './examples/index.js';

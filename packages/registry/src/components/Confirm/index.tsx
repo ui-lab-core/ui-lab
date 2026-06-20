@@ -4,27 +4,6 @@ import { ControlDef, ComponentDetail } from '@/types';
 import { FaCheck, FaX } from 'react-icons/fa6';
 
 
-const confirmControls: ControlDef[] = [
-  {
-    name: 'triggerLabel',
-    label: 'Trigger Label',
-    type: 'text',
-    defaultValue: 'Delete',
-  },
-  {
-    name: 'title',
-    label: 'Title',
-    type: 'text',
-    defaultValue: 'Are you sure?',
-  },
-  {
-    name: 'description',
-    label: 'Description',
-    type: 'text',
-    defaultValue: 'This action cannot be undone.',
-  },
-];
-
 const confirmBasicCode = `import {Confirm} from "ui-lab-components";
 
           export function Example() {
@@ -55,37 +34,7 @@ export const confirmDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: confirmBasicCode,
-      preview: (
-        <Confirm
-          triggerLabel="Delete"
-          title="Are you sure?"
-          description="This action cannot be undone."
-          confirmLabel="Delete"
-          cancelLabel="Cancel"
-          onConfirm={() => console.log('Confirmed')}
-          onCancel={() => console.log('Cancelled')}
-        />
-      ),
-      controls: confirmControls,
-      renderPreview: (props: any) => (
-        <Confirm
-          triggerLabel={props.triggerLabel}
-          title={props.title}
-          description={props.description}
-          confirmLabel="Delete"
-          cancelLabel="Cancel"
-          onConfirm={() => console.log('Confirmed')}
-          onCancel={() => console.log('Cancelled')}
-        />
-      ),
-    }
-  ],
+  examples: [],
   variants: [
     {
       id: 'default',
@@ -106,5 +55,3 @@ export const confirmDetail: ComponentDetail = {
     },
   ],
 };
-
-export { confirmControls };

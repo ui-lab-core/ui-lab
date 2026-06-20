@@ -2,36 +2,6 @@ import React from 'react';
 import { Divider } from "ui-lab-components";
 import { ControlDef, ComponentDetail } from "@/types";
 
-const dividerControls: ControlDef[] = [
-  {
-    name: "variant",
-    label: "Variant",
-    type: "select",
-    options: [
-      { label: "Solid", value: "solid" },
-      { label: "Dashed", value: "dashed" },
-      { label: "Dotted", value: "dotted" },
-    ],
-    defaultValue: "solid",
-  },
-  {
-    name: "orientation",
-    label: "Orientation",
-    type: "select",
-    options: [
-      { label: "Horizontal", value: "horizontal" },
-      { label: "Vertical", value: "vertical" },
-    ],
-    defaultValue: "horizontal",
-  },
-];
-
-const basicDividerCode = `import { Divider } from "ui-lab-components";
-
-export function Example() {
-  return <Divider />;
-}`;
-
 export const dividerDetail: ComponentDetail = {
   id: "divider",
   name: "Divider",
@@ -47,22 +17,7 @@ export const dividerDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: basicDividerCode,
-      preview: <Divider />,
-      controls: dividerControls,
-      renderPreview: (props: any) => (
-        <Divider
-          variant={props.variant as any}
-          orientation={props.orientation as any}
-        />
-      ),
-    }
-  ],
+  examples: [],
   variants: [
     {
       id: "solid",
@@ -86,5 +41,3 @@ export const dividerDetail: ComponentDetail = {
     },
   ],
 };
-
-export { dividerControls };

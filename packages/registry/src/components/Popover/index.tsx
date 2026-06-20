@@ -1,27 +1,6 @@
 import React from 'react';
-import { Button, Frame, Popover } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-import { FaQuestion } from 'react-icons/fa6';
-
-const TAIL_WIDTH = 18;
-const TAIL_PATH = "M 0.00 0.00 C 3.00 0.00 7.50 -6.00 9.00 -6.00 C 10.50 -6.00 13.50 0.00 18.00 0.00";
-
-
-const popoverControls: ControlDef[] = [
-  {
-    name: "position",
-    label: "Position",
-    type: "select",
-    options: [
-      { label: "Top", value: "top" },
-      { label: "Right", value: "right" },
-      { label: "Bottom", value: "bottom" },
-      { label: "Left", value: "left" },
-    ],
-    defaultValue: "bottom",
-  },
-];
-
+import { Button, Popover } from 'ui-lab-components';
+import { ComponentDetail } from '@/types';
 const popoverBasicCode = `import { Popover, Button } from "ui-lab-components";
 
 export function Example() {
@@ -53,25 +32,7 @@ export const popoverDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: popoverBasicCode,
-      preview: (
-        <Popover content={<p className="text-sm">This is a popover</p>}>
-          <Button>Click me</Button>
-        </Popover>
-      ),
-      controls: popoverControls,
-      renderPreview: (props: any) => (
-        <Popover position={props.position} content={<p className="text-sm">Popover at {props.position}</p>}>
-          <Button>Click me</Button>
-        </Popover>
-      ),
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -111,5 +72,3 @@ export const popoverDetail: ComponentDetail = {
     },
   ],
 };
-
-export { popoverControls };

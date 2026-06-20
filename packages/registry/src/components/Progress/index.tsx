@@ -1,46 +1,6 @@
 import React from 'react';
 import { Progress } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
-const progressControls: ControlDef[] = [
-  {
-    name: "variant",
-    label: "Variant",
-    type: "select",
-    options: [
-      { label: "Default", value: "default" },
-      { label: "Success", value: "success" },
-      { label: "Warning", value: "warning" },
-      { label: "Error", value: "error" },
-    ],
-    defaultValue: "default",
-  },
-  {
-    name: "value",
-    label: "Value",
-    type: "select",
-    options: [
-      { label: "0%", value: "0" },
-      { label: "25%", value: "25" },
-      { label: "50%", value: "50" },
-      { label: "75%", value: "75" },
-      { label: "100%", value: "100" },
-    ],
-    defaultValue: "50",
-  },
-  {
-    name: "indeterminate",
-    label: "Indeterminate",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "showValue",
-    label: "Show Value",
-    type: "toggle",
-    defaultValue: false,
-  },
-]
+import { ComponentDetail } from '@/types';
 
 const progressBasicCode = `import { Progress } from "ui-lab-components";
 
@@ -64,24 +24,7 @@ export const progressDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: progressBasicCode,
-      preview: <Progress value={60} />,
-      controls: progressControls,
-      renderPreview: (props: any) => (
-        <Progress
-          value={parseInt(props.value as string)}
-          variant={props.variant as any}
-          indeterminate={props.indeterminate}
-          showValue={props.showValue}
-        />
-      ),
-    },
-  ],
+  examples: [],
 
   variants: [
     {
@@ -100,5 +43,3 @@ export const progressDetail: ComponentDetail = {
     },
   ],
 };
-
-export { progressControls };

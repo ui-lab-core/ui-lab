@@ -2,33 +2,6 @@ import React from 'react';
 import { Checkbox } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
-const checkboxControls: ControlDef[] = [
-  {
-    name: 'checked',
-    label: 'Checked',
-    type: 'toggle',
-    defaultValue: false,
-  },
-  {
-    name: 'disabled',
-    label: 'Disabled',
-    type: 'toggle',
-    defaultValue: false,
-  },
-  {
-    name: 'error',
-    label: 'Error',
-    type: 'toggle',
-    defaultValue: false,
-  },
-  {
-    name: 'label',
-    label: 'Label Text',
-    type: 'text',
-    defaultValue: 'Accept terms',
-  },
-];
-
 const checkboxBasicCode = `import { Checkbox } from "ui-lab-components";
 
 export function Example() {
@@ -49,24 +22,7 @@ export const checkboxDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: checkboxBasicCode,
-      preview: <Checkbox label="Accept terms and conditions" />,
-      controls: checkboxControls,
-      renderPreview: (props: any) => (
-        <Checkbox
-          checked={props.checked ?? false}
-          onChange={(e) => props.handleControlChange('checked', e.target.checked)}
-          disabled={props.disabled}
-          label={props.label}
-        />
-      ),
-    },
-  ],
+  examples: [],
   variants: [
     {
       id: 'default',
@@ -84,5 +40,3 @@ export const checkboxDetail: ComponentDetail = {
     },
   ],
 };
-
-export { checkboxControls };

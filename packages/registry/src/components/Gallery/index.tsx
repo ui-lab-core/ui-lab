@@ -2,44 +2,6 @@ import React from 'react';
 import { Gallery } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 import { FaImage } from 'react-icons/fa6';
-import Example1, { metadata as metadata1, controls as controls1, renderPreview as renderPreview1, previewLayout as previewLayout1, resizable as resizable1 } from './examples/01-grid-composition.js';
-import Example2, { metadata as metadata2, controls as controls2, renderPreview as renderPreview2, previewLayout as previewLayout2, resizable as resizable2 } from './examples/02-item-orientation.js';
-import Example3, { metadata as metadata3, controls as controls3, renderPreview as renderPreview3, previewLayout as previewLayout3, resizable as resizable3 } from './examples/03-span-layout.js';
-import examplesJson from './examples.json' with { type: 'json' };
-import { loadComponentExamples } from '../../utils/load-component-examples.js';
-
-const examplesData = [
-  { id: '01-grid-composition', Component: Example1, metadata: metadata1, controls: controls1, renderPreview: renderPreview1, previewLayout: previewLayout1, resizable: resizable1 },
-  { id: '02-item-orientation', Component: Example2, metadata: metadata2, controls: controls2, renderPreview: renderPreview2, previewLayout: previewLayout2, resizable: resizable2 },
-  { id: '03-span-layout', Component: Example3, metadata: metadata3, controls: controls3, renderPreview: renderPreview3, previewLayout: previewLayout3, resizable: resizable3 },
-];
-
-const galleryControls: ControlDef[] = [
-  {
-    name: 'columns',
-    label: 'Columns',
-    type: 'select',
-    options: [
-      { label: '1', value: '1' },
-      { label: '2', value: '2' },
-      { label: '3', value: '3' },
-      { label: '4', value: '4' },
-    ],
-    defaultValue: '3',
-  },
-  {
-    name: 'gap',
-    label: 'Gap',
-    type: 'select',
-    options: [
-      { label: 'None', value: '0' },
-      { label: 'Small', value: '2' },
-      { label: 'Medium', value: '4' },
-      { label: 'Large', value: '6' },
-    ],
-    defaultValue: '4',
-  },
-];
 
 const basicItems = [
   { id: 1, title: 'Mountain Landscape', description: 'Beautiful mountain scenery at sunset', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=450&fit=crop', href: '#mountain' },
@@ -86,44 +48,7 @@ export const galleryDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: galleryBasicCode,
-      preview: (
-        <Gallery columns={3}>
-          {basicItems.map((item) => (
-            <Gallery.Item key={item.id} href={item.href}>
-              <Gallery.View aspectRatio="16/9">
-                <img src={item.image} alt={item.title} />
-              </Gallery.View>
-              <Gallery.Body>
-                <strong>{item.title}</strong>
-              </Gallery.Body>
-            </Gallery.Item>
-          ))}
-        </Gallery>
-      ),
-      controls: galleryControls,
-      renderPreview: (props: any) => (
-        <Gallery columns={parseInt(props.columns)} gap={parseInt(props.gap)}>
-          {basicItems.map((item) => (
-            <Gallery.Item key={item.id} href={item.href}>
-              <Gallery.View aspectRatio="16/9">
-                <img src={item.image} alt={item.title} />
-              </Gallery.View>
-              <Gallery.Body>
-                <strong>{item.title}</strong>
-              </Gallery.Body>
-            </Gallery.Item>
-          ))}
-        </Gallery>
-      ),
-    },
-    ...loadComponentExamples(examplesData, examplesJson),
-  ],
+  examples: [],
   variants: [
     {
       id: 'default',
@@ -148,5 +73,4 @@ export const galleryDetail: ComponentDetail = {
   ],
 };
 
-export { galleryControls };
 export * from './examples/index.js';

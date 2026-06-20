@@ -4,38 +4,6 @@ import { ControlDef, ComponentDetail } from '@/types';
 import { FaInfoCircle } from 'react-icons/fa';
 
 
-const bannerControls: ControlDef[] = [
-  {
-    name: 'variant',
-    label: 'Variant',
-    type: 'select',
-    options: [
-      { label: 'Note', value: 'note' },
-      { label: 'Info', value: 'info' },
-      { label: 'Success', value: 'success' },
-      { label: 'Warning', value: 'warning' },
-      { label: 'Danger', value: 'danger' },
-    ],
-    defaultValue: 'note',
-  },
-  {
-    name: 'dismissible',
-    label: 'Dismissible',
-    type: 'toggle',
-    defaultValue: false,
-  },
-];
-
-const bannerBasicCode = `import { Banner } from "ui-lab-components";
-
-export function Example() {
-  return (
-    <Banner variant="note">
-      This is an informational banner.
-    </Banner>
-  );
-}`;
-
 export const bannerDetail: ComponentDetail = {
   id: 'banner',
   name: 'Banner',
@@ -52,28 +20,5 @@ export const bannerDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the banner',
-      code: bannerBasicCode,
-      preview: (
-        <Banner variant="note">
-          This is an informational banner.
-        </Banner>
-      ),
-      controls: bannerControls,
-      renderPreview: (props: any) => (
-        <Banner
-          variant={props.variant as any}
-          isDismissible={props.dismissible}
-        >
-          This is a {props.variant} banner.
-        </Banner>
-      ),
-    }
-  ],
+  examples: [],
 };
-
-export { bannerControls };

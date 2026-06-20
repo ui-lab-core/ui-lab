@@ -1,47 +1,6 @@
 import React from 'react';
 import { Radio } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
-
-
-const radioControls: ControlDef[] = [
-  {
-    name: "size",
-    label: "Size",
-    type: "select",
-    options: [
-      { label: "Small", value: "sm" },
-      { label: "Medium", value: "md" },
-      { label: "Large", value: "lg" },
-    ],
-    defaultValue: "md",
-  },
-  {
-    name: "disabled",
-    label: "Disabled",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "error",
-    label: "Error",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "label",
-    label: "Label Text",
-    type: "text",
-    defaultValue: "Option 1",
-  },
-  {
-    name: "easing",
-    label: "Interaction Ease",
-    type: "select",
-    options: [],
-    defaultValue: "snappyPop",
-  },
-]
+import { ComponentDetail } from '@/types';
 
 const radioBasicCode = `import { Radio } from "ui-lab-components";
 
@@ -64,24 +23,7 @@ export const radioDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: radioBasicCode,
-      preview: <Radio label="Option 1" />,
-      controls: radioControls,
-      renderPreview: (props: any) => (
-        <Radio
-          size={props.size as any}
-          disabled={props.disabled}
-          error={props.error}
-          label={props.label}
-        />
-      ),
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -100,5 +42,3 @@ export const radioDetail: ComponentDetail = {
     },
   ],
 };
-
-export { radioControls };

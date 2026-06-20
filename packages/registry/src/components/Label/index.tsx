@@ -5,38 +5,6 @@ import { FaEnvelope } from 'react-icons/fa6';
 
 
 
-const labelControls: ControlDef[] = [
-  {
-    name: "size",
-    label: "Size",
-    type: "select",
-    options: [
-      { label: "Small", value: "sm" },
-      { label: "Medium", value: "md" },
-      { label: "Large", value: "lg" },
-    ],
-    defaultValue: "md",
-  },
-  {
-    name: "required",
-    label: "Required",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "disabled",
-    label: "Disabled",
-    type: "toggle",
-    defaultValue: false,
-  },
-  {
-    name: "error",
-    label: "Error",
-    type: "toggle",
-    defaultValue: false,
-  },
-]
-
 const labelBasicCode = `import { Label } from "ui-lab-components";
 
 export function Example() {
@@ -58,26 +26,7 @@ export const labelDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: labelBasicCode,
-      preview: <Label htmlFor="name">Name</Label>,
-      controls: labelControls,
-      renderPreview: (props: any) => (
-        <Label
-          size={props.size as any}
-          required={props.required}
-          disabled={props.disabled}
-          error={props.error}
-        >
-          {props.label || "Label"}
-        </Label>
-      ),
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -96,5 +45,3 @@ export const labelDetail: ComponentDetail = {
     },
   ],
 };
-
-export { labelControls };

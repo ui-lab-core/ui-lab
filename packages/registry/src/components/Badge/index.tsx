@@ -4,34 +4,6 @@ import { ControlDef, ComponentDetail } from '@/types';
 import { FaInfo } from 'react-icons/fa6';
 
 
-const badgeControls: ControlDef[] = [
-  {
-    name: 'variant',
-    label: 'Variant',
-    type: 'select',
-    options: [
-      { label: 'Default', value: 'default' },
-      { label: 'Success', value: 'success' },
-      { label: 'Warning', value: 'warning' },
-      { label: 'Danger', value: 'danger' },
-      { label: 'Info', value: 'info' },
-    ],
-    defaultValue: 'default',
-  },
-  {
-    name: 'dismissible',
-    label: 'Dismissible',
-    type: 'toggle',
-    defaultValue: false,
-  },
-];
-
-const badgeBasicCode = `import { Badge } from "ui-lab-components";
-
-export function Example() {
-  return <Badge>Default</Badge>;
-}`;
-
 export const badgeDetail: ComponentDetail = {
   id: 'badge',
   name: 'Badge',
@@ -46,24 +18,7 @@ export const badgeDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: badgeBasicCode,
-      preview: <Badge>Default</Badge>,
-      controls: badgeControls,
-      renderPreview: (props: any) => (
-        <Badge
-          variant={props.variant as any}
-          dismissible={props.dismissible}
-        >
-          Badge Text
-        </Badge>
-      ),
-    }
-  ],
+  examples: [],
   variants: [
     {
       id: 'default',
@@ -81,5 +36,3 @@ export const badgeDetail: ComponentDetail = {
     },
   ],
 };
-
-export { badgeControls };

@@ -1,23 +1,5 @@
 import React from 'react';
-import { Modal, Button } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-import { FaWindowRestore, FaX } from 'react-icons/fa6';
-
-
-const modalControls: ControlDef[] = [
-  {
-    name: "size",
-    label: "Size",
-    type: "select",
-    options: [
-      { label: "Small", value: "sm" },
-      { label: "Medium", value: "md" },
-      { label: "Large", value: "lg" },
-    ],
-    defaultValue: "md",
-  },
-];
-
+import { ComponentDetail } from '@/types';
 const modalBasicCode = `import { Modal, Button } from "ui-lab-components";
 import { useState } from "react";
 
@@ -53,32 +35,7 @@ export const modalDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: modalBasicCode,
-      preview: (
-        <div className="text-sm text-foreground-400">
-          Click button to open modal
-        </div>
-      ),
-      controls: modalControls,
-      renderPreview: (props: any) => {
-        const [isOpen, setIsOpen] = React.useState(false);
-        return (
-          <>
-            <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
-            <Modal isOpen={isOpen} onOpenChange={setIsOpen} size={props.size}>
-              <Modal.Header>Modal Title</Modal.Header>
-              <Modal.Body>This is the modal content</Modal.Body>
-            </Modal>
-          </>
-        );
-      },
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -94,5 +51,3 @@ export const modalDetail: ComponentDetail = {
     },
   ],
 };
-
-export { modalControls };

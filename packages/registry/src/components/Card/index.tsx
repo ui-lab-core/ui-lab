@@ -3,25 +3,6 @@ import { Card } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
 
-const cardControls: ControlDef[] = [];
-
-const basicCardCode = `import { Card } from "ui-lab-components";
-
-export function Example() {
-  return (
-    <Card className="max-w-sm">
-      <Card.Header>
-        <h3 className="font-semibold text-foreground-100">Card Title</h3>
-      </Card.Header>
-      <Card.Body>
-        <p className="text-foreground-300">
-          This is the main content area of the card. You can put any content here.
-        </p>
-      </Card.Body>
-    </Card>
-  );
-}`;
-
 export const cardDetail: ComponentDetail = {
   id: 'card',
   name: 'Card',
@@ -36,39 +17,5 @@ export const cardDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
-      code: basicCardCode,
-      preview: (
-        <Card className="max-w-sm">
-          <Card.Header>
-            <h3 className="font-semibold text-foreground-100">Card Title</h3>
-          </Card.Header>
-          <Card.Body>
-            <p className="text-foreground-300">
-              This is the main content area of the card. You can put any content here.
-            </p>
-          </Card.Body>
-        </Card>
-      ),
-      controls: cardControls,
-      renderPreview: (props: any) => (
-        <Card className="max-w-sm">
-          <Card.Header>
-            <h3 className="font-semibold text-foreground-100">Card Title</h3>
-          </Card.Header>
-          <Card.Body>
-            <p className="text-foreground-300">
-              This is the main content area of the card. You can put any content here.
-            </p>
-          </Card.Body>
-        </Card>
-      ),
-    }
-  ],
+  examples: [],
 };
-
-export { cardControls };

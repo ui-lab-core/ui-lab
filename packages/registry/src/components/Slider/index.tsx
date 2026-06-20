@@ -1,15 +1,6 @@
 import React from 'react';
 import { Slider } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
-const sliderControls: ControlDef[] = [
-  {
-    name: "disabled",
-    label: "Disabled",
-    type: "toggle",
-    defaultValue: false,
-  },
-];
+import { ComponentDetail } from '@/types';
 
 const sliderBasicCode = `import { Slider } from "ui-lab-components";
 
@@ -31,24 +22,7 @@ export const sliderDetail: ComponentDetail = {
       </p>
     </div>
   ),
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: sliderBasicCode,
-      preview: <Slider.Root min={0} max={100} defaultValue={[50]} />,
-      controls: sliderControls,
-      renderPreview: (props: any) => (
-        <Slider.Root
-          min={0}
-          max={100}
-          defaultValue={[50]}
-          disabled={props.disabled}
-        />
-      ),
-    },
-  ],
+  examples: [],
   variants: [
     {
       id: "default",
@@ -66,5 +40,3 @@ export const sliderDetail: ComponentDetail = {
     },
   ],
 };
-
-export { sliderControls };

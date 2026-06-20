@@ -1,13 +1,6 @@
 import React from 'react';
-import { Select, Searchable } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-import { FaChevronDown } from 'react-icons/fa6';
-
-
-const selectControls: ControlDef[] = [
-  { name: "placeholder", label: "Placeholder", type: "text", defaultValue: "Select an option" },
-  { name: "disabled", label: "Disabled", type: "toggle", defaultValue: false },
-];
+import { Select } from 'ui-lab-components';
+import { ComponentDetail } from '@/types';
 
 const selectBasicCode = `import { Select } from "ui-lab-components";
 
@@ -38,43 +31,7 @@ export const selectDetail: ComponentDetail = {
       <p>Use it for form inputs, filters, settings, or any situation where you need users to pick from a predefined set of options. It supports grouping, disabled states, and controlled values.</p>
     </div>
   ),
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: selectBasicCode,
-      preview: (
-        <Select>
-          <Select.Trigger>
-            <Select.Value placeholder="Select an option" />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.List>
-              <Select.Item value="option1">Option 1</Select.Item>
-              <Select.Item value="option2">Option 2</Select.Item>
-              <Select.Item value="option3">Option 3</Select.Item>
-            </Select.List>
-          </Select.Content>
-        </Select>
-      ),
-      controls: selectControls,
-      renderPreview: (props: any) => (
-        <Select isDisabled={props.disabled}>
-          <Select.Trigger>
-            <Select.Value placeholder={props.placeholder} />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.List>
-              <Select.Item value="option1">Option 1</Select.Item>
-              <Select.Item value="option2">Option 2</Select.Item>
-              <Select.Item value="option3">Option 3</Select.Item>
-            </Select.List>
-          </Select.Content>
-        </Select>
-      ),
-    }
-  ],
+  examples: [],
   variants: [
     {
       id: "default",
@@ -98,5 +55,3 @@ export const selectDetail: ComponentDetail = {
     },
   ],
 };
-
-export { selectControls };

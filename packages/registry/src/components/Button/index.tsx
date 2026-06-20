@@ -71,15 +71,26 @@ export const buttonDetail: ComponentDetail = {
       code: buttonBasicCode,
       preview: <Button>Click me</Button>,
       controls: buttonControls,
-      renderPreview: (props: any) => (
-        <Button
-          variant={props.variant as any}
-          size={props.size as any}
-          disabled={props.disabled}
-        >
-          Click me
-        </Button>
-      ),
+      factory: (props) => ({
+        preview: (
+          <Button
+            variant={props.variant as any}
+            size={props.size as any}
+            disabled={props.disabled as boolean}
+          >
+            Click me
+          </Button>
+        ),
+        code: `import { Button } from "ui-lab-components";
+
+export function Example() {
+  return (
+    <Button${props.variant !== 'default' ? ` variant="${props.variant}"` : ''}${props.size !== 'md' ? ` size="${props.size}"` : ''}${props.disabled ? ' disabled' : ''}>
+      Click me
+    </Button>
+  );
+}`,
+      }),
     },
   ],
 };

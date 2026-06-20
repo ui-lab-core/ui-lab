@@ -1,28 +1,6 @@
 import React from 'react';
 import { Tabs } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
-// Define examplesData locally
-
-
-const tabsControls: ControlDef[] = [
-  {
-    name: "variant",
-    label: "Variant",
-    type: "select",
-    options: [
-      { label: "Default", value: "default" },
-      { label: "Underline", value: "underline" },
-    ],
-    defaultValue: "default",
-  },
-  {
-    name: "disabled",
-    label: "Disable Second Tab",
-    type: "toggle",
-    defaultValue: false,
-  },
-]
+import { ComponentDetail } from '@/types';
 
 const tabsBasicCode = `import { Tabs } from "ui-lab-components";
 
@@ -54,51 +32,7 @@ export const tabsDetail: ComponentDetail = {
     </div>
   ),
 
-  examples: [
-    {
-      id: "preview",
-      title: "Preview",
-      description: "Adjust props to customize the component",
-      code: tabsBasicCode,
-      preview: (
-        <Tabs default="tab1">
-          <Tabs.List>
-            <Tabs.Trigger value="tab1">Tab 1</Tabs.Trigger>
-            <Tabs.Trigger value="tab2">Tab 2</Tabs.Trigger>
-            <Tabs.Trigger value="tab3">Tab 3</Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Content value="tab1">
-            <p className="text-foreground-300">Content for Tab 1</p>
-          </Tabs.Content>
-          <Tabs.Content value="tab2">
-            <p className="text-foreground-300">Content for Tab 2</p>
-          </Tabs.Content>
-          <Tabs.Content value="tab3">
-            <p className="text-foreground-300">Content for Tab 3</p>
-          </Tabs.Content>
-        </Tabs>
-      ),
-      controls: tabsControls,
-      renderPreview: (props: any) => (
-        <Tabs default="tab1" variant={props.variant}>
-          <Tabs.List>
-            <Tabs.Trigger value="tab1">Tab 1</Tabs.Trigger>
-            <Tabs.Trigger value="tab2" disabled={props.disabled}>Tab 2</Tabs.Trigger>
-            <Tabs.Trigger value="tab3">Tab 3</Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Content value="tab1">
-            <p className="text-foreground-300">Content for Tab 1</p>
-          </Tabs.Content>
-          <Tabs.Content value="tab2">
-            <p className="text-foreground-300">Content for Tab 2</p>
-          </Tabs.Content>
-          <Tabs.Content value="tab3">
-            <p className="text-foreground-300">Content for Tab 3</p>
-          </Tabs.Content>
-        </Tabs>
-      ),
-    }
-  ],
+  examples: [],
 
   variants: [
     {
@@ -143,5 +77,3 @@ export const tabsDetail: ComponentDetail = {
     },
   ],
 };
-
-export { tabsControls };
