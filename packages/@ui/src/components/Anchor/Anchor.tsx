@@ -10,7 +10,8 @@ import { Tooltip } from "@/components/Tooltip";
 import css from "./Anchor.module.css";
 
 type Orientation = "horizontal" | "vertical";
-type Size = "sm" | "md" | "lg";
+type UnderlineWeight = "sm" | "md" | "lg";
+type AnchorVariant = "solid" | "dashed" | "dotted";
 
 interface AnchorStyleSlots {
   root?: StyleValue;
@@ -36,13 +37,13 @@ const DASHED_DIMENSIONS = {
 } as const;
 
 const DOTTED_DIMENSIONS = {
-  sm: { thickness: 1, radius: 0.5, spacing: 6 },
-  md: { thickness: 2, radius: 1, spacing: 8 },
+  sm: { thickness: 1, radius: 0.5, spacing: 3 },
+  md: { thickness: 2, radius: 1, spacing: 6 },
   lg: { thickness: 4, radius: 2, spacing: 12 },
 } as const;
 
-function getPath(orientation: Orientation, size: Size): string {
-  const { thickness, dashLength, gapLength } = DASHED_DIMENSIONS[size];
+function getDashedMaskSvg(orientation: Orientation, weight: UnderlineWeight): string {
+  const { thickness, dashLength, gapLength } = DASHED_DIMENSIONS[weight];
   const totalLength = dashLength + gapLength;
 
   if (orientation === "horizontal") {
@@ -51,8 +52,8 @@ function getPath(orientation: Orientation, size: Size): string {
   return `%3Csvg width='${thickness}' height='${totalLength}' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='${thickness}' height='${dashLength}' fill='%23ffffff'/%3E%3C/svg%3E`;
 }
 
-function getDottedMaskSvg(orientation: Orientation, size: Size): string {
-  const { thickness, radius, spacing } = DOTTED_DIMENSIONS[size];
+function getDottedMaskSvg(orientation: Orientation, weight: UnderlineWeight): string {
+  const { thickness, radius, spacing } = DOTTED_DIMENSIONS[weight];
 
   if (orientation === "horizontal") {
     return `%3Csvg width='${spacing}' height='${thickness}' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='${radius}' cy='${radius}' r='${radius}' fill='%23ffffff'/%3E%3C/svg%3E`;
@@ -110,7 +111,7 @@ AnchorPreview.displayName = ANCHOR_PREVIEW_DISPLAY_NAME;
 
 interface AnchorUnderlineProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Controls the line style of the underline */
-  variant?: "solid" | "dashed" | "dotted";
+  variant?: AnchorVariant;
 }
 
 const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
@@ -119,9 +120,9 @@ const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
       if (variant === "solid") return {}
 
       const orientation = "horizontal";
-      const size = "sm";
+      const weight = "sm";
 
-      const svgDataUri = variant === "dashed" ? getPath(orientation, size) : getDottedMaskSvg(orientation, size);
+      const svgDataUri = variant === "dashed" ? getDashedMaskSvg(orientation, weight) : getDottedMaskSvg(orientation, weight);
       const maskRepeat = "repeat-x";
       const encodedSvg = `url("data:image/svg+xml,${svgDataUri}")`;
 
@@ -137,6 +138,7 @@ const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
       <span
         ref={ref}
         className={cn(css.underline, className)}
+        data-anchor-underline="true"
         style={{ ...getMaskStyles(), ...style }}
         {...props}
       />
@@ -156,6 +158,8 @@ export interface AnchorProps
   href?: string;
   /** Browsing context for the link (e.g. "_blank") */
   target?: string;
+  /** Controls the underline treatment. */
+  variant?: AnchorVariant;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: AnchorStylesProp;
   /** Preview content to show in a tooltip on hover. Use this in server components instead of <Anchor.Preview>. */
@@ -163,7 +167,7 @@ export interface AnchorProps
 }
 
 const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorProps>(
-  ({ className, children, href, target = "_blank", styles, preview: previewProp, ...props }, ref) => {
+  ({ className, children, href, target = "_blank", variant = "solid", styles, preview: previewProp, ...props }, ref) => {
     const rootRef = React.useRef<HTMLAnchorElement | HTMLSpanElement>(null);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({});
@@ -181,6 +185,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
 
     const childrenArray = React.Children.toArray(children);
     const resolved = resolveAnchorStyles(styles);
+    const rootClassName = cn("anchor", variant, css.root, className, resolved.root, scopeProps.className);
 
     let filteredChildren: React.ReactNode[] = [];
 
@@ -207,7 +212,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
 
     // Inject default underline if none provided
     if (!hasUnderline) {
-      filteredChildren.push(<AnchorUnderline key="__default_underline" className={resolved.underline} />);
+      filteredChildren.push(<AnchorUnderline key="__default_underline" className={resolved.underline} variant={variant} />);
     }
 
     const { onChange, onChangeCapture, ...otherProps } = props as any;
@@ -220,7 +225,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
         href={href}
         target={target}
         rel={target === "_blank" ? "noopener noreferrer" : undefined}
-        className={cn("anchor", css.root, className, resolved.root, scopeProps.className)}
+        className={rootClassName}
         data-anchor-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
@@ -234,7 +239,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
     ) : (
       <span
         ref={mergedRef as React.Ref<HTMLSpanElement>}
-        className={cn("anchor", css.root, className, resolved.root, scopeProps.className)}
+        className={rootClassName}
         data-anchor-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
