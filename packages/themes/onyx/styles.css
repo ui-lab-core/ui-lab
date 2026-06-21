@@ -27,12 +27,12 @@
   }
 
   .button {
+    @apply text-xs font-semibold;
     --background: var(--background-800);
     --foreground: var(--foreground-200);
     --background-border: var(--background-700);
     --focus-visible: var(--accent-400);
     --icon-foreground: var(--foreground-400);
-    font-size: var(--text-xs);
   }
 
   .button[data-hovered="true"]:not([data-disabled="true"]) {
@@ -45,7 +45,7 @@
     --background-border: var(--background-600);
   }
 
-  .button.sm { @apply px-2.5 py-1.5 text-xs font-semibold }
+  .button.sm { @apply px-2.5 py-1.5 }
   .button.md { @apply px-3 py-1.5 }
   .button.lg { @apply px-10 py-2 }
 
@@ -940,10 +940,10 @@
   }
 
   .tabs.trigger {
+    @apply text-xs font-medium;
     --background: transparent;
-    --foreground: var(--foreground-400);
+    --foreground: var(--foreground-300);
     --underline-border: var(--accent-500);
-    font-size: var(--text-xs);
   }
 
   .tabs.trigger[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
@@ -975,8 +975,7 @@
     --foreground: var(--foreground-200);
     --underline-background: var(--background-600);
     --focus-ring: var(--color-background-600);
-    font-size: var(--text-xs);
-    @apply py-1.5;
+    @apply text-xs font-semibold py-1.5;
   }
 
   .anchor[data-hovered="true"]:not([data-disabled="true"]),

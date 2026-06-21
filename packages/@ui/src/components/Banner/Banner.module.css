@@ -63,10 +63,10 @@
   }
 
   .title {
-    font-weight: var(--font-weight-semibold, 600);
-    font-size: inherit;
+    font-weight: var(--font-weight-header-medium, 500);
+    font-size: var(--header-text-md);
     line-height: var(--leading-tight, 1.25);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
+    letter-spacing: var(--letter-spacing-header-sm, -0.0050em);
     @apply my-0;
   }
 
