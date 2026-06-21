@@ -5,6 +5,7 @@ import {
   applyDynamicThemeScales,
   applyDynamicFontSizeScalesWithRatio,
   applyDynamicHeaderFontSizeScales,
+  applyDynamicCodeTypographyScales,
   applyDynamicLineHeightScales,
   applyDynamicLetterSpacingScales,
   applyDynamicFontWeightScales,
@@ -61,6 +62,13 @@ export function useThemeConfiguration(config: ThemeConfigurationInput) {
       typography.headerFontWeightScale,
       typography.bodyFontWeightScale,
     );
+    applyDynamicCodeTypographyScales(
+      typography.monoFontSizeScale,
+      typography.monoLineHeight,
+      typography.monoLetterSpacingScale,
+      typography.monoFontWeightScale,
+      typography.monoMinFontSizePx,
+    );
   }, [
     isEnabled,
     typography.bodyTypeSizeRatio,
@@ -75,6 +83,11 @@ export function useThemeConfiguration(config: ThemeConfigurationInput) {
     typography.headerLetterSpacingScale,
     typography.headerFontWeightScale,
     typography.bodyFontWeightScale,
+    typography.monoFontSizeScale,
+    typography.monoLineHeight,
+    typography.monoLetterSpacingScale,
+    typography.monoFontWeightScale,
+    typography.monoMinFontSizePx,
   ]);
 
   useEffect(() => {

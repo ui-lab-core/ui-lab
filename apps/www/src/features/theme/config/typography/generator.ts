@@ -238,6 +238,34 @@ export function generateLineHeightCSS(
   };
 }
 
+export function generateCodeTypographyVars(
+  monoFontSizeScale: number = 1,
+  monoLineHeight: number = 1.55,
+  monoLetterSpacingScale: number = 1,
+  monoFontWeightScale: number = 1,
+  monoMinFontSizePx: number = 13,
+  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
+): Record<string, string> {
+  const fontSizeRoundingStepPx =
+    options.fontSizeRoundingStepPx ?? DEFAULT_FONT_SIZE_ROUNDING_STEP_PX;
+  const codeSizeRem = roundFontSizeRem(
+    Math.max(0.875 * monoFontSizeScale, pxToRem(monoMinFontSizePx)),
+    fontSizeRoundingStepPx,
+  );
+  const codeWeight = Math.max(
+    100,
+    Math.min(900, Math.round(400 * monoFontWeightScale)),
+  );
+  const letterSpacing = (monoLetterSpacingScale - 1) * 0.010;
+
+  return {
+    "--text-code-size": formatRem(codeSizeRem),
+    "--leading-code": String(monoLineHeight),
+    "--letter-spacing-code": `${letterSpacing.toFixed(4)}em`,
+    "--font-weight-code": String(codeWeight),
+  };
+}
+
 /**
  * Applies dynamic font size scales to the DOM based on type scale ratio
  * Updates all --text-* CSS variables based on the ratio and fontSizeScale
@@ -298,6 +326,29 @@ export function applyDynamicHeaderFontSizeScales(
   });
 }
 
+export function applyDynamicCodeTypographyScales(
+  monoFontSizeScale: number,
+  monoLineHeight: number,
+  monoLetterSpacingScale: number,
+  monoFontWeightScale: number,
+  monoMinFontSizePx?: number,
+  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
+): void {
+  const root = document.documentElement;
+  const vars = generateCodeTypographyVars(
+    monoFontSizeScale,
+    monoLineHeight,
+    monoLetterSpacingScale,
+    monoFontWeightScale,
+    monoMinFontSizePx,
+    options,
+  );
+
+  Object.entries(vars).forEach(([name, value]) => {
+    root.style.setProperty(name, value);
+  });
+}
+
 export function applyDynamicLineHeightScales(
   headerLineHeight: number,
   bodyLineHeight: number,
@@ -311,7 +362,7 @@ export function applyDynamicLineHeightScales(
  * Generates letter spacing CSS variables as key-value pairs
  * Used for caching and consistency across cache/inline/React paths
  * @param bodyLetterSpacingScale - Body letter spacing scale factor (0 - 3.0)
- * @param headerLetterSpacingScale - Header letter spacing scale factor (-5.0 - 2.0)
+ * @param headerLetterSpacingScale - Header letter spacing scale factor (-5.0 - 3.0)
  * @returns Object mapping CSS variable names to values
  */
 export function generateLetterSpacingCSS(
@@ -341,7 +392,7 @@ export function generateLetterSpacingCSS(
  * Applies dynamic letter spacing scales to the DOM
  * Updates all --letter-spacing-* CSS variables based on body letter spacing scale
  * @param bodyLetterSpacingScale - Body letter spacing scale factor (0 - 3.0)
- * @param headerLetterSpacingScale - Header letter spacing scale factor (-5.0 - 2.0)
+ * @param headerLetterSpacingScale - Header letter spacing scale factor (-5.0 - 3.0)
  */
 export function applyDynamicLetterSpacingScales(
   bodyLetterSpacingScale: number = 1,

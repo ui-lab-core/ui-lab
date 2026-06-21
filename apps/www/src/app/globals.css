@@ -6,6 +6,24 @@
 @import "ui-lab-components/styles.css";
 @import "ui-lab-theme-onyx";
 
+/* Self-hosted Karla (body/header + LCP text), served from a stable public URL
+   that the <link rel="preload"> in layout.tsx matches exactly, so the heading
+   font is fetched in parallel with the document instead of after the CSS. */
+@font-face {
+  font-family: "KarlaLocal";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/assets/fonts/sans/karla-latin-wght-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KarlaLocal";
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/assets/fonts/sans/karla-latin-wght-italic.woff2") format("woff2");
+}
+
 :root {
   /* Border Radius Scale */
   --radius-xs: 0.05rem;
@@ -21,8 +39,8 @@
 }
 
 @theme {
-  --font-body: "Karla", system-ui, sans-serif;
-  --font-header: "Karla", system-ui, sans-serif;
+  --font-body: "KarlaLocal", "Karla", system-ui, sans-serif;
+  --font-header: "KarlaLocal", "Karla", system-ui, sans-serif;
   --font-mono: var(--font-ioskeley-mono), monospace;
   /* Keep font-sans compatibility while body/header are configured explicitly. */
   --font-sans: var(--font-body);

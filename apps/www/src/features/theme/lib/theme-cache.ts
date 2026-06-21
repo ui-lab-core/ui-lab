@@ -141,6 +141,10 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
             sourceTypography?.headerMinFontSizePx ??
             legacyMinFontSizePx ??
             fontTypography.headerMinFontSizePx,
+          monoMinFontSizePx:
+            sourceTypography?.monoMinFontSizePx ??
+            legacyMinFontSizePx ??
+            fontTypography.monoMinFontSizePx,
         },
         layout: {
           ...defaultSourceConfig.layout,

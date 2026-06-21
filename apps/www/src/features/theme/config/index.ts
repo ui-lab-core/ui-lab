@@ -7,6 +7,7 @@ export {
   roundFontSizePx,
   applyDynamicFontSizeScalesWithRatio,
   applyDynamicHeaderFontSizeScales,
+  applyDynamicCodeTypographyScales,
   applyDynamicLineHeightScales,
   applyDynamicLetterSpacingScales,
 } from "./typography/generator";

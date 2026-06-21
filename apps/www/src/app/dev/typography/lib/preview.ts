@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { FontConfig } from "@/features/theme/constants/font-config";
 import {
   generateDerivedTextSizeVars,
+  generateCodeTypographyVars,
   generateLetterSpacingCSS,
   generateLineHeightCSS,
   generateTypeScaleFromRatio,
@@ -11,6 +12,8 @@ import {
   DEFAULT_BODY_MIN_FONT_SIZE_PX,
   DEFAULT_HEADER_LINE_HEIGHT,
   DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+  DEFAULT_MONO_LINE_HEIGHT,
+  DEFAULT_MONO_MIN_FONT_SIZE_PX,
 } from "@/features/theme/lib/typography-config";
 import { FONT_WEIGHT_DEFS } from "./constants";
 import type { FontTuningState, PreviewTypographyState } from "./types";
@@ -33,6 +36,11 @@ export function getFontPreviewState(fontConfig?: FontConfig): PreviewTypographyS
     bodyFontWeightScale: metrics?.bodyFontWeightScale ?? metrics?.fontWeightScale ?? 1,
     bodyLetterSpacingScale: metrics?.bodyLetterSpacingScale ?? 1,
     bodyLineHeight: metrics?.bodyLineHeight ?? DEFAULT_BODY_LINE_HEIGHT,
+    monoFontSizeScale: metrics?.monoFontSizeScale ?? metrics?.fontSizeScale ?? 1,
+    monoFontWeightScale: metrics?.monoFontWeightScale ?? metrics?.fontWeightScale ?? 1,
+    monoLetterSpacingScale: metrics?.monoLetterSpacingScale ?? 1,
+    monoLineHeight: metrics?.monoLineHeight ?? DEFAULT_MONO_LINE_HEIGHT,
+    monoMinFontSizePx: metrics?.monoMinFontSizePx ?? DEFAULT_MONO_MIN_FONT_SIZE_PX,
     bodyMinFontSizePx: DEFAULT_BODY_MIN_FONT_SIZE_PX,
     headerMinFontSizePx: DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   };
@@ -83,6 +91,16 @@ export function buildPreviewVars(
     generateLetterSpacingCSS(
       typography.bodyLetterSpacingScale,
       typography.headerLetterSpacingScale,
+    ),
+  );
+  Object.assign(
+    vars,
+    generateCodeTypographyVars(
+      typography.monoFontSizeScale,
+      typography.monoLineHeight,
+      typography.monoLetterSpacingScale,
+      typography.monoFontWeightScale,
+      typography.monoMinFontSizePx,
     ),
   );
 

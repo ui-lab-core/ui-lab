@@ -34,6 +34,15 @@ const HEADER_FONT_TYPOGRAPHY_MAP = Object.fromEntries(
     }),
   ]),
 );
+const MONO_FONT_TYPOGRAPHY_MAP = Object.fromEntries(
+  MONO_FONTS.map((font) => [
+    font.name,
+    getTypographyConfigForFonts({
+      ...DEFAULT_FONT_CONFIG,
+      monoFont: font.name,
+    }),
+  ]),
+);
 
 export function getInitialThemeScript(): string {
   const payload = {
@@ -44,6 +53,7 @@ export function getInitialThemeScript(): string {
     defaultTypography: getTypographyConfigForFonts(DEFAULT_FONT_CONFIG),
     staticDefaultTypography: DEFAULT_TYPOGRAPHY_CONFIG,
     headerFontTypographyMap: HEADER_FONT_TYPOGRAPHY_MAP,
+    monoFontTypographyMap: MONO_FONT_TYPOGRAPHY_MAP,
     spacingSteps: SPACING_SCALE_STEPS,
     radiusSteps: RADIUS_SCALE_STEPS,
     borderSteps: BORDER_SCALE_STEPS,
@@ -143,7 +153,13 @@ export function getInitialThemeScript(): string {
 
   function getTypographyDefaults(fonts) {
     var header = fonts && (fonts.headerFont || fonts.bodyFont || fonts.sansFont) || payload.defaultFonts.headerFont;
-    return payload.headerFontTypographyMap[header] || payload.defaultTypography;
+    var mono = fonts && fonts.monoFont || payload.defaultFonts.monoFont;
+    return Object.assign(
+      {},
+      payload.defaultTypography,
+      payload.headerFontTypographyMap[header] || {},
+      payload.monoFontTypographyMap[mono] || {}
+    );
   }
 
   function computeTypographyVars(typography, fonts) {
@@ -155,7 +171,11 @@ export function getInitialThemeScript(): string {
     var headerScale = getNumberOrFallback(typography && typography.headerFontSizeScale, defaults.headerFontSizeScale);
     var headerLineHeight = getNumberOrFallback(typography && typography.headerLineHeight, defaults.headerLineHeight);
     var bodyLineHeight = getNumberOrFallback(typography && typography.bodyLineHeight, defaults.bodyLineHeight);
+    var monoLineHeight = getNumberOrFallback(typography && typography.monoLineHeight, defaults.monoLineHeight);
     var bodyLetterSpacingScale = getNumberOrFallback(typography && typography.bodyLetterSpacingScale, defaults.bodyLetterSpacingScale);
+    var monoFontSizeScale = getNumberOrFallback(typography && typography.monoFontSizeScale, defaults.monoFontSizeScale);
+    var monoFontWeightScale = getNumberOrFallback(typography && typography.monoFontWeightScale, defaults.monoFontWeightScale);
+    var monoLetterSpacingScale = getNumberOrFallback(typography && typography.monoLetterSpacingScale, defaults.monoLetterSpacingScale);
     var headerLetterSpacingValue = typography && typography.headerLetterSpacingScale;
     if (
       headerLetterSpacingValue === staticDefaults.headerLetterSpacingScale &&
@@ -172,6 +192,10 @@ export function getInitialThemeScript(): string {
     var headerMinFontSizePx = getNumberOrFallback(
       typography && typography.headerMinFontSizePx,
       legacyMinFontSizePx === null ? defaults.headerMinFontSizePx : legacyMinFontSizePx
+    );
+    var monoMinFontSizePx = getNumberOrFallback(
+      typography && typography.monoMinFontSizePx,
+      legacyMinFontSizePx === null ? defaults.monoMinFontSizePx : legacyMinFontSizePx
     );
     var vars = {};
     var bodySizeMap = {};
@@ -253,6 +277,7 @@ export function getInitialThemeScript(): string {
 
     vars["--leading-header"] = String(headerLineHeight);
     vars["--leading-body"] = String(bodyLineHeight);
+    vars["--leading-code"] = String(monoLineHeight);
 
     var baseLetterSpacingFactor = 0.020;
     payload.textSizeNames.forEach(function (name, index) {
@@ -263,6 +288,9 @@ export function getInitialThemeScript(): string {
     ["sm", "md", "lg", "xl"].forEach(function (name) {
       vars["--letter-spacing-header-" + name] = (payload.headingTrackingEm + (headerLetterSpacingScale - 1) * baseLetterSpacingFactor).toFixed(4) + "em";
     });
+    vars["--text-code-size"] = fontSizeRem(Math.max(0.875 * monoFontSizeScale, monoMinFontSizePx / payload.rootFontSizePx));
+    vars["--letter-spacing-code"] = ((monoLetterSpacingScale - 1) * 0.010).toFixed(4) + "em";
+    vars["--font-weight-code"] = String(Math.max(100, Math.min(900, Math.round(400 * monoFontWeightScale))));
 
     return vars;
   }

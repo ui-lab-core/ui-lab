@@ -25,7 +25,7 @@ import {
   TypographyConfig,
 } from "../../lib/typography-config";
 
-type TypographySectionKey = "header" | "body";
+type TypographySectionKey = "header" | "body" | "mono";
 
 interface TypographyPanelProps {
   selectedBodyFont: string;
@@ -206,6 +206,11 @@ export const TypographyPanel = memo(
       bodyLineHeight,
       bodyMinFontSizePx,
       headerMinFontSizePx,
+      monoFontSizeScale,
+      monoLetterSpacingScale,
+      monoFontWeightScale,
+      monoLineHeight,
+      monoMinFontSizePx,
     } = typography;
     const [expandedSection, setExpandedSection] =
       useState<TypographySectionKey | null>(null);
@@ -258,7 +263,7 @@ export const TypographyPanel = memo(
                 label="Letter Spacing"
                 value={headerLetterSpacingScale}
                 min={-5.0}
-                max={2.0}
+                max={3}
                 step={0.05}
                 unit="x"
                 onChange={(scale) => onTypographyChange({ headerLetterSpacingScale: scale })}
@@ -380,29 +385,78 @@ export const TypographyPanel = memo(
           </TypographySection>
         </div>
 
-        <div className="mx-[6px] mb-4 p-3 bg-background-900/40 rounded-[12px] border border-background-700 space-y-4">
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-foreground-400 block">
-              Mono Font
-            </div>
-            <Select
-              selectedKey={selectedMonoFont}
-              defaultValue={selectedMonoFont}
-              onSelectionChange={(key) => onMonoFontChange(key as string)}
-            >
-              <Select.Trigger className="w-full">
-                <Select.Value placeholder="Select mono font" />
-              </Select.Trigger>
-              <Select.Content>
-                {MONO_FONTS.map((font) => (
-                  <Select.Item key={font.name} value={font.name} textValue={font.name}>
-                    {font.isDefault ? `${font.name} (default)` : font.name}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select>
+        <TypographySection
+          icon={<FaFont size={14} />}
+          title="Mono"
+          select={
+            <FontSelectRow
+              value={selectedMonoFont}
+              placeholder="Select mono font"
+              options={MONO_FONTS}
+              onChange={onMonoFontChange}
+            />
+          }
+          isExpanded={expandedSection === "mono"}
+          onToggle={() =>
+            setExpandedSection((current) =>
+              current === "mono" ? null : "mono",
+            )
+          }
+        >
+          <div className="space-y-3">
+            <div className="h-px w-full bg-background-700/30" />
+            <SliderRow
+              icon={<FaTextWidth size={13} />}
+              label="Code Size"
+              value={monoFontSizeScale}
+              min={TYPOGRAPHY_FONT_SIZE_SCALE_MIN}
+              max={TYPOGRAPHY_FONT_SIZE_SCALE_MAX}
+              step={0.01}
+              unit="x"
+              onChange={(scale) => onTypographyChange({ monoFontSizeScale: scale })}
+            />
+            <SliderRow
+              icon={<FaArrowsLeftRight size={13} />}
+              label="Code Letter Spacing"
+              value={monoLetterSpacingScale}
+              min={0}
+              max={3}
+              step={0.05}
+              unit="x"
+              onChange={(scale) => onTypographyChange({ monoLetterSpacingScale: scale })}
+            />
+            <SliderRow
+              icon={<FaScaleUnbalanced size={13} />}
+              label="Code Weight"
+              value={monoFontWeightScale}
+              min={0.80}
+              max={1.20}
+              step={0.01}
+              unit="x"
+              onChange={(scale) => onTypographyChange({ monoFontWeightScale: scale })}
+            />
+            <SliderRow
+              icon={<FaRulerHorizontal size={13} />}
+              label="Code Line Height"
+              value={monoLineHeight}
+              min={TYPOGRAPHY_LINE_HEIGHT_MIN}
+              max={TYPOGRAPHY_LINE_HEIGHT_MAX}
+              step={0.01}
+              unit=""
+              onChange={(lineHeight) => onTypographyChange({ monoLineHeight: lineHeight })}
+            />
+            <SliderRow
+              icon={<FaTextWidth size={13} />}
+              label="Code Minimum Size"
+              value={monoMinFontSizePx}
+              min={MIN_MIN_FONT_SIZE_PX}
+              max={MAX_MIN_FONT_SIZE_PX}
+              step={0.05}
+              unit="px"
+              onChange={(size) => onTypographyChange({ monoMinFontSizePx: size })}
+            />
           </div>
-        </div>
+        </TypographySection>
       </div>
     );
   },

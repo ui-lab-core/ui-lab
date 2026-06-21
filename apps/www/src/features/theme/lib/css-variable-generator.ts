@@ -8,6 +8,7 @@ import {
   generateTypeScaleFromRatio,
   generateLetterSpacingCSS,
   generateLineHeightCSS,
+  generateCodeTypographyVars,
 } from "../config/typography/generator";
 import { generateFontWeightCSS } from "../config/font-weight/generator";
 import { type TypographyConfig } from "./typography-config";
@@ -57,6 +58,11 @@ function computeTypographyVars(typography: ThemeConfig['typography']): Record<st
     headerLetterSpacingScale,
     bodyMinFontSizePx,
     headerMinFontSizePx,
+    monoFontSizeScale,
+    monoLetterSpacingScale,
+    monoFontWeightScale,
+    monoLineHeight,
+    monoMinFontSizePx,
   } = typography;
 
   const vars: Record<string, string> = {};
@@ -97,6 +103,16 @@ function computeTypographyVars(typography: ThemeConfig['typography']): Record<st
 
   // Generate letter spacing variables
   Object.assign(vars, generateLetterSpacingCSS(bodyLetterSpacingScale, headerLetterSpacingScale));
+  Object.assign(
+    vars,
+    generateCodeTypographyVars(
+      monoFontSizeScale,
+      monoLineHeight,
+      monoLetterSpacingScale,
+      monoFontWeightScale,
+      monoMinFontSizePx,
+    ),
+  );
 
   return vars;
 }

@@ -21,6 +21,9 @@ export const DEFAULT_HEADING_TRACKING_EM = -0.012;
 export const DEFAULT_BODY_LINE_HEIGHT = 1.5;
 export const DEFAULT_BODY_MIN_FONT_SIZE_PX = 14.75;
 
+export const DEFAULT_MONO_LINE_HEIGHT = 1.55;
+export const DEFAULT_MONO_MIN_FONT_SIZE_PX = 13.0;
+
 export const DEFAULT_GLOBAL_MIN_FONT_SIZE_PX = DEFAULT_BODY_MIN_FONT_SIZE_PX;
 export const MIN_GLOBAL_MIN_FONT_SIZE_PX = MIN_MIN_FONT_SIZE_PX;
 export const MAX_GLOBAL_MIN_FONT_SIZE_PX = MAX_MIN_FONT_SIZE_PX;
@@ -44,6 +47,13 @@ export interface TypographyConfig {
   bodyLineHeight: number;
   bodyMinFontSizePx: number;
 
+  // Mono / code
+  monoFontSizeScale: number;
+  monoLetterSpacingScale: number;
+  monoFontWeightScale: number;
+  monoLineHeight: number;
+  monoMinFontSizePx: number;
+
   // Legacy
   globalMinFontSizePx?: number;
 }
@@ -66,6 +76,13 @@ export const DEFAULT_TYPOGRAPHY_CONFIG: TypographyConfig = {
   bodyFontWeightScale: 1,
   bodyLineHeight: DEFAULT_BODY_LINE_HEIGHT,
   bodyMinFontSizePx: DEFAULT_BODY_MIN_FONT_SIZE_PX,
+
+  // Mono / code
+  monoFontSizeScale: 1.0,
+  monoLetterSpacingScale: 1,
+  monoFontWeightScale: 1,
+  monoLineHeight: DEFAULT_MONO_LINE_HEIGHT,
+  monoMinFontSizePx: DEFAULT_MONO_MIN_FONT_SIZE_PX,
 };
 
 export function clampMinFontSizePx(value: number): number {

@@ -42,8 +42,12 @@ export function getTypographyConfigForFonts(
   const headerFont =
     getFontConfig(fonts.headerFont ?? DEFAULT_FONT_CONFIG.headerFont, "header") ??
     getDefaultHeaderFont();
+  const monoFont =
+    getFontConfig(fonts.monoFont ?? DEFAULT_FONT_CONFIG.monoFont, "mono") ??
+    getDefaultMonoFont();
   const bodyMetrics = bodyFont.metrics;
   const headerMetrics = headerFont.metrics;
+  const monoMetrics = monoFont.metrics;
 
   return {
     ...DEFAULT_TYPOGRAPHY_CONFIG,
@@ -51,6 +55,7 @@ export function getTypographyConfigForFonts(
       headerMetrics.typeSizeRatio ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerTypeSizeRatio,
     headerFontSizeScale:
+      headerMetrics.headerFontSizeScale ??
       headerMetrics.fontSizeScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerFontSizeScale,
     headerLetterSpacingScale:
@@ -87,6 +92,23 @@ export function getTypographyConfigForFonts(
     bodyMinFontSizePx:
       bodyMetrics.bodyMinFontSizePx ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
+    monoFontSizeScale:
+      monoMetrics.monoFontSizeScale ??
+      monoMetrics.fontSizeScale ??
+      DEFAULT_TYPOGRAPHY_CONFIG.monoFontSizeScale,
+    monoLetterSpacingScale:
+      monoMetrics.monoLetterSpacingScale ??
+      DEFAULT_TYPOGRAPHY_CONFIG.monoLetterSpacingScale,
+    monoFontWeightScale:
+      monoMetrics.monoFontWeightScale ??
+      monoMetrics.fontWeightScale ??
+      DEFAULT_TYPOGRAPHY_CONFIG.monoFontWeightScale,
+    monoLineHeight:
+      monoMetrics.monoLineHeight ??
+      DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
+    monoMinFontSizePx:
+      monoMetrics.monoMinFontSizePx ??
+      DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
   };
 }
 

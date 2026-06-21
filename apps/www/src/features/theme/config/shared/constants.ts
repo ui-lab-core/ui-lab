@@ -74,6 +74,9 @@ export const SEMANTIC_HTML_STYLES = `
   code {
     font-family: var(--font-mono);
     font-size: var(--text-code-size);
+    line-height: var(--leading-code);
+    font-weight: var(--font-weight-code);
+    letter-spacing: var(--letter-spacing-code);
     background-color: var(--color-background-800);
     padding: 0.125rem 0.375rem;
     border-radius: var(--radius-xs);
@@ -86,7 +89,9 @@ export const SEMANTIC_HTML_STYLES = `
     padding: 1rem;
     border-radius: var(--radius-sm);
     overflow-x: auto;
-    line-height: var(--leading-body);
+    line-height: var(--leading-code);
+    font-weight: var(--font-weight-code);
+    letter-spacing: var(--letter-spacing-code);
   }
 
   pre code {

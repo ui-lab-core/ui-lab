@@ -8,7 +8,7 @@ import { generateBorderWidthScaleCSS, applyBorderWidthScalesToDOM } from "../bor
 import { generateFluidSpacingCSS } from "../spacing/generator";
 import { generateMaxWidthVariablesCSS, generateMaxWidthScaleCSS } from "../max-width/generator";
 import { SEMANTIC_HTML_STYLES } from "../shared/constants";
-import { generateLineHeightCSS, generateTypographyCSS } from "../typography/generator";
+import { generateCodeTypographyVars, generateLineHeightCSS, generateTypographyCSS } from "../typography/generator";
 
 interface GeneratedThemeSetupFiles {
   themeCss: string
@@ -30,6 +30,11 @@ export interface ThemeTypographyOptions {
   headerMinFontSizePx?: number
   headerTypeSizeRatio?: number
   headerFontSizeScale?: number
+  monoFontSizeScale?: number
+  monoFontWeightScale?: number
+  monoLetterSpacingScale?: number
+  monoLineHeight?: number
+  monoMinFontSizePx?: number
 }
 
 function renderCssVariables(variables: Record<string, string>): string {
@@ -152,6 +157,15 @@ export function generateThemeSetupFiles(
   const leadingCSS = renderCssVariables(
     generateLineHeightCSS(headerLineHeight ?? 1.5, bodyLineHeight ?? 1.3),
   );
+  const codeTypographyCSS = renderCssVariables(
+    generateCodeTypographyVars(
+      resolvedTypographyOptions.monoFontSizeScale ?? 1,
+      resolvedTypographyOptions.monoLineHeight ?? 1.55,
+      resolvedTypographyOptions.monoLetterSpacingScale ?? 1,
+      resolvedTypographyOptions.monoFontWeightScale ?? 1,
+      resolvedTypographyOptions.monoMinFontSizePx ?? 13,
+    ),
+  );
   const headerScale = headerFontWeightScale ?? fontWeightScale ?? 1;
   const bodyScale = bodyFontWeightScale ?? fontWeightScale ?? 1;
   const fontWeightCSS = generateFontWeightCSS(headerScale, bodyScale);
@@ -221,6 +235,7 @@ ${fontFamilyCSS}
 
 ${typographyCSS}
 ${leadingCSS}
+${codeTypographyCSS}
 
   --letter-spacing-tight: -0.01em;
   --letter-spacing-snug: -0.01em;
@@ -243,6 +258,7 @@ ${fontFamilyCSS}
 
 ${typographyCSS}
 ${leadingCSS}
+${codeTypographyCSS}
 }
 
 ${maxWidthUtilitiesCSS}

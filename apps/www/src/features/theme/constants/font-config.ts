@@ -30,10 +30,17 @@ export interface FontMetrics {
   bodyTypeSizeRatio?: number;
   headerFontWeightScale?: number;
   bodyFontWeightScale?: number;
+  headerFontSizeScale?: number;
+  headerTypeSizeRatio?: number;
   bodyFontSizeScale?: number;
   bodyLineHeight?: number;
   bodyMinFontSizePx?: number;
   headerMinFontSizePx?: number;
+  monoFontSizeScale?: number;
+  monoFontWeightScale?: number;
+  monoLetterSpacingScale?: number;
+  monoLineHeight?: number;
+  monoMinFontSizePx?: number;
 }
 
 export interface FontConfig {
@@ -52,12 +59,13 @@ const SANS: FontDefinition[] = [
     family: '"Karla Variable", system-ui, sans-serif',
     isDefault: true,
     metrics: {
-      fontSizeScale: 0.98,
+      fontSizeScale: 0.92,
       fontWeightScale: 1,
       typeSizeRatio: 1.245,
       bodyLineHeight: 1.4,
       bodyMinFontSizePx: 14.35,
       bodyLetterSpacingScale: 1.35,
+      headerMinFontSizePx: 13.0,
     },
   },
   {
@@ -93,6 +101,7 @@ const SANS: FontDefinition[] = [
       fontWeightScale: 0.86,
       typeSizeRatio: 1.175,
       baseline: 0,
+      bodyFontWeightScale: 1.05,
       capHeight: 0.722,
       xHeight: 0.556,
       ascender: 0.944,
@@ -103,9 +112,13 @@ const SANS: FontDefinition[] = [
       leading: 1.5,
       pointSize: 18,
       alignment: "left",
-      bodyLetterSpacingScale: 2.65,
+      bodyLetterSpacingScale: 3.00,
       bodyLineHeight: 1.60,
       bodyMinFontSizePx: 13.25,
+      headerMinFontSizePx: 12.0,
+      headerFontSizeScale: 0.83,
+      headerTypeSizeRatio: 1.30,
+      headerLetterSpacingScale: 3.00
     },
   },
   {
@@ -142,6 +155,11 @@ const MONO: FontDefinition[] = [
       fontSizeScale: 1,
       fontWeightScale: 1,
       typeSizeRatio: 1.2,
+      monoFontSizeScale: 0.98,
+      monoFontWeightScale: 1,
+      monoLetterSpacingScale: 0.8,
+      monoLineHeight: 1.55,
+      monoMinFontSizePx: 13.0,
     },
   },
   {
@@ -152,6 +170,11 @@ const MONO: FontDefinition[] = [
       fontSizeScale: 1,
       fontWeightScale: 1,
       typeSizeRatio: 1.2,
+      monoFontSizeScale: 0.96,
+      monoFontWeightScale: 0.98,
+      monoLetterSpacingScale: 0.7,
+      monoLineHeight: 1.52,
+      monoMinFontSizePx: 13.25,
     },
   },
   {
@@ -162,6 +185,11 @@ const MONO: FontDefinition[] = [
       fontSizeScale: 0.95,
       fontWeightScale: 1.05,
       typeSizeRatio: 1.15,
+      monoFontSizeScale: 0.94,
+      monoFontWeightScale: 1.04,
+      monoLetterSpacingScale: 0.45,
+      monoLineHeight: 1.58,
+      monoMinFontSizePx: 13.5,
     },
   },
 ];

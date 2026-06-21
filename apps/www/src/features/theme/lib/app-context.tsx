@@ -74,6 +74,16 @@ interface AppContextType {
   setBodyLetterSpacingScale: (scale: number) => void;
   bodyLineHeight: number;
   setBodyLineHeight: (lineHeight: number) => void;
+  monoFontSizeScale: number;
+  setMonoFontSizeScale: (scale: number) => void;
+  monoFontWeightScale: number;
+  setMonoFontWeightScale: (scale: number) => void;
+  monoLetterSpacingScale: number;
+  setMonoLetterSpacingScale: (scale: number) => void;
+  monoLineHeight: number;
+  setMonoLineHeight: (lineHeight: number) => void;
+  monoMinFontSizePx: number;
+  setMonoMinFontSizePx: (size: number) => void;
   bodyMinFontSizePx: number;
   setBodyMinFontSizePx: (size: number) => void;
   headerMinFontSizePx: number;
@@ -108,6 +118,11 @@ interface AppState {
   bodyFontWeightScale: number;
   bodyLetterSpacingScale: number;
   bodyLineHeight: number;
+  monoFontSizeScale: number;
+  monoFontWeightScale: number;
+  monoLetterSpacingScale: number;
+  monoLineHeight: number;
+  monoMinFontSizePx: number;
   bodyMinFontSizePx: number;
   headerMinFontSizePx: number;
 }
@@ -152,6 +167,11 @@ const initialAppState: AppState = {
   bodyFontWeightScale: defaultPreferences.bodyFontWeightScale,
   bodyLetterSpacingScale: defaultPreferences.bodyLetterSpacingScale,
   bodyLineHeight: defaultPreferences.bodyLineHeight,
+  monoFontSizeScale: defaultPreferences.monoFontSizeScale,
+  monoFontWeightScale: defaultPreferences.monoFontWeightScale,
+  monoLetterSpacingScale: defaultPreferences.monoLetterSpacingScale,
+  monoLineHeight: defaultPreferences.monoLineHeight,
+  monoMinFontSizePx: defaultPreferences.monoMinFontSizePx,
   bodyMinFontSizePx: defaultPreferences.bodyMinFontSizePx,
   headerMinFontSizePx: defaultPreferences.headerMinFontSizePx,
 };
@@ -189,6 +209,10 @@ function getPersistedPreferences(
   const headerMinFontSizePx = normalizeMinFontSizePx(
     sourceConfig.typography.headerMinFontSizePx ?? legacyMinFontSizePx,
     DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+  );
+  const monoMinFontSizePx = normalizeMinFontSizePx(
+    sourceConfig.typography.monoMinFontSizePx ?? legacyMinFontSizePx,
+    defaultPreferences.monoMinFontSizePx,
   );
   const bodyTypeSizeRatio =
     sourceConfig.typography.bodyTypeSizeRatio ??
@@ -284,6 +308,20 @@ function getPersistedPreferences(
       sourceConfig.typography.bodyLineHeight,
       defaultPreferences.bodyLineHeight,
     ),
+    monoFontSizeScale:
+      sourceConfig.typography.monoFontSizeScale ??
+      defaultPreferences.monoFontSizeScale,
+    monoFontWeightScale:
+      sourceConfig.typography.monoFontWeightScale ??
+      defaultPreferences.monoFontWeightScale,
+    monoLetterSpacingScale:
+      sourceConfig.typography.monoLetterSpacingScale ??
+      defaultPreferences.monoLetterSpacingScale,
+    monoLineHeight: normalizeTypographyLineHeight(
+      sourceConfig.typography.monoLineHeight,
+      defaultPreferences.monoLineHeight,
+    ),
+    monoMinFontSizePx,
     bodyMinFontSizePx,
     headerMinFontSizePx,
   };
@@ -311,6 +349,11 @@ function ThemeConfigurationApplier() {
     bodyFontWeightScale,
     bodyLetterSpacingScale,
     bodyLineHeight,
+    monoFontSizeScale,
+    monoFontWeightScale,
+    monoLetterSpacingScale,
+    monoLineHeight,
+    monoMinFontSizePx,
     bodyMinFontSizePx,
     headerMinFontSizePx,
     radius,
@@ -333,6 +376,11 @@ function ThemeConfigurationApplier() {
       bodyFontWeightScale,
       bodyLetterSpacingScale,
       bodyLineHeight,
+      monoFontSizeScale,
+      monoFontWeightScale,
+      monoLetterSpacingScale,
+      monoLineHeight,
+      monoMinFontSizePx,
       bodyMinFontSizePx,
       headerMinFontSizePx,
     },
@@ -464,6 +512,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       bodyLineHeight: state.bodyLineHeight,
       setBodyLineHeight: (lineHeight) =>
         dispatch({ type: "set", key: "bodyLineHeight", value: lineHeight }),
+      monoFontSizeScale: state.monoFontSizeScale,
+      setMonoFontSizeScale: (scale) =>
+        dispatch({ type: "set", key: "monoFontSizeScale", value: scale }),
+      monoFontWeightScale: state.monoFontWeightScale,
+      setMonoFontWeightScale: (scale) =>
+        dispatch({ type: "set", key: "monoFontWeightScale", value: scale }),
+      monoLetterSpacingScale: state.monoLetterSpacingScale,
+      setMonoLetterSpacingScale: (scale) =>
+        dispatch({ type: "set", key: "monoLetterSpacingScale", value: scale }),
+      monoLineHeight: state.monoLineHeight,
+      setMonoLineHeight: (lineHeight) =>
+        dispatch({ type: "set", key: "monoLineHeight", value: lineHeight }),
+      monoMinFontSizePx: state.monoMinFontSizePx,
+      setMonoMinFontSizePx: (size) =>
+        dispatch({ type: "set", key: "monoMinFontSizePx", value: size }),
       bodyMinFontSizePx: state.bodyMinFontSizePx,
       setBodyMinFontSizePx: (size) =>
         dispatch({ type: "set", key: "bodyMinFontSizePx", value: size }),
