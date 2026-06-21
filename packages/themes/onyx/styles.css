@@ -616,6 +616,11 @@
     --background: var(--background-900);
   }
 
+  .slider > .track > .thumb {
+    --thumb-width: 10px
+  }
+
+
   .slider > .track .range {
     --background: color-mix(in srgb, var(--background-500) 20%, transparent);
     --disabled-background: var(--background-600);

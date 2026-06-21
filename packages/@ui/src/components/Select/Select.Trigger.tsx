@@ -6,7 +6,7 @@ import { Input, type InputProps } from "../Input"
 import { ChevronDown } from "lucide-react"
 import styles from "./Select.module.css"
 import { useSelectContext } from "./Select"
-import { GroupContext } from "../Group/Group"
+import { GroupContext } from "../Group/Group.Context"
 import groupStyles from "../Group/Group.module.css"
 import { handleListKeyDown } from "./Select.shared"
 

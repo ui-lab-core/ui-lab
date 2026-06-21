@@ -4,7 +4,10 @@
   "description": "A collection of beautiful, accessible React components built with React Aria and Tailwind CSS",
   "type": "module",
   "license": "MIT",
-  "main": "./dist/ui-lab-ui.umd.js",
+  "sideEffects": [
+    "*.css",
+    "**/*.css"
+  ],
   "module": "./dist/ui-lab-ui.es.js",
   "types": "./dist/ui-lab-ui.d.ts",
   "keywords": [
@@ -27,9 +30,167 @@
     ".": {
       "react-server": "./src/index.react-server.js",
       "import": "./dist/ui-lab-ui.es.js",
-      "require": "./dist/ui-lab-ui.umd.js",
-      "types": "./dist/ui-lab-ui.d.ts",
-      "style": "./dist/styles.css"
+      "types": "./dist/ui-lab-ui.d.ts"
+    },
+    "./providers": {
+      "import": "./dist/providers.es.js",
+      "types": "./dist/providers.d.ts"
+    },
+    "./anchor": {
+      "import": "./dist/anchor.es.js",
+      "types": "./dist/anchor.d.ts"
+    },
+    "./badge": {
+      "import": "./dist/badge.es.js",
+      "types": "./dist/badge.d.ts"
+    },
+    "./banner": {
+      "import": "./dist/banner.es.js",
+      "types": "./dist/banner.d.ts"
+    },
+    "./button": {
+      "import": "./dist/button.es.js",
+      "types": "./dist/button.d.ts"
+    },
+    "./card": {
+      "import": "./dist/card.es.js",
+      "types": "./dist/card.d.ts"
+    },
+    "./checkbox": {
+      "import": "./dist/checkbox.es.js",
+      "types": "./dist/checkbox.d.ts"
+    },
+    "./code": {
+      "import": "./dist/code.es.js",
+      "types": "./dist/code.d.ts"
+    },
+    "./color": {
+      "import": "./dist/color.es.js",
+      "types": "./dist/color.d.ts"
+    },
+    "./command": {
+      "import": "./dist/command.es.js",
+      "types": "./dist/command.d.ts"
+    },
+    "./confirm": {
+      "import": "./dist/confirm.es.js",
+      "types": "./dist/confirm.d.ts"
+    },
+    "./date": {
+      "import": "./dist/date.es.js",
+      "types": "./dist/date.d.ts"
+    },
+    "./divider": {
+      "import": "./dist/divider.es.js",
+      "types": "./dist/divider.d.ts"
+    },
+    "./expand": {
+      "import": "./dist/expand.es.js",
+      "types": "./dist/expand.d.ts"
+    },
+    "./flex": {
+      "import": "./dist/flex.es.js",
+      "types": "./dist/flex.d.ts"
+    },
+    "./frame": {
+      "import": "./dist/frame.es.js",
+      "types": "./dist/frame.d.ts"
+    },
+    "./gallery": {
+      "import": "./dist/gallery.es.js",
+      "types": "./dist/gallery.d.ts"
+    },
+    "./grid": {
+      "import": "./dist/grid.es.js",
+      "types": "./dist/grid.d.ts"
+    },
+    "./group": {
+      "import": "./dist/group.es.js",
+      "types": "./dist/group.d.ts"
+    },
+    "./input": {
+      "import": "./dist/input.es.js",
+      "types": "./dist/input.d.ts"
+    },
+    "./label": {
+      "import": "./dist/label.es.js",
+      "types": "./dist/label.d.ts"
+    },
+    "./list": {
+      "import": "./dist/list.es.js",
+      "types": "./dist/list.d.ts"
+    },
+    "./mask": {
+      "import": "./dist/mask.es.js",
+      "types": "./dist/mask.d.ts"
+    },
+    "./menu": {
+      "import": "./dist/menu.es.js",
+      "types": "./dist/menu.d.ts"
+    },
+    "./modal": {
+      "import": "./dist/modal.es.js",
+      "types": "./dist/modal.d.ts"
+    },
+    "./page": {
+      "import": "./dist/page.es.js",
+      "types": "./dist/page.d.ts"
+    },
+    "./panel": {
+      "import": "./dist/panel.es.js",
+      "types": "./dist/panel.d.ts"
+    },
+    "./path": {
+      "import": "./dist/path.es.js",
+      "types": "./dist/path.d.ts"
+    },
+    "./popover": {
+      "import": "./dist/popover.es.js",
+      "types": "./dist/popover.d.ts"
+    },
+    "./progress": {
+      "import": "./dist/progress.es.js",
+      "types": "./dist/progress.d.ts"
+    },
+    "./radio": {
+      "import": "./dist/radio.es.js",
+      "types": "./dist/radio.d.ts"
+    },
+    "./scroll": {
+      "import": "./dist/scroll.es.js",
+      "types": "./dist/scroll.d.ts"
+    },
+    "./select": {
+      "import": "./dist/select.es.js",
+      "types": "./dist/select.d.ts"
+    },
+    "./slider": {
+      "import": "./dist/slider.es.js",
+      "types": "./dist/slider.d.ts"
+    },
+    "./switch": {
+      "import": "./dist/switch.es.js",
+      "types": "./dist/switch.d.ts"
+    },
+    "./table": {
+      "import": "./dist/table.es.js",
+      "types": "./dist/table.d.ts"
+    },
+    "./tabs": {
+      "import": "./dist/tabs.es.js",
+      "types": "./dist/tabs.d.ts"
+    },
+    "./textarea": {
+      "import": "./dist/textarea.es.js",
+      "types": "./dist/textarea.d.ts"
+    },
+    "./toast": {
+      "import": "./dist/toast.es.js",
+      "types": "./dist/toast.d.ts"
+    },
+    "./tooltip": {
+      "import": "./dist/tooltip.es.js",
+      "types": "./dist/tooltip.d.ts"
     },
     "./theme-script": {
       "import": "./dist/theme-script.es.js",
@@ -47,6 +208,10 @@
       "style": "./dist/styles.css",
       "default": "./dist/styles.css"
     },
+    "./base.css": {
+      "style": "./dist/base.css",
+      "default": "./dist/base.css"
+    },
     "./postcss": {
       "import": "./dist/postcss-ui-lab.mjs",
       "default": "./dist/postcss-ui-lab.mjs"
@@ -61,8 +226,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && pnpm run build:css && pnpm run build:postcss && cp dist/ui-lab-ui.es.js dist/ui-lab-ui.umd.js",
-    "build:css": "postcss src/styles.css -o dist/styles.css && (cat dist/style.css >> dist/styles.css 2>/dev/null || true)",
+    "build": "vite build && pnpm run build:css && pnpm run build:postcss",
+    "build:css": "postcss src/styles.css -o dist/base.css && cat dist/base.css > dist/styles.css && find dist -maxdepth 1 -name '*.css' ! -name base.css ! -name styles.css -exec cat {} + >> dist/styles.css",
     "build:postcss": "cp src/postcss-ui-lab.ts dist/postcss-ui-lab.mjs",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
@@ -97,6 +262,7 @@
     "typescript": "^5",
     "vite": "^5.3.4",
     "vite-plugin-dts": "^3.9.1",
+    "vite-plugin-lib-inject-css": "^2.2.2",
     "vitest": "^1.6.1"
   },
   "dependencies": {

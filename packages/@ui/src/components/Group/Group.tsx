@@ -9,10 +9,13 @@ import { Button, type ButtonProps } from "../Button"
 import { Expand, type ExpandProps } from "../Expand"
 import { Input, type InputProps } from "../Input"
 import { Select, type SelectProps } from "../Select"
+import {
+  GroupContext,
+  type GroupContextValue,
+  type GroupOrientation as Orientation,
+  type GroupSpacing as Spacing,
+} from "./Group.Context"
 import css from "./Group.module.css"
-
-type Orientation = "horizontal" | "vertical"
-type Spacing = "none" | "xs" | "sm"
 
 type GroupItemStyles = {
   first?: StyleValue
@@ -48,25 +51,6 @@ export interface GroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: GroupStylesProp
 }
-
-interface GroupContextValue {
-  isInGroup: boolean
-  groupOrientation: Orientation
-  groupSpacing: Spacing
-  groupIsDisabled: boolean
-  groupValue?: string
-  groupOnChange?: (value: string) => void
-  groupVariant?: string
-  groupStyles: ReturnType<typeof resolveGroupStyles>
-  registerInput?: (containerRef: React.RefObject<HTMLDivElement | null>, inputRef: React.RefObject<HTMLInputElement | null>) => void
-  unregisterInput?: (containerRef: React.RefObject<HTMLDivElement | null>) => void
-  activateInput?: () => boolean
-  registerFocusableSurface?: (ref: React.RefObject<HTMLElement | null>) => void
-  unregisterFocusableSurface?: (ref: React.RefObject<HTMLElement | null>) => void
-}
-
-// Context
-const GroupContext = React.createContext<GroupContextValue | null>(null)
 
 function useGroupContext() {
   const context = React.useContext(GroupContext)

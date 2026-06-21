@@ -11,7 +11,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Tooltip } from "@/components/Tooltip";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { GroupContext } from "@/components/Group/Group";
+import { GroupContext } from "@/components/Group/Group.Context";
 import css from "./Input.module.css";
 
 type Variant = "default" | "ghost";

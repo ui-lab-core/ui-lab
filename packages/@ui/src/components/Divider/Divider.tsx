@@ -3,7 +3,7 @@ import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { GroupContext } from "../Group/Group";
+import { GroupContext } from "../Group/Group.Context";
 import css from "./Divider.module.css";
 
 type Orientation = "horizontal" | "vertical";
