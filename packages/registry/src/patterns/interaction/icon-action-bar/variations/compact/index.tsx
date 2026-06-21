@@ -1,5 +1,6 @@
 'use client';
-import { Button, Group } from 'ui-lab-components';
+import { Button } from 'ui-lab-components/button'
+import { Group } from 'ui-lab-components/group';
 
 function IconActionBarCompact({ onEdit, onCopy, onDelete }: { onEdit: () => void; onCopy: () => void; onDelete: () => void }) {
   return (

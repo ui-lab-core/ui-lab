@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Badge, Button } from 'ui-lab-components';
+import { Badge } from 'ui-lab-components/badge'
+import { Button } from 'ui-lab-components/button';
 
 const statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;
 

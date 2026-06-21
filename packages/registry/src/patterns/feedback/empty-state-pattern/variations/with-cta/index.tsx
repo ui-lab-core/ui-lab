@@ -1,5 +1,5 @@
 'use client';
-import { Button } from 'ui-lab-components';
+import { Button } from 'ui-lab-components/button';
 
 export function EmptyStateWithCTADemo() {
   return (

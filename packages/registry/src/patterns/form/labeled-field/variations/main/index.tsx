@@ -1,5 +1,6 @@
 'use client';
-import { Label, Input } from 'ui-lab-components';
+import { Label } from 'ui-lab-components/label'
+import { Input } from 'ui-lab-components/input';
 
 function LabeledField({ id, label, placeholder, hint }: { id: string; label: string; placeholder?: string; hint?: string }) {
   return (

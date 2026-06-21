@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
-import { Select, Label } from 'ui-lab-components';
+import { Select } from 'ui-lab-components/select'
+import { Label } from 'ui-lab-components/label';
 
 const languages = [
   { id: 'en', label: 'English' },

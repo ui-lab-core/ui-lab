@@ -198,20 +198,23 @@ function useSettingsHandlers(
           nextHeaderLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
         headerMinFontSizePx:
           nextHeaderMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
+        headerFontSizeScale = fontSizeScale,
+        headerTypeSizeRatio: metricHeaderTypeSizeRatio,
       } = fontConfig.metrics;
+      const resolvedHeaderTypeSizeRatio = metricHeaderTypeSizeRatio ?? typeSizeRatio;
       const finalHeaderScale = isValidTypographyConfig(
-        typeSizeRatio,
-        fontSizeScale,
+        resolvedHeaderTypeSizeRatio,
+        headerFontSizeScale,
         nextHeaderMinFontSizePx,
       )
-        ? fontSizeScale
+        ? headerFontSizeScale
         : findClosestValidFontSizeScale(
-            typeSizeRatio,
-            fontSizeScale,
+            resolvedHeaderTypeSizeRatio,
+            headerFontSizeScale,
             nextHeaderMinFontSizePx,
           );
       updateTypography({
-        headerTypeSizeRatio: typeSizeRatio,
+        headerTypeSizeRatio: resolvedHeaderTypeSizeRatio,
         headerFontSizeScale: finalHeaderScale,
         headerFontWeightScale: headerFontWeightScale ?? fontWeightScale ?? 1,
         headerLetterSpacingScale: headerSpacing,
@@ -227,6 +230,25 @@ function useSettingsHandlers(
   };
 
   const handleMonoFontChange = (fontName: string) => {
+    const fontConfig = getFontConfig(fontName as FontKey, "mono");
+    if (fontConfig) {
+      const {
+        fontSizeScale,
+        fontWeightScale,
+        monoFontSizeScale = fontSizeScale,
+        monoFontWeightScale = fontWeightScale,
+        monoLetterSpacingScale = DEFAULT_TYPOGRAPHY_CONFIG.monoLetterSpacingScale,
+        monoLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
+        monoMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
+      } = fontConfig.metrics;
+      updateTypography({
+        monoFontSizeScale,
+        monoFontWeightScale,
+        monoLetterSpacingScale,
+        monoLineHeight,
+        monoMinFontSizePx,
+      });
+    }
     persistFonts({
       bodyFont: selectedBodyFont as FontKey,
       headerFont: selectedHeaderFont as FontKey,
@@ -292,6 +314,16 @@ export const SettingsContent = ({
     setBodyLetterSpacingScale,
     bodyLineHeight,
     setBodyLineHeight,
+    monoFontSizeScale,
+    setMonoFontSizeScale,
+    monoFontWeightScale,
+    setMonoFontWeightScale,
+    monoLetterSpacingScale,
+    setMonoLetterSpacingScale,
+    monoLineHeight,
+    setMonoLineHeight,
+    monoMinFontSizePx,
+    setMonoMinFontSizePx,
     bodyMinFontSizePx,
     setBodyMinFontSizePx,
     headerMinFontSizePx,
@@ -340,6 +372,11 @@ export const SettingsContent = ({
       setBodyFontWeightScale(config.bodyFontWeightScale);
       setBodyLetterSpacingScale(config.bodyLetterSpacingScale);
       setBodyLineHeight(config.bodyLineHeight);
+      setMonoFontSizeScale(config.monoFontSizeScale);
+      setMonoFontWeightScale(config.monoFontWeightScale);
+      setMonoLetterSpacingScale(config.monoLetterSpacingScale);
+      setMonoLineHeight(config.monoLineHeight);
+      setMonoMinFontSizePx(config.monoMinFontSizePx);
       setBodyMinFontSizePx(config.bodyMinFontSizePx);
       setHeaderMinFontSizePx(config.headerMinFontSizePx);
     },
@@ -367,6 +404,11 @@ export const SettingsContent = ({
     bodyFontWeightScale,
     bodyLetterSpacingScale,
     bodyLineHeight,
+    monoFontSizeScale,
+    monoFontWeightScale,
+    monoLetterSpacingScale,
+    monoLineHeight,
+    monoMinFontSizePx,
     bodyMinFontSizePx,
     headerMinFontSizePx,
   };

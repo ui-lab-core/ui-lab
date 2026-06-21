@@ -1,5 +1,6 @@
 'use client';
-import { Button, Badge } from 'ui-lab-components';
+import { Button } from 'ui-lab-components/button'
+import { Badge } from 'ui-lab-components/badge';
 
 function TabContentHeaderWithBadge({ title, count, actionLabel, onAction }: { title: string; count: number; actionLabel?: string; onAction?: () => void }) {
   return (

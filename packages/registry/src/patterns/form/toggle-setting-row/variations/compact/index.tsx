@@ -1,5 +1,6 @@
 'use client';
-import { Switch, Label } from 'ui-lab-components';
+import { Switch } from 'ui-lab-components/switch'
+import { Label } from 'ui-lab-components/label';
 
 function ToggleSettingRowCompact({ id, label, defaultSelected = false }: { id: string; label: string; defaultSelected?: boolean }) {
   return (

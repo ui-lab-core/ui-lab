@@ -1,5 +1,6 @@
 'use client';
-import { Select, Label } from 'ui-lab-components';
+import { Select } from 'ui-lab-components/select'
+import { Label } from 'ui-lab-components/label';
 
 const timezones = [
   { id: 'utc', label: 'UTC' },

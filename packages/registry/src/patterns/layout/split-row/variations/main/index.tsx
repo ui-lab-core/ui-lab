@@ -1,5 +1,5 @@
 'use client';
-import { Badge } from 'ui-lab-components';
+import { Badge } from 'ui-lab-components/badge';
 
 function SplitRow({ title, description, timestamp, status }: { title: string; description: string; timestamp: string; status: string }) {
   const variant = status === 'active' ? 'success' : status === 'pending' ? 'warning' : 'default';

@@ -1,5 +1,5 @@
 'use client';
-import { Input } from 'ui-lab-components';
+import { Input } from 'ui-lab-components/input';
 
 function SearchInputBare({ placeholder = 'Search...' }: { placeholder?: string }) {
   return (

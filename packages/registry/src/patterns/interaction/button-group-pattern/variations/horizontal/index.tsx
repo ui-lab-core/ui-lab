@@ -1,5 +1,7 @@
 'use client';
-import { Button, Group, Divider } from 'ui-lab-components';
+import { Button } from 'ui-lab-components/button'
+import { Group } from 'ui-lab-components/group'
+import { Divider } from 'ui-lab-components/divider';
 
 export function ButtonGroupHorizontalDemo() {
   return (

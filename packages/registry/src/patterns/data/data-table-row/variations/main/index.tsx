@@ -1,5 +1,5 @@
 'use client';
-import { Badge } from 'ui-lab-components';
+import { Badge } from 'ui-lab-components/badge';
 
 const statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;
 

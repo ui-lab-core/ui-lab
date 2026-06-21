@@ -18,8 +18,8 @@ function HeroSection() {
 
           <div className="flex items-center text-left flex-col pt-8 md:pt-0">
             <div>
-              <h1 className="isolate mb-2 text-4xl max-w-[18ch] sm:max-w-[20ch] text-foreground-200">
-                Make your interface stand out in the era of slop.
+              <h1 className="isolate mb-2 tracking-normal text-4xl max-w-[20ch] sm:max-w-[22ch] text-foreground-200">
+                Make your interfaces stand out in the era of slop.
               </h1>
               <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch]">
                 Your agent's favorite UI Library.

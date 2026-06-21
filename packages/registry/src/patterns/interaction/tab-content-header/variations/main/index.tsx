@@ -1,5 +1,5 @@
 'use client';
-import { Button } from 'ui-lab-components';
+import { Button } from 'ui-lab-components/button';
 
 function TabContentHeader({ title, description, actionLabel, onAction }: { title: string; description?: string; actionLabel?: string; onAction?: () => void }) {
   return (

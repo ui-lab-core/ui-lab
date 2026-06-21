@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Badge, Checkbox } from 'ui-lab-components';
+import { Badge } from 'ui-lab-components/badge'
+import { Checkbox } from 'ui-lab-components/checkbox';
 
 const statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;
 

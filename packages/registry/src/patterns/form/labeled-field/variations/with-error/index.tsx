@@ -1,5 +1,6 @@
 'use client';
-import { Label, Input } from 'ui-lab-components';
+import { Label } from 'ui-lab-components/label'
+import { Input } from 'ui-lab-components/input';
 
 function LabeledFieldWithError({ id, label, placeholder, error }: { id: string; label: string; placeholder?: string; error?: string }) {
   return (

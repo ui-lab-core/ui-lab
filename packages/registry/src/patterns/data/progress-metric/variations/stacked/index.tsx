@@ -1,5 +1,5 @@
 'use client';
-import { Progress } from 'ui-lab-components';
+import { Progress } from 'ui-lab-components/progress';
 
 function ProgressMetricStacked({ label, value, max = 100 }: { label: string; value: number; max?: number }) {
   const pct = Math.round((value / max) * 100);

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Grid } from "ui-lab-components";
+import { featureFlags } from "@/shared/config/feature-flags";
 import { IntegrationsPanel } from "./examples/integrations";
 import { AIComposer } from "./examples/ai-composer";
 import { MemberRolePanel } from "./examples/team-members";
@@ -14,6 +15,7 @@ const SessionConfigPanel = dynamic(
 );
 
 export function Showcase() {
+  if (!featureFlags.showcase) return null;
   return (
     <div className="min-h-250">
       <Grid className="rounded-t-md border-background-700" columns={{ sm: 1, md: 2 }} rows="masonry" alignItems="start" gap="md">

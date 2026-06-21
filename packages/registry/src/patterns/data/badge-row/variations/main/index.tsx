@@ -1,5 +1,5 @@
 'use client';
-import { Badge } from 'ui-lab-components';
+import { Badge } from 'ui-lab-components/badge';
 
 function BadgeRow({ tags }: { tags: string[] }) {
   return (
