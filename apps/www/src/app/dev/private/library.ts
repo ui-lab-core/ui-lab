@@ -12,7 +12,7 @@ import {
   type ElementPackage,
   type ElementSourceEntry,
   type ElementVisibility,
-} from "@ui-lab-core/library";
+} from "@ui-lab-core/library/registry";
 
 import type { ViewerEntitlement } from "@/features/auth/server-entitlements";
 
