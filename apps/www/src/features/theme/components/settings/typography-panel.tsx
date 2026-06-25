@@ -69,14 +69,13 @@ const TypographySection = memo(
   ({ icon, title, select, isExpanded, onToggle, children }: TypographySectionProps) => {
     return (
       <div>
-        <div
-          className={`mx-[6px] rounded-[12px] ${isExpanded ? "bg-background-700/40 border border-background-700" : "hover:bg-background-700/40 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
-        >
-          <div className="w-full grid grid-cols-[minmax(0,1fr)_minmax(160px,220px)_auto] items-center gap-3 py-[10px] px-[10px]">
+        <div >
+          <div
+            onClick={onToggle}
+            aria-expanded={isExpanded}
+            className={`cursor-pointer rounded-[12px] p-3 w-full grid grid-cols-[minmax(0,1fr)_minmax(160px,220px)_auto] items-center gap-3  ${isExpanded ? "bg-background-700/40 border border-background-700" : "hover:bg-background-700/40 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}>
             <button
               type="button"
-              onClick={onToggle}
-              aria-expanded={isExpanded}
               className="cursor-pointer min-w-0 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 text-left outline-none"
             >
               <div className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-background-700 border border-background-600 shrink-0 text-foreground-100">
@@ -99,7 +98,7 @@ const TypographySection = memo(
               onClick={onToggle}
               aria-label={`${isExpanded ? "Collapse" : "Expand"} ${title} typography settings`}
               aria-expanded={isExpanded}
-              className="cursor-pointer mr-3 text-foreground-400 transition-colors hover:text-foreground-100 outline-none"
+              className="hidden cursor-pointer mr-3 text-foreground-400 transition-colors hover:text-foreground-100 outline-none"
             >
               <FaChevronDown
                 size={13}
@@ -112,7 +111,6 @@ const TypographySection = memo(
             className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[660px] opacity-100" : "max-h-0 opacity-0"}`}
           >
             <div className="px-3 pb-4 pt-0">
-              <div className="h-px w-full bg-background-700/30 mb-4" />
               {children}
             </div>
           </div>

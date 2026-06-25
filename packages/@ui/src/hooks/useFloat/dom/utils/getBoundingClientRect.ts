@@ -1,13 +1,13 @@
-import type {ClientRectObject} from '../../core';
-import {rectToClientRect} from '../../core';
-import {createCoords} from '../../../../utils';
-import {getComputedStyle, getWindow, getFrameElement} from '../../../../utils/dom';
+import type { ClientRectObject } from '../../core';
+import { rectToClientRect } from '../../core';
+import { createCoords } from '../../../../utils';
+import { getComputedStyle, getWindow, getFrameElement } from '../../../../utils/dom';
 
-import {getScale} from '../platform/getScale';
-import {isElement} from '../platform/isElement';
-import {getVisualOffsets, shouldAddVisualOffsets} from './getVisualOffsets';
-import {unwrapElement} from './unwrapElement';
-import type {VirtualElement} from '../types';
+import { getScale } from '../platform/getScale';
+import { isElement } from '../platform/isElement';
+import { getVisualOffsets, shouldAddVisualOffsets } from './getVisualOffsets';
+import { unwrapElement } from './unwrapElement';
+import type { VirtualElement } from '../types';
 
 export function getBoundingClientRect(
   element: Element | VirtualElement,
@@ -58,7 +58,7 @@ export function getBoundingClientRect(
       const left =
         iframeRect.left +
         (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) *
-          iframeScale.x;
+        iframeScale.x;
       const top =
         iframeRect.top +
         (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
@@ -76,5 +76,5 @@ export function getBoundingClientRect(
     }
   }
 
-  return rectToClientRect({width, height, x, y});
+  return rectToClientRect({ width, height, x, y });
 }
