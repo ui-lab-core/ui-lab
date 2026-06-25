@@ -13,17 +13,6 @@ export interface FontMetrics {
   fontSizeScale: number;
   fontWeightScale: number;
   typeSizeRatio: number;
-  baseline?: number;
-  capHeight?: number;
-  xHeight?: number;
-  ascender?: number;
-  descender?: number;
-  stem?: number;
-  bowlCounter?: number;
-  tracking?: number;
-  leading?: number;
-  pointSize?: number;
-  alignment?: "left" | "center" | "right" | "justify";
   headerLetterSpacingScale?: number;
   headerLineHeight?: number;
   bodyLetterSpacingScale?: number;
@@ -69,56 +58,33 @@ const SANS: FontDefinition[] = [
     },
   },
   {
-    name: "Geist Sans",
-    family: '"Geist Variable", system-ui, sans-serif',
-    isDefault: false,
-    metrics: {
-      fontSizeScale: 0.95,
-      fontWeightScale: 0.86,
-      typeSizeRatio: 1.175,
-      baseline: 0,
-      capHeight: 0.722,
-      xHeight: 0.556,
-      ascender: 0.944,
-      descender: 0.222,
-      stem: 0.269,
-      bowlCounter: 0.784,
-      tracking: 0,
-      leading: 1.5,
-      pointSize: 18,
-      alignment: "left",
-      headerLetterSpacingScale: -1.4,
-      bodyLetterSpacingScale: 2.65,
-      bodyLineHeight: 1.53,
-    },
-  },
-  {
     name: "Inter",
     family: '"Inter Variable", system-ui, sans-serif',
     isDefault: false,
     metrics: {
-      fontSizeScale: 0.95,
+      fontSizeScale: 0.94,
       fontWeightScale: 0.86,
       typeSizeRatio: 1.175,
-      baseline: 0,
-      bodyFontWeightScale: 1.05,
-      capHeight: 0.722,
-      xHeight: 0.556,
-      ascender: 0.944,
-      descender: 0.222,
-      stem: 0.269,
-      bowlCounter: 0.784,
-      tracking: 0,
-      leading: 1.5,
-      pointSize: 18,
-      alignment: "left",
-      bodyLetterSpacingScale: 3.00,
+      bodyLetterSpacingScale: 3,
       bodyLineHeight: 1.60,
-      bodyMinFontSizePx: 13.25,
-      headerMinFontSizePx: 12.0,
-      headerFontSizeScale: 0.83,
-      headerTypeSizeRatio: 1.30,
-      headerLetterSpacingScale: 3.00
+      bodyMinFontSizePx: 11.83,
+      headerMinFontSizePx: 10.12,
+      headerLetterSpacingScale: 3
+    },
+  },
+  {
+    name: "Geist Sans",
+    family: '"Geist Variable", system-ui, sans-serif',
+    isDefault: false,
+    metrics: {
+      fontSizeScale: 0.831,
+      fontWeightScale: 0.86,
+      typeSizeRatio: 1.175,
+      bodyLetterSpacingScale: 3,
+      bodyLineHeight: 1.5,
+      bodyMinFontSizePx: 13.5,
+      headerMinFontSizePx: 10.76,
+      headerLetterSpacingScale: 3
     },
   },
   {
@@ -126,22 +92,14 @@ const SANS: FontDefinition[] = [
     family: '"Work Sans Variable", system-ui, sans-serif',
     isDefault: false,
     metrics: {
-      fontSizeScale: 0.95,
+      fontSizeScale: 1.039,
       fontWeightScale: 0.86,
-      typeSizeRatio: 1.175,
-      baseline: 0,
-      capHeight: 0.722,
-      xHeight: 0.556,
-      ascender: 0.944,
-      descender: 0.222,
-      stem: 0.269,
-      bowlCounter: 0.784,
-      tracking: 0,
-      leading: 1.5,
-      pointSize: 18,
-      alignment: "left",
-      bodyLetterSpacingScale: 2.65,
-      bodyLineHeight: 1.53,
+      typeSizeRatio: 1.235,
+      bodyLetterSpacingScale: 2.19,
+      bodyLineHeight: 1.74,
+      bodyMinFontSizePx: 12.68,
+      headerMinFontSizePx: 12.36,
+      headerLetterSpacingScale: 2.19
     },
   },
 ];
