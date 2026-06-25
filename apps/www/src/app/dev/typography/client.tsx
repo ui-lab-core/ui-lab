@@ -1,10 +1,9 @@
 "use client";
 
-import { Button, Divider } from "ui-lab-components";
+import { Button, Divider, Tabs } from "ui-lab-components";
 import { BodyPreviewLab } from "./components/body-preview";
-import { ComparisonLab } from "./components/comparison-lab";
 import { ConfigExport } from "./components/config-export";
-import { ContextLab } from "./components/context-lab";
+import { Compare } from "./components/compare";
 import { ControlsSidebar } from "./components/controls-sidebar";
 import { GlyphLab } from "./components/glyph-lab";
 import { MonoPreview } from "./components/mono-preview";
@@ -30,43 +29,40 @@ function TypographyPlaygroundShell() {
         </div>
 
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="space-y-6">
-            <BodyPreviewLab />
-            <Divider size="sm" variant="dashed" className="my-12" />
+          <Tabs default="specimen" variant="underline">
+            <Tabs.List>
+              <Tabs.Trigger value="specimen">Specimen</Tabs.Trigger>
+              <Tabs.Trigger value="glyphs">Glyphs</Tabs.Trigger>
+              <Tabs.Trigger value="compare">Compare</Tabs.Trigger>
+              <Tabs.Trigger value="mono">Mono</Tabs.Trigger>
+              <Tabs.Trigger value="export">Export</Tabs.Trigger>
+            </Tabs.List>
 
-            <GlyphLab />
-            <Divider size="sm" variant="dashed" className="my-12" />
-
-            <ContextLab />
-            <ComparisonSection />
-
-            <Divider size="sm" variant="dashed" className="my-12" />
-            <MonoPreview />
-
-            <Divider size="sm" variant="dashed" className="my-12" />
-            <WeightVariants />
-
-            <Divider size="sm" variant="dashed" className="my-12" />
-            <ConfigExport />
-          </div>
+            <Tabs.Content value="specimen">
+              <div className="space-y-6">
+                <BodyPreviewLab />
+                <Divider size="sm" variant="dashed" className="my-12" />
+                <WeightVariants />
+              </div>
+            </Tabs.Content>
+            <Tabs.Content value="glyphs">
+              <GlyphLab />
+            </Tabs.Content>
+            <Tabs.Content value="compare">
+              <Compare />
+            </Tabs.Content>
+            <Tabs.Content value="mono">
+              <MonoPreview />
+            </Tabs.Content>
+            <Tabs.Content value="export">
+              <ConfigExport />
+            </Tabs.Content>
+          </Tabs>
 
           <ControlsSidebar />
         </div>
       </div>
     </div>
-  );
-}
-
-function ComparisonSection() {
-  const { isKarlaSelected } = useTypographyPlayground();
-
-  if (isKarlaSelected) return null;
-
-  return (
-    <>
-      <Divider size="sm" variant="dashed" className="my-12" />
-      <ComparisonLab />
-    </>
   );
 }
 

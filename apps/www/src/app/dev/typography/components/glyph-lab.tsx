@@ -1,55 +1,16 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { useTypographyPlayground } from "../context";
 import { SAMPLE_GLYPHS } from "../lib/constants";
-import type { RenderedFontMetrics } from "../lib/types";
-
-function MetricGuide({
-  baselineY,
-  displayFontSize,
-  metrics,
-}: {
-  baselineY: number;
-  displayFontSize: number;
-  metrics: RenderedFontMetrics | null;
-}) {
-  const capHeight = metrics?.capHeight ?? 0;
-  const xHeight = metrics?.xHeight ?? 0;
-  const ascender = metrics?.ascender ?? 0;
-  const descender = metrics?.descender ?? 0;
-  const guideLines = [
-    { label: "Asc", y: baselineY - ascender * displayFontSize, color: "bg-info-500" },
-    { label: "Cap", y: baselineY - capHeight * displayFontSize, color: "bg-success-500" },
-    { label: "X", y: baselineY - xHeight * displayFontSize, color: "bg-warning-500" },
-    { label: "Base", y: baselineY, color: "bg-foreground-300" },
-    { label: "Desc", y: baselineY + descender * displayFontSize, color: "bg-danger-500" },
-  ];
-
-  return (
-    <div className="pointer-events-none absolute inset-0" aria-hidden>
-      {guideLines.map((line) => (
-        <div key={line.label} className="absolute left-0 right-0" style={{ top: line.y }}>
-          <span className={`absolute left-0 top-0 h-px w-full ${line.color} opacity-55`} />
-          <span className="absolute -top-2 right-0 bg-background-900 pl-2 text-[10px] font-medium text-foreground-500">
-            {line.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function GlyphInspector({
   character,
   fontName,
-  metrics,
-  style,
+  fontFamily,
 }: {
   character: string;
   fontName: string;
-  metrics: RenderedFontMetrics | null;
-  style: CSSProperties;
+  fontFamily: string;
 }) {
   const displayFontSize = 180;
   const baselineY = 200;
@@ -69,23 +30,13 @@ function GlyphInspector({
         </div>
       </div>
       <div className="relative h-[260px]">
-        <MetricGuide
-          baselineY={baselineY}
-          displayFontSize={displayFontSize}
-          metrics={metrics}
-        />
         <svg className="absolute inset-0 h-full w-full overflow-visible" role="img" aria-label={`${fontName} glyph ${displayText}`}>
           <text
             x="50%"
             y={baselineY}
             textAnchor="middle"
             className="fill-foreground-50"
-            style={{
-              fontFamily: style.fontFamily,
-              fontKerning: "normal",
-              fontSize: displayFontSize,
-              letterSpacing: style.letterSpacing,
-            }}
+            style={{ fontFamily, fontKerning: "normal", fontSize: displayFontSize }}
           >
             {displayText}
           </text>
@@ -98,11 +49,11 @@ function GlyphInspector({
 function GlyphGrid({
   selectedCharacter,
   onSelectCharacter,
-  style,
+  fontFamily,
 }: {
   selectedCharacter: string;
   onSelectCharacter: (character: string) => void;
-  style: CSSProperties;
+  fontFamily: string;
 }) {
   return (
     <div className="grid grid-cols-6 gap-2 sm:grid-cols-8 md:grid-cols-10 xl:grid-cols-12">
@@ -118,7 +69,7 @@ function GlyphGrid({
               ? "border-foreground-200 bg-background-700 text-foreground-50"
               : "border-background-700 bg-background-900 text-foreground-200 hover:border-background-500 hover:bg-background-800"
               }`}
-            style={{ ...style, fontSize: 30, lineHeight: 1 }}
+            style={{ fontFamily, fontSize: 30, lineHeight: 1 }}
           >
             {character}
           </button>
@@ -130,38 +81,30 @@ function GlyphGrid({
 
 export function GlyphLab() {
   const {
-    activeFontTuning,
-    renderedMetrics,
+    bodyFamily,
     selectedBodyFont,
     selectedCharacter,
     setSelectedCharacter,
-    tuningStyle,
   } = useTypographyPlayground();
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-sm font-medium text-foreground-400">Glyph Lab</div>
-          <p className="mt-1 text-sm text-foreground-500">
-            Inspect individual characters against Canvas-measured glyph metrics.
-          </p>
-        </div>
-        <div className="rounded border border-background-700 bg-background-900 px-2 py-1 font-mono text-sm text-foreground-300">
-          {activeFontTuning.pointSize}px / {activeFontTuning.leading.toFixed(2)} leading
-        </div>
+      <div>
+        <div className="text-sm font-medium text-foreground-400">Glyph Lab</div>
+        <p className="mt-1 text-sm text-foreground-500">
+          Inspect individual characters in the selected body font.
+        </p>
       </div>
       <div className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
         <GlyphInspector
           character={selectedCharacter}
           fontName={selectedBodyFont}
-          metrics={renderedMetrics}
-          style={tuningStyle}
+          fontFamily={bodyFamily}
         />
         <GlyphGrid
           selectedCharacter={selectedCharacter}
           onSelectCharacter={setSelectedCharacter}
-          style={tuningStyle}
+          fontFamily={bodyFamily}
         />
       </div>
     </section>

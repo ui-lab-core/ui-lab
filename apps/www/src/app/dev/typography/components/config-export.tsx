@@ -18,8 +18,7 @@ export function ConfigExport() {
       <p className="text-sm text-foreground-500">
         Paste into <code className="text-foreground-300">BODY_FONTS</code> or{" "}
         <code className="text-foreground-300">HEADER_FONTS</code> in{" "}
-        <code className="text-foreground-300">font-config.ts</code>. Optional fields
-        omitted at defaults.
+        <code className="text-foreground-300">font-config.ts</code>.
       </p>
       <pre className="overflow-x-auto rounded border border-background-700 bg-background-800 p-4 text-sm text-foreground-100">
         {bodyConfigSnippet}

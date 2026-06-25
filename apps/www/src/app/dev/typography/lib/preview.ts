@@ -16,7 +16,7 @@ import {
   DEFAULT_MONO_MIN_FONT_SIZE_PX,
 } from "@/features/theme/lib/typography-config";
 import { FONT_WEIGHT_DEFS } from "./constants";
-import type { FontTuningState, PreviewTypographyState } from "./types";
+import type { PreviewTypographyState } from "./types";
 
 export function clampFontWeight(value: number) {
   return Math.max(100, Math.min(900, Math.round(value)));
@@ -41,8 +41,8 @@ export function getFontPreviewState(fontConfig?: FontConfig): PreviewTypographyS
     monoLetterSpacingScale: metrics?.monoLetterSpacingScale ?? 1,
     monoLineHeight: metrics?.monoLineHeight ?? DEFAULT_MONO_LINE_HEIGHT,
     monoMinFontSizePx: metrics?.monoMinFontSizePx ?? DEFAULT_MONO_MIN_FONT_SIZE_PX,
-    bodyMinFontSizePx: DEFAULT_BODY_MIN_FONT_SIZE_PX,
-    headerMinFontSizePx: DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+    bodyMinFontSizePx: metrics?.bodyMinFontSizePx ?? DEFAULT_BODY_MIN_FONT_SIZE_PX,
+    headerMinFontSizePx: metrics?.headerMinFontSizePx ?? DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   };
 }
 
@@ -114,15 +114,4 @@ export function buildPreviewVars(
   });
 
   return vars as CSSProperties;
-}
-
-export function buildTuningStyle(fontFamily: string, tuning: FontTuningState): CSSProperties {
-  return {
-    fontFamily,
-    fontKerning: "normal",
-    letterSpacing: `${tuning.tracking}em`,
-    lineHeight: tuning.leading,
-    fontSize: tuning.pointSize,
-    textAlign: tuning.alignment,
-  };
 }

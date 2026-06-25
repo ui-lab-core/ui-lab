@@ -1,17 +1,7 @@
 "use client";
 
-import { Switch } from "ui-lab-components";
 import { useTypographyPlayground } from "../context";
-import { KARLA_BODY_FAMILY, KARLA_HEADER_FAMILY } from "../lib/constants";
-import { buildPreviewVars, getFontPreviewState } from "../lib/preview";
-import { defaultBodyFont } from "../lib/constants";
 import { PreviewSurface } from "./shared";
-
-const KARLA_VARS = buildPreviewVars(
-  KARLA_BODY_FAMILY,
-  KARLA_HEADER_FAMILY,
-  getFontPreviewState(defaultBodyFont),
-);
 
 export function BodyPreviewContent() {
   const headingStyle = { fontFamily: "var(--font-header)" };
@@ -41,46 +31,24 @@ export function BodyPreviewContent() {
 export function BodyPreviewLab() {
   const {
     activeBodyPreviewStyle,
-    isKarlaSelected,
     selectedBodyFont,
     selectedHeaderFont,
-    setUseBaseline,
-    useBaseline,
   } = useTypographyPlayground();
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-sm font-medium text-foreground-400">
-            Body - {selectedBodyFont}
-          </div>
-          <p className="mt-1 text-sm text-foreground-500">
-            Type specimen uses {selectedHeaderFont} for headings and keeps the Karla ghost overlay.
-          </p>
+      <div>
+        <div className="text-sm font-medium text-foreground-400">
+          Body - {selectedBodyFont}
         </div>
-        {!isKarlaSelected && (
-          <label className="flex items-center gap-3 text-sm font-medium text-foreground-400">
-            <span>Use baseline</span>
-            <Switch
-              aria-label="Use Karla baseline overlay"
-              size="sm"
-              isSelected={useBaseline}
-              onChange={setUseBaseline}
-            />
-          </label>
-        )}
+        <p className="mt-1 text-sm text-foreground-500">
+          Type specimen uses {selectedHeaderFont} for headings.
+        </p>
       </div>
 
-      <PreviewSurface
-        activeStyle={activeBodyPreviewStyle}
-        reference={!isKarlaSelected && useBaseline ? <BodyPreviewContent /> : undefined}
-        referenceStyle={!isKarlaSelected && useBaseline ? KARLA_VARS : undefined}
-      >
+      <PreviewSurface activeStyle={activeBodyPreviewStyle}>
         <BodyPreviewContent />
       </PreviewSurface>
     </div>
   );
 }
-
-export { KARLA_VARS };

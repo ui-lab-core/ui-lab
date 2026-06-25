@@ -13,6 +13,7 @@
     "verify:private-library": "node --conditions development --import tsx scripts/verify-private-library-link.mts"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.8",
     "@clerk/nextjs": "^7.3.5",
     "@convex-dev/stripe": "^0.1.4",
     "@fontsource-variable/geist": "^5.2.8",
