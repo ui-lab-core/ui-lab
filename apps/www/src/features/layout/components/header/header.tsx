@@ -238,7 +238,7 @@ export default function Header({
         </div>
       </header>
 
-      {isCommandPaletteOpen ? <CommandPalette /> : null}
+      <CommandPalette />
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} pathname={pathname} />
     </>
   );
