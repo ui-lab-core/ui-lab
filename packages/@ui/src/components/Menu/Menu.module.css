@@ -9,83 +9,120 @@
       --content-padding: calc(var(--spacing) * 1.5);
       --content-radius: var(--radius-sm, 0.375rem);
       --content-inner-radius: calc(var(--content-radius) - var(--border-width-base, 1px));
-      --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
-      --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
       --disabled-opacity: 0.5;
 
-      @apply absolute min-w-40 max-w-80 overflow-hidden;
+      @apply fixed min-w-40 max-w-80 overflow-hidden;
       z-index: 50000;
       background-color: var(--background);
       border: var(--border-width-base, 1px) solid var(--background-border);
       border-radius: var(--content-radius);
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      outline: none;
     }
 
     .trigger {
-      &[data-type="pop-over"][data-pressed="true"] {
-        opacity: 1;
-        background-color: var(--background-pressed);
-        border-radius: var(--radius-sm, 0.375rem);
+      @apply flex items-center justify-center;
+      cursor: pointer;
+      outline: none;
+      user-select: none;
+      transition: var(--hover-transition-duration) var(--hover-transition-timing-function);
+
+      &[data-disabled="true"] {
+        opacity: 0.5;
+        pointer-events: none;
       }
     }
 
     .content[data-state="open"],
     .sub-content[data-state="open"] {
-      animation: var(--open-animation);
+      animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
     }
 
     .content[data-state="closed"],
     .sub-content[data-state="closed"] {
-      animation: var(--closed-animation);
+      animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
+      pointer-events: none;
     }
 
     .list {
       @apply space-y-1;
       max-height: 24rem;
       overflow-y: auto;
+      padding: calc(var(--spacing) * 1);
     }
 
     .item {
       @apply flex min-w-0 items-center gap-2;
-      padding: var(--item-padding, var(--content-padding));
-      border-radius: var(--item-radius, var(--content-inner-radius));
+      padding: calc(var(--content-padding) / 1.5) var(--content-padding);
+      border-radius: var(--content-inner-radius);
       cursor: pointer;
       user-select: none;
       outline: none;
       color: var(--foreground);
+      transition: background-color 150ms ease-out;
 
-      &[data-focused="true"] {
+      &[data-focused="true"],
+      &[data-highlighted="true"] {
         background-color: var(--background-focused, var(--background-hover));
       }
 
       &[data-disabled="true"] {
         opacity: var(--disabled-opacity);
         pointer-events: none;
+        color: var(--foreground-muted);
       }
     }
 
-    .item {
-      &[data-inset="true"] {
-        padding-left: calc(var(--item-padding, var(--content-padding)) * 2.67);
-      }
+    .item[data-inset="true"] {
+      padding-left: calc(var(--content-padding) * 2.67);
     }
 
     .item-indicator {
-      @apply ml-auto flex h-4 w-4 shrink-0 items-center justify-center;
+      @apply flex h-4 w-4 shrink-0 items-center justify-center;
+      margin-left: auto;
       color: var(--foreground);
     }
 
-    .sub-trigger[data-state="open"]:not([data-focused="true"]) {
-      background-color: var(--background-focused, var(--background-hover));
+    .sub-trigger {
+      @apply flex min-w-0 w-full items-center gap-2;
+      padding: calc(var(--content-padding) / 1.5) var(--content-padding);
+      border-radius: var(--content-inner-radius);
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      color: var(--foreground);
+      background-color: var(--background);
+      transition: background-color 150ms ease-out;
+
+      &[data-highlighted="true"],
+      &[data-open="true"]:not([data-highlighted="true"]) {
+        background-color: var(--background-focused, var(--background-hover));
+      }
+
+      &[data-disabled="true"] {
+        opacity: var(--disabled-opacity);
+        pointer-events: none;
+        color: var(--foreground-muted);
+      }
+    }
+
+    .sub-trigger[data-inset="true"] {
+      padding-left: calc(var(--content-padding) * 2.67);
     }
 
     .sub-trigger-chevron {
-      @apply ml-auto h-4 w-4 shrink-0;
-      color: var(--chevron-foreground, currentColor);
+      @apply h-4 w-4 shrink-0;
+      margin-left: auto;
+      color: var(--foreground-muted);
     }
 
     .label {
-      padding: var(--content-padding);
+      padding: calc(var(--content-padding) / 2) var(--content-padding);
       color: var(--foreground-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
 
       &[data-inset="true"] {
         padding-left: calc(var(--content-padding) * 2.67);
@@ -93,16 +130,39 @@
     }
 
     .separator {
-      @apply -mx-1 my-1 h-px;
+      @apply my-1;
+      margin-left: calc(var(--content-padding) / -2);
+      margin-right: calc(var(--content-padding) / -2);
+      height: 1px;
       background-color: var(--background-border);
     }
 
     .shortcut {
       margin-left: auto;
       color: var(--foreground-muted);
+      font-size: 0.75rem;
     }
   }
 
-  @keyframes slide-in-from-top { from { opacity: 0; translate: 0 -2px; } to { opacity: 1; translate: 0 0; } }
-  @keyframes slide-out-to-top { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 -2px; } }
+  @keyframes slide-in-from-top {
+    from {
+      opacity: 0;
+      translate: 0 -2px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @keyframes slide-out-to-top {
+    from {
+      opacity: 1;
+      translate: 0 0;
+    }
+    to {
+      opacity: 0;
+      translate: 0 -2px;
+    }
+  }
 }

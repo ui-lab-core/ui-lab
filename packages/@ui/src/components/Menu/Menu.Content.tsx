@@ -40,6 +40,7 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
   ({ children, disabled = false, className, styles }, ref) => {
     const { isOpen, setIsOpen, type, clickPositionRef, triggerRef: contextTriggerRef } = useMenuContext()
     const resolved = resolveMenuTriggerStyles(styles)
+    const [isHovered, setIsHovered] = React.useState(false)
 
     const handleContextMenu = React.useCallback((e: React.MouseEvent) => {
       if (disabled || type !== "context-menu") return
@@ -59,8 +60,12 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
     const triggerProps = {
       onContextMenu: handleContextMenu,
       onClickCapture: handleClick,
+      onMouseEnter: () => setIsHovered(true),
+      onMouseLeave: () => setIsHovered(false),
       className: cn('trigger', css.trigger, className, resolved.root),
-      'data-pressed': isOpen ? "true" : "false",
+      'data-open': isOpen ? "true" : "false",
+      'data-state': isOpen ? "open" : "closed",
+      'data-hovered': isOpen || isHovered ? "true" : "false",
       'data-type': type,
     }
 
@@ -81,7 +86,8 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
               resolved.root,
             ),
             ref: mergedRef,
-            'data-pressed': isOpen ? "true" : "false",
+            'data-open': isOpen ? "true" : "false",
+            'data-hovered': isOpen ? "true" : undefined,
             'data-type': type,
           } as any)}
         </div>
