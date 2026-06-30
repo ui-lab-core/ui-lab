@@ -69,6 +69,12 @@ importers:
       '@fontsource-variable/karla':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource-variable/nunito-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource-variable/readex-pro':
+        specifier: ^5.2.11
+        version: 5.2.11
       '@fontsource-variable/work-sans':
         specifier: ^5.2.8
         version: 5.2.8
@@ -1212,6 +1218,12 @@ packages:
 
   '@fontsource-variable/karla@5.2.8':
     resolution: {integrity: sha512-JuJZVY/r5InCfkKb3jp5XCwuypIvc62barKaxzSAYnxzHo9YnCfZDWDjL+gbSYrUI+lVxhEyS+7QkOuVBvWcOA==}
+
+  '@fontsource-variable/nunito-sans@5.2.7':
+    resolution: {integrity: sha512-rflH5HeAoNjIkwftStzQvxqCJhIS+usMr/lfslWg/RCa499B5qxyjo+74R/QMM0geQt4AY1URlG7wAR1iq6KPQ==}
+
+  '@fontsource-variable/readex-pro@5.2.11':
+    resolution: {integrity: sha512-qBMhvaJ3yiMEhPmo0UPJA61i08+gFEHbu65WblSENvMYy1zB8ntpNjdXgUbKHCW5LYkaMReWAMD4q+B6LU8Q7Q==}
 
   '@fontsource-variable/work-sans@5.2.8':
     resolution: {integrity: sha512-8uWtTt0/B5NxGie9xUVD5y5Ch4Q+Hy7kFYKtUpwYbzSAgJEoaMxT8rMnfnK7zfAYSLC8GnGO1/tXrFtKIYYQVQ==}
@@ -7193,6 +7205,10 @@ snapshots:
   '@fontsource-variable/jetbrains-mono@5.2.8': {}
 
   '@fontsource-variable/karla@5.2.8': {}
+
+  '@fontsource-variable/nunito-sans@5.2.7': {}
+
+  '@fontsource-variable/readex-pro@5.2.11': {}
 
   '@fontsource-variable/work-sans@5.2.8': {}
 

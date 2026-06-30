@@ -1,5 +1,5 @@
 const NAMES = {
-  sans: ["Karla", "Geist Sans", "Inter", "Work Sans"],
+  sans: ["Karla", "Geist Sans", "Inter", "Nunito Sans", "Work Sans", "Readex Pro"],
   mono: ["Ioskeley Mono", "Geist Mono", "JetBrains Mono"],
 } as const;
 
@@ -9,27 +9,37 @@ export type FontKey =
 export type FontCategory = "body" | "header" | "mono";
 export type FontCategoryInput = FontCategory | "sans";
 
-export interface FontMetrics {
-  fontSizeScale: number;
+export interface BodyFontMetrics {
   fontWeightScale: number;
   typeSizeRatio: number;
-  headerLetterSpacingScale?: number;
-  headerLineHeight?: number;
-  bodyLetterSpacingScale?: number;
-  bodyTypeSizeRatio?: number;
-  headerFontWeightScale?: number;
-  bodyFontWeightScale?: number;
-  headerFontSizeScale?: number;
-  headerTypeSizeRatio?: number;
-  bodyFontSizeScale?: number;
-  bodyLineHeight?: number;
-  bodyMinFontSizePx?: number;
-  headerMinFontSizePx?: number;
-  monoFontSizeScale?: number;
-  monoFontWeightScale?: number;
-  monoLetterSpacingScale?: number;
-  monoLineHeight?: number;
-  monoMinFontSizePx?: number;
+  fontSizeScale: number;
+  lineHeight: number;
+  minFontSizePx: number;
+  letterSpacingScale: number;
+}
+
+export interface HeaderFontMetrics {
+  fontWeightScale: number;
+  typeSizeRatio: number;
+  fontSizeScale: number;
+  lineHeight: number;
+  minFontSizePx: number;
+  letterSpacingScale: number;
+}
+
+export interface MonoFontMetrics {
+  fontWeightScale: number;
+  typeSizeRatio: number;
+  fontSizeScale: number;
+  lineHeight: number;
+  minFontSizePx: number;
+  letterSpacingScale: number;
+}
+
+export interface FontMetrics {
+  body: BodyFontMetrics;
+  header: HeaderFontMetrics;
+  mono: MonoFontMetrics;
 }
 
 export interface FontConfig {
@@ -41,6 +51,10 @@ export interface FontConfig {
 }
 
 type FontDefinition = Omit<FontConfig, "category">;
+export interface FontTable {
+  family: "body" | "header" | "mono";
+  fonts: FontConfig[];
+}
 
 const SANS: FontDefinition[] = [
   {
@@ -48,13 +62,30 @@ const SANS: FontDefinition[] = [
     family: '"Karla Variable", system-ui, sans-serif',
     isDefault: true,
     metrics: {
-      fontSizeScale: 0.92,
-      fontWeightScale: 1,
-      typeSizeRatio: 1.245,
-      bodyLineHeight: 1.4,
-      bodyMinFontSizePx: 14.35,
-      bodyLetterSpacingScale: 1.35,
-      headerMinFontSizePx: 13.0,
+      body: {
+        fontWeightScale: 1.05,
+        typeSizeRatio: 1.100,
+        fontSizeScale: 1.05,
+        lineHeight: 1.430,
+        minFontSizePx: 14.35,
+        letterSpacingScale: 1.460,
+      },
+      header: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.245,
+        fontSizeScale: 0.92,
+        lineHeight: 1.4,
+        minFontSizePx: 13.0,
+        letterSpacingScale: 1.50,
+      },
+      mono: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.245,
+        fontSizeScale: 0.92,
+        lineHeight: 1.4,
+        minFontSizePx: 13.0,
+        letterSpacingScale: 1.50,
+      },
     },
   },
   {
@@ -62,14 +93,61 @@ const SANS: FontDefinition[] = [
     family: '"Inter Variable", system-ui, sans-serif',
     isDefault: false,
     metrics: {
-      fontSizeScale: 0.94,
-      fontWeightScale: 0.86,
-      typeSizeRatio: 1.175,
-      bodyLetterSpacingScale: 3,
-      bodyLineHeight: 1.60,
-      bodyMinFontSizePx: 11.83,
-      headerMinFontSizePx: 10.12,
-      headerLetterSpacingScale: 3
+      body: {
+        fontWeightScale: 1.04,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.95,
+        lineHeight: 1.580,
+        minFontSizePx: 13.30,
+        letterSpacingScale: 3.2,
+      },
+      header: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.175,
+        fontSizeScale: 0.95,
+        lineHeight: 1.580,
+        minFontSizePx: 10.12,
+        letterSpacingScale: 3,
+      },
+      mono: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.175,
+        fontSizeScale: 0.95,
+        lineHeight: 1.550,
+        minFontSizePx: 10.12,
+        letterSpacingScale: 3,
+      },
+    },
+  },
+  {
+    name: "Nunito Sans",
+    family: '"Nunito Sans Variable", system-ui, sans-serif',
+    isDefault: false,
+    metrics: {
+      body: {
+        fontWeightScale: 1.2,
+        typeSizeRatio: 1.185,
+        fontSizeScale: 0.985,
+        lineHeight: 1.500,
+        minFontSizePx: 13.75,
+        letterSpacingScale: 3.25,
+      },
+      header: {
+        fontWeightScale: 0.92,
+        typeSizeRatio: 1.185,
+        fontSizeScale: 0.945,
+        lineHeight: 1.46,
+        minFontSizePx: 12.2,
+        letterSpacingScale: 1.8,
+      },
+      mono: {
+        fontWeightScale: 0.92,
+        typeSizeRatio: 1.185,
+        fontSizeScale: 0.945,
+        lineHeight: 1.46,
+        minFontSizePx: 12.2,
+        letterSpacingScale: 1.8,
+      },
     },
   },
   {
@@ -77,14 +155,30 @@ const SANS: FontDefinition[] = [
     family: '"Geist Variable", system-ui, sans-serif',
     isDefault: false,
     metrics: {
-      fontSizeScale: 0.831,
-      fontWeightScale: 0.86,
-      typeSizeRatio: 1.175,
-      bodyLetterSpacingScale: 3,
-      bodyLineHeight: 1.5,
-      bodyMinFontSizePx: 13.5,
-      headerMinFontSizePx: 10.76,
-      headerLetterSpacingScale: 3
+      body: {
+        fontWeightScale: 1.05,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.97,
+        lineHeight: 1.550,
+        minFontSizePx: 13.5,
+        letterSpacingScale: 3.25,
+      },
+      header: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.175,
+        fontSizeScale: 0.831,
+        lineHeight: 1.5,
+        minFontSizePx: 10.76,
+        letterSpacingScale: 3,
+      },
+      mono: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.175,
+        fontSizeScale: 0.831,
+        lineHeight: 1.5,
+        minFontSizePx: 10.76,
+        letterSpacingScale: 3,
+      },
     },
   },
   {
@@ -92,14 +186,61 @@ const SANS: FontDefinition[] = [
     family: '"Work Sans Variable", system-ui, sans-serif',
     isDefault: false,
     metrics: {
-      fontSizeScale: 1.039,
-      fontWeightScale: 0.86,
-      typeSizeRatio: 1.235,
-      bodyLetterSpacingScale: 2.19,
-      bodyLineHeight: 1.74,
-      bodyMinFontSizePx: 12.68,
-      headerMinFontSizePx: 12.36,
-      headerLetterSpacingScale: 2.19
+      body: {
+        fontWeightScale: 1.02,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.98,
+        lineHeight: 1.580,
+        minFontSizePx: 12.65,
+        letterSpacingScale: 2.35,
+      },
+      header: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.235,
+        fontSizeScale: 1.039,
+        lineHeight: 1.74,
+        minFontSizePx: 12.36,
+        letterSpacingScale: 2.19,
+      },
+      mono: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.235,
+        fontSizeScale: 1.039,
+        lineHeight: 1.74,
+        minFontSizePx: 12.36,
+        letterSpacingScale: 2.19,
+      },
+    },
+  },
+  {
+    name: "Readex Pro",
+    family: '"Readex Pro Variable", system-ui, sans-serif',
+    isDefault: false,
+    metrics: {
+      body: {
+        fontWeightScale: 0.80,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.97,
+        lineHeight: 1.550,
+        minFontSizePx: 13.55,
+        letterSpacingScale: 2.5,
+      },
+      header: {
+        fontWeightScale: 0.9,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.95,
+        lineHeight: 1.5,
+        minFontSizePx: 12.0,
+        letterSpacingScale: 2.0,
+      },
+      mono: {
+        fontWeightScale: 0.9,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.95,
+        lineHeight: 1.5,
+        minFontSizePx: 12.0,
+        letterSpacingScale: 2.0,
+      },
     },
   },
 ];
@@ -110,14 +251,30 @@ const MONO: FontDefinition[] = [
     family: "var(--font-ioskeley-mono), monospace",
     isDefault: true,
     metrics: {
-      fontSizeScale: 1,
-      fontWeightScale: 1,
-      typeSizeRatio: 1.2,
-      monoFontSizeScale: 0.98,
-      monoFontWeightScale: 1,
-      monoLetterSpacingScale: 0.8,
-      monoLineHeight: 1.55,
-      monoMinFontSizePx: 13.0,
+      body: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.2,
+        fontSizeScale: 0.98,
+        lineHeight: 1.55,
+        minFontSizePx: 13.0,
+        letterSpacingScale: 0.8,
+      },
+      header: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.2,
+        fontSizeScale: 0.98,
+        lineHeight: 1.55,
+        minFontSizePx: 13.0,
+        letterSpacingScale: 0.8,
+      },
+      mono: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.2,
+        fontSizeScale: 0.98,
+        lineHeight: 1.55,
+        minFontSizePx: 13.0,
+        letterSpacingScale: 0.8,
+      },
     },
   },
   {
@@ -125,14 +282,30 @@ const MONO: FontDefinition[] = [
     family: '"Geist Mono", monospace',
     isDefault: false,
     metrics: {
-      fontSizeScale: 1,
-      fontWeightScale: 1,
-      typeSizeRatio: 1.2,
-      monoFontSizeScale: 0.96,
-      monoFontWeightScale: 0.98,
-      monoLetterSpacingScale: 0.7,
-      monoLineHeight: 1.52,
-      monoMinFontSizePx: 13.25,
+      body: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.2,
+        fontSizeScale: 0.96,
+        lineHeight: 1.52,
+        minFontSizePx: 13.25,
+        letterSpacingScale: 0.7,
+      },
+      header: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.2,
+        fontSizeScale: 0.96,
+        lineHeight: 1.52,
+        minFontSizePx: 13.25,
+        letterSpacingScale: 0.7,
+      },
+      mono: {
+        fontWeightScale: 1,
+        typeSizeRatio: 1.2,
+        fontSizeScale: 0.96,
+        lineHeight: 1.52,
+        minFontSizePx: 13.25,
+        letterSpacingScale: 0.7,
+      },
     },
   },
   {
@@ -140,22 +313,39 @@ const MONO: FontDefinition[] = [
     family: '"JetBrains Mono", monospace',
     isDefault: false,
     metrics: {
-      fontSizeScale: 0.95,
-      fontWeightScale: 1.05,
-      typeSizeRatio: 1.15,
-      monoFontSizeScale: 0.94,
-      monoFontWeightScale: 1.04,
-      monoLetterSpacingScale: 0.45,
-      monoLineHeight: 1.58,
-      monoMinFontSizePx: 13.5,
+      body: {
+        fontWeightScale: 1.05,
+        typeSizeRatio: 1.15,
+        fontSizeScale: 0.94,
+        lineHeight: 1.58,
+        minFontSizePx: 13.5,
+        letterSpacingScale: 0.45,
+      },
+      header: {
+        fontWeightScale: 1.05,
+        typeSizeRatio: 1.15,
+        fontSizeScale: 0.94,
+        lineHeight: 1.58,
+        minFontSizePx: 13.5,
+        letterSpacingScale: 0.45,
+      },
+      mono: {
+        fontWeightScale: 1.05,
+        typeSizeRatio: 1.15,
+        fontSizeScale: 0.94,
+        lineHeight: 1.58,
+        minFontSizePx: 13.5,
+        letterSpacingScale: 0.45,
+      },
     },
   },
 ];
 
 const DEFINITIONS = {
-  sans: SANS,
+  body: SANS,
+  header: SANS,
   mono: MONO,
-} satisfies Record<"sans" | "mono", FontDefinition[]>;
+} satisfies Record<FontCategory, FontDefinition[]>;
 
 function createFonts(
   category: FontCategory,
@@ -168,23 +358,46 @@ function createFonts(
   }));
 }
 
-const FONTS = {
-  body: createFonts("body", DEFINITIONS.sans),
-  header: createFonts("header", DEFINITIONS.sans),
-  mono: createFonts("mono", DEFINITIONS.mono),
-} satisfies Record<FontCategory, FontConfig[]>;
+export const FONT_TABLES = {
+  body: {
+    family: "body",
+    fonts: createFonts("body", DEFINITIONS.body),
+  },
+  header: {
+    family: "header",
+    fonts: createFonts("header", DEFINITIONS.header),
+  },
+  mono: {
+    family: "mono",
+    fonts: createFonts("mono", DEFINITIONS.mono),
+  },
+} satisfies Record<FontCategory, FontTable>;
 
-export const BODY_FONTS = FONTS.body;
-export const HEADER_FONTS = FONTS.header;
+function getMetricsForCategory(
+  metrics: FontMetrics,
+  category: FontCategory,
+): BodyFontMetrics | HeaderFontMetrics | MonoFontMetrics {
+  return metrics[category];
+}
+
+export function getFontMetrics(
+  font: FontConfig,
+  category: FontCategoryInput,
+): BodyFontMetrics | HeaderFontMetrics | MonoFontMetrics {
+  return getMetricsForCategory(font.metrics, normalizeCategory(category));
+}
+
+export const BODY_FONTS = FONT_TABLES.body.fonts;
+export const HEADER_FONTS = FONT_TABLES.header.fonts;
 export const SANS_FONTS = BODY_FONTS;
-export const MONO_FONTS = FONTS.mono;
+export const MONO_FONTS = FONT_TABLES.mono.fonts;
 
 function normalizeCategory(category: FontCategoryInput): FontCategory {
   return category === "sans" ? "body" : category;
 }
 
 export function getFontsByCategory(category: FontCategoryInput): FontConfig[] {
-  return FONTS[normalizeCategory(category)];
+  return FONT_TABLES[normalizeCategory(category)].fonts;
 }
 
 export function getFontConfig(
