@@ -25,6 +25,15 @@ const REQUIRED_CACHE_VARS = ["--background-500", "--text-md"];
 const FONT_FAMILY_MAP = Object.fromEntries(
   [...BODY_FONTS, ...HEADER_FONTS, ...MONO_FONTS].map((font) => [font.name, font.family]),
 );
+const BODY_FONT_TYPOGRAPHY_MAP = Object.fromEntries(
+  BODY_FONTS.map((font) => [
+    font.name,
+    getTypographyConfigForFonts({
+      ...DEFAULT_FONT_CONFIG,
+      bodyFont: font.name,
+    }),
+  ]),
+);
 const HEADER_FONT_TYPOGRAPHY_MAP = Object.fromEntries(
   HEADER_FONTS.map((font) => [
     font.name,
@@ -52,6 +61,7 @@ export function getInitialThemeScript(): string {
     defaultFonts: DEFAULT_FONT_CONFIG,
     defaultTypography: getTypographyConfigForFonts(DEFAULT_FONT_CONFIG),
     staticDefaultTypography: DEFAULT_TYPOGRAPHY_CONFIG,
+    bodyFontTypographyMap: BODY_FONT_TYPOGRAPHY_MAP,
     headerFontTypographyMap: HEADER_FONT_TYPOGRAPHY_MAP,
     monoFontTypographyMap: MONO_FONT_TYPOGRAPHY_MAP,
     spacingSteps: SPACING_SCALE_STEPS,
@@ -152,11 +162,13 @@ export function getInitialThemeScript(): string {
   }
 
   function getTypographyDefaults(fonts) {
+    var body = fonts && (fonts.bodyFont || fonts.sansFont) || payload.defaultFonts.bodyFont;
     var header = fonts && (fonts.headerFont || fonts.bodyFont || fonts.sansFont) || payload.defaultFonts.headerFont;
     var mono = fonts && fonts.monoFont || payload.defaultFonts.monoFont;
     return Object.assign(
       {},
       payload.defaultTypography,
+      payload.bodyFontTypographyMap[body] || {},
       payload.headerFontTypographyMap[header] || {},
       payload.monoFontTypographyMap[mono] || {}
     );

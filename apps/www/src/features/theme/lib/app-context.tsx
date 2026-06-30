@@ -14,10 +14,6 @@ import {
 import { ensureSemanticColorIntegrity } from "./color/semantic";
 import { type GlobalColorAdjustments } from "./color-utils";
 import { useThemeConfiguration } from "../hooks/use-theme-configuration";
-import {
-  clampTypographyConfig,
-  isValidTypographyConfig,
-} from "./typography-constraints";
 import { type FontKey } from "../constants/font-config";
 import {
   DEFAULT_BODY_MIN_FONT_SIZE_PX,
@@ -227,49 +223,6 @@ function getPersistedPreferences(
     sourceConfig.typography.headerFontSizeScale ??
     defaultPreferences.headerFontSizeScale;
 
-  let finalBodyTypeSizeRatio = bodyTypeSizeRatio;
-  let finalBodyFontSizeScale = bodyFontSizeScale;
-  let finalHeaderTypeSizeRatio = headerTypeSizeRatio;
-  let finalHeaderFontSizeScale = headerFontSizeScale;
-
-  if (
-    !isValidTypographyConfig(
-      bodyTypeSizeRatio,
-      bodyFontSizeScale,
-      bodyMinFontSizePx,
-    )
-  ) {
-    const clamped = clampTypographyConfig(
-      bodyTypeSizeRatio,
-      bodyFontSizeScale,
-      bodyMinFontSizePx,
-    );
-    console.warn(
-      `[AppContext] Body typography config violated the ${bodyMinFontSizePx}px minimum. Clamped from ratio=${bodyTypeSizeRatio}, scale=${bodyFontSizeScale} to ratio=${clamped.typeSizeRatio.toFixed(3)}, scale=${clamped.fontSizeScale.toFixed(3)}`,
-    );
-    finalBodyTypeSizeRatio = clamped.typeSizeRatio;
-    finalBodyFontSizeScale = clamped.fontSizeScale;
-  }
-
-  if (
-    !isValidTypographyConfig(
-      headerTypeSizeRatio,
-      headerFontSizeScale,
-      headerMinFontSizePx,
-    )
-  ) {
-    const clamped = clampTypographyConfig(
-      headerTypeSizeRatio,
-      headerFontSizeScale,
-      headerMinFontSizePx,
-    );
-    console.warn(
-      `[AppContext] Header typography config violated the ${headerMinFontSizePx}px minimum. Clamped from ratio=${headerTypeSizeRatio}, scale=${headerFontSizeScale} to ratio=${clamped.typeSizeRatio.toFixed(3)}, scale=${clamped.fontSizeScale.toFixed(3)}`,
-    );
-    finalHeaderTypeSizeRatio = clamped.typeSizeRatio;
-    finalHeaderFontSizeScale = clamped.fontSizeScale;
-  }
-
   return {
     currentThemeColors: validatedColors,
     currentThemeMode: sourceConfig.mode,
@@ -284,8 +237,8 @@ function getPersistedPreferences(
       defaultPreferences.selectedHeaderFont) as FontKey,
     selectedMonoFont: (sourceConfig.fonts?.monoFont ??
       defaultPreferences.selectedMonoFont) as FontKey,
-    headerTypeSizeRatio: finalHeaderTypeSizeRatio,
-    headerFontSizeScale: finalHeaderFontSizeScale,
+    headerTypeSizeRatio,
+    headerFontSizeScale,
     headerFontWeightScale:
       sourceConfig.typography.headerFontWeightScale ??
       defaultPreferences.headerFontWeightScale,
@@ -296,8 +249,8 @@ function getPersistedPreferences(
       sourceConfig.typography.headerLineHeight,
       defaultPreferences.headerLineHeight,
     ),
-    bodyTypeSizeRatio: finalBodyTypeSizeRatio,
-    bodyFontSizeScale: finalBodyFontSizeScale,
+    bodyTypeSizeRatio,
+    bodyFontSizeScale,
     bodyFontWeightScale:
       sourceConfig.typography.bodyFontWeightScale ??
       defaultPreferences.bodyFontWeightScale,

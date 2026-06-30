@@ -4,6 +4,7 @@ import {
   getDefaultBodyFont,
   getDefaultHeaderFont,
   getDefaultMonoFont,
+  getFontMetrics,
 } from "../constants/font-config";
 import {
   DEFAULT_GLOBAL_ADJUSTMENTS,
@@ -45,9 +46,9 @@ export function getTypographyConfigForFonts(
   const monoFont =
     getFontConfig(fonts.monoFont ?? DEFAULT_FONT_CONFIG.monoFont, "mono") ??
     getDefaultMonoFont();
-  const bodyMetrics = bodyFont.metrics;
-  const headerMetrics = headerFont.metrics;
-  const monoMetrics = monoFont.metrics;
+  const bodyMetrics = getFontMetrics(bodyFont, "body");
+  const headerMetrics = getFontMetrics(headerFont, "header");
+  const monoMetrics = getFontMetrics(monoFont, "mono");
 
   return {
     ...DEFAULT_TYPOGRAPHY_CONFIG,
@@ -55,59 +56,52 @@ export function getTypographyConfigForFonts(
       headerMetrics.typeSizeRatio ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerTypeSizeRatio,
     headerFontSizeScale:
-      headerMetrics.headerFontSizeScale ??
       headerMetrics.fontSizeScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerFontSizeScale,
     headerLetterSpacingScale:
-      headerMetrics.headerLetterSpacingScale ??
+      headerMetrics.letterSpacingScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerLetterSpacingScale,
     headerFontWeightScale:
-      headerMetrics.headerFontWeightScale ??
       headerMetrics.fontWeightScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerFontWeightScale,
     headerLineHeight:
-      headerMetrics.headerLineHeight ??
+      headerMetrics.lineHeight ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
     headerMinFontSizePx:
-      headerMetrics.headerMinFontSizePx ??
+      headerMetrics.minFontSizePx ??
       DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
     bodyTypeSizeRatio:
-      bodyMetrics.bodyTypeSizeRatio ??
       bodyMetrics.typeSizeRatio ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyTypeSizeRatio,
     bodyFontSizeScale:
-      bodyMetrics.bodyFontSizeScale ??
       bodyMetrics.fontSizeScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyFontSizeScale,
     bodyLetterSpacingScale:
-      bodyMetrics.bodyLetterSpacingScale ??
+      bodyMetrics.letterSpacingScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyLetterSpacingScale,
     bodyFontWeightScale:
-      bodyMetrics.bodyFontWeightScale ??
       bodyMetrics.fontWeightScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyFontWeightScale,
     bodyLineHeight:
-      bodyMetrics.bodyLineHeight ??
+      bodyMetrics.lineHeight ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyLineHeight,
     bodyMinFontSizePx:
-      bodyMetrics.bodyMinFontSizePx ??
+      bodyMetrics.minFontSizePx ??
       DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
     monoFontSizeScale:
-      monoMetrics.monoFontSizeScale ??
       monoMetrics.fontSizeScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.monoFontSizeScale,
     monoLetterSpacingScale:
-      monoMetrics.monoLetterSpacingScale ??
+      monoMetrics.letterSpacingScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.monoLetterSpacingScale,
     monoFontWeightScale:
-      monoMetrics.monoFontWeightScale ??
       monoMetrics.fontWeightScale ??
       DEFAULT_TYPOGRAPHY_CONFIG.monoFontWeightScale,
     monoLineHeight:
-      monoMetrics.monoLineHeight ??
+      monoMetrics.lineHeight ??
       DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
     monoMinFontSizePx:
-      monoMetrics.monoMinFontSizePx ??
+      monoMetrics.minFontSizePx ??
       DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
   };
 }

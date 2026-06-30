@@ -1,5 +1,8 @@
 import type { CSSProperties } from "react";
-import type { FontConfig } from "@/features/theme/constants/font-config";
+import {
+  getFontMetrics,
+  type FontConfig,
+} from "@/features/theme/constants/font-config";
 import {
   generateDerivedTextSizeVars,
   generateCodeTypographyVars,
@@ -23,26 +26,30 @@ export function clampFontWeight(value: number) {
 }
 
 export function getFontPreviewState(fontConfig?: FontConfig): PreviewTypographyState {
-  const metrics = fontConfig?.metrics;
+  const bodyMetrics = fontConfig ? getFontMetrics(fontConfig, "body") : undefined;
+  const headerMetrics = fontConfig
+    ? getFontMetrics(fontConfig, "header")
+    : undefined;
+  const monoMetrics = fontConfig ? getFontMetrics(fontConfig, "mono") : undefined;
 
   return {
-    headerTypeSizeRatio: metrics?.typeSizeRatio ?? 1.2,
-    headerFontSizeScale: metrics?.fontSizeScale ?? 1,
-    headerFontWeightScale: metrics?.headerFontWeightScale ?? metrics?.fontWeightScale ?? 1,
-    headerLetterSpacingScale: metrics?.headerLetterSpacingScale ?? 0,
-    headerLineHeight: metrics?.headerLineHeight ?? DEFAULT_HEADER_LINE_HEIGHT,
-    bodyTypeSizeRatio: metrics?.bodyTypeSizeRatio ?? metrics?.typeSizeRatio ?? 1.2,
-    bodyFontSizeScale: metrics?.bodyFontSizeScale ?? metrics?.fontSizeScale ?? 1,
-    bodyFontWeightScale: metrics?.bodyFontWeightScale ?? metrics?.fontWeightScale ?? 1,
-    bodyLetterSpacingScale: metrics?.bodyLetterSpacingScale ?? 1,
-    bodyLineHeight: metrics?.bodyLineHeight ?? DEFAULT_BODY_LINE_HEIGHT,
-    monoFontSizeScale: metrics?.monoFontSizeScale ?? metrics?.fontSizeScale ?? 1,
-    monoFontWeightScale: metrics?.monoFontWeightScale ?? metrics?.fontWeightScale ?? 1,
-    monoLetterSpacingScale: metrics?.monoLetterSpacingScale ?? 1,
-    monoLineHeight: metrics?.monoLineHeight ?? DEFAULT_MONO_LINE_HEIGHT,
-    monoMinFontSizePx: metrics?.monoMinFontSizePx ?? DEFAULT_MONO_MIN_FONT_SIZE_PX,
-    bodyMinFontSizePx: metrics?.bodyMinFontSizePx ?? DEFAULT_BODY_MIN_FONT_SIZE_PX,
-    headerMinFontSizePx: metrics?.headerMinFontSizePx ?? DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+    headerTypeSizeRatio: headerMetrics?.typeSizeRatio ?? 1.2,
+    headerFontSizeScale: headerMetrics?.fontSizeScale ?? 1,
+    headerFontWeightScale: headerMetrics?.fontWeightScale ?? 1,
+    headerLetterSpacingScale: headerMetrics?.letterSpacingScale ?? 0,
+    headerLineHeight: headerMetrics?.lineHeight ?? DEFAULT_HEADER_LINE_HEIGHT,
+    bodyTypeSizeRatio: bodyMetrics?.typeSizeRatio ?? 1.2,
+    bodyFontSizeScale: bodyMetrics?.fontSizeScale ?? 1,
+    bodyFontWeightScale: bodyMetrics?.fontWeightScale ?? 1,
+    bodyLetterSpacingScale: bodyMetrics?.letterSpacingScale ?? 1,
+    bodyLineHeight: bodyMetrics?.lineHeight ?? DEFAULT_BODY_LINE_HEIGHT,
+    monoFontSizeScale: monoMetrics?.fontSizeScale ?? 1,
+    monoFontWeightScale: monoMetrics?.fontWeightScale ?? 1,
+    monoLetterSpacingScale: monoMetrics?.letterSpacingScale ?? 1,
+    monoLineHeight: monoMetrics?.lineHeight ?? DEFAULT_MONO_LINE_HEIGHT,
+    monoMinFontSizePx: monoMetrics?.minFontSizePx ?? DEFAULT_MONO_MIN_FONT_SIZE_PX,
+    bodyMinFontSizePx: bodyMetrics?.minFontSizePx ?? DEFAULT_BODY_MIN_FONT_SIZE_PX,
+    headerMinFontSizePx: headerMetrics?.minFontSizePx ?? DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   };
 }
 

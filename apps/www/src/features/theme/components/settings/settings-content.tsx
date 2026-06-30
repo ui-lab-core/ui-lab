@@ -3,10 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useApp } from "../../lib/app-context";
-import {
-  findClosestValidFontSizeScale,
-  isValidTypographyConfig,
-} from "../../lib/typography-constraints";
 import { themes, type SimpleThemeColors } from "../../constants/themes";
 import {
   type OklchColor,
@@ -15,7 +11,11 @@ import {
   type GlobalColorAdjustments,
 } from "../../lib/color-utils";
 import { useThemeStorage } from "../../hooks/use-theme-storage";
-import { getFontConfig, type FontKey } from "../../constants/font-config";
+import {
+  getFontConfig,
+  getFontMetrics,
+  type FontKey,
+} from "../../constants/font-config";
 import { type ThemeFontsConfig } from "../../lib/theme-cache";
 import {
   DEFAULT_TYPOGRAPHY_CONFIG,
@@ -143,35 +143,20 @@ function useSettingsHandlers(
   const handleBodyFontChange = (fontName: string) => {
     const fontConfig = getFontConfig(fontName as FontKey, "body");
     if (fontConfig) {
+      const metrics = getFontMetrics(fontConfig, "body");
       const {
-        fontSizeScale: scale,
-        typeSizeRatio: ratio,
-        bodyLetterSpacingScale: bodySpacing = 1,
-        bodyFontWeightScale: bodyWeight = 1,
-        bodyLineHeight:
-          nextBodyLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.bodyLineHeight,
-        bodyMinFontSizePx:
-          nextBodyMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
-        bodyFontSizeScale = scale,
-        bodyTypeSizeRatio = ratio,
-      } = fontConfig.metrics;
-      let finalScale = bodyFontSizeScale;
-      if (
-        !isValidTypographyConfig(
-          bodyTypeSizeRatio,
-          bodyFontSizeScale,
-          nextBodyMinFontSizePx,
-        )
-      ) {
-        finalScale = findClosestValidFontSizeScale(
-          bodyTypeSizeRatio,
-          bodyFontSizeScale,
-          nextBodyMinFontSizePx,
-        );
-      }
+        typeSizeRatio: bodyTypeSizeRatio,
+        fontSizeScale: bodyFontSizeScale,
+        fontWeightScale: bodyWeight = 1,
+        letterSpacingScale: bodySpacing = 1,
+        lineHeight:
+        nextBodyLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.bodyLineHeight,
+        minFontSizePx:
+        nextBodyMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
+      } = metrics;
       updateTypography({
         bodyTypeSizeRatio,
-        bodyFontSizeScale: finalScale,
+        bodyFontSizeScale,
         bodyFontWeightScale: bodyWeight,
         bodyLetterSpacingScale: bodySpacing,
         bodyLineHeight: nextBodyLineHeight,
@@ -188,35 +173,21 @@ function useSettingsHandlers(
   const handleHeaderFontChange = (fontName: string) => {
     const fontConfig = getFontConfig(fontName as FontKey, "header");
     if (fontConfig) {
+      const metrics = getFontMetrics(fontConfig, "header");
       const {
-        fontSizeScale,
-        typeSizeRatio,
-        headerLetterSpacingScale: headerSpacing = 1,
-        headerFontWeightScale,
         fontWeightScale,
-        headerLineHeight:
-          nextHeaderLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
-        headerMinFontSizePx:
-          nextHeaderMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
-        headerFontSizeScale = fontSizeScale,
-        headerTypeSizeRatio: metricHeaderTypeSizeRatio,
-      } = fontConfig.metrics;
-      const resolvedHeaderTypeSizeRatio = metricHeaderTypeSizeRatio ?? typeSizeRatio;
-      const finalHeaderScale = isValidTypographyConfig(
-        resolvedHeaderTypeSizeRatio,
-        headerFontSizeScale,
-        nextHeaderMinFontSizePx,
-      )
-        ? headerFontSizeScale
-        : findClosestValidFontSizeScale(
-            resolvedHeaderTypeSizeRatio,
-            headerFontSizeScale,
-            nextHeaderMinFontSizePx,
-          );
+        typeSizeRatio: headerTypeSizeRatio,
+        fontSizeScale: headerFontSizeScale,
+        letterSpacingScale: headerSpacing = 1,
+        lineHeight:
+        nextHeaderLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
+        minFontSizePx:
+        nextHeaderMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
+      } = metrics;
       updateTypography({
-        headerTypeSizeRatio: resolvedHeaderTypeSizeRatio,
-        headerFontSizeScale: finalHeaderScale,
-        headerFontWeightScale: headerFontWeightScale ?? fontWeightScale ?? 1,
+        headerTypeSizeRatio,
+        headerFontSizeScale,
+        headerFontWeightScale: fontWeightScale ?? 1,
         headerLetterSpacingScale: headerSpacing,
         headerLineHeight: nextHeaderLineHeight,
         headerMinFontSizePx: nextHeaderMinFontSizePx,
@@ -232,18 +203,18 @@ function useSettingsHandlers(
   const handleMonoFontChange = (fontName: string) => {
     const fontConfig = getFontConfig(fontName as FontKey, "mono");
     if (fontConfig) {
+      const metrics = getFontMetrics(fontConfig, "mono");
       const {
-        fontSizeScale,
         fontWeightScale,
-        monoFontSizeScale = fontSizeScale,
-        monoFontWeightScale = fontWeightScale,
+        fontSizeScale: monoFontSizeScale = DEFAULT_TYPOGRAPHY_CONFIG.monoFontSizeScale,
+        letterSpacingScale:
         monoLetterSpacingScale = DEFAULT_TYPOGRAPHY_CONFIG.monoLetterSpacingScale,
-        monoLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
-        monoMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
-      } = fontConfig.metrics;
+        lineHeight: monoLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
+        minFontSizePx: monoMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
+      } = metrics;
       updateTypography({
         monoFontSizeScale,
-        monoFontWeightScale,
+        monoFontWeightScale: fontWeightScale,
         monoLetterSpacingScale,
         monoLineHeight,
         monoMinFontSizePx,

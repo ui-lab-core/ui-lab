@@ -89,7 +89,7 @@ const TypographySection = memo(
               </div>
             </button>
 
-            <div className="min-w-0">
+            <div className="min-w-0" onClick={(e) => e.stopPropagation()}>
               {select}
             </div>
 
@@ -261,7 +261,7 @@ export const TypographyPanel = memo(
                 label="Letter Spacing"
                 value={headerLetterSpacingScale}
                 min={-5.0}
-                max={3}
+                max={3.5}
                 step={0.05}
                 unit="x"
                 onChange={(scale) => onTypographyChange({ headerLetterSpacingScale: scale })}
@@ -344,7 +344,7 @@ export const TypographyPanel = memo(
                 label="Letter Spacing"
                 value={bodyLetterSpacingScale}
                 min={0}
-                max={3}
+                max={3.5}
                 step={0.05}
                 unit="x"
                 onChange={(scale) => onTypographyChange({ bodyLetterSpacingScale: scale })}
@@ -418,7 +418,7 @@ export const TypographyPanel = memo(
               label="Code Letter Spacing"
               value={monoLetterSpacingScale}
               min={0}
-              max={3}
+              max={3.5}
               step={0.05}
               unit="x"
               onChange={(scale) => onTypographyChange({ monoLetterSpacingScale: scale })}

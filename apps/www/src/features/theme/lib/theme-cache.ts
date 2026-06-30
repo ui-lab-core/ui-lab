@@ -46,6 +46,10 @@ interface CompleteThemeCache {
   version: 1;
 }
 
+type PartialTypographyConfig = Partial<ThemeSourceConfig["typography"]> & {
+  globalMinFontSizePx?: number;
+};
+
 export const THEME_CACHE_KEY = "uilab_theme_complete";
 export const REQUIRED_COLOR_VARS = [
   "--background-500",
@@ -62,6 +66,43 @@ export const COLOR_CSS_VARIABLE_PREFIXES = [
   "--info-",
   "--ui-lab-meta-",
 ] as const;
+
+function matchesNumber(value: unknown, expected: number): boolean {
+  return typeof value === "number" && Math.abs(value - expected) < 0.0001;
+}
+
+function hasStalePresetBodyScale(
+  typography: PartialTypographyConfig,
+  fontTypography: TypographyConfig,
+): boolean {
+  if (
+    typeof typography.bodyFontSizeScale !== "number" ||
+    matchesNumber(typography.bodyFontSizeScale, fontTypography.bodyFontSizeScale)
+  ) {
+    return false;
+  }
+
+  // Font-owned defaults are validated as a group. If a cache has the selected
+  // font's other body metrics but an older supporting minimum, the stored scale
+  // is a stale clamp result from the previous preset rather than a user edit.
+  return (
+    matchesNumber(
+      typography.bodyTypeSizeRatio,
+      fontTypography.bodyTypeSizeRatio,
+    ) &&
+    matchesNumber(typography.bodyLineHeight, fontTypography.bodyLineHeight) &&
+    matchesNumber(
+      typography.bodyLetterSpacingScale,
+      fontTypography.bodyLetterSpacingScale,
+    ) &&
+    matchesNumber(
+      typography.bodyFontWeightScale,
+      fontTypography.bodyFontWeightScale,
+    ) &&
+    typeof typography.bodyMinFontSizePx === "number" &&
+    !matchesNumber(typography.bodyMinFontSizePx, fontTypography.bodyMinFontSizePx)
+  );
+}
 
 export function normalizeThemeFontsConfig(
   fonts?: LegacyThemeFontsConfig | null,
@@ -100,15 +141,25 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
     | (Partial<ThemeSourceConfig> & { fonts?: LegacyThemeFontsConfig })
     | undefined;
   const sourceTypography = sourceConfig?.typography as
-    | (Partial<ThemeSourceConfig["typography"]> & {
-        globalMinFontSizePx?: number;
-      })
+    | PartialTypographyConfig
     | undefined;
   const legacyMinFontSizePx = sourceTypography?.globalMinFontSizePx;
   const currentTypography = { ...(sourceTypography ?? {}) };
   const normalizedFonts = normalizeThemeFontsConfig(sourceConfig?.fonts);
   const fontTypography = getTypographyConfigForFonts(normalizedFonts);
+  let bodyMinFontSizePx =
+    sourceTypography?.bodyMinFontSizePx ??
+    legacyMinFontSizePx ??
+    fontTypography.bodyMinFontSizePx;
   delete currentTypography.globalMinFontSizePx;
+
+  if (
+    sourceTypography &&
+    hasStalePresetBodyScale(sourceTypography, fontTypography)
+  ) {
+    delete currentTypography.bodyFontSizeScale;
+    bodyMinFontSizePx = fontTypography.bodyMinFontSizePx;
+  }
 
   if (
     currentTypography.headerLetterSpacingScale ===
@@ -133,10 +184,7 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
         typography: {
           ...fontTypography,
           ...currentTypography,
-          bodyMinFontSizePx:
-            sourceTypography?.bodyMinFontSizePx ??
-            legacyMinFontSizePx ??
-            fontTypography.bodyMinFontSizePx,
+          bodyMinFontSizePx,
           headerMinFontSizePx:
             sourceTypography?.headerMinFontSizePx ??
             legacyMinFontSizePx ??
