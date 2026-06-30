@@ -396,6 +396,7 @@ const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
           ref={inputRef}
           value={value as string}
           onChange={handleChange}
+          variant="ghost"
           icon={icon ?? <Search className="w-4 h-4" />}
           actions={resolvedActions}
           placeholder={placeholder}

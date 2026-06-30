@@ -108,6 +108,7 @@ interface TypographyPlaygroundContextValue {
   headerConfigSnippet: string;
   headerFamily: string;
   headerFontConfig: ReturnType<typeof getFontConfig>;
+  compareExpandedExamples: Record<string, boolean>;
   monoFontConfig: ReturnType<typeof getFontConfig>;
   resetAll: () => void;
   selectedBodyFont: string;
@@ -116,6 +117,7 @@ interface TypographyPlaygroundContextValue {
   selectedMonoFont: string;
   setSelectedCharacter: (character: string) => void;
   setSelectedMonoFont: (fontName: FontKey) => void;
+  setCompareExpandedExample: (key: string, isExpanded: boolean) => void;
   updateSelectedBodyTypography: (updates: Partial<PreviewTypographyState>) => void;
   applyBodyFontPreset: (fontName: string) => void;
   applyHeaderFontPreset: (fontName: string) => void;
@@ -129,6 +131,9 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
   const [selectedMonoFont, setSelectedMonoFont] = useState<string>(defaultMonoFont.name);
   const [bodyTypographyByFont, setBodyTypographyByFont] = useState<BodyTypographyState>(
     buildInitialBodyTypographyState,
+  );
+  const [compareExpandedExamples, setCompareExpandedExamples] = useState<Record<string, boolean>>(
+    {},
   );
   const [selectedCharacter, setSelectedCharacter] = useState("A");
 
@@ -168,6 +173,7 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
           bodyFontWeightScale: nextTypography.bodyFontWeightScale,
           bodyLetterSpacingScale: nextTypography.bodyLetterSpacingScale,
           bodyLineHeight: nextTypography.bodyLineHeight,
+          bodyMinFontSizePx: nextTypography.bodyMinFontSizePx,
         },
       };
     });
@@ -191,7 +197,21 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
     setSelectedHeaderFont(defaultHeaderFont.name);
     setSelectedMonoFont(defaultMonoFont.name);
     setBodyTypographyByFont(buildInitialBodyTypographyState());
+    setCompareExpandedExamples({});
     setSelectedCharacter("A");
+  }, []);
+
+  const setCompareExpandedExample = useCallback((key: string, isExpanded: boolean) => {
+    setCompareExpandedExamples((current) => {
+      if (current[key] === isExpanded) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [key]: isExpanded,
+      };
+    });
   }, []);
 
   const value = useMemo(() => {
@@ -212,6 +232,7 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
       applyHeaderFontPreset,
       bodyFamily,
       bodyFontConfig,
+      compareExpandedExamples,
       headerFamily,
       headerFontConfig,
       monoFontConfig,
@@ -222,6 +243,7 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
       selectedMonoFont,
       setSelectedCharacter,
       setSelectedMonoFont,
+      setCompareExpandedExample,
       updateSelectedBodyTypography,
     };
   }, [
@@ -230,6 +252,7 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
     applyHeaderFontPreset,
     bodyFamily,
     bodyFontConfig,
+    compareExpandedExamples,
     headerFamily,
     headerFontConfig,
     monoFontConfig,
@@ -239,6 +262,7 @@ export function TypographyPlaygroundProvider({ children }: { children: ReactNode
     selectedHeaderFont,
     selectedMonoFont,
     updateSelectedBodyTypography,
+    setCompareExpandedExample,
   ]);
 
   return (

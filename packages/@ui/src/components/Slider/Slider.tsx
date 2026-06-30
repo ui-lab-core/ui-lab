@@ -201,14 +201,6 @@ function SliderThumb({
     [index, onThumbRef]
   );
   const mergedRef = useMergeRefs<HTMLDivElement>(thumbRef, handleThumbRef);
-  const { scopeProps, indicatorProps } = useFocus({
-    scopeRef: thumbRef,
-    containerRef: thumbRef,
-    surfaceSelector: '[data-slider-focus-surface="true"]',
-    radiusSource: "surface",
-    mode: "self",
-    dependencies: [value, orientation, disabled],
-  });
 
   const percent = getValuePercent(value, min, max);
 
@@ -280,7 +272,7 @@ function SliderThumb({
       aria-disabled={disabled || undefined}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
-      className={cn("thumb", scopeProps.className, css.thumb, className)}
+      className={cn("thumb", css.thumb, className)}
       style={positionStyle}
       data-slider-thumb="true"
       data-slider-thumb-index={index}
@@ -294,9 +286,7 @@ function SliderThumb({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       {...asElementProps<"div">(mergeProps(focusProps, hoverProps))}
-    >
-      <div {...indicatorProps} data-focus-indicator="local" />
-    </div>
+    />
   );
 }
 
@@ -343,6 +333,14 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
     const mergedRef = useMergeRefs(ref, rootRef);
     const resolved = resolveSliderStyles(styles);
+    const { indicatorProps } = useFocus({
+      scopeRef: trackRef,
+      containerRef: trackRef,
+      surfaceSelector: '[data-slider-focus-surface="true"]',
+      radiusSource: "surface",
+      mode: "self",
+      dependencies: [values, orientation, disabled],
+    });
 
     const setThumbRef = React.useCallback((index: number, element: HTMLDivElement | null) => {
       thumbRefs.current[index] = element;
@@ -507,13 +505,13 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const rangeStyle =
       orientation === "vertical"
         ? {
-            bottom: `${rangeStartPercent}%`,
-            height: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
-          }
+          bottom: `${rangeStartPercent}%`,
+          height: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
+        }
         : {
-            left: `${rangeStartPercent}%`,
-            width: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
-          };
+          left: `${rangeStartPercent}%`,
+          width: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
+        };
 
     return (
       <div
@@ -541,6 +539,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
         >
+          <div {...indicatorProps} data-focus-indicator="track" />
           <div className={css["range-clip"]}>
             <div
               className={cn("range", css.range, resolved.range)}

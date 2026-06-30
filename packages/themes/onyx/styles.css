@@ -379,8 +379,8 @@
 
   .color > .controls > .hue-slider > .hue-track > .hue-thumb,
   .color > .controls > .opacity-slider > .opacity-track > .opacity-thumb {
-    --thumb-border: white;
-    --thumb-background: white;
+    --border: white;
+    --background: white;
   }
 
   .color > .controls > .opacity-slider > .opacity-track {
@@ -541,12 +541,12 @@
   }
 
   .select {
-    --background: color-mix(in srgb, var(--background-800) 50%, transparent);
+    --background: color-mix(in srgb, var(--background-800) 30%, transparent);
     --foreground: var(--foreground-300);
     --background-border: var(--background-700);
     --focus-visible: var(--accent-400);
     --focus-visible-background: var(--background-950);
-    --background-hover: color-mix(in srgb, var(--background-700) 50%, transparent);
+    --background-hover: color-mix(in srgb, var(--background-800) 50%, transparent);
     --background-pressed: color-mix(in srgb, var(--background-600) 50%, transparent);
     --foreground-size: var(--text-xs)
   }
@@ -582,7 +582,7 @@
   .select > .sub-content [role="option"].sub-trigger[data-highlighted="true"],
   .select > .content [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]),
   .select > .sub-content [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]) {
-    --background: color-mix(in srgb, var(--background-500) 10%, var(--background-600));
+    --background: color-mix(in srgb, var(--background-500) 15%, transparent);
   }
 
   .select > .content .scroll > .track > .thumb,
@@ -617,7 +617,8 @@
   }
 
   .slider > .track > .thumb {
-    --thumb-width: 10px
+    --width: 8px;
+    --radius: calc(var(--spacing-xs) * 0.2)
   }
 
 

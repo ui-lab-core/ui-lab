@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Divider } from "ui-lab-components";
-import { getFontConfig } from "@/features/theme/constants/font-config";
+import { Fragment, useEffect, useState } from "react";
+import { Button, Divider, Expand } from "ui-lab-components";
+import {
+  getDefaultBodyFont,
+  getFontConfig,
+  getFontMetrics,
+} from "@/features/theme/constants/font-config";
 import { useTypographyPlayground } from "../context";
-import { CONTEXT_PARAGRAPHS } from "../lib/constants";
 import { buildPreviewVars, getFontPreviewState } from "../lib/preview";
 import {
   computeFontCorrections,
@@ -12,87 +15,84 @@ import {
   type FontCorrections,
 } from "../lib/measure";
 
-const karlaBodyConfig = getFontConfig("Karla", "body");
-const karlaHeaderConfig = getFontConfig("Karla", "header");
+const karlaBodyConfig = getFontConfig("Karla", "body") ?? getDefaultBodyFont();
 
 const karlaBaselineStyle = buildPreviewVars(
-  karlaBodyConfig?.family ?? '"Karla Variable", system-ui, sans-serif',
-  karlaHeaderConfig?.family ?? '"Karla Variable", system-ui, sans-serif',
+  karlaBodyConfig.family,
+  karlaBodyConfig.family,
   getFontPreviewState(karlaBodyConfig),
 );
 
-const KARLA_FAMILY = karlaBodyConfig?.family ?? '"Karla Variable", system-ui, sans-serif';
+const KARLA_FAMILY = karlaBodyConfig.family;
+const karlaBodyMetrics = getFontMetrics(karlaBodyConfig, "body");
 const KARLA_BASELINE: BaselineConfig = {
-  fontSizeScale: karlaBodyConfig?.metrics.fontSizeScale ?? 0.92,
-  bodyLineHeight: karlaBodyConfig?.metrics.bodyLineHeight ?? 1.4,
-  bodyLetterSpacingScale: karlaBodyConfig?.metrics.bodyLetterSpacingScale ?? 1.35,
-  bodyMinFontSizePx: karlaBodyConfig?.metrics.bodyMinFontSizePx ?? 14.35,
+  fontSizeScale: karlaBodyMetrics.fontSizeScale,
+  bodyLineHeight: karlaBodyMetrics.lineHeight,
+  bodyLetterSpacingScale: karlaBodyMetrics.letterSpacingScale,
+  bodyMinFontSizePx: karlaBodyMetrics.minFontSizePx,
 };
 
-const headerStyle = { fontFamily: "var(--font-header)" };
+type ExpandExample = {
+  title: string;
+  paragraphs: string[];
+};
 
-function SectionHeading() {
+const EXPAND_EXAMPLES: ExpandExample[] = [
+  {
+    title: "Quick scan",
+    paragraphs: [
+      "Typography in dense tooling has to stay legible even when the screen is full of labels, values, and controls competing for attention.",
+    ],
+  },
+  {
+    title: "Working notes",
+    paragraphs: [
+      "A strong body face keeps counters open and spacing reliable so short notes do not collapse into a blur at smaller sizes.",
+      "That matters most when the interface mixes small metadata, action labels, and explanatory copy in the same visual band.",
+    ],
+  },
+  {
+    title: "Comparison checklist",
+    paragraphs: [
+      "Headers should feel unmistakable without overpowering the surrounding text, especially when the page already carries a lot of structure.",
+      "Body text needs enough contrast to support scanning, but not so much weight that it competes with the hierarchy above it.",
+      "Numbers and symbols deserve a quick pass too because tables and metrics can expose spacing weaknesses faster than prose does.",
+    ],
+  },
+  {
+    title: "Long-form specimen",
+    paragraphs: [
+      "When the copy stretches into a longer reading sample, line length and rhythm become more important than raw size because the eye needs a stable track from one line to the next.",
+      "A font that looks tidy in a heading can still feel brittle in a paragraph if its strokes taper too sharply or its spacing closes up under real content.",
+      "That is why this comparison keeps the example text concrete: labels, guidance, and plain reading prose each expose a different part of the type system.",
+      "By the end of the sample, the goal is not just to see whether the font looks good in isolation, but whether it stays calm, consistent, and readable across an extended block of text.",
+    ],
+  },
+];
+
+function ExpandExampleCard({
+  title,
+  paragraphs,
+  isExpanded,
+  onExpandedChange,
+}: ExpandExample & {
+  isExpanded: boolean;
+  onExpandedChange: (isExpanded: boolean) => void;
+}) {
   return (
-    <div className="space-y-3">
-      <h2 className="text-header-lg font-bold text-foreground-50" style={headerStyle}>
-        Component settings and usage rhythm
-      </h2>
-      {CONTEXT_PARAGRAPHS.map((paragraph) => (
+    <Expand
+      title={title}
+      isExpanded={isExpanded}
+      onExpandedChange={onExpandedChange}
+      className="overflow-hidden rounded border border-background-700 bg-background-900"
+      styles={{ contentInner: "space-y-3 px-4 py-4" }}
+    >
+      {paragraphs.map((paragraph) => (
         <p key={paragraph} className="text-foreground-200">
           {paragraph}
         </p>
       ))}
-    </div>
-  );
-}
-
-function SectionCards() {
-  return (
-    <div className="space-y-3">
-      <div className="rounded border border-background-700 bg-background-900 p-4">
-        <div className="mb-3 text-sm font-medium text-foreground-400">Header / body stack</div>
-        <h3 className="mb-2 text-header-md font-semibold text-foreground-50" style={headerStyle}>
-          Quarterly usage report
-        </h3>
-        <p className="text-foreground-200">
-          Net retention improved by 8.4% after the team simplified labels and grouped related
-          controls into smaller repeated blocks.
-        </p>
-      </div>
-      <div className="rounded border border-background-700 bg-background-900 p-4">
-        <div className="mb-3 text-sm font-medium text-foreground-400">Numeric scan</div>
-        <div className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-foreground-200">
-          <span>Active sessions</span>
-          <span className="tabular-nums">12,480</span>
-          <span>Latency p95</span>
-          <span className="tabular-nums">184 ms</span>
-          <span>Success rate</span>
-          <span className="tabular-nums">99.92%</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SectionLongText() {
-  return (
-    <div className="space-y-3">
-      <p className="text-foreground-200">
-        Typographic consistency across a dense interface depends on how well the chosen typeface
-        holds its weight distribution at small sizes. When labels shrink below fourteen pixels,
-        strokes that seemed balanced at display scale can collapse into indistinct blobs, robbing
-        the hierarchy of its intended contrast. A well-tuned body font resists this degradation by
-        maintaining open apertures and generous ink traps through the full size range.
-      </p>
-      <p className="text-foreground-200">
-        Pairing a geometric header face with a humanist body creates a productive visual tension:
-        the header commands attention through precision and tight spacing, while the body invites
-        sustained reading with its organic stroke variation and slightly looser rhythm. Getting the
-        size ratio right between the two is often more consequential than the choice of either
-        typeface individually — a half-point shift in the scale can tip the balance from
-        comfortable to crowded.
-      </p>
-    </div>
+    </Expand>
   );
 }
 
@@ -138,52 +138,67 @@ function MetricsRow({
         </span>
       </div>
       {changed && (
-        <button
+        <Button
           onClick={() => onApply(corrections)}
-          className="text-foreground-400 transition-colors hover:text-foreground-100"
         >
           Apply
-        </button>
+        </Button>
       )}
     </div>
   );
 }
 
 function useComputedCorrections(targetFamily: string, isBaseline: boolean): FontCorrections | null {
-  const [corrections, setCorrections] = useState<FontCorrections | null>(null);
+  const [corrections, setCorrections] = useState<{
+    family: string;
+    value: FontCorrections;
+  } | null>(null);
 
   useEffect(() => {
     if (isBaseline || typeof OffscreenCanvas === "undefined") return;
-    setCorrections(null);
 
     const primaryFamily = (f: string) => f.split(",")[0].trim();
+    let cancelled = false;
 
     Promise.all([
       document.fonts.load(`16px ${primaryFamily(targetFamily)}`),
       document.fonts.load(`16px ${primaryFamily(KARLA_FAMILY)}`),
     ])
       .then(() => {
-        setCorrections(
-          computeFontCorrections(targetFamily, KARLA_FAMILY, KARLA_BASELINE),
-        );
+        if (cancelled) return;
+        setCorrections({
+          family: targetFamily,
+          value: computeFontCorrections(targetFamily, KARLA_FAMILY, KARLA_BASELINE),
+        });
       })
       .catch(() => { });
+
+    return () => {
+      cancelled = true;
+    };
   }, [targetFamily, isBaseline]);
 
-  return corrections;
+  return corrections?.family === targetFamily ? corrections.value : null;
 }
 
 export function Compare() {
   const {
-    activeBodyPreviewStyle,
     activeTypography,
-    bodyFamily,
+    bodyFontConfig,
+    compareExpandedExamples,
     selectedBodyFont,
+    setCompareExpandedExample,
     updateSelectedBodyTypography,
   } = useTypographyPlayground();
 
-  const isBaseline = selectedBodyFont === "Karla";
-  const corrections = useComputedCorrections(bodyFamily, isBaseline);
+  const selectedBodyConfig = bodyFontConfig ?? karlaBodyConfig;
+  const selectedBodyPreviewStyle = buildPreviewVars(
+    selectedBodyConfig.family,
+    selectedBodyConfig.family,
+    activeTypography,
+  );
+  const isBaseline = selectedBodyFont === karlaBodyConfig.name;
+  const corrections = useComputedCorrections(selectedBodyConfig.family, isBaseline);
 
   function handleApply(c: FontCorrections) {
     updateSelectedBodyTypography({
@@ -194,67 +209,71 @@ export function Compare() {
     });
   }
 
+  function getExpandedStateKey(title: string, variant: "baseline" | "target") {
+    return `${variant}:${title}`;
+  }
+
   return (
     <section className="space-y-4">
       <div>
         <div className="text-sm font-medium text-foreground-400">Compare</div>
         <p className="mt-1 text-sm text-foreground-500">
-          Baseline Karla metrics versus the selected font.
+          Baseline Karla metrics versus the selected font in dedicated expand specimens.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-x-6">
-        <div className="text-xs font-medium uppercase tracking-wider text-foreground-500">
-          Baseline — Karla
-        </div>
-        <div className="text-xs font-medium uppercase tracking-wider text-foreground-500">
-          Target — {selectedBodyFont}
-        </div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 gap-x-6">
+          <div className="text-xs font-medium uppercase tracking-wider text-foreground-500">
+            Baseline — Karla
+          </div>
+          <div className="text-xs font-medium uppercase tracking-wider text-foreground-500">
+            Target — {selectedBodyFont}
+          </div>
 
-        <div className="h-[240px] overflow-y-auto" style={karlaBaselineStyle}>
-          <SectionHeading />
-        </div>
-        <div className="h-[240px] overflow-y-auto" style={activeBodyPreviewStyle}>
-          <SectionHeading />
-        </div>
+          {EXPAND_EXAMPLES.map((example, index) => (
+            <Fragment key={example.title}>
+              <div style={karlaBaselineStyle}>
+                <ExpandExampleCard
+                  title={example.title}
+                  paragraphs={example.paragraphs}
+                  isExpanded={compareExpandedExamples[getExpandedStateKey(example.title, "baseline")] ?? true}
+                  onExpandedChange={(isExpanded) =>
+                    setCompareExpandedExample(getExpandedStateKey(example.title, "baseline"), isExpanded)
+                  }
+                />
+              </div>
+              <div style={selectedBodyPreviewStyle}>
+                <ExpandExampleCard
+                  title={example.title}
+                  paragraphs={example.paragraphs}
+                  isExpanded={compareExpandedExamples[getExpandedStateKey(example.title, "target")] ?? true}
+                  onExpandedChange={(isExpanded) =>
+                    setCompareExpandedExample(getExpandedStateKey(example.title, "target"), isExpanded)
+                  }
+                />
+              </div>
 
-        <div className="col-span-2 py-3">
-          <Divider size="sm" variant="dashed" />
-        </div>
-
-        <div className="h-[350px] overflow-y-auto" style={karlaBaselineStyle}>
-          <SectionCards />
-        </div>
-        <div className="h-[350px] overflow-y-auto" style={activeBodyPreviewStyle}>
-          <SectionCards />
-        </div>
-
-        <div className="col-span-2 py-3">
-          <Divider size="sm" variant="dashed" />
-        </div>
-
-        <div className="h-[300px] overflow-y-auto" style={karlaBaselineStyle}>
-          <SectionLongText />
-        </div>
-        <div className="h-[300px] overflow-y-auto" style={activeBodyPreviewStyle}>
-          <SectionLongText />
+              {index < EXPAND_EXAMPLES.length - 1 && (
+                <div className="col-span-2 py-3">
+                  <Divider size="sm" variant="dashed" />
+                </div>
+              )}
+            </Fragment>
+          ))}
         </div>
 
         {!isBaseline && (
-          <>
-            <div className="col-span-2 py-3">
-              <Divider size="sm" variant="dashed" />
-            </div>
-            <div className="col-span-2">
-              <MetricsRow
-                corrections={corrections}
-                currentSizeScale={activeTypography.bodyFontSizeScale}
-                currentLineHeight={activeTypography.bodyLineHeight}
-                currentLsScale={activeTypography.bodyLetterSpacingScale}
-                onApply={handleApply}
-              />
-            </div>
-          </>
+          <div className="space-y-3">
+            <Divider size="sm" variant="dashed" />
+            <MetricsRow
+              corrections={corrections}
+              currentSizeScale={activeTypography.bodyFontSizeScale}
+              currentLineHeight={activeTypography.bodyLineHeight}
+              currentLsScale={activeTypography.bodyLetterSpacingScale}
+              onApply={handleApply}
+            />
+          </div>
         )}
       </div>
     </section>

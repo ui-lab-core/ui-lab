@@ -3,7 +3,6 @@
 @layer components {
   .slider {
     --disabled-opacity: 0.6;
-
     @apply relative flex w-full items-center;
     min-inline-size: var(--inline-size, 12rem);
     min-height: var(--hit-size, 2rem);
@@ -14,9 +13,9 @@
   .track {
     @apply relative flex grow items-center;
     flex-grow: 1;
-    height: var(--track-size, calc(var(--spacing-md) * 0.80));
+    height: var(--size, calc(var(--spacing-md) * 0.80));
     overflow: visible;
-    border-radius: var(--track-radius, calc(var(--spacing-xs) * 0.50));
+    border-radius: var(--radius, calc(var(--spacing-xs) * 0.50));
     border: 0;
     background: var(--background);
   }
@@ -40,11 +39,11 @@
 
   .thumb {
     @apply absolute block;
-    top: var(--thumb-top, 0);
-    width: var(--thumb-width, 12px);
-    height: var(--thumb-height, 100%);
-    transform: var(--thumb-transform, translateX(-50%));
-    border-radius: var(--thumb-radius, calc(var(--spacing-xs) * 0.35));
+    top: var(--top, 0);
+    width: var(--width, 12px);
+    height: var(--height, 100%);
+    transform: var(--transform, translateX(-50%));
+    border-radius: var(--radius, calc(var(--spacing-xs) * 0.35));
     outline: none;
     background: var(--background);
     border: none;
@@ -66,7 +65,7 @@
   }
 
   .slider[data-orientation="vertical"] .track {
-    width: var(--track-size, calc(var(--spacing-md) * 0.80));
+    width: var(--size, calc(var(--spacing-md) * 0.80));
     height: 100%;
   }
 
@@ -78,8 +77,8 @@
   .slider[data-orientation="vertical"] .thumb {
     left: 50%;
     top: auto;
-    width: var(--thumb-height, 100%);
-    height: var(--thumb-width, 12px);
+    width: var(--height, 100%);
+    height: var(--width, 12px);
     transform: translate(-50%, 50%);
   }
 
@@ -98,10 +97,10 @@
   }
 
   .thumb[data-pressed="true"] {
-    transform: var(--thumb-transform, translateX(-50%)) scale(1.08);
+    transform: var(--transform, translateX(-50%));
   }
 
   .slider[data-orientation="vertical"] .thumb[data-pressed="true"] {
-    transform: translate(-50%, 50%) scale(1.08);
+    transform: translate(-50%, 50%);
   }
 }

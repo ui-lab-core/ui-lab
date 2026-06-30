@@ -70,6 +70,8 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   target?: React.HTMLAttributeAnchorTarget;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: ButtonStylesProp;
+  /** Forces the visual hover state. Set by Menu.Trigger to keep the trigger highlighted while the menu is open. */
+  "data-hovered"?: "true" | "false";
 }
 
 function isButtonIconSlots(icon: ButtonProps["icon"]): icon is ButtonIconSlots {
@@ -97,7 +99,7 @@ function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
 }
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  ({ className, styles, variant = "default", size, children, onClick, onPress, isDisabled, disabled, icon, href, target, rel, ...props }, ref) => {
+  ({ className, styles, variant = "default", size, children, onClick, onPress, isDisabled, disabled, icon, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
     const mergedRef = useMergeRefs(ref, buttonRef);
     const isButtonDisabled = isDisabled ?? disabled ?? false;
@@ -170,7 +172,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           className={buttonClassName}
           data-disabled={isButtonDisabled ? "true" : undefined}
           data-pressed={isPressed ? "true" : "false"}
-          data-hovered={isHovered ? "true" : "false"}
+          data-hovered={forcedHovered ?? (isHovered ? "true" : "false")}
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
         >
@@ -193,7 +195,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         className={buttonClassName}
         data-disabled={isButtonDisabled ? "true" : undefined}
         data-pressed={isPressed ? "true" : "false"}
-        data-hovered={isHovered ? "true" : "false"}
+        data-hovered={forcedHovered ?? (isHovered ? "true" : "false")}
         data-focused={isFocused ? "true" : "false"}
         data-focus-visible={isFocusVisible ? "true" : "false"}
       >

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Divider, Scroll } from "ui-lab-components";
 import { DOCS_MANIFEST } from "../lib/generated-docs-manifest";
+import { FaFileLines, FaList } from "@/shared/icons/fa6";
 
 export interface TableOfContentsItem {
   id: string;
@@ -263,9 +264,9 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
     <>
       <aside className={cn("ml-auto w-65 top-(--header-height) sticky md:block self-start h-full min-h-0 overflow-hidden", className)}>
         <nav className="flex h-full min-h-0 flex-col pt-12">
-          <span className="text-md font-semibold text-foreground-50">
-            On this page
-          </span>
+          <h3 className="flex items-center gap-3 text-header-sm text-foreground-200">
+            <FaList /> Table of Contents
+          </h3>
           <Divider variant="dashed" spacing="lg" />
           <div className="mt-2 flex min-h-0 flex-1 overflow-hidden max-h-160">
             <Scroll inline fade-y ref={scrollRef} className="w-full h-full min-h-0 max-h-160 overflow-auto">
@@ -289,7 +290,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
                         : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50"
                     )}
                   >
-                    <span className="text-xs whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
+                    <span className="tracking-(--letter-spacing-md) text-xs whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
                       {item.title}
                     </span>
                   </button>

@@ -122,8 +122,6 @@
   --letter-spacing-normal: var(--letter-spacing-base);
   --letter-spacing-wide: var(--letter-spacing-lg);
 
-  /* Heading tracking baseline; keep in sync with DEFAULT_HEADING_TRACKING_EM. */
-  --letter-spacing-header-sm: 0.0060em;
   --letter-spacing-header-md: 0.0060em;
   --letter-spacing-header-lg: 0.0060em;
   --letter-spacing-header-xl: 0.0060em;

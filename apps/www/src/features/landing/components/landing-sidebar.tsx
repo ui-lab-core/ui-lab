@@ -111,12 +111,17 @@ export function LandingSidebar() {
                     <Tooltip position='right' key={navItem.id} content="Under Construction" showArrow={true}>
                       <div className='relative'>
                         <button
-                          className="opacity-60 flex items-center gap-3 pl-0.5 pr-2 py-0.5 text-xs font-semibold rounded-full text-foreground-400 border border-transparent"
+                          className="opacity-60 flex w-full items-center gap-3 pl-0.5 pr-2 py-0.5 text-xs font-semibold rounded-full text-foreground-400 border border-transparent"
                         >
                           <div className="w-10 h-10 bg-background-800 border border-background-700 rounded-sm flex items-center justify-center text-foreground-300">
                             <Icon className="w-5 h-5" />
                           </div>
                           <span className="font-semibold">Community</span>
+                          <span className="ml-auto flex items-center -space-x-2" aria-hidden="true">
+                            <span className="h-7.5 w-7.5 shrink-0 rounded-full border-1 border-background-950 bg-background-700" />
+                            <span className="h-7.5 w-7.5 shrink-0 rounded-full border-1 border-background-950 bg-background-700" />
+                            <span className="h-7.5 w-7.5 shrink-0 rounded-full border-1 border-background-950 bg-background-700" />
+                          </span>
                         </button>
                       </div>
                     </Tooltip>

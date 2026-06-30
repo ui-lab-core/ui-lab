@@ -53,7 +53,7 @@ export default function Header({
 }: HeaderProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
+  const { setIsCommandPaletteOpen } = useApp();
   const { toggleChat, isOpen: isChatOpen } = useChat();
   const { toggleSidebar } = useSidebarToggle();
   const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
