@@ -12,6 +12,7 @@ const CommandPalette = dynamic(
 );
 import { Logo } from "@/features/layout/components/logo";
 import { Input, Divider, Tabs, Button, Tooltip } from "ui-lab-components";
+import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { useChat } from "@/features/chat/context/chat-context";
 import { cn } from "@/shared/lib/utils";
@@ -53,7 +54,7 @@ export default function Header({
 }: HeaderProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { setIsCommandPaletteOpen } = useApp();
+  const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
   const { toggleChat, isOpen: isChatOpen } = useChat();
   const { toggleSidebar } = useSidebarToggle();
   const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
@@ -149,14 +150,16 @@ export default function Header({
 
           <div className="flex-1 flex justify-center md:pr-6 pl-4 lg:pr-0 lg:pr-12  max-w-sm">
             <div className="hidden lg:block relative flex-1 items-center">
-              <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
-                <Input
-                  placeholder="Search..."
-                  icon={<LuSearch strokeWidth={3.0} className="-translate-y-px" size={16} />}
-                  onClick={() => setIsCommandPaletteOpen(true)}
-                  readOnly
-                />
-              </Tooltip>
+              {featureFlags.commandPalette ? (
+                <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
+                  <Input
+                    placeholder="Search..."
+                    icon={<LuSearch strokeWidth={3.0} className="-translate-y-px" size={16} />}
+                    onClick={() => setIsCommandPaletteOpen(true)}
+                    readOnly
+                  />
+                </Tooltip>
+              ) : null}
             </div>
 
             {/* AI Chat: This comes later */}
@@ -176,16 +179,18 @@ export default function Header({
 
           <div className="flex items-center gap-2 shrink-0">
             <div className="lg:hidden flex items-center justify-end">
-              <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
-                <Button
-                  variant="ghost"
-                  className="text-foreground-300 hover:text-foreground-300 transition-colors"
-                  aria-label="Command palette"
-                  styles="p-2"
-                  icon={{ left: <LuSearch strokeWidth={3.0} size={16} /> }}
-                  onClick={() => setIsCommandPaletteOpen(true)}
-                />
-              </Tooltip>
+              {featureFlags.commandPalette ? (
+                <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
+                  <Button
+                    variant="ghost"
+                    className="text-foreground-300 hover:text-foreground-300 transition-colors"
+                    aria-label="Command palette"
+                    styles="p-2"
+                    icon={{ left: <LuSearch strokeWidth={3.0} size={16} /> }}
+                    onClick={() => setIsCommandPaletteOpen(true)}
+                  />
+                </Tooltip>
+              ) : null}
             </div>
 
             <div className="hidden lg:flex items-center gap-2">
@@ -238,7 +243,7 @@ export default function Header({
         </div>
       </header>
 
-      <CommandPalette />
+      {featureFlags.commandPalette && isCommandPaletteOpen ? <CommandPalette /> : null}
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} pathname={pathname} />
     </>
   );

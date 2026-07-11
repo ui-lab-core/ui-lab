@@ -1,5 +1,5 @@
 const NAMES = {
-  sans: ["Karla", "Geist Sans", "Inter", "Nunito Sans", "Work Sans", "Readex Pro"],
+  sans: ["Karla", "Geist Sans", "Inter", "Nunito Sans", "Roboto", "Work Sans", "Readex Pro"],
   mono: ["Ioskeley Mono", "Geist Mono", "JetBrains Mono"],
 } as const;
 
@@ -96,9 +96,9 @@ const SANS: FontDefinition[] = [
       body: {
         fontWeightScale: 1.04,
         typeSizeRatio: 1.200,
-        fontSizeScale: 0.95,
+        fontSizeScale: 0.94,
         lineHeight: 1.580,
-        minFontSizePx: 13.30,
+        minFontSizePx: 13.20,
         letterSpacingScale: 3.2,
       },
       header: {
@@ -127,10 +127,10 @@ const SANS: FontDefinition[] = [
       body: {
         fontWeightScale: 1.2,
         typeSizeRatio: 1.185,
-        fontSizeScale: 0.985,
+        fontSizeScale: 1.000,
         lineHeight: 1.500,
         minFontSizePx: 13.75,
-        letterSpacingScale: 3.25,
+        letterSpacingScale: 1.20,
       },
       header: {
         fontWeightScale: 0.92,
@@ -147,6 +147,37 @@ const SANS: FontDefinition[] = [
         lineHeight: 1.46,
         minFontSizePx: 12.2,
         letterSpacingScale: 1.8,
+      },
+    },
+  },
+  {
+    name: "Roboto",
+    family: '"Roboto Variable", system-ui, sans-serif',
+    isDefault: false,
+    metrics: {
+      body: {
+        fontWeightScale: 0.87,
+        typeSizeRatio: 1.200,
+        fontSizeScale: 0.98,
+        lineHeight: 1.550,
+        minFontSizePx: 13.5,
+        letterSpacingScale: 2.15,
+      },
+      header: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.175,
+        fontSizeScale: 0.95,
+        lineHeight: 1.580,
+        minFontSizePx: 10.12,
+        letterSpacingScale: 3,
+      },
+      mono: {
+        fontWeightScale: 0.86,
+        typeSizeRatio: 1.175,
+        fontSizeScale: 0.95,
+        lineHeight: 1.550,
+        minFontSizePx: 10.12,
+        letterSpacingScale: 3,
       },
     },
   },
@@ -218,12 +249,12 @@ const SANS: FontDefinition[] = [
     isDefault: false,
     metrics: {
       body: {
-        fontWeightScale: 0.80,
+        fontWeightScale: 0.90,
         typeSizeRatio: 1.200,
         fontSizeScale: 0.97,
         lineHeight: 1.550,
         minFontSizePx: 13.55,
-        letterSpacingScale: 2.5,
+        letterSpacingScale: 2.60,
       },
       header: {
         fontWeightScale: 0.9,

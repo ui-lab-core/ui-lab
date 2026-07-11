@@ -190,7 +190,7 @@ export function Table<T extends object>({
                       {expandRender && (
                         <td className="px-4 py-3 text-right">
                           <Expand
-                            isExpanded={isExpanded}
+                            expanded={isExpanded}
                             onExpandedChange={() => toggleRow(rowKey)}
                           >
                             <Expand.Trigger
@@ -210,7 +210,7 @@ export function Table<T extends object>({
                           colSpan={columns.length + 1}
                           className="px-4 py-3"
                         >
-                          <Expand isExpanded={isExpanded}>
+                          <Expand expanded={isExpanded}>
                             <Expand.Content>{expandRender(row)}</Expand.Content>
                           </Expand>
                         </td>

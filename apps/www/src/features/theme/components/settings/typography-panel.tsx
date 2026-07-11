@@ -344,7 +344,7 @@ export const TypographyPanel = memo(
                 label="Letter Spacing"
                 value={bodyLetterSpacingScale}
                 min={0}
-                max={3.5}
+                max={3.0}
                 step={0.05}
                 unit="x"
                 onChange={(scale) => onTypographyChange({ bodyLetterSpacingScale: scale })}

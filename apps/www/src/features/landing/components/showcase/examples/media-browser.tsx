@@ -157,8 +157,7 @@ export function FileBrowser() {
           <div>
             <div className="flex items-center gap-3 px-4 py-2.5 bg-background-300 border-b border-background-700">
               <Checkbox
-                checked={isAllSelected}
-                isIndeterminate={isSomeSelected}
+                state={{ checked: isAllSelected, indeterminate: isSomeSelected }}
                 onChange={toggleSelectAll}
               />
               <span className="text-foreground-500 flex-1">File</span>
@@ -169,7 +168,7 @@ export function FileBrowser() {
               <div key={file.name} className="group">
                 <div className="flex items-center gap-3 px-4 py-2.5 hover:bg-background-300 transition-colors">
                   <Checkbox
-                    checked={state.selected.has(file.name)}
+                    state={{ checked: state.selected.has(file.name) }}
                     onChange={() => toggleSelect(file.name)}
                   />
                   <span className="text-foreground-100 flex-1 truncate">{file.name}</span>
@@ -192,7 +191,7 @@ export function FileBrowser() {
               >
                 <div className="absolute top-1.5 left-1.5">
                   <Checkbox
-                    checked={state.selected.has(file.name)}
+                    state={{ checked: state.selected.has(file.name) }}
                     onChange={() => toggleSelect(file.name)}
                   />
                 </div>

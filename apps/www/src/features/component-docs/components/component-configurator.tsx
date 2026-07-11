@@ -230,9 +230,9 @@ export function ComponentConfigurator({
 
         {controls.length > 0 && (
           <>
-            <Divider orientation="vertical" />
+            <Divider spacing="none" orientation="vertical" />
 
-            <div className="p-4 w-full md:w-48 md:shrink-0 space-y-3">
+            <div className="p-2 w-full md:w-48 md:shrink-0 space-y-3">
               {controls.map((control) => {
                 if (control.name === "easing") return null;
 

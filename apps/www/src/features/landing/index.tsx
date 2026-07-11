@@ -12,13 +12,13 @@ import { Anchor, Button } from "ui-lab-components";
 function HeroSection() {
   return (
     <>
-      <div className="p-4 z-10 mt-12 sm:mt-0 overflow-hidden">
+      <div className="z-10 mt-12 sm:mt-0 overflow-hidden">
         <div
-          className="grid-paper overflow-hidden border border-background-700 rounded-md relative h-full flex flex-col justify-between md:justify-center">
+          className="grid-paper overflow-hidden relative h-full flex flex-col justify-between md:justify-center">
 
           <div className="flex items-center text-left flex-col pt-8 md:pt-0">
             <div>
-              <h1 className="isolate mb-2 tracking-normal text-4xl max-w-[20ch] sm:max-w-[22ch] text-foreground-200">
+              <h1 className="isolate mb-2 tracking-normal text-[3em] max-w-[20ch] sm:max-w-[22ch] text-foreground-200">
                 Make your interfaces stand out in the era of slop.
               </h1>
               <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch]">

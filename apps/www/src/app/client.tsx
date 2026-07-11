@@ -9,7 +9,7 @@ import { AppProvider, useApp } from "@/features/theme/lib/app-context";
 
 function KeyboardShortcuts() {
   const { toggleChat } = useChat();
-  const { isSettingsPanelOpen, setIsSettingsPanelOpen, currentThemeMode, currentThemeColors, setCurrentThemeMode, setCurrentThemeColors } = useApp();
+  const { isSettingsPanelOpen, setIsSettingsPanelOpen, currentThemeMode, currentThemeColors, setCurrentThemeMode, setCurrentThemeColors, setIsCommandPaletteOpen } = useApp();
   const { applyAndPersistModeAndColors } = useThemeStorage({
     onColorsChange: setCurrentThemeColors,
     onModeChange: setCurrentThemeMode,
@@ -54,6 +54,12 @@ function KeyboardShortcuts() {
         return;
       }
 
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen(true);
+        return;
+      }
+
       // if (e.ctrlKey && (e.key === "d" || e.key === "D")) {
       //   e.preventDefault();
       //   window.dispatchEvent(new Event(PERF_OVERLAY_TOGGLE_EVENT));
@@ -74,7 +80,13 @@ function KeyboardShortcuts() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSettingsPanelOpen, toggleChat, setIsSettingsPanelOpen, toggleThemeMode]);
+  }, [
+    isSettingsPanelOpen,
+    setIsCommandPaletteOpen,
+    setIsSettingsPanelOpen,
+    toggleChat,
+    toggleThemeMode,
+  ]);
 
   return null;
 }

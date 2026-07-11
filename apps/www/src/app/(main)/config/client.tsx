@@ -129,21 +129,21 @@ function PreviewCanvas() {
 
       <ExampleCard>
         <Flex direction="column" className="gap-3">
-          <Checkbox defaultChecked label="Connect domain" />
+          <Checkbox checked label="Connect domain" />
           <Checkbox label="Invite team" />
-          <Switch defaultSelected aria-label="Notifications" />
+          <Switch checked aria-label="Notifications" />
         </Flex>
       </ExampleCard>
 
       <ExampleCard>
-        <Radio.Group defaultValue="annual" label="Billing">
+        <Radio.Group value="annual" label="Billing">
           <Radio.Item value="monthly" label="Monthly" />
           <Radio.Item value="annual" label="Annual" />
         </Radio.Group>
       </ExampleCard>
 
       <ExampleCard>
-        <Select defaultSelectedKey="pro" label="Pro">
+        <Select value="pro" label="Pro">
           <Select.Trigger>
             <Select.Value placeholder="Plan" />
           </Select.Trigger>
@@ -158,11 +158,11 @@ function PreviewCanvas() {
       </ExampleCard>
 
       <ExampleCard>
-        <Slider defaultValue={64} aria-label="Review threshold" />
+        <Slider value={64} aria-label="Review threshold" />
       </ExampleCard>
 
       <ExampleCard>
-        <Tabs default="rollout">
+        <Tabs value="rollout">
           <Tabs.List>
             <Tabs.Trigger value="rollout">Rollout</Tabs.Trigger>
             <Tabs.Trigger value="segments">Segments</Tabs.Trigger>
@@ -248,9 +248,9 @@ function PreviewCanvas() {
       </ExampleCard>
 
       <ExampleCard>
-        <Expand title="Advanced settings" defaultExpanded>
+        <Expand title="Advanced settings" expanded>
           <Flex direction="column" className="gap-3 p-3">
-            <Checkbox defaultChecked label="Notify voters" />
+            <Checkbox checked label="Notify voters" />
             <Checkbox label="Create Linear task" />
           </Flex>
         </Expand>
@@ -321,7 +321,7 @@ function ExportContent({
         </Button>
       </Flex>
 
-      <Tabs default="theme">
+      <Tabs value="theme">
         <Tabs.List>
           <Tabs.Trigger value="theme">theme.css</Tabs.Trigger>
           <Tabs.Trigger value="globals">globals.css</Tabs.Trigger>
@@ -357,7 +357,7 @@ function ExportContent({
         </Tabs.Content>
       </Tabs>
 
-      <Expand title="Setup" defaultExpanded={false}>
+        <Expand title="Setup" expanded={false}>
         <div className="space-y-4 p-4">
           <div className="space-y-1">
             <Label>1. Install the package</Label>
@@ -542,7 +542,7 @@ export default function ConfigPage() {
         </section>
       </div>
       <Modal
-        isOpen={isExportOpen}
+        open={isExportOpen}
         onOpenChange={setIsExportOpen}
         title="Export theme"
         className="max-w-[min(92vw,72rem)]"

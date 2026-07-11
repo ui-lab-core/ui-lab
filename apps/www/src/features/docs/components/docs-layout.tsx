@@ -21,7 +21,7 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
       <div
         id={ROOT_ID}
         data-chat-open="false"
-        className="docs-layout-root grid grid-cols-1 w-full max-w-(--page-width) mx-auto min-h-[calc(100vh-var(--header-height))] lg:grid-cols-[auto_1fr]"
+        className="border-r border-background-700/40 docs-layout-root grid grid-cols-1 w-full max-w-(--page-width) mx-auto min-h-[calc(100vh-var(--header-height))] lg:grid-cols-[auto_1fr]"
       >
         <DocsLayoutChatSync rootId={ROOT_ID} />
         <Sidebar />

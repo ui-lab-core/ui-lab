@@ -50,7 +50,7 @@ function ExpandGroup({
   children: React.ReactNode;
 }) {
   return (
-    <Expand isExpanded={isExpanded} onExpandedChange={onToggle} className="rounded-sm">
+    <Expand expanded={isExpanded} onExpandedChange={onToggle} className="rounded-sm">
       <Expand.Trigger className="text-xs" title={<span className={triggerBold ? 'font-medium' : undefined}>{name}</span>} />
       <Expand.Content className="pl-3">
         <div className="space-y-0.5 mt-1">{children}</div>

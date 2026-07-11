@@ -2,6 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { HeaderClient } from "@/features/layout/components/header/client";
+import { featureFlags } from "@/shared/config/feature-flags";
+import { useChat } from "@/features/chat/context/chat-context";
 import { SidebarProvider } from "@/features/layout/hooks/sidebar-context";
 import { LandingSidebarProvider } from "@/features/layout/hooks/landing-sidebar-context";
 import { DocsNavigationProvider } from "@/features/navigation/lib/docs-navigation-context";
@@ -19,6 +21,8 @@ export function ClientShell({
   children: React.ReactNode;
   docsNavigationData: DocsNavigationData;
 }) {
+  const { isOpen: isChatOpen } = useChat();
+
   return (
     <DocsNavigationProvider data={docsNavigationData}>
       <SidebarProvider>
@@ -27,7 +31,7 @@ export function ClientShell({
           <main className="flex-1">
             {children}
           </main>
-          <ChatWindow />
+          {featureFlags.chat && isChatOpen ? <ChatWindow /> : null}
         </LandingSidebarProvider>
       </SidebarProvider>
     </DocsNavigationProvider>

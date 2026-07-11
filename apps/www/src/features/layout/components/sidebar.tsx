@@ -224,7 +224,7 @@ export function Sidebar({
                         <Icon className="w-5 h-5" />
                       </div>
                       }
-                      <span className='text-xs font-body-medium'>{navItem.label}</span>
+                      <span className='text-xs tracking-(--letter-spacing-md) font-body-medium'>{navItem.label}</span>
                     </Link>
                   );
                 })}
