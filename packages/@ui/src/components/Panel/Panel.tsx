@@ -17,14 +17,15 @@ import { PanelContext, PanelGroupContext } from './panel.context'
 import { StyleValue, cn } from '../../lib/utils' // Added/Modified
 import { createStylesResolver } from '../../lib/styles' // Added
 import styles from './Panel.module.css'
+import { useControlledState } from '@/hooks/useControlledState'
 
 const resolvePanelBaseStyles = createStylesResolver(['root'] as const) // Added
 
 /** Flexible multi-panel layout with header, content, footer, and sidebar */
 const PanelRoot = React.forwardRef<HTMLDivElement, PanelProps>(
-  ({ spacing = 'md', variant = 'default', className, children, styles: stylesProp, ...props }, ref) => { // Modified: added `styles: stylesProp`
+  ({ spacing = 'md', variant = 'default', open, state: controlledState, className, children, styles: stylesProp, ...props }, ref) => { // Modified: added `styles: stylesProp`
     const [isStacked, setIsStacked] = useState(false)
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [sidebarOpen, setSidebarOpen] = useControlledState(controlledState?.open, open, true)
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {

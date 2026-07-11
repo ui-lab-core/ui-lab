@@ -283,8 +283,8 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
       onPointerDown={handlePointerDown}
     >
       {Icon && (
-        <div className={cn("icon-wrap", css["icon-wrap"], resolved.iconWrap)}>
-          <Icon className={cn("icon", css.icon, resolved.icon)} />
+        <div className={cn("icon", css["icon-wrap"], resolved.iconWrap)}>
+          <Icon className={cn("glyph", css.icon, resolved.icon)} />
         </div>
       )}
       <div className={cn('content', css.content, resolved.content)}>

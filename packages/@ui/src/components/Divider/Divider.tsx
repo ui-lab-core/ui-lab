@@ -113,7 +113,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
       return "none";
     })();
     const getMaskStyles = (): React.CSSProperties => {
-      const baseStyles: React.CSSProperties = { backgroundColor: "var(--divider-background)" };
+      const baseStyles: React.CSSProperties = { backgroundColor: "var(--background)" };
       if (variant === "solid") return baseStyles
 
       const svgDataUri =

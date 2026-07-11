@@ -13,11 +13,13 @@ import { cn } from "@/lib/utils";
 import { useTooltipTriggerState } from "react-stately";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { type HintValue, hasHint, renderHint } from "@/lib/hint";
 import { Frame } from "../Frame";
 import { Badge } from "../Badge";
 import css from "./Tooltip.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { type StyleValue } from "@/lib/utils";
+import { useControlledState } from "@/hooks/useControlledState";
 
 const ARROW_PATH = "M 0 0 C 3 0 4 -9 6 -9 C 8 -9 9 0 12 0";
 const ARROW_WIDTH = 12;
@@ -103,6 +105,7 @@ function resolveTooltipStyles(styles: TooltipStylesProp | undefined) {
 }
 
 export interface TooltipProps {
+  state?: TooltipState;
   children: React.ReactNode;
   /** Content to display inside the tooltip */
   content: React.ReactNode;
@@ -114,17 +117,21 @@ export interface TooltipProps {
   delay?: number;
   /** Whether the tooltip is disabled */
   isDisabled?: boolean;
-  /** Controlled open state */
+  /** Initial open state. For controlled usage, pass `state={{ open }}`. */
+  open?: boolean;
+  /** Controlled state. */
+  /** @deprecated Use `open`. */
   isOpen?: boolean;
   /** Called when the tooltip opens or closes */
   onOpenChange?: (isOpen: boolean) => void;
   /** Whether to render a directional arrow pointing at the trigger */
   showArrow?: boolean;
-  /** Keyboard shortcut or hint text rendered as a Badge at the end of the tooltip */
-  hint?: string;
+  /** Keyboard shortcut or hint rendered as a Badge at the end of the tooltip. An array renders its segments joined by a `+` divider. */
+  hint?: HintValue;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: TooltipStylesProp;
 }
+export interface TooltipState { open?: boolean }
 
 const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
   (
@@ -135,7 +142,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       className,
       delay = DEFAULT_SHOW_DELAY_MS,
       isDisabled = false,
-      isOpen: controlledIsOpen,
+      open,
+      state: controlledState,
+      isOpen: legacyIsOpen,
       onOpenChange,
       showArrow = false,
       hint,
@@ -161,13 +170,15 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     const onOpenChangeRef = useRef(onOpenChange);
     onOpenChangeRef.current = onOpenChange;
 
+    const [isOpen, setOpen] = useControlledState(controlledState?.open, open ?? legacyIsOpen, false);
     const state = useTooltipTriggerState({
-      isOpen: controlledIsOpen,
+      isOpen,
       onOpenChange: useCallback((open: boolean) => {
+        setOpen(open);
         if (open) lastOpenTime = Date.now();
         else lastCloseTime = Date.now();
         onOpenChangeRef.current?.(open);
-      }, []),
+      }, [setOpen]),
       delay,
       isDisabled,
     });
@@ -367,9 +378,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                   pathWidth={showArrow ? ARROW_WIDTH : undefined}
                   style={{ "--frame-radius": "8px" } as React.CSSProperties}
                 >
-                  <div className={cn("frame", css.frame, resolved.frame)} data-hint={hint ? "true" : undefined}>
+                  <div className={cn("frame", css.frame, resolved.frame)} data-hint={hasHint(hint) ? "true" : undefined}>
                     {content}
-                    {hint && <Badge variant="secondary" className={cn(css.hint, resolved.hint)}>{hint}</Badge>}
+                    {hasHint(hint) && <Badge variant="secondary" className={cn(css.hint, resolved.hint)}>{renderHint(hint)}</Badge>}
                   </div>
                 </Frame>
               </div>

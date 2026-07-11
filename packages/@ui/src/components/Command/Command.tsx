@@ -15,8 +15,10 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Search } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
+import { useControlledState } from "@/hooks/useControlledState";
 
 import { Card } from "../Card";
+import { Frame } from "../Frame";
 import { Scroll } from "../Scroll";
 import { Badge } from "../Badge";
 import { Input, type InputProps } from "../Input";
@@ -109,8 +111,10 @@ function scoreCommandRelevance(
 }
 
 export interface CommandProps {
-  /** Whether the command palette is open */
+  state?: CommandState;
+  /** Initial open state. For controlled usage, pass `state={{ open }}`. */
   open?: boolean;
+  /** Controlled state. `query` controls the search text. */
   /** Called when the open state changes */
   onOpenChange?: (open: boolean) => void;
   /** Additional CSS class for the palette dialog */
@@ -124,16 +128,21 @@ export interface CommandProps {
   /** Child elements rendered inside the palette */
   children?: React.ReactNode;
 }
+export interface CommandState { open?: boolean; query?: string }
 
 const Command = React.forwardRef<HTMLDivElement, CommandProps>(
   (
-    { open = false, onOpenChange, className, styles: commandStyles, items = [], filter, children },
+    { open, state: controlledState, onOpenChange, className, styles: commandStyles, items = [], filter, children },
     ref,
   ) => {
     const [mounted, setMounted] = React.useState(false);
+    const [isOpen, setOpen] = useControlledState(controlledState?.open, open, false);
     const overlayState = useOverlayTriggerState({
-      isOpen: open,
-      onOpenChange,
+      isOpen,
+      onOpenChange: (next) => {
+        setOpen(next);
+        onOpenChange?.(next);
+      },
     });
 
     const modalRef = React.useRef<HTMLDivElement>(null);
@@ -151,7 +160,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
 
     const [focusedKey, setFocusedKey] = React.useState<Key | null>(null);
     const [itemCount, setItemCount] = React.useState(0);
-    const [searchValue, setSearchValue] = React.useState("");
+    const [searchValue, setSearchValue] = useControlledState(controlledState?.query, undefined, "");
 
     const filteredItems = items.filter((cmd) => !filter || filter(cmd, searchValue));
 
@@ -394,7 +403,7 @@ const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
       <Card.Header className={styles["search"]}>
         <Input
           ref={inputRef}
-          value={value as string}
+          state={{ value: value as string }}
           onChange={handleChange}
           variant="ghost"
           icon={icon ?? <Search className="w-4 h-4" />}
@@ -428,7 +437,7 @@ const CommandListComponent = React.forwardRef<
   const { scrollableRef } = useCommandContext();
 
   return (
-    <div className={cn(styles["inner"], className)}>
+    <Frame edges="top" strokeAlign="outside" className={cn(styles["inner"], className)}>
       <Scroll
         ref={useMergeRefs(ref, scrollableRef)}
         className={styles["list"]}
@@ -443,7 +452,7 @@ const CommandListComponent = React.forwardRef<
           )}
         </div>
       </Scroll>
-    </div>
+    </Frame>
   );
 });
 

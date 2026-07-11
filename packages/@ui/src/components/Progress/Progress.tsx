@@ -246,8 +246,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           aria-valuemax={max}
           aria-label={label}
           aria-disabled={disabled || undefined}
-          className={cn("track", variant, css.track, className, resolved.track)}
-          data-variant={variant}
+          className={cn("track", css.track, className, resolved.track)}
           data-indeterminate={indeterminate ? "true" : "false"}
           data-disabled={disabled ? "true" : undefined}
           onPointerDown={handlePointerDown}
@@ -257,14 +256,13 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           onLostPointerCapture={handleLostPointerCapture}
           {...props}
         >
-          <div className={css['range-clip']}>
-            <div
-              className={cn("range", css.range, resolved.range)}
-              data-animated={animated || indeterminate ? "true" : "false"}
-              data-indeterminate={indeterminate ? "true" : "false"}
-              style={indeterminate ? undefined : { width: `${percentage}%` }}
-            />
-          </div>
+          <div
+            className={cn("range", css.range, resolved.range)}
+            data-variant={variant}
+            data-animated={animated || indeterminate ? "true" : "false"}
+            data-indeterminate={indeterminate ? "true" : "false"}
+            style={indeterminate ? undefined : { width: `${percentage}%` }}
+          />
           {showControls && !indeterminate && (
             <div
               className={cn("thumb", css.thumb, resolved.thumb)}

@@ -2,16 +2,16 @@ import { describe, it, expect } from 'vitest'
 import { renderListWithItems, getListItems, getListContainer } from './List.test-utils'
 
 describe('List.accessibility', () => {
-  it('has role="list" on container', () => {
+  it('has role="listbox" on container', () => {
     const container = renderListWithItems([])
     const listRoot = getListContainer(container)
-    expect(listRoot).toHaveAttribute('role', 'list')
+    expect(listRoot).toHaveAttribute('role', 'listbox')
   })
 
-  it('has role="listitem" on items', () => {
+  it('has role="option" on items', () => {
     const container = renderListWithItems([{ key: '1', label: 'Item 1', value: '1' }])
     const listItems = getListItems(container)
-    expect(listItems[0]).toHaveAttribute('role', 'listitem')
+    expect(listItems[0]).toHaveAttribute('role', 'option')
   })
 
   it('reflects selected state via data-selected', () => {

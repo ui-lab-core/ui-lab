@@ -81,3 +81,34 @@ describe('Modal scroll lock', () => {
     expect(document.documentElement.style.overflow).toBe('')
   })
 })
+
+describe('Modal opening and backdrop', () => {
+  it('opens uncontrolled via `open` and renders the .modal > .backdrop and .panel chain', () => {
+    render(
+      <Modal open title="Hello">
+        body
+      </Modal>
+    )
+
+    const modal = document.querySelector('.modal') as HTMLElement
+    expect(modal).toBeTruthy()
+    const backdrop = modal.querySelector(':scope > .backdrop')
+    expect(backdrop).toBeTruthy()
+    const panel = modal.querySelector(':scope > .panel') as HTMLElement
+    expect(panel.querySelector('.header .title')).toBeTruthy()
+  })
+
+  it('opens and closes controlled via state and backdrop dismissal', () => {
+    const onOpenChange = vi.fn()
+    const { rerender } = render(
+      <Modal state={{ open: false }} onOpenChange={onOpenChange} title="T">x</Modal>
+    )
+    expect(document.querySelector('.modal')).toBeNull()
+
+    rerender(<Modal state={{ open: true }} onOpenChange={onOpenChange} title="T">x</Modal>)
+    expect(document.querySelector('.modal')).toBeTruthy()
+
+    fireEvent.mouseDown(document.querySelector('.backdrop') as HTMLElement)
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+})

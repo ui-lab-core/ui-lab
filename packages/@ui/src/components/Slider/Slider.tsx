@@ -11,6 +11,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
 
 import css from "./Slider.module.css";
 
@@ -24,6 +25,7 @@ export interface SliderStyleSlots {
 }
 
 export type SliderStylesProp = StylesProp<SliderStyleSlots>;
+export interface SliderState { value?: number | number[] }
 
 const resolveSliderBaseStyles = createStylesResolver([
   "root",
@@ -57,7 +59,9 @@ export interface SliderProps
   max?: number;
   /** Step increment between values. */
   step?: number;
-  /** Initial value or values for uncontrolled usage. */
+  /** Initial value or values. For controlled usage, pass `state={{ value }}`. */
+  state?: SliderState;
+  /** @deprecated Use `value`. */
   defaultValue?: number | number[];
   /** Controlled value or values for the slider thumbs. */
   value?: number | number[];
@@ -299,6 +303,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       style,
       defaultValue,
       value: controlledValue,
+      state: controlledState,
       onValueChange,
       min = 0,
       max = 100,
@@ -321,14 +326,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const activeDragRef = React.useRef<{ pointerId: number; thumbIndex: number } | null>(null);
     const [draggingThumbIndex, setDraggingThumbIndex] = React.useState<number | null>(null);
 
-    const [internalValues, setInternalValues] = React.useState<number[]>(
-      () => normalizeValue(defaultValue) ?? normalizeValue(controlledValue) ?? [min]
+    const [normalizedValues, setInternalValues] = useControlledState(
+      normalizeValue(controlledState?.value),
+      normalizeValue(controlledValue),
+      normalizeValue(defaultValue) ?? [min],
     );
-
-    const isControlled = controlledValue !== undefined;
-    const normalizedValues = isControlled
-      ? normalizeValue(controlledValue) ?? [min]
-      : internalValues;
     const values = normalizedValues.length > 0 ? normalizedValues : [min];
 
     const mergedRef = useMergeRefs(ref, rootRef);
@@ -353,13 +355,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         const nextValues = [...values];
         nextValues[index] = newValue;
 
-        if (!isControlled) {
-          setInternalValues(nextValues);
-        }
+        setInternalValues(nextValues);
 
         onValueChange?.(nextValues);
       },
-      [isControlled, onValueChange, values]
+      [onValueChange, setInternalValues, values]
     );
 
     const updateValueFromPointer = React.useCallback(
@@ -540,14 +540,12 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-orientation={orientation}
         >
           <div {...indicatorProps} data-focus-indicator="track" />
-          <div className={css["range-clip"]}>
-            <div
-              className={cn("range", css.range, resolved.range)}
-              data-slider-range="true"
-              data-disabled={disabled ? "true" : undefined}
-              style={rangeStyle}
-            />
-          </div>
+          <div
+            className={cn("range", css.range, resolved.range)}
+            data-slider-range="true"
+            data-disabled={disabled ? "true" : undefined}
+            style={rangeStyle}
+          />
           {values.map((sliderValue, index) => (
             <SliderThumb
               key={index}

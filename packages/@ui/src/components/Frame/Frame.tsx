@@ -24,12 +24,16 @@ export interface FrameProps extends React.HTMLAttributes<HTMLDivElement> {
   shapeMode?: "indent" | "extend";
   /** Controls the line style of the frame border and notch stroke */
   pathStroke?: "solid" | "dashed" | "dotted";
+  /** Which edges of the frame render a border stroke. A single edge keeps its corner arcs. */
+  edges?: "all" | "top" | "bottom" | "left" | "right";
+  /** Where the border stroke sits relative to the frame bounds, like Figma's stroke position */
+  strokeAlign?: "center" | "inside" | "outside";
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: FrameStylesProp;
 }
 
 const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
-  ({ children, className, styles, style, path, pathWidth = 0, side = "top", shapeMode = "indent", pathStroke = "solid", ...props }, ref) => {
+  ({ children, className, styles, style, path, pathWidth = 0, side = "top", shapeMode = "indent", pathStroke = "solid", edges = "all", strokeAlign = "center", ...props }, ref) => {
     const maskId = useId();
     const borderMaskId = `border-${maskId}`;
     const bgMaskId = `bg-${maskId}`;
@@ -52,6 +56,31 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
 
     const { x, y, rotate } = positionMap[side];
 
+    // Region masked out of the border stroke when only one edge is kept.
+    // Starts past the corner radius so the kept edge retains its corner arcs.
+    const edgeMaskStyle: React.CSSProperties | null =
+      edges === "all"
+        ? null
+        : {
+            top: { x: "-10%", y: "var(--frame-radius)", width: "120%", height: "120%" },
+            bottom: { x: "-10%", y: "-10%", width: "120%", height: "calc(110% - var(--frame-radius))" },
+            left: { x: "var(--frame-radius)", y: "-10%", width: "120%", height: "120%" },
+            right: { x: "-10%", y: "-10%", width: "calc(110% - var(--frame-radius))", height: "120%" },
+          }[edges];
+
+    // Extra unrounded shape region covering the half opposite the kept edge,
+    // so corner rounding only applies to the kept edge without painting
+    // outside the frame bounds.
+    const edgeShapeProps: React.SVGProps<SVGRectElement> | null =
+      edges === "all"
+        ? null
+        : {
+            top: { x: "0", y: "50%", width: "100%", height: "50%" },
+            bottom: { x: "0", y: "0", width: "100%", height: "50%" },
+            left: { x: "50%", y: "0", width: "50%", height: "100%" },
+            right: { x: "0", y: "0", width: "50%", height: "100%" },
+          }[edges];
+
     const resolved = resolveFrameBaseStyles(styles);
 
     return (
@@ -73,6 +102,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
             {/* Mask for the Content/Background: Cuts the path shape (curvature) */}
             <mask id={maskId}>
               <rect width="100%" height="100%" fill="white" className={css.shape} />
+              {edgeShapeProps && <rect fill="white" {...edgeShapeProps} />}
               {path && (
                 <svg x={x} y={y} overflow="visible">
                   <g transform={`rotate(${rotate}) scale(1.010, 0.990)`}>
@@ -89,6 +119,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
             {/* Mask for the Border: Cuts a clean gap for the stroke connection */}
             <mask id={borderMaskId}>
               <rect x="-10%" y="-10%" width="120%" height="120%" fill="white" />
+              {edgeMaskStyle && <rect fill="black" style={edgeMaskStyle} />}
               {path && (
                 <svg x={x} y={y} overflow="visible">
                   <g transform={`rotate(${rotate})`}>
@@ -107,6 +138,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
             {/* Mask for the Background Fill (Union or Difference) */}
             <mask id={bgMaskId}>
               <rect width="100%" height="100%" fill="white" className={css.shape} />
+              {edgeShapeProps && <rect fill="white" {...edgeShapeProps} />}
               {path && (
                 <svg x={x} y={y} overflow="visible">
                   <g transform={`rotate(${rotate}) scale(1.010, 0.990)`}>
@@ -142,6 +174,16 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
             strokeWidth={borderStroke}
             mask={`url(#${borderMaskId})`}
             className={cn(css.shape, css.stroke)}
+            style={
+              strokeAlign === "center"
+                ? undefined
+                : ({
+                    x: `calc(var(--frame-stroke-width) / ${strokeAlign === "inside" ? 2 : -2})`,
+                    y: `calc(var(--frame-stroke-width) / ${strokeAlign === "inside" ? 2 : -2})`,
+                    width: `calc(100% ${strokeAlign === "inside" ? "-" : "+"} var(--frame-stroke-width))`,
+                    height: `calc(100% ${strokeAlign === "inside" ? "-" : "+"} var(--frame-stroke-width))`,
+                  } as React.CSSProperties)
+            }
             {...strokeDashProps}
           />
 

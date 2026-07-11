@@ -136,6 +136,23 @@ function isHTMLElement(value: Element | null): value is HTMLElement {
   return value instanceof HTMLElement
 }
 
+// Find an icon-sized Group.Button, looking through plain wrapper elements
+// (e.g. <div className="flex items-center"><Divider /><Group.Button size="icon" /></div>)
+function containsIconGroupButton(node: React.ReactNode, depth = 0): boolean {
+  if (depth > 3 || !React.isValidElement(node)) return false
+  const props = (node.props || {}) as Record<string, unknown>
+  if ((node.type as any)?.displayName === "Group.Button") {
+    return props.size === "icon"
+  }
+  // Only look through host elements and fragments, not arbitrary components
+  if (typeof node.type === "string" || node.type === React.Fragment) {
+    return React.Children.toArray(props.children as React.ReactNode).some(
+      (child) => containsIconGroupButton(child, depth + 1)
+    )
+  }
+  return false
+}
+
 // Root component
 /** Button group that groups related buttons together */
 const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
@@ -311,8 +328,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
               const childProps = React.isValidElement(child) ? (child.props as any) : {}
               const childClassName = childProps.className || ""
               const shouldGrow = childClassName.includes('w-full') || childClassName.includes('flex-1')
-              const childType = React.isValidElement(child) ? (child.type as any) : null
-              const isIconGroupButton = childType?.displayName === "Group.Button" && childProps.size === "icon"
+              const isIconGroupButton = containsIconGroupButton(child)
               return (
                 <div
                   key={`item-${index}`}

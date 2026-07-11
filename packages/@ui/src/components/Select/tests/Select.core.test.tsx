@@ -12,7 +12,7 @@ describe('Select.core', () => {
 
       await openSelect(trigger)
 
-      const list = document.querySelector('[role="list"][data-gap="xs"]')
+      const list = document.querySelector('[role="listbox"][data-gap="xs"]')
       expect(list).toBeInTheDocument()
     })
 

@@ -12,6 +12,7 @@ import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { resolveAccessibleLabel } from "@/lib/react-aria";
+import { useControlledState } from "@/hooks/useControlledState";
 
 import styles from "./Switch.module.css";
 
@@ -27,13 +28,21 @@ type SwitchStylesProp = StylesProp<SwitchStyleSlots>;
 
 const resolveSwitchBaseStyles = createStylesResolver(['root', 'track', 'thumb'] as const) as (stylesProp?: SwitchStylesProp) => SwitchStyleSlots;
 
+export interface SwitchState {
+  checked?: boolean;
+}
+
 export interface SwitchProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "onChange" | "checked" | "defaultChecked"> {
-  /** Controlled selected (on) state */
+  /** Initial checked state. For controlled usage, pass `state={{ checked }}`. */
+  checked?: boolean;
+  /** Controlled state. */
+  state?: SwitchState;
+  /** @deprecated Use `state={{ checked }}`. */
   isSelected?: boolean;
   /** Called when the switch is toggled */
   onChange?: (isSelected: boolean) => void;
-  /** Initial selected state for uncontrolled usage */
+  /** @deprecated Use `checked`. */
   defaultSelected?: boolean;
 
   /** Whether the switch is disabled */
@@ -50,7 +59,9 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     className,
     styles: stylesProp,
     isDisabled = false,
-    isSelected: controlledSelected,
+    checked,
+    state: controlledState,
+    isSelected: legacySelected,
     onChange,
     defaultSelected,
     size = "default",
@@ -58,10 +69,17 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
   },
     ref
   ) => {
-    const state = useToggleState({
-      isSelected: controlledSelected,
-      defaultSelected: defaultSelected ?? false,
-      onChange,
+    const [selected, setSelected] = useControlledState(
+      controlledState?.checked,
+      checked ?? legacySelected,
+      defaultSelected ?? false,
+    );
+    const toggleState = useToggleState({
+      isSelected: selected,
+      onChange: (next) => {
+        setSelected(next);
+        onChange?.(next);
+      },
     });
 
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -79,7 +97,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         ...(resolvedAriaLabel && { "aria-label": resolvedAriaLabel }),
         ...(ariaLabelledby && { "aria-labelledby": ariaLabelledby }),
       },
-      state,
+      toggleState,
       inputRef
     );
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
@@ -132,7 +150,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         <input
           ref={inputRef}
           type="checkbox"
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          className={styles.input}
           aria-checked={isSelected}
           {...mergeProps(inputProps, focusProps, hoverProps, otherProps)}
         />

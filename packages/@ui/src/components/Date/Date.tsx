@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { type StyleValue, cn } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
+import { useControlledState } from "@/hooks/useControlledState"
 import { asElementProps } from "@/lib/react-aria"
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -75,6 +76,7 @@ function useDateContext() {
  * Props for Calendar component
  */
 export interface DateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+  state?: DateState
   /** Controlled selected date */
   value?: Date | null
   /** Called when the user selects a date */
@@ -90,6 +92,7 @@ export interface DateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: DateStylesProp;
 }
+export interface DateState { value?: Date | null }
 
 /**
  * Helper functions for date calculations
@@ -162,6 +165,7 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
   (
     {
       value: controlledValue,
+      state: controlledState,
       onChange,
       disabled: disabledProp = () => false,
       minDate,
@@ -173,12 +177,16 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
     },
     ref
   ) => {
-    const [uncontrolledValue, setUncontrolledValue] = React.useState<Date | null>(null)
+    const [uncontrolledValue, setUncontrolledValue] = useControlledState(
+      controlledState?.value,
+      controlledValue,
+      null,
+    )
     const [today, setToday] = React.useState<Date | null>(null)
     const [currentMonth, setCurrentMonth] = React.useState<Date | null>(null)
     const [focusedDate, setFocusedDate] = React.useState<Date | null>(null)
 
-    const selectedDate = controlledValue !== undefined ? controlledValue : uncontrolledValue
+    const selectedDate = uncontrolledValue
 
     const resolved = resolveDateBaseStyles(normalizeDateStyles(styles));
 
@@ -206,14 +214,12 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
     const selectDate = React.useCallback(
       (date: Date) => {
         if (!isDateDisabled(date)) {
-          if (controlledValue === undefined) {
-            setUncontrolledValue(date)
-          }
+          setUncontrolledValue(date)
           onChange?.(date)
           setFocusedDate(null)
         }
       },
-      [controlledValue, onChange, isDateDisabled]
+      [onChange, isDateDisabled, setUncontrolledValue]
     )
 
     const focusDate = React.useCallback((date: Date) => {
@@ -324,7 +330,7 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
       <DateContext.Provider value={contextValue}>
         <div
           ref={ref}
-          className={cn("date", dateModuleStyles.calendar, className, resolved.root)}
+          className={cn("date", dateModuleStyles.calendar, dateModuleStyles.grid, className, resolved.root)}
           role="application"
           aria-label="Date picker calendar"
           onKeyDown={handleKeyDown}
@@ -334,7 +340,7 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
             <>
               <DateHeader className={resolved.header} />
               <DateDayHeaders className={resolved["day-headers"]} />
-              <DateGrid grid={calendarGrid} className={resolved.grid} dayCellClassName={resolved["day-cell"]} />
+              <DateGrid grid={calendarGrid} dayCellClassName={resolved["day-cell"]} />
             </>
           )}
         </div>
@@ -372,17 +378,16 @@ const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
     return (
       <div
         ref={ref}
-        className={cn("header", dateModuleStyles.header, className)}
+        className={cn("row", dateModuleStyles.header, className)}
         {...props}
       >
-        <div className={cn("month-year", dateModuleStyles["month-year"])}>
+        <div className={cn("title", dateModuleStyles["month-year"])}>
           {monthYear}
         </div>
-        <div>
           <button
             {...asElementProps<"button">(mergeProps(prevFocusProps, prevTargetProps))}
             onClick={() => navigateMonth(-1)}
-            className={cn("nav-button", "prev-button", dateModuleStyles["nav-button"])}
+            className={cn("button", "prev-button", dateModuleStyles["nav-button"])}
             aria-label="Previous month"
             data-focused={isPrevFocused ? "true" : undefined}
             data-focus-visible={isPrevFocusVisible ? "true" : undefined}
@@ -392,14 +397,13 @@ const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
           <button
             {...asElementProps<"button">(mergeProps(nextFocusProps, nextTargetProps))}
             onClick={() => navigateMonth(1)}
-            className={cn("nav-button", "next-button", dateModuleStyles["nav-button"])}
+            className={cn("button", "next-button", dateModuleStyles["nav-button"])}
             aria-label="Next month"
             data-focused={isNextFocused ? "true" : undefined}
             data-focus-visible={isNextFocusVisible ? "true" : undefined}
           >
             <ChevronRight size={16} />
           </button>
-        </div>
       </div>
     )
   }
@@ -421,13 +425,13 @@ const DateDayHeaders = React.forwardRef<HTMLDivElement, DateDayHeadersProps>(
     return (
       <div
         ref={ref}
-        className={cn("day-headers", dateModuleStyles["day-headers"], className)}
+        className={cn("row", dateModuleStyles["day-headers"], className)}
         {...props}
       >
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div
             key={day}
-            className={cn("day-header", dateModuleStyles["day-header"])}
+            className={cn("label", dateModuleStyles["day-header"])}
           >
             {day}
           </div>
@@ -451,36 +455,11 @@ interface DateGridProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /** The 7-column calendar grid containing date cells */
 const DateGrid = React.forwardRef<HTMLDivElement, DateGridProps>(
-  ({ grid, className, dayCellClassName, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn("grid", dateModuleStyles.grid, className)}
-        role="grid"
-        {...props}
-      >
-        {/* Week headers */}
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div
-            key={day}
-            className={cn("day-header", dateModuleStyles["week-header"])}
-            role="columnheader"
-          >
-            {day}
-          </div>
-        ))}
-
-        {/* Calendar rows */}
-        {grid.map((week: Date[], weekIndex: number) => {
-          return (
-            <React.Fragment key={weekIndex}>
-              {week.map((date: Date, dayIndex: number) => (
-                <DateDay key={`${weekIndex}-${dayIndex}`} date={date} className={dayCellClassName} />
-              ))}
-            </React.Fragment>
-          )
-        })}
-      </div>
+  ({ grid, dayCellClassName }, _ref) => {
+    return grid.flatMap((week: Date[], weekIndex: number) =>
+      week.map((date: Date, dayIndex: number) => (
+        <DateDay key={`${weekIndex}-${dayIndex}`} date={date} className={dayCellClassName} />
+      ))
     )
   }
 )

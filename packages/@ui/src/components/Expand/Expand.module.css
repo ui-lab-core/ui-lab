@@ -34,8 +34,8 @@
     outline: none;
     box-shadow: none;
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-smooth-settle, ease-out)),
-      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-smooth-settle, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-smooth-settle, ease-out)),
+      opacity var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-smooth-settle, ease-out));
   }
 
   .trigger:focus,
@@ -72,7 +72,7 @@
 
   @media (hover: hover) {
     .trigger:not([data-disabled="true"]):hover {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
     }
 
     .trigger:not([data-disabled="true"]) .icon:hover {
@@ -136,23 +136,25 @@
     display: grid;
     overflow: hidden;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 300ms var(--ease-smooth-settle);
+    animation: var(--closed-animation);
   }
 
   .content[data-selected="true"] {
     grid-template-rows: 1fr;
+    animation: var(--open-animation);
   }
 
   .content[data-from="left"],
   .content[data-from="right"] {
     grid-template-rows: 1fr;
     grid-template-columns: 0fr;
-    transition: grid-template-columns 300ms var(--ease-smooth-settle);
+    animation: var(--closed-animation);
   }
 
   .content[data-from="left"][data-selected="true"],
   .content[data-from="right"][data-selected="true"] {
     grid-template-columns: 1fr;
+    animation: var(--open-animation);
   }
 
   .content-inner {

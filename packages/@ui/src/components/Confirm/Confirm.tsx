@@ -7,6 +7,7 @@ import { Button } from "../Button"
 import { Card } from "../Card"
 import { CircleAlert, TriangleAlert, Info } from "lucide-react"
 import styles from "./Confirm.module.css"
+import { useControlledState } from "@/hooks/useControlledState"
 
 export interface ConfirmStyleSlots {
   root?: StyleValue;
@@ -22,6 +23,7 @@ export interface ConfirmStyleSlots {
 }
 
 export type ConfirmStylesProp = StylesProp<ConfirmStyleSlots>;
+export interface ConfirmState { open?: boolean }
 
 const resolveConfirmBaseStyles = createStylesResolver([
   'root',
@@ -37,6 +39,10 @@ const resolveConfirmBaseStyles = createStylesResolver([
 ] as const);
 
 export interface ConfirmProps {
+  /** Initial confirmation visibility. For controlled usage, pass `state={{ open }}`. */
+  open?: boolean
+  /** Controlled state. */
+  state?: ConfirmState
   /** Display mode: inline expands in place, dialog shows a modal, auto chooses based on severity */
   mode?: "inline" | "dialog" | "auto"
   /** Severity level that affects styling and default mode selection */
@@ -116,10 +122,12 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
       requiresReason = false,
       confirmText,
       autoResetAfter,
+      open,
+      state: controlledState,
     },
     ref
   ) => {
-    const [isConfirming, setIsConfirming] = useState(false)
+    const [isConfirming, setIsConfirming] = useControlledState(controlledState?.open, open, false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [countdown, setCountdown] = useState(countdownSeconds || 0)

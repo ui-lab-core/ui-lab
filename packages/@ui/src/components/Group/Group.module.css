@@ -2,25 +2,25 @@
 
 @layer components {
   .group {
-    --layout-radius-size: calc(var(--spacing) * 1.5);
-    --layout-padding-size: var(--layout-radius-size);
+    --radius-size: calc(var(--spacing) * 1.5);
+    --padding-size: var(--radius-size);
     --background-radius: var(--radius-sm, 0.375rem);
     --background-border-width: var(--border-width-base, 1px);
     --background-inner-radius: calc(var(--background-radius) - var(--background-border-width));
-    --layout-text-height: calc(0.8em * var(--leading-tight, 1.25));
-    --layout-vertical-spacing: calc(var(--spacing) * 4);
-    --layout-border-height: calc(var(--background-border-width) * 2);
-    --layout-padding-height: calc(var(--layout-padding-size) * 2);
-    --layout-control-height: calc(
-      var(--layout-text-height) +
-      var(--layout-vertical-spacing) +
-      var(--layout-border-height)
+    --text-height: calc(0.8em * var(--leading-tight, 1.25));
+    --vertical-spacing: calc(var(--spacing) * 4);
+    --border-height: calc(var(--background-border-width) * 2);
+    --padding-height: calc(var(--padding-size) * 2);
+    --control-height: calc(
+      var(--text-height) +
+      var(--vertical-spacing) +
+      var(--border-height)
     );
     --item-height: max(
       calc(
-        var(--layout-control-height) -
-        var(--layout-padding-height) -
-        var(--layout-border-height)
+        var(--control-height) -
+        var(--padding-height) -
+        var(--border-height)
       ),
       0px
     );
@@ -30,16 +30,16 @@
     background-color: var(--background, transparent);
     border: var(--background-border-width) solid var(--background-border, transparent);
     border-radius: var(--background-radius);
-    padding: var(--layout-padding-size);
+    padding: var(--padding-size);
 
     &.horizontal {
       @apply flex-row items-stretch;
-      height: var(--layout-control-height);
+      height: var(--control-height);
 
       .item.divider {
-        margin-block: calc(var(--layout-padding-size) * -1);
+        margin-block: calc(var(--padding-size) * -1);
       }
-      .item.divider > [role="separator"] {
+      .item [role="separator"][aria-orientation="vertical"] {
         height: 100%;
       }
     }
@@ -48,25 +48,25 @@
       @apply flex-col;
 
       .item.divider {
-        margin-inline: calc(var(--layout-padding-size) * -1);
+        margin-inline: calc(var(--padding-size) * -1);
       }
-      .item.divider > [role="separator"] {
+      .item [role="separator"][aria-orientation="horizontal"] {
         width: 100%;
       }
     }
 
     &.none {
-      --layout-padding-size: 0px;
+      --padding-size: 0px;
       @apply gap-0;
     }
 
     &.xs {
-      --layout-radius-size: calc(var(--spacing) * 0.875);
+      --radius-size: calc(var(--spacing) * 0.875);
       @apply space-x-0.5;
     }
 
     &.sm {
-      --layout-radius-size: calc(var(--spacing) * 1.25);
+      --radius-size: calc(var(--spacing) * 1.25);
       @apply space-x-1;
     }
 
@@ -116,20 +116,25 @@
     @apply flex-1;
   }
 
-  .item.icon-button-item > .button {
-    @apply w-full;
+  /* Stretch plain wrapper elements between the item and a nested button */
+  .item.icon-button-item > :not(.button) {
+    @apply flex flex-1 min-w-0;
+  }
+
+  .item.icon-button-item .button {
+    @apply flex-1;
     aspect-ratio: auto;
   }
 
-  .item.icon-button-item > .button:global(.icon) {
+  .item.icon-button-item .button:global(.icon) {
     padding-inline: calc(var(--spacing) * 2);
   }
 
-  .item.icon-button-item > .button:global(.icon):global(.sm) {
+  .item.icon-button-item .button:global(.icon):global(.sm) {
     padding-inline: calc(var(--spacing) * 1.5);
   }
 
-  .item.icon-button-item > .button:global(.icon):global(.lg) {
+  .item.icon-button-item .button:global(.icon):global(.lg) {
     padding-inline: calc(var(--spacing) * 2.5);
   }
 
@@ -145,6 +150,23 @@
   .select {
     @apply flex items-stretch p-0 bg-transparent border-none;
     border-radius: var(--group-item-radius, var(--background-inner-radius));
+  }
+
+  .select > :global(.value) {
+    @apply flex flex-1 items-stretch min-w-0 h-full p-0;
+    border-radius: inherit;
+  }
+
+  .select > :global(.value):has(> :global(.button[data-hovered="true"]:not([data-disabled="true"]))) {
+    --hover-duration: var(--hover-enter-duration, 0ms);
+    background-color: var(--background-hover);
+  }
+
+  .select > :global(.value) > :global(.button) {
+    @apply w-full h-full min-h-0;
+    background-color: transparent;
+    border: none;
+    border-radius: inherit;
   }
 
   .expand {
@@ -180,11 +202,10 @@
 
     .button[data-selected="true"] {
       font-weight: var(--font-weight-body-medium, 500);
-      letter-spacing: var(--letter-spacing-md, -0.0050em);
     }
 
-    .item.divider > [role="separator"] {
-      --divider-background: var(--background);
+    .item [role="separator"] {
+      --background: var(--background-border);
     }
 
     &.none {

@@ -34,6 +34,10 @@
     transform: scale(0.98);
   }
 
+  .input {
+    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;
+  }
+
   .switch-thumb {
     @apply absolute top-0 bottom-0 my-auto;
     left: var(--thumb-offset);

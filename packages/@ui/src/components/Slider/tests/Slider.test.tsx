@@ -129,3 +129,16 @@ describe("Slider", () => {
     expect(thumb).toHaveAttribute("tabindex", "-1");
   });
 });
+
+describe("Slider range marker", () => {
+  it("renders the .range fill as a direct child of .track so themed --background applies", () => {
+    const { container } = render(<Slider aria-label="Volume" defaultValue={40} />);
+
+    const track = container.querySelector(".track") as HTMLElement;
+    const range = container.querySelector(".range") as HTMLElement;
+
+    expect(range).toBeTruthy();
+    expect(range.parentElement).toBe(track);
+    expect(range.style.width).toBe("40%");
+  });
+});

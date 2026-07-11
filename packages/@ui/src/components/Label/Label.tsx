@@ -55,14 +55,14 @@ const Label = ({
       >
         {children}
         {required && (
-          <span className={cn("required-indicator", css["required-indicator"], resolved.requiredIndicator)} aria-label="required">
+          <span className={cn("required", css["required-indicator"], resolved.requiredIndicator)} aria-label="required">
             *
           </span>
         )}
       </label>
       {helperText && (
         <p
-          className={cn("helper-text", css["helper-text"], resolved.helperText)}
+          className={cn("helper", css["helper-text"], resolved.helperText)}
           data-error={helperTextError || undefined}
         >
           {helperText}

@@ -59,7 +59,7 @@
     @media (hover: hover) {
       &:not([data-disabled]):hover .icon-section,
       &:not([data-disabled]):hover .value-section:not(:empty) {
-        --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+        --hover-duration: var(--hover-enter-duration, 0ms);
         background-color: var(--background-hover);
       }
     }
@@ -167,7 +167,7 @@
     }
 
     &[data-highlighted="true"] {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
     }
   }
 
@@ -270,7 +270,7 @@
 
     &[data-highlighted="true"],
     &[data-open="true"]:not([data-highlighted="true"]) {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
     }
   }
 

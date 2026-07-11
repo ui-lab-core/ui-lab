@@ -9,6 +9,7 @@ import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
 import { Scroll } from "@/components/Scroll";
 import css from "./Textarea.module.css";
 
@@ -31,6 +32,7 @@ export interface TextareaStyleSlots {
 }
 
 export type TextareaStylesProp = StylesProp<TextareaStyleSlots>;
+export interface TextareaState { value?: string }
 export type TextAreaStyleSlots = TextareaStyleSlots;
 export type TextAreaStylesProp = TextareaStylesProp;
 
@@ -81,6 +83,8 @@ function resolveTextareaStyles(styles: TextareaStylesProp | undefined) {
 }
 
 export interface TextareaProps extends Omit<ComponentPropsWithoutRef<"textarea">, "size"> {
+  /** Controlled state. */
+  state?: TextareaState;
   /** Size of the textarea. */
   size?: TextareaSize;
   /** Whether to apply error styling. */
@@ -154,6 +158,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       maxHeight,
       value: controlledValue,
       defaultValue,
+      state: controlledState,
       onChange,
       onFocus,
       onBlur,
@@ -163,7 +168,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     },
     ref
   ) => {
-    const [internalValue, setInternalValue] = useState(controlledValue ?? defaultValue ?? "");
+    const [internalValue, setInternalValue] = useControlledState(
+      controlledState?.value,
+      typeof controlledValue === "string" ? controlledValue : undefined,
+      typeof defaultValue === "string" ? defaultValue : "",
+    );
     const [isFocused, setIsFocused] = React.useState(false);
     const [internalHeight, setInternalHeight] = React.useState<number | null>(null);
     const [internalWidth, setInternalWidth] = React.useState<number | null>(null);
@@ -184,7 +193,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       dependencies: [maxHeight, size],
     });
 
-    const currentValue = controlledValue !== undefined ? controlledValue : internalValue;
+    const currentValue = internalValue;
     const charCount = typeof currentValue === "string" ? currentValue.length : 0;
     const isOverLimit = maxCharacters ? charCount > maxCharacters : false;
     const hasScrollSurface = maxHeight !== undefined;
@@ -209,9 +218,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       if (maxCharacters && nextValue.length > maxCharacters) {
         const truncatedValue = nextValue.slice(0, maxCharacters);
 
-        if (controlledValue === undefined) {
-          setInternalValue(truncatedValue);
-        }
+        setInternalValue(truncatedValue);
 
         onChange?.({
           ...event,
@@ -220,9 +227,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         return;
       }
 
-      if (controlledValue === undefined) {
-        setInternalValue(nextValue);
-      }
+      setInternalValue(nextValue);
 
       onChange?.(event);
     };
@@ -338,7 +343,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     );
 
     return (
-      <div ref={scopeRef} className={cn("textarea-scope", css.scope)}>
+      <div ref={scopeRef} className={cn("scope", css.scope)}>
         <div {...indicatorProps} data-focus-indicator="local" />
         <div
           ref={containerRef}
@@ -364,7 +369,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                 data-focus-visible={isFocusVisible ? "true" : undefined}
                 className={cn(
                   "textarea",
-                  "scroll-wrapper",
+                  "scroll",
                   css["scroll-wrapper"],
                   resolved.scrollWrapper
                 )}
@@ -383,7 +388,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                 data-slot="resize-handle"
                 className={cn(
                   "textarea",
-                  "resize-handle",
+                  "handle",
                   css["resize-handle"],
                   resizeHandleClassMap[resizeAxis],
                   resolvedResizeHandle
@@ -396,7 +401,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             <div
               className={cn(
                 "textarea",
-                "character-count",
+                "count",
                 css["character-count"],
                 resolved.characterCount
               )}

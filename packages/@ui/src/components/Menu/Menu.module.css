@@ -1,6 +1,12 @@
 @reference "tailwindcss";
 
 @layer components {
+  .content-root:global(.menu),
+  .sub-content-root:global(.menu) {
+    display: block;
+    position: absolute;
+  }
+
   :global(.menu) {
     display: contents;
 
@@ -11,12 +17,10 @@
       --content-inner-radius: calc(var(--content-radius) - var(--border-width-base, 1px));
       --disabled-opacity: 0.5;
 
-      @apply fixed min-w-40 max-w-80 overflow-hidden;
-      z-index: 50000;
+      @apply min-w-40 max-w-80 overflow-hidden;
       background-color: var(--background);
       border: var(--border-width-base, 1px) solid var(--background-border);
       border-radius: var(--content-radius);
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       outline: none;
     }
 
@@ -25,7 +29,7 @@
       cursor: pointer;
       outline: none;
       user-select: none;
-      transition: var(--hover-transition-duration) var(--hover-transition-timing-function);
+      transition: var(--hover-duration) var(--hover-transition-timing-function);
 
       &[data-disabled="true"] {
         opacity: 0.5;
@@ -44,12 +48,6 @@
       pointer-events: none;
     }
 
-    .list {
-      @apply space-y-1;
-      max-height: 24rem;
-      overflow-y: auto;
-      padding: calc(var(--spacing) * 1);
-    }
 
     .item {
       @apply flex min-w-0 items-center gap-2;
@@ -59,12 +57,8 @@
       user-select: none;
       outline: none;
       color: var(--foreground);
+      background-color: var(--background);
       transition: background-color 150ms ease-out;
-
-      &[data-focused="true"],
-      &[data-highlighted="true"] {
-        background-color: var(--background-focused, var(--background-hover));
-      }
 
       &[data-disabled="true"] {
         opacity: var(--disabled-opacity);
@@ -93,11 +87,6 @@
       color: var(--foreground);
       background-color: var(--background);
       transition: background-color 150ms ease-out;
-
-      &[data-highlighted="true"],
-      &[data-open="true"]:not([data-highlighted="true"]) {
-        background-color: var(--background-focused, var(--background-hover));
-      }
 
       &[data-disabled="true"] {
         opacity: var(--disabled-opacity);

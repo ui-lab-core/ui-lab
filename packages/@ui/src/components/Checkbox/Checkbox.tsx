@@ -62,8 +62,19 @@ function resolveCheckboxStyles(styles: CheckboxStylesProp | undefined) {
   });
 }
 
+export interface CheckboxState {
+  /** Controlled checked value. The caller owns the state and updates it via `onChange`. */
+  checked?: boolean;
+  /** Controlled indeterminate (partial selection) value. */
+  indeterminate?: boolean;
+}
+
 export interface CheckboxProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "checked"> {
+  /** Initial checked value (uncontrolled). For controlled usage, pass `state={{ checked }}`. */
+  checked?: boolean;
+  /** Controlled state. Keys that are present are controlled; absent keys stay self-managed. */
+  state?: CheckboxState;
   /** Label text or element displayed next to the checkbox */
   label?: React.ReactNode;
   /** Helper text shown below the checkbox. Prefer `helper`; `helperText` is kept as a compatibility alias. */
@@ -100,6 +111,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       disabled = false,
       checked,
       defaultChecked,
+      state,
       onChange,
       isIndeterminate = false,
       indeterminate = false,
@@ -115,9 +127,9 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
     const inputId = id ?? `checkbox-${generatedId}`;
     const helperId = `${inputId}-helper`;
     const resolvedHelper = helper ?? helperText;
-    const resolvedIndeterminate = indeterminate || isIndeterminate;
-    const [internalChecked, setInternalChecked] = useState(() =>
-      checked !== undefined ? checked : (defaultChecked ?? false)
+    const resolvedIndeterminate = state?.indeterminate ?? (indeterminate || isIndeterminate);
+    const [internalChecked, setInternalChecked] = useState(
+      () => state?.checked ?? checked ?? defaultChecked ?? false
     );
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { scopeProps, indicatorProps } = useFocus({
@@ -128,10 +140,10 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
     });
 
     React.useEffect(() => {
-      if (checked !== undefined) {
-        setInternalChecked(checked);
+      if (state?.checked !== undefined) {
+        setInternalChecked(state.checked);
       }
-    }, [checked]);
+    }, [state?.checked]);
 
     React.useEffect(() => {
       if (inputRef.current) {
@@ -150,9 +162,9 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       onChange: handleChange,
     }) as React.InputHTMLAttributes<HTMLInputElement>;
 
-    // Determine if this is a controlled component
-    const isControlled = checked !== undefined;
-    const displayChecked = isControlled ? checked : internalChecked;
+    // Controlled only when the caller passes state.checked
+    const isControlled = state?.checked !== undefined;
+    const displayChecked = state?.checked ?? internalChecked;
     const propAriaInvalid = props["aria-invalid"];
     const resolvedInvalid =
       error ||
@@ -185,7 +197,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             type="checkbox"
             id={inputId}
             disabled={disabled}
-            {...(isControlled ? { checked } : { defaultChecked: internalChecked })}
+            {...(isControlled ? { checked: displayChecked } : { defaultChecked: internalChecked })}
             className={cn(
               css.box,
               className,

@@ -1,7 +1,7 @@
 export { Panel, PanelContext, PanelGroupContext } from './Panel'
 export { usePanelContext, usePanelGroupContext } from './panel.context'
 export type {
-  PanelProps,
+  PanelProps, PanelState,
   PanelHeaderProps,
   PanelContentProps,
   PanelFooterProps,

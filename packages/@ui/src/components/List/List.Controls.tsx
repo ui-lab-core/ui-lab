@@ -29,7 +29,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheck
       <div className={cn(styles.control, listStyles.control, className)} data-placement={placement} data-list-primary-action="true">
         <UICheckbox
           ref={ref}
-          checked={checked}
+          state={checked !== undefined ? { checked } : undefined}
           onChange={handleChange}
           {...props}
         />
@@ -52,7 +52,7 @@ const CheckboxIndicator = React.forwardRef<HTMLDivElement, ListCheckboxIndicator
         {...props}
       >
         <UICheckbox
-          checked={checked}
+          state={{ checked: Boolean(checked) }}
           readOnly
           tabIndex={-1}
         />

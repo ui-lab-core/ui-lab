@@ -11,6 +11,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Tooltip } from "@/components/Tooltip";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
 import { GroupContext } from "@/components/Group/Group.Context";
 import css from "./Input.module.css";
 
@@ -33,6 +34,7 @@ export interface InputStyleSlots {
 }
 
 export type InputStylesProp = StylesProp<InputStyleSlots>;
+export interface InputState { value?: string }
 
 export type InputAction = InputActionDef | React.ReactNode;
 type InputIconSlots = {
@@ -86,6 +88,8 @@ function resolveInputStyles(styles: InputStylesProp | undefined) {
 }
 
 export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "size"> {
+  /** Controlled state. */
+  state?: InputState;
   /** Controls the visual style of the input */
   variant?: Variant;
   /** Whether the input is in an error state */
@@ -145,6 +149,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       actions,
       hint,
       type = "text",
+      value,
+      defaultValue,
+      state: controlledState,
+      onChange,
       onFocus,
       onBlur,
       styles: stylesProp,
@@ -166,6 +174,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasStartAdornment = hasPrefix || hasLeftActions;
     const isNumberType = type === "number";
     const [isFocused, setIsFocused] = React.useState(false);
+    const [currentValue, setCurrentValue] = useControlledState(
+      controlledState?.value,
+      typeof value === "string" ? value : undefined,
+      typeof defaultValue === "string" ? defaultValue : "",
+    );
 
     const inputRef = React.useRef<HTMLInputElement>(null);
     const containerRef = React.useRef<HTMLDivElement>(null);
@@ -248,7 +261,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {hasStartAdornment && (
           <div className={css['start-adornments']} data-start-adornments>
             {hasPrefix && (
-              <div className={cn('icon-wrapper', css['icon-wrapper'], resolved.iconLeft)}>
+              <div className={cn('icon', css['icon-wrapper'], resolved.iconLeft)}>
                 <span className={css.icon}>
                   {resolvedIcon?.prefix}
                 </span>
@@ -275,13 +288,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {...mergeProps(focusProps, {
             onFocus: handleFocus,
             onBlur: handleBlur,
+            value: currentValue,
+            onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+              setCurrentValue(event.target.value);
+              onChange?.(event);
+            },
             ...props,
           })}
         />
         {hasEndAdornment && (
           <div className={css['end-adornments']} data-end-adornments>
             {hasSuffix && (
-              <div className={cn('icon-wrapper', css['icon-wrapper'], resolved.iconRight)}>
+              <div className={cn('icon', css['icon-wrapper'], resolved.iconRight)}>
                 <span className={css.icon}>
                   {resolvedIcon?.suffix}
                 </span>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, useReducer } from "react";
+import { useControlledState } from "@/hooks/useControlledState";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Color.module.css";
@@ -206,6 +207,7 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
 }
 
 export interface ColorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  state?: ColorState;
   value?: string;
   defaultValue?: string;
   onChange?: (color: string) => void;
@@ -218,6 +220,7 @@ export interface ColorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   className?: string;
   styles?: ColorStylesProp;
 }
+export interface ColorState { value?: string }
 
 type ResolvedColorStyles = ReturnType<typeof resolveColorStyles>;
 
@@ -263,6 +266,7 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
   (
     {
       value: controlledValue,
+      state: controlledState,
       defaultValue = "#000000",
       onChange,
       onChangeComplete,
@@ -278,9 +282,11 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
     },
     ref
   ) => {
-    const isControlled = controlledValue !== undefined;
-    const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-    const currentValue = isControlled ? controlledValue : uncontrolledValue;
+    const [currentValue, setUncontrolledValue] = useControlledState(
+      controlledState?.value,
+      controlledValue,
+      defaultValue,
+    );
 
     const [format, setFormat] = useState<"hex" | "rgb">(controlledFormat);
     const [isDragging, setIsDragging] = useState(false);
@@ -328,12 +334,10 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
 
     const handleColorChange = useCallback(
       (newColor: string) => {
-        if (!isControlled) {
-          setUncontrolledValue(newColor);
-        }
+        setUncontrolledValue(newColor);
         onChange?.(newColor);
       },
-      [isControlled, onChange]
+      [onChange, setUncontrolledValue]
     );
 
     const handleChangeComplete = useCallback(

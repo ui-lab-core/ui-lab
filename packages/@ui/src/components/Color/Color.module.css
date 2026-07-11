@@ -58,12 +58,12 @@
     line-height: 1;
     letter-spacing: var(--letter-spacing-md, -0.0050em);
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .color-provider .color-trigger:hover {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
     background: var(--trigger-background-hover);
   }
 
@@ -258,7 +258,7 @@
   }
 
   .hue-slider .hue-thumb[data-hovered="true"] {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
     box-shadow: var(--slider-thumb-shadow-hover);
   }
 
@@ -315,7 +315,7 @@
   }
 
   .opacity-slider .opacity-thumb[data-hovered="true"] {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
     box-shadow: var(--slider-thumb-shadow-hover);
   }
 
@@ -341,12 +341,12 @@
     padding: 0;
     outline: none;
     transition:
-      box-shadow var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      transform var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .recent-colors .recent-color-swatch:hover {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
     transform: scale(1.1);
     box-shadow: 0 0 0 2px var(--focus-visible);
   }

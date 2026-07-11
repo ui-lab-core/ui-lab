@@ -59,7 +59,7 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
     const getFocusableItems = React.useCallback(() => {
       if (!rootRef.current) return [];
 
-      return Array.from(rootRef.current.querySelectorAll<HTMLElement>('[role="listitem"]')).filter((item) => (
+      return Array.from(rootRef.current.querySelectorAll<HTMLElement>('[role="option"]')).filter((item) => (
         item.isConnected &&
         item.tabIndex >= 0 &&
         item.getAttribute('aria-hidden') !== 'true' &&
@@ -183,7 +183,7 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       <ListContext.Provider value={contextValue}>
         <div
           ref={rootRef}
-          role="list"
+          role="listbox"
           className={cn(
             'list',
             styles.container,

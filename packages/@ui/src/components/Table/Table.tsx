@@ -239,7 +239,7 @@ const TableRoot = <T extends Record<string, any>>(
       >
         {showFilters && filterableColumns.length > 0 && (
           <div
-            className={cn("filter-bar", css.filterBar, resolved.filterBar)}
+            className={cn("filter", css.filterBar, resolved.filterBar)}
             data-slot="filter-bar"
           >
             <div
@@ -253,7 +253,7 @@ const TableRoot = <T extends Record<string, any>>(
                 return (
                   <div key={columnKey} className={css.filterField}>
                     <label
-                      className={cn("filter-label", css.filterLabel, resolved.filterLabel)}
+                      className={cn("label", css.filterLabel, resolved.filterLabel)}
                       data-slot="filter-label"
                       htmlFor={inputId}
                     >
@@ -372,7 +372,7 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
             ))
           ) : (
             <tr
-              className={cn("empty-row", css.emptyRow, styles.emptyRow)}
+              className={cn("empty", css.emptyRow, styles.emptyRow)}
               data-slot="empty-row"
               role="row"
             >

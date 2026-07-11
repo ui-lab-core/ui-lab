@@ -9,6 +9,7 @@ import type {
   MenuPortalProps,
   MenuItemExtras,
 } from "./menu.types"
+import { useControlledState } from "@/hooks/useControlledState"
 
 const MenuContext = React.createContext<MenuContextValue | null>(null)
 
@@ -43,15 +44,19 @@ const Menu = ({
   selectedKeys: controlledSelectedKeys,
   defaultSelectedKeys,
   onSelectionChange,
+  state: controlledState,
+  open,
 }: MenuProps) => {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = React.useState<Set<Key>>(
-    defaultSelectedKeys ?? new Set()
+  const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false)
+  const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = useControlledState(
+    controlledState?.selected,
+    controlledState?.selected ?? (controlledSelectedKeys ? new Set(controlledSelectedKeys) : undefined),
+    defaultSelectedKeys ?? new Set(),
   )
   const [radioGroups, setRadioGroups] = React.useState<Map<string, Key | null>>(new Map())
   const [activeSubmenuKey, setActiveSubmenuKey] = React.useState<Key | null>(null)
 
-  const selectedKeys = controlledSelectedKeys !== undefined ? controlledSelectedKeys : uncontrolledSelectedKeys
+  const selectedKeys = uncontrolledSelectedKeys
 
   const nav = useListNavigation({ isOpen })
   const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map())
@@ -70,11 +75,9 @@ const Menu = ({
   }, [nav.unregisterItem])
 
   const handleSelectionChange = React.useCallback((keys: Set<Key>) => {
-    if (controlledSelectedKeys === undefined) {
-      setUncontrolledSelectedKeys(keys)
-    }
+    setUncontrolledSelectedKeys(keys)
     onSelectionChange?.(keys)
-  }, [controlledSelectedKeys, onSelectionChange])
+  }, [onSelectionChange, setUncontrolledSelectedKeys])
 
   const toggleSelection = React.useCallback((key: Key) => {
     const newKeys = new Set(selectedKeys)

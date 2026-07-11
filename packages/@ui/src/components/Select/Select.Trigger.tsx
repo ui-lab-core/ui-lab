@@ -26,7 +26,7 @@ export interface SelectTriggerStyleSlots {
 
 export type SelectTriggerStylesProp = StylesProp<SelectTriggerStyleSlots>;
 
-export interface SelectTriggerProps extends React.PropsWithChildren {
+export interface SelectTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "type"> {
   /** Additional CSS class names */
   className?: string
   /** Custom chevron icon displayed on the right side of the trigger; defaults to ChevronDown */
@@ -75,7 +75,7 @@ function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined)
 }
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  ({ children, className, chevron, icon, variant, styles: stylesProp }, ref) => {
+  ({ children, className, chevron, icon, variant, styles: stylesProp, ...domProps }, ref) => {
     const groupContext = React.useContext(GroupContext)
     const {
       triggerProps,
@@ -121,6 +121,7 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
           data-disabled={isDisabled ? "true" : undefined}
+          {...domProps}
           {...triggerProps}
         >
           <div className={cn(styles['value-section'], resolved.valueSection)}>

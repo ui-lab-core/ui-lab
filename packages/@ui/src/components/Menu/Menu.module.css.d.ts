@@ -1,7 +1,8 @@
 declare const styles: {
   trigger: string
   content: string
-  list: string
+  'content-root': string
+  'sub-content-root': string
   item: string
   'item-indicator': string
   'sub-trigger': string

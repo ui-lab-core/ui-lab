@@ -11,6 +11,7 @@ export interface PanelStyleSlots {
 }
 
 export type PanelStylesProp = StylesProp<PanelStyleSlots>
+export interface PanelState { open?: boolean }
 
 export interface PanelContextValue {
   spacing: PanelSpacing
@@ -28,6 +29,8 @@ export interface PanelGroupContextValue {
 }
 
 export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
+  state?: PanelState
+  open?: boolean
   /** Controls the internal spacing between panel sections */
   spacing?: PanelSpacing
   /** Controls the visual density of the panel */

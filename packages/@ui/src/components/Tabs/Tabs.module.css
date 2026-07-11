@@ -21,6 +21,10 @@
       align-self: flex-start;
     }
 
+    &:global(.underline) {
+      text-decoration: none !important;
+    }
+
     &[data-variant="underline"] {
       background-color: transparent;
       border-radius: 0;
@@ -63,12 +67,12 @@
     box-shadow: none;
     letter-spacing: var(--letter-spacing-md, -0.0050em);
     transition:
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
 
     &[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
     }
 
     &[data-selected="true"] {
@@ -76,20 +80,23 @@
     }
 
     &[data-selected="true"]:not([data-indicator-ready="true"]):not([data-indicator-fallback="true"]) {
-      .list[data-variant="underline"] & {
+      .list.underline & {
         border-bottom-color: var(--underline-border);
       }
 
-      .list[data-variant="underline"][data-orientation="vertical"] & {
+      .list.underline[data-orientation="vertical"] & {
         border-bottom-color: transparent;
         border-left-color: var(--underline-border);
       }
     }
 
-    &:focus,
-    &:focus-visible {
+    &:focus {
       outline: none !important;
       box-shadow: none !important;
+    }
+
+    &[data-focus-visible="true"] {
+      box-shadow: inset 0 0 0 var(--ring-width, 2px) var(--focus-visible) !important;
     }
 
     &[data-disabled="true"] {
@@ -99,25 +106,29 @@
       pointer-events: none;
     }
 
-    .list[data-variant="underline"] & {
+    .list.underline & {
       background-color: var(--background);
       background-clip: padding-box;
       border-radius: var(--radius-sm);
       border-bottom: 2px solid transparent;
     }
 
-    .list[data-variant="underline"] &:focus,
-    .list[data-variant="underline"] &:focus-visible {
+    .list.underline &:focus,
+    .list.underline &:focus-visible {
       outline: none !important;
       box-shadow: none !important;
     }
 
-    .list[data-variant="underline"][data-orientation="vertical"] & {
+    .list.underline &[data-focus-visible="true"] {
+      box-shadow: inset 0 0 0 var(--ring-width, 2px) var(--focus-visible) !important;
+    }
+
+    .list.underline[data-orientation="vertical"] & {
       border-bottom: none;
       border-left: 2px solid transparent;
     }
 
-    .list[data-variant="underline"][data-orientation="vertical"] &[data-selected="true"]:not([data-indicator-ready="true"]):not([data-indicator-fallback="true"]) {
+    .list.underline[data-orientation="vertical"] &[data-selected="true"]:not([data-indicator-ready="true"]):not([data-indicator-fallback="true"]) {
       border-left-color: var(--underline-border);
       border-bottom: none;
     }
@@ -154,7 +165,7 @@
 
     .trigger {
       @apply px-1 py-1;
-      .list[data-variant="underline"] & {
+      .list.underline & {
         margin: 0.5rem 0.75rem;
       }
     }

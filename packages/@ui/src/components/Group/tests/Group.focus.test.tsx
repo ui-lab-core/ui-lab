@@ -5,8 +5,10 @@ import userEvent from '@testing-library/user-event'
 import { Group } from '../Group'
 import { Divider } from '../../Divider'
 import { Select } from '../../Select'
+import { Button } from '../../Button'
 import css from '../Group.module.css'
 import expandCss from '../../Expand/Expand.module.css'
+import selectCss from '../../Select/Select.module.css'
 
 const SearchIcon = () => <svg data-testid="search-icon" />
 
@@ -179,6 +181,41 @@ describe('Group.Input focus ring target', () => {
     expect(actionButton).toHaveAttribute('data-focus-surface', 'true')
     expect(selectTrigger).toBeInstanceOf(HTMLButtonElement)
     expect(selectTrigger.closest(`.${css.select}`)).toHaveAttribute('data-focus-surface', 'true')
+  })
+
+  it('stretches an external Select.Value segment inside Group.Select without affecting the compact trigger', () => {
+    const { container } = render(
+      <Group>
+        <Group.Select selectedKey="merge">
+          <Select.Value>
+            {() => (
+              <Button variant="ghost">
+                Merge
+              </Button>
+            )}
+          </Select.Value>
+          <Divider />
+          <Select.Trigger aria-label="Choose merge strategy" />
+          <Select.Content>
+            <Select.List>
+              <Select.Item value="merge" textValue="Merge">
+                Merge
+              </Select.Item>
+            </Select.List>
+          </Select.Content>
+        </Group.Select>
+      </Group>
+    )
+
+    const groupedSelect = container.querySelector(`.${css.select}`)!
+    const externalValue = groupedSelect.querySelector(`:scope > .${selectCss.value}`)!
+    const valueButton = screen.getByRole('button', { name: 'Merge' })
+    const trigger = screen.getByRole('button', { name: 'Choose merge strategy' })
+
+    expect(externalValue).toBe(valueButton.parentElement)
+    expect(valueButton).toHaveClass('button')
+    expect(groupedSelect.querySelector(`:scope > button.${selectCss.trigger}`)).toBe(trigger)
+    expect(trigger).toHaveClass(selectCss['trigger-compact'])
   })
 
   it('marks Group.Expand root as a grouped focus surface and shows the group focus ring', async () => {

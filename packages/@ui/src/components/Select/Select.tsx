@@ -10,6 +10,7 @@ import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
 import styles from "./Select.module.css"
 import { useListNavigation, handleListKeyDown, focusAdjacentTabStop, type ItemData } from "./Select.shared"
 import { registerSelectCloseCallback, unregisterSelectCloseCallback, closeOtherSelects, clearSelectRegistry } from "./Select.registry"
@@ -18,6 +19,7 @@ export type SelectItemData = ItemData
 
 export type SelectTriggerMode = "click" | "hover"
 export type SelectMode = "single" | "multiple"
+export interface SelectState { value?: Key | Key[]; open?: boolean }
 
 export interface SelectStyleSlots {
   root?: StyleValue;
@@ -83,6 +85,12 @@ export function useSelectContext() {
 }
 
 export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElement> {
+  /** Controlled state. `value` is a key (single) or key array (multiple). */
+  state?: SelectState
+  /** Initial selected value. */
+  value?: Key | Key[]
+  /** Initial open state. */
+  open?: boolean
   /** Selection mode: "single" for one item, "multiple" for multi-item selection */
   mode?: SelectMode
   /** External items array — used when items are provided as data rather than JSX */
@@ -131,6 +139,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
   (
     {
       mode = "single",
+      state: controlledState,
+      value,
+      open,
       items: propItems = [],
       selectedKey: controlledSelectedKey,
       defaultSelectedKey,
@@ -157,7 +168,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     const contentRef = React.useRef<HTMLElement>(null)
     const mouseMoveDetectedRef = React.useRef(true)
     const itemExtrasRef = React.useRef<Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>>(new Map())
-    const [isOpen, setIsOpen] = React.useState(false)
+    const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false)
     const [contentPlacement, setContentPlacement] = React.useState<"top" | "bottom">("bottom")
     const contentId = React.useId()
     const selectId = React.useId()
@@ -225,15 +236,19 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       }
     }, [isOpen, selectId])
 
-    const [uncontrolledSelectedKey, setUncontrolledSelectedKey] = React.useState<Key | null>(
-      defaultSelectedKey ?? null
+    const [uncontrolledSelectedKey, setUncontrolledSelectedKey] = useControlledState(
+      mode === "single" && !Array.isArray(controlledState?.value) ? controlledState?.value as Key | null | undefined : undefined,
+      !Array.isArray(value) ? value ?? controlledSelectedKey : undefined,
+      defaultSelectedKey ?? null,
     )
-    const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = React.useState<Set<Key>>(
-      new Set(defaultSelectedKeys)
+    const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = useControlledState(
+      mode === "multiple" ? new Set((controlledState?.value as Key[] | undefined) ?? []) : undefined,
+      Array.isArray(value) ? new Set(value) : controlledSelectedKeys ? new Set(controlledSelectedKeys) : undefined,
+      new Set(defaultSelectedKeys),
     )
     const [selectedTextValue, setSelectedTextValue] = React.useState(label ?? defaultValue ?? "")
-    const selectedKey = controlledSelectedKey !== undefined ? controlledSelectedKey : uncontrolledSelectedKey
-    const selectedKeys = controlledSelectedKeys !== undefined ? new Set(controlledSelectedKeys) : uncontrolledSelectedKeys
+    const selectedKey = uncontrolledSelectedKey
+    const selectedKeys = uncontrolledSelectedKeys
 
     const nav = useListNavigation({
       isOpen,
@@ -286,14 +301,12 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       if (item) {
         setSelectedTextValue(item.textValue)
       }
-      if (controlledSelectedKey === undefined) {
-        setUncontrolledSelectedKey(key)
-      }
+      setUncontrolledSelectedKey(key)
       onSelectionChange?.(key)
       setIsOpen(false)
       nav.setSearchValue("")
       restoreFocus()
-    }, [controlledSelectedKey, onSelectionChange, nav.items, restoreFocus])
+    }, [onSelectionChange, nav.items, restoreFocus, setUncontrolledSelectedKey])
 
     const onToggle = React.useCallback((key: Key) => {
       const newKeys = new Set(selectedKeys)
@@ -302,11 +315,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       } else {
         newKeys.add(key)
       }
-      if (controlledSelectedKeys === undefined) {
-        setUncontrolledSelectedKeys(newKeys)
-      }
+      setUncontrolledSelectedKeys(newKeys)
       onSelectionChange?.(Array.from(newKeys))
-    }, [selectedKeys, controlledSelectedKeys, onSelectionChange])
+    }, [selectedKeys, onSelectionChange, setUncontrolledSelectedKeys])
 
     const selectFocusedItem = React.useCallback(() => {
       if (nav.focusedKey !== null) {

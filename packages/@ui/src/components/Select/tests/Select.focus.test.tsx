@@ -236,7 +236,7 @@ describe('Select.focus', () => {
           </List.Item>
         </List>
       )
-      const row = screen.getByRole('listitem')
+      const row = screen.getByRole('option')
       const trigger = screen.getByRole('combobox')
 
       await user.click(trigger)
@@ -266,8 +266,8 @@ describe('Select.focus', () => {
           <List.Item value="2">Row 2</List.Item>
         </List>
       )
-      const list = screen.getByRole('list')
-      const [firstRow, secondRow] = screen.getAllByRole('listitem')
+      const list = screen.getByRole('listbox')
+      const [firstRow, secondRow] = screen.getAllByRole('option')
       const trigger = screen.getByRole('combobox')
 
       await user.click(trigger)

@@ -45,10 +45,10 @@ describe('Checkbox - Interactions', () => {
     expect(checkbox).not.toBeChecked()
   })
 
-  it('respects controlled checked state', async () => {
+  it('respects controlled state.checked', async () => {
     const onChange = vi.fn()
     const { rerender } = render(
-      <Checkbox checked={false} onChange={onChange} aria-label="Controlled" />
+      <Checkbox state={{ checked: false }} onChange={onChange} aria-label="Controlled" />
     )
 
     const checkbox = screen.getByRole('checkbox')
@@ -59,8 +59,20 @@ describe('Checkbox - Interactions', () => {
     expect(onChange).toHaveBeenCalledOnce()
     expect(checkbox).not.toBeChecked()
 
-    rerender(<Checkbox checked={true} onChange={onChange} aria-label="Controlled" />)
+    rerender(<Checkbox state={{ checked: true }} onChange={onChange} aria-label="Controlled" />)
     expect(checkbox).toBeChecked()
+  })
+
+  it('treats bare checked as an initial value and stays self-toggling', async () => {
+    const user = userEvent.setup()
+    render(<Checkbox checked aria-label="Initial" />)
+
+    const checkbox = screen.getByRole('checkbox')
+    expect(checkbox).toBeChecked()
+
+    await user.click(checkbox)
+    expect(checkbox).not.toBeChecked()
+    expect(checkbox).not.toHaveAttribute('data-selected')
   })
 
   it('does not respond to clicks when disabled', async () => {
@@ -117,6 +129,21 @@ describe('Checkbox - Focus', () => {
     const checkbox = screen.getByRole('checkbox') as HTMLInputElement
     expect(checkbox.indeterminate).toBe(true)
     expect(checkbox).toHaveAttribute('aria-checked', 'mixed')
+  })
+
+  it('supports controlled state.indeterminate', () => {
+    const { rerender } = render(
+      <Checkbox state={{ checked: true, indeterminate: true }} onChange={() => {}} aria-label="Partial" />
+    )
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement
+    expect(checkbox.indeterminate).toBe(true)
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed')
+
+    rerender(
+      <Checkbox state={{ checked: true, indeterminate: false }} onChange={() => {}} aria-label="Partial" />
+    )
+    expect(checkbox.indeterminate).toBe(false)
+    expect(checkbox).toBeChecked()
   })
 })
 
@@ -265,7 +292,7 @@ describe('Checkbox - Component Specific', () => {
       <Checkbox
         label="Styled slots"
         helper="Slot helper"
-        defaultChecked
+        checked
         styles={{
           root: 'custom-root',
           checkbox: 'custom-checkbox',

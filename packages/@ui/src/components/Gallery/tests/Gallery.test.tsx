@@ -16,6 +16,8 @@ describe("Gallery", () => {
 
     const item = screen.getByRole("button") // GalleryItem has role="button"
     expect(item).toHaveAttribute("data-orientation", "vertical")
+    expect(item).toHaveAttribute("data-active", "true")
+    expect(item).not.toHaveAttribute("data-focus-surface")
   })
 
   it("renders with horizontal orientation when specified", () => {

@@ -16,6 +16,7 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Frame } from "../Frame";
 import css from "./Popover.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useControlledState } from "@/hooks/useControlledState";
 
 const ARROW_PATH = "M 0 0 L 6 -12 L 12 0";
 const ARROW_WIDTH = 12;
@@ -67,6 +68,7 @@ interface PopoverStyleSlots {
 type PopoverStylesProp = StylesProp<PopoverStyleSlots>;
 
 export interface PopoverProps {
+  state?: PopoverState;
   children: React.ReactNode;
   /** Content to display inside the popover panel */
   content: React.ReactNode;
@@ -76,16 +78,20 @@ export interface PopoverProps {
   styles?: PopoverStylesProp;
   /** Additional CSS class for the trigger element. */
   className?: string;
-  /** Controlled open state */
+  /** Initial open state. For controlled usage, pass `state={{ open }}`. */
+  open?: boolean;
+  /** Controlled state. */
+  /** @deprecated Use `open`. */
   isOpen?: boolean;
   /** Called when the popover opens or closes */
   onOpenChange?: (isOpen: boolean) => void;
   /** Whether to render a directional arrow pointing at the trigger */
   showArrow?: boolean;
 }
+export interface PopoverState { open?: boolean }
 
 const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
-  ({ children, content, position = "bottom", styles, className: externalClassName, isOpen: controlledIsOpen, onOpenChange, showArrow = false }, ref) => {
+  ({ children, content, position = "bottom", styles, className: externalClassName, open, state: controlledState, isOpen: legacyIsOpen, onOpenChange, showArrow = false }, ref) => {
 
     const resolvePopoverBaseStyles = createStylesResolver([
       'root',
@@ -101,9 +107,13 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [isExiting, setIsExiting] = React.useState(false);
 
+    const [isOpen, setOpen] = useControlledState(controlledState?.open, open ?? legacyIsOpen, false);
     const state = useOverlayTriggerState({
-      isOpen: controlledIsOpen,
-      onOpenChange,
+      isOpen,
+      onOpenChange: (next) => {
+        setOpen(next);
+        onOpenChange?.(next);
+      },
     });
 
     const { triggerProps, overlayProps } = useOverlayTrigger({ type: "dialog" }, state, triggerRef);

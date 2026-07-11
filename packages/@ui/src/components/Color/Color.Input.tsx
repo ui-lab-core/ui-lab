@@ -84,7 +84,7 @@ export const ColorInput = React.forwardRef<
       </Group.Select>
       {showPreview && (
         <div
-          className={cn("preview-swatch", styles["preview-swatch"], previewClassName)}
+          className={cn("swatch", styles["preview-swatch"], previewClassName)}
           data-size={size}
           data-disabled={disabled || undefined}
           style={{

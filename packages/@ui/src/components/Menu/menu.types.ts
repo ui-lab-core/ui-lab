@@ -70,6 +70,10 @@ export interface RadioGroupContextValue {
 }
 
 export interface MenuProps extends React.PropsWithChildren {
+  /** Controlled state. */
+  state?: { open?: boolean; selected?: Set<Key> }
+  /** Initial open state. */
+  open?: boolean
   /** The behavior type of the menu */
   type?: MenuType
   /** Controls how many items can be selected at once */

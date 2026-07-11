@@ -2,6 +2,6 @@
 
 @layer components {
   .divider {
-    --divider-background: var(--group-divider-background, var(--background-border, var(--background)));
+    --background: var(--background-border, currentColor);
   }
 }

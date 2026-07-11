@@ -4,7 +4,8 @@
   .calendar {
     --disabled-opacity: 0.5;
 
-    @apply inline-flex p-1.5 flex-col overflow-hidden gap-0;
+    @apply inline-grid p-1.5 overflow-hidden gap-1;
+    grid-template-columns: repeat(7, 1fr);
     border-radius: var(--radius-sm);
     background-color: var(--background);
     border: var(--border-width-base) solid var(--border);
@@ -17,6 +18,7 @@
     border: var(--border-width-base) solid var(--border);
     border-bottom: none;
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    grid-column: 1 / -1;
   }
 
   .day-header {
@@ -30,6 +32,7 @@
   .header {
     @apply flex items-center justify-between gap-4 pl-2 pr-1.5 py-1.5;
     color: var(--foreground);
+    grid-column: 1 / -1;
   }
 
   .month-year {
@@ -48,9 +51,9 @@
     font-size: var(--text-sm);
     font-weight: 500;
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .nav-button:focus-visible {
@@ -58,15 +61,11 @@
   }
 
   .nav-button:hover {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
   .grid {
-    @apply grid gap-1 px-4 pb-4;
-    grid-template-columns: repeat(7, 1fr);  /* 7 days only */
-    background: var(--background);
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    border: var(--border-width-base) solid var(--border);
+    @apply gap-1 px-4 pb-4;
   }
 
   .day-cell {
@@ -78,10 +77,10 @@
     font-size: var(--text-sm);
     font-weight: 400;
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      opacity var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .day-cell:focus-visible {
@@ -104,7 +103,7 @@
 
 .day-cell[data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),
 .day-cell:hover:not([data-disabled="true"]):not([data-out-of-range="true"]) {
-  --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+  --hover-duration: var(--hover-enter-duration, 0ms);
 }
 
 .day-cell[data-today="true"] {

@@ -182,7 +182,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       itemSelector: '[data-focused="true"], [data-highlighted="true"]',
     })
 
-    const mergedRef = useMergedRef<HTMLDivElement>(refs.setFloating, setFloatingElement, ref)
+    const mergedRef = useMergedRef<HTMLDivElement>(setFloatingElement, ref)
 
     const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
       if (e.key === "ArrowRight") {
@@ -224,7 +224,15 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
           />
         )}
         {isOpen && (
-          <div className="menu">
+          <div
+            ref={refs.setFloating}
+            className={cn('menu', css['content-root'])}
+            style={{
+              ...floatingStyles,
+              zIndex: 50000,
+              visibility: isPositioned ? "visible" : "hidden",
+            }}
+          >
             <div
               ref={mergedRef}
               role="menu"
@@ -233,17 +241,14 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
               data-state={showContent ? "open" : "closed"}
               data-placement={placement.split("-")[0]}
               onKeyDown={handleKeyDown}
-              style={{
-                ...floatingStyles,
-                zIndex: 50000,
-                visibility: isPositioned ? "visible" : "hidden",
-                outline: "none",
-              }}
+              style={{ outline: "none" }}
             >
               <Scroll
-                className={cn(css.list, resolved.list)}
+                className={cn("viewport", resolved.list)}
+                maxHeight="24rem"
                 direction="vertical"
                 fade-y
+                inline
                 hide={false}
               >
                 <div style={{ padding: "0.25rem" }}>

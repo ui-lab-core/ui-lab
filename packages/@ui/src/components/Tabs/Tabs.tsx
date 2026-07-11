@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils"
 import { StyleValue } from "@/lib/utils"
 import { asElementProps } from "@/lib/react-aria"
 import { StylesProp, createStylesResolver } from "@/lib/styles"
-import { useFocus } from "@/hooks/useFocus"
 import { useMergeRefs } from "@/hooks/useMergeRefs"
+import { useControlledState } from "@/hooks/useControlledState"
 import css from "./Tabs.module.css"
 
 type TabsVariant = "underline"
@@ -63,7 +63,6 @@ function useTabsListContext() {
 
 function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
   return cn(
-    "tabs",
     "indicator",
     variant === "underline" && "underline",
     variant === "underline" && "indicator-underline",
@@ -80,12 +79,14 @@ export interface TabsStyleSlots {
 }
 
 interface TabsProps {
+  state?: TabsState
   /** Optional alternate visual style of the tab list indicator */
   variant?: TabsVariant
   /** Direction of the tab list layout */
   orientation?: TabsOrientation
   /** Initially selected tab value for uncontrolled usage */
   default?: string
+  /** Controlled state. */
   /** Controlled selected tab value */
   value?: string
   /** Called when the selected tab changes */
@@ -96,6 +97,7 @@ interface TabsProps {
   styles?: StylesProp<TabsStyleSlots>
   children?: React.ReactNode
 }
+export interface TabsState { value?: string }
 
 const resolveTabsBaseStyles = createStylesResolver(['root'] as const)
 
@@ -106,6 +108,7 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
       orientation = "horizontal",
       default: defaultTab,
       value: controlledValue,
+      state: controlledState,
       onValueChange,
       className,
       styles: stylesProp,
@@ -115,10 +118,14 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
   ) => {
     const { root } = resolveTabsBaseStyles(stylesProp)
 
-    const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultTab || "")
+    const [uncontrolledValue, setUncontrolledValue] = useControlledState(
+      controlledState?.value ?? controlledValue,
+      undefined,
+      defaultTab || "",
+    )
     const [disabledTabs, setDisabledTabs] = React.useState<Set<string>>(new Set())
 
-    const selectedValue = controlledValue !== undefined ? controlledValue : uncontrolledValue
+    const selectedValue = uncontrolledValue
     const isDisabledTab = React.useCallback(
       (value: string) => disabledTabs.has(value),
       [disabledTabs]
@@ -127,13 +134,11 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
     const setSelectedValue = React.useCallback(
       (newValue: string) => {
         if (!isDisabledTab(newValue)) {
-          if (controlledValue === undefined) {
-            setUncontrolledValue(newValue)
-          }
+          setUncontrolledValue(newValue)
           onValueChange?.(newValue)
         }
       },
-      [controlledValue, isDisabledTab, onValueChange]
+      [isDisabledTab, onValueChange, setUncontrolledValue]
     )
 
     const registerDisabledTab = React.useCallback((value: string) => {
@@ -204,16 +209,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
     const { selectedValue, variant, orientation, setIndicatorReady } = useTabsContext()
     const { root, indicator } = resolveTabsListBaseStyles(stylesProp)
-    const scopeRef = React.useRef<HTMLDivElement>(null)
     const listRef = React.useRef<HTMLDivElement>(null)
-    const { scopeProps: focusScopeProps, indicatorProps: focusProps } = useFocus({
-      scopeRef,
-      containerRef: listRef,
-      surfaceSelector: '[data-focus-surface="true"]',
-      radiusSource: "surface",
-      mode: "ring",
-      dependencies: [selectedValue, orientation, variant],
-    })
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
       top: 0,
@@ -370,27 +366,30 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 
     return (
       <TabsListContext.Provider value={tabsListContext}>
-        <div ref={scopeRef} className={cn("tabs-scope", focusScopeProps.className)}>
-          <div {...focusProps} />
-          <div
-            ref={mergedRef}
-            role="tablist"
-            aria-label={ariaLabel}
-            aria-orientation={orientation}
-            className={cn("tabs", "list", css.list, root, className)}
-            data-variant={variant}
-            data-orientation={orientation}
-            style={{ position: "relative" }}
-          >
-            {children}
-            {indicatorPosition.width > 0 && (
-              <div
-                aria-hidden="true"
-                className={indicatorClassName}
-                style={getIndicatorStyle}
-              />
-            )}
-          </div>
+        <div
+          ref={mergedRef}
+          role="tablist"
+          aria-label={ariaLabel}
+          aria-orientation={orientation}
+          className={cn(
+            "tabs",
+            "list",
+            variant === "underline" && "underline",
+            css.list,
+            root,
+            className,
+          )}
+          data-orientation={orientation}
+          style={{ position: "relative" }}
+        >
+          {children}
+          {indicatorPosition.width > 0 && (
+            <div
+              aria-hidden="true"
+              className={indicatorClassName}
+              style={getIndicatorStyle}
+            />
+          )}
         </div>
       </TabsListContext.Provider>
     )
@@ -609,7 +608,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         disabled={disabled}
         data-tabs-value={value}
         data-focus-surface="true"
-        className={cn("tabs", "trigger", css.trigger, resolved.root, className)}
+        className={cn("trigger", css.trigger, resolved.root, className)}
         data-selected={isSelected ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         data-hovered={isHovered ? "true" : "false"}
@@ -663,7 +662,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         role="tabpanel"
         aria-labelledby={`${value}-trigger`}
         id={`${value}-content`}
-        className={cn("tabs", "content", css.content, root, className)}
+        className={cn("content", css.content, root, className)}
         data-orientation={orientation}
         hidden={!isVisible}
       >

@@ -44,19 +44,19 @@ describe('Progress - Styling', () => {
 describe('Progress - Variants', () => {
   it('renders a custom variant string as a class on the progressbar', () => {
     render(<Progress value={50} variant="my-custom-variant" />)
-    expect(screen.getByRole('progressbar')).toHaveClass('my-custom-variant')
+    expect(screen.getByRole('progressbar').querySelector('.range')).toHaveAttribute('data-variant', 'my-custom-variant')
   })
 
   it('renders the default variant class on the progressbar', () => {
     render(<Progress value={50} />)
-    expect(screen.getByRole('progressbar')).toHaveClass('default')
+    expect(screen.getByRole('progressbar').querySelector('.range')).toHaveAttribute('data-variant', 'default')
   })
 
   it('renders known variant classes on the progressbar', () => {
     const variants = ['success', 'warning', 'error']
     for (const variant of variants) {
       const { unmount } = render(<Progress value={50} variant={variant} />)
-      expect(screen.getByRole('progressbar')).toHaveClass(variant)
+      expect(screen.getByRole('progressbar').querySelector('.range')).toHaveAttribute('data-variant', variant)
       unmount()
     }
   })

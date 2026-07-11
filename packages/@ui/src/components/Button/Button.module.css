@@ -11,13 +11,21 @@
     font-weight: var(--font-weight-body-medium, 500);
     line-height: var(--leading-tight, 1.25);
     letter-spacing: var(--letter-spacing-md, -0.0050em);
-    transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--hover-duration, var(--hover-leave-duration));
+    transition-timing-function: var(--hover-transition-timing-function);
 
     &[data-hovered="true"]:not([data-disabled="true"]) {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
+      background-color: var(--background-hover, var(--background));
+      border-color: var(--background-hover-border, var(--background-border));
+      color: var(--foreground-hover, var(--foreground));
+    }
+
+    &[data-pressed="true"]:not([data-disabled="true"]) {
+      background-color: var(--background-pressed, var(--background-hover, var(--background)));
+      border-color: var(--background-pressed-border, var(--background-hover-border, var(--background-border)));
+      color: var(--foreground-pressed, var(--foreground-hover, var(--foreground)));
     }
 
     &:focus-visible {
@@ -34,5 +42,9 @@
     & > svg {
       color: var(--icon-foreground, currentColor);
     }
+  }
+
+  .hint {
+    @apply shrink-0 gap-1;
   }
 }

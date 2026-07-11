@@ -13,6 +13,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps, resolveAccessibleLabel } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
 import css from "./Radio.module.css";
 
 type Size = "sm" | "md" | "lg";
@@ -53,6 +54,7 @@ interface RadioGroupContextType {
   disabled?: boolean;
   size?: Size;
 }
+export interface RadioGroupState { value?: string }
 
 const RadioGroupContext = createContext<RadioGroupContextType | undefined>(undefined);
 
@@ -87,9 +89,11 @@ function resolveRadioGroupStyles(styles: RadioGroupStylesProp | undefined) {
 }
 
 export interface RadioGroupProps {
-  /** Controlled selected radio value */
+  /** Initial selected radio value. For controlled usage, pass `state={{ value }}`. */
   value?: string;
-  /** Initial selected value for uncontrolled usage */
+  /** Controlled state. */
+  state?: RadioGroupState;
+  /** @deprecated Use `value`. */
   defaultValue?: string;
   /** Called when the selected value changes */
   onValueChange?: (value: string) => void;
@@ -111,7 +115,8 @@ export interface RadioGroupProps {
 const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
   (
     {
-      value: controlledValue,
+      value,
+      state: controlledState,
       defaultValue,
       onValueChange,
       disabled = false,
@@ -124,10 +129,18 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
     },
     ref
   ) => {
-    const state = useRadioGroupState({
-      value: controlledValue,
+    const [selectedValue, setSelectedValue] = useControlledState(
+      controlledState?.value,
+      value,
       defaultValue,
-      onChange: onValueChange,
+    );
+    const state = useRadioGroupState({
+      value: selectedValue,
+      defaultValue,
+      onChange: (next) => {
+        setSelectedValue(next);
+        onValueChange?.(next);
+      },
       isDisabled: disabled,
     });
 
@@ -147,14 +160,14 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
         <div ref={ref} className={cn("radio-group", className, resolved.root)} role="group">
           {label && (
             <label
-              className={cn("radio-label", css["radio-label"], resolved.label)}
+              className={cn("label", css["radio-label"], resolved.label)}
               data-disabled={disabled ? "true" : undefined}
             >
               {label}
             </label>
           )}
           {description && (
-            <p className={cn("radio-description", css["radio-description"], resolved.description)}>
+            <p className={cn("description", css["radio-description"], resolved.description)}>
               {description}
             </p>
           )}
@@ -288,7 +301,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
             {label && (
               <label
                 htmlFor={radioId}
-                className={cn("radio-label", css["radio-label"], resolved.label)}
+                className={cn("label", css["radio-label"], resolved.label)}
                 data-disabled={disabled ? "true" : undefined}
                 suppressHydrationWarning
               >
@@ -297,7 +310,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
             )}
             {description && (
               <p
-                className={cn("radio-description", css["radio-description"], resolved.description)}
+                className={cn("description", css["radio-description"], resolved.description)}
                 data-error={error ? "true" : undefined}
               >
                 {description}
@@ -307,7 +320,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
         )}
         {helperText && (
           <p
-            className={cn("helper-text", css["helper-text"], resolved.helperText)}
+            className={cn("helper", css["helper-text"], resolved.helperText)}
             data-error={helperTextError ? "true" : undefined}
           >
             {helperText}
@@ -336,7 +349,12 @@ export interface RadioProps
   error?: boolean;
   /** Classes applied to named slots */
   styles?: RadioStylesProp;
+  /** Initial checked value. For controlled usage, pass `state={{ checked }}`. */
+  checked?: boolean;
+  /** Controlled state. */
+  state?: RadioState;
 }
+export interface RadioState { checked?: boolean }
 
 const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
   (
@@ -350,6 +368,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
       helperText,
       helperTextError = false,
       checked: checkedProp,
+      state: controlledState,
       defaultChecked,
       onChange,
       id,
@@ -358,19 +377,19 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
     },
     ref
   ) => {
-    const [internalChecked, setInternalChecked] = React.useState(checkedProp ?? defaultChecked ?? false);
+    const [checked, setChecked] = useControlledState(
+      controlledState?.checked,
+      checkedProp,
+      defaultChecked ?? false,
+    );
     const generatedId = useId();
 
-    const isControlled = checkedProp !== undefined;
-    const checked = isControlled ? checkedProp : internalChecked;
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!isControlled) {
-        setInternalChecked(e.target.checked);
-      }
+      setChecked(e.target.checked);
       onChange?.(e);
     };
 
@@ -428,7 +447,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
             {label && (
               <label
                 htmlFor={radioId}
-                className={cn("radio-label", css["radio-label"], resolved.label)}
+                className={cn("label", css["radio-label"], resolved.label)}
                 data-disabled={disabled ? "true" : undefined}
                 suppressHydrationWarning
               >
@@ -437,7 +456,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
             )}
             {description && (
               <p
-                className={cn("radio-description", css["radio-description"], resolved.description)}
+                className={cn("description", css["radio-description"], resolved.description)}
                 data-error={error ? "true" : undefined}
               >
                 {description}
@@ -447,7 +466,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
         )}
         {helperText && (
           <p
-            className={cn("helper-text", css["helper-text"], resolved.helperText)}
+            className={cn("helper", css["helper-text"], resolved.helperText)}
             data-error={helperTextError ? "true" : undefined}
           >
             {helperText}

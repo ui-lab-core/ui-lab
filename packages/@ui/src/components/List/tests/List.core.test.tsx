@@ -43,7 +43,7 @@ describe('List.core', () => {
     const header = container.querySelector('header')
     expect(header).toHaveTextContent('Header Text')
     
-    expect(container.querySelector(`[role="listitem"]`)).toBeInTheDocument()
+    expect(container.querySelector(`[role="option"]`)).toBeInTheDocument()
     expect(container.querySelector(`.${styles.media}`)).toHaveTextContent('Icon')
     expect(container.querySelector(`.${styles.desc}`)).toHaveTextContent('Description Text')
     expect(container.querySelector(`.${styles.checkbox}`)).toBeInTheDocument()
@@ -58,7 +58,7 @@ describe('List.core', () => {
 
   it('applies variant, gap, and spacing props to container', () => {
     const container = renderListWithItems([], { variant: 'feed', gap: 'lg', spacing: 'sm' })
-    const list = container.querySelector('[role="list"]')
+    const list = container.querySelector('[role="listbox"]')
 
     expect(list).toHaveAttribute('data-variant', 'feed')
     expect(list).toHaveAttribute('data-gap', 'lg')
@@ -68,7 +68,7 @@ describe('List.core', () => {
 
   it('defaults to no gap when gap is omitted', () => {
     const container = renderListWithItems([])
-    const list = container.querySelector('[role="list"]')
+    const list = container.querySelector('[role="listbox"]')
 
     expect(list).toBeInTheDocument()
     expect(list).not.toHaveAttribute('data-gap')
@@ -83,7 +83,7 @@ describe('List.core', () => {
       }
     )
 
-    const list = container.querySelector('[role="list"]')
+    const list = container.querySelector('[role="listbox"]')
 
     expect(list).toHaveClass('custom-list-root')
     expect(list).not.toHaveAttribute('styles')
@@ -122,9 +122,9 @@ describe('List.core', () => {
       }
     )
 
-    expect(container.querySelector('[role="list"]')).toHaveClass('root-slot')
+    expect(container.querySelector('[role="listbox"]')).toHaveClass('root-slot')
     expect(container.querySelector('header')).toHaveClass('header-slot')
-    expect(container.querySelector('[role="listitem"]')).toHaveClass('item-slot')
+    expect(container.querySelector('[role="option"]')).toHaveClass('item-slot')
     expect(container.querySelector(`.${styles.media}`)).toHaveClass('media-slot')
     expect(container.querySelector(`.${styles.title}`)).toHaveClass('title-slot')
     expect(container.querySelector(`.${styles.desc}`)).toHaveClass('desc-slot')
@@ -137,14 +137,14 @@ describe('List.core', () => {
 
   it('defaults to vertical orientation', () => {
     const container = renderListWithItems([])
-    const list = container.querySelector('[role="list"]')
+    const list = container.querySelector('[role="listbox"]')
 
     expect(list).toHaveAttribute('data-orientation', 'vertical')
   })
 
   it('supports horizontal orientation when specified', () => {
     const container = renderListWithItems([], { orientation: 'horizontal' })
-    const list = container.querySelector('[role="list"]')
+    const list = container.querySelector('[role="listbox"]')
 
     expect(list).toHaveAttribute('data-orientation', 'horizontal')
   })
@@ -197,7 +197,7 @@ describe('List.core', () => {
         Item with styles
       </List.Item>
     )
-    const item = container.querySelector('[role="listitem"]')
+    const item = container.querySelector('[role="option"]')
     expect(item).toHaveClass('custom-item-class')
   })
 

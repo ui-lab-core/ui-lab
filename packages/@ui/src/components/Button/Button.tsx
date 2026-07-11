@@ -7,10 +7,12 @@ import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus"
 import { useButton } from "@react-aria/button";
 
-import { cn, type StyleValue } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { cn } from "@/lib/utils";
+import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { type HintValue, hasHint, renderHint } from "@/lib/hint";
+import { Badge } from "../Badge";
 import css from "./Button.module.css";
 
 type ButtonSize = (string & {});
@@ -20,37 +22,52 @@ type ButtonIconSlots = {
 };
 
 interface ButtonIconStyles {
-  left?: StyleValue;
-  right?: StyleValue;
+  left?: SlotStyleValue;
+  right?: SlotStyleValue;
 }
 
 export interface ButtonStyleSlots {
-  root?: StyleValue;
-  icon?: StyleValue | ButtonIconStyles;
+  root?: SlotStyleValue;
+  icon?: SlotStyleValue | ButtonIconStyles;
+  hint?: SlotStyleValue;
 }
 
-export type ButtonStylesProp = StylesProp<ButtonStyleSlots>;
+export type ButtonStylesProp = SlotStyleValue | ButtonStyleSlots;
 
-const resolveButtonBaseStyles = createStylesResolver(['root', 'iconLeft', 'iconRight'] as const);
+const resolveButtonBaseStyles = createStylePropsResolver(['root', 'iconLeft', 'iconRight', 'hint'] as const);
+
+function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconStyles {
+  return typeof icon === 'object' && icon !== null && ('left' in icon || 'right' in icon);
+}
+
+function isButtonStyleSlots(styles: ButtonStylesProp): styles is ButtonStyleSlots {
+  return typeof styles === 'object'
+    && styles !== null
+    && !Array.isArray(styles)
+    && ('root' in styles || 'icon' in styles || 'hint' in styles);
+}
 
 function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
-  if (!styles || typeof styles === 'string' || Array.isArray(styles)) return resolveButtonBaseStyles(styles)
-  const { root, icon } = styles;
+  if (!styles || !isButtonStyleSlots(styles)) return resolveButtonBaseStyles(styles)
+  const { root, icon, hint } = styles;
 
-  let iconLeft: StyleValue | undefined;
-  let iconRight: StyleValue | undefined;
+  let iconLeft: SlotStyleValue | undefined;
+  let iconRight: SlotStyleValue | undefined;
 
   if (icon) {
     if (typeof icon === 'string' || Array.isArray(icon)) {
       iconLeft = icon;
       iconRight = icon;
-    } else {
+    } else if (isButtonIconStyles(icon)) {
       iconLeft = icon.left;
       iconRight = icon.right;
+    } else {
+      iconLeft = icon;
+      iconRight = icon;
     }
   }
 
-  return resolveButtonBaseStyles({ root, iconLeft, iconRight });
+  return resolveButtonBaseStyles({ root, iconLeft, iconRight, hint });
 }
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "href" | "target"> {
@@ -64,6 +81,8 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   onPress?: (e: { target: EventTarget | null }) => void;
   /** Icon slots rendered before (left) or after (right) the button label */
   icon?: React.ReactNode | ButtonIconSlots;
+  /** Keyboard shortcut or hint rendered as a Badge at the end of the button. An array renders its segments joined by a `+` divider. */
+  hint?: HintValue;
   /** Renders the button as an anchor element when provided */
   href?: string;
   /** Browsing context for the anchor variant (e.g. "_blank") */
@@ -99,7 +118,7 @@ function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
 }
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  ({ className, styles, variant = "default", size, children, onClick, onPress, isDisabled, disabled, icon, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
+  ({ className, styles, variant = "default", size, children, onClick, onPress, isDisabled, disabled, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
     const mergedRef = useMergeRefs(ref, buttonRef);
     const isButtonDisabled = isDisabled ?? disabled ?? false;
@@ -135,6 +154,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing({ autoFocus: props.autoFocus });
     const { hoverProps, isHovered } = useHover({ isDisabled: isButtonDisabled });
+    const isVisualHovered = !isButtonDisabled && (forcedHovered === "true" || (forcedHovered !== "false" && isHovered));
+    const isVisualPressed = !isButtonDisabled && isPressed;
 
     const actualSize = size ?? "md";
     const isIconOnly = !children && !!icon;
@@ -152,7 +173,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       isIconOnly && "icon",
       css.button,
       className,
-      resolved.root
+      resolved.root.className
     );
 
     const { targetProps } = useFocus({ mode: "target" });
@@ -171,14 +192,17 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           onMouseLeave={handleMouseLeave}
           className={buttonClassName}
           data-disabled={isButtonDisabled ? "true" : undefined}
-          data-pressed={isPressed ? "true" : "false"}
-          data-hovered={forcedHovered ?? (isHovered ? "true" : "false")}
+          data-pressed={isVisualPressed ? "true" : "false"}
+          data-hovered={isVisualHovered ? "true" : "false"}
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
+          data-hint={hasHint(hint) ? "true" : undefined}
+          style={{ ...resolved.root.style, ...props.style }}
         >
-          {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft)}>{resolvedIcon.left}</span>}
+          {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
           {children}
-          {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight)}>{resolvedIcon.right}</span>}
+          {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
+          {hasHint(hint) && <Badge variant="secondary" className={cn(css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
         </a>
       );
     }
@@ -194,14 +218,17 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         onMouseLeave={handleMouseLeave}
         className={buttonClassName}
         data-disabled={isButtonDisabled ? "true" : undefined}
-        data-pressed={isPressed ? "true" : "false"}
-        data-hovered={forcedHovered ?? (isHovered ? "true" : "false")}
+        data-pressed={isVisualPressed ? "true" : "false"}
+        data-hovered={isVisualHovered ? "true" : "false"}
         data-focused={isFocused ? "true" : "false"}
         data-focus-visible={isFocusVisible ? "true" : "false"}
+        data-hint={hasHint(hint) ? "true" : undefined}
+        style={{ ...resolved.root.style, ...props.style }}
       >
-        {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft)}>{resolvedIcon.left}</span>}
+        {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
         {children}
-        {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight)}>{resolvedIcon.right}</span>}
+        {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
+        {hasHint(hint) && <Badge variant="secondary" className={cn('hint', css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
       </button>
     );
   }

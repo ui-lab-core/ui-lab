@@ -129,12 +129,12 @@
     border-radius: 0.25rem;
     color: var(--action-foreground);
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .action:hover {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
     background-color: var(--action-background-hover);
     color: var(--action-foreground-hover);
   }
@@ -173,15 +173,15 @@
     --active-background: var(--background-700);
     --active-color: var(--foreground-100);
     transition:
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     &+.stepper {
       border-top: var(--border-width-base, 1px) solid var(--background-border);
     }
 
     &:hover:not(:disabled) {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
       background-color: var(--hover-background);
       color: var(--hover-color);
     }

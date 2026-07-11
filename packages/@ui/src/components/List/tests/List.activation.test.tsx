@@ -46,7 +46,7 @@ describe('List.activation', () => {
     }
 
     renderList(<CheckboxStyleRow />)
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
 
     await act(async () => {
       row.focus()
@@ -79,7 +79,7 @@ describe('List.activation', () => {
     }
 
     renderList(<CheckboxRow />)
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
     const checkbox = screen.getByRole('checkbox')
 
     await act(async () => {
@@ -109,7 +109,7 @@ describe('List.activation', () => {
     }
 
     renderList(<SwitchRow />)
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
     const control = screen.getByRole('switch')
 
     await act(async () => {
@@ -146,7 +146,7 @@ describe('List.activation', () => {
       </List.Item>
     )
 
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
     const trigger = screen.getByRole('button')
 
     await act(async () => {
@@ -176,7 +176,7 @@ describe('List.activation', () => {
       </List.Item>
     )
 
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
     const trigger = screen.getByRole('button')
 
     await user.click(trigger)
@@ -204,7 +204,7 @@ describe('List.activation', () => {
       </List.Item>
     )
 
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
     const trigger = screen.getByRole('button')
 
     await user.click(trigger)
@@ -310,7 +310,7 @@ describe('List.activation', () => {
       </List.Item>
     )
 
-    const row = screen.getByRole('listitem')
+    const row = screen.getByRole('option')
 
     await act(async () => {
       row.focus()

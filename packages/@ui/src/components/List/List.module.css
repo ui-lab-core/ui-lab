@@ -46,8 +46,8 @@
     background-color: var(--background);
     color: var(--foreground);
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .item[data-focus-visible="true"] {
@@ -59,11 +59,11 @@
   }
 
   .item:hover {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
   .container[data-keyboard-mode="true"] .item[data-highlighted="true"] {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
   .item[data-disabled="true"] {
@@ -137,12 +137,12 @@
     color: var(--foreground);
     @apply p-2;
     transition:
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .action:hover {
-    --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
   .footer {

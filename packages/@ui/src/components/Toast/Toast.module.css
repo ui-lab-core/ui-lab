@@ -55,8 +55,8 @@
     color: var(--foreground);
     opacity: 0.6;
     transition:
-      opacity var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-settle-in, ease-out)),
-      background-color var(--hover-transition-duration, var(--hover-transition-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-settle-in, ease-out));
+      opacity var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-settle-in, ease-out)),
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-settle-in, ease-out));
 
     &[data-focus-visible="true"] {
       box-shadow: 0 0 0 var(--border-width-base, 1px) var(--focus-visible);
@@ -64,7 +64,7 @@
     }
 
     &[data-hovered="true"] {
-      --hover-transition-duration: var(--hover-transition-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, 0ms);
       opacity: 1;
     }
   }

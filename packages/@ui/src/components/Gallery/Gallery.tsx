@@ -234,7 +234,7 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
     const { scopeProps, indicatorProps } = useFocus({
       scopeRef,
       containerRef: scopeRef,
-      surfaceSelector: '[data-focus-surface="true"]',
+      surfaceSelector: '[data-active="true"]',
       radiusSource: "surface",
     })
 
@@ -262,7 +262,7 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
           ref={mergedRef}
           role="button"
           tabIndex={props.tabIndex ?? 0}
-          className={cn("gallery", "item", css.item, inherited?.item, resolved.root, className)}
+          className={cn("item", css.item, inherited?.item, resolved.root, className)}
           data-selected={props["aria-pressed"] === true ? "true" : undefined}
           data-disabled={props["aria-disabled"] === true ? "true" : undefined}
           data-focused={isFocused ? "true" : undefined}
@@ -270,7 +270,7 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
           data-hovered={isHovered ? "true" : undefined}
           data-pressed={isPressed ? "true" : undefined}
           data-orientation={orientation}
-          data-focus-surface="true"
+          data-active="true"
           aria-label={hasAccessibleName ? props["aria-label"] : "Gallery item"}
         >
           {children}
@@ -289,7 +289,7 @@ const GalleryView = React.forwardRef<HTMLDivElement, GalleryViewProps>(
     return (
       <div
         ref={ref}
-        className={cn("gallery", "view", css.view, inherited?.view, resolved.root, className)}
+        className={cn("view", css.view, inherited?.view, resolved.root, className)}
         style={
           {
             "--aspect-ratio": aspectRatio,
@@ -313,7 +313,7 @@ const GalleryBody = React.forwardRef<HTMLDivElement, GalleryBodyProps>(
     return (
       <div
         ref={ref}
-        className={cn("gallery", "body", css.body, inherited?.body, resolved.root, className)}
+        className={cn("body", css.body, inherited?.body, resolved.root, className)}
         {...props}
       >
         {children}

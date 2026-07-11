@@ -14,6 +14,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Divider, type DividerProps } from "@/components/Divider";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
 import styles from "./Expand.module.css";
 
 type ExpandDirection = "below" | "above" | "left" | "right";
@@ -34,6 +35,7 @@ export interface ExpandStyleSlots {
 }
 
 export type ExpandStylesProp = StylesProp<ExpandStyleSlots>;
+export interface ExpandState { expanded?: boolean }
 
 const resolveExpandBaseStyles = createStylesResolver([
   "root",
@@ -298,9 +300,13 @@ export interface ExpandProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onChange"> {
   /** Header content rendered in preset mode */
   title?: React.ReactNode;
-  /** Controlled expanded state */
+  /** Initial expanded state. For controlled usage, pass `state={{ expanded }}`. */
+  expanded?: boolean;
+  /** Controlled state. */
+  state?: ExpandState;
+  /** @deprecated Use `expanded`. */
   isExpanded?: boolean;
-  /** Initial expanded state for uncontrolled usage */
+  /** @deprecated Use `expanded`. */
   defaultExpanded?: boolean;
   /** Called when the expanded state changes */
   onExpandedChange?: (isExpanded: boolean) => void;
@@ -319,7 +325,9 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
     {
       className,
       title,
-      isExpanded,
+      expanded,
+      state: controlledState,
+      isExpanded: legacyExpanded,
       defaultExpanded = false,
       onExpandedChange,
       onChange,
@@ -330,10 +338,17 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
     },
     ref,
   ) => {
+    const [isExpanded, setExpanded] = useControlledState(
+      controlledState?.expanded,
+      expanded ?? legacyExpanded,
+      defaultExpanded,
+    );
     const state = useToggleState({
       isSelected: isExpanded,
-      defaultSelected: defaultExpanded,
-      onChange: onExpandedChange ?? onChange,
+      onChange: (next) => {
+        setExpanded(next);
+        (onExpandedChange ?? onChange)?.(next);
+      },
     });
 
     const resolvedStyles = resolveExpandStyles(stylesProp);

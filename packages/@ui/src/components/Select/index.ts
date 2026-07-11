@@ -32,6 +32,7 @@ const Multi = Object.assign(SelectRoot, {
 
 export type {
   SelectProps,
+  SelectState,
   SelectStyleSlots,
   SelectStylesProp,
 } from "./Select"

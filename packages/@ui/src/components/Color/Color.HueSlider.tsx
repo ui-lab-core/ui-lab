@@ -61,7 +61,7 @@ export const ColorHueSlider = React.forwardRef<
   return (
     <div
       ref={containerRef}
-      className={cn("hue-slider", styles["hue-slider"], className)}
+      className={cn("hue", styles["hue-slider"], className)}
       data-size={size}
       data-disabled={disabled || undefined}
       data-focused={isFocused ? "true" : undefined}
@@ -76,9 +76,9 @@ export const ColorHueSlider = React.forwardRef<
       aria-valuemax={360}
       aria-valuenow={value}
     >
-      <div className={cn("hue-track", styles["hue-track"], trackClassName)} ref={trackRef}>
+      <div className={cn("track", styles["hue-track"], trackClassName)} ref={trackRef}>
         <div
-          className={cn("hue-thumb", styles["hue-thumb"], thumbClassName)}
+          className={cn("thumb", styles["hue-thumb"], thumbClassName)}
           style={{ left: `${thumbPosition}%` }}
           role="presentation"
           data-focused={isFocused ? "true" : undefined}

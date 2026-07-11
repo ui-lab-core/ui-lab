@@ -108,7 +108,7 @@ export const ColorCanvas = React.forwardRef<
           <div className={cn("canvas-gradient-saturation", styles["canvas-gradient-saturation"], gradientSaturationClassName)} />
           <div className={cn("canvas-gradient-brightness", styles["canvas-gradient-brightness"], gradientBrightnessClassName)} />
         </div>
-        <div className={cn("canvas-pointer", styles["canvas-pointer"], pointerClassName)} style={positionStyle} />
+        <div className={cn("pointer", styles["canvas-pointer"], pointerClassName)} style={positionStyle} />
       </div>
     );
   }

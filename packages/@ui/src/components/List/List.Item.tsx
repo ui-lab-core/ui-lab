@@ -301,7 +301,8 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
     return (
       <div
         ref={itemRef}
-        role="listitem"
+        role="option"
+        aria-selected={selected ? 'true' : 'false'}
         tabIndex={tabIndex}
         className={cn(styles.item, listStyles.item, className, resolvedStyles.root)}
         data-list-focus-owner="true"

@@ -63,7 +63,7 @@ export function renderListWithItems(
  */
 export function getListItems(container?: HTMLElement): HTMLElement[] {
   if (container) {
-    return Array.from(container.querySelectorAll('[role="listitem"]'))
+    return Array.from(container.querySelectorAll('[role="option"]'))
   }
   return getAllElementsByRole('listitem')
 }
@@ -81,7 +81,7 @@ export function getListItemByText(text: string, container?: HTMLElement): HTMLEl
  */
 export function getListContainer(container?: HTMLElement): HTMLElement | null {
   if (container) {
-    return container.querySelector('[role="list"]')
+    return container.querySelector('[role="listbox"]')
   }
-  return document.querySelector('[role="list"]')
+  return document.querySelector('[role="listbox"]')
 }

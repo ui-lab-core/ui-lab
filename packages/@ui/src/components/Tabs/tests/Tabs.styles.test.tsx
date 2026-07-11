@@ -42,6 +42,21 @@ afterEach(() => {
 })
 
 describe('Tabs.styles', () => {
+  it('renders every Onyx tabs marker as a real direct-child chain', () => {
+    const { container } = render(renderTestTabs())
+
+    const root = container.querySelector(':scope > .tabs')
+    const list = screen.getByRole('tablist', { name: 'Portfolio sections' })
+    const trigger = screen.getByRole('tab', { name: 'Portfolio' })
+    const content = screen.getByRole('tabpanel', { name: 'Portfolio' })
+
+    expect(root).toBeTruthy()
+    expect(root?.querySelector(':scope > .list')).toBe(list)
+    expect(list).toHaveClass('tabs')
+    expect(list.querySelector(':scope > .trigger')).toBe(trigger)
+    expect(root?.querySelector(':scope > .content')).toBe(content)
+  })
+
   it('renders the indicator slot classes in the SSR fallback markup', () => {
     const { renderToString } = require('react-dom/server')
     const html = renderToString(renderTestTabs())
@@ -237,5 +252,27 @@ describe('Tabs.styles', () => {
       height: '32px',
       margin: '0px',
     })
+  })
+})
+
+describe('Tabs underline variant markers', () => {
+  it('keeps .underline on the list, applies no text decoration, and renders an indicator', () => {
+    const { container } = render(
+      <Tabs default="a" variant="underline">
+        <Tabs.List aria-label="Sections">
+          <Tabs.Trigger value="a">A</Tabs.Trigger>
+          <Tabs.Trigger value="b">B</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="a">a</Tabs.Content>
+        <Tabs.Content value="b">b</Tabs.Content>
+      </Tabs>
+    )
+
+    const list = container.querySelector('[role="tablist"]') as HTMLElement
+    expect(list).toHaveClass('tabs')
+    expect(list).toHaveClass('list')
+    expect(list).toHaveClass('underline')
+    expect(getComputedStyle(list).textDecorationLine === 'underline').toBe(false)
+    expect(list.querySelector('.indicator')).toBeTruthy()
   })
 })

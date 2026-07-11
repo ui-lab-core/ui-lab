@@ -5,12 +5,12 @@ import { createPortal } from "react-dom";
 import { useDialog } from "react-aria";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
-import { useOverlayTriggerState } from "react-stately";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { X } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
+import { useControlledState } from "@/hooks/useControlledState";
 import css from "./Modal.module.css";
 
 const useModalKeyboard = (
@@ -66,7 +66,11 @@ function resolveModalStyles(styles: ModalStylesProp | undefined) {
 }
 
 export interface ModalProps {
-  /** Whether the modal is open */
+  state?: ModalState;
+  /** Initial open state. For controlled usage, pass `state={{ open }}`. */
+  open?: boolean;
+  /** Controlled state. */
+  /** @deprecated Use `open`. */
   isOpen?: boolean;
   /** Callback when the open state changes */
   onOpenChange?: (isOpen: boolean) => void;
@@ -93,6 +97,7 @@ export interface ModalProps {
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
   styles?: ModalStylesProp;
 }
+export interface ModalState { open?: boolean }
 
 function getModalChildDisplayName(child: React.ReactNode) {
   if (!React.isValidElement(child)) return null;
@@ -109,7 +114,9 @@ function getModalChildDisplayName(child: React.ReactNode) {
 const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
   (
     {
-      isOpen: controlledIsOpen,
+      open,
+      state: controlledState,
+      isOpen: legacyIsOpen,
       onOpenChange,
       title,
       children,
@@ -139,11 +146,17 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
 
     const resolved = resolveModalStyles(styles);
 
-    // Use uncontrolled state management via useOverlayTriggerState
-    const state = useOverlayTriggerState({
-      isOpen: controlledIsOpen,
-      onOpenChange: onOpenChange,
-    });
+    // All public open props represent the current state; leaving every one
+    // undefined is the only uncontrolled/initially-closed mode.
+    const [isOpen, setOpen] = useControlledState(
+      controlledState?.open ?? open ?? legacyIsOpen,
+      undefined,
+      false,
+    );
+    const closeModal = React.useCallback(() => {
+      setOpen(false);
+      onOpenChange?.(false);
+    }, [onOpenChange, setOpen]);
 
     // Handle mount to prevent hydration issues
     React.useEffect(() => {
@@ -156,21 +169,21 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
     // Handle keyboard events and auto-focus
     useModalKeyboard(
       modalRef,
-      state.isOpen,
+      isOpen,
       isDismissable,
       isKeyboardDismissDisabled,
-      () => state.close()
+      closeModal
     );
 
     // useDialog hook provides accessibility attributes and title handling
     const { dialogProps, titleProps } = useDialog({}, modalRef);
     const { focusProps: modalFocusProps, isFocused: isModalFocused, isFocusVisible: isModalFocusVisible } = useFocusRing();
 
-    const handleClose = () => state.close();
+    const handleClose = closeModal;
 
-    useScrollLock(state.isOpen, panelElement);
+    useScrollLock(isOpen, panelElement);
 
-    if (!mounted || !state.isOpen) return null;
+    if (!mounted || !isOpen) return null;
 
     const handleCloseMouseDown = () => setIsClosePressed(true);
     const handleCloseMouseUp = () => setIsClosePressed(false);
@@ -267,7 +280,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
         {/* Backdrop overlay - click outside to dismiss */}
         <div
           className={cn("backdrop", css.backdrop, resolved.backdrop)}
-          onMouseDown={() => { if (isDismissable) state.close(); }}
+          onMouseDown={() => { if (isDismissable) closeModal(); }}
         />
 
         {/* Modal content */}
@@ -283,7 +296,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
           )}
           onClick={(e) => e.stopPropagation()}
           tabIndex={-1}
-          data-open={state.isOpen || undefined}
+          data-open={isOpen || undefined}
           data-size={size}
           data-focused={isModalFocused ? "true" : "false"}
           data-focus-visible={isModalFocusVisible ? "true" : "false"}

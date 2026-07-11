@@ -100,6 +100,16 @@ describe('Button - Styling', () => {
     defaultProps: { children: 'Button' },
     role: 'button',
   })
+
+  it('applies inline root styles supplied through styles', () => {
+    render(
+      <Button styles={{ root: { style: { backgroundSize: '42% 100%' } } }}>
+        Render
+      </Button>
+    )
+
+    expect(screen.getByRole('button')).toHaveStyle({ backgroundSize: '42% 100%' })
+  })
 })
 
 describe('Button - Component Specific', () => {
@@ -112,6 +122,35 @@ describe('Button - Component Specific', () => {
 
     expect(screen.getByTestId('shorthand-icon')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Hello' })).toBeInTheDocument()
+  })
+
+  it('renders a hint as a secondary Badge', () => {
+    render(<Button hint="⌘↵">Render</Button>)
+
+    const hint = screen.getByText('⌘↵')
+    expect(hint).toHaveClass('badge', 'secondary')
+  })
+
+  it('renders an element-list hint with + dividers between segments', () => {
+    render(<Button hint={[<svg key="cmd" data-testid="hint-icon" />, 'K']}>Render</Button>)
+
+    const hint = screen.getByText('K')
+    expect(hint).toHaveClass('badge', 'secondary')
+    expect(screen.getByTestId('hint-icon')).toBeInTheDocument()
+    // one divider between the two segments, plus the user's icon
+    expect(hint.querySelectorAll('svg')).toHaveLength(2)
+  })
+
+  it('does not render a hint badge for an empty array', () => {
+    const { container } = render(<Button hint={[]}>Render</Button>)
+
+    expect(container.querySelector('.badge')).not.toBeInTheDocument()
+  })
+
+  it('applies hint slot styles', () => {
+    render(<Button hint="⌘↵" styles={{ hint: 'custom-hint' }}>Render</Button>)
+
+    expect(screen.getByText('⌘↵')).toHaveClass('custom-hint')
   })
 
   it('renders an anchor target when href is provided', () => {
@@ -175,6 +214,12 @@ describe('Button - Component Specific', () => {
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('data-disabled', 'true')
+  })
+
+  it('does not emit a forced hover state while disabled', () => {
+    render(<Button isDisabled data-hovered="true">Disabled</Button>)
+
+    expect(screen.getByRole('button')).toHaveAttribute('data-hovered', 'false')
   })
 
   it('renders disabled in SSR markup when isDisabled is true', () => {

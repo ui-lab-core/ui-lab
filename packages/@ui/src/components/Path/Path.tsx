@@ -105,7 +105,7 @@ export interface PathProps {
   styles?: PathStylesProp;
 }
 
-const PathItem = React.forwardRef<HTMLLIElement, PathItemProps>(
+const PathItem = React.forwardRef<HTMLElement, PathItemProps>(
   (
     {
       href,
@@ -118,7 +118,7 @@ const PathItem = React.forwardRef<HTMLLIElement, PathItemProps>(
     },
     ref
   ) => {
-    const itemRef = React.useRef<HTMLLIElement>(null);
+    const itemRef = React.useRef<HTMLElement>(null);
     const mergedRef = useMergeRefs(ref, itemRef);
     const isInteractive = !isCurrent && !isDisabled && Boolean(href || onPress);
     const [isPressed, setIsPressed] = React.useState(false);
@@ -208,21 +208,18 @@ const PathItem = React.forwardRef<HTMLLIElement, PathItemProps>(
       "aria-current": isCurrent ? ("page" as const) : undefined,
     };
 
-    const surfaceClassName = cn("path-link", css.link, resolved.link);
+    const surfaceClassName = cn("link", css.link, resolved.link);
     const focusableTabIndex = isDisabled ? -1 : isCurrent ? 0 : undefined;
 
     return (
-      <li
-        ref={mergedRef}
-        className={cn("path-item", css.item, className, resolved.root)}
-        data-selected={isCurrent ? "true" : undefined}
-        data-disabled={isDisabled ? "true" : undefined}
-      >
+      <React.Fragment>
         {isInteractive && href ? (
           <a
+            ref={mergedRef as React.Ref<HTMLAnchorElement>}
             {...(interactionProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
             href={href}
             className={surfaceClassName}
+            role="listitem"
             tabIndex={focusableTabIndex}
             {...stateProps}
             onClick={(event) => {
@@ -236,9 +233,11 @@ const PathItem = React.forwardRef<HTMLLIElement, PathItemProps>(
           </a>
         ) : isInteractive ? (
           <button
+            ref={mergedRef as React.Ref<HTMLButtonElement>}
             {...(interactionProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
             type="button"
             className={surfaceClassName}
+            role="listitem"
             tabIndex={focusableTabIndex}
             onClick={onPress}
             {...stateProps}
@@ -247,15 +246,17 @@ const PathItem = React.forwardRef<HTMLLIElement, PathItemProps>(
           </button>
         ) : (
           <span
+            ref={mergedRef as React.Ref<HTMLSpanElement>}
             {...(interactionProps as React.HTMLAttributes<HTMLSpanElement>)}
             className={surfaceClassName}
+            role="listitem"
             tabIndex={focusableTabIndex}
             {...stateProps}
           >
             {children}
           </span>
         )}
-      </li>
+      </React.Fragment>
     );
   }
 );
@@ -289,14 +290,12 @@ const Path = Object.assign(
           <div {...indicatorProps} data-focus-indicator="local" />
           <nav
             ref={mergedRef}
-            className={cn("path", css.path, className, resolved.root)}
+            className={cn("path", css.path, css.list, className, resolved.root, resolved.list)}
             aria-label="Path"
+            role="list"
+            data-path-list="true"
+            data-separator={separator ? "custom" : undefined}
           >
-            <ol
-              className={cn("path-list", css.list, resolved.list)}
-              data-path-list="true"
-              data-separator={separator ? "custom" : undefined}
-            >
               {React.Children.map(childArray, (child, index) => {
                 const isLastChild = index === childCount - 1;
 
@@ -310,12 +309,13 @@ const Path = Object.assign(
                     return (
                       <React.Fragment key={child.key ?? index}>
                         {element}
-                        <li
-                          className={cn("path-separator", css.separator, resolved.separator)}
+                        <span
+                          className={cn("separator", css.separator, resolved.separator)}
+                          role="presentation"
                           aria-hidden="true"
                         >
                           {separator}
-                        </li>
+                        </span>
                       </React.Fragment>
                     );
                   }
@@ -325,7 +325,6 @@ const Path = Object.assign(
 
                 return child;
               })}
-            </ol>
           </nav>
         </div>
       );
