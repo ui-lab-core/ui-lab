@@ -112,7 +112,7 @@ export {
 // Category utilities
 export { getCategoryIcon } from './utils/get-category-icon.js';
 
-// Elements
+// Catalog (elements, sections, starters, patterns) — snapshot of @ui-lab-core/library/catalog
 export {
   elementRegistry,
   elementsList,
@@ -134,14 +134,9 @@ export {
   getAllPackages,
   getElementsInPackage,
   getPackageForElement,
-} from './elements/index.js';
-export type { ElementCategoryId, ElementCategoryDefinition, ElementPackageMetadata } from './elements/index.js';
-
-// Element Order
-export { elementOrder, getElementsInOrder, getAllElementsInOrder } from './element-order.js';
-
-// Sections
-export {
+  elementOrder,
+  getElementsInOrder,
+  getAllElementsInOrder,
   sectionRegistry,
   getAllSections,
   getSectionById,
@@ -154,11 +149,6 @@ export {
   sectionCategories,
   getCategoryForSection,
   groupSectionsByCategory,
-} from './sections/index.js';
-export type { SectionCategoryId, SectionCategoryDefinition } from './sections/index.js';
-
-// Starters
-export {
   starterRegistry,
   getAllStarters,
   getStarterById,
@@ -168,7 +158,14 @@ export {
   searchStarters,
   getAllStarterCategories,
   getAllStarterTags,
-} from './starters/index.js';
+} from './catalog.js';
+export type {
+  ElementCategoryId,
+  ElementCategoryDefinition,
+  SectionCategoryId,
+  SectionCategoryDefinition,
+} from './catalog-types.js';
+export type { ElementPackageMetadata } from './types.js';
 
 // Guides
 export {
@@ -191,13 +188,13 @@ export {
   getPatternsByComplexity,
   getAllPatternCategories,
   getAllPatternTags,
-} from './patterns/index.js';
+} from './catalog.js';
 export type {
   PatternMetadata,
   PatternRegistry,
   PatternCategory,
   PatternVariation,
-} from './patterns/index.js';
+} from './types.js';
 
 // Providers
 export {

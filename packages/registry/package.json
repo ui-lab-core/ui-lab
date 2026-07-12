@@ -1,6 +1,6 @@
 {
   "name": "ui-lab-registry",
-  "version": "0.3.49",
+  "version": "0.4.0",
   "description": "Component registry and metadata management for ui-lab-components",
   "type": "module",
   "license": "MIT",
@@ -44,54 +44,6 @@
     },
     "./components/*/examples.json": {
       "import": "./dist/components/*/examples.json"
-    },
-    "./elements": {
-      "import": "./dist/elements/index.js",
-      "types": "./dist/elements/index.d.ts"
-    },
-    "./elements/*": {
-      "import": "./dist/elements/*/index.js",
-      "types": "./dist/elements/*/index.d.ts"
-    },
-    "./elements/*/variations/*": {
-      "import": "./dist/elements/*/variations/*/index.js",
-      "types": "./dist/elements/*/variations/*/index.d.ts"
-    },
-    "./elements/*/manifest": {
-      "import": "./dist/elements/*/manifest.js",
-      "types": "./dist/elements/*/manifest.d.ts"
-    },
-    "./sections": {
-      "import": "./dist/sections/index.js",
-      "types": "./dist/sections/index.d.ts"
-    },
-    "./sections/*": {
-      "import": "./dist/sections/*/index.js",
-      "types": "./dist/sections/*/index.d.ts"
-    },
-    "./sections/*/variations/*": {
-      "import": "./dist/sections/*/variations/*/index.js",
-      "types": "./dist/sections/*/variations/*/index.d.ts"
-    },
-    "./starters": {
-      "import": "./dist/starters/index.js",
-      "types": "./dist/starters/index.d.ts"
-    },
-    "./starters/*": {
-      "import": "./dist/starters/*/index.js",
-      "types": "./dist/starters/*/index.d.ts"
-    },
-    "./patterns": {
-      "import": "./dist/patterns/index.js",
-      "types": "./dist/patterns/index.d.ts"
-    },
-    "./patterns/*": {
-      "import": "./dist/patterns/*/index.js",
-      "types": "./dist/patterns/*/index.d.ts"
-    },
-    "./demo-registry": {
-      "import": "./dist/demo-registry.js",
-      "types": "./dist/demo-registry.d.ts"
     }
   },
   "files": [
@@ -102,11 +54,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "pnpm generate && tsc",
+    "build": "pnpm generate && rm -rf dist && tsc",
     "type-check": "tsc --noEmit",
-    "generate": "node --import tsx scripts/sync-private-registry-content.ts && node --import tsx scripts/generate-examples-json.ts && node --import tsx scripts/generate-registry-from-components.ts && node --import tsx scripts/generate-registry-data.ts && node --import tsx scripts/generate-element-variations.ts && node --import tsx scripts/generate-element-registry.ts && node --import tsx scripts/generate-manifest.ts && node --import tsx scripts/generate-demo-registry.ts && node --import tsx scripts/validate-element-structure.ts",
-    "validate": "node --import tsx scripts/validate-registry.ts",
-    "validate:elements": "node --import tsx scripts/validate-element-registry.ts"
+    "generate": "node --import tsx scripts/generate-catalog-snapshot.ts && node --import tsx scripts/generate-examples-json.ts && node --import tsx scripts/generate-registry-from-components.ts && node --import tsx scripts/generate-registry-data.ts",
+    "validate": "node --import tsx scripts/validate-registry.ts"
   },
   "dependencies": {
     "lucide-react": "^0.562.0",

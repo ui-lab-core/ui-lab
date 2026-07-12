@@ -1,5 +1,12 @@
 # ui-lab-registry
 
+## 0.4.0
+
+### Minor Changes
+
+- Element, section, pattern, and starter content now lives in `@ui-lab-core/library`. This package exposes only a plain-data metadata snapshot (`src/generated/catalog-snapshot.ts`, regenerated via `scripts/generate-catalog-snapshot.ts` when the private library is present) with the same lookup helpers as before on the root export.
+- BREAKING: removed the `./elements*`, `./sections*`, `./patterns*`, `./starters*`, and `./demo-registry` export subpaths, along with the JSX source trees they served. `elementPackages` entries no longer include `getPreview`.
+
 ## 0.3.49
 
 ### Patch Changes

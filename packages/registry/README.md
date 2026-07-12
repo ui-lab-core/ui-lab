@@ -4,12 +4,14 @@ A centralized, framework-agnostic component registry for the UI Lab ecosystem.
 
 ## Overview
 
-This package serves as the single source of truth for:
+This package provides:
 - Component metadata (names, descriptions, categories)
 - Component source code references
 - Component relationships and dependencies
 - Category definitions and organization
-- Starter template component mappings
+- A plain-data metadata snapshot of the element/section/pattern/starter catalog
+
+Element, section, pattern, and starter content is authored in the private `@ui-lab-core/library` package. This package ships only a stripped metadata snapshot (`src/generated/catalog-snapshot.ts`) regenerated at build time when the private library is present — no component JSX or variation source lives here.
 
 ## Installation
 

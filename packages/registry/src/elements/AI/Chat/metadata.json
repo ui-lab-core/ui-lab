@@ -1,7 +1,0 @@
-{
-  "id": "chat",
-  "name": "Chat",
-  "description": "Container component for displaying chat conversations with user and AI messages.",
-  "category": "content",
-  "tags": ["chat", "conversation", "ai", "messaging"]
-}
