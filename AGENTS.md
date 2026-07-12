@@ -4,3 +4,11 @@ Names are generic, never prefixed with the component or feature they belong to. 
 - Wrong: `--component-background`, `--feature-radius`
 Prefer the shortest generic name that reads clearly in context. Add a qualifier only to disambiguate two things in the same scope, never to restate the owner.
 </naming>
+
+<registry>
+`packages/registry` build runs `scripts/sync-private-registry-content.ts`, which replaces `src/elements`, `src/patterns`, and `src/sections` from `../private/packages/library/content/registry` when that private tree exists. Make persistent registry content edits in the private source first, then rebuild/regenerate the public registry copy.
+</registry>
+
+<validation>
+For focused component tests in `packages/@ui`, run the package-local Vitest binary, e.g. `./node_modules/.bin/vitest --run src/components/Grid/tests/Grid.core.test.tsx` from `packages/@ui`. For the site, `pnpm run type-check` from `apps/www` runs `tsc --noEmit`.
+</validation>
