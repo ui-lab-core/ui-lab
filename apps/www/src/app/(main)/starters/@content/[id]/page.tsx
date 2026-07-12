@@ -1,5 +1,5 @@
 import StarterDetailClient from './client';
-import { starterRegistry } from 'ui-lab-registry';
+import { starterRegistry } from '@ui-lab-core/library/catalog';
 import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 
 const starterIds = ["nextjs-basic"];

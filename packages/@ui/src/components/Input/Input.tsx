@@ -138,6 +138,12 @@ function resolveInputActions(actions: InputProps["actions"]): InputActionSlots {
   return { right: actions };
 }
 
+function normalizeInputValue(value: InputProps["value"] | InputProps["defaultValue"]) {
+  if (typeof value === "string") return value;
+  if (typeof value === "number") return String(value);
+  return undefined;
+}
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -173,11 +179,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasHint = hint !== undefined && hint !== null;
     const hasStartAdornment = hasPrefix || hasLeftActions;
     const isNumberType = type === "number";
+    const controlledValue = controlledState?.value ?? normalizeInputValue(value);
     const [isFocused, setIsFocused] = React.useState(false);
     const [currentValue, setCurrentValue] = useControlledState(
-      controlledState?.value,
-      typeof value === "string" ? value : undefined,
-      typeof defaultValue === "string" ? defaultValue : "",
+      controlledValue,
+      undefined,
+      normalizeInputValue(defaultValue) ?? "",
     );
 
     const inputRef = React.useRef<HTMLInputElement>(null);

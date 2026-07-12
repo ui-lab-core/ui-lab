@@ -8,6 +8,21 @@ import { Button } from '@/components/Button'
 const CopyIcon = () => <svg data-testid="copy-icon" />
 
 describe('Input actions', () => {
+  it('renders numeric controlled and default values', () => {
+    const { rerender, unmount } = render(<Input aria-label="Count" type="number" value={4} onChange={() => {}} />)
+
+    expect(screen.getByRole('spinbutton', { name: 'Count' })).toHaveValue(4)
+
+    rerender(<Input aria-label="Count" type="number" value={6} onChange={() => {}} />)
+
+    expect(screen.getByRole('spinbutton', { name: 'Count' })).toHaveValue(6)
+
+    unmount()
+    render(<Input aria-label="Count" type="number" defaultValue={2} />)
+
+    expect(screen.getByRole('spinbutton', { name: 'Count' })).toHaveValue(2)
+  })
+
   it('renders a shared focus indicator and activates it on keyboard focus', async () => {
     const user = userEvent.setup()
     const { container } = render(<Input aria-label="Search" />)

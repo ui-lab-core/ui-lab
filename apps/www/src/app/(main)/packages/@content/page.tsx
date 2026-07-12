@@ -1,7 +1,7 @@
-import { getAllPackages } from 'ui-lab-registry';
+import { getAllPackages } from '@ui-lab-core/library/catalog';
 import { GridCTA } from '@/features/landing/components/grid-cta';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
-import type { ElementPackageMetadata } from 'ui-lab-registry';
+import type { ElementPackageMetadata } from '@ui-lab-core/library/catalog';
 import { Metadata } from 'next';
 import { generateMetadata as buildMetadata } from '@/shared/lib/metadata';
 import PackagesGridClient from './client';

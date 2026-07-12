@@ -36,11 +36,11 @@
     }
 
     &[data-pressed="true"]:not([data-disabled]) {
-      background-color: var(--background-pressed, var(--background-hover, var(--background)));
+      background-color: var(--background);
     }
 
     &[data-open="true"] {
-      background-color: var(--background-hover);
+      background-color: var(--background);
     }
 
     &:global(.group) {
@@ -60,7 +60,8 @@
       &:not([data-disabled]):hover .icon-section,
       &:not([data-disabled]):hover .value-section:not(:empty) {
         --hover-duration: var(--hover-enter-duration, 0ms);
-        background-color: var(--background-hover);
+        --background: var(--trigger-background-hover, transparent);
+        background-color: var(--background);
       }
     }
 
@@ -78,6 +79,7 @@
   .value-section {
     @apply flex items-center flex-1 min-w-0 gap-0.5;
 
+    background-color: var(--background, transparent);
     padding: var(--trigger-padding-block) var(--trigger-padding-inline);
     border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
     font-size: var(--foreground-size);
@@ -94,6 +96,7 @@
 
   .icon-section {
     @apply flex items-center justify-center shrink-0;
+    background-color: var(--background, transparent);
     padding: var(--trigger-padding-block) var(--trigger-padding-inline);
     border-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
   }

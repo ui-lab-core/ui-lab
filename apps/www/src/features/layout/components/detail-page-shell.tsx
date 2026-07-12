@@ -19,7 +19,7 @@ export function DetailPageShell({
 }: DetailPageShellProps) {
   if (notFoundLabel !== undefined) {
     return (
-      <div className="w-full bg-background-950 mx-auto pt-12 pb-12">
+      <div className="w-full mx-auto pt-12 pb-12">
         <div className="mx-auto px-4">
           <div className="text-center py-12">
             <p className="text-foreground-400">{notFoundLabel}</p>
@@ -30,7 +30,7 @@ export function DetailPageShell({
   }
 
   return (
-    <div className="w-full bg-background-950 mx-auto min-h-screen flex flex-col pt-4 pb-12">
+    <div className="w-full mx-auto min-h-screen flex flex-col pt-4 pb-12">
       <div className="w-full mx-auto px-4 flex flex-col flex-1">
         <div className="mb-28">
           <div className="flex items-start justify-between gap-4 mb-4">

@@ -2,7 +2,7 @@
 
 import { Button } from 'ui-lab-components';
 import { PricingBadge } from '@/features/landing/components/pricing-badge';
-import type { PricingInfo } from 'ui-lab-registry';
+import type { PricingInfo } from '@ui-lab-core/library/catalog';
 import { FaShop } from '@/shared/icons/fa6';
 
 interface ContentHeaderProps {

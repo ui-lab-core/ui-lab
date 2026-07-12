@@ -38,10 +38,12 @@
   }
 
   .track {
+    --thickness: var(--size, calc(var(--spacing-md) * 0.80));
+    --length: calc(var(--thickness) * var(--ratio, 0.666667));
     position: relative;
     width: 100%;
-    height: var(--size, calc(var(--spacing-md) * 0.80));
-    border-radius: var(--radius, var(--radius-xs, 0.375rem));
+    height: var(--thickness);
+    border-radius: var(--radius);
     background-color: var(--background);
     overflow: visible;
   }
@@ -50,7 +52,7 @@
     position: absolute;
     top: 0;
     height: 100%;
-    border-radius: var(--radius-xs, 0.25rem);
+    border-radius: var(--radius);
     background-color: var(--background);
     transition: none;
     overflow: hidden;
@@ -68,10 +70,10 @@
   .thumb {
     position: absolute;
     top: var(--top, 0);
-    width: var(--width, 12px);
+    width: var(--width, var(--length));
     height: var(--height, 100%);
     transform: var(--transform, translateX(-50%));
-    border-radius: var(--radius, var(--radius-xs, 0.25rem));
+    border-radius: var(--radius);
     background: var(--background);
     border: none;
     opacity: 0;

@@ -136,6 +136,15 @@ function isHTMLElement(value: Element | null): value is HTMLElement {
   return value instanceof HTMLElement
 }
 
+function hasInput(item: Element | null): boolean {
+  return !!item?.querySelector('[data-input="true"]')
+}
+
+function isNextToInput(surface: HTMLElement): boolean {
+  const item = surface.closest('[data-item="true"]')
+  return hasInput(item?.previousElementSibling ?? null) || hasInput(item?.nextElementSibling ?? null)
+}
+
 // Find an icon-sized Group.Button, looking through plain wrapper elements
 // (e.g. <div className="flex items-center"><Divider /><Group.Button size="icon" /></div>)
 function containsIconGroupButton(node: React.ReactNode, depth = 0): boolean {
@@ -345,6 +354,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
                     isIconGroupButton && css["icon-button-item"],
                     resolved.item,
                   )}
+                  data-item="true"
                 >
                   {child}
                 </div>
@@ -386,7 +396,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
 
     // Activate input on pointer down to avoid focus ring flicker
     const handlePointerDown = React.useCallback((e: React.PointerEvent<HTMLButtonElement>) => {
-      if (!isDisabled && e.pointerType !== "mouse") {
+      if (!isDisabled && e.pointerType !== "mouse" && isNextToInput(e.currentTarget)) {
         // Pre-activate the input before button loses focus
         context.activateInput?.()
       }
@@ -394,7 +404,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
     }, [context, isDisabled, onPointerDown])
 
     const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!isDisabled && context.activateInput?.()) {
+      if (!isDisabled && isNextToInput(e.currentTarget) && context.activateInput?.()) {
         e.preventDefault()
       }
       onMouseDown?.(e)
@@ -466,6 +476,7 @@ const GroupInput = React.forwardRef<HTMLInputElement, GroupInputProps>(
         ref={containerRef}
         className={cn("input", context.groupVariant, css.input, context.groupStyles.input, className)}
         data-focus-surface="true"
+        data-input="true"
       >
         <Input
           ref={mergedRef}
@@ -513,6 +524,7 @@ const GroupInputWrapper = React.forwardRef<HTMLInputElement, GroupInputWrapperPr
         ref={containerRef}
         className={cn("input", context.groupVariant, css.input, context.groupStyles.input, className)}
         data-focus-surface="true"
+        data-input="true"
       >
         <Input
           ref={mergedRef}

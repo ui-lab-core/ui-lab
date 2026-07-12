@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
-import { getAllStarters } from 'ui-lab-registry';
+import { getAllStarters } from '@ui-lab-core/library/catalog';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import { GenericContentGrid } from '@/features/packages/components/content-grid';
 import { getLayoutConfig as getStarterLayoutConfig, getPreviewComponent as getStarterPreview } from '@/features/starters';
 import { GridCTA } from '@/features/landing/components/grid-cta';
 import { PurchaseModalClient, usePurchaseModal } from '@/features/packages';
-import type { StarterMetadata } from 'ui-lab-registry';
+import type { StarterMetadata } from '@ui-lab-core/library/catalog';
 
 const placeholderStarters: StarterMetadata[] = [
   {
@@ -38,7 +38,7 @@ function StartersPageContent() {
   const combinedStarters = [...allStarters, ...placeholderStarters];
   const modalContext = usePurchaseModal();
   const previews: Record<string, React.ReactNode> = {};
-  const layoutConfigs: Record<string, import('ui-lab-registry').LayoutConfig> = {};
+  const layoutConfigs: Record<string, import('@ui-lab-core/library/catalog').LayoutConfig> = {};
   for (const starter of combinedStarters) {
     const C = getStarterPreview(starter.id);
     if (C) previews[starter.id] = <C />;

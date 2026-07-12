@@ -1,4 +1,4 @@
-import type { LayoutConfig } from 'ui-lab-registry';
+import type { LayoutConfig } from '@ui-lab-core/library/catalog';
 
 interface RegistryItem {
   layout?: Partial<LayoutConfig>;

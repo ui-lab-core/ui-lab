@@ -9,7 +9,7 @@ export const metadata: Metadata = buildMetadata({
 export default function SectionsPage() {
   return (
     <div>
-      <div className="w-full bg-background-950 mx-auto pt-32 pb-12">
+      <div className="w-full mx-auto pt-32 pb-12">
         <div className="mx-auto px-4">
           <SectionsPageClient />
         </div>

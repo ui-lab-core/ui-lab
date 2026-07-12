@@ -1,7 +1,7 @@
 'use client';
 
+import { getElementPreview } from '@ui-lab-core/library';
 import { getPreviewComponent as getPatternPreviewComponent } from '../lib/get-pattern-preview';
-import { getPatternDemo } from 'ui-lab-registry/demo-registry';
 
 type PatternLivePreviewProps = {
   scope: 'pattern' | 'variation';
@@ -12,7 +12,7 @@ export function PatternLivePreview({ scope, id }: PatternLivePreviewProps) {
   const PreviewComponent =
     scope === 'pattern'
       ? getPatternPreviewComponent(id)
-      : getPatternDemo(id);
+      : getElementPreview('patterns', id);
 
   if (!PreviewComponent) {
     return (

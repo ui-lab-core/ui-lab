@@ -21,7 +21,10 @@ type GridAlignItems = "start" | "end" | "center" | "stretch" | "baseline";
 type GridJustifyContent = "start" | "end" | "center" | "stretch" | "space-between" | "space-around" | "space-evenly";
 type GridAlignContent = "start" | "end" | "center" | "stretch" | "space-between" | "space-around" | "space-evenly";
 type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
+type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
 type GridTemplateColumns = GridColumns | (string & {});
+type GridMasonryColumnWidth = string & {};
+type GridGapSize = GapSize | 0;
 
 type ResponsiveValue<T> = { sm?: T; md?: T; lg?: T; xl?: T };
 
@@ -31,11 +34,11 @@ export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Number of grid rows, or responsive object per breakpoint */
   rows?: GridRows | ResponsiveValue<GridRows>;
   /** Gap between all grid cells, or responsive object per breakpoint */
-  gap?: GapSize | ResponsiveValue<GapSize>;
+  gap?: GridGapSize | ResponsiveValue<GridGapSize>;
   /** Override gap between rows only */
-  rowGap?: GapSize;
+  rowGap?: GridGapSize;
   /** Override gap between columns only */
-  columnGap?: GapSize;
+  columnGap?: GridGapSize;
   /** Horizontal alignment of items within their cells */
   justifyItems?: GridJustifyItems;
   /** Vertical alignment of items within their cells */
@@ -46,6 +49,12 @@ export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   alignContent?: GridAlignContent;
   /** Direction items are auto-placed when no explicit placement is set */
   autoFlow?: GridAutoFlow;
+  /** Fixed masonry column width. Useful for horizontal masonry tracks that overflow the viewport. */
+  masonryColumnWidth?: GridMasonryColumnWidth | ResponsiveValue<GridMasonryColumnWidth>;
+  /** How masonry content fills columns when the grid has a constrained height. */
+  masonryColumnFill?: GridMasonryColumnFill;
+  /** Whether masonry children receive the Grid-managed vertical gap margin. */
+  masonryItemGap?: boolean;
   /** Wraps the grid in a container query parent for breakpoint-aware responsiveness */
   responsive?: boolean;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
@@ -62,10 +71,16 @@ const colsToTpl = (c: GridTemplateColumns): string => {
   return c;
 };
 
+const colsToCount = (c: GridTemplateColumns): string =>
+  typeof c === "number" ? String(c) : "1";
+
 const rowsToTpl = (r: GridRows): string => {
   if (r === "masonry" || r === "auto") return r;
   return `repeat(${r}, auto)`;
 };
+
+const gapToStep = (gap: GridGapSize): number =>
+  typeof gap === "number" ? gap : resolveGapStep(gap);
 
 const flowVal: Record<GridAutoFlow, string> = {
   row: "row",
@@ -89,6 +104,9 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       justifyContent = "start",
       alignContent = "start",
       autoFlow = "row",
+      masonryColumnWidth,
+      masonryColumnFill,
+      masonryItemGap = true,
       responsive = false,
       styles,
       children,
@@ -99,8 +117,13 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     const resolved = resolveGridBaseStyles(styles);
     const responsiveCols = isResponsive<GridTemplateColumns>(columns);
     const responsiveRows = isResponsive<GridRows>(rows);
-    const responsiveGap = isResponsive<GapSize>(gap);
-    const needsContainer = responsiveCols || responsiveRows || responsiveGap || responsive;
+    const responsiveGap = isResponsive<GridGapSize>(gap);
+    const responsiveMasonryColumnWidth = isResponsive<GridMasonryColumnWidth>(masonryColumnWidth);
+    const needsContainer = responsiveCols || responsiveRows || responsiveGap || responsiveMasonryColumnWidth || responsive;
+
+    const isMasonry = responsiveRows
+      ? Object.values(rows as ResponsiveValue<GridRows>).includes("masonry")
+      : rows === "masonry";
 
     const vars: Record<string, string> = {};
 
@@ -110,8 +133,15 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       if (rc.md) vars["--grid-tpl-md"] = colsToTpl(rc.md);
       if (rc.lg) vars["--grid-tpl-lg"] = colsToTpl(rc.lg);
       if (rc.xl) vars["--grid-tpl-xl"] = colsToTpl(rc.xl);
+      if (isMasonry) {
+        if (rc.sm) vars["--grid-col-count-sm"] = colsToCount(rc.sm);
+        if (rc.md) vars["--grid-col-count-md"] = colsToCount(rc.md);
+        if (rc.lg) vars["--grid-col-count-lg"] = colsToCount(rc.lg);
+        if (rc.xl) vars["--grid-col-count-xl"] = colsToCount(rc.xl);
+      }
     } else {
       vars["--grid-tpl"] = colsToTpl(columns as GridTemplateColumns);
+      if (isMasonry) vars["--grid-col-count"] = colsToCount(columns as GridTemplateColumns);
     }
 
     if (responsiveRows) {
@@ -125,17 +155,17 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     }
 
     if (responsiveGap) {
-      const rg = gap as ResponsiveValue<GapSize>;
-      if (rg.sm) vars["--grid-gap-step-sm"] = String(resolveGapStep(rg.sm));
-      if (rg.md) vars["--grid-gap-step-md"] = String(resolveGapStep(rg.md));
-      if (rg.lg) vars["--grid-gap-step-lg"] = String(resolveGapStep(rg.lg));
-      if (rg.xl) vars["--grid-gap-step-xl"] = String(resolveGapStep(rg.xl));
+      const rg = gap as ResponsiveValue<GridGapSize>;
+      if (rg.sm !== undefined) vars["--grid-gap-step-sm"] = String(gapToStep(rg.sm));
+      if (rg.md !== undefined) vars["--grid-gap-step-md"] = String(gapToStep(rg.md));
+      if (rg.lg !== undefined) vars["--grid-gap-step-lg"] = String(gapToStep(rg.lg));
+      if (rg.xl !== undefined) vars["--grid-gap-step-xl"] = String(gapToStep(rg.xl));
     } else {
-      vars["--grid-gap-step"] = String(resolveGapStep(gap as GapSize));
+      vars["--grid-gap-step"] = String(gapToStep(gap as GridGapSize));
     }
 
-    if (rowGap) vars["--grid-row-gap-step"] = String(resolveGapStep(rowGap));
-    if (columnGap) vars["--grid-col-gap-step"] = String(resolveGapStep(columnGap));
+    if (rowGap !== undefined) vars["--grid-row-gap-step"] = String(gapToStep(rowGap));
+    if (columnGap !== undefined) vars["--grid-col-gap-step"] = String(gapToStep(columnGap));
 
     vars["--grid-ji"] = justifyItems;
     vars["--grid-ai"] = alignItems;
@@ -143,13 +173,30 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     vars["--grid-ac"] = alignContent;
     vars["--grid-flow"] = flowVal[autoFlow];
 
+    if (responsiveMasonryColumnWidth) {
+      const widths = masonryColumnWidth as ResponsiveValue<GridMasonryColumnWidth>;
+      if (widths.sm) vars["--grid-masonry-col-width-sm"] = widths.sm;
+      if (widths.md) vars["--grid-masonry-col-width-md"] = widths.md;
+      if (widths.lg) vars["--grid-masonry-col-width-lg"] = widths.lg;
+      if (widths.xl) vars["--grid-masonry-col-width-xl"] = widths.xl;
+    } else if (masonryColumnWidth) {
+      vars["--grid-masonry-col-width"] = masonryColumnWidth as GridMasonryColumnWidth;
+    }
+
+    if (masonryColumnFill) vars["--grid-masonry-col-fill"] = masonryColumnFill;
+
     const gridClasses = cn(
       css.grid,
       responsiveCols && css["responsive-cols"],
       responsiveGap && css["responsive-gap"],
       responsiveRows && css["responsive-rows"],
-      rowGap && css["has-row-gap"],
-      columnGap && css["has-col-gap"],
+      rowGap !== undefined && css["has-row-gap"],
+      columnGap !== undefined && css["has-col-gap"],
+      isMasonry && css.masonry,
+      isMasonry && masonryColumnWidth && css["masonry-fixed-width"],
+      isMasonry && responsiveMasonryColumnWidth && css["responsive-masonry-width"],
+      isMasonry && masonryColumnFill && css["masonry-column-fill"],
+      isMasonry && !masonryItemGap && css["masonry-no-item-gap"],
     );
 
     if (needsContainer) {
@@ -160,7 +207,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
           style={style}
           {...props}
         >
-          <div className={gridClasses} style={vars as React.CSSProperties}>
+          <div className={cn(gridClasses, className)} style={vars as React.CSSProperties}>
             {children}
           </div>
         </div>

@@ -93,12 +93,14 @@ export interface DividerProps
   size?: "sm" | "md" | "lg" | "auto";
   /** Controls the margin around the divider */
   spacing?: "none" | "sm" | "md" | "lg";
+  /** Tailwind background color utility (e.g. "bg-background-700/40") overriding the default line color */
+  color?: string;
   /** Classes applied to the root slot. Accepts a string, cn()-compatible array, or slot object. */
   styles?: DividerStylesProp;
 }
 
 const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
-  ({ className, styles, variant = "solid", orientation, size = "auto", spacing, style, ...props }, ref) => {
+  ({ className, styles, variant = "solid", orientation, size = "auto", spacing, color, style, ...props }, ref) => {
     const groupContext = React.useContext(GroupContext);
 
     const resolvedOrientation = (() => {
@@ -113,7 +115,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
       return "none";
     })();
     const getMaskStyles = (): React.CSSProperties => {
-      const baseStyles: React.CSSProperties = { backgroundColor: "var(--background)" };
+      const baseStyles: React.CSSProperties = color ? {} : { backgroundColor: "var(--background)" };
       if (variant === "solid") return baseStyles
 
       const svgDataUri =
@@ -149,7 +151,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
           'divider',
           css.divider,
           dividerVariants({ variant, orientation: resolvedOrientation, size, spacing: resolvedSpacing }),
-          className, resolved.root,
+          color, className, resolved.root,
         )}
         style={{ ...getMaskStyles(), ...getAutoSizeStyle(), ...style }}
         role="separator"

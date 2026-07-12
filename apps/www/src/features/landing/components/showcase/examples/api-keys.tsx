@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import { List, Badge, Button } from "ui-lab-components";
 import { KeyRound, Copy, Check, Plus } from "lucide-react";
+import type { ShowcasePanelProps } from "./types";
 
 interface ApiKey {
   id: string;
@@ -15,14 +16,13 @@ interface ApiKey {
 const KEYS: ApiKey[] = [
   { id: "key_1", name: "Production server", token: "live_demo_placeholder_key_0001", env: "Production", lastUsed: "3m ago" },
   { id: "key_2", name: "Staging pipeline", token: "test_demo_placeholder_key_0002", env: "Development", lastUsed: "2d ago" },
-  { id: "key_3", name: "Local development", token: "test_demo_placeholder_key_0003", env: "Development", lastUsed: "Never" },
 ];
 
 function mask(token: string) {
   return `${token.slice(0, 7)}...${token.slice(-4)}`;
 }
 
-export function ApiKeysPanel() {
+export function ApiKeysPanel({ height }: ShowcasePanelProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
   function copy(key: ApiKey) {
@@ -32,7 +32,10 @@ export function ApiKeysPanel() {
   }
 
   return (
-    <div className="h-fit w-full bg-background-900 border border-background-700 rounded-sm overflow-hidden">
+    <div
+      className="flex w-full flex-col overflow-hidden"
+      style={{ height }}
+    >
       <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <KeyRound size={18} className="text-foreground-300" />
@@ -44,7 +47,7 @@ export function ApiKeysPanel() {
         <Button size="sm" variant="ghost" icon={{ left: <Plus size={12} /> }}>New key</Button>
       </div>
 
-      <List items={KEYS} spacing="default" className="max-w-none">
+      <List items={KEYS} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {KEYS.map((key, i) => (
           <Fragment key={key.id}>
             <List.Item value={key.id} className="px-4 py-3">
@@ -71,7 +74,7 @@ export function ApiKeysPanel() {
         ))}
       </List>
 
-      <div className="px-4 py-2.5 border-t border-background-700 text-xs text-foreground-400">
+      <div className="shrink-0 border-t border-background-700 px-4 py-2.5 text-xs text-foreground-400">
         Keys grant full account access. Rotate them regularly.
       </div>
     </div>

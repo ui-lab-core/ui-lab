@@ -21,7 +21,7 @@ export const metadata: Metadata = buildMetadata({
 export default function PrivatePackageDevPage() {
   return (
     <main className="p-8">
-      <Suspense fallback={<div className="min-h-[40vh] w-full bg-background-950" />}>
+      <Suspense fallback={<div className="min-h-[40vh] w-full" />}>
         <PrivatePackageDevContent />
       </Suspense>
     </main>

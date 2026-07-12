@@ -108,4 +108,83 @@
       --grid-gap-step: 2;
     }
   }
+
+  /*
+   * grid-template-rows: masonry isn't supported by Chromium or WebKit,
+   * so masonry falls back to a CSS multi-column layout instead.
+   */
+  .grid.masonry {
+    display: block;
+    column-count: var(--grid-col-count, 1);
+    column-gap: calc(var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+  }
+
+  .grid.masonry.masonry-fixed-width {
+    --grid-masonry-gap: calc(var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    column-width: var(--grid-masonry-col-width);
+    width: max(
+      100%,
+      calc(
+        (var(--grid-col-count, 1) * var(--grid-masonry-col-width)) +
+        ((var(--grid-col-count, 1) - 1) * var(--grid-masonry-gap))
+      )
+    );
+  }
+
+  .grid.masonry.masonry-column-fill {
+    column-fill: var(--grid-masonry-col-fill);
+  }
+
+  .grid.masonry > * {
+    break-inside: avoid;
+    margin-bottom: calc(var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+  }
+
+  .grid.masonry.masonry-no-item-gap > * {
+    margin-bottom: 0;
+  }
+
+  .grid.masonry.responsive-cols {
+    column-count: var(--grid-col-count-sm, 1);
+  }
+
+  .grid.masonry.responsive-masonry-width {
+    --grid-masonry-col-width: var(--grid-masonry-col-width-sm, auto);
+  }
+
+  @media (min-width: 640px) {
+    .grid.masonry.responsive-cols {
+      column-count: var(--grid-col-count-md, var(--grid-col-count-sm, 1));
+    }
+
+    .grid.masonry.responsive-masonry-width {
+      --grid-masonry-col-width: var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .grid.masonry.responsive-cols {
+      column-count: var(--grid-col-count-lg, var(--grid-col-count-md, var(--grid-col-count-sm, 1)));
+    }
+
+    .grid.masonry.responsive-masonry-width {
+      --grid-masonry-col-width: var(--grid-masonry-col-width-lg, var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto)));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .grid.masonry.responsive-cols {
+      column-count: var(--grid-col-count-xl, var(--grid-col-count-lg, var(--grid-col-count-md, var(--grid-col-count-sm, 1))));
+    }
+
+    .grid.masonry.responsive-masonry-width {
+      --grid-masonry-col-width: var(--grid-masonry-col-width-xl, var(--grid-masonry-col-width-lg, var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto))));
+    }
+  }
+
+  @container grid-ctx (width < 400px) {
+    .container .grid.masonry {
+      column-count: 1;
+    }
+  }
 }

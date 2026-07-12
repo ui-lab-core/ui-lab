@@ -9,27 +9,29 @@ import {
 } from "@/shared/icons/fa6";
 import { Anchor, Button } from "ui-lab-components";
 
+// Make your interfaces <span className="text-foreground-400">stand out in the era of slop.</span>
+
 function HeroSection() {
   return (
     <>
-      <div className="z-10 mt-12 sm:mt-0 overflow-hidden">
+      <div className="z-10 mt-12 sm:mt-0 w-full overflow-hidden">
         <div
-          className="grid-paper overflow-hidden relative h-full flex flex-col justify-between md:justify-center">
+          className="grid-paper relative mx-auto flex h-full w-full max-w-(--page-width) flex-col justify-between overflow-hidden md:justify-center">
 
           <div className="flex items-center text-left flex-col pt-8 md:pt-0">
             <div>
-              <h1 className="isolate mb-2 tracking-normal text-[3em] max-w-[20ch] sm:max-w-[22ch] text-foreground-200">
-                Make your interfaces stand out in the era of slop.
+              <h1 className="isolate mb-2 text-header-3xl max-w-[26ch] sm:max-w-[28ch] text-foreground-200">
+                Great products need <span className="text-foreground-400">great interfaces.</span>
               </h1>
               <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch]">
                 Your agent's favorite UI Library.
               </p>
               <div className="flex gap-4 mt-6 mb-6 md:mt-8 md:mb-0">
-                <Button size="sm" variant="primary" href="/docs" >
-                  Documentation
+                <Button styles="px-8" size="sm" variant="primary" href="/docs" >
+                  Get Started
                 </Button>
                 <Anchor href="/components">
-                  View Components
+                  Browse Components
                 </Anchor>
               </div>
             </div>

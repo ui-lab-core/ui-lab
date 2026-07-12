@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button, Group, Divider } from "ui-lab-components";
 import { FaClock, FaMicrochip, FaMemory, FaMinus, FaPlus, FaBoltLightning } from "@/shared/icons/fa6";
 import { SiGnubash } from "@/shared/icons/si";
+import type { ShowcasePanelProps } from "./types";
 
 function Stepper({
   value,
@@ -53,7 +54,7 @@ function Stepper({
   );
 }
 
-export function SessionConfigPanel() {
+export function SessionConfigPanel({ height }: ShowcasePanelProps) {
   const [duration, setDuration] = useState(1);
   const [cores, setCores] = useState(2);
   const [memory, setMemory] = useState(4);
@@ -94,7 +95,10 @@ export function SessionConfigPanel() {
   ];
 
   return (
-    <div className="h-fit w-full bg-background-200 border border-background-700 rounded-sm overflow-hidden">
+    <div
+      className="flex w-full flex-col overflow-hidden bg-background-200"
+      style={{ height }}
+    >
       <div className="flex items-center gap-5 px-4 pt-3.5 pb-3 border-b border-background-700">
         <SiGnubash size={26} />
         <div>
@@ -103,29 +107,31 @@ export function SessionConfigPanel() {
         </div>
       </div>
 
-      {rows.map((row, i) => (
-        <div key={row.label}>
-          <div className="px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-sm bg-background-300 flex items-center justify-center shrink-0">
-                {row.icon}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {rows.map((row, i) => (
+          <div key={row.label}>
+            <div className="px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-sm bg-background-300 flex items-center justify-center shrink-0">
+                  {row.icon}
+                </div>
+                <div>
+                  <div className="text-sm text-foreground-100">{row.label}</div>
+                  <div className="text-sm text-foreground-500">{row.desc}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-sm text-foreground-100">{row.label}</div>
-                <div className="text-sm text-foreground-500">{row.desc}</div>
-              </div>
+              <Stepper
+                value={row.value}
+                onChange={row.onChange}
+                min={row.min}
+                max={row.max}
+                step={row.step}
+              />
             </div>
-            <Stepper
-              value={row.value}
-              onChange={row.onChange}
-              min={row.min}
-              max={row.max}
-              step={row.step}
-            />
+            {i < rows.length - 1 && <Divider spacing="none" size="sm" />}
           </div>
-          {i < rows.length - 1 && <Divider spacing="none" size="sm" />}
-        </div>
-      ))}
+        ))}
+      </div>
 
       <div className="px-4 py-3.5 border-t border-background-700 flex items-center justify-between">
         <div>

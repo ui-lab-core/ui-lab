@@ -223,7 +223,6 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
   ) => {
     const inherited = React.useContext(GalleryStylesContext)
     const resolved = resolveGalleryItemStyles(stylesProp)
-    const scopeRef = React.useRef<HTMLDivElement>(null)
     const itemRef = React.useRef<HTMLDivElement>(null)
     const mergedRef = useMergeRefs(itemRef, ref)
     const { focusProps, isFocused, isFocusVisible } = useFocusRing()
@@ -231,12 +230,7 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
     const { pressProps, isPressed } = usePress({
       onPress: () => onPress?.(href),
     })
-    const { scopeProps, indicatorProps } = useFocus({
-      scopeRef,
-      containerRef: scopeRef,
-      surfaceSelector: '[data-active="true"]',
-      radiusSource: "surface",
-    })
+    const { targetProps } = useFocus({ mode: "target" })
 
     const spanStyles: React.CSSProperties = {
       ...(columnSpan ? { gridColumn: `span ${columnSpan}` } : {}),
@@ -252,29 +246,24 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
 
     return (
       <div
-        ref={scopeRef}
-        className={cn(scopeProps.className, css["item-scope"])}
+        {...mergeProps(focusProps, hoverProps, pressProps, props)}
+        {...targetProps}
+        ref={mergedRef}
+        role="button"
+        tabIndex={props.tabIndex ?? 0}
+        className={cn("item", css.item, inherited?.item, resolved.root, className)}
         style={spanStyles}
+        data-selected={props["aria-pressed"] === true ? "true" : undefined}
+        data-disabled={props["aria-disabled"] === true ? "true" : undefined}
+        data-focused={isFocused ? "true" : undefined}
+        data-focus-visible={isFocusVisible ? "true" : undefined}
+        data-hovered={isHovered ? "true" : undefined}
+        data-pressed={isPressed ? "true" : undefined}
+        data-orientation={orientation}
+        data-active="true"
+        aria-label={hasAccessibleName ? props["aria-label"] : "Gallery item"}
       >
-        <div {...indicatorProps} data-focus-indicator="local" />
-        <div
-          {...mergeProps(focusProps, hoverProps, pressProps, props)}
-          ref={mergedRef}
-          role="button"
-          tabIndex={props.tabIndex ?? 0}
-          className={cn("item", css.item, inherited?.item, resolved.root, className)}
-          data-selected={props["aria-pressed"] === true ? "true" : undefined}
-          data-disabled={props["aria-disabled"] === true ? "true" : undefined}
-          data-focused={isFocused ? "true" : undefined}
-          data-focus-visible={isFocusVisible ? "true" : undefined}
-          data-hovered={isHovered ? "true" : undefined}
-          data-pressed={isPressed ? "true" : undefined}
-          data-orientation={orientation}
-          data-active="true"
-          aria-label={hasAccessibleName ? props["aria-label"] : "Gallery item"}
-        >
-          {children}
-        </div>
+        {children}
       </div>
     )
   }

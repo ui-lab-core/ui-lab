@@ -1,0 +1,62 @@
+"use client";
+
+import { Color, Tabs } from "ui-lab-components";
+import { useApp } from "@/features/theme/lib/app-context";
+import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
+import { themes } from "@/features/theme/constants/themes";
+import { setThemeColorFromHue } from "@/features/theme/lib/color/set-color";
+
+const tabs = [
+  { value: "showcase", label: "Showcase" },
+  { value: "primitives", label: "Primitives" },
+  { value: "dashboard", label: "Dashboard" },
+  { value: "sales", label: "Sales" },
+  { value: "entertainment", label: "Entertainment" },
+];
+
+export function ShowcaseToolbar() {
+  const { currentThemeColors, setCurrentThemeColors, currentThemeMode } =
+    useApp();
+  const { applyAndPersistColors } = useThemeStorage({
+    onColorsChange: setCurrentThemeColors,
+    currentThemeMode,
+  });
+  const colors = currentThemeColors ?? themes["Vitesse"][currentThemeMode];
+  const backgroundHue = colors.background.c <= 0.005 ? 0 : colors.background.h;
+
+  const applyBackground = (hue: number) => {
+    applyAndPersistColors(
+      setThemeColorFromHue(colors, "background", hue, currentThemeMode),
+    );
+  };
+
+  return (
+    <div className="flex w-full items-center justify-between gap-4 p-2">
+      <Tabs default="showcase" className="w-auto">
+        <Tabs.List
+          aria-label="Showcase categories"
+          className="w-auto rounded-sm bg-background-900/80 px-[5px]"
+          styles={{ indicator: "rounded-sm bg-background-700" }}
+        >
+          {tabs.map(({ value, label }) => (
+            <Tabs.Trigger
+              key={value}
+              value={value}
+              className="rounded-full bg-transparent px-3 py-1 text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+            >
+              {label}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+      </Tabs>
+
+      <Color.Slider
+        aria-label="Background hue"
+        type="hue"
+        value={backgroundHue}
+        onChange={applyBackground}
+        className="w-[9.5rem] min-w-[9.5rem]"
+      />
+    </div>
+  );
+}

@@ -5,7 +5,7 @@ import { getElementPreview } from '@ui-lab-core/library';
 import {
   elementRegistry,
   getPackageForElement,
-} from 'ui-lab-registry/elements';
+} from '@ui-lab-core/library/catalog';
 
 type DemoComponent = React.ComponentType<object>;
 

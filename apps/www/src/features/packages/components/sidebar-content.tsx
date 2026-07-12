@@ -16,7 +16,7 @@ import {
   getPatternsByCategory,
   type ElementCategoryId,
   type SectionCategoryId,
-} from 'ui-lab-registry';
+} from '@ui-lab-core/library/catalog';
 
 interface ElementsSidebarContentProps {
   activeNav: 'packages' | 'sections' | 'starters' | 'patterns';

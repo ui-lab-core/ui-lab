@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button, Badge } from "ui-lab-components";
 import { CalendarDays, Clock, Video } from "lucide-react";
+import type { ShowcasePanelProps } from "./types";
 
 const DAYS = [
   { id: "mon", label: "Mon", date: 13 },
@@ -14,13 +15,16 @@ const DAYS = [
 
 const SLOTS = ["9:00", "9:30", "10:00", "11:30", "13:00", "14:30", "15:00", "16:30"];
 
-export function EventScheduler() {
+export function EventScheduler({ height }: ShowcasePanelProps) {
   const [day, setDay] = useState("wed");
   const [slot, setSlot] = useState<string | null>("10:00");
   const selectedDay = DAYS.find((d) => d.id === day)!;
 
   return (
-    <div className="h-fit w-full bg-background-900 border border-background-700 rounded-sm overflow-hidden">
+    <div
+      className="flex w-full flex-col overflow-hidden"
+      style={{ height }}
+    >
       <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <CalendarDays size={18} className="text-foreground-300" />
@@ -32,39 +36,41 @@ export function EventScheduler() {
         <Badge icon={<Video size={11} />}>Remote</Badge>
       </div>
 
-      <div className="px-4 py-3 flex gap-1.5">
-        {DAYS.map((d) => (
-          <Button
-            key={d.id}
-            variant={d.id === day ? "default" : "outline"}
-            onPress={() => setDay(d.id)}
-            aria-pressed={d.id === day}
-            className="flex-1 h-auto py-2"
-          >
-            <span className="flex flex-col items-center">
-              <span className="text-xs">{d.label}</span>
-              <span className="text-sm font-semibold mt-0.5">{d.date}</span>
-            </span>
-          </Button>
-        ))}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="px-4 py-3 flex gap-1.5">
+          {DAYS.map((d) => (
+            <Button
+              key={d.id}
+              variant={d.id === day ? "default" : "outline"}
+              onPress={() => setDay(d.id)}
+              aria-pressed={d.id === day}
+              className="flex-1 h-auto py-2"
+            >
+              <span className="flex flex-col items-center">
+                <span className="text-xs">{d.label}</span>
+                <span className="text-sm font-semibold mt-0.5">{d.date}</span>
+              </span>
+            </Button>
+          ))}
+        </div>
+
+        <div className="px-4 pb-3 grid grid-cols-4 gap-1.5">
+          {SLOTS.map((time) => (
+            <Button
+              key={time}
+              size="sm"
+              variant={slot === time ? "default" : "outline"}
+              onPress={() => setSlot(time)}
+              aria-pressed={slot === time}
+              className="w-full"
+            >
+              {time}
+            </Button>
+          ))}
+        </div>
       </div>
 
-      <div className="px-4 pb-3 grid grid-cols-4 gap-1.5">
-        {SLOTS.map((time) => (
-          <Button
-            key={time}
-            size="sm"
-            variant={slot === time ? "default" : "outline"}
-            onPress={() => setSlot(time)}
-            aria-pressed={slot === time}
-            className="w-full"
-          >
-            {time}
-          </Button>
-        ))}
-      </div>
-
-      <div className="px-4 py-3 border-t border-background-700 flex items-center justify-between">
+      <div className="flex shrink-0 items-center justify-between border-t border-background-700 px-4 py-3">
         <div className="flex items-center gap-2 text-sm text-foreground-400">
           <Clock size={14} />
           {slot ? `${selectedDay.label} ${selectedDay.date} June · ${slot}` : "Pick a time"}

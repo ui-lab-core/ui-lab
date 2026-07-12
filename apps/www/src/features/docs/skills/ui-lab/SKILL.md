@@ -17,6 +17,10 @@ Route explicit front-end UI design tasks to specialized agents. ideate produces 
 Use this skill only when the user is asking about UI design, visual/interface quality, layout, design-system adherence, or a UI Lab component migration. If the task is not about changing or evaluating the front-end UI, do not use this skill.
 </quick_start>
 
+<radius_guidance>
+Use `rounded-xs` for most compact UI surfaces and controls. Use `rounded-sm` for standard panels, cards, dialogs, and general-purpose containers. Treat `rounded-md`, `rounded-lg`, and `rounded-xl` as rare and deliberate choices for niche cases only.
+</radius_guidance>
+
 <activation_guardrails>
 
 Invoke this skill only when the user's current request clearly concerns front-end UI design. Acceptable requests include:

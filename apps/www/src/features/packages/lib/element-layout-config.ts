@@ -1,5 +1,5 @@
-import type { LayoutConfig } from 'ui-lab-registry';
-import { elementRegistry } from 'ui-lab-registry/elements';
+import type { LayoutConfig } from '@ui-lab-core/library/catalog';
+import { elementRegistry } from '@ui-lab-core/library/catalog';
 import { createLayoutConfigGetter } from '@/shared/lib/layout-utils';
 
 const DEFAULT_LAYOUT: LayoutConfig = {

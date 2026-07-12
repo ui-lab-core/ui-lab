@@ -79,7 +79,7 @@ export const ColorHueSlider = React.forwardRef<
       <div className={cn("track", styles["hue-track"], trackClassName)} ref={trackRef}>
         <div
           className={cn("thumb", styles["hue-thumb"], thumbClassName)}
-          style={{ left: `${thumbPosition}%` }}
+          style={{ "--position": `${thumbPosition}%` } as React.CSSProperties}
           role="presentation"
           data-focused={isFocused ? "true" : undefined}
           data-focus-visible={isFocusVisible || undefined}

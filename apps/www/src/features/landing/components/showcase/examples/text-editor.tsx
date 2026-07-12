@@ -3,6 +3,7 @@
 import { useReducer } from "react";
 import { Group, Divider, Select, Tooltip } from "ui-lab-components";
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaAlignLeft, FaAlignCenter, FaAlignRight, FaListUl, FaLink } from "@/shared/icons/fa6";
+import type { ShowcasePanelProps } from "./types";
 
 interface EditorState {
   textStyle: string | number | null;
@@ -40,7 +41,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
   }
 }
 
-export function TextEditor() {
+export function TextEditor({ height }: ShowcasePanelProps) {
   const [state, dispatch] = useReducer(editorReducer, {
     textStyle: "paragraph",
     fontSize: "16",
@@ -51,8 +52,11 @@ export function TextEditor() {
   });
 
   return (
-    <div className="w-full bg-background-200 border border-background-700 rounded-sm overflow-hidden">
-      <div className="border-b border-background-700">
+    <div
+      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
+      style={{ height }}
+    >
+      <div className="shrink-0 border-b border-background-700">
         <div className="[&_.button]:aspect-square [&_.button]:p-0! px-1.5 h-14 flex items-center justify-between w-full">
           <Group className="flex">
             <Group.Select selectedKey={state.textStyle} onSelectionChange={(v) => dispatch({ type: 'SET_TEXT_STYLE', payload: v })} className="w-40">
@@ -121,7 +125,7 @@ export function TextEditor() {
       <textarea
         rows={5}
         placeholder="Start writing..."
-        className="w-full bg-transparent px-4 py-3 text-sm text-foreground-100 placeholder:text-foreground-500 resize-none outline-none"
+        className="min-h-0 w-full flex-1 resize-none bg-transparent px-4 py-3 text-sm text-foreground-100 outline-none placeholder:text-foreground-500"
         style={{
           fontStyle: state.italic ? "italic" : "normal",
           fontWeight: state.bold ? "bold" : "normal",
@@ -131,7 +135,7 @@ export function TextEditor() {
         }}
       />
 
-      <div className="px-3 py-2 border-t border-background-700 flex items-center justify-between">
+      <div className="flex shrink-0 items-center justify-between border-t border-background-700 px-3 py-2">
         <span className="text-sm text-foreground-500">Markdown enabled</span>
         <Group spacing="sm" className="h-12">
           <Group.Button variant="ghost" size="sm">Discard</Group.Button>

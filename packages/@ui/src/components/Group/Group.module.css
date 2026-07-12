@@ -107,8 +107,8 @@
 
     &[data-selected="true"] {
       @apply relative;
-      background-color: var(--button-selected-background, var(--background-pressed, var(--background-hover, var(--background))));
-      color: var(--button-selected-foreground, var(--foreground));
+      background-color: var(--background);
+      color: var(--foreground);
     }
   }
 
@@ -159,7 +159,7 @@
 
   .select > :global(.value):has(> :global(.button[data-hovered="true"]:not([data-disabled="true"]))) {
     --hover-duration: var(--hover-enter-duration, 0ms);
-    background-color: var(--background-hover);
+    background-color: var(--background, transparent);
   }
 
   .select > :global(.value) > :global(.button) {

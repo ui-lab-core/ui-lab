@@ -4,8 +4,8 @@ import { GenericContentGrid } from './content-grid';
 import { getLayoutConfig } from '../lib/layout-registry';
 import { getPreviewComponent } from '@/features/packages/lib/get-element-preview';
 import { usePurchaseModal } from './purchase-modal';
-import type { ElementMetadata } from 'ui-lab-registry';
-import { getPackageById } from 'ui-lab-registry';
+import type { ElementMetadata } from '@ui-lab-core/library/catalog';
+import { getPackageById } from '@ui-lab-core/library/catalog';
 
 interface ElementsGridClientProps {
   elements: ElementMetadata[];

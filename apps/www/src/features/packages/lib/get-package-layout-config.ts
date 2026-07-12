@@ -1,4 +1,4 @@
-import type { ElementPackageMetadata, LayoutConfig } from 'ui-lab-registry';
+import type { ElementPackageMetadata, LayoutConfig } from '@ui-lab-core/library/catalog';
 
 const defaultPackageLayout: LayoutConfig = {
   layoutClass: 'default-package',

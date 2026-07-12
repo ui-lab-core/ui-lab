@@ -1,6 +1,6 @@
 'use client';
 
-import { elementsList } from 'ui-lab-registry';
+import { elementsList } from '@ui-lab-core/library/catalog';
 
 function buildSourceCodeMap(): Record<string, string> {
   const map: Record<string, string> = {};

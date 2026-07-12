@@ -6,7 +6,7 @@ import { FaFolder, FaFolderOpen, FaFile, FaExpand } from "@/shared/icons/fa6";
 import { PreviewContainer, DEVICE_PRESETS, calculateVariantFromWidth, PreviewDeviceVariant } from "@/features/preview";
 import { Code } from "@/features/docs/components/code-display/code";
 import { useExternalWindow } from "@/features/preview/hooks/use-external-window";
-import type { ElementFile } from "ui-lab-registry";
+import type { ElementFile } from "@ui-lab-core/library/catalog";
 
 type DeviceVariant = PreviewDeviceVariant;
 

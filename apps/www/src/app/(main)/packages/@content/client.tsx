@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { ElementPackageMetadata, LayoutConfig } from 'ui-lab-registry';
+import type { ElementPackageMetadata, LayoutConfig } from '@ui-lab-core/library/catalog';
 import { GenericContentGrid } from '@/features/packages/components/content-grid';
 import {
   getPackageLayoutConfig,

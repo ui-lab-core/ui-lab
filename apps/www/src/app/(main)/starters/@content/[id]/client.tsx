@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { ElementFile } from "ui-lab-registry";
-import { getStarterById } from "ui-lab-registry";
+import type { ElementFile } from "@ui-lab-core/library/catalog";
+import { getStarterById } from "@ui-lab-core/library/catalog";
 import { Code } from "@/features/docs/components/code-display/code";
 import { PurchaseModalClient, usePurchaseModal } from "@/features/packages";
 import { Button } from "ui-lab-components";
@@ -175,7 +175,7 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
 
   if (!starter) {
     return (
-      <div className="w-full bg-background-950 mx-auto pt-12 pb-12">
+      <div className="w-full mx-auto pt-12 pb-12">
         <div className="mx-auto px-4">
           <div className="text-center py-12">
             <p className="text-foreground-400">Starter not found.</p>
@@ -188,95 +188,95 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
   const isPremium = starter.pricing && starter.pricing.price !== null;
 
   return (
-    <div className="w-full bg-background-950 mx-auto min-h-screen flex flex-col pt-4 pb-12">
+    <div className="w-full mx-auto min-h-screen flex flex-col pt-4 pb-12">
       <div className="w-full mx-auto px-4 flex flex-col flex-1">
-          <div className="mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 md:gap-8 mb-12">
-              <div className="flex items-center justify-center">
-                <div className="w-full h-48 bg-background-800 rounded border border-background-700 flex items-center justify-center">
-                  <div className="text-foreground-400">Preview</div>
+        <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 md:gap-8 mb-12">
+            <div className="flex items-center justify-center">
+              <div className="w-full h-48 bg-background-800 rounded border border-background-700 flex items-center justify-center">
+                <div className="text-foreground-400">Preview</div>
+              </div>
+            </div>
+            <div className="flex relative flex-col justify-between gap-4">
+              <div className="flex flex-col sm:flex-row items-start justify-start gap-4">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground-50 flex-1">{starter.name}</h1>
+                  <p className="text-foreground-400 text-sm leading-relaxed flex-1">{starter.description}</p>
                 </div>
               </div>
-              <div className="flex relative flex-col justify-between gap-4">
-                <div className="flex flex-col sm:flex-row items-start justify-start gap-4">
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground-50 flex-1">{starter.name}</h1>
-                    <p className="text-foreground-400 text-sm leading-relaxed flex-1">{starter.description}</p>
-                  </div>
+              {isPremium && (
+                <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+                  <Button
+                    icon={{ left: <FaShop /> }}
+                    size="md"
+                    variant="primary"
+                    onClick={() => modalContext.openModal(starter)}
+                  >
+                    Purchase on Gumroad
+                  </Button>
                 </div>
-                {isPremium && (
-                  <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
-                    <Button
-                      icon={{ left: <FaShop /> }}
-                      size="md"
-                      variant="primary"
-                      onClick={() => modalContext.openModal(starter)}
-                    >
-                      Purchase on Gumroad
-                    </Button>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </div>
+        </div>
 
-          {starter.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-8">
-              {starter.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-block px-2.5 py-1 text-sm bg-background-900 border border-background-700 text-foreground-400 rounded"
-                >
-                  {tag}
-                </span>
-              ))}
+        {starter.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-8">
+            {starter.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-block px-2.5 py-1 text-sm bg-background-900 border border-background-700 text-foreground-400 rounded"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="space-y-8 flex-1">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-3 space-y-2">
+              <h3 className="text-sm font-semibold text-foreground-200 mb-3">
+                Project Files
+              </h3>
+              <div className="bg-background-900 rounded border border-background-700 p-2 overflow-hidden">
+                {fileTree.map((node) => (
+                  <FileTreeNode
+                    key={node.path}
+                    node={node}
+                    expanded={expandedFolders}
+                    onToggle={handleToggleFolder}
+                    onSelectFile={setActiveFile}
+                    activeFile={activeFile || currentFile?.filename || ""}
+                  />
+                ))}
+              </div>
             </div>
-          )}
 
-          <div className="space-y-8 flex-1">
-            <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-3 space-y-2">
-                <h3 className="text-sm font-semibold text-foreground-200 mb-3">
-                  Project Files
-                </h3>
-                <div className="bg-background-900 rounded border border-background-700 p-2 overflow-hidden">
-                  {fileTree.map((node) => (
-                    <FileTreeNode
-                      key={node.path}
-                      node={node}
-                      expanded={expandedFolders}
-                      onToggle={handleToggleFolder}
-                      onSelectFile={setActiveFile}
-                      activeFile={activeFile || currentFile?.filename || ""}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="col-span-9">
-                {currentFile && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-foreground-200">
-                        {currentFile.filename}
-                      </h3>
-                      <span className="text-sm text-foreground-400 uppercase">
-                        {currentFile.language}
-                      </span>
-                    </div>
-                    {currentFile.description && (
-                      <p className="text-sm text-foreground-400">
-                        {currentFile.description}
-                      </p>
-                    )}
-                    <Code language={currentFile.language}>
-                      {currentFile.code || ''}
-                    </Code>
+            <div className="col-span-9">
+              {currentFile && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-foreground-200">
+                      {currentFile.filename}
+                    </h3>
+                    <span className="text-sm text-foreground-400 uppercase">
+                      {currentFile.language}
+                    </span>
                   </div>
-                )}
-              </div>
+                  {currentFile.description && (
+                    <p className="text-sm text-foreground-400">
+                      {currentFile.description}
+                    </p>
+                  )}
+                  <Code language={currentFile.language}>
+                    {currentFile.code || ''}
+                  </Code>
+                </div>
+              )}
             </div>
           </div>
+        </div>
       </div>
     </div>
   );

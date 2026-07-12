@@ -1,4 +1,4 @@
-import { elementsList, getAllStarters, getAllPackages, getElementsInPackage, elementRegistry } from 'ui-lab-registry';
+import { elementsList, getAllStarters, getAllPackages, getElementsInPackage, elementRegistry } from '@ui-lab-core/library/catalog';
 
 function getElementsListForSidebar() {
   return elementsList;

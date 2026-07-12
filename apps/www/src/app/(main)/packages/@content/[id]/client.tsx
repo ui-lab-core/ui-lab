@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo } from 'react';
-import { elementRegistry, elementOrder } from 'ui-lab-registry';
-import type { ElementMetadata } from 'ui-lab-registry';
+import { elementRegistry, elementOrder } from '@ui-lab-core/library/catalog';
+import type { ElementMetadata } from '@ui-lab-core/library/catalog';
 import { ElementsGridClient, ElementsSearchHeader, ElementsFilterPopover, ElementsSortDropdown, ElementsLayoutToggle } from '@/features/packages';
 import { Divider } from 'ui-lab-components';
 

@@ -1,4 +1,5 @@
 import "./globals.css";
+import "lenis/dist/lenis.css";
 
 import "@fontsource/geist-sans";
 import "@fontsource/geist-mono";

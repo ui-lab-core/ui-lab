@@ -3,7 +3,8 @@
 import { useState, useMemo } from "react";
 import { List, Group, Select, Divider, Button } from "ui-lab-components";
 import { FaMagnifyingGlass } from "@/shared/icons/fa6";
-import { SiGithub, SiSlack, SiFigma, SiLinear, SiNotion, SiVercel } from "@/shared/icons/si";
+import { SiGithub, SiSlack, SiFigma, SiLinear, SiVercel } from "@/shared/icons/si";
+import type { ShowcasePanelProps } from "./types";
 
 interface Integration {
   id: string;
@@ -19,10 +20,9 @@ const INTEGRATIONS: Integration[] = [
   { id: "vercel", name: "Vercel", desc: "Deploy previews on every push.", icon: <SiVercel size={20} />, initiallyConnected: true },
   { id: "figma", name: "Figma", desc: "Design handoff with live preview.", icon: <SiFigma size={20} />, initiallyConnected: false },
   { id: "linear", name: "Linear", desc: "Sync issues and pull requests.", icon: <SiLinear size={20} />, initiallyConnected: false },
-  { id: "notion", name: "Notion", desc: "Document changelogs automatically.", icon: <SiNotion size={20} />, initiallyConnected: false },
 ];
 
-export function IntegrationsPanel() {
+export function IntegrationsPanel({ height }: ShowcasePanelProps) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<string | number | null>("all");
   const [connected, setConnected] = useState(
@@ -52,8 +52,11 @@ export function IntegrationsPanel() {
   }
 
   return (
-    <div className="w-full bg-background-200 border border-background-700 rounded-sm overflow-hidden">
-      <div className="px-3 py-2.5 border-b border-background-700">
+    <div
+      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
+      style={{ height }}
+    >
+      <div className="px-3 py-2.5 border-b border-background-700/40">
         <Group className="h-12" spacing="sm">
           <Group.Input
             value={query}
@@ -79,7 +82,7 @@ export function IntegrationsPanel() {
         </Group>
       </div>
 
-      <List items={visible} spacing="default" className="max-w-none">
+      <List items={visible} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {visible.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-foreground-500">
             No integrations match your search.
@@ -107,7 +110,7 @@ export function IntegrationsPanel() {
                     {isConnected ? "Connected" : "Connect"}
                   </Button>
                 </List.Item>
-                {i < visible.length - 1 && <List.Divider spacing="none" />}
+                {i < visible.length - 1 && <List.Divider color="bg-background-700/40" spacing="none" />}
               </div>
             );
           })

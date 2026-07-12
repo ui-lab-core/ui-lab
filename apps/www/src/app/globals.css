@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @source "../../node_modules/@ui-lab-core/library/src";
+@source "../../node_modules/@ui-lab-core/library/content";
 @source "../../node_modules/ui-lab-registry/src";
 @import "./theme.css";
 

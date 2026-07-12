@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import type { LayoutConfig } from 'ui-lab-registry';
+import type { LayoutConfig } from '@ui-lab-core/library/catalog';
 
 interface PreviewContainerProps {
   layoutConfig: LayoutConfig;

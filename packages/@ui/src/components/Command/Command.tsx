@@ -202,13 +202,6 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       focusedKeyRef.current = focusedKey;
     }, [focusedKey]);
 
-    // Auto-focus search input when opening
-    React.useEffect(() => {
-      if (overlayState.isOpen && searchInputRef.current) {
-        setTimeout(() => searchInputRef.current?.focus(), 0);
-      }
-    }, [overlayState.isOpen]);
-
     // Cleanup state when overlay closes
     React.useEffect(() => {
       if (!overlayState.isOpen) {
@@ -386,7 +379,7 @@ interface CommandInputProps extends InputProps { }
 
 const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
   ({ value: externalValue, onChange: externalOnChange, icon, actions, placeholder = "Search...", ...props }, ref) => {
-    const { searchInputRef, searchValue, setSearchValue } = useCommandContext();
+    const { isOpen, searchInputRef, searchValue, setSearchValue } = useCommandContext();
 
     const value = externalValue !== undefined ? externalValue : searchValue;
 
@@ -395,9 +388,22 @@ const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
       externalOnChange?.(e);
     };
 
-    const inputRef = (ref ?? searchInputRef) as React.RefObject<HTMLInputElement>;
+    const inputRef = useMergeRefs(ref, searchInputRef);
 
-    const resolvedActions = actions ?? (value ? [{ icon: <>✕</>, title: "Clear search", onClick: () => { setSearchValue(""); } }] : []);
+    React.useLayoutEffect(() => {
+      if (!isOpen) return;
+
+      searchInputRef.current?.focus({ preventScroll: true });
+    }, [isOpen, searchInputRef]);
+
+    const usesDefaultClearAction = actions === undefined;
+    // Keep the clear action mounted so the input reserves its end-adornment space.
+    const resolvedActions = actions ?? [{ icon: <>✕</>, title: "Clear search", onClick: () => { setSearchValue(""); } }];
+    const inputStyles = cn(
+      styles["input"],
+      usesDefaultClearAction && styles["input-clear"],
+      usesDefaultClearAction && !value && styles["input-empty"],
+    );
 
     return (
       <Card.Header className={styles["search"]}>
@@ -410,7 +416,7 @@ const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
           actions={resolvedActions}
           placeholder={placeholder}
           aria-label="Search commands"
-          styles={{ root: styles["input"] }}
+          styles={{ root: inputStyles }}
           {...props}
         />
       </Card.Header>

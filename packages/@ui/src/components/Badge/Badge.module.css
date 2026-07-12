@@ -33,7 +33,7 @@
     height: 1em;
     line-height: 1;
     border-radius: var(--radius-xs, 0.25rem);
-    background-color: var(--dismiss-background, var(--background, transparent));
+    background-color: var(--background, transparent);
     color: var(--foreground, var(--foreground-400));
     border: none;
     transition:
@@ -50,14 +50,11 @@
 
   .dismiss[data-hovered="true"] {
     --hover-duration: var(--hover-enter-duration, 0ms);
-    background-color: var(--background-hover, var(--dismiss-background, transparent));
+    background-color: var(--background, transparent);
   }
 
   .dismiss[data-pressed="true"] {
-    background-color: var(
-      --background-pressed,
-      var(--background-hover, var(--dismiss-background, transparent))
-    );
+    background-color: var(--background, transparent);
     transform: scale(0.95);
   }
 

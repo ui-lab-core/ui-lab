@@ -3,6 +3,7 @@
 import { Fragment, useMemo, useReducer } from "react";
 import { List, Group, Select, Badge, Divider, Button } from "ui-lab-components";
 import { FaEnvelope, FaMagnifyingGlass, FaGear, FaUsers, FaArrowTurnUp } from "@/shared/icons/fa6";
+import type { ShowcasePanelProps } from "./types";
 
 interface Member {
   name: string;
@@ -16,7 +17,6 @@ const ROLES = ["Owner", "Admin", "Member", "Viewer"];
 const INITIAL_MEMBERS: Member[] = [
   { name: "Sophie Chen", email: "sc@acme.com", initials: "SC", role: "Admin" },
   { name: "Marcus Rivera", email: "mr@acme.com", initials: "MR", role: "Member" },
-  { name: "Jaya Patel", email: "jp@acme.com", initials: "JP", role: "Viewer" },
 ];
 
 const PENDING_INVITE = { email: "alex@relay.so", role: "Member", sentAt: "2h ago" };
@@ -53,7 +53,7 @@ function memberReducer(state: State, action: Action): State {
   }
 }
 
-export function MemberRolePanel() {
+export function MemberRolePanel({ height }: ShowcasePanelProps) {
   const [state, dispatch] = useReducer(memberReducer, {
     members: INITIAL_MEMBERS,
     search: "",
@@ -80,12 +80,17 @@ export function MemberRolePanel() {
   }
 
   return (
-    <div className="h-fit w-full bg-background-200 border border-background-700 rounded-sm overflow-hidden">
+    <div
+      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
+      style={{ height }}
+    >
 
       {/* Header */}
       <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex justify-between">
         <div className="flex items-center gap-2">
-          <FaUsers size={20} className="mr-2" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-background-800 text-foreground-300">
+            <FaUsers size={19} />
+          </div>
           <span className="text-sm font-semibold text-foreground-100">Team Members</span>
           <span className="text-sm text-foreground-500">{members.length} members</span>
         </div>
@@ -121,22 +126,20 @@ export function MemberRolePanel() {
           </Group.Select>
         </Group>
         <Button variant="ghost" className="text-foreground-400 w-10 h-10 p-0 ">
-          <FaGear />
+          <FaGear size={19} />
         </Button>
       </div>
 
       {/* Member list */}
-      <List items={filtered} spacing="default" className="max-w-none">
+      <List items={filtered} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {filtered.map((member, i) => {
           const originalIndex = members.indexOf(member);
           return (
             <Fragment key={member.email}>
               <List.Item value={member.email} className="px-4 py-3">
                 <List.Media>
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold text-foreground-300 bg-background-800 shrink-0"
-                  >
-                    {member.initials}
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-background-800">
+                    <span className="text-sm font-semibold text-foreground-300">{member.initials}</span>
                   </div>
                 </List.Media>
 
@@ -173,8 +176,8 @@ export function MemberRolePanel() {
         <List.Divider spacing="none" />
         <List.Item value="pending-alex" className="px-4 py-3">
           <List.Media>
-            <div className="w-8 h-8 rounded-full bg-background-700 flex items-center justify-center shrink-0">
-              <FaEnvelope className="w-3.5 h-3.5 text-foreground-500" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background-700">
+              <FaEnvelope size={19} className="text-foreground-500" />
             </div>
           </List.Media>
           <div className="flex-1 min-w-0">

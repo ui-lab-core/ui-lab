@@ -22,7 +22,7 @@ export function ContentSectionLayout({ sidebar, content }: ContentSectionLayoutP
 
 export function ContentIndex({ children, controls, cta }: ContentIndexProps) {
   return (
-    <div className="w-full bg-background-950 px-4 mx-auto pb-12 pt-6">
+    <div className="w-full px-4 mx-auto pb-12 pt-6">
       <div className="space-y-10">
         <div className="space-y-4">
           {controls ? (

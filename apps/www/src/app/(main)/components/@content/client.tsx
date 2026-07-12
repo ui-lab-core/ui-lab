@@ -52,12 +52,19 @@ export default function ComponentsPageClient() {
                           <div key={component.id}>
                             <Gallery.Item
                               href={href}
-                              className='group h-70 rounded-sm bg-background-950 hover:bg-background-900/50'
+                              className='group h-70 relative rounded-sm bg-background-950 hover:bg-background-900/50'
                               orientation='vertical'
                               onClick={() => router.push(href)}
                             >
+                              {component.experimental && (
+                                <Tooltip content="Experimental" position="top" showArrow>
+                                  <span className="z-10 top-2 right-2 absolute ml-auto inline-block px-2 py-1 text-sm font-semibold bg-accent-400/20 text-accent-400 rounded-xs">
+                                    <Icon IconComponent={Icons.Flask} size={14} />
+                                  </span>
+                                </Tooltip>
+                              )}
                               <Gallery.View
-                                className="w-full h-40 duration-200 flex items-center justify-center relative bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0"
+                                className="w-full h-40 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0"
                               >
                                 <div className='max-w-50 gap-2 flex items-center justify-center'>
                                   {previews[component.id] || <div />}
@@ -68,17 +75,8 @@ export default function ComponentsPageClient() {
                               </Gallery.View>
 
                               <Gallery.Body>
-                                <div className="relative flex items-center gap-1 w-full">
+                                <div className="flex items-center gap-1 w-full">
                                   <h4>{component.name}</h4>
-                                  {component.experimental && (
-                                    <div className='ml-auto'>
-                                      <Tooltip content="Experimental" position="top" showArrow>
-                                        <span className="ml-auto inline-block px-2 py-1 text-sm font-semibold bg-accent-500/20 text-accent-300 rounded-md">
-                                          <Icon IconComponent={Icons.Flask} size={14} />
-                                        </span>
-                                      </Tooltip>
-                                    </div>
-                                  )}
                                 </div>
                                 <p className="text-foreground-400 text-xs">
                                   {component.description}

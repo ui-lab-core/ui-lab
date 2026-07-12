@@ -16,13 +16,13 @@
 
   .banner:hover {
     --hover-duration: var(--hover-enter-duration, 0ms);
-    background-color: var(--background-hover, var(--background));
-    border-color: var(--border-hover, var(--border));
+    background-color: var(--background, var(--background-900));
+    border-color: var(--border, var(--background-700));
   }
 
   .banner[data-pressed="true"] {
-    background-color: var(--background-pressed, var(--background-hover, var(--background)));
-    border-color: var(--border-pressed, var(--border-hover, var(--border)));
+    background-color: var(--background, var(--background-900));
+    border-color: var(--border, var(--background-700));
   }
 
   .content {
@@ -49,11 +49,11 @@
 
     &:hover {
       --hover-duration: var(--hover-enter-duration, 0ms);
-      background-color: var(--dismiss-hover-background, transparent);
+      background-color: var(--background, transparent);
     }
 
     &[data-pressed="true"] {
-      background-color: var(--dismiss-pressed-background, transparent);
+      background-color: var(--background, transparent);
     }
 
     &:focus-visible {

@@ -55,6 +55,35 @@ describe('Grid.core', () => {
     expect(grid).toHaveClass(styles['has-col-gap'])
   })
 
+  it('supports zero gap overrides', () => {
+    const container = renderGrid({
+      gap: 0,
+      rowGap: 0,
+      columnGap: 0,
+    })
+    const grid = getGridRoot(container)
+
+    expect(grid).toHaveStyle({
+      '--grid-gap-step': '0',
+      '--grid-row-gap-step': '0',
+      '--grid-col-gap-step': '0',
+    })
+    expect(grid).toHaveClass(styles['has-row-gap'])
+    expect(grid).toHaveClass(styles['has-col-gap'])
+  })
+
+  it('preserves responsive zero gap values', () => {
+    const container = renderGrid({
+      gap: { sm: 0, md: 'md' },
+    })
+    const grid = getGridRoot(container)
+
+    expect(grid).toHaveStyle({
+      '--grid-gap-step-sm': '0',
+      '--grid-gap-step-md': '4',
+    })
+  })
+
   it('passes custom grid-template-columns values through unchanged', () => {
     const container = renderGrid({
       columns: '760px 1fr',
@@ -72,6 +101,27 @@ describe('Grid.core', () => {
 
     expect(grid).toHaveStyle({
       '--grid-rows': 'masonry',
+    })
+  })
+
+  it('supports fixed-width masonry tracks', () => {
+    const container = renderGrid({
+      rows: 'masonry',
+      columns: 7,
+      masonryColumnWidth: 'max(22rem, 40vw)',
+      masonryColumnFill: 'auto',
+      masonryItemGap: false,
+    })
+    const grid = getGridRoot(container)
+
+    expect(grid).toHaveClass(styles.masonry)
+    expect(grid).toHaveClass(styles['masonry-fixed-width'])
+    expect(grid).toHaveClass(styles['masonry-column-fill'])
+    expect(grid).toHaveClass(styles['masonry-no-item-gap'])
+    expect(grid).toHaveStyle({
+      '--grid-col-count': '7',
+      '--grid-masonry-col-width': 'max(22rem, 40vw)',
+      '--grid-masonry-col-fill': 'auto',
     })
   })
 

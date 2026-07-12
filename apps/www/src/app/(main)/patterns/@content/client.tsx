@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import type { LayoutConfig } from 'ui-lab-registry';
+import type { LayoutConfig } from '@ui-lab-core/library/catalog';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import { GenericContentGrid } from '@/features/packages/components/content-grid';
 import { GridCTA } from '@/features/landing/components/grid-cta';

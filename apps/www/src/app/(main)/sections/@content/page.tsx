@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getAllSections } from "ui-lab-registry";
-import type { LayoutConfig } from "ui-lab-registry";
+import { getAllSections } from "@ui-lab-core/library/catalog";
+import type { LayoutConfig } from "@ui-lab-core/library/catalog";
 import { getLayoutConfig as getSectionLayoutConfig } from "@/features/sections/lib/layout-registry";
 import {
   filterSections,

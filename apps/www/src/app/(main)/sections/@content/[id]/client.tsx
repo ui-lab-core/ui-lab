@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { ElementFile, SectionMetadata } from "ui-lab-registry";
+import type { ElementFile, SectionMetadata } from "@ui-lab-core/library/catalog";
 import { SectionPreviewContent } from "@/features/sections/components/section-preview-content";
 import { PreviewDeviceVariant } from "@/features/preview";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";

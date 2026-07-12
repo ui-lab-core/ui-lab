@@ -5,8 +5,8 @@ import { getElementPreview } from '@ui-lab-core/library';
 import {
   elementRegistry,
   getPackageForElement,
-} from 'ui-lab-registry/elements';
-import { sectionRegistry } from 'ui-lab-registry/sections';
+} from '@ui-lab-core/library/catalog';
+import { sectionRegistry } from '@ui-lab-core/library/catalog';
 
 interface PreviewRendererProps {
   type: 'element' | 'section';

@@ -20,6 +20,7 @@ import {
   Color,
 } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
+import { colorFromHue } from "../../lib/color/set-color";
 
 const MICRO_LABEL = "text-sm font-semibold text-foreground-400";
 const VALUE_LABEL = "text-sm text-foreground-300";
@@ -331,29 +332,11 @@ const ColorPicker = memo(
       return false;
     };
 
-    const getMaxChroma = (): number => {
-      if (type === "background") return 0.008;
-      if (type === "foreground") return 0.04;
-      if (type === "accent") return 0.18;
-      return 0.20;
-    };
-
     const handleHueChange = (h: number) => {
       const clampedH = hueRange
         ? Math.min(hueRange.max, Math.max(hueRange.min, h))
         : h;
-      const isColorNeutral = color.c <= 0.005;
-      const defaultChroma = type === "foreground" ? 0.01 : type === "accent" ? 0.20 : type === "background" ? 0.008 : 0.20;
-      let lightness = color.l;
-      if (isColorNeutral) {
-        if (type === "foreground") {
-          lightness = currentThemeMode === "dark" ? 0.4 : 0.2;
-        } else if (type === "accent") {
-          lightness = 0.5;
-        }
-      }
-      const chroma = Math.min(isColorNeutral ? defaultChroma : color.c, getMaxChroma());
-      onChange({ l: lightness, c: chroma, h: clampedH });
+      onChange(colorFromHue(type, clampedH, color, currentThemeMode));
     };
 
     return (
@@ -375,17 +358,7 @@ const ColorPicker = memo(
                   if (isNeutral) {
                     onChange({ l: 1, c: 0, h: 0 });
                   } else {
-                    const isColorNeutral = color.c <= 0.005;
-                    const defaultChroma = type === "foreground" ? 0.01 : type === "accent" ? 0.20 : 0.008;
-                    let lightness = color.l;
-                    if (isColorNeutral) {
-                      if (type === "foreground") {
-                        lightness = currentThemeMode === "dark" ? 0.4 : 0.2;
-                      } else if (type === "accent") {
-                        lightness = 0.5;
-                      }
-                    }
-                    onChange({ l: lightness, c: color.c === 0 ? defaultChroma : color.c, h });
+                    onChange(colorFromHue(type, h, color, currentThemeMode));
                   }
                 }}
                 className="relative h-10 rounded-[4px] flex items-center justify-center"

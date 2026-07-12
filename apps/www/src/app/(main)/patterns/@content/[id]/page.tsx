@@ -1,5 +1,5 @@
 import PatternDetailClient from './client';
-import { getAllPatterns, getPatternById } from 'ui-lab-registry';
+import { getAllPatterns, getPatternById } from '@ui-lab-core/library/catalog';
 import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 
 export function generateStaticParams() {

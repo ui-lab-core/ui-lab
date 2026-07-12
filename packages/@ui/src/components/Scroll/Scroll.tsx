@@ -34,6 +34,7 @@ export type ScrollStylesProp = StylesProp<ScrollStyleSlots>;
 
 export interface ScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
+  viewportRef?: React.Ref<HTMLDivElement>;
   maxHeight?: string;
   maxWidth?: string;
   direction?: "vertical" | "horizontal";
@@ -44,6 +45,7 @@ export interface ScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   enabled?: boolean;
   hide?: boolean;
   inline?: boolean;
+  wheel?: boolean;
   styles?: ScrollStylesProp;
   storageKey?: string;
 }
@@ -114,6 +116,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
   (
     {
       children,
+      viewportRef,
       className,
       maxHeight,
       maxWidth,
@@ -125,6 +128,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       enabled = true,
       hide = true,
       inline = false,
+      wheel = true,
       styles,
       storageKey,
       style: propsStyle,
@@ -330,6 +334,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       },
       [cleanupDragListeners, cleanupObservers, cleanupScrollTimeout, connectObservers, storageKey]
     );
+    const mergedContentRef = useMergeRefs(viewportRef, handleContentRef);
 
     const handleScroll = useCallback(() => {
       updateScrollbar();
@@ -442,13 +447,16 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     const handleWheel = useCallback(
       (e: React.WheelEvent) => {
         if (!contentRef.current || !isHoriz) return;
-        e.preventDefault();
 
         const content = contentRef.current;
-        const scrollAmount = e.deltaY || e.deltaX;
+        const scrollAmount = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
         const maxScroll = content.scrollWidth - content.clientWidth;
+        const nextScroll = Math.max(0, Math.min(maxScroll, content.scrollLeft + scrollAmount));
 
-        content.scrollLeft = Math.max(0, Math.min(maxScroll, content.scrollLeft + scrollAmount));
+        if (nextScroll === content.scrollLeft) return;
+
+        e.preventDefault();
+        content.scrollLeft = nextScroll;
       },
       [isHoriz]
     );
@@ -459,9 +467,8 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     }, [restoreStoredScrollPosition, connectObservers, enabled]);
 
     const axisConstraintStyle = {
-      ...(isHoriz
-        ? (maxWidth ? { maxWidth } : {})
-        : (maxHeight ? { maxHeight } : {})),
+      ...(maxWidth ? { maxWidth } : {}),
+      ...(maxHeight ? { maxHeight } : {}),
     };
 
     if (!enabled) {
@@ -508,19 +515,21 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         <Mask
           ref={maskRef}
           style={{
-            [isHoriz ? "maxWidth" : "maxHeight"]: "inherit",
+            maxHeight: "inherit",
+            maxWidth: "inherit",
             overflow: "hidden",
             ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
           } as React.CSSProperties}
         >
           {!isHoriz && fadeY ? <Mask.Fade /> : null}
           <div
-            ref={handleContentRef}
+            ref={mergedContentRef}
             className={cn(css.content, resolved.content)}
             onScroll={handleScroll}
-            onWheel={isHoriz ? handleWheel : undefined}
+            onWheel={isHoriz && wheel ? handleWheel : undefined}
             style={{
-              [isHoriz ? "maxWidth" : "maxHeight"]: "inherit",
+              maxHeight: "inherit",
+              maxWidth: "inherit",
               minHeight: 0,
               minWidth: 0,
             }}

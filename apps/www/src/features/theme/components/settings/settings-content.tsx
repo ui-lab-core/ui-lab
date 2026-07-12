@@ -27,6 +27,7 @@ import {
   Scroll,
 } from "ui-lab-components";
 import { type CodeThemeOptionId } from "../../lib/themes/shiki/code-theme-options";
+import { setThemeColor, type ThemeColorType } from "../../lib/color/set-color";
 import { ColorsPanel } from "./colors-panel";
 import { TypographyPanel } from "./typography-panel";
 import { LayoutPanel } from "./layout-panel";
@@ -69,41 +70,12 @@ function useSettingsHandlers(
   };
 
   const handleColorChange = (type: string, newColor: OklchColor) => {
-    const updated = { ...localColors };
-    const MIN_BACKGROUND_CHROMA = 0.008;
-
-    if (type === "background") {
-      updated.background = {
-        l: newColor.l,
-        c: newColor.c === 0 ? 0 : Math.max(newColor.c, MIN_BACKGROUND_CHROMA),
-        h: newColor.h,
-      };
-      updated.foreground = newColor;
-    } else if (type === "foreground") {
-      updated.foreground = newColor;
-    } else if (type === "accent") {
-      updated.accent = newColor;
-    } else {
-      const semanticType = type as SemanticColorType;
-      const semantic = (updated.semantic ?? {}) as Record<
-        SemanticColorType,
-        SemanticColorConfig
-      >;
-      const existing = semantic[semanticType] ?? {
-        light: { color: newColor, chromaLimit: 0.25 },
-        dark: { color: newColor, chromaLimit: 0.25 },
-      };
-      const modeKey = currentThemeMode as "light" | "dark";
-      semantic[semanticType] = {
-        ...existing,
-        [modeKey]: {
-          ...existing[modeKey],
-          color: newColor,
-          chromaLimit: existing[modeKey]?.chromaLimit ?? 0.25,
-        },
-      };
-      updated.semantic = semantic;
-    }
+    const updated = setThemeColor(
+      localColors,
+      type as ThemeColorType,
+      newColor,
+      currentThemeMode,
+    );
     setLocalColors(updated);
     applyAndPersistColors(updated);
   };

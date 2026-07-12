@@ -13,6 +13,50 @@ import selectCss from '../../Select/Select.module.css'
 const SearchIcon = () => <svg data-testid="search-icon" />
 
 describe('Group.Input focus ring target', () => {
+  it('renders numeric controlled values in grouped number inputs', () => {
+    const { rerender } = render(
+      <Group>
+        <Group.Button>-</Group.Button>
+        <Group.Input aria-label="Value" type="number" value={5} onChange={() => {}} />
+        <Group.Button>+</Group.Button>
+      </Group>
+    )
+
+    expect(screen.getByRole('spinbutton', { name: 'Value' })).toHaveValue(5)
+
+    rerender(
+      <Group>
+        <Group.Button>-</Group.Button>
+        <Group.Input aria-label="Value" type="number" value={6} onChange={() => {}} />
+        <Group.Button>+</Group.Button>
+      </Group>
+    )
+
+    expect(screen.getByRole('spinbutton', { name: 'Value' })).toHaveValue(6)
+  })
+
+  it('updates grouped controlled number inputs when buttons change state', async () => {
+    const user = userEvent.setup()
+
+    function Stepper() {
+      const [value, setValue] = React.useState(5)
+
+      return (
+        <Group>
+          <Group.Button onClick={() => setValue((current) => current - 1)}>-</Group.Button>
+          <Group.Input aria-label="Value" type="number" value={value} onChange={() => {}} />
+          <Group.Button onClick={() => setValue((current) => current + 1)}>+</Group.Button>
+        </Group>
+      )
+    }
+
+    render(<Stepper />)
+
+    await user.click(screen.getByRole('button', { name: '+' }))
+
+    expect(screen.getByRole('spinbutton', { name: 'Value' })).toHaveValue(6)
+  })
+
   it('applies a custom variant class to the root, item wrappers, and grouped slots', () => {
     const { container } = render(
       <Group variant="my-custom-variant">
@@ -471,6 +515,43 @@ describe('Group auto-focus behavior', () => {
 
     // Input should receive focus automatically
     expect(input).toHaveFocus()
+  })
+
+  it('does not focus the input when a separated action Group.Button is clicked', async () => {
+    const user = userEvent.setup()
+    const handleListView = vi.fn()
+
+    render(
+      <Group>
+        <Group.Input aria-label="Search files" />
+        <Divider orientation="vertical" />
+        <Group.Select selectedKey="newest">
+          <Select.Trigger>
+            <Select.Value placeholder="Sort" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.List>
+              <Select.Item value="newest" textValue="Newest">
+                Newest
+              </Select.Item>
+            </Select.List>
+          </Select.Content>
+        </Group.Select>
+        <Divider orientation="vertical" />
+        <Group.Button onClick={handleListView} aria-label="List view">
+          List
+        </Group.Button>
+      </Group>
+    )
+
+    const input = screen.getByRole('textbox', { name: 'Search files' })
+    const listViewButton = screen.getByRole('button', { name: 'List view' })
+
+    await user.click(listViewButton)
+
+    expect(handleListView).toHaveBeenCalledOnce()
+    expect(input).not.toHaveFocus()
+    expect(listViewButton).toHaveFocus()
   })
 
   it('focuses the input when a Group.Button with value is clicked (toggle group)', async () => {

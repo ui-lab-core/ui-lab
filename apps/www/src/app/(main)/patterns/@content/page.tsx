@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getAllPatterns, type LayoutConfig } from "ui-lab-registry";
+import { getAllPatterns, type LayoutConfig } from "@ui-lab-core/library/catalog";
 import ClientPage from "./client";
 
 export const metadata: Metadata = {

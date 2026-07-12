@@ -17,15 +17,15 @@
 
     &[data-hovered="true"]:not([data-disabled="true"]) {
       --hover-duration: var(--hover-enter-duration, 0ms);
-      background-color: var(--background-hover, var(--background));
-      border-color: var(--background-hover-border, var(--background-border));
-      color: var(--foreground-hover, var(--foreground));
+      background-color: var(--background);
+      border-color: var(--background-border);
+      color: var(--foreground);
     }
 
     &[data-pressed="true"]:not([data-disabled="true"]) {
-      background-color: var(--background-pressed, var(--background-hover, var(--background)));
-      border-color: var(--background-pressed-border, var(--background-hover-border, var(--background-border)));
-      color: var(--foreground-pressed, var(--foreground-hover, var(--foreground)));
+      background-color: var(--background);
+      border-color: var(--background-border);
+      color: var(--foreground);
     }
 
     &:focus-visible {

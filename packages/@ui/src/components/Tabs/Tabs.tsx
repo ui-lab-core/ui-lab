@@ -63,6 +63,7 @@ function useTabsListContext() {
 
 function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
   return cn(
+    "tabs",
     "indicator",
     variant === "underline" && "underline",
     variant === "underline" && "indicator-underline",
@@ -260,7 +261,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 
     const updateIndicator = React.useCallback(
       (value: string) => {
-        if (!listRef.current) return
+        if (!listRef.current) return false
 
         const trigger = listRef.current.querySelector(
           `[data-tabs-value="${value}"]`
@@ -269,17 +270,26 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         if (trigger) {
           const position = measureTrigger(trigger)
           if (position) {
+            const hasMeasurement = position.width > 0 && position.height > 0
             setIndicatorPosition(position)
+            return hasMeasurement
           }
         }
+
+        setIndicatorPosition({
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0,
+        })
+        return false
       },
       [measureTrigger]
     )
 
     React.useLayoutEffect(() => {
       measureList()
-      updateIndicator(selectedValue)
-      setIndicatorReady(true)
+      setIndicatorReady(updateIndicator(selectedValue))
     }, [selectedValue, updateIndicator, measureList, setIndicatorReady])
 
     React.useEffect(() => {
@@ -288,25 +298,25 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       const resizeObserver = new ResizeObserver(() => {
         requestAnimationFrame(() => {
           measureList()
-          updateIndicator(selectedValue)
+          setIndicatorReady(updateIndicator(selectedValue))
         })
       })
 
       resizeObserver.observe(listRef.current)
       return () => resizeObserver.disconnect()
-    }, [selectedValue, updateIndicator, measureList])
+    }, [selectedValue, updateIndicator, measureList, setIndicatorReady])
 
     React.useEffect(() => {
       const handleWindowResize = () => {
         requestAnimationFrame(() => {
           measureList()
-          updateIndicator(selectedValue)
+          setIndicatorReady(updateIndicator(selectedValue))
         })
       }
 
       window.addEventListener("resize", handleWindowResize)
       return () => window.removeEventListener("resize", handleWindowResize)
-    }, [selectedValue, updateIndicator, measureList])
+    }, [selectedValue, updateIndicator, measureList, setIndicatorReady])
 
     const getIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = {
@@ -380,6 +390,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
             className,
           )}
           data-orientation={orientation}
+          data-variant={variant}
           style={{ position: "relative" }}
         >
           {children}
@@ -608,7 +619,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         disabled={disabled}
         data-tabs-value={value}
         data-focus-surface="true"
-        className={cn("trigger", css.trigger, resolved.root, className)}
+        className={cn("tabs", "trigger", css.trigger, resolved.root, className)}
         data-selected={isSelected ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         data-hovered={isHovered ? "true" : "false"}
@@ -662,7 +673,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         role="tabpanel"
         aria-labelledby={`${value}-trigger`}
         id={`${value}-content`}
-        className={cn("content", css.content, root, className)}
+        className={cn("tabs", "content", css.content, root, className)}
         data-orientation={orientation}
         hidden={!isVisible}
       >

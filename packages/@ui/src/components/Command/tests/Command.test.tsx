@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { Command } from '../Command'
 import styles from '../Command.module.css'
 
@@ -23,5 +23,59 @@ describe('Command', () => {
     expect(dialog).toHaveClass('slot-root')
     expect(overlay).toHaveClass(styles.overlay)
     expect(overlay).toHaveClass('slot-overlay')
+  })
+
+  it('focuses the search input when opened', async () => {
+    const { rerender } = render(
+      <Command state={{ open: false }}>
+        <Command.Input placeholder="Search commands" />
+      </Command>
+    )
+
+    rerender(
+      <Command state={{ open: true }}>
+        <Command.Input placeholder="Search commands" />
+      </Command>
+    )
+
+    const input = await screen.findByRole('textbox', { name: 'Search commands' })
+
+    expect(input).toHaveFocus()
+  })
+
+  it('keeps the command input focus behavior when a consumer ref is provided', async () => {
+    const ref = { current: null as HTMLInputElement | null }
+
+    render(
+      <Command open>
+        <Command.Input ref={ref} placeholder="Search commands" />
+      </Command>
+    )
+
+    const input = await screen.findByRole('textbox', { name: 'Search commands' })
+
+    expect(input).toHaveFocus()
+    expect(ref.current).toBe(input)
+  })
+
+  it('reserves clear-action space before and after entering a query', async () => {
+    render(
+      <Command open>
+        <Command.Input />
+      </Command>
+    )
+
+    const input = await screen.findByRole('textbox', { name: 'Search commands' })
+    const action = screen.getByRole('button', { name: 'Clear search', hidden: true })
+
+    expect(action).toBeInTheDocument()
+    expect(input.parentElement).toHaveClass(styles['input-clear'])
+    expect(input.parentElement).toHaveClass(styles['input-empty'])
+    expect(input).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
+
+    fireEvent.change(input, { target: { value: 'settings' } })
+
+    expect(input.parentElement).not.toHaveClass(styles['input-empty'])
+    expect(input).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
   })
 })

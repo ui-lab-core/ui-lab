@@ -1,4 +1,4 @@
-import type { ElementMetadata, LayoutConfig } from 'ui-lab-registry';
+import type { ElementMetadata, LayoutConfig } from '@ui-lab-core/library/catalog';
 import { getElementLayoutConfig } from './element-layout-config';
 import { createMetadataLayoutGetter } from '@/shared/lib/layout-utils';
 

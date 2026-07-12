@@ -1,6 +1,6 @@
 import type React from 'react';
-import type { ElementPackageMetadata } from 'ui-lab-registry';
-import { elementPackages } from 'ui-lab-registry';
+import type { ElementPackageMetadata } from '@ui-lab-core/library/catalog';
+import { elementPackages } from '@ui-lab-core/library/catalog';
 
 type PreviewComponent = React.ComponentType<object>;
 

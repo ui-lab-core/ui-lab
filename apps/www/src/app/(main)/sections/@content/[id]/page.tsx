@@ -1,5 +1,5 @@
 import SectionDetailClient from './client';
-import { getAllSections, getSectionById } from 'ui-lab-registry';
+import { getAllSections, getSectionById } from '@ui-lab-core/library/catalog';
 import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 
 export function generateStaticParams() {

@@ -47,6 +47,28 @@
     }
   }
 
+  .search :global([data-focus-indicator="local"]) {
+    display: none;
+  }
+
+  .input-clear {
+    position: relative;
+  }
+
+  .input-clear :global(input) {
+    padding-right: calc(2rem + var(--adornment-offset)) !important;
+  }
+
+  .input-clear :global([data-end-adornments]) {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+  }
+
+  .input-empty :global([data-actions-position="right"]) {
+    visibility: hidden;
+  }
+
   /* List Section */
   .list {
     @apply py-0.5 px-2 space-y-2;

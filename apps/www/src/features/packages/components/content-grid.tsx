@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { Gallery } from 'ui-lab-components';
 import { PreviewContainer } from '@/features/preview/components/preview-container';
 import { PricingBadge } from '@/features/landing/components/pricing-badge';
-import type { LayoutConfig, PricingInfo } from 'ui-lab-registry';
+import type { LayoutConfig, PricingInfo } from '@ui-lab-core/library/catalog';
 
 interface ContentItem {
   id: string;

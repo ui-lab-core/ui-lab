@@ -55,6 +55,27 @@ describe('Grid.responsive', () => {
     })
   })
 
+  it('wraps the grid when responsive masonry column widths are provided', () => {
+    const container = renderGrid({
+      rows: 'masonry',
+      columns: { sm: 2, lg: 7 },
+      masonryColumnWidth: { sm: '18rem', lg: 'max(26rem, 34vw)' },
+    })
+    const wrapper = getGridContainer(container)
+    const grid = getGridRoot(container)
+
+    expect(wrapper).toBeInTheDocument()
+    expect(grid).toHaveClass(styles.masonry)
+    expect(grid).toHaveClass(styles['masonry-fixed-width'])
+    expect(grid).toHaveClass(styles['responsive-masonry-width'])
+    expect(grid).toHaveStyle({
+      '--grid-col-count-sm': '2',
+      '--grid-col-count-lg': '7',
+      '--grid-masonry-col-width-sm': '18rem',
+      '--grid-masonry-col-width-lg': 'max(26rem, 34vw)',
+    })
+  })
+
   it('wraps the grid when containerQueryResponsive is enabled even without responsive props', () => {
     const container = renderGrid({ responsive: true })
 

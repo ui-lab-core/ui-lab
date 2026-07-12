@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { ElementFile } from "ui-lab-registry";
-import { getElementById } from "ui-lab-registry";
+import type { ElementFile } from "@ui-lab-core/library/catalog";
+import { getElementById } from "@ui-lab-core/library/catalog";
 import { ElementPreviewContent } from "@/features/packages";
 import { getDemoComponent, getElementSourceCode } from "@/features/packages";
 import { PreviewDeviceVariant } from "@/features/preview";

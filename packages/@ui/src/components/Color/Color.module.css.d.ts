@@ -16,9 +16,11 @@ export interface Styles {
   "canvas-pointer": string;
   "hue-slider": string;
   "hue-track": string;
+  "hue-range": string;
   "hue-thumb": string;
   "opacity-slider": string;
   "opacity-track": string;
+  "opacity-range": string;
   "opacity-thumb": string;
   "recent-colors": string;
   "recent-color-swatch": string;

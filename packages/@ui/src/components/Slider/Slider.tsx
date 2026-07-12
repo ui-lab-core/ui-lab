@@ -259,10 +259,9 @@ function SliderThumb({
     setIsPressed(false);
   }, []);
 
-  const positionStyle =
-    orientation === "vertical"
-      ? { bottom: `${percent}%` }
-      : { left: `${percent}%` };
+  const positionStyle = {
+    "--position": `${percent}%`,
+  } as React.CSSProperties;
 
   return (
     <div

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { PreviewCodeDisplay, DEVICE_PRESETS } from '@/features/preview';
 import type { PreviewDeviceVariant } from '@/features/preview';
-import type { PatternMetadata } from 'ui-lab-registry';
+import type { PatternMetadata } from '@ui-lab-core/library/catalog';
 import { PatternLivePreview } from './pattern-live-preview';
 
 interface PatternDetailContentProps {
@@ -32,7 +32,7 @@ export function PatternDetailContent({
 
   if (!pattern) {
     return (
-      <div className="w-full bg-background-950 mx-auto pt-12 pb-12">
+      <div className="w-full mx-auto pt-12 pb-12">
         <div className="text-center py-12">
           <p className="text-foreground-400">Pattern not found.</p>
         </div>
@@ -41,7 +41,7 @@ export function PatternDetailContent({
   }
 
   return (
-    <div className="w-full bg-background-950 mx-auto min-h-screen flex flex-col pt-4 pb-12">
+    <div className="w-full mx-auto min-h-screen flex flex-col pt-4 pb-12">
       <div className="w-full mx-auto px-4 flex flex-col flex-1 max-w-4xl">
 
         <div className="mb-12">

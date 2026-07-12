@@ -96,7 +96,7 @@ export default function Header({
 
   return (
     <>
-      <header className="fixed left-0 -mr-2 top-0 z-50 w-full border-b border-background-700/40 bg-background-950 h-[58px]">
+      <header className="fixed left-0 -mr-2 top-0 z-50 h-(--header-height) w-full border-b border-background-700/40 bg-background-950">
         <div
           className={cn(
             "relative h-full flex items-center justify-between px-3 w-full overflow-hidden transition-[margin] duration-300",

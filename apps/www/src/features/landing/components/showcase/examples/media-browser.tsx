@@ -1,16 +1,15 @@
 "use client";
 
 import { useReducer, useMemo } from "react";
-import { Group, Divider, Select, Checkbox, Input } from "ui-lab-components";
+import { Group, Divider, Select, Checkbox } from "ui-lab-components";
 import { FaList, FaGrip, FaChevronLeft, FaChevronRight, FaMagnifyingGlass, FaTrash, FaEllipsis } from "@/shared/icons/fa6";
+import type { ShowcasePanelProps } from "./types";
 
 const FILES = [
   { name: "hero-banner.png", type: "PNG", size: "2.4 MB", modified: "2h ago" },
   { name: "brand-assets.zip", type: "ZIP", size: "18.7 MB", modified: "Yesterday" },
   { name: "product-video.mp4", type: "MP4", size: "84.2 MB", modified: "3d ago" },
   { name: "design-system.fig", type: "FIG", size: "5.1 MB", modified: "1w ago" },
-  { name: "logo.svg", type: "SVG", size: "12 KB", modified: "2w ago" },
-  { name: "docs-cover.jpg", type: "JPG", size: "1.8 MB", modified: "1mo ago" },
 ];
 
 
@@ -47,7 +46,7 @@ function browserReducer(state: BrowserState, action: BrowserAction): BrowserStat
   }
 }
 
-export function FileBrowser() {
+export function FileBrowser({ height }: ShowcasePanelProps) {
   const [state, dispatch] = useReducer(browserReducer, {
     view: "list",
     sort: "newest",
@@ -89,13 +88,16 @@ export function FileBrowser() {
   };
 
   return (
-    <div className="w-full text-xs bg-background-200 border border-background-700 rounded-sm overflow-hidden flex flex-col">
-      <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex items-center justify-between">
+    <div
+      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200 text-xs"
+      style={{ height }}
+    >
+      <div className="px-4 pt-3.5 pb-3 border-b border-background-700/40 flex items-center justify-between">
         <span className="font-semibold text-foreground-100">Media</span>
         <span className="text-foreground-500">{filteredFiles.length} files</span>
       </div>
 
-      <div className="border-b border-background-700 flex items-center gap-2 p-2">
+      <div className="border-b border-background-700/40 flex items-center gap-2 p-2">
         <Group spacing="none" className="justify-between w-full">
           <Group.Input
             placeholder="Search files..."
@@ -155,7 +157,7 @@ export function FileBrowser() {
           </div>
         ) : state.view === "list" ? (
           <div>
-            <div className="flex items-center gap-3 px-4 py-2.5 bg-background-300 border-b border-background-700">
+            <div className="flex items-center gap-3 px-4 py-2.5 bg-background-300 border-b border-background-700/40">
               <Checkbox
                 state={{ checked: isAllSelected, indeterminate: isSomeSelected }}
                 onChange={toggleSelectAll}
@@ -206,7 +208,7 @@ export function FileBrowser() {
         )}
       </div>
 
-      <div className="px-3 py-2 border-t border-background-700 flex items-center justify-between">
+      <div className="px-3 py-2 border-t border-background-700/40 flex items-center justify-between">
         <span className="text-foreground-500">Page {state.page} of {TOTAL_PAGES}</span>
         <Group spacing="none">
           <Group.Button isDisabled={state.page === 1} onClick={() => dispatch({ type: 'SET_PAGE', payload: Math.max(1, state.page - 1) })} aria-label="Previous">

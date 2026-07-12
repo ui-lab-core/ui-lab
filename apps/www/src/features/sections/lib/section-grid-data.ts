@@ -1,4 +1,4 @@
-import type { PricingInfo, SectionMetadata } from "ui-lab-registry";
+import type { PricingInfo, SectionMetadata } from "@ui-lab-core/library/catalog";
 
 export type SectionGridItem = SectionMetadata & {
   pricing?: PricingInfo;

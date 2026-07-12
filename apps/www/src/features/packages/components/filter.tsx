@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Badge, Button, Flex, Grid, Popover } from 'ui-lab-components';
 import { FaX } from '@/shared/icons/fa6';
-import { getAllCategories, getAllTags } from 'ui-lab-registry';
+import { getAllCategories, getAllTags } from '@ui-lab-core/library/catalog';
 import { cn } from '@/shared/lib/utils';
 
 // ElementsFilterPopover

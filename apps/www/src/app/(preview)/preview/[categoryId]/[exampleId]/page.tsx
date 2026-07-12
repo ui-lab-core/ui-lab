@@ -1,5 +1,5 @@
 import { Dashboard } from '@/shared/lib/demos/dashboard';
-import { getElementById, getSectionById } from 'ui-lab-registry';
+import { getElementById, getSectionById } from '@ui-lab-core/library/catalog';
 
 export const metadata = {
   title: "Component Preview",

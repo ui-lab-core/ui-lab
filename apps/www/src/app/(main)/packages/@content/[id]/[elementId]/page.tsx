@@ -1,5 +1,5 @@
 import ElementDetailClient from './client';
-import { elementRegistry, getAllPackages, getElementsInPackage } from 'ui-lab-registry';
+import { elementRegistry, getAllPackages, getElementsInPackage } from '@ui-lab-core/library/catalog';
 import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 import { extractElementMetadata } from '@/shared/lib/metadata-extractors';
 

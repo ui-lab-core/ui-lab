@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { getPackageById, getElementsInPackage, getAllPackages } from 'ui-lab-registry';
+import { getPackageById, getElementsInPackage, getAllPackages } from '@ui-lab-core/library/catalog';
 import { ContentHeader } from '@/features/navigation/components/content-header';
 import PackageElementsClientWrapper from './wrapper';
 import { generateMetadata as buildMetadata } from '@/shared/lib/metadata';
@@ -63,7 +63,7 @@ export default async function PackageElementsPage({
   const { id: packageId } = await params;
 
   return (
-    <div className="w-full bg-background-950 px-4 mx-auto pt-4 pb-12">
+    <div className="w-full px-4 mx-auto pt-4 pb-12">
       <PackageContent packageId={packageId} />
     </div>
   );

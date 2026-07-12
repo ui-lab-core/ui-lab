@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button, Input, Modal } from 'ui-lab-components';
 import { CheckCircle2, Mail, Sparkles } from 'lucide-react';
-import type { PricingInfo } from 'ui-lab-registry';
+import type { PricingInfo } from '@ui-lab-core/library/catalog';
 
 type PurchaseItem = {
   id: string;

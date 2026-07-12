@@ -639,6 +639,10 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
             type === "opacity" ? styles["opacity-track"] : styles["hue-track"],
             resolvedTrackClassName
           ),
+          range: cn(
+            type === "opacity" ? "opacity-range" : "hue-range",
+            type === "opacity" ? styles["opacity-range"] : styles["hue-range"]
+          ),
           thumb: cn(
             type === "opacity" ? "opacity-thumb" : "hue-thumb",
             type === "opacity" ? styles["opacity-thumb"] : styles["hue-thumb"],

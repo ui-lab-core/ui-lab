@@ -30,13 +30,19 @@
     @apply text-xs font-semibold;
     --background: var(--background-800);
     --background-border: var(--background-700);
-    --background-hover: color-mix(in srgb, var(--background-600) 50%, var(--background-950));
-    --background-hover-border: var(--background-600);
-    --background-pressed: color-mix(in srgb, var(--background-600) 60%, var(--background-950));
-    --background-pressed-border: var(--background-600);
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-300);
     --icon-foreground: var(--foreground-400);
+  }
+
+  .button:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));
+    --background-border: var(--background-600);
+  }
+
+  .button[data-pressed="true"]:not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));
+    --background-border: var(--background-600);
   }
 
   .button.sm { @apply px-2.5 py-1.5; }
@@ -54,16 +60,22 @@
   .gallery > .item {
     --background: var(--background-950);
     --background-border: var(--background-700);
-    --background-hover-border: var(--background-600);
-    --background-pressed-border: var(--accent-500);
     --focus-visible: var(--accent-400);
   }
 
-  .gallery > .view {
+  .gallery > .item[data-hovered="true"]:not([data-disabled="true"]) {
+    --background-border: var(--background-600);
+  }
+
+  .gallery > .item[data-pressed="true"]:not([data-disabled="true"]) {
+    --background-border: var(--accent-500);
+  }
+
+  .gallery > .item > .view {
     --background: var(--background-950);
   }
 
-  .gallery > .body {
+  .gallery > .item > .body {
     --foreground: var(--foreground-50);
     --foreground-muted: var(--foreground-300);
   }
@@ -158,13 +170,17 @@
 
   .group > .button[data-selected="true"],
   .group > .item > .button[data-selected="true"] {
-    --background: var(--background-800);
     --foreground: var(--foreground-100);
   }
 
   .group > .select > .value,
   .group > .item > .select > .value {
     padding-inline: calc(var(--spacing) * 1.5);
+  }
+
+  .group > .select > .value:has(> .button[data-hovered="true"]:not([data-disabled="true"])),
+  .group > .item > .select > .value:has(> .button[data-hovered="true"]:not([data-disabled="true"])) {
+    --background: color-mix(in srgb, var(--background-800) 50%, transparent);
   }
 
   .group > .select > .value > .button,
@@ -438,19 +454,30 @@
   .select {
     --background: color-mix(in srgb, var(--background-800) 30%, transparent);
     --background-border: var(--background-700);
-    --background-hover: color-mix(in srgb, var(--background-800) 50%, transparent);
-    --background-pressed: color-mix(in srgb, var(--background-600) 50%, transparent);
     --focus-visible: var(--accent-400);
     --focus-visible-background: var(--background-950);
     --foreground: var(--foreground-300);
     --foreground-size: var(--text-xs);
+    --trigger-background-hover: color-mix(in srgb, var(--background-800) 50%, transparent);
+  }
+
+  .select[data-pressed="true"]:not([data-disabled]) {
+    --background: color-mix(in srgb, var(--background-600) 50%, transparent);
+  }
+
+  .select[data-open="true"] {
+    --background: color-mix(in srgb, var(--background-800) 50%, transparent);
   }
 
   .select.ghost {
     --background: transparent;
     --background-border: transparent;
-    --background-hover: color-mix(in srgb, var(--background-700) 50%, transparent);
-    --background-pressed: color-mix(in srgb, var(--background-700) 50%, transparent);
+    --trigger-background-hover: color-mix(in srgb, var(--background-700) 50%, transparent);
+  }
+
+  .select.ghost[data-pressed="true"]:not([data-disabled]),
+  .select.ghost[data-open="true"] {
+    --background: color-mix(in srgb, var(--background-700) 50%, transparent);
   }
 
   .select > :is(.content, .sub-content) {
@@ -483,8 +510,7 @@
     --background-border: color-mix(in srgb, var(--background-500) 40%, transparent);
     --disabled-background: var(--background-500);
     --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
-    --radius: calc(var(--spacing-xs) * 0.2);
-    --width: 8px;
+    --radius: calc(var(--spacing) * 0.6);
   }
 
   .slider > .track > .range {
@@ -579,17 +605,22 @@
   }
 
   .badge > .dismiss {
-    --background-hover: color-mix(in srgb, var(--background-700) 80%, var(--background-900));
-    --background-pressed: var(--background-700);
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-400);
+  }
+
+  .badge > .dismiss[data-hovered="true"] {
+    --background: color-mix(in srgb, var(--background-700) 80%, var(--background-900));
+  }
+
+  .badge > .dismiss[data-pressed="true"] {
+    --background: var(--background-700);
   }
 
   .popover > .content,
   .tooltip > .content {
     --background: var(--background-900);
     --background-border: var(--background-700);
-    --background-hover: var(--background-900);
     --foreground: var(--foreground-200);
   }
 
@@ -599,32 +630,21 @@
   }
 
   .progress > .track {
-    --background: var(--background-700);
+    --background: color-mix(in srgb, var(--background-500) 20%, transparent);
+    --radius: calc(var(--spacing) * 0.8)
   }
 
   .progress > .label {
     --foreground: var(--foreground-400);
   }
 
-  .progress > .track > .range[data-variant="default"] {
-    --background: color-mix(in srgb, var(--background-500) 90%, transparent);
-  }
-
-  .progress > .track > .range[data-variant="success"] {
-    --background: color-mix(in srgb, var(--success-500) 20%, transparent);
-  }
-
-  .progress > .track > .range[data-variant="warning"] {
-    --background: color-mix(in srgb, var(--warning-500) 20%, transparent);
-  }
-
-  .progress > .track > .range[data-variant="error"] {
-    --background: color-mix(in srgb, var(--danger-500) 20%, transparent);
+  .progress > .range {
+    --radius: calc(var(--spacing) * 0.8)
   }
 
   .progress > .track > .thumb {
-    --background: var(--foreground-200);
-    --radius: calc(var(--spacing-xs) * 0.6);
+    --background: var(--foreground-400);
+    --radius: calc(var(--spacing) * 0.6);
   }
 
   .toast {
@@ -819,49 +839,75 @@
   .primary {
     --background: var(--foreground-100);
     --background-border: var(--foreground-100);
-    --background-hover: color-mix(in srgb, var(--foreground-100) 90%, var(--background-600));
-    --background-hover-border: var(--background-hover);
-    --background-pressed: color-mix(in srgb, var(--foreground-100) 85%, var(--background-600));
-    --background-pressed-border: var(--background-pressed);
     --foreground: var(--background-900);
     --icon-foreground: var(--background-700);
     border: none;
   }
 
+  .primary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--foreground-100) 90%, var(--background-600));
+    --background-border: color-mix(in srgb, var(--foreground-100) 90%, var(--background-600));
+  }
+
+  .primary[data-pressed="true"]:not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--foreground-100) 85%, var(--background-600));
+    --background-border: color-mix(in srgb, var(--foreground-100) 85%, var(--background-600));
+  }
+
   .secondary {
     --background: color-mix(in srgb, var(--background-900) 50%, transparent);
     --background-border: var(--background-800);
-    --background-hover: var(--background-700);
-    --background-hover-border: var(--background-700);
-    --background-pressed: color-mix(in srgb, var(--background-700) 60%, var(--background-950));
-    --background-pressed-border: var(--background-700);
     --foreground: var(--foreground-300);
+  }
+
+  .secondary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: var(--background-700);
+    --background-border: var(--background-700);
+  }
+
+  .secondary[data-pressed="true"]:not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-700) 60%, var(--background-950));
+    --background-border: var(--background-700);
   }
 
   .outline {
     --background: transparent;
     --background-border: var(--background-700);
-    --background-hover: color-mix(in srgb, var(--background-950) 90%, var(--background-500));
-    --background-pressed: color-mix(in srgb, var(--background-900) 90%, var(--background-500));
     --foreground: var(--foreground-300);
     outline: unset !important;
+  }
+
+  .outline:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-950) 90%, var(--background-500));
+  }
+
+  .outline[data-pressed="true"]:not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-900) 90%, var(--background-500));
   }
 
   .ghost {
     --background: transparent;
     --background-border: transparent;
-    --background-hover: var(--background-800);
-    --background-pressed: var(--background-800);
     --foreground: var(--foreground-300);
+  }
+
+  .ghost:is([data-hovered="true"], [data-pressed="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: var(--background-800);
   }
 
   .default {
     --background: color-mix(in srgb, var(--background-600) 10%, var(--background-900));
     --background-border: var(--background-700);
-    --background-hover: color-mix(in srgb, var(--background-500) 20%, var(--background-900));
-    --background-pressed: color-mix(in srgb, var(--background-500) 30%, var(--background-900));
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-200);
+  }
+
+  .default:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-500) 20%, var(--background-900));
+  }
+
+  .default[data-pressed="true"]:not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--background-500) 30%, var(--background-900));
   }
 
   .danger, .success, .warning, .info {
@@ -871,49 +917,54 @@
   .danger {
     --background: color-mix(in srgb, var(--danger-500) 15%, transparent);
     --background-border: transparent;
-    --background-hover: var(--background);
-    --background-hover-border: var(--background-600);
-    --background-pressed: var(--background);
-    --background-pressed-border: var(--background-600);
     --focus-visible: var(--danger-400);
     --foreground: var(--danger-600);
     --icon-foreground: var(--danger-700);
   }
 
+  .danger[data-hovered="true"]:not([data-disabled="true"]),
+  .danger[data-pressed="true"]:not([data-disabled="true"]) {
+    --background: color-mix(in srgb, var(--danger-500) 20%, transparent);
+    --background-border: transparent;
+  }
+
   .success {
     --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));
     --background-border: color-mix(in srgb, var(--success-600) 20%, var(--background-900));
-    --background-hover: var(--background);
-    --background-hover-border: var(--background-600);
-    --background-pressed: var(--background);
-    --background-pressed-border: var(--background-600);
     --focus-visible: var(--success-400);
     --foreground: var(--success-600);
     --icon-foreground: var(--success-700);
   }
 
+  .success[data-hovered="true"]:not([data-disabled="true"]),
+  .success[data-pressed="true"]:not([data-disabled="true"]) {
+    --background-border: var(--background-600);
+  }
+
   .warning {
     --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));
     --background-border: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));
-    --background-hover: var(--background);
-    --background-hover-border: var(--background-600);
-    --background-pressed: var(--background);
-    --background-pressed-border: var(--background-600);
     --focus-visible: var(--warning-400);
     --foreground: var(--warning-600);
     --icon-foreground: var(--warning-700);
   }
 
+  .warning[data-hovered="true"]:not([data-disabled="true"]),
+  .warning[data-pressed="true"]:not([data-disabled="true"]) {
+    --background-border: var(--background-600);
+  }
+
   .info {
     --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));
     --background-border: color-mix(in srgb, var(--info-600) 20%, var(--background-900));
-    --background-hover: var(--background);
-    --background-hover-border: var(--background-600);
-    --background-pressed: var(--background);
-    --background-pressed-border: var(--background-600);
     --focus-visible: var(--info-400);
     --foreground: var(--info-600);
     --icon-foreground: var(--info-700);
+  }
+
+  .info[data-hovered="true"]:not([data-disabled="true"]),
+  .info[data-pressed="true"]:not([data-disabled="true"]) {
+    --background-border: var(--background-600);
   }
 
   .banner.note {
