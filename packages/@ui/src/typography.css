@@ -1,0 +1,121 @@
+@layer components {
+  /* A reading surface: UI type remains body-first, while headers define hierarchy. */
+  .typography {
+    --font: var(--font-body, inherit);
+    --header-font: var(--font-header, var(--font));
+    --mono-font: var(--font-mono, ui-monospace, monospace);
+    --size: var(--text-body-size, 1rem);
+    --leading: var(--leading-body, 1.5);
+    --space: 1.25em;
+    --muted: var(--foreground-400, color-mix(in oklab, currentColor 60%, transparent));
+    --rule: var(--background-700, color-mix(in oklab, currentColor 20%, transparent));
+
+    color: var(--foreground-300, currentColor);
+    font-family: var(--font);
+    font-size: var(--size);
+    font-weight: var(--font-weight-body-medium, 400);
+    letter-spacing: var(--letter-spacing-md, normal);
+    line-height: var(--leading);
+    overflow-wrap: break-word;
+  }
+
+  /* Document rhythm starts with sibling flow, then elements make local adjustments. */
+  .typography > * + *,
+  .typography :where(li, blockquote, td, th, dd, figure) > * + * { margin-block-start: var(--space); }
+
+  .typography :where(h1, h2, h3, h4, h5, h6) {
+    color: var(--foreground-100, currentColor);
+    font-family: var(--header-font);
+    font-weight: var(--font-weight-header-semibold, 600);
+    line-height: var(--leading-header, 1.5);
+    margin-block: calc(var(--space) * 1.5) 0;
+  }
+
+  .typography :where(h1) {
+    font-size: var(--header-text-2xl, 1.5em);
+    font-weight: var(--font-weight-header-bold, 700);
+    letter-spacing: var(--letter-spacing-header-xl, var(--letter-spacing-xl, normal));
+  }
+
+  .typography :where(h2) {
+    font-size: var(--header-text-xl, 1.25em);
+    font-weight: var(--font-weight-header-bold, 700);
+    letter-spacing: var(--letter-spacing-header-lg, var(--letter-spacing-lg, normal));
+  }
+
+  .typography :where(h3) {
+    font-size: var(--header-text-lg, 1.125em);
+    letter-spacing: var(--letter-spacing-header-md, normal);
+  }
+
+  .typography :where(h4, h5) { font-size: var(--header-text-md, 1em); }
+  .typography :where(h6) {
+    color: var(--muted);
+    font-size: var(--header-text-sm, 0.875em);
+    font-weight: var(--font-weight-header-medium, 500);
+  }
+
+  .typography :where([id]) { scroll-margin-block-start: calc(var(--space) * 2); }
+  .typography :where(a) {
+    color: inherit;
+    font-weight: var(--font-weight-body-semibold, 600);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
+    text-underline-offset: 0.15em;
+  }
+  .typography :where(a:hover) { text-decoration-color: currentColor; }
+  .typography :where(a:focus-visible) {
+    border-radius: var(--radius-sm, 0.125em);
+    outline: 2px solid var(--accent-400, currentColor);
+    outline-offset: 2px;
+  }
+  .typography :where(strong, b) { color: var(--foreground-100, currentColor); font-weight: var(--font-weight-body-semibold, 600); }
+  .typography :where(del, s) { color: var(--muted); }
+
+  .typography :where(ul, ol) { padding-inline-start: 1.5em; }
+  .typography :where(ul) { list-style: disc; }
+  .typography :where(ol) { list-style: decimal; }
+  .typography :where(li) { margin-block-start: 0.4em; padding-inline-start: 0.25em; }
+  .typography :where(li)::marker { color: var(--muted); }
+  .typography :where(li > :is(p, ul, ol, blockquote, pre)) { margin-block-start: 0.5em; }
+
+  .typography :where(:not(pre) > code, kbd) {
+    background: var(--background-800, color-mix(in oklab, currentColor 8%, transparent));
+    border-radius: var(--radius-sm, 0.25em);
+    font-family: var(--mono-font);
+    font-size: 0.85em;
+    padding: 0.125em 0.3em;
+  }
+  .typography :where(kbd) { border: 1px solid var(--rule); border-block-end-width: 2px; }
+  .typography :where(pre) {
+    background: var(--background-900, color-mix(in oklab, currentColor 8%, transparent));
+    border-radius: var(--radius-md, 0.5em);
+    font-family: var(--mono-font);
+    font-size: var(--text-code-size, 0.875em);
+    line-height: 1.5;
+    overflow-x: auto;
+    padding: 0.75em 1em;
+    tab-size: 2;
+  }
+  .typography :where(pre code) { background: transparent; font: inherit; padding: 0; }
+
+  .typography :where(blockquote) {
+    border-inline-start: 2px solid var(--rule);
+    color: var(--muted);
+    margin-inline: 0;
+    padding-inline-start: 1em;
+  }
+  .typography :where(hr) { border: 0; border-block-start: 1px solid var(--rule); margin-block-start: calc(var(--space) * 2); }
+  .typography :where(details > summary) { cursor: pointer; font-weight: var(--font-weight-body-semibold, 600); }
+  .typography :where(img, video) { border-radius: var(--radius-md, 0.5em); height: auto; max-width: 100%; }
+  .typography :where(figure) { margin-inline: 0; }
+  .typography :where(figcaption, caption) { color: var(--muted); font-size: 0.875em; margin-block-start: 0.75em; text-align: center; }
+
+  .typography :where(table) { border-collapse: collapse; font-size: 0.875em; max-width: 100%; width: 100%; }
+  .typography :where(th, td) { border-block-start: 1px solid var(--rule); padding: 0.65em 0.8em; text-align: start; vertical-align: top; }
+  .typography :where(th) { color: var(--foreground-200, currentColor); font-weight: var(--font-weight-body-semibold, 600); }
+  .typography :where(th:first-child, td:first-child) { padding-inline-start: 0; }
+
+  .typography > :first-child,
+  .typography :where(li, blockquote, td, th, dd, figure) > :first-child { margin-block-start: 0; }
+}

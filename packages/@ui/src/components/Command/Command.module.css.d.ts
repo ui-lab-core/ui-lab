@@ -1,6 +1,7 @@
 export interface Styles {
   overlay: string;
   content: string;
+  embedded: string;
   inner: string;
   search: string;
   input: string;

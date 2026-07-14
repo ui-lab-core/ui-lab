@@ -1,4 +1,5 @@
 declare const styles: {
+  overlay: string;
   backdrop: string;
   panel: string;
   header: string;

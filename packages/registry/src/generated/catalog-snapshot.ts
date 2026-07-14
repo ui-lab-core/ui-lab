@@ -764,6 +764,64 @@ export const elementPackages: ElementPackageRegistry = {
         "Copy-paste ready"
       ]
     }
+  },
+  "premium-ui-kit": {
+    "id": "premium-ui-kit",
+    "name": "Premium UI Kit",
+    "description": "Advanced component collection with enterprise-grade styling and interactions.",
+    "tags": [
+      "premium",
+      "enterprise",
+      "advanced"
+    ],
+    "elements": [
+      "Button",
+      "Input",
+      "Modal",
+      "Dropdown"
+    ],
+    "layout": {
+      "columnSpan": 1
+    },
+    "pricing": {
+      "price": 49.99,
+      "features": [
+        "Enterprise-ready component patterns",
+        "Advanced interaction states",
+        "Responsive layouts",
+        "Production-ready styling"
+      ]
+    },
+    "status": "coming-soon"
+  },
+  "pro-components": {
+    "id": "pro-components",
+    "name": "Pro Components",
+    "description": "Extended component library with specialized controls and complex interactions.",
+    "tags": [
+      "pro",
+      "advanced",
+      "specialized"
+    ],
+    "elements": [
+      "DatePicker",
+      "TimePicker",
+      "FileUpload",
+      "RichEditor"
+    ],
+    "layout": {
+      "columnSpan": 1
+    },
+    "pricing": {
+      "price": 29.99,
+      "features": [
+        "Specialized input controls",
+        "Complex interaction patterns",
+        "Accessible defaults",
+        "Composable APIs"
+      ]
+    },
+    "status": "coming-soon"
   }
 };
 
@@ -1021,6 +1079,27 @@ export const sectionRegistry: SectionRegistry = {
         ]
       }
     ]
+  },
+  "custom-cta": {
+    "id": "custom-cta",
+    "name": "Custom CTA",
+    "description": "Advanced call-to-action section with interactive elements and conversion optimization.",
+    "category": "cta",
+    "tags": [
+      "premium",
+      "conversion",
+      "interactive"
+    ],
+    "variants": [],
+    "pricing": {
+      "price": 29.99,
+      "features": [
+        "Interactive CTA states",
+        "Campaign-ready variants",
+        "Responsive conversion blocks"
+      ]
+    },
+    "status": "coming-soon"
   }
 };
 
@@ -1919,10 +1998,9 @@ export const starterRegistry: StarterRegistry = {
         "Search functionality",
         "Responsive design",
         "Dark mode support"
-      ],
-      "gumroadProductId": "documentation-starter"
+      ]
     },
-    "gumroadProductId": "documentation-starter",
+    "status": "coming-soon",
     "bundledElements": [
       "toc",
       "copypage",
@@ -2017,10 +2095,9 @@ export const starterRegistry: StarterRegistry = {
         "Local storage",
         "Categories",
         "Search functionality"
-      ],
-      "gumroadProductId": "productivity-starter"
+      ]
     },
-    "gumroadProductId": "productivity-starter",
+    "status": "coming-soon",
     "bundledElements": [
       "input",
       "checkbox",
@@ -2109,10 +2186,8 @@ export const starterRegistry: StarterRegistry = {
         "Interaction history",
         "Dashboard",
         "Reporting tools"
-      ],
-      "gumroadProductId": "crm-starter"
+      ]
     },
-    "gumroadProductId": "crm-starter",
     "bundledElements": [
       "table",
       "form",
@@ -2213,10 +2288,9 @@ export const starterRegistry: StarterRegistry = {
         "Social sharing",
         "Search functionality",
         "Comment system"
-      ],
-      "gumroadProductId": "blog-starter"
+      ]
     },
-    "gumroadProductId": "blog-starter",
+    "status": "coming-soon",
     "bundledElements": [
       "toc",
       "copypage",
@@ -2278,5 +2352,61 @@ export const starterRegistry: StarterRegistry = {
         "isEntryPoint": false
       }
     ]
+  },
+  "premium-dashboard": {
+    "id": "premium-dashboard",
+    "name": "Premium Dashboard",
+    "description": "Full-featured enterprise dashboard with analytics, charts, and real-time data visualization.",
+    "category": "dashboard",
+    "tags": [
+      "premium",
+      "enterprise",
+      "dashboard",
+      "analytics"
+    ],
+    "files": [],
+    "pricing": {
+      "price": 99.99,
+      "features": [
+        "Analytics and reporting views",
+        "Real-time data visualization",
+        "Enterprise dashboard layouts",
+        "Advanced data tables"
+      ]
+    },
+    "bundledElements": [
+      "chart",
+      "analytics",
+      "data-table"
+    ],
+    "status": "coming-soon"
+  },
+  "saas-landing": {
+    "id": "saas-landing",
+    "name": "SaaS Landing",
+    "description": "Modern SaaS landing page with conversion-optimized sections and responsive design.",
+    "category": "landing",
+    "tags": [
+      "saas",
+      "landing",
+      "conversion",
+      "premium"
+    ],
+    "files": [],
+    "pricing": {
+      "price": 79.99,
+      "features": [
+        "Conversion-focused page layouts",
+        "Responsive marketing sections",
+        "SaaS onboarding flows",
+        "Reusable launch assets"
+      ]
+    },
+    "bundledElements": [
+      "hero",
+      "cta",
+      "testimonials"
+    ],
+    "status": "coming-soon"
   }
 };

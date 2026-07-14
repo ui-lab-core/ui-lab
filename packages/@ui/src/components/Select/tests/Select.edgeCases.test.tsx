@@ -229,6 +229,17 @@ describe('Select.edgeCases', () => {
   })
 
   describe('composed trigger layouts', () => {
+    it('allows explicit full-width sizing', () => {
+      const container = renderSelectWithChildren(
+        React.createElement(Select.Trigger, null, 'NVIDIA L40S · 48 GB GDDR6'),
+        { className: 'w-full' }
+      )
+
+      const root = container.querySelector('[data-mode="single"]')
+
+      expect(root).toHaveClass('w-full')
+    })
+
     it('renders a select trigger alongside sibling controls in fit-content layouts', () => {
       const container = renderSelectWithChildren(
         React.createElement(

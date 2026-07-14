@@ -17,7 +17,7 @@ interface ListContextValue {
   rootRef: React.MutableRefObject<HTMLDivElement | null>;
   styles: ResolvedListStyles;
   setFocusedItem: (item: HTMLElement | null, options?: SetFocusedItemOptions) => void;
-  focusAdjacentItem: (currentItem: HTMLElement | null, direction: 1 | -1, scroll?: boolean) => boolean;
+  focusAdjacentItem: (currentItem: HTMLElement | null, direction: 1 | -1, scroll?: boolean, wrap?: boolean) => boolean;
   focusBoundaryItem: (position: 'first' | 'last', scroll?: boolean) => boolean;
 }
 

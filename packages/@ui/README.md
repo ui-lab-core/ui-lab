@@ -234,7 +234,7 @@ The component system expects these CSS variable families. Provided by theme pack
 **Spacing & radius**:
 - `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-full`
 
-See [theme-onyx](https://github.com/kyza0d/ui-lab/tree/main/packages/@theme-onyx) for complete token definitions.
+See [theme-onyx](https://github.com/ui-lab-core/ui-lab/tree/main/packages/@theme-onyx) for complete token definitions.
 
 ## Development
 

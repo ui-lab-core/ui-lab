@@ -20,11 +20,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kyza0d/ui-lab.app"
+    "url": "https://github.com/ui-lab-core/ui-lab"
   },
-  "homepage": "https://github.com/kyza0d/ui-lab.app#readme",
+  "homepage": "https://github.com/ui-lab-core/ui-lab#readme",
   "bugs": {
-    "url": "https://github.com/kyza0d/ui-lab.app/issues"
+    "url": "https://github.com/ui-lab-core/ui-lab/issues"
   },
   "exports": {
     ".": {
@@ -212,6 +212,10 @@
       "style": "./dist/base.css",
       "default": "./dist/base.css"
     },
+    "./typography.css": {
+      "style": "./dist/typography.css",
+      "default": "./dist/typography.css"
+    },
     "./postcss": {
       "import": "./dist/postcss-ui-lab.mjs",
       "default": "./dist/postcss-ui-lab.mjs"
@@ -227,7 +231,7 @@
   },
   "scripts": {
     "build": "vite build && pnpm run build:css && pnpm run build:postcss",
-    "build:css": "postcss src/styles.css -o dist/base.css && cat dist/base.css > dist/styles.css && find dist -maxdepth 1 -name '*.css' ! -name base.css ! -name styles.css -exec cat {} + >> dist/styles.css",
+    "build:css": "postcss src/styles.css -o dist/base.css && postcss src/typography.css -o dist/typography.css && cat dist/base.css > dist/styles.css && find dist -maxdepth 1 -name '*.css' ! -name base.css ! -name styles.css ! -name typography.css -exec cat {} + >> dist/styles.css",
     "build:postcss": "cp src/postcss-ui-lab.ts dist/postcss-ui-lab.mjs",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",

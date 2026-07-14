@@ -42,6 +42,7 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       gap,
       spacing = 'default',
       onNavigate,
+      highlighted,
       children,
       className,
       styles: stylesProp,
@@ -98,19 +99,23 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       const target = itemsInOrder[index];
       if (!target) return false;
 
-      shouldScrollFocusedItemRef.current = scroll;
+      // focus() synchronously blurs the previous item, whose handler clears the
+      // scroll flag via setFocusedItem(null) — arm it only after that dispatch.
       target.focus({ preventScroll: true });
+      shouldScrollFocusedItemRef.current = scroll;
       return true;
     }, [getFocusableItems]);
 
-    const focusAdjacentItem = React.useCallback((currentItem: HTMLElement | null, direction: 1 | -1, scroll = true) => {
+    const focusAdjacentItem = React.useCallback((currentItem: HTMLElement | null, direction: 1 | -1, scroll = true, wrap = true) => {
       const itemsInOrder = getFocusableItems();
       if (itemsInOrder.length === 0) return false;
 
       const currentIndex = currentItem ? itemsInOrder.indexOf(currentItem) : -1;
       const nextIndex = currentIndex === -1
         ? (direction === 1 ? 0 : itemsInOrder.length - 1)
-        : Math.min(Math.max(currentIndex + direction, 0), itemsInOrder.length - 1);
+        : wrap
+          ? (currentIndex + direction + itemsInOrder.length) % itemsInOrder.length
+          : Math.min(Math.max(currentIndex + direction, 0), itemsInOrder.length - 1);
 
       if (currentIndex !== -1 && nextIndex === currentIndex) {
         return false;
@@ -158,6 +163,12 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       shouldScrollFocusedItemRef.current = false;
       scrollItemIntoView(focusedItem);
     }, [focusedItem, isFocusMode]);
+
+    React.useEffect(() => {
+      if (highlighted == null || !rootRef.current) return;
+      const item = rootRef.current.querySelector<HTMLElement>('[data-highlighted="true"]');
+      if (item) scrollItemIntoView(item);
+    }, [highlighted]);
 
     React.useEffect(() => {
       if (!focusedItem) return;

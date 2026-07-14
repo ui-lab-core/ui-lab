@@ -5,7 +5,7 @@ export { componentRegistry, componentMetadata } from './registry.js';
 export { generatedAPI, generatedSourceCode, reactAriaUrls, generatedComponentDependencies, generatedCoreNpmDependencies, packageMetadata } from './generated-data.js';
 export { generatedStyles } from './generated-styles.js';
 
-const BASE = "https://github.com/kyza0d/ui-lab.app/tree/master/packages/%40ui/src/components";
+const BASE = "https://github.com/ui-lab-core/ui-lab/tree/master/packages/%40ui/src/components";
 
 export const sourceUrls: Record<string, string> = {
   "anchor":       `${BASE}/Anchor`,

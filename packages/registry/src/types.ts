@@ -105,6 +105,9 @@ export interface LayoutConfig {
   };
 }
 
+/** Release state is separate from commercial access. */
+export type ContentStatus = 'available' | 'coming-soon';
+
 export interface ElementMetadata {
   id: string;
   name: string;
@@ -114,6 +117,7 @@ export interface ElementMetadata {
   variants: ElementVariant[];
   componentDependencies?: string[];
   layout?: Partial<LayoutConfig>;
+  status?: ContentStatus;
 }
 
 export interface ElementRegistry {
@@ -124,7 +128,6 @@ export interface PricingInfo {
   price: number | null;
   features?: string[];
   purchaseUrl?: string;
-  gumroadProductId?: string;
 }
 
 export interface ElementPackageMetadata {
@@ -136,8 +139,8 @@ export interface ElementPackageMetadata {
   layout?: Partial<LayoutConfig>;
   getPreview?: () => React.ComponentType<object>;
   pricing?: PricingInfo;
-  gumroadProductId?: string;
   bundledIn?: string[];
+  status?: ContentStatus;
 }
 
 export interface ElementPackageRegistry {
@@ -162,6 +165,8 @@ export interface SectionMetadata {
   componentDependencies?: string[];
   layout?: Partial<LayoutConfig>;
   fullPageLayout?: boolean;
+  pricing?: PricingInfo;
+  status?: ContentStatus;
 }
 
 export interface SectionRegistry {
@@ -188,7 +193,7 @@ export interface StarterMetadata {
   fullPageLayout?: boolean;
   pricing?: PricingInfo;
   bundledElements?: string[];
-  gumroadProductId?: string;
+  status?: ContentStatus;
 }
 
 export interface StarterRegistry {

@@ -202,3 +202,4 @@ export { useFilter } from "./hooks/useFilter";
 export { useAnimatedWidth } from "./hooks/useAnimatedWidth";
 
 export type { StyleValue } from "./lib/utils";
+export { infer } from "./lib/infer";

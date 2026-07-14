@@ -9,16 +9,44 @@
     /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */
     background-color: var(--overlay);
     backdrop-filter: var(--overlay-backdrop);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 180ms var(--ease-snappy-pop, ease-out),
+      backdrop-filter 180ms var(--ease-snappy-pop, ease-out);
+  }
+
+  .overlay[data-state="entered"] {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   /* Content */
-  .content {
+  .overlay .content {
     @apply relative m-2 w-full max-w-[28rem];
     border-radius: var(--radius-sm);
     background: var(--background);
     margin-inline: 1rem;
     box-shadow: var(--shadow);
-    animation: fade-in-zoom-in 0.2s ease-out;
+    opacity: 0;
+    transform: scale(0.98);
+    pointer-events: none;
+    transition:
+      opacity 180ms var(--ease-snappy-pop, ease-out),
+      transform 180ms var(--ease-snappy-pop, ease-out);
+  }
+
+  .overlay[data-state="entered"] .content {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .embedded {
+    @apply relative w-full;
+    border-radius: var(--radius-sm);
+    background: var(--background);
+    box-shadow: var(--shadow);
   }
 
   .inner {
@@ -99,8 +127,9 @@
   }
 
   .item-icon {
-    @apply flex h-6 w-6 shrink-0 items-center justify-center;
-    color: var(--foreground);
+    @apply h-8 w-8 self-start rounded-sm;
+    background-color: var(--background-800);
+    color: var(--foreground-400);
   }
 
   .item-labels {
@@ -152,6 +181,10 @@
     justify-content: flex-between;
   }
 
-  /* Animations */
-  @keyframes fade-in-zoom-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) {
+    .overlay,
+    .content {
+      transition: none;
+    }
+  }
 }

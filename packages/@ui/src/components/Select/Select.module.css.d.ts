@@ -14,6 +14,7 @@ declare const styles: {
   "value-section": string;
   "icon-section": string;
   icon: string;
+  text: string;
   value: string;
   "value-icon": string;
   "value-text": string;

@@ -12,12 +12,8 @@
   }
 
   .day-headers {
-    @apply grid gap-2 px-4 pt-3 pb-1;
+    @apply grid gap-1 pb-1;
     grid-template-columns: repeat(7, 1fr);
-    background: var(--background);
-    border: var(--border-width-base) solid var(--border);
-    border-bottom: none;
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     grid-column: 1 / -1;
   }
 
@@ -30,13 +26,13 @@
   }
 
   .header {
-    @apply flex items-center justify-between gap-4 pl-2 pr-1.5 py-1.5;
+    @apply flex items-center gap-2 pl-2 pr-1.5 py-1.5;
     color: var(--foreground);
     grid-column: 1 / -1;
   }
 
   .month-year {
-    @apply ml-2;
+    @apply ml-2 mr-auto;
     font-weight: var(--font-weight-body-medium, 500);
     font-size: var(--text-sm);
     text-align: center;

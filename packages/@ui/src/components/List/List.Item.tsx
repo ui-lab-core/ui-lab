@@ -277,7 +277,7 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
           }
           case 'Tab': {
             const direction = event.shiftKey ? -1 : 1;
-            const movedToRow = focusAdjacentItem(event.currentTarget, direction as 1 | -1);
+            const movedToRow = focusAdjacentItem(event.currentTarget, direction as 1 | -1, true, false);
             if (movedToRow) {
               event.preventDefault();
               return;

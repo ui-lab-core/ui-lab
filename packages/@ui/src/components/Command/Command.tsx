@@ -16,15 +16,19 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Search } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
 import { useControlledState } from "@/hooks/useControlledState";
+import { usePresence } from "@/hooks/usePresence";
 
 import { Card } from "../Card";
 import { Frame } from "../Frame";
+import { List } from "../List";
 import { Scroll } from "../Scroll";
 import { Badge } from "../Badge";
 import { Input, type InputProps } from "../Input";
 
 import type { Key } from "react-aria";
 import styles from "./Command.module.css";
+
+const transitionDuration = 180;
 
 interface CommandStyleSlots {
   root?: StyleValue;
@@ -73,8 +77,11 @@ interface CommandContextValue {
   registerItem: (key: Key, textValue: string) => void;
   unregisterItem: (key: Key) => void;
   actionRef: React.MutableRefObject<Map<Key, () => void | Promise<void>>>;
+  surfaceRef: React.MutableRefObject<HTMLDivElement | null>;
+  pointerRef: React.MutableRefObject<boolean>;
   searchInputRef: React.MutableRefObject<HTMLInputElement | null>;
   scrollableRef: React.MutableRefObject<HTMLDivElement | null>;
+  dismissOnBlur: boolean;
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   filteredItems: CommandItem[];
@@ -117,6 +124,8 @@ export interface CommandProps {
   /** Controlled state. `query` controls the search text. */
   /** Called when the open state changes */
   onOpenChange?: (open: boolean) => void;
+  /** Renders only the command surface so an ancestor can own the overlay. */
+  embedded?: boolean;
   /** Additional CSS class for the palette dialog */
   className?: string;
   /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, or slot object. */
@@ -132,7 +141,7 @@ export interface CommandState { open?: boolean; query?: string }
 
 const Command = React.forwardRef<HTMLDivElement, CommandProps>(
   (
-    { open, state: controlledState, onOpenChange, className, styles: commandStyles, items = [], filter, children },
+    { open, state: controlledState, onOpenChange, embedded = false, className, styles: commandStyles, items = [], filter, children },
     ref,
   ) => {
     const [mounted, setMounted] = React.useState(false);
@@ -149,9 +158,10 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     const paletteRef = React.useRef<HTMLDivElement>(null);
     const searchInputRef = React.useRef<HTMLInputElement>(null);
     const scrollableRef = React.useRef<HTMLDivElement>(null);
+    const pointerRef = React.useRef(false);
     const resolved = resolveCommandBaseStyles(commandStyles);
 
-    useScrollLock(overlayState.isOpen, scrollableRef.current);
+    useScrollLock(!embedded && overlayState.isOpen, scrollableRef.current);
     const itemsRef = React.useRef<Map<Key, string>>(new Map());
     const actionRef = React.useRef<Map<Key, () => void | Promise<void>>>(
       new Map(),
@@ -197,21 +207,31 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       setMounted(true);
     }, []);
 
+    const { present, state, finishExit } = usePresence(
+      mounted && overlayState.isOpen,
+      transitionDuration,
+    );
+
     // Sync focusedKeyRef with focusedKey
     React.useEffect(() => {
       focusedKeyRef.current = focusedKey;
     }, [focusedKey]);
 
-    // Cleanup state when overlay closes
+    // Keep the current results stable while the closing surface is still visible.
     React.useEffect(() => {
       if (!overlayState.isOpen) {
         scrollableRef.current = null;
+      }
+
+      if (!overlayState.isOpen && !present) {
         setSearchValue("");
       }
-    }, [overlayState.isOpen]);
+    }, [overlayState.isOpen, present]);
 
     // Cmd+K global listener
     React.useEffect(() => {
+      if (embedded) return;
+
       const handleKeyDown = (event: KeyboardEvent) => {
         const isMac =
           navigator.platform.toUpperCase().indexOf("MAC") >= 0 ||
@@ -228,7 +248,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
       };
-    }, [overlayState]);
+    }, [embedded, overlayState]);
 
     // Auto-focus first item when items change (filtering, opening)
     React.useEffect(() => {
@@ -247,58 +267,54 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       }
     }, [itemCount, overlayState.isOpen, searchValue]);
 
-    // Keyboard navigation
-    React.useEffect(() => {
+    const handleKeyDown = (event: React.KeyboardEvent) => {
       if (!overlayState.isOpen) return;
 
-      const handleKeyDown = (event: KeyboardEvent) => {
-        switch (event.key) {
-          case "ArrowDown": {
-            event.preventDefault();
-            const keys = Array.from(itemsRef.current.keys());
-            if (keys.length === 0) return;
-            if (focusedKey === null) {
-              setFocusedKey(keys[0]);
-            } else {
-              const idx = keys.indexOf(focusedKey);
-              setFocusedKey(keys[(idx + 1) % keys.length]);
-            }
-            break;
+      switch (event.key) {
+        case "ArrowDown": {
+          event.preventDefault();
+          const keys = Array.from(itemsRef.current.keys());
+          if (keys.length === 0) return;
+          if (focusedKey === null) {
+            setFocusedKey(keys[0]);
+          } else {
+            const idx = keys.indexOf(focusedKey);
+            setFocusedKey(keys[(idx + 1) % keys.length]);
           }
-          case "ArrowUp": {
-            event.preventDefault();
-            const keys = Array.from(itemsRef.current.keys());
-            if (keys.length === 0) return;
-            if (focusedKey === null) {
-              setFocusedKey(keys[keys.length - 1]);
-            } else {
-              const idx = keys.indexOf(focusedKey);
-              setFocusedKey(keys[idx === 0 ? keys.length - 1 : idx - 1]);
-            }
-            break;
+          break;
+        }
+        case "ArrowUp": {
+          event.preventDefault();
+          const keys = Array.from(itemsRef.current.keys());
+          if (keys.length === 0) return;
+          if (focusedKey === null) {
+            setFocusedKey(keys[keys.length - 1]);
+          } else {
+            const idx = keys.indexOf(focusedKey);
+            setFocusedKey(keys[idx === 0 ? keys.length - 1 : idx - 1]);
           }
-          case "Enter": {
-            event.preventDefault();
-            if (focusedKey !== null) {
-              const action = actionRef.current.get(focusedKey);
-              if (action) {
-                action();
-                overlayState.close();
-              }
+          break;
+        }
+        case "Enter": {
+          event.preventDefault();
+          if (focusedKey !== null) {
+            const action = actionRef.current.get(focusedKey);
+            if (action) {
+              action();
+              overlayState.close();
             }
-            break;
           }
-          case "Escape": {
+          break;
+        }
+        case "Escape": {
+          if (!embedded) {
             event.preventDefault();
             overlayState.close();
-            break;
           }
+          break;
         }
-      };
-
-      document.addEventListener("keydown", handleKeyDown);
-      return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [overlayState.isOpen, focusedKey]);
+      }
+    };
 
     const registerItem = React.useCallback((key: Key, textValue: string) => {
       itemsRef.current.set(key, textValue);
@@ -325,8 +341,59 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       modalRef,
     );
 
-    if (!mounted || !overlayState.isOpen) {
+    if (!embedded && (!mounted || !present)) {
       return null;
+    }
+
+    const content = (
+      <Card
+        {...(!embedded ? filterDOMProps(dialogProps) : {})}
+        ref={modalRef}
+        onKeyDown={handleKeyDown}
+        onPointerDownCapture={() => {
+          pointerRef.current = true;
+          window.setTimeout(() => {
+            pointerRef.current = false;
+          }, 0);
+        }}
+        className={cn(
+          embedded && "command",
+          "content",
+          styles["content"],
+          embedded && styles["embedded"],
+          className,
+          resolved.root,
+        )}
+        role={embedded ? undefined : "dialog"}
+        aria-modal={embedded ? undefined : "true"}
+      >
+        <CommandContext.Provider
+          value={{
+            isOpen: overlayState.isOpen,
+            close: overlayState.close,
+            focusedKey,
+            setFocusedKey,
+            registerItem,
+            unregisterItem,
+            actionRef,
+            surfaceRef: modalRef,
+            pointerRef,
+            searchInputRef,
+            scrollableRef,
+            dismissOnBlur: embedded,
+            searchValue,
+            setSearchValue,
+            filteredItems,
+            groupedItems,
+          }}
+        >
+          {children}
+        </CommandContext.Provider>
+      </Card>
+    );
+
+    if (embedded) {
+      return content;
     }
 
     return createPortal(
@@ -338,34 +405,14 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
             resolved.overlay,
           )}
           onClick={handleOverlayClick}
+          data-state={state}
+          onTransitionEnd={(event) => {
+            if (event.target === event.currentTarget && event.propertyName === "opacity") {
+              finishExit();
+            }
+          }}
         >
-          <Card
-            {...filterDOMProps(dialogProps)}
-            ref={modalRef}
-            className={cn("content", styles["content"], className, resolved.root)}
-            role="dialog"
-            aria-modal="true"
-          >
-            <CommandContext.Provider
-              value={{
-                isOpen: overlayState.isOpen,
-                close: overlayState.close,
-                focusedKey,
-                setFocusedKey,
-                registerItem,
-                unregisterItem,
-                actionRef,
-                searchInputRef,
-                scrollableRef,
-                searchValue,
-                setSearchValue,
-                filteredItems,
-                groupedItems,
-              }}
-            >
-              {children}
-            </CommandContext.Provider>
-          </Card>
+          {content}
         </div>
       </FocusScope>,
       document.body,
@@ -378,14 +425,46 @@ Command.displayName = "Command";
 interface CommandInputProps extends InputProps { }
 
 const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
-  ({ value: externalValue, onChange: externalOnChange, icon, actions, placeholder = "Search...", ...props }, ref) => {
-    const { isOpen, searchInputRef, searchValue, setSearchValue } = useCommandContext();
+  ({ value: externalValue, onChange: externalOnChange, onBlur: externalOnBlur, icon, actions, placeholder = "Search...", ...props }, ref) => {
+    const {
+      isOpen,
+      close,
+      surfaceRef,
+      pointerRef,
+      searchInputRef,
+      dismissOnBlur,
+      searchValue,
+      setSearchValue,
+    } = useCommandContext();
 
     const value = externalValue !== undefined ? externalValue : searchValue;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
       externalOnChange?.(e);
+    };
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+      externalOnBlur?.(event);
+      if (!dismissOnBlur || pointerRef.current) return;
+
+      const next = event.relatedTarget;
+      if (next instanceof Node && surfaceRef.current?.contains(next)) return;
+
+      queueMicrotask(() => {
+        const input = searchInputRef.current;
+        const ownerDocument = input?.ownerDocument;
+        if (!input || !ownerDocument?.hasFocus() || pointerRef.current) return;
+
+        const activeElement = ownerDocument.activeElement;
+        if (
+          activeElement === null ||
+          activeElement === ownerDocument.body ||
+          activeElement === ownerDocument.documentElement
+        ) {
+          close();
+        }
+      });
     };
 
     const inputRef = useMergeRefs(ref, searchInputRef);
@@ -411,6 +490,7 @@ const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
           ref={inputRef}
           state={{ value: value as string }}
           onChange={handleChange}
+          onBlur={handleBlur}
           variant="ghost"
           icon={icon ?? <Search className="w-4 h-4" />}
           actions={resolvedActions}
@@ -440,7 +520,7 @@ const CommandListComponent = React.forwardRef<
   HTMLDivElement,
   CommandListProps
 >(({ children, emptyMessage = "No items found.", className }, ref) => {
-  const { scrollableRef } = useCommandContext();
+  const { scrollableRef, focusedKey } = useCommandContext();
 
   return (
     <Frame edges="top" strokeAlign="outside" className={cn(styles["inner"], className)}>
@@ -450,13 +530,13 @@ const CommandListComponent = React.forwardRef<
         maxHeight="44dvh"
         fade-y
       >
-        <div role="listbox" aria-label="Commands">
+        <List aria-label="Commands" highlighted={focusedKey as string | number | null}>
           {!children ? (
             <div className={styles["empty"]}>{emptyMessage}</div>
           ) : (
             children
           )}
-        </div>
+        </List>
       </Scroll>
     </Frame>
   );
@@ -471,6 +551,8 @@ interface CommandItemProps {
   textValue: string;
   /** Called when the item is selected */
   action: () => void | Promise<void>;
+  /** Leading icon rendered in the list media slot */
+  icon?: React.ReactNode;
   /** Child elements rendered inside the item */
   children?: React.ReactNode;
   /** Additional CSS class for the item */
@@ -480,7 +562,7 @@ interface CommandItemProps {
 }
 
 const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
-  ({ value, textValue, action, children, className, hint }, ref) => {
+  ({ value, textValue, action, icon, children, className, hint }, ref) => {
     const { focusedKey, registerItem, unregisterItem, actionRef, close } =
       useCommandContext();
 
@@ -504,7 +586,12 @@ const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
         onClick={() => { action(); close(); }}
         className={cn("item", styles["item"], className)}
       >
-        <div className={styles["item-content"]}>{children}</div>
+        <div className={styles["item-content"]}>
+          {icon && (
+            <List.Media className={styles["item-icon"]}>{icon}</List.Media>
+          )}
+          {children}
+        </div>
         {hint && (
           <Badge variant="secondary" className={styles["hint-wrapper"]}>
             {hint}

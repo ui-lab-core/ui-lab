@@ -81,6 +81,7 @@
 
     &.grow {
       flex: 1;
+      min-width: 0;
     }
 
     &.divider {
@@ -148,7 +149,7 @@
   }
 
   .select {
-    @apply flex items-stretch p-0 bg-transparent border-none;
+    @apply flex items-stretch min-w-0 p-0 bg-transparent border-none;
     border-radius: var(--group-item-radius, var(--background-inner-radius));
   }
 

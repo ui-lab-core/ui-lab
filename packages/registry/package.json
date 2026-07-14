@@ -15,11 +15,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kyza0d/ui-lab.app"
+    "url": "https://github.com/ui-lab-core/ui-lab"
   },
-  "homepage": "https://github.com/kyza0d/ui-lab.app#readme",
+  "homepage": "https://github.com/ui-lab-core/ui-lab#readme",
   "bugs": {
-    "url": "https://github.com/kyza0d/ui-lab.app/issues"
+    "url": "https://github.com/ui-lab-core/ui-lab/issues"
   },
   "exports": {
     ".": {

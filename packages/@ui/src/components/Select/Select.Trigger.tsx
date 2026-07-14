@@ -9,6 +9,7 @@ import { useSelectContext } from "./Select"
 import { GroupContext } from "../Group/Group.Context"
 import groupStyles from "../Group/Group.module.css"
 import { handleListKeyDown } from "./Select.shared"
+import { infer } from "@/lib/infer"
 
 export const SelectTriggerContext = React.createContext<boolean>(false)
 
@@ -98,6 +99,9 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
 
     const resolvedChevron = icon?.chevron !== undefined ? icon.chevron : chevron !== undefined ? chevron : <ChevronDown size={14} />
     const resolved = resolveSelectTriggerStyles(stylesProp);
+    const content = infer("text", children)
+      ? <span className={styles.text}>{children}</span>
+      : children
 
     return (
       <SelectTriggerContext.Provider value={true}>
@@ -133,7 +137,7 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
                   : "Select items..."}
               </span>
             ) : (
-              children
+              content
             )}
           </div>
           {resolvedChevron !== null && (

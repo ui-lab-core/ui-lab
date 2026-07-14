@@ -11,10 +11,13 @@ import { asElementProps } from "@/lib/react-aria";
 import { X } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
 import { useControlledState } from "@/hooks/useControlledState";
+import { usePresence } from "@/hooks/usePresence";
 import css from "./Modal.module.css";
 
+const transitionDuration = 180;
+
 const useModalKeyboard = (
-  ref: React.RefObject<HTMLDivElement | null>,
+  element: HTMLDivElement | null,
   isOpen: boolean,
   isDismissable: boolean,
   isKeyboardDismissDisabled: boolean,
@@ -24,9 +27,13 @@ const useModalKeyboard = (
   onCloseRef.current = onClose;
 
   React.useEffect(() => {
-    if (!isOpen || !ref.current) return;
+    if (!isOpen || !element) return;
 
-    ref.current.focus();
+    if (!element.contains(element.ownerDocument.activeElement)) {
+      element.focus();
+    }
+
+    const ownerDocument = element.ownerDocument;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isDismissable && !isKeyboardDismissDisabled) {
@@ -35,9 +42,9 @@ const useModalKeyboard = (
       }
     };
 
-    ref.current.addEventListener("keydown", handleKeyDown);
-    return () => ref.current?.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isDismissable, isKeyboardDismissDisabled]);
+    ownerDocument.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => ownerDocument.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [element, isOpen, isDismissable, isKeyboardDismissDisabled]);
 };
 
 export interface ModalStyleSlots {
@@ -76,6 +83,8 @@ export interface ModalProps {
   onOpenChange?: (isOpen: boolean) => void;
   /** Optional title rendered in the modal header bar */
   title?: React.ReactNode;
+  /** Accessible name used when the modal has no visible title. */
+  "aria-label"?: string;
   /** Modal body content */
   children: React.ReactNode;
   /** Optional footer content rendered below the body */
@@ -84,6 +93,8 @@ export interface ModalProps {
   close?: boolean;
   /** Controls modal width: "fit" adapts to content, "auto" uses default width */
   size?: "fit" | "auto";
+  /** Controls the panel entrance and exit animation. */
+  animation?: "default" | "fade";
   /** Whether clicking the backdrop dismisses the modal */
   isDismissable?: boolean;
   /** Prevents the Escape key from dismissing the modal */
@@ -119,10 +130,12 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       isOpen: legacyIsOpen,
       onOpenChange,
       title,
+      "aria-label": ariaLabel,
       children,
       footer,
       close = true,
       size = "auto",
+      animation = "default",
       isDismissable = true,
       isKeyboardDismissDisabled = false,
       className,
@@ -163,12 +176,17 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       setMounted(true);
     }, []);
 
+    const { present, state, finishExit } = usePresence(
+      mounted && isOpen,
+      transitionDuration,
+    );
+
     // Use forwardRef callback to expose modalRef
     React.useImperativeHandle(ref, () => modalRef.current as HTMLDivElement);
 
     // Handle keyboard events and auto-focus
     useModalKeyboard(
-      modalRef,
+      panelElement,
       isOpen,
       isDismissable,
       isKeyboardDismissDisabled,
@@ -176,14 +194,14 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
     );
 
     // useDialog hook provides accessibility attributes and title handling
-    const { dialogProps, titleProps } = useDialog({}, modalRef);
+    const { dialogProps, titleProps } = useDialog({ "aria-label": ariaLabel }, modalRef);
     const { focusProps: modalFocusProps, isFocused: isModalFocused, isFocusVisible: isModalFocusVisible } = useFocusRing();
 
     const handleClose = closeModal;
 
     useScrollLock(isOpen, panelElement);
 
-    if (!mounted || !isOpen) return null;
+    if (!mounted || !present) return null;
 
     const handleCloseMouseDown = () => setIsClosePressed(true);
     const handleCloseMouseUp = () => setIsClosePressed(false);
@@ -272,10 +290,12 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       <div
         className={cn(
           "modal",
+          css.overlay,
           "fixed inset-0 z-9999 flex items-center justify-center",
           overlayClassName,
           resolved.overlay
         )}
+        data-state={state}
       >
         {/* Backdrop overlay - click outside to dismiss */}
         <div
@@ -295,9 +315,14 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
             resolved.root
           )}
           onClick={(e) => e.stopPropagation()}
+          onTransitionEnd={(event) => {
+            if (event.target === event.currentTarget && event.propertyName === "opacity") {
+              finishExit();
+            }
+          }}
           tabIndex={-1}
-          data-open={isOpen || undefined}
           data-size={size}
+          data-animation={animation}
           data-focused={isModalFocused ? "true" : "false"}
           data-focus-visible={isModalFocusVisible ? "true" : "false"}
         >

@@ -93,7 +93,7 @@ describe('List.navigation', () => {
     expect(onNavigate.enter).toHaveBeenCalled()
   })
 
-  it('caps navigation at item bounds', async () => {
+  it('wraps ref navigation at item bounds by default', async () => {
     const listRef = React.createRef<ListRef>()
     const items = [
       { key: '1', label: 'Item 1', value: '1' },
@@ -108,17 +108,49 @@ describe('List.navigation', () => {
       listRef.current?.focusNext()
     })
     await act(async () => {
-      listRef.current?.focusNext() // Should stay at index 1
-    })
-    expect(listRef.current?.getHighlightedIndex()).toBe(1)
-
-    await act(async () => {
-      listRef.current?.focusFirst()
-    })
-    await act(async () => {
-      listRef.current?.focusPrev() // Should stay at index 0
+      listRef.current?.focusNext()
     })
     expect(listRef.current?.getHighlightedIndex()).toBe(0)
+
+    await act(async () => {
+      listRef.current?.focusPrev()
+    })
+    expect(listRef.current?.getHighlightedIndex()).toBe(1)
+  })
+
+  it('Arrow keys wrap between first and last rows by default', async () => {
+    const container = renderListWithItems([
+      { key: '1', label: 'Item 1', value: '1' },
+      { key: '2', label: 'Item 2', value: '2' },
+      { key: '3', label: 'Item 3', value: '3' },
+    ])
+    const user = userEvent.setup()
+    const listItems = getListItems(container)
+
+    await user.click(listItems[0]!)
+    await user.keyboard('{ArrowUp}')
+    expect(document.activeElement).toBe(listItems[2])
+
+    await user.keyboard('{ArrowDown}')
+    expect(document.activeElement).toBe(listItems[0])
+  })
+
+  it('Tab leaves the list at the last row instead of wrapping', async () => {
+    const user = userEvent.setup()
+    const { container } = utilRender(
+      <>
+        <List>
+          <List.Item value="1">Row 1</List.Item>
+          <List.Item value="2">Row 2</List.Item>
+        </List>
+        <button type="button">After</button>
+      </>
+    )
+    const listItems = getListItems(container)
+
+    await user.click(listItems[1]!)
+    await user.keyboard('{Tab}')
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'After' }))
   })
 
   it('clicking a row establishes row focus mode on that row', async () => {
