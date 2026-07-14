@@ -14,7 +14,12 @@ const tabs = [
   { value: "entertainment", label: "Entertainment" },
 ];
 
-export function ShowcaseToolbar() {
+interface ShowcaseToolbarProps {
+  value: string;
+  onValueChange: (value: string) => void;
+}
+
+export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) {
   const { currentThemeColors, setCurrentThemeColors, currentThemeMode } =
     useApp();
   const { applyAndPersistColors } = useThemeStorage({
@@ -32,17 +37,12 @@ export function ShowcaseToolbar() {
 
   return (
     <div className="flex w-full items-center justify-between gap-4 p-2">
-      <Tabs default="showcase" className="w-auto">
-        <Tabs.List
-          aria-label="Showcase categories"
-          className="w-auto rounded-sm bg-background-900/80 px-[5px]"
-          styles={{ indicator: "rounded-sm bg-background-700" }}
-        >
+      <Tabs value={value} onValueChange={onValueChange}>
+        <Tabs.List aria-label="Showcase categories" >
           {tabs.map(({ value, label }) => (
             <Tabs.Trigger
               key={value}
               value={value}
-              className="rounded-full bg-transparent px-3 py-1 text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
             >
               {label}
             </Tabs.Trigger>

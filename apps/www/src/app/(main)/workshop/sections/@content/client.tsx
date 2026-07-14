@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo } from 'react';
 import type { LayoutConfig } from '@ui-lab-core/library/catalog';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
-import { GenericContentGrid } from '@/features/packages/components/content-grid';
+import { GenericContentGrid } from '@/features/workshop/components/content-grid';
 import { getLayoutConfig as getSectionLayoutConfig } from '@/features/sections/lib/layout-registry';
 import {
   filterSections,
   type SectionGridFilters,
   type SectionGridItem,
 } from '@/features/sections/lib/section-grid-data';
-import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover, PurchaseModalClient, usePurchaseModal } from '@/features/packages';
+import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover, WaitlistModalClient, useWaitlistModal } from '@/features/workshop';
 import { GridCTA } from '@/features/landing/components/grid-cta';
 import { getCardPreviewComponent as getSectionCardPreviewComponent } from '@/features/sections/lib/get-section-preview';
 
@@ -34,7 +34,7 @@ function SectionsPageContent({
   initialLayoutConfigs,
 }: SectionsPageProps) {
   const router = useRouter();
-  const modalContext = usePurchaseModal();
+  const modalContext = useWaitlistModal();
   const [searchQuery, setSearchQuery] = useState(initialFilters.searchQuery);
   const [sortBy, setSortBy] = useState(initialFilters.sortBy);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialFilters.selectedCategory);
@@ -97,25 +97,25 @@ function SectionsPageContent({
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     const params = buildParams({ q: query || null });
-    router.push(`/sections${params ? '?' + params : ''}`);
+    router.push(`/workshop/sections${params ? '?' + params : ''}`);
   }, [buildParams, router]);
 
   const handleSortChange = useCallback((sort: string) => {
     setSortBy(sort);
     const params = buildParams({ sort: sort !== 'default' ? sort : null });
-    router.push(`/sections${params ? '?' + params : ''}`);
+    router.push(`/workshop/sections${params ? '?' + params : ''}`);
   }, [buildParams, router]);
 
   const handleCategoryChange = useCallback((category: string | null) => {
     setSelectedCategory(category);
     const params = buildParams({ category: category || null });
-    router.push(`/sections${params ? '?' + params : ''}`);
+    router.push(`/workshop/sections${params ? '?' + params : ''}`);
   }, [buildParams, router]);
 
   const handleTagsChange = useCallback((newTags: string[]) => {
     setSelectedTags(newTags);
     const params = buildParams({ tags: newTags.length > 0 ? newTags.join(',') : null });
-    router.push(`/sections${params ? '?' + params : ''}`);
+    router.push(`/workshop/sections${params ? '?' + params : ''}`);
   }, [buildParams, router]);
 
   const handleClearAll = useCallback(() => {
@@ -123,7 +123,7 @@ function SectionsPageContent({
     setSelectedCategory(null);
     setSelectedTags([]);
     setSortBy('default');
-    router.push('/sections');
+    router.push('/workshop/sections');
   }, [router]);
 
   return (
@@ -134,7 +134,7 @@ function SectionsPageContent({
             <ElementsSearchHeader
               className="lg:w-[400px]"
               currentQuery={searchQuery}
-              pathname="/sections"
+              pathname="/workshop/sections"
               onSearch={handleSearch}
             />
           </div>
@@ -158,12 +158,13 @@ function SectionsPageContent({
     >
       <GenericContentGrid
         items={filteredSections}
-        basePath="/sections"
+        basePath="/workshop/sections"
         layoutConfigs={layoutConfigs}
         previews={previews}
+        previewKind="section"
         onItemClick={(section) => {
-          if (section.pricing?.price != null) {
-            modalContext.openModal(section);
+          if (section.status === 'coming-soon') {
+            modalContext.openModal();
             return true;
           }
 
@@ -176,8 +177,8 @@ function SectionsPageContent({
 
 export default function SectionsPage(props: SectionsPageProps) {
   return (
-    <PurchaseModalClient type="section">
+    <WaitlistModalClient>
       <SectionsPageContent {...props} />
-    </PurchaseModalClient>
+    </WaitlistModalClient>
   );
 }

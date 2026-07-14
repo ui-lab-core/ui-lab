@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo } from 'react';
 import { elementRegistry, elementOrder } from '@ui-lab-core/library/catalog';
 import type { ElementMetadata } from '@ui-lab-core/library/catalog';
-import { ElementsGridClient, ElementsSearchHeader, ElementsFilterPopover, ElementsSortDropdown, ElementsLayoutToggle } from '@/features/packages';
+import { ElementsGridClient, ElementsSearchHeader, ElementsFilterPopover, ElementsSortDropdown, ElementsLayoutToggle } from '@/features/workshop';
 import { Divider } from 'ui-lab-components';
 
 function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetadata[] {
@@ -90,25 +90,25 @@ export default function PackageElementsClient({
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     const urlParams = buildParams({ q: query || null });
-    router.push(`/packages/${packageId}${urlParams ? `?${urlParams}` : ''}`);
+    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
   }, [buildParams, router, packageId]);
 
   const handleSortChange = useCallback((sort: string) => {
     setSortBy(sort);
     const urlParams = buildParams({ sort: sort !== 'default' ? sort : null });
-    router.push(`/packages/${packageId}${urlParams ? `?${urlParams}` : ''}`);
+    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
   }, [buildParams, router, packageId]);
 
   const handleCategoryChange = useCallback((category: string | null) => {
     setSelectedCategory(category);
     const urlParams = buildParams({ category: category || null });
-    router.push(`/packages/${packageId}${urlParams ? `?${urlParams}` : ''}`);
+    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
   }, [buildParams, router, packageId]);
 
   const handleTagsChange = useCallback((newTags: string[]) => {
     setSelectedTags(newTags);
     const urlParams = buildParams({ tags: newTags.length > 0 ? newTags.join(',') : null });
-    router.push(`/packages/${packageId}${urlParams ? `?${urlParams}` : ''}`);
+    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
   }, [buildParams, router, packageId]);
 
   const handleClearAll = useCallback(() => {
@@ -116,7 +116,7 @@ export default function PackageElementsClient({
     setSelectedCategory(null);
     setSelectedTags([]);
     setSortBy('default');
-    router.push(`/packages/${packageId}`);
+    router.push(`/workshop/elements/${packageId}`);
   }, [router, packageId]);
 
   return (
@@ -127,7 +127,7 @@ export default function PackageElementsClient({
           <ElementsSearchHeader
             className="lg:w-[400px]"
             currentQuery={searchQuery}
-            pathname={`/packages/${packageId}`}
+            pathname={`/workshop/elements/${packageId}`}
             onSearch={handleSearch}
           />
         </div>

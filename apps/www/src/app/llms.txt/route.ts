@@ -18,8 +18,8 @@ function generateLLMsText(): string {
 **Version:** ${packageMetadata.version}
 **Last Updated:** ${new Date().toISOString().split('T')[0]}
 **Package:** ui-lab-components
-**Repository:** https://github.com/kyza0d/ui-lab
-**Documentation:** https://ui-lab.app
+**Repository:** https://github.com/ui-lab-core/ui-lab
+**Documentation:** https://ui-lab
 
 Complete reference for all UI Lab components with their props,
 variants, usage guidelines, and examples.

@@ -1,15 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, Button, Checkbox, Divider, Progress } from "ui-lab-components";
-import { Activity, CheckCircle2, Clock3, FilePlus2, GitPullRequest, ShieldCheck, Sparkles, UploadCloud } from "lucide-react";
+import { Button, Checkbox, Divider, Group } from "ui-lab-components";
+import { ArrowUp, FilePlus2, Sparkles } from "lucide-react";
 import type { ShowcasePanelProps } from "./types";
-
-const events = [
-  { id: "evt_build", label: "Preview build passed", meta: "main · 42s", icon: <CheckCircle2 size={19} className="text-success-500" /> },
-  { id: "evt_review", label: "Morgan requested review", meta: "Billing settings", icon: <GitPullRequest size={19} className="text-foreground-300" /> },
-  { id: "evt_upload", label: "Assets synced", meta: "8 files · CDN", icon: <UploadCloud size={19} className="text-foreground-300" /> },
-];
 
 const tasks = [
   { id: "copy", label: "Approve homepage copy", done: true },
@@ -23,9 +17,16 @@ export function QuickActions({ height }: ShowcasePanelProps) {
       className="flex w-full flex-col overflow-hidden"
       style={{ height }}
     >
-      <div className="flex items-center justify-between border-b border-background-700/40 px-4 py-3">
-        <span className="text-sm font-semibold text-foreground-100">Quick actions</span>
-        <Badge>4 ready</Badge>
+      <div className="border-b border-background-700/40 p-2">
+        <Group className="h-10" spacing="sm">
+          <Group.Input
+            placeholder="What do you want to make?"
+            icon={<Sparkles size={15} />}
+            className="min-w-0 flex-1"
+          />
+          <Divider orientation="vertical" />
+          <Group.Button aria-label="Create" icon={<ArrowUp size={14} />} />
+        </Group>
       </div>
       <div className="grid min-h-0 flex-1 grid-cols-2 gap-2 p-3">
         <Button variant="outline" className="h-full justify-start" icon={{ left: <Sparkles size={17} /> }}>
@@ -52,7 +53,7 @@ export function TaskQueue({ height }: ShowcasePanelProps) {
   }
 
   return (
-    <div className="px-2"
+    <div className="px-2 h-full flex items-center"
       style={{ height }}
     >
       <div
@@ -82,4 +83,3 @@ export function TaskQueue({ height }: ShowcasePanelProps) {
     </div>
   );
 }
-

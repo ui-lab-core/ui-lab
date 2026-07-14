@@ -59,28 +59,28 @@ const MAIN_NAV_ITEMS: MainNavItemConfig[] = [
   {
     id: 'packages',
     label: 'Elements',
-    href: '/packages',
+    href: '/workshop/elements',
     // icon: FaLayerGroup,
     domain: 'packages',
   },
   {
     id: 'sections',
     label: 'Sections',
-    href: '/sections',
+    href: '/workshop/sections',
     // icon: FaRegWindowMaximize,
     domain: 'sections',
   },
   {
     id: 'patterns',
     label: 'Patterns',
-    href: '/patterns',
+    href: '/workshop/patterns',
     // icon: FaPuzzlePiece,
     domain: 'patterns',
   },
   {
     id: 'starters',
     label: 'Starters',
-    href: '/starters',
+    href: '/workshop/starters',
     // icon: FaSeedling,
     domain: 'starters',
   },
@@ -89,10 +89,10 @@ const MAIN_NAV_ITEMS: MainNavItemConfig[] = [
 export function getActiveDomainForPathname(pathname: string): SidebarDomain {
   if (pathname.startsWith('/docs')) return 'docs';
   if (pathname.startsWith('/components')) return 'components';
-  if (pathname.startsWith('/packages')) return 'packages';
-  if (pathname.startsWith('/sections')) return 'sections';
-  if (pathname.startsWith('/starters')) return 'starters';
-  if (pathname.startsWith('/patterns')) return 'patterns';
+  if (pathname.startsWith('/workshop/elements')) return 'packages';
+  if (pathname.startsWith('/workshop/sections')) return 'sections';
+  if (pathname.startsWith('/workshop/starters')) return 'starters';
+  if (pathname.startsWith('/workshop/patterns')) return 'patterns';
   if (pathname.startsWith('/design-system')) return 'design-system';
   return 'docs';
 }

@@ -31,7 +31,7 @@ export function DocPage({ page, beforeBody, afterBody, className }: DocPageProps
 
       {beforeBody ?? <div className="h-px bg-background-800 my-12"></div>}
 
-      <div id="doc-content">
+      <div id="doc-content" className="typography">
         <DocsMDX source={page.body} />
       </div>
 

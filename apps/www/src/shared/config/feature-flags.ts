@@ -17,8 +17,6 @@ const isOff = (value: string | undefined): boolean =>
 export const featureFlags = {
   /** Heavy local IoskeleyMono (mono) + extra @fontsource families. */
   heavyFonts: !isOff(process.env.NEXT_PUBLIC_FF_HEAVY_FONTS),
-  /** Lazy chat window + provider. */
-  chat: !isOff(process.env.NEXT_PUBLIC_FF_CHAT),
   /** Command palette (lazy). */
   commandPalette: !isOff(process.env.NEXT_PUBLIC_FF_COMMAND_PALETTE),
   /** Landing-page interactive showcase. */

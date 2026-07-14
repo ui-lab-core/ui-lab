@@ -2,20 +2,20 @@
 
 import React from 'react';
 import type { ElementPackageMetadata, LayoutConfig } from '@ui-lab-core/library/catalog';
-import { GenericContentGrid } from '@/features/packages/components/content-grid';
+import { GenericContentGrid } from '@/features/workshop/components/content-grid';
 import {
   getPackageLayoutConfig,
   getPackagePreviewComponent,
-  PurchaseModalClient,
-  usePurchaseModal,
-} from '@/features/packages';
+  WaitlistModalClient,
+  useWaitlistModal,
+} from '@/features/workshop';
 
 interface PackagesGridClientProps {
   packages: ElementPackageMetadata[];
 }
 
 function PackagesGridContent({ packages }: PackagesGridClientProps) {
-  const modalContext = usePurchaseModal();
+  const modalContext = useWaitlistModal();
   const previews: Record<string, React.ReactNode> = {};
   const layoutConfigs: Record<string, LayoutConfig> = {};
 
@@ -28,12 +28,13 @@ function PackagesGridContent({ packages }: PackagesGridClientProps) {
   return (
     <GenericContentGrid
       items={packages}
-      basePath="/packages"
+      basePath="/workshop/elements"
       layoutConfigs={layoutConfigs}
       previews={previews}
+      previewKind="package"
       onItemClick={(pkg) => {
-        if (pkg.pricing?.price != null) {
-          modalContext.openModal(pkg);
+        if (pkg.status === 'coming-soon') {
+          modalContext.openModal();
           return true;
         }
 
@@ -45,8 +46,8 @@ function PackagesGridContent({ packages }: PackagesGridClientProps) {
 
 export default function PackagesGridClient(props: PackagesGridClientProps) {
   return (
-    <PurchaseModalClient type="element">
+    <WaitlistModalClient>
       <PackagesGridContent {...props} />
-    </PurchaseModalClient>
+    </WaitlistModalClient>
   );
 }

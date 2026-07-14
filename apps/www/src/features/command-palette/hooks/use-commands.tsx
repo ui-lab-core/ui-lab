@@ -91,7 +91,7 @@ export function useCommands({
       icon: <FaGithub className="w-4 h-4" />,
       keywords: ["github", "source", "repo"],
       action: () => {
-        window.open("https://github.com/kyza0d/ui-lab.app", "_blank");
+        window.open("https://github.com/ui-lab-core/ui-lab", "_blank");
       },
     });
 

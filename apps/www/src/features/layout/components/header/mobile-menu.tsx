@@ -17,9 +17,15 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   pathname: string;
+  showNavigation?: boolean;
 }
 
-export function MobileMenu({ isOpen, onClose, pathname }: MobileMenuProps) {
+export function MobileMenu({
+  isOpen,
+  onClose,
+  pathname,
+  showNavigation = false,
+}: MobileMenuProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const isLandingPage = pathname === "/";
@@ -32,16 +38,16 @@ export function MobileMenu({ isOpen, onClose, pathname }: MobileMenuProps) {
       id: item.name,
       label: item.label,
       icon: item.icon,
-      path: item.name === "documentation" ? "/docs" : item.name === "elements" ? "/packages" : "/components",
+      path: item.name === "documentation" ? "/docs" : item.name === "workshop" ? "/workshop/elements" : "/components",
       isPlaceholder: false,
     }) as TabConfig), []);
 
   const visibleTabs: TabConfig[] = useMemo(() => {
-    if (isLandingPage) {
+    if (isLandingPage || (showNavigation && !tabGroup)) {
       return homeNavTabs;
     }
     return (hasRevealCollapse && tabGroup) ? tabGroup.tabs : [];
-  }, [isLandingPage, hasRevealCollapse, tabGroup, homeNavTabs]);
+  }, [isLandingPage, showNavigation, hasRevealCollapse, tabGroup, homeNavTabs]);
 
   const getDocumentationSubItems = () => {
     return documentationItems.map((i) => ({
@@ -139,7 +145,7 @@ export function MobileMenu({ isOpen, onClose, pathname }: MobileMenuProps) {
                 Feedback
               </Button>
               <a
-                href="https://github.com/kyza0d/ui-lab.app"
+                href="https://github.com/ui-lab-core/ui-lab"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full"

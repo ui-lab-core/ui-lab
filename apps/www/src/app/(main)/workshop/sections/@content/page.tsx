@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { getAllSections } from "@ui-lab-core/library/catalog";
 import type { LayoutConfig } from "@ui-lab-core/library/catalog";
 import { getLayoutConfig as getSectionLayoutConfig } from "@/features/sections/lib/layout-registry";
 import {
   filterSections,
-  placeholderSections,
   type SectionGridFilters,
   type SectionGridItem,
 } from "@/features/sections/lib/section-grid-data";
@@ -52,13 +50,10 @@ function buildLayoutConfigs(
   );
 }
 
-async function SectionsContent({ searchParams }: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
   const params = (await searchParams) ?? {};
   const initialFilters = parseFilters(params);
-  const allSections = [
-    ...placeholderSections,
-    ...(getAllSections() as SectionGridItem[]),
-  ];
+  const allSections = getAllSections() as SectionGridItem[];
   const initialSections = filterSections(allSections, initialFilters);
 
   return (
@@ -68,13 +63,5 @@ async function SectionsContent({ searchParams }: PageProps) {
       initialFilters={initialFilters}
       initialLayoutConfigs={buildLayoutConfigs(initialSections)}
     />
-  );
-}
-
-export default function Page({ searchParams }: PageProps) {
-  return (
-    <Suspense fallback={null}>
-      <SectionsContent searchParams={searchParams} />
-    </Suspense>
   );
 }

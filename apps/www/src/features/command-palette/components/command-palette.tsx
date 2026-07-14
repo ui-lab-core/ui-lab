@@ -1,10 +1,17 @@
 "use client";
 
-import { Command, Divider, scoreCommandRelevance } from "ui-lab-components";
+import {
+  Command,
+  Divider,
+  Modal,
+  scoreCommandRelevance,
+  useCommandContext,
+} from "ui-lab-components";
 import { Badge } from "ui-lab-components";
 import type { CommandItem } from "ui-lab-components";
 import { useApp } from "@/features/theme/lib/app-context";
 import { useCommands } from "../hooks/use-commands";
+import css from "./command-palette.module.css";
 
 function matchesSearch(cmd: CommandItem, query: string): boolean {
   if (!query) return true;
@@ -21,57 +28,65 @@ function matchesSearch(cmd: CommandItem, query: string): boolean {
 }
 
 function CommandPaletteContent({ itemCount }: { itemCount: number }) {
+  const { filteredItems, searchValue } = useCommandContext();
+
   return (
     <>
       <Command.Input placeholder="Search commands, components, docs..." />
 
-      <Command.List emptyMessage="No commands found.">
-        <Command.Groups renderCategory={(category) => category && (
-          <>
-            <Command.Category className="text-xs not-first:mt-12">{category}</Command.Category>
-            <Divider variant="dashed" size="sm" />
-          </>
-        )}
-          renderItem={(cmd) => (
-            <>
-              <Command.Item
-                className="mb-2"
-                key={cmd.id}
-                value={cmd.id}
-                textValue={cmd.label}
-                action={cmd.action}
-                hint={cmd.shortcut}
-              >
-                <div className="w-16 h-10 self-start pt-2">{cmd.icon && cmd.icon}</div>
-                <div className="w-180">
-                  <h3 className="text-xs mb-1.5">{cmd.label}</h3>
-                  <p className="w-full text-xs">{cmd.description && cmd.description}</p>
-                </div>
-              </Command.Item>
-            </>
-          )}
-        />
+      <Command.List
+        className={css.list}
+        emptyMessage={`0 results for "${searchValue}"`}
+      >
+        {filteredItems.length > 0 ? (
+          <Command.Groups
+            renderCategory={(category) =>
+              category && (
+                <>
+                  <Command.Category className="text-xs not-first:mt-12">
+                    {category}
+                  </Command.Category>
+                  <Divider variant="dashed" size="sm" />
+                </>
+              )
+            }
+            renderItem={(cmd) => (
+              <>
+                <Command.Item
+                  className="mb-2"
+                  key={cmd.id}
+                  value={cmd.id}
+                  textValue={cmd.label}
+                  action={cmd.action}
+                  icon={cmd.icon}
+                  hint={cmd.shortcut}
+                >
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xs mb-1.5">{cmd.label}</h3>
+                    <p className="w-full break-words text-xs">
+                      {cmd.description && cmd.description}
+                    </p>
+                  </div>
+                </Command.Item>
+              </>
+            )}
+          />
+        ) : undefined}
       </Command.List>
       <Command.Footer>
         {itemCount > 0 && (
           <>
             <div>
               <span>Navigate</span>
-              <Badge variant="default">
-                ↑↓
-              </Badge>
+              <Badge variant="default">↑↓</Badge>
             </div>
             <div>
               <span>Select</span>
-              <Badge variant="default">
-                ↵
-              </Badge>
+              <Badge variant="default">↵</Badge>
             </div>
             <div>
               <span>Close</span>
-              <Badge variant="default">
-                Esc
-              </Badge>
+              <Badge variant="default">Esc</Badge>
             </div>
           </>
         )}
@@ -81,17 +96,38 @@ function CommandPaletteContent({ itemCount }: { itemCount: number }) {
 }
 
 export default function CommandPalette() {
-  const { isCommandPaletteOpen, setIsCommandPaletteOpen, currentThemeMode, setCurrentThemeMode } = useApp();
+  const {
+    isCommandPaletteOpen,
+    setIsCommandPaletteOpen,
+    currentThemeMode,
+    setCurrentThemeMode,
+  } = useApp();
   const commands = useCommands({ currentThemeMode, setCurrentThemeMode });
 
   return (
-    <Command
+    <Modal
       open={isCommandPaletteOpen}
       onOpenChange={setIsCommandPaletteOpen}
-      items={commands}
-      filter={matchesSearch}
+      close={false}
+      aria-label="Command palette"
+      overlayClassName="command"
+      styles={{
+        overlay: css.overlay,
+        backdrop: css.backdrop,
+        root: css.panel,
+        content: css.content,
+      }}
     >
-      <CommandPaletteContent itemCount={commands.length} />
-    </Command>
+      <Command
+        className={css.palette}
+        open={isCommandPaletteOpen}
+        embedded
+        onOpenChange={setIsCommandPaletteOpen}
+        items={commands}
+        filter={matchesSearch}
+      >
+        <CommandPaletteContent itemCount={commands.length} />
+      </Command>
+    </Modal>
   );
 }

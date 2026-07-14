@@ -2,10 +2,9 @@
 import React from 'react';
 import { GenericContentGrid } from './content-grid';
 import { getLayoutConfig } from '../lib/layout-registry';
-import { getPreviewComponent } from '@/features/packages/lib/get-element-preview';
-import { usePurchaseModal } from './purchase-modal';
+import { getPreviewComponent } from '@/features/workshop/lib/get-element-preview';
+import { useWaitlistModal } from './waitlist-modal';
 import type { ElementMetadata } from '@ui-lab-core/library/catalog';
-import { getPackageById } from '@ui-lab-core/library/catalog';
 
 interface ElementsGridClientProps {
   elements: ElementMetadata[];
@@ -31,16 +30,13 @@ function buildLayoutConfigs(elements: ElementMetadata[]) {
 }
 
 function PremiumElementsGrid({ elements, packageId }: ElementsGridClientProps) {
-  const basePath = `/packages/${packageId}`;
-  const modalContext = usePurchaseModal();
+  const basePath = `/workshop/elements/${packageId}`;
+  const modalContext = useWaitlistModal();
   const previews = buildPreviews(elements);
   const layoutConfigs = buildLayoutConfigs(elements);
 
   const handleElementClick = () => {
-    const pkg = getPackageById(packageId!);
-    if (pkg) {
-      modalContext.openModal(pkg);
-    }
+    modalContext.openModal();
   };
 
   return (
@@ -49,13 +45,14 @@ function PremiumElementsGrid({ elements, packageId }: ElementsGridClientProps) {
       basePath={basePath}
       layoutConfigs={layoutConfigs}
       previews={previews}
+      previewKind="element"
       onItemClick={handleElementClick}
     />
   );
 }
 
 function FreeElementsGrid({ elements, packageId }: ElementsGridClientProps) {
-  const basePath = packageId ? `/packages/${packageId}` : '/packages';
+  const basePath = packageId ? `/workshop/elements/${packageId}` : '/workshop/elements';
   const previews = buildPreviews(elements);
   const layoutConfigs = buildLayoutConfigs(elements);
 
@@ -65,6 +62,7 @@ function FreeElementsGrid({ elements, packageId }: ElementsGridClientProps) {
       basePath={basePath}
       layoutConfigs={layoutConfigs}
       previews={previews}
+      previewKind="element"
     />
   );
 }

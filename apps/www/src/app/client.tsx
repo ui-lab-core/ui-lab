@@ -1,14 +1,12 @@
 'use client';
 
 import { useCallback, useEffect } from "react";
-import { ChatProvider, useChat } from "@/features/chat/context/chat-context";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { AppProvider, useApp } from "@/features/theme/lib/app-context";
 // import { PERF_OVERLAY_TOGGLE_EVENT, PerfOverlay } from "@/features/dev/components/perf-overlay";
 
 function KeyboardShortcuts() {
-  const { toggleChat } = useChat();
   const { isSettingsPanelOpen, setIsSettingsPanelOpen, currentThemeMode, currentThemeColors, setCurrentThemeMode, setCurrentThemeColors, setIsCommandPaletteOpen } = useApp();
   const { applyAndPersistModeAndColors } = useThemeStorage({
     onColorsChange: setCurrentThemeColors,
@@ -48,12 +46,6 @@ function KeyboardShortcuts() {
       const target = e.target as HTMLElement;
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
 
-      if (e.ctrlKey && e.key === "i") {
-        e.preventDefault();
-        toggleChat();
-        return;
-      }
-
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setIsCommandPaletteOpen(true);
@@ -84,7 +76,6 @@ function KeyboardShortcuts() {
     isSettingsPanelOpen,
     setIsCommandPaletteOpen,
     setIsSettingsPanelOpen,
-    toggleChat,
     toggleThemeMode,
   ]);
 
@@ -94,11 +85,9 @@ function KeyboardShortcuts() {
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
     <AppProvider>
-      <ChatProvider>
-        <KeyboardShortcuts />
-        {/* <PerfOverlay /> */}
-        {children}
-      </ChatProvider>
+      <KeyboardShortcuts />
+      {/* <PerfOverlay /> */}
+      {children}
     </AppProvider>
   );
 }

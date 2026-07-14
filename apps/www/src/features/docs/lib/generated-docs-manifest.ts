@@ -153,6 +153,11 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
+            "id": "add-long-form-typography",
+            "title": "Add long-form typography",
+            "level": 2
+          },
+          {
             "id": "using-a-custom-theme-instead",
             "title": "Using a custom theme instead",
             "level": 3

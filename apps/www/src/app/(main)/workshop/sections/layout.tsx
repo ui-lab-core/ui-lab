@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { generateMetadata } from "@/shared/lib/metadata";
 import { ContentSectionLayout } from "@/features/layout/components/content-section-layout";
 
-export const metadata = generateMetadata({ pathname: '/sections' });
+export const metadata = generateMetadata({ pathname: '/workshop/sections' });
 
 export default function SectionsLayout({
   sidebar,

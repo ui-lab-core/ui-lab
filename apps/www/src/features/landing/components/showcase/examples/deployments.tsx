@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment } from "react";
-import { List, Badge, Button } from "ui-lab-components";
-import { GitBranch, GitCommitHorizontal, RotateCcw } from "lucide-react";
+import { Fragment, useMemo, useState } from "react";
+import { List, Badge, Button, Group, Select, Divider } from "ui-lab-components";
+import { GitBranch, GitCommitHorizontal, RotateCcw, RefreshCw } from "lucide-react";
 import type { ShowcasePanelProps } from "./types";
 
 type Status = "ready" | "building" | "error";
@@ -30,21 +30,41 @@ const STATUS: Record<Status, { label: string; variant: string; dot: string }> = 
 };
 
 export function DeploymentList({ height }: ShowcasePanelProps) {
+  const [branch, setBranch] = useState("all");
+  const visible = useMemo(
+    () => DEPLOYMENTS.filter((deployment) => branch === "all" || deployment.branch === branch),
+    [branch],
+  );
+
   return (
     <div
       className="flex w-full flex-col overflow-hidden"
       style={{ height }}
     >
-      <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-foreground-100">Deployments</span>
-          <span className="text-sm text-foreground-400">acme/web</span>
-        </div>
-        <Badge>Production</Badge>
+      <div className="border-b border-background-700 p-2">
+        <Group className="h-10" spacing="sm">
+          <Group.Select selectedKey={branch} onSelectionChange={(key) => setBranch(String(key))}>
+            <Select.Trigger icon={{ prefix: <GitBranch size={13} /> }}>
+              {branch === "all" ? "All branches" : branch}
+            </Select.Trigger>
+            <Select.Content>
+              <Select.List>
+                <Select.Item value="all" textValue="All branches">All branches</Select.Item>
+                <Select.Item value="main" textValue="main">main</Select.Item>
+                <Select.Item value="feat/showcase" textValue="feat/showcase">feat/showcase</Select.Item>
+                <Select.Item value="chore/deps" textValue="chore/deps">chore/deps</Select.Item>
+              </Select.List>
+            </Select.Content>
+          </Group.Select>
+          <Divider orientation="vertical" />
+          <Badge>Production</Badge>
+          <Divider orientation="vertical" />
+          <Group.Button aria-label="Refresh deployments" icon={<RefreshCw size={13} />} />
+        </Group>
       </div>
 
-      <List items={DEPLOYMENTS} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
-        {DEPLOYMENTS.map((d, i) => {
+      <List items={visible} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
+        {visible.map((d, i) => {
           const status = STATUS[d.status];
           return (
             <Fragment key={d.id}>
@@ -68,7 +88,7 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
                   </Badge>
                 )}
               </List.Item>
-              {i < DEPLOYMENTS.length - 1 && <List.Divider spacing="none" />}
+              {i < visible.length - 1 && <List.Divider spacing="none" />}
             </Fragment>
           );
         })}

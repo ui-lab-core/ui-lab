@@ -10,5 +10,9 @@ export function getPreviewComponent(demoId: string): PreviewComponent | null {
 }
 
 export function getCardPreviewComponent(sectionId: string): PreviewComponent | null {
-  return (getElementPreview('sections', sectionId) as PreviewComponent) || null;
+  // Gallery cards intentionally avoid mounting full section JSX. Add a
+  // purpose-built minimal preview here when a section needs more than the
+  // shared gallery icon; live previews still use getPreviewComponent above.
+  void sectionId;
+  return null;
 }

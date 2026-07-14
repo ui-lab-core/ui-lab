@@ -1,0 +1,57 @@
+.overlay {
+  align-items: flex-start;
+  overflow: hidden;
+  padding-top: 20vh;
+  z-index: 999;
+}
+
+.overlay .backdrop {
+  background-color: var(--overlay);
+}
+
+.overlay[data-state="entering"] .backdrop,
+.overlay[data-state="entered"] .backdrop,
+.overlay[data-state="exiting"] .backdrop {
+  backdrop-filter: var(--overlay-backdrop);
+}
+
+.overlay .panel {
+  max-width: 28rem;
+  margin: 0.5rem 1rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transition: none;
+  transform: none;
+}
+
+.overlay[data-state="entering"] .panel,
+.overlay[data-state="entered"] .panel {
+  opacity: 1;
+}
+
+.overlay[data-state="exiting"] .panel {
+  opacity: 0;
+}
+
+.content {
+  overflow: visible;
+}
+
+.palette {
+  display: grid;
+  min-width: 0;
+  height: min(32rem, 70dvh);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.list {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.list > * {
+  height: 100%;
+  max-height: none !important;
+}

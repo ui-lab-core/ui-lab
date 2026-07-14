@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment, useState } from "react";
-import { List, Badge, Button } from "ui-lab-components";
-import { KeyRound, Copy, Check, Plus } from "lucide-react";
+import { Fragment, useMemo, useState } from "react";
+import { List, Badge, Button, Group, Select, Divider } from "ui-lab-components";
+import { Copy, Check, Plus, Search } from "lucide-react";
 import type { ShowcasePanelProps } from "./types";
 
 interface ApiKey {
@@ -24,6 +24,13 @@ function mask(token: string) {
 
 export function ApiKeysPanel({ height }: ShowcasePanelProps) {
   const [copied, setCopied] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [environment, setEnvironment] = useState("all");
+  const visible = useMemo(() => KEYS.filter((key) => {
+    const matchesQuery = key.name.toLowerCase().includes(query.toLowerCase());
+    const matchesEnvironment = environment === "all" || key.env === environment;
+    return matchesQuery && matchesEnvironment;
+  }), [environment, query]);
 
   function copy(key: ApiKey) {
     navigator.clipboard?.writeText(key.token);
@@ -36,19 +43,35 @@ export function ApiKeysPanel({ height }: ShowcasePanelProps) {
       className="flex w-full flex-col overflow-hidden"
       style={{ height }}
     >
-      <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <KeyRound size={18} className="text-foreground-300" />
-          <div>
-            <div className="text-sm font-semibold text-foreground-100">API Keys</div>
-            <div className="text-sm text-foreground-400 mt-0.5">Authenticate requests to the API.</div>
-          </div>
-        </div>
-        <Button size="sm" variant="ghost" icon={{ left: <Plus size={12} /> }}>New key</Button>
+      <div className="border-b border-background-700 p-2">
+        <Group className="h-10" spacing="sm">
+          <Group.Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Filter credentials..."
+            icon={<Search size={14} />}
+            className="min-w-0 flex-1"
+          />
+          <Divider orientation="vertical" />
+          <Group.Select selectedKey={environment} onSelectionChange={(key) => setEnvironment(String(key))} className="min-w-32 w-fit">
+            <Select.Trigger variant="ghost">
+              {environment === "all" ? "All environments" : environment}
+            </Select.Trigger>
+            <Select.Content>
+              <Select.List>
+                <Select.Item value="all" textValue="All environments">All environments</Select.Item>
+                <Select.Item value="Production" textValue="Production">Production</Select.Item>
+                <Select.Item value="Development" textValue="Development">Development</Select.Item>
+              </Select.List>
+            </Select.Content>
+          </Group.Select>
+          <Divider orientation="vertical" />
+          <Group.Button aria-label="Create credential" icon={<Plus size={13} />} />
+        </Group>
       </div>
 
-      <List items={KEYS} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
-        {KEYS.map((key, i) => (
+      <List items={visible} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
+        {visible.map((key, i) => (
           <Fragment key={key.id}>
             <List.Item value={key.id} className="px-4 py-3">
               <div className="flex-1 min-w-0">
@@ -69,7 +92,7 @@ export function ApiKeysPanel({ height }: ShowcasePanelProps) {
                 icon={copied === key.id ? <Check size={13} className="text-success-500" /> : <Copy size={13} />}
               />
             </List.Item>
-            {i < KEYS.length - 1 && <List.Divider spacing="none" />}
+            {i < visible.length - 1 && <List.Divider spacing="none" />}
           </Fragment>
         ))}
       </List>

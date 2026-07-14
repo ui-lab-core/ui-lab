@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Badge } from "ui-lab-components";
-import { CalendarDays, Clock, Video } from "lucide-react";
+import { Clock, Video } from "lucide-react";
 import type { ShowcasePanelProps } from "./types";
 
 const DAYS = [
@@ -27,10 +27,12 @@ export function EventScheduler({ height }: ShowcasePanelProps) {
     >
       <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <CalendarDays size={18} className="text-foreground-300" />
-          <div>
-            <div className="text-sm font-semibold text-foreground-100">Book a demo</div>
-            <div className="text-sm text-foreground-400 mt-0.5">30 min · Google Meet</div>
+          <div className="flex size-9 items-center justify-center rounded-full bg-accent-700 text-xs font-semibold text-accent-100">
+            AM
+          </div>
+          <div className="min-w-0">
+            <div className="truncate text-sm font-medium text-foreground-100">Avery Morgan</div>
+            <div className="mt-0.5 text-sm text-foreground-400">30 min · Google Meet</div>
           </div>
         </div>
         <Badge icon={<Video size={11} />}>Remote</Badge>

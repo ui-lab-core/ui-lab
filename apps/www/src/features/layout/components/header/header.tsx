@@ -14,7 +14,6 @@ import { Logo } from "@/features/layout/components/logo";
 import { Input, Divider, Tabs, Button, Tooltip } from "ui-lab-components";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
-import { useChat } from "@/features/chat/context/chat-context";
 import { cn } from "@/shared/lib/utils";
 import {
   FaBars,
@@ -23,7 +22,6 @@ import {
 } from "@/shared/icons/fa6";
 import { LuSearch } from "@/shared/icons/lu";
 import { HiX } from "@/shared/icons/hi";
-import { HiMiniSparkles } from "@/shared/icons/hi2";
 import { PanelRight } from "lucide-react";
 import { getTabGroupForPathname, getActiveTabForPathname, shouldApplyRevealCollapse, type TabConfig } from "@/features/layout/lib/route-config";
 import { MobileMenu } from "./mobile-menu";
@@ -47,15 +45,16 @@ TabItem.displayName = "TabItem";
 
 interface HeaderProps {
   pathname: string;
+  showNavigation?: boolean;
 }
 
 export default function Header({
   pathname,
+  showNavigation = false,
 }: HeaderProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
-  const { toggleChat, isOpen: isChatOpen } = useChat();
   const { toggleSidebar } = useSidebarToggle();
   const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
   const isLandingPage = pathname === "/";
@@ -71,6 +70,7 @@ export default function Header({
   const isConfigRoute = pathname === "/config" || pathname.startsWith("/config/");
   const tabGroup = useMemo(() => getTabGroupForPathname(pathname), [pathname]);
   const activeTabId = useMemo(() => getActiveTabForPathname(pathname), [pathname]);
+  const showPrimaryNavigation = isLandingPage || (showNavigation && !tabGroup);
 
   const homeNavTabs = useMemo(() => navigationData
     .filter((item) => item.name !== "tools")
@@ -78,11 +78,11 @@ export default function Header({
       id: item.name,
       label: item.label,
       icon: item.icon,
-      path: item.name === "documentation" ? "/docs" : item.name === "elements" ? "/packages" : "/components",
+      path: item.name === "documentation" ? "/docs" : item.name === "workshop" ? "/workshop/elements" : "/components",
       isPlaceholder: false,
     })), []);
 
-  const activeHomeTab = pathname === "/docs" ? "documentation" : pathname === "/packages" ? "elements" : pathname === "/components" ? "components" : undefined;
+  const activeHomeTab = pathname === "/docs" ? "documentation" : pathname === "/workshop/elements" ? "workshop" : pathname === "/components" ? "components" : undefined;
   const handleTabsNavigation = (tabs: TabConfig[]) => (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement | null;
     const trigger = target?.closest("[data-tabs-value]");
@@ -101,7 +101,7 @@ export default function Header({
           className={cn(
             "relative h-full flex items-center justify-between px-3 w-full overflow-hidden transition-[margin] duration-300",
             isConfigRoute ? "max-w-none" : "max-w-(--page-width)",
-            isChatOpen ? "mx-auto lg:ml-0 lg:mr-[28vw] xl:mr-[22vw] 2xl:mr-[18vw]" : "mx-auto",
+            "mx-auto",
           )}
         >
 
@@ -122,7 +122,7 @@ export default function Header({
             </button>
 
             <div className="pt-3 ">
-              {pathname === "/" && homeNavTabs && (
+              {showPrimaryNavigation && (
                 <Tabs className="hidden ml-8 lg:block" value={activeHomeTab || ""} variant="underline">
                   <div onClickCapture={handleTabsNavigation(homeNavTabs)}>
                     <Tabs.List>
@@ -162,19 +162,6 @@ export default function Header({
               ) : null}
             </div>
 
-            {/* AI Chat: This comes later */}
-            <div className="hidden ml-2">
-              <Tooltip showArrow content="Open Chat Panel" position="bottom" hint="ctrl-i">
-                <Button
-                  variant="ghost"
-                  className="p-2"
-                  styles={[isChatOpen ? "text-accent-500" : "text-foreground-300"]}
-                  icon={{ left: <HiMiniSparkles size={15} /> }}
-                  onClick={toggleChat}
-                  aria-label="Toggle AI chat"
-                />
-              </Tooltip>
-            </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -202,7 +189,7 @@ export default function Header({
                 variant="ghost"
                 aria-label="GitHub repository"
                 target="_blank"
-                href="https://github.com/kyza0d/ui-lab.app"
+                href="https://github.com/ui-lab-core/ui-lab"
                 className="hover:text-foreground-300 transition-colors text-foreground-300 p-2"
                 size="sm"
                 >
@@ -216,7 +203,7 @@ export default function Header({
                 variant="ghost"
                 aria-label="GitHub repository"
                 target="_blank"
-                href="https://github.com/kyza0d/ui-lab.app"
+                href="https://github.com/ui-lab-core/ui-lab"
                 icon={<FaGithub size={16} />}
                 className="p-2"
                 size="icon"
@@ -243,8 +230,13 @@ export default function Header({
         </div>
       </header>
 
-      {featureFlags.commandPalette && isCommandPaletteOpen ? <CommandPalette /> : null}
-      <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} pathname={pathname} />
+      {featureFlags.commandPalette ? <CommandPalette /> : null}
+      <MobileMenu
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        pathname={pathname}
+        showNavigation={showNavigation}
+      />
     </>
   );
 }

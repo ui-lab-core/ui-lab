@@ -15,8 +15,8 @@ import {
 } from '@/app/lib/sidebar-config';
 import { getSectionsForNav, getHrefForNavItem, isNavItemActive } from '@/features/navigation/lib/sidebar-sections';
 import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation-context';
-import { getActiveElementsNavFromPathname } from '@/features/packages/lib/sidebar-sections';
-import { ElementsList } from '@/features/packages/components/sidebar-content';
+import { getActiveElementsNavFromPathname } from '@/features/workshop/lib/sidebar-sections';
+import { ElementsList } from '@/features/workshop/components/sidebar-content';
 import { RiExpandUpDownFill } from "@/shared/icons/ri";
 
 type FrameworkOption = {

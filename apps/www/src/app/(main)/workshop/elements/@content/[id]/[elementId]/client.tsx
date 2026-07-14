@@ -3,8 +3,8 @@
 import { useState, useMemo } from "react";
 import type { ElementFile } from "@ui-lab-core/library/catalog";
 import { getElementById } from "@ui-lab-core/library/catalog";
-import { ElementPreviewContent } from "@/features/packages";
-import { getDemoComponent, getElementSourceCode } from "@/features/packages";
+import { ElementPreviewContent } from "@/features/workshop";
+import { getDemoComponent, getElementSourceCode } from "@/features/workshop";
 import { PreviewDeviceVariant } from "@/features/preview";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 

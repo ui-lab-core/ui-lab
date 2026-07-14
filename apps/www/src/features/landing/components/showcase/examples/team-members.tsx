@@ -1,8 +1,8 @@
 "use client";
 
 import { Fragment, useMemo, useReducer } from "react";
-import { List, Group, Select, Badge, Divider, Button } from "ui-lab-components";
-import { FaEnvelope, FaMagnifyingGlass, FaGear, FaUsers, FaArrowTurnUp } from "@/shared/icons/fa6";
+import { List, Group, Select, Badge, Divider, Button, Tabs } from "ui-lab-components";
+import { FaEnvelope, FaMagnifyingGlass, FaGear, FaArrowTurnUp } from "@/shared/icons/fa6";
 import type { ShowcasePanelProps } from "./types";
 
 interface Member {
@@ -85,15 +85,13 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
       style={{ height }}
     >
 
-      {/* Header */}
-      <div className="px-4 pt-3.5 pb-3 border-b border-background-700 flex justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-background-800 text-foreground-300">
-            <FaUsers size={19} />
-          </div>
-          <span className="text-sm font-semibold text-foreground-100">Team Members</span>
-          <span className="text-sm text-foreground-500">{members.length} members</span>
-        </div>
+      <div className="border-b border-background-700 px-3 py-2">
+        <Tabs default="members" className="w-fit">
+          <Tabs.List aria-label="People">
+            <Tabs.Trigger value="members">Members {members.length}</Tabs.Trigger>
+            <Tabs.Trigger value="invites">Invites 1</Tabs.Trigger>
+          </Tabs.List>
+        </Tabs>
       </div>
 
       {/* Search/filter toolbar */}
@@ -110,7 +108,6 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
           <Group.Select
             selectedKey={roleFilter}
             onSelectionChange={(key) => dispatch({ type: 'SET_ROLE_FILTER', value: String(key) })}
-            className="flex-none"
           >
             <Select.Trigger className="bg-background-900">
               {roleFilter === "all" ? "All Roles" : roleFilter}
@@ -202,7 +199,6 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
           <Group.Select
             selectedKey={inviteRole}
             onSelectionChange={(key) => dispatch({ type: 'SET_INVITE_ROLE', value: String(key) })}
-            className="w-[110px] flex-none"
           >
             <Select.Trigger variant="ghost">
               {inviteRole}

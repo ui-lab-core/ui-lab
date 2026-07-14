@@ -54,10 +54,10 @@ const SidebarItemLink = memo(function SidebarItemLink({
 });
 
 const LANDING_NAV_ITEMS = [
-  { id: 'release-notes', label: 'Changelog', href: '/changelog', icon: FaTags },
   { id: 'docs', label: 'Getting Started', href: '/docs', icon: FaBook },
   { id: 'design-system', label: 'Design System', href: '/design-system', icon: FaSwatchbook },
   { id: 'community', label: 'Community', href: '/community', icon: FaUsers },
+  { id: 'release-notes', label: 'Changelog', href: '/changelog', icon: FaTags },
 ];
 
 const QUICK_LINKS = [

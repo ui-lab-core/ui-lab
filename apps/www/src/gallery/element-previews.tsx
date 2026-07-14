@@ -80,34 +80,46 @@ export const elementPreviews: Record<string, React.ComponentType<object>> = {
   ),
 
   carousel: () => (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="p-2 bg-background-900 rounded-sm border border-background-700">
-        {/* Carousel placeholder preview */}
+    <div className="flex w-full items-center gap-2 p-4">
+      <div className="size-7 shrink-0 rounded-md border border-background-700 bg-background-800" />
+      <div className="h-16 flex-1 rounded-md border border-background-700 bg-background-900 p-2">
+        <div className="h-full rounded bg-background-800" />
       </div>
+      <div className="size-7 shrink-0 rounded-md border border-background-700 bg-background-800" />
     </div>
   ),
 
   timeline: () => (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="p-2 bg-background-900 rounded-sm border border-background-700">
-        {/* Timeline placeholder preview */}
-      </div>
+    <div className="flex w-full flex-col gap-3 p-4">
+      {[0, 1, 2].map((item) => (
+        <div key={item} className="flex items-center gap-3">
+          <div className="size-3 rounded-full border border-accent-700 bg-accent-900" />
+          <div className="h-2 flex-1 rounded bg-background-700" />
+          <div className="h-2 w-12 rounded bg-background-800" />
+        </div>
+      ))}
     </div>
   ),
 
   rating: () => (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="p-2 bg-background-900 rounded-sm border border-background-700">
-        {/* Rating placeholder preview */}
+    <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+      <div className="flex gap-2">
+        {[0, 1, 2, 3, 4].map((item) => (
+          <div key={item} className={`size-5 rotate-45 rounded-sm ${item < 4 ? 'bg-accent-800' : 'bg-background-700'}`} />
+        ))}
       </div>
+      <div className="h-2 w-24 rounded bg-background-800" />
     </div>
   ),
 
   "tree-view": () => (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="p-2 bg-background-900 rounded-sm border border-background-700">
-        {/* TreeView placeholder preview */}
-      </div>
+    <div className="flex w-full flex-col gap-3 p-4">
+      {[0, 1, 2].map((item) => (
+        <div key={item} className="flex items-center gap-2" style={{ paddingLeft: `${item * 16}px` }}>
+          <div className="size-3 rounded-sm border border-background-600 bg-background-800" />
+          <div className={`h-2 rounded bg-background-700 ${item === 1 ? 'w-3/5' : 'w-4/5'}`} />
+        </div>
+      ))}
     </div>
   ),
 

@@ -16,17 +16,17 @@ function HeroSection() {
     <>
       <div className="z-10 mt-12 sm:mt-0 w-full overflow-hidden">
         <div
-          className="grid-paper relative mx-auto flex h-full w-full max-w-(--page-width) flex-col justify-between overflow-hidden md:justify-center">
+          className="grid-paper relative flex items-center h-full w-full max-w-(--page-width) flex-col justify-between overflow-hidden md:justify-center">
 
-          <div className="flex items-center text-left flex-col pt-8 md:pt-0">
-            <div>
-              <h1 className="isolate mb-2 text-header-3xl max-w-[26ch] sm:max-w-[28ch] text-foreground-200">
+          <div className="flex h-full justify-center items-center flex-col px-12 pt-8 md:pt-0">
+            <div className="flex items-start justify-center flex-col w-fit">
+              <h1 className="text-balance isolate mb-2 text-header-4xl text-foreground-200">
                 Great products need <span className="text-foreground-400">great interfaces.</span>
               </h1>
-              <p className="text-foreground-400 w-full sm:w-[59ch] max-w-[59ch]">
+              <h2 className="font-medium w-fit text-foreground-400">
                 Your agent's favorite UI Library.
-              </p>
-              <div className="flex gap-4 mt-6 mb-6 md:mt-8 md:mb-0">
+              </h2>
+              <div className="flex w-fit gap-4 mt-6 mb-6 md:mt-8 md:mb-0">
                 <Button styles="px-8" size="sm" variant="primary" href="/docs" >
                   Get Started
                 </Button>
@@ -35,37 +35,11 @@ function HeroSection() {
                 </Anchor>
               </div>
             </div>
-
           </div>
-          <div className="flex flex-col-reverse sm:flex-row gap-4 sm:gap-6 w-full md:absolute md:bottom-0 md:left-0">
-            <div className="hidden p-3  text-foreground-400 flex gap-4 sm:gap-0 sm:space-x-[28px] w-full">
-              <span className="flex items-center gap-3 text-sm">
-                <FaPaintbrush className="w-3.5 h-3.5" /> Customization
-              </span>
-              <span className="flex items-center gap-3 text-sm">
-                <FaEye className="w-3.5 h-3.5" /> Accessible
-              </span>
-              <span className="flex items-center gap-3 text-sm">
-                <FaBrain className="w-3.5 h-3.5" /> LLM Enabled
-              </span>
-            </div>
 
-            <div className="hidden flex gap-2 ml-6">
-              <span className="flex h-[32px] font-medium items-center overflow-hidden gap-[9px] border border-background-700 rounded-[8px] text-foreground-300 text-sm pl-[3px]">
-                <div className="flex p-1.5 text-foreground-400 rounded-[5px] border-background-700">
-                  <FaRocket size={13} />
-                </div>
-                <span className="text-sm font-semibold">UI Lab Launches!</span>
-                <span className="bg-background-800/50 flex items-center gap-3 border-l border-background-700 h-full text-sm font-smeibold px-3">
-                  View Details <FaArrowRightLong className="text-foreground-400" />
-                </span>
-              </span>
-            </div>
-
-            <p className="ml-auto text-xs max-w-[41ch] text-foreground-400 md:mb-[14px]">
-              "User Interface" (UI) is the space where interactions between humans and machines occur.
-            </p>
-          </div>
+          <p className="absolute bottom-0 right-0 text-xs max-w-[41ch] text-foreground-400 md:mb-[14px]">
+            "User Interface" (UI) is the space where interactions between humans and machines occur.
+          </p>
 
           <div
             className="-z-1 pointer-events-none absolute inset-x-0 top-0 h-50"

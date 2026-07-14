@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Switch, Select, Divider } from "ui-lab-components";
-import { Bell, AtSign, GitPullRequest, Rocket } from "lucide-react";
+import { BellOff, AtSign, GitPullRequest, Rocket } from "lucide-react";
 import type { ShowcasePanelProps } from "./types";
 
 const CHANNELS = [
@@ -16,6 +16,7 @@ export function NotificationSettings({ height }: ShowcasePanelProps) {
     () => new Set(CHANNELS.filter((c) => c.initiallyOn).map((c) => c.id))
   );
   const [digest, setDigest] = useState<string | number | null>("daily");
+  const [paused, setPaused] = useState(false);
 
   function toggle(id: string, on: boolean) {
     setEnabled((prev) => {
@@ -31,14 +32,15 @@ export function NotificationSettings({ height }: ShowcasePanelProps) {
       className="flex w-full flex-col overflow-hidden"
       style={{ height }}
     >
-      <div className="flex items-center gap-3 px-4 pt-3.5 pb-3 border-b border-background-700">
+      <div className="flex items-center justify-between gap-3 border-b border-background-700 px-4 py-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-background-800 text-foreground-300">
-          <Bell size={19} />
+          <BellOff size={19} />
         </div>
-        <div>
-          <div className="text-sm font-semibold text-foreground-100">Notifications</div>
-          <div className="text-sm text-foreground-400 mt-0.5">Choose what reaches you.</div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm text-foreground-100">Pause until tomorrow</div>
+          <div className="mt-0.5 truncate text-sm text-foreground-400">Mute push and email alerts</div>
         </div>
+        <Switch state={{ checked: paused }} onChange={setPaused} aria-label="Pause notifications until tomorrow" />
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -70,7 +72,7 @@ export function NotificationSettings({ height }: ShowcasePanelProps) {
           <div className="text-sm text-foreground-100">Email digest</div>
           <div className="text-sm text-foreground-400">Summary of unread activity</div>
         </div>
-        <Select selectedKey={digest} onSelectionChange={setDigest} className="w-28 flex-none">
+        <Select selectedKey={digest} onSelectionChange={setDigest} className="flex-none">
           <Select.Trigger variant="ghost">
             {digest === "off" ? "Off" : digest === "daily" ? "Daily" : "Weekly"}
           </Select.Trigger>

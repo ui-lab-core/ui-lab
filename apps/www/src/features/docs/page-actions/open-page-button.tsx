@@ -11,7 +11,7 @@ export function OpenPage({ componentId }: { componentId?: string }) {
 
   const githubUrl = componentId
     ? sourceUrls[componentId]
-    : `https://github.com/kyza0d/ui-lab.app/blob/master/apps/site/content${pathname}.mdx`;
+    : `https://github.com/ui-lab-core/ui-lab/blob/master/apps/site/content${pathname}.mdx`;
 
   const prompt = encodeURIComponent(`Read this and help me understand it: ${githubUrl}`);
 

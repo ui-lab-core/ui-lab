@@ -138,7 +138,7 @@ function ElementsListContent({
       <div className="space-y-1 pt-2">
         {packages.map((pkg) => {
           const pkgElements = getElementsInPackage(pkg.id).map(id => elementRegistry[id]).filter(Boolean);
-          const href = `/packages/${pkg.id}`;
+          const href = `/workshop/elements/${pkg.id}`;
 
           if (pkgElements.length === 0) {
             return <NavLink key={pkg.id} href={href} isActive={currentPackageId === pkg.id}>{pkg.name}</NavLink>;
@@ -155,7 +155,7 @@ function ElementsListContent({
                 {pkgElements.map((element) => (
                   <SidebarItemLink
                     key={element.id}
-                    href={`/packages/${pkg.id}/${element.id}`}
+                    href={`/workshop/elements/${pkg.id}/${element.id}`}
                     className={cn(
                       'block last:mb-6 px-2 py-2 font-medium text-xs rounded-sm cursor-pointer transition-colors',
                       currentElementId === element.id
@@ -187,7 +187,7 @@ function ElementsListContent({
       <div className="space-y-1">
         {packageElements.map((element) => {
           const isActive = currentElementId === element.id;
-          const href = `/packages/${currentPackageId}/${element.id}`;
+          const href = `/workshop/elements/${currentPackageId}/${element.id}`;
 
           if (element.variants.length === 0) {
             return <NavLink key={element.id} href={href} isActive={isActive}>{element.name}</NavLink>;
@@ -237,7 +237,7 @@ function ElementsListContent({
     return (
       <div className="space-y-1">
         {sortedStarters.map((starter) => (
-          <NavLink key={starter.id} href={`/starters/${starter.id}`} isActive={currentItemId === starter.id}>
+          <NavLink key={starter.id} href={`/workshop/starters/${starter.id}`} isActive={currentItemId === starter.id}>
             {starter.name}
           </NavLink>
         ))}
@@ -257,7 +257,7 @@ function ElementsListContent({
               <p className="mb-1 text-xs font-semibold text-foreground-200 capitalize">{category}</p>
               <div className="space-y-0.5">
                 {patterns.map((pattern) => {
-                  const href = `/patterns/${pattern.id}`;
+                  const href = `/workshop/patterns/${pattern.id}`;
 
                   if (!pattern.variations || pattern.variations.length === 0) {
                     return (
@@ -306,7 +306,7 @@ function ElementsListContent({
     return (
       <div className="space-y-1">
         {sortedSections.map((section) => {
-          const href = `/sections/${section.id}`;
+          const href = `/workshop/sections/${section.id}`;
 
           if (section.variants.length === 0) {
             return <NavLink key={section.id} href={href} isActive={currentItemId === section.id}>{section.name}</NavLink>;

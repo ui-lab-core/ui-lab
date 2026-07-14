@@ -11,7 +11,6 @@ import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
 import { FaFlask, FaGithub } from "@/shared/icons/fa6";
 import { Footer } from "@/features/layout/components/footer";
-import { useChat } from "@/features/chat/context/chat-context";
 
 const ReactAriaSvg = () => (
   <svg
@@ -37,7 +36,6 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
   description: string;
   experimental: boolean;
 }) {
-  const { isOpen: isChatOpen } = useChat();
   const component = useMemo(() => getComponentById(componentId), [componentId]);
   const examples = component?.examples ?? [];
 
@@ -87,7 +85,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
 
   if (!name) {
     return (
-      <div className={cn("grid grid-cols-1", isChatOpen ? "md:grid-cols-1" : "md:grid-cols-[4fr_1fr]")}>
+      <div className="grid grid-cols-1 md:grid-cols-[4fr_1fr]">
         <div className={cn("flex flex-col justify-center mt-(--header-height)")}>
           <div className="flex items-center">
             <div className="pt-12 mx-auto max-w-3xl pb-12">
@@ -102,7 +100,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
   }
 
   return (
-    <div className={cn("grid grid-cols-1", isChatOpen ? "md:grid-cols-1" : "md:grid-cols-[4fr_1fr]")}>
+    <div className="grid grid-cols-1 md:grid-cols-[4fr_1fr]">
       <div className="py-12 px-4 md:px-6 mx-auto max-w-(--content-width) w-full min-w-0">
         <Toaster />
         <div>
@@ -176,19 +174,17 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
         </div>
         <Footer />
       </div>
-      {!isChatOpen && (
-        <div className="sticky px-4 top-(--header-height) grid h-[calc(100vh-var(--header-height))] grid-rows-[minmax(0,1fr)_auto]">
-          <TableOfContents items={tocItems} mode="static" className="min-h-0" />
-          <Group
-            orientation="vertical"
-            spacing="none"
-            className="mb-4 w-full shrink-0 overflow-hidden"
-          >
-            <OpenPage componentId={componentId} />
-            <CopyComponentPage componentId={componentId} component={component} grouped />
-          </Group>
-        </div>
-      )}
+      <div className="sticky px-4 top-(--header-height) grid h-[calc(100vh-var(--header-height))] grid-rows-[minmax(0,1fr)_auto]">
+        <TableOfContents items={tocItems} mode="static" className="min-h-0" />
+        <Group
+          orientation="vertical"
+          spacing="none"
+          className="mb-4 w-full shrink-0 overflow-hidden"
+        >
+          <OpenPage componentId={componentId} />
+          <CopyComponentPage componentId={componentId} component={component} grouped />
+        </Group>
+      </div>
     </div>
   );
 }

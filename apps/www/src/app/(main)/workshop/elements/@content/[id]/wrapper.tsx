@@ -1,6 +1,6 @@
 "use client";
 
-import { PurchaseModalClient } from '@/features/packages';
+import { WaitlistModalClient } from '@/features/workshop';
 import PackageElementsClient from './client';
 
 interface PackageElementsClientWrapperProps {
@@ -11,8 +11,8 @@ interface PackageElementsClientWrapperProps {
 
 export default function PackageElementsClientWrapper({ packageId, elementIds, isPremium }: PackageElementsClientWrapperProps) {
   return (
-    <PurchaseModalClient type="element">
+    <WaitlistModalClient>
       <PackageElementsClient packageId={packageId} elementIds={elementIds} isPremium={isPremium} />
-    </PurchaseModalClient>
+    </WaitlistModalClient>
   );
 }

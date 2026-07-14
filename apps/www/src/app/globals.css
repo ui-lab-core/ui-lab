@@ -5,6 +5,7 @@
 @import "./theme.css";
 
 @import "ui-lab-components/styles.css";
+@import "ui-lab-components/typography.css";
 @import "ui-lab-theme-onyx";
 
 /* Self-hosted Karla (body/header + LCP text), served from a stable public URL

@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Gallery } from 'ui-lab-components';
+import { Blocks, LayoutPanelTop, Puzzle, Rocket } from 'lucide-react';
 import { PreviewContainer } from '@/features/preview/components/preview-container';
 import { PricingBadge } from '@/features/landing/components/pricing-badge';
 import type { LayoutConfig, PricingInfo } from '@ui-lab-core/library/catalog';
@@ -12,6 +13,8 @@ interface ContentItem {
   pricing?: PricingInfo;
 }
 
+type PreviewKind = 'element' | 'package' | 'pattern' | 'section' | 'starter';
+
 interface GenericContentGridProps<T extends ContentItem> {
   items: T[];
   basePath: string;
@@ -22,6 +25,27 @@ interface GenericContentGridProps<T extends ContentItem> {
   categoryLabels?: Record<string, string>;
   fullWidth?: boolean;
   hideGroupHeaders?: boolean;
+  previewKind?: PreviewKind;
+}
+
+const previewIcons = {
+  element: Blocks,
+  package: Blocks,
+  pattern: Puzzle,
+  section: LayoutPanelTop,
+  starter: Rocket,
+} as const;
+
+function FallbackPreview({ kind }: { kind: PreviewKind }) {
+  const Icon = previewIcons[kind];
+
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="flex size-16 items-center justify-center rounded-xl border border-background-700 bg-background-900">
+        <Icon className="size-7 text-foreground-400" aria-hidden="true" />
+      </div>
+    </div>
+  );
 }
 
 export function GenericContentGrid<T extends ContentItem>({
@@ -34,6 +58,7 @@ export function GenericContentGrid<T extends ContentItem>({
   categoryLabels,
   fullWidth = false,
   hideGroupHeaders = false,
+  previewKind = 'element',
 }: GenericContentGridProps<T>) {
   const router = useRouter();
 
@@ -47,9 +72,8 @@ export function GenericContentGrid<T extends ContentItem>({
 
   const renderItem = (item: T) => {
     const layoutConfig = layoutConfigs[item.id];
-    const preview = previews[item.id] ?? null;
+    const preview = previews[item.id] ?? <FallbackPreview kind={previewKind} />;
     const href = `${basePath}/${item.id}`;
-    const isPlaceholder = !preview;
 
     const handlePress = (passedHref?: string) => {
       if (onItemClick) {
@@ -61,21 +85,19 @@ export function GenericContentGrid<T extends ContentItem>({
       router.push(passedHref || href);
     };
 
-    const isNonClickable = isPlaceholder && !onItemClick;
     const columnSpan = fullWidth ? 1 : Math.min(layoutConfig.columnSpan || 1, 3);
 
     return (
       <Gallery.Item
         key={item.id}
-        href={isNonClickable ? undefined : (onItemClick ? undefined : href)}
-        onPress={isNonClickable ? undefined : handlePress}
+        href={onItemClick ? undefined : href}
+        onPress={handlePress}
         columnSpan={columnSpan}
         rowSpan={layoutConfig.rowSpan}
-        className={`relative overflow-hidden ${isNonClickable ? 'pointer-events-none' : ''}`}
-        {...(isNonClickable && { tabIndex: -1 })}
+        className="relative overflow-hidden"
       >
         <PreviewContainer layoutConfig={layoutConfig}>
-          {preview ?? <div className="text-foreground-400">Preview</div>}
+          {preview}
         </PreviewContainer>
         <Gallery.Body className="p-3 w-full">
           <div className="flex flex-col gap-2">

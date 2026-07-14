@@ -19,7 +19,7 @@ export async function generateMetadata({
   const pkg = getPackageById(id);
 
   return buildMetadata({
-    pathname: `/packages/${id}`,
+    pathname: `/workshop/elements/${id}`,
     title: pkg?.name ?? 'Package',
     description: pkg?.description ?? 'Explore package contents and included elements.',
   });

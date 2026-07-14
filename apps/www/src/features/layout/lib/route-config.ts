@@ -73,7 +73,7 @@ const TAB_GROUPS: Record<string, TabGroup> = {
     tabs: [
       { id: 'docs', label: 'Documentation', icon: FaBook, path: '/docs' },
       { id: 'components', label: 'Components', icon: FaShapes, path: '/components' },
-      { id: 'packages', label: 'Elements', icon: FaCube, path: '/packages' },
+      { id: 'workshop', label: 'Workshop', icon: FaCube, path: '/workshop' },
     ],
   },
 };
@@ -82,11 +82,8 @@ const ROUTE_TAB_GROUPS: RouteTabGroupConfig[] = [
   { path: '/docs', tabGroupId: 'documentation' },
   { path: '/components', tabGroupId: 'documentation' },
   { path: '/design-system', tabGroupId: 'documentation' },
-  { path: '/packages', tabGroupId: 'documentation' },
-  { path: '/sections', tabGroupId: 'documentation' },
+  { path: '/workshop', tabGroupId: 'documentation' },
   { path: '/blocks', tabGroupId: 'documentation' },
-  { path: '/starters', tabGroupId: 'documentation' },
-  { path: '/patterns', tabGroupId: 'documentation' },
   { path: '/changelog', tabGroupId: 'documentation' },
 ];
 
@@ -109,15 +106,15 @@ const ROUTES: Record<string, RouteConfig> = {
     domainId: 'docs',
   },
   packages: {
-    path: '/packages',
+    path: '/workshop/elements',
     domainId: 'packages',
   },
   sections: {
-    path: '/sections',
+    path: '/workshop/sections',
     domainId: 'sections',
   },
   patterns: {
-    path: '/patterns',
+    path: '/workshop/patterns',
     domainId: 'patterns',
   },
   blocks: {
@@ -125,7 +122,7 @@ const ROUTES: Record<string, RouteConfig> = {
     domainId: 'packages',
   },
   starters: {
-    path: '/starters',
+    path: '/workshop/starters',
     domainId: 'starters',
   },
   changelog: {
@@ -157,10 +154,8 @@ export const getTabGroupForPathname = (pathname: string): TabGroup | undefined =
 
 const ACTIVE_TAB_OVERRIDES: Record<string, string | undefined> = {
   '/design-system': 'docs',
-  '/sections': 'packages',
-  '/patterns': 'packages',
-  '/blocks': 'packages',
-  '/starters': 'packages',
+  '/workshop': 'workshop',
+  '/blocks': 'workshop',
   '/changelog': 'docs',
 };
 

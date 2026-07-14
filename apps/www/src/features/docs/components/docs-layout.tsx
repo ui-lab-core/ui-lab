@@ -1,7 +1,6 @@
 import { Sidebar } from "@/features/layout/components/sidebar";
 import { TableOfContents, type TableOfContentsItem } from "./table-of-contents";
 import { CopyPage, OpenPage } from "../page-actions";
-import { DocsLayoutChatSync } from "./docs-layout-chat-sync";
 import "../../../app/docs.css";
 import { Footer } from "@/features/layout/components/footer";
 import { Group } from "ui-lab-components";
@@ -20,10 +19,8 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
     <>
       <div
         id={ROOT_ID}
-        data-chat-open="false"
         className="border-r border-background-700/40 docs-layout-root grid grid-cols-1 w-full max-w-(--page-width) mx-auto min-h-[calc(100vh-var(--header-height))] lg:grid-cols-[auto_1fr]"
       >
-        <DocsLayoutChatSync rootId={ROOT_ID} />
         <Sidebar />
 
         <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 lg:grid-cols-[4fr_1fr]">

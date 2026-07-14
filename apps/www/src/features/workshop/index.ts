@@ -6,7 +6,7 @@ export { ElementsSearchHeader } from "./components/ui/search-header";
 export { ElementsSortDropdown } from "./components/ui/sort-dropdown";
 export { getPackageLayoutConfig } from "./lib/get-package-layout-config";
 export { getPackagePreviewComponent } from "./lib/get-package-preview";
-export { PurchaseModalClient, usePurchaseModal } from "./components/purchase-modal";
+export { WaitlistModalClient, useWaitlistModal } from "./components/waitlist-modal";
 export * from "./lib/get-element-demo";
 export * from "./lib/get-element-preview";
 export * from "./lib/get-element-source";

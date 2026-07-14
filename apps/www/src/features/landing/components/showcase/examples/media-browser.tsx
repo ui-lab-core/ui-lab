@@ -92,11 +92,6 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
       className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200 text-xs"
       style={{ height }}
     >
-      <div className="px-4 pt-3.5 pb-3 border-b border-background-700/40 flex items-center justify-between">
-        <span className="font-semibold text-foreground-100">Media</span>
-        <span className="text-foreground-500">{filteredFiles.length} files</span>
-      </div>
-
       <div className="border-b border-background-700/40 flex items-center gap-2 p-2">
         <Group spacing="none" className="justify-between w-full">
           <Group.Input
@@ -128,6 +123,8 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
           <Group.Button active={state.view === "grid"} onClick={() => dispatch({ type: 'SET_VIEW', payload: "grid" })} aria-label="Grid view">
             <FaGrip size={13} />
           </Group.Button>
+          <Divider orientation="vertical" />
+          <span className="px-2 text-foreground-500">{filteredFiles.length} files</span>
         </Group>
       </div>
 

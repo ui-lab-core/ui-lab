@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import type { ElementFile } from "@ui-lab-core/library/catalog";
 import { getStarterById } from "@ui-lab-core/library/catalog";
 import { Code } from "@/features/docs/components/code-display/code";
-import { PurchaseModalClient, usePurchaseModal } from "@/features/packages";
+import { WaitlistModalClient, useWaitlistModal } from "@/features/workshop";
 import { Button } from "ui-lab-components";
-import { FaShop } from "@/shared/icons/fa6";
+import { Mail } from "lucide-react";
 
 interface StarterDetailClientProps {
   starterId: string;
@@ -156,7 +156,7 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
 
   const starter = getStarterById(starterId);
   const files = starter?.files || [];
-  const modalContext = usePurchaseModal();
+  const modalContext = useWaitlistModal();
 
   const fileTree = useMemo(() => buildFileTree(files), [files]);
 
@@ -207,12 +207,12 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
               {isPremium && (
                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
                   <Button
-                    icon={{ left: <FaShop /> }}
+                    icon={{ left: <Mail /> }}
                     size="md"
                     variant="primary"
-                    onClick={() => modalContext.openModal(starter)}
+                    onClick={modalContext.openModal}
                   >
-                    Purchase on Gumroad
+                    Join waitlist
                   </Button>
                 </div>
               )}
@@ -284,8 +284,8 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
 
 export default function StarterDetailClient(props: StarterDetailClientProps) {
   return (
-    <PurchaseModalClient type="starter">
+    <WaitlistModalClient>
       <StarterDetailContent {...props} />
-    </PurchaseModalClient>
+    </WaitlistModalClient>
   );
 }

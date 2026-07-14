@@ -16,7 +16,7 @@ interface NavigationItem {
 export const navigationData: NavigationItem[] = [
   { name: "documentation", label: "Documentation", isDropdown: true },
   { name: "components", label: "Components" },
-  { name: "elements", label: "Elements" },
+  { name: "workshop", label: "Workshop" },
   { name: "tools", label: "Tools" },
 ] as const;
 

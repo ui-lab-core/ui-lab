@@ -284,6 +284,68 @@ function PreviewCanvas() {
   );
 }
 
+function TypographyCanvas() {
+  return (
+    <div className="flex w-full justify-center">
+      <article className="typography w-[400px] max-w-full p-6 sm:p-10">
+      <p className="text-sm text-foreground-400">Design notes · 6 min read</p>
+      <h1>A quieter way to make a product feel clear</h1>
+      <p>
+        A good interface makes room for people to think. It uses <strong>clear hierarchy</strong>,
+        comfortable line lengths, and just enough contrast to direct attention without demanding it.
+      </p>
+
+      <figure>
+        <div
+          role="img"
+          aria-label="Placeholder for a product design image"
+          className="grid place-items-center overflow-hidden rounded-md border border-background-700 bg-background-800"
+        >
+          <div className="grid w-2/3 grid-cols-3 gap-3 opacity-70">
+            <div className="h-16 rounded-sm bg-background-700" />
+            <div className="h-24 rounded-sm bg-background-700" />
+            <div className="h-12 rounded-sm bg-background-700" />
+          </div>
+        </div>
+        <figcaption>A skeleton placeholder for an editorial image.</figcaption>
+      </figure>
+
+      <h2>Start with the reading rhythm</h2>
+      <p>
+        Body copy should feel steady. Use <em>italics</em> for a gentle change in tone, inline
+        <code> code </code> for implementation details, and links only when they help someone move
+        forward.
+      </p>
+      <blockquote>
+        Typography is the interface between the words and the reader.
+      </blockquote>
+
+      <h3>Three useful defaults</h3>
+      <ul>
+        <li>Use headings to create a visible outline.</li>
+        <li>Keep paragraphs focused on one idea.</li>
+        <li>Let supporting text stay quieter than primary content.</li>
+      </ul>
+      <ol>
+        <li>Choose a body face built for extended reading.</li>
+        <li>Pair it with a distinct, expressive heading face.</li>
+        <li>Reserve mono type for code, values, and technical detail.</li>
+      </ol>
+
+      <h2>Let the details support the message</h2>
+      <p>
+        These settings are applied to every example here, so changes in the configuration panel
+        immediately show how the system behaves in a realistic document.
+      </p>
+      <pre><code>{`export const article = {
+  rhythm: "comfortable",
+  hierarchy: "clear",
+};`}</code></pre>
+      </article>
+    </div>
+  );
+}
+
 function ExportContent({
   themeCss,
   globalsCss,
@@ -357,7 +419,7 @@ function ExportContent({
         </Tabs.Content>
       </Tabs>
 
-        <Expand title="Setup" expanded={false}>
+      <Expand title="Setup" expanded={false}>
         <div className="space-y-4 p-4">
           <div className="space-y-1">
             <Label>1. Install the package</Label>
@@ -394,6 +456,7 @@ function ExportContent({
 
 export default function ConfigPage() {
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [preview, setPreview] = useState("ui");
   const {
     currentThemeColors,
     currentThemeMode,
@@ -535,9 +598,29 @@ export default function ConfigPage() {
           }
         />
 
-        <section className="p-4 max-h-[calc(100vh-var(--header-height))] min-w-0 space-y-6">
-          <Scroll maxHeight="100%" className="rounded-sm border border-background-700" fade-y>
-            <PreviewCanvas />
+        <section className="flex h-[calc(100vh-var(--header-height))] min-w-0 flex-col gap-3 p-4">
+          <Tabs value={preview} onValueChange={setPreview} className="w-auto">
+            <Tabs.List
+              aria-label="Configuration previews"
+              className="w-auto rounded-sm bg-background-900/80 px-[5px]"
+              styles={{ indicator: "rounded-sm bg-background-700" }}
+            >
+              <Tabs.Trigger
+                value="ui"
+                className="rounded-full bg-transparent px-3 py-1 text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+              >
+                UI examples
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="typography"
+                className="rounded-full bg-transparent px-3 py-1 text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+              >
+                Typography
+              </Tabs.Trigger>
+            </Tabs.List>
+          </Tabs>
+          <Scroll maxHeight="100%" className="min-h-0 flex-1 rounded-sm border border-background-700" fade-y>
+            {preview === "ui" ? <PreviewCanvas /> : <TypographyCanvas />}
           </Scroll>
         </section>
       </div>

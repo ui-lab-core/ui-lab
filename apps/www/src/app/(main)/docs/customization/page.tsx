@@ -74,7 +74,7 @@ function TypographySection() {
     <div id="typography" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Typography</h2>
       <p className="text-foreground-300 mb-6">
-        Customize fonts, sizes, and weights through Tailwind configuration:
+        UI Lab has three font roles: body text, headers, and code. Components inherit body type; the optional <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">typography</code> layer gives long-form content a shared rhythm and applies the header role only to headings.
       </p>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Font families</h3>
@@ -85,6 +85,19 @@ function TypographySection() {
   --font-mono: 'Fira Code', 'Courier New', monospace;
   --font-sans: var(--font-body);
 }`}</code></pre>
+      </div>
+
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Long-form content</h3>
+      <p className="text-foreground-300 mb-4">
+        Import <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">ui-lab-components/typography.css</code> and add <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">typography</code> to an article, MDX body, or CMS output. It handles document flow and semantic elements without changing the rest of your interface.
+      </p>
+      <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
+        <pre className="text-sm text-foreground-300"><code>{`@import "ui-lab-components/typography.css";
+
+<article className="typography">
+  <h1>Article title</h1>
+  <p>Body copy uses --font-body; headings use --font-header.</p>
+</article>`}</code></pre>
       </div>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Font sizes</h3>
