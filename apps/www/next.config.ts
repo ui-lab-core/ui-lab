@@ -31,6 +31,13 @@ const nextConfig: NextConfig = {
     externalDir: true,
   },
   productionBrowserSourceMaps: false,
+  redirects: async () => [
+    { source: "/workshop", destination: "/workshop/elements", permanent: false },
+    { source: "/packages/:path*", destination: "/workshop/elements/:path*", permanent: true },
+    { source: "/sections/:path*", destination: "/workshop/sections/:path*", permanent: true },
+    { source: "/patterns/:path*", destination: "/workshop/patterns/:path*", permanent: true },
+    { source: "/starters/:path*", destination: "/workshop/starters/:path*", permanent: true },
+  ],
   outputFileTracingRoot: nextRoot,
   turbopack: {
     root: nextRoot,

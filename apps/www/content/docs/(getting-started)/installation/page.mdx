@@ -8,7 +8,7 @@ tags: ["installation", "setup", "tailwind"]
 
 ## Choose your path
 
-**Fastest: Start from a template.** Browse pre-built [Starters](/starters)—Next.js, Vite, Astro, Tauri, and more. Clone, install, build. Everything's configured.
+**Fastest: Start from a template.** Browse pre-built [Starters](/workshop/starters)—Next.js, Vite, Astro, Tauri, and more. Clone, install, build. Everything's configured.
 
 **Quick: Use the CLI.** One command sets up UI Lab in an existing project:
 
@@ -62,6 +62,36 @@ The order matters:
 2. `ui-lab-theme-onyx/styles.css` defines the design tokens (colors, typography, spacing).
 3. `ui-lab-components/styles.css` consumes those tokens to render components.
 
+## Add long-form typography
+
+UI Lab keeps typography intentionally role-based: body copy inherits `--font-body`, all headers use `--font-header`, and code uses `--font-mono`. Import the optional typography layer after the component styles, then add `typography` to the article or rich-text container—not to the page root.
+
+```css
+@import "tailwindcss";
+@import "ui-lab-theme-onyx/styles.css";
+@import "ui-lab-components/styles.css";
+@import "ui-lab-components/typography.css";
+```
+
+```tsx
+<article className="typography">
+  <h1>Release notes</h1>
+  <p>Paragraphs, headings, lists, tables, links, media, and code now share one reading rhythm.</p>
+</article>
+```
+
+The layer is scoped, so component UI remains untouched. It establishes document flow first, then gives headers their dedicated type role. To customize it, override the role tokens in your app theme:
+
+```css
+@theme {
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-header: "Newsreader", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --leading-body: 1.6;
+  --leading-header: 1.25;
+}
+```
+
 ### Using a custom theme instead
 
 If you prefer to define your own token layer instead of using `ui-lab-theme-onyx`:
@@ -77,7 +107,7 @@ Your `my-theme.css` must define all required tokens:
 - `--text-sm`, `--text-md`, `--text-lg`, `--text-xl`
 - `--radius-sm`, `--radius-md`, `--radius-lg`
 
-See [ui-lab-theme-onyx](https://github.com/kyza0d/ui-lab/tree/main/packages/@theme-onyx) for the complete token structure.
+See [ui-lab-theme-onyx](https://github.com/ui-lab-core/ui-lab/tree/main/packages/@theme-onyx) for the complete token structure.
 
 ## Optional: wire up theme switching
 
@@ -202,5 +232,5 @@ Compare against the [Components](/components) gallery. File issues on [GitHub](h
 ## Next steps
 
 - Browse [Components](/components) for the full library
-- Explore [Elements](/elements) for composed UI patterns
-- Check [Starters](/starters) for complete project templates
+- Explore [Elements](/workshop/elements) for composed UI patterns
+- Check [Starters](/workshop/starters) for complete project templates

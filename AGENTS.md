@@ -7,6 +7,8 @@ Prefer the shortest generic name that reads clearly in context. Add a qualifier 
 
 <registry>
 `packages/registry` build runs `scripts/sync-private-registry-content.ts`, which replaces `src/elements`, `src/patterns`, and `src/sections` from `../private/packages/library/content/registry` when that private tree exists. Make persistent registry content edits in the private source first, then rebuild/regenerate the public registry copy.
+
+The public catalog snapshot is generated from `private/packages/library/dist/catalog.js`; run `npm run build` in the private library before `pnpm generate` in `packages/registry` when catalog metadata changes.
 </registry>
 
 <validation>

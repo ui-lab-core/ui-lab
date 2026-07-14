@@ -23,8 +23,8 @@ ui-lab/
 ## Setup
 
 ```sh
-git clone https://github.com/kyza0d/ui-lab.app
-cd ui-lab.app
+git clone https://github.com/ui-lab-core/ui-lab
+cd ui-lab
 pnpm install
 ```
 
