@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useMemo, useEffect, useState, useRef } from "react";
+import React, { useMemo, useEffect, useLayoutEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useToastStore, ToastPosition, ToastProps } from "./Toast.Store";
 import { Toast } from "./Toast";
 import gsap from "gsap";
@@ -26,14 +27,38 @@ const positionConfig: Record<
   "bottom-right": { bottom: "1.5rem", right: "1.5rem" },
 };
 
-const activePositions = new Set<string>();
+const activePositions = new Map<string, symbol>();
+
+export type ToastPortalContainer =
+  | HTMLElement
+  | null
+  | (() => HTMLElement | null);
+
+export interface ToasterProps {
+  /**
+   * Element that receives the Toast portal. Defaults to document.body.
+   * A custom container must establish a containing block, for example with
+   * position: relative. The container also owns any desired overflow clipping.
+   * Pass null while a target is unavailable to avoid rendering the portal.
+   */
+  container?: ToastPortalContainer;
+  /** Channel rendered by this Toaster. Omit to use the default channel. */
+  toasterId?: string;
+}
 
 interface ToastContainerProps {
   position: ToastPosition;
   toasts: ToastProps[];
+  positioning: "fixed" | "absolute";
+  boundary?: HTMLElement;
 }
 
-const ToastContainer: React.FC<ToastContainerProps> = ({ position, toasts }) => {
+const ToastContainer: React.FC<ToastContainerProps> = ({
+  position,
+  toasts,
+  positioning,
+  boundary,
+}) => {
   const config = positionConfig[position];
   const toastRefsMap = useRef<Map<string, HTMLDivElement>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
@@ -152,10 +177,12 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ position, toasts }) => 
     prevVisibleIdsRef.current = new Set(openToasts.map(t => t.id));
   }, [isTop, isHovering, toasts]);
 
-  const fixedStyle: React.CSSProperties = {
-    position: "fixed",
+  const positionedStyle: React.CSSProperties = {
+    position: positioning,
     zIndex: 9999,
     pointerEvents: "none",
+    width: "356px",
+    maxWidth: "calc(100% - 3rem)",
     ...config,
   };
 
@@ -163,12 +190,11 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ position, toasts }) => 
     position: "relative",
     display: "flex",
     flexDirection: "column",
-    width: "356px",
-    maxWidth: "90vw",
+    width: "100%",
   };
 
   return (
-    <div style={fixedStyle}>
+    <div style={positionedStyle} data-toast-position={position}>
       <div
         ref={containerRef}
         style={containerStyle}
@@ -197,6 +223,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ position, toasts }) => 
             <Toast
               toast={toast}
               pauseOnHover={isHovering}
+              boundary={boundary}
               onDragStart={() => {
                 isDraggingRef.current = true;
                 if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -227,31 +254,58 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ position, toasts }) => 
   );
 };
 
-// ... Toaster and SingletonToastContainer remain unchanged
+function getClaimKey(toasterId: string | undefined, position: ToastPosition) {
+  return JSON.stringify([toasterId ?? null, position]);
+}
 
-export const Toaster = () => {
+function resolveContainer(container: ToastPortalContainer | undefined) {
+  if (container === undefined) return document.body;
+  return typeof container === "function" ? container() : container;
+}
+
+export const Toaster = ({ container, toasterId }: ToasterProps) => {
   const { toasts } = useToastStore();
-  const [mounted, setMounted] = useState(false);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    setPortalTarget(resolveContainer(container));
+  });
+
+  const isViewportTarget = Boolean(
+    portalTarget &&
+    (portalTarget === portalTarget.ownerDocument.body ||
+      portalTarget === portalTarget.ownerDocument.documentElement)
+  );
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (
+      process.env.NODE_ENV !== "production" &&
+      portalTarget &&
+      !isViewportTarget &&
+      portalTarget.ownerDocument.defaultView?.getComputedStyle(portalTarget).position === "static"
+    ) {
+      console.warn(
+        "A custom Toast container must establish a containing block, for example with position: relative."
+      );
+    }
+  }, [isViewportTarget, portalTarget]);
 
   const positions: ToastPosition[] = ["top-left", "top", "top-right", "bottom-left", "bottom", "bottom-right"];
 
   const toastsByPosition = useMemo(() => {
     const grouped: Partial<Record<ToastPosition, ToastProps[]>> = {};
     toasts.forEach((t) => {
+      if (t.toasterId !== toasterId) return;
       const pos = t.position || "bottom-right";
       if (!grouped[pos]) grouped[pos] = [];
       grouped[pos]!.push(t);
     });
     return grouped;
-  }, [toasts]);
+  }, [toasterId, toasts]);
 
-  if (!mounted) return null;
+  if (!portalTarget) return null;
 
-  return (
+  return createPortal(
     <>
       {positions.map((pos) => {
         const pts = toastsByPosition[pos];
@@ -260,34 +314,51 @@ export const Toaster = () => {
         return (
           <SingletonToastContainer
             key={pos}
+            claimKey={getClaimKey(toasterId, pos)}
             position={pos}
             toasts={pts}
+            positioning={isViewportTarget ? "fixed" : "absolute"}
+            boundary={isViewportTarget ? undefined : portalTarget}
           />
         );
       })}
-    </>
+    </>,
+    portalTarget
   );
 };
 
-// Wrapper to enforce singleton per position
-const SingletonToastContainer: React.FC<ToastContainerProps> = (props) => {
-  const [isAllowed, setIsAllowed] = useState(false);
+interface SingletonToastContainerProps extends ToastContainerProps {
+  claimKey: string;
+}
 
-  useEffect(() => {
-    if (activePositions.has(props.position)) {
-      setIsAllowed(false);
+// Wrapper to enforce a singleton per toaster channel and position.
+const SingletonToastContainer: React.FC<SingletonToastContainerProps> = ({
+  claimKey,
+  ...props
+}) => {
+  const claimRef = useRef(Symbol("toast-position-claim"));
+  const [allowedClaimKey, setAllowedClaimKey] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    const claim = claimRef.current;
+    const owner = activePositions.get(claimKey);
+
+    if (owner && owner !== claim) {
+      setAllowedClaimKey(null);
       return;
     }
 
-    activePositions.add(props.position);
-    setIsAllowed(true);
+    activePositions.set(claimKey, claim);
+    setAllowedClaimKey(claimKey);
 
     return () => {
-      activePositions.delete(props.position);
+      if (activePositions.get(claimKey) === claim) {
+        activePositions.delete(claimKey);
+      }
     };
-  }, [props.position]);
+  }, [claimKey]);
 
-  if (!isAllowed) return null;
+  if (allowedClaimKey !== claimKey) return null;
 
   return <ToastContainer {...props} />;
 };

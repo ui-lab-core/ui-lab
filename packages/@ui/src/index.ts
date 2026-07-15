@@ -89,6 +89,7 @@ export { Toaster } from "./components/Toast/Toast.Toaster";
 export { toast } from "./components/Toast/Toast.UseToast";
 export { useToastStore } from "./components/Toast/Toast.Store";
 export type { ToastProps, ToastVariant, ToastPosition } from "./components/Toast/Toast.Store";
+export type { ToasterProps, ToastPortalContainer } from "./components/Toast/Toast.Toaster";
 
 export { Modal, ModalHeader, ModalBody, ModalFooter } from "./components/Modal";
 export type { ModalProps, ModalState } from "./components/Modal";

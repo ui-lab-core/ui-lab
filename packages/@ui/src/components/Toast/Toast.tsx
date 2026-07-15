@@ -17,18 +17,25 @@ import { X } from 'lucide-react';
 
 const DRAG_DISMISS_THRESHOLD = 100;
 const DRAG_LEFT_RESISTANCE = 20;
-const VIEWPORT_SPAWN_OFFSET = 24;
+const SPAWN_OFFSET = 24;
 
-function getViewportSpawnY(element: HTMLElement, direction: 'top' | 'bottom') {
+function getSpawnY(
+  element: HTMLElement,
+  direction: 'top' | 'bottom',
+  boundary?: HTMLElement
+) {
   if (typeof window === 'undefined') return direction === 'top' ? -80 : 80;
 
   const rect = element.getBoundingClientRect();
+  const boundaryRect = boundary?.getBoundingClientRect();
+  const topBoundary = boundaryRect?.top ?? 0;
+  const bottomBoundary = boundaryRect?.bottom ?? window.innerHeight;
 
   if (direction === 'top') {
-    return -(rect.bottom + VIEWPORT_SPAWN_OFFSET);
+    return topBoundary - rect.bottom - SPAWN_OFFSET;
   }
 
-  return window.innerHeight - rect.top + VIEWPORT_SPAWN_OFFSET;
+  return bottomBoundary - rect.top + SPAWN_OFFSET;
 }
 
 export interface ToastStyleSlots {
@@ -76,6 +83,8 @@ interface ToastComponentProps {
   toast: ToastData;
   /** Whether the auto-dismiss timer pauses on mouse hover */
   pauseOnHover?: boolean;
+  /** Custom containing block used as the entrance animation boundary */
+  boundary?: HTMLElement;
   onDragStart?: () => void;
   onDragEnd?: () => void;
   onDismissStart?: () => void;
@@ -83,7 +92,7 @@ interface ToastComponentProps {
 }
 
 export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function Toast(
-  { toast, pauseOnHover = false, onDragStart, onDragEnd, onDismissStart, onDismissEnd },
+  { toast, pauseOnHover = false, boundary, onDragStart, onDragEnd, onDismissStart, onDismissEnd },
   ref
 ) {
   const innerRef = useRef<HTMLDivElement>(null);
@@ -155,7 +164,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
     if (!element) return;
 
     const spawnDir = toast.spawnDirection ?? (isTop ? 'top' : 'bottom');
-    const fromY = getViewportSpawnY(element, spawnDir);
+    const fromY = getSpawnY(element, spawnDir, boundary);
 
     gsap.fromTo(element, {
       opacity: 0,

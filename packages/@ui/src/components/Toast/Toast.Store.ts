@@ -23,6 +23,8 @@ export type ToastStylesProp = StylesProp<ToastStyleSlots>;
 export interface ToastProps {
   /** Unique identifier for this toast instance */
   id: string;
+  /** Channel used to route this toast to a matching Toaster */
+  toasterId?: string;
   /** Heading text or element displayed at the top of the toast */
   title?: React.ReactNode;
   /** Body text or element displayed below the title */
@@ -95,13 +97,21 @@ const reducer = (state: State, action: ToastAction): State => {
         ),
       };
 
-    case 'DISMISS_TOAST':
+    case 'DISMISS_TOAST': {
+      const dismissedToast = state.toasts.find((t) => t.id === action.toastId);
+      if (!dismissedToast) return state;
+
       return {
         ...state,
         toasts: state.toasts
           .filter((t) => t.id !== action.toastId)
-          .map((t) => t.spawnDirection === 'top' ? t : { ...t, spawnDirection: 'top' as ToastSpawnDirection }),
+          .map((t) =>
+            t.toasterId === dismissedToast?.toasterId && t.spawnDirection !== 'top'
+              ? { ...t, spawnDirection: 'top' as ToastSpawnDirection }
+              : t
+          ),
       };
+    }
 
     case 'PAUSE_TOAST':
       return {
