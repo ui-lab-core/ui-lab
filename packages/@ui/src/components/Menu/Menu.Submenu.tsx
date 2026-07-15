@@ -2,8 +2,6 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 
 import { useFloating } from "@/hooks/useFloat/react/useFloating"
-import { flip } from "@/hooks/useFloat/core/middleware/flip"
-import { offset as offsetMiddleware } from "@/hooks/useFloat/core/middleware/offset"
 import { autoUpdate } from "@/hooks/useFloat/dom/autoUpdate"
 import { useHover } from "@react-aria/interactions"
 import { ChevronRight } from "lucide-react"
@@ -26,6 +24,7 @@ import { createStylesResolver } from "@/lib/styles"
 import { asElementProps } from "@/lib/react-aria"
 import { useMergeRefs } from "@/hooks/useMergeRefs"
 import { useListNavigation, handleListKeyDown, scrollItemIntoView } from "../../utils/list-navigation"
+import * as positioning from "../../utils/submenu-positioning"
 
 import type { MenuItemExtras } from "./menu.types"
 import { Scroll } from "../Scroll"
@@ -240,10 +239,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
     const { refs, floatingStyles, x, y, placement } = useFloating({
       placement: "right-start",
       whileElementsMounted: autoUpdate,
-      middleware: [
-        offsetMiddleware({ mainAxis: offset, crossAxis: offset }),
-        flip({ fallbackPlacements: ["left-start"] }),
-      ],
+      middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: offset }),
     })
 
     const isPositioned = x !== null && y !== null
@@ -398,7 +394,8 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
             >
               <Scroll
                 className={cn("viewport", resolved.list)}
-                maxHeight="24rem"
+                maxHeight={`min(24rem, ${positioning.maxHeight})`}
+                maxWidth={positioning.maxWidth}
                 direction="vertical"
                 fade-y
                 inline

@@ -1,8 +1,6 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
 import { useFloating } from "../../hooks/useFloat/react/useFloating"
-import { flip } from "../../hooks/useFloat/core/middleware/flip"
-import { offset } from "../../hooks/useFloat/core/middleware/offset"
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
 import { useHover } from "@react-aria/interactions"
 import { ChevronRight } from "lucide-react"
@@ -14,6 +12,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles"
 import { asElementProps } from "@/lib/react-aria"
 import { useMergeRefs } from "@/hooks/useMergeRefs"
 import { useListNavigation, handleListKeyDown } from "./Select.shared"
+import * as positioning from "../../utils/submenu-positioning"
 import type { ItemData } from "./Select.shared"
 import { Scroll } from "../Scroll"
 import { List } from "../List"
@@ -319,10 +318,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
       // Keep nested panels aligned when the parent menu lives inside fixed/sticky layout chrome.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
-      middleware: [
-        offset({ mainAxis: sideOffset, crossAxis: alignOffset }),
-        flip({ fallbackPlacements: ["left-start"] }),
-      ],
+      middleware: positioning.getMiddleware({ mainAxis: sideOffset, crossAxis: alignOffset }),
     })
 
     const isPositioned = x !== null && y !== null
@@ -515,6 +511,8 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
             >
               <Scroll
                 className={cn(styles.list, resolved.list)}
+                maxHeight={positioning.maxHeight}
+                maxWidth={positioning.maxWidth}
                 direction="vertical"
                 fade-y
                 hide={false}
