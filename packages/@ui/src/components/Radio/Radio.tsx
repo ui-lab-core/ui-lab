@@ -41,7 +41,7 @@ const resolveRadioBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveRadioStyles(styles: RadioStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveRadioBaseStyles(styles);
   }
 
@@ -80,7 +80,7 @@ const resolveRadioGroupBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveRadioGroupStyles(styles: RadioGroupStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveRadioGroupBaseStyles(styles);
   }
 
@@ -108,7 +108,7 @@ export interface RadioGroupProps {
   label?: string;
   /** Descriptive text shown below the group label */
   description?: string;
-  /** Classes applied to the root or named slots */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: RadioGroupStylesProp;
 }
 

@@ -67,7 +67,7 @@ const resolveModalBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveModalStyles(styles: ModalStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveModalBaseStyles(styles);
+  if (!styles) return resolveModalBaseStyles(styles);
   const { root, overlay, backdrop, header, title, spacer, close, closeIcon, content, footer } = styles;
   return resolveModalBaseStyles({ root, overlay, backdrop, header, title, spacer, close, closeIcon, content, footer });
 }
@@ -105,7 +105,7 @@ export interface ModalProps {
   contentClassName?: string;
   /** Additional class for the backdrop overlay */
   overlayClassName?: string;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ModalStylesProp;
 }
 export interface ModalState { open?: boolean }

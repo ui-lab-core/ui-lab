@@ -34,13 +34,13 @@ const resolveMenuSubTriggerBaseStyles = createStylesResolver(['root', 'chevron']
 const resolveMenuSubContentBaseStyles = createStylesResolver(['root', 'list'] as const);
 
 function resolveMenuSubTriggerStyles(styles: MenuSubTriggerProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuSubTriggerBaseStyles(styles)
+  if (!styles) return resolveMenuSubTriggerBaseStyles(styles)
   const { root, chevron } = styles
   return resolveMenuSubTriggerBaseStyles({ root, chevron })
 }
 
 function resolveMenuSubContentStyles(styles: MenuSubContentProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuSubContentBaseStyles(styles)
+  if (!styles) return resolveMenuSubContentBaseStyles(styles)
   const { root, list } = styles
   return resolveMenuSubContentBaseStyles({ root, list })
 }

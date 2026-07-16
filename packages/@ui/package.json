@@ -160,6 +160,10 @@
       "import": "./dist/scroll.es.js",
       "types": "./dist/scroll.d.ts"
     },
+    "./skeleton": {
+      "import": "./dist/skeleton.es.js",
+      "types": "./dist/skeleton.d.ts"
+    },
     "./select": {
       "import": "./dist/select.es.js",
       "types": "./dist/select.d.ts"

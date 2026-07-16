@@ -42,11 +42,10 @@ describe('Flex.core', () => {
     expect(flex).toHaveStyle({ '--flex-gap-step': '8' })
   })
 
-  it('applies className, inline style, styles.root, and native HTML attributes to the root flex element', () => {
+  it('applies className, inline style, and native HTML attributes to the root flex element', () => {
     const container = renderFlex({
       className: 'custom-flex',
       style: { marginTop: '12px' },
-      styles: { root: 'slot-root' },
       id: 'flex-id',
       title: 'Flex title',
     })
@@ -54,20 +53,9 @@ describe('Flex.core', () => {
 
     expect(flex).toHaveClass(styles.flex)
     expect(flex).toHaveClass('custom-flex')
-    expect(flex).toHaveClass('slot-root')
     expect(flex).toHaveAttribute('id', 'flex-id')
     expect(flex).toHaveAttribute('title', 'Flex title')
     expect(flex).toHaveStyle({ marginTop: '12px' })
-  })
-
-  it('accepts root styles passed as a cn()-compatible array', () => {
-    const container = renderFlex({
-      styles: ['slot-root', false, undefined, 'slot-root-2'],
-    })
-    const flex = getFlexRoot(container)
-
-    expect(flex).toHaveClass('slot-root')
-    expect(flex).toHaveClass('slot-root-2')
   })
 
   testRefForwarding({

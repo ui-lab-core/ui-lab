@@ -60,7 +60,7 @@ export interface TableProps<T extends Record<string, any>>
   onRowClick?: (row: T) => void;
   /** Called when any column filter value changes */
   onFilterChange?: (filters: Record<string, string>) => void;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TableStylesProp;
   /** Optional composed table content. When omitted, the default header/body renderer is used. */
   children?: React.ReactNode;
@@ -112,7 +112,7 @@ const tableStyleSlotKeys = [
 const resolveTableBaseStyles = createStylesResolver(tableStyleSlotKeys);
 
 function normalizeTableStyles(styles: TableStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return styles;
   }
 

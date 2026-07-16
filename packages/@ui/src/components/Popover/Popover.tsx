@@ -74,7 +74,7 @@ export interface PopoverProps {
   content: React.ReactNode;
   /** Preferred side of the trigger where the popover appears */
   position?: PopoverPosition;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for named component parts. The frame slot controls panel layout such as padding. */
   styles?: PopoverStylesProp;
   /** Additional CSS class for the trigger element. */
   className?: string;

@@ -159,7 +159,7 @@
   .canvas {
     position: relative;
     width: 96%;
-    @apply mx-auto mt-2;
+    @apply mx-auto mt-2 rounded-sm;
     cursor: crosshair;
     touch-action: none;
     display: flex;
@@ -177,6 +177,7 @@
     width: 100%;
     flex: 1;
     overflow: hidden;
+    @apply rounded-sm;
   }
 
   .canvas .canvas-gradient-hue {
@@ -214,11 +215,10 @@
   .hue-slider {
     --track-height: calc(var(--spacing, 0.25rem) * 5);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
-    --track-radius: var(--radius-xs, calc(var(--spacing, 0.25rem) * 0.75));
     --border: 0;
     --side-padding: var(--inline-padding, 2px);
-    --thumb-width: calc(var(--track-height) / 2);
-    --thumb-height: calc(var(--track-height) - (var(--padding-block) * 2));
+    --thumb-width: calc(var(--track-height) - (var(--padding-block) * 2));
+    --thumb-height: var(--thumb-width);
     --gradient-inset: 0;
     --track-background: linear-gradient(
       to right,
@@ -233,7 +233,6 @@
     --range-background: transparent;
     --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
-    --thumb-radius: calc(var(--track-radius) * 0.75);
     --thumb-background: transparent;
     --thumb-border: 2px solid white;
     --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);
@@ -252,7 +251,7 @@
     height: var(--track-height);
     overflow: hidden;
     border: var(--border);
-    border-radius: var(--track-radius);
+    @apply rounded-full;
     background: transparent;
   }
 
@@ -261,7 +260,7 @@
     position: absolute;
     inset-block: 0;
     inset-inline: var(--gradient-inset);
-    border-radius: var(--track-radius);
+    @apply rounded-full;
     background: var(--track-background);
     pointer-events: none;
   }
@@ -286,7 +285,7 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    border-radius: var(--thumb-radius);
+    @apply rounded-full;
     background: var(--thumb-background);
     box-shadow: var(--thumb-shadow);
   }
@@ -294,16 +293,14 @@
   .opacity-slider {
     --size: calc(var(--spacing, 0.25rem) * 4);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
-    --radius: var(--radius-xs, calc(var(--spacing, 0.25rem) * 0.75));
     --border: 0;
     --range-background: transparent;
-    --thumb-width: calc(var(--size) * 0.625);
+    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));
     --padding-inline: var(--inline-padding, var(--padding-block));
     --hit-size: calc(var(--size) + (var(--padding-block) * 2));
-    --thumb-height: calc(var(--size) - (var(--padding-block) * 2));
+    --thumb-height: var(--thumb-width);
     --side-padding: 2px;
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
-    --thumb-radius: calc(var(--radius) * 0.75);
     --thumb-background: transparent;
     --thumb-border: 2px solid white;
     --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);
@@ -326,7 +323,7 @@
     min-height: var(--hit-size);
     padding-block: var(--padding-block);
     padding-inline: var(--padding-inline);
-    border-radius: var(--radius);
+    @apply rounded-full;
   }
 
   .opacity-slider .opacity-track {
@@ -335,7 +332,7 @@
     height: var(--size);
     overflow: hidden;
     border: var(--border);
-    border-radius: var(--radius);
+    @apply rounded-full;
     background: var(--track-background);
   }
 
@@ -354,7 +351,7 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    border-radius: var(--thumb-radius);
+    @apply rounded-full;
     background: var(--thumb-background);
     box-shadow: var(--thumb-shadow);
   }

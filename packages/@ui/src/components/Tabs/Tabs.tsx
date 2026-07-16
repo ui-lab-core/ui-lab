@@ -452,7 +452,7 @@ function resolveTabsTriggerIcon(icon: TabsTriggerProps["icon"]): TabsTriggerIcon
 }
 
 function resolveTabsTriggerStyles(styles: StylesProp<TabsTriggerStyleSlots> | undefined) {
-  if (!styles || typeof styles === 'string' || Array.isArray(styles)) return resolveTabsTriggerBaseStyles(styles)
+  if (!styles) return resolveTabsTriggerBaseStyles(styles)
   const { root, icon } = styles
 
   let iconLeft: StyleValue | undefined

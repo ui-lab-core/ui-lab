@@ -93,7 +93,7 @@ export interface MenuTriggerProps extends React.PropsWithChildren {
   asChild?: boolean
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuTriggerStylesProp;
 }
 
@@ -129,7 +129,7 @@ export interface MenuContentProps extends React.PropsWithChildren {
   onPointerDownOutside?: (event: PointerEvent) => void
   /** Distance offset from the trigger in all directions (for pop-over type) */
   offset?: number
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuContentStylesProp;
 }
 
@@ -151,7 +151,7 @@ export interface MenuItemProps extends React.PropsWithChildren {
   inset?: boolean
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuItemStylesProp;
 }
 
@@ -174,7 +174,7 @@ export interface MenuCheckboxItemProps extends React.PropsWithChildren {
   textValue?: string
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuCheckboxItemStylesProp;
 }
 
@@ -202,7 +202,7 @@ export interface MenuRadioItemProps extends React.PropsWithChildren {
   textValue?: string
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuRadioItemStylesProp;
 }
 
@@ -211,7 +211,7 @@ export interface MenuLabelProps extends React.PropsWithChildren {
   inset?: boolean
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuLabelStylesProp;
 }
 
@@ -223,7 +223,7 @@ export type MenuLabelStylesProp = StylesProp<MenuLabelStyleSlots>;
 export interface MenuSeparatorProps {
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuSeparatorStylesProp;
 }
 
@@ -235,7 +235,7 @@ export type MenuSeparatorStylesProp = StylesProp<MenuSeparatorStyleSlots>;
 export interface MenuShortcutProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuShortcutStylesProp;
 }
 
@@ -268,7 +268,7 @@ export interface MenuSubTriggerProps extends React.PropsWithChildren {
   textValue?: string
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuSubTriggerStylesProp;
 }
 
@@ -283,6 +283,6 @@ export interface MenuSubContentProps extends React.PropsWithChildren {
   className?: string
   /** Distance offset from the trigger in all directions */
   offset?: number
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuSubContentStylesProp;
 }

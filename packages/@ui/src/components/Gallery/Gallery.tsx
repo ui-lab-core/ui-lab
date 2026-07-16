@@ -56,7 +56,7 @@ export interface GalleryProps extends React.HTMLAttributes<HTMLDivElement> {
   rows?: GalleryRows
   /** Whether to enable container-query-based responsive columns */
   responsive?: boolean
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: GalleryStylesProp
 }
 
@@ -71,19 +71,19 @@ export interface GalleryItemProps extends React.HTMLAttributes<HTMLDivElement> {
   rowSpan?: number
   /** Controls the item's layout orientation */
   orientation?: Orientation
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: GalleryItemStylesProp
 }
 
 export interface GalleryViewProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Aspect ratio of the view area (e.g. "16/9") */
   aspectRatio?: string
-  /** Classes applied to the root slot. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root. Use className for conventional root classes. */
   styles?: GalleryViewStylesProp
 }
 
 export interface GalleryBodyProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Classes applied to the root slot. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root. Use className for conventional root classes. */
   styles?: GalleryBodyStylesProp
 }
 
@@ -101,7 +101,7 @@ const resolveGalleryBodyBaseStyles = createStylesResolver(["root"] as const)
 function resolveGalleryStyles(
   styles: GalleryStylesProp | undefined
 ): ReturnType<typeof resolveGalleryBaseStyles> {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveGalleryBaseStyles(styles)
   }
 
@@ -112,7 +112,7 @@ function resolveGalleryStyles(
 function resolveGalleryItemStyles(
   styles: GalleryItemStylesProp | undefined
 ): ReturnType<typeof resolveGalleryItemBaseStyles> {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveGalleryItemBaseStyles(styles)
   }
 
@@ -123,7 +123,7 @@ function resolveGalleryItemStyles(
 function resolveGalleryViewStyles(
   styles: GalleryViewStylesProp | undefined
 ): ReturnType<typeof resolveGalleryViewBaseStyles> {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveGalleryViewBaseStyles(styles)
   }
 
@@ -134,7 +134,7 @@ function resolveGalleryViewStyles(
 function resolveGalleryBodyStyles(
   styles: GalleryBodyStylesProp | undefined
 ): ReturnType<typeof resolveGalleryBodyBaseStyles> {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveGalleryBodyBaseStyles(styles)
   }
 

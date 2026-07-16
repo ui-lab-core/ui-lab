@@ -17,6 +17,8 @@ import { X } from 'lucide-react';
 
 const DRAG_DISMISS_THRESHOLD = 100;
 const DRAG_LEFT_RESISTANCE = 20;
+const DRAG_DISMISS_DURATION = 0.15;
+const STACK_REFLOW_DURATION = 0.55;
 const SPAWN_OFFSET = 24;
 
 function getSpawnY(
@@ -63,7 +65,7 @@ const resolveToastBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveToastStyles(styles: ToastStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveToastBaseStyles(styles);
+  if (!styles) return resolveToastBaseStyles(styles);
 
   const { root, iconWrap, icon, content, title, description, close, closeIcon } = styles;
 
@@ -88,11 +90,22 @@ interface ToastComponentProps {
   onDragStart?: () => void;
   onDragEnd?: () => void;
   onDismissStart?: () => void;
+  /** Lets the stack coordinate close motion and invoke completion. */
+  onDismissAnimation?: (complete: () => void) => void;
   onDismissEnd?: () => void;
 }
 
 export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function Toast(
-  { toast, pauseOnHover = false, boundary, onDragStart, onDragEnd, onDismissStart, onDismissEnd },
+  {
+    toast,
+    pauseOnHover = false,
+    boundary,
+    onDragStart,
+    onDragEnd,
+    onDismissStart,
+    onDismissAnimation,
+    onDismissEnd,
+  },
   ref
 ) {
   const innerRef = useRef<HTMLDivElement>(null);
@@ -133,31 +146,36 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
   const dragPausedRef = useRef(false);
 
   const handleDismiss = useCallback(() => {
-    // Change absolute numbers to relative strings
-    const yOffset = isTop ? "-=20" : "+=20";
-
     if (innerRef.current) {
       innerRef.current.dataset.dismissing = "true";
       onDismissStart?.();
-      dispatch({ type: 'CLOSE_TOAST', toastId: id });
+      const completeDismissal = () => {
+        onDismissEnd?.();
+        onDismiss?.();
+        dispatch({ type: 'DISMISS_TOAST', toastId: id });
+      };
       gsap.killTweensOf(innerRef.current);
+
+      if (onDismissAnimation) {
+        onDismissAnimation(completeDismissal);
+        dispatch({ type: 'CLOSE_TOAST', toastId: id });
+        return;
+      }
+
+      dispatch({ type: 'CLOSE_TOAST', toastId: id });
       gsap.to(innerRef.current, {
         opacity: 0,
-        y: yOffset, // Animates relative to its current layout position
-        scale: 0.9,
-        duration: 0.35,
+        duration: STACK_REFLOW_DURATION,
         ease: "expo.out",
         onComplete: () => {
-          onDismissEnd?.();
-          onDismiss?.();
-          dispatch({ type: 'DISMISS_TOAST', toastId: id });
+          completeDismissal();
         },
       });
     } else {
       onDismiss?.();
       dispatch({ type: 'DISMISS_TOAST', toastId: id });
     }
-  }, [id, isTop, onDismiss]);
+  }, [id, onDismiss, onDismissAnimation, onDismissEnd, onDismissStart]);
 
   useGSAP(() => {
     const element = innerRef.current;
@@ -222,7 +240,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
           gsap.to(innerRef.current, {
             x: "+=200",
             opacity: 0,
-            duration: 0.25,
+            duration: DRAG_DISMISS_DURATION,
             ease: "power2.in",
             onComplete: () => {
               onDismissEnd?.();

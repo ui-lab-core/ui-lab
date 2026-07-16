@@ -2,6 +2,7 @@ import React, { StrictMode, useLayoutEffect } from "react";
 import {
   act,
   cleanup,
+  fireEvent,
   render,
   screen,
   waitFor,
@@ -14,6 +15,7 @@ import type { ToastPosition } from "../Toast.Store";
 
 const gsapMocks = vi.hoisted(() => ({
   fromTo: vi.fn(),
+  getProperty: vi.fn(),
   killTweensOf: vi.fn(),
   set: vi.fn(),
   to: vi.fn(),
@@ -88,6 +90,7 @@ afterEach(() => {
   targets.splice(0).forEach((target) => target.remove());
   titleCount = 0;
   gsapMocks.fromTo.mockClear();
+  gsapMocks.getProperty.mockClear();
   gsapMocks.killTweensOf.mockClear();
   gsapMocks.set.mockClear();
   gsapMocks.to.mockClear();
@@ -329,5 +332,142 @@ describe("Toast container-relative layout", () => {
 
     expect(await within(secondTarget).findByText("Strict toast")).toBeInTheDocument();
     expect(screen.getAllByRole("alert")).toHaveLength(1);
+  });
+});
+
+describe("Toast dismissal animation", () => {
+  it("auto dismissal slowly fades downward without scaling", async () => {
+    let now = 0;
+    let animationFrameCallback: FrameRequestCallback | undefined;
+    vi.spyOn(Date, "now").mockImplementation(() => now);
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      animationFrameCallback = callback;
+      return 1;
+    });
+
+    render(<Toaster />);
+    showToast({ title: "Auto fade down", duration: 1, position: "top" });
+
+    const alert = await screen.findByRole("alert");
+    now = 1000;
+    act(() => animationFrameCallback?.(now));
+
+    const dismissCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
+      Array.isArray(elements) && elements.includes(alert) && "opacity" in options
+    );
+
+    expect(dismissCall?.[1]).toMatchObject({
+      duration: 0.55,
+    });
+    expect(dismissCall?.[1]).not.toHaveProperty("scale");
+    const elements = dismissCall?.[0] as HTMLElement[];
+    const resolveOpacity = dismissCall?.[1].opacity as (index: number) => number;
+    expect(resolveOpacity(elements.indexOf(alert))).toBe(0);
+  });
+
+  it("close dismissal fades down at the same speed as the stack without scaling", async () => {
+    render(<Toaster />);
+    showToast({ title: "Behind" });
+    showToast({ title: "Fade down" });
+
+    const alert = await screen.findByText("Fade down").then((node) =>
+      node.closest('[role="alert"]') as HTMLElement
+    );
+    const exitingWrapper = alert.parentElement as HTMLElement;
+    const remainingAlert = screen.getByText("Behind").closest('[role="alert"]') as HTMLElement;
+    const remainingWrapper = remainingAlert.parentElement as HTMLElement;
+    gsapMocks.getProperty.mockImplementation((element, property) => {
+      if (property !== "y") return 1;
+      return element === remainingWrapper ? -14 : 0;
+    });
+    gsapMocks.to.mockClear();
+    fireEvent.click(within(alert).getByRole("button", { name: "Close" }));
+
+    const dismissCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
+      Array.isArray(elements) && elements.includes(alert) && "opacity" in options
+    );
+    expect(dismissCall?.[1]).toMatchObject({
+      duration: 0.55,
+    });
+    expect(dismissCall?.[1]).not.toHaveProperty("scale");
+    const dismissElements = dismissCall?.[0] as HTMLElement[];
+    const resolveOpacity = dismissCall?.[1].opacity as (index: number) => number;
+    expect(resolveOpacity(dismissElements.indexOf(alert))).toBe(0);
+
+    const sharedMotionCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
+      Array.isArray(elements) && elements.includes(exitingWrapper) && "y" in options
+    );
+    expect(sharedMotionCall).toBeDefined();
+    const elements = sharedMotionCall?.[0] as HTMLElement[];
+    const resolveY = sharedMotionCall?.[1].y as (index: number) => number;
+    expect(resolveY(elements.indexOf(remainingWrapper))).toBeCloseTo(0);
+    expect(resolveY(elements.indexOf(exitingWrapper))).toBe(14);
+  });
+
+  it("uses the dismissed toast height and gap when the stack is expanded", async () => {
+    render(<Toaster />);
+    showToast({ title: "Expanded behind" });
+    showToast({ title: "Expanded front" });
+
+    const alert = await screen.findByText("Expanded front").then((node) =>
+      node.closest('[role="alert"]') as HTMLElement
+    );
+    const wrapper = alert.parentElement as HTMLElement;
+    const stack = wrapper.parentElement as HTMLElement;
+    const remainingAlert = screen.getByText("Expanded behind").closest('[role="alert"]') as HTMLElement;
+    const remainingWrapper = remainingAlert.parentElement as HTMLElement;
+    Object.defineProperty(wrapper, "offsetHeight", { configurable: true, value: 80 });
+
+    fireEvent.mouseEnter(stack);
+    gsapMocks.getProperty.mockImplementation((element, property) => {
+      if (property !== "y") return 1;
+      return element === remainingWrapper ? -94 : 0;
+    });
+    gsapMocks.to.mockClear();
+    fireEvent.click(within(alert).getByRole("button", { name: "Close" }));
+
+    const sharedMotionCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
+      Array.isArray(elements) && elements.includes(wrapper) && "y" in options
+    );
+    expect(sharedMotionCall?.[1]).toMatchObject({
+      duration: 0.55,
+      ease: "expo.out",
+    });
+    // Remaining wrapper, exiting wrapper, and fading toast content all share
+    // one tween and therefore one progress clock.
+    expect(sharedMotionCall?.[0]).toHaveLength(3);
+    const elements = sharedMotionCall?.[0] as HTMLElement[];
+    const resolveY = sharedMotionCall?.[1].y as (index: number) => number;
+    expect(resolveY(elements.indexOf(remainingWrapper))).toBeCloseTo(0);
+    expect(resolveY(elements.indexOf(wrapper))).toBe(94);
+  });
+
+  it("quickly slides a dragged toast out while the stack reflows more slowly", async () => {
+    render(<Toaster />);
+    showToast({ title: "Dragged toast" });
+    showToast({ title: "Remaining toast" });
+
+    const alert = await screen.findByText("Dragged toast").then((node) =>
+      node.closest('[role="alert"]') as HTMLElement
+    );
+    gsapMocks.to.mockClear();
+
+    fireEvent.pointerDown(alert, { clientX: 0 });
+    fireEvent.pointerMove(document, { clientX: 120 });
+    fireEvent.pointerUp(document);
+
+    const slideCall = gsapMocks.to.mock.calls.find(([element, options]) =>
+      element === alert && options.x === "+=200"
+    );
+    const stackCall = gsapMocks.to.mock.calls.find(([element, options]) =>
+      element !== alert && options.duration === 0.55 && "y" in options
+    );
+
+    expect(slideCall?.[1]).toMatchObject({
+      x: "+=200",
+      opacity: 0,
+      duration: 0.15,
+    });
+    expect(stackCall).toBeDefined();
   });
 });

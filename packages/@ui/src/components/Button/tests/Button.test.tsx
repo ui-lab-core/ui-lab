@@ -110,6 +110,14 @@ describe('Button - Styling', () => {
 
     expect(screen.getByRole('button')).toHaveStyle({ backgroundSize: '42% 100%' })
   })
+
+  it('applies conditional root classes without forwarding styles to the DOM', () => {
+    render(<Button styles={{ root: ['base', false, 'active'] }}>Render</Button>)
+
+    const button = screen.getByRole('button')
+    expect(button).toHaveClass('base', 'active')
+    expect(button).not.toHaveAttribute('styles')
+  })
 })
 
 describe('Button - Component Specific', () => {

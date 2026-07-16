@@ -56,15 +56,15 @@
   }
 
   .typography :where([id]) { scroll-margin-block-start: calc(var(--space) * 2); }
-  .typography :where(a) {
+  .typography :where(a:not(.anchor)) {
     color: inherit;
     font-weight: var(--font-weight-body-semibold, 600);
     text-decoration: underline;
     text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
     text-underline-offset: 0.15em;
   }
-  .typography :where(a:hover) { text-decoration-color: currentColor; }
-  .typography :where(a:focus-visible) {
+  .typography :where(a:not(.anchor):hover) { text-decoration-color: currentColor; }
+  .typography :where(a:not(.anchor):focus-visible) {
     border-radius: var(--radius-sm, 0.125em);
     outline: 2px solid var(--accent-400, currentColor);
     outline-offset: 2px;

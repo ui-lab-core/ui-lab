@@ -1,7 +1,7 @@
 import type * as React from 'react';
 import { cn, type StyleValue } from './utils';
 
-export type StylesProp<S extends object> = StyleValue | S;
+export type StylesProp<S extends { root?: StyleValue }> = S;
 export type SlotStyleObject = React.CSSProperties;
 export type SlotStyleProps = {
   className?: StyleValue;
@@ -16,7 +16,7 @@ export type ResolvedSlotStyles<K extends string> = Record<K, ResolvedSlotStyle>;
 
 function resolveStyles<K extends string>(
   slotKeys: readonly K[],
-  styles: StyleValue | Partial<Record<K, StyleValue>> | undefined
+  styles: Partial<Record<K, StyleValue>> | undefined
 ): Record<K, string> {
   const result = {} as Record<K, string>;
 
@@ -25,19 +25,14 @@ function resolveStyles<K extends string>(
     return result;
   }
 
-  if (typeof styles === 'string' || Array.isArray(styles)) {
-    for (const key of slotKeys) result[key] = key === 'root' ? cn(styles) : '';
-    return result;
-  }
-
   for (const key of slotKeys) {
-    result[key] = cn((styles as Partial<Record<K, StyleValue>>)[key]);
+    result[key] = cn(styles[key]);
   }
   return result;
 }
 
 export function createStylesResolver<K extends string>(slotKeys: readonly K[]) {
-  return (styles: StyleValue | Partial<Record<K, StyleValue>> | undefined): Record<K, string> =>
+  return (styles: Partial<Record<K, StyleValue>> | undefined): Record<K, string> =>
     resolveStyles(slotKeys, styles);
 }
 
@@ -68,11 +63,9 @@ function normalizeSlotStyleValue(value: SlotStyleValue | undefined): ResolvedSlo
 
 export function createStylePropsResolver<K extends string>(slotKeys: readonly K[]) {
   return (
-    styles: SlotStyleValue | Partial<Record<K, SlotStyleValue>> | undefined
+    styles: Partial<Record<K, SlotStyleValue>> | undefined
   ): ResolvedSlotStyles<K> => {
     const result = {} as ResolvedSlotStyles<K>;
-    const rootKey = 'root' as K;
-
     for (const key of slotKeys) {
       result[key] = { className: '' };
     }
@@ -81,20 +74,8 @@ export function createStylePropsResolver<K extends string>(slotKeys: readonly K[
       return result;
     }
 
-    if (typeof styles === 'string' || Array.isArray(styles) || isSlotStyleProps(styles)) {
-      result[rootKey] = normalizeSlotStyleValue(styles);
-      return result;
-    }
-
-    const hasSlotKey = slotKeys.some((key) => key in styles);
-
-    if (!hasSlotKey) {
-      result[rootKey] = normalizeSlotStyleValue(styles);
-      return result;
-    }
-
     for (const key of slotKeys) {
-      result[key] = normalizeSlotStyleValue((styles as Partial<Record<K, SlotStyleValue>>)[key]);
+      result[key] = normalizeSlotStyleValue(styles[key]);
     }
 
     return result;

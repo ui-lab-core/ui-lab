@@ -125,6 +125,21 @@ export type { SwitchProps, SwitchState } from "./components/Switch";
 export { Progress } from "./components/Progress";
 export type { ProgressProps } from "./components/Progress";
 
+export {
+  Skeleton,
+  SkeletonText,
+  SkeletonImage,
+  SKELETON_TEXT_GEOMETRY,
+  getSkeletonTextRowCount,
+} from "./components/Skeleton";
+export type {
+  SkeletonProps,
+  SkeletonTextProps,
+  SkeletonImageProps,
+  SkeletonDimension,
+  SkeletonTextSize,
+} from "./components/Skeleton";
+
 export { Slider } from "./components/Slider";
 export type { SliderProps, SliderState } from "./components/Slider";
 

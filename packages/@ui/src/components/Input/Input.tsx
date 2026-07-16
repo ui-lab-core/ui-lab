@@ -56,7 +56,7 @@ type InputActionSlots = {
 const resolveInputBaseStyles = createStylesResolver(['root', 'iconLeft', 'iconRight', 'stepperUp', 'stepperDown'] as const);
 
 function resolveInputStyles(styles: InputStylesProp | undefined) {
-  if (!styles || typeof styles === 'string' || Array.isArray(styles)) return resolveInputBaseStyles(styles);
+  if (!styles) return resolveInputBaseStyles(styles);
   const { root, icon, stepper } = styles;
 
   let iconLeft: StyleValue | undefined;
@@ -100,7 +100,7 @@ export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "siz
   actions?: InputAction[] | InputActionSlots;
   /** Hint content rendered inside a badge on the right side of the input, commonly used for keyboard shortcuts. */
   hint?: React.ReactNode;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: InputStylesProp;
   /** Hides the spinner controls for number inputs */
   "hide-controls"?: boolean;

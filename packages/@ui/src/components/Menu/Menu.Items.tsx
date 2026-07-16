@@ -19,19 +19,19 @@ const resolveMenuCheckboxItemBaseStyles = createStylesResolver(['root', 'indicat
 const resolveMenuRadioItemBaseStyles = createStylesResolver(['root', 'indicator'] as const);
 
 function resolveMenuItemStyles(styles: MenuItemProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuItemBaseStyles(styles)
+  if (!styles) return resolveMenuItemBaseStyles(styles)
   const { root } = styles
   return resolveMenuItemBaseStyles({ root })
 }
 
 function resolveMenuCheckboxItemStyles(styles: MenuCheckboxItemProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuCheckboxItemBaseStyles(styles)
+  if (!styles) return resolveMenuCheckboxItemBaseStyles(styles)
   const { root, indicator } = styles
   return resolveMenuCheckboxItemBaseStyles({ root, indicator })
 }
 
 function resolveMenuRadioItemStyles(styles: MenuRadioItemProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuRadioItemBaseStyles(styles)
+  if (!styles) return resolveMenuRadioItemBaseStyles(styles)
   const { root, indicator } = styles
   return resolveMenuRadioItemBaseStyles({ root, indicator })
 }

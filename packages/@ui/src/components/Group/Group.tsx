@@ -48,7 +48,7 @@ export interface GroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   value?: string
   /** Called when a button with a value prop is pressed */
   onChange?: (value: string) => void
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: GroupStylesProp
 }
 
@@ -74,7 +74,7 @@ const resolveGroupBaseStyles = createStylesResolver([
 ] as const)
 
 function resolveGroupStyles(styles: GroupStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveGroupBaseStyles(styles)
+  if (!styles) return resolveGroupBaseStyles(styles)
   const { root, item, button, input, select, expand } = styles
 
   let itemResolved: StyleValue | undefined
@@ -580,8 +580,6 @@ const GroupExpand = React.forwardRef<HTMLDivElement, GroupExpandProps>(
     const context = useGroupContext()
     const surfaceRef = React.useRef<HTMLDivElement>(null)
     const disabled = isDisabled ?? context.groupIsDisabled
-    const surfaceStyles = typeof stylesProp === "string" || Array.isArray(stylesProp) ? stylesProp : undefined
-    const expandStyles = surfaceStyles ? undefined : stylesProp
 
     React.useEffect(() => {
       context.registerFocusableSurface?.(surfaceRef)
@@ -594,13 +592,13 @@ const GroupExpand = React.forwardRef<HTMLDivElement, GroupExpandProps>(
       <div
         ref={surfaceRef}
         data-focus-surface="true"
-        className={cn("expand", context.groupVariant, css.expand, context.groupStyles.expand, surfaceStyles)}
+        className={cn("expand", context.groupVariant, css.expand, context.groupStyles.expand)}
       >
         <Expand
           ref={ref}
           {...props}
           className={className}
-          styles={expandStyles}
+          styles={stylesProp}
           isDisabled={disabled}
         />
       </div>

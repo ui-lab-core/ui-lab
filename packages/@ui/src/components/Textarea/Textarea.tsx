@@ -48,7 +48,7 @@ const resolveTextareaBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveTextareaStyles(styles: TextareaStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveTextareaBaseStyles(styles);
   }
 
@@ -97,7 +97,7 @@ export interface TextareaProps extends Omit<ComponentPropsWithoutRef<"textarea">
   maxCharacters?: number;
   /** Maximum height before the custom scrollbar activates. */
   maxHeight?: string;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TextareaStylesProp;
 }
 

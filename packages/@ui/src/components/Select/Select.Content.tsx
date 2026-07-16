@@ -38,7 +38,7 @@ export interface SelectContentProps extends React.PropsWithChildren {
   onSearch?: (value: string) => void
   /** Content shown below the search input when no searchable results match */
   emptyContent?: React.ReactNode
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectContentStylesProp;
 }
 
@@ -52,7 +52,7 @@ const resolveSelectContentBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveSelectContentStyles(styles: SelectContentStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectContentBaseStyles(styles)
+  if (!styles) return resolveSelectContentBaseStyles(styles)
   const { root, overlay, searchWrapper, searchInput, emptyState, listPaddingWrapper } = styles
   return resolveSelectContentBaseStyles({ root, overlay, searchWrapper, searchInput, emptyState, listPaddingWrapper })
 }
@@ -319,20 +319,61 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       </div>
     )
 
-    const bodyContent = shouldConstrainListHeight ? (
-      <Scroll
-        className="viewport"
-        maxHeight={scrollMaxHeight}
-        direction="vertical"
-        fade-y={!searchable}
-        inline
-        hide={false}
-      >
-        {listContent}
-      </Scroll>
-    ) : (
-      listContent
+    const bodyContent = (
+      <React.Fragment key="body">
+        {shouldConstrainListHeight ? (
+          <Scroll
+            className="viewport"
+            maxHeight={scrollMaxHeight}
+            direction="vertical"
+            fade-y={!searchable}
+            inline
+            hide={false}
+          >
+            {listContent}
+          </Scroll>
+        ) : (
+          listContent
+        )}
+      </React.Fragment>
     )
+
+    const searchContent = searchable ? (
+      <div key="search" className={cn(styles['search-wrapper'], resolved.searchWrapper)}>
+        <Input
+          ref={inputRef}
+          type="text"
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-autocomplete="list"
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value)
+            onSearch?.(e.target.value)
+          }}
+          onKeyDown={handleInputKeyDown}
+          placeholder={searchPlaceholder}
+          variant="ghost"
+          className={cn(styles['search-content-input'], resolved.searchInput)}
+        />
+      </div>
+    ) : null
+
+    const emptyStateContent = shouldShowEmptyState ? (
+      <div
+        key="empty-state"
+        className={cn('empty-state', styles['empty-state'], resolved.emptyState)}
+        role="status"
+        aria-live="polite"
+      >
+        {emptyContent}
+      </div>
+    ) : null
+
+    const panelContent = placement.startsWith('top')
+      ? [bodyContent, emptyStateContent, searchContent]
+      : [searchContent, emptyStateContent, bodyContent]
 
     return createPortal(
       <>
@@ -359,37 +400,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
               outline: 'none',
             }}
           >
-            {searchable && (
-              <div className={cn(styles['search-wrapper'], resolved.searchWrapper)}>
-                <Input
-                  ref={inputRef}
-                  type="text"
-                  role="combobox"
-                  aria-haspopup="listbox"
-                  aria-expanded={isOpen}
-                  aria-autocomplete="list"
-                  value={searchValue}
-                  onChange={(e) => {
-                    setSearchValue(e.target.value)
-                    onSearch?.(e.target.value)
-                  }}
-                  onKeyDown={handleInputKeyDown}
-                  placeholder={searchPlaceholder}
-                  variant="ghost"
-                  className={cn(styles['search-content-input'], resolved.searchInput)}
-                />
-              </div>
-            )}
-            {shouldShowEmptyState && (
-              <div
-                className={cn('empty-state', styles['empty-state'], resolved.emptyState)}
-                role="status"
-                aria-live="polite"
-              >
-                {emptyContent}
-              </div>
-            )}
-            {bodyContent}
+            {panelContent}
           </div>
         </div>
       </>,

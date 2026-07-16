@@ -23,18 +23,18 @@ export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
   isDismissible?: boolean;
   /** Called when the dismiss button is clicked */
   onDismiss?: () => void;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: BannerStylesProp;
 }
 
 interface BannerTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
-  styles?: StyleValue;
+  /** Keyed styles for the root. Use className for conventional root classes. */
+  styles?: StylesProp<{ root?: StyleValue }>;
 }
 
 interface BannerBodyProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
-  styles?: StyleValue;
+  /** Keyed styles for the root. Use className for conventional root classes. */
+  styles?: StylesProp<{ root?: StyleValue }>;
 }
 
 const bannerIcons = {
@@ -63,7 +63,7 @@ const BannerTitle = React.forwardRef<HTMLHeadingElement, BannerTitleProps>(
   ({ className, styles, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn("title", css.title, className, styles)}
+      className={cn("title", css.title, className, styles?.root)}
       {...props}
     />
   )
@@ -76,7 +76,7 @@ const BannerBody = React.forwardRef<HTMLParagraphElement, BannerBodyProps>(
   ({ className, styles, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn("body", css.body, className, styles)}
+      className={cn("body", css.body, className, styles?.root)}
       {...props}
     />
   )

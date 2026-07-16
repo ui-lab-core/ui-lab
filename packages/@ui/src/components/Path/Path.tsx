@@ -66,13 +66,13 @@ const resolvePathBaseStyles = createStylesResolver(["root", "list", "separator"]
 const resolvePathItemBaseStyles = createStylesResolver(["root", "link"] as const);
 
 function resolvePathStyles(styles: PathStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolvePathBaseStyles(styles);
+  if (!styles) return resolvePathBaseStyles(styles);
   const { root, list, separator } = styles;
   return resolvePathBaseStyles({ root, list, separator });
 }
 
 function resolvePathItemStyles(styles: PathItemStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolvePathItemBaseStyles(styles);
+  if (!styles) return resolvePathItemBaseStyles(styles);
   const { root, link } = styles;
   return resolvePathItemBaseStyles({ root, link });
 }
@@ -90,7 +90,7 @@ export interface PathItemProps {
   isDisabled?: boolean;
   /** Additional CSS class names applied to the item root. */
   className?: string;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: PathItemStylesProp;
 }
 
@@ -101,7 +101,7 @@ export interface PathProps {
   className?: string;
   /** Custom separator rendered between path items. */
   separator?: React.ReactNode;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: PathStylesProp;
 }
 

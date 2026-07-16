@@ -65,6 +65,7 @@ export interface SelectContextValue {
   triggerMode: SelectTriggerMode
   handleHoverIntent: (isHovering: boolean) => void
   mouseMoveDetectedRef: React.MutableRefObject<boolean>
+  triggerMouseDownRef: React.MutableRefObject<boolean>
   keyboardScrollIntentRef: React.MutableRefObject<boolean>
   markKeyboardNavigation: () => void
   moveFocusFromTrigger: (direction: 1 | -1) => boolean
@@ -123,14 +124,14 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   trigger?: SelectTriggerMode
   /** Custom filter predicate applied to the items array */
   filter?: (item: T) => boolean
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectStylesProp;
 }
 
 const resolveSelectBaseStyles = createStylesResolver(['root'] as const);
 
 function resolveSelectStyles(styles: SelectStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectBaseStyles(styles)
+  if (!styles) return resolveSelectBaseStyles(styles)
   const { root } = styles
   return resolveSelectBaseStyles({ root })
 }
@@ -167,6 +168,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     const wrapperRef = React.useRef<HTMLDivElement>(null)
     const contentRef = React.useRef<HTMLElement>(null)
     const mouseMoveDetectedRef = React.useRef(true)
+    const triggerMouseDownRef = React.useRef(false)
+    const openedOnMouseDownRef = React.useRef(false)
     const itemExtrasRef = React.useRef<Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>>(new Map())
     const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false)
     const [contentPlacement, setContentPlacement] = React.useState<"top" | "bottom">("bottom")
@@ -370,6 +373,12 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         if (isDisabled) return
         // Keyboard interactions are handled by onKeyDown to prevent conflicts
         if (e.pointerType !== 'keyboard') {
+          // A closed Select opens on mouse down. Do not immediately undo that
+          // state change when React Aria completes the same press on mouse up.
+          if (openedOnMouseDownRef.current) {
+            openedOnMouseDownRef.current = false
+            return
+          }
           setIsOpen(prev => !prev)
         }
       },
@@ -386,6 +395,15 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       'aria-expanded': isOpen,
       'aria-controls': isOpen ? contentId : undefined,
       'aria-disabled': isDisabled || undefined,
+      onMouseDown: (e: React.MouseEvent) => {
+        if (isDisabled || e.button !== 0) return
+
+        triggerMouseDownRef.current = true
+        openedOnMouseDownRef.current = !isOpen
+        if (!isOpen) {
+          setIsOpen(true)
+        }
+      },
       onKeyDown: (e: React.KeyboardEvent) => {
         if (!isOpen) {
           if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || (e.key === ' ' && !isDisabled)) {
@@ -422,6 +440,15 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         })
       },
     })
+
+    React.useEffect(() => {
+      const handleMouseUp = () => {
+        triggerMouseDownRef.current = false
+      }
+
+      window.addEventListener('mouseup', handleMouseUp)
+      return () => window.removeEventListener('mouseup', handleMouseUp)
+    }, [])
 
     React.useEffect(() => {
       if (autoFocus && triggerRef.current) {
@@ -516,6 +543,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
           triggerMode,
           handleHoverIntent,
           mouseMoveDetectedRef,
+          triggerMouseDownRef,
           keyboardScrollIntentRef,
           markKeyboardNavigation,
           moveFocusFromTrigger,

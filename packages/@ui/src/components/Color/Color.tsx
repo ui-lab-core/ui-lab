@@ -83,7 +83,7 @@ const resolveColorBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveColorStyles(styles: ColorStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveColorBaseStyles(styles);
+  if (!styles) return resolveColorBaseStyles(styles);
   const {
     provider,
     root,
@@ -765,7 +765,7 @@ export interface ColorTriggerProps
   position?: PopoverProps["position"];
   /** Picker content shown in the popover. Defaults to Color.Area. */
   area?: React.ReactNode;
-  /** Classes applied to the popover primitive slots. */
+  /** Classes applied to the popover primitive slots. The frame slot controls the picker shell padding. */
   popoverStyles?: PopoverProps["styles"];
   /** Whether to render a directional popover arrow. */
   showArrow?: boolean;
@@ -831,7 +831,10 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
       <Popover
         content={area ?? <ColorArea variant="popover" />}
         position={position}
-        styles={popoverStyles}
+        styles={{
+          ...popoverStyles,
+          frame: popoverStyles?.frame ?? "p-0",
+        }}
         showArrow={showArrow}
       >
         {trigger}

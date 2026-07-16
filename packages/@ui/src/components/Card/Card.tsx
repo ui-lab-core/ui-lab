@@ -23,7 +23,7 @@ interface CardStyleSlots {
   footer?: SlotStyleValue;
 }
 
-type CardStylesProp = CardStyleSlots | SlotStyleValue;
+type CardStylesProp = CardStyleSlots;
 
 const resolveCardBaseStyles = createStylePropsResolver(['root', 'header', 'body', 'footer'] as const);
 

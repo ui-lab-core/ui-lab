@@ -8,7 +8,6 @@ describe('Flex.responsive', () => {
     const container = renderFlex({
       containerQueryResponsive: true,
       className: 'outer-flex',
-      styles: { root: 'slot-root' },
       style: { marginTop: '24px' },
       id: 'responsive-flex',
       title: 'Responsive flex',
@@ -21,7 +20,6 @@ describe('Flex.responsive', () => {
 
     expect(wrapper).toHaveClass(styles['container-query-parent'])
     expect(wrapper).toHaveClass('outer-flex')
-    expect(wrapper).toHaveClass('slot-root')
     expect(wrapper).toHaveAttribute('data-container-responsive', 'true')
     expect(wrapper).toHaveAttribute('id', 'responsive-flex')
     expect(wrapper).toHaveAttribute('title', 'Responsive flex')

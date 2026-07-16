@@ -15,7 +15,7 @@ const resolveLabelBaseStyles = createStylesResolver(["root", "text", "requiredIn
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: LabelStylesProp;
   /** Whether to show a required asterisk indicator */
   required?: boolean;

@@ -99,7 +99,7 @@ const resolveTooltipBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveTooltipStyles(styles: TooltipStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveTooltipBaseStyles(styles);
+  if (!styles) return resolveTooltipBaseStyles(styles);
   const { root, trigger, content, frame, hint } = styles;
   return resolveTooltipBaseStyles({ root, trigger, content, frame, hint });
 }
@@ -128,7 +128,7 @@ export interface TooltipProps {
   showArrow?: boolean;
   /** Keyboard shortcut or hint rendered as a Badge at the end of the tooltip. An array renders its segments joined by a `+` divider. */
   hint?: HintValue;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TooltipStylesProp;
 }
 export interface TooltipState { open?: boolean }

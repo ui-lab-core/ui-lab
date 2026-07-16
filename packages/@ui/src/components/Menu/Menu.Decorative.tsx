@@ -11,19 +11,19 @@ const resolveMenuSeparatorBaseStyles = createStylesResolver(['root'] as const);
 const resolveMenuShortcutBaseStyles = createStylesResolver(['root'] as const);
 
 function resolveMenuLabelStyles(styles: MenuLabelProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuLabelBaseStyles(styles)
+  if (!styles) return resolveMenuLabelBaseStyles(styles)
   const { root } = styles
   return resolveMenuLabelBaseStyles({ root })
 }
 
 function resolveMenuSeparatorStyles(styles: MenuSeparatorProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuSeparatorBaseStyles(styles)
+  if (!styles) return resolveMenuSeparatorBaseStyles(styles)
   const { root } = styles
   return resolveMenuSeparatorBaseStyles({ root })
 }
 
 function resolveMenuShortcutStyles(styles: MenuShortcutProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuShortcutBaseStyles(styles)
+  if (!styles) return resolveMenuShortcutBaseStyles(styles)
   const { root } = styles
   return resolveMenuShortcutBaseStyles({ root })
 }

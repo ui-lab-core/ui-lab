@@ -29,7 +29,7 @@ const resolveProgressBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveProgressStyles(styles: ProgressStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveProgressBaseStyles(styles);
   }
   const { root, labelRow, label, value, track, range, thumb } = styles;
@@ -103,7 +103,7 @@ export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   "show-controls"?: boolean;
   /** Whether the progress is disabled */
   disabled?: boolean;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ProgressStylesProp;
 }
 

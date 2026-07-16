@@ -24,7 +24,6 @@ type AnchorStylesProp = StylesProp<AnchorStyleSlots>;
 const resolveAnchorBaseStyles = createStylesResolver(['root', 'underline', 'preview'] as const);
 
 function resolveAnchorStyles(styles: AnchorStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveAnchorBaseStyles(styles);
   return resolveAnchorBaseStyles(styles);
 }
 const ANCHOR_PREVIEW_DISPLAY_NAME = "Anchor.Preview";
@@ -160,7 +159,7 @@ export interface AnchorProps
   target?: string;
   /** Controls the underline treatment. */
   variant?: AnchorVariant;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: AnchorStylesProp;
   /** Preview content to show in a tooltip on hover. Use this in server components instead of <Anchor.Preview>. */
   preview?: React.ReactNode;

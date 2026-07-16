@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
-import { renderSelectWithItems, openSelect, closeSelect, getSelectTrigger, getSelectContent } from './Select.test-utils'
+import { fireEvent } from '@testing-library/react'
+import { renderSelectWithItems, openSelect, closeSelect, getSelectTrigger, getSelectContent, getSelectItems } from './Select.test-utils'
 import { createMockSelectItems, clickElement, pressArrowUp, pressEscape, hoverElement, unhoverElement, waitForOpen, waitForClose, waitForCondition } from '@/tests/utils'
 import { Select, Searchable } from '../'
 import { render as utilRender } from '@/tests/utils'
@@ -15,6 +16,24 @@ describe('Select.openClose', () => {
       await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true')
 
       expect(trigger.getAttribute('aria-expanded')).toBe('true')
+    })
+
+    it('opens on trigger mouse down and selects the hovered item on mouse up', () => {
+      const items = createMockSelectItems(3)
+      const onSelectionChange = vi.fn()
+      const container = renderSelectWithItems(items, { trigger: 'click', onSelectionChange })
+      const trigger = getSelectTrigger(container)
+
+      fireEvent.mouseDown(trigger, { button: 0 })
+
+      expect(trigger).toHaveAttribute('aria-expanded', 'true')
+
+      const option = getSelectItems()[1]
+      fireEvent.mouseEnter(option)
+      fireEvent.mouseUp(option, { button: 0 })
+
+      expect(onSelectionChange).toHaveBeenCalledWith(items[1].key)
+      expect(trigger).toHaveAttribute('aria-expanded', 'false')
     })
 
     it('closes on second trigger click', async () => {

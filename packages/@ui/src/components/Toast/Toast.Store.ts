@@ -45,7 +45,7 @@ export interface ToastProps {
   action?: React.ReactNode;
   /** Direction from which the toast enters during its entrance animation */
   spawnDirection?: ToastSpawnDirection;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ToastStylesProp;
 
   // Internal — set on ADD_TOAST, never changes

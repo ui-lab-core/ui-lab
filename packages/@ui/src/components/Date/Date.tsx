@@ -34,7 +34,7 @@ const dateStyleSlotKeys = ['root', 'header', 'day-headers', 'grid', 'day-cell'] 
 const resolveDateBaseStyles = createStylesResolver(dateStyleSlotKeys);
 
 function normalizeDateStyles(styles: DateStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return styles;
   }
 
@@ -89,7 +89,7 @@ export interface DateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   maxDate?: Date
   /** Month shown initially when no date is selected */
   defaultMonth?: Date;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: DateStylesProp;
 }
 export interface DateState { value?: Date | null }

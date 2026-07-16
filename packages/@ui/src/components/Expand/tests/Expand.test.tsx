@@ -1,9 +1,23 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { readFileSync } from 'node:fs'
 import { Expand } from '../Expand'
 import styles from '../Expand.module.css'
 
 describe('Expand', () => {
+  it('transitions the collapsing grid dimension in every direction', () => {
+    const css = readFileSync('src/components/Expand/Expand.module.css', 'utf8')
+
+    expect(css).toContain(
+      'transition: grid-template-rows 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));'
+    )
+    expect(css).toContain(
+      'transition: grid-template-columns 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));'
+    )
+    expect(css).not.toContain('animation: var(--open-animation);')
+    expect(css).not.toContain('animation: var(--closed-animation);')
+  })
+
   it('applies preset slot styles through the styles prop', () => {
     render(
       <Expand

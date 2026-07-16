@@ -24,13 +24,13 @@ const resolveMenuTriggerBaseStyles = createStylesResolver(['root'] as const);
 const resolveMenuContentBaseStyles = createStylesResolver(['root', 'list'] as const);
 
 function resolveMenuTriggerStyles(styles: MenuTriggerProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuTriggerBaseStyles(styles)
+  if (!styles) return resolveMenuTriggerBaseStyles(styles)
   const { root } = styles
   return resolveMenuTriggerBaseStyles({ root })
 }
 
 function resolveMenuContentStyles(styles: MenuContentProps["styles"]) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveMenuContentBaseStyles(styles)
+  if (!styles) return resolveMenuContentBaseStyles(styles)
   const { root, list } = styles
   return resolveMenuContentBaseStyles({ root, list })
 }

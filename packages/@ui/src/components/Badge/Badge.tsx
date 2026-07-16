@@ -46,7 +46,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   pill?: boolean;
   /** Numeric count to display; replaces children when provided */
   count?: number;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: BadgeStylesProp;
 }
 
@@ -90,7 +90,7 @@ function DismissButton({ onDismiss, variant, className }: DismissButtonProps) {
 const resolveBadgeBaseStyles = createStylesResolver(['root', 'icon', 'iconLeft', 'iconRight', 'dismiss'] as const);
 
 function resolveBadgeStyles(styles: BadgeStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveBadgeBaseStyles(styles);
+  if (!styles) return resolveBadgeBaseStyles(styles);
   const { root, icon, iconLeft, iconRight, dismiss } = styles;
   if (!icon || typeof icon === "string" || Array.isArray(icon)) {
     return resolveBadgeBaseStyles({ root, icon: icon as StyleValue | undefined, iconLeft, iconRight, dismiss });

@@ -50,7 +50,7 @@ const resolveExpandBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveExpandStyles(stylesProp: ExpandStylesProp | undefined) {
-  if (!stylesProp || typeof stylesProp === "string" || Array.isArray(stylesProp)) {
+  if (!stylesProp) {
     return resolveExpandBaseStyles(stylesProp);
   }
 
@@ -316,7 +316,7 @@ export interface ExpandProps
   isDisabled?: boolean;
   /** Compound sub-components or content nodes */
   children?: React.ReactNode;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ExpandStylesProp;
 }
 

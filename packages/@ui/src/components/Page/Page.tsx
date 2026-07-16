@@ -16,7 +16,7 @@ type PageStylesProp = StylesProp<PageStyleSlots>;
 const resolvePageBaseStyles = createStylesResolver(['root'] as const);
 
 interface PageRootProps extends PageProps {
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: PageStylesProp;
 }
 

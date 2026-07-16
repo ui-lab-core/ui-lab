@@ -7,6 +7,9 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Skeleton as SkeletonRoot,
+  SkeletonImage,
+  SkeletonText,
 } from '../dist/ui-lab-ui.es.js';
 
 const Card = Object.assign(function Card(props) {
@@ -18,3 +21,12 @@ const Card = Object.assign(function Card(props) {
 });
 
 export { Card };
+
+const Skeleton = Object.assign(function Skeleton(props) {
+  return React.createElement(SkeletonRoot, props);
+}, {
+  Text: SkeletonText,
+  Image: SkeletonImage,
+});
+
+export { Skeleton };

@@ -35,7 +35,7 @@ const resolveSliderBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveSliderStyles(styles: SliderStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) {
+  if (!styles) {
     return resolveSliderBaseStyles(styles);
   }
 
@@ -73,7 +73,7 @@ export interface SliderProps
   "aria-label"?: string;
   /** ID of an element that labels the slider. */
   "aria-labelledby"?: string;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SliderStylesProp;
 }
 

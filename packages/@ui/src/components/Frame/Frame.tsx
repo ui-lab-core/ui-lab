@@ -28,7 +28,7 @@ export interface FrameProps extends React.HTMLAttributes<HTMLDivElement> {
   edges?: "all" | "top" | "bottom" | "left" | "right";
   /** Where the border stroke sits relative to the frame bounds, like Figma's stroke position */
   strokeAlign?: "center" | "inside" | "outside";
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: FrameStylesProp;
 }
 

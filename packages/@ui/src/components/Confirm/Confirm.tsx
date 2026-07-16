@@ -75,7 +75,7 @@ export interface ConfirmProps {
   confirmText?: string
   /** Milliseconds after which the inline confirm auto-resets to idle state */
   autoResetAfter?: number
-  /** Classes applied to root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ConfirmStylesProp
 }
 
@@ -124,6 +124,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
       autoResetAfter,
       open,
       state: controlledState,
+      styles: stylesProp,
     },
     ref
   ) => {
@@ -133,6 +134,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
     const [countdown, setCountdown] = useState(countdownSeconds || 0)
     const [inputValue, setInputValue] = useState("")
     const [showDialogMode, setShowDialogMode] = useState(false)
+    const resolvedStyles = resolveConfirmBaseStyles(stylesProp)
 
     // Determine actual mode
     const effectiveMode = mode === "auto"
@@ -213,7 +215,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
 
     if (effectiveMode === "inline" && !showDialogMode) {
       return (
-        <div ref={ref} className={cn(styles.confirm, styles.container)}>
+        <div ref={ref} className={cn(styles.confirm, styles.container, resolvedStyles.root, resolvedStyles.container)}>
           {!isConfirming ? (
             <Button
               onClick={handleTrigger}
@@ -223,15 +225,15 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
               {triggerLabel}
             </Button>
           ) : (
-            <Card className={cn(styles.card)}>
-              <Card.Body className={cn(styles.body, styles['body-compact'])}>
+            <Card className={cn(styles.card, resolvedStyles.card)}>
+              <Card.Body className={cn(styles.body, styles['body-compact'], resolvedStyles.body)}>
                 {description && (
-                  <p className={styles.description}>{description}</p>
+                  <p className={cn(styles.description, resolvedStyles.description)}>{description}</p>
                 )}
                 {error && (
-                  <p className={styles['error-message']}>{error}</p>
+                  <p className={cn(styles['error-message'], resolvedStyles.errorMessage)}>{error}</p>
                 )}
-                <div className={cn(styles.actions, styles['actions-inline'])}>
+                <div className={cn(styles.actions, styles['actions-inline'], resolvedStyles.actions)}>
                   <Button
                     size="sm"
                     variant="primary"
@@ -259,12 +261,12 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
     // Dialog mode
     if (showDialogMode) {
       return (
-        <div ref={ref} className={styles.confirm}>
+        <div ref={ref} className={cn(styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
           {isConfirming && (
             <div className={styles['dialog-overlay']}>
-              <Card className={cn(styles['dialog-card'])}>
-                <Card.Header className={styles.body}>
-                  <div className={styles.header}>
+              <Card className={cn(styles['dialog-card'], resolvedStyles.card)}>
+                <Card.Header className={cn(styles.body, resolvedStyles.body)}>
+                  <div className={cn(styles.header, resolvedStyles.header)}>
                     {icon || config.icon}
                     <div className={styles['header-content']}>
                       <h4 className={styles['header-title']}>
@@ -273,14 +275,15 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                     </div>
                   </div>
                 </Card.Header>
-                <Card.Body className={cn(styles.body)}>
+                <Card.Body className={cn(styles.body, resolvedStyles.body)}>
                   {description && (
-                    <p className={styles.description}>{description}</p>
+                    <p className={cn(styles.description, resolvedStyles.description)}>{description}</p>
                   )}
                   {destructiveActionWarning && (
                     <div className={cn(
                       styles['warning-box'],
-                      config.warningBoxClass
+                      config.warningBoxClass,
+                      resolvedStyles.warningBox
                     )}>
                       {destructiveActionWarning}
                     </div>
@@ -303,15 +306,15 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                           setError(null)
                         }}
                         placeholder={confirmText}
-                        className={styles.input}
+                        className={cn(styles.input, resolvedStyles.input)}
                       />
                     </div>
                   )}
                   {error && (
-                    <p className={styles['error-message']}>{error}</p>
+                    <p className={cn(styles['error-message'], resolvedStyles.errorMessage)}>{error}</p>
                   )}
                 </Card.Body>
-                <Card.Footer className={cn(styles.actions, styles['actions-dialog'])}>
+                <Card.Footer className={cn(styles.actions, styles['actions-dialog'], resolvedStyles.actions)}>
                   <Button
                     size="sm"
                     variant="outline"
@@ -337,7 +340,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
     }
 
     return (
-      <div ref={ref} className={cn(styles.confirm, styles.container)}>
+      <div ref={ref} className={cn(styles.confirm, styles.container, resolvedStyles.root, resolvedStyles.container)}>
         <Button
           onClick={handleTrigger}
           isDisabled={disabled || isLoading}

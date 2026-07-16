@@ -84,7 +84,7 @@ export interface CodeProps {
   preHighlightedLight?: string;
   /** Pre-highlighted HTML string for dark mode to skip client-side Shiki processing */
   preHighlightedDark?: string;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: CodeStylesProp;
 }
 

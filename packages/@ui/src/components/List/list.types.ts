@@ -85,7 +85,7 @@ export interface ListContainerProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onNavigate?: ListNavigateCallbacks;
   /** Value of the externally highlighted item; the container scrolls the `[data-highlighted="true"]` item into view when this changes */
   highlighted?: string | number | null;
-  /** Classes applied to the root or named slots. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ListStylesProp;
   children: React.ReactNode;
 }
@@ -112,7 +112,7 @@ export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
   /** Whether the item is in a selected state */
   selected?: boolean;
-  /** Classes applied to the root or named slots. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ListStylesProp;
   actions?: Array<ListActionDef | React.ReactNode>;
   children: React.ReactNode;

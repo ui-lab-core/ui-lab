@@ -36,7 +36,7 @@ export interface SelectTriggerProps extends Omit<React.ButtonHTMLAttributes<HTML
   icon?: { prefix?: React.ReactNode; chevron?: React.ReactNode }
   /** Visual style variant; "ghost" removes the default button background */
   variant?: 'ghost'
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectTriggerStylesProp;
 }
 
@@ -50,7 +50,7 @@ const resolveSelectTriggerBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined) {
-  if (!styles || typeof styles === 'string' || Array.isArray(styles)) return resolveSelectTriggerBaseStyles(styles);
+  if (!styles) return resolveSelectTriggerBaseStyles(styles);
 
   const { root, valueSection, icon, iconSection } = styles;
   let iconLeft: StyleValue | undefined;
@@ -165,7 +165,7 @@ export interface SearchableTriggerStyleSlots {
 export type SearchableTriggerStylesProp = StylesProp<SearchableTriggerStyleSlots>;
 
 export interface SearchableTriggerProps extends Omit<InputProps, 'value' | 'onChange' | 'styles'> {
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SearchableTriggerStylesProp;
 }
 
@@ -178,7 +178,7 @@ const resolveSearchableTriggerBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveSearchableTriggerStyles(styles: SearchableTriggerStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSearchableTriggerBaseStyles(styles)
+  if (!styles) return resolveSearchableTriggerBaseStyles(styles)
   const { root, valueSection, input, iconSection, icon } = styles
   return resolveSearchableTriggerBaseStyles({ root, valueSection, input, iconSection, icon })
 }

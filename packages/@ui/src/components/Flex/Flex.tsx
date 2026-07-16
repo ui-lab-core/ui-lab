@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { cn } from "@/lib/utils";
 import { resolveGapStep, type GapSize } from "@/lib/gap";
 import styles from "./Flex.module.css";
 
@@ -21,13 +20,6 @@ type FlexAlign =
   | "center"
   | "stretch"
   | "baseline";
-interface FlexStyleSlots {
-  root?: StyleValue;
-}
-
-type FlexStylesProp = StylesProp<FlexStyleSlots>;
-
-const resolveFlexBaseStyles = createStylesResolver(['root'] as const);
 
 export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Direction of the flex container */
@@ -42,8 +34,6 @@ export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   align?: FlexAlign;
   /** Wraps the flex container in a container query parent for breakpoint-aware responsiveness */
   containerQueryResponsive?: boolean;
-  /** Classes applied to the root slot. Accepts a string, cn()-compatible array, or slot object. */
-  styles?: FlexStylesProp;
 }
 
 const directionMap = {
@@ -78,7 +68,6 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
     {
       className,
       style,
-      styles: stylesProp,
       direction,
       wrap,
       gap,
@@ -90,7 +79,6 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
     },
     ref
   ) => {
-    const resolved = resolveFlexBaseStyles(stylesProp);
     const layoutStyle = gap
       ? ({ "--flex-gap-step": resolveGapStep(gap) } as React.CSSProperties)
       : undefined;
@@ -98,7 +86,7 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
       return (
         <div
           ref={ref}
-          className={cn(styles["container-query-parent"], className, resolved.root)}
+          className={cn(styles["container-query-parent"], className)}
           style={style}
           data-container-responsive="true"
           {...props}
@@ -134,8 +122,7 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
           wrap && wrapMap[wrap],
           justify && justifyMap[justify],
           align && alignMap[align],
-          className,
-          resolved.root
+          className
         )}
         style={layoutStyle ? { ...style, ...layoutStyle } : style}
         data-direction={direction ?? "row"}

@@ -62,7 +62,7 @@ export interface SelectSubTriggerProps extends React.PropsWithChildren {
   className?: string
   /** Accessible text value used for keyboard navigation registration; defaults to children string */
   textValue?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectSubTriggerStylesProp
 }
 
@@ -73,7 +73,7 @@ export interface SelectSubContentProps extends React.PropsWithChildren {
   sideOffset?: number
   /** Offset in pixels along the cross axis for submenu panel alignment */
   alignOffset?: number
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectSubContentStylesProp
 }
 
@@ -100,7 +100,7 @@ export type SelectSubContentStylesProp = StylesProp<SelectSubContentStyleSlots>
 const resolveSelectSubTriggerBaseStyles = createStylesResolver(["root", "iconRight"] as const)
 
 function resolveSelectSubTriggerStyles(styles: SelectSubTriggerStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectSubTriggerBaseStyles(styles)
+  if (!styles) return resolveSelectSubTriggerBaseStyles(styles)
   const { root, icon } = styles
 
   let iconRight: StyleValue | undefined
@@ -118,7 +118,7 @@ function resolveSelectSubTriggerStyles(styles: SelectSubTriggerStylesProp | unde
 const resolveSelectSubContentBaseStyles = createStylesResolver(["root", "overlay", "list", "listPaddingWrapper"] as const)
 
 function resolveSelectSubContentStyles(styles: SelectSubContentStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectSubContentBaseStyles(styles)
+  if (!styles) return resolveSelectSubContentBaseStyles(styles)
   const { root, overlay, list, listPaddingWrapper } = styles
   return resolveSelectSubContentBaseStyles({ root, overlay, list, listPaddingWrapper })
 }

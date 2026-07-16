@@ -8,6 +8,26 @@ import gsap from "gsap";
 
 const GAP = 14;
 const MAX_VISIBLE = 3;
+const STACK_REFLOW_DURATION = 0.55;
+const STANDALONE_DISMISS_OFFSET = 20;
+
+interface StackTarget {
+  id: string;
+  element: HTMLElement;
+  y: number;
+  scale: number;
+  opacity: number;
+}
+
+function readGsapNumber(
+  element: HTMLElement,
+  property: "y" | "scale" | "opacity",
+  fallback: number,
+) {
+  const value = gsap.getProperty(element, property);
+  const number = typeof value === "number" ? value : Number.parseFloat(String(value));
+  return Number.isFinite(number) ? number : fallback;
+}
 
 const positionConfig: Record<
   ToastPosition,
@@ -70,6 +90,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
   const isDismissingCountRef = useRef(0);
   const isMouseInContainerRef = useRef(false);
   const prevVisibleIdsRef = useRef<Set<string>>(new Set());
+  const pendingDismissalsRef = useRef<Map<string, () => void>>(new Map());
 
   const handleMouseEnter: React.MouseEventHandler<HTMLDivElement> = () => {
     isMouseInContainerRef.current = true;
@@ -86,9 +107,10 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     hoverTimeoutRef.current = setTimeout(() => setIsHovering(false), 200);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const currentActiveIds = new Set(toasts.map(t => t.id));
     const openToasts = toasts.filter(t => t.open);
+    const targets: StackTarget[] = [];
 
     let cumulativeY = 0;
     let activeIndex = 0; // Track visual index separately from array index
@@ -97,8 +119,6 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
       const el = toastRefsMap.current.get(toast.id);
       if (!el) return;
 
-      // If the toast is closing, ignore it in the layout calculations.
-      // This lets the Toast component's internal GSAP handle the exit undisturbed.
       if (!toast.open) {
         el.style.pointerEvents = "none";
         return;
@@ -143,11 +163,86 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         gsap.set(el, { y: startY, opacity: 0, scale: scale * 0.9 });
       }
 
-      gsap.to(el, { y, scale, opacity, duration: 0.45, ease: "expo.out", overwrite: "auto" });
+      targets.push({ id: toast.id, element: el, y, scale, opacity });
       el.style.pointerEvents = pointerEvents;
 
       activeIndex++; // Only increment for active toasts
     });
+
+    const targetById = new Map(targets.map((target) => [target.id, target]));
+    const motionTargets = [...targets];
+    const completedDismissals: Array<() => void> = [];
+
+    // A newly closed wrapper joins the exact same vertical tween as the stack.
+    // Its target is derived from the following toast's *actual* remaining
+    // displacement, so interrupted/restarted animations cannot drift or overlap.
+    toasts.forEach((toast, index) => {
+      if (toast.open || !prevVisibleIdsRef.current.has(toast.id)) return;
+
+      const element = toastRefsMap.current.get(toast.id);
+      if (!element) return;
+
+      const followingToast = toasts
+        .slice(index + 1)
+        .find((candidate) => candidate.open && targetById.has(candidate.id));
+      const followingTarget = followingToast ? targetById.get(followingToast.id) : undefined;
+      const previousY = readGsapNumber(element, "y", 0);
+
+      let displacement = STANDALONE_DISMISS_OFFSET;
+      if (followingTarget) {
+        const followingY = readGsapNumber(
+          followingTarget.element,
+          "y",
+          followingTarget.y,
+        );
+        displacement = followingTarget.y - followingY;
+      }
+
+      motionTargets.push({
+        id: toast.id,
+        element,
+        y: previousY + displacement,
+        scale: readGsapNumber(element, "scale", 1),
+        opacity: readGsapNumber(element, "opacity", 1),
+      });
+
+      const innerElement = element.querySelector<HTMLElement>('[role="alert"]');
+      if (innerElement) {
+        motionTargets.push({
+          id: `${toast.id}:content`,
+          element: innerElement,
+          y: readGsapNumber(innerElement, "y", 0),
+          scale: readGsapNumber(innerElement, "scale", 1),
+          opacity: 0,
+        });
+      }
+
+      const completeDismissal = pendingDismissalsRef.current.get(toast.id);
+      if (completeDismissal) {
+        pendingDismissalsRef.current.delete(toast.id);
+        completedDismissals.push(completeDismissal);
+      }
+    });
+
+    if (motionTargets.length > 0) {
+      gsap.to(motionTargets.map((target) => target.element), {
+        y: (index: number) => motionTargets[index].y,
+        opacity: (index: number) => motionTargets[index].opacity,
+        duration: STACK_REFLOW_DURATION,
+        ease: "expo.out",
+        overwrite: "auto",
+        onComplete: () => completedDismissals.forEach((complete) => complete()),
+      });
+    }
+
+    if (targets.length > 0) {
+      gsap.to(targets.map((target) => target.element), {
+        scale: (index: number) => targets[index].scale,
+        duration: STACK_REFLOW_DURATION,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+    }
 
     if (containerRef.current) {
       let totalHeight = 0;
@@ -164,7 +259,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
 
       gsap.to(containerRef.current, {
         height: totalHeight,
-        duration: 0.45,
+        duration: STACK_REFLOW_DURATION,
         ease: "expo.out",
         overwrite: "auto",
       });
@@ -239,6 +334,9 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
                 isDismissingCountRef.current++;
                 // FIX: Removed `setIsHovering(true)` from here.
                 // Auto-dismissing should NOT force the stack open.
+              }}
+              onDismissAnimation={(complete) => {
+                pendingDismissalsRef.current.set(toast.id, complete);
               }}
               onDismissEnd={() => {
                 isDismissingCountRef.current--;

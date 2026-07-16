@@ -32,7 +32,7 @@ export interface ButtonStyleSlots {
   hint?: SlotStyleValue;
 }
 
-export type ButtonStylesProp = SlotStyleValue | ButtonStyleSlots;
+export type ButtonStylesProp = ButtonStyleSlots;
 
 const resolveButtonBaseStyles = createStylePropsResolver(['root', 'iconLeft', 'iconRight', 'hint'] as const);
 
@@ -40,15 +40,8 @@ function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconS
   return typeof icon === 'object' && icon !== null && ('left' in icon || 'right' in icon);
 }
 
-function isButtonStyleSlots(styles: ButtonStylesProp): styles is ButtonStyleSlots {
-  return typeof styles === 'object'
-    && styles !== null
-    && !Array.isArray(styles)
-    && ('root' in styles || 'icon' in styles || 'hint' in styles);
-}
-
 function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
-  if (!styles || !isButtonStyleSlots(styles)) return resolveButtonBaseStyles(styles)
+  if (!styles) return resolveButtonBaseStyles(styles)
   const { root, icon, hint } = styles;
 
   let iconLeft: SlotStyleValue | undefined;
@@ -87,7 +80,7 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   href?: string;
   /** Browsing context for the anchor variant (e.g. "_blank") */
   target?: React.HTMLAttributeAnchorTarget;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ButtonStylesProp;
   /** Forces the visual hover state. Set by Menu.Trigger to keep the trigger highlighted while the menu is open. */
   "data-hovered"?: "true" | "false";

@@ -95,7 +95,7 @@ export interface DividerProps
   spacing?: "none" | "sm" | "md" | "lg";
   /** Tailwind background color utility (e.g. "bg-background-700/40") overriding the default line color */
   color?: string;
-  /** Classes applied to the root slot. Accepts a string, cn()-compatible array, or slot object. */
+  /** Keyed styles for the root. Use className for conventional root classes. */
   styles?: DividerStylesProp;
 }
 

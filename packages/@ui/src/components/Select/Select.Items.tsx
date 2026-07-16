@@ -19,14 +19,14 @@ export interface SelectGroupProps extends React.PropsWithChildren {
   title?: string
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectGroupStylesProp;
 }
 
 const resolveSelectGroupBaseStyles = createStylesResolver(['root', 'title'] as const);
 
 function resolveSelectGroupStyles(styles: SelectGroupStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectGroupBaseStyles(styles)
+  if (!styles) return resolveSelectGroupBaseStyles(styles)
   const { root, title } = styles
   return resolveSelectGroupBaseStyles({ root, title })
 }
@@ -62,14 +62,14 @@ export interface SelectValueProps {
   icon?: React.ReactNode
   /** Custom render function receiving the selected item, or static content to display */
   children?: ((selectedItem: SelectItemData | null) => React.ReactNode) | React.ReactNode
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectValueStylesProp;
 }
 
 const resolveSelectValueBaseStyles = createStylesResolver(['root', 'icon', 'text'] as const);
 
 function resolveSelectValueStyles(styles: SelectValueStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectValueBaseStyles(styles)
+  if (!styles) return resolveSelectValueBaseStyles(styles)
   const { root, icon, text } = styles
   return resolveSelectValueBaseStyles({ root, icon, text })
 }
@@ -133,7 +133,7 @@ export interface SelectItemProps extends React.PropsWithChildren {
   icon?: React.ReactNode
   /** Secondary descriptive text displayed below the item label */
   description?: React.ReactNode
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectItemStylesProp;
 }
 
@@ -146,7 +146,7 @@ const resolveSelectItemBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveSelectItemStyles(styles: SelectItemStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectItemBaseStyles(styles)
+  if (!styles) return resolveSelectItemBaseStyles(styles)
   const { root, iconWrapper, contentWrapper, text, description } = styles
   return resolveSelectItemBaseStyles({ root, iconWrapper, contentWrapper, text, description })
 }
@@ -165,6 +165,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
       focusedKey,
       setFocusedKey,
       mouseMoveDetectedRef,
+      triggerMouseDownRef,
       visibleKeys,
     } = useSelectContext()
     const finalTextValue = textValue || String(children)
@@ -204,6 +205,13 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         aria-selected={isSelected}
         className={cn('item', styles.item, hasDescription && styles['item-with-description'], className, resolved.root)}
         onClick={handleClick}
+        onMouseUp={() => {
+          // Native Select behavior: a press that starts on the trigger may be
+          // dragged into the open list and committed by releasing over an item.
+          if (!triggerMouseDownRef.current) return
+          triggerMouseDownRef.current = false
+          handleClick()
+        }}
         onMouseEnter={() => {
           if (isDisabled) return
           mouseMoveDetectedRef.current = true
@@ -247,14 +255,14 @@ export interface SelectListProps extends React.PropsWithChildren {
   className?: string
   /** Custom filter predicate applied to the items array */
   filter?: (item: any) => boolean
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectListStylesProp;
 }
 
 const resolveSelectListBaseStyles = createStylesResolver(['root'] as const);
 
 function resolveSelectListStyles(styles: SelectListStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectListBaseStyles(styles)
+  if (!styles) return resolveSelectListBaseStyles(styles)
   const { root } = styles
   return resolveSelectListBaseStyles({ root })
 }

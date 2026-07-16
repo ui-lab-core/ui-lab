@@ -128,7 +128,7 @@ export interface CommandProps {
   embedded?: boolean;
   /** Additional CSS class for the palette dialog */
   className?: string;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, or slot object. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: CommandStylesProp;
   /** List of command items to display */
   items?: CommandItem[];

@@ -12,14 +12,14 @@ export type SelectSeparatorStylesProp = StylesProp<SelectSeparatorStyleSlots>
 export interface SelectSeparatorProps extends React.PropsWithChildren {
   /** Additional CSS class names */
   className?: string
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectSeparatorStylesProp
 }
 
 const resolveSelectSeparatorBaseStyles = createStylesResolver(["root"] as const)
 
 function resolveSelectSeparatorStyles(styles: SelectSeparatorStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveSelectSeparatorBaseStyles(styles)
+  if (!styles) return resolveSelectSeparatorBaseStyles(styles)
   const { root } = styles
   return resolveSelectSeparatorBaseStyles({ root })
 }

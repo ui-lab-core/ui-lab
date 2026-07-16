@@ -283,10 +283,10 @@ describe('Group.Input focus ring target', () => {
     })
   })
 
-  it('applies string styles on Group.Expand to the grouped surface wrapper', () => {
+  it('applies className to the nested Expand root', () => {
     render(
       <Group>
-        <Group.Expand title="Filters" styles="outer-surface-style" />
+        <Group.Expand title="Filters" className="outer-surface-style" />
       </Group>
     )
 
@@ -294,8 +294,8 @@ describe('Group.Input focus ring target', () => {
     const groupedSurface = expandTrigger.closest(`.${css.expand}`)
     const nestedExpand = expandTrigger.closest(`.${expandCss.expand}`)
 
-    expect(groupedSurface).toHaveClass('outer-surface-style')
-    expect(nestedExpand).not.toHaveClass('outer-surface-style')
+    expect(groupedSurface).not.toHaveClass('outer-surface-style')
+    expect(nestedExpand).toHaveClass('outer-surface-style')
   })
 
   it('keeps object styles on Group.Expand targeting nested Expand slots', () => {

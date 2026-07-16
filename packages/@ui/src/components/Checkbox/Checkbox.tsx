@@ -36,7 +36,7 @@ const resolveCheckboxBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveCheckboxStyles(styles: CheckboxStylesProp | undefined) {
-  if (!styles || typeof styles === "string" || Array.isArray(styles)) return resolveCheckboxBaseStyles(styles);
+  if (!styles) return resolveCheckboxBaseStyles(styles);
   const { root, checkbox, icon, label } = styles;
 
   let iconCheckmark: StyleValue | undefined = styles["icon-checkmark"];
@@ -93,7 +93,7 @@ export interface CheckboxProps
   indeterminate?: boolean;
   /** Ref for the underlying input. The forwarded ref remains attached to the wrapper element. */
   inputRef?: React.Ref<HTMLInputElement>;
-  /** Classes applied to the root or named slots. Accepts a string, cn()-compatible array, slot object, or array of any of those. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: CheckboxStylesProp;
 }
 

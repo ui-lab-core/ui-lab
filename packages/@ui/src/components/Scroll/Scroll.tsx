@@ -58,7 +58,7 @@ const resolveScrollBaseStyles = createStylesResolver([
 ] as const);
 
 function resolveScrollStyles(styles: ScrollStylesProp | undefined) {
-  if (!styles || typeof styles === 'string' || Array.isArray(styles)) return resolveScrollBaseStyles(styles);
+  if (!styles) return resolveScrollBaseStyles(styles);
   const { root, content, track, thumb } = styles;
   return resolveScrollBaseStyles({ root, content, track, thumb });
 }
