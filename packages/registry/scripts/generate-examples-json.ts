@@ -7,6 +7,9 @@ const __dirname = path.dirname(__filename);
 
 const REGISTRY_SRC_PATH = path.resolve(__dirname, '../src');
 const COMPONENTS_PATH = path.resolve(REGISTRY_SRC_PATH, 'components');
+const PRIVATE_COMPONENTS_PATH =
+  process.env.UI_LAB_PRIVATE_COMPONENT_EXAMPLES_ROOT ??
+  path.resolve(__dirname, '../../../../private/packages/library/src/components');
 
 interface ExampleMetadata {
   title: string;
@@ -19,7 +22,7 @@ interface ExamplesJson {
 }
 
 function extractMetadataFromTsx(content: string): { title: string; description: string } | null {
-  const metadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
+  const metadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?})\s*;?/);
   if (!metadataMatch) return null;
 
   try {
@@ -37,12 +40,48 @@ function extractMetadataFromTsx(content: string): { title: string; description: 
 function stripMetadata(content: string): string {
   // Remove the metadata export and return only the component
   return content
-    .replace(/export\s+const\s+metadata\s*=\s*{[\s\S]*?};\n\n?/, '')
+    .replace(/export\s+const\s+metadata\s*=\s*{[\s\S]*?}\s*;?\n\n?/, '')
     .trim();
 }
 
+function normalizeUiLabImports(content: string): string {
+  const pattern = /import\s+\{([^}]+)\}\s+from\s+['"]ui-lab-components\/[^'"]+['"];?\n?/g;
+  const imports: string[] = [];
+  let firstIndex = -1;
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(content)) !== null) {
+    if (firstIndex === -1) firstIndex = match.index;
+    imports.push(...match[1].split(',').map((name) => name.trim()).filter(Boolean));
+  }
+
+  if (firstIndex === -1) return content;
+
+  const withoutSubpathImports = content.replace(pattern, '');
+  const uniqueImports = Array.from(new Set(imports));
+  const rootImport = `import { ${uniqueImports.join(', ')} } from 'ui-lab-components';\n`;
+
+  return `${withoutSubpathImports.slice(0, firstIndex)}${rootImport}${withoutSubpathImports.slice(firstIndex)}`;
+}
+
+function getPrivateComponentId(componentPath: string): string | null {
+  const metadataPath = path.join(componentPath, 'metadata.json');
+  if (!fs.existsSync(metadataPath)) return null;
+
+  const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8')) as { id?: unknown };
+  return typeof metadata.id === 'string' ? metadata.id : null;
+}
+
 function generateExamplesJson(componentPath: string): boolean {
-  const examplesDir = path.join(componentPath, 'examples');
+  const componentId = getPrivateComponentId(componentPath);
+  const privateExamplesDir = componentId
+    ? path.join(PRIVATE_COMPONENTS_PATH, componentId)
+    : null;
+  const publicExamplesDir = path.join(componentPath, 'examples');
+  const examplesDir =
+    privateExamplesDir && fs.existsSync(privateExamplesDir)
+      ? privateExamplesDir
+      : publicExamplesDir;
 
   if (!fs.existsSync(examplesDir)) {
     return false;
@@ -69,7 +108,7 @@ function generateExamplesJson(componentPath: string): boolean {
       continue;
     }
 
-    const code = stripMetadata(content);
+    const code = normalizeUiLabImports(stripMetadata(content));
     const key = file.replace('.tsx', '');
 
     examples[key] = {

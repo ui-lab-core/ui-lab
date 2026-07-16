@@ -11,7 +11,7 @@ export const componentOrder: Record<ComponentCategory, string[]> = {
   action: ['button', 'confirm', 'command'],
   input: ['date', 'checkbox', 'color', 'input', 'radio', 'select', 'slider', 'switch', 'textarea'],
   information: ['banner', 'badge', 'label', 'tooltip'],
-  feedback: ['popover', 'progress', 'toast'],
+  feedback: ['popover', 'progress', 'skeleton', 'toast'],
   navigation: ['path', 'menu', 'tabs', 'anchor'],
   container: ['page', 'card', 'modal', 'scroll', 'mask', 'frame'],
   display: ['table', 'code'],

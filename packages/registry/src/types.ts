@@ -128,6 +128,7 @@ export interface PricingInfo {
   price: number | null;
   features?: string[];
   purchaseUrl?: string;
+  gumroadProductId?: string;
 }
 
 export interface ElementPackageMetadata {
@@ -139,6 +140,7 @@ export interface ElementPackageMetadata {
   layout?: Partial<LayoutConfig>;
   getPreview?: () => React.ComponentType<object>;
   pricing?: PricingInfo;
+  gumroadProductId?: string;
   bundledIn?: string[];
   status?: ContentStatus;
 }
@@ -166,6 +168,7 @@ export interface SectionMetadata {
   layout?: Partial<LayoutConfig>;
   fullPageLayout?: boolean;
   pricing?: PricingInfo;
+  gumroadProductId?: string;
   status?: ContentStatus;
 }
 
@@ -193,6 +196,7 @@ export interface StarterMetadata {
   fullPageLayout?: boolean;
   pricing?: PricingInfo;
   bundledElements?: string[];
+  gumroadProductId?: string;
   status?: ContentStatus;
 }
 

@@ -1,0 +1,32 @@
+{
+  "01-skeleton-rectangles": {
+    "title": "Rectangle Geometry",
+    "description": "The default rectangle alongside an explicit numeric width and height.",
+    "code": "import { Skeleton } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-4\">\n      <Skeleton />\n      <Skeleton w={180} h={20} />\n    </div>\n  );\n}"
+  },
+  "02-skeleton-paragraph": {
+    "title": "Paragraph Rows",
+    "description": "A four-line body placeholder with a natural shorter final row.",
+    "code": "import { Skeleton } from 'ui-lab-components';\n\nexport default function Example() {\n  return <Skeleton.Text lines={4} lastLineWidth=\"70%\" w={320} />;\n}"
+  },
+  "03-skeleton-height-derived": {
+    "title": "Height-Derived Rows",
+    "description": "Numeric total height deterministically chooses how many complete text rows fit.",
+    "code": "import { Skeleton } from 'ui-lab-components';\n\nexport default function Example() {\n  return <Skeleton.Text h={200} w={320} />;\n}"
+  },
+  "04-skeleton-semantic-sizes": {
+    "title": "Semantic Text Sizes",
+    "description": "One-line heading and display placeholders use semantic row geometry.",
+    "code": "import { Skeleton } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-5\">\n      <Skeleton.Text size=\"heading\" w={150} />\n      <Skeleton.Text size=\"display\" w={240} />\n      <Skeleton.Text size=\"heading\" scale={1.25} w={180} />\n    </div>\n  );\n}"
+  },
+  "05-skeleton-image": {
+    "title": "Image Ratio",
+    "description": "A media placeholder using width and aspect ratio instead of image semantics.",
+    "code": "import { Skeleton } from 'ui-lab-components';\n\nexport default function Example() {\n  return <Skeleton.Image w={320} ratio=\"16/9\" />;\n}"
+  },
+  "06-skeleton-article": {
+    "title": "Accessible Article Loading State",
+    "description": "One accessible, animated region composes image, heading, metadata, and body placeholders.",
+    "code": "import { Skeleton } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <article\n      aria-busy=\"true\"\n      aria-label=\"Loading article\"\n      data-skeleton-animate\n      className=\"flex w-full max-w-md flex-col gap-5\"\n    >\n      <Skeleton.Image w=\"100%\" ratio=\"16/9\" />\n      <div className=\"flex items-center gap-3\">\n        <Skeleton w={36} h={36} className=\"rounded-full\" />\n        <Skeleton.Text lines={2} w={140} scale={0.75} />\n      </div>\n      <Skeleton.Text size=\"heading\" w=\"82%\" />\n      <Skeleton.Text lines={4} />\n    </article>\n  );\n}"
+  }
+}

@@ -38,6 +38,7 @@ export const componentDependencies: Record<string, ComponentDeps> = {
   'toast': { npm: [], internal: [] },
   'tooltip': { npm: ['@floating-ui/react-dom'], internal: [] },
   'scroll': { npm: [], internal: [] },
+  'skeleton': { npm: [], internal: [] },
 }
 
 /**

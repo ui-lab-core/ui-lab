@@ -35,6 +35,7 @@ export const sourceUrls: Record<string, string> = {
   "progress":     `${BASE}/Progress`,
   "radio":        `${BASE}/Radio`,
   "scroll":       `${BASE}/Scroll`,
+  "skeleton":     `${BASE}/Skeleton`,
   "select":       `${BASE}/Select`,
   "slider":       `${BASE}/Slider`,
   "switch":       `${BASE}/Switch`,

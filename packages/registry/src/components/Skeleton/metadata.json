@@ -1,0 +1,64 @@
+{
+  "id": "skeleton",
+  "name": "Skeleton",
+  "description": "Decorative content placeholders with rectangle, text, and media shapes.",
+  "category": "feedback",
+  "source": {
+    "packageName": "ui-lab-components",
+    "exportName": "Skeleton",
+    "packagePath": "dist/index.d.ts"
+  },
+  "relatedComponents": [
+    "progress",
+    "card"
+  ],
+  "tags": [
+    "feedback",
+    "placeholder",
+    "loading",
+    "ssr"
+  ],
+  "accessibility": {
+    "hasAriaSupport": true,
+    "notes": [
+      "Visual placeholders are aria-hidden by default",
+      "Consumers own aria-busy and the accessible label on the loading region",
+      "Animation honors prefers-reduced-motion"
+    ]
+  },
+  "usage": {
+    "summary": "Use Skeleton to preserve content geometry while content is unavailable, redacted, or loading.",
+    "whenToUse": [
+      "Server-rendered placeholders that must hydrate without changing shape",
+      "Text blocks whose line count or numeric total height is known",
+      "Media and card layouts that should retain their eventual dimensions"
+    ],
+    "whenNotToUse": [
+      "To communicate measurable completion; use Progress instead",
+      "As an individually announced progress indicator",
+      "With responsive height measurement; provide explicit lines instead"
+    ],
+    "rules": [
+      {
+        "type": "do",
+        "title": "Animate the region once",
+        "description": "Put data-skeleton-animate on a common ancestor so every descendant shape follows the active theme animation."
+      },
+      {
+        "type": "do",
+        "title": "Label meaningful loading regions",
+        "description": "When placeholders represent loading, apply aria-busy and an accessible label to their containing section."
+      },
+      {
+        "type": "avoid",
+        "title": "Do not measure after hydration",
+        "description": "Use numeric h for deterministic height-derived rows or explicit lines for responsive layouts."
+      },
+      {
+        "type": "prefer",
+        "title": "Prefer semantic text sizes",
+        "description": "Start with body, heading, or display and reserve scale for local geometry adjustments."
+      }
+    ]
+  }
+}
