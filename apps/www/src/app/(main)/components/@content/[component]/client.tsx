@@ -119,12 +119,12 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
               </div>
               <div className="h-10 flex gap-3 flex-row mb-4 mt-4">
                 {sourceUrl && (
-                  <Button icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" styles="px-2 h-9" onClick={() => window.open(sourceUrl, '_blank')}>
+                  <Button icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" className="px-2 h-9" onClick={() => window.open(sourceUrl, '_blank')}>
                     Source
                   </Button>
                 )}
                 {reactAriaUrl && (
-                  <Button icon={<ReactAriaSvg />} variant="ghost" size="sm" styles="px-2 h-9" onClick={() => window.open(reactAriaUrl, '_blank')}>
+                  <Button icon={<ReactAriaSvg />} variant="ghost" size="sm" className="px-2 h-9" onClick={() => window.open(reactAriaUrl, '_blank')}>
                     React Aria
                   </Button>
                 )}

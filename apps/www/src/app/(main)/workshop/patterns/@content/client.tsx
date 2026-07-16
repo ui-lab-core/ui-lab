@@ -3,7 +3,6 @@ import React from 'react';
 import type { LayoutConfig } from '@ui-lab-core/library/catalog';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import { GenericContentGrid } from '@/features/workshop/components/content-grid';
-import { GridCTA } from '@/features/landing/components/grid-cta';
 import { getCardPreviewComponent } from '@/features/patterns/lib/get-pattern-preview';
 
 type PatternGridItem = {
@@ -29,7 +28,7 @@ export default function PatternsPage({
   }
 
   return (
-    <ContentIndex cta={<GridCTA contentType="patterns" />}>
+    <ContentIndex>
       <GenericContentGrid
         items={patterns}
         basePath="/workshop/patterns"

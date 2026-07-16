@@ -13,7 +13,6 @@ import {
   type SectionGridItem,
 } from '@/features/sections/lib/section-grid-data';
 import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover, WaitlistModalClient, useWaitlistModal } from '@/features/workshop';
-import { GridCTA } from '@/features/landing/components/grid-cta';
 import { getCardPreviewComponent as getSectionCardPreviewComponent } from '@/features/sections/lib/get-section-preview';
 
 interface SectionsPageProps {
@@ -154,7 +153,6 @@ function SectionsPageContent({
           </div>
         </>
       }
-      cta={<GridCTA contentType="sections" />}
     >
       <GenericContentGrid
         items={filteredSections}

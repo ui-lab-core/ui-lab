@@ -54,12 +54,6 @@ export const comingSoonComponents: ComingSoonComponent[] = [
     category: "information",
   },
   {
-    id: "skeleton",
-    name: "Skeleton",
-    description: "Renders placeholder shapes that mirror content while loading.",
-    category: "feedback",
-  },
-  {
     id: "loading",
     name: "Loading",
     description: "Displays an animated indicator to communicate ongoing activity.",

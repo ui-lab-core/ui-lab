@@ -183,3 +183,5 @@ export const elementPreviews: Record<string, React.ComponentType<object>> = {
     </div>
   ),
 };
+
+elementPreviews.treeview = elementPreviews["tree-view"];

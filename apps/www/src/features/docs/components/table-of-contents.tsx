@@ -278,7 +278,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
                     onClick={() => handleClick(item.id)}
                     className={cn(
                       "block w-full my-0.25 text-left font-medium px-2 py-1.5 rounded-sm cursor-pointer overflow-hidden",
-                      "transition-colors duration-450 ease-out",
+                      "transition-colors ease-out",
                       "hover:duration-0",
 
                       item.level === 3 && "pl-6",
@@ -286,8 +286,8 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
                       item.level && item.level > 4 && "pl-14",
 
                       activeId === item.id
-                        ? "text-foreground-50 bg-background-800"
-                        : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50"
+                        ? "duration-0 text-foreground-50 bg-background-800"
+                        : "duration-300 text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50"
                     )}
                   >
                     <span className="tracking-(--letter-spacing-md) text-xs whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">

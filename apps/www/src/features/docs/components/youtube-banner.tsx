@@ -5,13 +5,14 @@ import { useState } from "react";
 interface YouTubeBannerProps {
   videoId: string;
   title: string;
+  imageSrc?: string;
 }
 
-export function YouTubeBanner({ videoId, title }: YouTubeBannerProps) {
+export function YouTubeBanner({ videoId, title, imageSrc }: YouTubeBannerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="p-4 aspect-7/3 border-b border-background-700/40 w-full text-sm font-medium">
+    <div className="p-4 aspect-6/3 border-b border-background-700/40 w-full text-sm font-medium">
       <div className="relative w-full h-full overflow-hidden rounded-md border border-background-700 bg-background-900/20">
         {isPlaying ? (
           <iframe
@@ -31,7 +32,7 @@ export function YouTubeBanner({ videoId, title }: YouTubeBannerProps) {
           >
             <img
               className="absolute inset-0 h-full w-full object-cover"
-              src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
+              src={imageSrc ?? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
               alt=""
               loading="eager"
               fetchPriority="high"

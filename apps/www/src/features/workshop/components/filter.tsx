@@ -53,7 +53,7 @@ export function ElementsFilterPopover({
       }}
       content={
         <Flex direction="column" gap="md">
-          <Flex align="center" justify="between" styles="gap-3">
+          <Flex align="center" justify="between" className="gap-3">
             <div>
               <h3 className="text-sm font-semibold text-foreground-50">Filters</h3>
               {activeFilterCount > 0 && (
@@ -68,7 +68,7 @@ export function ElementsFilterPopover({
                   variant="ghost"
                   size="sm"
                   onPress={onClearAll}
-                  styles="text-foreground-400 hover:text-foreground-100"
+                  className="text-foreground-400 hover:text-foreground-100"
                 >
                   Clear
                 </Button>
@@ -78,7 +78,7 @@ export function ElementsFilterPopover({
                 size="sm"
                 onPress={() => setIsOpen(false)}
                 aria-label="Close filters"
-                styles="min-h-11 min-w-11 px-0 text-foreground-400 hover:bg-background-800 hover:text-foreground-100"
+                className="min-h-11 min-w-11 px-0 text-foreground-400 hover:bg-background-800 hover:text-foreground-100"
               >
                 <FaX className="size-3" />
               </Button>
@@ -95,12 +95,12 @@ export function ElementsFilterPopover({
                 size="sm"
                 onPress={() => onCategoryChange(null)}
                 aria-pressed={selectedCategory === null}
-                styles={cn(
+                styles={{ root: cn(
                   'w-full justify-start text-left',
                   selectedCategory === null
                     ? 'bg-background-700 text-foreground-200'
                     : 'text-foreground-400 hover:bg-background-800 hover:text-foreground-100',
-                )}
+                ) }}
               >
                 All
               </Button>
@@ -111,12 +111,12 @@ export function ElementsFilterPopover({
                   size="sm"
                   onPress={() => onCategoryChange(category)}
                   aria-pressed={selectedCategory === category}
-                  styles={cn(
+                  styles={{ root: cn(
                     'w-full justify-start text-left',
                     selectedCategory === category
                       ? 'bg-background-700 text-foreground-200'
                       : 'text-foreground-400 hover:text-foreground-100',
-                  )}
+                  ) }}
                 >
                   {category}
                 </Button>
@@ -124,7 +124,7 @@ export function ElementsFilterPopover({
             </Grid>
           </Flex>
 
-          <Flex direction="column" gap="xs" styles="border-t border-background-700 pt-4">
+          <Flex direction="column" gap="xs" className="border-t border-background-700 pt-4">
             <p className="text-xs font-medium text-foreground-400">
               Tags
             </p>
@@ -139,12 +139,12 @@ export function ElementsFilterPopover({
                     size="sm"
                     onPress={() => toggleTag(tag)}
                     aria-pressed={isSelected}
-                    styles={cn(
+                    styles={{ root: cn(
                       'border text-xs',
                       isSelected
                         ? 'border-background-600 bg-background-700 text-foreground-200'
                         : 'border-background-700 text-foreground-400 hover:border-background-600 hover:bg-background-700 hover:text-foreground-200',
-                    )}
+                    ) }}
                   >
                     {tag}
                   </Button>
@@ -158,17 +158,17 @@ export function ElementsFilterPopover({
       <Button
         variant='secondary'
         size="sm"
-        styles={cn(
+        styles={{ root: cn(
           'border',
           activeFilterCount > 0
             ? 'bg-background-700 bg-background-800 text-foreground-300 hover:border-accent-400'
             : 'border-background-700 bg-background-900 text-foreground-300 hover:border-background-600 hover:bg-background-800',
           className
-        )}
+        ) }}
       >
         <span className="text-sm font-medium">Filters</span>
         {activeFilterCount > 0 && (
-          <Badge variant="default" count={activeFilterCount} pill styles="ml-1 bg-background-600 text-foreground-50" />
+          <Badge variant="default" count={activeFilterCount} pill className="ml-1 bg-background-600 text-foreground-50" />
         )}
       </Button>
     </Popover>

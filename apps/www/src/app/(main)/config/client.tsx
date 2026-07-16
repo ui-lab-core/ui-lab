@@ -98,7 +98,7 @@ function PreviewCanvas() {
   ];
 
   return (
-    <Grid styles="p-4" columns={{ sm: 1, md: 2, xl: 3 }} rows="masonry" alignItems="start" gap="md">
+    <Grid className="p-4" columns={{ sm: 1, md: 2, xl: 3 }} rows="masonry" alignItems="start" gap="md">
       <ExampleCard>
         <Flex direction="column" className="gap-3">
           <Input placeholder="you@example.com" icon={<SiGithub size={14} />} />
@@ -367,7 +367,7 @@ function ExportContent({
     <Flex direction="column" className="gap-4">
       <Flex align="start" justify="between" className="gap-3">
         <Flex direction="column" className="gap-2">
-          <Label size="sm" styles="font-semibold text-foreground-300">
+          <Label size="sm" className="font-semibold text-foreground-300">
             Export bundle
           </Label>
           <span className="text-sm text-foreground-400">5 files · {bundleSizeLabel}</span>
@@ -582,7 +582,7 @@ export default function ConfigPage() {
       maxWidth="none"
       centered={false}
       fullscreen
-      styles="bg-background-950 text-foreground-100 space-y-6"
+      className="bg-background-950 text-foreground-100 space-y-6"
     >
       <div className="grid w-full xl:grid-cols-[27rem_minmax(0,1fr)]">
         <SettingsSidebar

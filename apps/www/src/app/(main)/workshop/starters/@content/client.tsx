@@ -4,7 +4,6 @@ import { getAllStarters } from '@ui-lab-core/library/catalog';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import { GenericContentGrid } from '@/features/workshop/components/content-grid';
 import { getLayoutConfig as getStarterLayoutConfig, getPreviewComponent as getStarterPreview } from '@/features/starters';
-import { GridCTA } from '@/features/landing/components/grid-cta';
 import { WaitlistModalClient, useWaitlistModal } from '@/features/workshop';
 
 function StartersPageContent() {
@@ -19,7 +18,7 @@ function StartersPageContent() {
   }
 
   return (
-    <ContentIndex cta={<GridCTA contentType="starters" />}>
+    <ContentIndex>
       <GenericContentGrid
         items={allStarters}
         basePath="/workshop/starters"

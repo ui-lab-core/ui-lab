@@ -27,7 +27,7 @@ function HeroSection() {
                 Your agent's favorite UI Library.
               </h2>
               <div className="flex w-fit gap-4 mt-6 mb-6 md:mt-8 md:mb-0">
-                <Button styles="px-8" size="sm" variant="primary" href="/docs" >
+                <Button className="px-8" size="sm" variant="primary" href="/docs" >
                   Get Started
                 </Button>
                 <Anchor href="/components">

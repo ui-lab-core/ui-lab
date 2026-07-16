@@ -3,6 +3,7 @@
 import React from "react";
 import {
   getElementPreview,
+  getElementPreviewConfig,
   listElements as listPrivateElements,
   type ElementSourceEntry,
 } from "@ui-lab-core/library";
@@ -34,6 +35,7 @@ import { progressDetail } from "ui-lab-registry/components/Progress";
 import { radioDetail } from "ui-lab-registry/components/Radio";
 import { commandDetail } from "ui-lab-registry/components/Command";
 import { scrollDetail } from "ui-lab-registry/components/Scroll";
+import { skeletonDetail } from "ui-lab-registry/components/Skeleton";
 import { selectDetail } from "ui-lab-registry/components/Select";
 import { sliderDetail } from "ui-lab-registry/components/Slider";
 import { switchDetail } from "ui-lab-registry/components/Switch";
@@ -163,6 +165,7 @@ const componentDetails: Record<string, ComponentDetail> = {
   gallery: galleryDetail,
   frame: frameDetail,
   scroll: scrollDetail,
+  skeleton: skeletonDetail,
   list: listDetail,
   panel: panelDetail,
   code: codeDetail,
@@ -174,9 +177,12 @@ function isPublicFreeComponentExample(entry: ElementSourceEntry, componentId: st
     entry.previewEligible &&
     entry.groupPath[0] === componentId &&
     entry.visibility === "public" &&
-    entry.access === "free" &&
-    !entry.id.endsWith("-interactive")
+    entry.access === "free"
   );
+}
+
+function isInteractiveExample(id: string) {
+  return id.endsWith("-interactive");
 }
 
 function getPrivateComponentExamples(componentId: string): ComponentDetail["examples"] {
@@ -199,12 +205,19 @@ function getPrivateComponentExamples(componentId: string): ComponentDetail["exam
         return [];
       }
 
+      const previewConfig = getElementPreviewConfig(entry.package, entry.id);
+
       return [{
         id: entry.id,
         title: entry.displayName,
         description: entry.description,
         code: entry.code,
         preview: React.createElement(Preview),
+        controls: previewConfig?.controls,
+        factory: previewConfig?.factory,
+        renderPreview: previewConfig?.renderPreview,
+        previewLayout: previewConfig?.previewLayout,
+        resizable: previewConfig?.resizable,
       }];
     });
 }
@@ -222,12 +235,33 @@ function withPrivateComponentExamples(detail: ComponentDetail): ComponentDetail 
   }
 
   const privateExampleIds = new Set(privateExamples.map((example) => example.id));
+  const staticHero = detail.examples.find((example) => example.id === "preview");
+  const heroEasingControl = staticHero?.controls?.find(
+    (control) => control.name === "easing",
+  );
+
+  const interactiveExamples = privateExamples
+    .filter((example) => isInteractiveExample(example.id))
+    .map((example) =>
+      heroEasingControl &&
+      !example.controls?.some((control) => control.name === "easing")
+        ? { ...example, controls: [...(example.controls ?? []), heroEasingControl] }
+        : example,
+    );
+  const otherExamples = privateExamples.filter(
+    (example) => !isInteractiveExample(example.id),
+  );
 
   return {
     ...detail,
     examples: [
-      ...detail.examples.filter((example) => !privateExampleIds.has(example.id)),
-      ...privateExamples,
+      ...interactiveExamples,
+      ...detail.examples.filter(
+        (example) =>
+          !privateExampleIds.has(example.id) &&
+          !(interactiveExamples.length > 0 && example.id === "preview"),
+      ),
+      ...otherExamples,
     ],
   };
 }

@@ -170,9 +170,8 @@ export default function Header({
                 <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
                   <Button
                     variant="ghost"
-                    className="text-foreground-300 hover:text-foreground-300 transition-colors"
+                    className="p-2 text-foreground-300 transition-colors hover:text-foreground-300"
                     aria-label="Command palette"
-                    styles="p-2"
                     icon={{ left: <LuSearch strokeWidth={3.0} size={16} /> }}
                     onClick={() => setIsCommandPaletteOpen(true)}
                   />

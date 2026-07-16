@@ -10,8 +10,13 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <DocsLayout
-      // Disabled for now
-      banner={<YouTubeBanner videoId="VSYQLmGf3To" title="UI Lab YouTube video" />}
+      banner={
+        <YouTubeBanner
+          videoId="VSYQLmGf3To"
+          title="Introduction to UI Lab"
+          imageSrc="/assets/thumbnail.png"
+        />
+      }
     >
       {children}
     </DocsLayout>

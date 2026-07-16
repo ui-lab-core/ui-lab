@@ -38,7 +38,7 @@ export default function NotFound() {
             <Logo className="h-15 w-15" />
             <span className="ml-[-4px]">4</span>
           </span>
-          <Divider orientation="vertical" styles="my-1" />
+          <Divider orientation="vertical" className="my-1" />
           <div className="text-left">
             <h4 className="text-foreground-50">Page not found.</h4>
             <p className="text-sm text-foreground-300">

@@ -83,7 +83,7 @@ export function CopyComponentPage({ componentId, component, grouped = false }: {
   };
 
   return (
-    <Group.Expand styles="w-full">
+    <Group.Expand className="w-full">
       <Expand.Trigger className="flex flex-col rounded-none border-b border-background-700">
         <Flex className="h-12 cursor-pointer">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">

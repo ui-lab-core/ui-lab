@@ -68,6 +68,7 @@ export const ColorsPanel = memo(
           <Select
             selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
             defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}
+            className="w-full max-w-68"
             onSelectionChange={(key) => onCodeThemeChange(key as CodeThemeOptionId)}
           >
             <Select.Trigger className="w-full">

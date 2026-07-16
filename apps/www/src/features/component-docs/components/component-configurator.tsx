@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Code } from "@/features/docs/components/code-display/code";
 import { DEVICE_PRESETS, PreviewContainer, calculateVariantFromWidth } from "@/features/preview";
-import { Button, Divider, Group, Scroll } from "ui-lab-components";
+import { Button, Divider, Flex, Group, Scroll } from "ui-lab-components";
 import { Select } from "ui-lab-components";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
@@ -56,7 +56,10 @@ interface ComponentConfiguratorProps {
     code: string;
   }>;
   controls?: ControlDef[];
-  factory?: (props: Record<string, unknown>) => { preview: React.ReactNode; code: string };
+  factory?: (
+    props: Record<string, unknown>,
+    onStateChange?: (updates: Record<string, unknown>) => void,
+  ) => { preview: React.ReactNode; code: string };
   renderPreview?: (props: RenderPreviewProps) => React.ReactNode;
   customRenderer?: (context: RenderContext) => React.ReactNode;
   hidePreviewToggle?: boolean;
@@ -107,7 +110,19 @@ export function ComponentConfigurator({
   const [controlValues, setControlValues] = useState<Record<string, ControlValue>>(initialControlValues);
   const [selectedEasing, setSelectedEasing] = useState<EasingKey>("snappyPop");
   const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.desktop);
-  const factoryResult = factory ? factory(controlValues) : null;
+
+  const handleControlChange = (name: string, value: ControlValue) => {
+    setControlValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleStateChange = (updates: Record<string, unknown>) => {
+    setControlValues(updates as Record<string, ControlValue>);
+  };
+
+  const factoryResult = factory ? factory(controlValues, handleStateChange) : null;
   const hasCode = Boolean(factoryResult || code || tabs.length > 0);
 
   const allTabs = hasCode && !factoryResult
@@ -118,20 +133,13 @@ export function ComponentConfigurator({
   const currentCode = factoryResult ? factoryResult.code : (allTabs[activeTab]?.code ?? code ?? "");
   const previewVariant = calculateVariantFromWidth(previewWidth);
 
-  const handleControlChange = (name: string, value: ControlValue) => {
-    setControlValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const PreviewRenderer = renderPreview;
   const CustomRenderer = customRenderer;
   const previewContent = (
-    <Scroll styles={{ track: "pr-6" }} inline maxHeight="40rem">
+    <Scroll className="h-full" styles={{ track: "pr-6" }} inline maxHeight="40rem">
       <div
         className={cn(
-          "flex w-full mx-auto min-h-80",
+          "flex h-full w-full mx-auto min-h-80",
           previewLayout === "center" ? "items-center justify-center" : "flex-col"
         )}
         style={{ "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties}
@@ -195,8 +203,8 @@ export function ComponentConfigurator({
       )
       }
 
-      <div className="flex rounded-sm border border-background-700 rounded-b-none flex-col md:flex-row h-full md:items-center">
-        <div className="h-full border-background-700 flex-1 min-w-0 overflow-hidden">
+      <div className="flex rounded-sm border border-background-700 rounded-b-none flex-col md:flex-row md:items-stretch">
+        <div className="border-background-700 flex-1 min-w-0 overflow-hidden md:self-stretch">
           {!hidePreviewToggle && resizable && (
             <PreviewContainer
               deviceVariant={previewVariant}
@@ -214,7 +222,7 @@ export function ComponentConfigurator({
           )}
 
           {!hidePreviewToggle && !resizable && (
-            <div className="rounded-sm">
+            <div className="h-full rounded-sm">
               {previewContent}
             </div>
           )}
@@ -243,13 +251,14 @@ export function ComponentConfigurator({
                     </label>
                     {control.type === "select" && (
                       <Select
+                        className="w-full"
                         selectedKey={String(controlValues[control.name] ?? "")}
                         defaultValue={control.options?.find(opt => opt.value === controlValues[control.name])?.label ?? control.options?.[0]?.label ?? ""}
                         onSelectionChange={(key) =>
                           handleControlChange(control.name, key)
                         }
                       >
-                        <Select.Trigger>
+                        <Select.Trigger className="w-full">
                           <Select.Value />
                         </Select.Trigger>
                         <Select.Content>
@@ -351,13 +360,14 @@ export function ComponentConfigurator({
                     Interaction Ease
                   </label>
                   <Select
+                    className="w-full"
                     selectedKey={selectedEasing}
                     defaultValue={EASING_FUNCTIONS[selectedEasing]?.name || ""}
                     onSelectionChange={(key) =>
                       setSelectedEasing(key as EasingKey)
                     }
                   >
-                    <Select.Trigger>
+                    <Select.Trigger className="w-full">
                       <div className="flex items-center gap-2">
                         <EasingPreview easing={selectedEasing} size="sm" className="text-accent-500" />
                         <span>{EASING_FUNCTIONS[selectedEasing].name}</span>

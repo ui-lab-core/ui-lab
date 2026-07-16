@@ -23,7 +23,7 @@ export function OpenPage({ componentId }: { componentId?: string }) {
   ];
 
   return (
-    <Group.Expand styles="w-full">
+    <Group.Expand className="w-full">
       <Expand.Trigger className="rounded-none">
         <Flex className="h-12 cursor-pointer border-b border-background-700">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">

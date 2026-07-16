@@ -1,5 +1,4 @@
 import { getAllPackages } from '@ui-lab-core/library/catalog';
-import { GridCTA } from '@/features/landing/components/grid-cta';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import { Metadata } from 'next';
 import { generateMetadata as buildMetadata } from '@/shared/lib/metadata';
@@ -15,7 +14,7 @@ export default function ElementsPage() {
   const serializablePackages = getAllPackages().map(({ getPreview: _getPreview, ...rest }) => rest);
 
   return (
-    <ContentIndex cta={<GridCTA contentType="elements" />}>
+    <ContentIndex>
       <PackagesGridClient packages={serializablePackages} />
     </ContentIndex>
   );

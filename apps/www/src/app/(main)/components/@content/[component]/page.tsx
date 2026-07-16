@@ -8,7 +8,7 @@ const componentIds = [
   "button", "input", "label", "select", "textarea",
   "checkbox", "radio", "badge", "tooltip", "popover", "form",
   "toast", "modal", "tabs", "menu", "switch", "slider",
-  "progress", "card", "command", "confirm", "divider", "fold",
+  "progress", "skeleton", "card", "command", "confirm", "divider", "fold",
   "group", "flex", "grid", "table", "breadcrumbs", "scroll", "gallery"
 ];
 
