@@ -14,31 +14,6 @@ export const metadata: Metadata = {
   description: "Browse UI Lab sections",
 };
 
-type PageProps = {
-  searchParams?: Promise<SearchParams>;
-};
-
-type SearchParams = Record<string, string | string[] | undefined>;
-
-function getSearchParam(
-  params: SearchParams,
-  key: string,
-): string {
-  const value = params[key];
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
-}
-
-function parseFilters(params: SearchParams): SectionGridFilters {
-  const tags = getSearchParam(params, "tags");
-
-  return {
-    searchQuery: getSearchParam(params, "q"),
-    sortBy: getSearchParam(params, "sort") || "default",
-    selectedCategory: getSearchParam(params, "category") || null,
-    selectedTags: tags ? tags.split(",").filter(Boolean) : [],
-  };
-}
-
 function buildLayoutConfigs(
   sections: SectionGridItem[],
 ): Record<string, LayoutConfig> {
@@ -50,9 +25,13 @@ function buildLayoutConfigs(
   );
 }
 
-export default async function Page({ searchParams }: PageProps) {
-  const params = (await searchParams) ?? {};
-  const initialFilters = parseFilters(params);
+export default function Page() {
+  const initialFilters: SectionGridFilters = {
+    searchQuery: "",
+    sortBy: "default",
+    selectedCategory: null,
+    selectedTags: [],
+  };
   const allSections = getAllSections() as SectionGridItem[];
   const initialSections = filterSections(allSections, initialFilters);
 
