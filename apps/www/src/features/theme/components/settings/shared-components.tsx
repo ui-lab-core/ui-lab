@@ -20,7 +20,10 @@ import {
   Color,
 } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
-import { colorFromHue } from "../../lib/color/set-color";
+import {
+  colorFromHue,
+  type ThemeColorType,
+} from "../../lib/color/set-color";
 
 const MICRO_LABEL = "text-sm font-semibold text-foreground-400";
 const VALUE_LABEL = "text-sm text-foreground-300";
@@ -47,14 +50,7 @@ interface GlobalSliderProps {
 }
 
 export interface ColorRowProps {
-  type:
-  | "background"
-  | "foreground"
-  | "accent"
-  | "success"
-  | "danger"
-  | "warning"
-  | "info";
+  type: ThemeColorType;
   color: OklchColor;
   isExpanded: boolean;
   onToggle: () => void;
@@ -74,7 +70,7 @@ interface ColorPickerProps {
   color: OklchColor;
   onChange: (color: OklchColor) => void;
   hueRange?: HueRange;
-  type: string;
+  type: ThemeColorType;
 }
 
 export const SliderControl = memo(
