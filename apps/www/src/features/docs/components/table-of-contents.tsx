@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
-import { Divider, Scroll } from "ui-lab-components";
+import { Divider } from "ui-lab-components/divider";
+import { Scroll } from "ui-lab-components/scroll";
 import { DOCS_MANIFEST } from "../lib/generated-docs-manifest";
-import { FaFileLines, FaList } from "@/shared/icons/fa6";
+import { FaList } from "@/shared/icons/fa6";
 
 export interface TableOfContentsItem {
   id: string;
@@ -173,48 +174,58 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
     };
   }, [filterVisibleHeadings, mode]);
 
-  const findActiveHeading = useCallback(() => {
+  useEffect(() => {
     if (visibleItems.length === 0) return;
-    const scrollOffset = window.innerHeight * 0.20;
-    const headingPositions: { id: string; top: number }[] = [];
-    for (const item of visibleItems) {
+    const elements = visibleItems.flatMap((item) => {
       const element = document.getElementById(item.id);
-      if (element) {
-        headingPositions.push({
-          id: item.id,
-          top: element.getBoundingClientRect().top,
-        });
-      }
-    }
-    if (headingPositions.length === 0) return;
-    let activeHeading = headingPositions[0].id;
-    for (const { id, top } of headingPositions) {
-      if (top <= scrollOffset) {
-        activeHeading = id;
-      } else {
-        break;
-      }
-    }
-    setActiveId(activeHeading);
-  }, [visibleItems]);
+      return element ? [element] : [];
+    });
+    if (!elements.length) return;
 
-  useEffect(() => {
-    if (visibleItems.length === 0) return;
-    const timer = setTimeout(() => {
-      findActiveHeading();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [visibleItems, findActiveHeading]);
+    let frameId: number | null = null;
 
-  useEffect(() => {
-    if (visibleItems.length === 0) return;
-    const handleScroll = () => {
+    const update = () => {
       if (isClickScrolling.current) return;
-      findActiveHeading();
+      const offset = window.innerHeight * 0.2;
+      let nextId = elements[0].id;
+
+      for (const element of elements) {
+        if (element.getBoundingClientRect().top > offset) break;
+        nextId = element.id;
+      }
+
+      setActiveId((currentId) => currentId === nextId ? currentId : nextId);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [findActiveHeading, visibleItems.length]);
+
+    const scheduleUpdate = () => {
+      if (frameId !== null) return;
+      frameId = requestAnimationFrame(() => {
+        frameId = null;
+        update();
+      });
+    };
+
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(scheduleUpdate);
+    if (resizeObserver) {
+      resizeObserver.observe(document.body);
+      for (const element of elements) {
+        resizeObserver.observe(element);
+      }
+    }
+
+    scheduleUpdate();
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    return () => {
+      if (frameId !== null) cancelAnimationFrame(frameId);
+      resizeObserver?.disconnect();
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+    };
+  }, [visibleItems]);
 
   useEffect(() => {
     if (!activeId || !scrollRef.current) return;
@@ -274,6 +285,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
                 {visibleItems.map((item) => (
                   <button
                     key={item.id}
+                    aria-current={activeId === item.id ? "location" : undefined}
                     data-toc-id={item.id}
                     onClick={() => handleClick(item.id)}
                     className={cn(

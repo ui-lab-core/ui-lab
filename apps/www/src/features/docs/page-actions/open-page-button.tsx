@@ -1,16 +1,19 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { Expand, Flex, Group } from 'ui-lab-components';
+import { useState } from 'react';
+import { Expand } from 'ui-lab-components/expand';
+import { Flex } from 'ui-lab-components/flex';
+import { Group } from 'ui-lab-components/group';
 import { FaGithub, FaArrowUpRightFromSquare } from '@/shared/icons/fa6';
 import { SiClaude, SiOpenai, SiGooglegemini } from '@/shared/icons/si';
-import { sourceUrls } from 'ui-lab-registry';
 
-export function OpenPage({ componentId }: { componentId?: string }) {
+export function OpenPage({ componentId, sourceUrl }: { componentId?: string; sourceUrl?: string | null }) {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const githubUrl = componentId
-    ? sourceUrls[componentId]
+    ? sourceUrl
     : `https://github.com/ui-lab-core/ui-lab/blob/master/apps/site/content${pathname}.mdx`;
 
   const prompt = encodeURIComponent(`Read this and help me understand it: ${githubUrl}`);
@@ -23,7 +26,11 @@ export function OpenPage({ componentId }: { componentId?: string }) {
   ];
 
   return (
-    <Group.Expand className="w-full">
+    <Group.Expand
+      className="w-full"
+      expanded={isOpen}
+      onExpandedChange={setIsOpen}
+    >
       <Expand.Trigger className="rounded-none">
         <Flex className="h-12 cursor-pointer border-b border-background-700">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
@@ -39,25 +46,27 @@ export function OpenPage({ componentId }: { componentId?: string }) {
         </Flex>
       </Expand.Trigger>
       <Expand.Content from="below" className="-mt-(--border-width-base) mx-0 border-b border-background-700">
-        <div className="flex flex-col overflow-hidden">
-          {options.map(({ label, Icon, href }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex py-2.5 items-center text-xs text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
-            >
-              <span className="flex items-center justify-center px-3 text-sm">
-                <Icon className="h-5 w-5" />
-              </span>
-              <span className="flex-1">{label}</span>
-              <span className="px-3 opacity-60">
-                <FaArrowUpRightFromSquare size={10} />
-              </span>
-            </a>
-          ))}
-        </div>
+        {isOpen && (
+          <div className="flex flex-col overflow-hidden">
+            {options.map(({ label, Icon, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex py-2.5 items-center text-xs text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
+              >
+                <span className="flex items-center justify-center px-3 text-sm">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="flex-1">{label}</span>
+                <span className="px-3 opacity-60">
+                  <FaArrowUpRightFromSquare size={10} />
+                </span>
+              </a>
+            ))}
+          </div>
+        )}
       </Expand.Content>
     </Group.Expand>
   );

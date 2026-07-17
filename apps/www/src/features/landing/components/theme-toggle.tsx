@@ -3,7 +3,8 @@ import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { useApp } from "@/features/theme/lib/app-context";
 import { FaCircleHalfStroke } from "@/shared/icons/fa6";
-import { Button, Tooltip } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
+import { Tooltip } from "ui-lab-components/tooltip";
 
 export const LandingThemeToggle = () => {
   const { currentThemeMode, setCurrentThemeMode, currentThemeColors, setCurrentThemeColors } = useApp();

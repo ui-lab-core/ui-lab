@@ -4,8 +4,11 @@ import { useState, useMemo } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Code } from "@/features/docs/components/code-display/code";
 import { DEVICE_PRESETS, PreviewContainer, calculateVariantFromWidth } from "@/features/preview";
-import { Button, Divider, Flex, Group, Scroll } from "ui-lab-components";
-import { Select } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
+import { Divider } from "ui-lab-components/divider";
+import { Group } from "ui-lab-components/group";
+import { Scroll } from "ui-lab-components/scroll";
+import { Select } from "ui-lab-components/select";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
 import { FaMinus, FaPlus } from "@/shared/icons/fa6";
@@ -65,6 +68,8 @@ interface ComponentConfiguratorProps {
   hidePreviewToggle?: boolean;
   previewLayout?: "center" | "start";
   resizable?: boolean;
+  preHighlightedLight?: string;
+  preHighlightedDark?: string;
 }
 
 const EMPTY_TABS: Array<{ label: string; code: string }> = [];
@@ -97,6 +102,8 @@ export function ComponentConfigurator({
   hidePreviewToggle = false,
   previewLayout = "center",
   resizable = false,
+  preHighlightedLight,
+  preHighlightedDark,
 }: ComponentConfiguratorProps) {
   const [activeTab, setActiveTab] = useState<number>(0);
   const initialControlValues = useMemo(() => {
@@ -173,7 +180,16 @@ export function ComponentConfigurator({
           </div>
         </div>
       )}
-      <Code className="rounded-none border-0" language={language} showLineNumbers>{currentCode}</Code>
+      <Code
+        className="rounded-none border-0"
+        eagerMeasure
+        language={language}
+        showLineNumbers
+        preHighlightedLight={currentCode === code ? preHighlightedLight : undefined}
+        preHighlightedDark={currentCode === code ? preHighlightedDark : undefined}
+      >
+        {currentCode}
+      </Code>
     </div>
   ) : null;
 

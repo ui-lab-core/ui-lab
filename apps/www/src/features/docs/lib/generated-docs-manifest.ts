@@ -143,13 +143,13 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
-            "id": "important-components-are-unstyled-by-default",
-            "title": "Important: Components are unstyled by default",
+            "id": "add-a-theme",
+            "title": "Add a theme",
             "level": 2
           },
           {
-            "id": "import-styles-in-the-right-order",
-            "title": "Import styles in the right order",
+            "id": "import-the-theme",
+            "title": "Import the theme",
             "level": 2
           },
           {

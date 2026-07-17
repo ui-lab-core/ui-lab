@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { ComponentClient } from "./client";
+import { notFound } from "next/navigation";
 import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
 import { extractComponentMetadata } from "@/shared/lib/metadata-extractors";
 import { componentRegistry, generatedAPI, generatedStyles, reactAriaUrls, sourceUrls } from "ui-lab-registry";
-
-const componentIds = [
-  "button", "input", "label", "select", "textarea",
-  "checkbox", "radio", "badge", "tooltip", "popover", "form",
-  "toast", "modal", "tabs", "menu", "switch", "slider",
-  "progress", "skeleton", "card", "command", "confirm", "divider", "fold",
-  "group", "flex", "grid", "table", "breadcrumbs", "scroll", "gallery"
-];
+import { ComponentPage } from "./component-page";
 
 export function generateStaticParams() {
-  return componentIds.map((id) => ({ component: id }));
+  return Object.keys(componentRegistry).map((component) => ({ component }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ component: string }> }): Promise<Metadata> {
@@ -34,16 +27,17 @@ export async function generateMetadata({ params }: { params: Promise<{ component
 export default async function ComponentDetailPage({ params }: { params: Promise<{ component: string; }>; }) {
   const { component: componentId } = await params;
   const component = componentRegistry[componentId as keyof typeof componentRegistry];
+
+  if (!component) notFound();
+
   return (
-    <ComponentClient
+    <ComponentPage
       componentId={componentId}
+      component={component}
       api={generatedAPI[componentId] ?? null}
       styles={generatedStyles[componentId] ?? null}
       reactAriaUrl={reactAriaUrls[componentId] ?? null}
       sourceUrl={sourceUrls[componentId] ?? null}
-      name={component?.name ?? ""}
-      description={component?.description ?? ""}
-      experimental={component?.experimental ?? false}
     />
   );
 }

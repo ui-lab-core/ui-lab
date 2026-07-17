@@ -12,7 +12,7 @@ interface SidebarItemLinkProps {
 
 export function SidebarItemLink({ href, className, children }: SidebarItemLinkProps) {
   const router = useRouter();
-  const { onMouseEnter } = usePrefetchOnHover(href);
+  const { onMouseEnter, onFocus } = usePrefetchOnHover(href);
 
   return (
     <>
@@ -20,6 +20,7 @@ export function SidebarItemLink({ href, className, children }: SidebarItemLinkPr
         href={href}
         prefetch={false}
         onMouseEnter={onMouseEnter}
+        onFocus={onFocus}
         style={{ display: 'none' }}
         aria-hidden
       />
@@ -33,6 +34,7 @@ export function SidebarItemLink({ href, className, children }: SidebarItemLinkPr
           }
         }}
         onMouseEnter={onMouseEnter}
+        onFocus={onFocus}
         className={className}
       >
         {children}

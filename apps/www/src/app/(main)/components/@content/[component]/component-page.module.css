@@ -1,0 +1,4 @@
+.section {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}

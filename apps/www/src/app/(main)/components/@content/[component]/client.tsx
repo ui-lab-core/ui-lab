@@ -2,10 +2,19 @@
 
 import { ComponentConfigurator } from "@/features/component-docs";
 import { getComponentById } from "@/features/component-docs";
-import { TableOfContents, Table, TableExpandedDetails, type Column, type TableExpandedDetail } from "@/features/docs";
+import { TableOfContents } from "@/features/docs/components/table-of-contents";
+import {
+  Table,
+  TableExpandedDetails,
+  type Column,
+  type TableExpandedDetail,
+} from "@/features/docs/components/table";
+import {
+  Code,
+  InlineCodeHighlight,
+} from "@/features/docs/components/code-display";
 import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
 import { cn } from "@/shared/lib/utils";
-import { Code, InlineCodeHighlight } from "@/features/docs";
 import { Toaster, Tabs, Button, Flex, Tooltip, Group } from "ui-lab-components";
 import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
@@ -181,8 +190,8 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
           spacing="none"
           className="mb-4 w-full shrink-0 overflow-hidden"
         >
-          <OpenPage componentId={componentId} />
-          <CopyComponentPage componentId={componentId} component={component} grouped />
+          <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
+          <CopyComponentPage componentId={componentId} component={component} api={api} styles={styles} grouped />
         </Group>
       </div>
     </div>

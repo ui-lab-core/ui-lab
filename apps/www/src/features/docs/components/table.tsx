@@ -2,7 +2,7 @@
 
 import { useState, Fragment } from "react";
 import { cn } from "@/shared/lib/utils";
-import { InlineCodeHighlight } from "@/features/docs";
+import { InlineCodeHighlight } from "./code-display/inline-code-highlight";
 import { Expand } from "ui-lab-components";
 
 export interface TableExpandedDetail {

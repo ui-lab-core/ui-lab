@@ -1,9 +1,8 @@
 import {
   categoryMap,
   getCategoriesInOrder,
-  getComponentsGroupedByCategory,
   getComponentsInCategoryOrder,
-} from '@/features/component-docs';
+} from 'ui-lab-registry';
 import { getSectionsForDomain, type DocsNavigationData } from './sidebar-registry-resolver';
 import { MainNavItem } from '@/app/lib/sidebar-config';
 
@@ -56,11 +55,11 @@ function deduplicateSectionItems(section: SidebarSection): SidebarSection {
 
 function getComponentSections(): SidebarSection[] {
   return getCategoriesInOrder()
-    .map((category: any) => ({ category, components: getComponentsInCategoryOrder(category) }))
-    .filter(({ components }: any) => components.length > 0)
-    .map(({ category, components }: any) => ({
-      label: categoryMap[category as keyof typeof categoryMap].label || category,
-      items: components.map((comp: any) => ({
+    .map((category) => ({ category, components: getComponentsInCategoryOrder(category) }))
+    .filter(({ components }) => components.length > 0)
+    .map(({ category, components }) => ({
+      label: categoryMap[category].label || category,
+      items: components.map((comp) => ({
         id: comp.id,
         label: comp.name,
       })),
@@ -110,9 +109,4 @@ export function isNavItemActive(itemId: string, pathname: string, activeNav: Mai
   if (itemId === 'introduction' && (pathname === '/docs' || pathname === '/design-system')) return true;
   if (itemId === 'overview' && (pathname === '/components' || pathname === '/design-system')) return true;
   return pathname.includes(`/${itemId}`);
-}
-
-function getTotalComponentCount(): number {
-  const groupedComponents = getComponentsGroupedByCategory();
-  return Object.values(groupedComponents).reduce((sum, components) => sum + components.length, 0);
 }

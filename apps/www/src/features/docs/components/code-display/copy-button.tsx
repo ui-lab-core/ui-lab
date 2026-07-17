@@ -2,7 +2,7 @@
 
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
-import { Button } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
 
 export function CopyButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -18,6 +18,7 @@ export function CopyButton({ code }: { code: string }) {
       variant="ghost"
       size="icon"
       onClick={handleCopy}
+      aria-label={copied ? "Code copied" : "Copy code"}
       className="absolute p-1 right-2 top-2 z-10"
     >
       {copied ? <Check size={14} /> : <Copy size={14} />}

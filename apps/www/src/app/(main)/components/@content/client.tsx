@@ -58,7 +58,7 @@ export default function ComponentsPageClient() {
                             >
                               {component.experimental && (
                                 <Tooltip content="Experimental" position="top" showArrow>
-                                  <span className="z-10 top-2 right-2 absolute ml-auto inline-block px-2 py-1 text-sm font-semibold bg-accent-400/20 text-accent-400 rounded-xs">
+                                  <span className="z-10 top-2 right-2 absolute ml-auto inline-block px-2 py-1 text-sm font-semibold bg-accent-400/20 text-accent-500 rounded-xs">
                                     <Icon IconComponent={Icons.Flask} size={14} />
                                   </span>
                                 </Tooltip>

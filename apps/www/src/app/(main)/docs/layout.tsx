@@ -14,7 +14,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <YouTubeBanner
           videoId="VSYQLmGf3To"
           title="Introduction to UI Lab"
-          imageSrc="/assets/thumbnail.png"
+        // imageSrc="/assets/thumbnail.png"
         />
       }
     >

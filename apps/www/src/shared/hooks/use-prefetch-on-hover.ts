@@ -28,5 +28,6 @@ export function usePrefetchOnHover(href: string) {
   return {
     onMouseEnter: handleMouseEnter,
     onMouseLeave: handleMouseLeave,
+    onFocus: handleMouseEnter,
   };
 }

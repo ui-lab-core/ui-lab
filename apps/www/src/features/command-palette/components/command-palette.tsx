@@ -1,33 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { FocusScope } from "react-aria";
 import {
   Command,
-  Divider,
-  Modal,
   scoreCommandRelevance,
   useCommandContext,
-} from "ui-lab-components";
-import { Badge } from "ui-lab-components";
-import type { CommandItem } from "ui-lab-components";
+  type CommandItem,
+} from "ui-lab-components/command";
+import { Badge } from "ui-lab-components/badge";
+import { Divider } from "ui-lab-components/divider";
+import { Modal } from "ui-lab-components/modal";
 import { useApp } from "@/features/theme/lib/app-context";
-import { useCommands } from "../hooks/use-commands";
+import { useCommands, type ComponentResult } from "../hooks/use-commands";
 import css from "./command-palette.module.css";
 
-function matchesSearch(cmd: CommandItem, query: string): boolean {
+function matchesSearch(command: CommandItem, query: string): boolean {
   if (!query) return true;
 
-  const q = query.toLowerCase();
+  const value = query.toLowerCase();
+  if (scoreCommandRelevance(command.label, value) > 0) return true;
 
-  const labelScore = scoreCommandRelevance(cmd.label, q);
-  if (labelScore > 0) return true;
-  if (cmd.keywords?.some((kw) => scoreCommandRelevance(kw, q) > 0)) {
-    return true;
-  }
-
-  return false;
+  return Boolean(
+    command.keywords?.some(
+      (keyword) => scoreCommandRelevance(keyword, value) > 0,
+    ),
+  );
 }
 
-function CommandPaletteContent({ itemCount }: { itemCount: number }) {
+function Content({ itemCount }: { itemCount: number }) {
   const { filteredItems, searchValue } = useCommandContext();
 
   return (
@@ -41,40 +42,40 @@ function CommandPaletteContent({ itemCount }: { itemCount: number }) {
         {filteredItems.length > 0 ? (
           <Command.Groups
             renderCategory={(category) =>
-              category && (
+              category ? (
                 <>
                   <Command.Category className="text-xs not-first:mt-12">
                     {category}
                   </Command.Category>
                   <Divider variant="dashed" size="sm" />
                 </>
-              )
+              ) : null
             }
-            renderItem={(cmd) => (
-              <>
-                <Command.Item
-                  className="mb-2"
-                  key={cmd.id}
-                  value={cmd.id}
-                  textValue={cmd.label}
-                  action={cmd.action}
-                  icon={cmd.icon}
-                  hint={cmd.shortcut}
-                >
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-xs mb-1.5">{cmd.label}</h3>
+            renderItem={(command) => (
+              <Command.Item
+                className="mb-2"
+                value={command.id}
+                textValue={command.label}
+                action={command.action}
+                icon={command.icon}
+                hint={command.shortcut}
+              >
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-xs mb-1.5">{command.label}</h3>
+                  {command.description ? (
                     <p className="w-full break-words text-xs">
-                      {cmd.description && cmd.description}
+                      {command.description}
                     </p>
-                  </div>
-                </Command.Item>
-              </>
+                  ) : null}
+                </div>
+              </Command.Item>
             )}
           />
         ) : undefined}
       </Command.List>
+
       <Command.Footer>
-        {itemCount > 0 && (
+        {itemCount > 0 ? (
           <>
             <div>
               <span>Navigate</span>
@@ -89,20 +90,46 @@ function CommandPaletteContent({ itemCount }: { itemCount: number }) {
               <Badge variant="default">Esc</Badge>
             </div>
           </>
-        )}
+        ) : null}
       </Command.Footer>
     </>
   );
 }
 
 export default function CommandPalette() {
+  const [components, setComponents] = useState<ComponentResult[]>([]);
   const {
     isCommandPaletteOpen,
     setIsCommandPaletteOpen,
     currentThemeMode,
     setCurrentThemeMode,
   } = useApp();
-  const commands = useCommands({ currentThemeMode, setCurrentThemeMode });
+  const commands = useCommands({
+    components,
+    currentThemeMode,
+    setCurrentThemeMode,
+  });
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/api/command-palette", { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Command data request failed: ${response.status}`);
+        }
+
+        return response.json() as Promise<{ components: ComponentResult[] }>;
+      })
+      .then((data) => setComponents(data.components))
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error("Failed to load command palette data:", error);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <Modal
@@ -118,16 +145,18 @@ export default function CommandPalette() {
         content: css.content,
       }}
     >
-      <Command
-        className={css.palette}
-        open={isCommandPaletteOpen}
-        embedded
-        onOpenChange={setIsCommandPaletteOpen}
-        items={commands}
-        filter={matchesSearch}
-      >
-        <CommandPaletteContent itemCount={commands.length} />
-      </Command>
+      <FocusScope contain restoreFocus>
+        <Command
+          className={css.palette}
+          open={isCommandPaletteOpen}
+          embedded
+          onOpenChange={setIsCommandPaletteOpen}
+          items={commands}
+          filter={matchesSearch}
+        >
+          <Content itemCount={commands.length} />
+        </Command>
+      </FocusScope>
     </Modal>
   );
 }

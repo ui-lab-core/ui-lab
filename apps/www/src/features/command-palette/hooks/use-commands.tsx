@@ -5,23 +5,29 @@ import {
   FaWrench,
   FaGithub,
   FaMoon,
+  FaPuzzlePiece,
   FaSun,
 } from "@/shared/icons/fa6";
-import {
-  componentRegistry as registryData,
-  getCategoryIcon,
-} from "ui-lab-registry";
 import { useDocsNavigationData } from "@/features/navigation/lib/docs-navigation-context";
 import { getPagesForDomain } from "@/features/navigation/lib/sidebar-registry-resolver";
 import { toolsItems } from "@/features/layout/components/header/data";
 import type { CommandItem } from "ui-lab-components";
 
 interface UseCommandsParams {
+  components: ComponentResult[];
   currentThemeMode: "light" | "dark";
   setCurrentThemeMode: (mode: "light" | "dark") => void;
 }
 
+export interface ComponentResult {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+}
+
 export function useCommands({
+  components,
   currentThemeMode,
   setCurrentThemeMode,
 }: UseCommandsParams) {
@@ -59,14 +65,18 @@ export function useCommands({
       });
     });
 
-    Object.values(registryData).forEach((component) => {
+    components.forEach((component) => {
       cmds.push({
         id: `component-${component.id}`,
         label: component.name,
         description: component.description,
         category: "Components",
-        icon: getCategoryIcon(component.category as any),
-        keywords: [component.id, component.name.toLowerCase()],
+        icon: <FaPuzzlePiece className="w-4 h-4" />,
+        keywords: [
+          component.id,
+          component.name.toLowerCase(),
+          ...component.tags,
+        ],
         action: () => router.push(`/components/${component.id}`),
       });
     });
@@ -91,7 +101,11 @@ export function useCommands({
       icon: <FaGithub className="w-4 h-4" />,
       keywords: ["github", "source", "repo"],
       action: () => {
-        window.open("https://github.com/ui-lab-core/ui-lab", "_blank");
+        window.open(
+          "https://github.com/ui-lab-core/ui-lab",
+          "_blank",
+          "noopener,noreferrer",
+        );
       },
     });
 
@@ -112,5 +126,11 @@ export function useCommands({
     });
 
     return cmds;
-  }, [router, currentThemeMode, docsNavigationData, setCurrentThemeMode]);
+  }, [
+    router,
+    components,
+    currentThemeMode,
+    docsNavigationData,
+    setCurrentThemeMode,
+  ]);
 }

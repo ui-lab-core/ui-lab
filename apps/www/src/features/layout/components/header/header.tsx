@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useEffect, type ComponentType } from "react";
 import { SettingsPanel } from "@/features/landing/components/settings-panel";
 import { LandingThemeToggle as ThemeToggle } from "@/features/landing/components/theme-toggle";
-import dynamic from "next/dynamic";
-const CommandPalette = dynamic(
-  () => import("@/features/command-palette/components/command-palette"),
-  { ssr: false, loading: () => null }
-);
 import { Logo } from "@/features/layout/components/logo";
-import { Input, Divider, Tabs, Button, Tooltip } from "ui-lab-components";
+import { Input } from "ui-lab-components/input";
+import { Divider } from "ui-lab-components/divider";
+import { Tabs } from "ui-lab-components/tabs";
+import { Button } from "ui-lab-components/button";
+import { Tooltip } from "ui-lab-components/tooltip";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { cn } from "@/shared/lib/utils";
@@ -55,9 +54,19 @@ export default function Header({
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
+  const [Palette, setPalette] = useState<ComponentType | null>(null);
   const { toggleSidebar } = useSidebarToggle();
   const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
   const isLandingPage = pathname === "/";
+
+  useEffect(() => {
+    if (!isCommandPaletteOpen || Palette) return;
+    let active = true;
+    import("@/features/command-palette/components/command-palette").then((module) => {
+      if (active) setPalette(() => module.default);
+    });
+    return () => { active = false; };
+  }, [Palette, isCommandPaletteOpen]);
   const handleToggleSidebar = () => {
     if (isLandingPage) {
       toggleLandingSidebar();
@@ -107,7 +116,12 @@ export default function Header({
 
           {/* LEFT SECTION: Logo & Tabs - Added shrink-0 to prevent it being crushed */}
           <div className="flex items-center shrink-0">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0">
+            <Link
+              href="/"
+              prefetch={false}
+              aria-label="UI Lab home"
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0"
+            >
               <div className="scale-100">
                 <Logo />
               </div>
@@ -130,6 +144,18 @@ export default function Header({
                         <TabItem key={tab.id} tab={tab} />
                       ))}
                     </Tabs.List>
+                    {homeNavTabs.map((tab) => (
+                      <div
+                        key={tab.id}
+                        id={`${tab.id}-content`}
+                        role="tabpanel"
+                        aria-labelledby={`${tab.id}-trigger`}
+                        hidden={tab.id !== activeHomeTab}
+                        className="sr-only"
+                      >
+                        {tab.label} page
+                      </div>
+                    ))}
                   </div>
                 </Tabs>
               )}
@@ -142,6 +168,18 @@ export default function Header({
                         <TabItem key={tab.id} tab={tab} />
                       ))}
                     </Tabs.List>
+                    {tabGroup.tabs.map((tab) => (
+                      <div
+                        key={tab.id}
+                        id={`${tab.id}-content`}
+                        role="tabpanel"
+                        aria-labelledby={`${tab.id}-trigger`}
+                        hidden={tab.id !== activeTabId}
+                        className="sr-only"
+                      >
+                        {tab.label} page
+                      </div>
+                    ))}
                   </div>
                 </Tabs>
               )}
@@ -229,7 +267,7 @@ export default function Header({
         </div>
       </header>
 
-      {featureFlags.commandPalette ? <CommandPalette /> : null}
+      {featureFlags.commandPalette && Palette ? <Palette /> : null}
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}

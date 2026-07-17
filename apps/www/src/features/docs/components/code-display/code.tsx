@@ -1,59 +1,24 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo } from "react";
 import { type OklchColor } from "@/features/theme/lib/color-utils";
 import { useApp } from "@/features/theme/lib/app-context";
-import { resolveCodeThemeSelection } from "@/features/theme/lib/themes/shiki/resolve-code-theme";
-import { resolveShikiLanguage } from "@/features/docs/lib/shiki-language";
 import { CopyButton } from "./copy-button";
 import { LuChevronsDownUp } from "@/shared/icons/lu";
 import { cn } from "@/shared/lib/utils";
-import { Button } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
 import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
+import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
 
-function renderFallbackLine(line: string): string {
-  if (line.length === 0) return " ";
-
-  const leadingWhitespace = line.match(/^[\t ]+/)?.[0] ?? "";
-  const content = line.slice(leadingWhitespace.length);
-
-  let indentMarkup = "";
-  let pendingSpaces = 0;
-
-  for (const char of leadingWhitespace) {
-    if (char === "\t") {
-      if (pendingSpaces > 0) {
-        indentMarkup += " ".repeat(pendingSpaces);
-        pendingSpaces = 0;
-      }
-      indentMarkup += '<span class="indent">\t</span>';
-      continue;
-    }
-
-    pendingSpaces += 1;
-    if (pendingSpaces === 2) {
-      indentMarkup += '<span class="indent">  </span>';
-      pendingSpaces = 0;
-    }
-  }
-
-  if (pendingSpaces > 0) {
-    indentMarkup += " ".repeat(pendingSpaces);
-  }
-
-  const escapedContent = escapeHtml(content);
-  return `${indentMarkup}${escapedContent || " "}`;
-}
-
 function generateFallbackHtml(code: string): string {
-  const lines = code.split("\n");
-  const lineMarkup = lines
-    .map((line) => `<span class="line">${renderFallbackLine(line)}</span>`)
+  const numbers = code
+    .split("\n")
+    .map((_, index) => index + 1)
     .join("\n");
 
-  return `<pre class="shiki"><code style="display: block; padding: 1rem;">${lineMarkup}</code></pre>`;
+  return `<pre class="shiki fallback"><code style="padding: 1rem;"><span class="numbers" aria-hidden="true">${numbers}</span><span class="source">${escapeHtml(code)}</span></code></pre>`;
 }
 
 function stripSyntaxColorStyles(html: string): string {
@@ -80,10 +45,47 @@ interface CodeProps {
   accentChromaLimit?: number;
   preHighlightedLight?: string;
   preHighlightedDark?: string;
+  eagerMeasure?: boolean;
 }
 
 const MAX_HEIGHT_LINES = 5;
-type CodeToHtmlOptions = any;
+const HIGHLIGHT_DELAY_MS = 120;
+let highlightQueue = Promise.resolve();
+const highlightRequests = new Map<string, Promise<{ light: string; dark: string }>>();
+
+function enqueueHighlight<T>(job: () => Promise<T>) {
+  const result = highlightQueue.then(job, job);
+  highlightQueue = result.then(
+    () => new Promise<void>((resolve) => {
+      if (typeof requestIdleCallback === "function") {
+        requestIdleCallback(() => resolve(), { timeout: 100 });
+      } else {
+        setTimeout(resolve, 0);
+      }
+    }),
+    () => undefined,
+  );
+  return result;
+}
+
+function requestHighlight(code: string, language: string) {
+  const key = `${language}\u0000${code}`;
+  const existing = highlightRequests.get(key);
+  if (existing) return existing;
+
+  const request = enqueueHighlight(async () => {
+    const response = await fetch("/api/highlight", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ code, language }),
+    });
+    if (!response.ok) throw new Error(`Highlight request failed: ${response.status}`);
+    return response.json() as Promise<{ light: string; dark: string }>;
+  });
+  highlightRequests.set(key, request);
+  request.catch(() => highlightRequests.delete(key));
+  return request;
+}
 
 export function Code({
   children,
@@ -94,33 +96,34 @@ export function Code({
   heading,
   preHighlightedLight,
   preHighlightedDark,
+  eagerMeasure = false,
   maxHeightLines = MAX_HEIGHT_LINES,
 }: CodeProps) {
-  const { currentThemeMode, currentThemeColors, isThemeInitialized } = useApp();
+  const { currentThemeMode, isThemeInitialized } = useApp();
 
   // Refs
+  const rootRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollTrackRef = useRef<HTMLDivElement>(null);
 
-  const [highlightedCode, setHighlightedCode] = useState<string>(() => {
-    if (currentThemeMode === "light" && preHighlightedLight) return preHighlightedLight;
-    if (currentThemeMode === "dark" && preHighlightedDark) return preHighlightedDark;
-    return generateFallbackHtml(children);
-  });
-
-  const shikiTheme = useMemo(
-    () =>
-      resolveCodeThemeSelection(
-        currentThemeColors,
-        currentThemeMode,
-        `custom-${currentThemeMode}`,
-      ),
-    [currentThemeColors, currentThemeMode],
-  );
+  const [resolved, setResolved] = useState<{
+    key: string;
+    html: string;
+    status: "resolved" | "failed";
+  } | null>(null);
   const [dimensions, setDimensions] = useState({ contentScrollWidth: 0, viewportWidth: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
+  const isNearViewport = useNearViewport(rootRef);
+  const hasStaticHighlight = Boolean(preHighlightedLight && preHighlightedDark);
 
   const fallbackHtml = useMemo(() => generateFallbackHtml(children), [children]);
+  const highlightKey = `${language}\u0000${currentThemeMode}\u0000${children}`;
+  const staticHighlight = currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark;
+  const highlightedCode = staticHighlight ?? (
+    resolved?.key === highlightKey && resolved.status === "resolved"
+      ? resolved.html
+      : fallbackHtml
+  );
   const totalCodeLines = children.split('\n').length;
   const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
   const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
@@ -151,29 +154,15 @@ export function Code({
   }, []);
 
   useEffect(() => {
-    if (currentThemeMode === "light" && preHighlightedLight) {
-      setHighlightedCode(preHighlightedLight);
-      return;
-    }
+    if (hasStaticHighlight || !isNearViewport) return;
+    let cancelled = false;
 
-    if (currentThemeMode === "dark" && preHighlightedDark) {
-      setHighlightedCode(preHighlightedDark);
-      return;
-    }
-
-    setHighlightedCode(generateFallbackHtml(children));
-  }, [children, currentThemeMode, preHighlightedDark, preHighlightedLight]);
-
-  useEffect(() => {
     const highlight = async () => {
       try {
-        const { bundledLanguages, bundledLanguagesAlias, codeToHtml } = await import("shiki");
-        const { transformerRenderIndentGuides } = await import("@shikijs/transformers");
-        const html = await codeToHtml(children, {
-          lang: resolveShikiLanguage(language, bundledLanguages, bundledLanguagesAlias) as CodeToHtmlOptions["lang"],
-          theme: shikiTheme,
-          transformers: [transformerRenderIndentGuides()],
-        });
+        const result = await requestHighlight(children, language);
+        const html = result[currentThemeMode];
+
+        if (cancelled) return;
 
         let styledHtml = html.replace(
           /<code>/,
@@ -181,17 +170,24 @@ export function Code({
         );
         styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, '');
         styledHtml = stripPreTabIndex(styledHtml);
-        setHighlightedCode(styledHtml);
+        setResolved({ key: highlightKey, html: styledHtml, status: "resolved" });
       } catch (error) {
         console.error("Failed to highlight code:", error);
-        setHighlightedCode(generateFallbackHtml(children));
+        if (!cancelled) {
+          setResolved({ key: highlightKey, html: fallbackHtml, status: "failed" });
+        }
       }
     };
 
-    highlight();
-  }, [children, language, shikiTheme]);
+    const timeout = window.setTimeout(highlight, HIGHLIGHT_DELAY_MS);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [children, currentThemeMode, fallbackHtml, hasStaticHighlight, highlightKey, isNearViewport, language]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (!eagerMeasure && !isNearViewport && !isExpanded) return;
     const measure = () => {
       if (viewportRef.current) {
         setDimensions({
@@ -201,10 +197,11 @@ export function Code({
       }
     };
     measure();
+    if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
     if (viewportRef.current) observer.observe(viewportRef.current);
     return () => observer.disconnect();
-  }, [displayHtml]);
+  }, [displayHtml, eagerMeasure, isExpanded, isNearViewport]);
 
   const hasHorizontalOverflow = dimensions.contentScrollWidth > dimensions.viewportWidth;
   const hiddenCodeLines = totalCodeLines - maxHeightLines;
@@ -213,6 +210,7 @@ export function Code({
 
   return (
     <div
+      ref={rootRef}
       className={cn(
         "rounded-sm border border-background-700 flex flex-col overflow-hidden w-full min-w-0",
         showLineNumbers && "code-block--line-numbers",
@@ -238,40 +236,47 @@ export function Code({
           </Button>
         )}
         <CopyButton code={children} />
-        <div
-          ref={viewportRef}
-          onScroll={handleScrollViewport}
-          onWheel={handleWheel}
-          dangerouslySetInnerHTML={{ __html: displayHtml }}
-          className={cn(`
-              overflow-y-auto overflow-x-hidden
-              [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
-              [&_code]:text-foreground-400 [&_code]:whitespace-pre
+        <div className="relative flex-1 min-h-0 min-w-0">
+          <div
+            ref={viewportRef}
+            onScroll={handleScrollViewport}
+            onWheel={handleWheel}
+            dangerouslySetInnerHTML={{ __html: displayHtml }}
+            className={cn(`
+                overflow-y-auto overflow-x-hidden
+                [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
+                [&_code]:font-mono [&_code]:whitespace-pre
 
-              /* Custom Vertical Scrollbar Styling */
-              [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-thumb]:bg-background-700
-              [&::-webkit-scrollbar-thumb]:rounded-full
-              [&::-webkit-scrollbar-thumb:hover]:bg-background-600
-            `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_span]:!text-inherit")}
-          style={{
-            overflowY: expanded ? 'auto' : 'hidden',
-            maxHeight: !expanded ? `calc(${maxHeightLines} * 1.5em + 2rem)` : undefined,
-            maskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
-            WebkitMaskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
-          }}
-        />
+                /* Custom Vertical Scrollbar Styling */
+                [&::-webkit-scrollbar]:w-2
+                [&::-webkit-scrollbar-track]:bg-transparent
+                [&::-webkit-scrollbar-thumb]:bg-background-700
+                [&::-webkit-scrollbar-thumb]:rounded-full
+                [&::-webkit-scrollbar-thumb:hover]:bg-background-600
+              `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
+            style={{
+              overflowY: expanded ? 'auto' : 'hidden',
+              maxHeight: !expanded ? `calc(${maxHeightLines} * 1.5em + 2rem)` : undefined,
+              maskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
+              WebkitMaskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
+            }}
+          />
 
-        {hasHorizontalOverflow && (
+          {/* Absolutely positioned so mounting overflow state after hydration
+              never changes the block's height; hidden via opacity instead of
+              conditional rendering to keep server and client DOM identical. */}
           <div
             ref={scrollTrackRef}
             onScroll={handleScrollTrack}
-            className="flex-none w-full overflow-x-auto bg-background-950/50 backdrop-blur-sm"
+            aria-hidden={hasHorizontalOverflow ? undefined : true}
+            className={cn(
+              "absolute bottom-0 left-0 right-0 overflow-x-auto bg-background-950/50 backdrop-blur-sm transition-opacity",
+              hasHorizontalOverflow ? "opacity-100" : "pointer-events-none opacity-0"
+            )}
           >
-            <div style={{ width: dimensions.contentScrollWidth, height: '12px' }} />
+            <div style={{ width: dimensions.contentScrollWidth || '100%', height: '12px' }} />
           </div>
-        )}
+        </div>
 
         {shouldShowExpandButton && !expanded && (
           <button

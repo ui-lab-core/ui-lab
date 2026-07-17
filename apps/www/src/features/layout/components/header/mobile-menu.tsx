@@ -4,7 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { cn } from "@/shared/lib/utils";
 import { FaChevronDown, FaCodeBranch } from "@/shared/icons/fa6";
-import { Divider, Button } from "ui-lab-components";
+import { Divider } from "ui-lab-components/divider";
+import { Button } from "ui-lab-components/button";
 import { getTabGroupForPathname, shouldApplyRevealCollapse } from "@/features/layout/lib/route-config";
 import type { TabConfig } from "../../lib/route-config";
 import {
@@ -87,6 +88,7 @@ export function MobileMenu({
                   <Link
                     key={sub.href}
                     href={sub.href}
+                    prefetch={false}
                     onClick={onClose}
                     className={cn(
                       "flex flex-col rounded-md px-3 py-2 hover:bg-background-800 text-foreground-300"
@@ -106,6 +108,7 @@ export function MobileMenu({
       <Link
         key={tab.id}
         href={tab.path}
+        prefetch={false}
         onClick={onClose}
         className={cn(
           "rounded-md px-4 py-3 text-sm hover:bg-background-800"
@@ -118,18 +121,16 @@ export function MobileMenu({
 
   return (
     <>
-      <div
-        className={cn(
-          "fixed inset-0 z-30 bg-background-950/80 transition-opacity md:hidden"
-        )}
-        style={{ opacity: isOpen ? 1 : 0, pointerEvents: isOpen ? "auto" : "none" }}
-        onClick={onClose}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape') onClose();
-        }}
-        role="button"
-        tabIndex={0}
-      />
+      {isOpen && (
+        <button
+          type="button"
+          aria-label="Close menu"
+          className={cn(
+            "fixed inset-0 z-30 bg-background-950/80 transition-opacity md:hidden"
+          )}
+          onClick={onClose}
+        />
+      )}
       {isOpen && (
         <div
           className={cn(

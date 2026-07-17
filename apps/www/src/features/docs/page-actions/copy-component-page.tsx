@@ -1,17 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import { Expand, Flex, Group } from 'ui-lab-components';
+import { Expand } from 'ui-lab-components/expand';
+import { Flex } from 'ui-lab-components/flex';
+import { Group } from 'ui-lab-components/group';
 import { FaCheck, FaRegClipboard } from '@/shared/icons/fa6';
-import { generatedAPI, generatedStyles } from 'ui-lab-registry';
 import type { ComponentDetail } from '@/types/component';
+import type { ComponentAPI } from 'ui-lab-registry';
 
 type CopySource = 'examples' | 'api' | 'styles';
 
-function buildExamplesMarkdown(component: ComponentDetail | undefined): string {
-  if (!component) return '';
-  const lines = [`# ${component.name}\n\n${component.description}`];
-  component.examples.forEach((ex) => {
+type CopyExample = { title?: string; description?: string; code: string };
+type CopyStyles = { rawCss?: string } | string | null;
+
+function buildExamplesMarkdown(
+  component: ComponentDetail | undefined,
+  name?: string,
+  description?: string,
+  examples?: CopyExample[],
+): string {
+  const resolvedName = component?.name ?? name;
+  const resolvedDescription = component?.description ?? description;
+  const resolvedExamples = component?.examples ?? examples;
+  if (!resolvedName || !resolvedExamples) return '';
+  const lines = [`# ${resolvedName}\n\n${resolvedDescription ?? ''}`];
+  resolvedExamples.forEach((ex) => {
     if (ex.title) lines.push(`\n## ${ex.title}`);
     if (ex.description) lines.push(ex.description);
     lines.push(`\`\`\`tsx\n${ex.code}\n\`\`\``);
@@ -19,8 +32,7 @@ function buildExamplesMarkdown(component: ComponentDetail | undefined): string {
   return lines.join('\n');
 }
 
-function buildAPIMarkdown(componentId: string): string {
-  const api = generatedAPI[componentId];
+function buildAPIMarkdown(componentId: string, api: ComponentAPI | null | undefined): string {
   if (!api) return '';
   const name = componentId.charAt(0).toUpperCase() + componentId.slice(1);
   const lines = [`# ${name} API`];
@@ -53,11 +65,12 @@ function buildAPIMarkdown(componentId: string): string {
   return lines.join('\n');
 }
 
-function buildStylesMarkdown(componentId: string): string {
-  const styles = generatedStyles[componentId];
+function buildStylesMarkdown(componentId: string, styles: CopyStyles): string {
   if (!styles) return '';
   const name = componentId.charAt(0).toUpperCase() + componentId.slice(1);
-  return `# ${name} Styles\n\n\`\`\`css\n${styles}\n\`\`\``;
+  const source = typeof styles === 'string' ? styles : styles.rawCss;
+  if (!source) return '';
+  return `# ${name} Styles\n\n\`\`\`css\n${source}\n\`\`\``;
 }
 
 const copyOptions: { label: string; source: CopySource }[] = [
@@ -66,15 +79,43 @@ const copyOptions: { label: string; source: CopySource }[] = [
   { label: 'Copy Styles', source: 'styles' },
 ];
 
-export function CopyComponentPage({ componentId, component, grouped = false }: { componentId: string; component?: ComponentDetail; grouped?: boolean }) {
+export function CopyComponentPage({
+  componentId,
+  component,
+  name,
+  description,
+  examples,
+  api,
+  styles,
+  dataUrl,
+}: {
+  componentId: string;
+  component?: ComponentDetail;
+  name?: string;
+  description?: string;
+  examples?: CopyExample[];
+  api?: ComponentAPI | null;
+  styles?: CopyStyles;
+  dataUrl?: string;
+  grouped?: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState<{ source: CopySource; lines: number } | null>(null);
 
   const handleCopy = async (source: CopySource) => {
     let markdown = '';
-    if (source === 'examples') markdown = buildExamplesMarkdown(component);
-    else if (source === 'api') markdown = buildAPIMarkdown(componentId);
-    else markdown = buildStylesMarkdown(componentId);
+    if (source === 'examples') markdown = buildExamplesMarkdown(component, name, description, examples);
+    else if (source === 'api') {
+      const resolvedAPI = api ?? (dataUrl
+        ? (await fetch(`${dataUrl}?tab=api`).then((response) => response.json())).api
+        : null);
+      markdown = buildAPIMarkdown(componentId, resolvedAPI);
+    } else {
+      const resolvedStyles = styles ?? (dataUrl
+        ? (await fetch(`${dataUrl}?tab=styles`).then((response) => response.json())).styles
+        : null);
+      markdown = buildStylesMarkdown(componentId, resolvedStyles);
+    }
     if (!markdown) return;
     await navigator.clipboard.writeText(markdown);
     setCopied({ source, lines: markdown.split('\n').length });
@@ -83,7 +124,11 @@ export function CopyComponentPage({ componentId, component, grouped = false }: {
   };
 
   return (
-    <Group.Expand className="w-full">
+    <Group.Expand
+      className="w-full"
+      expanded={isOpen}
+      onExpandedChange={setIsOpen}
+    >
       <Expand.Trigger className="flex flex-col rounded-none border-b border-background-700">
         <Flex className="h-12 cursor-pointer">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
@@ -107,18 +152,20 @@ export function CopyComponentPage({ componentId, component, grouped = false }: {
       </Expand.Trigger>
 
       <Expand.Content from="below" className="-mt-(--border-width-base)">
-        <div className="flex flex-col overflow-hidden">
-          {copyOptions.map(({ label, source }) => (
-            <button
-              key={source}
-              type="button"
-              onClick={() => handleCopy(source)}
-              className="flex py-2.5 cursor-pointer items-center text-left text-xs font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
-            >
-              <span className="flex-1 px-3">{label}</span>
-            </button>
-          ))}
-        </div>
+        {isOpen && (
+          <div className="flex flex-col overflow-hidden">
+            {copyOptions.map(({ label, source }) => (
+              <button
+                key={source}
+                type="button"
+                onClick={() => handleCopy(source)}
+                className="flex py-2.5 cursor-pointer items-center text-left text-xs font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
+              >
+                <span className="flex-1 px-3">{label}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </Expand.Content>
     </Group.Expand>
   );

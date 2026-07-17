@@ -1,8 +1,8 @@
 .overlay {
+  z-index: 999;
   align-items: flex-start;
   overflow: hidden;
   padding-top: 20vh;
-  z-index: 999;
 }
 
 .overlay .backdrop {
@@ -54,4 +54,14 @@
 .list > * {
   height: 100%;
   max-height: none !important;
+}
+
+@media (max-width: 36rem) {
+  .overlay {
+    padding-top: 4rem;
+  }
+
+  .palette {
+    height: min(32rem, calc(100dvh - 5rem));
+  }
 }

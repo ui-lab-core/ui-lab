@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useMemo, memo, useState, type ReactNode } from 'react';
-import { Divider, Scroll, Select } from 'ui-lab-components';
-import { SiAstro, SiFlutter, SiReact, SiSvelte } from '@/shared/icons/si';
+import { useEffect, useMemo, memo, useState, type ComponentType } from 'react';
+import { Divider } from 'ui-lab-components/divider';
+import { Scroll } from 'ui-lab-components/scroll';
 import { usePrefetchOnHover } from '@/shared/hooks/use-prefetch-on-hover';
 import { cn } from '@/shared/lib/utils';
 import { useSidebarToggle } from '@/features/layout/hooks/sidebar-context';
@@ -15,36 +15,21 @@ import {
 } from '@/app/lib/sidebar-config';
 import { getSectionsForNav, getHrefForNavItem, isNavItemActive } from '@/features/navigation/lib/sidebar-sections';
 import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation-context';
-import { getActiveElementsNavFromPathname } from '@/features/workshop/lib/sidebar-sections';
-import { ElementsList } from '@/features/workshop/components/sidebar-content';
-import { RiExpandUpDownFill } from "@/shared/icons/ri";
-
-type FrameworkOption = {
-  value: 'react' | 'svelte' | 'astro' | 'flutter';
-  label: string;
-  icon: ReactNode;
-};
 
 type ElementsNavType = 'packages' | 'sections' | 'starters' | 'patterns';
 
-const FRAMEWORK_STORAGE_KEY = 'ui-lab-selected-framework';
-const FRAMEWORK_OPTIONS: FrameworkOption[] = [
-  {
-    value: 'react',
-    label: 'React',
-    icon: <SiReact className="aspect-square min-w-5 h-5 text-foreground-300" />,
-  },
-  {
-    value: 'flutter',
-    label: 'Flutter',
-    icon: <SiFlutter className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
-  },
-  {
-    value: 'svelte',
-    label: 'Svelte',
-    icon: <SiSvelte className="aspect-square min-w-4.5 h-4.5 text-foreground-300" />,
-  },
-];
+type ElementsProps = {
+  activeNav: ElementsNavType;
+  pathname: string;
+  activeCategory?: null;
+};
+
+function getElementsNav(pathname: string): ElementsNavType {
+  if (pathname.startsWith('/workshop/sections')) return 'sections';
+  if (pathname.startsWith('/workshop/starters')) return 'starters';
+  if (pathname.startsWith('/workshop/patterns')) return 'patterns';
+  return 'packages';
+}
 
 const SidebarItemLink = memo(function SidebarItemLink({
   href,
@@ -56,7 +41,7 @@ const SidebarItemLink = memo(function SidebarItemLink({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { onMouseEnter } = usePrefetchOnHover(href);
+  const { onMouseEnter, onFocus } = usePrefetchOnHover(href);
 
   return (
     <>
@@ -64,6 +49,7 @@ const SidebarItemLink = memo(function SidebarItemLink({
         href={href}
         prefetch={false}
         onMouseEnter={onMouseEnter}
+        onFocus={onFocus}
         style={{ display: 'none' }}
         aria-hidden
       />
@@ -77,6 +63,7 @@ const SidebarItemLink = memo(function SidebarItemLink({
           }
         }}
         onMouseEnter={onMouseEnter}
+        onFocus={onFocus}
         className={className}
       >
         {children}
@@ -95,7 +82,7 @@ export function Sidebar({
   const { isOpen, closeSidebar } = useSidebarToggle();
   const docsNavigationData = useDocsNavigationData();
   const pathname = usePathname();
-  const [selectedFramework, setSelectedFramework] = useState<FrameworkOption['value']>('react');
+  const [Elements, setElements] = useState<ComponentType<ElementsProps> | null>(null);
   const activeDomain = activeDomainProp ?? getActiveDomainForPathname(pathname);
   const activeNavItem = getActiveNavItemForDomain(activeDomain);
   const mainNavItems = useMemo(() => getMainNavItemsForDomain(activeDomain), [activeDomain]);
@@ -108,35 +95,21 @@ export function Sidebar({
 
   const isElementsOrSectionsOrStarters = activeDomain === 'packages' || activeDomain === 'sections' || activeDomain === 'starters' || activeDomain === 'patterns';
   const activeElementsNav = useMemo(
-    () => (isElementsOrSectionsOrStarters ? activeElementsNavProp ?? getActiveElementsNavFromPathname(pathname) : 'packages'),
+    () => (isElementsOrSectionsOrStarters ? activeElementsNavProp ?? getElementsNav(pathname) : 'packages'),
     [activeElementsNavProp, isElementsOrSectionsOrStarters, pathname]
   );
   const scrollStorageKey = useMemo(
     () => (isElementsOrSectionsOrStarters ? `sidebar-scroll-${activeElementsNav}` : `sidebar-scroll-${activeNavItem}`),
     [activeElementsNav, activeNavItem, isElementsOrSectionsOrStarters]
   );
-  const selectedFrameworkOption = useMemo(
-    () => FRAMEWORK_OPTIONS.find((option) => option.value === selectedFramework) ?? FRAMEWORK_OPTIONS[0],
-    [selectedFramework]
-  );
-
   useEffect(() => {
-    const storedFramework = window.localStorage.getItem(FRAMEWORK_STORAGE_KEY);
-    if (!storedFramework) return;
-
-    const matchingFramework = FRAMEWORK_OPTIONS.find((option) => option.value === storedFramework);
-    if (matchingFramework) {
-      setSelectedFramework(matchingFramework.value);
-    }
-  }, []);
-
-  const handleFrameworkChange = (key: string | number | null) => {
-    if (key === null) return;
-
-    const value = String(key) as FrameworkOption['value'];
-    setSelectedFramework(value);
-    window.localStorage.setItem(FRAMEWORK_STORAGE_KEY, value);
-  };
+    if (!isElementsOrSectionsOrStarters || Elements) return;
+    let active = true;
+    import('@/features/workshop/components/sidebar-content').then((module) => {
+      if (active) setElements(() => module.ElementsList as ComponentType<ElementsProps>);
+    });
+    return () => { active = false; };
+  }, [Elements, isElementsOrSectionsOrStarters]);
 
   const sidebarWidth = isElementsOrSectionsOrStarters ? 'w-78 md:w-66 lg:w-52 xl:w-62' : 'w-76 md:w-60 lg:w-46 xl:w-62';
 
@@ -163,40 +136,6 @@ export function Sidebar({
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
         <div className="flex border-r border-background-700/40 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
-          {false && <div className="px-2 pt-4">
-            <Select
-              selectedKey={selectedFramework}
-              label={selectedFrameworkOption.label}
-              onSelectionChange={handleFrameworkChange}
-            >
-              <Select.Trigger
-                chevron={<RiExpandUpDownFill />}
-                className="h-11">
-                <Select.Value
-                  placeholder="Choose a framework"
-                  styles={{ root: "pl-1", icon: "w-5 h-5 mr-2" }}
-                  icon={selectedFrameworkOption.icon}
-                />
-              </Select.Trigger>
-              <Select.Content >
-                <Select.List >
-                  {FRAMEWORK_OPTIONS.map((option) => (
-                    <Select.Item
-                      key={option.value}
-                      value={option.value}
-                      textValue={option.label}
-                      icon={option.icon}
-                      styles={{ iconWrapper: "w-6 h-6" }}
-                    >
-                      {option.label}
-                    </Select.Item>
-                  ))}
-                </Select.List>
-              </Select.Content>
-            </Select>
-          </div>
-          }
-
           {mainNavItems.length > 0 && (
             <div className="z-10">
               <nav className="py-3 px-2 space-y-1">
@@ -208,6 +147,7 @@ export function Sidebar({
                     <Link
                       key={navItem.id}
                       href={navItem.href}
+                      prefetch={false}
                       className={cn(
                         'flex border items-center py-2.5 px-4 gap-3 text-xs rounded-sm',
                         isActive
@@ -240,11 +180,11 @@ export function Sidebar({
           >
             {isElementsOrSectionsOrStarters ? (
               <div className="px-4">
-                <ElementsList
+                {Elements ? <Elements
                   activeNav={activeElementsNav}
                   pathname={pathname}
                   activeCategory={null}
-                />
+                /> : null}
               </div>
             ) : (
               <div className="py-4 px-5 space-y-8">

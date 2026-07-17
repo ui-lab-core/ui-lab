@@ -279,7 +279,7 @@ const SANS: FontDefinition[] = [
 const MONO: FontDefinition[] = [
   {
     name: "Ioskeley Mono",
-    family: "var(--font-ioskeley-mono), monospace",
+    family: 'var(--font-ioskeley-mono, ui-monospace), "SFMono-Regular", Consolas, "Liberation Mono", monospace',
     isDefault: true,
     metrics: {
       body: {
