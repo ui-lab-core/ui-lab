@@ -36,9 +36,9 @@ Prefer the manual path if you need a minimal setup or want to wire things in you
 pnpm add ui-lab-components ui-lab-theme-onyx
 ```
 
-## Important: Components are unstyled by default
+## Add a theme
 
-UI Lab components provide **semantic structure and accessibility** but no visual styles out of the box. You must pair them with a theme package to render them visually.
+Each component automatically loads its own default styles when you import it. Pair the components with a theme package to provide the design tokens those defaults consume.
 
 The easiest way is to use `ui-lab-theme-onyx`, which provides:
 - Complete color palette (8 colors × 9 shades each)
@@ -46,21 +46,22 @@ The easiest way is to use `ui-lab-theme-onyx`, which provides:
 - Spacing and radius tokens
 - Light/dark mode support
 
-## Import styles in the right order
+## Import the theme
 
 ```css
 @import "tailwindcss";
 @import "ui-lab-theme-onyx/styles.css";
-@import "ui-lab-components/styles.css";
 ```
 
 Add this to your app stylesheet (`app/globals.css` in Next.js, `src/index.css` or `src/main.css` in Vite).
 
-The order matters:
+That is the only required UI Lab stylesheet import:
 
 1. `tailwindcss` establishes the layers.
 2. `ui-lab-theme-onyx/styles.css` defines the design tokens (colors, typography, spacing).
-3. `ui-lab-components/styles.css` consumes those tokens to render components.
+3. Imported components bring in only their own default CSS. The package's cascade-layer contract keeps theme overrides above those defaults regardless of module evaluation order.
+
+`ui-lab-components/styles.css` remains available as an optional aggregate bundle for environments that deliberately load the entire component library at once.
 
 ## Add long-form typography
 
@@ -69,7 +70,6 @@ UI Lab keeps typography intentionally role-based: body copy inherits `--font-bod
 ```css
 @import "tailwindcss";
 @import "ui-lab-theme-onyx/styles.css";
-@import "ui-lab-components/styles.css";
 @import "ui-lab-components/typography.css";
 ```
 
@@ -99,7 +99,6 @@ If you prefer to define your own token layer instead of using `ui-lab-theme-onyx
 ```css
 @import "tailwindcss";
 @import "./my-theme.css";           /* Your custom token definitions */
-@import "ui-lab-components/styles.css";
 ```
 
 Your `my-theme.css` must define all required tokens:

@@ -1,14 +1,10 @@
-import { ClerkProvider } from "@clerk/nextjs";
-import { Suspense } from "react";
 import type { ReactNode } from "react";
 
 import {
   getPremiumAuthSetup,
 } from "@/features/auth/auth-setup";
 
-import { ConvexClientProvider } from "./convex-client-provider";
-
-export function AuthProviders({ children }: { children: ReactNode }) {
+export async function AuthProviders({ children }: { children: ReactNode }) {
   const setup = getPremiumAuthSetup();
   const allowPartialDevAuth = process.env.NODE_ENV !== "production";
   const enableClerkProvider =
@@ -17,21 +13,15 @@ export function AuthProviders({ children }: { children: ReactNode }) {
   const enableConvexProvider =
     setup.convexConfigured && (allowPartialDevAuth || setup.fullAuthConfigured);
 
-  let tree = children;
+  if (!enableClerkProvider && !enableConvexProvider) return <>{children}</>;
 
-  if (enableConvexProvider) {
-    tree = (
-      <Suspense fallback={tree}>
-        <ConvexClientProvider withClerkAuth={enableClerkProvider}>
-          {tree}
-        </ConvexClientProvider>
-      </Suspense>
-    );
-  }
-
-  if (enableClerkProvider) {
-    tree = <ClerkProvider>{tree}</ClerkProvider>;
-  }
-
-  return <>{tree}</>;
+  const { EnabledAuthProviders } = await import("./enabled-auth-providers");
+  return (
+    <EnabledAuthProviders
+      clerk={enableClerkProvider}
+      convex={enableConvexProvider}
+    >
+      {children}
+    </EnabledAuthProviders>
+  );
 }

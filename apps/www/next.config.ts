@@ -14,7 +14,7 @@ function usesLocalPrivateLibrary() {
 
     return (
       sitePackage.dependencies?.["@ui-lab-core/library"] ===
-        localPrivateLibrarySpecifier &&
+      localPrivateLibrarySpecifier &&
       existsSync(path.join(workspaceRoot, "private/packages/library/package.json"))
     );
   } catch {
@@ -23,6 +23,22 @@ function usesLocalPrivateLibrary() {
 }
 
 const nextRoot = usesLocalPrivateLibrary() ? workspaceRoot : appRoot;
+
+function usesAuthProviders() {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim();
+  const secretKey = process.env.CLERK_SECRET_KEY?.trim();
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL?.trim();
+  const development = process.env.NODE_ENV !== "production";
+  const full = Boolean(
+    publishableKey &&
+    secretKey &&
+    convexUrl &&
+    !publishableKey.startsWith("pk_test_"),
+  );
+  const clerk = Boolean(publishableKey && (development || full));
+  const convex = Boolean(convexUrl && (development || full));
+  return clerk || convex;
+}
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -43,30 +59,39 @@ const nextConfig: NextConfig = {
     root: nextRoot,
   },
   webpack: (config, { webpack }) => {
-    // ui-lab-components ships a per-component CSS sidecar (Anchor.css, Badge.css,
-    // …) that each component chunk imports, so a page using N components emits N
-    // render-blocking <link>s. The combined "ui-lab-components/styles.css"
-    // (imported once in globals.css) already contains every one of those rules
-    // with identical CSS-module hashes, so the sidecars are pure duplication.
-    // Redirect them to an empty stylesheet to collapse ~30 render-blocking
-    // stylesheets into one. (ui-lab-components is a workspace dep, so it resolves
-    // through the symlink to packages/@ui/dist — match both spellings.)
+    if (!usesAuthProviders()) {
+      const disabled = path.resolve(__dirname, "src/app/auth-providers-disabled.tsx");
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /^\.\/auth-providers$/,
+          (resource: { context?: string; request?: string }) => {
+            if (resource.context === path.resolve(__dirname, "src/app")) {
+              resource.request = disabled;
+            }
+          },
+        ),
+      );
+    }
+
+    // The component library auto-imports CSS per retained component chunk for
+    // normal consumers. This showcase intentionally indexes every preview, so
+    // it imports the identical aggregate bundle once in globals.css and drops
+    // only the duplicate package sidecars from the JavaScript graph.
     const emptyCss = path.resolve(__dirname, "src/empty-component-styles.css");
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(
-        /[/\\][A-Z][A-Za-z0-9]*\.css$/,
+        /\.css$/,
         (resource: { context?: string; request?: string }) => {
           if (
-            /[/\\](ui-lab-components|@ui)[/\\]dist[/\\]/.test(
-              resource.context ?? "",
-            ) &&
-            /^\.{1,2}[/\\][A-Z][A-Za-z0-9]*\.css$/.test(resource.request ?? "")
+            /[/\\](ui-lab-components|@ui)[/\\]dist[/\\]/.test(resource.context ?? "") &&
+            /^\.{1,2}[/\\].+\.css$/.test(resource.request ?? "")
           ) {
             resource.request = emptyCss;
           }
         },
       ),
     );
+
     return config;
   },
 };

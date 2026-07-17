@@ -1,45 +1,17 @@
 import "./globals.css";
 import "lenis/dist/lenis.css";
+// The showcase indexes every preview, so load the aggregate once and suppress
+// its otherwise-duplicate automatic package sidecars in next.config.
+import "ui-lab-components/styles.css";
+import "ui-lab-components/typography.css";
 
-import "@fontsource/geist-sans";
-import "@fontsource/geist-mono";
-import "@fontsource-variable/karla";
-import "@fontsource-variable/geist";
-import "@fontsource-variable/inter";
-import "@fontsource-variable/nunito-sans";
-import "@fontsource-variable/roboto";
-import "@fontsource-variable/work-sans";
-import "@fontsource-variable/readex-pro";
-import "@fontsource-variable/jetbrains-mono";
-import localFont from "next/font/local";
 import { Metadata } from "next";
 
 import { AuthProviders } from "./auth-providers";
 import { RootLayoutClient } from "./client";
-import { featureFlags } from "@/shared/config/feature-flags";
 import { generateMetadata } from "@/shared/lib/metadata";
 import { getInitialThemeScript } from "@/features/theme/lib/initial-theme-script";
 import { generateScrollRestoreScript } from "ui-lab-components/scripts";
-
-const ioskeleyMono = localFont({
-  src: [
-    {
-      path: "../../public/assets/fonts/monospace/IoskeleyMono-Medium.subset.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../../public/assets/fonts/monospace/IoskeleyMono-MediumItalic.subset.woff2",
-      weight: "500",
-      style: "italic",
-    },
-  ],
-  variable: "--font-ioskeley-mono",
-  display: "swap",
-  // Mono is used for code, not the above-the-fold heading (Karla). Skipping
-  // preload keeps it off the LCP critical path; it loads on demand with swap.
-  preload: false,
-});
 
 // Karla is the body/header font and the LCP text element on most pages. It is
 // self-hosted from a stable public URL (see the "KarlaLocal" @font-face in
@@ -57,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={featureFlags.heavyFonts ? ioskeleyMono.variable : undefined}>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link
           rel="preload"

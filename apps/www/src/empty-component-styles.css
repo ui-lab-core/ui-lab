@@ -1,3 +1,1 @@
-/* Intentionally empty. The combined ui-lab-components/styles.css (imported in
-   globals.css) already contains every per-component rule, so the per-component
-   CSS sidecars are redirected here to avoid ~30 duplicate render-blocking links. */
+/* Package sidecars are duplicated by the aggregate showcase import. */
