@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .root {
     @apply relative;
     min-height: 0;

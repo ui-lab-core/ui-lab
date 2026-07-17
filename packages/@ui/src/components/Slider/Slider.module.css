@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .slider {
     --disabled-opacity: 0.6;
     @apply relative flex w-full items-center;

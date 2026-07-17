@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .container {
     --gap-scale: 0.75;
 

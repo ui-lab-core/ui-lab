@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .overlay[data-state="exiting"] {
     pointer-events: none;
   }

@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .badge {
     @apply inline-flex items-center justify-center gap-2 select-none whitespace-nowrap px-1.5;
     height: fit-content;

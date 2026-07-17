@@ -77,8 +77,11 @@ If you want to create a custom theme, define CSS variables that the components e
   --radius-lg: 0.75rem;
 }
 
-@import "ui-lab-components/styles.css";
 ```
+
+Component imports automatically include their default CSS. The aggregate
+`ui-lab-components/styles.css` export is optional for applications that load the
+entire library up front.
 
 Then import your CSS before your app:
 

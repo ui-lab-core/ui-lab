@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .root {
     @apply flex w-full max-w-[28rem] items-start gap-3 px-4 py-2.5 select-none;
     background: var(--background);

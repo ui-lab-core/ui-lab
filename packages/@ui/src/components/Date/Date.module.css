@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .calendar {
     --disabled-opacity: 0.5;
 

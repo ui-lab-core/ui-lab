@@ -16,7 +16,10 @@
   --ring-background: #0f74c5
 }
 
-@layer components {
+/* Keep theme tokens above component fallbacks even when component CSS is auto-imported later. */
+@layer components.defaults, components.theme;
+
+@layer components.theme {
   [data-ring="true"] {
     --ring: var(--ring-background);
     --ring-width: 2px;

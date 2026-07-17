@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .confirm {
     --overlay-background: mix(var(--background-950) 50%, transparent);
     --header-foreground: var(--foreground-100);

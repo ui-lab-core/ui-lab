@@ -1,3 +1,4 @@
+import "../base.css";
 import type * as React from 'react';
 import { cn, type StyleValue } from './utils';
 

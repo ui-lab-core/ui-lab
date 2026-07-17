@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .checkbox {
     @apply inline-grid gap-x-3;
     grid-template-columns: auto 1fr;

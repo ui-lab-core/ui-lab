@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .page {
     --padding: var(--page-padding-md, 1rem);
 

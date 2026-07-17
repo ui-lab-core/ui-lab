@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .button {
     @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;
     background-color: var(--background);

@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .focus-scope {
     position: relative;
     display: inline-flex;

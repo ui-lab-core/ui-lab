@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .shape {
     display: block;
     background: var(--background, var(--background-800));

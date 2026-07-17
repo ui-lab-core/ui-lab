@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .label {
     --background: transparent;
     --foreground: var(--foreground-primary);

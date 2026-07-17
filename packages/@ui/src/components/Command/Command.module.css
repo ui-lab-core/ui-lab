@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   /* Overlay Container */
   .overlay {
     @apply fixed inset-0 flex items-start justify-center overflow-hidden;

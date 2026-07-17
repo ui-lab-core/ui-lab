@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .root {
     --frame-radius: var(--radius-sm, 24px);
     --frame-stroke-width: var(--border-width-base, 1px);

@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .card {
     @apply overflow-hidden;
     background-color: var(--background, var(--background-800));

@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .code {
     --border-color: var(--background-700);
     --header-bg: mix(var(--background-900) 90%, transparent);

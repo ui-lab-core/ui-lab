@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .divider {
     --background: var(--background-border, currentColor);
   }

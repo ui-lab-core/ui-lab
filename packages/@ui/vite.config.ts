@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import path from 'path';
@@ -19,6 +19,43 @@ const componentEntries = Object.fromEntries(
     .filter((pair): pair is [string, string] => pair !== null)
 );
 
+type CssChunk = {
+  fileName: string;
+  viteMetadata?: {
+    importedCss?: Set<string>;
+  };
+};
+
+/**
+ * Vite extracts library CSS but does not retain a static import in the emitted
+ * JavaScript. Restore that association so consumers automatically receive the
+ * CSS for every component chunk their bundler keeps.
+ */
+function injectCssImports(): Plugin {
+  return {
+    name: 'ui-lab-inject-css-imports',
+    apply: 'build',
+    enforce: 'post',
+    renderChunk(code, chunk) {
+      const { importedCss } = (chunk as CssChunk).viteMetadata ?? {};
+      const styles = [...(importedCss ?? [])].sort();
+      if (styles.length === 0) return null;
+
+      const directory = path.posix.dirname(chunk.fileName);
+      const imports = styles.map((fileName) => {
+        const relative = path.posix.relative(directory, fileName);
+        const specifier = relative.startsWith('.') ? relative : `./${relative}`;
+        return `import ${JSON.stringify(specifier)};`;
+      });
+
+      return {
+        code: `${imports.join('\n')}\n${code}`,
+        map: null,
+      };
+    },
+  };
+}
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -32,6 +69,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    injectCssImports(),
     dts({
       insertTypesEntry: true,
       exclude: ['**/*.test.ts', '**/*.test.tsx', 'src/tests/**', '**/tests/**'],
@@ -39,7 +77,7 @@ export default defineConfig({
   ],
   build: {
     sourcemap: false,
-    emptyOutDir: false,
+    emptyOutDir: true,
     cssCodeSplit: true,
     lib: {
       entry: {
@@ -64,6 +102,7 @@ export default defineConfig({
         /^@react-types\/.*/,
       ],
       output: {
+        hoistTransitiveImports: false,
         entryFileNames: '[name].es.js',
         chunkFileNames: 'chunks/[name]-[hash].js',
         // Component/provider entries are client components; the pure script entries are not.

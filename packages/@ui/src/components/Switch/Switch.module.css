@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .switch {
     --radius: 9999px;
     --inner-radius: calc(var(--radius) - var(--border-width-base));

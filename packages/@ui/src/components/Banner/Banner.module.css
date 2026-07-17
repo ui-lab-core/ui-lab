@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .banner {
     @apply flex w-full items-start gap-3 px-4 py-3;
     font-family: inherit;

@@ -1,6 +1,6 @@
 @reference "tailwindcss";
 
-@layer components {
+@layer components.defaults {
   .group {
     --radius-size: calc(var(--spacing) * 1.5);
     --padding-size: var(--radius-size);

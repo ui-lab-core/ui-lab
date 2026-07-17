@@ -43,7 +43,7 @@
   --info-600: var(--color-info-600, oklch(81% 0.19  255));
 }
 
-@layer components {
+@layer components.defaults {
   [data-ring="true"] {
     outline: none;
   }
