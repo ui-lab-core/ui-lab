@@ -36,8 +36,6 @@
   .frame {
     @apply flex items-center gap-1.5 p-2.5;
     color: var(--foreground);
-    font-weight: var(--font-weight-body-medium, 500);
     font-size: var(--text-sm);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 }

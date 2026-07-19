@@ -4,7 +4,6 @@
   .banner {
     @apply flex w-full items-start gap-3 px-4 py-3;
     font-family: inherit;
-    font-weight: var(--font-weight-body-medium, 500);
     background-color: var(--background, var(--background-900));
     color: var(--foreground, var(--foreground-200));
     border: var(--border-width-base, 1px) solid var(--border, var(--background-700));
@@ -63,18 +62,13 @@
   }
 
   .title {
-    font-weight: var(--font-weight-header-medium, 500);
-    font-size: var(--header-text-md);
+    font-size: var(--text-md, 1rem);
     line-height: var(--leading-tight, 1.25);
-    letter-spacing: var(--letter-spacing-header-sm, -0.0050em);
     @apply my-0;
   }
 
   .body {
-    font-weight: var(--font-weight-body-medium, 500);
     font-size: inherit;
-    line-height: calc(var(--leading-body), 1.5);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     @apply my-0;
   }
 }

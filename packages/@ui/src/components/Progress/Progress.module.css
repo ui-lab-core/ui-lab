@@ -24,8 +24,6 @@
   .label-row {
     @apply flex items-center justify-between;
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--foreground);
   }
 

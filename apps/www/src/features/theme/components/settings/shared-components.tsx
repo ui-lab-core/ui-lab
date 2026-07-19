@@ -189,7 +189,7 @@ export const ColorRow = memo(
     return (
       <div>
         <div
-          className={`mx-[6px] rounded-[12px] ${isExpanded ? "bg-background-700/40 border border-background-700" : "hover:bg-background-700/40 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
+          className={`mx-[6px] rounded-[12px] ${isExpanded ? "bg-background-700 border border-background-700" : "hover:bg-background-700 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
         >
           <button
             onClick={onToggle}

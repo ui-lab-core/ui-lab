@@ -79,7 +79,6 @@
     @apply m-0;
     font-size: 1.125rem;
     font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--title-foreground, var(--foreground));
   }
 

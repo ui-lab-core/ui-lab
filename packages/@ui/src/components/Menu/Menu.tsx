@@ -125,12 +125,6 @@ const Menu = ({
     return radioGroups.get(groupName) ?? null
   }, [radioGroups])
 
-  React.useEffect(() => {
-    if (isOpen && nav.focusedKey === null && nav.enabledFilteredItems.length > 0) {
-      nav.setFocusedKey(nav.enabledFilteredItems[0].key)
-    }
-  }, [isOpen, nav.enabledFilteredItems, nav.focusedKey, nav.setFocusedKey])
-
   const contextValue = React.useMemo(() => ({
     isOpen,
     setIsOpen,

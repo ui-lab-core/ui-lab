@@ -87,7 +87,7 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
             ),
             ref: mergedRef,
             'data-open': isOpen ? "true" : "false",
-            'data-hovered': isOpen ? "true" : undefined,
+            'data-hovered': isOpen || isHovered ? "true" : undefined,
             'data-type': type,
           } as any)}
         </div>

@@ -1,12 +1,4 @@
 import {
-  type FontKey,
-  getFontConfig,
-  getDefaultBodyFont,
-  getDefaultHeaderFont,
-  getDefaultMonoFont,
-  getFontMetrics,
-} from "../constants/font-config";
-import {
   DEFAULT_GLOBAL_ADJUSTMENTS,
   DEFAULT_THEME_NAME,
   themes,
@@ -24,87 +16,9 @@ const DEFAULT_THEME_MODE = "dark" as const;
 
 export const DEFAULT_LAYOUT_CONFIG: LayoutScaleConfig = {
   radius: 0.9,
-  borderWidth: 2,
+  borderWidth: 1,
   spacingScale: 0.9,
 };
-
-export const DEFAULT_FONT_CONFIG = {
-  bodyFont: getDefaultBodyFont().name as FontKey,
-  headerFont: getDefaultHeaderFont().name as FontKey,
-  monoFont: getDefaultMonoFont().name as FontKey,
-};
-
-export function getTypographyConfigForFonts(
-  fonts: Partial<typeof DEFAULT_FONT_CONFIG> = DEFAULT_FONT_CONFIG,
-): TypographyConfig {
-  const bodyFont =
-    getFontConfig(fonts.bodyFont ?? DEFAULT_FONT_CONFIG.bodyFont, "body") ??
-    getDefaultBodyFont();
-  const headerFont =
-    getFontConfig(fonts.headerFont ?? DEFAULT_FONT_CONFIG.headerFont, "header") ??
-    getDefaultHeaderFont();
-  const monoFont =
-    getFontConfig(fonts.monoFont ?? DEFAULT_FONT_CONFIG.monoFont, "mono") ??
-    getDefaultMonoFont();
-  const bodyMetrics = getFontMetrics(bodyFont, "body");
-  const headerMetrics = getFontMetrics(headerFont, "header");
-  const monoMetrics = getFontMetrics(monoFont, "mono");
-
-  return {
-    ...DEFAULT_TYPOGRAPHY_CONFIG,
-    headerTypeSizeRatio:
-      headerMetrics.typeSizeRatio ??
-      DEFAULT_TYPOGRAPHY_CONFIG.headerTypeSizeRatio,
-    headerFontSizeScale:
-      headerMetrics.fontSizeScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.headerFontSizeScale,
-    headerLetterSpacingScale:
-      headerMetrics.letterSpacingScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.headerLetterSpacingScale,
-    headerFontWeightScale:
-      headerMetrics.fontWeightScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.headerFontWeightScale,
-    headerLineHeight:
-      headerMetrics.lineHeight ??
-      DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
-    headerMinFontSizePx:
-      headerMetrics.minFontSizePx ??
-      DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
-    bodyTypeSizeRatio:
-      bodyMetrics.typeSizeRatio ??
-      DEFAULT_TYPOGRAPHY_CONFIG.bodyTypeSizeRatio,
-    bodyFontSizeScale:
-      bodyMetrics.fontSizeScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.bodyFontSizeScale,
-    bodyLetterSpacingScale:
-      bodyMetrics.letterSpacingScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.bodyLetterSpacingScale,
-    bodyFontWeightScale:
-      bodyMetrics.fontWeightScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.bodyFontWeightScale,
-    bodyLineHeight:
-      bodyMetrics.lineHeight ??
-      DEFAULT_TYPOGRAPHY_CONFIG.bodyLineHeight,
-    bodyMinFontSizePx:
-      bodyMetrics.minFontSizePx ??
-      DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
-    monoFontSizeScale:
-      monoMetrics.fontSizeScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.monoFontSizeScale,
-    monoLetterSpacingScale:
-      monoMetrics.letterSpacingScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.monoLetterSpacingScale,
-    monoFontWeightScale:
-      monoMetrics.fontWeightScale ??
-      DEFAULT_TYPOGRAPHY_CONFIG.monoFontWeightScale,
-    monoLineHeight:
-      monoMetrics.lineHeight ??
-      DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
-    monoMinFontSizePx:
-      monoMetrics.minFontSizePx ??
-      DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
-  };
-}
 
 function getDefaultThemeColors(
   mode: "light" | "dark" = DEFAULT_THEME_MODE,
@@ -126,9 +40,8 @@ export function getDefaultThemeSourceConfig(
 ) {
   return {
     colors: getDefaultThemeColors(mode),
-    typography: getTypographyConfigForFonts(DEFAULT_FONT_CONFIG),
+    typography: { ...DEFAULT_TYPOGRAPHY_CONFIG },
     layout: { ...DEFAULT_LAYOUT_CONFIG },
-    fonts: { ...DEFAULT_FONT_CONFIG },
     mode,
   };
 }
@@ -144,9 +57,6 @@ export function getDefaultAppPreferences() {
     spacingScale: defaults.layout.spacingScale,
     globalAdjustments:
       defaults.colors.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
-    selectedBodyFont: defaults.fonts.bodyFont,
-    selectedHeaderFont: defaults.fonts.headerFont,
-    selectedMonoFont: defaults.fonts.monoFont,
     ...defaults.typography,
   };
 }

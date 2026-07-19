@@ -55,15 +55,11 @@
 
   .description {
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--description-foreground);
   }
 
   .error-message {
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--error-foreground);
   }
 
@@ -73,8 +69,6 @@
     background-color: var(--warning-background);
     color: var(--warning-foreground);
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 
   .warning-box-low {
@@ -103,15 +97,11 @@
 
   .countdown-text {
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     color: var(--countdown-foreground);
   }
 
   .input-label {
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     margin-left: 0.25rem;
     color: var(--label-foreground);
   }
@@ -122,8 +112,6 @@
     border: var(--border-width-base, 1px) solid var(--input-border-color);
     color: var(--input-foreground);
     font-size: var(--text-sm);
-    font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
 
     &:focus-visible {
       outline: 2px solid var(--input-focus-visible);

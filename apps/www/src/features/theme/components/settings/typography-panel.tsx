@@ -11,8 +11,7 @@ import {
   FaRulerHorizontal,
   FaArrowsLeftRight,
 } from "@/shared/icons/fa6";
-import { Divider, Select, Slider } from "ui-lab-components";
-import { BODY_FONTS, HEADER_FONTS, MONO_FONTS } from "../../constants/font-config";
+import { Divider, Slider } from "ui-lab-components";
 import {
   MAX_MIN_FONT_SIZE_PX,
   MIN_MIN_FONT_SIZE_PX,
@@ -28,13 +27,7 @@ import {
 type TypographySectionKey = "header" | "body" | "mono";
 
 interface TypographyPanelProps {
-  selectedBodyFont: string;
-  selectedHeaderFont: string;
-  selectedMonoFont: string;
   typography: TypographyConfig;
-  onBodyFontChange: (fontName: string) => void;
-  onHeaderFontChange: (fontName: string) => void;
-  onMonoFontChange: (fontName: string) => void;
   onTypographyChange: (next: Partial<TypographyConfig>) => void;
 }
 
@@ -58,12 +51,6 @@ interface SliderRowProps {
   onChange: (value: number) => void;
 }
 
-interface FontSelectRowProps {
-  value: string;
-  placeholder: string;
-  options: Array<{ name: string; isDefault?: boolean }>;
-  onChange: (fontName: string) => void;
-}
 
 const TypographySection = memo(
   ({ icon, title, select, isExpanded, onToggle, children }: TypographySectionProps) => {
@@ -73,7 +60,7 @@ const TypographySection = memo(
           <div
             onClick={onToggle}
             aria-expanded={isExpanded}
-            className={`cursor-pointer rounded-[12px] p-3 w-full grid grid-cols-[minmax(0,1fr)_minmax(160px,220px)_auto] items-center gap-3  ${isExpanded ? "bg-background-700/40 border border-background-700" : "hover:bg-background-700/40 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}>
+            className={`cursor-pointer rounded-[12px] p-3 w-full grid grid-cols-[minmax(0,1fr)_minmax(160px,220px)_auto] items-center gap-3  ${isExpanded ? "bg-background-700 border border-background-700" : "hover:bg-background-700 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}>
             <button
               type="button"
               className="cursor-pointer min-w-0 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 text-left outline-none"
@@ -155,40 +142,9 @@ const SliderRow = memo(
 
 SliderRow.displayName = "SliderRow";
 
-const FontSelectRow = memo(
-  ({ value, placeholder, options, onChange }: FontSelectRowProps) => {
-    return (
-      <Select
-        selectedKey={value}
-        defaultValue={value}
-        onSelectionChange={(key) => onChange(key as string)}
-      >
-        <Select.Trigger className="w-full">
-          <Select.Value placeholder={placeholder} />
-        </Select.Trigger>
-        <Select.Content>
-          {options.map((font) => (
-            <Select.Item key={font.name} value={font.name} textValue={font.name}>
-              {font.isDefault ? `${font.name} (default)` : font.name}
-            </Select.Item>
-          ))}
-        </Select.Content>
-      </Select>
-    );
-  },
-);
-
-FontSelectRow.displayName = "FontSelectRow";
-
 export const TypographyPanel = memo(
   ({
-    selectedBodyFont,
-    selectedHeaderFont,
-    selectedMonoFont,
     typography,
-    onBodyFontChange,
-    onHeaderFontChange,
-    onMonoFontChange,
     onTypographyChange,
   }: TypographyPanelProps) => {
     const {
@@ -219,14 +175,7 @@ export const TypographyPanel = memo(
           <TypographySection
             icon={<FaHeading size={14} />}
             title="Header"
-            select={
-              <FontSelectRow
-                value={selectedHeaderFont}
-                placeholder="Select header font"
-                options={HEADER_FONTS}
-                onChange={onHeaderFontChange}
-              />
-            }
+            select={null}
             isExpanded={expandedSection === "header"}
             onToggle={() =>
               setExpandedSection((current) =>
@@ -302,14 +251,7 @@ export const TypographyPanel = memo(
           <TypographySection
             icon={<FaFont size={14} />}
             title="Body"
-            select={
-              <FontSelectRow
-                value={selectedBodyFont}
-                placeholder="Select body font"
-                options={BODY_FONTS}
-                onChange={onBodyFontChange}
-              />
-            }
+            select={null}
             isExpanded={expandedSection === "body"}
             onToggle={() =>
               setExpandedSection((current) =>
@@ -386,14 +328,7 @@ export const TypographyPanel = memo(
         <TypographySection
           icon={<FaFont size={14} />}
           title="Mono"
-          select={
-            <FontSelectRow
-              value={selectedMonoFont}
-              placeholder="Select mono font"
-              options={MONO_FONTS}
-              onChange={onMonoFontChange}
-            />
-          }
+          select={null}
           isExpanded={expandedSection === "mono"}
           onToggle={() =>
             setExpandedSection((current) =>

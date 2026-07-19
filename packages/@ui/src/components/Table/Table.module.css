@@ -24,7 +24,6 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     font-size: var(--text-xs);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 
   .header {
@@ -48,7 +47,6 @@
     background-color: var(--background);
     color: var(--foreground);
     font-weight: var(--header-font-weight, var(--font-weight-semibold));
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     white-space: nowrap;
     border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
   }
@@ -158,8 +156,6 @@
     @apply mb-2 block;
     color: var(--foreground);
     font-size: var(--filter-label-font-size, var(--text-xs));
-    font-weight: var(--filter-label-font-weight, var(--font-weight-body-medium, 500));
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 
   .filterLabel {

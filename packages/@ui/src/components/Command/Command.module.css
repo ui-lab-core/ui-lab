@@ -26,6 +26,8 @@
     @apply relative m-2 w-full max-w-[28rem];
     border-radius: var(--radius-sm);
     background: var(--background);
+    font-size: var(--text-sm, 0.8125rem);
+    font-weight: var(--font-weight-body-medium, 500);
     margin-inline: 1rem;
     box-shadow: var(--shadow);
     opacity: 0;
@@ -46,6 +48,8 @@
     @apply relative w-full;
     border-radius: var(--radius-sm);
     background: var(--background);
+    font-size: var(--text-sm, 0.8125rem);
+    font-weight: var(--font-weight-body-medium, 500);
     box-shadow: var(--shadow);
   }
 
@@ -67,6 +71,7 @@
     border-color: transparent;
     background: transparent;
     box-shadow: none;
+    font-weight: var(--font-weight-body-medium, 500);
 
     &[data-active],
     &[data-focus-visible] {
@@ -138,29 +143,37 @@
   }
 
   .item-label {
-    font-size: var(--text-sm);
-    color: var(--foreground);
+    font-size: var(--size, var(--text-sm, 0.8125rem));
     font-weight: var(--font-weight-body-medium, 500);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
+    letter-spacing: normal;
+    line-height: var(--leading, var(--leading-sm, 1.25rem));
+    color: var(--foreground);
     @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .item-description {
     color: var(--foreground-muted);
-    font-size: 0.875rem;
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
+    font-size: var(--size, var(--text-sm, 0.8125rem));
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading, var(--leading-sm, 1.25rem));
     @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .hint-wrapper {
     @apply flex items-center;
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: 1rem;
   }
 
   .category-header {
     @apply px-2 py-1.5 mt-2 first:mt-0;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: 1rem;
     color: var(--foreground-muted);
   }
 
@@ -168,8 +181,10 @@
   .empty {
     padding: 1.5rem 1rem;
     text-align: center;
-    font-size: 0.875rem;
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
+    font-size: var(--size, var(--text-sm, 0.8125rem));
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading, var(--leading-sm, 1.25rem));
     color: var(--foreground-muted);
   }
 
@@ -179,6 +194,10 @@
     background-color: var(--background-footer);
     border-top: 1px solid var(--border);
     justify-content: flex-between;
+    font-size: var(--text-sm, 0.75rem);
+    font-weight: var(--font-weight-body-normal, 500);
+    letter-spacing: normal;
+    line-height: 1rem;
   }
 
   @media (prefers-reduced-motion: reduce) {

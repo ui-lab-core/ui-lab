@@ -54,9 +54,7 @@
     cursor: pointer;
     font: inherit;
     font-size: 0.875rem;
-    font-weight: var(--font-weight-body-medium, 500);
     line-height: 1;
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
@@ -82,7 +80,6 @@
     height: 34px;
     padding: 0 0.625rem;
     font-size: 0.8125rem;
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 
   .color-provider .color-trigger[data-size="lg"] {
@@ -90,7 +87,6 @@
     height: 46px;
     padding: 0 0.875rem;
     font-size: 0.9375rem;
-    letter-spacing: var(--letter-spacing-md, -0.0050em);
   }
 
   .color-provider .color-trigger-swatch {

@@ -218,6 +218,51 @@ describe('Command', () => {
     unmount()
   })
 
+  it('ranks label matches ahead of keyword matches', () => {
+    const items = [
+      { id: 'checkbox', label: 'Checkbox', category: 'Inputs', keywords: ['select'], action: vi.fn() },
+      { id: 'date', label: 'Date', category: 'Inputs', keywords: ['date selection'], action: vi.fn() },
+      { id: 'list', label: 'List', category: 'Inputs', keywords: ['select'], action: vi.fn() },
+      { id: 'radio', label: 'Radio', category: 'Inputs', keywords: ['select'], action: vi.fn() },
+      { id: 'select', label: 'Select', category: 'Components', keywords: ['select'], action: vi.fn() },
+    ]
+
+    render(
+      <Command
+        open
+        embedded
+        items={items}
+        filter={(item, query) =>
+          item.label.toLowerCase().includes(query.toLowerCase()) ||
+          Boolean(item.keywords?.some((keyword) => keyword.includes(query.toLowerCase())))
+        }
+      >
+        <Command.Input />
+        <Command.List>
+          <Command.Groups
+            renderItem={(item) => (
+              <Command.Item value={item.id} textValue={item.label} action={item.action}>
+                {item.label}
+              </Command.Item>
+            )}
+          />
+        </Command.List>
+      </Command>
+    )
+
+    fireEvent.change(screen.getByRole('textbox', { name: 'Search commands' }), {
+      target: { value: 'select' },
+    })
+
+    expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+      'Select',
+      'Checkbox',
+      'List',
+      'Radio',
+      'Date',
+    ])
+  })
+
   it('cancels a pending exit when controlled state reopens', () => {
     vi.useFakeTimers()
     const { rerender } = render(

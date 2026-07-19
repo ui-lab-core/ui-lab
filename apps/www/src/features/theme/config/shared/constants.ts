@@ -82,6 +82,14 @@ export const SEMANTIC_HTML_STYLES = `
     border-radius: var(--radius-xs);
   }
 
+  .text-code {
+    font-family: var(--font-mono);
+    font-size: var(--text-code-size);
+    line-height: var(--leading-code);
+    font-weight: var(--font-weight-code);
+    letter-spacing: var(--letter-spacing-code);
+  }
+
   pre {
     font-family: var(--font-mono);
     font-size: var(--text-code-size);

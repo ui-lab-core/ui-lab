@@ -20,6 +20,7 @@ type FlexAlign =
   | "center"
   | "stretch"
   | "baseline";
+type FlexGap = GapSize | "none";
 
 export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Direction of the flex container */
@@ -27,7 +28,7 @@ export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Whether items wrap to the next line when they overflow */
   wrap?: FlexWrap;
   /** Gap between flex items */
-  gap?: GapSize;
+  gap?: FlexGap;
   /** Alignment of items along the main axis */
   justify?: FlexJustify;
   /** Alignment of items along the cross axis */
@@ -79,9 +80,9 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
     },
     ref
   ) => {
-    const layoutStyle = gap
-      ? ({ "--flex-gap-step": resolveGapStep(gap) } as React.CSSProperties)
-      : undefined;
+    const layoutStyle = {
+      "--flex-gap-step": gap === "none" || !gap ? 0 : resolveGapStep(gap),
+    } as React.CSSProperties;
     if (containerQueryResponsive) {
       return (
         <div
@@ -103,7 +104,7 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
             style={layoutStyle}
             data-direction={direction ?? "row"}
             data-wrap={wrap ?? "nowrap"}
-            data-gap={gap ?? "md"}
+            data-gap={gap ?? "none"}
             data-justify={justify ?? "start"}
             data-align={align ?? "stretch"}
           >
@@ -124,10 +125,10 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
           align && alignMap[align],
           className
         )}
-        style={layoutStyle ? { ...style, ...layoutStyle } : style}
+        style={{ ...style, ...layoutStyle }}
         data-direction={direction ?? "row"}
         data-wrap={wrap ?? "nowrap"}
-        data-gap={gap ?? "md"}
+        data-gap={gap ?? "none"}
         data-justify={justify ?? "start"}
         data-align={align ?? "stretch"}
         data-container-responsive={containerQueryResponsive || undefined}

@@ -13,6 +13,15 @@ import { act } from '@testing-library/react'
 
 describe('Menu.navigation', () => {
   describe('Arrow keys', () => {
+    it('does not highlight an item when opened', async () => {
+      const items = createMockMenuItems(3)
+      const container = renderMenuWithItems(items)
+
+      await openMenu(getMenuTrigger(container))
+
+      expect(document.querySelector('[data-highlighted="true"]')).not.toBeInTheDocument()
+    })
+
     it('Arrow Down navigates to next item', async () => {
       const items = createMockMenuItems(3)
       const container = renderMenuWithItems(items)
@@ -22,14 +31,10 @@ describe('Menu.navigation', () => {
       
       const menu = document.querySelector('[role="menu"]') as HTMLElement
       
-      // Initially first item should be highlighted
-      const highlighted = await waitForHighlighted()
-      expect(highlighted).toHaveTextContent(items[0].label)
-      
       await pressArrowDown(menu)
       
-      const nextHighlighted = await waitForHighlighted(items[1].label)
-      expect(nextHighlighted).toHaveTextContent(items[1].label)
+      const highlighted = await waitForHighlighted(items[0].label)
+      expect(highlighted).toHaveTextContent(items[0].label)
     })
 
     it('Arrow Up navigates to previous item', async () => {
@@ -40,8 +45,8 @@ describe('Menu.navigation', () => {
       await openMenu(trigger)
       
       const menu = document.querySelector('[role="menu"]') as HTMLElement
+      await pressArrowDown(menu)
       await waitForHighlighted(items[0].label)
-      
       await pressArrowDown(menu)
       await waitForHighlighted(items[1].label)
       
@@ -59,9 +64,8 @@ describe('Menu.navigation', () => {
       await openMenu(trigger)
       
       const menu = document.querySelector('[role="menu"]') as HTMLElement
-      await waitForHighlighted(items[0].label)
-      
       await act(async () => {
+        await pressArrowDown(menu) // To 1st
         await pressArrowDown(menu) // To 2nd
       })
       await waitForHighlighted(items[1].label)
@@ -84,8 +88,8 @@ describe('Menu.navigation', () => {
       await openMenu(trigger)
       
       const menu = document.querySelector('[role="menu"]') as HTMLElement
+      await pressArrowDown(menu)
       await waitForHighlighted(items[0].label)
-      
       await pressArrowDown(menu)
       await waitForHighlighted(items[1].label)
       
@@ -103,8 +107,6 @@ describe('Menu.navigation', () => {
       await openMenu(trigger)
       
       const menu = document.querySelector('[role="menu"]') as HTMLElement
-      await waitForHighlighted(items[0].label)
-      
       await pressEnd(menu)
       
       const highlighted = await waitForHighlighted(items[4].label)
@@ -120,9 +122,9 @@ describe('Menu.navigation', () => {
       const trigger = getMenuTrigger(container)
       
       await openMenu(trigger)
-      await waitForHighlighted('Item 1')
-      
       const menu = document.querySelector('[role="menu"]') as HTMLElement
+      await pressArrowDown(menu)
+      await waitForHighlighted('Item 1')
       await pressEnter(menu)
       
       expect(onSelect).toHaveBeenCalled()

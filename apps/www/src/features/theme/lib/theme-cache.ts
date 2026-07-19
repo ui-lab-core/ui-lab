@@ -1,40 +1,11 @@
 import { type SimpleThemeColors } from "../constants/themes";
-import {
-  type FontKey,
-  BODY_FONTS,
-  HEADER_FONTS,
-  MONO_FONTS,
-  type FontCategory,
-  type FontCategoryInput,
-  getDefaultBodyFont,
-  getDefaultHeaderFont,
-  getDefaultMonoFont,
-} from "../constants/font-config";
-import {
-  DEFAULT_TYPOGRAPHY_CONFIG,
-  type TypographyConfig,
-} from "./typography-config";
-import {
-  DEFAULT_FONT_CONFIG,
-  getDefaultThemeSourceConfig,
-  getTypographyConfigForFonts,
-} from "./default-theme-config";
-
-export interface ThemeFontsConfig {
-  bodyFont: FontKey;
-  headerFont: FontKey;
-  monoFont: FontKey;
-}
-
-type LegacyThemeFontsConfig = Partial<ThemeFontsConfig> & {
-  sansFont?: FontKey;
-};
+import { type TypographyConfig } from "./typography-config";
+import { getDefaultThemeSourceConfig } from "./default-theme-config";
 
 export interface ThemeSourceConfig {
   colors: SimpleThemeColors;
   typography: TypographyConfig;
   layout: { radius: number; borderWidth: number; spacingScale: number };
-  fonts?: ThemeFontsConfig;
   mode: "light" | "dark";
 }
 
@@ -67,59 +38,6 @@ export const COLOR_CSS_VARIABLE_PREFIXES = [
   "--ui-lab-meta-",
 ] as const;
 
-function matchesNumber(value: unknown, expected: number): boolean {
-  return typeof value === "number" && Math.abs(value - expected) < 0.0001;
-}
-
-function hasStalePresetBodyScale(
-  typography: PartialTypographyConfig,
-  fontTypography: TypographyConfig,
-): boolean {
-  if (
-    typeof typography.bodyFontSizeScale !== "number" ||
-    matchesNumber(typography.bodyFontSizeScale, fontTypography.bodyFontSizeScale)
-  ) {
-    return false;
-  }
-
-  // Font-owned defaults are validated as a group. If a cache has the selected
-  // font's other body metrics but an older supporting minimum, the stored scale
-  // is a stale clamp result from the previous preset rather than a user edit.
-  return (
-    matchesNumber(
-      typography.bodyTypeSizeRatio,
-      fontTypography.bodyTypeSizeRatio,
-    ) &&
-    matchesNumber(typography.bodyLineHeight, fontTypography.bodyLineHeight) &&
-    matchesNumber(
-      typography.bodyLetterSpacingScale,
-      fontTypography.bodyLetterSpacingScale,
-    ) &&
-    matchesNumber(
-      typography.bodyFontWeightScale,
-      fontTypography.bodyFontWeightScale,
-    ) &&
-    typeof typography.bodyMinFontSizePx === "number" &&
-    !matchesNumber(typography.bodyMinFontSizePx, fontTypography.bodyMinFontSizePx)
-  );
-}
-
-export function normalizeThemeFontsConfig(
-  fonts?: LegacyThemeFontsConfig | null,
-): ThemeFontsConfig {
-  const bodyFont = (fonts?.bodyFont ??
-    fonts?.sansFont ??
-    DEFAULT_FONT_CONFIG.bodyFont) as FontKey;
-
-  return {
-    bodyFont,
-    headerFont: (fonts?.headerFont ??
-      fonts?.bodyFont ??
-      fonts?.sansFont ??
-      DEFAULT_FONT_CONFIG.headerFont) as FontKey,
-    monoFont: (fonts?.monoFont ?? DEFAULT_FONT_CONFIG.monoFont) as FontKey,
-  };
-}
 
 function getDevicePreferredTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "dark";
@@ -137,38 +55,17 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
   }
   const themeMode = d.themeMode as "light" | "dark";
   const defaultSourceConfig = getDefaultSourceConfig(themeMode);
-  const sourceConfig = d.sourceConfig as
-    | (Partial<ThemeSourceConfig> & { fonts?: LegacyThemeFontsConfig })
-    | undefined;
+  const sourceConfig = d.sourceConfig as Partial<ThemeSourceConfig> | undefined;
   const sourceTypography = sourceConfig?.typography as
     | PartialTypographyConfig
     | undefined;
   const legacyMinFontSizePx = sourceTypography?.globalMinFontSizePx;
   const currentTypography = { ...(sourceTypography ?? {}) };
-  const normalizedFonts = normalizeThemeFontsConfig(sourceConfig?.fonts);
-  const fontTypography = getTypographyConfigForFonts(normalizedFonts);
-  let bodyMinFontSizePx =
+  const bodyMinFontSizePx =
     sourceTypography?.bodyMinFontSizePx ??
     legacyMinFontSizePx ??
-    fontTypography.bodyMinFontSizePx;
+    defaultSourceConfig.typography.bodyMinFontSizePx;
   delete currentTypography.globalMinFontSizePx;
-
-  if (
-    sourceTypography &&
-    hasStalePresetBodyScale(sourceTypography, fontTypography)
-  ) {
-    delete currentTypography.bodyFontSizeScale;
-    bodyMinFontSizePx = fontTypography.bodyMinFontSizePx;
-  }
-
-  if (
-    currentTypography.headerLetterSpacingScale ===
-      DEFAULT_TYPOGRAPHY_CONFIG.headerLetterSpacingScale &&
-    fontTypography.headerLetterSpacingScale !==
-      DEFAULT_TYPOGRAPHY_CONFIG.headerLetterSpacingScale
-  ) {
-    delete currentTypography.headerLetterSpacingScale;
-  }
 
   return {
     cssVariables: vars as Record<string, string>,
@@ -182,23 +79,22 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
           ...(sourceConfig.colors || {}),
         },
         typography: {
-          ...fontTypography,
+          ...defaultSourceConfig.typography,
           ...currentTypography,
           bodyMinFontSizePx,
           headerMinFontSizePx:
             sourceTypography?.headerMinFontSizePx ??
             legacyMinFontSizePx ??
-            fontTypography.headerMinFontSizePx,
+            defaultSourceConfig.typography.headerMinFontSizePx,
           monoMinFontSizePx:
             sourceTypography?.monoMinFontSizePx ??
             legacyMinFontSizePx ??
-            fontTypography.monoMinFontSizePx,
+            defaultSourceConfig.typography.monoMinFontSizePx,
         },
         layout: {
           ...defaultSourceConfig.layout,
           ...(sourceConfig.layout || {}),
         },
-        fonts: normalizedFonts,
       }
       : defaultSourceConfig,
     timestamp: typeof d.timestamp === "number" ? d.timestamp : Date.now(),
@@ -233,14 +129,10 @@ export function cacheCompleteTheme(
 ): void {
   if (typeof window === "undefined") return;
   try {
-    const normalizedSourceConfig: ThemeSourceConfig = {
-      ...sourceConfig,
-      fonts: normalizeThemeFontsConfig(sourceConfig.fonts),
-    };
     const toCache: CompleteThemeCache = {
       cssVariables,
-      themeMode: normalizedSourceConfig.mode,
-      sourceConfig: normalizedSourceConfig,
+      themeMode: sourceConfig.mode,
+      sourceConfig,
       timestamp: Date.now(),
       version: 1,
     };
@@ -260,41 +152,18 @@ export function extractColorVariablesFromCache(
   );
 }
 
+/**
+ * The site itself only ever takes customized colors. Typography, spacing, and
+ * other structural tokens stay on the static CSS baseline; the config route
+ * scopes them to its preview instead.
+ */
 export function applyThemeCacheToDOM(cache: CompleteThemeCache): void {
   const root = document.documentElement;
   root.setAttribute("data-theme", cache.themeMode);
   root.style.colorScheme = cache.themeMode;
-  Object.entries(cache.cssVariables).forEach(([varName, value]) => {
-    root.style.setProperty(varName, value);
-  });
-
-  if (cache.sourceConfig.fonts) {
-    const { bodyFont, headerFont, monoFont } = cache.sourceConfig.fonts;
-    const bodyFontFamily = getFontFamilyString(bodyFont, "body");
-    const headerFontFamily = getFontFamilyString(headerFont, "header");
-    const monoFontFamily = getFontFamilyString(monoFont, "mono");
-    root.style.setProperty("--font-body", bodyFontFamily);
-    root.style.setProperty("--font-header", headerFontFamily);
-    root.style.setProperty("--font-sans", bodyFontFamily);
-    root.style.setProperty("--font-mono", monoFontFamily);
-  }
-}
-
-function getFontFamilyString(fontName: FontKey, category: FontCategoryInput): string {
-  const normalizedCategory: FontCategory = category === "sans" ? "body" : category;
-  const fonts =
-    normalizedCategory === "body"
-      ? BODY_FONTS
-      : normalizedCategory === "header"
-        ? HEADER_FONTS
-        : MONO_FONTS;
-  const fontConfig = fonts.find((f) => f.name === fontName);
-  return (
-    fontConfig?.family ||
-    (normalizedCategory === "body"
-      ? getDefaultBodyFont().family
-      : normalizedCategory === "header"
-        ? getDefaultHeaderFont().family
-        : getDefaultMonoFont().family)
+  Object.entries(extractColorVariablesFromCache(cache.cssVariables)).forEach(
+    ([varName, value]) => {
+      root.style.setProperty(varName, value);
+    },
   );
 }

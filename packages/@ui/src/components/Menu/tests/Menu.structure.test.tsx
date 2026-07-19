@@ -36,6 +36,9 @@ describe('Menu.structure', () => {
       { type: 'pop-over' }
     )
     await openMenu(getMenuTrigger(container), 'pop-over')
+    const menu = document.querySelector('[role="menu"]') as HTMLElement
+    fireEvent.keyDown(menu, { key: 'ArrowDown' })
+    fireEvent.keyDown(menu, { key: 'ArrowRight' })
 
     await waitFor(() => {
       const sub = document.querySelector('.sub-content') as HTMLElement

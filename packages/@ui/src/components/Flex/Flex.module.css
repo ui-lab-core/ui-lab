@@ -5,7 +5,7 @@
     --gap-scale: 0.5;
 
     @apply flex w-full;
-    gap: calc(var(--spacing, 0.25rem) * var(--flex-gap-step, 4) * var(--gap-scale, 1));
+    gap: calc(var(--spacing, 0.25rem) * var(--flex-gap-step, 0) * var(--gap-scale, 1));
   }
 
   /* Direction variants */

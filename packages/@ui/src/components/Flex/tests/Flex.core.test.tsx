@@ -14,7 +14,8 @@ describe('Flex.core', () => {
     expect(flex).toHaveTextContent('Item 2')
     expect(flex).toHaveAttribute('data-direction', 'row')
     expect(flex).toHaveAttribute('data-wrap', 'nowrap')
-    expect(flex).toHaveAttribute('data-gap', 'md')
+    expect(flex).toHaveAttribute('data-gap', 'none')
+    expect(flex).toHaveStyle({ '--flex-gap-step': '0' })
     expect(flex).toHaveAttribute('data-justify', 'start')
     expect(flex).toHaveAttribute('data-align', 'stretch')
     expect(flex).not.toHaveAttribute('data-container-responsive')
@@ -40,6 +41,14 @@ describe('Flex.core', () => {
     expect(flex).toHaveClass(styles['justify-between'])
     expect(flex).toHaveClass(styles['align-baseline'])
     expect(flex).toHaveStyle({ '--flex-gap-step': '8' })
+  })
+
+  it('allows an explicit gap of none', () => {
+    const container = renderFlex({ gap: 'none' })
+    const flex = getFlexRoot(container)
+
+    expect(flex).toHaveAttribute('data-gap', 'none')
+    expect(flex).toHaveStyle({ '--flex-gap-step': '0' })
   })
 
   it('applies className, inline style, and native HTML attributes to the root flex element', () => {

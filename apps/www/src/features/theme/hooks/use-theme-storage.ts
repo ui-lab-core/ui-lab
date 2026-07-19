@@ -7,36 +7,29 @@ import {
   cacheCompleteTheme,
   applyThemeCacheToDOM,
   getSourceConfig,
-  type ThemeFontsConfig,
   type ThemeSourceConfig,
 } from "../lib/theme-cache";
 import { type TypographyConfig } from "../lib/typography-config";
-import {
-  getDefaultThemeSourceConfig,
-  getTypographyConfigForFonts,
-} from "../lib/default-theme-config";
+import { getDefaultThemeSourceConfig } from "../lib/default-theme-config";
 interface LayoutConfig { radius: number; borderWidth: number; spacingScale: number }
 
 interface ThemeStorageOptions {
   onColorsChange?: (colors: SimpleThemeColors) => void;
   onTypographyChange?: (config: TypographyConfig) => void;
   onLayoutChange?: (config: LayoutConfig) => void;
-  onFontsChange?: (config: ThemeFontsConfig) => void;
   onModeChange?: (mode: "light" | "dark") => void;
   currentThemeMode: "light" | "dark";
 }
 
 function buildConfig(source: ThemeSourceConfig | null, mode: "light" | "dark"): ThemeConfig {
   const defaults = getDefaultThemeSourceConfig(mode);
-  const fonts = { ...defaults.fonts, ...(source?.fonts || {}) };
   return {
     colors: source?.colors || defaults.colors,
     typography: {
-      ...getTypographyConfigForFonts(fonts),
+      ...defaults.typography,
       ...(source?.typography || {}),
     },
     layout: { ...defaults.layout, ...(source?.layout || {}) },
-    fonts,
     mode,
   };
 }
@@ -44,21 +37,13 @@ function buildConfig(source: ThemeSourceConfig | null, mode: "light" | "dark"): 
 function computeAndCache(config: ThemeConfig): void {
   const cssVariables = computeAllCssVariables(config);
   cacheCompleteTheme(cssVariables, config);
-  const nonTypographyVars = Object.fromEntries(
-    Object.entries(cssVariables).filter(([key]) =>
-      !key.startsWith('--text-') &&
-      !key.startsWith('--header-text-') &&
-      !key.startsWith('--leading-') &&
-      !key.startsWith('--letter-spacing-') &&
-      !key.startsWith('--font-weight-')
-    )
-  );
-
-  applyThemeCacheToDOM({ cssVariables: nonTypographyVars, themeMode: config.mode, sourceConfig: config, timestamp: Date.now(), version: 1 });
+  // Only color variables reach the live document; everything else stays scoped
+  // to the config preview.
+  applyThemeCacheToDOM({ cssVariables, themeMode: config.mode, sourceConfig: config, timestamp: Date.now(), version: 1 });
 }
 
 export function useThemeStorage(options: ThemeStorageOptions) {
-  const { onColorsChange, onTypographyChange, onLayoutChange, onFontsChange, onModeChange, currentThemeMode } = options;
+  const { onColorsChange, onTypographyChange, onLayoutChange, onModeChange, currentThemeMode } = options;
 
   const applyAndPersistColors = useCallback((colors: SimpleThemeColors, mode?: "light" | "dark") => {
     const themeMode = mode ?? currentThemeMode;
@@ -82,13 +67,6 @@ export function useThemeStorage(options: ThemeStorageOptions) {
     onLayoutChange?.(layout);
   }, [currentThemeMode, onLayoutChange]);
 
-  const applyAndPersistFonts = useCallback((fonts: ThemeFontsConfig) => {
-    const config = buildConfig(getSourceConfig(), currentThemeMode);
-    config.fonts = fonts;
-    computeAndCache(config);
-    onFontsChange?.(fonts);
-  }, [currentThemeMode, onFontsChange]);
-
   const applyAndPersistMode = useCallback((mode: "light" | "dark") => {
     const config = buildConfig(getSourceConfig(), currentThemeMode);
     config.mode = mode;
@@ -109,7 +87,6 @@ export function useThemeStorage(options: ThemeStorageOptions) {
     applyAndPersistColors,
     applyAndPersistTypography,
     applyAndPersistLayout,
-    applyAndPersistFonts,
     applyAndPersistMode,
     applyAndPersistModeAndColors,
   };

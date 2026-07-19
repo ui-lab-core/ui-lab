@@ -38,6 +38,7 @@ describe('Menu.submenu', () => {
     
     expect(document.querySelectorAll('[role="menu"]').length).toBe(2)
     expect(document.querySelectorAll('[role="menu"]')[1]).toHaveTextContent('Sub Item 1')
+    expect(document.querySelectorAll('[role="menu"]')[1]?.querySelector('[data-highlighted="true"]')).not.toBeInTheDocument()
   })
 
   it('opens submenu on ArrowRight', async () => {
@@ -55,9 +56,9 @@ describe('Menu.submenu', () => {
       </Menu>
     )
     await openMenu(getMenuTrigger(container))
-    await waitForHighlighted('Submenu')
-    
     const menu = document.querySelector('[role="menu"]') as HTMLElement
+    await pressKey(menu, '{ArrowDown}')
+    await waitForHighlighted('Submenu')
     
     await pressKey(menu, '{ArrowRight}')
     
@@ -80,9 +81,9 @@ describe('Menu.submenu', () => {
       </Menu>
     )
     await openMenu(getMenuTrigger(container))
-    await waitForHighlighted('Submenu')
-    
     const menu = document.querySelector('[role="menu"]') as HTMLElement
+    await pressKey(menu, '{ArrowDown}')
+    await waitForHighlighted('Submenu')
     await pressKey(menu, '{ArrowRight}')
     
     await waitForCondition(() => document.querySelectorAll('[role="menu"]').length === 2)

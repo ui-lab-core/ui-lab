@@ -93,7 +93,7 @@ export interface DividerProps
   size?: "sm" | "md" | "lg" | "auto";
   /** Controls the margin around the divider */
   spacing?: "none" | "sm" | "md" | "lg";
-  /** Tailwind background color utility (e.g. "bg-background-700/40") overriding the default line color */
+  /** Tailwind background color utility (e.g. "bg-background-700") overriding the default line color */
   color?: string;
   /** Keyed styles for the root. Use className for conventional root classes. */
   styles?: DividerStylesProp;

@@ -1,28 +1,16 @@
 import { generateColorPaletteVariables } from "../colors/generator";
-import { generateFontWeightCSS } from "../font-weight/generator";
 import { type SimpleThemeColors } from "../../constants/themes";
-import { getFontConfig, type FontKey } from "../../constants/font-config";
-import { DEFAULT_FONT_CONFIG } from "../../lib/default-theme-config";
-import { generateRadiusScaleCSS, generateRadiusRootCSS, applyRadiusScalesToDOM } from "../radius/generator";
+import { generateRadiusScaleCSS, applyRadiusScalesToDOM } from "../radius/generator";
 import { generateBorderWidthScaleCSS, applyBorderWidthScalesToDOM } from "../border-width/generator";
 import { generateFluidSpacingCSS } from "../spacing/generator";
-import { generateMaxWidthVariablesCSS, generateMaxWidthScaleCSS } from "../max-width/generator";
-import { SEMANTIC_HTML_STYLES } from "../shared/constants";
-import { generateCodeTypographyVars, generateLineHeightCSS, generateTypographyCSS } from "../typography/generator";
+import { generateTypographyCSS } from "../typography/generator";
 
 interface GeneratedThemeSetupFiles {
   themeCss: string
   globalsCss: string
   layoutTsx: string
   themeToggleTsx: string
-  themeToggleModuleCss: string
   fullBundle: string
-}
-
-interface ThemeFontSelections {
-  bodyFont: FontKey
-  headerFont: FontKey
-  monoFont: FontKey
 }
 
 export interface ThemeTypographyOptions {
@@ -41,37 +29,6 @@ function renderCssVariables(variables: Record<string, string>): string {
   return Object.entries(variables)
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
-}
-
-function resolveFontFamily(
-  fontName: FontKey,
-  category: "body" | "header" | "mono",
-): string {
-  const fallback =
-    category === "body"
-      ? DEFAULT_FONT_CONFIG.bodyFont
-      : category === "header"
-        ? DEFAULT_FONT_CONFIG.headerFont
-        : DEFAULT_FONT_CONFIG.monoFont;
-
-  return (
-    getFontConfig(fontName, category)?.family ??
-    getFontConfig(fallback, category)?.family ??
-    "system-ui, sans-serif"
-  );
-}
-
-function generateFontFamilyCSS(fonts?: ThemeFontSelections): string {
-  const resolvedFonts = { ...DEFAULT_FONT_CONFIG, ...(fonts || {}) };
-  const bodyFontFamily = resolveFontFamily(resolvedFonts.bodyFont, "body");
-  const headerFontFamily = resolveFontFamily(resolvedFonts.headerFont, "header");
-  const monoFontFamily = resolveFontFamily(resolvedFonts.monoFont, "mono");
-
-  return `  --font-body: ${bodyFontFamily};
-  --font-header: ${headerFontFamily};
-  --font-mono: ${monoFontFamily};
-  /* Keep font-sans compatibility while body/header are configured explicitly. */
-  --font-sans: var(--font-body);`;
 }
 
 /**
@@ -132,7 +89,6 @@ export function generateThemeSetupFiles(
   borderWidth?: number,
   spacingScale?: number,
   maxWidthScale?: number,
-  fonts?: ThemeFontSelections,
   typographyOptions?: number | ThemeTypographyOptions,
 ): GeneratedThemeSetupFiles {
   const resolvedTypographyOptions =
@@ -142,40 +98,16 @@ export function generateThemeSetupFiles(
           headerMinFontSizePx: typographyOptions,
         }
       : (typographyOptions ?? {});
-  const bodyTypographyCSS = generateTypographyCSS(
+  const typographyCSS = generateTypographyCSS(
     typeSizeRatio,
     fontSizeScale,
     resolvedTypographyOptions.bodyMinFontSizePx,
   );
-  const headerTypographyCSS = generateTypographyCSS(
-    resolvedTypographyOptions.headerTypeSizeRatio ?? typeSizeRatio,
-    resolvedTypographyOptions.headerFontSizeScale ?? fontSizeScale,
-    resolvedTypographyOptions.headerMinFontSizePx,
-    "header-text",
-  );
-  const typographyCSS = `${bodyTypographyCSS}\n${headerTypographyCSS}`;
-  const leadingCSS = renderCssVariables(
-    generateLineHeightCSS(headerLineHeight ?? 1.5, bodyLineHeight ?? 1.3),
-  );
-  const codeTypographyCSS = renderCssVariables(
-    generateCodeTypographyVars(
-      resolvedTypographyOptions.monoFontSizeScale ?? 1,
-      resolvedTypographyOptions.monoLineHeight ?? 1.55,
-      resolvedTypographyOptions.monoLetterSpacingScale ?? 1,
-      resolvedTypographyOptions.monoFontWeightScale ?? 1,
-      resolvedTypographyOptions.monoMinFontSizePx ?? 13,
-    ),
-  );
-  const headerScale = headerFontWeightScale ?? fontWeightScale ?? 1;
-  const bodyScale = bodyFontWeightScale ?? fontWeightScale ?? 1;
-  const fontWeightCSS = generateFontWeightCSS(headerScale, bodyScale);
-  const radiusCSS = generateRadiusScaleCSS(radius ?? 0.2);
-  const radiusRootCSS = generateRadiusRootCSS(radius ?? 0.2);
-  const borderWidthCSS = generateBorderWidthScaleCSS(borderWidth ?? 1);
+  const leadingCSS = renderCssVariables({
+    "--leading-heading": String(headerLineHeight ?? 1.5),
+    "--leading-body": String(bodyLineHeight ?? 1.3),
+  });
   const spacingCSS = generateFluidSpacingCSS(spacingScale ?? 1);
-  const maxWidthVariablesCSS = generateMaxWidthVariablesCSS(maxWidthScale ?? 1);
-  const maxWidthUtilitiesCSS = generateMaxWidthScaleCSS(maxWidthScale ?? 1);
-  const fontFamilyCSS = generateFontFamilyCSS(fonts);
   const lightColorVariables = generateColorPaletteVariables(colors, "light");
   const darkColorVariables = generateColorPaletteVariables(colors, "dark");
   const tokenNames = Array.from(
@@ -189,7 +121,7 @@ export function generateThemeSetupFiles(
     .map((tokenName) => `  --color-${tokenName}: var(--${tokenName});`)
     .join("\n");
 
-  const themeCss = `/* Your app owns this token layer. UI Lab does not need to ship a theme.css for you. */
+  const themeCss = `/* Your configured tokens. Imported after ui-lab-theme-onyx so they override its defaults. */
 /* Generated from a ${mode} preview, but both light and dark tokens are included here. */
 :root {
   color-scheme: light;
@@ -225,54 +157,22 @@ ${themeInlineMapping}
 }`;
 
   const globalsCss = `@import "tailwindcss";
+@import "ui-lab-theme-onyx/styles.css";
 @import "./theme.css";
 @import "ui-lab-components/styles.css";
 
-${radiusRootCSS}
-
 @theme {
-${fontFamilyCSS}
-
 ${typographyCSS}
 ${leadingCSS}
-${codeTypographyCSS}
-
-  --letter-spacing-tight: -0.01em;
-  --letter-spacing-snug: -0.01em;
-  --letter-spacing-normal: 0;
-  --letter-spacing-wide: 0.05em;
-
-${fontWeightCSS}
 
 ${spacingCSS}
-
-${maxWidthVariablesCSS}
-
-${radiusCSS}
-
-${borderWidthCSS}
 }
-
-:root {
-${fontFamilyCSS}
-
-${typographyCSS}
-${leadingCSS}
-${codeTypographyCSS}
-}
-
-${maxWidthUtilitiesCSS}
 
 @layer base {
   body {
     font-family: var(--font-body);
     font-size: var(--text-body-size);
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-header);
-  }
-${SEMANTIC_HTML_STYLES}
 }`;
 
   const layoutTsx = `import type { Metadata } from "next";
@@ -310,71 +210,20 @@ export default async function RootLayout({
 
   const themeToggleTsx = `"use client";
 
-import { FaMoon, FaSun } from "react-icons/fa6";
 import { Button, useColorMode } from "ui-lab-components";
 
-import styles from "./theme-toggle.module.css";
-
-function ThemeToggleIcon() {
-  return (
-    <span aria-hidden="true" className={styles.icon}>
-      <span className={\`\${styles.glyph} \${styles.moon}\`}>
-        <FaMoon size={14} />
-      </span>
-      <span className={\`\${styles.glyph} \${styles.sun}\`}>
-        <FaSun size={14} />
-      </span>
-    </span>
-  );
-}
-
 export default function ThemeToggle() {
-  const { toggleThemeMode } = useColorMode();
+  const { themeMode, toggleThemeMode } = useColorMode();
 
   return (
     <Button
       aria-label="Toggle color mode"
       onPress={toggleThemeMode}
       variant="ghost"
-      icon={{
-        left: <ThemeToggleIcon />,
-      }}
-      styles={{
-        root: "p-2",
-        icon: "text-current",
-      }}
-    />
+    >
+      {themeMode === "dark" ? "Light" : "Dark"}
+    </Button>
   );
-}`;
-
-  const themeToggleModuleCss = `.icon {
-  position: relative;
-  display: block;
-  width: 14px;
-  height: 14px;
-}
-
-.glyph {
-  position: absolute;
-  inset: 0;
-  align-items: center;
-  justify-content: center;
-}
-
-.moon {
-  display: inline-flex;
-}
-
-.sun {
-  display: none;
-}
-
-:global(:root[data-theme="dark"]) .moon {
-  display: none;
-}
-
-:global(:root[data-theme="dark"]) .sun {
-  display: inline-flex;
 }`;
 
   const fullBundle = `/* === app/theme.css === */
@@ -386,18 +235,14 @@ ${globalsCss}
 /* === app/layout.tsx === */
 ${layoutTsx}
 
-/* === components/theme-toggle/index.tsx === */
-${themeToggleTsx}
-
-/* === components/theme-toggle/theme-toggle.module.css === */
-${themeToggleModuleCss}`;
+/* === components/theme-toggle.tsx === */
+${themeToggleTsx}`;
 
   return {
     themeCss,
     globalsCss,
     layoutTsx,
     themeToggleTsx,
-    themeToggleModuleCss,
     fullBundle,
   };
 }
@@ -420,7 +265,6 @@ function generateFullThemeConfig(
   borderWidth?: number,
   spacingScale?: number,
   maxWidthScale?: number,
-  fonts?: ThemeFontSelections,
 ): string {
   return generateThemeSetupFiles(
     colors,
@@ -436,6 +280,5 @@ function generateFullThemeConfig(
     borderWidth,
     spacingScale,
     maxWidthScale,
-    fonts,
   ).fullBundle
 }

@@ -11,16 +11,7 @@ import {
   type GlobalColorAdjustments,
 } from "../../lib/color-utils";
 import { useThemeStorage } from "../../hooks/use-theme-storage";
-import {
-  getFontConfig,
-  getFontMetrics,
-  type FontKey,
-} from "../../constants/font-config";
-import { type ThemeFontsConfig } from "../../lib/theme-cache";
-import {
-  DEFAULT_TYPOGRAPHY_CONFIG,
-  type TypographyConfig,
-} from "../../lib/typography-config";
+import { type TypographyConfig } from "../../lib/typography-config";
 import {
   Tabs,
   Button,
@@ -40,11 +31,7 @@ function useSettingsHandlers(
   localGlobalAdjustments: GlobalColorAdjustments,
   currentThemeMode: "light" | "dark",
   applyAndPersistColors: (colors: SimpleThemeColors) => void,
-  applyAndPersistFonts: (fonts: ThemeFontsConfig) => void,
   applyAndPersistTypography: (typography: TypographyConfig) => void,
-  selectedBodyFont: string,
-  selectedHeaderFont: string,
-  selectedMonoFont: string,
   currentTypography: TypographyConfig,
   setLocalColors: (colors: SimpleThemeColors) => void,
   setLocalGlobalAdjustments: (adj: GlobalColorAdjustments) => void,
@@ -102,101 +89,10 @@ function useSettingsHandlers(
     applyAndPersistColors(updated);
   };
 
-  const persistFonts = (fonts: ThemeFontsConfig) => {
-    applyAndPersistFonts(fonts);
-  };
-
   const handleCodeThemeChange = (codeTheme: CodeThemeOptionId) => {
     const updated = { ...localColors, codeTheme };
     setLocalColors(updated);
     applyAndPersistColors(updated);
-  };
-
-  const handleBodyFontChange = (fontName: string) => {
-    const fontConfig = getFontConfig(fontName as FontKey, "body");
-    if (fontConfig) {
-      const metrics = getFontMetrics(fontConfig, "body");
-      const {
-        typeSizeRatio: bodyTypeSizeRatio,
-        fontSizeScale: bodyFontSizeScale,
-        fontWeightScale: bodyWeight = 1,
-        letterSpacingScale: bodySpacing = 1,
-        lineHeight:
-        nextBodyLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.bodyLineHeight,
-        minFontSizePx:
-        nextBodyMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.bodyMinFontSizePx,
-      } = metrics;
-      updateTypography({
-        bodyTypeSizeRatio,
-        bodyFontSizeScale,
-        bodyFontWeightScale: bodyWeight,
-        bodyLetterSpacingScale: bodySpacing,
-        bodyLineHeight: nextBodyLineHeight,
-        bodyMinFontSizePx: nextBodyMinFontSizePx,
-      });
-    }
-    persistFonts({
-      bodyFont: fontName as FontKey,
-      headerFont: selectedHeaderFont as FontKey,
-      monoFont: selectedMonoFont as FontKey,
-    });
-  };
-
-  const handleHeaderFontChange = (fontName: string) => {
-    const fontConfig = getFontConfig(fontName as FontKey, "header");
-    if (fontConfig) {
-      const metrics = getFontMetrics(fontConfig, "header");
-      const {
-        fontWeightScale,
-        typeSizeRatio: headerTypeSizeRatio,
-        fontSizeScale: headerFontSizeScale,
-        letterSpacingScale: headerSpacing = 1,
-        lineHeight:
-        nextHeaderLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.headerLineHeight,
-        minFontSizePx:
-        nextHeaderMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.headerMinFontSizePx,
-      } = metrics;
-      updateTypography({
-        headerTypeSizeRatio,
-        headerFontSizeScale,
-        headerFontWeightScale: fontWeightScale ?? 1,
-        headerLetterSpacingScale: headerSpacing,
-        headerLineHeight: nextHeaderLineHeight,
-        headerMinFontSizePx: nextHeaderMinFontSizePx,
-      });
-    }
-    persistFonts({
-      bodyFont: selectedBodyFont as FontKey,
-      headerFont: fontName as FontKey,
-      monoFont: selectedMonoFont as FontKey,
-    });
-  };
-
-  const handleMonoFontChange = (fontName: string) => {
-    const fontConfig = getFontConfig(fontName as FontKey, "mono");
-    if (fontConfig) {
-      const metrics = getFontMetrics(fontConfig, "mono");
-      const {
-        fontWeightScale,
-        fontSizeScale: monoFontSizeScale = DEFAULT_TYPOGRAPHY_CONFIG.monoFontSizeScale,
-        letterSpacingScale:
-        monoLetterSpacingScale = DEFAULT_TYPOGRAPHY_CONFIG.monoLetterSpacingScale,
-        lineHeight: monoLineHeight = DEFAULT_TYPOGRAPHY_CONFIG.monoLineHeight,
-        minFontSizePx: monoMinFontSizePx = DEFAULT_TYPOGRAPHY_CONFIG.monoMinFontSizePx,
-      } = metrics;
-      updateTypography({
-        monoFontSizeScale,
-        monoFontWeightScale: fontWeightScale,
-        monoLetterSpacingScale,
-        monoLineHeight,
-        monoMinFontSizePx,
-      });
-    }
-    persistFonts({
-      bodyFont: selectedBodyFont as FontKey,
-      headerFont: selectedHeaderFont as FontKey,
-      monoFont: fontName as FontKey,
-    });
   };
 
   return {
@@ -204,19 +100,22 @@ function useSettingsHandlers(
     handleColorChange,
     handleChromaLimitChange,
     handleCodeThemeChange,
-    handleBodyFontChange,
-    handleHeaderFontChange,
-    handleMonoFontChange,
     updateTypography,
   };
 }
 
 interface SettingsContentProps {
   showFooterLink?: boolean;
+  /**
+   * Which panels to expose. The site-wide dialog only offers colors; the
+   * config route opts into typography and layout, scoped to its preview.
+   */
+  panels?: ConfigTab[];
 }
 
 export const SettingsContent = ({
   showFooterLink = true,
+  panels = ["colors"],
 }: SettingsContentProps) => {
   const {
     currentThemeColors,
@@ -231,12 +130,6 @@ export const SettingsContent = ({
     isThemeInitialized,
     globalAdjustments,
     setGlobalAdjustments,
-    selectedBodyFont,
-    setSelectedBodyFont,
-    selectedHeaderFont,
-    setSelectedHeaderFont,
-    selectedMonoFont,
-    setSelectedMonoFont,
     headerTypeSizeRatio,
     setHeaderTypeSizeRatio,
     headerFontSizeScale,
@@ -273,7 +166,7 @@ export const SettingsContent = ({
     setHeaderMinFontSizePx,
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<ConfigTab>("colors");
+  const [activeTab, setActiveTab] = useState<ConfigTab>(panels[0] ?? "colors");
   const [previousThemeColors, setPreviousThemeColors] = useState(currentThemeColors);
   const [localColors, setLocalColors] = useState(
     currentThemeColors || themes["Vitesse"].dark,
@@ -301,7 +194,6 @@ export const SettingsContent = ({
     applyAndPersistColors,
     applyAndPersistTypography,
     applyAndPersistLayout,
-    applyAndPersistFonts,
   } = useThemeStorage({
     onColorsChange: setCurrentThemeColors,
     onTypographyChange: (config: TypographyConfig) => {
@@ -327,11 +219,6 @@ export const SettingsContent = ({
       setRadius(config.radius);
       setBorderWidth(config.borderWidth);
       setSpacingScale(config.spacingScale);
-    },
-    onFontsChange: (config: ThemeFontsConfig) => {
-      setSelectedBodyFont(config.bodyFont);
-      setSelectedHeaderFont(config.headerFont);
-      setSelectedMonoFont(config.monoFont);
     },
     currentThemeMode,
   });
@@ -361,20 +248,13 @@ export const SettingsContent = ({
     handleColorChange,
     handleChromaLimitChange,
     handleCodeThemeChange,
-    handleBodyFontChange,
-    handleHeaderFontChange,
-    handleMonoFontChange,
     updateTypography,
   } = useSettingsHandlers(
     localColors,
     localGlobalAdjustments,
     currentThemeMode,
     applyAndPersistColors,
-    applyAndPersistFonts,
     applyAndPersistTypography,
-    selectedBodyFont,
-    selectedHeaderFont,
-    selectedMonoFont,
     currentTypography,
     setLocalColors,
     setLocalGlobalAdjustments,
@@ -382,96 +262,93 @@ export const SettingsContent = ({
   );
 
 
+  const tabLabels: Record<ConfigTab, string> = {
+    colors: "Theme",
+    fonts: "Typography",
+    layout: "Layout",
+  };
+
   return (
     <div className="w-full h-full select-none flex flex-col bg-background-950 text-foreground">
-      <div className="pr-[8px] flex items-center justify-between border-b border-background-700 shrink-0">
-        <Tabs
-          value={activeTab}
-          onValueChange={(value) => setActiveTab(value as ConfigTab)}
-        >
-          <Tabs.List className="px-[5px] h-[40px] border-none *:hover:bg-transparent">
-            <Tabs.Trigger
-              className="w-[80px]"
-              value="colors"
-            >
-              Theme
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              className="w-[80px]"
-              value="fonts"
-            >
-              Fonts
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              className="w-[80px]"
-              value="layout"
-            >
-              Layout
-            </Tabs.Trigger>
-          </Tabs.List>
-        </Tabs>
-      </div>
+      {panels.length > 1 ? (
+        <div className="pr-[8px] flex items-center justify-between border-b border-background-700 shrink-0">
+          <Tabs
+            value={activeTab}
+            variant="underline"
+            onValueChange={(value) => setActiveTab(value as ConfigTab)}
+          >
+            <Tabs.List className="px-[5px] h-[40px] border-none *:hover:bg-transparent">
+              {panels.map((panel) => (
+                <Tabs.Trigger key={panel} className="w-[80px]" value={panel}>
+                  {tabLabels[panel]}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+          </Tabs>
+        </div>
+      ) : null}
 
       <div className="flex-1 overflow-hidden">
         <Scroll>
           <Tabs
             value={activeTab}
+            variant="underline"
             onValueChange={(value) => setActiveTab(value as ConfigTab)}
           >
-            <Tabs.Content value="colors" className="py-[8px]">
-              <ColorsPanel
-                localColors={localColors}
-                expandedColor={expandedColor}
-                localGlobalAdjustments={localGlobalAdjustments}
-                onExpandedColorChange={setExpandedColor}
-                onColorChange={handleColorChange}
-                onChromaLimitChange={handleChromaLimitChange}
-                onCodeThemeChange={handleCodeThemeChange}
-                onGlobalAdjustmentChange={handleGlobalAdjustmentChange}
-              />
-            </Tabs.Content>
+            {panels.includes("colors") ? (
+              <Tabs.Content value="colors" className="py-[8px]">
+                <ColorsPanel
+                  localColors={localColors}
+                  expandedColor={expandedColor}
+                  localGlobalAdjustments={localGlobalAdjustments}
+                  onExpandedColorChange={setExpandedColor}
+                  onColorChange={handleColorChange}
+                  onChromaLimitChange={handleChromaLimitChange}
+                  onCodeThemeChange={handleCodeThemeChange}
+                  onGlobalAdjustmentChange={handleGlobalAdjustmentChange}
+                />
+              </Tabs.Content>
+            ) : null}
 
-            <Tabs.Content value="fonts" className="py-[8px]">
-              <TypographyPanel
-                selectedBodyFont={selectedBodyFont}
-                selectedHeaderFont={selectedHeaderFont}
-                selectedMonoFont={selectedMonoFont}
-                typography={currentTypography}
-                onBodyFontChange={handleBodyFontChange}
-                onHeaderFontChange={handleHeaderFontChange}
-                onMonoFontChange={handleMonoFontChange}
-                onTypographyChange={updateTypography}
-              />
-            </Tabs.Content>
+            {panels.includes("fonts") ? (
+              <Tabs.Content value="fonts" className="py-[8px]">
+                <TypographyPanel
+                  typography={currentTypography}
+                  onTypographyChange={updateTypography}
+                />
+              </Tabs.Content>
+            ) : null}
 
-            <Tabs.Content value="layout" className="py-[8px]">
-              <LayoutPanel
-                radius={radius}
-                borderWidth={borderWidth}
-                spacingScale={spacingScale}
-                onRadiusChange={(value) =>
-                  applyAndPersistLayout({
-                    radius: value,
-                    borderWidth,
-                    spacingScale,
-                  })
-                }
-                onBorderWidthChange={(value) =>
-                  applyAndPersistLayout({
-                    radius,
-                    borderWidth: value,
-                    spacingScale,
-                  })
-                }
-                onSpacingScaleChange={(value) =>
-                  applyAndPersistLayout({
-                    radius,
-                    borderWidth,
-                    spacingScale: value,
-                  })
-                }
-              />
-            </Tabs.Content>
+            {panels.includes("layout") ? (
+              <Tabs.Content value="layout" className="py-[8px]">
+                <LayoutPanel
+                  radius={radius}
+                  borderWidth={borderWidth}
+                  spacingScale={spacingScale}
+                  onRadiusChange={(value) =>
+                    applyAndPersistLayout({
+                      radius: value,
+                      borderWidth,
+                      spacingScale,
+                    })
+                  }
+                  onBorderWidthChange={(value) =>
+                    applyAndPersistLayout({
+                      radius,
+                      borderWidth: value,
+                      spacingScale,
+                    })
+                  }
+                  onSpacingScaleChange={(value) =>
+                    applyAndPersistLayout({
+                      radius,
+                      borderWidth,
+                      spacingScale: value,
+                    })
+                  }
+                />
+              </Tabs.Content>
+            ) : null}
           </Tabs>
         </Scroll>
       </div>

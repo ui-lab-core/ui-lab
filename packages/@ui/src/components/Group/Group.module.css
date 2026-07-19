@@ -202,7 +202,6 @@
     }
 
     .button[data-selected="true"] {
-      font-weight: var(--font-weight-body-medium, 500);
     }
 
     .item [role="separator"] {

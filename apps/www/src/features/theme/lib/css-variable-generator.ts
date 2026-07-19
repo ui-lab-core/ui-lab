@@ -1,8 +1,6 @@
 import { type SimpleThemeColors, DEFAULT_GLOBAL_ADJUSTMENTS } from "../constants/themes";
 import { generateThemePalettes, paletteToCssVars } from "../lib/color-utils";
-import { getFontConfig, type FontKey } from "../constants/font-config";
 import { getBorderWidthCssVariables, getRadiusCssVariables, getSpacingCssVariables } from "../config/shared/layout-variables";
-import { DEFAULT_FONT_CONFIG } from "./default-theme-config";
 import {
   generateDerivedTextSizeVars,
   generateTypeScaleFromRatio,
@@ -17,7 +15,6 @@ export interface ThemeConfig {
   colors: SimpleThemeColors;
   typography: TypographyConfig;
   layout: { radius: number; borderWidth: number; spacingScale: number };
-  fonts?: { bodyFont: FontKey; headerFont: FontKey; monoFont: FontKey };
   mode: "light" | "dark";
 }
 
@@ -176,35 +173,24 @@ function computeColorVars(colors: SimpleThemeColors, mode: "light" | "dark"): Re
   return allVars as Record<string, string>;
 }
 
-function computeFontVars(fonts: ThemeConfig["fonts"]): Record<string, string> {
-  const resolvedFonts = { ...DEFAULT_FONT_CONFIG, ...(fonts || {}) };
-  const bodyFontFamily =
-    getFontConfig(resolvedFonts.bodyFont, "body")?.family ??
-    getFontConfig(DEFAULT_FONT_CONFIG.bodyFont, "body")?.family;
-  const headerFontFamily =
-    getFontConfig(resolvedFonts.headerFont, "header")?.family ??
-    getFontConfig(DEFAULT_FONT_CONFIG.headerFont, "header")?.family ??
-    bodyFontFamily;
-  const monoFontFamily =
-    getFontConfig(resolvedFonts.monoFont, "mono")?.family ??
-    getFontConfig(DEFAULT_FONT_CONFIG.monoFont, "mono")?.family;
-
+export function computeAllCssVariables(config: ThemeConfig): Record<string, string> {
   return {
-    ...(bodyFontFamily
-      ? { "--font-body": bodyFontFamily, "--font-sans": bodyFontFamily }
-      : {}),
-    ...(headerFontFamily ? { "--font-header": headerFontFamily } : {}),
-    ...(monoFontFamily ? { "--font-mono": monoFontFamily } : {}),
+    ...computeStyleVariables(config),
+    ...computeColorVars(config.colors, config.mode),
   };
 }
 
-export function computeAllCssVariables(config: ThemeConfig): Record<string, string> {
+/**
+ * Every non-color variable: typography and layout. These never touch
+ * the live document — the config route applies them inline on its preview.
+ */
+export function computeStyleVariables(
+  config: Pick<ThemeConfig, "typography" | "layout">,
+): Record<string, string> {
   return {
     ...computeTypographyVars(config.typography),
     ...computeSpacingVars(config.layout),
     ...computeRadiusVars(config.layout),
     ...computeBorderVars(config.layout),
-    ...computeFontVars(config.fonts),
-    ...computeColorVars(config.colors, config.mode),
   };
 }

@@ -13,8 +13,6 @@ import {
 } from "./theme-cache";
 import { ensureSemanticColorIntegrity } from "./color/semantic";
 import { type GlobalColorAdjustments } from "./color-utils";
-import { useThemeConfiguration } from "../hooks/use-theme-configuration";
-import { type FontKey } from "../constants/font-config";
 import {
   DEFAULT_BODY_MIN_FONT_SIZE_PX,
   DEFAULT_HEADER_MIN_FONT_SIZE_PX,
@@ -44,12 +42,6 @@ interface AppContextType {
   setSpacingScale: (value: number) => void;
   globalAdjustments: GlobalColorAdjustments;
   setGlobalAdjustments: (adjustments: GlobalColorAdjustments) => void;
-  selectedBodyFont: FontKey;
-  setSelectedBodyFont: (font: FontKey) => void;
-  selectedHeaderFont: FontKey;
-  setSelectedHeaderFont: (font: FontKey) => void;
-  selectedMonoFont: FontKey;
-  setSelectedMonoFont: (font: FontKey) => void;
   headerTypeSizeRatio: number;
   setHeaderTypeSizeRatio: (ratio: number) => void;
   headerFontSizeScale: number;
@@ -101,9 +93,6 @@ interface AppState {
   borderWidth: number;
   spacingScale: number;
   globalAdjustments: GlobalColorAdjustments;
-  selectedBodyFont: FontKey;
-  selectedHeaderFont: FontKey;
-  selectedMonoFont: FontKey;
   headerTypeSizeRatio: number;
   headerFontSizeScale: number;
   headerFontWeightScale: number;
@@ -150,9 +139,6 @@ const initialAppState: AppState = {
   borderWidth: defaultPreferences.borderWidth,
   spacingScale: defaultPreferences.spacingScale,
   globalAdjustments: defaultPreferences.globalAdjustments,
-  selectedBodyFont: defaultPreferences.selectedBodyFont,
-  selectedHeaderFont: defaultPreferences.selectedHeaderFont,
-  selectedMonoFont: defaultPreferences.selectedMonoFont,
   headerTypeSizeRatio: defaultPreferences.headerTypeSizeRatio,
   headerFontSizeScale: defaultPreferences.headerFontSizeScale,
   headerFontWeightScale: defaultPreferences.headerFontWeightScale,
@@ -231,12 +217,6 @@ function getPersistedPreferences(
     spacingScale: sourceConfig.layout.spacingScale,
     globalAdjustments:
       sourceConfig.colors.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
-    selectedBodyFont: (sourceConfig.fonts?.bodyFont ??
-      defaultPreferences.selectedBodyFont) as FontKey,
-    selectedHeaderFont: (sourceConfig.fonts?.headerFont ??
-      defaultPreferences.selectedHeaderFont) as FontKey,
-    selectedMonoFont: (sourceConfig.fonts?.monoFont ??
-      defaultPreferences.selectedMonoFont) as FontKey,
     headerTypeSizeRatio,
     headerFontSizeScale,
     headerFontWeightScale:
@@ -287,66 +267,6 @@ function loadPreferencesFromStorage(): PersistedAppPreferences | null {
   if (!sourceConfig) return null;
 
   return getPersistedPreferences(sourceConfig);
-}
-
-function ThemeConfigurationApplier() {
-  const {
-    isThemeInitialized,
-    headerTypeSizeRatio,
-    headerFontSizeScale,
-    headerFontWeightScale,
-    headerLetterSpacingScale,
-    headerLineHeight,
-    bodyTypeSizeRatio,
-    bodyFontSizeScale,
-    bodyFontWeightScale,
-    bodyLetterSpacingScale,
-    bodyLineHeight,
-    monoFontSizeScale,
-    monoFontWeightScale,
-    monoLetterSpacingScale,
-    monoLineHeight,
-    monoMinFontSizePx,
-    bodyMinFontSizePx,
-    headerMinFontSizePx,
-    radius,
-    borderWidth,
-    spacingScale,
-    selectedBodyFont,
-    selectedHeaderFont,
-    selectedMonoFont,
-  } = useApp();
-
-  useThemeConfiguration({
-    typography: {
-      headerTypeSizeRatio,
-      headerFontSizeScale,
-      headerFontWeightScale,
-      headerLetterSpacingScale,
-      headerLineHeight,
-      bodyTypeSizeRatio,
-      bodyFontSizeScale,
-      bodyFontWeightScale,
-      bodyLetterSpacingScale,
-      bodyLineHeight,
-      monoFontSizeScale,
-      monoFontWeightScale,
-      monoLetterSpacingScale,
-      monoLineHeight,
-      monoMinFontSizePx,
-      bodyMinFontSizePx,
-      headerMinFontSizePx,
-    },
-    layout: { radius, borderWidth, spacingScale },
-    fonts: {
-      bodyFont: selectedBodyFont,
-      headerFont: selectedHeaderFont,
-      monoFont: selectedMonoFont,
-    },
-    isEnabled: isThemeInitialized,
-  });
-
-  return null;
 }
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -418,15 +338,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       globalAdjustments: state.globalAdjustments,
       setGlobalAdjustments: (adjustments) =>
         dispatch({ type: "set", key: "globalAdjustments", value: adjustments }),
-      selectedBodyFont: state.selectedBodyFont,
-      setSelectedBodyFont: (font) =>
-        dispatch({ type: "set", key: "selectedBodyFont", value: font }),
-      selectedHeaderFont: state.selectedHeaderFont,
-      setSelectedHeaderFont: (font) =>
-        dispatch({ type: "set", key: "selectedHeaderFont", value: font }),
-      selectedMonoFont: state.selectedMonoFont,
-      setSelectedMonoFont: (font) =>
-        dispatch({ type: "set", key: "selectedMonoFont", value: font }),
       headerTypeSizeRatio: state.headerTypeSizeRatio,
       setHeaderTypeSizeRatio: (ratio) =>
         dispatch({ type: "set", key: "headerTypeSizeRatio", value: ratio }),
@@ -492,7 +403,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={value}>
-      <ThemeConfigurationApplier />
       {children}
     </AppContext.Provider>
   );

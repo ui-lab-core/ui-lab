@@ -117,6 +117,18 @@ function scoreCommandRelevance(
   return 0;
 }
 
+function scoreItemRelevance(command: CommandItem, query: string) {
+  return {
+    label: scoreCommandRelevance(command.label, query),
+    keyword: Math.max(
+      0,
+      ...(command.keywords?.map((keyword) =>
+        scoreCommandRelevance(keyword, query),
+      ) ?? []),
+    ),
+  };
+}
+
 export interface CommandProps {
   state?: CommandState;
   /** Initial open state. For controlled usage, pass `state={{ open }}`. */
@@ -172,7 +184,27 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     const [itemCount, setItemCount] = React.useState(0);
     const [searchValue, setSearchValue] = useControlledState(controlledState?.query, undefined, "");
 
-    const filteredItems = items.filter((cmd) => !filter || filter(cmd, searchValue));
+    const filteredItems = React.useMemo(() => {
+      const matches = items.filter(
+        (command) => !filter || filter(command, searchValue),
+      );
+
+      if (!searchValue.trim()) return matches;
+
+      return matches
+        .map((command, index) => ({
+          command,
+          index,
+          score: scoreItemRelevance(command, searchValue),
+        }))
+        .sort(
+          (a, b) =>
+            b.score.label - a.score.label ||
+            b.score.keyword - a.score.keyword ||
+            a.index - b.index,
+        )
+        .map(({ command }) => command);
+    }, [filter, items, searchValue]);
 
     const groupedItems = React.useMemo(() => {
       const groups = new Map<string | undefined, CommandItem[]>();
@@ -184,22 +216,13 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         groups.get(cat)!.push(cmd);
       });
 
-      // Maintain category order from original items
-      const categoryOrder = new Map<string | undefined, number>();
-      let idx = 0;
-      items.forEach((cmd) => {
-        if (!categoryOrder.has(cmd.category)) {
-          categoryOrder.set(cmd.category, idx++);
-        }
-      });
-
-      return Array.from(groups.entries())
-        .sort(
-          ([a], [b]) =>
-            (categoryOrder.get(a) ?? Infinity) - (categoryOrder.get(b) ?? Infinity),
-        )
-        .map(([category, items]) => ({ category, items }));
-    }, [filteredItems, items]);
+      // Map insertion order makes the group containing the strongest result first.
+      // With an empty query, filteredItems retains the original category order.
+      return Array.from(groups.entries()).map(([category, items]) => ({
+        category,
+        items,
+      }));
+    }, [filteredItems]);
 
     React.useImperativeHandle(ref, () => paletteRef.current as HTMLDivElement);
 

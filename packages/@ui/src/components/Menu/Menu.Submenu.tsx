@@ -288,12 +288,6 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
 
     React.useEffect(() => {
       if (submenuContext?.isOpen && floatingElement) {
-        if (submenuContext.items.length > 0) {
-          const firstEnabled = submenuContext.items.find(i => !i.isDisabled)
-          if (firstEnabled) {
-            submenuContext.setFocusedKey(firstEnabled.key)
-          }
-        }
         floatingElement.focus({ preventScroll: true })
       }
     }, [submenuContext?.isOpen, floatingElement])
