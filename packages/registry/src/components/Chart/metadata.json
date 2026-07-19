@@ -1,0 +1,29 @@
+{
+  "id": "chart",
+  "name": "Chart",
+  "description": "Visualizes structured data with bars, lines, and trend displays.",
+  "category": "display",
+  "experimental": true,
+  "source": {
+    "packageName": "ui-lab-components",
+    "exportName": "Chart",
+    "packagePath": "dist/index.d.ts"
+  },
+  "relatedComponents": [
+    "tooltip",
+    "table"
+  ],
+  "tags": [
+    "data",
+    "visualization",
+    "graph"
+  ],
+  "accessibility": {
+    "hasAriaSupport": true,
+    "notes": [
+      "Keyboard accessible data navigation",
+      "Screen reader status announcements",
+      "Accessible chart labeling"
+    ]
+  }
+}

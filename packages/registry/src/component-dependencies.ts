@@ -9,6 +9,7 @@ export const componentDependencies: Record<string, ComponentDeps> = {
   'path': { npm: [], internal: [] },
   'button': { npm: [], internal: [] },
   'card': { npm: [], internal: [] },
+  'chart': { npm: [], internal: [] },
   'checkbox': { npm: [], internal: ['label'] },
   'command': { npm: ['cmdk'], internal: ['card', 'badge', 'divider'] },
   'confirm': { npm: [], internal: ['modal', 'button', 'card'] },

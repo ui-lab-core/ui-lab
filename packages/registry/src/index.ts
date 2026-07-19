@@ -14,6 +14,7 @@ export const sourceUrls: Record<string, string> = {
   "path":        `${BASE}/Path`,
   "button":       `${BASE}/Button`,
   "card":         `${BASE}/Card`,
+  "chart":        `${BASE}/Chart`,
   "checkbox":     `${BASE}/Checkbox`,
   "code":         `${BASE}/Code`,
   "command":      `${BASE}/Command`,

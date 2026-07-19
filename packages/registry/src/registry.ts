@@ -175,6 +175,45 @@ export const componentRegistry: ComponentRegistry = {
 ],
   },
 
+  chart: {
+    id: "chart",
+    name: "Chart",
+    description: "Visualizes structured data with bars, lines, and trend displays.",
+    category: "display",
+    experimental: true,
+    source: {
+  "packageName": "ui-lab-components",
+  "exportName": "Chart",
+  "packagePath": "dist/index.d.ts"
+},
+    relatedComponents: ["tooltip","table"],
+    tags: ["data","visualization","graph"],
+    accessibility: {"hasAriaSupport":true,"notes":["Keyboard accessible data navigation","Screen reader status announcements","Accessible chart labeling"]},
+    usage: undefined,
+    examples: [
+    {
+        "title": "Basic Line Chart",
+        "description": "A line chart with axes, grid lines, and a tooltip for inspecting values.",
+        "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { month: 'Jan', revenue: 42 },\n  { month: 'Feb', revenue: 58 },\n  { month: 'Mar', revenue: 51 },\n  { month: 'Apr', revenue: 76 },\n  { month: 'May', revenue: 68 },\n  { month: 'Jun', revenue: 89 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"month\" aria-label=\"Monthly revenue\">\n      <Chart.Grid />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Line y=\"revenue\" label=\"Revenue\" />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+    },
+    {
+        "title": "Multi-series Chart",
+        "description": "Compare two related trends with a shared legend and tooltip.",
+        "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { month: 'Jan', current: 42, previous: 34 },\n  { month: 'Feb', current: 58, previous: 46 },\n  { month: 'Mar', current: 51, previous: 49 },\n  { month: 'Apr', current: 76, previous: 61 },\n  { month: 'May', current: 68, previous: 64 },\n  { month: 'Jun', current: 89, previous: 72 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"month\" aria-label=\"Revenue comparison\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Line y=\"current\" label=\"This year\" curve=\"smooth\" />\n      <Chart.Line y=\"previous\" label=\"Last year\" curve=\"smooth\" />\n      <Chart.Legend />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+    },
+    {
+        "title": "Stacked Bar Chart",
+        "description": "Stack related values to show both category totals and their composition.",
+        "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { quarter: 'Q1', product: 38, services: 24, support: 12 },\n  { quarter: 'Q2', product: 46, services: 31, support: 15 },\n  { quarter: 'Q3', product: 42, services: 36, support: 18 },\n  { quarter: 'Q4', product: 55, services: 39, support: 21 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"quarter\" aria-label=\"Quarterly revenue by category\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Bar y=\"product\" label=\"Product\" stack=\"revenue\" />\n      <Chart.Bar y=\"services\" label=\"Services\" stack=\"revenue\" />\n      <Chart.Bar y=\"support\" label=\"Support\" stack=\"revenue\" />\n      <Chart.Legend />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+    },
+    {
+        "title": "Area Chart with Reference",
+        "description": "Add a labeled reference line to place a trend in context.",
+        "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { week: 'Week 1', score: 62 },\n  { week: 'Week 2', score: 71 },\n  { week: 'Week 3', score: 68 },\n  { week: 'Week 4', score: 79 },\n  { week: 'Week 5', score: 84 },\n  { week: 'Week 6', score: 88 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"week\" domain={[0, 100]} aria-label=\"Weekly performance score\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Area y=\"score\" label=\"Score\" curve=\"smooth\" />\n      <Chart.Reference y={75} label=\"Target\" />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+    }
+],
+  },
+
   checkbox: {
     id: "checkbox",
     name: "Checkbox",
@@ -1077,7 +1116,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Searchable Select",
         "description": "A filterable select component with search input. Type to filter through a large list of options.",
-        "code": "import { Select, Searchable } from 'ui-lab-components';\n\nconst countries = [\n  { value: 'us', label: 'United States' },\n  { value: 'ca', label: 'Canada' },\n  { value: 'mx', label: 'Mexico' },\n  { value: 'br', label: 'Brazil' },\n  { value: 'ar', label: 'Argentina' },\n  { value: 'uk', label: 'United Kingdom' },\n  { value: 'fr', label: 'France' },\n  { value: 'de', label: 'Germany' },\n  { value: 'it', label: 'Italy' },\n  { value: 'es', label: 'Spain' },\n  { value: 'pt', label: 'Portugal' },\n  { value: 'nl', label: 'Netherlands' },\n  { value: 'be', label: 'Belgium' },\n  { value: 'ch', label: 'Switzerland' },\n  { value: 'at', label: 'Austria' },\n  { value: 'se', label: 'Sweden' },\n  { value: 'no', label: 'Norway' },\n  { value: 'dk', label: 'Denmark' },\n  { value: 'fi', label: 'Finland' },\n  { value: 'pl', label: 'Poland' },\n  { value: 'jp', label: 'Japan' },\n  { value: 'cn', label: 'China' },\n  { value: 'kr', label: 'South Korea' },\n  { value: 'in', label: 'India' },\n  { value: 'au', label: 'Australia' },\n  { value: 'nz', label: 'New Zealand' },\n];\n\nexport default function Example() {\n  return (\n    <Select>\n      <Searchable.Input placeholder=\"Search countries...\" />\n      <Searchable.Content searchPlaceholder=\"Type to filter...\">\n        {countries.map((country) => (\n          <Select.Item key={country.value} value={country.value} textValue={country.label}>\n            {country.label}\n          </Select.Item>\n        ))}\n      </Searchable.Content>\n    </Select>\n  );\n}"
+        "code": "import { Select, Searchable } from 'ui-lab-components';\n\nconst countries = [\n  { value: 'us', label: 'United States' },\n  { value: 'ca', label: 'Canada' },\n  { value: 'mx', label: 'Mexico' },\n  { value: 'br', label: 'Brazil' },\n  { value: 'ar', label: 'Argentina' },\n  { value: 'uk', label: 'United Kingdom' },\n  { value: 'fr', label: 'France' },\n  { value: 'de', label: 'Germany' },\n  { value: 'it', label: 'Italy' },\n  { value: 'es', label: 'Spain' },\n  { value: 'pt', label: 'Portugal' },\n  { value: 'nl', label: 'Netherlands' },\n  { value: 'be', label: 'Belgium' },\n  { value: 'ch', label: 'Switzerland' },\n  { value: 'at', label: 'Austria' },\n  { value: 'se', label: 'Sweden' },\n  { value: 'no', label: 'Norway' },\n  { value: 'dk', label: 'Denmark' },\n  { value: 'fi', label: 'Finland' },\n  { value: 'pl', label: 'Poland' },\n  { value: 'jp', label: 'Japan' },\n  { value: 'cn', label: 'China' },\n  { value: 'kr', label: 'South Korea' },\n  { value: 'in', label: 'India' },\n  { value: 'au', label: 'Australia' },\n  { value: 'nz', label: 'New Zealand' },\n];\n\nexport default function Example() {\n  return (\n    <Select>\n      <Searchable.Input placeholder=\"Search countries...\" />\n      <Select.Content>\n        {countries.map((country) => (\n          <Select.Item key={country.value} value={country.value} textValue={country.label}>\n            {country.label}\n          </Select.Item>\n        ))}\n      </Select.Content>\n    </Select>\n  );\n}"
     },
     {
         "title": "Country Selector",

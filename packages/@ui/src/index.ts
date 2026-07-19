@@ -176,6 +176,24 @@ export type { ScrollProps } from "./components/Scroll";
 export { Table } from "./components/Table";
 export type { TableProps, Column } from "./components/Table";
 
+export { Chart, useChartContext } from "./components/Chart";
+export type {
+  ChartProps, ChartState,
+  ChartStyleSlots,
+  ChartStylesProp,
+  ChartLineProps,
+  ChartAreaProps,
+  ChartBarProps,
+  ChartPointProps,
+  ChartSeriesStyleSlots,
+  ChartSeriesStylesProp,
+  ChartAxisProps,
+  ChartGridProps,
+  ChartReferenceProps,
+  ChartTooltipProps,
+  ChartLegendProps,
+} from "./components/Chart";
+
 export { Code } from "./components/Code";
 export type { CodeProps } from "./components/Code";
 

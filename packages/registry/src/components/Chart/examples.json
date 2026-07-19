@@ -1,0 +1,22 @@
+{
+  "01-chart-basic-line": {
+    "title": "Basic Line Chart",
+    "description": "A line chart with axes, grid lines, and a tooltip for inspecting values.",
+    "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { month: 'Jan', revenue: 42 },\n  { month: 'Feb', revenue: 58 },\n  { month: 'Mar', revenue: 51 },\n  { month: 'Apr', revenue: 76 },\n  { month: 'May', revenue: 68 },\n  { month: 'Jun', revenue: 89 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"month\" aria-label=\"Monthly revenue\">\n      <Chart.Grid />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Line y=\"revenue\" label=\"Revenue\" />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+  },
+  "02-chart-multi-series": {
+    "title": "Multi-series Chart",
+    "description": "Compare two related trends with a shared legend and tooltip.",
+    "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { month: 'Jan', current: 42, previous: 34 },\n  { month: 'Feb', current: 58, previous: 46 },\n  { month: 'Mar', current: 51, previous: 49 },\n  { month: 'Apr', current: 76, previous: 61 },\n  { month: 'May', current: 68, previous: 64 },\n  { month: 'Jun', current: 89, previous: 72 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"month\" aria-label=\"Revenue comparison\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Line y=\"current\" label=\"This year\" curve=\"smooth\" />\n      <Chart.Line y=\"previous\" label=\"Last year\" curve=\"smooth\" />\n      <Chart.Legend />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+  },
+  "03-chart-stacked-bars": {
+    "title": "Stacked Bar Chart",
+    "description": "Stack related values to show both category totals and their composition.",
+    "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { quarter: 'Q1', product: 38, services: 24, support: 12 },\n  { quarter: 'Q2', product: 46, services: 31, support: 15 },\n  { quarter: 'Q3', product: 42, services: 36, support: 18 },\n  { quarter: 'Q4', product: 55, services: 39, support: 21 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"quarter\" aria-label=\"Quarterly revenue by category\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Bar y=\"product\" label=\"Product\" stack=\"revenue\" />\n      <Chart.Bar y=\"services\" label=\"Services\" stack=\"revenue\" />\n      <Chart.Bar y=\"support\" label=\"Support\" stack=\"revenue\" />\n      <Chart.Legend />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+  },
+  "04-chart-area-reference": {
+    "title": "Area Chart with Reference",
+    "description": "Add a labeled reference line to place a trend in context.",
+    "code": "import { Chart } from 'ui-lab-components';\n\nconst data = [\n  { week: 'Week 1', score: 62 },\n  { week: 'Week 2', score: 71 },\n  { week: 'Week 3', score: 68 },\n  { week: 'Week 4', score: 79 },\n  { week: 'Week 5', score: 84 },\n  { week: 'Week 6', score: 88 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"week\" domain={[0, 100]} aria-label=\"Weekly performance score\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Area y=\"score\" label=\"Score\" curve=\"smooth\" />\n      <Chart.Reference y={75} label=\"Target\" />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}"
+  }
+}

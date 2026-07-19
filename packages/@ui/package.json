@@ -56,6 +56,10 @@
       "import": "./dist/card.es.js",
       "types": "./dist/card.d.ts"
     },
+    "./chart": {
+      "import": "./dist/chart.es.js",
+      "types": "./dist/chart.d.ts"
+    },
     "./checkbox": {
       "import": "./dist/checkbox.es.js",
       "types": "./dist/checkbox.d.ts"

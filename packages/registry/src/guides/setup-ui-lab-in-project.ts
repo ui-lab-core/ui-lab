@@ -99,12 +99,10 @@ const setupUiLabInProjectGuide: GuideMetadata = {
 export default function Home() {
   return (
     <Card>
-      <Card.Header>
-        <Card.Title>Welcome</Card.Title>
-      </Card.Header>
-      <Card.Content>
+      <Card.Header>Welcome</Card.Header>
+      <Card.Body>
         <Input placeholder="your@email.com" />
-      </Card.Content>
+      </Card.Body>
       <Card.Footer>
         <Button>Get Started</Button>
       </Card.Footer>

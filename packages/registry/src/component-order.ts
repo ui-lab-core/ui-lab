@@ -14,7 +14,7 @@ export const componentOrder: Record<ComponentCategory, string[]> = {
   feedback: ['popover', 'progress', 'skeleton', 'toast'],
   navigation: ['path', 'menu', 'tabs', 'anchor'],
   container: ['page', 'card', 'modal', 'scroll', 'mask', 'frame'],
-  display: ['table', 'code'],
+  display: ['table', 'code', 'chart'],
 };
 
 /**
