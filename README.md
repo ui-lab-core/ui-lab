@@ -2,17 +2,17 @@
 
 # UI Lab
 
-React component library and design system for building accessible, themeable interfaces. It ships 39 components built on React Aria, a typed registry of pre-built patterns and elements, an MCP server for AI-assisted development, and a documentation site with live previews and an interactive theme configurator.
+React component library and design system for building accessible, themeable interfaces. It ships 40 components built on React Aria, a typed registry of pre-built patterns and elements, an MCP server for AI-assisted development, and a documentation site with live previews and an interactive theme configurator.
 
 
 ## What's Included
 
 | Package | npm name | Purpose |
 |---------|----------|---------|
-| `packages/@ui` | `ui-lab-components` | React component library — 39 accessible, themeable components |
+| `packages/@ui` | `ui-lab-components` | React component library — 40 accessible, themeable components |
 | `packages/registry` | `ui-lab-registry` | Public registry for the existing public site ecosystem |
 | `packages/@mcp` | `ui-lab-mcp` | MCP server — exposes library to AI assistants (Claude, Cursor) |
-| `apps/site` | — | Next.js documentation site with live previews and public metadata |
+| `apps/www` | — | Next.js documentation site with live previews and public metadata |
 
 ---
 
@@ -25,13 +25,13 @@ The private authoring workspace lives in the sibling `dev/` repo in this checkou
 npm install ui-lab-components
 ```
 
-**39 components** across these categories:
+**40 components** across these categories:
 
 | Category | Components |
 |----------|-----------|
 | Layout | Grid, Flex, Gallery, Divider, Expand, Panel |
 | Composition | Group, List |
-| Action | Button, Confirm, Command |
+| Action | Button, Confirm, Command, Skeleton |
 | Input | Date, Checkbox, Color, Input, Radio, Select, Slider, Switch, Textarea |
 | Information | Banner, Badge, Label, Tooltip |
 | Feedback | Popover, Progress, Toast |
@@ -42,10 +42,10 @@ npm install ui-lab-components
 **Key characteristics:**
 
 - **Accessibility** — built on [React Aria](https://react-spectrum.adobe.com/react-aria/) (`useButton`, `useDialog`, `useListbox`, `useModalOverlay`, keyboard navigation, focus management)
-- **Styling** — CSS Modules with CSS custom properties for theming; Tailwind CSS `@apply` used internally; no Tailwind dependency in consumer projects
+- **Styling** — CSS Modules with CSS custom properties for theming; the distributed CSS is precompiled, while the documented integration uses Tailwind CSS v4 for the app-owned token layer
 - **Compound components** — complex components compose via sub-components: `Card.Header/Body/Footer`, `List.Item/Checkbox/Media/Desc`, `Menu.Item/Group/SubTrigger`, `Panel.Header/Content/Sidebar/Resize`, `Modal.Header/Body/Footer`, and more
-- **Theme system** — `ThemeProvider`, `useTheme`, `useThemeMode`, and a `generateThemeScript` for FOUC prevention; light/dark mode with localStorage persistence
-- **Outputs** — UMD + ES modules, TypeScript declarations, `styles.css`, PostCSS plugin
+- **Theme system** — app-owned CSS tokens, optional runtime theme utilities, and server-safe helpers for cookie-backed light/dark preferences
+- **Outputs** — ES modules, TypeScript declarations, `styles.css`, and a PostCSS plugin
 
 ---
 
@@ -94,7 +94,7 @@ The `ui-lab-mcp` package is a [Model Context Protocol](https://modelcontextproto
 
 ## Documentation Site
 
-The Next.js site at `apps/site` provides:
+The Next.js site at `apps/www` provides:
 
 - **Component browser** — category-organized gallery with live preview thumbnails
 - **Patterns, Elements, Sections, Starters** — browsable and searchable, with copy-paste code
@@ -109,8 +109,8 @@ The Next.js site at `apps/site` provides:
 
 The private elements pipeline is site-only:
 
-- `@ui-lab-core/elements` is installed only in `app/apps/site`.
-- `app/apps/site/src/**` may render the package only from server components, route handlers, or other server-only code paths.
+- `@ui-lab-core/elements` is installed only in `app/apps/www`.
+- `app/apps/www/src/**` may render the package only from server components, route handlers, or other server-only code paths.
 - Convex is the entitlement boundary and decides whether a request is allowed to see locked source.
 - `@ui-lab-core/elements/server` may be used after entitlement is confirmed on the server.
 - GitHub Packages tokens are build-time only and must never be exposed to browser code.

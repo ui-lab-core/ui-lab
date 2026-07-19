@@ -16,7 +16,7 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
     surface: 'var(--background-800)',
     border: 'var(--background-600)',
     muted: 'var(--foreground-100)',
-    font: 'Karla',
+    font: 'Inter Variable',
     padding: 48,
   })
 

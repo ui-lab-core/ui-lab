@@ -20,13 +20,13 @@ export const searchComponentsTool: Tool = {
 export const getComponentTool: Tool = {
   name: 'get_component',
   description:
-    'Get complete metadata for a component by ID, including its API, examples, and design guidance. Use after search_components to get detailed information about a specific component.',
+    'Get complete metadata for a component or source code for a component example. Pass a component ID (for example, "button") for API metadata, or a component/example ID (for example, "button/04-media-player") to retrieve that exact example for use as an implementation reference.',
   inputSchema: {
     type: 'object' as const,
     properties: {
       id: {
         type: 'string',
-        description: 'Component ID (e.g., "button", "input", "card")',
+        description: 'Component ID (e.g., "button", "input", "card") or canonical example ID (e.g., "button/04-media-player")',
       },
       detail: {
         type: 'string',

@@ -41,10 +41,11 @@ function Content({ itemCount }: { itemCount: number }) {
       >
         {filteredItems.length > 0 ? (
           <Command.Groups
+            className="[&>div:not(:first-child)_.category]:mt-5"
             renderCategory={(category) =>
               category ? (
                 <>
-                  <Command.Category className="text-xs not-first:mt-12">
+                  <Command.Category className="category text-md font-medium">
                     {category}
                   </Command.Category>
                   <Divider variant="dashed" size="sm" />
@@ -61,9 +62,9 @@ function Content({ itemCount }: { itemCount: number }) {
                 hint={command.shortcut}
               >
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-xs mb-1.5">{command.label}</h3>
+                  <h3 className="text-sm mb-1.5">{command.label}</h3>
                   {command.description ? (
-                    <p className="w-full break-words text-xs">
+                    <p className="w-full break-words text-sm">
                       {command.description}
                     </p>
                   ) : null}

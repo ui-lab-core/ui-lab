@@ -8,7 +8,7 @@ function Line({ className = "" }: { className?: string }) {
 
 function Header() {
   return (
-    <div className="flex shrink-0 items-center justify-between border-b border-background-700/40 px-4 py-4">
+    <div className="flex shrink-0 items-center justify-between border-b border-background-700 px-4 py-4">
       <Line className="w-24" />
       <Line className="w-10 opacity-60" />
     </div>
@@ -65,7 +65,7 @@ const rows = (count: number) =>
           {Array.from({ length: count }, (_, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 border-b border-background-700/40 px-4 py-3 last:border-b-0"
+              className="flex items-center gap-3 border-b border-background-700 px-4 py-3 last:border-b-0"
             >
               <div className="h-9 w-9 shrink-0 rounded-sm bg-background-800/70" />
               <div className="flex min-w-0 flex-1 flex-col gap-2">

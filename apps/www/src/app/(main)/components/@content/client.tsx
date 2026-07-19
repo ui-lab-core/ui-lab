@@ -17,7 +17,7 @@ const tocItems: TableOfContentsItem[] = getCategoriesInOrder().map((category) =>
 export default function ComponentsPageClient() {
   const router = useRouter();
   return (
-    <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 lg:grid-cols-[4fr_1fr]">
+    <div className="docs-layout-inner grid min-h-0 min-w-0 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
       <div className="flex flex-col justify-center min-w-0 mt-(--header-height)">
         <div className="flex items-center w-full min-w-0">
           <main className="py-12 px-4 md:px-6 mx-auto w-full min-w-0">
@@ -31,11 +31,13 @@ export default function ComponentsPageClient() {
                   <div key={category} id={category} className="space-y-4">
                     <Flex className="gap-4">
                       {/* Category Header */}
+                      {/*
                       <Flex justify="center" align="center" className="bg-background-800 border border-background-700 w-10 h-10 rounded-sm text-foreground-200 mr-3">
                         <Icon color="var(--foreground-400)" IconComponent={CategoryIcons[category as keyof typeof CategoryIcons] || CategoryIcons.default} size={18} />
                       </Flex>
-                      <div>
-                        <h3 className="mb-1 font-semibold text-foreground-50 flex items-center">
+                      */}
+                      <div className="w-full flex items-center justify-between ">
+                        <h3 className="text-2xl font-medium text-foreground-50 flex items-center">
                           {categoryMap[category].label}
                         </h3>
                         <p className="w-full md:w-[47ch] text-foreground-400 flex items-start">
@@ -52,7 +54,7 @@ export default function ComponentsPageClient() {
                           <div key={component.id}>
                             <Gallery.Item
                               href={href}
-                              className='group h-70 relative rounded-sm bg-background-950 hover:bg-background-900/50'
+                              className='group h-65 relative rounded-sm bg-background-950 hover:bg-background-900/50'
                               orientation='vertical'
                               onClick={() => router.push(href)}
                             >
@@ -64,7 +66,7 @@ export default function ComponentsPageClient() {
                                 </Tooltip>
                               )}
                               <Gallery.View
-                                className="w-full h-40 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0"
+                                className="w-full h-35 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0"
                               >
                                 <div className='max-w-50 gap-2 flex items-center justify-center'>
                                   {previews[component.id] || <div />}
@@ -74,11 +76,11 @@ export default function ComponentsPageClient() {
                                 </div>
                               </Gallery.View>
 
-                              <Gallery.Body>
+                              <Gallery.Body className="pt-4">
                                 <div className="flex items-center gap-1 w-full">
                                   <h4>{component.name}</h4>
                                 </div>
-                                <p className="text-foreground-400 text-xs">
+                                <p className="font-medium text-md text-foreground-400">
                                   {component.description}
                                 </p>
                               </Gallery.Body>
@@ -89,27 +91,27 @@ export default function ComponentsPageClient() {
                       {comingSoonInCategory.map((component) => (
                         <div key={component.id} className="opacity-40 pointer-events-none select-none">
                           <Gallery.Item
-                            className='group h-70 rounded-sm bg-background-1000'
+                            className='group h-65 rounded-sm bg-background-1000'
                             orientation='vertical'
                           >
                             <Gallery.View
-                              className="w-full h-40 flex items-center justify-center relative bg-background-1000 border-b border-background-700 shrink-0"
+                              className="w-full h-35 flex items-center justify-center relative bg-background-1000 border-b border-background-700 shrink-0"
                             >
                               <div className='max-w-65 px-4 gap-2 flex items-center justify-center'>
                                 {previews[component.id] || <div />}
                               </div>
                             </Gallery.View>
 
-                            <Gallery.Body>
+                            <Gallery.Body className="pt-4">
                               <div className="relative flex items-center gap-1 w-full">
                                 <h4>{component.name}</h4>
                                 <div className='ml-auto'>
-                                  <span className="inline-block px-2 py-1 text-xs font-semibold bg-background-700/40 text-foreground-400 rounded-md">
+                                  <span className="inline-block px-2 py-1 text-xs font-semibold bg-background-700 text-foreground-400 rounded-md">
                                     Soon
                                   </span>
                                 </div>
                               </div>
-                              <p className="text-foreground-400 text-xs">
+                              <p className="font-medium text-md text-foreground-400">
                                 {component.description}
                               </p>
                             </Gallery.Body>
@@ -125,7 +127,9 @@ export default function ComponentsPageClient() {
         </div>
       </div>
       <div className="docs-toc sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
-        <TableOfContents items={tocItems} mode="static" className="flex-1 min-h-0" />
+        <div className="min-h-0 flex-1 overflow-hidden px-4">
+          <TableOfContents items={tocItems} mode="static" className="min-h-0" />
+        </div>
       </div>
     </div>
   );

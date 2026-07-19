@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useMemo, memo, useEffect, type ComponentType } from "react";
-import { SettingsPanel } from "@/features/landing/components/settings-panel";
-import { LandingThemeToggle as ThemeToggle } from "@/features/landing/components/theme-toggle";
 import { Logo } from "@/features/layout/components/logo";
-import { Input } from "ui-lab-components/input";
 import { Divider } from "ui-lab-components/divider";
 import { Tabs } from "ui-lab-components/tabs";
 import { Button } from "ui-lab-components/button";
@@ -24,6 +21,7 @@ import { HiX } from "@/shared/icons/hi";
 import { PanelRight } from "lucide-react";
 import { getTabGroupForPathname, getActiveTabForPathname, shouldApplyRevealCollapse, type TabConfig } from "@/features/layout/lib/route-config";
 import { MobileMenu } from "./mobile-menu";
+import { HeaderMenu } from "./header-menu";
 import { navigationData } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
 import { useLandingSidebarToggle } from "@/features/layout/hooks/landing-sidebar-context";
@@ -33,7 +31,7 @@ const TabItem = memo(({ tab }: { tab: TabConfig }) => {
     <Tabs.Trigger
       value={tab.id}
       disabled={tab.isPlaceholder}
-      className="font-medium text-xs py-[9px]"
+      className="text-md leading-[20px] font-medium tracking-normal"
     >
       {tab.label}
     </Tabs.Trigger>
@@ -105,7 +103,7 @@ export default function Header({
 
   return (
     <>
-      <header className="fixed left-0 -mr-2 top-0 z-50 h-(--header-height) w-full border-b border-background-700/40 bg-background-950">
+      <header className="fixed left-0 -mr-2 top-0 z-50 h-(--header-height) w-full border-b border-background-700 bg-background-950">
         <div
           className={cn(
             "relative h-full flex items-center justify-between px-3 w-full overflow-hidden transition-[margin] duration-300",
@@ -115,7 +113,7 @@ export default function Header({
         >
 
           {/* LEFT SECTION: Logo & Tabs - Added shrink-0 to prevent it being crushed */}
-          <div className="flex items-center shrink-0">
+          <div className="flex h-full items-center shrink-0">
             <Link
               href="/"
               prefetch={false}
@@ -135,11 +133,11 @@ export default function Header({
               <PanelRight strokeWidth={2.4} size={20} />
             </button>
 
-            <div className="pt-3 ">
+            <div className="h-full">
               {showPrimaryNavigation && (
-                <Tabs className="hidden ml-8 lg:block" value={activeHomeTab || ""} variant="underline">
-                  <div onClickCapture={handleTabsNavigation(homeNavTabs)}>
-                    <Tabs.List>
+                <Tabs className="hidden h-full ml-8 lg:flex [&_.indicator]:!top-[calc(100%-2px)]" value={activeHomeTab || ""} variant="underline">
+                  <div className="h-full" onClickCapture={handleTabsNavigation(homeNavTabs)}>
+                    <Tabs.List className="h-full !p-0">
                       {homeNavTabs.map((tab) => (
                         <TabItem key={tab.id} tab={tab} />
                       ))}
@@ -161,9 +159,9 @@ export default function Header({
               )}
 
               {hasRevealCollapse && tabGroup && activeTabId && (
-                <Tabs className="w-fit ml-8 hidden md:block" value={activeTabId} variant="underline">
-                  <div onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
-                    <Tabs.List>
+                <Tabs className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:!top-[calc(100%-2px)]" value={activeTabId} variant="underline">
+                  <div className="h-full" onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
+                    <Tabs.List className="h-full !p-0">
                       {tabGroup.tabs.map((tab) => (
                         <TabItem key={tab.id} tab={tab} />
                       ))}
@@ -186,40 +184,10 @@ export default function Header({
             </div>
           </div>
 
-          <div className="flex-1 flex justify-center md:pr-6 pl-4 lg:pr-0 lg:pr-12  max-w-sm">
-            <div className="hidden lg:block relative flex-1 items-center">
-              {featureFlags.commandPalette ? (
-                <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
-                  <Input
-                    placeholder="Search..."
-                    icon={<LuSearch strokeWidth={3.0} className="-translate-y-px" size={16} />}
-                    onClick={() => setIsCommandPaletteOpen(true)}
-                    readOnly
-                  />
-                </Tooltip>
-              ) : null}
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="lg:hidden flex items-center justify-end">
-              {featureFlags.commandPalette ? (
-                <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
-                  <Button
-                    variant="ghost"
-                    className="p-2 text-foreground-300 transition-colors hover:text-foreground-300"
-                    aria-label="Command palette"
-                    icon={{ left: <LuSearch strokeWidth={3.0} size={16} /> }}
-                    onClick={() => setIsCommandPaletteOpen(true)}
-                  />
-                </Tooltip>
-              ) : null}
-            </div>
-
+          <div className="flex items-center gap-1 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              <Button variant="ghost" size="sm" aria-label="Feedback">
-                Feedback
+              <Button variant="ghost" aria-label="Feedback">
+                Give Feedback
               </Button>
               {/*
                 <Button
@@ -235,7 +203,7 @@ export default function Header({
                 </Button>
               */}
 
-              <Button variant="secondary" icon={<FaPlus size={12} />}>New Project</Button>
+              <Button size="sm" variant="outline" icon={<FaPlus size={12} />}>New Project</Button>
               <Button
                 variant="ghost"
                 aria-label="GitHub repository"
@@ -249,11 +217,23 @@ export default function Header({
               <Divider size='auto' orientation="vertical" />
             </div>
 
-            <SettingsPanel />
-            <ThemeToggle />
+            {featureFlags.commandPalette ? (
+              <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="p-2 text-foreground-300 transition-colors hover:text-foreground-200"
+                  aria-label="Open command palette"
+                  onClick={() => setIsCommandPaletteOpen(true)}
+                >
+                  <LuSearch strokeWidth={2.5} size={16} />
+                </Button>
+              </Tooltip>
+            ) : null}
 
+            <HeaderMenu />
 
-            <Tooltip showArrow content="Toggle Theme" position="bottom" hint="d">
+            <Tooltip showArrow content={isMobileMenuOpen ? "Close navigation" : "Open navigation"} position="bottom">
               <Button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
                 variant="ghost"

@@ -1,5 +1,26 @@
 import { registryAdapter } from '../adapters/registry-adapter.js';
 import { formatDesignGuidelines } from '../context/design-guidelines.js';
+import { getElementEntry } from '@ui-lab-core/library/server';
+
+function getExample(reference: string) {
+  const [componentId, exampleId, ...rest] = reference.split('/');
+  if (!componentId || !exampleId || rest.length > 0) return null;
+
+  const example = getElementEntry('components', exampleId)
+    // Older published registry snapshots omit the numeric filename prefix.
+    ?? getElementEntry('components', exampleId.replace(/^\d+-/, ''));
+  if (
+    !example ||
+    example.groupPath[0] !== componentId ||
+    !example.previewEligible ||
+    example.visibility !== 'public' ||
+    example.access !== 'free'
+  ) {
+    return null;
+  }
+
+  return { componentId, example };
+}
 
 export async function handleSearchComponents(input: { query: string }): Promise<any> {
   const results = registryAdapter.search(input.query, undefined, 10);
@@ -43,9 +64,29 @@ export async function handleGetComponent(input: {
   id: string;
   detail?: 'api' | 'examples' | 'usage' | 'full';
 }): Promise<any> {
+  const exampleMatch = getExample(input.id);
+  if (exampleMatch) {
+    const { componentId, example } = exampleMatch;
+    return {
+      success: true,
+      reference: input.id,
+      component: {
+        id: componentId,
+        name: registryAdapter.getComponentById(componentId)?.name ?? componentId,
+      },
+      example: {
+        id: input.id,
+        name: example.displayName,
+        description: example.description,
+        code: example.code,
+        files: example.files,
+      },
+    };
+  }
+
   const component = registryAdapter.getComponentById(input.id);
   if (!component) {
-    throw new Error(`Component not found: ${input.id}`);
+    throw new Error(`Component or example not found: ${input.id}`);
   }
 
   const detail = input.detail ?? 'full';

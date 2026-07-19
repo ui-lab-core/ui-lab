@@ -12,7 +12,7 @@ export function YouTubeBanner({ videoId, title, imageSrc }: YouTubeBannerProps) 
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="p-4 aspect-6/3 border-b border-background-700/40 w-full text-sm font-medium">
+    <div className="p-4 aspect-6/3 border-b border-background-700 w-full text-sm font-medium">
       <div className="relative w-full h-full overflow-hidden rounded-md border border-background-700 bg-background-900/20">
         {isPlaying ? (
           <iframe

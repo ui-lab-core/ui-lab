@@ -1,4 +1,9 @@
 .section {
+  margin-top: calc(var(--spacing-md) * 3);
   content-visibility: visible;
   contain-intrinsic-size: none;
+}
+
+.section:first-child {
+  margin-top: 0
 }

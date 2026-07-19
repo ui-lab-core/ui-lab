@@ -71,7 +71,7 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
               <List.Item value={d.id} className="px-4 py-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-foreground-100 truncate">{d.message}</div>
-                  <div className="flex items-center gap-2 text-xs text-foreground-400 mt-0.5">
+                  <div className="flex items-center gap-2 text-sm text-foreground-400 mt-0.5">
                     <span className="flex items-center gap-1"><GitBranch size={11} />{d.branch}</span>
                     <span className="flex items-center gap-1 font-mono"><GitCommitHorizontal size={11} />{d.commit}</span>
                     <span>{d.time} · {d.duration}</span>

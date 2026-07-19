@@ -1,9 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useApp } from "@/features/theme/lib/app-context";
 import { generateThemeSetupFiles } from "@/features/theme/config";
+import { computeStyleVariables } from "@/features/theme/lib/css-variable-generator";
+import type { TypographyConfig } from "@/features/theme/lib/typography-config";
 import { Code } from "@/features/docs/components/code-display/code";
 import { SettingsSidebar } from "@/features/theme/components/settings-sidebar";
 import {
@@ -46,7 +48,7 @@ import {
 } from "lucide-react";
 import { SiGithub } from "@/shared/icons/si";
 
-const SETUP_INSTALL = `pnpm add ui-lab-components`;
+const SETUP_INSTALL = `pnpm add ui-lab-components ui-lab-theme-onyx`;
 
 function ExampleCard({
   children,
@@ -162,7 +164,7 @@ function PreviewCanvas() {
       </ExampleCard>
 
       <ExampleCard>
-        <Tabs value="rollout">
+        <Tabs default="rollout">
           <Tabs.List>
             <Tabs.Trigger value="rollout">Rollout</Tabs.Trigger>
             <Tabs.Trigger value="segments">Segments</Tabs.Trigger>
@@ -287,57 +289,53 @@ function PreviewCanvas() {
 function TypographyCanvas() {
   return (
     <div className="flex w-full justify-center">
-      <article className="typography w-[400px] max-w-full p-6 sm:p-10">
-      <p className="text-sm text-foreground-400">Design notes · 6 min read</p>
-      <h1>A quieter way to make a product feel clear</h1>
-      <p>
-        A good interface makes room for people to think. It uses <strong>clear hierarchy</strong>,
-        comfortable line lengths, and just enough contrast to direct attention without demanding it.
-      </p>
+      <article className="typography w-(--content-width) max-w-full p-6 sm:p-10">
+        <p className="text-sm text-foreground-400">Design notes · 6 min read</p>
+        <h1>A quieter way to make a product feel clear</h1>
+        <p>
+          A good interface makes room for people to think. It uses <strong>clear hierarchy</strong>,
+          comfortable line lengths, and just enough contrast to direct attention without demanding it.
+        </p>
 
-      <figure>
-        <div
-          role="img"
-          aria-label="Placeholder for a product design image"
-          className="grid place-items-center overflow-hidden rounded-md border border-background-700 bg-background-800"
-        >
-          <div className="grid w-2/3 grid-cols-3 gap-3 opacity-70">
-            <div className="h-16 rounded-sm bg-background-700" />
-            <div className="h-24 rounded-sm bg-background-700" />
-            <div className="h-12 rounded-sm bg-background-700" />
+        <figure>
+          <div
+            role="img"
+            aria-label="Placeholder for a product design image"
+            className="grid place-items-center overflow-hidden rounded-md border border-background-700 bg-background-800"
+          >
+            <div className="grid h-[20rem] w-2/3 grid-cols-3 gap-3 opacity-70">
+            </div>
           </div>
-        </div>
-        <figcaption>A skeleton placeholder for an editorial image.</figcaption>
-      </figure>
+        </figure>
 
-      <h2>Start with the reading rhythm</h2>
-      <p>
-        Body copy should feel steady. Use <em>italics</em> for a gentle change in tone, inline
-        <code> code </code> for implementation details, and links only when they help someone move
-        forward.
-      </p>
-      <blockquote>
-        Typography is the interface between the words and the reader.
-      </blockquote>
+        <h2>Start with the reading rhythm</h2>
+        <p>
+          Body copy should feel steady. Use <em>italics</em> for a gentle change in tone, inline
+          <code> code </code> for implementation details, and links only when they help someone move
+          forward.
+        </p>
+        <blockquote>
+          Typography is the interface between the words and the reader.
+        </blockquote>
 
-      <h3>Three useful defaults</h3>
-      <ul>
-        <li>Use headings to create a visible outline.</li>
-        <li>Keep paragraphs focused on one idea.</li>
-        <li>Let supporting text stay quieter than primary content.</li>
-      </ul>
-      <ol>
-        <li>Choose a body face built for extended reading.</li>
-        <li>Pair it with a distinct, expressive heading face.</li>
-        <li>Reserve mono type for code, values, and technical detail.</li>
-      </ol>
+        <h3>Three useful defaults</h3>
+        <ul>
+          <li>Use headings to create a visible outline.</li>
+          <li>Keep paragraphs focused on one idea.</li>
+          <li>Let supporting text stay quieter than primary content.</li>
+        </ul>
+        <ol>
+          <li>Choose a body face built for extended reading.</li>
+          <li>Pair it with a distinct, expressive heading face.</li>
+          <li>Reserve mono type for code, values, and technical detail.</li>
+        </ol>
 
-      <h2>Let the details support the message</h2>
-      <p>
-        These settings are applied to every example here, so changes in the configuration panel
-        immediately show how the system behaves in a realistic document.
-      </p>
-      <pre><code>{`export const article = {
+        <h2>Let the details support the message</h2>
+        <p>
+          These settings are applied to every example here, so changes in the configuration panel
+          immediately show how the system behaves in a realistic document.
+        </p>
+        <pre><code>{`export const article = {
   rhythm: "comfortable",
   hierarchy: "clear",
 };`}</code></pre>
@@ -346,32 +344,59 @@ function TypographyCanvas() {
   );
 }
 
-function ExportContent({
+function SetupStep({
+  step,
+  title,
+  description,
+  children,
+}: {
+  step: number;
+  title: string;
+  description?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="space-y-1">
+        <Label size="sm" className="font-semibold text-foreground-200">
+          {step}. {title}
+        </Label>
+        {description ? (
+          <div className="text-sm text-foreground-400">{description}</div>
+        ) : null}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function InitializeContent({
   themeCss,
+  typographyCss,
   globalsCss,
   layoutTsx,
   themeToggleTsx,
-  themeToggleModuleCss,
   bundleSizeLabel,
   onDownload,
 }: {
   themeCss: string;
+  typographyCss: string;
   globalsCss: string;
   layoutTsx: string;
   themeToggleTsx: string;
-  themeToggleModuleCss: string;
   bundleSizeLabel: string;
   onDownload: () => void;
 }) {
   return (
-    <Flex direction="column" className="gap-4">
+    <Flex direction="column" className="gap-6">
       <Flex align="start" justify="between" className="gap-3">
-        <Flex direction="column" className="gap-2">
-          <Label size="sm" className="font-semibold text-foreground-300">
-            Export bundle
-          </Label>
-          <span className="text-sm text-foreground-400">5 files · {bundleSizeLabel}</span>
-        </Flex>
+        <div className="text-sm text-foreground-400">
+          Everything below is generated from your current configuration.
+          UI Lab components ship without design tokens, so they look unstyled
+          until a theme is loaded. ui-lab-theme-onyx supplies that base theme;
+          the generated theme.css layers your configured tokens on top of it.
+          Three steps gets a project running · {bundleSizeLabel}
+        </div>
 
         <Button
           onPress={onDownload}
@@ -379,82 +404,99 @@ function ExportContent({
           className="shrink-0"
           icon={<Download size={12} />}
         >
-          Download
+          Download all
         </Button>
       </Flex>
 
-      <Tabs value="theme">
-        <Tabs.List>
-          <Tabs.Trigger value="theme">theme.css</Tabs.Trigger>
-          <Tabs.Trigger value="globals">globals.css</Tabs.Trigger>
-          <Tabs.Trigger value="layout">layout.tsx</Tabs.Trigger>
-          <Tabs.Trigger value="toggle">theme-toggle.tsx</Tabs.Trigger>
-          <Tabs.Trigger value="toggle-css">theme-toggle.module.css</Tabs.Trigger>
-        </Tabs.List>
+      <SetupStep
+        step={1}
+        title="Install the package and a base theme"
+        description="ui-lab-theme-onyx is the base theme UI Lab components render against — install it alongside the components, then override its tokens with your own."
+      >
+        <Code language="bash" filename="terminal">
+          {SETUP_INSTALL}
+        </Code>
+      </SetupStep>
 
-        <Tabs.Content value="theme">
-          <Code language="css" filename="theme.css">
-            {themeCss}
-          </Code>
-        </Tabs.Content>
-        <Tabs.Content value="globals">
-          <Code language="css" filename="globals.css">
-            {globalsCss}
-          </Code>
-        </Tabs.Content>
-        <Tabs.Content value="layout">
-          <Code language="tsx" filename="app/layout.tsx">
-            {layoutTsx}
-          </Code>
-        </Tabs.Content>
-        <Tabs.Content value="toggle">
-          <Code language="tsx" filename="components/theme-toggle/index.tsx">
-            {themeToggleTsx}
-          </Code>
-        </Tabs.Content>
-        <Tabs.Content value="toggle-css">
-          <Code language="css" filename="components/theme-toggle/theme-toggle.module.css">
-            {themeToggleModuleCss}
-          </Code>
-        </Tabs.Content>
-      </Tabs>
+      <SetupStep
+        step={2}
+        title="Add your theme"
+        description="Create app/theme.css with your generated tokens, then replace app/globals.css. It imports ui-lab-theme-onyx first, so your tokens override its defaults. Tailwind v4 is required."
+      >
+        <Tabs default="theme">
+          <Tabs.List>
+            <Tabs.Trigger value="theme">theme.css</Tabs.Trigger>
+            <Tabs.Trigger value="globals">globals.css</Tabs.Trigger>
+          </Tabs.List>
 
-      <Expand title="Setup" expanded={false}>
-        <div className="space-y-4 p-4">
-          <div className="space-y-1">
-            <Label>1. Install the package</Label>
-            <Code language="bash" filename="terminal">
-              {SETUP_INSTALL}
+          <Tabs.Content value="theme">
+            <Code language="css" filename="app/theme.css">
+              {themeCss}
+            </Code>
+          </Tabs.Content>
+          <Tabs.Content value="globals">
+            <Code language="css" filename="app/globals.css">
+              {globalsCss}
+            </Code>
+          </Tabs.Content>
+        </Tabs>
+      </SetupStep>
+
+      <SetupStep
+        step={3}
+        title="Stamp the color mode in your layout"
+        description="Merge into your root layout. The server reads the ui-lab-theme cookie so light and dark render correctly on first paint."
+      >
+        <Code language="tsx" filename="app/layout.tsx">
+          {layoutTsx}
+        </Code>
+      </SetupStep>
+
+      <div className="space-y-2">
+        <Label size="sm" className="font-semibold text-foreground-300">
+          Optional
+        </Label>
+
+        <Expand title="Theme toggle" expanded={false}>
+          <div className="space-y-3 p-4">
+            <div className="text-sm text-foreground-400">
+              A minimal light/dark switch built on the useColorMode hook. Drop it
+              anywhere in your client tree, then restyle it however you like —
+              swap the label for your own icons, move it into a menu, or call
+              toggleThemeMode from any control you already have.
+            </div>
+            <Code language="tsx" filename="components/theme-toggle.tsx">
+              {themeToggleTsx}
             </Code>
           </div>
+        </Expand>
 
-          <div className="space-y-1">
-            <Label>2. Copy `theme.css`</Label>
+        <Expand title="Long-form typography" expanded={false}>
+          <div className="space-y-3 p-4">
             <div className="text-sm text-foreground-400">
-              Paste the generated token layer into `app/theme.css`.
+              Reading-surface styles for articles and rich text. Save as
+              app/typography.css, import it after your theme in globals.css, and
+              add the typography class to long-form containers — not the page
+              root.
             </div>
+            <Code language="tsx" filename="import">
+              {`@import "./typography.css";`}
+            </Code>
+            <Code language="css" filename="app/typography.css">
+              {typographyCss}
+            </Code>
           </div>
-
-          <div className="space-y-1">
-            <Label>3. Merge `globals.css` and `layout.tsx`</Label>
-            <div className="text-sm text-foreground-400">
-              Keep the font imports, theme variables, and server-stamped color mode script.
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <Label>4. Copy the theme toggle files</Label>
-            <div className="text-sm text-foreground-400">
-              Render the generated toggle anywhere in your client tree.
-            </div>
-          </div>
-        </div>
-      </Expand>
+        </Expand>
+      </div>
     </Flex>
   );
 }
 
-export default function ConfigPage() {
+export default function ConfigPage({
+  baseTypographyCss,
+}: {
+  baseTypographyCss: string;
+}) {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [preview, setPreview] = useState("ui");
   const {
@@ -462,6 +504,8 @@ export default function ConfigPage() {
     currentThemeMode,
     headerFontWeightScale,
     bodyFontWeightScale,
+    headerLetterSpacingScale,
+    bodyLetterSpacingScale,
     headerLineHeight,
     bodyLineHeight,
     headerTypeSizeRatio,
@@ -478,9 +522,6 @@ export default function ConfigPage() {
     radius,
     borderWidth,
     spacingScale,
-    selectedBodyFont,
-    selectedHeaderFont,
-    selectedMonoFont,
   } = useApp();
 
   useEffect(() => {
@@ -490,6 +531,67 @@ export default function ConfigPage() {
       delete document.body.dataset.configFullBleed;
     };
   }, []);
+
+  const currentTypography: TypographyConfig = useMemo(
+    () => ({
+      headerTypeSizeRatio,
+      headerFontSizeScale,
+      headerFontWeightScale,
+      headerLetterSpacingScale,
+      headerLineHeight,
+      headerMinFontSizePx,
+      bodyTypeSizeRatio,
+      bodyFontSizeScale,
+      bodyFontWeightScale,
+      bodyLetterSpacingScale,
+      bodyLineHeight,
+      bodyMinFontSizePx,
+      monoFontSizeScale,
+      monoFontWeightScale,
+      monoLetterSpacingScale,
+      monoLineHeight,
+      monoMinFontSizePx,
+    }),
+    [
+      headerTypeSizeRatio,
+      headerFontSizeScale,
+      headerFontWeightScale,
+      headerLetterSpacingScale,
+      headerLineHeight,
+      headerMinFontSizePx,
+      bodyTypeSizeRatio,
+      bodyFontSizeScale,
+      bodyFontWeightScale,
+      bodyLetterSpacingScale,
+      bodyLineHeight,
+      bodyMinFontSizePx,
+      monoFontSizeScale,
+      monoFontWeightScale,
+      monoLetterSpacingScale,
+      monoLineHeight,
+      monoMinFontSizePx,
+    ],
+  );
+
+  // Typography and layout apply only inside the preview; the rest of
+  // the site stays on the static baseline.
+  const previewStyle = useMemo(() => {
+    const vars = computeStyleVariables({
+      typography: currentTypography,
+      layout: { radius, borderWidth, spacingScale },
+    });
+    vars["--font-heading"] = vars["--font-header"];
+    vars["--leading-heading"] = String(headerLineHeight);
+    return vars as CSSProperties;
+  }, [
+    currentTypography,
+    radius,
+    borderWidth,
+    spacingScale,
+    headerLineHeight,
+  ]);
+
+  const typographyCss = baseTypographyCss;
 
   const themeSetup = useMemo(() => {
     if (!currentThemeColors) return null;
@@ -508,11 +610,6 @@ export default function ConfigPage() {
       borderWidth,
       spacingScale,
       undefined,
-      {
-        bodyFont: selectedBodyFont,
-        headerFont: selectedHeaderFont,
-        monoFont: selectedMonoFont,
-      },
       {
         bodyMinFontSizePx,
         headerMinFontSizePx,
@@ -546,27 +643,29 @@ export default function ConfigPage() {
     radius,
     borderWidth,
     spacingScale,
-    selectedBodyFont,
-    selectedHeaderFont,
-    selectedMonoFont,
   ]);
 
+  const fullBundle = useMemo(() => {
+    if (!themeSetup) return "";
+    return `${themeSetup.fullBundle}\n\n/* === app/typography.css === */\n${typographyCss}`;
+  }, [themeSetup, typographyCss]);
+
   const bundleSizeLabel = useMemo(() => {
-    if (!themeSetup) return "0 KB";
-    const kb = Math.max(1, Math.round(themeSetup.fullBundle.length / 1024));
+    if (!fullBundle) return "0 KB";
+    const kb = Math.max(1, Math.round(fullBundle.length / 1024));
     return `~${kb} KB`;
-  }, [themeSetup]);
+  }, [fullBundle]);
 
   const handleDownload = useCallback(() => {
-    if (!themeSetup) return;
-    const blob = new Blob([themeSetup.fullBundle], { type: "text/plain" });
+    if (!fullBundle) return;
+    const blob = new Blob([fullBundle], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "ui-lab-theme-setup.txt";
     a.click();
     URL.revokeObjectURL(url);
-  }, [themeSetup]);
+  }, [fullBundle]);
 
   if (!currentThemeColors) {
     return (
@@ -593,7 +692,7 @@ export default function ConfigPage() {
               className="w-full justify-center"
               icon={<Download size={12} />}
             >
-              Export theme
+              Initialize project
             </Button>
           }
         />
@@ -602,7 +701,7 @@ export default function ConfigPage() {
           <Tabs value={preview} onValueChange={setPreview} className="w-auto">
             <Tabs.List
               aria-label="Configuration previews"
-              className="w-auto rounded-sm bg-background-900/80 px-[5px]"
+              className="w-fit rounded-sm px-[5px]"
               styles={{ indicator: "rounded-sm bg-background-700" }}
             >
               <Tabs.Trigger
@@ -620,23 +719,25 @@ export default function ConfigPage() {
             </Tabs.List>
           </Tabs>
           <Scroll maxHeight="100%" className="min-h-0 flex-1 rounded-sm border border-background-700" fade-y>
-            {preview === "ui" ? <PreviewCanvas /> : <TypographyCanvas />}
+            <div style={previewStyle}>
+              {preview === "ui" ? <PreviewCanvas /> : <TypographyCanvas />}
+            </div>
           </Scroll>
         </section>
       </div>
       <Modal
         open={isExportOpen}
         onOpenChange={setIsExportOpen}
-        title="Export theme"
+        title="Initialize project"
         className="max-w-[min(92vw,72rem)]"
         contentClassName="p-6"
       >
-        <ExportContent
+        <InitializeContent
           themeCss={themeSetup?.themeCss ?? ""}
+          typographyCss={typographyCss}
           globalsCss={themeSetup?.globalsCss ?? ""}
           layoutTsx={themeSetup?.layoutTsx ?? ""}
           themeToggleTsx={themeSetup?.themeToggleTsx ?? ""}
-          themeToggleModuleCss={themeSetup?.themeToggleModuleCss ?? ""}
           bundleSizeLabel={bundleSizeLabel}
           onDownload={handleDownload}
         />

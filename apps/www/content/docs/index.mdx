@@ -2,7 +2,7 @@
 title: "Getting started"
 description: "A React component library with enforced design quality. OKLCH tokens, compound components, and an MCP server so AI agents build correctly — not by hallucination."
 category: "guides"
-publishedOn: "2026-01-15"
+publishedOn: "2026-07-18"
 tags: ["getting-started", "setup", "basics"]
 ---
 
@@ -28,14 +28,10 @@ UI Lab makes correct usage machine-readable. The MCP server returns one recommen
 ## Quick start
 
 ```bash
-npx ui-lab init
-```
-
-Or manually:
-
-```bash
 pnpm add ui-lab-components
 ```
+
+Then add your app-owned token layer and import `ui-lab-components/styles.css`. Follow the [Installation guide](/docs/installation) for the required stylesheet order and a complete working setup.
 
 ```tsx
 import { Button, Group, Panel } from 'ui-lab-components';

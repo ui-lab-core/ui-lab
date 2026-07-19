@@ -20,6 +20,7 @@ import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
 import { FaFlask, FaGithub } from "@/shared/icons/fa6";
 import { Footer } from "@/features/layout/components/footer";
+import type { ComponentExample } from "@/types/component";
 
 const ReactAriaSvg = () => (
   <svg
@@ -34,6 +35,27 @@ const ReactAriaSvg = () => (
     />
   </svg>
 );
+
+function ExampleConfigurator({ example, hero = false }: {
+  example?: ComponentExample;
+  hero?: boolean;
+}) {
+  return (
+    <ComponentConfigurator
+      title={hero ? "" : (example?.title ?? "")}
+      description={hero ? "" : example?.description}
+      code={example?.code ?? ""}
+      language="typescript"
+      controls={example?.controls}
+      factory={example?.factory}
+      renderPreview={example?.renderPreview}
+      previewLayout={example?.previewLayout}
+      resizable={example?.resizable}
+    >
+      {example?.preview ?? <div className="h-10 w-32 bg-background-800 rounded animate-pulse" />}
+    </ComponentConfigurator>
+  );
+}
 
 export function ComponentClient({ componentId, api, styles, reactAriaUrl, sourceUrl, name, description, experimental }: {
   componentId: string;
@@ -109,7 +131,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[4fr_1fr]">
+    <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_18.25rem]">
       <div className="py-12 px-4 md:px-6 mx-auto max-w-(--content-width) w-full min-w-0">
         <Toaster />
         <div>
@@ -140,13 +162,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
               </div>
             </div>
             <div className="space-y-4 mb-12">
-              <ComponentConfigurator title="" description="" code={firstExample?.code ?? ""} language="typescript"
-                controls={firstExample?.controls} factory={firstExample?.factory} renderPreview={firstExample?.renderPreview}
-                previewLayout={firstExample?.previewLayout} resizable={firstExample?.resizable}>
-                {!firstExample
-                  ? <div className="h-10 w-32 bg-background-800 rounded animate-pulse" />
-                  : firstExample.preview}
-              </ComponentConfigurator>
+              <ExampleConfigurator example={firstExample} hero />
             </div>
             <Tabs variant="underline" value={activeTab} onValueChange={(tab) => { setActiveTab(tab); setVisitedTabs((prev) => new Set(prev).add(tab)); }}>
               <Flex direction="row" justify="between" className="border-b border-background-700">
@@ -161,12 +177,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
                   <div className="space-y-4">
                     {remainingExamples.map((example) => (
                       <div key={example.id} id={example.id}>
-                        <ComponentConfigurator title={example.title} description={example.description}
-                          code={example.code} language="typescript" controls={example.controls}
-                          factory={example.factory} renderPreview={example.renderPreview}
-                          previewLayout={example.previewLayout} resizable={example.resizable}>
-                          {example.preview}
-                        </ComponentConfigurator>
+                        <ExampleConfigurator example={example} />
                       </div>
                     ))}
                   </div>
@@ -183,16 +194,21 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
         </div>
         <Footer />
       </div>
-      <div className="sticky px-4 top-(--header-height) grid h-[calc(100vh-var(--header-height))] grid-rows-[minmax(0,1fr)_auto]">
-        <TableOfContents items={tocItems} mode="static" className="min-h-0" />
-        <Group
-          orientation="vertical"
-          spacing="none"
-          className="mb-4 w-full shrink-0 overflow-hidden"
-        >
-          <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
-          <CopyComponentPage componentId={componentId} component={component} api={api} styles={styles} grouped />
-        </Group>
+      <div className="sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-hidden px-4">
+          <TableOfContents items={tocItems} mode="static" className="min-h-0" />
+        </div>
+        <div className="shrink-0 px-4 pb-4 [&>.group-scope]:w-full">
+          <Group
+            orientation="vertical"
+            spacing="none"
+            styles={{ expand: "h-auto w-full" }}
+            className="w-full [--background-border:var(--background-700)]"
+          >
+            <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
+            <CopyComponentPage componentId={componentId} component={component} api={api} styles={styles} grouped />
+          </Group>
+        </div>
       </div>
     </div>
   );
@@ -221,7 +237,7 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
       key: "name",
       label: "Name",
       render: (value: any, row: any) => (
-        <span className="font-mono text-xs text-foreground-50">
+        <span className="font-mono text-foreground-50">
           {value}{row.required && <span className="ml-1 text-background-500">?</span>}
         </span>
       ),
@@ -252,7 +268,7 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
       key: "name",
       label: "Name",
       render: (value: any, row: any) => (
-        <span className="font-mono text-xs text-foreground-50">
+        <span className="font-mono text-foreground-50">
           {value}{row.required && <span className="ml-1 text-foreground-400">?</span>}
         </span>
       ),
@@ -296,14 +312,14 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
                     ? {
                       key: "description",
                       label: "Description",
-                      value: <p className="text-foreground-400 text-xs">{row.description}</p>,
+                      value: <p className="text-foreground-400">{row.description}</p>,
                     }
                     : null,
                   {
                     key: "styleable-parts",
                     label: "Styleable parts",
                     value: (
-                      <ul className="grid grid-cols-1 gap-x-4 gap-y-1 text-xs text-foreground-400 sm:grid-cols-2">
+                      <ul className="grid grid-cols-1 gap-x-4 gap-y-1 text-foreground-400 sm:grid-cols-2">
                         {styleableParts.map((part) => (
                           <li key={part.name}>
                             <InlineCodeHighlight code={`'${part.name}'`} language="typescript" />
@@ -319,7 +335,7 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
                   ? {
                     key: "description",
                     label: "Description",
-                    value: <p className="text-foreground-400 text-xs">{row.description}</p>,
+                    value: <p className="text-foreground-400">{row.description}</p>,
                   }
                   : null,
                 row.defaultValue

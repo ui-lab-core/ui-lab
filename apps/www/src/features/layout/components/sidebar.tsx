@@ -135,7 +135,7 @@ export function Sidebar({
         'lg:transition-none lg:transform-none',
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
-        <div className="flex border-r border-background-700/40 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
+        <div className="flex border-r border-background-700 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
           {mainNavItems.length > 0 && (
             <div className="z-10">
               <nav className="py-3 px-2 space-y-1">
@@ -149,12 +149,13 @@ export function Sidebar({
                       href={navItem.href}
                       prefetch={false}
                       className={cn(
-                        'flex border items-center py-2.5 px-4 gap-3 text-xs rounded-sm',
+                        'flex items-center gap-3 rounded-[6px] border px-4 py-3 text-md leading-[20px] font-medium tracking-normal',
                         isActive
                           ? 'border-background-700 text-foreground-50 bg-background-800'
                           : 'border-transparent text-foreground-400 hover:text-foreground-200 hover:bg-background-800/60'
                       )}
                     >
+                      {/*
                       {Icon && <div
                         className={cn(
                           '-ml-4 w-10 rounded-sm flex items-center justify-center',
@@ -164,7 +165,8 @@ export function Sidebar({
                         <Icon className="w-5 h-5" />
                       </div>
                       }
-                      <span className='text-xs tracking-(--letter-spacing-md) font-body-medium'>{navItem.label}</span>
+                     */}
+                      <span>{navItem.label}</span>
                     </Link>
                   );
                 })}
@@ -187,10 +189,10 @@ export function Sidebar({
                 /> : null}
               </div>
             ) : (
-              <div className="py-4 px-5 space-y-8">
+              <div className="py-5 px-5 space-y-10">
                 {sections.map((section) => (
                   <div key={section.label}>
-                    <h2 className="text-header-xs font-header-semibold text-foreground-200">{section.label}</h2>
+                    <h2 className="font-medium text-md leading-[20px] tracking-normal text-foreground-400">{section.label}</h2>
                     <div className="relative mt-2.5">
                       <Divider orientation='vertical' size="sm" variant='dashed' spacing='none' className="absolute left-0.5 top-0 bottom-0 bg-foreground-400" />
                       <div className="pl-3">
@@ -202,12 +204,12 @@ export function Sidebar({
                               key={item.id}
                               href={href}
                               className={cn(
-                                'block relative leading-body text-xs px-3 py-2 rounded-sm cursor-pointer',
+                                'block relative px-[8px] py-2.5 font-medium text-md leading-[20px] tracking-normal rounded-[6px] cursor-pointer',
                                 'transition-colors duration-300 ease-out',
                                 'hover:duration-0  hover:bg-background-800/50',
                                 active
-                                  ? 'text-foreground-100 font-medium after:content-[""] after:absolute after:-left-2.5 after:top-0 after:bg-foreground-400 after:w-0.5 after:h-full'
-                                  : cn('text-foreground-400', 'hover:text-foreground-200')
+                                  ? 'text-foreground-100 font-medium after:content-[""] after:absolute after:-left-2.5 after:top-0 after:bg-foreground-300 after:w-0.5 after:h-full'
+                                  : cn('text-foreground-300', 'hover:text-foreground-200')
                               )}
                             >
                               {item.label}

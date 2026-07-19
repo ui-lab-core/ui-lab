@@ -68,8 +68,8 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
       {queue && (
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <div className="flex items-center justify-between border-b border-background-700/60 mb-2 px-2.5 py-1.5">
-            <span className="text-xs font-medium text-foreground-400">Up next</span>
-            <span className="text-xs text-foreground-500 tabular-nums">{tracks.length} tracks</span>
+            <span className="text-sm font-medium text-foreground-400">Up next</span>
+            <span className="text-sm text-foreground-500 tabular-nums">{tracks.length} tracks</span>
           </div>
           <Scroll className="min-h-0 flex-1 max-w-none" fade-y inline>
             <List items={tracks} gap="sm" spacing="sm" className="max-w-none">
@@ -105,7 +105,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
                       {track.title}
                       <span className="text-foreground-500"> · {track.artist}</span>
                     </List.Title>
-                    <span className="text-xs text-foreground-500 tabular-nums">{track.duration}</span>
+                    <span className="text-sm text-foreground-500 tabular-nums">{track.duration}</span>
                   </List.Item>
                 );
               })}
@@ -160,14 +160,14 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
         </div>
 
         <div className="flex items-center mb-4 gap-3">
-          <span className="text-xs text-foreground-400 tabular-nums">1:34</span>
+          <span className="text-sm text-foreground-400 tabular-nums">1:34</span>
           <Progress
             show-controls
             value={progress}
             onValueChange={setProgress}
             styles={{ root: "flex-1", track: "h-5.5" }}
           />
-          <span className="text-xs text-foreground-400 tabular-nums">5:05</span>
+          <span className="text-sm text-foreground-400 tabular-nums">5:05</span>
         </div>
 
         <div className="flex items-center justify-between">

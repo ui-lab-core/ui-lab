@@ -66,12 +66,6 @@ export const comingSoonComponents: ComingSoonComponent[] = [
     category: "feedback",
   },
   {
-    id: "chart",
-    name: "Chart",
-    description: "Visualizes structured data with bars, lines, and trend displays.",
-    category: "display",
-  },
-  {
     id: "image",
     name: "Image",
     description: "Displays responsive images with framing, loading, and presentation controls.",

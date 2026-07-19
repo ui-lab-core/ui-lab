@@ -39,7 +39,7 @@ export function CopyPage() {
           <span className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             {copiedLines !== null ? <FaCheck size={12} className="text-foreground-400" /> : <FaFileLines />}
           </span>
-          <span className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300">
+          <span className="flex w-full items-center justify-start pl-4 text-sm font-medium text-foreground-300">
             {copiedLines !== null ? `Copied ${copiedLines} lines!` : 'Copy Markdown'}
             <Expand.Icon className="ml-auto bg-transparent text-foreground-400" />
           </span>
@@ -53,7 +53,7 @@ export function CopyPage() {
             onClick={() => {
               void handleCopy();
             }}
-            className="flex py-2.5 cursor-pointer items-center text-left text-xs font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
+            className="flex py-2.5 cursor-pointer items-center text-left text-sm font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
           >
             <span className="flex-1 px-3">Copy rendered content as Markdown</span>
           </button>

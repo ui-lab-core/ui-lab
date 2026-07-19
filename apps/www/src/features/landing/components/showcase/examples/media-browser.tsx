@@ -89,10 +89,10 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
 
   return (
     <div
-      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200 text-xs"
+      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200 text-sm"
       style={{ height }}
     >
-      <div className="border-b border-background-700/40 flex items-center gap-2 p-2">
+      <div className="border-b border-background-700 flex items-center gap-2 p-2">
         <Group spacing="none" className="justify-between w-full">
           <Group.Input
             placeholder="Search files..."
@@ -123,8 +123,6 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
           <Group.Button active={state.view === "grid"} onClick={() => dispatch({ type: 'SET_VIEW', payload: "grid" })} aria-label="Grid view">
             <FaGrip size={13} />
           </Group.Button>
-          <Divider orientation="vertical" />
-          <span className="px-2 text-foreground-500">{filteredFiles.length} files</span>
         </Group>
       </div>
 
@@ -146,7 +144,7 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
         {filteredFiles.length === 0 ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <div className="text-3xl text-foreground-500 mb-2">○</div>
+              <div className="text-sm text-foreground-500 mb-2">○</div>
               <span className="text-foreground-500">
                 {state.search ? "No files match your search" : "No files found"}
               </span>
@@ -154,7 +152,7 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
           </div>
         ) : state.view === "list" ? (
           <div>
-            <div className="flex items-center gap-3 px-4 py-2.5 bg-background-300 border-b border-background-700/40">
+            <div className="flex items-center gap-3 px-4 py-2.5 bg-background-300 border-b border-background-700">
               <Checkbox
                 state={{ checked: isAllSelected, indeterminate: isSomeSelected }}
                 onChange={toggleSelectAll}
@@ -170,7 +168,7 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
                     state={{ checked: state.selected.has(file.name) }}
                     onChange={() => toggleSelect(file.name)}
                   />
-                  <span className="text-foreground-100 flex-1 truncate">{file.name}</span>
+                  <span className="text-foreground-100 flex-1 truncate font-medium">{file.name}</span>
                   <span className="text-foreground-500 shrink-0">{file.size}</span>
                   <span className="text-foreground-500 shrink-0 w-16 text-right">{file.modified}</span>
                   <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-foreground-500 hover:text-foreground-100">
@@ -194,7 +192,7 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
                     onChange={() => toggleSelect(file.name)}
                   />
                 </div>
-                <span className="text-foreground-300 truncate w-full text-center">{file.name.split(".")[0]}</span>
+                <span className="text-foreground-300 truncate w-full text-center font-medium">{file.name.split(".")[0]}</span>
                 <span className="text-foreground-500">{file.size}</span>
                 <button className="absolute bottom-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-1 text-foreground-500 hover:text-foreground-100">
                   <FaEllipsis size={11} />
@@ -205,8 +203,7 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
         )}
       </div>
 
-      <div className="px-3 py-2 border-t border-background-700/40 flex items-center justify-between">
-        <span className="text-foreground-500">Page {state.page} of {TOTAL_PAGES}</span>
+      <div className="px-3 py-2 border-t border-background-700 flex items-center justify-between">
         <Group spacing="none">
           <Group.Button isDisabled={state.page === 1} onClick={() => dispatch({ type: 'SET_PAGE', payload: Math.max(1, state.page - 1) })} aria-label="Previous">
             <FaChevronLeft size={11} />

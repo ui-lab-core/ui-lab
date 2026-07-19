@@ -14,6 +14,7 @@ import { bannerDetail } from "ui-lab-registry/components/Banner";
 import { badgeDetail } from "ui-lab-registry/components/Badge";
 import { pathDetail } from "ui-lab-registry/components/Path";
 import { cardDetail } from "ui-lab-registry/components/Card";
+import { chartDetail } from "ui-lab-registry/components/Chart";
 import { checkboxDetail } from "ui-lab-registry/components/Checkbox";
 import { colorDetail } from "ui-lab-registry/components/Color";
 import { dividerDetail } from "ui-lab-registry/components/Divider";
@@ -158,6 +159,7 @@ const componentDetails: Record<string, ComponentDetail> = {
   menu: menuDetail,
   switch: switchDetail,
   card: cardDetail,
+  chart: chartDetail,
   command: commandDetail,
   confirm: confirmDetail,
   divider: dividerDetail,

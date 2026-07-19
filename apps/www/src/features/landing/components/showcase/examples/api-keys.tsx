@@ -79,7 +79,7 @@ export function ApiKeysPanel({ height }: ShowcasePanelProps) {
                   <span className="text-sm font-medium text-foreground-100 truncate">{key.name}</span>
                   <Badge variant={key.env === "Production" ? "success" : "default"}>{key.env}</Badge>
                 </div>
-                <div className="flex items-center gap-2 mt-0.5 text-xs text-foreground-400">
+                <div className="flex items-center gap-2 mt-0.5 text-sm text-foreground-400">
                   <span className="font-mono">{mask(key.token)}</span>
                   <span>· Last used {key.lastUsed}</span>
                 </div>
@@ -97,7 +97,7 @@ export function ApiKeysPanel({ height }: ShowcasePanelProps) {
         ))}
       </List>
 
-      <div className="shrink-0 border-t border-background-700 px-4 py-2.5 text-xs text-foreground-400">
+      <div className="shrink-0 border-t border-background-700 px-4 py-2.5 text-sm text-foreground-400">
         Keys grant full account access. Rotate them regularly.
       </div>
     </div>

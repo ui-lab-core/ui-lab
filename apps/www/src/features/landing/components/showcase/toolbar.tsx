@@ -36,13 +36,20 @@ export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) 
   };
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 p-2">
-      <Tabs value={value} onValueChange={onValueChange}>
-        <Tabs.List aria-label="Showcase categories" >
+    <div className="flex w-full items-center justify-between gap-4 pt-4 px-5">
+      <Tabs
+        value={value} onValueChange={onValueChange}>
+        <Tabs.List
+          className="w-fit rounded-full border border-background-700 bg-background-950 px-[4px]"
+          styles={{
+            indicator: "bg-background-700 rounded-full"
+          }}
+          aria-label="Showcase categories" >
           {tabs.map(({ value, label }) => (
             <Tabs.Trigger
               key={value}
               value={value}
+              className="py-2 px-3 rounded-full active:bg-background-700"
             >
               {label}
             </Tabs.Trigger>

@@ -1,235 +1,142 @@
 ---
 title: "Installation"
-description: "Add UI Lab to any Tailwind v4 project in under one minute."
+description: "Install UI Lab in a React app with Tailwind CSS v4."
 category: "Getting Started"
-publishedOn: "2026-01-10"
+publishedOn: "2026-07-18"
 tags: ["installation", "setup", "tailwind"]
 ---
 
-## Choose your path
+UI Lab is a React 19 component library. Its component CSS is distributed separately from its design tokens, so a complete setup has three parts:
 
-**Fastest: Start from a template.** Browse pre-built [Starters](/workshop/starters)—Next.js, Vite, Astro, Tauri, and more. Clone, install, build. Everything's configured.
+1. install `ui-lab-components`
+2. provide an app-owned token layer
+3. import the UI Lab stylesheet after that token layer
 
-**Quick: Use the CLI.** One command sets up UI Lab in an existing project:
-
-```bash
-npx ui-lab init
-```
-
-**Manual: Full control.** Follow the steps below for custom setups.
-
----
-
-## Interactive Installation
-
-Step-by-step guidance for your framework:
-
-<InstallationFlow />
-
-## Manual Installation
-
-Prefer the manual path if you need a minimal setup or want to wire things in yourself.
+The documented setup uses Tailwind CSS v4. It does not need a `tailwind.config.ts` content extension for UI Lab.
 
 ## Install the package
 
 ```bash
-pnpm add ui-lab-components ui-lab-theme-onyx
+pnpm add ui-lab-components
 ```
 
-## Add a theme
+Use the equivalent command for your package manager:
 
-Each component automatically loads its own default styles when you import it. Pair the components with a theme package to provide the design tokens those defaults consume.
+```bash
+npm install ui-lab-components
+# yarn add ui-lab-components
+# bun add ui-lab-components
+```
 
-The easiest way is to use `ui-lab-theme-onyx`, which provides:
-- Complete color palette (8 colors × 9 shades each)
-- Typography scale
-- Spacing and radius tokens
-- Light/dark mode support
+`react`, `react-dom`, `shiki`, and `@shikijs/transformers` are peer dependencies. Most React 19 apps already provide `react` and `react-dom`; install the remaining peers if your package manager reports them as missing.
 
-## Import the theme
+## Add your token layer
+
+Create a theme file owned by your app—for example, `app/theme.css` in Next.js or `src/theme.css` in Vite. It supplies the color, typography, spacing, and component tokens used by UI Lab.
 
 ```css
-@import "tailwindcss";
-@import "ui-lab-theme-onyx/styles.css";
-```
+/* app/theme.css */
+:root {
+  --background-500: oklch(60% 0.008 51.4);
+  --background-900: oklch(96% 0.005 51.4);
+  --background-950: oklch(98% 0.004 51.4);
 
-Add this to your app stylesheet (`app/globals.css` in Next.js, `src/index.css` or `src/main.css` in Vite).
+  --foreground-50: oklch(16% 0.01 51.4);
+  --foreground-200: oklch(31% 0.016 51.4);
+  --foreground-400: oklch(55% 0.023 51.4);
 
-That is the only required UI Lab stylesheet import:
+  --accent-100: oklch(97% 0 0);
+  --accent-500: oklch(32% 0 0);
+  --accent-600: oklch(28% 0 0);
+}
 
-1. `tailwindcss` establishes the layers.
-2. `ui-lab-theme-onyx/styles.css` defines the design tokens (colors, typography, spacing).
-3. Imported components bring in only their own default CSS. The package's cascade-layer contract keeps theme overrides above those defaults regardless of module evaluation order.
-
-`ui-lab-components/styles.css` remains available as an optional aggregate bundle for environments that deliberately load the entire component library at once.
-
-## Add long-form typography
-
-UI Lab keeps typography intentionally role-based: body copy inherits `--font-body`, all headers use `--font-header`, and code uses `--font-mono`. Import the optional typography layer after the component styles, then add `typography` to the article or rich-text container—not to the page root.
-
-```css
-@import "tailwindcss";
-@import "ui-lab-theme-onyx/styles.css";
-@import "ui-lab-components/typography.css";
-```
-
-```tsx
-<article className="typography">
-  <h1>Release notes</h1>
-  <p>Paragraphs, headings, lists, tables, links, media, and code now share one reading rhythm.</p>
-</article>
-```
-
-The layer is scoped, so component UI remains untouched. It establishes document flow first, then gives headers their dedicated type role. To customize it, override the role tokens in your app theme:
-
-```css
-@theme {
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-header: "Newsreader", ui-serif, Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --leading-body: 1.6;
-  --leading-header: 1.25;
+@theme inline {
+  --color-background-500: var(--background-500);
+  --color-background-900: var(--background-900);
+  --color-background-950: var(--background-950);
+  --color-foreground-50: var(--foreground-50);
+  --color-foreground-200: var(--foreground-200);
+  --color-foreground-400: var(--foreground-400);
+  --color-accent-100: var(--accent-100);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
 }
 ```
 
-### Using a custom theme instead
+This is a minimal token example. Define the component-level tokens and mode rules your application needs; see [Theming](/docs/customization-theming) for the token model and [Theme Switching](/docs/guides-theme-switching) for a light/dark setup.
 
-If you prefer to define your own token layer instead of using `ui-lab-theme-onyx`:
+## Import the styles
+
+In your application stylesheet, import Tailwind, then your token layer, then UI Lab:
 
 ```css
+/* app/globals.css or src/index.css */
 @import "tailwindcss";
-@import "./my-theme.css";           /* Your custom token definitions */
+@import "./theme.css";
+@import "ui-lab-components/styles.css";
 ```
 
-Your `my-theme.css` must define all required tokens:
-- `--accent-{50,100,200,...,900}`, `--background-*`, `--foreground-*`, `--success-*`, `--danger-*`, `--warning-*`, `--info-*`
-- `--text-sm`, `--text-md`, `--text-lg`, `--text-xl`
-- `--radius-sm`, `--radius-md`, `--radius-lg`
-
-See [ui-lab-theme-onyx](https://github.com/ui-lab-core/ui-lab/tree/main/packages/@theme-onyx) for the complete token structure.
-
-## Optional: wire up theme switching
-
-If you want light/dark mode, keep the token definitions in your own `theme.css` and let `prefers-color-scheme` handle the unstamped system case.
-
-For Next.js, the preferred setup is:
-
-1. Persist explicit `"light"` or `"dark"` overrides in the `ui-lab-theme` cookie.
-2. Read that cookie in the server `app/layout.tsx`.
-3. Apply `className`, `data-theme`, and `style.colorScheme` on `<html>` with `parseThemeCookie()` and `resolveThemeRootState()` from `ui-lab-components/theme-server`.
-
-```tsx
-import { cookies } from "next/headers";
-import { parseThemeCookie, resolveThemeRootState } from "ui-lab-components/theme-server";
-
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const cookieStore = await cookies();
-  const theme = parseThemeCookie(cookieStore.get("ui-lab-theme")?.value);
-  const rootTheme = resolveThemeRootState(theme);
-
-  return (
-    <html
-      lang="en"
-      className={rootTheme.className}
-      data-theme={rootTheme.dataTheme}
-      style={rootTheme.colorScheme ? { colorScheme: rootTheme.colorScheme } : undefined}
-    >
-      <body>{children}</body>
-    </html>
-  );
-}
-```
-
-Leave system mode unstamped so CSS can handle first paint without an inline bootstrap script.
-
-If you cannot use a cookie-backed server layout, `ui-lab-components/theme-script` is still available as a fallback. The full setup is documented in [Theme Switching](/docs/guides-theme-switching).
+Import that stylesheet once from your application root. The aggregate `styles.css` bundle is the recommended app-level integration; component entry points also carry their own CSS for bundlers that preserve CSS imports from dependencies.
 
 ## Render a component
 
 ```tsx
-import { Button, Card, Input } from 'ui-lab-components';
+import { Button, Card, Input } from "ui-lab-components";
 
 export default function Home() {
   return (
     <Card>
-      <Card.Header>
-        <Card.Title>Welcome</Card.Title>
-      </Card.Header>
-      <Card.Content>
-        <Input placeholder="your@email.com" />
-      </Card.Content>
+      <Card.Header>Welcome</Card.Header>
+      <Card.Body>
+        <Input placeholder="you@example.com" />
+      </Card.Body>
       <Card.Footer>
-        <Button>Get Started</Button>
+        <Button>Get started</Button>
       </Card.Footer>
     </Card>
   );
 }
 ```
 
-If styles don't appear, verify that you've imported a theme package (e.g., `ui-lab-theme-onyx/styles.css`) before `ui-lab-components/styles.css` in your stylesheet.
+## Optional: start from Onyx
 
-## Troubleshooting
+`ui-lab-theme-onyx` is an optional ready-made theme. It is useful when you want its component recipes and token defaults rather than starting with an app-owned theme from scratch.
 
-### Components have no visual styles
-
-**This is expected if you haven't installed a theme.** UI Lab components are unstyled by default.
-
-Install `ui-lab-theme-onyx`:
 ```bash
-pnpm add ui-lab-theme-onyx
+pnpm add ui-lab-components ui-lab-theme-onyx
 ```
 
-Then import it in your stylesheet before `ui-lab-components/styles.css`:
 ```css
+@import "tailwindcss";
 @import "ui-lab-theme-onyx/styles.css";
 @import "ui-lab-components/styles.css";
 ```
 
-### Styles look wrong or partially applied
+You can then add an app-owned stylesheet after Onyx to override its tokens and component recipes.
 
-Verify Tailwind v4:
-```bash
-npm ls tailwindcss
-```
+## Troubleshooting
 
-Should show v4.x.x. If not: `npm install tailwindcss@latest`
+### Components render without their intended appearance
 
-### PostCSS error
+Check that all three stylesheet imports are present and ordered as shown above. UI Lab’s component CSS consumes tokens; importing `ui-lab-components/styles.css` alone does not define your app’s theme.
 
-Check `postcss.config.mjs` includes:
-```javascript
+### Tailwind reports an import or PostCSS error
+
+Confirm that the app uses Tailwind CSS v4 and its PostCSS plugin:
+
+```js
+// postcss.config.mjs
 export default {
-  plugins: { '@tailwindcss/postcss': {} },
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
 };
 ```
 
-Restart dev server after changes.
-
-### Styles still not applying
-
-1. **Check your stylesheet import order** — theme package must come before `ui-lab-components`:
-   ```css
-   @import "tailwindcss";
-   @import "ui-lab-theme-onyx/styles.css";
-   @import "ui-lab-components/styles.css";
-   ```
-
-2. **Verify a theme is installed** — Run `npm ls ui-lab-theme-onyx` (or check your custom theme package)
-
-3. Clear cache and restart: `rm -rf node_modules/.cache && npm run dev`
-
-### Still stuck?
-
-Compare against the [Components](/components) gallery. File issues on [GitHub](https://github.com/anthropics/ui-lab).
-
----
+Restart the development server after changing the PostCSS configuration.
 
 ## Next steps
 
-- Browse [Components](/components) for the full library
-- Explore [Elements](/workshop/elements) for composed UI patterns
-- Check [Starters](/workshop/starters) for complete project templates
+- [Theming](/docs/customization-theming) — token roles and customization
+- [Theme Switching](/docs/guides-theme-switching) — light/dark mode in Next.js
+- [Components](/components) — browse the component APIs and examples

@@ -6,6 +6,7 @@ import { CopyComponentPage } from '@/features/docs/page-actions/copy-component-p
 import { OpenPage } from '@/features/docs/page-actions/open-page-button';
 import { highlightCode } from '@/features/docs/lib/shiki-server';
 import { Playground, Preview } from './preview';
+import { ExampleReference } from './example-reference';
 import type { StyleInfo } from './documentation';
 import { Content } from './content';
 import { Toc } from './toc';
@@ -46,6 +47,10 @@ function getExamples(componentId: string) {
   return primary ? [primary, ...entries.filter((entry) => entry !== primary)] : entries;
 }
 
+function isInteractiveExample(id: string) {
+  return id.endsWith('-interactive');
+}
+
 export async function ComponentPage({
   componentId,
   component,
@@ -63,13 +68,16 @@ export async function ComponentPage({
 }) {
   const examples = getExamples(componentId).map((entry) => ({
     id: entry.id,
-    title: entry.displayName,
+    title: `${componentId}/${entry.id}`,
     description: entry.description,
     code: entry.code,
   }));
   const first = examples[0];
   const highlighted = first ? await highlightCode(first.code, 'typescript') : { light: '', dark: '' };
-  const tocItems = examples.slice(1).map((example) => ({ id: example.id, title: example.title, level: 3 }));
+  const tocItems = examples
+    .slice(1)
+    .filter((example) => !isInteractiveExample(example.id))
+    .map((example) => ({ id: example.id, title: example.title, level: 3 }));
   const apiItems = [
     ...(api?.props?.length ? [{ id: 'api-props', title: 'Props', level: 2 }] : []),
     ...(api?.subComponents && Object.keys(api.subComponents).length
@@ -86,13 +94,15 @@ export async function ComponentPage({
 
   const examplesPanel = (
     <section className="scroll-mt-20">
-      <div className="space-y-12">
+      <div>
         {examples.slice(1).map((example) => (
           <article className={css.section} id={example.id} key={example.id}>
-            <header className="space-y-2 border-b border-background-700 py-5">
-              <h3 className="text-foreground-50">{example.title}</h3>
-              <p className="text-sm text-foreground-400">{example.description}</p>
-            </header>
+            {!isInteractiveExample(example.id) ? (
+              <div className="flex justify-between space-y-2 border-b border-background-700 pb-5">
+                <ExampleReference id={example.title} />
+                <p className="text-sm max-w-[45ch] text-foreground-400">{example.description}</p>
+              </div>
+            ) : null}
             <Preview id={example.id} />
             <div className="overflow-hidden rounded-sm border border-t-0 border-background-700">
               <Code className="rounded-none border-0" eagerMeasure language="typescript" showLineNumbers>{example.code}</Code>
@@ -104,56 +114,68 @@ export async function ComponentPage({
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[4fr_1fr]">
-      <main className="mx-auto w-full min-w-0 max-w-(--content-width) px-4 py-12 md:px-6">
-        <div className="pb-12 pt-12">
-          <header className="mb-12 min-h-32 space-y-4">
-            <div className="relative space-y-2">
-              {component.experimental ? <span className="absolute right-0 rounded-sm bg-accent-500/20 px-2 py-1 text-sm font-semibold text-accent-500"><FaFlask /></span> : null}
-              <h1 className="font-bold text-foreground-50">{component.name}</h1>
-              <p className="max-w-[66ch] text-md text-foreground-400">{component.description}</p>
+    <div className="docs-layout-inner grid min-h-0 min-w-0 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
+      <main className="flex min-w-0 flex-col justify-center">
+        <div className="flex w-full min-w-0 items-center">
+          <div className="w-full min-w-0 px-4 py-12 md:px-6">
+            <div className="mx-auto w-full min-w-0 max-w-(--content-width)">
+              <div className="pb-12 pt-12">
+                <header className="min-h-32 space-y-12">
+                  <div className="relative space-y-2">
+                    {component.experimental ? <span className="absolute right-0 rounded-sm bg-accent-500/20 px-2 py-1 text-sm font-semibold text-accent-500"><FaFlask /></span> : null}
+                    <h1 className="font-medium text-xl text-foreground-50">{component.name}</h1>
+                    <p className="max-w-[66ch] text-md text-foreground-400">{component.description}</p>
+                  </div>
+                  <nav className="flex h-10 gap-3" aria-label="Component resources">
+                    {sourceUrl ? (
+                      <Button href={sourceUrl} target="_blank" icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" className="h-9 px-2">
+                        Source
+                      </Button>
+                    ) : null}
+                    {reactAriaUrl ? (
+                      <Button href={reactAriaUrl} target="_blank" icon={<ReactAriaIcon />} variant="ghost" size="sm" className="h-9 px-2">
+                        React Aria
+                      </Button>
+                    ) : null}
+                  </nav>
+                </header>
+
+                {first ? (
+                  <section className="mb-12 space-y-4">
+                    {!isInteractiveExample(first.id) ? <ExampleReference id={first.title} level={2} /> : null}
+                    <Playground id={first.id} code={first.code} light={highlighted.light} dark={highlighted.dark} />
+                  </section>
+                ) : null}
+
+                <Content examples={examplesPanel} componentId={componentId} />
+              </div>
             </div>
-            <nav className="flex h-10 gap-3" aria-label="Component resources">
-              {sourceUrl ? (
-                <Button href={sourceUrl} target="_blank" icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" className="h-9 px-2">
-                  Source
-                </Button>
-              ) : null}
-              {reactAriaUrl ? (
-                <Button href={reactAriaUrl} target="_blank" icon={<ReactAriaIcon />} variant="ghost" size="sm" className="h-9 px-2">
-                  React Aria
-                </Button>
-              ) : null}
-            </nav>
-          </header>
-
-          {first ? (
-            <section className="mb-12 space-y-4">
-              <header className="space-y-2 border-b border-background-700 py-5">
-                <h2 className="text-foreground-50">{first.title}</h2>
-                <p className="text-sm text-foreground-400">{first.description}</p>
-              </header>
-              <Playground id={first.id} code={first.code} light={highlighted.light} dark={highlighted.dark} />
-            </section>
-          ) : null}
-
-          <Content examples={examplesPanel} componentId={componentId} />
+          </div>
         </div>
         <Footer />
       </main>
 
-      <aside className="sticky top-(--header-height) grid h-[calc(100vh-var(--header-height))] grid-rows-[minmax(0,1fr)_auto] px-4">
-        <Toc items={{ examples: tocItems, api: apiItems, styles: styleItems }} />
-        <Group orientation="vertical" spacing="none" className="mb-4 w-full shrink-0 overflow-hidden">
-          <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
-          <CopyComponentPage
-            componentId={componentId}
-            name={component.name}
-            description={component.description}
-            examples={examples}
-            dataUrl={`/api/component-docs/${componentId}`}
-          />
-        </Group>
+      <aside className="sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-hidden px-4">
+          <Toc items={{ examples: tocItems, api: apiItems, styles: styleItems }} />
+        </div>
+        <div className="shrink-0 px-4 pb-4 [&>.group-scope]:w-full">
+          <Group
+            orientation="vertical"
+            spacing="none"
+            styles={{ expand: "h-auto w-full" }}
+            className="w-full [--background-border:var(--background-700)]"
+          >
+            <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
+            <CopyComponentPage
+              componentId={componentId}
+              name={component.name}
+              description={component.description}
+              examples={examples}
+              dataUrl={`/api/component-docs/${componentId}`}
+            />
+          </Group>
+        </div>
       </aside>
     </div>
   );

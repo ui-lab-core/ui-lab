@@ -93,7 +93,7 @@ export function LandingSidebar() {
 
       <aside className={cn(
         'w-68 flex flex-col lg:-mt-4',
-        'fixed lg:static left-0 top-0 h-screen lg:h-auto border-r border-background-700/40',
+        'fixed lg:static left-0 top-0 h-screen lg:h-auto border-r border-background-700',
         'z-[55] lg:z-20',
         'transition-transform duration-300 ease-out',
         'lg:transition-none lg:transform-none',

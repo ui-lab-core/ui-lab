@@ -106,7 +106,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "isIndex": true,
         "order": -1,
         "sectionOrder": 999,
-        "publishedOn": "2026-01-15",
+        "publishedOn": "2026-07-18",
         "tags": [
           "getting-started",
           "setup",
@@ -119,52 +119,22 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "url": "/docs/installation",
         "title": "Installation",
         "label": "Installation",
-        "description": "Add UI Lab to any Tailwind v4 project in under one minute.",
+        "description": "Install UI Lab in a React app with Tailwind CSS v4.",
         "section": "Getting Started",
         "toc": [
-          {
-            "id": "choose-your-path",
-            "title": "Choose your path",
-            "level": 2
-          },
-          {
-            "id": "interactive-installation",
-            "title": "Interactive Installation",
-            "level": 2
-          },
-          {
-            "id": "manual-installation",
-            "title": "Manual Installation",
-            "level": 2
-          },
           {
             "id": "install-the-package",
             "title": "Install the package",
             "level": 2
           },
           {
-            "id": "add-a-theme",
-            "title": "Add a theme",
+            "id": "add-your-token-layer",
+            "title": "Add your token layer",
             "level": 2
           },
           {
-            "id": "import-the-theme",
-            "title": "Import the theme",
-            "level": 2
-          },
-          {
-            "id": "add-long-form-typography",
-            "title": "Add long-form typography",
-            "level": 2
-          },
-          {
-            "id": "using-a-custom-theme-instead",
-            "title": "Using a custom theme instead",
-            "level": 3
-          },
-          {
-            "id": "optional-wire-up-theme-switching",
-            "title": "Optional: wire up theme switching",
+            "id": "import-the-styles",
+            "title": "Import the styles",
             "level": 2
           },
           {
@@ -173,33 +143,23 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
+            "id": "optional-start-from-onyx",
+            "title": "Optional: start from Onyx",
+            "level": 2
+          },
+          {
             "id": "troubleshooting",
             "title": "Troubleshooting",
             "level": 2
           },
           {
-            "id": "components-have-no-visual-styles",
-            "title": "Components have no visual styles",
+            "id": "components-render-without-their-intended-appearance",
+            "title": "Components render without their intended appearance",
             "level": 3
           },
           {
-            "id": "styles-look-wrong-or-partially-applied",
-            "title": "Styles look wrong or partially applied",
-            "level": 3
-          },
-          {
-            "id": "postcss-error",
-            "title": "PostCSS error",
-            "level": 3
-          },
-          {
-            "id": "styles-still-not-applying",
-            "title": "Styles still not applying",
-            "level": 3
-          },
-          {
-            "id": "still-stuck",
-            "title": "Still stuck?",
+            "id": "tailwind-reports-an-import-or-postcss-error",
+            "title": "Tailwind reports an import or PostCSS error",
             "level": 3
           },
           {
@@ -211,7 +171,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "isIndex": false,
         "order": 0,
         "sectionOrder": 0,
-        "publishedOn": "2026-01-10",
+        "publishedOn": "2026-07-18",
         "tags": [
           "installation",
           "setup",

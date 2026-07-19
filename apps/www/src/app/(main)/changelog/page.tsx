@@ -1,68 +1,86 @@
+import { Divider } from "ui-lab-components/divider";
+import { TableOfContents, type TableOfContentsItem } from "@/features/docs/components/table-of-contents";
+import { getMonthGroups, type Entry } from "./data";
+
 export const metadata = {
   title: "Changelog",
   description: "Version history and feature updates for UI Lab components.",
 };
 
-interface Release {
-  version: string;
-  date: string;
-  changes: string[];
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+function Release({ entry }: { entry: Entry }) {
+  return (
+    <div
+      id={`v${entry.version.replace(/\./g, "-")}`}
+      className="grid gap-2 md:grid-cols-[7rem_1fr] md:gap-8 scroll-mt-40"
+    >
+      <time dateTime={entry.date} className="text-sm font-semibold text-foreground-400 md:pt-1">
+        {dateFormatter.format(new Date(entry.date))}
+      </time>
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-3">
+          <span className="text-sm font-medium text-foreground-50">{entry.title}</span>
+          <span className="text-sm font-mono text-foreground-400 whitespace-nowrap">v{entry.version}</span>
+        </div>
+        {entry.description && (
+          <div className="mt-2 text-sm text-foreground-300">{entry.description}</div>
+        )}
+        <ul className="mt-3 font-[450] space-y-1.5 text-sm text-foreground-300">
+          {entry.changes.map((change) => (
+            <li key={change}>— {change}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 }
 
-const releases: Release[] = [
-  {
-    version: "1.2.0",
-    date: "2026-01-28",
-    changes: [
-      "Added opacity slider to Color component",
-      "Format switching between HEX, RGB, and HSL",
-      "Improved keyboard navigation for color picker",
-    ],
-  },
-  {
-    version: "1.1.0",
-    date: "2026-01-15",
-    changes: [
-      "Ghost variant for Group buttons",
-      "Enhanced Group.Select component",
-      "Better active state handling",
-    ],
-  },
-  {
-    version: "1.0.0",
-    date: "2026-01-01",
-    changes: [
-      "Initial stable release",
-      "20+ accessible components",
-      "Full dark mode support",
-      "Tailwind CSS v4 integration",
-      "React Aria foundation",
-    ],
-  },
-];
-
 export default function ChangelogPage() {
+  const months = getMonthGroups();
+
+  const tocItems: TableOfContentsItem[] = months.flatMap((month) => [
+    { id: month.id, title: month.label, level: 2 },
+    ...month.entries.map((entry) => ({
+      id: `v${entry.version.replace(/\./g, "-")}`,
+      title: entry.title,
+      level: 3,
+    })),
+  ]);
+
   return (
-    <div className="py-20">
-      <div className="mb-10">
-        <h1 className="text-md font-semibold text-foreground-50">Changelog</h1>
-        <p className="text-sm mt-1 text-foreground-300">Version history and changelog.</p>
+    <div className="flex w-full gap-10">
+      <div className="min-w-0 flex-1 pt-12">
+        <header className="mb-16">
+          <h1 className="text-2xl font-semibold text-foreground-50">Changelog</h1>
+          <p className="text-sm mt-1 text-foreground-300">
+            New components, refinements, and fixes shipped to UI Lab.
+          </p>
+        </header>
+        <div className="space-y-16">
+          {months.map((month) => (
+            <section key={month.id} aria-labelledby={month.id}>
+              <h2
+                id={month.id}
+                className="text-header-sm font-semibold text-foreground-200 scroll-mt-40"
+              >
+                {month.label}
+              </h2>
+              <Divider variant="dashed" spacing="lg" />
+              <div className="mt-8 space-y-12">
+                {month.entries.map((entry) => (
+                  <Release key={entry.version} entry={entry} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
-      <div className="space-y-10">
-        {releases.map((release) => (
-          <section key={release.version} id={`v${release.version}`} className="border-b border-background-800 pb-8 last:border-0">
-            <div className="flex items-baseline gap-3 mb-4">
-              <h2 className="text-md font-medium text-foreground-100">v{release.version}</h2>
-              <span className="text-sm text-foreground-400">{release.date}</span>
-            </div>
-            <ul className="space-y-1.5 text-sm text-foreground-300">
-              {release.changes.map((change) => (
-                <li key={change}>— {change}</li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
+      <TableOfContents items={tocItems} mode="static" className="hidden lg:block" />
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function OpenPage({ componentId, sourceUrl }: { componentId?: string; sou
           </div>
           <div
             title="Open this page in another app"
-            className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300"
+            className="flex w-full items-center justify-start pl-4 text-sm font-medium text-foreground-300"
           >
             Open Page
             <Expand.Icon className="ml-auto bg-transparent text-foreground-400" />
@@ -54,7 +54,7 @@ export function OpenPage({ componentId, sourceUrl }: { componentId?: string; sou
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex py-2.5 items-center text-xs text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
+                className="flex py-2.5 items-center font-medium text-sm text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
               >
                 <span className="flex items-center justify-center px-3 text-sm">
                   <Icon className="h-5 w-5" />

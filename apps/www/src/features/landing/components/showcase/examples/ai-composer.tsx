@@ -85,7 +85,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
             <div key={message.id} className="space-y-2">
               {message.role === "user" ? (
                 <div className="flex justify-end gap-2 pl-8">
-                  <div className="max-w-[calc(100%-3rem)] rounded-sm border border-background-600 px-3.5 py-2.5 text-xs font-medium leading-6 text-foreground-100">
+                  <div className="max-w-[calc(100%-3rem)] rounded-sm border border-background-600 px-3.5 py-2.5 text-sm font-medium leading-6 text-foreground-100">
                     {message.content}
                   </div>
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-sm border border-background-600 bg-background-800">
@@ -97,7 +97,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-sm border border-background-700 bg-background-800">
                     <ProviderIcon className="size-4 text-foreground-200" />
                   </div>
-                  <div className="max-w-[calc(100%-3rem)] rounded-sm border border-background-700 px-3.5 py-2.5 text-xs font-medium leading-6 text-foreground-200">
+                  <div className="max-w-[calc(100%-3rem)] rounded-sm border border-background-700 px-3.5 py-2.5 text-sm font-medium leading-6 text-foreground-200">
                     {message.content}
                   </div>
                 </div>
@@ -111,8 +111,8 @@ export function AIComposer({ height }: ShowcasePanelProps) {
                         <Icon className="size-3.5 text-foreground-400" />
                       </div>
                       <div className="flex items-center gap-2.5 rounded-sm px-2 py-1.5">
-                        <p className="shrink-0 text-xs font-medium text-foreground-200">{name}</p>
-                        <p className="min-w-0 truncate text-xs text-foreground-400">{detail}</p>
+                        <p className="shrink-0 text-sm font-medium text-foreground-200">{name}</p>
+                        <p className="min-w-0 truncate text-sm text-foreground-400">{detail}</p>
                         <Check className="mr-1 size-3.5 shrink-0 text-success-500" aria-label="Completed" />
                       </div>
                     </div>
@@ -145,7 +145,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
             <Select.Trigger
               variant="ghost"
               icon={{ prefix: <ProviderIcon className="size-3.5 shrink-0 text-foreground-400" /> }}
-              className="h-8 border-none text-xs"
+              className="h-8 border-none text-sm"
             >
               <span className="text-foreground-200">{selectedModel.label}</span>
             </Select.Trigger>

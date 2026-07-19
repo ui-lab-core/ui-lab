@@ -125,18 +125,18 @@ export function CopyComponentPage({
 
   return (
     <Group.Expand
-      className="w-full"
+      className="w-full min-w-0"
       expanded={isOpen}
       onExpandedChange={setIsOpen}
     >
-      <Expand.Trigger className="flex flex-col rounded-none border-b border-background-700">
-        <Flex className="h-12 cursor-pointer">
+      <Expand.Trigger className="flex w-full min-w-0 flex-col rounded-none border-b border-background-700">
+        <Flex className="h-12 w-full min-w-0 cursor-pointer">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             {copied ? <FaCheck size={12} className="text-foreground-400" /> : <FaRegClipboard />}
           </div>
           <div
             title="Copy component context as Markdown"
-            className="flex w-full items-center justify-start pl-4 text-xs font-medium text-foreground-300"
+            className="flex w-full items-center justify-start pl-4 text-sm font-medium text-foreground-300"
           >
             {copied ? (
               <>
@@ -151,15 +151,15 @@ export function CopyComponentPage({
         </Flex>
       </Expand.Trigger>
 
-      <Expand.Content from="below" className="-mt-(--border-width-base)">
+      <Expand.Content from="below" className="-mt-(--border-width-base) w-full min-w-0">
         {isOpen && (
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex w-full min-w-0 flex-col overflow-hidden">
             {copyOptions.map(({ label, source }) => (
               <button
                 key={source}
                 type="button"
                 onClick={() => handleCopy(source)}
-                className="flex py-2.5 cursor-pointer items-center text-left text-xs font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
+                className="flex w-full min-w-0 cursor-pointer items-center py-2.5 text-left text-sm font-medium text-foreground-400 hover:bg-background-800 hover:text-foreground-50 active:bg-background-700"
               >
                 <span className="flex-1 px-3">{label}</span>
               </button>

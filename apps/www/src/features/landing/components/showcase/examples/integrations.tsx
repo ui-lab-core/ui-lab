@@ -56,7 +56,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
       className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
       style={{ height }}
     >
-      <div className="px-3 py-2.5 border-b border-background-700/40">
+      <div className="px-3 py-2.5 border-b border-background-700">
         <Group className="h-12" spacing="sm">
           <Group.Input
             value={query}
@@ -94,13 +94,13 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
               <div key={item.id}>
                 <List.Item value={item.id} className="px-4 py-3">
                   <List.Media>
-                    <div className="w-20 h-20 rounded-md flex items-center justify-center text-sm bg-background-300 text-foreground-300">
+                    <div className="w-20 h-20 rounded-md flex items-center justify-center bg-background-300 text-foreground-300">
                       {item.icon}
                     </div>
                   </List.Media>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-foreground-100">{item.name}</div>
-                    <List.Desc className="text-xs">{item.desc}</List.Desc>
+                    <List.Desc>{item.desc}</List.Desc>
                   </div>
                   <Button
                     size="sm"
@@ -110,7 +110,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
                     {isConnected ? "Connected" : "Connect"}
                   </Button>
                 </List.Item>
-                {i < visible.length - 1 && <List.Divider color="bg-background-700/40" spacing="none" />}
+                {i < visible.length - 1 && <List.Divider color="bg-background-700" spacing="none" />}
               </div>
             );
           })

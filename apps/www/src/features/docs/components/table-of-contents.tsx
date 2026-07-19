@@ -20,6 +20,17 @@ interface TableOfContentsProps {
   className?: string;
 }
 
+function formatTitle(title: string) {
+  const match = title.match(/^[a-z0-9-]+\/(.+)$/);
+  if (!match) return title;
+
+  return match[1]
+    .replace(/^\d+-/, '')
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 function getRouteTocItems(pathname: string | null): TableOfContentsItem[] | null {
   if (!pathname || (!pathname.startsWith("/docs") && !pathname.startsWith("/design-system"))) {
     return null;
@@ -275,7 +286,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
     <>
       <aside className={cn("ml-auto w-65 top-(--header-height) sticky md:block self-start h-full min-h-0 overflow-hidden", className)}>
         <nav className="flex h-full min-h-0 flex-col pt-12">
-          <h3 className="flex items-center gap-3 text-header-sm text-foreground-200">
+          <h3 className="flex items-center gap-3 text-md text-foreground-200">
             <FaList /> Table of Contents
           </h3>
           <Divider variant="dashed" spacing="lg" />
@@ -302,8 +313,8 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
                         : "duration-300 text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50"
                     )}
                   >
-                    <span className="tracking-(--letter-spacing-md) text-xs whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
-                      {item.title}
+                    <span className="tracking-(--letter-spacing-md) text-md font-medium whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
+                      {formatTitle(item.title)}
                     </span>
                   </button>
                 ))}

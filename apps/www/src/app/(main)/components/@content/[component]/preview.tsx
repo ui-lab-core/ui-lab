@@ -46,7 +46,7 @@ export function Playground({
   return (
     <div>
       <div className="flex flex-col rounded-sm rounded-b-none border border-background-700 md:flex-row md:items-stretch">
-        <div className={`flex min-h-80 min-w-0 flex-1 p-6 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}>
+        <div className={`flex min-h-80 min-w-0 flex-1 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}>
           <Suspense fallback={null}>
             {result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />)}
           </Suspense>
@@ -204,7 +204,7 @@ function PreviewInstance({ id }: { id: string }) {
           aria-hidden={loaded ? true : undefined}
           className={`pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${loaded ? 'opacity-0' : 'opacity-100'}`}
         >
-          <span aria-hidden="true" className="size-5 animate-spin rounded-full border-2 border-background-600 border-t-accent-500" />
+          <span aria-hidden="true" className="size-5 animate-spin rounded-full border border-background-600 border-t-accent-500" />
           <span className="sr-only">Loading interactive preview</span>
         </div>
       ) : null}

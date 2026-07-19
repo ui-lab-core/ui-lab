@@ -19,11 +19,11 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
     <>
       <div
         id={ROOT_ID}
-        className="border-r border-background-700/40 docs-layout-root grid grid-cols-1 w-full max-w-(--page-width) mx-auto min-h-[calc(100vh-var(--header-height))] lg:grid-cols-[auto_1fr]"
+        className="border-r border-background-700 docs-layout-root grid grid-cols-1 w-full max-w-(--page-width) mx-auto min-h-[calc(100vh-var(--header-height))] lg:grid-cols-[auto_1fr]"
       >
         <Sidebar />
 
-        <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 lg:grid-cols-[4fr_1fr]">
+        <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
           {banner && (
             <div className="col-span-full mt-(--header-height)">
               {banner}
@@ -35,22 +35,29 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
             className={`flex flex-col justify-center min-w-0 ${banner ? "" : "mt-(--header-height)"}`}
           >
             <div className="flex items-center w-full min-w-0">
-              <div className="py-12 px-4 md:px-6 mx-auto max-w-(--content-width) w-full min-w-0">
-                {children}
+              <div className="w-full min-w-0 px-4 py-12 md:px-6">
+                <div className="mx-auto w-full min-w-0 max-w-[652px]">
+                  {children}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="docs-toc sticky px-4 top-(--header-height) grid h-[calc(100vh-var(--header-height))] min-h-0 grid-rows-[minmax(0,1fr)_auto] overflow-visible">
-            <TableOfContents items={tocItems} className="min-h-0" />
-            <Group
-              orientation="vertical"
-              spacing="none"
-              className="mb-4 ml-auto w-full shrink-0 overflow-hidden [--background-border:var(--background-700)]"
-            >
-              <OpenPage />
-              <CopyPage />
-            </Group>
+          <div className="docs-toc sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
+            <div className="min-h-0 flex-1 overflow-hidden px-4">
+              <TableOfContents items={tocItems} className="min-h-0" />
+            </div>
+            <div className="shrink-0 px-4 pb-4 [&>.group-scope]:w-full">
+              <Group
+                orientation="vertical"
+                spacing="none"
+                styles={{ expand: "h-auto w-full" }}
+                className="w-full [--background-border:var(--background-700)]"
+              >
+                <OpenPage />
+                <CopyPage />
+              </Group>
+            </div>
           </div>
         </div>
       </div>

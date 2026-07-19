@@ -169,7 +169,7 @@ export function SessionConfigPanel({ height }: ShowcasePanelProps) {
             </Select.List>
           </Select.Content>
         </Select>
-        <span className="ml-auto text-xs text-foreground-500">us-east-1</span>
+        <span className="ml-auto text-sm text-foreground-500">us-east-1</span>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">

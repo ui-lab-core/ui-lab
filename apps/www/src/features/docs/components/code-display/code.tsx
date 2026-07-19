@@ -218,7 +218,7 @@ export function Code({
       )}
     >
       {(filename || heading) && (
-        <div className="flex-none bg-background-900/90 flex text-xs font-medium items-center justify-between border-b border-background-700 py-1.5 px-3 text-foreground-400">
+        <div className="flex-none bg-background-900/90 flex text-xs  items-center justify-between border-b border-background-700 py-1.5 px-3 text-foreground-400">
           <span>{heading || filename}</span>
           {!heading && <span className="text-foreground-400">{language}</span>}
         </div>
@@ -281,7 +281,7 @@ export function Code({
         {shouldShowExpandButton && !expanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-800 text-foreground-300 text-xs font-semibold transition-colors border-t border-background-700"
+            className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-800 text-foreground-300 font-medium text-md transition-colors border-t border-background-700"
           >
             <HiOutlineChevronUpDown size={24} className="text-foreground-400 inline mr-3" /> Show {hiddenCodeLines} more lines
           </button>
