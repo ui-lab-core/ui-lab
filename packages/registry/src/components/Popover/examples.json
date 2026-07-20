@@ -22,6 +22,6 @@
   "05-popover-arrow-positions": {
     "title": "Arrow & Positions",
     "description": "Directional arrow enabled across all four placement options.",
-    "code": "\"use client\";\n\nimport { Popover, Button, Flex } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Flex align=\"center\">\n      {([\"top\", \"bottom\", \"left\", \"right\"] as const).map((position) => (\n        <Popover\n          key={position}\n          position={position}\n          showArrow\n          content={<span className=\"text-sm capitalize\">{position}</span>}\n        >\n          <Button variant=\"ghost\">\n            <span className=\"capitalize\">{position}</span>\n          </Button>\n        </Popover>\n      ))}\n    </Flex>\n  );\n}"
+    "code": "\"use client\";\n\nimport { Popover, Button, Flex } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Flex align-center>\n      {([\"top\", \"bottom\", \"left\", \"right\"] as const).map((position) => (\n        <Popover\n          key={position}\n          position={position}\n          showArrow\n          content={<span className=\"text-sm capitalize\">{position}</span>}\n        >\n          <Button variant=\"ghost\">\n            <span className=\"capitalize\">{position}</span>\n          </Button>\n        </Popover>\n      ))}\n    </Flex>\n  );\n}"
   }
 }

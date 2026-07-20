@@ -7,7 +7,7 @@
   "02-textarea-bio-settings": {
     "title": "Profile Bio",
     "description": "Fixed-height settings textarea with a 160-character cap and save/clear actions.",
-    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { TextArea, Flex, Button } from 'ui-lab-components';\n\nexport default function Example() {\n  const [bio, setBio] = useState(\"UI designer & developer building minimal tools.\");\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\" style={{ width: 380 }}>\n      <TextArea\n        value={bio}\n        onChange={(e) => setBio(e.target.value)}\n        showCharacterCount\n        maxCharacters={160}\n        rows={3}\n        resizable={false}\n      />\n      <Flex justify=\"end\" gap=\"sm\">\n        <Button size=\"sm\" variant=\"ghost\" onClick={() => setBio(\"\")}>Clear</Button>\n        <Button size=\"sm\" variant=\"primary\">Save</Button>\n      </Flex>\n    </Flex>\n  );\n}"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { TextArea, Flex, Button } from 'ui-lab-components';\n\nexport default function Example() {\n  const [bio, setBio] = useState(\"UI designer & developer building minimal tools.\");\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\" style={{ width: 380 }}>\n      <TextArea\n        value={bio}\n        onChange={(e) => setBio(e.target.value)}\n        showCharacterCount\n        maxCharacters={160}\n        rows={3}\n        resizable={false}\n      />\n      <Flex justify-end gap=\"sm\">\n        <Button size=\"sm\" variant=\"ghost\" onClick={() => setBio(\"\")}>Clear</Button>\n        <Button size=\"sm\" variant=\"primary\">Save</Button>\n      </Flex>\n    </Flex>\n  );\n}"
   },
   "03-textarea-error-state": {
     "title": "Validation Error",

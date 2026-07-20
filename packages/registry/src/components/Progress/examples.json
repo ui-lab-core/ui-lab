@@ -7,7 +7,7 @@
   "02-storage-quota": {
     "title": "Storage Quota",
     "description": "Fixed progress bar showing disk usage relative to a custom max value.",
-    "code": "import { Progress, Flex } from 'ui-lab-components';\n\nconst used = 7.4;\nconst total = 10;\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\" style={{ width: 300 }}>\n      <Flex direction=\"column\" gap=\"xs\">\n        <Progress value={used} max={total} label=\"Storage\" showValue />\n        <span style={{ fontSize: \"var(--text-xs)\", color: \"var(--foreground-muted)\" }}>\n          {used} GB of {total} GB used\n        </span>\n      </Flex>\n    </Flex>\n  );\n}"
+    "code": "import { Progress, Flex } from 'ui-lab-components';\n\nconst used = 7.4;\nconst total = 10;\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\" style={{ width: 300 }}>\n      <Flex direction=\"column\" gap=\"xs\">\n        <Progress value={used} max={total} label=\"Storage\" showValue />\n        <span style={{\n          color: \"var(--foreground-muted)\",\n          fontFamily: \"var(--font-body)\",\n          fontSize: \"var(--text-xs)\",\n          fontWeight: \"var(--font-weight-body-normal)\",\n          lineHeight: \"var(--leading-sm)\",\n        }}>\n          {used} GB of {total} GB used\n        </span>\n      </Flex>\n    </Flex>\n  );\n}"
   },
   "03-onboarding-steps": {
     "title": "Onboarding Steps",
