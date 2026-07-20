@@ -4,6 +4,7 @@ import * as React from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { resolveGapStep, type GapSize } from "@/lib/gap";
+import { resolveSizingStyles, type SizingValue } from "@/lib/sizing";
 import css from "./Grid.module.css";
 
 interface GridStyleSlots {
@@ -16,35 +17,69 @@ const resolveGridBaseStyles = createStylesResolver(['root'] as const);
 
 type GridColumns = number | "auto-fit" | "auto-fill";
 type GridRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto" | "masonry";
+type GridJustify =
+  | "justify-start"
+  | "justify-end"
+  | "justify-center"
+  | "justify-between"
+  | "justify-around"
+  | "justify-evenly";
+type GridAlign =
+  | "align-start"
+  | "align-end"
+  | "align-center"
+  | "align-stretch"
+  | "align-baseline";
 type GridJustifyItems = "start" | "end" | "center" | "stretch";
-type GridAlignItems = "start" | "end" | "center" | "stretch" | "baseline";
-type GridJustifyContent = "start" | "end" | "center" | "stretch" | "space-between" | "space-around" | "space-evenly";
 type GridAlignContent = "start" | "end" | "center" | "stretch" | "space-between" | "space-around" | "space-evenly";
 type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
 type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
 type GridTemplateColumns = GridColumns | (string & {});
 type GridMasonryColumnWidth = string & {};
-type GridGapSize = GapSize | 0;
+type GridGap = GapSize | "none" | number;
 
 type ResponsiveValue<T> = { sm?: T; md?: T; lg?: T; xl?: T };
 
-export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
+const JUSTIFY_KEYS: readonly GridJustify[] = [
+  "justify-start",
+  "justify-end",
+  "justify-center",
+  "justify-between",
+  "justify-around",
+  "justify-evenly",
+];
+
+const ALIGN_KEYS: readonly GridAlign[] = [
+  "align-start",
+  "align-end",
+  "align-center",
+  "align-stretch",
+  "align-baseline",
+];
+
+type GridJustifyProps = { [K in GridJustify]?: boolean };
+type GridAlignProps = { [K in GridAlign]?: boolean };
+
+export interface GridProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    GridJustifyProps,
+    GridAlignProps {
   /** Grid template columns value, or responsive object per breakpoint */
   columns?: GridTemplateColumns | ResponsiveValue<GridTemplateColumns>;
   /** Number of grid rows, or responsive object per breakpoint */
   rows?: GridRows | ResponsiveValue<GridRows>;
-  /** Gap between all grid cells, or responsive object per breakpoint */
-  gap?: GridGapSize | ResponsiveValue<GridGapSize>;
+  /** Gap between all grid cells, or responsive object per breakpoint. A number maps directly to the Tailwind spacing scale (e.g. `gap={4}` behaves like `gap-4`). */
+  gap?: GridGap | ResponsiveValue<GridGap>;
+  /** Root height. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS height. Overrides `style.height` and sizing classes. */
+  h?: SizingValue;
+  /** Root width. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS width. Overrides `style.width` and sizing classes. */
+  w?: SizingValue;
   /** Override gap between rows only */
-  rowGap?: GridGapSize;
+  rowGap?: GridGap;
   /** Override gap between columns only */
-  columnGap?: GridGapSize;
+  columnGap?: GridGap;
   /** Horizontal alignment of items within their cells */
   justifyItems?: GridJustifyItems;
-  /** Vertical alignment of items within their cells */
-  alignItems?: GridAlignItems;
-  /** Horizontal distribution of the grid within its container */
-  justifyContent?: GridJustifyContent;
   /** Vertical distribution of the grid rows within its container */
   alignContent?: GridAlignContent;
   /** Direction items are auto-placed when no explicit placement is set */
@@ -56,7 +91,7 @@ export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Whether masonry children receive the Grid-managed vertical gap margin. */
   masonryItemGap?: boolean;
   /** Wraps the grid in a container query parent for breakpoint-aware responsiveness */
-  responsive?: boolean;
+  containerQueryResponsive?: boolean;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: GridStylesProp;
 }
@@ -79,8 +114,27 @@ const rowsToTpl = (r: GridRows): string => {
   return `repeat(${r}, auto)`;
 };
 
-const gapToStep = (gap: GridGapSize): number =>
-  typeof gap === "number" ? gap : resolveGapStep(gap);
+const gapToStep = (gap: GridGap): number => {
+  if (gap === "none") return 0;
+  return typeof gap === "number" ? gap : resolveGapStep(gap);
+};
+
+const justifyVal: Record<GridJustify, string> = {
+  "justify-start": "start",
+  "justify-end": "end",
+  "justify-center": "center",
+  "justify-between": "space-between",
+  "justify-around": "space-around",
+  "justify-evenly": "space-evenly",
+};
+
+const alignVal: Record<GridAlign, string> = {
+  "align-start": "start",
+  "align-end": "end",
+  "align-center": "center",
+  "align-stretch": "stretch",
+  "align-baseline": "baseline",
+};
 
 const flowVal: Record<GridAutoFlow, string> = {
   row: "row",
@@ -97,29 +151,43 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       columns = 3,
       rows = "auto",
       gap = "md",
+      h,
+      w,
       rowGap,
       columnGap,
       justifyItems = "stretch",
-      alignItems = "stretch",
-      justifyContent = "start",
       alignContent = "start",
       autoFlow = "row",
       masonryColumnWidth,
       masonryColumnFill,
       masonryItemGap = true,
-      responsive = false,
+      containerQueryResponsive = false,
       styles,
       children,
-      ...props
+      ...rest
     },
     ref
   ) => {
+    let justify: GridJustify | undefined;
+    let align: GridAlign | undefined;
+    const props = rest as Record<string, unknown>;
+
+    for (const key of JUSTIFY_KEYS) {
+      if (props[key]) justify = key;
+      delete props[key];
+    }
+    for (const key of ALIGN_KEYS) {
+      if (props[key]) align = key;
+      delete props[key];
+    }
+
     const resolved = resolveGridBaseStyles(styles);
+    const rootStyle = { ...style, ...resolveSizingStyles({ h, w }) };
     const responsiveCols = isResponsive<GridTemplateColumns>(columns);
     const responsiveRows = isResponsive<GridRows>(rows);
-    const responsiveGap = isResponsive<GridGapSize>(gap);
+    const responsiveGap = isResponsive<GridGap>(gap);
     const responsiveMasonryColumnWidth = isResponsive<GridMasonryColumnWidth>(masonryColumnWidth);
-    const needsContainer = responsiveCols || responsiveRows || responsiveGap || responsiveMasonryColumnWidth || responsive;
+    const needsContainer = responsiveCols || responsiveRows || responsiveGap || responsiveMasonryColumnWidth || containerQueryResponsive;
 
     const isMasonry = responsiveRows
       ? Object.values(rows as ResponsiveValue<GridRows>).includes("masonry")
@@ -155,21 +223,21 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     }
 
     if (responsiveGap) {
-      const rg = gap as ResponsiveValue<GridGapSize>;
+      const rg = gap as ResponsiveValue<GridGap>;
       if (rg.sm !== undefined) vars["--grid-gap-step-sm"] = String(gapToStep(rg.sm));
       if (rg.md !== undefined) vars["--grid-gap-step-md"] = String(gapToStep(rg.md));
       if (rg.lg !== undefined) vars["--grid-gap-step-lg"] = String(gapToStep(rg.lg));
       if (rg.xl !== undefined) vars["--grid-gap-step-xl"] = String(gapToStep(rg.xl));
     } else {
-      vars["--grid-gap-step"] = String(gapToStep(gap as GridGapSize));
+      vars["--grid-gap-step"] = String(gapToStep(gap as GridGap));
     }
 
     if (rowGap !== undefined) vars["--grid-row-gap-step"] = String(gapToStep(rowGap));
     if (columnGap !== undefined) vars["--grid-col-gap-step"] = String(gapToStep(columnGap));
 
     vars["--grid-ji"] = justifyItems;
-    vars["--grid-ai"] = alignItems;
-    vars["--grid-jc"] = justifyContent;
+    vars["--grid-ai"] = align ? alignVal[align] : "stretch";
+    vars["--grid-jc"] = justify ? justifyVal[justify] : "start";
     vars["--grid-ac"] = alignContent;
     vars["--grid-flow"] = flowVal[autoFlow];
 
@@ -199,15 +267,23 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       isMasonry && !masonryItemGap && css["masonry-no-item-gap"],
     );
 
+    const dataAttrs = {
+      "data-gap": responsiveGap ? undefined : String(gap ?? "none"),
+      "data-justify": justify ?? "justify-start",
+      "data-align": align ?? "align-stretch",
+      "data-flow": autoFlow,
+    };
+
     if (needsContainer) {
       return (
         <div
           ref={ref}
           className={cn(css.container, className, resolved.root)}
-          style={style}
+          style={rootStyle}
+          data-container-responsive="true"
           {...props}
         >
-          <div className={cn(gridClasses, className)} style={vars as React.CSSProperties}>
+          <div className={cn(gridClasses, className)} style={vars as React.CSSProperties} {...dataAttrs}>
             {children}
           </div>
         </div>
@@ -218,7 +294,8 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       <div
         ref={ref}
         className={cn(gridClasses, className, resolved.root)}
-        style={{ ...style, ...vars } as React.CSSProperties}
+        style={{ ...rootStyle, ...vars } as React.CSSProperties}
+        {...dataAttrs}
         {...props}
       >
         {children}

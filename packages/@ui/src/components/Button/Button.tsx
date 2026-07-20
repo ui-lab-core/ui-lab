@@ -111,7 +111,7 @@ function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
 }
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  ({ className, styles, variant = "default", size, children, onClick, onPress, isDisabled, disabled, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
+  ({ className, styles, variant = "primary", size, children, onClick, onPress, isDisabled, disabled, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
     const mergedRef = useMergeRefs(ref, buttonRef);
     const isButtonDisabled = isDisabled ?? disabled ?? false;

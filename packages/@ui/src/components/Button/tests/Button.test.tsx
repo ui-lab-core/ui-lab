@@ -30,7 +30,7 @@ describe('Button - Accessibility', () => {
   })
 
   it('is accessible with all variants', async () => {
-    const variants = ['primary', 'secondary', 'outline', 'ghost']
+    const variants = ['primary', 'secondary', 'ghost', 'danger']
     for (const variant of variants) {
       const { container, unmount } = render(
         <Button variant={variant as any}>Button</Button>
@@ -239,6 +239,16 @@ describe('Button - Component Specific', () => {
   it('renders a custom variant string as a root class', () => {
     render(<Button variant="my-custom-variant">Custom</Button>)
     expect(screen.getByRole('button', { name: 'Custom' })).toHaveClass('my-custom-variant')
+  })
+
+  it('defaults to the primary variant when omitted', () => {
+    render(<Button>Click</Button>)
+    expect(screen.getByRole('button', { name: 'Click' })).toHaveClass('primary')
+  })
+
+  it.each(['primary', 'secondary', 'ghost', 'danger'])('renders the %s variant as a root class', (variant) => {
+    render(<Button variant={variant}>Button</Button>)
+    expect(screen.getByRole('button', { name: 'Button' })).toHaveClass(variant)
   })
 
   it('renders a custom size string as a root class', () => {

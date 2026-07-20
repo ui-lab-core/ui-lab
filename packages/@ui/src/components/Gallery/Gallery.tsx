@@ -193,7 +193,7 @@ const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
           columns={mapColumnsToGrid(columns)}
           gap={mapGapToGrid(gap)}
           rows={rows}
-          responsive={responsive}
+          containerQueryResponsive={responsive}
           className={cn("gallery", className, resolved.root)}
           {...props}
         >

@@ -3,17 +3,23 @@
 @layer components.defaults {
   .page {
     --padding: var(--page-padding-md, 1rem);
+    --page-gap-step: 0;
+    --page-gap-scale: 1;
 
-    @apply flex flex-col w-full relative;
+    @apply relative flex w-full min-w-0 flex-col;
+    box-sizing: border-box;
+    container-type: inline-size;
+    max-width: var(--max-width);
+    gap: calc(var(--spacing, 0.25rem) * var(--page-gap-step) * var(--page-gap-scale));
   }
 
   .page[data-centered="true"] {
-    @apply items-center;
+    margin-inline: auto;
   }
 
-  .page[data-fullscreen="false"] {
-    margin-left: auto;
-    margin-right: auto;
+  .page[data-fullscreen="true"] {
+    min-height: 100dvh;
+    max-width: none;
   }
 
   .padding-none { --padding: 0; padding: 0; }
@@ -25,4 +31,77 @@
   .padding-lg { --padding: var(--page-padding-lg, 1.5rem); padding: var(--padding); }
 
   .padding-xl { --padding: var(--page-padding-xl, 2rem); padding: var(--padding); }
+
+  .header,
+  .footer {
+    @apply flex w-full min-w-0 flex-wrap items-center justify-between;
+    gap: calc(var(--spacing, 0.25rem) * var(--page-gap-step) * var(--page-gap-scale));
+  }
+
+  .header {
+    z-index: 10;
+  }
+
+  .footer {
+    z-index: 5;
+  }
+
+  .sticky {
+    position: sticky;
+    background: inherit;
+  }
+
+  .header.sticky {
+    top: 0;
+  }
+
+  .footer.sticky {
+    bottom: 0;
+  }
+
+  .header.divided {
+    border-bottom: var(--border-width-base, 1px) solid var(--page-border-color, currentColor);
+    padding-bottom: var(--padding);
+  }
+
+  .footer.divided {
+    border-top: var(--border-width-base, 1px) solid var(--page-border-color, currentColor);
+    padding-top: var(--padding);
+  }
+
+  .title {
+    margin: 0;
+    color: var(--page-title-color, inherit);
+    font-size: var(--page-title-size, 1.875rem);
+    font-weight: var(--page-title-weight, 650);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  .description {
+    margin: 0.375rem 0 0;
+    max-width: var(--page-description-width, 65ch);
+    color: var(--page-description-color, inherit);
+    line-height: 1.6;
+  }
+
+  .actions {
+    @apply flex shrink-0 flex-wrap items-center;
+    gap: var(--spacing-sm, 0.5rem);
+  }
+
+  .content {
+    @apply flex w-full min-w-0 flex-none flex-col;
+  }
+
+  @container (max-width: 40rem) {
+    .header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .actions {
+      width: 100%;
+    }
+  }
 }

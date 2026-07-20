@@ -32,8 +32,8 @@ describe('Grid.core', () => {
       rowGap: 'xs',
       columnGap: 'xl',
       justifyItems: 'center',
-      alignItems: 'baseline',
-      justifyContent: 'space-between',
+      'align-baseline': true,
+      'justify-between': true,
       alignContent: 'space-evenly',
       autoFlow: 'column-dense',
     })
@@ -53,11 +53,14 @@ describe('Grid.core', () => {
     })
     expect(grid).toHaveClass(styles['has-row-gap'])
     expect(grid).toHaveClass(styles['has-col-gap'])
+    expect(grid).toHaveAttribute('data-justify', 'justify-between')
+    expect(grid).toHaveAttribute('data-align', 'align-baseline')
+    expect(grid).toHaveAttribute('data-flow', 'column-dense')
   })
 
-  it('supports zero gap overrides', () => {
+  it('supports zero and none gap overrides', () => {
     const container = renderGrid({
-      gap: 0,
+      gap: 'none',
       rowGap: 0,
       columnGap: 0,
     })
@@ -81,6 +84,43 @@ describe('Grid.core', () => {
     expect(grid).toHaveStyle({
       '--grid-gap-step-sm': '0',
       '--grid-gap-step-md': '4',
+    })
+  })
+
+  it('maps numeric gaps directly to the spacing scale', () => {
+    const container = renderGrid({ gap: 6, rowGap: 2 })
+    const grid = getGridRoot(container)
+
+    expect(grid).toHaveStyle({
+      '--grid-gap-step': '6',
+      '--grid-row-gap-step': '2',
+    })
+    expect(grid).toHaveAttribute('data-gap', '6')
+  })
+
+  it('maps numeric height and width to the Tailwind spacing scale', () => {
+    const container = renderGrid({ h: 24, w: 64 })
+    const grid = getGridRoot(container)
+
+    expect(grid).toHaveStyle({
+      height: 'calc(var(--spacing, 0.25rem) * 24)',
+      width: 'calc(var(--spacing, 0.25rem) * 64)',
+    })
+  })
+
+  it('supports named and arbitrary CSS dimensions with explicit props taking precedence', () => {
+    const container = renderGrid({
+      h: 'screen',
+      w: 'calc(100% - 2rem)',
+      style: { height: '100px', width: '320px' },
+      className: 'w-full',
+    })
+    const grid = getGridRoot(container)
+
+    expect(grid).toHaveClass('w-full')
+    expect(grid).toHaveStyle({
+      height: '100vh',
+      width: 'calc(100% - 2rem)',
     })
   })
 

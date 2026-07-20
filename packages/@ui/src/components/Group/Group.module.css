@@ -128,6 +128,7 @@
   }
 
   .item.icon-button-item .button:global(.icon) {
+    --size: var(--item-height);
     padding-inline: calc(var(--spacing) * 2);
   }
 

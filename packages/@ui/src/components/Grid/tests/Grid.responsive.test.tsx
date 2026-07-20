@@ -37,7 +37,7 @@ describe('Grid.responsive', () => {
     const container = renderGrid({
       rows: { sm: '1', md: 'auto', lg: 'masonry' },
       gap: { sm: 'xs', md: 'md', xl: 'xl' },
-      responsive: true,
+      containerQueryResponsive: true,
     })
     const wrapper = getGridContainer(container)
     const grid = getGridRoot(container)
@@ -77,10 +77,26 @@ describe('Grid.responsive', () => {
   })
 
   it('wraps the grid when containerQueryResponsive is enabled even without responsive props', () => {
-    const container = renderGrid({ responsive: true })
+    const container = renderGrid({ containerQueryResponsive: true })
 
     expect(getGridContainer(container)).toBeInTheDocument()
     expect(getGridRoot(container)).toBeInTheDocument()
+  })
+
+  it('applies sizing and unrelated HTML attributes to the public root when wrapped', () => {
+    const container = renderGrid({
+      columns: { sm: 1, md: 2 },
+      h: 'auto',
+      w: 'full',
+      'aria-label': 'Responsive grid',
+    })
+    const wrapper = getGridContainer(container)
+
+    expect(wrapper).toHaveStyle({
+      height: 'auto',
+      width: '100%',
+    })
+    expect(wrapper).toHaveAttribute('aria-label', 'Responsive grid')
   })
 
   it('forwards the ref to the outer wrapper in responsive mode', () => {

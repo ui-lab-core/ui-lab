@@ -21,10 +21,12 @@ export type {
   PanelProps, PanelState,
   PanelHeaderProps,
   PanelContentProps,
+  PanelMainProps,
   PanelFooterProps,
   PanelSidebarProps,
   PanelToggleProps,
   PanelGroupProps,
+  PanelPaneProps,
   PanelResizeProps,
   PanelContextValue,
   PanelGroupContextValue,
@@ -168,7 +170,21 @@ export { Color } from "./components/Color";
 export type { ColorAreaProps, ColorProps, ColorSliderProps, ColorTriggerProps, ColorState } from "./components/Color";
 
 export { Page, PageContext, usePageContext } from "./components/Page";
-export type { PageProps, PageContextValue, PagePadding } from "./components/Page";
+export type {
+  PageProps,
+  PageContextValue,
+  PagePadding,
+  PageGap,
+  PageSpacing,
+  PageStyleSlots,
+  PageStylesProp,
+  PageHeaderProps,
+  PageTitleProps,
+  PageDescriptionProps,
+  PageActionsProps,
+  PageContentProps,
+  PageFooterProps,
+} from "./components/Page";
 
 export { Scroll } from "./components/Scroll";
 export type { ScrollProps } from "./components/Scroll";

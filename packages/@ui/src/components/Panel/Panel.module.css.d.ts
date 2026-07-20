@@ -1,5 +1,6 @@
 declare const styles: {
   readonly panel: string;
+  readonly main: string;
   readonly header: string;
   readonly sticky: string;
   readonly content: string;
@@ -8,6 +9,7 @@ declare const styles: {
   readonly sidebar: string;
   readonly toggle: string;
   readonly group: string;
+  readonly pane: string;
   readonly resize: string;
   readonly spacingNone: string;
   readonly spacingSm: string;

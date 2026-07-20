@@ -31,8 +31,8 @@ describe('Flex.responsive', () => {
     expect(flex).toHaveAttribute('data-wrap', 'nowrap')
     expect(flex).toHaveAttribute('data-gap', 'none')
     expect(flex).toHaveStyle({ '--flex-gap-step': '0' })
-    expect(flex).toHaveAttribute('data-justify', 'start')
-    expect(flex).toHaveAttribute('data-align', 'stretch')
+    expect(flex).toHaveAttribute('data-justify', 'justify-start')
+    expect(flex).toHaveAttribute('data-align', 'align-stretch')
   })
 
   it('keeps layout data attributes and variant classes on the inner flex element in responsive mode', () => {
@@ -41,8 +41,8 @@ describe('Flex.responsive', () => {
       direction: 'column',
       wrap: 'wrap',
       gap: 'lg',
-      justify: 'around',
-      align: 'center',
+      'justify-around': true,
+      'align-center': true,
     })
     const wrapper = getFlexContainer(container)
     const flex = getFlexRoot(container)
@@ -51,13 +51,33 @@ describe('Flex.responsive', () => {
     expect(flex).toHaveAttribute('data-direction', 'column')
     expect(flex).toHaveAttribute('data-wrap', 'wrap')
     expect(flex).toHaveAttribute('data-gap', 'lg')
-    expect(flex).toHaveAttribute('data-justify', 'around')
-    expect(flex).toHaveAttribute('data-align', 'center')
+    expect(flex).toHaveAttribute('data-justify', 'justify-around')
+    expect(flex).toHaveAttribute('data-align', 'align-center')
     expect(flex).toHaveClass(styles.column)
     expect(flex).toHaveClass(styles.wrap)
     expect(flex).toHaveClass(styles['justify-around'])
     expect(flex).toHaveClass(styles['align-center'])
     expect(flex).toHaveStyle({ '--flex-gap-step': '6' })
+  })
+
+  it('applies sizing and unrelated HTML attributes to the public root in responsive mode', () => {
+    const container = renderFlex({
+      containerQueryResponsive: true,
+      h: 'full',
+      w: 80,
+      style: { height: '10px', width: '20px' },
+      'aria-label': 'Responsive layout',
+    })
+    const wrapper = getFlexContainer(container)
+    const flex = getFlexRoot(container)
+
+    expect(wrapper).toHaveStyle({
+      height: '100%',
+      width: 'calc(var(--spacing, 0.25rem) * 80)',
+    })
+    expect(wrapper).toHaveAttribute('aria-label', 'Responsive layout')
+    expect(flex?.style.height).toBe('')
+    expect(flex?.style.width).toBe('')
   })
 
   it('forwards the ref to the outer wrapper in responsive mode', () => {

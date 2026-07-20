@@ -244,7 +244,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant="secondary"
                     onClick={handleCancel}
                     isDisabled={isLoading}
                   >
@@ -317,7 +317,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                 <Card.Footer className={cn(styles.actions, styles['actions-dialog'], resolvedStyles.actions)}>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant="secondary"
                     onClick={handleCancel}
                     isDisabled={isLoading}
                   >

@@ -2,11 +2,20 @@
 
 @layer components.defaults {
   .panel {
-    @apply flex h-full w-full min-h-0 min-w-0 flex-row;
+    @apply flex h-full w-full min-h-0 min-w-0;
+    container-type: inline-size;
     background: inherit;
   }
 
-  .panel[data-stacked="true"] { flex-direction: column; }
+  .main {
+    @apply flex min-h-0 min-w-0 flex-1 flex-col;
+    overflow: hidden;
+    background: inherit;
+  }
+
+  .panel[data-stacked="true"] {
+    flex-direction: column;
+  }
 
   .header,
   .footer {
@@ -21,96 +30,125 @@
   }
 
   .content {
-    @apply flex min-h-0 min-w-0;
-    flex: 1;
+    @apply flex min-h-0 min-w-0 flex-1;
     overflow: auto;
   }
 
   .fixed {
-    position: fixed;
+    position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
     z-index: 5;
   }
 
-  /* Sidebar */
   .sidebar {
-    @apply shrink-0 overflow-hidden;
-    overflow: hidden;
-    transition: width 0.2s ease;
-    border-right: var(--border-width-base) solid var(--panel-border-color);
+    @apply min-h-0 shrink-0 overflow-hidden;
+    width: var(--size);
+    transition:
+      width 0.2s ease,
+      height 0.2s ease;
+    border-right: var(--border-width-base, 1px) solid var(--panel-border-color, currentColor);
+  }
+
+  .sidebar[data-open="false"] {
+    width: var(--collapsed-size);
+    visibility: hidden;
   }
 
   .sidebar[data-side="right"] {
     border-right: none;
-    border-left: var(--border-width-base) solid var(--panel-border-color);
+    border-left: var(--border-width-base, 1px) solid var(--panel-border-color, currentColor);
   }
 
-  /* Toggle */
+  .panel[data-stacked="true"] .sidebar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .panel[data-stacked="true"] .sidebar[data-open="false"] {
+    width: 100%;
+    height: 0;
+    min-height: 0;
+    border-width: 0;
+  }
+
   .toggle {
     @apply flex items-center;
   }
 
-  /* Group */
   .group {
-    @apply flex w-full h-full;
+    @apply flex h-full min-h-0 w-full min-w-0;
+    overflow: hidden;
     background: inherit;
   }
 
-  .group[data-direction="vertical"] { flex-direction: column; }
+  .group[data-direction="vertical"] {
+    flex-direction: column;
+  }
 
-  /* Resize handle */
+  .group > [data-panel-pane] {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  .pane {
+    @apply flex min-h-0 min-w-0;
+    background: inherit;
+  }
+
+  .pane > .group {
+    flex: 1 1 0%;
+  }
+
   .resize {
     @apply relative shrink-0;
-    cursor: col-resize;
-    background: transparent;
     width: 10px;
+    cursor: col-resize;
+    touch-action: none;
+    user-select: none;
+    background: transparent;
   }
 
   .resize::before {
     content: '';
     position: absolute;
-    top: 0;
-    bottom: 0;
+    inset-block: 0;
     left: 50%;
     width: 1px;
     background: var(--panel-divider-color, #374151);
     transform: translateX(-50%);
-    transition:
-      width var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      height var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: width var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);
   }
 
   .resize[data-direction="vertical"] {
-    cursor: row-resize;
+    width: auto;
     height: 10px;
+    cursor: row-resize;
   }
 
   .resize[data-direction="vertical"]::before {
+    inset-block: auto;
+    inset-inline: 0;
     top: 50%;
-    bottom: auto;
-    left: 0;
-    right: 0;
     width: auto;
     height: 1px;
     transform: translateY(-50%);
+    transition: height var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);
   }
 
   .resize:hover::before,
+  .resize:focus-visible::before,
   .resize[data-resizing="true"]::before {
-    --hover-duration: var(--hover-enter-duration, 0ms);
     width: 2px;
   }
 
   .resize[data-direction="vertical"]:hover::before,
+  .resize[data-direction="vertical"]:focus-visible::before,
   .resize[data-direction="vertical"][data-resizing="true"]::before {
-    --hover-duration: var(--hover-enter-duration, 0ms);
     width: auto;
     height: 2px;
   }
 
-  /* Spacing variants */
   .spacingNone,
   .spacing-none { gap: 0; }
 
@@ -123,13 +161,13 @@
   .spacingLg,
   .spacing-lg { gap: var(--spacing-lg, 1.5rem); }
 
-  /* Compact variant */
   .compact {
     gap: calc(var(--spacing-sm, 0.5rem) / 2);
   }
 
-  /* Responsive stacking (mobile) */
-  @media (max-width: 767px) {
-    .stacked { flex-direction: column; }
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar {
+      transition: none;
+    }
   }
 }
