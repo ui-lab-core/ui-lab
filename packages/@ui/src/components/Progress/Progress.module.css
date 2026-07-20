@@ -23,7 +23,11 @@
 
   .label-row {
     @apply flex items-center justify-between;
-    font-size: var(--text-sm);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground);
   }
 

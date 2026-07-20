@@ -29,7 +29,11 @@
   }
 
   .header > :first-child {
-    font-size: 1.125rem;
+    font-family: var(--font-heading, var(--font-body, inherit));
+    font-size: var(--header-text-lg, var(--text-lg, 1.125rem));
+    font-weight: var(--font-weight-header-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-heading, 1.25);
     color: var(--header-title-foreground);
   }
 
@@ -89,17 +93,21 @@
   }
 
   .title {
-    font-size: var(--text-sm, 0.8125rem);
-    font-weight: var(--font-weight-medium);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground);
     @apply truncate;
   }
 
   .desc {
-    font-size: var(--text-sm, 0.8125rem);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
     font-weight: var(--font-weight-body-normal, 400);
-    line-height: var(--leading-sm, 1.25rem);
+    letter-spacing: normal;
+    line-height: var(--leading-body, 1.5);
     color: var(--desc-foreground);
     @apply truncate;
   }

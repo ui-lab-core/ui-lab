@@ -9,8 +9,11 @@
     color: var(--foreground, var(--foreground-200));
     border: var(--border-width-base, 1px) solid var(--background-border, var(--background-600));
     border-radius: var(--radius-sm, 0.375rem);
+    font-family: var(--font-body, inherit);
     font-size: var(--text-xs, 0.75rem);
-    line-height: var(--leading-tight, 1.25);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
   }
 
   .badge.dismissible {
@@ -29,7 +32,7 @@
     @apply ml-1 flex shrink-0 items-center justify-center p-0 cursor-pointer;
     width: 1em;
     height: 1em;
-    line-height: 1;
+    line-height: 1; /* icon-only hit target */
     border-radius: var(--radius-xs, 0.25rem);
     background-color: var(--background, transparent);
     color: var(--foreground, var(--foreground-400));

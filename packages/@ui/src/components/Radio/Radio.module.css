@@ -61,8 +61,11 @@
   .radio-label {
     @apply cursor-pointer;
     color: var(--foreground);
-    font-size: inherit;
-    line-height: inherit;
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     user-select: none;
 
     &[data-disabled="true"] {
@@ -73,13 +76,21 @@
 
   .radio-description {
     color: var(--foreground);
-    font-size: var(--text-sm, 0.875rem);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading-body, 1.5);
     margin-top: 0.125rem;
   }
 
   .helper-text {
     color: var(--foreground);
-    font-size: var(--text-sm, 0.875rem);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     margin-top: 0.5rem;
     margin-left: 2rem;
   }

@@ -1,6 +1,10 @@
 @layer components.defaults {
+  /*
+   * This file styles long-form reading surfaces only. Components use the
+   * shared body, heading, and mono family tokens from base.css.
+   */
   :where(h1, h2, h3, h4, h5, h6) {
-    font-family: var(--font-heading, inherit);
+    font-family: var(--font-heading, var(--font-body, inherit));
     font-weight: var(--font-weight-header-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-heading, 1.25);
@@ -98,7 +102,7 @@
     border-radius: var(--radius-sm, 0.25em);
     font-family: var(--mono-font);
     font-size: var(--text-code-size, 0.75rem);
-    line-height: 1.5;
+    line-height: var(--leading-code, 1.5);
     letter-spacing: 0;
     padding: 0.125em 0.3em;
   }

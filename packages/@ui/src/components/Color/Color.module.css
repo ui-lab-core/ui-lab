@@ -52,9 +52,11 @@
     background: var(--trigger-background);
     color: var(--trigger-text);
     cursor: pointer;
-    font: inherit;
-    font-size: 0.875rem;
-    line-height: 1;
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
@@ -79,14 +81,14 @@
     min-width: 150px;
     height: 34px;
     padding: 0 0.625rem;
-    font-size: 0.8125rem;
+    font-size: var(--text-xs, 0.75rem);
   }
 
   .color-provider .color-trigger[data-size="lg"] {
     min-width: 190px;
     height: 46px;
     padding: 0 0.875rem;
-    font-size: 0.9375rem;
+    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
   }
 
   .color-provider .color-trigger-swatch {

@@ -8,7 +8,7 @@ tags: ["typography", "fonts", "text-styles"]
 
 # Typography System
 
-Carefully selected typefaces, modular type scale (1.25 ratio), and predefined text styles create readable, consistent interfaces.
+UI Lab has two typography layers: a compact, role-based contract for components and the `.typography` reading surface for long-form document flow. They share the same theme scale, but components should not borrow document spacing or heading rules.
 
 ---
 
@@ -17,6 +17,14 @@ Carefully selected typefaces, modular type scale (1.25 ratio), and predefined te
 **Primary (Sans):** System fonts for native appearance, better performance, and accessibility
 
 **Secondary (Monospace):** For code, data tables, and technical content
+
+## Component Typography Contract
+
+Components use three font-family roles: `--font-body` for controls, labels, captions, and supporting copy; `--font-heading` for component titles; and `--font-mono` for code and data. Sizes, weights, and leading remain on the existing type-scale tokens (`--text-*`, `--font-weight-*`, and `--leading-*`) so the API stays small.
+
+Controls keep the compact `--text-sm` / `--leading-sm` pairing, which preserves Button and Group sizing. Headings use `--header-text-*` with `--leading-heading`; code and data use `--text-code-size` with `--leading-code`.
+
+`.typography` is intentionally different: it owns document rhythm, prose headings, lists, code blocks, and tables on a reading surface. It is not the default styling API for controls.
 
 ---
 
@@ -176,14 +184,14 @@ Predefined text styles combine font size, weight, line height, and letter spacin
 - **Weight**: 500 (medium)
 - **Line Height**: 1.25
 - **Use**: Form labels, UI text, badges
-- **CSS Variable**: `--text-label`
+- **CSS Variables**: `--font-body`, `--text-sm`, `--font-weight-body-medium`, `--leading-sm`
 
 #### Caption
 - **Size**: 0.75rem (12px)
 - **Weight**: 400 (regular)
 - **Line Height**: 1.25
 - **Use**: Metadata, timestamps, hints
-- **CSS Variable**: `--text-caption`
+- **CSS Variables**: `--font-body`, `--text-xs`, `--font-weight-body-normal`, `--leading-sm`
 
 #### Code
 - **Font Family**: Monospace
@@ -191,7 +199,7 @@ Predefined text styles combine font size, weight, line height, and letter spacin
 - **Weight**: 400 (regular)
 - **Line Height**: 1.5
 - **Use**: Inline code, code blocks
-- **CSS Variable**: `--text-code`
+- **CSS Variables**: `--font-mono`, `--text-code-size`, `--font-weight-code`, `--leading-code`
 
 ---
 
@@ -210,19 +218,17 @@ Predefined text styles combine font size, weight, line height, and letter spacin
 All typography styles are available as CSS variables:
 
 ```css
-/* Font sizes */
-font-size: var(--font-size-md);
-font-size: var(--font-size-lg);
+/* A compact control */
+font-family: var(--font-body);
+font-size: var(--text-sm);
+font-weight: var(--font-weight-body-medium);
+line-height: var(--leading-sm);
 
-/* Complete text styles */
-font: var(--text-body);
-font: var(--text-h2);
-font: var(--text-label);
-
-/* Individual properties */
-font-family: var(--font-family-sans);
-font-weight: var(--font-weight-bold);
-line-height: var(--line-height-relaxed);
+/* A component title */
+font-family: var(--font-heading);
+font-size: var(--header-text-lg);
+font-weight: var(--font-weight-header-medium);
+line-height: var(--leading-heading);
 ```
 
 ### Tailwind CSS Classes

@@ -16,8 +16,11 @@
     flex: none;
     background-color: var(--header-bg);
     @apply flex items-center justify-between px-3 py-1.5;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     border-bottom: 1px solid var(--border-color);
     color: var(--foreground-400);
   }
@@ -38,6 +41,11 @@
 
   .viewport :global(code) {
     color: var(--foreground-300);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: var(--text-code-size, var(--text-sm, 0.875rem));
+    font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));
+    letter-spacing: var(--letter-spacing-code, 0);
+    line-height: var(--leading-code, 1.5);
     white-space: pre;
   }
 
@@ -72,7 +80,11 @@
   .expand-button {
     @apply flex w-full items-center gap-3 px-4 py-2 cursor-pointer;
     color: var(--foreground-300);
-    font-size: var(--text-sm);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     border-top: 1px solid var(--border-color);
@@ -80,7 +92,6 @@
     border-left: none;
     border-right: none;
     border-bottom: none;
-    font-family: inherit;
   }
 
   .expand-button:hover {

@@ -26,8 +26,11 @@
     @apply relative m-2 w-full max-w-[28rem];
     border-radius: var(--radius-sm);
     background: var(--background);
-    font-size: var(--text-sm, 0.8125rem);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
     font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     margin-inline: 1rem;
     box-shadow: var(--shadow);
     opacity: 0;
@@ -48,8 +51,11 @@
     @apply relative w-full;
     border-radius: var(--radius-sm);
     background: var(--background);
-    font-size: var(--text-sm, 0.8125rem);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm, 0.875rem);
     font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     box-shadow: var(--shadow);
   }
 
@@ -143,7 +149,8 @@
   }
 
   .item-label {
-    font-size: var(--size, var(--text-sm, 0.8125rem));
+    font-family: var(--font-body, inherit);
+    font-size: var(--size, var(--text-sm, 0.875rem));
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading, var(--leading-sm, 1.25rem));
@@ -153,27 +160,30 @@
 
   .item-description {
     color: var(--foreground-muted);
-    font-size: var(--size, var(--text-sm, 0.8125rem));
+    font-family: var(--font-body, inherit);
+    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
-    line-height: var(--leading, var(--leading-sm, 1.25rem));
+    line-height: var(--leading, var(--leading-body, 1.5));
     @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .hint-wrapper {
     @apply flex items-center;
+    font-family: var(--font-body, inherit);
     font-size: var(--text-xs, 0.75rem);
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
-    line-height: 1rem;
+    line-height: var(--leading-sm, 1.25rem);
   }
 
   .category-header {
     @apply px-2 py-1.5 mt-2 first:mt-0;
+    font-family: var(--font-body, inherit);
     font-size: var(--text-xs, 0.75rem);
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
-    line-height: 1rem;
+    line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground-muted);
   }
 
@@ -181,10 +191,11 @@
   .empty {
     padding: 1.5rem 1rem;
     text-align: center;
-    font-size: var(--size, var(--text-sm, 0.8125rem));
+    font-family: var(--font-body, inherit);
+    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
-    line-height: var(--leading, var(--leading-sm, 1.25rem));
+    line-height: var(--leading, var(--leading-body, 1.5));
     color: var(--foreground-muted);
   }
 
@@ -194,10 +205,11 @@
     background-color: var(--background-footer);
     border-top: 1px solid var(--border);
     justify-content: flex-between;
-    font-size: var(--text-sm, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 500);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
-    line-height: 1rem;
+    line-height: var(--leading-sm, 1.25rem);
   }
 
   @media (prefers-reduced-motion: reduce) {

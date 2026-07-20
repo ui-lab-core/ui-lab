@@ -82,6 +82,10 @@
 
   .body > :not(:first-child) {
     color: var(--description-color);
-    font-size: var(--text-sm, 0.875rem);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
   }
 }

@@ -3,7 +3,11 @@
 @layer components.defaults {
   .banner {
     @apply flex w-full items-start gap-3 px-4 py-3;
-    font-family: inherit;
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading-body, 1.5);
     background-color: var(--background, var(--background-900));
     color: var(--foreground, var(--foreground-200));
     border: var(--border-width-base, 1px) solid var(--border, var(--background-700));
@@ -62,13 +66,16 @@
   }
 
   .title {
-    font-size: var(--text-md, 1rem);
-    line-height: var(--leading-tight, 1.25);
+    font-family: var(--font-heading, var(--font-body, inherit));
+    font-size: var(--header-text-lg, var(--text-lg, 1.125rem));
+    font-weight: var(--font-weight-header-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-heading, 1.25);
     @apply my-0;
   }
 
   .body {
-    font-size: inherit;
+    font: inherit;
     @apply my-0;
   }
 }

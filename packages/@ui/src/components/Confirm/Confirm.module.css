@@ -54,12 +54,14 @@
   }
 
   .description {
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-normal, 400) var(--text-body-size, var(--text-base, 0.9375rem)) / var(--leading-body, 1.5) var(--font-body, inherit);
+    letter-spacing: normal;
     color: var(--description-foreground);
   }
 
   .error-message {
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
     color: var(--error-foreground);
   }
 
@@ -68,7 +70,8 @@
     border: var(--border-width-base, 1px) solid var(--warning-border-color);
     background-color: var(--warning-background);
     color: var(--warning-foreground);
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-normal, 400) var(--text-body-size, var(--text-base, 0.9375rem)) / var(--leading-body, 1.5) var(--font-body, inherit);
+    letter-spacing: normal;
   }
 
   .warning-box-low {
@@ -96,12 +99,14 @@
   }
 
   .countdown-text {
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
     color: var(--countdown-foreground);
   }
 
   .input-label {
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
     margin-left: 0.25rem;
     color: var(--label-foreground);
   }
@@ -111,7 +116,8 @@
     background-color: var(--input-background);
     border: var(--border-width-base, 1px) solid var(--input-border-color);
     color: var(--input-foreground);
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
 
     &:focus-visible {
       outline: 2px solid var(--input-focus-visible);

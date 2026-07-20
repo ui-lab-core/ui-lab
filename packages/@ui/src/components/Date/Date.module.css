@@ -19,7 +19,8 @@
 
   .day-header {
     @apply flex items-center justify-center;
-    font-size: var(--text-sm);
+    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
     color: var(--foreground);
   }
 
@@ -31,7 +32,8 @@
 
   .month-year {
     @apply ml-2 mr-auto;
-    font-size: var(--text-sm);
+    font: var(--font-weight-header-medium, 500) var(--header-text-lg, var(--text-lg, 1.125rem)) / var(--leading-heading, 1.25) var(--font-heading, var(--font-body, inherit));
+    letter-spacing: normal;
     text-align: center;
   }
 
@@ -41,8 +43,8 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: 1px solid transparent;
-    font-size: var(--text-sm);
-    font-weight: 500;
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
@@ -67,8 +69,8 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: 2px solid transparent;
-    font-size: var(--text-sm);
-    font-weight: 400;
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
@@ -91,7 +93,7 @@
 
 /* Variant states - these are outside @layer */
 .day-cell[data-selected="true"] {
-  font-weight: 500;
+  font-weight: var(--font-weight-body-medium, 500);
 }
 
 .day-cell[data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),

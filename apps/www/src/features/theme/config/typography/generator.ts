@@ -223,6 +223,7 @@ export function generateTypographyCSS(
     ).forEach(([name, value]) => {
       lines.push(`  ${name}: ${value};`);
     });
+
   }
 
   return lines.join("\n");

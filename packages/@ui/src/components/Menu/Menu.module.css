@@ -127,8 +127,11 @@
     .label {
       padding: calc(var(--content-padding) / 2) var(--content-padding);
       color: var(--foreground-400);
-      font-size: var(--text-sm);
-      font-weight: 500;
+      font-family: var(--font-body, inherit);
+      font-size: var(--text-sm, 0.875rem);
+      font-weight: var(--font-weight-body-medium, 500);
+      letter-spacing: normal;
+      line-height: var(--leading-sm, 1.25rem);
 
       &[data-inset="true"] {
         padding-left: calc(var(--content-padding) * 2.67);
@@ -146,7 +149,11 @@
     .shortcut {
       margin-left: auto;
       color: var(--foreground-400);
-      font-size: 0.75rem;
+      font-family: var(--font-mono, ui-monospace, monospace);
+      font-size: var(--text-code-size, var(--text-sm, 0.875rem));
+      font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));
+      letter-spacing: var(--letter-spacing-code, 0);
+      line-height: var(--leading-code, 1.5);
     }
   }
 

@@ -36,6 +36,10 @@
   .frame {
     @apply flex items-center gap-1.5 p-2.5;
     color: var(--foreground);
-    font-size: var(--text-sm);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading-body, 1.5);
   }
 }

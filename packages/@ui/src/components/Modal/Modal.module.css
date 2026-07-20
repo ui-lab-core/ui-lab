@@ -77,8 +77,11 @@
 
   .title {
     @apply m-0;
-    font-size: 1.125rem;
-    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-heading, var(--font-body, inherit));
+    font-size: var(--header-text-lg, var(--text-lg, 1.125rem));
+    font-weight: var(--font-weight-header-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-heading, 1.25);
     color: var(--title-foreground, var(--foreground));
   }
 

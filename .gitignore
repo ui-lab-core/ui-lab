@@ -23,5 +23,6 @@ packages/registry/.cache
 .knowledge/
 .agents/
 .reports/
+.documents/
 .references/
 .env*.local

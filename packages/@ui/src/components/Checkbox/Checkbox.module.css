@@ -55,11 +55,19 @@
   }
 
   .label-md {
+    font-family: var(--font-body, inherit);
     font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
   }
 
   .helper-text {
-    @apply text-xs;
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-weight-body-normal, 400);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
     grid-column: 2;
     color: var(--helper-foreground);
 
