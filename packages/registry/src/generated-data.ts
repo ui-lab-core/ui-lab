@@ -2733,7 +2733,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "color",
             "type": "string",
             "required": false,
-            "description": "Tailwind background color utility (e.g. \"bg-background-700/40\") overriding the default line color"
+            "description": "Tailwind background color utility (e.g. \"bg-background-700\") overriding the default line color"
           },
           {
             "name": "styles",
@@ -6379,5 +6379,5 @@ export const generatedCorePeerDependencies = [
 ];
 
 export const packageMetadata: PackageMetadata = {
-  "version": "0.4.0"
+  "version": "0.4.1"
 };
