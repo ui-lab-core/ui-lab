@@ -15,6 +15,7 @@ import {
 } from '@/app/lib/sidebar-config';
 import { getSectionsForNav, getHrefForNavItem, isNavItemActive } from '@/features/navigation/lib/sidebar-sections';
 import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation-context';
+import { Flex } from 'ui-lab-components';
 
 type ElementsNavType = 'packages' | 'sections' | 'starters' | 'patterns';
 
@@ -195,7 +196,7 @@ export function Sidebar({
                     <h2 className="font-medium text-md leading-[20px] tracking-normal text-foreground-400">{section.label}</h2>
                     <div className="relative mt-2.5">
                       <Divider orientation='vertical' size="sm" variant='dashed' spacing='none' className="absolute left-0.5 top-0 bottom-0 bg-foreground-400" />
-                      <div className="pl-3">
+                      <div className="pl-3 space-y-0.5">
                         {section.items.map((item) => {
                           const active = isNavItemActive(item.id, pathname, activeNavItem);
                           const href = getHrefForNavItem(activeNavItem, item.id);

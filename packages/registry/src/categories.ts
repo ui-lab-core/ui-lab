@@ -10,7 +10,7 @@ export const categories = {
     id: 'layout',
     name: 'Layout Components',
     label: 'Layout',
-    description: 'Components for arranging and structuring page content using grids, flexbox, or other layout systems.',
+    description: 'Components for defining page structure and arranging content using page shells, grids, flexbox, and other layout systems.',
     iconName: categoryIconConfig.layout.name,
   },
   composition: {
@@ -66,7 +66,7 @@ export const categories = {
     id: 'display',
     name: 'Display Components',
     label: 'Display',
-    description: 'Components for displaying and presenting content, such as tables, galleries, and data visualizations.',
+    description: 'Components for presenting content and visual structure, such as dividers, tables, code, and data visualizations.',
     iconName: categoryIconConfig.display.name,
   },
 } as const;

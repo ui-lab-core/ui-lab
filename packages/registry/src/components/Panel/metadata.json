@@ -1,23 +1,23 @@
 {
   "id": "panel",
   "name": "Panel",
-  "description": "Region container managing header, content, and footer areas.",
+  "description": "Container-aware region coordinator for collapsible sidebars, main columns, and resizable panes.",
   "category": "layout",
-  "experimental": true,
+  "experimental": false,
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Panel",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["page", "grid", "flex"],
-  "tags": ["composition", "panel", "regions", "responsive", "sticky"],
+  "relatedComponents": ["page", "grid", "flex", "button"],
+  "tags": ["composition", "panel", "sidebar", "regions", "responsive", "resize"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Uses semantic HTML elements (header, main, footer)",
-      "Provides context to child components",
-      "Supports responsive viewport detection",
-      "Sticky header respects user preferences"
+      "Uses semantic aside, header, main, and footer regions",
+      "Toggle exposes aria-expanded and aria-controls while preserving consumer handlers",
+      "Responsive stacking follows Panel container width and preserves authored reading order",
+      "Resize handles expose separator semantics, values, controls, and keyboard interaction"
     ]
   }
 }

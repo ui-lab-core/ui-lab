@@ -1,4 +1,4 @@
-import { Toaster } from "ui-lab-components";
+import { Flex, Toaster } from "ui-lab-components";
 import { HeroSection, Showcase, NodeSection, ValueProps, TasteSection } from "@/features/landing";
 import { FeaturesSection } from "@/features/landing/components/FeaturesSection";
 // import { LandingSidebar } from "@/features/landing/components/landing-sidebar";
@@ -17,9 +17,18 @@ export default function Home() {
         <Toaster />
         {/* <LandingSidebar /> */}
         <main className="min-w-0 flex-1 h-full border-x border-background-700 w-full flex flex-col items-center">
+          {/* 
+          <Flex align-center gap={14} className="w-full">
+            <div className="bg-background-500 w-12 h-12" />
+            <div className="bg-background-500 w-12 h-12" />
+            <div className="bg-background-500 w-12 h-12" />
+            <div className="bg-background-500 w-12 h-12" />
+            <div className="bg-background-500 w-12 h-12" />
+          </Flex>
+          */}
 
           <section className="w-full min-w-0 border-t-0 relative isolate after:content-[''] ml-auto">
-            <div className="grid min-w-0 mt-[-2px] grid-cols-[1fr] grid-rows-[300px]">
+            <div className="grid min-w-0 mt-[-2px] grid-cols-[1fr] grid-rows-[350px]">
               <HeroSection />
             </div>
           </section>

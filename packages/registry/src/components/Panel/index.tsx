@@ -4,19 +4,24 @@ import { ComponentDetail } from '@/types'
 export const panelDetail: ComponentDetail = {
   id: 'panel',
   name: 'Panel',
-  description: 'A flexible region coordinator that manages header, footer, and content areas with responsive stacking.',
+  description: 'A container-aware layout coordinator for collapsible sidebars, main regions, and resizable panes.',
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Panel component coordinates multiple page regions (header, content, footer) with unified
-        spacing, responsive behavior, and sticky/fixed positioning support.
+        Panel coordinates one sidebar with a main column made from Panel.Header, Panel.Content, and
+        Panel.Footer. Author a left sidebar before the main regions or a right sidebar after them;
+        Panel preserves that order when its own container becomes narrow.
       </p>
       <p>
-        Perfect for building page structures that need header, content, and footer regions. Provides
-        context about responsive state so child components know when to collapse or reorganize.
+        Panel.Content owns scrolling while the header and footer remain inside the Panel. Use
+        controlled <code>open</code> and <code>onOpenChange</code>, or <code>defaultOpen</code> for
+        local sidebar state. Panel.Toggle composes a button-like child and supplies its expanded and
+        controls relationship.
       </p>
       <p>
-        Use Panel.Header, Panel.Content, and Panel.Footer sub-components to organize your page regions.
+        For split workspaces, place pane elements around Panel.Resize inside Panel.Group. Separators
+        support pointer and touch dragging plus Arrow, Home, and End keyboard controls with percentage
+        min/max constraints.
       </p>
     </div>
   ),

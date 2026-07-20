@@ -5,7 +5,7 @@ export const componentRegistry: ComponentRegistry = {
     id: "anchor",
     name: "Anchor",
     description: "Link with animated underline and popover preview.",
-    category: "information",
+    category: "navigation",
     source: {
   "packageName": "ui-lab-components",
   "exportName": "Anchor",
@@ -170,7 +170,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Task Progress",
         "description": "Card displaying a checklist with a progress bar in the header to summarize completion state.",
-        "code": "import { Card, Button, Flex, Progress } from 'ui-lab-components';\n\nconst tasks = [\n  { label: 'Design review', done: true },\n  { label: 'Write changelog', done: true },\n  { label: 'Update docs', done: false },\n  { label: 'Deploy to staging', done: false },\n];\n\nconst completed = tasks.filter((t) => t.done).length;\n\nexport default function Example() {\n  return (\n    <Card style={{ width: 360 }}>\n      <Card.Header>\n        <Flex justify=\"between\" align=\"center\">\n          <span className=\"text-sm font-medium text-foreground-100\">Release v2.4.0</span>\n          <span className=\"text-xs text-foreground-500\">{completed}/{tasks.length}</span>\n        </Flex>\n        <Progress value={(completed / tasks.length) * 100} className=\"mt-2\" />\n      </Card.Header>\n      <Card.Body className=\"py-3\">\n        <ul className=\"space-y-2\">\n          {tasks.map((task) => (\n            <li key={task.label} className=\"flex items-center gap-2 text-sm\">\n              <span className={task.done ? 'text-foreground-500 line-through' : 'text-foreground-200'}>\n                {task.label}\n              </span>\n            </li>\n          ))}\n        </ul>\n      </Card.Body>\n      <Card.Footer>\n        <Button size=\"sm\" variant=\"outline\" className=\"w-full\">View milestone</Button>\n      </Card.Footer>\n    </Card>\n  );\n}"
+        "code": "import { Card, Button, Flex, Progress } from 'ui-lab-components';\n\nconst tasks = [\n  { label: 'Design review', done: true },\n  { label: 'Write changelog', done: true },\n  { label: 'Update docs', done: false },\n  { label: 'Deploy to staging', done: false },\n];\n\nconst completed = tasks.filter((t) => t.done).length;\n\nexport default function Example() {\n  return (\n    <Card style={{ width: 360 }}>\n      <Card.Header>\n        <Flex justify=\"between\" align=\"center\">\n          <span className=\"text-sm font-medium text-foreground-100\">Release v2.4.0</span>\n          <span className=\"text-xs text-foreground-500\">{completed}/{tasks.length}</span>\n        </Flex>\n        <Progress value={(completed / tasks.length) * 100} className=\"mt-2\" />\n      </Card.Header>\n      <Card.Body className=\"py-3\">\n        <ul className=\"space-y-2\">\n          {tasks.map((task) => (\n            <li key={task.label} className=\"flex items-center gap-2 text-sm\">\n              <span className={task.done ? 'text-foreground-500 line-through' : 'text-foreground-200'}>\n                {task.label}\n              </span>\n            </li>\n          ))}\n        </ul>\n      </Card.Body>\n      <Card.Footer>\n        <Button size=\"sm\" variant=\"secondary\" className=\"w-full\">View milestone</Button>\n      </Card.Footer>\n    </Card>\n  );\n}"
     }
 ],
   },
@@ -394,7 +394,7 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Controlled Mode",
         "description": "Date picker with controlled value and external state management. Includes a ",
-        "code": "import React from 'react'\nimport { Date as DatePicker, Button, Flex } from 'ui-lab-components';\n\nexport default function Example() {\n  const [date, setDate] = React.useState<Date | null>(null)\n\n  const handleSetToday = () => {\n    setDate(new Date())\n  }\n\n  const handleClear = () => {\n    setDate(null)\n  }\n\n  const formatDate = (d: Date | null) => {\n    if (!d) return 'No date selected'\n    return d.toLocaleDateString('en-US', {\n      weekday: 'long',\n      year: 'numeric',\n      month: 'long',\n      day: 'numeric'\n    })\n  }\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex gap=\"sm\">\n        <Button variant=\"primary\" onClick={handleSetToday}>\n          Today\n        </Button>\n        <Button variant=\"outline\" onClick={handleClear}>\n          Clear\n        </Button>\n      </Flex>\n      <div className=\"text-sm text-foreground-400\">\n        Selected: {formatDate(date)}\n      </div>\n      <DatePicker value={date} onChange={setDate} />\n    </Flex>\n  )\n}"
+        "code": "import React from 'react'\nimport { Date as DatePicker, Button, Flex } from 'ui-lab-components';\n\nexport default function Example() {\n  const [date, setDate] = React.useState<Date | null>(null)\n\n  const handleSetToday = () => {\n    setDate(new Date())\n  }\n\n  const handleClear = () => {\n    setDate(null)\n  }\n\n  const formatDate = (d: Date | null) => {\n    if (!d) return 'No date selected'\n    return d.toLocaleDateString('en-US', {\n      weekday: 'long',\n      year: 'numeric',\n      month: 'long',\n      day: 'numeric'\n    })\n  }\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex gap=\"sm\">\n        <Button variant=\"primary\" onClick={handleSetToday}>\n          Today\n        </Button>\n        <Button variant=\"secondary\" onClick={handleClear}>\n          Clear\n        </Button>\n      </Flex>\n      <div className=\"text-sm text-foreground-400\">\n        Selected: {formatDate(date)}\n      </div>\n      <DatePicker value={date} onChange={setDate} />\n    </Flex>\n  )\n}"
     },
     {
         "title": "Date Range Selection",
@@ -408,7 +408,7 @@ export const componentRegistry: ComponentRegistry = {
     id: "divider",
     name: "Divider",
     description: "Horizontal or vertical separator for dividing content.",
-    category: "layout",
+    category: "display",
     source: {
   "packageName": "ui-lab-components",
   "exportName": "Divider",
@@ -874,7 +874,7 @@ export const componentRegistry: ComponentRegistry = {
     id: "page",
     name: "Page",
     description: "Top-level page container with layout constraints.",
-    category: "container",
+    category: "layout",
     experimental: true,
     source: {
   "packageName": "ui-lab-components",
@@ -891,23 +891,22 @@ export const componentRegistry: ComponentRegistry = {
   panel: {
     id: "panel",
     name: "Panel",
-    description: "Region container managing header, content, and footer areas.",
+    description: "Container-aware region coordinator for collapsible sidebars, main columns, and resizable panes.",
     category: "layout",
-    experimental: true,
     source: {
   "packageName": "ui-lab-components",
   "exportName": "Panel",
   "packagePath": "dist/index.d.ts"
 },
-    relatedComponents: ["page","grid","flex"],
-    tags: ["composition","panel","regions","responsive","sticky"],
-    accessibility: {"hasAriaSupport":true,"notes":["Uses semantic HTML elements (header, main, footer)","Provides context to child components","Supports responsive viewport detection","Sticky header respects user preferences"]},
+    relatedComponents: ["page","grid","flex","button"],
+    tags: ["composition","panel","sidebar","regions","responsive","resize"],
+    accessibility: {"hasAriaSupport":true,"notes":["Uses semantic aside, header, main, and footer regions","Toggle exposes aria-expanded and aria-controls while preserving consumer handlers","Responsive stacking follows Panel container width and preserves authored reading order","Resize handles expose separator semantics, values, controls, and keyboard interaction"]},
     usage: undefined,
     examples: [
     {
-        "title": "Sidebar with Toggle",
-        "description": "Left sidebar that collapses and expands via a toggle button in the content area.",
-        "code": "import { Panel } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Panel open style={{ height: \"400px\" }} className=\"w-full border border-background-700 rounded-lg bg-background-900\">\n      <Panel.Sidebar side=\"left\" width=\"200px\" collapsedWidth=\"0\">\n      </Panel.Sidebar>\n      <Panel.Content>\n        <Panel.Toggle>\n          <button>☰</button>\n        </Panel.Toggle>\n      </Panel.Content>\n    </Panel>\n  );\n}"
+        "title": "Documentation workspace",
+        "description": "A collapsible documentation navigation beside a scrolling article, with header and footer kept inside the panel.",
+        "code": "\"use client\";\n\nimport { Button, Panel } from 'ui-lab-components';\n\nconst links = [\"Introduction\", \"Installation\", \"Composition\", \"Accessibility\", \"API reference\"];\n\nexport default function Example() {\n  return (\n    <div className=\"h-[430px] w-full max-w-4xl overflow-hidden rounded-lg border border-background-700 bg-background-900\">\n      <Panel defaultOpen collapseAt={560} spacing=\"none\">\n        <Panel.Sidebar\n          side=\"left\"\n          width={220}\n          aria-label=\"Documentation navigation\"\n          className=\"bg-background-950\"\n        >\n          <nav className=\"flex h-full flex-col gap-1 p-4\">\n            <p className=\"mb-3 text-xs font-semibold uppercase tracking-wider text-foreground-500\">\n              Panel guide\n            </p>\n            {links.map((link, index) => (\n              <a\n                key={link}\n                href={`#${link.toLowerCase().replace(\" \", \"-\")}`}\n                className={`rounded-md px-3 py-2 text-sm ${index === 2 ? \"bg-background-700 text-foreground-50\" : \"text-foreground-300 hover:bg-background-800\"}`}\n              >\n                {link}\n              </a>\n            ))}\n          </nav>\n        </Panel.Sidebar>\n\n        <Panel.Header className=\"flex items-center justify-between border-b border-background-700 px-4 py-3\">\n          <div className=\"flex items-center gap-3\">\n            <Panel.Toggle>\n              <Button size=\"sm\" variant=\"ghost\">Toggle navigation</Button>\n            </Panel.Toggle>\n            <div>\n              <h2 className=\"text-sm font-semibold text-foreground-100\">Composition</h2>\n              <p className=\"text-xs text-foreground-500\">Layout primitives / Panel</p>\n            </div>\n          </div>\n          <Button size=\"sm\" variant=\"secondary\">Copy page</Button>\n        </Panel.Header>\n\n        <Panel.Content className=\"block\">\n          <article className=\"mx-auto max-w-2xl space-y-5 p-6 text-sm leading-6 text-foreground-300\">\n            <div>\n              <p className=\"text-xs font-medium uppercase tracking-wider text-accent-400\">Guide</p>\n              <h1 className=\"mt-1 text-2xl font-semibold text-foreground-50\">Coordinate application regions</h1>\n            </div>\n            <p>\n              Panel keeps navigation beside a main column while the article remains the only scrolling\n              region. The header and footer stay visible because they are siblings of the content.\n            </p>\n            <section id=\"composition\" className=\"space-y-2\">\n              <h2 className=\"text-lg font-semibold text-foreground-100\">Compound composition</h2>\n              <p>\n                Author a left sidebar before the main regions, or a right sidebar after them. At narrow\n                container widths, the authored order is preserved and the regions stack.\n              </p>\n            </section>\n            <section id=\"accessibility\" className=\"space-y-2\">\n              <h2 className=\"text-lg font-semibold text-foreground-100\">Accessible controls</h2>\n              <p>\n                The toggle exposes the controlled sidebar through expanded and controls state. Resize\n                separators can be focused and adjusted with arrow, Home, and End keys.\n              </p>\n            </section>\n            <div className=\"h-24 rounded-md border border-dashed border-background-600 p-4 text-foreground-500\">\n              Extra article height makes the content region visibly scroll.\n            </div>\n          </article>\n        </Panel.Content>\n\n        <Panel.Footer fixed className=\"flex items-center justify-between border-t border-background-700 px-4 py-2 text-xs text-foreground-500\">\n          <span>Panel composition</span>\n          <span>Updated today</span>\n        </Panel.Footer>\n      </Panel>\n    </div>\n  );\n}"
     }
 ],
   },

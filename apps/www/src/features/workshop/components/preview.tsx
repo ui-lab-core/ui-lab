@@ -185,14 +185,14 @@ export function ElementPreviewContent({
         showWidthLabel={variant === "preview"}
         rightContent={
           elementId && variantIndex !== undefined ? (
-            <Button variant="outline" size="sm" onClick={handleOpenWindow}>
+            <Button variant="ghost" size="sm" onClick={handleOpenWindow}>
               <FaExpand size={14} />
             </Button>
           ) : null
         }
       >
         {variant === "preview" && DemoComponent ? (
-          <div className="border-x border-background-700">
+          <div className="h-full min-h-0 w-full min-w-0 border-x border-background-700">
             <DemoComponent />
           </div>
         ) : (

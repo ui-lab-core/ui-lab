@@ -18,7 +18,7 @@ function HeroSection() {
             <div className="flex items-end justify-between flex-row w-full">
               <div>
                 <h1 className="max-w-[30ch] isolate mb-5 text-4xl leading-snug font-semibold tracking-normal text-foreground-100">
-                  Make your interfaces <br />stand out in the era of slop.
+                  Make your Interfaces <br />Stand out in the era of Slop.
                 </h1>
                 <h2 className="w-fit text-md leading-[28.8px] font-medium tracking-normal text-foreground-400">
                   Your agent's favorite UI Library.

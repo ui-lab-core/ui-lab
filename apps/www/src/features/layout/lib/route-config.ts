@@ -85,6 +85,7 @@ const ROUTE_TAB_GROUPS: RouteTabGroupConfig[] = [
   { path: '/workshop', tabGroupId: 'documentation' },
   { path: '/blocks', tabGroupId: 'documentation' },
   { path: '/changelog', tabGroupId: 'documentation' },
+  { path: '/config', tabGroupId: 'documentation' },
 ];
 
 interface RouteConfig {
@@ -127,6 +128,10 @@ const ROUTES: Record<string, RouteConfig> = {
   },
   changelog: {
     path: '/changelog',
+    domainId: 'docs',
+  },
+  config: {
+    path: '/config',
     domainId: 'docs',
   },
 };

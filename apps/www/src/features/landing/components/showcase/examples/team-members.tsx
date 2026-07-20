@@ -211,7 +211,7 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
               </Select.List>
             </Select.Content>
           </Group.Select>
-          <Group.Button className="gap-4" variant="default" icon={{ right: <FaArrowTurnUp className="rotate-90 w-12" /> }} size="sm">Invite</Group.Button>
+          <Group.Button className="gap-4" variant="primary" icon={{ right: <FaArrowTurnUp className="rotate-90 w-12" /> }} size="sm">Invite</Group.Button>
         </Group>
       </div>
     </div>

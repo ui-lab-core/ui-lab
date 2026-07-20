@@ -92,15 +92,15 @@ import { Button } from 'ui-lab-components'
   Usage: Alternative actions, secondary choices
   Example: <Button variant="secondary">Cancel</Button>
 
-- **outline**
-  Visual style: Border with transparent background
-  Usage: Secondary actions, multiple equal alternatives
-  Example: <Button variant="outline">Download</Button>
-
 - **ghost**
   Visual style: No background or border, text-only
   Usage: Tertiary actions, help, information
   Example: <Button variant="ghost">Help</Button>
+
+- **danger**
+  Visual style: Red/destructive color
+  Usage: Destructive actions like delete or remove
+  Example: <Button variant="danger">Delete</Button>
 
 ### Examples
 

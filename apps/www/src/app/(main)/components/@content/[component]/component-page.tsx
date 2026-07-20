@@ -6,6 +6,7 @@ import { CopyComponentPage } from '@/features/docs/page-actions/copy-component-p
 import { OpenPage } from '@/features/docs/page-actions/open-page-button';
 import { highlightCode } from '@/features/docs/lib/shiki-server';
 import { Playground, Preview } from './preview';
+import { isInteractivePreview } from './preview-utils';
 import { ExampleReference } from './example-reference';
 import type { StyleInfo } from './documentation';
 import { Content } from './content';
@@ -47,10 +48,6 @@ function getExamples(componentId: string) {
   return primary ? [primary, ...entries.filter((entry) => entry !== primary)] : entries;
 }
 
-function isInteractiveExample(id: string) {
-  return id.endsWith('-interactive');
-}
-
 export async function ComponentPage({
   componentId,
   component,
@@ -68,6 +65,7 @@ export async function ComponentPage({
 }) {
   const examples = getExamples(componentId).map((entry) => ({
     id: entry.id,
+    path: entry.path,
     title: `${componentId}/${entry.id}`,
     description: entry.description,
     code: entry.code,
@@ -76,7 +74,7 @@ export async function ComponentPage({
   const highlighted = first ? await highlightCode(first.code, 'typescript') : { light: '', dark: '' };
   const tocItems = examples
     .slice(1)
-    .filter((example) => !isInteractiveExample(example.id))
+    .filter((example) => !isInteractivePreview(example.id, example.path))
     .map((example) => ({ id: example.id, title: example.title, level: 3 }));
   const apiItems = [
     ...(api?.props?.length ? [{ id: 'api-props', title: 'Props', level: 2 }] : []),
@@ -97,7 +95,7 @@ export async function ComponentPage({
       <div>
         {examples.slice(1).map((example) => (
           <article className={css.section} id={example.id} key={example.id}>
-            {!isInteractiveExample(example.id) ? (
+            {!isInteractivePreview(example.id, example.path) ? (
               <div className="flex justify-between space-y-2 border-b border-background-700 pb-5">
                 <ExampleReference id={example.title} />
                 <p className="text-sm max-w-[45ch] text-foreground-400">{example.description}</p>
@@ -142,7 +140,7 @@ export async function ComponentPage({
 
                 {first ? (
                   <section className="mb-12 space-y-4">
-                    {!isInteractiveExample(first.id) ? <ExampleReference id={first.title} level={2} /> : null}
+                    {!isInteractivePreview(first.id, first.path) ? <ExampleReference id={first.title} level={2} /> : null}
                     <Playground id={first.id} code={first.code} light={highlighted.light} dark={highlighted.dark} />
                   </section>
                 ) : null}

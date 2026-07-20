@@ -100,7 +100,7 @@ function PreviewCanvas() {
   ];
 
   return (
-    <Grid className="p-4" columns={{ sm: 1, md: 2, xl: 3 }} rows="masonry" alignItems="start" gap="md">
+    <Grid className="p-4" columns={{ sm: 1, md: 2, xl: 3 }} rows="masonry" align-start gap="md">
       <ExampleCard>
         <Flex direction="column" className="gap-3">
           <Input placeholder="you@example.com" icon={<SiGithub size={14} />} />
@@ -111,9 +111,9 @@ function PreviewCanvas() {
 
       <ExampleCard>
         <Flex className="flex-wrap gap-2">
-          <Button>Default</Button>
+          <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
+          <Button variant="danger">Danger</Button>
           <Button variant="ghost" icon={<MoreHorizontal size={14} />} aria-label="More options" />
         </Flex>
       </ExampleCard>
@@ -175,7 +175,7 @@ function PreviewCanvas() {
           <Tabs.Content value="segments">
             <List gap="xs">
               <List.Item value="free">
-                <Flex align="center" justify="between" className="w-full gap-3">
+                <Flex align-center justify-between className="w-full gap-3">
                   <List.Title>Free tier</List.Title>
                   <Switch aria-label="Free tier" />
                 </Flex>
@@ -238,7 +238,7 @@ function PreviewCanvas() {
       <ExampleCard>
         <Menu type="pop-over">
           <Menu.Trigger>
-            <Button variant="outline" icon={<MoreHorizontal size={14} />}>
+            <Button variant="ghost" icon={<MoreHorizontal size={14} />}>
               Actions
             </Button>
           </Menu.Trigger>
@@ -389,7 +389,7 @@ function InitializeContent({
 }) {
   return (
     <Flex direction="column" className="gap-6">
-      <Flex align="start" justify="between" className="gap-3">
+      <Flex align-start justify-between className="gap-3">
         <div className="text-sm text-foreground-400">
           Everything below is generated from your current configuration.
           UI Lab components ship without design tokens, so they look unstyled
@@ -705,10 +705,10 @@ export default function ConfigPage({
               styles={{ indicator: "rounded-sm bg-background-700" }}
             >
               <Tabs.Trigger
-                value="ui"
+                value="components"
                 className="rounded-full bg-transparent px-3 py-1 text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
               >
-                UI examples
+                Components
               </Tabs.Trigger>
               <Tabs.Trigger
                 value="typography"
@@ -720,7 +720,7 @@ export default function ConfigPage({
           </Tabs>
           <Scroll maxHeight="100%" className="min-h-0 flex-1 rounded-sm border border-background-700" fade-y>
             <div style={previewStyle}>
-              {preview === "ui" ? <PreviewCanvas /> : <TypographyCanvas />}
+              {preview === "components" ? <PreviewCanvas /> : <TypographyCanvas />}
             </div>
           </Scroll>
         </section>

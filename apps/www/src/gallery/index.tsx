@@ -11,6 +11,7 @@ import { GalleryAnimation } from "./timelines/gallery.animation";
 import { PopoverAnimation } from "./timelines/popover.animation";
 import { ListAnimation } from "./timelines/list.animation";
 import { PanelAnimation } from "./timelines/panel.animation";
+import { PageAnimation } from "./timelines/page.animation";
 import { BannerAnimation } from "./timelines/banner.animation";
 import { ButtonAnimation } from "./timelines/button.animation";
 import { CheckboxAnimation } from "./timelines/checkbox.animation";
@@ -97,20 +98,7 @@ export const previews: Record<string, React.ReactNode> = {
 
   scroll: <ScrollAnimation />,
   table: <TableAnimation />,
-  page: (
-    <div className="w-40 flex flex-col border border-background-700 rounded overflow-hidden">
-      <div className="h-6 bg-background-900 border-b border-background-700 flex items-center px-2">
-        <div className="w-[40%] h-1 opacity-10 rounded-md bg-background-500"></div>
-      </div>
-      <div className="bg-background-950 flex flex-col justify-center gap-2 px-2 py-2 min-h-[50px]">
-        <div className="w-[60%] h-1 opacity-10 rounded-md bg-background-500"></div>
-        <div className="w-[80%] h-1 opacity-10 rounded-md bg-background-500"></div>
-      </div>
-      <div className="h-5 bg-background-900 border-t border-background-700 flex items-center px-2">
-        <div className="w-[25%] h-1 opacity-10 rounded-md bg-background-500"></div>
-      </div>
-    </div>
-  ),
+  page: <PageAnimation />,
 
   "code": (
     <div className="w-[85%] rounded-[3px] border border-background-700 overflow-hidden">

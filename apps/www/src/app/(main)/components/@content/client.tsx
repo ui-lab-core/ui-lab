@@ -32,7 +32,7 @@ export default function ComponentsPageClient() {
                     <Flex className="gap-4">
                       {/* Category Header */}
                       {/*
-                      <Flex justify="center" align="center" className="bg-background-800 border border-background-700 w-10 h-10 rounded-sm text-foreground-200 mr-3">
+                      <Flex justify-center align-center className="bg-background-800 border border-background-700 w-10 h-10 rounded-sm text-foreground-200 mr-3">
                         <Icon color="var(--foreground-400)" IconComponent={CategoryIcons[category as keyof typeof CategoryIcons] || CategoryIcons.default} size={18} />
                       </Flex>
                       */}

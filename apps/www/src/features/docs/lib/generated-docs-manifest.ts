@@ -1243,6 +1243,11 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
+            "id": "component-typography-contract",
+            "title": "Component Typography Contract",
+            "level": 2
+          },
+          {
             "id": "type-scale",
             "title": "Type Scale",
             "level": 2
@@ -1382,6 +1387,11 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "description": "Role-based guidance for using UI Lab foreground, background, accent, and semantic tokens",
         "section": "Systems",
         "toc": [
+          {
+            "id": "typography-role-tokens",
+            "title": "Typography Role Tokens",
+            "level": 2
+          },
           {
             "id": "color-token-families",
             "title": "Color Token Families",

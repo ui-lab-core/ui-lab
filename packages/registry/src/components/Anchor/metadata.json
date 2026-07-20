@@ -2,7 +2,7 @@
   "id": "anchor",
   "name": "Anchor",
   "description": "Link with animated underline and popover preview.",
-  "category": "information",
+  "category": "navigation",
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Anchor",

@@ -68,7 +68,7 @@ function NavItem({
   if (toggle) {
     return (
       <Flex
-        align="center"
+        align-center
         className="h-10 w-full gap-3 px-3 text-sm text-foreground-300"
       >
         <Icon size={22} strokeWidth={2} />
@@ -171,7 +171,7 @@ function VolumeChart() {
           color="var(--accent-500)"
         />
       </Chart>
-      <Flex justify="between" className="-mt-1 text-xs text-foreground-400">
+      <Flex justify-between className="-mt-1 text-xs text-foreground-400">
         <span>12:00 AM</span>
         <span className="text-accent-500">Now, 04:14 PM</span>
         <span>11:59 PM</span>
@@ -242,20 +242,20 @@ function MetricCard({
 }) {
   return (
     <Card className="min-w-80 flex-1 rounded-none border-0 border-r border-background-700 bg-transparent px-5 py-5 last:border-r-0">
-      <Flex align="center" className="gap-2 text-sm text-foreground-300">
+      <Flex align-center className="gap-2 text-sm text-foreground-300">
         <span>{title}</span>
         <Badge variant={tone} pill className="px-1.5 py-0.5 text-xs">
           {tone === "success" ? "↑" : "↓"} {rate}
         </Badge>
       </Flex>
-      <Flex align="baseline" className="mt-2 gap-4">
+      <Flex align-baseline className="mt-2 gap-4">
         <span className="text-2xl font-medium text-foreground-100">
           {value}
         </span>
         <span className="text-lg text-foreground-400">{comparison}</span>
       </Flex>
       <MiniChart tone={chartTone} />
-      <Flex justify="between" className="mt-0 text-xs text-foreground-400">
+      <Flex justify-between className="mt-0 text-xs text-foreground-400">
         <span>Jul 31</span>
         <span>Aug 29</span>
       </Flex>
@@ -384,7 +384,7 @@ function ShowcaseAfter() {
                   <Flex className="gap-18">
                     <div>
                       <Flex
-                        align="center"
+                        align-center
                         className="gap-2 text-sm text-foreground-300"
                       >
                         Gross Volume <ChevronDown size={13} />
@@ -398,7 +398,7 @@ function ShowcaseAfter() {
                     </div>
                     <div>
                       <Flex
-                        align="center"
+                        align-center
                         className="gap-2 text-sm text-foreground-300"
                       >
                         August 27, 2020 <ChevronDown size={13} />
@@ -429,24 +429,23 @@ function ShowcaseAfter() {
                 </div>
               </Card>
 
-              <Flex align="center" justify="between" className="mt-10">
+              <Flex align-center justify-between className="mt-10">
                 <h3 className="text-md font-medium text-foreground-100">
                   Reports Overview
                 </h3>
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="secondary"
                   className="text-sm font-normal"
                   icon={<BarChart3 size={15} />}
                 >
                   Download
                 </Button>
               </Flex>
-              <Flex align="center" className="mt-5 gap-3">
+              <Flex align-center className="mt-5 gap-3">
                 <Group spacing="sm" className="h-9">
                   <Group.Button
                     size="sm"
-                    variant="outline"
                     className="text-sm font-normal"
                     icon={{ right: <ChevronDown size={14} /> }}
                   >
@@ -455,7 +454,6 @@ function ShowcaseAfter() {
                   <Divider orientation="vertical" />
                   <Group.Button
                     size="sm"
-                    variant="outline"
                     className="text-sm font-normal"
                     icon={{ left: <FileText size={15} /> }}
                   >
@@ -466,7 +464,6 @@ function ShowcaseAfter() {
                 <Group spacing="sm" className="h-9">
                   <Group.Button
                     size="sm"
-                    variant="outline"
                     className="text-sm font-normal"
                     icon={{ right: <ChevronDown size={14} /> }}
                   >

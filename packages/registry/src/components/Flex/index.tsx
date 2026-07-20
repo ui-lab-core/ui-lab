@@ -36,24 +36,24 @@ const flexControls: ControlDef[] = [
     label: 'Justify Content',
     type: 'select',
     options: [
-      { label: 'Start', value: 'start' },
-      { label: 'Center', value: 'center' },
-      { label: 'End', value: 'end' },
-      { label: 'Space Between', value: 'between' },
+      { label: 'Start', value: 'justify-start' },
+      { label: 'Center', value: 'justify-center' },
+      { label: 'End', value: 'justify-end' },
+      { label: 'Space Between', value: 'justify-between' },
     ],
-    defaultValue: 'start',
+    defaultValue: 'justify-start',
   },
   {
     name: 'align',
     label: 'Align Items',
     type: 'select',
     options: [
-      { label: 'Start', value: 'start' },
-      { label: 'Center', value: 'center' },
-      { label: 'End', value: 'end' },
-      { label: 'Stretch', value: 'stretch' },
+      { label: 'Start', value: 'align-start' },
+      { label: 'Center', value: 'align-center' },
+      { label: 'End', value: 'align-end' },
+      { label: 'Stretch', value: 'align-stretch' },
     ],
-    defaultValue: 'stretch',
+    defaultValue: 'align-stretch',
   },
 ];
 
@@ -61,7 +61,7 @@ const flexBasicCode = `import { Flex, Frame } from "ui-lab-components";
 
 export function Example() {
   return (
-    <Flex gap="md" align="stretch">
+    <Flex gap="md" align-stretch>
       <Frame pathStroke="dashed" style={{ width: "5rem", height: "7rem" }} />
       <Frame pathStroke="dashed" style={{ width: "11rem", height: "7rem", flex: "1 1 12rem" }} />
       <Flex direction="column" gap="sm" style={{ width: "5.5rem" }}>
@@ -106,8 +106,8 @@ export const flexDetail: ComponentDetail = {
           <Flex
             direction={props.direction as any}
             gap={props.gap as any}
-            justify={props.justify as any}
-            align={props.align as any}
+            {...(props.justify ? { [props.justify]: true } : {})}
+            {...(props.align ? { [props.align]: true } : {})}
             className="w-full"
           >
             <FlexFrame className="shrink-0" style={{ width: '5rem', height: '7rem' }} />

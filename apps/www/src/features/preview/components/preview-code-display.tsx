@@ -65,7 +65,7 @@ export function PreviewCodeDisplay({
       onPromptClick={onPromptClick}
       rightContent={
         categoryId && exampleId ? (
-          <Button variant="outline" size="sm" onClick={handleOpenWindow}>
+          <Button variant="ghost" size="sm" onClick={handleOpenWindow}>
             <FaExpand size={14} />
           </Button>
         ) : undefined

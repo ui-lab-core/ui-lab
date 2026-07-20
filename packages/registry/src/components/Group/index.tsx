@@ -8,7 +8,7 @@ export function Example() {
   return (
     <Group>
       <Group.Button>Save</Group.Button>
-      <Group.Button variant="outline">Cancel</Group.Button>
+      <Group.Button>Cancel</Group.Button>
     </Group>
   );
 }`;
@@ -19,8 +19,8 @@ export function Example() {
   return (
     <Group orientation="vertical">
       <Group.Button>Top</Group.Button>
-      <Group.Button variant="outline">Middle</Group.Button>
-      <Group.Button variant="outline">Bottom</Group.Button>
+      <Group.Button>Middle</Group.Button>
+      <Group.Button>Bottom</Group.Button>
     </Group>
   );
 }`;
@@ -51,8 +51,8 @@ export const groupDetail: ComponentDetail = {
       preview: (
         <Group orientation="horizontal">
           <Group.Button>Left</Group.Button>
-          <Group.Button variant="outline">Center</Group.Button>
-          <Group.Button variant="outline">Right</Group.Button>
+          <Group.Button>Center</Group.Button>
+          <Group.Button>Right</Group.Button>
         </Group>
       ),
     },
@@ -64,8 +64,8 @@ export const groupDetail: ComponentDetail = {
       preview: (
         <Group orientation="vertical" className="w-fit">
           <Group.Button>Top</Group.Button>
-          <Group.Button variant="outline">Middle</Group.Button>
-          <Group.Button variant="outline">Bottom</Group.Button>
+          <Group.Button>Middle</Group.Button>
+          <Group.Button>Bottom</Group.Button>
         </Group>
       ),
     },

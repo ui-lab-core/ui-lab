@@ -152,7 +152,7 @@ export const gridDetail: ComponentDetail = {
             columns={columns}
             gap={props.gap}
             justifyItems={props.justifyItems}
-            alignItems={props.alignItems}
+            {...(props.alignItems ? { [`align-${props.alignItems}`]: true } : {})}
             autoFlow={props.autoFlow}
             className="w-full"
           >

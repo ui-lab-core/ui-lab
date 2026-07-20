@@ -53,7 +53,7 @@ export function ElementsFilterPopover({
       }}
       content={
         <Flex direction="column" gap="md">
-          <Flex align="center" justify="between" className="gap-3">
+          <Flex align-center justify-between className="gap-3">
             <div>
               <h3 className="text-sm font-semibold text-foreground-50">Filters</h3>
               {activeFilterCount > 0 && (
@@ -62,7 +62,7 @@ export function ElementsFilterPopover({
                 </p>
               )}
             </div>
-            <Flex align="center" gap="xs">
+            <Flex align-center gap="xs">
               {activeFilterCount > 0 && (
                 <Button
                   variant="ghost"

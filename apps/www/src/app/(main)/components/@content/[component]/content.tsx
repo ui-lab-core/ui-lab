@@ -42,7 +42,7 @@ export function Content({ examples, componentId }: { examples: React.ReactNode; 
 
   return (
     <Tabs variant="underline" value={active} onValueChange={select}>
-      <Flex direction="row" justify="between" className="border-b border-background-700">
+      <Flex direction="row" justify-between className="border-b border-background-700">
         <div onMouseOver={prepareHoveredTab} onFocus={prepareHoveredTab}>
           <Tabs.List className="grid w-fit grid-cols-3">
             <Tabs.Trigger value="examples">Examples</Tabs.Trigger>

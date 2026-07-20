@@ -52,7 +52,7 @@ export function Buttons({ height }: ShowcasePanelProps) {
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Button size="sm" variant="primary">Save changes</Button>
         <Button size="sm">Duplicate</Button>
-        <Button size="sm" variant="outline">Preview</Button>
+        <Button size="sm" variant="secondary">Preview</Button>
         <Button size="sm" variant="ghost">Discard</Button>
       </div>
     </Cell>
@@ -269,7 +269,7 @@ export function Menus({ height }: ShowcasePanelProps) {
     <Cell height={height}>
       <Menu type="pop-over">
         <Menu.Trigger>
-          <Button size="sm" variant="outline" icon={{ right: <ChevronDown size={14} /> }}>
+          <Button size="sm" variant="ghost" icon={{ right: <ChevronDown size={14} /> }}>
             Actions
           </Button>
         </Menu.Trigger>
@@ -327,7 +327,7 @@ export function Tooltips({ height }: ShowcasePanelProps) {
   return (
     <Cell height={height}>
       <Tooltip content="Copy link" hint="⌘C">
-        <Button size="sm" variant="outline" icon={{ left: <Link2 size={14} /> }}>
+        <Button size="sm" variant="ghost" icon={{ left: <Link2 size={14} /> }}>
           Share
         </Button>
       </Tooltip>

@@ -71,8 +71,6 @@ export function HeaderMenu() {
             <FaTags size={14} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Changelog</span>
           </Menu.Item>
-
-          <Menu.Separator />
           <Menu.Item
             onSelect={() => setIsSettingsPanelOpen(true)}
             textValue="Theme settings"
@@ -91,11 +89,9 @@ export function HeaderMenu() {
             onValueChange={(mode) => setTheme(mode as "light" | "dark")}
           >
             <Menu.RadioItem value="light" textValue="Light theme">
-              <FaSun size={14} className="shrink-0 text-foreground-400" />
               <span className="flex-1">Light</span>
             </Menu.RadioItem>
             <Menu.RadioItem value="dark" textValue="Dark theme">
-              <FaMoon size={14} className="shrink-0 text-foreground-400" />
               <span className="flex-1">Dark</span>
             </Menu.RadioItem>
           </Menu.RadioGroup>

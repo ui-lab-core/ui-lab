@@ -158,8 +158,8 @@ export default function Header({
                 </Tabs>
               )}
 
-              {hasRevealCollapse && tabGroup && activeTabId && (
-                <Tabs className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:!top-[calc(100%-2px)]" value={activeTabId} variant="underline">
+              {hasRevealCollapse && tabGroup && (
+                <Tabs className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:!top-[calc(100%-2px)]" value={activeTabId || ""} variant="underline">
                   <div className="h-full" onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
                     <Tabs.List className="h-full !p-0">
                       {tabGroup.tabs.map((tab) => (
@@ -203,7 +203,7 @@ export default function Header({
                 </Button>
               */}
 
-              <Button size="sm" variant="outline" icon={<FaPlus size={12} />}>New Project</Button>
+              <Button size="sm" href="/config" variant="secondary" icon={<FaPlus size={12} />}>New Project</Button>
               <Button
                 variant="ghost"
                 aria-label="GitHub repository"

@@ -1,8 +1,8 @@
 {
   "id": "page",
   "name": "Page",
-  "description": "Top-level page container with layout constraints.",
-  "category": "container",
+  "description": "Semantic top-to-bottom page container with shared Flex-compatible gaps, layout constraints, and responsive context.",
+  "category": "layout",
   "experimental": true,
   "source": {
     "packageName": "ui-lab-components",

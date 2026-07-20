@@ -8,14 +8,12 @@ const buttonControls: ControlDef[] = [
     label: 'Variant',
     type: 'select',
     options: [
-      { label: 'Default', value: 'default' },
       { label: 'Primary', value: 'primary' },
       { label: 'Secondary', value: 'secondary' },
-      { label: 'Outline', value: 'outline' },
       { label: 'Ghost', value: 'ghost' },
       { label: 'Danger', value: 'danger' },
     ],
-    defaultValue: 'default',
+    defaultValue: 'primary',
   },
   {
     name: 'size',
@@ -85,7 +83,7 @@ export const buttonDetail: ComponentDetail = {
 
 export function Example() {
   return (
-    <Button${props.variant !== 'default' ? ` variant="${props.variant}"` : ''}${props.size !== 'md' ? ` size="${props.size}"` : ''}${props.disabled ? ' disabled' : ''}>
+    <Button${props.variant !== 'primary' ? ` variant="${props.variant}"` : ''}${props.size !== 'md' ? ` size="${props.size}"` : ''}${props.disabled ? ' disabled' : ''}>
       Click me
     </Button>
   );

@@ -188,7 +188,7 @@ export function SectionPreviewContent({
         showWidthLabel={variant === 'preview'}
         rightContent={
           sectionId && variantIndex !== undefined ? (
-            <Button variant="outline" size="sm" onClick={handleOpenWindow}>
+            <Button variant="ghost" size="sm" onClick={handleOpenWindow}>
               <FaExpand size={14} />
             </Button>
           ) : null

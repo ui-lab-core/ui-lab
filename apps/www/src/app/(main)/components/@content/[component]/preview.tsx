@@ -9,6 +9,7 @@ import {
 import { Code } from '@/features/docs/components/code-display/code';
 import { useNearViewport } from '@/shared/hooks/use-near-viewport';
 import { Select } from 'ui-lab-components/select';
+import { Switch } from 'ui-lab-components/switch';
 
 type Value = string | number | boolean;
 
@@ -19,15 +20,18 @@ export function Playground({
   code,
   light,
   dark,
+  previewHeight,
 }: {
   id: string;
   code: string;
   light: string;
   dark: string;
+  previewHeight?: number;
 }) {
   const config = getElementPreviewConfig('components', id);
   const Preview = getElementPreview('components', id);
   const controls = config?.controls ?? emptyControls;
+  const fixedPreviewHeight = previewHeight ?? config?.previewHeight ?? 320;
   const [values, setValues] = useState<Record<string, Value>>(() =>
     Object.fromEntries(controls.map((control) => [
       control.name,
@@ -46,7 +50,10 @@ export function Playground({
   return (
     <div>
       <div className="flex flex-col rounded-sm rounded-b-none border border-background-700 md:flex-row md:items-stretch">
-        <div className={`flex min-h-80 min-w-0 flex-1 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}>
+        <div
+          className={`flex min-h-0 min-w-0 flex-1 overflow-auto p-6 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}
+          style={{ minHeight: fixedPreviewHeight }}
+        >
           <Suspense fallback={null}>
             {result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />)}
           </Suspense>
@@ -80,14 +87,14 @@ export function Playground({
                     </Select.Content>
                   </Select>
                 ) : control.type === 'toggle' ? (
-                  <button
-                    aria-pressed={Boolean(values[control.name])}
-                    className="min-h-9 rounded-sm border border-background-700 bg-background-800 px-3 text-left text-foreground-200 aria-pressed:bg-accent-900"
-                    onClick={() => change(control.name, !values[control.name])}
-                    type="button"
-                  >
-                    {values[control.name] ? control.label : `${control.label} (Off)`}
-                  </button>
+                  <span className="flex min-h-9 items-center">
+                    <Switch
+                      aria-label={control.label}
+                      onChange={(checked) => change(control.name, checked)}
+                      size="sm"
+                      state={{ checked: Boolean(values[control.name]) }}
+                    />
+                  </span>
                 ) : (
                   <input
                     className="min-h-9 rounded-sm border border-background-700 bg-background-800 px-2 text-foreground-100"
@@ -122,17 +129,18 @@ export function Playground({
   );
 }
 
-export function Preview({ id }: { id: string }) {
-  return <PreviewInstance id={id} key={id} />;
+export function Preview({ id, previewHeight }: { id: string; previewHeight?: number }) {
+  return <PreviewInstance id={id} previewHeight={previewHeight} key={id} />;
 }
 
-function PreviewInstance({ id }: { id: string }) {
+function PreviewInstance({ id, previewHeight }: { id: string; previewHeight?: number }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isNearViewport = useNearViewport(rootRef, { rootMargin: '600px 0px' });
   const [loaded, setLoaded] = useState(false);
   const [overlayGone, setOverlayGone] = useState(false);
   const Implementation = getElementPreview('components', id);
+  const fixedPreviewHeight = previewHeight ?? getElementPreviewConfig('components', id)?.previewHeight ?? 320;
 
   useLayoutEffect(() => {
     if (!isNearViewport) return;
@@ -181,7 +189,8 @@ function PreviewInstance({ id }: { id: string }) {
     <div
       ref={rootRef}
       aria-busy={loaded ? undefined : true}
-      className="relative flex h-80 w-full shrink-0 items-center justify-center overflow-hidden rounded-sm border border-background-700"
+      className="relative flex w-full shrink-0 items-center justify-center overflow-hidden rounded-sm border border-background-700"
+      style={{ height: fixedPreviewHeight }}
       data-preview-active={isNearViewport ? 'true' : 'false'}
       data-preview-loaded={loaded ? 'true' : 'false'}
     >
