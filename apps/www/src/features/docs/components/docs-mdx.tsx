@@ -5,6 +5,7 @@ import * as LucideIcons from 'lucide-react'
 
 import { Code } from './code-display/code'
 import { CodeWithPackageManager } from './code-display/code-with-package-manager'
+import { InstallCommand } from './code-display/install-command'
 import { InstallationFlow } from './code-display/installation-flow'
 import Timeline from './timeline'
 import ColorPaletteGrid from '@/features/theme/components/color-palette-grid'
@@ -52,6 +53,7 @@ const components = {
   ),
   Code,
   CodeWithPackageManager,
+  InstallCommand,
   InstallationFlow,
   Timeline,
   ColorPaletteGrid,

@@ -16,6 +16,8 @@ import {
 import { getSectionsForNav, getHrefForNavItem, isNavItemActive } from '@/features/navigation/lib/sidebar-sections';
 import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation-context';
 import { Flex } from 'ui-lab-components';
+import { Logo } from '@/features/layout/components/logo';
+import { FaTags } from '@/shared/icons/fa6';
 
 type ElementsNavType = 'packages' | 'sections' | 'starters' | 'patterns';
 
@@ -130,13 +132,32 @@ export function Sidebar({
 
       <aside className={cn(
         sidebarWidth, 'flex flex-col',
-        'fixed lg:static left-0 top-0 h-screen lg:h-auto',
+        'bg-background-1000 fixed lg:static left-0 top-0 h-screen lg:h-auto',
         'z-[55] lg:z-20',
         'transition-transform duration-300 ease-out',
         'lg:transition-none lg:transform-none',
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}>
         <div className="flex border-r border-background-700 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
+          <div className="flex h-(--header-height) shrink-0 items-center justify-between border-b border-background-700 px-4 lg:hidden">
+            <Link
+              href="/"
+              prefetch={false}
+              aria-label="UI Lab home"
+              className="flex items-center hover:opacity-80 transition-opacity"
+            >
+              <Logo />
+            </Link>
+            <Link
+              href="/changelog"
+              prefetch={false}
+              className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
+            >
+              <FaTags size={14} />
+              Changelog
+            </Link>
+          </div>
+
           {mainNavItems.length > 0 && (
             <div className="z-10">
               <nav className="py-3 px-2 space-y-1">

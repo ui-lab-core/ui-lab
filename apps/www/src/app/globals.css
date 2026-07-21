@@ -100,7 +100,10 @@
   --radius-full: 9999px;
   --radius-ratio: 2.25;
   --border-width-base: 1.0px;
-  --background-1000: oklch(from var(--background-950) calc(l * 1.5 - 0.125) c h / 0.5);
+  /* Derived deep root layer. Keep the token opaque so fixed surfaces do not
+     reveal content underneath them; callers can add opacity explicitly when
+     translucency is intentional. */
+  --background-1000: oklch(from var(--background-950) calc(l * 1.5 - 0.125) c h);
 }
 
 :root[data-font="work-sans"] {
@@ -116,6 +119,7 @@
 
   /* Color Palette */
   --color-background: var(--background);
+  --color-background-1000: var(--background-1000);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
 
@@ -157,18 +161,6 @@ body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   color: var(--color-foreground-300);
-}
-
-@layer base {
-  :where(h1, h2, h3, h4, h5, h6) {
-    font-family: var(--font-heading);
-    font-weight: var(--font-weight-header-medium);
-    letter-spacing: normal;
-  }
-
-  h1 { font-size: var(--text-4xl); line-height: 1.2222; }
-  h2 { font-size: var(--text-3xl); line-height: 1.2857; }
-  h3 { font-size: var(--text-2xl); line-height: 1.3333; }
 }
 
 html.theme-transition,
@@ -241,130 +233,6 @@ pre.shiki .indent::before {
 /* } */
 
 
-@layer utilities {
-  .text-sm {
-    font-size: var(--text-sm);
-    line-height: var(--leading-sm);
-  }
-
-  .text-md {
-    font-size: var(--text-md)
-  }
-
-  .text-lg {
-    font-size: var(--text-lg)
-  }
-
-  .text-xl {
-    font-size: var(--text-xl)
-  }
-
-  .text-2xl {
-    font-size: var(--text-2xl)
-  }
-
-  .text-3xl {
-    font-size: var(--text-3xl)
-  }
-
-  .text-4xl {
-    font-size: var(--text-4xl)
-  }
-
-  .text-5xl {
-    font-size: var(--text-5xl)
-  }
-
-  .text-6xl {
-    font-size: var(--text-5xl)
-  }
-
-  .text-7xl {
-    font-size: var(--text-5xl)
-  }
-
-  .text-8xl {
-    font-size: var(--text-5xl)
-  }
-
-  .text-9xl {
-    font-size: var(--text-5xl)
-  }
-
-  .text-header-xs {
-    font-size: var(--header-text-sm)
-  }
-
-  .text-header-sm {
-    font-size: var(--header-text-sm)
-  }
-
-  .text-header-md {
-    font-size: var(--header-text-md)
-  }
-
-  .text-header-lg {
-    font-size: var(--header-text-lg)
-  }
-
-  .text-header-xl {
-    font-size: var(--header-text-xl)
-  }
-
-  .text-header-2xl {
-    font-size: var(--header-text-2xl)
-  }
-
-  .text-header-3xl {
-    font-size: var(--header-text-3xl)
-  }
-
-  .text-header-4xl {
-    font-size: var(--header-text-4xl)
-  }
-
-  .text-header-5xl {
-    font-size: var(--header-text-5xl)
-  }
-
-  .text-body-xs {
-    font-size: var(--text-sm)
-  }
-
-  .text-body-sm {
-    font-size: var(--text-sm)
-  }
-
-  .text-body-md {
-    font-size: var(--text-md)
-  }
-
-  .text-body-lg {
-    font-size: var(--text-lg)
-  }
-
-  .text-body-xl {
-    font-size: var(--text-xl)
-  }
-
-  .text-body-2xl {
-    font-size: var(--text-2xl)
-  }
-
-  .text-body-3xl {
-    font-size: var(--text-3xl)
-  }
-
-  .text-body-4xl {
-    font-size: var(--text-4xl)
-  }
-
-  .text-body-5xl {
-    font-size: var(--text-5xl)
-  }
-
-}
-
 .code-block--line-numbers .shiki .line::before {
   content: counter(step);
   counter-increment: step;
@@ -410,9 +278,11 @@ pre.shiki .indent::before {
   pointer-events: none;
 }
 
-html { background: var(--background-950); }
+html {
+  background: var(--background-950);
+}
 body {
-  background: var( --background-1000);
+  background: var(--background-1000);
 }
 p {
   font-weight: 500;

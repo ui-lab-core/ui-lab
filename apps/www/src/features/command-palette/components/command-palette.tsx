@@ -41,11 +41,11 @@ function Content({ itemCount }: { itemCount: number }) {
       >
         {filteredItems.length > 0 ? (
           <Command.Groups
-            className="[&>div:not(:first-child)_.category]:mt-5"
+            className="[&>div:not(:first-child)_.category]:mt-8"
             renderCategory={(category) =>
               category ? (
                 <>
-                  <Command.Category className="category text-md font-medium">
+                  <Command.Category className="category text-sm font-medium">
                     {category}
                   </Command.Category>
                   <Divider variant="dashed" size="sm" />

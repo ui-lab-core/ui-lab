@@ -140,7 +140,7 @@ export function TextEditor({ height }: ShowcasePanelProps) {
         <Group spacing="sm" className="h-12">
           <Group.Button variant="ghost" size="sm">Discard</Group.Button>
           <Divider />
-          <Group.Button variant="primary" size="sm">Publish</Group.Button>
+          <Group.Button variant="secondary" size="sm">Publish</Group.Button>
         </Group>
       </div>
     </div>

@@ -47,9 +47,9 @@ function TasteSection() {
     <section className="w-full border-t border-background-700">
       <div className="flex flex-col justify-center h-[20rem]">
         <h2 className="ml-18 max-w-[34ch] text-balance text-4xl font-medium leading-tight tracking-normal text-foreground-100">
-          Agents don't have taste. Give them yours,{" "}
+          Give you agents better design sense,{" "}
           <span className="text-foreground-400">
-            so what they ship looks designed, not generated.
+            so what they build looks designed, not generated.
           </span>
         </h2>
       </div>

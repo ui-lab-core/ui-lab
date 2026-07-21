@@ -191,8 +191,8 @@ function ShowcaseColumn({ column, index, viewportRef }: ShowcaseColumnProps) {
       {shouldRender
         ? column.map(({ key, Panel, height }) => (
           <React.Fragment key={key}>
-            <div className="p-5" style={{ height }}>
-              <div className="h-full overflow-hidden rounded-sm border border-background-700">
+            <div className="p-2" style={{ height }}>
+              <div className="h-full w-full origin-top-left overflow-hidden rounded-sm border border-background-700 max-sm:h-[114%] max-sm:w-[114%] max-sm:scale-[0.88]">
                 <Panel height="100%" />
               </div>
             </div>
@@ -311,10 +311,10 @@ export function Showcase() {
   if (!featureFlags.showcase) return null;
 
   return (
-    <div ref={rootRef} className="w-full min-w-0 overflow-visible [contain:inline-size]">
+    <div ref={rootRef} className="w-full min-w-0 overflow-visible [container-type:inline-size]">
       <div
         ref={stickyRef}
-        className="sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] w-full min-w-0 max-w-full flex-col overflow-hidden"
+        className="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height))] min-h-[32rem] w-full min-w-0 max-w-full flex-col overflow-hidden sm:h-[calc(100vh-var(--header-height))]"
       >
         <ShowcaseToolbar value={view} onValueChange={setView} />
         <div
@@ -323,7 +323,7 @@ export function Showcase() {
         >
           <div
             ref={trackRef}
-            className="flex h-full min-w-max flex-nowrap bg-background-1000 [mask-image:linear-gradient(to_top,transparent,black_45%)] [--showcase-column-width:max(40rem,70vw)] lg:[--showcase-column-width:max(20rem,30vw)]"
+            className="flex h-full min-w-max flex-nowrap bg-background-1000 [mask-image:linear-gradient(to_top,transparent,black_45%)] [--showcase-column-width:max(20rem,88cqw)] sm:[--showcase-column-width:max(30rem,70cqw)] lg:[--showcase-column-width:max(20rem,30cqw)]"
           >
             {views[view].map((column, index) => (
               <React.Fragment key={column.map((item) => item.key).join("-")}>

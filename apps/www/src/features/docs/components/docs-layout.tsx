@@ -23,7 +23,7 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
       >
         <Sidebar />
 
-        <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
+        <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 min-[750px]:grid-cols-[minmax(0,1fr)_clamp(11rem,20vw,18.25rem)]">
           {banner && (
             <div className="col-span-full mt-(--header-height)">
               {banner}
@@ -43,7 +43,7 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
             </div>
           </div>
 
-          <div className="docs-toc sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
+          <div className="docs-toc sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden min-[750px]:flex">
             <div className="min-h-0 flex-1 overflow-hidden px-4">
               <TableOfContents items={tocItems} className="min-h-0" />
             </div>

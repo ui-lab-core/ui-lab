@@ -112,7 +112,7 @@ export async function ComponentPage({
   );
 
   return (
-    <div className="docs-layout-inner grid min-h-0 min-w-0 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
+    <div className="docs-layout-inner grid min-h-0 min-w-0 grid-cols-1 min-[750px]:grid-cols-[minmax(0,1fr)_clamp(11rem,20vw,18.25rem)]">
       <main className="flex min-w-0 flex-col justify-center">
         <div className="flex w-full min-w-0 items-center">
           <div className="w-full min-w-0 px-4 py-12 md:px-6">
@@ -153,7 +153,7 @@ export async function ComponentPage({
         <Footer />
       </main>
 
-      <aside className="sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
+      <aside className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden min-[750px]:flex">
         <div className="min-h-0 flex-1 overflow-hidden px-4">
           <Toc items={{ examples: tocItems, api: apiItems, styles: styleItems }} />
         </div>

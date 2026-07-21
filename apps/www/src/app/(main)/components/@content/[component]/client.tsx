@@ -15,7 +15,7 @@ import {
 } from "@/features/docs/components/code-display";
 import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
 import { cn } from "@/shared/lib/utils";
-import { Toaster, Tabs, Button, Flex, Tooltip, Group } from "ui-lab-components";
+import { Tabs, Button, Flex, Tooltip, Group } from "ui-lab-components";
 import { useState, useMemo } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
 import { FaFlask, FaGithub } from "@/shared/icons/fa6";
@@ -133,7 +133,6 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
   return (
     <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_18.25rem]">
       <div className="py-12 px-4 md:px-6 mx-auto max-w-(--content-width) w-full min-w-0">
-        <Toaster />
         <div>
           <div className="pt-12 pb-12">
             <div className="space-y-2 min-h-32">

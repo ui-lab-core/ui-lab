@@ -1,10 +1,11 @@
 "use client";
 
-import { Anchor, Button } from "ui-lab-components";
+import { Button } from "ui-lab-components";
 
 // <p className="absolute bottom-0 right-0 text-xs max-w-[41ch] text-foreground-400 md:mb-[14px]">
 //   "User Interface" (UI) is the space where interactions between humans and machines occur.
 // </p>
+// className="bg-linear-to-t from-accent-500/10 to-transparent to-8% grid-paper relative flex h-full w-full flex-col justify-end overflow-hidden px-5 pb-8 sm:px-8 sm:pb-10 md:items-start md:justify-center md:px-0 md:pb-0 md:pl-8">
 
 
 function HeroSection() {
@@ -12,23 +13,23 @@ function HeroSection() {
     <>
       <div className="z-10 mt-12 sm:mt-0 w-full overflow-hidden">
         <div
-          className="bg-linear-to-t from-accent-500/10 to-transparent to-45% grid-paper relative flex items-start pl-8 h-full w-full flex-col justify-between overflow-hidden md:justify-center">
+          className="grid-paper relative flex h-full w-full flex-col justify-end overflow-hidden px-5 pb-8 sm:px-8 sm:pb-10 md:items-start md:justify-center md:px-0 md:pb-0 md:pl-8">
 
-          <div className="flex h-full w-full text-balance justify-end flex-col px-12 md:pb-12">
-            <div className="flex items-end justify-between flex-row w-full">
-              <div>
-                <h1 className="max-w-[30ch] isolate mb-5 text-4xl leading-snug font-semibold tracking-normal text-foreground-100">
-                  Make your Interfaces <br />Stand out in the era of Slop.
+          <div className="flex w-full flex-col gap-6 text-balance sm:px-4 md:h-full md:justify-end md:px-12 md:pb-12">
+            <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-0">
+              <div className="min-w-0">
+                <h1 className="max-w-[30ch] text-balance isolate mb-5 text-3xl leading-snug font-semibold tracking-normal text-foreground-100 md:text-4xl">
+                  Make your Interfaces <br />Stand out in the era of Slop
                 </h1>
-                <h2 className="w-fit text-md leading-[28.8px] font-medium tracking-normal text-foreground-400">
+                <h2 className="text-base font-medium leading-6 tracking-normal text-foreground-400 sm:text-md sm:leading-[28.8px]">
                   Your agent's favorite UI Library.
                 </h2>
               </div>
-              <div className="flex w-fit gap-4 mt-6 mb-6 md:mt-8 md:mb-0">
-                <Button className="rounded-full" variant="primary" href="/docs" >
+              <div className="flex w-full flex-wrap gap-3 md:mt-8 md:mb-0 md:w-fit md:shrink-0 md:gap-4">
+                <Button className="rounded-full" variant="primary" href="/docs">
                   Get Started
                 </Button>
-                <Button className="rounded-full" variant="secondary" href="/components" >
+                <Button className="rounded-full" variant="secondary" href="/components">
                   Browse Components
                 </Button>
               </div>

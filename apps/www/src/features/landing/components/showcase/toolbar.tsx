@@ -36,11 +36,11 @@ export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) 
   };
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 pt-4 px-5">
+    <div className="flex w-full min-w-0 flex-col items-stretch gap-3 px-3 pt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 sm:pt-4">
       <Tabs
         value={value} onValueChange={onValueChange}>
         <Tabs.List
-          className="w-fit rounded-full border border-background-700 bg-background-950 px-[4px]"
+          className="w-full max-w-full overflow-x-auto rounded-full border border-background-700 bg-background-950 px-[4px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit"
           styles={{
             indicator: "bg-background-700 rounded-full"
           }}
@@ -49,7 +49,7 @@ export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) 
             <Tabs.Trigger
               key={value}
               value={value}
-              className="py-2 px-3 rounded-full active:bg-background-700"
+              className="shrink-0 rounded-full px-3 py-2 active:bg-background-700"
             >
               {label}
             </Tabs.Trigger>
@@ -62,7 +62,7 @@ export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) 
         type="hue"
         value={backgroundHue}
         onChange={applyBackground}
-        className="w-[9.5rem] min-w-[9.5rem]"
+        className="w-[9.5rem] min-w-[9.5rem] self-end sm:self-auto"
       />
     </div>
   );

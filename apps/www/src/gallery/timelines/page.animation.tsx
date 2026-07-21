@@ -3,192 +3,117 @@
 import { useEffect, useRef, useState } from "react";
 import config from "./config.json";
 
-type State = "dim" | "idle" | "active";
-
-function Sheet({ state }: { state: State }) {
-  const isActive = state === "active";
-  const isDim = state === "dim";
-  const color = isActive
-    ? config.highlight.hoverClass
-    : config.highlight.idleClass;
-  const opacity = isDim ? 0.1 : 1;
+function Sheet({
+  isFront,
+  isHovered,
+}: {
+  isFront: boolean;
+  isHovered: boolean;
+}) {
+  const color = isFront
+    ? isHovered
+      ? config.highlight.hoverClass
+      : config.highlight.idleClass
+    : config.dim.class;
+  const fillOpacity = isFront
+    ? isHovered
+      ? 0.05
+      : config.highlight.idleFillOpacity
+    : config.dim.fillOpacity;
+  const strokeOpacity = isFront
+    ? isHovered
+      ? config.highlight.hoverStrokeOpacity
+      : config.highlight.idleStrokeOpacity
+    : config.dim.strokeOpacity;
+  const contentOpacity = isFront ? (isHovered ? 0.7 : 0.45) : 0.2;
 
   return (
     <g>
       <rect
-        x={127}
-        y={49}
-        width={146}
-        height={202}
+        x={138}
+        y={64}
+        width={124}
+        height={172}
         rx={config.blockRx}
         className="text-background-950"
         fill="currentColor"
       />
       <rect
-        x={127}
-        y={49}
-        width={146}
-        height={202}
+        x={138}
+        y={64}
+        width={124}
+        height={172}
         rx={config.blockRx}
-        className={isDim ? config.dim.class : color}
+        className={color}
         fill="currentColor"
         stroke="currentColor"
         strokeWidth={config.strokeWidth}
+        style={{ fillOpacity, strokeOpacity, transition: config.transition }}
+      />
+
+      {/* Header bar */}
+      <rect
+        x={152}
+        y={80}
+        width={36}
+        height={7}
+        rx={3}
+        className={color}
+        fill="currentColor"
+        style={{ opacity: contentOpacity, transition: config.transition }}
+      />
+
+      {/* Title */}
+      <rect
+        x={152}
+        y={110}
+        width={98}
+        height={12}
+        rx={5}
+        className={color}
+        fill="currentColor"
+        style={{ opacity: contentOpacity, transition: config.transition }}
+      />
+      <rect
+        x={152}
+        y={130}
+        width={68}
+        height={5}
+        rx={3}
+        className={config.dim.class}
+        fill="currentColor"
+        style={{ opacity: 0.2, transition: config.transition }}
+      />
+
+      {/* Media */}
+      <rect
+        x={152}
+        y={150}
+        width={98}
+        height={66}
+        rx={7}
+        className={color}
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth={2}
         style={{
-          fillOpacity: isDim
-            ? config.dim.fillOpacity
-            : isActive
-              ? 0.06
-              : config.highlight.idleFillOpacity * 0.5,
-          strokeOpacity: isDim
-            ? config.dim.strokeOpacity
-            : isActive
-              ? config.highlight.hoverStrokeOpacity
-              : config.highlight.idleStrokeOpacity,
+          fillOpacity: isFront
+            ? config.activeContent.mediaActiveOpacity
+            : config.dim.fillOpacity,
+          strokeOpacity,
           transition: config.transition,
         }}
       />
-
-      {/* Navigation */}
-      <g style={{ opacity, transition: config.transition }}>
-        <rect
-          x={143}
-          y={66}
-          width={30}
-          height={6}
-          rx={3}
-          className={color}
-          fill="currentColor"
-          style={{
-            opacity: isActive ? 0.7 : 0.45,
-            transition: config.transition,
-          }}
-        />
-        <rect
-          x={231}
-          y={63}
-          width={26}
-          height={12}
-          rx={4}
-          className={color}
-          fill="currentColor"
-          style={{ opacity: isActive ? 0.32 : 0.18 }}
-        />
-      </g>
-
-      {/* Hero */}
-      <g style={{ opacity, transition: config.transition }}>
-        <rect
-          x={164}
-          y={92}
-          width={72}
-          height={8}
-          rx={4}
-          className={color}
-          fill="currentColor"
-          style={{ opacity: isActive ? 0.7 : 0.45 }}
-        />
-        <rect
-          x={176}
-          y={105}
-          width={48}
-          height={8}
-          rx={4}
-          className={color}
-          fill="currentColor"
-          style={{ opacity: isActive ? 0.7 : 0.45 }}
-        />
-        <rect
-          x={169}
-          y={121}
-          width={62}
-          height={4}
-          rx={2}
-          className="text-background-500"
-          fill="currentColor"
-          style={{ opacity: 0.22 }}
-        />
-        <rect
-          x={184}
-          y={135}
-          width={32}
-          height={14}
-          rx={4}
-          className={color}
-          fill="currentColor"
-          style={{ opacity: isActive ? 0.45 : 0.25 }}
-        />
-
-        {/* Media */}
-        <rect
-          x={143}
-          y={164}
-          width={114}
-          height={64}
-          rx={7}
-          className={color}
-          fill="currentColor"
-          stroke="currentColor"
-          strokeWidth={2}
-          style={{
-            fillOpacity: isActive
-              ? config.activeContent.mediaActiveOpacity
-              : config.skeleton.mediaIdleOpacity,
-            strokeOpacity: isActive
-              ? config.highlight.hoverStrokeOpacity
-              : config.dim.strokeOpacity,
-            transition: config.transition,
-          }}
-        />
-      </g>
     </g>
   );
 }
 
-function getPosition(offset: number) {
-  if (offset <= -2) {
-    return {
-      opacity: 0,
-      transform: "translate(126px, -12px) rotate(28deg) scale(0.88)",
-    };
-  }
-
-  if (offset === -1) {
-    return {
-      opacity: 0,
-      transform: "translate(72px, -8px) rotate(18deg) scale(0.9)",
-    };
-  }
-
-  if (offset === 0) {
-    return {
-      opacity: 1,
-      transform: "translate(0px, 0px) rotate(0deg) scale(0.9)",
-    };
-  }
-
-  if (offset === 1) {
-    return {
-      opacity: 1,
-      transform: "translate(-15px, 9px) rotate(-4deg) scale(0.87)",
-    };
-  }
-
-  if (offset === 2) {
-    return {
-      opacity: 0.55,
-      transform: "translate(-28px, 17px) rotate(-7deg) scale(0.84)",
-    };
-  }
-
-  return {
-    opacity: 0,
-    transform: "translate(-42px, 25px) rotate(-10deg) scale(0.81)",
-  };
-}
+const SHEET_COUNT = 3;
+const CENTER_INDEX = 1;
+const PIVOT = "200px 320px";
 
 export function PageAnimation() {
-  const [step, setStep] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -196,10 +121,8 @@ export function PageAnimation() {
     if (!element) return;
 
     const galleryItem = element.closest(".group") || element;
-    const handleEnter = () =>
-      setStep((current) => (current % 2 === 0 ? current + 1 : current));
-    const handleLeave = () =>
-      setStep((current) => (current % 2 === 1 ? current + 1 : current));
+    const handleEnter = () => setIsHovered(true);
+    const handleLeave = () => setIsHovered(false);
 
     galleryItem.addEventListener("mouseenter", handleEnter);
     galleryItem.addEventListener("mouseleave", handleLeave);
@@ -221,33 +144,34 @@ export function PageAnimation() {
           className="w-full h-full relative z-10 overflow-visible"
           aria-hidden="true"
         >
-          {Array.from({ length: 6 }, (_, index) => step - 2 + index)
-            .sort((a, b) => b - a)
-            .map((sheetIndex) => {
-              const offset = sheetIndex - step;
-              const position = getPosition(offset);
-              const state: State =
-                offset <= 0
-                  ? sheetIndex % 2 === 0
-                    ? "idle"
-                    : "active"
-                  : "dim";
+          {Array.from({ length: SHEET_COUNT }, (_, index) => index).map(
+            (index) => {
+              const rel = index - CENTER_INDEX;
+              const isFront = rel === 0;
+
+              const angle = isHovered ? rel * 8 : rel * 4;
+              const spread = isHovered ? rel * 34 : rel * 16;
+              const lift = isHovered
+                ? isFront
+                  ? -12
+                  : -3
+                : -Math.abs(rel) * 4;
 
               return (
                 <g
-                  key={sheetIndex}
+                  key={index}
                   style={{
-                    opacity: position.opacity,
-                    transform: position.transform,
-                    transformOrigin: "200px 150px",
+                    transform: `translate(${spread}px, ${lift}px) rotate(${angle}deg)`,
+                    transformOrigin: PIVOT,
                     transition:
-                      "transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.5s ease-out",
+                      "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s ease-out",
                   }}
                 >
-                  <Sheet state={state} />
+                  <Sheet isFront={isFront} isHovered={isHovered} />
                 </g>
               );
-            })}
+            }
+          )}
         </svg>
       </div>
     </div>

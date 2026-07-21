@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { cn } from "@/shared/lib/utils";
-import { FaChevronDown, FaCodeBranch } from "@/shared/icons/fa6";
+import { FaChevronDown, FaCodeBranch, FaTags } from "@/shared/icons/fa6";
 import { Divider } from "ui-lab-components/divider";
 import { Button } from "ui-lab-components/button";
 import { getTabGroupForPathname, shouldApplyRevealCollapse } from "@/features/layout/lib/route-config";
@@ -68,7 +68,7 @@ export function MobileMenu({
               setExpanded((prev) => (prev === tab.id ? null : tab.id))
             }
             className={cn(
-              "flex w-full items-center justify-between rounded-md px-3 py-2",
+              "flex w-full items-center justify-between rounded-sm px-3 py-2",
               "font-medium hover:bg-background-800"
             )}
           >
@@ -82,7 +82,7 @@ export function MobileMenu({
           </button>
 
           {expanded === tab.id && (
-            <div className="flex flex-col mx-2 mb-2 rounded-md">
+            <div className="flex flex-col mx-2 mb-2 rounded-sm">
               <div className="py-3 space-y-2 text-sm">
                 {getDocumentationSubItems().map((sub) => (
                   <Link
@@ -91,7 +91,7 @@ export function MobileMenu({
                     prefetch={false}
                     onClick={onClose}
                     className={cn(
-                      "flex flex-col rounded-md px-3 py-2 hover:bg-background-800 text-foreground-300"
+                      "flex flex-col rounded-sm px-3 py-2 hover:bg-background-800 text-foreground-300"
                     )}
                   >
                     <div className="font-semibold">{sub.label}</div>
@@ -111,7 +111,7 @@ export function MobileMenu({
         prefetch={false}
         onClick={onClose}
         className={cn(
-          "rounded-md px-4 py-3 text-sm hover:bg-background-800"
+          "rounded-sm px-4 py-3 text-sm hover:bg-background-800"
         )}
       >
         {tab.label}
@@ -125,41 +125,51 @@ export function MobileMenu({
         <button
           type="button"
           aria-label="Close menu"
-          className={cn(
-            "fixed inset-0 z-30 bg-background-950/80 transition-opacity md:hidden"
-          )}
+          className="fixed inset-0 top-(--header-height) z-40 bg-background-950/70 md:hidden"
           onClick={onClose}
         />
       )}
-      {isOpen && (
-        <div
-          className={cn(
-            "fixed top-0 left-0 right-0 z-50 pt-7 border-b border-background-700/60 md:hidden",
-            "overflow-y-auto max-h-[calc(100vh-3.75rem)] bg-background-950 animate-in slide-in-from-top-2"
-          )}
-        >
-          <div className="flex flex-col px-2 py-4 space-y-1">
-            {visibleTabs.map((tab) => renderTab(tab))}
-            <Divider variant="dashed" className="my-3" />
-            <div className="flex flex-col gap-2">
-              <Button className="w-full">
-                Feedback
-              </Button>
-              <a
-                href="https://github.com/ui-lab-core/ui-lab"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full"
-              >
-                <Button className="w-full flex items-center justify-center gap-2">
-                  <FaCodeBranch size={14} />
-                  Source
-                </Button>
-              </a>
-            </div>
+      <nav
+        aria-label="Mobile navigation"
+        aria-hidden={!isOpen}
+        className={cn(
+          "fixed left-0 right-0 top-(--header-height) z-40 max-h-[calc(100vh-var(--header-height))] overflow-y-auto",
+          "border-b border-background-700 bg-background-950 shadow-xl shadow-background-950/30 md:hidden",
+          "transition-transform duration-300 ease-out",
+          isOpen ? "translate-y-0" : "-translate-y-full pointer-events-none"
+        )}
+      >
+        <div className="mx-auto flex w-full max-w-(--page-width) flex-col gap-1 px-4 py-4">
+          {visibleTabs.map((tab) => renderTab(tab))}
+
+          <Divider variant="dashed" className="my-3" />
+
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              href="/changelog"
+              prefetch={false}
+              onClick={onClose}
+              className="flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
+            >
+              <FaTags size={14} />
+              Changelog
+            </Link>
+            <a
+              href="https://github.com/ui-lab-core/ui-lab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
+            >
+              <FaCodeBranch size={14} />
+              Source
+            </a>
           </div>
+
+          <Button variant="secondary" className="mt-2 w-full" onClick={onClose}>
+            Feedback
+          </Button>
         </div>
-      )}
+      </nav>
     </>
   );
 }

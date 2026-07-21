@@ -18,7 +18,7 @@ function generateFallbackHtml(code: string): string {
     .map((_, index) => index + 1)
     .join("\n");
 
-  return `<pre class="shiki fallback"><code style="padding: 1rem;"><span class="numbers" aria-hidden="true">${numbers}</span><span class="source">${escapeHtml(code)}</span></code></pre>`;
+  return `<pre class="shiki fallback"><code style="display: block; padding: 1rem;"><span class="numbers" aria-hidden="true">${numbers}</span><span class="source">${escapeHtml(code)}</span></code></pre>`;
 }
 
 function stripSyntaxColorStyles(html: string): string {

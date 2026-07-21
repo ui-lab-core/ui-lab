@@ -16,17 +16,7 @@ The documented setup uses Tailwind CSS v4. It does not need a `tailwind.config.t
 
 ## Install the package
 
-```bash
-pnpm add ui-lab-components
-```
-
-Use the equivalent command for your package manager:
-
-```bash
-npm install ui-lab-components
-# yarn add ui-lab-components
-# bun add ui-lab-components
-```
+<InstallCommand packages="ui-lab-components" />
 
 `react`, `react-dom`, `shiki`, and `@shikijs/transformers` are peer dependencies. Most React 19 apps already provide `react` and `react-dom`; install the remaining peers if your package manager reports them as missing.
 
@@ -48,6 +38,10 @@ Create a theme file owned by your app—for example, `app/theme.css` in Next.js 
   --accent-100: oklch(97% 0 0);
   --accent-500: oklch(32% 0 0);
   --accent-600: oklch(28% 0 0);
+
+  /* Foundational tokens component CSS reads directly. Required when you are
+     not importing ui-lab-theme-onyx, which would otherwise supply them. */
+  --border-width-base: 1px;
 }
 
 @theme inline {
@@ -78,6 +72,16 @@ In your application stylesheet, import Tailwind, then your token layer, then UI 
 
 Import that stylesheet once from your application root. The aggregate `styles.css` bundle is the recommended app-level integration; component entry points also carry their own CSS for bundlers that preserve CSS imports from dependencies.
 
+Import the stylesheet before any other application or component module, and only once, from your application's entry point:
+
+```tsx
+/* src/main.tsx */
+import "@/styles/globals.css";
+import App from "./App";
+```
+
+This matters because `ui-lab-components` registers its component CSS using cascade layers (for example `components.defaults`). Layer order is determined by the order layers are first seen, not by import order alone — if a module that transitively imports `ui-lab-components` runs before your global stylesheet, the component layers register before Tailwind's layers, and Tailwind's base styles can override UI Lab's component styles.
+
 ## Render a component
 
 ```tsx
@@ -102,23 +106,39 @@ export default function Home() {
 
 `ui-lab-theme-onyx` is an optional ready-made theme. It is useful when you want its component recipes and token defaults rather than starting with an app-owned theme from scratch.
 
-```bash
-pnpm add ui-lab-components ui-lab-theme-onyx
-```
+UI Lab supports two setups:
+
+- **Onyx + app-owned overrides** — install `ui-lab-theme-onyx` for its full token and component-recipe defaults, then layer your own `theme.css` on top to override only what you need to customize.
+- **Fully app-owned theme** — skip Onyx entirely and define the complete token contract yourself in `theme.css`, as shown above.
+
+Do not mix the two by defining a partial `theme.css` and skipping Onyx — components will fall back to unstyled or invalid values for any token you didn't define.
+
+<InstallCommand packages="ui-lab-components ui-lab-theme-onyx" />
+
+Import Onyx immediately after Tailwind, your own `theme.css` after Onyx (so it can override Onyx's tokens), and `ui-lab-components/styles.css` last:
 
 ```css
 @import "tailwindcss";
 @import "ui-lab-theme-onyx/styles.css";
+@import "./theme.css";
 @import "ui-lab-components/styles.css";
 ```
 
-You can then add an app-owned stylesheet after Onyx to override its tokens and component recipes.
+If you have no overrides yet, omit the `theme.css` import and rely on Onyx's defaults — but keep the same relative order once you add one.
 
 ## Troubleshooting
 
 ### Components render without their intended appearance
 
-Check that all three stylesheet imports are present and ordered as shown above. UI Lab’s component CSS consumes tokens; importing `ui-lab-components/styles.css` alone does not define your app’s theme.
+Check that all stylesheet imports are present and ordered as shown above. UI Lab's component CSS consumes tokens; importing `ui-lab-components/styles.css` alone does not define your app's theme.
+
+### Broadly incorrect / reset-looking component styles
+
+This is a different symptom from the one above — components look like they lost their styles entirely, as if Tailwind's base/reset styles won. This means CSS cascade layers registered in the wrong order: either the global stylesheet was imported after an app or component module instead of before it (see [Import the styles](#import-the-styles)), or `ui-lab-theme-onyx`, `theme.css`, and `ui-lab-components/styles.css` were imported out of the order shown above. Fix the import order and order-of-first-import; do not add specificity overrides to work around it.
+
+### Square Switch thumbs, or other components with invalid computed styles
+
+This means a foundational token your theme is expected to define — most commonly `--border-width-base` — is missing. Some component CSS reads foundational tokens directly; when the value is undefined, the resulting `calc()` or shorthand property becomes invalid, which can make a rounded element render square or drop a border entirely. If you're using a fully app-owned theme, make sure `theme.css` defines `--border-width-base: 1px` along with the rest of the foundational token contract. If you're using Onyx, it defines these tokens for you — check that Onyx is actually imported and ordered correctly.
 
 ### Tailwind reports an import or PostCSS error
 

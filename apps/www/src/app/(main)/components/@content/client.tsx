@@ -4,7 +4,7 @@ import { categoryMap, getCategoriesInOrder, getComponentsInCategoryOrder, coming
 import { TableOfContents, type TableOfContentsItem } from "@/features/docs/components/table-of-contents";
 import { previews } from "@/gallery";
 import Icon from "@/shared/components/Icon";
-import { Icons, CategoryIcons } from "@/shared/components/icon-registry";
+import { Icons } from "@/shared/components/icon-registry";
 import { Divider, Flex, Gallery, Tooltip } from "ui-lab-components";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +17,7 @@ const tocItems: TableOfContentsItem[] = getCategoriesInOrder().map((category) =>
 export default function ComponentsPageClient() {
   const router = useRouter();
   return (
-    <div className="docs-layout-inner grid min-h-0 min-w-0 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18.25rem]">
+    <div className="docs-layout-inner grid min-h-0 min-w-0 grid-cols-1 min-[750px]:grid-cols-[minmax(0,1fr)_clamp(11rem,20vw,18.25rem)]">
       <div className="flex flex-col justify-center min-w-0 mt-(--header-height)">
         <div className="flex items-center w-full min-w-0">
           <main className="py-12 px-4 md:px-6 mx-auto w-full min-w-0">
@@ -36,25 +36,29 @@ export default function ComponentsPageClient() {
                         <Icon color="var(--foreground-400)" IconComponent={CategoryIcons[category as keyof typeof CategoryIcons] || CategoryIcons.default} size={18} />
                       </Flex>
                       */}
-                      <div className="w-full flex items-center justify-between ">
+                      <div className="w-full flex flex-col items-start gap-2 min-[850px]:flex-row min-[850px]:items-center min-[850px]:justify-between">
                         <h3 className="text-2xl font-medium text-foreground-50 flex items-center">
                           {categoryMap[category].label}
                         </h3>
-                        <p className="w-full md:w-[47ch] text-foreground-400 flex items-start">
+                        <p className="w-full min-[850px]:w-[47ch] text-foreground-400 flex items-start">
                           {categoryMap[category].description}
                         </p>
                       </div>
                     </Flex>
                     <Divider variant="dashed" size="sm" className="mb-8 mt-10" />
                     {/* Components Grid */}
-                    <Gallery responsive columns={{ sm: 1, md: 2, lg: 3 }} gap="lg">
+                    <Gallery
+                      columns={1}
+                      gap="lg"
+                      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))" }}
+                    >
                       {componentsInCategory.map((component) => {
                         const href = `/components/${component.id}`;
                         return (
                           <div key={component.id}>
                             <Gallery.Item
                               href={href}
-                              className='group h-65 relative rounded-sm bg-background-950 hover:bg-background-900/50'
+                              className='group relative rounded-sm bg-background-950 hover:bg-background-900/50'
                               orientation='vertical'
                               onClick={() => router.push(href)}
                             >
@@ -76,7 +80,7 @@ export default function ComponentsPageClient() {
                                 </div>
                               </Gallery.View>
 
-                              <Gallery.Body className="pt-4">
+                              <Gallery.Body className="py-4">
                                 <div className="flex items-center gap-1 w-full">
                                   <h4>{component.name}</h4>
                                 </div>
@@ -126,7 +130,7 @@ export default function ComponentsPageClient() {
           </main>
         </div>
       </div>
-      <div className="docs-toc sticky top-(--header-height) flex h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden">
+      <div className="docs-toc sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden min-[750px]:flex">
         <div className="min-h-0 flex-1 overflow-hidden px-4">
           <TableOfContents items={tocItems} mode="static" className="min-h-0" />
         </div>

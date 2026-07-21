@@ -118,7 +118,7 @@ export default function Header({
               href="/"
               prefetch={false}
               aria-label="UI Lab home"
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0"
+              className="hidden lg:flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0"
             >
               <div className="scale-100">
                 <Logo />
@@ -231,7 +231,9 @@ export default function Header({
               </Tooltip>
             ) : null}
 
-            <HeaderMenu />
+            <div className="hidden md:block">
+              <HeaderMenu />
+            </div>
 
             <Tooltip showArrow content={isMobileMenuOpen ? "Close navigation" : "Open navigation"} position="bottom">
               <Button
