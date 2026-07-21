@@ -3,7 +3,7 @@
 @layer components.defaults {
   /* Overlay Container */
   .overlay {
-    @apply fixed inset-0 flex items-start justify-center overflow-hidden;
+    @apply fixed inset-0 flex items-start justify-center;
     z-index: 999;
     padding-top: 20vh;
     /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */
@@ -32,7 +32,7 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     margin-inline: 1rem;
-    box-shadow: var(--shadow);
+    box-shadow: var(--background-shadow);
     opacity: 0;
     transform: scale(0.98);
     pointer-events: none;
@@ -56,10 +56,11 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    box-shadow: var(--shadow);
+    box-shadow: var(--background-shadow);
   }
 
   .inner {
+    @apply pt-1.5;
     --frame-stroke-color: var(--border);
     --frame-fill: var(--background-list);
     --frame-radius: var(--radius-sm);

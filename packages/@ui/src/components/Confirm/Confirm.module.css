@@ -2,7 +2,6 @@
 
 @layer components.defaults {
   .confirm {
-    --overlay-background: mix(var(--background-950) 50%, transparent);
     --header-foreground: var(--foreground-100);
     --description-foreground: var(--foreground-300);
     --error-foreground: var(--foreground-danger);
@@ -18,39 +17,32 @@
     @apply flex flex-col;
   }
 
-  .card {
-    @apply max-w-[28rem];
-  }
-
   .body {
     @apply flex flex-col gap-4;
   }
 
-  .body-compact {
-    @apply gap-3;
+  .row {
+    @apply flex items-center justify-between gap-4;
   }
 
-  .dialog-overlay {
-    @apply fixed inset-0 z-50 flex items-center justify-center;
-    background-color: var(--overlay-background);
+  .row-text {
+    @apply flex flex-col;
   }
 
-  .dialog-card {
-    @apply max-w-[28rem];
-    margin: 0 1rem;
+  .row-title {
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
+    color: var(--header-foreground);
+  }
+
+  .row-description {
+    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    letter-spacing: normal;
+    color: var(--description-foreground);
   }
 
   .header {
-    @apply flex items-start gap-3;
-  }
-
-  .header-content {
-    @apply flex-1;
-  }
-
-  .header-title {
-    @apply font-semibold;
-    color: var(--header-foreground);
+    @apply flex items-center gap-3;
   }
 
   .description {
@@ -126,14 +118,6 @@
   }
 
   .actions {
-    @apply flex gap-2;
-  }
-
-  .actions-inline {
-    @apply flex-row;
-  }
-
-  .actions-dialog {
-    @apply flex-row justify-end;
+    @apply flex items-center gap-2;
   }
 }

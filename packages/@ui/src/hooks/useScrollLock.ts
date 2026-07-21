@@ -10,8 +10,9 @@ import { useEffect } from "react"
  * - Desktop: `overflow: hidden` on <html> (documentElement), which is the
  *   real scroll container in all modern browsers. Setting it only on <body>
  *   is insufficient — wheel events on non-scrollable overlay regions propagate
- *   up past body and still scroll the html element. paddingRight compensation
- *   is applied to <body> so content does not shift when the scrollbar disappears.
+ *   up past body and still scroll the html element. A stable scrollbar gutter
+ *   preserves the viewport layout for normal, sticky, and fixed content. Body
+ *   padding is used as a fallback in browsers without stable gutter support.
  * - iOS Safari: `overflow: hidden` on html is not reliably honored, so we
  *   additionally apply the `position: fixed` + negative-top technique to
  *   <body> and restore window.scrollTo on unlock. Rubber-band overscroll at
@@ -28,6 +29,7 @@ import { useEffect } from "react"
 
 interface SavedStyles {
   htmlOverflow: string
+  htmlScrollbarGutter: string
   bodyPaddingRight: string
   bodyPosition: string
   bodyTop: string
@@ -54,6 +56,7 @@ function lockBodyScroll(): void {
   const body = document.body
   savedStyles = {
     htmlOverflow: html.style.overflow,
+    htmlScrollbarGutter: html.style.getPropertyValue("scrollbar-gutter"),
     bodyPaddingRight: body.style.paddingRight,
     bodyPosition: body.style.position,
     bodyTop: body.style.top,
@@ -62,17 +65,33 @@ function lockBodyScroll(): void {
   }
   savedScrollY = window.scrollY
 
-  // Only compensate when a scrollbar was actually present, to avoid a jump.
-  const scrollbarWidth = window.innerWidth - html.clientWidth
-  if (scrollbarWidth > 0) {
-    const currentPadding = parseFloat(window.getComputedStyle(body).paddingRight) || 0
-    body.style.paddingRight = `${currentPadding + scrollbarWidth}px`
+  // Capture the usable width before locking, then measure how much it grows
+  // when Chromium removes the scrollbar. Measuring the actual before/after
+  // change is more reliable than inferring the scrollbar width from
+  // window.innerWidth, especially with overlay scrollbars and browser chrome.
+  const width = html.clientWidth
+
+  // Unlike body padding, a stable gutter is part of the viewport and therefore
+  // also constrains fixed and sticky elements such as application headers.
+  const hasStableGutter = typeof CSS !== "undefined"
+    && typeof CSS.supports === "function"
+    && CSS.supports("scrollbar-gutter", "stable")
+  if (hasStableGutter) {
+    html.style.setProperty("scrollbar-gutter", "stable")
   }
 
   // Lock on <html> — the real scroll container. Locking only <body> is not
   // enough: wheel events on non-scrollable overlay regions propagate past body
   // and still scroll the html element.
   html.style.overflow = "hidden"
+
+  // Apply this before the browser has a chance to paint the locked state, so
+  // the body's content width remains unchanged while the scrollbar is hidden.
+  const compensation = html.clientWidth - width
+  if (!hasStableGutter && compensation > 0) {
+    const padding = parseFloat(window.getComputedStyle(body).paddingRight) || 0
+    body.style.paddingRight = `${padding + compensation}px`
+  }
 
   usedFixedBody = isIOS()
   if (usedFixedBody) {
@@ -91,6 +110,11 @@ function unlockBodyScroll(): void {
   const html = document.documentElement
   const body = document.body
   html.style.overflow = savedStyles.htmlOverflow
+  if (savedStyles.htmlScrollbarGutter) {
+    html.style.setProperty("scrollbar-gutter", savedStyles.htmlScrollbarGutter)
+  } else {
+    html.style.removeProperty("scrollbar-gutter")
+  }
   body.style.paddingRight = savedStyles.bodyPaddingRight
   body.style.position = savedStyles.bodyPosition
   body.style.top = savedStyles.bodyTop

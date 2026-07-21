@@ -1,7 +1,7 @@
 {
   "id": "panel",
   "name": "Panel",
-  "description": "Container-aware region coordinator for collapsible sidebars, main columns, and resizable panes.",
+  "description": "Resizable layout regions with collapsible sidebars.",
   "category": "layout",
   "experimental": false,
   "source": {

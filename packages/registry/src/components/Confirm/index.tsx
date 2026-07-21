@@ -9,11 +9,12 @@ const confirmBasicCode = `import {Confirm} from "ui-lab-components";
           export function Example() {
   return (
           <Confirm
-            triggerLabel="Delete Account"
-            title="Are you sure?"
-            description="This action cannot be undone."
-            confirmLabel="Delete"
-            cancelLabel="Cancel"
+            labels={{
+              trigger: "Delete Account",
+              confirming: { title: "Are you sure?", body: "This action cannot be undone." },
+              confirm: "Delete",
+              cancel: "Cancel",
+            }}
             onConfirm={() => console.log('Confirmed')}
             onCancel={() => console.log('Cancelled')}
           />
@@ -43,11 +44,12 @@ export const confirmDetail: ComponentDetail = {
       code: confirmBasicCode,
       preview: (
         <Confirm
-          triggerLabel="Delete Account"
-          title="Are you sure?"
-          description="This action cannot be undone."
-          confirmLabel="Delete"
-          cancelLabel="Cancel"
+          labels={{
+            trigger: "Delete Account",
+            confirming: { title: "Are you sure?", body: "This action cannot be undone." },
+            confirm: "Delete",
+            cancel: "Cancel",
+          }}
           onConfirm={() => console.log('Confirmed')}
           onCancel={() => console.log('Cancelled')}
         />

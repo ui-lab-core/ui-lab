@@ -1,7 +1,7 @@
 {
   "id": "code",
   "name": "Code",
-  "description": "Displays syntax-highlighted code with a built-in copy button.",
+  "description": "Displays syntax-highlighted code with a copy button.",
   "category": "display",
   "experimental": true,
   "source": {

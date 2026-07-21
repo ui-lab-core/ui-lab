@@ -148,8 +148,8 @@ export type { SliderProps, SliderState } from "./components/Slider";
 export { Divider, dividerVariants } from "./components/Divider";
 export type { DividerProps } from "./components/Divider";
 
-export { Command, Command as CommandPalette, useCommandContext } from "./components/Command";
-export type { CommandItem, CommandGroupedItems, CommandProps, CommandGroupsProps, CommandState } from "./components/Command";
+export { Command, Command as CommandPalette, useCommandContext, useCommandState } from "./components/Command";
+export type { CommandItem, CommandGroupedItems, CommandProps, CommandGroupsProps, CommandState, CommandTriggerProps, UseCommandStateProps } from "./components/Command";
 export { scoreCommandRelevance } from "./components/Command";
 
 export { Confirm } from "./components/Confirm";

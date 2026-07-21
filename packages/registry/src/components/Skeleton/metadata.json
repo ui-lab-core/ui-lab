@@ -1,7 +1,7 @@
 {
   "id": "skeleton",
   "name": "Skeleton",
-  "description": "Decorative content placeholders with rectangle, text, and media shapes.",
+  "description": "Decorative placeholders with rectangle, text, and media shapes.",
   "category": "feedback",
   "source": {
     "packageName": "ui-lab-components",

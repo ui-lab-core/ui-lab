@@ -1,7 +1,7 @@
 {
   "id": "page",
   "name": "Page",
-  "description": "Semantic top-to-bottom page container with shared Flex-compatible gaps, layout constraints, and responsive context.",
+  "description": "Semantic responsive container for page-level layouts.",
   "category": "layout",
   "experimental": true,
   "source": {

@@ -1,14 +1,12 @@
 export interface Styles {
   confirm: string;
   container: string;
-  card: string;
   body: string;
-  "body-compact": string;
-  "dialog-overlay": string;
-  "dialog-card": string;
+  row: string;
+  "row-text": string;
+  "row-title": string;
+  "row-description": string;
   header: string;
-  "header-content": string;
-  "header-title": string;
   description: string;
   "error-message": string;
   "warning-box": string;
@@ -20,8 +18,6 @@ export interface Styles {
   "input-label": string;
   input: string;
   actions: string;
-  "actions-inline": string;
-  "actions-dialog": string;
 }
 
 declare const styles: Styles;

@@ -130,10 +130,12 @@ function scoreItemRelevance(command: CommandItem, query: string) {
 }
 
 export interface CommandProps {
+  /** An instance controller created by `useCommandState`. */
   state?: CommandState;
-  /** Initial open state. For controlled usage, pass `state={{ open }}`. */
+  /** Controlled open state. */
   open?: boolean;
-  /** Controlled state. `query` controls the search text. */
+  /** Initial open state for uncontrolled usage. */
+  defaultOpen?: boolean;
   /** Called when the open state changes */
   onOpenChange?: (open: boolean) => void;
   /** Renders only the command surface so an ancestor can own the overlay. */
@@ -149,21 +151,83 @@ export interface CommandProps {
   /** Child elements rendered inside the palette */
   children?: React.ReactNode;
 }
-export interface CommandState { open?: boolean; query?: string }
+/** Instance-scoped controller for a Command and its triggers. */
+export interface CommandState {
+  isOpen: boolean;
+  setOpen: (open: boolean) => void;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+  setTrigger: (element: HTMLElement | null) => void;
+  triggerRef: React.MutableRefObject<HTMLElement | null>;
+}
+
+export interface UseCommandStateProps {
+  /** Controlled open state. */
+  open?: boolean;
+  /** Initial open state for uncontrolled usage. */
+  defaultOpen?: boolean;
+  /** Called whenever this controller requests an open-state change. */
+  onOpenChange?: (open: boolean) => void;
+}
+
+/**
+ * Creates state for one Command instance. Pass the returned controller to both
+ * `<Command state={state}>` and `Command.Trigger` (or call `state.open()` from
+ * application-owned shortcuts).
+ */
+export function useCommandState({
+  open: controlledOpen,
+  defaultOpen,
+  onOpenChange,
+}: UseCommandStateProps = {}): CommandState {
+  const [isOpen, setInternalOpen] = useControlledState(
+    controlledOpen,
+    defaultOpen,
+    false,
+  );
+
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      setInternalOpen(next);
+      onOpenChange?.(next);
+    },
+    [onOpenChange, setInternalOpen],
+  );
+  const triggerRef = React.useRef<HTMLElement | null>(null);
+  const setTrigger = React.useCallback((element: HTMLElement | null) => {
+    triggerRef.current = element;
+  }, []);
+
+  return React.useMemo(
+    () => ({
+      isOpen,
+      setOpen,
+      open: () => setOpen(true),
+      close: () => setOpen(false),
+      toggle: () => setOpen(!isOpen),
+      setTrigger,
+      triggerRef,
+    }),
+    [isOpen, setOpen, setTrigger],
+  );
+}
 
 const Command = React.forwardRef<HTMLDivElement, CommandProps>(
   (
-    { open, state: controlledState, onOpenChange, embedded = false, className, styles: commandStyles, items = [], filter, children },
+    { open, defaultOpen, state, onOpenChange, embedded = false, className, styles: commandStyles, items = [], filter, children },
     ref,
   ) => {
     const [mounted, setMounted] = React.useState(false);
-    const [isOpen, setOpen] = useControlledState(controlledState?.open, open, false);
+    const localState = useCommandState({
+      open,
+      defaultOpen,
+      onOpenChange,
+    });
+    const commandState = state ?? localState;
     const overlayState = useOverlayTriggerState({
-      isOpen,
-      onOpenChange: (next) => {
-        setOpen(next);
-        onOpenChange?.(next);
-      },
+      isOpen: commandState.isOpen,
+      onOpenChange: commandState.setOpen,
     });
 
     const modalRef = React.useRef<HTMLDivElement>(null);
@@ -182,7 +246,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
 
     const [focusedKey, setFocusedKey] = React.useState<Key | null>(null);
     const [itemCount, setItemCount] = React.useState(0);
-    const [searchValue, setSearchValue] = useControlledState(controlledState?.query, undefined, "");
+    const [searchValue, setSearchValue] = useControlledState(undefined, undefined, "");
 
     const filteredItems = React.useMemo(() => {
       const matches = items.filter(
@@ -230,10 +294,23 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       setMounted(true);
     }, []);
 
-    const { present, state, finishExit } = usePresence(
+    const { present, state: presenceState, finishExit } = usePresence(
       mounted && overlayState.isOpen,
       transitionDuration,
     );
+    const wasOpenRef = React.useRef(false);
+
+    React.useEffect(() => {
+      if (overlayState.isOpen) {
+        wasOpenRef.current = true;
+        return;
+      }
+
+      if (wasOpenRef.current && !present) {
+        commandState.triggerRef.current?.focus({ preventScroll: true });
+        wasOpenRef.current = false;
+      }
+    }, [commandState, overlayState.isOpen, present]);
 
     // Sync focusedKeyRef with focusedKey
     React.useEffect(() => {
@@ -250,28 +327,6 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         setSearchValue("");
       }
     }, [overlayState.isOpen, present]);
-
-    // Cmd+K global listener
-    React.useEffect(() => {
-      if (embedded) return;
-
-      const handleKeyDown = (event: KeyboardEvent) => {
-        const isMac =
-          navigator.platform.toUpperCase().indexOf("MAC") >= 0 ||
-          navigator.userAgent.indexOf("Mac") !== -1;
-        const isCommandKey = isMac ? event.metaKey : event.ctrlKey;
-
-        if (isCommandKey && event.key === "k") {
-          event.preventDefault();
-          overlayState.open();
-        }
-      };
-
-      document.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [embedded, overlayState]);
 
     // Auto-focus first item when items change (filtering, opening)
     React.useEffect(() => {
@@ -428,7 +483,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
             resolved.overlay,
           )}
           onClick={handleOverlayClick}
-          data-state={state}
+          data-state={presenceState}
           onTransitionEnd={(event) => {
             if (event.target === event.currentTarget && event.propertyName === "opacity") {
               finishExit();
@@ -444,6 +499,71 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
 );
 
 Command.displayName = "Command";
+
+export interface CommandTriggerProps {
+  /** The controller for the Command instance this trigger opens. */
+  state: CommandState;
+  /** Render the trigger element directly instead of wrapping it in a button. */
+  asChild?: boolean;
+  /** Trigger content. Exactly one element is required with `asChild`. */
+  children: React.ReactElement;
+}
+
+/**
+ * Binds a button or custom element to one Command controller. Native buttons
+ * keep their semantics; custom elements receive button keyboard semantics.
+ */
+const CommandTrigger = React.forwardRef<HTMLElement, CommandTriggerProps>(
+  ({ state, asChild = false, children }, forwardedRef) => {
+    const child = React.Children.only(children) as React.ReactElement<Record<string, unknown>>;
+    const isNativeButton = typeof child.type === "string" && child.type === "button";
+    const childProps = child.props as {
+      onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+      onKeyDown?: (event: React.KeyboardEvent<HTMLElement>) => void;
+    };
+
+    const triggerProps = {
+      "aria-haspopup": "dialog" as const,
+      "aria-expanded": state.isOpen,
+      onClick: (event: React.MouseEvent<HTMLElement>) => {
+        childProps.onClick?.(event);
+        if (!event.defaultPrevented) state.open();
+      },
+      onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+        childProps.onKeyDown?.(event);
+        if (
+          !event.defaultPrevented &&
+          !isNativeButton &&
+          (event.key === "Enter" || event.key === " ")
+        ) {
+          event.preventDefault();
+          state.open();
+        }
+      },
+    };
+    const setRef = (element: HTMLElement | null) => {
+      state.setTrigger(element);
+      if (typeof forwardedRef === "function") forwardedRef(element);
+      else if (forwardedRef) forwardedRef.current = element;
+    };
+
+    if (asChild) {
+      return React.cloneElement(child, {
+        ...triggerProps,
+        ...(isNativeButton ? {} : { role: "button", tabIndex: 0 }),
+        ref: setRef,
+      });
+    }
+
+    return (
+      <button ref={setRef as React.Ref<HTMLButtonElement>} type="button" {...triggerProps}>
+        {children}
+      </button>
+    );
+  },
+);
+
+CommandTrigger.displayName = "Command.Trigger";
 
 interface CommandInputProps extends InputProps { }
 
@@ -712,6 +832,7 @@ interface CommandComponent
   Category: typeof CommandCategory;
   Footer: typeof CommandFooter;
   Groups: typeof CommandGroups;
+  Trigger: typeof CommandTrigger;
 }
 
 const CommandWithSubcomponents = Object.assign(Command, {
@@ -721,6 +842,7 @@ const CommandWithSubcomponents = Object.assign(Command, {
   Category: CommandCategory,
   Footer: CommandFooter,
   Groups: CommandGroups,
+  Trigger: CommandTrigger,
 }) as CommandComponent;
 
 export { CommandWithSubcomponents as Command };

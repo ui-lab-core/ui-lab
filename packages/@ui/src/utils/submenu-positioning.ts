@@ -3,19 +3,22 @@ import { offset } from "../hooks/useFloat/core/middleware/offset"
 import { shift } from "../hooks/useFloat/core/middleware/shift"
 
 import type { Middleware } from "../hooks/useFloat/core/types"
+import type { Placement } from "../hooks/useFloat/utils"
 
 const inset = 8
 
 interface Options {
   mainAxis: number
   crossAxis: number
+  /** @default [oppositePlacement] (computed by flip) */
+  fallbackPlacements?: Placement[]
 }
 
-/** Shared viewport-collision policy for nested flyout menus. */
-export function getMiddleware({ mainAxis, crossAxis }: Options): Middleware[] {
+/** Shared viewport-collision policy for floating menu-like content. */
+export function getMiddleware({ mainAxis, crossAxis, fallbackPlacements }: Options): Middleware[] {
   return [
     offset({ mainAxis, crossAxis }),
-    flip({ fallbackPlacements: ["left-start"], padding: inset }),
+    flip({ fallbackPlacements, padding: inset }),
     shift({ padding: inset, crossAxis: true }),
   ]
 }

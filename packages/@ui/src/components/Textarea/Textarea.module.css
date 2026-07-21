@@ -206,7 +206,7 @@
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition: color 0.15s var(--ease-snappy-pop);
+    transition: color 0.15s var(--ease-snappy-pop, ease-out);
   }
 
   .character-count[data-over-limit="true"] {

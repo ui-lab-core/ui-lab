@@ -12,7 +12,10 @@ const SCROLLBAR_WIDTH = 15
 
 function mockScrollbar(width: number) {
   Object.defineProperty(document.documentElement, 'clientWidth', {
-    value: window.innerWidth - width,
+    get() {
+      return window.innerWidth
+        - (document.documentElement.style.overflow === 'hidden' ? 0 : width)
+    },
     configurable: true,
   })
 }
@@ -38,6 +41,34 @@ describe('useScrollLock', () => {
     render(<Locker enabled />)
 
     expect(document.body.style.paddingRight).toBe(`${SCROLLBAR_WIDTH}px`)
+  })
+
+  it('uses a stable document gutter when supported so fixed elements do not shift', () => {
+    const supports = CSS.supports
+    CSS.supports = () => true
+
+    try {
+      const { unmount } = render(<Locker enabled />)
+
+      expect(document.documentElement.style.getPropertyValue('scrollbar-gutter')).toBe('stable')
+      expect(document.body.style.paddingRight).toBe('')
+
+      unmount()
+      expect(document.documentElement.style.getPropertyValue('scrollbar-gutter')).toBe('')
+    } finally {
+      CSS.supports = supports
+    }
+  })
+
+  it('adds the measured compensation to existing body padding', () => {
+    document.body.style.paddingRight = '10px'
+
+    const { unmount } = render(<Locker enabled />)
+
+    expect(document.body.style.paddingRight).toBe(`${10 + SCROLLBAR_WIDTH}px`)
+
+    unmount()
+    expect(document.body.style.paddingRight).toBe('10px')
   })
 
   it('does not add padding when no scrollbar is present', () => {

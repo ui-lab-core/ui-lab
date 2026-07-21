@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { Command } from '../Command'
+import { useState } from 'react'
+import { Command, useCommandState } from '../Command'
 import { Modal } from '../../Modal'
 import * as ListNavigation from '@/utils/list-navigation'
 import styles from '../Command.module.css'
@@ -151,7 +152,7 @@ describe('Command', () => {
   it('stays mounted through exit and unmounts after the transition duration', () => {
     vi.useFakeTimers()
     const { rerender } = render(
-      <Command state={{ open: true }}>
+      <Command open>
         <Command.List emptyMessage="Nothing here" />
       </Command>
     )
@@ -159,7 +160,7 @@ describe('Command', () => {
     advanceEntrance()
 
     rerender(
-      <Command state={{ open: false }}>
+      <Command open={false}>
         <Command.List emptyMessage="Nothing here" />
       </Command>
     )
@@ -179,7 +180,7 @@ describe('Command', () => {
     ]
     const palette = (open: boolean) => (
       <Command
-        state={{ open }}
+        open={open}
         embedded
         items={items}
         filter={(item, query) => item.label.toLowerCase().includes(query.toLowerCase())}
@@ -266,7 +267,7 @@ describe('Command', () => {
   it('cancels a pending exit when controlled state reopens', () => {
     vi.useFakeTimers()
     const { rerender } = render(
-      <Command state={{ open: true }}>
+      <Command open>
         <Command.List emptyMessage="Nothing here" />
       </Command>
     )
@@ -274,7 +275,7 @@ describe('Command', () => {
     advanceEntrance()
 
     rerender(
-      <Command state={{ open: false }}>
+      <Command open={false}>
         <Command.List emptyMessage="Nothing here" />
       </Command>
     )
@@ -282,7 +283,7 @@ describe('Command', () => {
       vi.advanceTimersByTime(90)
     })
     rerender(
-      <Command state={{ open: true }}>
+      <Command open>
         <Command.List emptyMessage="Nothing here" />
       </Command>
     )
@@ -294,7 +295,7 @@ describe('Command', () => {
     expect(screen.getByRole('dialog')).toBe(dialog)
   })
 
-  it('opens and closes through the uncontrolled keyboard API', () => {
+  it('does not install a document Cmd/Ctrl+K listener', () => {
     vi.useFakeTimers()
     render(
       <Command>
@@ -303,16 +304,73 @@ describe('Command', () => {
     )
 
     fireEvent.keyDown(document, { key: 'k', ctrlKey: true })
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('opens and restores focus through an uncontrolled instance trigger', async () => {
+    vi.useFakeTimers()
+    function Example() {
+      const command = useCommandState()
+      return (
+        <>
+          <Command.Trigger state={command} asChild>
+            <button type="button">Open first palette</button>
+          </Command.Trigger>
+          <Command state={command}><Command.Input /></Command>
+        </>
+      )
+    }
+
+    render(<Example />)
+    const trigger = screen.getByRole('button', { name: 'Open first palette' })
+    trigger.focus()
+    fireEvent.click(trigger)
     const dialog = screen.getByRole('dialog')
-    advanceEntrance()
-    expect(dialog.parentElement).toHaveAttribute('data-state', 'entered')
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
 
     fireEvent.keyDown(dialog, { key: 'Escape' })
-    expect(dialog.parentElement).toHaveAttribute('data-state', 'exiting')
     act(() => {
       vi.advanceTimersByTime(180)
     })
     expect(screen.queryByRole('dialog')).toBeNull()
+    expect(trigger).toHaveFocus()
+  })
+
+  it('uses controlled state for its trigger and surface', async () => {
+    function Example() {
+      const [open, setOpen] = useState(false)
+      const command = useCommandState({ open, onOpenChange: setOpen })
+      return (
+        <>
+          <Command.Trigger state={command} asChild><button type="button">Open controlled palette</button></Command.Trigger>
+          <Command state={command}><Command.Input /></Command>
+        </>
+      )
+    }
+
+    render(<Example />)
+    fireEvent.click(screen.getByRole('button', { name: 'Open controlled palette' }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('keeps multiple instance triggers isolated', async () => {
+    function Example() {
+      const first = useCommandState()
+      const second = useCommandState()
+      return (
+        <>
+          <Command.Trigger state={first} asChild><button type="button">Open first</button></Command.Trigger>
+          <Command state={first}><Command.Input placeholder="First" /></Command>
+          <Command.Trigger state={second} asChild><button type="button">Open second</button></Command.Trigger>
+          <Command state={second}><Command.Input placeholder="Second" /></Command>
+        </>
+      )
+    }
+
+    render(<Example />)
+    fireEvent.click(screen.getByRole('button', { name: 'Open first' }))
+    expect(await screen.findByRole('textbox', { name: 'Search commands' })).toHaveAttribute('placeholder', 'First')
+    expect(screen.queryByPlaceholderText('Second')).toBeNull()
   })
 
   it('applies root and overlay slot styles through the styles prop', async () => {
@@ -360,13 +418,13 @@ describe('Command', () => {
 
   it('focuses the search input when opened', async () => {
     const { rerender } = render(
-      <Command state={{ open: false }}>
+      <Command open={false}>
         <Command.Input placeholder="Search commands" />
       </Command>
     )
 
     rerender(
-      <Command state={{ open: true }}>
+      <Command open>
         <Command.Input placeholder="Search commands" />
       </Command>
     )

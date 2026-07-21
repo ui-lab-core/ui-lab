@@ -318,7 +318,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
       // Keep nested panels aligned when the parent menu lives inside fixed/sticky layout chrome.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
-      middleware: positioning.getMiddleware({ mainAxis: sideOffset, crossAxis: alignOffset }),
+      middleware: positioning.getMiddleware({ mainAxis: sideOffset, crossAxis: alignOffset, fallbackPlacements: ["left-start"] }),
     })
 
     const isPositioned = x !== null && y !== null

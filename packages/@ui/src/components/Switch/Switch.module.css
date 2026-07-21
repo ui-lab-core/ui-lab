@@ -3,7 +3,7 @@
 @layer components.defaults {
   .switch {
     --radius: 9999px;
-    --inner-radius: calc(var(--radius) - var(--border-width-base));
+    --inner-radius: calc(var(--radius) - var(--border-width-base, 1px));
 
     --width: 2.75rem;
     --height: 1.5rem;
@@ -26,7 +26,7 @@
       border-color var(--transition-duration) var(--transition-easing),
       transform var(--transition-duration) var(--transition-easing);
     background-color: var(--background);
-    border: var(--border-width-base) solid var(--background-border);
+    border: var(--border-width-base, 1px) solid var(--background-border);
     border-radius: var(--radius);
   }
 

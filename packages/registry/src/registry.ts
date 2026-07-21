@@ -265,7 +265,7 @@ export const componentRegistry: ComponentRegistry = {
   code: {
     id: "code",
     name: "Code",
-    description: "Displays syntax-highlighted code with a built-in copy button.",
+    description: "Displays syntax-highlighted code with a copy button.",
     category: "display",
     experimental: true,
     source: {
@@ -337,8 +337,8 @@ export const componentRegistry: ComponentRegistry = {
     examples: [
     {
         "title": "Basic Command Palette",
-        "description": "A searchable command palette with keyboard shortcuts. Use Cmd+K (or Ctrl+K) to open.",
-        "code": "'use client';\n\nimport React from 'react';\nimport { Command, Button } from 'ui-lab-components';\n\nexport default function Example() {\n  const [open, setOpen] = React.useState(false);\n\n  const commands = [\n    {\n      id: 'search',\n      label: 'Search',\n      description: 'Search documents',\n      shortcut: '⌘F',\n      action: () => console.log('Search'),\n    },\n    {\n      id: 'create',\n      label: 'Create new',\n      description: 'Create a new document',\n      shortcut: '⌘N',\n      action: () => console.log('Create'),\n    },\n    {\n      id: 'settings',\n      label: 'Settings',\n      description: 'Open application settings',\n      shortcut: '⌘,',\n      action: () => console.log('Settings'),\n    },\n  ];\n\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>\n        Open Palette (⌘K)\n      </Button>\n      <Command\n        open={open}\n        onOpenChange={setOpen}\n        items={commands}\n      >\n        <Command.Input placeholder=\"Search commands...\" />\n        <Command.List>\n          <Command.Groups\n            renderCategory={(category) =>\n              category ? <Command.Category>{category}</Command.Category> : null\n            }\n            renderItem={(cmd) => (\n              <Command.Item\n                key={cmd.id}\n                value={cmd.id}\n                textValue={cmd.label}\n                action={cmd.action}\n                hint={cmd.shortcut}\n              >\n                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>\n                  <div>\n                    <div style={{ fontWeight: 500 }}>{cmd.label}</div>\n                    {cmd.description && (\n                      <div style={{ fontSize: '0.875em', opacity: 0.7 }}>\n                        {cmd.description}\n                      </div>\n                    )}\n                  </div>\n                </div>\n              </Command.Item>\n            )}\n          />\n        </Command.List>\n      </Command>\n    </>\n  );\n}"
+        "description": "A searchable command palette with keyboard shortcuts. Click the button to open.",
+        "code": "'use client';\n\nimport React from 'react';\nimport { Command, Button } from 'ui-lab-components';\n\nexport default function Example() {\n  const [open, setOpen] = React.useState(false);\n\n  const commands = [\n    {\n      id: 'search',\n      label: 'Search',\n      description: 'Search documents',\n      shortcut: '⌘F',\n      action: () => console.log('Search'),\n    },\n    {\n      id: 'create',\n      label: 'Create new',\n      description: 'Create a new document',\n      shortcut: '⌘N',\n      action: () => console.log('Create'),\n    },\n    {\n      id: 'settings',\n      label: 'Settings',\n      description: 'Open application settings',\n      shortcut: '⌘,',\n      action: () => console.log('Settings'),\n    },\n  ];\n\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>\n        Open Palette\n      </Button>\n      <Command\n        open={open}\n        onOpenChange={setOpen}\n        items={commands}\n      >\n        <Command.Input placeholder=\"Search commands...\" />\n        <Command.List>\n          <Command.Groups\n            renderCategory={(category) =>\n              category ? <Command.Category>{category}</Command.Category> : null\n            }\n            renderItem={(cmd) => (\n              <Command.Item\n                key={cmd.id}\n                value={cmd.id}\n                textValue={cmd.label}\n                action={cmd.action}\n                hint={cmd.shortcut}\n              >\n                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>\n                  <div>\n                    <div style={{ fontWeight: 500 }}>{cmd.label}</div>\n                    {cmd.description && (\n                      <div style={{ fontSize: '0.875em', opacity: 0.7 }}>\n                        {cmd.description}\n                      </div>\n                    )}\n                  </div>\n                </div>\n              </Command.Item>\n            )}\n          />\n        </Command.List>\n      </Command>\n    </>\n  );\n}"
     }
 ],
   },
@@ -361,7 +361,17 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Basic Confirm",
         "description": "A confirmation dialog for critical actions. Use this to prevent accidental deletions or destructive operations.",
-        "code": "import { Confirm } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <Confirm\n      triggerLabel=\"Delete Account\"\n      title=\"Are you sure?\"\n      description=\"This action cannot be undone. All your data will be permanently deleted.\"\n      confirmLabel=\"Delete\"\n      cancelLabel=\"Cancel\"\n      onConfirm={() => console.log('Account deleted')}\n      onCancel={() => console.log('Cancelled')}\n    />\n  );\n}"
+        "code": "import { Confirm, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Confirm\n        labels={{\n          trigger: 'Delete Account',\n          confirming: {\n            title: 'Are you sure?',\n            body: 'This action cannot be undone. All your data will be permanently deleted.',\n          },\n          confirm: 'Delete',\n          cancel: 'Cancel',\n        }}\n        onConfirm={() => toast({ title: 'Account deleted', variant: 'danger' })}\n      />\n      <Toaster />\n    </>\n  );\n}"
+    },
+    {
+        "title": "Inline Row Confirm",
+        "description": "A settings-row delete action. The row label stays put via labels.idle, and the warning copy only appears once the user commits, via labels.confirming.",
+        "code": "import { Confirm, Flex, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Flex direction=\"column\" gap=\"lg\" className=\"w-100 rounded-sm p-5\">\n        <Confirm\n          labels={{\n            trigger: 'Remove',\n            idle: {\n              title: 'Two-factor authentication',\n              body: 'Adds a second step when signing in.',\n            },\n            confirming: {\n              title: 'Turn off two-factor authentication?',\n              body: 'Your account will only be protected by your password.',\n            },\n            confirm: 'Turn off',\n            cancel: 'Keep it on',\n          }}\n          severity=\"high\"\n          onConfirm={() => toast({ title: '2FA disabled', variant: 'warning' })}\n        />\n\n        <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n        <Confirm\n          labels={{\n            trigger: 'Delete',\n            confirming: {\n              title: 'Delete this project?',\n              body: 'All files and history are removed immediately.',\n            },\n            confirm: 'Delete',\n            cancel: 'Cancel',\n          }}\n          severity=\"critical\"\n          onConfirm={() => toast({ title: 'Project deleted', variant: 'danger' })}\n        />\n      </Flex>\n      <Toaster />\n    </>\n  );\n}"
+    },
+    {
+        "title": "Dialog Mode",
+        "description": "Same labels API as inline mode, switched to a modal for higher-stakes confirmations. labels.idle labels the row behind the trigger; labels.confirming becomes the dialog heading and body.",
+        "code": "import { Confirm, Flex, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Flex align-center justify-between gap=\"xl\" className=\"w-100 rounded-sm p-5\">\n        <Flex direction=\"column\" gap=\"xs\">\n          <span className=\"text-sm font-medium text-foreground-100\">acme-production</span>\n          <span className=\"text-xs text-foreground-300\">Deployed 3 hours ago</span>\n        </Flex>\n\n        <Confirm\n          mode=\"dialog\"\n          labels={{\n            trigger: 'Delete environment',\n            confirming: {\n              title: 'Delete acme-production?',\n              body: 'This permanently removes the environment, its secrets, and deploy history.',\n            },\n            confirm: 'Delete environment',\n            cancel: 'Cancel',\n          }}\n          destructiveActionWarning=\"This action cannot be undone.\"\n          requiresReason\n          confirmText=\"acme-production\"\n          severity=\"critical\"\n          onConfirm={() => toast({ title: 'Environment deleted', description: 'acme-production is gone.', variant: 'danger' })}\n        />\n      </Flex>\n      <Toaster />\n    </>\n  );\n}"
     }
 ],
   },
@@ -488,7 +498,7 @@ export const componentRegistry: ComponentRegistry = {
   flex: {
     id: "flex",
     name: "Flex",
-    description: "Flexbox layout primitive with container query support for UIs.",
+    description: "Flexbox layout with container query support.",
     category: "layout",
     source: {
   "packageName": "ui-lab-components",
@@ -583,7 +593,7 @@ export const componentRegistry: ComponentRegistry = {
   group: {
     id: "group",
     name: "Group",
-    description: "Groups Button, Input, Select, and Expand with unified border styling.",
+    description: "Groups controls with unified borders.",
     category: "composition",
     experimental: true,
     source: {
@@ -873,7 +883,7 @@ export const componentRegistry: ComponentRegistry = {
   page: {
     id: "page",
     name: "Page",
-    description: "Semantic top-to-bottom page container with shared Flex-compatible gaps, layout constraints, and responsive context.",
+    description: "Semantic responsive container for page-level layouts.",
     category: "layout",
     experimental: true,
     source: {
@@ -891,7 +901,7 @@ export const componentRegistry: ComponentRegistry = {
   panel: {
     id: "panel",
     name: "Panel",
-    description: "Container-aware region coordinator for collapsible sidebars, main columns, and resizable panes.",
+    description: "Resizable layout regions with collapsible sidebars.",
     category: "layout",
     source: {
   "packageName": "ui-lab-components",
@@ -1122,7 +1132,7 @@ export const componentRegistry: ComponentRegistry = {
   skeleton: {
     id: "skeleton",
     name: "Skeleton",
-    description: "Decorative content placeholders with rectangle, text, and media shapes.",
+    description: "Decorative placeholders with rectangle, text, and media shapes.",
     category: "feedback",
     source: {
   "packageName": "ui-lab-components",
@@ -1365,7 +1375,7 @@ export const componentRegistry: ComponentRegistry = {
   toast: {
     id: "toast",
     name: "Toast",
-    description: "A notification component for displaying temporary messages.",
+    description: "Temporary notification messages.",
     category: "feedback",
     experimental: true,
     source: {
@@ -1381,27 +1391,27 @@ export const componentRegistry: ComponentRegistry = {
     {
         "title": "Basic Toast",
         "description": "A simple toast notification. Click the button to trigger a toast message with default styling.",
-        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() => toast({ title: 'Notification', description: 'This is a toast message' })}>\n        Show Toast\n      </Button>\n      <Toaster />\n    </>\n  );\n}"
+        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() => toast({ toasterId: 'basic-toast', title: 'Notification', description: 'This is a toast message' })}>\n        Show Toast\n      </Button>\n      <Toaster toasterId=\"basic-toast\" />\n    </>\n  );\n}"
     },
     {
         "title": "Success Toast",
         "description": "Toast notification for successful operations.",
-        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            title: 'Success',\n            description: 'Operation completed successfully',\n            variant: 'success',\n          })\n        }\n      >\n        Show Success\n      </Button>\n      <Toaster />\n    </>\n  );\n}"
+        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'success-toast',\n            title: 'Success',\n            description: 'Operation completed successfully',\n            variant: 'success',\n          })\n        }\n      >\n        Show Success\n      </Button>\n      <Toaster toasterId=\"success-toast\" />\n    </>\n  );\n}"
     },
     {
         "title": "Danger Toast",
         "description": "Toast notification for errors or destructive operations.",
-        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            title: 'Error',\n            description: 'Something went wrong',\n            variant: 'danger',\n          })\n        }\n      >\n        Show Error\n      </Button>\n      <Toaster />\n    </>\n  );\n}"
+        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'danger-toast',\n            title: 'Error',\n            description: 'Something went wrong',\n            variant: 'danger',\n          })\n        }\n      >\n        Show Error\n      </Button>\n      <Toaster toasterId=\"danger-toast\" />\n    </>\n  );\n}"
     },
     {
         "title": "Info Toast",
         "description": "Toast notification for informational messages.",
-        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            title: 'Info',\n            description: 'Here is some useful information',\n            variant: 'info',\n          })\n        }\n      >\n        Show Info\n      </Button>\n      <Toaster />\n    </>\n  );\n}"
+        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'info-toast',\n            title: 'Info',\n            description: 'Here is some useful information',\n            variant: 'info',\n          })\n        }\n      >\n        Show Info\n      </Button>\n      <Toaster toasterId=\"info-toast\" />\n    </>\n  );\n}"
     },
     {
         "title": "Warning Toast",
         "description": "Toast notification for warnings.",
-        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            title: 'Warning',\n            description: 'Please be careful',\n            variant: 'warning',\n          })\n        }\n      >\n        Show Warning\n      </Button>\n      <Toaster />\n    </>\n  );\n}"
+        "code": "import { Button, toast, Toaster } from 'ui-lab-components';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'warning-toast',\n            title: 'Warning',\n            description: 'Please be careful',\n            variant: 'warning',\n          })\n        }\n      >\n        Show Warning\n      </Button>\n      <Toaster toasterId=\"warning-toast\" />\n    </>\n  );\n}"
     }
 ],
   },

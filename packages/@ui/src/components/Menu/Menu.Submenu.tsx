@@ -239,7 +239,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
     const { refs, floatingStyles, x, y, placement } = useFloating({
       placement: "right-start",
       whileElementsMounted: autoUpdate,
-      middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: offset }),
+      middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: offset, fallbackPlacements: ["left-start"] }),
     })
 
     const isPositioned = x !== null && y !== null

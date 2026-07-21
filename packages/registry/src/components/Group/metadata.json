@@ -1,7 +1,7 @@
 {
   "id": "group",
   "name": "Group",
-  "description": "Groups Button, Input, Select, and Expand with unified border styling.",
+  "description": "Groups controls with unified borders.",
   "category": "composition",
   "experimental": true,
   "source": {

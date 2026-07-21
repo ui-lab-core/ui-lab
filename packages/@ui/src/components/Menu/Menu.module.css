@@ -45,12 +45,12 @@
 
     .content[data-state="open"],
     .sub-content[data-state="open"] {
-      animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
+      animation: slide-in-from-top 0.15s var(--ease-snappy-pop, ease-out);
     }
 
     .content[data-state="closed"],
     .sub-content[data-state="closed"] {
-      animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
+      animation: slide-out-to-top 0.15s var(--ease-snappy-pop, ease-out);
       pointer-events: none;
     }
 

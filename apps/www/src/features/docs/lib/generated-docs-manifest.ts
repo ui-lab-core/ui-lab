@@ -158,6 +158,16 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 3
           },
           {
+            "id": "broadly-incorrect-reset-looking-component-styles",
+            "title": "Broadly incorrect / reset-looking component styles",
+            "level": 3
+          },
+          {
+            "id": "square-switch-thumbs-or-other-components-with-invalid-computed-styles",
+            "title": "Square Switch thumbs, or other components with invalid computed styles",
+            "level": 3
+          },
+          {
             "id": "tailwind-reports-an-import-or-postcss-error",
             "title": "Tailwind reports an import or PostCSS error",
             "level": 3
@@ -187,6 +197,11 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "description": "How UI Lab's token system works — color families, shade ranges, dark mode inversion, and dynamic accent customization.",
         "section": "Customization",
         "toc": [
+          {
+            "id": "foundational-token-contract",
+            "title": "Foundational token contract",
+            "level": 2
+          },
           {
             "id": "how-the-token-pipeline-works",
             "title": "How the token pipeline works",
@@ -226,6 +241,21 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "id": "common-mistakes",
             "title": "Common mistakes",
             "level": 2
+          },
+          {
+            "id": "troubleshooting",
+            "title": "Troubleshooting",
+            "level": 2
+          },
+          {
+            "id": "broadly-incorrect-reset-looking-component-styles",
+            "title": "Broadly incorrect / reset-looking component styles",
+            "level": 3
+          },
+          {
+            "id": "square-switch-thumbs-invalid-computed-styles",
+            "title": "Square Switch thumbs / invalid computed styles",
+            "level": 3
           },
           {
             "id": "further-reading",

@@ -1,7 +1,7 @@
 {
   "id": "command",
   "name": "Command",
-  "description": "Searchable command palette for quick action access.",
+  "description": "Searchable command palette with instance-scoped trigger and controller APIs.",
   "category": "action",
   "experimental": true,
   "source": {
@@ -21,7 +21,7 @@
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Keyboard shortcuts",
+      "Application-owned keyboard shortcuts",
       "Search support",
       "Focus management"
     ]

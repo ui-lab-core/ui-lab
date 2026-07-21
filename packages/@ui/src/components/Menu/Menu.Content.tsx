@@ -2,9 +2,8 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { mergeProps } from "react-aria"
 import { useFloating } from "../../hooks/useFloat/react/useFloating"
-import { flip } from "../../hooks/useFloat/core/middleware/flip"
-import { offset as offsetMiddleware } from "../../hooks/useFloat/core/middleware/offset"
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
+import * as positioning from "../../utils/submenu-positioning"
 import { cn } from "@/lib/utils"
 import { createStylesResolver } from "@/lib/styles"
 import css from "./Menu.module.css"
@@ -134,10 +133,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       placement: type === "context-menu" ? "bottom-start" : `${side}${align === "center" ? "" : `-${align}`}` as any,
       strategy: "absolute",
       whileElementsMounted: autoUpdate,
-      middleware: [
-        offsetMiddleware({ mainAxis: offset, crossAxis: offset }),
-        flip(),
-      ],
+      middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: offset }),
     })
 
     const isPositioned = x !== null && y !== null
@@ -245,7 +241,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
             >
               <Scroll
                 className={cn("viewport", resolved.list)}
-                maxHeight="24rem"
+                maxHeight={`min(24rem, ${positioning.maxHeight})`}
                 direction="vertical"
                 fade-y
                 inline

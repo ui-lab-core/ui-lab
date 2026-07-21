@@ -291,7 +291,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
         className={cn(
           "modal",
           css.overlay,
-          "fixed inset-0 z-9999 flex items-center justify-center",
+          "fixed inset-0 z-[9999] flex items-center justify-center",
           overlayClassName,
           resolved.overlay
         )}

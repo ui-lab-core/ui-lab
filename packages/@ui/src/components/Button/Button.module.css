@@ -14,7 +14,7 @@
     line-height: var(--leading-sm, 1.25rem);
     transition-property: background-color, border-color, box-shadow, color, opacity;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 150ms));
-    transition-timing-function: var(--hover-transition-timing-function);
+    transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     &[data-hovered="true"]:not([data-disabled="true"]) {
       --hover-duration: var(--hover-enter-duration, 0ms);

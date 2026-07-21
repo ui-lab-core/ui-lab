@@ -8,15 +8,16 @@ describe('Confirm styles', () => {
       <Confirm
         open
         mode="inline"
-        triggerLabel="Delete"
-        description="This cannot be undone"
+        labels={{
+          trigger: 'Delete',
+          confirming: { title: 'Delete item', body: 'This cannot be undone' },
+        }}
         onConfirm={vi.fn()}
         styles={{
           root: 'slot-root',
           container: 'slot-container',
-          card: 'slot-card',
-          body: 'slot-body',
           actions: 'slot-actions',
+          title: 'slot-title',
           description: 'slot-description',
         }}
       />
@@ -25,9 +26,8 @@ describe('Confirm styles', () => {
     const root = container.firstElementChild;
     expect(root).toHaveClass('slot-root', 'slot-container');
     expect(root).not.toHaveAttribute('styles');
-    expect(container.querySelector('.slot-card')).toBeInTheDocument();
-    expect(container.querySelector('.slot-body')).toBeInTheDocument();
     expect(container.querySelector('.slot-actions')).toBeInTheDocument();
+    expect(screen.getByText('Delete item')).toHaveClass('slot-title');
     expect(screen.getByText('This cannot be undone')).toHaveClass('slot-description');
   });
 });
