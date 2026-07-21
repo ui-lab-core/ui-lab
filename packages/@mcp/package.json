@@ -1,6 +1,6 @@
 {
   "name": "ui-lab-mcp",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "MCP server for UI Lab component library - enables AI agents to discover, understand, and generate production-ready code",
   "type": "module",
   "main": "./dist/index.js",
@@ -29,8 +29,8 @@
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "@ui-lab-core/library": "0.1.5",
-    "ui-lab-registry": "workspace:*"
+    "@ui-lab-core/library": "0.1.6",
+    "ui-lab-registry": "0.4.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

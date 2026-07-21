@@ -30,7 +30,7 @@
     "@fontsource/geist-sans": "^5.2.5",
     "@fontsource/karla": "^5.2.8",
     "@shikijs/transformers": "^3.20.0",
-    "@ui-lab-core/library": "link:../../../private/packages/library",
+    "@ui-lab-core/library": "0.1.6",
     "beautiful-mermaid": "^1.0.2",
     "canvas": "^3.2.3",
     "clsx": "^2.1.1",
@@ -49,9 +49,9 @@
     "server-only": "^0.0.1",
     "shiki": "^3.17.1",
     "turndown": "^7.2.2",
-    "ui-lab-components": "workspace:*",
-    "ui-lab-registry": "workspace:*",
-    "ui-lab-theme-onyx": "workspace:*"
+    "ui-lab-components": "0.4.2",
+    "ui-lab-registry": "0.4.2",
+    "ui-lab-theme-onyx": "0.4.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

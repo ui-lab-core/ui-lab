@@ -1,5 +1,11 @@
 # ui-lab-components
 
+## 0.4.2
+
+### Patch Changes
+
+- a701707: Add a mobile table-of-contents drawer, package-manager-aware install command snippets, and fix Confirm-on-Modal, Command, Menu, and scroll-lock behavior.
+
 ## 0.4.1
 
 ### Patch Changes
