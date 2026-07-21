@@ -50,7 +50,6 @@
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-300);
     --icon-foreground: var(--foreground-400);
-    font-size: var(--text-md)
   }
 
   .button:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {

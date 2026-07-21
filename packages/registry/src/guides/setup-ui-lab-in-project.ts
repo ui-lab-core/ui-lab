@@ -69,6 +69,7 @@ const setupUiLabInProjectGuide: GuideMetadata = {
         'Call get_theme_setup to get the canonical theme.css content and creation instructions.',
         'Create the file at app/theme.css (Next.js) or src/theme.css (Vite) using the code returned by get_theme_setup.',
         'Do not skip this step — if theme.css is missing, components will render without tokens and the site will look broken.',
+        'theme.css must define the full foundational token contract for a fully app-owned theme, including --border-width-base: 1px. Missing foundational tokens can make component CSS compute invalid values (for example, square Switch thumbs instead of rounded ones).',
       ],
       relatedTools: ['get_theme_setup'],
     },
@@ -79,12 +80,24 @@ const setupUiLabInProjectGuide: GuideMetadata = {
         'Edit the app stylesheet entrypoint rather than scattering imports across components.',
         'Keep the order exactly: tailwind, theme.css, then ui-lab-components styles.',
         'Do not import ui-lab-theme-onyx/styles.css — theme.css replaces it as the token layer.',
+        'Import this stylesheet exactly once, from the application entry point, before any app or component module. Loading it after another module that transitively imports ui-lab-components registers Tailwind\'s layers after UI Lab\'s component layers, letting Tailwind base styles override component styles.',
       ],
       code: `@import "tailwindcss";
 @import "./theme.css";
 @import "ui-lab-components/styles.css";`,
       language: 'css',
       path: 'app/globals.css',
+    },
+    {
+      title: 'Import the stylesheet first in the app entry point',
+      goal: 'Guarantee the CSS cascade layers registered by the global stylesheet come before any component layers.',
+      instructions: [
+        'Import the global stylesheet as the first import in the application entry point (e.g. src/main.tsx for Vite, or the root layout/globals import in Next.js).',
+        'Import it only once. A second import elsewhere (e.g. inside a lazy-loaded route) can re-register layers in the wrong order.',
+      ],
+      code: `import "@/styles/globals.css";
+import App from "./App";`,
+      language: 'tsx',
     },
     {
       title: 'Render one simple UI Lab component in an existing page',
@@ -127,6 +140,8 @@ export default function Home() {
     'A page renders at least one UI Lab component with non-default visual styling.',
     'The stylesheet import order is: tailwindcss → theme.css → ui-lab-components/styles.css.',
     'ui-lab-theme-onyx is not installed or imported — theme.css replaces it.',
+    'The global stylesheet is imported exactly once, and before any other app/component module, from the application entry point.',
+    'theme.css defines --border-width-base and the rest of the foundational token contract UI Lab components read.',
     'The chosen install command matches the repo package manager.',
   ],
   relatedTools: ['search_components', 'get_component', 'get_theme_setup', 'search_guides', 'get_guide'],

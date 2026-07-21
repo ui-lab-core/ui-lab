@@ -225,24 +225,28 @@ export async function handleGetThemeSetup(_input: { include_fouc_script?: boolea
   --color-info-400: var(--info-400);
   --color-info-500: var(--info-500);
   --color-info-600: var(--info-600);
+
+  /* Foundational tokens components rely on without a fallback (or whose
+     fallback should not be relied on for a fully app-owned theme). */
+  --border-width-base: 1px;
 }`,
         instructions: [
           'Create this file at app/theme.css.',
-          'This file defines your token layer. Import it in globals.css before ui-lab-components/styles.css.',
-          'Import ui-lab-theme-onyx in globals.css after ui-lab-components/styles.css for theme-specific overrides.',
+          'This file defines your token layer, including the foundational tokens (like --border-width-base) that UI Lab component CSS reads directly. Import it in globals.css before ui-lab-components/styles.css.',
+          'This setup is fully app-owned: do not also import ui-lab-theme-onyx. theme.css already supplies the full token contract Onyx would otherwise provide. If you want Onyx as your base theme instead, use ui-lab-theme-onyx/styles.css and treat this file as an override layer imported after it — see the "Optional: start from Onyx" section of the Installation guide.',
           'Customize the oklch values to match your brand. The structure (variable names, runtime aliases, @theme inline block) must stay the same.',
         ],
       },
       stylesheet: {
         path: 'app/globals.css',
-        description: 'Import order is critical. Token layer must come before ui-lab-components/styles.css, followed by ui-lab-theme-onyx.',
+        description: 'Import order is critical: Tailwind first, then your token layer, then ui-lab-components/styles.css. Import this stylesheet once, before any app or component module, from your application entry point.',
         code: `@import "tailwindcss";
 @import "./theme.css";
-@import "ui-lab-components/styles.css";
-@import "ui-lab-theme-onyx";`,
+@import "ui-lab-components/styles.css";`,
         instructions: [
           'Edit your app stylesheet entrypoint (app/globals.css in Next.js, src/index.css in Vite).',
-          'Keep the order exactly: tailwindcss → theme.css → ui-lab-components/styles.css → ui-lab-theme-onyx.',
+          'Keep the order exactly: tailwindcss → theme.css → ui-lab-components/styles.css.',
+          "Import this stylesheet exactly once, and before any module that transitively imports ui-lab-components — otherwise component CSS layers register before Tailwind's layers and Tailwind base styles can override UI Lab styles.",
         ],
       },
       layout: {
@@ -313,6 +317,18 @@ export function ThemeToggle() {
         '500': '↔ 500 (constant)',
       },
     },
+    troubleshooting: [
+      {
+        symptom: 'Broadly incorrect / reset-looking component styles (as if Tailwind base styles overrode UI Lab).',
+        cause:
+          'CSS cascade layers registered in the wrong order — usually the app stylesheet (globals.css) was imported after an app/component module instead of before it, or theme.css / ui-lab-theme-onyx / ui-lab-components/styles.css were imported out of order. Import the app stylesheet exactly once, before any other app or component module, from the application entry point.',
+      },
+      {
+        symptom: 'Square Switch thumbs, or other components with invalid/missing computed styles (invalid border-radius, missing borders).',
+        cause:
+          'A foundational token like --border-width-base is not defined by the app-owned theme.css. Some component CSS reads foundational tokens without a fallback; an undefined token makes the calc()/property invalid. Define the full foundational token contract in theme.css, including --border-width-base: 1px, or use ui-lab-theme-onyx which defines it for you.',
+      },
+    ],
     designGuidelines: formatDesignGuidelines(),
   };
 }

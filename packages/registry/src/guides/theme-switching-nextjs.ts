@@ -210,6 +210,7 @@ const themeSwitchingNextJsGuide: GuideMetadata = {
       instructions: [
         'Import theme.css before ui-lab-components/styles.css.',
         'Keep tailwindcss first if the project uses Tailwind v4 imports.',
+        'Import this stylesheet exactly once, before any other app or component module, from the application entry point (e.g. the root layout import in Next.js) — otherwise UI Lab\'s component CSS layers can register before Tailwind\'s layers.',
       ],
       code: `@import "tailwindcss";
 @import "./theme.css";

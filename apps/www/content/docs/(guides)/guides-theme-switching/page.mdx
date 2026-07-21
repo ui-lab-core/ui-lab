@@ -55,6 +55,8 @@ The order matters:
 - `theme.css` defines your app's tokens and mode rules
 - `ui-lab-components/styles.css` consumes the active tokens
 
+Import this stylesheet exactly once, before any other app or component module, from your application entry point (for example the root layout import in Next.js). `ui-lab-components` registers its component CSS in cascade layers; if a module that transitively imports it runs before your global stylesheet, those layers register before Tailwind's, and Tailwind's base styles can override UI Lab's component styles.
+
 ---
 
 ## 2. Keep token definitions in app-owned `theme.css`

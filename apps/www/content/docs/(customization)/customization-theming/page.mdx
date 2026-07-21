@@ -20,6 +20,31 @@ Consumers usually own the token layer in their app's `theme.css`. With Tailwind 
 
 `theme.css` defines your app tokens and mode rules. `ui-lab-components/styles.css` consumes those active `--color-*` tokens. You do not need a `tailwind.config.ts` content extension step for this integration.
 
+Import this stylesheet once, before any other app or component module, from your application entry point — see [Installation](/docs/installation) for why import order and placement matter.
+
+If you're starting from `ui-lab-theme-onyx` instead of a fully app-owned theme, import it right after `tailwindcss` and before your own `theme.css`:
+
+```css
+@import "tailwindcss";
+@import "ui-lab-theme-onyx/styles.css";
+@import "./theme.css";
+@import "ui-lab-components/styles.css";
+```
+
+---
+
+## Foundational token contract
+
+A fully app-owned `theme.css` (no `ui-lab-theme-onyx` import) must define every token component CSS reads, not just colors. Some foundational tokens — like `--border-width-base` — are read directly by component CSS without a fallback. Leaving one undefined can make the dependent property compute to an invalid value, which is different from "wrong color": it can render as a missing border or a square corner where a rounded one was expected.
+
+```css
+:root {
+  --border-width-base: 1px;
+}
+```
+
+`ui-lab-theme-onyx` already defines the foundational token contract, so apps that import it don't need to repeat this.
+
 ---
 
 ## How the token pipeline works
@@ -158,8 +183,21 @@ All components that use `accent-*` tokens pick up the change automatically — n
 
 ---
 
+## Troubleshooting
+
+### Broadly incorrect / reset-looking component styles
+
+Symptom: components look unstyled or reset, as if Tailwind's base styles won over UI Lab's. Cause: CSS cascade layers registered in the wrong order — the global stylesheet was imported after an app/component module instead of before it, or `ui-lab-theme-onyx` / `theme.css` / `ui-lab-components/styles.css` were imported out of order. See [Installation](/docs/installation#import-the-styles) for the required order and entry-point placement.
+
+### Square Switch thumbs / invalid computed styles
+
+Symptom: a component that should render with rounded corners (Switch's thumb is the most visible case) renders square, or a border is missing. Cause: a foundational token — most commonly `--border-width-base` — isn't defined by your `theme.css`. See [Foundational token contract](#foundational-token-contract) above.
+
+---
+
 ## Further reading
 
+- [Installation](/docs/installation) — stylesheet setup and import order
 - [Colors](/design-system/colors) — full OKLCH palette reference with all shade values
 - [Design Tokens](/design-system/tokens) — complete token reference for spacing, typography, and motion
 - [Variables](/design-system/variables) — all CSS custom properties and their defaults

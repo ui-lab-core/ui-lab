@@ -42,7 +42,10 @@ function usesAuthProviders() {
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  transpilePackages: ['beautiful-mermaid', '@ui-lab-core/library'],
+  // `ui-lab-components` is a workspace-linked, prebuilt package. Transpiling it
+  // makes Next track its dist files as development dependencies instead of
+  // retaining an obsolete compiled module after the package is rebuilt.
+  transpilePackages: ['beautiful-mermaid', '@ui-lab-core/library', 'ui-lab-components'],
   experimental: {
     externalDir: true,
   },
