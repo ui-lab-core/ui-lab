@@ -9,16 +9,17 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "ui-lab-components/button";
 import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
+import { type SimpleThemeColors } from "@/features/theme/constants/themes";
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
 
 function generateFallbackHtml(code: string): string {
-  const numbers = code
+  const lines = code
     .split("\n")
-    .map((_, index) => index + 1)
+    .map((line) => `<span class="line">${escapeHtml(line) || " "}</span>`)
     .join("\n");
 
-  return `<pre class="shiki fallback"><code style="display: block; padding: 1rem;"><span class="numbers" aria-hidden="true">${numbers}</span><span class="source">${escapeHtml(code)}</span></code></pre>`;
+  return `<pre class="shiki fallback"><code style="display: block; padding: 1rem;">${lines}</code></pre>`;
 }
 
 function stripSyntaxColorStyles(html: string): string {
@@ -51,7 +52,7 @@ interface CodeProps {
 const MAX_HEIGHT_LINES = 5;
 const HIGHLIGHT_DELAY_MS = 120;
 let highlightQueue = Promise.resolve();
-const highlightRequests = new Map<string, Promise<{ light: string; dark: string }>>();
+const highlightRequests = new Map<string, Promise<{ html: string }>>();
 
 function enqueueHighlight<T>(job: () => Promise<T>) {
   const result = highlightQueue.then(job, job);
@@ -68,8 +69,9 @@ function enqueueHighlight<T>(job: () => Promise<T>) {
   return result;
 }
 
-function requestHighlight(code: string, language: string) {
-  const key = `${language}\u0000${code}`;
+function requestHighlight(code: string, language: string, colors: SimpleThemeColors, mode: "light" | "dark") {
+  const theme = JSON.stringify(colors);
+  const key = `${language}\u0000${mode}\u0000${theme}\u0000${code}`;
   const existing = highlightRequests.get(key);
   if (existing) return existing;
 
@@ -77,10 +79,10 @@ function requestHighlight(code: string, language: string) {
     const response = await fetch("/api/highlight", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ code, language }),
+      body: JSON.stringify({ code, language, colors, mode }),
     });
     if (!response.ok) throw new Error(`Highlight request failed: ${response.status}`);
-    return response.json() as Promise<{ light: string; dark: string }>;
+    return response.json() as Promise<{ html: string }>;
   });
   highlightRequests.set(key, request);
   request.catch(() => highlightRequests.delete(key));
@@ -99,7 +101,7 @@ export function Code({
   eagerMeasure = false,
   maxHeightLines = MAX_HEIGHT_LINES,
 }: CodeProps) {
-  const { currentThemeMode, isThemeInitialized } = useApp();
+  const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
 
   // Refs
   const rootRef = useRef<HTMLDivElement>(null);
@@ -114,16 +116,14 @@ export function Code({
   const [dimensions, setDimensions] = useState({ contentScrollWidth: 0, viewportWidth: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
   const isNearViewport = useNearViewport(rootRef);
-  const hasStaticHighlight = Boolean(preHighlightedLight && preHighlightedDark);
 
   const fallbackHtml = useMemo(() => generateFallbackHtml(children), [children]);
-  const highlightKey = `${language}\u0000${currentThemeMode}\u0000${children}`;
+  const themeKey = currentThemeColors ? JSON.stringify(currentThemeColors) : "uninitialized";
+  const highlightKey = `${language}\u0000${currentThemeMode}\u0000${themeKey}\u0000${children}`;
   const staticHighlight = currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark;
-  const highlightedCode = staticHighlight ?? (
-    resolved?.key === highlightKey && resolved.status === "resolved"
-      ? resolved.html
-      : fallbackHtml
-  );
+  const highlightedCode = resolved?.key === highlightKey && resolved.status === "resolved"
+    ? resolved.html
+    : staticHighlight ?? fallbackHtml;
   const totalCodeLines = children.split('\n').length;
   const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
   const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
@@ -154,13 +154,13 @@ export function Code({
   }, []);
 
   useEffect(() => {
-    if (hasStaticHighlight || !isNearViewport) return;
+    if (!isNearViewport || !isThemeInitialized || !currentThemeColors) return;
     let cancelled = false;
 
     const highlight = async () => {
       try {
-        const result = await requestHighlight(children, language);
-        const html = result[currentThemeMode];
+        const result = await requestHighlight(children, language, currentThemeColors, currentThemeMode);
+        const html = result.html;
 
         if (cancelled) return;
 
@@ -184,7 +184,7 @@ export function Code({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [children, currentThemeMode, fallbackHtml, hasStaticHighlight, highlightKey, isNearViewport, language]);
+  }, [children, currentThemeColors, currentThemeMode, fallbackHtml, highlightKey, isNearViewport, isThemeInitialized, language]);
 
   useLayoutEffect(() => {
     if (!eagerMeasure && !isNearViewport && !isExpanded) return;
@@ -212,7 +212,7 @@ export function Code({
     <div
       ref={rootRef}
       className={cn(
-        "rounded-sm border border-background-700 flex flex-col overflow-hidden w-full min-w-0",
+        "rounded-sm border border-background-700 bg-transparent flex flex-col overflow-hidden w-full min-w-0",
         showLineNumbers && "code-block--line-numbers",
         className
       )}
@@ -227,10 +227,12 @@ export function Code({
       <div className="relative group flex-1 min-h-0 flex flex-col">
         {expanded && shouldShowExpandButton && (
           <Button
+            type="button"
             onClick={() => setIsExpanded(false)}
+            aria-label="Collapse code"
             variant="ghost"
             size="icon"
-            className="absolute right-11 top-2 p-1"
+            className="absolute right-11 top-2 z-10 p-1"
           >
             <LuChevronsDownUp size={14} />
           </Button>
@@ -270,7 +272,7 @@ export function Code({
             onScroll={handleScrollTrack}
             aria-hidden={hasHorizontalOverflow ? undefined : true}
             className={cn(
-              "absolute bottom-0 left-0 right-0 overflow-x-auto bg-background-950/50 backdrop-blur-sm transition-opacity",
+              "absolute bottom-0 left-0 right-0 overflow-x-auto bg-transparent backdrop-blur-sm transition-opacity",
               hasHorizontalOverflow ? "opacity-100" : "pointer-events-none opacity-0"
             )}
           >

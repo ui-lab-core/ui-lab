@@ -4,9 +4,9 @@ import { DEFAULT_CODE_THEME } from '@/features/theme/lib/themes/shiki/code-theme
 import { ensureSemanticColorIntegrity } from '@/features/theme/lib/color/semantic'
 import { resolveCodeThemeSelection } from '@/features/theme/lib/themes/shiki/resolve-code-theme'
 import { resolveShikiLanguage } from '@/features/docs/lib/shiki-language'
+import type { SimpleThemeColors } from '@/features/theme/constants/themes'
 
-// Shiki theme object type is complex to import directly from Shiki 3.x
-type ShikiTheme = unknown
+type ShikiTheme = ReturnType<typeof resolveCodeThemeSelection>
 
 // Cache the precomputed themes globally/module-level.
 let precomputedThemes: Record<'light' | 'dark', ShikiTheme> | null = null
@@ -88,7 +88,7 @@ export async function highlightCode(code: string, lang: string) {
     try {
       const html = await codeToHtml(code, {
         lang: resolvedLanguage,
-        theme: shikiTheme as any,
+        theme: shikiTheme,
         transformers: [transformerRenderIndentGuides()],
       })
 
@@ -100,4 +100,22 @@ export async function highlightCode(code: string, lang: string) {
   }))
 
   return results
+}
+
+export async function highlightCodeForTheme(
+  code: string,
+  lang: string,
+  colors: SimpleThemeColors,
+  mode: 'light' | 'dark',
+) {
+  const { bundledLanguages, bundledLanguagesAlias, codeToHtml } = await import('shiki')
+  const resolvedLanguage = resolveShikiLanguage(lang, bundledLanguages, bundledLanguagesAlias)
+  const theme = resolveCodeThemeSelection(colors, mode, `runtime-${mode}`)
+  const html = await codeToHtml(code, {
+    lang: resolvedLanguage,
+    theme,
+    transformers: [transformerRenderIndentGuides()],
+  })
+
+  return normalizeShikiHtml(html)
 }

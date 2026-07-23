@@ -4,7 +4,11 @@ import { useEffect, useState, type RefObject } from 'react';
 
 export function useNearViewport<T extends Element>(
   ref: RefObject<T | null>,
-  { rootMargin = '500px 0px', once = true }: { rootMargin?: string; once?: boolean } = {},
+  {
+    rootMargin = '500px 0px',
+    viewportMargin,
+    once = true,
+  }: { rootMargin?: string; viewportMargin?: number; once?: boolean } = {},
 ) {
   const [visible, setVisible] = useState(false);
 
@@ -12,11 +16,14 @@ export function useNearViewport<T extends Element>(
     const element = ref.current;
     if (!element) return;
     if (typeof IntersectionObserver === 'undefined') {
-      setVisible(true);
-      return;
+      const frame = window.requestAnimationFrame(() => setVisible(true));
+      return () => window.cancelAnimationFrame(frame);
     }
 
     let mounted = true;
+    const resolvedRootMargin = viewportMargin === undefined
+      ? rootMargin
+      : `${Math.round(window.innerHeight * viewportMargin)}px 0px`;
     const observer = new IntersectionObserver((entries) => {
       if (!mounted) return;
       const entry = entries.find((candidate) => candidate.target === element);
@@ -31,7 +38,7 @@ export function useNearViewport<T extends Element>(
         setVisible(true);
         observer.disconnect();
       }
-    }, { rootMargin });
+    }, { rootMargin: resolvedRootMargin });
 
     observer.observe(element);
 
@@ -39,7 +46,7 @@ export function useNearViewport<T extends Element>(
       mounted = false;
       observer.disconnect();
     };
-  }, [once, ref, rootMargin]);
+  }, [once, ref, rootMargin, viewportMargin]);
 
   return visible;
 }
