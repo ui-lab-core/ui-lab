@@ -127,10 +127,10 @@ export default function Header({
 
             <button
               onClick={handleToggleSidebar}
-              className="lg:hidden flex items-center justify-center rounded-md p-0.5 text-foreground-300 hover:bg-background-800 min-w-[44px] min-h-[44px]"
+              className="lg:hidden flex items-center justify-center rounded-sm p-2 text-foreground-300 hover:bg-background-800"
               aria-label="Toggle sidebar"
             >
-              <PanelRight strokeWidth={2.4} size={20} />
+              <PanelRight className="text-foreground-400" strokeWidth={2.4} size={17} />
             </button>
 
             <div className="h-full">

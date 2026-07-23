@@ -198,7 +198,7 @@ export function Table<T extends object>({
                               onClick={(event) => event.stopPropagation()}
                               className="ml-auto w-auto justify-end bg-transparent p-0"
                             >
-                              <Expand.Icon className="px-0 py-0" />
+                              <Expand.Icon color="text-background-500" className="px-0 py-0" />
                             </Expand.Trigger>
                           </Expand>
                         </td>

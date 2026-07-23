@@ -36,7 +36,7 @@ export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) 
   };
 
   return (
-    <div className="flex w-full min-w-0 flex-col items-stretch gap-3 px-3 pt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 sm:pt-4">
+    <div className="flex w-full min-w-0 flex-col items-stretch p-2 sm:flex-row sm:items-center sm:justify-between">
       <Tabs
         value={value} onValueChange={onValueChange}>
         <Tabs.List

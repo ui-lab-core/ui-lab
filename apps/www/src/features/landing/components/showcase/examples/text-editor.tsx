@@ -134,15 +134,6 @@ export function TextEditor({ height }: ShowcasePanelProps) {
           fontSize: state.fontSize ? `${state.fontSize}px` : undefined,
         }}
       />
-
-      <div className="flex shrink-0 items-center justify-between border-t border-background-700 px-3 py-2">
-        <span className="text-sm text-foreground-500">Markdown enabled</span>
-        <Group spacing="sm" className="h-12">
-          <Group.Button variant="ghost" size="sm">Discard</Group.Button>
-          <Divider />
-          <Group.Button variant="secondary" size="sm">Publish</Group.Button>
-        </Group>
-      </div>
     </div>
   );
 }

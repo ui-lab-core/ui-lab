@@ -101,8 +101,8 @@ export async function ComponentPage({
                 <p className="text-sm max-w-[45ch] text-foreground-400">{example.description}</p>
               </div>
             ) : null}
-            <Preview id={example.id} />
-            <div className="overflow-hidden rounded-sm border border-t-0 border-background-700">
+            <Preview id={example.id} flushBottom />
+            <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700">
               <Code className="rounded-none border-0" eagerMeasure language="typescript" showLineNumbers>{example.code}</Code>
             </div>
           </article>

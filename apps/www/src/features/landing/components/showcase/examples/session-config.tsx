@@ -234,14 +234,6 @@ export function SessionConfigPanel({ height }: ShowcasePanelProps) {
           </Select>
         </div>
       </div>
-
-      <div className="px-4 py-3.5 border-t border-background-700 flex items-center justify-between">
-        <div>
-          <div className="text-sm text-foreground-500">{duration}h session</div>
-          <div className="font-semibold text-foreground-100">${cost}</div>
-        </div>
-        <Button variant="secondary" icon={{ left: <FaBoltLightning /> }}>Start</Button>
-      </div>
     </div>
   );
 }

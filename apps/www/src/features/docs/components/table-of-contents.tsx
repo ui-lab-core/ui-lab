@@ -381,7 +381,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
     <>
       <aside className={cn("ml-auto hidden w-full max-w-65 top-(--header-height) sticky min-[750px]:block self-start h-full min-h-0 overflow-hidden", className)}>
         <nav className="flex h-full min-h-0 flex-col pt-12">
-          <h3 className="flex items-center gap-3 text-md text-foreground-200">
+          <h3 className="flex items-center gap-3 text-md text-foreground-400">
             <FaList aria-hidden="true" />
             <span className="min-[1050px]:hidden">Contents</span>
             <span className="hidden min-[1050px]:inline">Table of Contents</span>
@@ -404,9 +404,9 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
             aria-controls="table-of-contents-drawer"
             aria-expanded={isDrawerOpen}
             onClick={() => setIsDrawerOpen(true)}
-            className="fixed bottom-5 right-5 z-50 flex size-12 cursor-pointer items-center justify-center rounded-sm border border-background-600 bg-background-800 text-foreground-200 transition-colors hover:bg-background-700 hover:text-foreground-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
+            className="fixed bottom-5 right-5 z-50 flex size-10 cursor-pointer items-center justify-center rounded-sm border border-background-700 bg-background-950 text-foreground-400 transition-colors hover:bg-background-700 hover:text-foreground-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
           >
-            <FaList aria-hidden="true" />
+            <FaList size={16} aria-hidden="true" />
           </button>
 
           <div

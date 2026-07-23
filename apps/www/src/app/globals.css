@@ -1,9 +1,10 @@
 @import "tailwindcss";
-@import "@fontsource-variable/karla/wght.css";
 @import "@fontsource-variable/jetbrains-mono";
 @import "@fontsource-variable/work-sans/wght.css";
-@source "../../node_modules/@ui-lab-core/library/src";
-@source "../../node_modules/@ui-lab-core/library/content";
+/* Scan the installed package root, not its development-only `src` directory.
+   Published packages contain compiled previews in `dist`, while workspace links
+   also expose `src`; using the stable package root covers both layouts. */
+@source "../../node_modules/@ui-lab-core/library";
 @source "../../node_modules/ui-lab-registry/src";
 @import "./theme.css";
 
@@ -14,9 +15,7 @@
    own overrides to the preview. Generated from the default theme config via
    computeStyleVariables — regenerate there if the defaults change. */
 :root {
-  /* Default to Karla. Set data-font="work-sans" on <html> to switch the
-     complete interface to Work Sans without changing individual components. */
-  --font-interface: "Karla Variable", system-ui, sans-serif;
+  --font-interface: "Work Sans Variable", system-ui, sans-serif;
   --header-type-size-ratio: 1.125;
   --header-font-size-scale: 1;
   --body-type-size-ratio: 1.2;
@@ -205,34 +204,6 @@ pre.shiki .indent::before {
   white-space: pre;
 }
 
-.shiki.fallback .numbers {
-  display: none;
-}
-
-.code-block--line-numbers .shiki.fallback code {
-  display: grid;
-  grid-template-columns: 1rem max-content;
-  column-gap: 1rem;
-}
-
-.code-block--line-numbers .shiki.fallback .numbers {
-  display: block;
-  text-align: right;
-  color: var(--foreground-400);
-  user-select: none;
-}
-
-/* .code-block--line-numbers .shiki .line::before { */
-/*   content: counter(step); */
-/*   counter-increment: step; */
-/*   width: 1rem; */
-/*   margin-right: 1rem; */
-/*   display: inline-block; */
-/*   text-align: right; */
-/*   color: color-mix(in srgb, var(--foreground-400) 40%, transparent);  */
-/* } */
-
-
 .code-block--line-numbers .shiki .line::before {
   content: counter(step);
   counter-increment: step;
@@ -240,7 +211,7 @@ pre.shiki .indent::before {
   margin-right: 1rem;
   display: inline-block;
   text-align: right;
-  color: var(--foreground-400);
+  color: var(--background-500);
 }
 
  pre.shiki .indent {

@@ -19,7 +19,7 @@ export function DocsPagination({ adjacent }: DocsPaginationProps) {
           className="rounded-sm flex items-center gap-3 px-4 py-3.5 text-foreground-300 hover:text-foreground-50 hover:bg-background-800 transition-colors text-sm"
         >
           <FaChevronLeft size={12} />
-          <span>Previous</span>
+          <span className='text-md font-medium'>Previous</span>
         </Link>
       ) : (
         <div className="px-5 py-4" />
@@ -32,14 +32,14 @@ export function DocsPagination({ adjacent }: DocsPaginationProps) {
           href={next.url}
           className="rounded-sm flex items-center hover:bg-background-800 transition-colors"
         >
-          <div className="px-4 py-3.5 text-right">
-            <div className="text-sm font-semibold text-foreground-50">{next.title}</div>
+          <div className="px-4 py-3.5">
+            <div className="text-sm font-medium text-foreground-50">{next.title}</div>
             {next.description && (
-              <div className="text-xs text-foreground-400 mt-0.5 max-w-xs truncate">{next.description}</div>
+              <div className="text-md font-medium text-foreground-400 mt-0.5 max-w-sm">{next.description}</div>
             )}
           </div>
           <div className="flex items-center gap-3 px-5 py-4 text-foreground-300 text-sm border-l border-background-700">
-            <span>Next</span>
+            <span className='text-md font-medium'>Next</span>
             <FaChevronRight size={12} />
           </div>
         </Link>

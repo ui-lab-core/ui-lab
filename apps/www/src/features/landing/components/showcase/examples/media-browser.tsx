@@ -202,22 +202,6 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
           </div>
         )}
       </div>
-
-      <div className="px-3 py-2 border-t border-background-700 flex items-center justify-between">
-        <Group spacing="none">
-          <Group.Button isDisabled={state.page === 1} onClick={() => dispatch({ type: 'SET_PAGE', payload: Math.max(1, state.page - 1) })} aria-label="Previous">
-            <FaChevronLeft size={11} />
-          </Group.Button>
-          {[1, 2, 3].map((p) => (
-            <Group.Button key={p} active={state.page === p} onClick={() => dispatch({ type: 'SET_PAGE', payload: p })}>
-              {p}
-            </Group.Button>
-          ))}
-          <Group.Button isDisabled={state.page === TOTAL_PAGES} onClick={() => dispatch({ type: 'SET_PAGE', payload: Math.min(TOTAL_PAGES, state.page + 1) })} aria-label="Next">
-            <FaChevronRight size={11} />
-          </Group.Button>
-        </Group>
-      </div>
     </div>
   );
 }

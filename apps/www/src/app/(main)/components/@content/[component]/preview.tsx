@@ -129,11 +129,11 @@ export function Playground({
   );
 }
 
-export function Preview({ id, previewHeight }: { id: string; previewHeight?: number }) {
-  return <PreviewInstance id={id} previewHeight={previewHeight} key={id} />;
+export function Preview({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
+  return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} key={id} />;
 }
 
-function PreviewInstance({ id, previewHeight }: { id: string; previewHeight?: number }) {
+function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isNearViewport = useNearViewport(rootRef, { rootMargin: '600px 0px' });
@@ -189,7 +189,7 @@ function PreviewInstance({ id, previewHeight }: { id: string; previewHeight?: nu
     <div
       ref={rootRef}
       aria-busy={loaded ? undefined : true}
-      className="relative flex w-full shrink-0 items-center justify-center overflow-hidden rounded-sm border border-background-700"
+      className={`relative flex w-full shrink-0 items-center justify-center overflow-hidden rounded-sm border border-background-700 ${flushBottom ? 'rounded-b-none' : ''}`}
       style={{ height: fixedPreviewHeight }}
       data-preview-active={isNearViewport ? 'true' : 'false'}
       data-preview-loaded={loaded ? 'true' : 'false'}
