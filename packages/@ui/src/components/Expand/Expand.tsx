@@ -104,10 +104,12 @@ function useExpandContext() {
 export interface ExpandIconProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Custom icon element rendered inside the icon wrapper */
   children?: React.ReactNode;
+  /** Tailwind color utility applied to the icon wrapper (e.g. "bg-background-500") */
+  color?: string;
 }
 
 const ExpandIcon = React.forwardRef<HTMLSpanElement, ExpandIconProps>(
-  ({ children, className, ...props }, ref) => {
+  ({ children, className, color, ...props }, ref) => {
     const { state, resolvedStyles } = useExpandContext();
 
     return (
@@ -118,6 +120,7 @@ const ExpandIcon = React.forwardRef<HTMLSpanElement, ExpandIconProps>(
           styles.icon,
           resolvedStyles.icon,
           state.isSelected ? resolvedStyles.iconExpanded : resolvedStyles.iconCollapsed,
+          color,
           className,
         )}
         data-selected={state.isSelected ? "true" : undefined}

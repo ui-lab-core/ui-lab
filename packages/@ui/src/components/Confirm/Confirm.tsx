@@ -50,16 +50,16 @@ export interface ConfirmStageLabel {
 }
 
 export interface ConfirmLabels {
-  /** Label for the trigger button. */
-  trigger: string
+  /** Label for the trigger button. Accepts an icon or other node, not just text. */
+  trigger: React.ReactNode
   /** Row content shown before the trigger is clicked. Omit to show nothing. */
   idle?: ConfirmStageLabel
   /** Row content (inline) or heading/body (dialog) shown once the user is confirming. */
   confirming?: ConfirmStageLabel
-  /** Label for the confirm button. Defaults to "Confirm". */
-  confirm?: string
-  /** Label for the cancel button. Defaults to "Cancel". */
-  cancel?: string
+  /** Label for the confirm button. Defaults to "Confirm". Accepts an icon or other node, not just text. */
+  confirm?: React.ReactNode
+  /** Label for the cancel button. Defaults to "Cancel". Accepts an icon or other node, not just text. */
+  cancel?: React.ReactNode
 }
 
 export interface ConfirmProps {

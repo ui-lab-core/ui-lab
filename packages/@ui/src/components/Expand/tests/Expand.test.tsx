@@ -87,6 +87,24 @@ describe('Expand', () => {
     expect(contentInner).toHaveClass('slot-content-inner')
   })
 
+  it('applies color and className to the icon wrapper', () => {
+    render(
+      <Expand>
+        <Expand.Trigger>
+          Details
+          <Expand.Icon color="bg-background-500" className="px-0 py-0" />
+        </Expand.Trigger>
+        <Expand.Content>Content</Expand.Content>
+      </Expand>
+    )
+
+    const icon = screen.getByRole('button', { name: 'Details' }).querySelector(`.${styles.icon}`)
+
+    expect(icon).toHaveClass('bg-background-500')
+    expect(icon).toHaveClass('px-0', 'py-0')
+    expect(icon).not.toHaveAttribute('color')
+  })
+
   it('renders dividers inside the collapsing content region', () => {
     render(
       <>
