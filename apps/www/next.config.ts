@@ -48,6 +48,19 @@ const nextConfig: NextConfig = {
   transpilePackages: ['beautiful-mermaid', '@ui-lab-core/library', 'ui-lab-components'],
   experimental: {
     externalDir: true,
+    // Keep source maps and module bookkeeping out of the long-lived dev
+    // compiler. Browser source maps are already disabled below.
+    serverSourceMaps: false,
+    // This workspace's linked package graph produces a multi-gigabyte
+    // persistent cache that is restored into the dev server on startup.
+    turbopackFileSystemCacheForDev: false,
+    turbopackInputSourceMaps: false,
+    // Let Turbopack evict inactive compilation data instead of allowing the
+    // long-lived dev process to grow with every route visited.
+    turbopackMemoryLimit: 1.5 * 1024 * 1024 * 1024,
+    turbopackSourceMaps: false,
+    // The production build still uses Webpack and custom plugins.
+    webpackMemoryOptimizations: true,
   },
   productionBrowserSourceMaps: false,
   redirects: async () => [

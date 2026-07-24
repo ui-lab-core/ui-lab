@@ -190,9 +190,18 @@ export function Code({
     if (!eagerMeasure && !isNearViewport && !isExpanded) return;
     const measure = () => {
       if (viewportRef.current) {
-        setDimensions({
-          contentScrollWidth: viewportRef.current.scrollWidth,
-          viewportWidth: viewportRef.current.clientWidth,
+        const contentScrollWidth = viewportRef.current.scrollWidth;
+        const viewportWidth = viewportRef.current.clientWidth;
+
+        setDimensions((current) => {
+          if (
+            current.contentScrollWidth === contentScrollWidth &&
+            current.viewportWidth === viewportWidth
+          ) {
+            return current;
+          }
+
+          return { contentScrollWidth, viewportWidth };
         });
       }
     };
