@@ -1,5 +1,11 @@
 # ui-lab-components
 
+## 0.4.3
+
+### Patch Changes
+
+- 7f3b6b1: Reworked Table with custom columns, header cells, and horizontal scroll; simplified Flex wrap to a boolean prop; fixed Select multiple re-render and toggle bugs; Confirm now accepts ReactNode labels and Expand.Icon supports a color prop.
+
 ## 0.4.2
 
 ### Patch Changes
