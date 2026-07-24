@@ -244,9 +244,21 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       !Array.isArray(value) ? value ?? controlledSelectedKey : undefined,
       defaultSelectedKey ?? null,
     )
+    const controlledMultipleValues =
+      mode === "multiple"
+        ? Array.isArray(controlledState?.value)
+          ? controlledState.value
+          : Array.isArray(value)
+            ? value
+            : controlledSelectedKeys
+        : undefined
+    const controlledMultipleKeys = React.useMemo(
+      () => controlledMultipleValues === undefined ? undefined : new Set(controlledMultipleValues),
+      [controlledMultipleValues],
+    )
     const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = useControlledState(
-      mode === "multiple" ? new Set((controlledState?.value as Key[] | undefined) ?? []) : undefined,
-      Array.isArray(value) ? new Set(value) : controlledSelectedKeys ? new Set(controlledSelectedKeys) : undefined,
+      controlledMultipleKeys,
+      undefined,
       new Set(defaultSelectedKeys),
     )
     const [selectedTextValue, setSelectedTextValue] = React.useState(label ?? defaultValue ?? "")

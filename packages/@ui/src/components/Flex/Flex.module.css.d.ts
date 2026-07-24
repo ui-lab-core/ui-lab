@@ -3,7 +3,6 @@ declare const styles: {
   row: string;
   column: string;
   wrap: string;
-  nowrap: string;
   "justify-start": string;
   "justify-end": string;
   "justify-center": string;

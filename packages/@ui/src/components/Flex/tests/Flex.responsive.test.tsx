@@ -29,6 +29,7 @@ describe('Flex.responsive', () => {
     expect(flex).toHaveClass(styles['container-responsive'])
     expect(flex).toHaveAttribute('data-direction', 'row')
     expect(flex).toHaveAttribute('data-wrap', 'nowrap')
+    expect(flex).not.toHaveClass(styles.wrap)
     expect(flex).toHaveAttribute('data-gap', 'none')
     expect(flex).toHaveStyle({ '--flex-gap-step': '0' })
     expect(flex).toHaveAttribute('data-justify', 'justify-start')
@@ -39,7 +40,7 @@ describe('Flex.responsive', () => {
     const container = renderFlex({
       containerQueryResponsive: true,
       direction: 'column',
-      wrap: 'wrap',
+      wrap: true,
       gap: 'lg',
       'justify-around': true,
       'align-center': true,

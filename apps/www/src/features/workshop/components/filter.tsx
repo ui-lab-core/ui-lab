@@ -128,7 +128,7 @@ export function ElementsFilterPopover({
             <p className="text-xs font-medium text-foreground-400">
               Tags
             </p>
-            <Flex wrap="wrap" gap="xs" role="group" aria-label="Tags">
+            <Flex wrap gap="xs" role="group" aria-label="Tags">
               {tags.map((tag) => {
                 const isSelected = selectedTags.includes(tag);
 

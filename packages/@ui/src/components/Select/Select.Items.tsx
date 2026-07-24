@@ -224,7 +224,14 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         style={!isVisible ? { display: 'none' } : undefined}
         aria-hidden={!isVisible || undefined}
       >
-        {mode === "multiple" && <List.Checkbox checked={isSelected} />}
+        {mode === "multiple" && (
+          <List.Checkbox
+            checked={isSelected}
+            tabIndex={-1}
+            aria-label={`${isSelected ? 'Deselect' : 'Select'} ${finalTextValue}`}
+            onChange={handleClick}
+          />
+        )}
         {icon && (
           <span className={cn(styles['item-icon'], hasDescription && styles['item-icon-with-description'], resolved.iconWrapper)}>
             {icon}

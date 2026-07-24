@@ -7,7 +7,6 @@ import { resolveSizingStyles, type SizingValue } from "@/lib/sizing";
 import styles from "./Flex.module.css";
 
 type FlexDirection = "row" | "column";
-type FlexWrap = "wrap" | "nowrap";
 type FlexJustify =
   | "justify-start"
   | "justify-end"
@@ -50,7 +49,7 @@ export interface FlexProps
   /** Direction of the flex container */
   direction?: FlexDirection;
   /** Whether items wrap to the next line when they overflow */
-  wrap?: FlexWrap;
+  wrap?: boolean;
   /** Gap between flex items. A number maps directly to the Tailwind spacing scale (e.g. `gap={4}` behaves like `gap-4`). */
   gap?: FlexGap;
   /** Root height. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS height. Overrides `style.height` and sizing classes. */
@@ -64,11 +63,6 @@ export interface FlexProps
 const directionMap = {
   row: styles["row"],
   column: styles["column"],
-} as const;
-
-const wrapMap = {
-  wrap: styles["wrap"],
-  nowrap: styles["nowrap"],
 } as const;
 
 const justifyMap = {
@@ -123,14 +117,14 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
             className={cn(
               styles.flex,
               direction && directionMap[direction],
-              wrap && wrapMap[wrap],
+              wrap && styles.wrap,
               justify && justifyMap[justify],
               align && alignMap[align],
               styles["container-responsive"]
             )}
             style={layoutStyle}
             data-direction={direction ?? "row"}
-            data-wrap={wrap ?? "nowrap"}
+            data-wrap={wrap ? "wrap" : "nowrap"}
             data-gap={gap ?? "none"}
             data-justify={justify ?? "justify-start"}
             data-align={align ?? "align-stretch"}
@@ -147,14 +141,14 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
         className={cn(
           styles.flex,
           direction && directionMap[direction],
-          wrap && wrapMap[wrap],
+          wrap && styles.wrap,
           justify && justifyMap[justify],
           align && alignMap[align],
           className
         )}
         style={{ ...rootStyle, ...layoutStyle }}
         data-direction={direction ?? "row"}
-        data-wrap={wrap ?? "nowrap"}
+        data-wrap={wrap ? "wrap" : "nowrap"}
         data-gap={gap ?? "none"}
         data-justify={justify ?? "justify-start"}
         data-align={align ?? "align-stretch"}

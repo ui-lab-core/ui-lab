@@ -14,6 +14,7 @@ describe('Flex.core', () => {
     expect(flex).toHaveTextContent('Item 2')
     expect(flex).toHaveAttribute('data-direction', 'row')
     expect(flex).toHaveAttribute('data-wrap', 'nowrap')
+    expect(flex).not.toHaveClass(styles.wrap)
     expect(flex).toHaveAttribute('data-gap', 'none')
     expect(flex).toHaveStyle({ '--flex-gap-step': '0' })
     expect(flex).toHaveAttribute('data-justify', 'justify-start')
@@ -24,7 +25,7 @@ describe('Flex.core', () => {
   it('maps layout props to root data attributes and variant classes', () => {
     const container = renderFlex({
       direction: 'column',
-      wrap: 'wrap',
+      wrap: true,
       gap: 'xl',
       'justify-between': true,
       'align-baseline': true,
