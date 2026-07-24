@@ -1,6 +1,7 @@
 declare const styles: {
   root: string;
   container: string;
+  scroller: string;
   table: string;
   header: string;
   body: string;

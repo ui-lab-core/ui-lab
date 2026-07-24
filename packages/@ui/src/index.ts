@@ -190,7 +190,7 @@ export { Scroll } from "./components/Scroll";
 export type { ScrollProps } from "./components/Scroll";
 
 export { Table } from "./components/Table";
-export type { TableProps, Column } from "./components/Table";
+export type { TableProps, Column, TableCellRenderContext } from "./components/Table";
 
 export { Chart, useChartContext } from "./components/Chart";
 export type {

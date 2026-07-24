@@ -1,6 +1,10 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
+  .overlay {
+    isolation: isolate;
+  }
+
   .overlay[data-state="exiting"] {
     pointer-events: none;
   }

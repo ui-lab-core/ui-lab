@@ -1,2 +1,17 @@
-export { Table, TableHeader, TableBody, TableRow, TableCell, useTableContext } from "./Table";
-export type { TableProps, Column, TableContextValue, TableFilterState, TableSortState } from "./Table";
+export {
+  Table,
+  TableHeader,
+  TableHeaderCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  useTableContext,
+} from "./Table";
+export type {
+  TableProps,
+  Column,
+  TableCellRenderContext,
+  TableContextValue,
+  TableFilterState,
+  TableSortState,
+} from "./Table";

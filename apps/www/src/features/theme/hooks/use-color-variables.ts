@@ -1,77 +1,44 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
-import { cssToOklch, getShadesForRole, type OklchColor, type ShadeScale, type ColorRole } from '../lib/color-utils'
-
-function useColorVariable(family: ColorRole, shade: ShadeScale): OklchColor | null {
-  const [color, setColor] = useState<OklchColor | null>(null)
-  const observerRef = useRef<MutationObserver | null>(null)
-
-  useEffect(() => {
-    const updateColor = () => {
-      if (typeof window !== 'undefined') {
-        const css = getComputedStyle(document.documentElement)
-          .getPropertyValue(`--${family}-${shade}`)
-          .trim()
-        const oklch = cssToOklch(css)
-        setColor(oklch)
-      }
-    }
-
-    updateColor()
-
-    observerRef.current = new MutationObserver(() => {
-      updateColor()
-    })
-
-    observerRef.current.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['style'],
-    })
-
-    return () => {
-      observerRef.current?.disconnect()
-    }
-  }, [family, shade])
-
-  return color
-}
+import { useMemo } from 'react'
+import { useApp } from '../lib/app-context'
+import {
+  generateThemePalettes,
+  getShadesForRole,
+  type OklchColor,
+  type ShadeScale,
+  type ColorRole,
+} from '../lib/color-utils'
 
 export function useColorVariables(family: ColorRole): Partial<Record<ShadeScale, OklchColor | null>> {
-  const [colors, setColors] = useState<Partial<Record<ShadeScale, OklchColor | null>>>({})
-  const observerRef = useRef<MutationObserver | null>(null)
+  const { currentThemeColors, currentThemeMode } = useApp()
 
-  useEffect(() => {
-    const shades = getShadesForRole(family)
-
-    const updateColors = () => {
-      if (typeof window !== 'undefined') {
-        const newColors = {} as Partial<Record<ShadeScale, OklchColor | null>>
-        shades.forEach((shade: ShadeScale) => {
-          const css = getComputedStyle(document.documentElement)
-            .getPropertyValue(`--${family}-${shade}`)
-            .trim()
-          newColors[shade] = cssToOklch(css)
-        })
-        setColors(newColors)
-      }
+  return useMemo(() => {
+    if (!currentThemeColors) {
+      return Object.fromEntries(
+        getShadesForRole(family).map(shade => [shade, null])
+      )
     }
 
-    updateColors()
+    const palettes = generateThemePalettes(
+      currentThemeColors.background,
+      currentThemeColors.foreground,
+      currentThemeColors.accent,
+      currentThemeMode,
+      0,
+      currentThemeColors.semantic,
+      currentThemeColors.accentChromaLimit ?? 0.3,
+      currentThemeColors.accentEasing,
+      currentThemeColors.accentChromaScaling,
+      currentThemeColors.globalAdjustments,
+    )
 
-    observerRef.current = new MutationObserver(() => {
-      updateColors()
-    })
-
-    observerRef.current.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['style'],
-    })
-
-    return () => {
-      observerRef.current?.disconnect()
+    if (family === 'background' || family === 'foreground' || family === 'accent') {
+      return palettes[family]
     }
-  }, [family])
 
-  return colors
+    return palettes.semantic?.[family] ?? Object.fromEntries(
+      getShadesForRole(family).map(shade => [shade, null])
+    )
+  }, [currentThemeColors, currentThemeMode, family])
 }

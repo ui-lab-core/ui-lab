@@ -273,18 +273,17 @@
   }
 
   .table {
-    --background: var(--background-950);
+    --background: none;
     --border: var(--background-700);
     --focus-ring: var(--accent-400);
     --foreground: var(--foreground-300);
   }
-  .table > .header,
-  .table > .filter {
+
+  .table .header {
     --background: var(--background-900);
-  }
-  .table > .header {
     --foreground: var(--foreground-400);
   }
+
   .table .row {
     --background: transparent;
     --foreground: var(--foreground-300);

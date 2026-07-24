@@ -3,21 +3,43 @@
 import * as React from "react";
 
 import { Input } from "@/components/Input";
+import { Scroll } from "@/components/Scroll";
 import { type StyleValue, cn } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 
 import css from "./Table.module.css";
 
-export interface Column<T> {
+export interface TableCellRenderContext<T, K extends keyof T = keyof T> {
+  /** Cell value for the current column. */
+  value: T[K];
+  /** Full data object for the current row. */
+  row: T;
+  /** Zero-based row index after filtering. */
+  rowIndex: number;
+  /** Column definition for the current cell. */
+  column: Column<T, K>;
+  /** Zero-based column index. */
+  columnIndex: number;
+}
+
+export interface Column<T, K extends keyof T = keyof T> {
   /** Key of the data row object to display in this column */
-  key: keyof T;
-  /** Column header label displayed in the table head */
-  label: string;
+  key: K;
+  /** Column header content displayed in the table head. */
+  header?: React.ReactNode;
+  /** Preferred column width. Numbers are interpreted as pixels. */
+  width?: React.CSSProperties["width"];
+  /** Minimum column width. Numbers are interpreted as pixels. */
+  minWidth?: React.CSSProperties["minWidth"];
+  /** @deprecated Use header instead. */
+  label?: string;
   /** Whether the column supports sorting (reserved for future use) */
   sortable?: boolean;
   /** Whether a filter input is shown for this column when showFilters is enabled */
   filterable?: boolean;
-  /** Custom render function for the cell; receives the cell value and full row */
+  /** Defines custom cell content using the value, row, and table coordinates. */
+  cell?: (context: TableCellRenderContext<T, K>) => React.ReactNode;
+  /** @deprecated Use cell instead. */
   render?: (value: any, row: T) => React.ReactNode;
 }
 
@@ -151,6 +173,7 @@ type TableComponent = (<T extends Record<string, any>>(
 ) => React.ReactElement | null) & {
   displayName?: string;
   Header: typeof TableHeader;
+  HeaderCell: typeof TableHeaderCell;
   Body: typeof TableBody;
   Row: typeof TableRow;
   Cell: typeof TableCell;
@@ -257,15 +280,15 @@ const TableRoot = <T extends Record<string, any>>(
                       data-slot="filter-label"
                       htmlFor={inputId}
                     >
-                      {column.label}
+                      {column.header ?? column.label ?? String(column.key)}
                     </label>
                     <Input
                       id={inputId}
                       type="text"
                       value={filterState[columnKey] || ""}
                       onChange={(event) => setFilterValue(columnKey, event.target.value)}
-                      placeholder={`Filter by ${column.label.toLowerCase()}`}
-                      aria-label={`Filter by ${column.label}`}
+                      placeholder={`Filter by ${String(column.label ?? column.key).toLowerCase()}`}
+                      aria-label={`Filter by ${String(column.label ?? column.key)}`}
                       className={cn(css.filterInput, resolved.filterInput)}
                     />
                   </div>
@@ -276,19 +299,38 @@ const TableRoot = <T extends Record<string, any>>(
         )}
 
         <div className={cn("container", css.container, resolved.container)} data-slot="container">
-          <table
-            className={cn("element", css.table, resolved.table)}
-            data-slot="element"
-            role="table"
-            aria-label={ariaLabel}
+          <Scroll
+            className={css.scroller}
+            direction="horizontal"
+            inline
+            data-slot="scroller"
           >
-            {children ?? (
-              <>
-                <TableHeader />
-                <TableBody />
-              </>
-            )}
-          </table>
+            <table
+              className={cn("element", css.table, resolved.table)}
+              data-slot="element"
+              role="table"
+              aria-label={ariaLabel}
+            >
+              <colgroup>
+                {columns.map((column) => (
+                  <col
+                    key={String(column.key)}
+                    data-column={String(column.key)}
+                    style={{
+                      width: column.width,
+                      minWidth: column.minWidth,
+                    }}
+                  />
+                ))}
+              </colgroup>
+              {children ?? (
+                <>
+                  <TableHeader />
+                  <TableBody />
+                </>
+              )}
+            </table>
+          </Scroll>
         </div>
       </div>
     </TableContext.Provider>
@@ -323,17 +365,13 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
             role="row"
           >
             {columns.map((column) => (
-              <th
+              <TableHeaderCell
                 key={String(column.key)}
-                className={cn("header-cell", css.headerCell, styles.headerCell)}
-                data-slot="header-cell"
-                scope="col"
-                role="columnheader"
                 aria-sort="none"
                 data-sortable={column.sortable ? "true" : undefined}
               >
-                {column.label}
-              </th>
+                {column.header ?? column.label ?? String(column.key)}
+              </TableHeaderCell>
             ))}
           </tr>
         )}
@@ -343,6 +381,31 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
 );
 
 TableHeader.displayName = "Table.Header";
+
+interface TableHeaderCellProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  children?: React.ReactNode;
+}
+
+const TableHeaderCell = React.forwardRef<HTMLTableCellElement, TableHeaderCellProps>(
+  ({ className, children, ...props }, ref) => {
+    const { styles } = useTableContext();
+
+    return (
+      <th
+        ref={ref}
+        className={cn("header-cell", css.headerCell, styles.headerCell, className)}
+        data-slot="header-cell"
+        scope="col"
+        role="columnheader"
+        {...props}
+      >
+        {children}
+      </th>
+    );
+  }
+);
+
+TableHeaderCell.displayName = "Table.HeaderCell";
 
 interface TableBodyProps<T extends Record<string, any> = Record<string, any>>
   extends React.HTMLAttributes<HTMLTableSectionElement> {
@@ -445,6 +508,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
             row={row}
             column={column}
             columnIndex={columnIndex}
+            rowIndex={rowIndex}
           />
         ))}
       </tr>
@@ -462,19 +526,29 @@ interface TableCellProps<T extends Record<string, any> = Record<string, any>>
   column?: Column<T>;
   /** Zero-based column index used to read the column from context. */
   columnIndex?: number;
+  /** Zero-based row index supplied to the custom cell renderer. */
+  rowIndex?: number;
   /** Explicit cell value. Defaults to row[column.key]. */
   value?: React.ReactNode;
 }
 
 const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
-  ({ className, row, column, columnIndex, value, children, ...props }, ref) => {
+  ({ className, row, column, columnIndex = 0, rowIndex = 0, value, children, ...props }, ref) => {
     const { columns, styles } = useTableContext();
     const resolvedColumn = column ?? (columnIndex !== undefined ? columns[columnIndex] : undefined);
     const resolvedValue =
       value ?? (row && resolvedColumn ? row[resolvedColumn.key] : undefined);
     const content =
       children ??
-      (resolvedColumn?.render && row
+      (resolvedColumn?.cell && row
+        ? resolvedColumn.cell({
+            value: resolvedValue,
+            row,
+            rowIndex,
+            column: resolvedColumn,
+            columnIndex,
+          })
+        : resolvedColumn?.render && row
         ? resolvedColumn.render(resolvedValue, row)
         : String(resolvedValue ?? ""));
 
@@ -496,8 +570,17 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
 TableCell.displayName = "Table.Cell";
 
 Table.Header = TableHeader;
+Table.HeaderCell = TableHeaderCell;
 Table.Body = TableBody;
 Table.Row = TableRow;
 Table.Cell = TableCell;
 
-export { Table, TableHeader, TableBody, TableRow, TableCell, useTableContext };
+export {
+  Table,
+  TableHeader,
+  TableHeaderCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  useTableContext,
+};

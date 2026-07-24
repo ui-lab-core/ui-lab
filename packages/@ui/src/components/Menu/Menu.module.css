@@ -64,6 +64,11 @@
       outline: none;
       color: var(--foreground);
       background-color: var(--background);
+      font-family: var(--font-body, inherit);
+      font-size: var(--text-sm, 0.875rem);
+      font-weight: var(--font-weight-body-medium, 500);
+      letter-spacing: normal;
+      line-height: var(--leading-sm, 1.25rem);
       transition:
         background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
         color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
@@ -98,6 +103,11 @@
       outline: none;
       color: var(--foreground);
       background-color: var(--background);
+      font-family: var(--font-body, inherit);
+      font-size: var(--text-sm, 0.875rem);
+      font-weight: var(--font-weight-body-medium, 500);
+      letter-spacing: normal;
+      line-height: var(--leading-sm, 1.25rem);
       transition:
         background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
         color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));

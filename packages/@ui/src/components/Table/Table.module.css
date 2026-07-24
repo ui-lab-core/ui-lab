@@ -2,18 +2,22 @@
 
 @layer components.defaults {
   .root {
-    @apply w-full;
+    @apply w-full min-w-0 max-w-full;
+    /* Keep the public `.table` theme hook from matching Tailwind's display utility. */
+    display: block !important;
   }
 
   .container {
-    @apply w-full overflow-x-auto rounded-sm;
+    @apply w-full min-w-0 max-w-full overflow-hidden rounded-sm;
+    /* Keep the public `.container` theme hook from applying Tailwind's breakpoint max-widths. */
+    max-width: 100% !important;
     border: var(--border-width-base) solid var(--border, var(--background-border));
     background-color: var(--container-background, var(--background));
   }
 
-  .container {
-    display: block;
-    max-width: none;
+  .scroller {
+    @apply block w-full min-w-0 max-w-full;
+    overscroll-behavior-inline: contain;
   }
 
   .table {
@@ -45,8 +49,8 @@
     background-color: var(--background);
   }
 
-  .headerCell {
-    @apply px-4 py-3 text-left;
+  .table .headerCell {
+    @apply px-3 py-2.5 text-left;
     display: table-cell;
     background-color: var(--background);
     color: var(--foreground);
@@ -56,15 +60,8 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     white-space: nowrap;
+    border: 0;
     border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
-  }
-
-  .headerCell:first-child {
-    border-top-left-radius: var(--radius-xs);
-  }
-
-  .headerCell:last-child {
-    border-top-right-radius: var(--radius-xs);
   }
 
   .row {
@@ -96,11 +93,12 @@
     @apply cursor-pointer;
   }
 
-  .cell {
-    @apply px-4 py-3 align-middle;
+  .table .cell {
+    @apply px-3 py-2.5 align-middle;
     display: table-cell;
     background-color: var(--background, transparent);
     color: var(--foreground);
+    border: 0;
     border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
@@ -109,14 +107,6 @@
 
   .row:last-child .cell {
     border-bottom: none;
-  }
-
-  .row:last-child .cell:first-child {
-    border-bottom-left-radius: var(--radius-xs);
-  }
-
-  .row:last-child .cell:last-child {
-    border-bottom-right-radius: var(--radius-xs);
   }
 
   .emptyRow {

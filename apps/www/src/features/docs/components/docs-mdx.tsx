@@ -14,6 +14,14 @@ import { Anchor } from './mdx/client-anchor'
 import { Divider } from './mdx/client-divider'
 import { MermaidDiagramWrapper as MermaidDiagram } from './mdx/mermaid-diagram-wrapper'
 import { SkillFiles } from './mdx/skill-files'
+import {
+  MarkdownTable,
+  MarkdownTableBody,
+  MarkdownTableCell,
+  MarkdownTableHeader,
+  MarkdownTableHeaderCell,
+  MarkdownTableRow,
+} from './mdx/client-table'
 import Icon from '@/shared/components/Icon'
 import { highlightCode } from '../lib/shiki-server'
 import rehypeSlug from 'rehype-slug'
@@ -36,16 +44,12 @@ const components = {
   ol: ({ children }: any) => <ol>{children}</ol>,
   li: ({ children }: any) => <li>{children}</li>,
   hr: () => <hr />,
-  thead: ({ children }: any) => <thead className="bg-background-900 border-b border-background-800">{children}</thead>,
-  tbody: ({ children }: any) => <tbody>{children}</tbody>,
-  tr: ({ children }: any) => <tr className="border-background-800 not-last:border-b">{children}</tr>,
-  th: ({ children }: any) => <th className="px-4 py-3 text-left font-semibold text-foreground-200">{children}</th>,
-  td: ({ children }: any) => <td className="px-4 text-xs py-3 text-foreground-300">{children}</td>,
-  table: ({ children }: any) => (
-    <div className="overflow-x-auto">
-      <table>{children}</table>
-    </div>
-  ),
+  thead: MarkdownTableHeader,
+  tbody: MarkdownTableBody,
+  tr: MarkdownTableRow,
+  th: MarkdownTableHeaderCell,
+  td: MarkdownTableCell,
+  table: MarkdownTable,
   blockquote: ({ children }: any) => (
     <blockquote>
       {children}

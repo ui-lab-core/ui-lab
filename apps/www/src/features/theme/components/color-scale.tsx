@@ -1,19 +1,40 @@
 'use client'
 
 import { useColorVariables } from '../hooks/use-color-variables'
-import { CHROMA_BOUNDARIES, getShadesForRole, oklchToHex, oklchToCss, type ColorRole } from '../lib/color-utils'
-import { Divider } from 'ui-lab-components'
+import {
+  CHROMA_BOUNDARIES,
+  getShadesForRole,
+  oklchToHex,
+  oklchToCss,
+  type ColorRole,
+  type OklchColor,
+  type ShadeScale,
+} from '../lib/color-utils'
+import { Divider, Table, type Column } from 'ui-lab-components'
 import { ColorPreviewCell, CopyableCell } from './color-table-cells'
 
 interface ColorScaleProps {
   family: ColorRole
 }
 
+interface ColorRow {
+  shade: number
+  color: OklchColor
+  hex: string
+  cssVariable: string
+  oklch: string
+}
+
 export function ColorScale({ family }: ColorScaleProps) {
   const colors = useColorVariables(family)
   const chromaBounds = CHROMA_BOUNDARIES[family]
   const shadesForFamily = getShadesForRole(family)
+  const isLoading = shadesForFamily.some(shade => colors[shade] === undefined)
   const hasAnyColor = Object.values(colors).some(c => c !== null)
+
+  if (isLoading) {
+    return null
+  }
 
   if (!hasAnyColor) {
     return <div className="text-foreground-400">No color data available</div>
@@ -21,7 +42,53 @@ export function ColorScale({ family }: ColorScaleProps) {
 
   const colorRows = shadesForFamily
     .map(shade => ({ shade, color: colors[shade] }))
-    .filter(item => item.color !== null)
+    .filter(
+      (item): item is { shade: ShadeScale; color: OklchColor } =>
+        item.color !== null && item.color !== undefined
+    )
+    .map(({ shade, color }) => ({
+      shade,
+      color,
+      hex: oklchToHex(color),
+      cssVariable: `--${family}-${shade}`,
+      oklch: oklchToCss(color),
+    }))
+
+  const columns: Column<ColorRow>[] = [
+    {
+      key: 'color',
+      header: <span className="sr-only">Color preview</span>,
+      cell: ({ row }) => (
+        <ColorPreviewCell
+          oklch={row.color}
+          family={family}
+          shade={String(row.shade)}
+        />
+      ),
+    },
+    {
+      key: 'shade',
+      header: 'Shade',
+      cell: ({ row }) => (
+        <span className="font-semibold text-foreground-200">{row.shade}</span>
+      ),
+    },
+    {
+      key: 'hex',
+      header: 'Hex',
+      cell: ({ row }) => <CopyableCell value={row.hex} label="hex" />,
+    },
+    {
+      key: 'cssVariable',
+      header: 'CSS Variable',
+      cell: ({ row }) => <CopyableCell value={row.cssVariable} label="CSS variable" />,
+    },
+    {
+      key: 'oklch',
+      header: 'OKLCH',
+      cell: ({ row }) => <CopyableCell value={row.oklch} label="OKLCH" />,
+    },
+  ]
 
   return (
     <div>
@@ -34,43 +101,7 @@ export function ColorScale({ family }: ColorScaleProps) {
         </p>
       </div>
 
-      <div className="overflow-x-auto my-6 border border-background-800 rounded-sm">
-        <table className="w-full text-sm">
-          <thead className="bg-background-900 border-b border-background-800">
-            <tr className="border-b border-background-800 last:border-b-0">
-              <th className="px-4 py-3 text-left font-semibold text-foreground-200 w-[60px]"></th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground-200">Shade</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground-200">Hex</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground-200">CSS Variable</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground-200">OKLCH</th>
-            </tr>
-          </thead>
-          <tbody>
-            {colorRows.map(({ shade, color }) => (
-              <tr key={shade} className="border-b border-background-800 last:border-b-0">
-                <td className="px-1 py-1 text-sm text-foreground-300">
-                  <div className="flex justify-center">
-                    <ColorPreviewCell oklch={color!} family={family} shade={shade.toString()} />
-                  </div>
-                </td>
-                <td className="px-4 text-sm py-3 text-foreground-300">
-                  <span className="font-semibold text-foreground-200">{shade}</span>
-                </td>
-                <td className="px-4 text-sm py-3 text-foreground-300">
-                  <CopyableCell value={oklchToHex(color!)} label="hex" />
-                </td>
-                <td className="px-4 text-sm py-3 text-foreground-300">
-                  <CopyableCell value={`--${family}-${shade}`} label="var" />
-                </td>
-                <td className="px-4 text-sm py-3 text-foreground-300">
-                  <CopyableCell value={oklchToCss(color!)} label="oklch" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
+      <Table className="my-6" data={colorRows} columns={columns} />
       <Divider variant='dashed' className='my-24' />
     </div>
   )

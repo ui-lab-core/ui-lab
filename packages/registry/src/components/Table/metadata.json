@@ -1,7 +1,7 @@
 {
   "id": "table",
   "name": "Table",
-  "description": "Table component for displaying and organizing tabular data.",
+  "description": "Expressive table component with consumer-defined headers and cell rendering logic.",
   "category": "display",
   "source": {
     "packageName": "ui-lab-components",
@@ -14,7 +14,9 @@
   "tags": [
     "data",
     "table",
-    "display"
+    "display",
+    "custom cells",
+    "rendering"
   ],
   "accessibility": {
     "hasAriaSupport": true,

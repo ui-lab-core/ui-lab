@@ -12,7 +12,7 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition-property: background-color, border-color, box-shadow, color, opacity;
+    transition-property: background-color, border-color, color, opacity;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 150ms));
     transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 

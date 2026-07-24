@@ -4,6 +4,7 @@
   .root {
     @apply relative;
     min-height: 0;
+    isolation: isolate;
   }
 
   .vertical {

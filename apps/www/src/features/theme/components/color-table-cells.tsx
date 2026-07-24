@@ -14,9 +14,10 @@ export function ColorPreviewCell({ oklch, family, shade }: ColorPreviewCellProps
 
   return (
     <div
-      className="w-full h-10 rounded-xs border-[0.5] border-background-700"
+      className="h-6 min-w-8 w-full border-[0.5] border-background-800"
       style={{ backgroundColor: cssValue }}
       title={`${family} ${shade}`}
+      aria-label={`${family} ${shade} color preview`}
     />
   )
 }
