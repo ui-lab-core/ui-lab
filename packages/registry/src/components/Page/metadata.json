@@ -19,15 +19,14 @@
     "layout",
     "page-wrapper",
     "responsive",
-    "context"
+    "seo"
   ],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Uses semantic main role for page structure",
-      "Provides page-level context to child components",
-      "Mobile viewport detection for responsive behavior",
-      "Flexible padding and max-width constraints"
+      "Uses semantic header, main, and footer landmarks for page structure",
+      "Flexible padding and max-width constraints",
+      "seo prop renders a hoisted <title>, <meta name=\"description\">, and <link rel=\"canonical\">"
     ]
   }
 }

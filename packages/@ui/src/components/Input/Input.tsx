@@ -8,6 +8,7 @@ import { mergeProps, } from "@react-aria/utils";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { Button } from "@/components/Button";
 import { Tooltip } from "@/components/Tooltip";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -242,14 +243,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <React.Fragment key={key}>{action}</React.Fragment>
       ) : (
         <Tooltip key={key} content={(action as InputActionDef).title} position="top">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             type="button"
             className={css.action}
             aria-label={(action as InputActionDef).title}
             onClick={(action as InputActionDef).onClick}
-          >
-            {(action as InputActionDef).icon}
-          </button>
+            icon={(action as InputActionDef).icon}
+          />
         </Tooltip>
       );
     };

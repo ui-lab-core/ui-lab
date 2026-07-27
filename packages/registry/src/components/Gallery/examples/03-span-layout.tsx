@@ -9,9 +9,9 @@ type GalleryGap = NonNullable<GalleryProps['gap']>;
 type ItemTier = 'common' | 'archived' | 'experimental';
 
 const FRAME_STYLE: Record<ItemTier, React.CSSProperties> = {
-  common: { '--frame-fill': 'var(--background-900)', '--frame-stroke-color': 'var(--background-600)' } as React.CSSProperties,
-  archived: { '--frame-fill': 'var(--background-950)', '--frame-stroke-color': 'var(--background-700)' } as React.CSSProperties,
-  experimental: { '--frame-fill': 'var(--background-950)', '--frame-stroke-color': 'var(--background-800)' } as React.CSSProperties,
+  common: { '--fill': 'var(--background-900)', '--stroke-color': 'var(--background-600)' } as React.CSSProperties,
+  archived: { '--fill': 'var(--background-950)', '--stroke-color': 'var(--background-700)' } as React.CSSProperties,
+  experimental: { '--fill': 'var(--background-950)', '--stroke-color': 'var(--background-800)' } as React.CSSProperties,
 };
 
 export const metadata = {

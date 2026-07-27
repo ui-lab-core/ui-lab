@@ -153,9 +153,11 @@ export function PageAnimation() {
               const spread = isHovered ? rel * 34 : rel * 16;
               const lift = isHovered
                 ? isFront
-                  ? -12
-                  : -3
-                : -Math.abs(rel) * 4;
+                  ? -18
+                  : 2
+                : isFront
+                  ? -10
+                  : 0;
 
               return (
                 <g

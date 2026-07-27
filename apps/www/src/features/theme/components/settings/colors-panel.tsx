@@ -3,12 +3,10 @@
 import { memo } from "react";
 import {
   type OklchColor,
-  type SemanticColorType,
   type GlobalColorAdjustments,
 } from "../../lib/color-utils";
 import {
   getSemanticColorSafely,
-  getSemanticChromaLimit,
 } from "../../lib/color/semantic";
 import {
   ColorRow,
@@ -31,7 +29,6 @@ interface ColorsPanelProps {
   localGlobalAdjustments: GlobalColorAdjustments;
   onExpandedColorChange: (colorType: string | null) => void;
   onColorChange: (type: string, newColor: OklchColor) => void;
-  onChromaLimitChange: (type: SemanticColorType, chromaLimit: number) => void;
   onCodeThemeChange: (themeId: CodeThemeOptionId) => void;
   onGlobalAdjustmentChange: (key: keyof GlobalColorAdjustments, value: number) => void;
 }
@@ -43,7 +40,6 @@ export const ColorsPanel = memo(
     localGlobalAdjustments,
     onExpandedColorChange,
     onColorChange,
-    onChromaLimitChange,
     onCodeThemeChange,
     onGlobalAdjustmentChange,
   }: ColorsPanelProps) => {
@@ -61,39 +57,12 @@ export const ColorsPanel = memo(
             onGlobalAdjustmentChange("chromaBoost", v)
           }
         />
-        <div className="mx-[6px] mb-1 rounded-[12px] border border-background-700 bg-background-900/40 p-3">
-          <div className={`${MICRO_LABEL} mb-2 block opacity-70`}>
-            Code Theme
-          </div>
-          <Select
-            selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
-            defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}
-            className="w-full max-w-68"
-            onSelectionChange={(key) => onCodeThemeChange(key as CodeThemeOptionId)}
-          >
-            <Select.Trigger className="w-full">
-              <Select.Value placeholder="Select code theme" />
-            </Select.Trigger>
-            <Select.Content>
-              {CODE_THEME_OPTIONS.map((theme) => (
-                <Select.Item
-                  key={theme.id}
-                  value={theme.id}
-                  textValue={theme.label}
-                >
-                  {theme.label}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select>
-        </div>
         <Divider />
         <div className={`${MICRO_LABEL} px-2 pt-2 opacity-70`}>
           Core Colors
         </div>
         {([
           "background",
-          "foreground",
           "accent",
         ] as const).map((colorType) => (
           <ColorRow
@@ -126,11 +95,6 @@ export const ColorsPanel = memo(
                 colorType,
                 currentThemeMode,
               );
-              const chromaLimit = getSemanticChromaLimit(
-                localColors.semantic,
-                colorType,
-                currentThemeMode,
-              );
               const hueRange =
                 localColors.semantic?.[colorType]?.hueRange;
 
@@ -150,15 +114,37 @@ export const ColorsPanel = memo(
                   onChange={(c: OklchColor) =>
                     onColorChange(colorType, c)
                   }
-                  chromaLimit={chromaLimit}
-                  onChromaLimitChange={(limit) =>
-                    onChromaLimitChange(colorType, limit)
-                  }
                   hueRange={hueRange}
                 />
               );
             })}
           </div>
+        </div>
+        <div className="mx-[6px] mb-1 rounded-[12px] border border-background-700 bg-background-900/40 p-3">
+          <div className={`${MICRO_LABEL} mb-2 block opacity-70`}>
+            Code Theme
+          </div>
+          <Select
+            selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
+            defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}
+            className="w-full max-w-68"
+            onSelectionChange={(key) => onCodeThemeChange(key as CodeThemeOptionId)}
+          >
+            <Select.Trigger className="w-full">
+              <Select.Value placeholder="Select code theme" />
+            </Select.Trigger>
+            <Select.Content>
+              {CODE_THEME_OPTIONS.map((theme) => (
+                <Select.Item
+                  key={theme.id}
+                  value={theme.id}
+                  textValue={theme.label}
+                >
+                  {theme.label}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select>
         </div>
       </div>
     );

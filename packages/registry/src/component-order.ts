@@ -7,12 +7,12 @@ import type { ComponentCategory } from './types.js';
  */
 export const componentOrder: Record<ComponentCategory, string[]> = {
   layout: ['page', 'grid', 'flex', 'gallery', 'expand', 'panel'],
-  composition: ['group', 'list'],
-  action: ['button', 'confirm', 'command'],
+  action: ['button', 'confirm', 'command', 'menu'],
   input: ['date', 'checkbox', 'color', 'input', 'radio', 'select', 'slider', 'switch', 'textarea'],
+  composition: ['group', 'list'],
   information: ['banner', 'badge', 'label', 'tooltip'],
   feedback: ['popover', 'progress', 'skeleton', 'toast'],
-  navigation: ['path', 'menu', 'tabs', 'anchor'],
+  navigation: ['path', 'tabs', 'anchor'],
   container: ['card', 'modal', 'scroll', 'mask', 'frame'],
   display: ['divider', 'table', 'code', 'chart'],
 };

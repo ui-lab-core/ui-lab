@@ -1,5 +1,6 @@
-export function isInteractivePreview(id: string, path?: string) {
-  // Factory-backed previews are either explicitly named `interactive` or
-  // generated from a folder-level `index.tsx` entry.
-  return id.endsWith('-interactive') || path?.endsWith('/index.tsx') === true;
+export function isInteractivePreview(id: string) {
+  // Interactive previews follow the explicit naming convention used by
+  // controls such as Button. Folder-based examples may also use index.tsx,
+  // but should still render their example headers.
+  return id.endsWith('-interactive');
 }

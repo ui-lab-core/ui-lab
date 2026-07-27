@@ -92,7 +92,7 @@ export function PopoverAnimation() {
               path={TAIL_PATH}
               pathWidth={TAIL_WIDTH}
               className="p-2"
-              style={{ "--frame-fill": "var(--color-background-900)", "--frame-radius": "4px" } as React.CSSProperties}
+              style={{ "--fill": "var(--color-background-900)", "--frame-radius": "4px" } as React.CSSProperties}
             >
               <div className="flex flex-col w-[132px]">
                 {/* Header */}

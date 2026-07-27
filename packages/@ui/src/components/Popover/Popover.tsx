@@ -126,8 +126,10 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       right: "right",
     };
 
-    const { refs, floatingStyles, placement } = useFloating({
+    const { refs, floatingStyles, placement, isPositioned } = useFloating({
       placement: placementMap[position],
+      strategy: "fixed",
+      transform: false,
       whileElementsMounted: autoUpdate,
       middleware: [
         offset(POPOVER_GAP + ARROW_POSITIONING_SIZE),
@@ -135,8 +137,6 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
         shift({ padding: 8 }),
       ],
     });
-
-    const isPositioned = floatingStyles.transform !== undefined;
 
     // Trigger animation when popover is opened and positioned
     React.useEffect(() => {

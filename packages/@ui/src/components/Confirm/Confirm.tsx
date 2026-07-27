@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import { cn, type StyleValue } from "@/lib/utils"
 import { type StylesProp, createStylesResolver } from "@/lib/styles"
 import { Button } from "../Button"
+import { Input } from "../Input"
 import { Modal } from "../Modal"
 import { CircleAlert, TriangleAlert, Info } from "lucide-react"
 import styles from "./Confirm.module.css"
@@ -100,21 +101,25 @@ const severityConfig = {
     icon: <Info className="w-5 h-5 text-blue-500" />,
     warningBoxClass: styles["warning-box-low"],
     buttonVariant: "primary" as const,
+    confirmVariant: "primary" as const,
   },
   medium: {
     icon: <TriangleAlert className="w-5 h-5 text-yellow-500" />,
     warningBoxClass: styles["warning-box-medium"],
     buttonVariant: "secondary" as const,
+    confirmVariant: "primary" as const,
   },
   high: {
     icon: <CircleAlert className="w-5 h-5 text-orange-500" />,
     warningBoxClass: styles["warning-box-high"],
     buttonVariant: "secondary" as const,
+    confirmVariant: "primary" as const,
   },
   critical: {
     icon: <TriangleAlert className="w-5 h-5 text-red-500" />,
     warningBoxClass: styles["warning-box-critical"],
     buttonVariant: "secondary" as const,
+    confirmVariant: "danger" as const,
   },
 } as const
 
@@ -218,7 +223,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
 
     if (mode === "dialog") {
       return (
-        <div ref={ref} className={cn(styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
+        <div ref={ref} className={cn('confirm', styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
           <div className={styles.row}>
             {(labels.idle?.title || labels.idle?.body) && (
               <div className={cn(styles['row-text'], resolvedStyles.rowText)}>
@@ -259,7 +264,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                 </Button>
                 <Button
                   size="sm"
-                  variant="primary"
+                  variant={config.confirmVariant}
                   onClick={handleConfirm}
                   isDisabled={!canConfirm || !confirmValid || isLoading}
                 >
@@ -291,7 +296,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                   <label className={styles['input-label']}>
                     Type "{confirmText}" to confirm:
                   </label>
-                  <input
+                  <Input
                     type="text"
                     value={inputValue}
                     onChange={(e) => {
@@ -299,7 +304,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                       setError(null)
                     }}
                     placeholder={confirmText}
-                    className={cn(styles.input, resolvedStyles.input)}
+                    styles={{ root: cn(styles.input, resolvedStyles.input) }}
                   />
                 </div>
               )}
@@ -314,7 +319,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
 
     // Inline mode: idle/confirming each render their own title+body, actions swap on the right.
     return (
-      <div ref={ref} className={cn(styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
+      <div ref={ref} className={cn('confirm', styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
         <div className={styles.row}>
           {(stage?.title || stage?.body) && (
             <div className={cn(styles['row-text'], resolvedStyles.rowText)}>
@@ -336,7 +341,6 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
             ) : (
               <>
                 <Button
-                  size="sm"
                   variant="secondary"
                   onClick={handleCancel}
                   isDisabled={isLoading}
@@ -344,8 +348,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                   {cancelLabel}
                 </Button>
                 <Button
-                  size="sm"
-                  variant="primary"
+                  variant={config.confirmVariant}
                   onClick={handleConfirm}
                   isDisabled={!canConfirm || !confirmValid || isLoading}
                 >

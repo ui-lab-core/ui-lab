@@ -30,6 +30,10 @@ import styles from "./Command.module.css";
 
 const transitionDuration = 180;
 
+// Stable default so an omitted `items` prop doesn't create a new array each
+// render, which would invalidate the filtered/ordered memos and reset focus.
+const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
+
 interface CommandStyleSlots {
   root?: StyleValue;
   overlay?: StyleValue;
@@ -215,7 +219,7 @@ export function useCommandState({
 
 const Command = React.forwardRef<HTMLDivElement, CommandProps>(
   (
-    { open, defaultOpen, state, onOpenChange, embedded = false, className, styles: commandStyles, items = [], filter, children },
+    { open, defaultOpen, state, onOpenChange, embedded = false, className, styles: commandStyles, items = EMPTY_COMMAND_ITEMS, filter, children },
     ref,
   ) => {
     const [mounted, setMounted] = React.useState(false);
@@ -288,6 +292,17 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       }));
     }, [filteredItems]);
 
+    // Navigation order must match what the user sees. filteredItems is already
+    // sorted by relevance; the itemsRef Map only preserves mount order, which
+    // diverges from the rendered order once results are re-sorted, so relying on
+    // it would highlight (and scroll to) a row in the middle of the visible list.
+    // Fall back to registration order only for the manual-children usage where
+    // no items prop was supplied.
+    const orderedKeys = React.useMemo<Key[]>(() => {
+      if (filteredItems.length > 0) return filteredItems.map((command) => command.id);
+      return Array.from(itemsRef.current.keys());
+    }, [filteredItems, itemCount]);
+
     React.useImperativeHandle(ref, () => paletteRef.current as HTMLDivElement);
 
     React.useEffect(() => {
@@ -337,13 +352,8 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         return;
       }
 
-      const keys = Array.from(itemsRef.current.keys());
-      if (keys.length > 0) {
-        setFocusedKey(keys[0]);
-      } else {
-        setFocusedKey(null);
-      }
-    }, [itemCount, overlayState.isOpen, searchValue]);
+      setFocusedKey(orderedKeys[0] ?? null);
+    }, [orderedKeys, overlayState.isOpen, searchValue]);
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
       if (!overlayState.isOpen) return;
@@ -351,25 +361,23 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       switch (event.key) {
         case "ArrowDown": {
           event.preventDefault();
-          const keys = Array.from(itemsRef.current.keys());
-          if (keys.length === 0) return;
+          if (orderedKeys.length === 0) return;
           if (focusedKey === null) {
-            setFocusedKey(keys[0]);
+            setFocusedKey(orderedKeys[0]);
           } else {
-            const idx = keys.indexOf(focusedKey);
-            setFocusedKey(keys[(idx + 1) % keys.length]);
+            const idx = orderedKeys.indexOf(focusedKey);
+            setFocusedKey(orderedKeys[(idx + 1) % orderedKeys.length]);
           }
           break;
         }
         case "ArrowUp": {
           event.preventDefault();
-          const keys = Array.from(itemsRef.current.keys());
-          if (keys.length === 0) return;
+          if (orderedKeys.length === 0) return;
           if (focusedKey === null) {
-            setFocusedKey(keys[keys.length - 1]);
+            setFocusedKey(orderedKeys[orderedKeys.length - 1]);
           } else {
-            const idx = keys.indexOf(focusedKey);
-            setFocusedKey(keys[idx === 0 ? keys.length - 1 : idx - 1]);
+            const idx = orderedKeys.indexOf(focusedKey);
+            setFocusedKey(orderedKeys[idx === 0 ? orderedKeys.length - 1 : idx - 1]);
           }
           break;
         }

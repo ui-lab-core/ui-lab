@@ -18,7 +18,7 @@
     height: var(--thickness);
     overflow: visible;
     border-radius: var(--radius, var(--slider-track-radius, calc(var(--spacing-xs) * 0.50)));
-    border: var(--border, var(--slider-track-border, 0));
+    border: var(--border-width-base) solid var(--border-color);
     background: var(--track-background, var(--slider-track-background, var(--background)));
   }
 

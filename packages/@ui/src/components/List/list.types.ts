@@ -83,7 +83,7 @@ export interface ListContainerProps extends Omit<React.HTMLAttributes<HTMLDivEle
   spacing?: 'default' | 'sm';
   /** Keyboard navigation event callbacks */
   onNavigate?: ListNavigateCallbacks;
-  /** Value of the externally highlighted item; the container scrolls the `[data-highlighted="true"]` item into view when this changes */
+  /** Value of the externally highlighted item; the container instantly scrolls the `[data-highlighted="true"]` item into view when this changes */
   highlighted?: string | number | null;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ListStylesProp;

@@ -80,7 +80,8 @@ describe('Input actions', () => {
     )
 
     expect(container.querySelector('[data-actions-position="right"]')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Copy' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Copy' })).toHaveClass('ghost', 'icon')
+    expect(screen.getByRole('button', { name: 'Copy' })).not.toHaveClass('md')
     expect(screen.getByTestId('copy-icon')).toBeInTheDocument()
   })
 
@@ -93,7 +94,7 @@ describe('Input actions', () => {
     )
 
     expect(container.querySelector('[data-actions-position="left"]')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Copy' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Copy' })).toHaveClass('ghost')
   })
 
   it('calls onClick for action defs', () => {

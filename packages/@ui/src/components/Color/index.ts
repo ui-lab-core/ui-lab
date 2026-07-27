@@ -7,7 +7,14 @@ const Color = Object.assign(ColorRoot, {
 });
 
 export { Color };
-export type { ColorAreaProps, ColorProps, ColorSliderProps, ColorTriggerProps, ColorState } from "./Color";
-
+export type {
+  ColorAreaProps,
+  ColorProps,
+  ColorSliderProps,
+  ColorStyleSlots,
+  ColorStylesProp,
+  ColorTriggerProps,
+  ColorState,
+} from "./Color";
 
 

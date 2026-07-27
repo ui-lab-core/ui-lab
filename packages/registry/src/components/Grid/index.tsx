@@ -3,8 +3,8 @@ import { Divider, Frame, Grid } from 'ui-lab-components';
 import { ControlDef, ComponentDetail } from '@/types';
 
 const BASE_FRAME_STYLE = {
-  '--frame-fill': 'var(--background-900)',
-  '--frame-stroke-color': 'var(--background-600)',
+  '--fill': 'var(--background-900)',
+  '--stroke-color': 'var(--background-600)',
 } as React.CSSProperties;
 
 const gridControls: ControlDef[] = [

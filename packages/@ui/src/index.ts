@@ -16,20 +16,14 @@ export type { FrameProps } from "./components/Frame";
 export { Grid } from "./components/Grid";
 export type { GridProps } from "./components/Grid";
 
-export { Panel, PanelContext, PanelGroupContext, usePanelContext, usePanelGroupContext } from "./components/Panel";
+export { Panel, PanelContext, usePanelContext } from "./components/Panel";
 export type {
-  PanelProps, PanelState,
-  PanelHeaderProps,
-  PanelContentProps,
-  PanelMainProps,
-  PanelFooterProps,
+  PanelProps,
+  PanelOrientation,
   PanelSidebarProps,
   PanelToggleProps,
-  PanelGroupProps,
-  PanelPaneProps,
   PanelResizeProps,
   PanelContextValue,
-  PanelGroupContextValue,
 } from "./components/Panel";
 
 export { Badge } from "./components/Badge";
@@ -167,22 +161,26 @@ export { Gallery, GalleryItem, GalleryView, GalleryBody } from "./components/Gal
 export type { GalleryProps, GalleryItemProps, GalleryViewProps, GalleryBodyProps } from "./components/Gallery";
 
 export { Color } from "./components/Color";
-export type { ColorAreaProps, ColorProps, ColorSliderProps, ColorTriggerProps, ColorState } from "./components/Color";
+export type {
+  ColorAreaProps,
+  ColorProps,
+  ColorSliderProps,
+  ColorStyleSlots,
+  ColorStylesProp,
+  ColorTriggerProps,
+  ColorState,
+} from "./components/Color";
 
-export { Page, PageContext, usePageContext } from "./components/Page";
+export { Page } from "./components/Page";
 export type {
   PageProps,
-  PageContextValue,
   PagePadding,
   PageGap,
-  PageSpacing,
+  PageSeo,
   PageStyleSlots,
   PageStylesProp,
   PageHeaderProps,
-  PageTitleProps,
-  PageDescriptionProps,
-  PageActionsProps,
-  PageContentProps,
+  PageBodyProps,
   PageFooterProps,
 } from "./components/Page";
 

@@ -29,6 +29,7 @@ type ColorCanvasGradientStyles = {
 type ColorSliderStyles = {
   hue?: StyleValue;
   opacity?: StyleValue;
+  chroma?: StyleValue;
 };
 
 export interface ColorStyleSlots {
@@ -70,10 +71,13 @@ const resolveColorBaseStyles = createStylesResolver([
   "canvasPointer",
   "sliderHue",
   "sliderOpacity",
+  "sliderChroma",
   "sliderTrackHue",
   "sliderTrackOpacity",
+  "sliderTrackChroma",
   "sliderThumbHue",
   "sliderThumbOpacity",
+  "sliderThumbChroma",
   "recentColors",
   "recentColorSwatch",
   "inputGroup",
@@ -111,10 +115,13 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
   let canvasGradientBrightness: StyleValue | undefined;
   let sliderHue: StyleValue | undefined;
   let sliderOpacity: StyleValue | undefined;
+  let sliderChroma: StyleValue | undefined;
   let sliderTrackHue: StyleValue | undefined;
   let sliderTrackOpacity: StyleValue | undefined;
+  let sliderTrackChroma: StyleValue | undefined;
   let sliderThumbHue: StyleValue | undefined;
   let sliderThumbOpacity: StyleValue | undefined;
+  let sliderThumbChroma: StyleValue | undefined;
 
   if (canvasGradient) {
     if (typeof canvasGradient === "string" || Array.isArray(canvasGradient)) {
@@ -132,9 +139,11 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
     if (typeof slider === "string" || Array.isArray(slider)) {
       sliderHue = slider;
       sliderOpacity = slider;
+      sliderChroma = slider;
     } else {
       sliderHue = slider.hue;
       sliderOpacity = slider.opacity;
+      sliderChroma = slider.chroma;
     }
   }
 
@@ -142,9 +151,11 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
     if (typeof sliderTrack === "string" || Array.isArray(sliderTrack)) {
       sliderTrackHue = sliderTrack;
       sliderTrackOpacity = sliderTrack;
+      sliderTrackChroma = sliderTrack;
     } else {
       sliderTrackHue = sliderTrack.hue;
       sliderTrackOpacity = sliderTrack.opacity;
+      sliderTrackChroma = sliderTrack.chroma;
     }
   }
 
@@ -152,9 +163,11 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
     if (typeof sliderThumb === "string" || Array.isArray(sliderThumb)) {
       sliderThumbHue = sliderThumb;
       sliderThumbOpacity = sliderThumb;
+      sliderThumbChroma = sliderThumb;
     } else {
       sliderThumbHue = sliderThumb.hue;
       sliderThumbOpacity = sliderThumb.opacity;
+      sliderThumbChroma = sliderThumb.chroma;
     }
   }
 
@@ -173,10 +186,13 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
     canvasPointer,
     sliderHue,
     sliderOpacity,
+    sliderChroma,
     sliderTrackHue,
     sliderTrackOpacity,
+    sliderTrackChroma,
     sliderThumbHue,
     sliderThumbOpacity,
+    sliderThumbChroma,
     recentColors,
     recentColorSwatch,
     inputGroup,
@@ -523,15 +539,29 @@ export interface ColorSliderProps
     "defaultValue" | "value" | "onChange"
   > {
   /** Which color channel this slider controls. */
-  type?: "hue" | "opacity";
-  /** Current slider value. Hue uses 0-360, opacity uses 0-1. */
+  type?: "hue" | "opacity" | "chroma";
+  /** Current slider value. Hue uses 0-360; opacity and OKLCH chroma use their native unit ranges. */
   value?: number;
   /** Initial slider value for uncontrolled usage. */
   defaultValue?: number;
   /** Called when the slider value changes. */
   onChange?: (value: number) => void;
-  /** Base color used to render the opacity gradient when type is opacity. */
+  /**
+   * Base CSS color used to render opacity and chroma gradients. For chroma,
+   * supply an OKLCH color so the track can preserve its lightness and hue.
+   */
   color?: string;
+  /** Overrides the channel's default minimum value. */
+  min?: number;
+  /** Overrides the channel's default maximum value. */
+  max?: number;
+  /**
+   * Maximum chroma used only for the track preview. This does not change the
+   * slider's interactive range.
+   */
+  previewMax?: number;
+  /** Overrides the channel's default keyboard and pointer increment. */
+  step?: number;
   /** Disables slider interaction. */
   disabled?: boolean;
   /** Size of the slider. */
@@ -539,6 +569,21 @@ export interface ColorSliderProps
   className?: string;
   trackClassName?: string;
   thumbClassName?: string;
+}
+
+function getChromaTrackBackground(color: string, maxChroma: number): string {
+  const oklchMatch = color.match(
+    /^oklch\(\s*([+-]?(?:\d*\.\d+|\d+))(%?)\s+([+-]?(?:\d*\.\d+|\d+))\s+([+-]?(?:\d*\.\d+|\d+))\s*\)$/i
+  );
+
+  if (oklchMatch) {
+    const [, lightness, lightnessUnit, , hue] = oklchMatch;
+    const preservedLightness = `${lightness}${lightnessUnit}`;
+
+    return `linear-gradient(to right, oklch(${preservedLightness} 0 ${hue}), oklch(${preservedLightness} ${maxChroma} ${hue}))`;
+  }
+
+  return `linear-gradient(to right, oklch(from ${color} l 0 h), oklch(from ${color} l ${maxChroma} h))`;
 }
 
 const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
@@ -549,6 +594,10 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
       defaultValue,
       onChange,
       color,
+      min,
+      max,
+      previewMax,
+      step,
       disabled,
       size,
       className,
@@ -568,7 +617,9 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
       (context
         ? type === "opacity"
           ? context.opacity
-          : context.hue
+          : type === "hue"
+            ? context.hue
+            : undefined
         : undefined);
 
     const resolvedDefaultValue =
@@ -576,21 +627,37 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
     const resolvedDisabled = disabled ?? context?.disabled ?? false;
     const resolvedSize = size ?? context?.size ?? "md";
     const resolvedTrackColor = color ?? context?.baseColor ?? "rgb(0, 0, 0)";
+    const resolvedMin = min ?? 0;
+    const resolvedMax = max ?? (type === "hue" ? 360 : type === "opacity" ? 1 : 0.4);
+    const resolvedPreviewMax = previewMax ?? resolvedMax;
+    const resolvedStep = step ?? (type === "hue" ? 1 : type === "opacity" ? 0.01 : 0.001);
     const resolvedClassName =
       className ??
-      (type === "opacity" ? context?.resolved.sliderOpacity : context?.resolved.sliderHue);
+      (type === "opacity"
+        ? context?.resolved.sliderOpacity
+        : type === "chroma"
+          ? context?.resolved.sliderChroma
+          : context?.resolved.sliderHue);
     const resolvedTrackClassName =
       trackClassName ??
       (type === "opacity"
         ? context?.resolved.sliderTrackOpacity
-        : context?.resolved.sliderTrackHue);
+        : type === "chroma"
+          ? context?.resolved.sliderTrackChroma
+          : context?.resolved.sliderTrackHue);
     const resolvedThumbClassName =
       thumbClassName ??
       (type === "opacity"
         ? context?.resolved.sliderThumbOpacity
-        : context?.resolved.sliderThumbHue);
+        : type === "chroma"
+          ? context?.resolved.sliderThumbChroma
+          : context?.resolved.sliderThumbHue);
     const contextOnChange =
-      type === "opacity" ? context?.handleOpacityChange : context?.handleHueChange;
+      type === "opacity"
+        ? context?.handleOpacityChange
+        : type === "hue"
+          ? context?.handleHueChange
+          : undefined;
 
     const handleValueChange = React.useCallback(
       ([nextValue]: number[]) => {
@@ -614,38 +681,62 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
       }),
       [resolvedTrackColor, style, type]
     );
+    const trackStyle = React.useMemo(
+      () =>
+        type === "chroma"
+          ? { backgroundImage: getChromaTrackBackground(resolvedTrackColor, resolvedPreviewMax) }
+          : undefined,
+      [resolvedPreviewMax, resolvedTrackColor, type]
+    );
 
     return (
       <Slider
         ref={ref}
-        min={type === "opacity" ? 0 : 0}
-        max={type === "opacity" ? 1 : 360}
-        step={type === "opacity" ? 0.01 : 1}
-        aria-label={ariaLabel ?? (type === "opacity" ? "Opacity" : "Hue")}
+        min={resolvedMin}
+        max={resolvedMax}
+        step={resolvedStep}
+        aria-label={ariaLabel ?? (type === "opacity" ? "Opacity" : type === "chroma" ? "Chroma" : "Hue")}
         value={resolvedValue}
         defaultValue={resolvedValue === undefined ? resolvedDefaultValue : undefined}
         onValueChange={handleValueChange}
         disabled={resolvedDisabled}
         data-size={resolvedSize}
         style={sliderStyle}
+        trackStyle={trackStyle}
         className={cn(
-          type === "opacity" ? "opacity-slider" : "hue-slider",
-          type === "opacity" ? styles["opacity-slider"] : styles["hue-slider"],
+          type === "opacity" ? "opacity-slider" : type === "chroma" ? "chroma-slider" : "hue-slider",
+          type === "opacity"
+            ? styles["opacity-slider"]
+            : type === "chroma"
+              ? styles["chroma-slider"]
+              : styles["hue-slider"],
           resolvedClassName
         )}
         styles={{
           track: cn(
-            type === "opacity" ? "opacity-track" : "hue-track",
-            type === "opacity" ? styles["opacity-track"] : styles["hue-track"],
+            type === "opacity" ? "opacity-track" : type === "chroma" ? "chroma-track" : "hue-track",
+            type === "opacity"
+              ? styles["opacity-track"]
+              : type === "chroma"
+                ? styles["chroma-track"]
+                : styles["hue-track"],
             resolvedTrackClassName
           ),
           range: cn(
-            type === "opacity" ? "opacity-range" : "hue-range",
-            type === "opacity" ? styles["opacity-range"] : styles["hue-range"]
+            type === "opacity" ? "opacity-range" : type === "chroma" ? "chroma-range" : "hue-range",
+            type === "opacity"
+              ? styles["opacity-range"]
+              : type === "chroma"
+                ? styles["chroma-range"]
+                : styles["hue-range"]
           ),
           thumb: cn(
-            type === "opacity" ? "opacity-thumb" : "hue-thumb",
-            type === "opacity" ? styles["opacity-thumb"] : styles["hue-thumb"],
+            type === "opacity" ? "opacity-thumb" : type === "chroma" ? "chroma-thumb" : "hue-thumb",
+            type === "opacity"
+              ? styles["opacity-thumb"]
+              : type === "chroma"
+                ? styles["chroma-thumb"]
+                : styles["hue-thumb"],
             resolvedThumbClassName
           ),
         }}

@@ -4,7 +4,7 @@
   .flex {
     --gap-scale: 0.5;
 
-    @apply flex w-full;
+    @apply flex;
     gap: calc(var(--spacing, 0.25rem) * var(--flex-gap-step, 0) * var(--gap-scale, 1));
   }
 

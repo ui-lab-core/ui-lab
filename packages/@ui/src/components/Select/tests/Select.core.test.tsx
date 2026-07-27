@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { screen } from '@testing-library/react'
-import { renderSelectWithItems, selectItem, openSelect, getSelectTrigger, getSelectedItems } from './Select.test-utils'
+import { renderSelectWithItems, renderSelectWithChildren, selectItem, openSelect, getSelectTrigger, getSelectedItems } from './Select.test-utils'
 import { createMockSelectItems, createSelectionCallback } from '@/tests/utils'
+import styles from '../Select.module.css'
+import { Select } from '..'
 
 describe('Select.core', () => {
   describe('single selection', () => {
@@ -14,6 +16,28 @@ describe('Select.core', () => {
 
       const list = document.querySelector('[role="listbox"][data-gap="xs"]')
       expect(list).toBeInTheDocument()
+    })
+
+    it('applies item spacing when options are wrapped in Select.List', async () => {
+      const container = renderSelectWithChildren(
+        <>
+          <Select.Trigger><Select.Value placeholder="Select an option" /></Select.Trigger>
+          <Select.Content>
+            <Select.List>
+              <Select.Item value="option1">Option 1</Select.Item>
+              <Select.Item value="option2">Option 2</Select.Item>
+              <Select.Item value="option3">Option 3</Select.Item>
+            </Select.List>
+          </Select.Content>
+        </>
+      )
+      const trigger = getSelectTrigger(container)
+
+      await openSelect(trigger)
+
+      const list = document.querySelector(`.${styles.list}`)
+      expect(list).toBeInTheDocument()
+      expect(list?.querySelectorAll('[role="option"]')).toHaveLength(3)
     })
 
     it('controlled: selectedKey prop controls selection', async () => {

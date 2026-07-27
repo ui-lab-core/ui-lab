@@ -11,7 +11,6 @@ import {
   type HueRange,
   oklchToCss,
 } from "../../lib/color-utils";
-import { getScaleName } from "../../config";
 import {
   Slider,
   Divider,
@@ -22,11 +21,14 @@ import {
 import { useApp } from "../../lib/app-context";
 import {
   colorFromHue,
+  colorFromChroma,
+  getMaxChroma,
   type ThemeColorType,
 } from "../../lib/color/set-color";
 
 const MICRO_LABEL = "text-sm font-semibold text-foreground-400";
 const VALUE_LABEL = "text-sm text-foreground-300";
+const BACKGROUND_CHROMA_PREVIEW_MULTIPLIER = 10;
 
 interface SliderControlProps {
   label: string;
@@ -55,18 +57,16 @@ export interface ColorRowProps {
   isExpanded: boolean;
   onToggle: () => void;
   onChange: (color: OklchColor) => void;
-  chromaLimit?: number;
-  onChromaLimitChange?: (limit: number) => void;
   hueRange?: HueRange;
 }
 
-interface TypeScaleSliderProps {
-  value?: number;
-  onChange: (ratio: number) => void;
-  fontSizeScale: number;
+interface CoreColorControlsProps {
+  color: OklchColor;
+  onChange: (color: OklchColor) => void;
+  type: "background" | "accent";
 }
 
-interface ColorPickerProps {
+interface SemanticColorPickerProps {
   color: OklchColor;
   onChange: (color: OklchColor) => void;
   hueRange?: HueRange;
@@ -113,7 +113,6 @@ const GlobalSlider = memo(
     formatValue,
     onChange,
   }: GlobalSliderProps) => {
-    const isNeutral = Math.abs(value - (label === "Lightness" ? 0 : 1)) < 0.01;
     return (
       <div className="space-y-1.5 group">
         <div className="space-y-1 flex justify-between items-center">
@@ -163,7 +162,7 @@ const getPreviewColor = (
         ? { l: 0.58, c: 0, h: 0 }
         : { l: 0.58, c: 0, h: 0 };
     }
-    return { l: 0.70, c: Math.min(color.c, 0.18), h: color.h };
+    return { l: 0.70, c: Math.min(color.c, 0.32), h: color.h };
   }
 
   return { l: 0.55, c: Math.min(color.c, 0.20), h: color.h };
@@ -220,12 +219,20 @@ export const ColorRow = memo(
           >
             <div className="px-3 pb-4 pt-0">
               <div className="h-px w-full bg-background-700/30 mb-4" />
-              <ColorPicker
-                type={type}
-                color={color}
-                onChange={onChange}
-                hueRange={hueRange}
-              />
+              {type === "background" || type === "accent" ? (
+                <CoreColorControls
+                  type={type}
+                  color={color}
+                  onChange={onChange}
+                />
+              ) : (
+                <SemanticColorPicker
+                  type={type}
+                  color={color}
+                  onChange={onChange}
+                  hueRange={hueRange}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -237,33 +244,41 @@ export const ColorRow = memo(
 
 ColorRow.displayName = "ColorRow";
 
-const TypeScaleSlider = memo(
-  ({ value, onChange, fontSizeScale }: TypeScaleSliderProps) => {
-    const ratio = value ?? 1.2;
-    const scaleName = getScaleName(ratio);
+const CoreColorControls = memo(
+  ({ color, onChange, type }: CoreColorControlsProps) => {
+    const { currentThemeMode } = useApp();
 
     return (
-      <div className="bg-background-800/30 rounded-[12px] border border-background-700 space-y-3 mx-[6px] mt-2">
-        <div className="flex justify-between items-start px-4 pt-2">
-          <label className="text-sm font-medium text-foreground-400" htmlFor="type-scale-slider">
-            Type Scale
-          </label>
-          <div className="flex flex-col items-end text-right">
-            <span className="text-sm font-semibold text-foreground-100">
-              {scaleName}
-            </span>
-            <span className={`${VALUE_LABEL} text-foreground-400`}>
-              {ratio.toFixed(3)}
-            </span>
-          </div>
+      <div className="space-y-4">
+        <div className="space-y-2 group">
+          <Label styles={{ text: "text-xs font-medium" }}>Hue</Label>
+          <Color.Slider
+            type="hue"
+            aria-label={`${type} hue`}
+            value={color.c <= 0.005 ? 0 : color.h}
+            onChange={(hue) =>
+              onChange(colorFromHue(type, hue, color, currentThemeMode))
+            }
+          />
         </div>
-        <div className="px-4 py-2 border-t border-background-700">
-          <Slider.Root
-            value={[ratio]}
-            onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
-            min={1.067}
-            max={1.2}
+        <div className="space-y-2 group">
+          <Label styles={{ text: "text-xs font-medium" }}>Chroma</Label>
+          <Color.Slider
+            type="chroma"
+            aria-label={`${type} chroma`}
+            value={color.c}
+            color={oklchToCss(getPreviewColor(type, color, currentThemeMode))}
+            min={0}
+            max={getMaxChroma(type)}
+            previewMax={
+              type === "background"
+                ? getMaxChroma(type) * BACKGROUND_CHROMA_PREVIEW_MULTIPLIER
+                : undefined
+            }
             step={0.001}
+            onChange={(chroma) =>
+              onChange(colorFromChroma(type, chroma, color))
+            }
           />
         </div>
       </div>
@@ -271,10 +286,10 @@ const TypeScaleSlider = memo(
   },
 );
 
-TypeScaleSlider.displayName = "TypeScaleSlider";
+CoreColorControls.displayName = "CoreColorControls";
 
-const ColorPicker = memo(
-  ({ color, onChange, hueRange, type }: ColorPickerProps) => {
+const SemanticColorPicker = memo(
+  ({ color, onChange, hueRange, type }: SemanticColorPickerProps) => {
     const { currentThemeMode } = useApp();
 
     const swatches = useMemo(() => {
@@ -380,7 +395,7 @@ const ColorPicker = memo(
   },
 );
 
-ColorPicker.displayName = "ColorPicker";
+SemanticColorPicker.displayName = "SemanticColorPicker";
 
 export const GlobalAdjustmentsPanel = memo(
   ({ lightnessValue, chromaValue, onLightnessChange, onChromaChange }: {

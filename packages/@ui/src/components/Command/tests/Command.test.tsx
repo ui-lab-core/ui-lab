@@ -494,12 +494,12 @@ describe('Command', () => {
 
       fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowDown' })
       expect(options[0]).toHaveAttribute('data-highlighted', 'true')
-      expect(scrollSpy).toHaveBeenCalledWith(options[0])
+      expect(scrollSpy).toHaveBeenCalledWith(options[0], 'instant')
 
       scrollSpy.mockClear()
       fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowDown' })
       expect(options[1]).toHaveAttribute('data-highlighted', 'true')
-      expect(scrollSpy).toHaveBeenCalledWith(options[1])
+      expect(scrollSpy).toHaveBeenCalledWith(options[1], 'instant')
     })
 
     it('scrolls when the highlight wraps from the first to the last item', async () => {
@@ -510,7 +510,7 @@ describe('Command', () => {
 
       fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowUp' })
       expect(options[2]).toHaveAttribute('data-highlighted', 'true')
-      expect(scrollSpy).toHaveBeenCalledWith(options[2])
+      expect(scrollSpy).toHaveBeenCalledWith(options[2], 'instant')
     })
   })
 })

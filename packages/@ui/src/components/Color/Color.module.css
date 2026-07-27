@@ -213,7 +213,6 @@
   .hue-slider {
     --track-height: calc(var(--spacing, 0.25rem) * 5);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
-    --border: 0;
     --side-padding: var(--inline-padding, 2px);
     --thumb-width: calc(var(--track-height) - (var(--padding-block) * 2));
     --thumb-height: var(--thumb-width);
@@ -248,7 +247,6 @@
     width: 100%;
     height: var(--track-height);
     overflow: hidden;
-    border: var(--border);
     @apply rounded-full;
     background: transparent;
   }
@@ -291,7 +289,6 @@
   .opacity-slider {
     --size: calc(var(--spacing, 0.25rem) * 4);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
-    --border: 0;
     --range-background: transparent;
     --thumb-width: calc(var(--size) - (var(--padding-block) * 2));
     --padding-inline: var(--inline-padding, var(--padding-block));
@@ -329,7 +326,6 @@
     width: 100%;
     height: var(--size);
     overflow: hidden;
-    border: var(--border);
     @apply rounded-full;
     background: var(--track-background);
   }
@@ -379,6 +375,71 @@
   }
 
   .opacity-slider .opacity-thumb[data-pressed="true"] {
+    box-shadow: var(--thumb-shadow-active);
+  }
+
+  .chroma-slider {
+    --size: calc(var(--spacing, 0.25rem) * 4);
+    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
+    --range-background: transparent;
+    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));
+    --padding-inline: var(--inline-padding, var(--padding-block));
+    --hit-size: calc(var(--size) + (var(--padding-block) * 2));
+    --thumb-height: var(--thumb-width);
+    --side-padding: 2px;
+    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
+    --thumb-background: transparent;
+    --thumb-border: 2px solid white;
+    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);
+    --top: 50%;
+    --transform: translate(-50%, -50%);
+    width: 100%;
+    box-sizing: border-box;
+    min-height: var(--hit-size);
+    padding-block: var(--padding-block);
+    padding-inline: var(--padding-inline);
+    @apply rounded-full;
+  }
+
+  .chroma-slider .chroma-track {
+    position: relative;
+    width: 100%;
+    height: var(--size);
+    overflow: hidden;
+    @apply rounded-full;
+  }
+
+  .chroma-slider .chroma-range {
+    background: transparent;
+  }
+
+  .chroma-slider .chroma-thumb {
+    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);
+    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);
+
+    position: absolute;
+    top: var(--top);
+    box-sizing: border-box;
+    width: var(--thumb-width);
+    height: var(--thumb-height);
+    transform: var(--transform);
+    border: var(--thumb-border);
+    @apply rounded-full;
+    background: var(--thumb-background);
+    box-shadow: var(--thumb-shadow);
+  }
+
+  .chroma-slider .chroma-thumb[data-focus-visible="true"] {
+    outline: 2px solid var(--focus-visible);
+    outline-offset: 2px;
+  }
+
+  .chroma-slider .chroma-thumb[data-hovered="true"] {
+    --hover-duration: var(--hover-enter-duration, 0ms);
+    box-shadow: var(--thumb-shadow-hover);
+  }
+
+  .chroma-slider .chroma-thumb[data-pressed="true"] {
     box-shadow: var(--thumb-shadow-active);
   }
 

@@ -118,7 +118,7 @@ describe('List.scroll', () => {
 
     const highlightedRow = container.querySelector('[data-highlighted="true"]')
     expect(highlightedRow).toHaveTextContent('Item 2')
-    expect(scrollSpy).toHaveBeenCalledWith(highlightedRow)
+    expect(scrollSpy).toHaveBeenCalledWith(highlightedRow, 'instant')
   })
 
   it('does not scroll when highlighted is null or matches no row', async () => {

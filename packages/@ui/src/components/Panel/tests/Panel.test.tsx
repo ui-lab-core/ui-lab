@@ -4,23 +4,28 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { axe } from 'jest-axe'
 import { Panel } from '../Panel'
-import css from '../Panel.module.css'
 
-describe('Panel state and trigger contract', () => {
-  it('toggles uncontrolled state, preserves the consumer handler, and reports changes', async () => {
+describe('Panel sidebar relationships', () => {
+  it('toggles an uncontrolled sidebar identified by aria-controls', async () => {
     const user = userEvent.setup()
     const onClick = vi.fn()
     const onOpenChange = vi.fn()
 
     render(
-      <Panel defaultOpen={false} onOpenChange={onOpenChange}>
-        <Panel.Sidebar id="navigation">Navigation</Panel.Sidebar>
-        <Panel.Header>
-          <Panel.Toggle>
+      <Panel>
+        <Panel.Sidebar
+          id="navigation"
+          defaultOpen={false}
+          onOpenChange={onOpenChange}
+        >
+          Navigation
+        </Panel.Sidebar>
+        <header>
+          <Panel.Toggle aria-controls="navigation">
             <button onClick={onClick}>Navigation</button>
           </Panel.Toggle>
-        </Panel.Header>
-        <Panel.Content>Content</Panel.Content>
+        </header>
+        <main>Content</main>
       </Panel>
     )
 
@@ -38,13 +43,15 @@ describe('Panel state and trigger contract', () => {
     expect(sidebar).toHaveAttribute('data-open', 'true')
   })
 
-  it('keeps controlled state with the consumer until open changes', async () => {
+  it('keeps controlled visibility on the sidebar', async () => {
     const user = userEvent.setup()
     const onOpenChange = vi.fn()
     const { rerender } = render(
-      <Panel open={false} onOpenChange={onOpenChange}>
-        <Panel.Sidebar id="inspector">Inspector</Panel.Sidebar>
-        <Panel.Toggle><button>Inspector</button></Panel.Toggle>
+      <Panel>
+        <Panel.Sidebar id="inspector" open={false} onOpenChange={onOpenChange}>
+          Inspector
+        </Panel.Sidebar>
+        <Panel.Toggle aria-controls="inspector"><button>Inspector</button></Panel.Toggle>
       </Panel>
     )
 
@@ -53,38 +60,25 @@ describe('Panel state and trigger contract', () => {
     expect(document.getElementById('inspector')).toHaveAttribute('data-open', 'false')
 
     rerender(
-      <Panel open onOpenChange={onOpenChange}>
-        <Panel.Sidebar id="inspector">Inspector</Panel.Sidebar>
-        <Panel.Toggle><button>Inspector</button></Panel.Toggle>
+      <Panel>
+        <Panel.Sidebar id="inspector" open onOpenChange={onOpenChange}>
+          Inspector
+        </Panel.Sidebar>
+        <Panel.Toggle aria-controls="inspector"><button>Inspector</button></Panel.Toggle>
       </Panel>
     )
     expect(document.getElementById('inspector')).toHaveAttribute('data-open', 'true')
   })
-
-  it('uses Sidebar.defaultOpen only as an initial root state seed', async () => {
-    const user = userEvent.setup()
-    render(
-      <Panel>
-        <Panel.Sidebar id="seeded" defaultOpen={false}>Sidebar</Panel.Sidebar>
-        <Panel.Toggle><button>Toggle</button></Panel.Toggle>
-      </Panel>
-    )
-
-    const sidebar = document.getElementById('seeded')!
-    expect(sidebar).toHaveAttribute('data-open', 'false')
-    await user.click(screen.getByRole('button', { name: 'Toggle' }))
-    expect(sidebar).toHaveAttribute('data-open', 'true')
-  })
 })
 
-describe('Panel refs, layout, and responsiveness', () => {
+describe('Panel layout and responsiveness', () => {
   const originalObserver = globalThis.ResizeObserver
 
   afterEach(() => {
     globalThis.ResizeObserver = originalObserver
   })
 
-  it('forwards the root ref while observing that same Panel container', () => {
+  it('forwards the root ref while observing the same container', () => {
     const observed: Element[] = []
     globalThis.ResizeObserver = class {
       constructor(_callback: ResizeObserverCallback) {}
@@ -94,62 +88,34 @@ describe('Panel refs, layout, and responsiveness', () => {
     } as unknown as typeof ResizeObserver
     const ref = React.createRef<HTMLDivElement>()
 
-    render(<Panel ref={ref}><Panel.Content>Content</Panel.Content></Panel>)
+    render(<Panel ref={ref} collapseAt={600}><main>Content</main></Panel>)
 
     expect(ref.current).toBeInstanceOf(HTMLDivElement)
     expect(observed).toEqual([ref.current])
   })
 
-  it('groups header, content, and footer into a main column without reordering either sidebar side', () => {
-    const { container, rerender } = render(
-      <Panel>
-        <Panel.Sidebar side="left">Left</Panel.Sidebar>
-        <Panel.Header>Header</Panel.Header>
-        <Panel.Content>Content</Panel.Content>
-        <Panel.Footer fixed>Footer</Panel.Footer>
-      </Panel>
-    )
-
-    const root = container.firstElementChild!
-    expect(root.children[0]).toHaveAttribute('data-side', 'left')
-    expect(root.children[1]).toHaveClass(css.main)
-    expect(Array.from(root.children[1].children).map((node) => node.tagName)).toEqual([
-      'HEADER',
-      'DIV',
-      'FOOTER',
-    ])
-    expect(root.querySelector('footer')).toHaveClass(css.fixed)
-
-    rerender(
-      <Panel>
-        <Panel.Header>Header</Panel.Header>
-        <Panel.Content>Content</Panel.Content>
-        <Panel.Footer>Footer</Panel.Footer>
-        <Panel.Sidebar side="right">Right</Panel.Sidebar>
-      </Panel>
-    )
-    expect(root.children[0]).toHaveClass(css.main)
-    expect(root.children[1]).toHaveAttribute('data-side', 'right')
-  })
-
-  it('keeps an explicit main region intact for advanced compositions', () => {
+  it('renders semantic regions directly without rewriting their structure', () => {
     const { container } = render(
       <Panel>
-        <Panel.Sidebar side="left">Navigation</Panel.Sidebar>
-        <Panel.Main data-testid="main">
-          <Panel.Header>Header</Panel.Header>
-          <Panel.Content>Content</Panel.Content>
-        </Panel.Main>
+        <aside>Navigation</aside>
+        <section>
+          <header>Header</header>
+          <main>Content</main>
+          <footer>Footer</footer>
+        </section>
       </Panel>
     )
 
     const root = container.firstElementChild!
-    expect(root.children).toHaveLength(2)
-    expect(screen.getByTestId('main')).toHaveClass(css.main)
-    expect(screen.getByTestId('main').children).toHaveLength(2)
+    expect(Array.from(root.children).map((node) => node.tagName)).toEqual(['ASIDE', 'SECTION'])
+    expect(Array.from(root.children[1].children).map((node) => node.tagName)).toEqual([
+      'HEADER',
+      'MAIN',
+      'FOOTER',
+    ])
   })
 
-  it('bases stacked state on observed container width without changing open state', () => {
+  it('stacks a horizontal layout based on its observed width', () => {
     let callback: ResizeObserverCallback = () => {}
     globalThis.ResizeObserver = class {
       constructor(next: ResizeObserverCallback) { callback = next }
@@ -159,9 +125,9 @@ describe('Panel refs, layout, and responsiveness', () => {
     } as unknown as typeof ResizeObserver
 
     const { container } = render(
-      <Panel collapseAt={600} defaultOpen>
+      <Panel collapseAt={600}>
         <Panel.Sidebar id="responsive">Sidebar</Panel.Sidebar>
-        <Panel.Content>Content</Panel.Content>
+        <main>Content</main>
       </Panel>
     )
     const root = container.firstElementChild!
@@ -173,79 +139,86 @@ describe('Panel refs, layout, and responsiveness', () => {
     })
 
     expect(root).toHaveAttribute('data-stacked', 'true')
+    expect(root).toHaveAttribute('data-orientation', 'vertical')
     expect(document.getElementById('responsive')).toHaveAttribute('data-open', 'true')
   })
 })
 
-describe('Panel.Group resizing and accessibility', () => {
-  it('provides separator semantics, keyboard resizing, constraints, and controlled pane ids', async () => {
+describe('Panel resizing and accessibility', () => {
+  it('resizes explicitly controlled sibling regions with the keyboard', async () => {
     const user = userEvent.setup()
-    const onSizesChange = vi.fn()
     render(
-      <Panel.Group
-        defaultSizes={[40, 60]}
-        minSize={[30, 25]}
-        maxSize={[75, 70]}
-        keyboardStep={10}
-        onSizesChange={onSizesChange}
-      >
-        <section>Editor</section>
-        <Panel.Resize aria-label="Resize editor and preview" />
-        <section>Preview</section>
-      </Panel.Group>
+      <Panel>
+        <section
+          id="editor"
+          style={{ flexBasis: '40%', minWidth: 300, maxWidth: 750 }}
+        >
+          Editor
+        </section>
+        <Panel.Resize
+          aria-controls="editor preview"
+          aria-label="Resize editor and preview"
+          keyboardStep={10}
+        />
+        <section
+          id="preview"
+          style={{ flexBasis: '60%', minWidth: 250, maxWidth: 700 }}
+        >
+          Preview
+        </section>
+      </Panel>
     )
+
+    const editor = document.getElementById('editor')!
+    const preview = document.getElementById('preview')!
+    vi.spyOn(editor, 'getBoundingClientRect').mockReturnValue({ width: 400 } as DOMRect)
+    vi.spyOn(preview, 'getBoundingClientRect').mockReturnValue({ width: 600 } as DOMRect)
 
     const separator = screen.getByRole('separator', { name: 'Resize editor and preview' })
     expect(separator).toHaveAttribute('aria-orientation', 'vertical')
-    expect(separator).toHaveAttribute('aria-valuenow', '40')
-    expect(separator.getAttribute('aria-controls')?.split(' ')).toHaveLength(2)
+    expect(separator).toHaveAttribute('aria-controls', 'editor preview')
 
     separator.focus()
     await user.keyboard('{ArrowRight}')
     expect(separator).toHaveAttribute('aria-valuenow', '50')
-
-    await user.keyboard('{End}')
-    expect(separator).toHaveAttribute('aria-valuenow', '75')
-    expect(onSizesChange).toHaveBeenLastCalledWith([75, 25])
+    expect(editor.style.flex).toBe('0 0 500px')
+    expect(preview.style.flex).toBe('0 0 500px')
   })
 
-  it('co-locates pane sizes and constraints with nested regions', async () => {
-    const user = userEvent.setup()
+  it('supports nested horizontal and vertical layouts without pane wrappers', () => {
     render(
-      <Panel.Group>
-        <Panel.Pane defaultSize={30} minSize={20} maxSize={40}>
-          <Panel.Group direction="vertical">
-            <Panel.Pane defaultSize={50}>Top</Panel.Pane>
-            <Panel.Resize aria-label="Resize stacked panes" />
-            <Panel.Pane defaultSize={50}>Bottom</Panel.Pane>
-          </Panel.Group>
-        </Panel.Pane>
-        <Panel.Resize aria-label="Resize navigation and workspace" />
-        <Panel.Pane defaultSize={70} minSize={40}>Workspace</Panel.Pane>
-      </Panel.Group>
+      <Panel>
+        <Panel id="workspace" orientation="vertical">
+          <section id="top">Top</section>
+          <Panel.Resize aria-controls="top bottom" aria-label="Resize rows" />
+          <section id="bottom">Bottom</section>
+        </Panel>
+        <Panel.Resize aria-controls="workspace inspector" aria-label="Resize columns" />
+        <aside id="inspector">Inspector</aside>
+      </Panel>
     )
 
-    const pane = screen.getByText('Top').closest('[data-panel-pane]')!
-    expect(pane).toHaveStyle({ flex: '0 0 50%' })
-
-    const separator = screen.getByRole('separator', { name: 'Resize navigation and workspace' })
-    expect(separator).toHaveAttribute('aria-valuenow', '30')
-    separator.focus()
-    await user.keyboard('{End}')
-    expect(separator).toHaveAttribute('aria-valuenow', '40')
+    expect(screen.getByRole('separator', { name: 'Resize rows' }))
+      .toHaveAttribute('aria-orientation', 'horizontal')
+    expect(screen.getByRole('separator', { name: 'Resize columns' }))
+      .toHaveAttribute('aria-orientation', 'vertical')
   })
 
   it('has no detectable accessibility violations in a composed panel', async () => {
     const { container } = render(
-      <Panel aria-label="Documentation">
+      <Panel role="group" aria-label="Documentation">
         <Panel.Sidebar id="docs-navigation" aria-label="Documentation navigation">
           Navigation
         </Panel.Sidebar>
-        <Panel.Header>
-          <Panel.Toggle><button>Navigation</button></Panel.Toggle>
-        </Panel.Header>
-        <Panel.Content>Article</Panel.Content>
-        <Panel.Footer>Status</Panel.Footer>
+        <section>
+          <header>
+            <Panel.Toggle aria-controls="docs-navigation">
+              <button>Navigation</button>
+            </Panel.Toggle>
+          </header>
+          <main>Article</main>
+          <footer>Status</footer>
+        </section>
       </Panel>
     )
 

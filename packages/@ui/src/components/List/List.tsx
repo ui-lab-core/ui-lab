@@ -167,7 +167,10 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
     React.useEffect(() => {
       if (highlighted == null || !rootRef.current) return;
       const item = rootRef.current.querySelector<HTMLElement>('[data-highlighted="true"]');
-      if (item) scrollItemIntoView(item);
+      // Externally-driven highlights (e.g. Command palette filtering) change on
+      // every keystroke while results reflow; a smooth scroll would chase the
+      // moving target and read as layout jank. Jump instantly instead.
+      if (item) scrollItemIntoView(item, 'instant');
     }, [highlighted]);
 
     React.useEffect(() => {

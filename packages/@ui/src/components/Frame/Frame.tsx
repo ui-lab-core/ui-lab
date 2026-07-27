@@ -159,7 +159,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
             y="-50%"
             width="200%"
             height="200%"
-            fill="var(--frame-fill, transparent)"
+            fill="var(--fill, transparent)"
             mask={`url(#${bgMaskId})`}
           />
 
@@ -170,7 +170,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
             width="100%"
             height="100%"
             fill="none"
-            stroke="var(--frame-stroke-color, var(--background-700))"
+            stroke="var(--stroke-color, var(--background-700))"
             strokeWidth={borderStroke}
             mask={`url(#${borderMaskId})`}
             className={cn(css.shape, css.stroke)}
@@ -194,7 +194,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
                 <path
                   d={path}
                   fill="none"
-                  stroke="var(--frame-stroke-color, var(--background-700))"
+                  stroke="var(--stroke-color, var(--background-700))"
                   strokeWidth={borderStroke}
                   transform={`translate(-${pathWidth / 2}, 0)`}
                   className={css.stroke}

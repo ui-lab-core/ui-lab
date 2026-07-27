@@ -1,11 +1,10 @@
 import { listElements, type ElementSourceEntry } from '@ui-lab-core/library/server';
 import type { ComponentAPI, ComponentMetadata } from 'ui-lab-registry';
 import { Footer } from '@/features/layout/components/footer';
-import { Code } from '@/features/docs/components/code-display/code';
 import { CopyComponentPage } from '@/features/docs/page-actions/copy-component-page';
 import { OpenPage } from '@/features/docs/page-actions/open-page-button';
 import { highlightCode } from '@/features/docs/lib/shiki-server';
-import { Playground, Preview } from './preview';
+import { ExampleCode, Playground, Preview } from './preview';
 import { isInteractivePreview } from './preview-utils';
 import { ExampleReference } from './example-reference';
 import type { StyleInfo } from './documentation';
@@ -74,7 +73,7 @@ export async function ComponentPage({
   const highlighted = first ? await highlightCode(first.code, 'typescript') : { light: '', dark: '' };
   const tocItems = examples
     .slice(1)
-    .filter((example) => !isInteractivePreview(example.id, example.path))
+    .filter((example) => !isInteractivePreview(example.id))
     .map((example) => ({ id: example.id, title: example.title, level: 3 }));
   const apiItems = [
     ...(api?.props?.length ? [{ id: 'api-props', title: 'Props', level: 2 }] : []),
@@ -95,7 +94,7 @@ export async function ComponentPage({
       <div>
         {examples.slice(1).map((example) => (
           <article className={css.section} id={example.id} key={example.id}>
-            {!isInteractivePreview(example.id, example.path) ? (
+            {!isInteractivePreview(example.id) ? (
               <div className="flex justify-between space-y-2 border-b border-background-700 pb-5">
                 <ExampleReference id={example.title} />
                 <p className="text-sm max-w-[45ch] text-foreground-400">{example.description}</p>
@@ -103,7 +102,7 @@ export async function ComponentPage({
             ) : null}
             <Preview id={example.id} flushBottom />
             <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700">
-              <Code className="rounded-none border-0" eagerMeasure language="typescript" showLineNumbers>{example.code}</Code>
+              <ExampleCode id={example.id} code={example.code} />
             </div>
           </article>
         ))}
@@ -140,7 +139,7 @@ export async function ComponentPage({
 
                 {first ? (
                   <section className="mb-12 space-y-4">
-                    {!isInteractivePreview(first.id, first.path) ? <ExampleReference id={first.title} level={2} /> : null}
+                    {!isInteractivePreview(first.id) ? <ExampleReference id={first.title} level={2} /> : null}
                     <Playground id={first.id} code={first.code} light={highlighted.light} dark={highlighted.dark} />
                   </section>
                 ) : null}

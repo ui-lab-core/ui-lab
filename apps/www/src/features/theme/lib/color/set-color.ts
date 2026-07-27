@@ -27,7 +27,7 @@ const NEUTRAL_CHROMA_THRESHOLD = 0.005;
 const MAX_CHROMA: Record<string, number> = {
   background: 0.008,
   foreground: 0.04,
-  accent: 0.18,
+  accent: 0.32,
 };
 
 const DEFAULT_CHROMA: Record<string, number> = {
@@ -46,6 +46,14 @@ export function getDefaultChroma(type: ThemeColorType): number {
 
 export function isNeutralColor(color: OklchColor): boolean {
   return color.c <= NEUTRAL_CHROMA_THRESHOLD;
+}
+
+function clampRoleChroma(type: ThemeColorType, chroma: number): number {
+  const clamped = Math.min(getMaxChroma(type), Math.max(0, chroma));
+
+  return type === "background" && clamped !== 0
+    ? Math.max(clamped, MIN_BACKGROUND_CHROMA)
+    : clamped;
 }
 
 /**
@@ -70,12 +78,28 @@ export function colorFromHue(
     }
   }
 
-  const chroma = Math.min(
+  const chroma = clampRoleChroma(
+    type,
     isNeutral ? getDefaultChroma(type) : current.c,
-    getMaxChroma(type),
   );
 
   return { l: lightness, c: chroma, h: hue };
+}
+
+/**
+ * Derive a new color for a theme slot from a chroma adjustment while
+ * preserving its lightness and hue. The control uses the same role limits as
+ * hue selection, so UI updates cannot produce out-of-range base colors.
+ */
+export function colorFromChroma(
+  type: ThemeColorType,
+  chroma: number,
+  current: OklchColor,
+): OklchColor {
+  return {
+    ...current,
+    c: clampRoleChroma(type, chroma),
+  };
 }
 
 /**
@@ -93,12 +117,13 @@ export function setThemeColor(
   const updated = { ...colors };
 
   if (type === "background") {
-    updated.background = {
+    const background = {
       l: newColor.l,
-      c: newColor.c === 0 ? 0 : Math.max(newColor.c, MIN_BACKGROUND_CHROMA),
+      c: clampRoleChroma("background", newColor.c),
       h: newColor.h,
     };
-    updated.foreground = newColor;
+    updated.background = background;
+    updated.foreground = background;
   } else if (type === "foreground") {
     updated.foreground = newColor;
   } else if (type === "accent") {

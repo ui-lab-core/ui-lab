@@ -7,97 +7,44 @@
     background: inherit;
   }
 
-  .main {
-    @apply flex min-h-0 min-w-0 flex-1 flex-col;
-    overflow: hidden;
-    background: inherit;
-  }
-
-  .panel[data-stacked="true"] {
+  .panel[data-orientation="vertical"] {
     flex-direction: column;
   }
 
-  .header,
-  .footer {
-    @apply shrink-0;
-    background: inherit;
+  .panel > :not(.resize) {
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 0%;
   }
 
-  .sticky {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .content {
-    @apply flex min-h-0 min-w-0 flex-1;
-    overflow: auto;
-  }
-
-  .fixed {
-    position: sticky;
-    bottom: 0;
-    z-index: 5;
-  }
-
-  .sidebar {
+  .panel > .sidebar {
     @apply min-h-0 shrink-0 overflow-hidden;
-    width: var(--size);
-    transition:
-      width 0.2s ease,
-      height 0.2s ease;
-    border-right: var(--border-width-base, 1px) solid var(--panel-border-color, currentColor);
+    flex: 0 0 var(--size);
+    transition: flex-basis 0.2s ease;
+    border-right: var(--border-width-base, 1px) solid var(--border-color, currentColor);
   }
 
   .sidebar[data-open="false"] {
-    width: var(--collapsed-size);
+    flex-basis: var(--collapsed-size);
     visibility: hidden;
   }
 
   .sidebar[data-side="right"] {
     border-right: none;
-    border-left: var(--border-width-base, 1px) solid var(--panel-border-color, currentColor);
+    border-left: var(--border-width-base, 1px) solid var(--border-color, currentColor);
   }
 
-  .panel[data-stacked="true"] .sidebar {
+  .panel[data-stacked="true"] > .sidebar {
     width: 100%;
     max-width: 100%;
+    flex-basis: auto;
   }
 
-  .panel[data-stacked="true"] .sidebar[data-open="false"] {
-    width: 100%;
+  .panel[data-stacked="true"] > .sidebar[data-open="false"] {
     height: 0;
     min-height: 0;
+    flex-basis: 0;
     border-width: 0;
-  }
-
-  .toggle {
-    @apply flex items-center;
-  }
-
-  .group {
-    @apply flex h-full min-h-0 w-full min-w-0;
-    overflow: hidden;
-    background: inherit;
-  }
-
-  .group[data-direction="vertical"] {
-    flex-direction: column;
-  }
-
-  .group > [data-panel-pane] {
-    min-width: 0;
-    min-height: 0;
-    overflow: auto;
-  }
-
-  .pane {
-    @apply flex min-h-0 min-w-0;
-    background: inherit;
-  }
-
-  .pane > .group {
-    flex: 1 1 0%;
   }
 
   .resize {
@@ -115,18 +62,18 @@
     inset-block: 0;
     left: 50%;
     width: 1px;
-    background: var(--panel-divider-color, #374151);
+    background: var(--divider-color, #374151);
     transform: translateX(-50%);
     transition: width var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);
   }
 
-  .resize[data-direction="vertical"] {
+  .resize[data-orientation="vertical"] {
     width: auto;
     height: 10px;
     cursor: row-resize;
   }
 
-  .resize[data-direction="vertical"]::before {
+  .resize[data-orientation="vertical"]::before {
     inset-block: auto;
     inset-inline: 0;
     top: 50%;
@@ -142,9 +89,9 @@
     width: 2px;
   }
 
-  .resize[data-direction="vertical"]:hover::before,
-  .resize[data-direction="vertical"]:focus-visible::before,
-  .resize[data-direction="vertical"][data-resizing="true"]::before {
+  .resize[data-orientation="vertical"]:hover::before,
+  .resize[data-orientation="vertical"]:focus-visible::before,
+  .resize[data-orientation="vertical"][data-resizing="true"]::before {
     width: auto;
     height: 2px;
   }

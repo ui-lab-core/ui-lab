@@ -2,7 +2,7 @@
 
 @layer components.defaults {
   .scope {
-    @apply flex w-full;
+    @apply flex;
     position: relative;
     overflow: visible;
   }
@@ -125,12 +125,17 @@
   }
 
   .action {
-    @apply flex items-center justify-center p-2;
+    @apply flex items-center justify-center;
     border-radius: 0.25rem;
     color: var(--action-foreground);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+  }
+
+  .action:global(.button):global(.icon) {
+    --size: calc(var(--spacing, 0.25rem) * 7);
+    padding: calc(var(--spacing, 0.25rem) * 1.5);
   }
 
   .action:hover {

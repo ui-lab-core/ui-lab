@@ -22,6 +22,10 @@ export interface Styles {
   "opacity-track": string;
   "opacity-range": string;
   "opacity-thumb": string;
+  "chroma-slider": string;
+  "chroma-track": string;
+  "chroma-range": string;
+  "chroma-thumb": string;
   "recent-colors": string;
   "recent-color-swatch": string;
   "preview-swatch": string;

@@ -6,8 +6,6 @@ import { useApp } from "../../lib/app-context";
 import { themes, type SimpleThemeColors } from "../../constants/themes";
 import {
   type OklchColor,
-  type SemanticColorType,
-  type SemanticColorConfig,
   type GlobalColorAdjustments,
 } from "../../lib/color-utils";
 import { useThemeStorage } from "../../hooks/use-theme-storage";
@@ -67,28 +65,6 @@ function useSettingsHandlers(
     applyAndPersistColors(updated);
   };
 
-  const handleChromaLimitChange = (
-    type: SemanticColorType,
-    chromaLimit: number,
-  ) => {
-    const updated = { ...localColors };
-    const semantic = (updated.semantic ?? {}) as Record<
-      SemanticColorType,
-      SemanticColorConfig
-    >;
-    const existing = semantic[type];
-    if (existing) {
-      const modeKey = currentThemeMode as "light" | "dark";
-      semantic[type] = {
-        ...existing,
-        [modeKey]: { ...existing[modeKey], chromaLimit },
-      };
-      updated.semantic = semantic;
-    }
-    setLocalColors(updated);
-    applyAndPersistColors(updated);
-  };
-
   const handleCodeThemeChange = (codeTheme: CodeThemeOptionId) => {
     const updated = { ...localColors, codeTheme };
     setLocalColors(updated);
@@ -98,7 +74,6 @@ function useSettingsHandlers(
   return {
     handleGlobalAdjustmentChange,
     handleColorChange,
-    handleChromaLimitChange,
     handleCodeThemeChange,
     updateTypography,
   };
@@ -246,7 +221,6 @@ export const SettingsContent = ({
   const {
     handleGlobalAdjustmentChange,
     handleColorChange,
-    handleChromaLimitChange,
     handleCodeThemeChange,
     updateTypography,
   } = useSettingsHandlers(
@@ -303,7 +277,6 @@ export const SettingsContent = ({
                   localGlobalAdjustments={localGlobalAdjustments}
                   onExpandedColorChange={setExpandedColor}
                   onColorChange={handleColorChange}
-                  onChromaLimitChange={handleChromaLimitChange}
                   onCodeThemeChange={handleCodeThemeChange}
                   onGlobalAdjustmentChange={handleGlobalAdjustmentChange}
                 />

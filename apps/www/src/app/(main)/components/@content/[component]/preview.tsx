@@ -129,6 +129,23 @@ export function Playground({
   );
 }
 
+export function ExampleCode({ id, code }: { id: string; code: string }) {
+  const config = getElementPreviewConfig('components', id);
+  const controls = config?.controls ?? emptyControls;
+  const values = Object.fromEntries(controls.map((control) => [
+    control.name,
+    control.defaultValue ?? control.options?.[0]?.value ?? '',
+  ]));
+  const result = config?.factory?.(values, () => {});
+  const currentCode = result?.code ?? code;
+
+  return (
+    <Code className="rounded-none border-0" eagerMeasure language="typescript" showLineNumbers>
+      {currentCode}
+    </Code>
+  );
+}
+
 export function Preview({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
   return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} key={id} />;
 }

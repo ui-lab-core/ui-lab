@@ -3,7 +3,7 @@
 @layer components.defaults {
   .shape {
     display: block;
-    background: var(--background, var(--background-800));
+    background: var(--background, var(--background-950));
     border-radius: var(--radius, var(--radius-sm, 0.375rem));
   }
 

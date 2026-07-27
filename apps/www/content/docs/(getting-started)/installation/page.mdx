@@ -102,6 +102,18 @@ export default function Home() {
 }
 ```
 
+## Expressive > Extensive
+
+UI Lab favors a small set of expressive, composable primitives over a large surface of single-purpose components. `Card` above is one component, not three—`Card.Header`, `Card.Body`, and `Card.Footer` are compound parts that compose to fit the shape of your content, rather than props that toggle prebuilt variants.
+
+This matters for how you'll use the library day to day:
+
+- **Compose instead of configure.** Instead of reaching for a `variant` or `layout` prop to approximate what you need, assemble the pieces you actually need. Omit `Card.Footer` entirely, nest another `Card` inside `Card.Body`, or reorder parts—the component doesn't prescribe a fixed shape.
+- **Fewer components to learn, more shapes to build.** A handful of composable primitives cover far more layouts than a large catalog of extensive, single-purpose components ever could, because the combinations scale with your needs instead of the library's foresight.
+- **Extend without forking.** When a use case falls outside what a prop was designed for, composition gives you a way out: reach for the sub-parts directly instead of waiting on a new variant or patching the component yourself.
+
+Keep this in mind as you move through the docs—most components documented here follow the same pattern of compound, composable parts rather than monolithic, heavily-configured ones.
+
 ## Optional: start from Onyx
 
 `ui-lab-theme-onyx` is an optional ready-made theme. It is useful when you want its component recipes and token defaults rather than starting with an app-owned theme from scratch.

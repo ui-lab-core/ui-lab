@@ -169,6 +169,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     const thumbSizeRef = useRef(0);
     const resizeObserverRef = useRef<ResizeObserver | null>(null);
     const mutationObserverRef = useRef<MutationObserver | null>(null);
+    const animationFrameRef = useRef<number | null>(null);
 
     const updateScrollbar = useCallback(() => {
       if (!containerRef.current || !contentRef.current) return;
@@ -222,6 +223,21 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       resizeObserverRef.current = null;
       mutationObserverRef.current = null;
     }, []);
+
+    const cleanupAnimationFrame = useCallback(() => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    }, []);
+
+    const scheduleScrollbarUpdate = useCallback(() => {
+      cleanupAnimationFrame();
+      animationFrameRef.current = requestAnimationFrame(() => {
+        animationFrameRef.current = null;
+        updateScrollbar();
+      });
+    }, [cleanupAnimationFrame, updateScrollbar]);
 
     const cleanupDragListeners = useCallback(() => {
       document.removeEventListener("mousemove", handleMouseMove);
@@ -300,24 +316,26 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       cleanupObservers();
       updateScrollbar();
 
-      const resizeObserver = new ResizeObserver(() => requestAnimationFrame(updateScrollbar));
-      const mutationObserver = new MutationObserver(() => requestAnimationFrame(updateScrollbar));
-
-      if (containerRef.current) resizeObserver.observe(containerRef.current);
-      if (contentRef.current) {
-        resizeObserver.observe(contentRef.current);
-        mutationObserver.observe(contentRef.current, { childList: true, subtree: true });
+      if (typeof ResizeObserver !== "undefined") {
+        const resizeObserver = new ResizeObserver(scheduleScrollbarUpdate);
+        if (containerRef.current) resizeObserver.observe(containerRef.current);
+        if (contentRef.current) resizeObserver.observe(contentRef.current);
+        resizeObserverRef.current = resizeObserver;
       }
 
-      resizeObserverRef.current = resizeObserver;
-      mutationObserverRef.current = mutationObserver;
-    }, [cleanupObservers, updateScrollbar]);
+      if (typeof MutationObserver !== "undefined" && contentRef.current) {
+        const mutationObserver = new MutationObserver(scheduleScrollbarUpdate);
+        mutationObserver.observe(contentRef.current, { childList: true, subtree: true });
+        mutationObserverRef.current = mutationObserver;
+      }
+    }, [cleanupObservers, scheduleScrollbarUpdate, updateScrollbar]);
 
     const handleContentRef = useCallback(
       (node: HTMLDivElement | null) => {
         contentRef.current = node;
         if (!node) {
           cleanupObservers();
+          cleanupAnimationFrame();
           cleanupDragListeners();
           cleanupScrollTimeout();
           return;
@@ -330,9 +348,8 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           bootstrapDebugId: storageKey ? getScrollRestoreDebugId(getBootstrapRestoredNode(storageKey)) : null,
           debugIdPropertyKey: SCROLL_RESTORE_DEBUG_ID_KEY,
         });
-        connectObservers();
       },
-      [cleanupDragListeners, cleanupObservers, cleanupScrollTimeout, connectObservers, storageKey]
+      [cleanupAnimationFrame, cleanupDragListeners, cleanupObservers, cleanupScrollTimeout, storageKey]
     );
     const mergedContentRef = useMergeRefs(viewportRef, handleContentRef);
 
@@ -464,7 +481,13 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     useLayoutEffect(() => {
       restoreStoredScrollPosition();
       connectObservers();
-    }, [restoreStoredScrollPosition, connectObservers, enabled]);
+      return () => {
+        cleanupObservers();
+        cleanupAnimationFrame();
+        cleanupDragListeners();
+        cleanupScrollTimeout();
+      };
+    }, [restoreStoredScrollPosition, connectObservers, cleanupAnimationFrame, cleanupDragListeners, cleanupObservers, cleanupScrollTimeout, enabled]);
 
     const axisConstraintStyle = {
       ...(maxWidth ? { maxWidth } : {}),
@@ -509,7 +532,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         onMouseMove={handleContainerMouseMove}
         onMouseLeave={handleContainerMouseLeave}
         data-pressed={isDragging || undefined}
-        data-inline={String(inline && needsScrollbar)}
+        data-inline={String(inline)}
         {...restProps}
       >
         <Mask

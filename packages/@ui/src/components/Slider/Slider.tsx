@@ -75,6 +75,8 @@ export interface SliderProps
   "aria-labelledby"?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SliderStylesProp;
+  /** Inline styles applied to the slider track. */
+  trackStyle?: React.CSSProperties;
 }
 
 interface SliderThumbProps {
@@ -308,6 +310,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       max = 100,
       step = 1,
       orientation = "horizontal",
+      trackStyle,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       onPointerDown,
@@ -537,6 +540,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-slider-track="true"
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
+          style={trackStyle}
         >
           <div {...indicatorProps} data-focus-indicator="track" />
           <div

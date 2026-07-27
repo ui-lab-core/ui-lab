@@ -8,7 +8,7 @@ const TasteMockups = dynamic(() => import("./taste-mockups").then((module) => mo
 
 const steps = [
   {
-    title: "Taste is served over MCP.",
+    title: "Conventions are served over MCP.",
     desc: "Agents query components, tokens, and patterns instead of inventing styles. The answer is always the system, never a guess.",
   },
   {
@@ -61,11 +61,11 @@ function TasteSection() {
 
   return (
     <section className="w-full border-t border-background-700">
-      <div className="flex flex-col justify-center h-[10rem] px-6 md:h-[20rem] md:px-0 md:ml-18">
-        <h2 className="max-w-[34ch] text-balance text-2xl font-medium leading-tight tracking-normal text-foreground-100 sm:text-3xl md:text-4xl">
-          Give you agents better design sense,{" "}
+      <div className="flex flex-col justify-center h-[20rem] px-6 md:h-[30rem]">
+        <h2 className="max-w-[34ch] mx-auto text-balance text-2xl font-medium leading-tight tracking-normal text-foreground-100 sm:text-3xl md:text-5xl">
+          Software should look Built,{" "}
           <span className="text-foreground-400">
-            so what they build looks designed, not generated.
+            not Generated.
           </span>
         </h2>
       </div>

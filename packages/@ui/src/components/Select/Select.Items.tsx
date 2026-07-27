@@ -279,7 +279,7 @@ const SelectList = React.forwardRef<HTMLDivElement, SelectListProps>(
   ({ children, className, filter, styles: stylesProp }, ref) => {
     const resolved = resolveSelectListStyles(stylesProp);
     return (
-      <div ref={ref} className={cn(className, resolved.root)}>
+      <div ref={ref} className={cn(styles.list, className, resolved.root)}>
         {children}
       </div>
     );

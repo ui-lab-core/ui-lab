@@ -61,8 +61,8 @@
 
   .inner {
     @apply pt-1.5;
-    --frame-stroke-color: var(--border);
-    --frame-fill: var(--background-list);
+    --stroke-color: var(--border);
+    --fill: var(--background-list);
     --frame-radius: var(--radius-sm);
   }
 

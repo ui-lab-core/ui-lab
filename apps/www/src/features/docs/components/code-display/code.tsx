@@ -221,13 +221,13 @@ export function Code({
     <div
       ref={rootRef}
       className={cn(
-        "rounded-sm border border-background-700 bg-transparent flex flex-col overflow-hidden w-full min-w-0",
+        "rounded-sm border border-background-700 bg-background-1000 flex flex-col overflow-hidden w-full min-w-0",
         showLineNumbers && "code-block--line-numbers",
         className
       )}
     >
       {(filename || heading) && (
-        <div className="flex-none bg-background-900/90 flex text-xs  items-center justify-between border-b border-background-700 py-1.5 px-3 text-foreground-400">
+        <div className="flex-none flex text-xs  items-center justify-between border-b border-background-700 py-1.5 px-3 text-foreground-400">
           <span>{heading || filename}</span>
           {!heading && <span className="text-foreground-400">{language}</span>}
         </div>

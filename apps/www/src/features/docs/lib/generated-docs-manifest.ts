@@ -143,6 +143,11 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
+            "id": "expressive-extensive",
+            "title": "Expressive > Extensive",
+            "level": 2
+          },
+          {
             "id": "optional-start-from-onyx",
             "title": "Optional: start from Onyx",
             "level": 2

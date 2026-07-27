@@ -12,8 +12,8 @@
   }
 
   .content {
-    --frame-fill: var(--background);
-    --frame-stroke-color: var(--background-border);
+    --fill: var(--background);
+    --stroke-color: var(--background-border);
     opacity: 0;
     transition: opacity 0.15s ease-out, transform 0.15s ease-out;
   }

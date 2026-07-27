@@ -1,17 +1,12 @@
 export { Page } from './Page';
-export { PageContext, usePageContext } from './page.context';
 export type {
   PageProps,
-  PageContextValue,
   PagePadding,
   PageGap,
-  PageSpacing,
+  PageSeo,
   PageStyleSlots,
   PageStylesProp,
   PageHeaderProps,
-  PageTitleProps,
-  PageDescriptionProps,
-  PageActionsProps,
-  PageContentProps,
+  PageBodyProps,
   PageFooterProps,
 } from './page.types';

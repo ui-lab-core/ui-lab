@@ -77,6 +77,11 @@
 
     &[data-selected="true"] {
       cursor: pointer;
+
+      .list:not([data-variant="underline"]) & {
+        background-color: transparent;
+        transition-property: color;
+      }
     }
 
     &[data-selected="true"]:not([data-indicator-ready="true"]):not([data-indicator-fallback="true"]) {
