@@ -15,7 +15,6 @@ import {
   useListScrollIntoView,
 } from "../../utils/list-navigation"
 import { useMergeRefs as useMergedRef } from "../../hooks/useMergeRefs"
-import { Scroll } from "../Scroll"
 import { List } from "../List"
 import { useScrollLock } from "../../hooks/useScrollLock"
 
@@ -239,20 +238,11 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
               onKeyDown={handleKeyDown}
               style={{ outline: "none" }}
             >
-              <Scroll
-                className={cn("viewport", resolved.list)}
-                maxHeight={`min(24rem, ${positioning.maxHeight})`}
-                direction="vertical"
-                fade-y
-                inline
-                hide={false}
-              >
-                <div style={{ padding: "0.25rem" }}>
-                  <List items={items} gap="xs">
-                    {children}
-                  </List>
-                </div>
-              </Scroll>
+              <div className={cn("viewport", resolved.list)} style={{ padding: "0.25rem" }}>
+                <List items={items} gap="xs">
+                  {children}
+                </List>
+              </div>
             </div>
           </div>
         )}

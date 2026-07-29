@@ -29,31 +29,12 @@
       cursor: pointer;
       outline: none;
       user-select: none;
-      transition:
-        background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-
-      &[data-hovered="true"] {
-        --hover-duration: var(--hover-enter-duration, 0ms);
-      }
 
       &[data-disabled="true"] {
         opacity: 0.5;
         pointer-events: none;
       }
     }
-
-    .content[data-state="open"],
-    .sub-content[data-state="open"] {
-      animation: slide-in-from-top 0.15s var(--ease-snappy-pop, ease-out);
-    }
-
-    .content[data-state="closed"],
-    .sub-content[data-state="closed"] {
-      animation: slide-out-to-top 0.15s var(--ease-snappy-pop, ease-out);
-      pointer-events: none;
-    }
-
 
     .item {
       @apply flex min-w-0 items-center gap-2;
@@ -69,13 +50,6 @@
       font-weight: var(--font-weight-body-medium, 500);
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
-      transition:
-        background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-
-      &[data-highlighted="true"] {
-        --hover-duration: var(--hover-enter-duration, 0ms);
-      }
 
       &[data-disabled="true"] {
         opacity: var(--disabled-opacity);
@@ -108,14 +82,6 @@
       font-weight: var(--font-weight-body-medium, 500);
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
-      transition:
-        background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-
-      &[data-highlighted="true"],
-      &[data-state="open"]:not([data-highlighted="true"]) {
-        --hover-duration: var(--hover-enter-duration, 0ms);
-      }
 
       &[data-disabled="true"] {
         opacity: var(--disabled-opacity);
@@ -167,25 +133,4 @@
     }
   }
 
-  @keyframes slide-in-from-top {
-    from {
-      opacity: 0;
-      translate: 0 -2px;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-    }
-  }
-
-  @keyframes slide-out-to-top {
-    from {
-      opacity: 1;
-      translate: 0 0;
-    }
-    to {
-      opacity: 0;
-      translate: 0 -2px;
-    }
-  }
 }

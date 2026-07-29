@@ -27,7 +27,6 @@ import { useListNavigation, handleListKeyDown, scrollItemIntoView } from "../../
 import * as positioning from "../../utils/submenu-positioning"
 
 import type { MenuItemExtras } from "./menu.types"
-import { Scroll } from "../Scroll"
 import { List } from "../List"
 
 const resolveMenuSubTriggerBaseStyles = createStylesResolver(['root', 'chevron'] as const);
@@ -386,21 +385,11 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
               style={{ outline: "none" }}
               {...asElementProps<"div">(hoverProps)}
             >
-              <Scroll
-                className={cn("viewport", resolved.list)}
-                maxHeight={`min(24rem, ${positioning.maxHeight})`}
-                maxWidth={positioning.maxWidth}
-                direction="vertical"
-                fade-y
-                inline
-                hide={false}
-              >
-                <div style={{ padding: "0.25rem" }}>
-                  <List items={submenuContext.items} gap="xs">
-                    {children}
-                  </List>
-                </div>
-              </Scroll>
+              <div className={cn("viewport", resolved.list)} style={{ padding: "0.25rem" }}>
+                <List items={submenuContext.items} gap="xs">
+                  {children}
+                </List>
+              </div>
             </div>
           </div>
         )}

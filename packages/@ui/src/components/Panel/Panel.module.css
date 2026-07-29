@@ -20,18 +20,15 @@
   .panel > .sidebar {
     @apply min-h-0 shrink-0 overflow-hidden;
     flex: 0 0 var(--size);
+  }
+
+  .sidebar[data-open="true"] {
     transition: flex-basis 0.2s ease;
-    border-right: var(--border-width-base, 1px) solid var(--border-color, currentColor);
   }
 
   .sidebar[data-open="false"] {
     flex-basis: var(--collapsed-size);
     visibility: hidden;
-  }
-
-  .sidebar[data-side="right"] {
-    border-right: none;
-    border-left: var(--border-width-base, 1px) solid var(--border-color, currentColor);
   }
 
   .panel[data-stacked="true"] > .sidebar {
@@ -44,7 +41,6 @@
     height: 0;
     min-height: 0;
     flex-basis: 0;
-    border-width: 0;
   }
 
   .resize {
@@ -113,7 +109,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sidebar {
+    .sidebar[data-open="true"] {
       transition: none;
     }
   }

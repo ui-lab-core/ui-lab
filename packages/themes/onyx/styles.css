@@ -689,7 +689,7 @@
   }
 
   .menu > :is(.content, .sub-content) {
-    --background: var(--background-700);
+    --background: var(--background-800);
     --background-border: var(--background-600);
     --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
     --foreground: var(--foreground-300);
