@@ -51,7 +51,7 @@ export function Playground({
     <div>
       <div className="flex flex-col rounded-sm rounded-b-none border border-background-700 md:flex-row md:items-stretch">
         <div
-          className={`flex min-h-0 min-w-0 flex-1 overflow-auto p-6 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}
+          className={`flex min-h-0 min-w-0 flex-1 overflow-auto p-2 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}
           style={{ minHeight: fixedPreviewHeight }}
         >
           <Suspense fallback={null}>
@@ -214,7 +214,7 @@ function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previ
       <div
         ref={contentRef}
         aria-hidden={loaded ? undefined : true}
-        className="flex h-full min-h-0 w-full items-center justify-center overflow-auto p-6"
+        className="flex h-full min-h-0 w-full items-center justify-center overflow-auto p-2"
         inert={loaded ? undefined : true}
       >
         <Suspense fallback={null}>
