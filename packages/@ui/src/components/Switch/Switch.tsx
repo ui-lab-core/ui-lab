@@ -13,6 +13,7 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { resolveAccessibleLabel } from "@/lib/react-aria";
 import { useControlledState } from "@/hooks/useControlledState";
+import { useDragToggle } from "@/hooks/useDragToggle";
 
 import styles from "./Switch.module.css";
 
@@ -114,9 +115,16 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     React.useImperativeHandle(ref, () => inputRef.current!);
 
     const resolved = resolveSwitchBaseStyles(stylesProp);
+    const dragToggleProps = useDragToggle(
+      "switch",
+      rootRef,
+      inputRef,
+      toggleState.setSelected,
+    );
 
     return (
       <div
+        {...dragToggleProps}
         ref={rootRef}
         className={cn(
           'switch',

@@ -7,6 +7,7 @@ import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useDragToggle } from "@/hooks/useDragToggle";
 import css from "./Checkbox.module.css";
 
 interface CheckboxIconStyles {
@@ -179,9 +180,11 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
     const resolved = resolveCheckboxStyles(styles);
     const mergedRootRef = useMergeRefs(rootRef, ref);
     const mergedInputRef = useMergeRefs(inputRef, forwardedInputRef);
+    const dragToggleProps = useDragToggle("checkbox", rootRef, inputRef);
 
     return (
       <div
+        {...dragToggleProps}
         ref={mergedRootRef}
         className={cn("checkbox", scopeProps.className, css.checkbox, resolved.root)}
         data-disabled={disabled ? "true" : undefined}
