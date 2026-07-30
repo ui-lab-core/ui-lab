@@ -105,26 +105,10 @@ export const SettingsContent = ({
     isThemeInitialized,
     globalAdjustments,
     setGlobalAdjustments,
-    headerTypeSizeRatio,
-    setHeaderTypeSizeRatio,
-    headerFontSizeScale,
-    setHeaderFontSizeScale,
-    headerFontWeightScale,
-    setHeaderFontWeightScale,
-    headerLetterSpacingScale,
-    setHeaderLetterSpacingScale,
-    headerLineHeight,
-    setHeaderLineHeight,
-    bodyTypeSizeRatio,
-    setBodyTypeSizeRatio,
-    bodyFontSizeScale,
-    setBodyFontSizeScale,
-    bodyFontWeightScale,
-    setBodyFontWeightScale,
-    bodyLetterSpacingScale,
-    setBodyLetterSpacingScale,
-    bodyLineHeight,
-    setBodyLineHeight,
+    headerScale,
+    setHeaderScale,
+    bodyScale,
+    setBodyScale,
     monoFontSizeScale,
     setMonoFontSizeScale,
     monoFontWeightScale,
@@ -172,16 +156,8 @@ export const SettingsContent = ({
   } = useThemeStorage({
     onColorsChange: setCurrentThemeColors,
     onTypographyChange: (config: TypographyConfig) => {
-      setHeaderTypeSizeRatio(config.headerTypeSizeRatio);
-      setHeaderFontSizeScale(config.headerFontSizeScale);
-      setHeaderFontWeightScale(config.headerFontWeightScale);
-      setHeaderLetterSpacingScale(config.headerLetterSpacingScale);
-      setHeaderLineHeight(config.headerLineHeight);
-      setBodyTypeSizeRatio(config.bodyTypeSizeRatio);
-      setBodyFontSizeScale(config.bodyFontSizeScale);
-      setBodyFontWeightScale(config.bodyFontWeightScale);
-      setBodyLetterSpacingScale(config.bodyLetterSpacingScale);
-      setBodyLineHeight(config.bodyLineHeight);
+      setHeaderScale(config.headerScale);
+      setBodyScale(config.bodyScale);
       setMonoFontSizeScale(config.monoFontSizeScale);
       setMonoFontWeightScale(config.monoFontWeightScale);
       setMonoLetterSpacingScale(config.monoLetterSpacingScale);
@@ -199,16 +175,8 @@ export const SettingsContent = ({
   });
 
   const currentTypography: TypographyConfig = {
-    headerTypeSizeRatio,
-    headerFontSizeScale,
-    headerFontWeightScale,
-    headerLetterSpacingScale,
-    headerLineHeight,
-    bodyTypeSizeRatio,
-    bodyFontSizeScale,
-    bodyFontWeightScale,
-    bodyLetterSpacingScale,
-    bodyLineHeight,
+    headerScale,
+    bodyScale,
     monoFontSizeScale,
     monoFontWeightScale,
     monoLetterSpacingScale,
@@ -238,12 +206,12 @@ export const SettingsContent = ({
 
   const tabLabels: Record<ConfigTab, string> = {
     colors: "Theme",
-    fonts: "Typography",
+    fonts: "Fonts",
     layout: "Layout",
   };
 
   return (
-    <div className="w-full h-full select-none flex flex-col bg-background-950 text-foreground">
+    <div className="w-full h-full select-none flex flex-col text-foreground">
       {panels.length > 1 ? (
         <div className="pr-[8px] flex items-center justify-between border-b border-background-700 shrink-0">
           <Tabs
@@ -251,9 +219,9 @@ export const SettingsContent = ({
             variant="underline"
             onValueChange={(value) => setActiveTab(value as ConfigTab)}
           >
-            <Tabs.List className="px-[5px] h-[40px] border-none *:hover:bg-transparent">
+            <Tabs.List className="px-[7px] pt-[10px] h-[55px] border-none *:hover:bg-transparent">
               {panels.map((panel) => (
-                <Tabs.Trigger key={panel} className="w-[80px]" value={panel}>
+                <Tabs.Trigger key={panel} className="h-[40px] w-[80px]" value={panel}>
                   {tabLabels[panel]}
                 </Tabs.Trigger>
               ))}

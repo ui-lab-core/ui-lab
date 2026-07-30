@@ -427,7 +427,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
             inert={!isDrawerOpen}
             tabIndex={-1}
             className={cn(
-              "fixed inset-y-0 right-0 z-[65] flex w-[min(22rem,calc(100vw-2rem))] flex-col border-l border-background-700 bg-background-950 outline-none transition-transform duration-300 ease-out",
+              "fixed inset-y-0 right-0 z-[65] flex w-[min(22rem,calc(100vw-2rem))] flex-col bg-background-950 outline-none transition-transform duration-300 ease-out",
               isDrawerOpen ? "translate-x-0" : "translate-x-full"
             )}
           >

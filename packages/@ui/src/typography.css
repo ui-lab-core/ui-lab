@@ -5,9 +5,9 @@
    */
   :where(h1, h2, h3, h4, h5, h6) {
     font-family: var(--font-heading, var(--font-body, inherit));
-    font-weight: var(--font-weight-header-medium, 500);
-    letter-spacing: normal;
-    line-height: var(--leading-heading, 1.25);
+    font-weight: var(--font-weight-header-medium);
+    letter-spacing: var(--letter-spacing-header-md);
+    line-height: var(--leading-heading, var(--leading-header));
   }
 
   /* A reading surface: UI type remains body-first, while headings define hierarchy. */
@@ -15,8 +15,15 @@
     --font: var(--font-body, inherit);
     --heading-font: var(--font-heading, var(--font-header, var(--font)));
     --mono-font: var(--font-mono, ui-monospace, monospace);
-    --size: var(--text-body-size, var(--text-base, 0.9375rem));
-    --leading: var(--leading-body, 1.6);
+    --size: var(--text-body-size);
+    --leading: var(--leading-body);
+    --heading-leading: var(--leading-heading, var(--leading-header));
+    --typography-h1-size: var(--header-text-3xl);
+    --typography-h2-size: var(--header-text-2xl);
+    --typography-h3-size: var(--header-text-xl);
+    --typography-h4-size: var(--header-text-lg);
+    --typography-h5-size: var(--header-text-md);
+    --typography-h6-size: var(--header-text-md);
     --space: 1.5rem;
     --muted: var(--foreground-400, color-mix(in oklab, currentColor 60%, transparent));
     --rule: var(--background-700, color-mix(in oklab, currentColor 20%, transparent));
@@ -24,8 +31,8 @@
     color: var(--foreground-300, currentColor);
     font-family: var(--font);
     font-size: var(--size);
-    font-weight: var(--font-weight-body-normal, 400);
-    letter-spacing: normal;
+    font-weight: var(--font-weight-body-normal);
+    letter-spacing: var(--letter-spacing-base);
     line-height: var(--leading);
     overflow-wrap: break-word;
     text-wrap: pretty;
@@ -38,39 +45,45 @@
   .typography :is(h1, h2, h3, h4, h5, h6) {
     color: var(--foreground-100, currentColor);
     font-family: var(--heading-font);
-    font-weight: var(--font-weight-header-medium, 500);
-    letter-spacing: normal;
+    font-weight: var(--font-weight-header-medium);
+    letter-spacing: var(--letter-spacing-header-md);
     margin-block: calc(var(--space) * 1.5) 0;
   }
 
   .typography h1 {
-    font-size: var(--header-text-4xl, 2.25rem);
-    line-height: 1.2222;
+    font-size: var(--typography-h1-size);
+    letter-spacing: var(--letter-spacing-header-xl);
+    line-height: var(--heading-leading);
   }
 
   .typography h2 {
-    font-size: var(--header-text-3xl, 1.75rem);
-    line-height: 1.2857;
+    font-size: var(--typography-h2-size);
+    letter-spacing: var(--letter-spacing-header-xl);
+    line-height: var(--heading-leading);
     margin-block-start: calc(var(--space) * 2);
   }
 
   .typography h3 {
-    font-size: var(--header-text-2xl, 1.5rem);
-    line-height: 1.3333;
+    font-size: var(--typography-h3-size);
+    letter-spacing: var(--letter-spacing-header-xl);
+    line-height: var(--heading-leading);
   }
 
   .typography h4 {
-    font-size: var(--header-text-xl, 1.25rem);
-    line-height: 1.2;
+    font-size: var(--typography-h4-size);
+    letter-spacing: var(--letter-spacing-header-lg);
+    line-height: var(--heading-leading);
   }
   .typography h5 {
-    font-size: var(--text-base, 0.9375rem);
-    line-height: 1.6;
+    font-size: var(--typography-h5-size);
+    letter-spacing: var(--letter-spacing-header-md);
+    line-height: var(--heading-leading);
   }
   .typography h6 {
     color: var(--muted);
-    font-size: var(--text-sm, 0.8125rem);
-    line-height: var(--leading-sm, 1.25rem);
+    font-size: var(--typography-h6-size);
+    letter-spacing: var(--letter-spacing-header-md);
+    line-height: var(--heading-leading);
   }
 
   .typography :where([id]) { scroll-margin-block-start: calc(var(--space) * 2); }
@@ -87,7 +100,7 @@
     outline: 2px solid var(--accent-400, currentColor);
     outline-offset: 2px;
   }
-  .typography :where(strong, b) { color: var(--foreground-100, currentColor); font-weight: 500; }
+  .typography :where(strong, b) { color: var(--foreground-100, currentColor); font-weight: var(--font-weight-body-medium); }
   .typography :where(del, s) { color: var(--muted); }
 
   .typography :where(ul, ol) { padding-inline-start: 1.5em; }
@@ -103,7 +116,7 @@
     font-family: var(--mono-font);
     font-size: var(--text-code-size, 0.75rem);
     line-height: var(--leading-code, 1.5);
-    letter-spacing: 0;
+    letter-spacing: var(--letter-spacing-code);
     padding: 0.125em 0.3em;
   }
   .typography :where(kbd) { border: 1px solid var(--rule); border-block-end-width: 2px; }

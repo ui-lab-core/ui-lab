@@ -74,7 +74,6 @@ export default function Header({
   };
 
   const hasRevealCollapse = shouldApplyRevealCollapse(pathname);
-  const isConfigRoute = pathname === "/config" || pathname.startsWith("/config/");
   const tabGroup = useMemo(() => getTabGroupForPathname(pathname), [pathname]);
   const activeTabId = useMemo(() => getActiveTabForPathname(pathname), [pathname]);
   const showPrimaryNavigation = isLandingPage || (showNavigation && !tabGroup);
@@ -107,7 +106,7 @@ export default function Header({
         <div
           className={cn(
             "relative h-full flex items-center justify-between px-3 w-full overflow-hidden transition-[margin] duration-300",
-            isConfigRoute ? "max-w-none" : "max-w-(--page-width)",
+            "max-w-(--page-width)",
             "mx-auto",
           )}
         >

@@ -1,28 +1,62 @@
-import { ExtendedTypeScale } from "../shared/types";
 import {
-  DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  DEFAULT_BODY_SCALE,
   DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
-  DEFAULT_HEADING_TRACKING_EM,
+  DEFAULT_HEADER_SCALE,
+  TYPOGRAPHY_SCALE_MAX,
+  TYPOGRAPHY_SCALE_MIN,
   pxToRem,
   remToPx,
 } from "../../lib/typography-config";
-import {
-  baseTextSizeIndex,
-  derivedTextSizes,
-  fluidSizes,
-  minFontSizeConstraints,
-  staticFontSizes,
-  textSizeNames,
-  type TextSizeName,
-} from "./constants";
+import { textSizeNames, type TextSizeName } from "./constants";
 
-export interface TypeScaleOptions {
-  minFontSizePx?: number;
-  globalMinFontSizePx?: number;
-  fontSizeRoundingStepPx?: number;
-}
+type TypographyRole = "body" | "header";
 
-type TypographyVariablePrefix = "text" | "header-text";
+const BODY_BASELINE_REM: Record<TextSizeName, number> = {
+  xs: 0.8125,
+  sm: 0.85,
+  md: 0.9,
+  base: 0.9,
+  lg: 1.125,
+  xl: 1.25,
+  "2xl": 1.5,
+  "3xl": 1.75,
+  "4xl": 2.25,
+  "5xl": 2.75,
+};
+
+const HEADER_BASELINE_REM: Record<TextSizeName, number> = {
+  xs: 0.75,
+  sm: 0.8225,
+  md: 0.9375,
+  base: 0.9375,
+  lg: 1.125,
+  xl: 1.25,
+  "2xl": 1.5,
+  "3xl": 1.75,
+  "4xl": 2.25,
+  "5xl": 2.75,
+};
+
+const WEIGHTS = {
+  thin: 100,
+  extralight: 200,
+  light: 300,
+  normal: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+  extrabold: 800,
+  black: 900,
+} as const;
+
+const BODY_WEIGHT_BASELINE = {
+  ...WEIGHTS,
+  thin: 105,
+  extralight: 210,
+  light: 315,
+  normal: 500,
+  extrabold: 840,
+};
 
 function formatCssNumber(value: number, precision: number = 6): string {
   return String(Number(value.toFixed(precision)));
@@ -30,10 +64,6 @@ function formatCssNumber(value: number, precision: number = 6): string {
 
 function formatRem(value: number): string {
   return `${formatCssNumber(value)}rem`;
-}
-
-function getStaticFontSize(name: TextSizeName): number | undefined {
-  return staticFontSizes[name as keyof typeof staticFontSizes];
 }
 
 export function roundFontSizePx(
@@ -47,196 +77,96 @@ export function roundFontSizePx(
   return Math.round(valuePx / stepPx) * stepPx;
 }
 
-function roundFontSizeRem(
-  valueRem: number,
-  stepPx: number = DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
-): number {
-  return pxToRem(roundFontSizePx(remToPx(valueRem), stepPx));
+function clampScale(scale: number): number {
+  return Math.max(TYPOGRAPHY_SCALE_MIN, Math.min(TYPOGRAPHY_SCALE_MAX, scale));
 }
 
-function scaleFluidSize(
-  size: ExtendedTypeScale,
-  multiplier: number,
-  roundingStepPx: number,
-): ExtendedTypeScale {
-  const minSize = roundFontSizeRem(size.minSize * multiplier, roundingStepPx);
-  const preferredSize = roundFontSizeRem(
-    size.fluidVw / 1.8 * multiplier,
-    roundingStepPx,
-  );
-  const maxSize = roundFontSizeRem(size.maxSize * multiplier, roundingStepPx);
-
-  return {
-    ...size,
-    minSize,
-    fluidVw: preferredSize * 1.8,
-    maxSize,
-  };
+function getScaleMultiplier(scale: number, defaultScale: number): number {
+  return Math.pow(2, (clampScale(scale) - defaultScale) * 2);
 }
 
-function getCssValue(size: ExtendedTypeScale): string {
-  if (!size.isFluid) return formatRem(size.minSize);
-
-  return `clamp(${formatRem(size.minSize)}, ${size.fluidVw.toFixed(2)}vw, ${formatRem(size.maxSize)})`;
-}
-
-export function generateDerivedTextSizeVars(
-  typeScale: ExtendedTypeScale[],
-  roundingStepPx: number = DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
+function deriveRoleTypographyVars(
+  role: TypographyRole,
+  scale: number,
+  minFontSizePx: number,
 ): Record<string, string> {
-  const vars: Record<string, string> = {};
+  const baseline =
+    role === "header" ? HEADER_BASELINE_REM : BODY_BASELINE_REM;
+  const defaultScale =
+    role === "header" ? DEFAULT_HEADER_SCALE : DEFAULT_BODY_SCALE;
+  const multiplier = getScaleMultiplier(scale, defaultScale);
+  const minSizeRem = pxToRem(minFontSizePx);
+  const prefix = role === "header" ? "header-text" : "text";
+  const vars: Record<string, string> = {
+    [`--${role}-scale`]: formatCssNumber(clampScale(scale)),
+  };
 
-  derivedTextSizes.forEach(({ name, source, multiplier }) => {
-    const sourceSize = typeScale.find((size) => size.name === source);
-    if (!sourceSize) return;
+  textSizeNames.forEach((name) => {
+    const size = Math.max(baseline[name] * multiplier, minSizeRem);
+    vars[`--${prefix}-${name}`] = formatRem(size);
+  });
 
-    const size = sourceSize.isFluid
-      ? scaleFluidSize(sourceSize, multiplier, roundingStepPx)
-      : {
-          ...sourceSize,
-          minSize: roundFontSizeRem(
-            sourceSize.minSize * multiplier,
-            roundingStepPx,
-          ),
-          maxSize: roundFontSizeRem(
-            sourceSize.maxSize * multiplier,
-            roundingStepPx,
-          ),
-        };
+  if (role === "body") {
+    vars["--text-body-size"] = vars["--text-base"];
+  }
 
-    vars[`--text-${name}`] = getCssValue(size);
+  const scaleOffset = clampScale(scale) - defaultScale;
+  const leading =
+    role === "header"
+      ? 1.25 - scaleOffset * 0.4
+      : 1.64 - scaleOffset * 0.48;
+  vars[`--leading-${role}`] = formatCssNumber(leading);
+
+  const tracking = -scaleOffset * (role === "header" ? 0.04 : 0.02);
+  const trackingNames =
+    role === "header" ? ["sm", "md", "lg", "xl"] : textSizeNames;
+  trackingNames.forEach((name) => {
+    vars[
+      role === "header"
+        ? `--letter-spacing-header-${name}`
+        : `--letter-spacing-${name}`
+    ] = `${formatCssNumber(tracking, 4)}em`;
+  });
+
+  const weightBaseline = role === "header" ? WEIGHTS : BODY_WEIGHT_BASELINE;
+  const weightOffset = Math.round(scaleOffset * 200);
+  Object.entries(weightBaseline).forEach(([name, weight]) => {
+    vars[`--font-weight-${role}-${name}`] = String(
+      Math.max(100, Math.min(900, weight + weightOffset)),
+    );
   });
 
   return vars;
 }
 
-/**
- * Generates a type scale based on a ratio
- * - Small sizes (xs through base): Static rem values
- * - Large sizes (lg through 5xl): Fluid clamp() values
- *
- * @param ratio - The scale ratio (1.067 - 1.2), only affects fluid sizes
- * @param fontSizeScale - Font size scale factor to apply (0.85 - 1.15)
- * @param baseSize - The base size in rem (default: 1)
- * @param options - Additional generation options such as the role's minimum font size
- * @returns Array of generated type scale sizes
- */
-export function generateTypeScaleFromRatio(
-  ratio: number,
-  fontSizeScale: number = 1,
-  baseSize: number = 1,
-  options: TypeScaleOptions = {},
-): ExtendedTypeScale[] {
-  const scale: ExtendedTypeScale[] = [];
-  const fontSizeRoundingStepPx =
-    options.fontSizeRoundingStepPx ?? DEFAULT_FONT_SIZE_ROUNDING_STEP_PX;
-  const minFontSizeRem = pxToRem(
-    options.minFontSizePx ??
-      options.globalMinFontSizePx ??
-      DEFAULT_BODY_MIN_FONT_SIZE_PX,
-  );
-
-  textSizeNames.forEach((name, i) => {
-    const isFluid = fluidSizes.has(name);
-    const minConstraint =
-      minFontSizeRem *
-      (minFontSizeConstraints[name] / minFontSizeConstraints.xs);
-
-    if (!isFluid) {
-      const staticSize = getStaticFontSize(name);
-      if (staticSize === undefined) return;
-
-      const size = roundFontSizeRem(
-        Math.max(staticSize * fontSizeScale, minConstraint),
-        fontSizeRoundingStepPx,
-      );
-      const item: ExtendedTypeScale = {
-        name,
-        minSize: size,
-        fluidVw: 0,
-        maxSize: size,
-        isFluid: false,
-        cssValue: "",
-      };
-      item.cssValue = getCssValue(item);
-
-      scale.push(item);
-    } else {
-      const stepsFromBase = i - baseTextSizeIndex;
-      const scaledSize =
-        baseSize * Math.pow(ratio, stepsFromBase) * fontSizeScale;
-      const roundedPreferredSize = roundFontSizeRem(
-        scaledSize,
-        fontSizeRoundingStepPx,
-      );
-
-      // Min constraint must scale with fontSizeScale to respect user's size adjustments
-      const minSize = roundFontSizeRem(
-        Math.max(scaledSize * 0.85, minConstraint * fontSizeScale),
-        fontSizeRoundingStepPx,
-      );
-      const maxSize = roundFontSizeRem(
-        scaledSize * 1.15,
-        fontSizeRoundingStepPx,
-      );
-      const fluidVw = roundedPreferredSize * 1.8;
-      const item: ExtendedTypeScale = {
-        name,
-        minSize,
-        fluidVw,
-        maxSize,
-        isFluid: true,
-        cssValue: "",
-      };
-      item.cssValue = getCssValue(item);
-
-      scale.push(item);
-    }
-  });
-
-  return scale;
+export function generateTypographyVars(
+  headerScale: number,
+  bodyScale: number,
+  headerMinFontSizePx: number,
+  bodyMinFontSizePx: number,
+): Record<string, string> {
+  return {
+    ...deriveRoleTypographyVars("header", headerScale, headerMinFontSizePx),
+    ...deriveRoleTypographyVars("body", bodyScale, bodyMinFontSizePx),
+  };
 }
 
 export function generateTypographyCSS(
-  typeSizeRatio: number,
-  fontSizeScale: number,
-  minFontSizePx?: number,
-  prefix: TypographyVariablePrefix = "text",
-  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
+  headerScale: number,
+  bodyScale: number,
+  headerMinFontSizePx: number,
+  bodyMinFontSizePx: number,
 ): string {
-  const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
-    minFontSizePx,
-    ...options,
-  });
-  const lines: string[] = [];
-
-  typeScale.forEach(({ name, cssValue }) => {
-    lines.push(`  --${prefix}-${name}: ${cssValue};`);
-  });
-
-  if (prefix === "text") {
-    Object.entries(
-      generateDerivedTextSizeVars(
-        typeScale,
-        options.fontSizeRoundingStepPx,
-      ),
-    ).forEach(([name, value]) => {
-      lines.push(`  ${name}: ${value};`);
-    });
-
-  }
-
-  return lines.join("\n");
-}
-
-export function generateLineHeightCSS(
-  headerLineHeight: number,
-  bodyLineHeight: number,
-): Record<string, string> {
-  return {
-    "--leading-header": String(headerLineHeight),
-    "--leading-body": String(bodyLineHeight),
-  };
+  return Object.entries(
+    generateTypographyVars(
+      headerScale,
+      bodyScale,
+      headerMinFontSizePx,
+      bodyMinFontSizePx,
+    ),
+  )
+    .map(([name, value]) => `  ${name}: ${value};`)
+    .join("\n");
 }
 
 export function generateCodeTypographyVars(
@@ -245,19 +175,19 @@ export function generateCodeTypographyVars(
   monoLetterSpacingScale: number = 1,
   monoFontWeightScale: number = 1,
   monoMinFontSizePx: number = 13,
-  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
 ): Record<string, string> {
-  const fontSizeRoundingStepPx =
-    options.fontSizeRoundingStepPx ?? DEFAULT_FONT_SIZE_ROUNDING_STEP_PX;
-  const codeSizeRem = roundFontSizeRem(
-    Math.max(0.875 * monoFontSizeScale, pxToRem(monoMinFontSizePx)),
-    fontSizeRoundingStepPx,
+  const codeSizeRem = pxToRem(
+    roundFontSizePx(
+      remToPx(
+        Math.max(0.875 * monoFontSizeScale, pxToRem(monoMinFontSizePx)),
+      ),
+    ),
   );
   const codeWeight = Math.max(
     100,
     Math.min(900, Math.round(400 * monoFontWeightScale)),
   );
-  const letterSpacing = (monoLetterSpacingScale - 1) * 0.010;
+  const letterSpacing = (monoLetterSpacingScale - 1) * 0.01;
 
   return {
     "--text-code-size": formatRem(codeSizeRem),
@@ -265,143 +195,4 @@ export function generateCodeTypographyVars(
     "--letter-spacing-code": `${letterSpacing.toFixed(4)}em`,
     "--font-weight-code": String(codeWeight),
   };
-}
-
-/**
- * Applies dynamic font size scales to the DOM based on type scale ratio
- * Updates all --text-* CSS variables based on the ratio and fontSizeScale
- * - Small sizes (xs through base): Static rem values
- * - Large sizes (lg through 5xl): Fluid clamp() values
- *
- * @param typeSizeRatio - Base type scale ratio (1.067 - 1.2)
- * @param fontSizeScale - Font size scale factor (0.85 - 1.15)
- */
-export function applyDynamicFontSizeScalesWithRatio(
-  typeSizeRatio: number,
-  fontSizeScale: number,
-  minFontSizePx?: number,
-  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
-): void {
-  const root = document.documentElement;
-  const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
-    minFontSizePx,
-    ...options,
-  });
-
-  typeScale.forEach(({ name, cssValue }) => {
-    root.style.setProperty(`--text-${name}`, cssValue);
-  });
-
-  Object.entries(
-    generateDerivedTextSizeVars(
-      typeScale,
-      options.fontSizeRoundingStepPx,
-    ),
-  ).forEach(([name, value]) => {
-    root.style.setProperty(name, value);
-  });
-}
-
-/**
- * Applies dynamic header font size scales to the DOM
- * Updates all --header-text-* CSS variables based on header ratio and font size scale
- * @param headerTypeSizeRatio - Header type scale ratio (1.067 - 1.2)
- * @param headerFontSizeScale - Header font size scale factor (0.85 - 1.15)
- */
-export function applyDynamicHeaderFontSizeScales(
-  headerTypeSizeRatio: number,
-  headerFontSizeScale: number,
-  minFontSizePx?: number,
-  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
-): void {
-  const root = document.documentElement;
-  const typeScale = generateTypeScaleFromRatio(
-    headerTypeSizeRatio,
-    headerFontSizeScale,
-    1,
-    { minFontSizePx, ...options },
-  );
-
-  typeScale.forEach(({ name, cssValue }) => {
-    root.style.setProperty(`--header-text-${name}`, cssValue);
-  });
-}
-
-export function applyDynamicCodeTypographyScales(
-  monoFontSizeScale: number,
-  monoLineHeight: number,
-  monoLetterSpacingScale: number,
-  monoFontWeightScale: number,
-  monoMinFontSizePx?: number,
-  options: Pick<TypeScaleOptions, "fontSizeRoundingStepPx"> = {},
-): void {
-  const root = document.documentElement;
-  const vars = generateCodeTypographyVars(
-    monoFontSizeScale,
-    monoLineHeight,
-    monoLetterSpacingScale,
-    monoFontWeightScale,
-    monoMinFontSizePx,
-    options,
-  );
-
-  Object.entries(vars).forEach(([name, value]) => {
-    root.style.setProperty(name, value);
-  });
-}
-
-export function applyDynamicLineHeightScales(
-  headerLineHeight: number,
-  bodyLineHeight: number,
-): void {
-  const root = document.documentElement;
-  root.style.setProperty("--leading-header", String(headerLineHeight));
-  root.style.setProperty("--leading-body", String(bodyLineHeight));
-}
-
-/**
- * Generates letter spacing CSS variables as key-value pairs
- * Used for caching and consistency across cache/inline/React paths
- * @param bodyLetterSpacingScale - Body letter spacing scale factor (0 - 3.0)
- * @param headerLetterSpacingScale - Header letter spacing scale factor (-5.0 - 3.0)
- * @returns Object mapping CSS variable names to values
- */
-export function generateLetterSpacingCSS(
-  bodyLetterSpacingScale: number = 1,
-  headerLetterSpacingScale: number = 1,
-): Record<string, string> {
-  const vars: Record<string, string> = {};
-  const baseLetterSpacingFactor = 0.020;
-
-  textSizeNames.forEach((name, i) => {
-    const stepsFromBase = i - baseTextSizeIndex;
-    const baseLetterSpacing = stepsFromBase * baseLetterSpacingFactor;
-    const scaledLetterSpacing = baseLetterSpacing + (bodyLetterSpacingScale - 1) * baseLetterSpacingFactor;
-    vars[`--letter-spacing-${name}`] = `${scaledLetterSpacing.toFixed(4)}em`;
-  });
-
-  const headerSizeNames = ["sm", "md", "lg", "xl"];
-  headerSizeNames.forEach((name) => {
-    const spacingValue = DEFAULT_HEADING_TRACKING_EM + (headerLetterSpacingScale - 1) * baseLetterSpacingFactor;
-    vars[`--letter-spacing-header-${name}`] = `${spacingValue.toFixed(4)}em`;
-  });
-
-  return vars;
-}
-
-/**
- * Applies dynamic letter spacing scales to the DOM
- * Updates all --letter-spacing-* CSS variables based on body letter spacing scale
- * @param bodyLetterSpacingScale - Body letter spacing scale factor (0 - 3.0)
- * @param headerLetterSpacingScale - Header letter spacing scale factor (-5.0 - 3.0)
- */
-export function applyDynamicLetterSpacingScales(
-  bodyLetterSpacingScale: number = 1,
-  headerLetterSpacingScale: number = 1,
-): void {
-  const root = document.documentElement;
-  const vars = generateLetterSpacingCSS(bodyLetterSpacingScale, headerLetterSpacingScale);
-  Object.entries(vars).forEach(([name, value]) => {
-    root.style.setProperty(name, value);
-  });
 }

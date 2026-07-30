@@ -3,7 +3,7 @@ export { getScaleName } from "./type-scale/generator";
 
 // Typography
 export {
-  generateTypeScaleFromRatio,
+  generateTypographyVars,
   roundFontSizePx,
 } from "./typography/generator";
 

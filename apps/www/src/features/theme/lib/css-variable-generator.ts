@@ -2,13 +2,9 @@ import { type SimpleThemeColors, DEFAULT_GLOBAL_ADJUSTMENTS } from "../constants
 import { generateThemePalettes, paletteToCssVars } from "../lib/color-utils";
 import { getBorderWidthCssVariables, getRadiusCssVariables, getSpacingCssVariables } from "../config/shared/layout-variables";
 import {
-  generateDerivedTextSizeVars,
-  generateTypeScaleFromRatio,
-  generateLetterSpacingCSS,
-  generateLineHeightCSS,
   generateCodeTypographyVars,
+  generateTypographyVars,
 } from "../config/typography/generator";
-import { generateFontWeightCSS } from "../config/font-weight/generator";
 import { type TypographyConfig } from "./typography-config";
 
 export interface ThemeConfig {
@@ -18,41 +14,10 @@ export interface ThemeConfig {
   mode: "light" | "dark";
 }
 
-function generateTextSizeVars(
-  prefix: string,
-  typeSizeRatio: number,
-  fontSizeScale: number,
-  minFontSizePx: number,
-): Record<string, string> {
-  // Use new centralized typography generator to ensure consistency with React application layer
-  const typeScale = generateTypeScaleFromRatio(typeSizeRatio, fontSizeScale, 1, {
-    minFontSizePx,
-  });
-  const vars: Record<string, string> = {};
-
-  typeScale.forEach(({ name, cssValue }) => {
-    vars[`--${prefix}-${name}`] = cssValue;
-  });
-
-  if (prefix === "text") {
-    Object.assign(vars, generateDerivedTextSizeVars(typeScale));
-  }
-
-  return vars;
-}
-
 function computeTypographyVars(typography: ThemeConfig['typography']): Record<string, string> {
   const {
-    headerTypeSizeRatio,
-    headerFontSizeScale,
-    headerFontWeightScale,
-    headerLineHeight,
-    bodyTypeSizeRatio,
-    bodyFontSizeScale,
-    bodyFontWeightScale,
-    bodyLetterSpacingScale,
-    bodyLineHeight,
-    headerLetterSpacingScale,
+    headerScale,
+    bodyScale,
     bodyMinFontSizePx,
     headerMinFontSizePx,
     monoFontSizeScale,
@@ -62,44 +27,12 @@ function computeTypographyVars(typography: ThemeConfig['typography']): Record<st
     monoMinFontSizePx,
   } = typography;
 
-  const vars: Record<string, string> = {};
-  vars['--header-type-size-ratio'] = String(headerTypeSizeRatio);
-  vars['--header-font-size-scale'] = String(headerFontSizeScale);
-  vars['--body-type-size-ratio'] = String(bodyTypeSizeRatio);
-  vars['--body-font-size-scale'] = String(bodyFontSizeScale);
-  Object.assign(vars, generateLineHeightCSS(headerLineHeight, bodyLineHeight));
-
-  // Use centralized typography generators to ensure consistency across all paths
-  Object.assign(
-    vars,
-    generateTextSizeVars(
-      'text',
-      bodyTypeSizeRatio,
-      bodyFontSizeScale,
-      bodyMinFontSizePx,
-    ),
+  const vars = generateTypographyVars(
+    headerScale,
+    bodyScale,
+    headerMinFontSizePx,
+    bodyMinFontSizePx,
   );
-  Object.assign(
-    vars,
-    generateTextSizeVars(
-      'header-text',
-      headerTypeSizeRatio,
-      headerFontSizeScale,
-      headerMinFontSizePx,
-    ),
-  );
-
-  // Parse font weight CSS string into individual variables
-  const fontWeightCSS = generateFontWeightCSS(headerFontWeightScale, bodyFontWeightScale);
-  fontWeightCSS.split('\n').forEach((line) => {
-    const match = line.match(/--font-weight-([^:]+):\s*(\d+);/);
-    if (match) {
-      vars[`--font-weight-${match[1]}`] = match[2];
-    }
-  });
-
-  // Generate letter spacing variables
-  Object.assign(vars, generateLetterSpacingCSS(bodyLetterSpacingScale, headerLetterSpacingScale));
   Object.assign(
     vars,
     generateCodeTypographyVars(

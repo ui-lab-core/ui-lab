@@ -16,13 +16,11 @@
    computeStyleVariables — regenerate there if the defaults change. */
 :root {
   --font-interface: "Work Sans Variable", system-ui, sans-serif;
-  --header-type-size-ratio: 1.125;
-  --header-font-size-scale: 1;
-  --body-type-size-ratio: 1.2;
-  --body-font-size-scale: 1;
+  --header-scale: 0.75;
+  --body-scale: 0.75;
   --leading-header: 1.25;
   --leading-body: 1.64;
-  --text-xs: 0.8125rem;
+  --text-xs: 0.84375rem;
   --text-sm: 0.850rem;
   --text-md: 0.900rem;
   --text-base: 0.900rem;
@@ -122,13 +120,8 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
 
-  /* Header typography scale factors */
-  --header-type-size-ratio: 1.125;
-  --header-font-size-scale: 1;
-
-  /* Body typography scale factors */
-  --body-type-size-ratio: 1.2;
-  --body-font-size-scale: 1;
+  --header-scale: 0.75;
+  --body-scale: 0.75;
 
   --spacing-scale: 1;
   --spacing: clamp(0.200rem, 2.5vw, 0.250rem);
@@ -262,20 +255,6 @@ p {
 article {
   max-width: var(--page-width);
   margin: 0 auto;
-}
-
-body:has(.config-route-shell),
-body[data-config-full-bleed="true"] {
-  max-width: none;
-  margin: 0;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-.config-route-shell {
-  width: 100%;
-  max-width: none;
-  overflow-x: clip;
 }
 
 ::selection {

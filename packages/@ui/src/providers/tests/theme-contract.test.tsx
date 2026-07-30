@@ -190,7 +190,22 @@ describe('theme-contract', () => {
   })
 
   it('generates theme setup files with both light and dark palettes', () => {
-    const generated = generateThemeSetupFiles(siteThemes.Vitesse.dark, 'dark', 1.25, 1, 1, 1, 1, 0.2, 1, 1, 1)
+    const generated = generateThemeSetupFiles(
+      siteThemes.Vitesse.dark,
+      'dark',
+      {
+        headerScale: 0.75,
+        headerMinFontSizePx: 12,
+        bodyScale: 0.75,
+        bodyMinFontSizePx: 13.5,
+        monoFontSizeScale: 1,
+        monoLetterSpacingScale: 1,
+        monoFontWeightScale: 1,
+        monoLineHeight: 1.55,
+        monoMinFontSizePx: 13,
+      },
+      { radius: 1, borderWidth: 1, spacingScale: 1 },
+    )
     const expectedLight = getSitePresetThemeBatch('Vitesse', 'light')
     const expectedDark = getSitePresetThemeBatch('Vitesse', 'dark')
 

@@ -26,7 +26,6 @@ export function PackageManagerTabs({ value, onValueChange }: PackageManagerTabsP
             key={pm.id}
             value={pm.id}
             icon={pm.icon}
-            className="rounded-none"
           >
             {pm.label}
           </Tabs.Trigger>

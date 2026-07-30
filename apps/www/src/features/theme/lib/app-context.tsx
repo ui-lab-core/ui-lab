@@ -15,8 +15,11 @@ import { ensureSemanticColorIntegrity } from "./color/semantic";
 import { type GlobalColorAdjustments } from "./color-utils";
 import {
   DEFAULT_BODY_MIN_FONT_SIZE_PX,
+  DEFAULT_BODY_SCALE,
   DEFAULT_HEADER_MIN_FONT_SIZE_PX,
+  DEFAULT_HEADER_SCALE,
   normalizeMinFontSizePx,
+  normalizeTypographyScale,
   normalizeTypographyLineHeight,
 } from "./typography-config";
 import { getDefaultAppPreferences } from "./default-theme-config";
@@ -42,26 +45,10 @@ interface AppContextType {
   setSpacingScale: (value: number) => void;
   globalAdjustments: GlobalColorAdjustments;
   setGlobalAdjustments: (adjustments: GlobalColorAdjustments) => void;
-  headerTypeSizeRatio: number;
-  setHeaderTypeSizeRatio: (ratio: number) => void;
-  headerFontSizeScale: number;
-  setHeaderFontSizeScale: (scale: number) => void;
-  headerFontWeightScale: number;
-  setHeaderFontWeightScale: (scale: number) => void;
-  headerLetterSpacingScale: number;
-  setHeaderLetterSpacingScale: (scale: number) => void;
-  headerLineHeight: number;
-  setHeaderLineHeight: (lineHeight: number) => void;
-  bodyTypeSizeRatio: number;
-  setBodyTypeSizeRatio: (ratio: number) => void;
-  bodyFontSizeScale: number;
-  setBodyFontSizeScale: (scale: number) => void;
-  bodyFontWeightScale: number;
-  setBodyFontWeightScale: (scale: number) => void;
-  bodyLetterSpacingScale: number;
-  setBodyLetterSpacingScale: (scale: number) => void;
-  bodyLineHeight: number;
-  setBodyLineHeight: (lineHeight: number) => void;
+  headerScale: number;
+  setHeaderScale: (scale: number) => void;
+  bodyScale: number;
+  setBodyScale: (scale: number) => void;
   monoFontSizeScale: number;
   setMonoFontSizeScale: (scale: number) => void;
   monoFontWeightScale: number;
@@ -93,16 +80,8 @@ interface AppState {
   borderWidth: number;
   spacingScale: number;
   globalAdjustments: GlobalColorAdjustments;
-  headerTypeSizeRatio: number;
-  headerFontSizeScale: number;
-  headerFontWeightScale: number;
-  headerLetterSpacingScale: number;
-  headerLineHeight: number;
-  bodyTypeSizeRatio: number;
-  bodyFontSizeScale: number;
-  bodyFontWeightScale: number;
-  bodyLetterSpacingScale: number;
-  bodyLineHeight: number;
+  headerScale: number;
+  bodyScale: number;
   monoFontSizeScale: number;
   monoFontWeightScale: number;
   monoLetterSpacingScale: number;
@@ -139,16 +118,8 @@ const initialAppState: AppState = {
   borderWidth: defaultPreferences.borderWidth,
   spacingScale: defaultPreferences.spacingScale,
   globalAdjustments: defaultPreferences.globalAdjustments,
-  headerTypeSizeRatio: defaultPreferences.headerTypeSizeRatio,
-  headerFontSizeScale: defaultPreferences.headerFontSizeScale,
-  headerFontWeightScale: defaultPreferences.headerFontWeightScale,
-  headerLetterSpacingScale: defaultPreferences.headerLetterSpacingScale,
-  headerLineHeight: defaultPreferences.headerLineHeight,
-  bodyTypeSizeRatio: defaultPreferences.bodyTypeSizeRatio,
-  bodyFontSizeScale: defaultPreferences.bodyFontSizeScale,
-  bodyFontWeightScale: defaultPreferences.bodyFontWeightScale,
-  bodyLetterSpacingScale: defaultPreferences.bodyLetterSpacingScale,
-  bodyLineHeight: defaultPreferences.bodyLineHeight,
+  headerScale: defaultPreferences.headerScale,
+  bodyScale: defaultPreferences.bodyScale,
   monoFontSizeScale: defaultPreferences.monoFontSizeScale,
   monoFontWeightScale: defaultPreferences.monoFontWeightScale,
   monoLetterSpacingScale: defaultPreferences.monoLetterSpacingScale,
@@ -183,32 +154,18 @@ function getPersistedPreferences(
       : undefined,
   };
 
-  const legacyMinFontSizePx = sourceConfig.typography.globalMinFontSizePx;
   const bodyMinFontSizePx = normalizeMinFontSizePx(
-    sourceConfig.typography.bodyMinFontSizePx ?? legacyMinFontSizePx,
+    sourceConfig.typography.bodyMinFontSizePx,
     DEFAULT_BODY_MIN_FONT_SIZE_PX,
   );
   const headerMinFontSizePx = normalizeMinFontSizePx(
-    sourceConfig.typography.headerMinFontSizePx ?? legacyMinFontSizePx,
+    sourceConfig.typography.headerMinFontSizePx,
     DEFAULT_HEADER_MIN_FONT_SIZE_PX,
   );
   const monoMinFontSizePx = normalizeMinFontSizePx(
-    sourceConfig.typography.monoMinFontSizePx ?? legacyMinFontSizePx,
+    sourceConfig.typography.monoMinFontSizePx,
     defaultPreferences.monoMinFontSizePx,
   );
-  const bodyTypeSizeRatio =
-    sourceConfig.typography.bodyTypeSizeRatio ??
-    defaultPreferences.bodyTypeSizeRatio;
-  const bodyFontSizeScale =
-    sourceConfig.typography.bodyFontSizeScale ??
-    defaultPreferences.bodyFontSizeScale;
-  const headerTypeSizeRatio =
-    sourceConfig.typography.headerTypeSizeRatio ??
-    defaultPreferences.headerTypeSizeRatio;
-  const headerFontSizeScale =
-    sourceConfig.typography.headerFontSizeScale ??
-    defaultPreferences.headerFontSizeScale;
-
   return {
     currentThemeColors: validatedColors,
     currentThemeMode: sourceConfig.mode,
@@ -217,29 +174,13 @@ function getPersistedPreferences(
     spacingScale: sourceConfig.layout.spacingScale,
     globalAdjustments:
       sourceConfig.colors.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
-    headerTypeSizeRatio,
-    headerFontSizeScale,
-    headerFontWeightScale:
-      sourceConfig.typography.headerFontWeightScale ??
-      defaultPreferences.headerFontWeightScale,
-    headerLetterSpacingScale:
-      sourceConfig.typography.headerLetterSpacingScale ??
-      defaultPreferences.headerLetterSpacingScale,
-    headerLineHeight: normalizeTypographyLineHeight(
-      sourceConfig.typography.headerLineHeight,
-      defaultPreferences.headerLineHeight,
+    headerScale: normalizeTypographyScale(
+      sourceConfig.typography.headerScale,
+      DEFAULT_HEADER_SCALE,
     ),
-    bodyTypeSizeRatio,
-    bodyFontSizeScale,
-    bodyFontWeightScale:
-      sourceConfig.typography.bodyFontWeightScale ??
-      defaultPreferences.bodyFontWeightScale,
-    bodyLetterSpacingScale:
-      sourceConfig.typography.bodyLetterSpacingScale ??
-      defaultPreferences.bodyLetterSpacingScale,
-    bodyLineHeight: normalizeTypographyLineHeight(
-      sourceConfig.typography.bodyLineHeight,
-      defaultPreferences.bodyLineHeight,
+    bodyScale: normalizeTypographyScale(
+      sourceConfig.typography.bodyScale,
+      DEFAULT_BODY_SCALE,
     ),
     monoFontSizeScale:
       sourceConfig.typography.monoFontSizeScale ??
@@ -338,44 +279,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       globalAdjustments: state.globalAdjustments,
       setGlobalAdjustments: (adjustments) =>
         dispatch({ type: "set", key: "globalAdjustments", value: adjustments }),
-      headerTypeSizeRatio: state.headerTypeSizeRatio,
-      setHeaderTypeSizeRatio: (ratio) =>
-        dispatch({ type: "set", key: "headerTypeSizeRatio", value: ratio }),
-      headerFontSizeScale: state.headerFontSizeScale,
-      setHeaderFontSizeScale: (scale) =>
-        dispatch({ type: "set", key: "headerFontSizeScale", value: scale }),
-      headerFontWeightScale: state.headerFontWeightScale,
-      setHeaderFontWeightScale: (scale) =>
-        dispatch({ type: "set", key: "headerFontWeightScale", value: scale }),
-      headerLetterSpacingScale: state.headerLetterSpacingScale,
-      setHeaderLetterSpacingScale: (scale) =>
-        dispatch({
-          type: "set",
-          key: "headerLetterSpacingScale",
-          value: scale,
-        }),
-      headerLineHeight: state.headerLineHeight,
-      setHeaderLineHeight: (lineHeight) =>
-        dispatch({ type: "set", key: "headerLineHeight", value: lineHeight }),
-      bodyTypeSizeRatio: state.bodyTypeSizeRatio,
-      setBodyTypeSizeRatio: (ratio) =>
-        dispatch({ type: "set", key: "bodyTypeSizeRatio", value: ratio }),
-      bodyFontSizeScale: state.bodyFontSizeScale,
-      setBodyFontSizeScale: (scale) =>
-        dispatch({ type: "set", key: "bodyFontSizeScale", value: scale }),
-      bodyFontWeightScale: state.bodyFontWeightScale,
-      setBodyFontWeightScale: (scale) =>
-        dispatch({ type: "set", key: "bodyFontWeightScale", value: scale }),
-      bodyLetterSpacingScale: state.bodyLetterSpacingScale,
-      setBodyLetterSpacingScale: (scale) =>
-        dispatch({
-          type: "set",
-          key: "bodyLetterSpacingScale",
-          value: scale,
-        }),
-      bodyLineHeight: state.bodyLineHeight,
-      setBodyLineHeight: (lineHeight) =>
-        dispatch({ type: "set", key: "bodyLineHeight", value: lineHeight }),
+      headerScale: state.headerScale,
+      setHeaderScale: (scale) =>
+        dispatch({ type: "set", key: "headerScale", value: scale }),
+      bodyScale: state.bodyScale,
+      setBodyScale: (scale) =>
+        dispatch({ type: "set", key: "bodyScale", value: scale }),
       monoFontSizeScale: state.monoFontSizeScale,
       setMonoFontSizeScale: (scale) =>
         dispatch({ type: "set", key: "monoFontSizeScale", value: scale }),

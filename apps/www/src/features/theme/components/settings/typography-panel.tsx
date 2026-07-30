@@ -5,7 +5,6 @@ import {
   FaChevronDown,
   FaFont,
   FaHeading,
-  FaArrowUpRightDots,
   FaTextWidth,
   FaScaleUnbalanced,
   FaRulerHorizontal,
@@ -15,12 +14,10 @@ import { Divider, Slider } from "ui-lab-components";
 import {
   MAX_MIN_FONT_SIZE_PX,
   MIN_MIN_FONT_SIZE_PX,
-  TYPOGRAPHY_FONT_SIZE_SCALE_MAX,
-  TYPOGRAPHY_FONT_SIZE_SCALE_MIN,
+  TYPOGRAPHY_SCALE_MAX,
+  TYPOGRAPHY_SCALE_MIN,
   TYPOGRAPHY_LINE_HEIGHT_MAX,
   TYPOGRAPHY_LINE_HEIGHT_MIN,
-  TYPOGRAPHY_TYPE_SIZE_RATIO_MAX,
-  TYPOGRAPHY_TYPE_SIZE_RATIO_MIN,
   TypographyConfig,
 } from "../../lib/typography-config";
 
@@ -148,16 +145,8 @@ export const TypographyPanel = memo(
     onTypographyChange,
   }: TypographyPanelProps) => {
     const {
-      headerTypeSizeRatio,
-      headerFontSizeScale,
-      headerFontWeightScale,
-      headerLetterSpacingScale,
-      headerLineHeight,
-      bodyTypeSizeRatio,
-      bodyFontSizeScale,
-      bodyFontWeightScale,
-      bodyLetterSpacingScale,
-      bodyLineHeight,
+      headerScale,
+      bodyScale,
       bodyMinFontSizePx,
       headerMinFontSizePx,
       monoFontSizeScale,
@@ -186,54 +175,14 @@ export const TypographyPanel = memo(
             <div className="space-y-3">
               <div className="h-px w-full bg-background-700/30" />
               <SliderRow
-                icon={<FaArrowUpRightDots size={13} />}
-                label="Type Scale Ratio"
-                value={headerTypeSizeRatio}
-                min={TYPOGRAPHY_TYPE_SIZE_RATIO_MIN}
-                max={TYPOGRAPHY_TYPE_SIZE_RATIO_MAX}
-                step={0.001}
-                unit=""
-                onChange={(ratio) => onTypographyChange({ headerTypeSizeRatio: ratio })}
-              />
-              <SliderRow
                 icon={<FaTextWidth size={13} />}
                 label="Scale"
-                value={headerFontSizeScale}
-                min={TYPOGRAPHY_FONT_SIZE_SCALE_MIN}
-                max={TYPOGRAPHY_FONT_SIZE_SCALE_MAX}
+                value={headerScale}
+                min={TYPOGRAPHY_SCALE_MIN}
+                max={TYPOGRAPHY_SCALE_MAX}
                 step={0.01}
                 unit="x"
-                onChange={(scale) => onTypographyChange({ headerFontSizeScale: scale })}
-              />
-              <SliderRow
-                icon={<FaArrowsLeftRight size={13} />}
-                label="Letter Spacing"
-                value={headerLetterSpacingScale}
-                min={-5.0}
-                max={3.5}
-                step={0.05}
-                unit="x"
-                onChange={(scale) => onTypographyChange({ headerLetterSpacingScale: scale })}
-              />
-              <SliderRow
-                icon={<FaScaleUnbalanced size={13} />}
-                label="Weight"
-                value={headerFontWeightScale}
-                min={0.80}
-                max={1.20}
-                step={0.01}
-                unit="x"
-                onChange={(scale) => onTypographyChange({ headerFontWeightScale: scale })}
-              />
-              <SliderRow
-                icon={<FaRulerHorizontal size={13} />}
-                label="Line Height"
-                value={headerLineHeight}
-                min={TYPOGRAPHY_LINE_HEIGHT_MIN}
-                max={TYPOGRAPHY_LINE_HEIGHT_MAX}
-                step={0.01}
-                unit=""
-                onChange={(lineHeight) => onTypographyChange({ headerLineHeight: lineHeight })}
+                onChange={(scale) => onTypographyChange({ headerScale: scale })}
               />
               <SliderRow
                 icon={<FaTextWidth size={13} />}
@@ -262,54 +211,14 @@ export const TypographyPanel = memo(
             <div className="space-y-3">
               <div className="h-px w-full bg-background-700/30" />
               <SliderRow
-                icon={<FaArrowUpRightDots size={13} />}
-                label="Type Scale Ratio"
-                value={bodyTypeSizeRatio}
-                min={TYPOGRAPHY_TYPE_SIZE_RATIO_MIN}
-                max={TYPOGRAPHY_TYPE_SIZE_RATIO_MAX}
-                step={0.001}
-                unit=""
-                onChange={(ratio) => onTypographyChange({ bodyTypeSizeRatio: ratio })}
-              />
-              <SliderRow
                 icon={<FaTextWidth size={13} />}
                 label="Scale"
-                value={bodyFontSizeScale}
-                min={TYPOGRAPHY_FONT_SIZE_SCALE_MIN}
-                max={TYPOGRAPHY_FONT_SIZE_SCALE_MAX}
-                step={0.001}
-                unit="x"
-                onChange={(scale) => onTypographyChange({ bodyFontSizeScale: scale })}
-              />
-              <SliderRow
-                icon={<FaArrowsLeftRight size={13} />}
-                label="Letter Spacing"
-                value={bodyLetterSpacingScale}
-                min={0}
-                max={3.0}
-                step={0.05}
-                unit="x"
-                onChange={(scale) => onTypographyChange({ bodyLetterSpacingScale: scale })}
-              />
-              <SliderRow
-                icon={<FaScaleUnbalanced size={13} />}
-                label="Weight"
-                value={bodyFontWeightScale}
-                min={0.80}
-                max={1.20}
+                value={bodyScale}
+                min={TYPOGRAPHY_SCALE_MIN}
+                max={TYPOGRAPHY_SCALE_MAX}
                 step={0.01}
                 unit="x"
-                onChange={(scale) => onTypographyChange({ bodyFontWeightScale: scale })}
-              />
-              <SliderRow
-                icon={<FaRulerHorizontal size={13} />}
-                label="Line Height"
-                value={bodyLineHeight}
-                min={TYPOGRAPHY_LINE_HEIGHT_MIN}
-                max={TYPOGRAPHY_LINE_HEIGHT_MAX}
-                step={0.01}
-                unit=""
-                onChange={(lineHeight) => onTypographyChange({ bodyLineHeight: lineHeight })}
+                onChange={(scale) => onTypographyChange({ bodyScale: scale })}
               />
               <SliderRow
                 icon={<FaTextWidth size={13} />}
@@ -342,8 +251,8 @@ export const TypographyPanel = memo(
               icon={<FaTextWidth size={13} />}
               label="Code Size"
               value={monoFontSizeScale}
-              min={TYPOGRAPHY_FONT_SIZE_SCALE_MIN}
-              max={TYPOGRAPHY_FONT_SIZE_SCALE_MAX}
+              min={0.8}
+              max={1.2}
               step={0.01}
               unit="x"
               onChange={(scale) => onTypographyChange({ monoFontSizeScale: scale })}

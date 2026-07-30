@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import type { Metadata } from "next";
@@ -10,6 +10,15 @@ export const metadata: Metadata = {
 };
 
 function readTypographyCss(): string {
+  const workspaceTypographyCss = path.join(
+    process.cwd(),
+    "../../packages/@ui/src/typography.css",
+  );
+
+  if (existsSync(workspaceTypographyCss)) {
+    return readFileSync(workspaceTypographyCss, "utf8");
+  }
+
   const require = createRequire(import.meta.url);
   try {
     return readFileSync(
@@ -17,13 +26,7 @@ function readTypographyCss(): string {
       "utf8",
     );
   } catch {
-    return readFileSync(
-      path.join(
-        process.cwd(),
-        "../../packages/@ui/src/typography.css",
-      ),
-      "utf8",
-    );
+    throw new Error("Unable to resolve ui-lab-components/typography.css");
   }
 }
 

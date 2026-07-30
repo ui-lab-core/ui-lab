@@ -1,5 +1,10 @@
 import { type SimpleThemeColors } from "../constants/themes";
 import { type TypographyConfig } from "./typography-config";
+import {
+  DEFAULT_BODY_SCALE,
+  DEFAULT_HEADER_SCALE,
+  normalizeTypographyScale,
+} from "./typography-config";
 import { getDefaultThemeSourceConfig } from "./default-theme-config";
 
 export interface ThemeSourceConfig {
@@ -19,6 +24,16 @@ interface CompleteThemeCache {
 
 type PartialTypographyConfig = Partial<ThemeSourceConfig["typography"]> & {
   globalMinFontSizePx?: number;
+  headerFontSizeScale?: number;
+  bodyFontSizeScale?: number;
+  headerTypeSizeRatio?: number;
+  bodyTypeSizeRatio?: number;
+  headerFontWeightScale?: number;
+  bodyFontWeightScale?: number;
+  headerLetterSpacingScale?: number;
+  bodyLetterSpacingScale?: number;
+  headerLineHeight?: number;
+  bodyLineHeight?: number;
 };
 
 export const THEME_CACHE_KEY = "uilab_theme_complete";
@@ -60,12 +75,38 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
     | PartialTypographyConfig
     | undefined;
   const legacyMinFontSizePx = sourceTypography?.globalMinFontSizePx;
-  const currentTypography = { ...(sourceTypography ?? {}) };
+  const {
+    globalMinFontSizePx: _globalMinFontSizePx,
+    headerFontSizeScale,
+    bodyFontSizeScale,
+    headerTypeSizeRatio: _headerTypeSizeRatio,
+    bodyTypeSizeRatio: _bodyTypeSizeRatio,
+    headerFontWeightScale: _headerFontWeightScale,
+    bodyFontWeightScale: _bodyFontWeightScale,
+    headerLetterSpacingScale: _headerLetterSpacingScale,
+    bodyLetterSpacingScale: _bodyLetterSpacingScale,
+    headerLineHeight: _headerLineHeight,
+    bodyLineHeight: _bodyLineHeight,
+    ...currentTypography
+  } = sourceTypography ?? {};
   const bodyMinFontSizePx =
     sourceTypography?.bodyMinFontSizePx ??
     legacyMinFontSizePx ??
     defaultSourceConfig.typography.bodyMinFontSizePx;
-  delete currentTypography.globalMinFontSizePx;
+  const headerScale = normalizeTypographyScale(
+    currentTypography.headerScale ??
+      (typeof headerFontSizeScale === "number"
+        ? DEFAULT_HEADER_SCALE + (headerFontSizeScale - 1) * 0.5
+        : undefined),
+    DEFAULT_HEADER_SCALE,
+  );
+  const bodyScale = normalizeTypographyScale(
+    currentTypography.bodyScale ??
+      (typeof bodyFontSizeScale === "number"
+        ? DEFAULT_BODY_SCALE + (bodyFontSizeScale - 1) * 0.5
+        : undefined),
+    DEFAULT_BODY_SCALE,
+  );
 
   return {
     cssVariables: vars as Record<string, string>,
@@ -81,6 +122,8 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
         typography: {
           ...defaultSourceConfig.typography,
           ...currentTypography,
+          headerScale,
+          bodyScale,
           bodyMinFontSizePx,
           headerMinFontSizePx:
             sourceTypography?.headerMinFontSizePx ??

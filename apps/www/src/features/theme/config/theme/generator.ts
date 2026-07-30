@@ -3,7 +3,11 @@ import { type SimpleThemeColors } from "../../constants/themes";
 import { generateRadiusScaleCSS, applyRadiusScalesToDOM } from "../radius/generator";
 import { generateBorderWidthScaleCSS, applyBorderWidthScalesToDOM } from "../border-width/generator";
 import { generateFluidSpacingCSS } from "../spacing/generator";
-import { generateTypographyCSS } from "../typography/generator";
+import {
+  generateCodeTypographyVars,
+  generateTypographyCSS,
+} from "../typography/generator";
+import { type TypographyConfig } from "../../lib/typography-config";
 
 interface GeneratedThemeSetupFiles {
   themeCss: string
@@ -13,16 +17,10 @@ interface GeneratedThemeSetupFiles {
   fullBundle: string
 }
 
-export interface ThemeTypographyOptions {
-  bodyMinFontSizePx?: number
-  headerMinFontSizePx?: number
-  headerTypeSizeRatio?: number
-  headerFontSizeScale?: number
-  monoFontSizeScale?: number
-  monoFontWeightScale?: number
-  monoLetterSpacingScale?: number
-  monoLineHeight?: number
-  monoMinFontSizePx?: number
+interface ThemeLayoutOptions {
+  radius: number
+  borderWidth: number
+  spacingScale: number
 }
 
 function renderCssVariables(variables: Record<string, string>): string {
@@ -78,36 +76,28 @@ function generateConfigMessage(
 export function generateThemeSetupFiles(
   colors: SimpleThemeColors,
   mode: "light" | "dark",
-  typeSizeRatio: number,
-  fontSizeScale: number,
-  fontWeightScale: number,
-  headerFontWeightScale?: number,
-  bodyFontWeightScale?: number,
-  headerLineHeight?: number,
-  bodyLineHeight?: number,
-  radius?: number,
-  borderWidth?: number,
-  spacingScale?: number,
-  maxWidthScale?: number,
-  typographyOptions?: number | ThemeTypographyOptions,
+  typography: TypographyConfig,
+  layout: ThemeLayoutOptions,
 ): GeneratedThemeSetupFiles {
-  const resolvedTypographyOptions =
-    typeof typographyOptions === "number"
-      ? {
-          bodyMinFontSizePx: typographyOptions,
-          headerMinFontSizePx: typographyOptions,
-        }
-      : (typographyOptions ?? {});
   const typographyCSS = generateTypographyCSS(
-    typeSizeRatio,
-    fontSizeScale,
-    resolvedTypographyOptions.bodyMinFontSizePx,
+    typography.headerScale,
+    typography.bodyScale,
+    typography.headerMinFontSizePx,
+    typography.bodyMinFontSizePx,
   );
-  const leadingCSS = renderCssVariables({
-    "--leading-heading": String(headerLineHeight ?? 1.5),
-    "--leading-body": String(bodyLineHeight ?? 1.3),
-  });
-  const spacingCSS = generateFluidSpacingCSS(spacingScale ?? 1);
+  const codeTypographyCSS = renderCssVariables(
+    generateCodeTypographyVars(
+      typography.monoFontSizeScale,
+      typography.monoLineHeight,
+      typography.monoLetterSpacingScale,
+      typography.monoFontWeightScale,
+      typography.monoMinFontSizePx,
+    ),
+  );
+  const headingAliasCSS = "  --leading-heading: var(--leading-header);";
+  const spacingCSS = generateFluidSpacingCSS(layout.spacingScale);
+  const radiusCSS = generateRadiusScaleCSS(layout.radius);
+  const borderCSS = generateBorderWidthScaleCSS(layout.borderWidth);
   const lightColorVariables = generateColorPaletteVariables(colors, "light");
   const darkColorVariables = generateColorPaletteVariables(colors, "dark");
   const tokenNames = Array.from(
@@ -163,9 +153,12 @@ ${themeInlineMapping}
 
 @theme {
 ${typographyCSS}
-${leadingCSS}
+${codeTypographyCSS}
+${headingAliasCSS}
 
 ${spacingCSS}
+${radiusCSS}
+${borderCSS}
 }
 
 @layer base {
@@ -245,40 +238,4 @@ ${themeToggleTsx}`;
     themeToggleTsx,
     fullBundle,
   };
-}
-
-/**
- * Generates a single bundled export containing every file required for the
- * current recommended theme setup.
- */
-function generateFullThemeConfig(
-  colors: SimpleThemeColors,
-  mode: "light" | "dark",
-  typeSizeRatio: number,
-  fontSizeScale: number,
-  fontWeightScale: number,
-  headerFontWeightScale?: number,
-  bodyFontWeightScale?: number,
-  headerLineHeight?: number,
-  bodyLineHeight?: number,
-  radius?: number,
-  borderWidth?: number,
-  spacingScale?: number,
-  maxWidthScale?: number,
-): string {
-  return generateThemeSetupFiles(
-    colors,
-    mode,
-    typeSizeRatio,
-    fontSizeScale,
-    fontWeightScale,
-    headerFontWeightScale,
-    bodyFontWeightScale,
-    headerLineHeight,
-    bodyLineHeight,
-    radius,
-    borderWidth,
-    spacingScale,
-    maxWidthScale,
-  ).fullBundle
 }
