@@ -31,9 +31,11 @@ async function main() {
   }
 
   if (!(await exists(catalogEntry))) {
-    throw new Error(
-      `[catalog-snapshot] ${catalogEntry} is missing. Build @ui-lab-core/library before generating the registry.`
+    console.warn(
+      `[catalog-snapshot] ${catalogEntry} is missing; keeping committed snapshot. ` +
+        'Build @ui-lab-core/library to refresh it.'
     );
+    return;
   }
 
   const catalog = await import(pathToFileURL(catalogEntry).href);

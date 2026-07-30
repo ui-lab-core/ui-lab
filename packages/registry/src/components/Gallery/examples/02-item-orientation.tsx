@@ -116,7 +116,7 @@ export function renderPreview(props: Record<string, unknown>) {
       {items.map((item) => (
         <Gallery.Item key={item.id} orientation={orientation} className={itemClassName(item.tier)} aria-disabled={item.tier === 'experimental' ? true : undefined}>
           <Gallery.View aspectRatio={orientation === 'horizontal' ? '1/1' : ratio}>
-            <Frame pathStroke={item.tier === 'experimental' ? 'dotted' : 'dashed'} style={FRAME_STYLE[item.tier]} className="w-full h-full" />
+            <Frame pathStroke={item.tier === 'experimental' ? 'dotted' : 'dashed'} style={FRAME_STYLE[item.tier]} className="w-full h-full" strokeAlign='inside' />
           </Gallery.View>
           <Gallery.Body>
             <span>{item.title}</span>
