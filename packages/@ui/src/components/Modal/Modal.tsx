@@ -3,13 +3,12 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useDialog } from "react-aria";
-import { useFocusRing } from "@react-aria/focus";
-import { mergeProps } from "@react-aria/utils";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { X } from "lucide-react";
 import { useScrollLock } from "../../hooks/useScrollLock";
+import { Scroll } from "../Scroll";
 import { useControlledState } from "@/hooks/useControlledState";
 import { usePresence } from "@/hooks/usePresence";
 import css from "./Modal.module.css";
@@ -195,7 +194,6 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
 
     // useDialog hook provides accessibility attributes and title handling
     const { dialogProps, titleProps } = useDialog({ "aria-label": ariaLabel }, modalRef);
-    const { focusProps: modalFocusProps, isFocused: isModalFocused, isFocusVisible: isModalFocusVisible } = useFocusRing();
 
     const handleClose = closeModal;
 
@@ -281,9 +279,14 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       slottedBody.length > 0 ? (
         slottedBody
       ) : (
-        <div className={cn("content", css.content, contentClassName, resolved.content)}>
+        <Scroll
+          className={cn("body-scroll", css["body-scroll"])}
+          maxHeight="90vh"
+          style={{ height: "auto", flex: "1 1 auto", minHeight: 0 }}
+          styles={{ content: cn("content", css.content, contentClassName, resolved.content) }}
+        >
           {unslottedChildren}
-        </div>
+        </Scroll>
       );
 
     return createPortal(
@@ -305,7 +308,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
 
         {/* Modal content */}
         <div
-          {...asElementProps<"div">(mergeProps(dialogProps, modalFocusProps))}
+          {...asElementProps<"div">(dialogProps)}
           aria-modal="true"
           ref={setPanelRef}
           className={cn(
@@ -323,8 +326,6 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
           tabIndex={-1}
           data-size={size}
           data-animation={animation}
-          data-focused={isModalFocused ? "true" : "false"}
-          data-focus-visible={isModalFocusVisible ? "true" : "false"}
         >
           {/* Header */}
           {headerContent}
@@ -368,10 +369,17 @@ ModalHeader.displayName = "Modal.Header";
 const ModalBody = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }
->(({ children, className, ...props }, ref) => (
-  <div ref={ref} className={cn("content", css.content, className)} {...props}>
+>(({ children, className, style, ...props }, ref) => (
+  <Scroll
+    viewportRef={ref}
+    className={cn("body-scroll", css["body-scroll"])}
+    maxHeight="90vh"
+    style={{ height: "auto", flex: "1 1 auto", minHeight: 0, ...style }}
+    styles={{ content: cn("content", css.content, className) }}
+    {...props}
+  >
     {children}
-  </div>
+  </Scroll>
 ));
 
 ModalBody.displayName = "Modal.Body";

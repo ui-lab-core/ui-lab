@@ -811,7 +811,7 @@
   }
 
   .modal {
-    --background: var(--background-900);
+    --background: var(--background-950);
     --background-border: var(--background-700);
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-300);

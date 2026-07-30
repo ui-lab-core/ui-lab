@@ -474,6 +474,10 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       ...(maxWidth ? { maxWidth } : {}),
       ...(maxHeight ? { maxHeight } : {}),
     };
+    const trackPlacement = {
+      horizontal: { bottom: 2, top: "auto", left: 0, width: "100%", height: 12 },
+      vertical: {},
+    } as const;
 
     if (!enabled) {
       return (
@@ -551,6 +555,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           className={cn("track", css.track, resolved.track)}
           data-hide={String(hide)}
           style={{
+            ...trackPlacement[direction],
             opacity: showOpacity,
             pointerEvents: needsScrollbar ? "auto" : "none",
           }}

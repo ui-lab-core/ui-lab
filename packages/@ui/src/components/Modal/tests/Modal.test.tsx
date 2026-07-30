@@ -74,12 +74,13 @@ describe('Modal focus management', () => {
     )
 
     const bodyContent = screen.getByText('Body content').closest('.content')
+    const bodyScroll = bodyContent?.closest('.scroll')
     const footer = screen.getByText('Save').closest('.footer')
 
     expect(bodyContent).not.toBeNull()
     expect(footer).not.toBeNull()
-    expect(bodyContent?.contains(footer as Node)).toBe(false)
-    expect(bodyContent?.nextElementSibling).toBe(footer)
+    expect(bodyScroll?.contains(footer as Node)).toBe(false)
+    expect(bodyScroll?.nextElementSibling).toBe(footer)
   })
 })
 

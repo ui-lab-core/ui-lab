@@ -136,6 +136,24 @@ function isHTMLElement(value: Element | null): value is HTMLElement {
   return value instanceof HTMLElement
 }
 
+// React.Children.toArray does not flatten explicit <Fragment key={...}> wrappers
+// (only plain arrays/iterables), so a common `<Fragment key={x}>{divider}{item}</Fragment>`
+// list would otherwise be treated as one opaque child per pair, hiding the real item's
+// props (className, divider role) from the per-item logic below. Flatten fragments recursively
+// so each real element is its own entry, matching what consumers expect from a children list.
+function flattenGroupChildren(children: React.ReactNode): React.ReactElement[] {
+  const result: React.ReactElement[] = []
+  React.Children.forEach(children, (child) => {
+    if (!React.isValidElement(child)) return
+    if (child.type === React.Fragment) {
+      result.push(...flattenGroupChildren((child.props as { children?: React.ReactNode }).children))
+    } else {
+      result.push(child)
+    }
+  })
+  return result
+}
+
 function hasInput(item: Element | null): boolean {
   return !!item?.querySelector('[data-input="true"]')
 }
@@ -185,9 +203,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
     const inputsRef = React.useRef<Map<React.RefObject<HTMLDivElement | null>, React.RefObject<HTMLInputElement | null>>>(new Map())
     const focusableSurfacesRef = React.useRef<React.RefObject<HTMLElement | null>[]>([])
 
-    const childrenArray = React.Children.toArray(children).filter(
-      (child) => child !== null && child !== undefined
-    )
+    const childrenArray = flattenGroupChildren(children)
 
     const resolved = resolveGroupStyles(stylesProp)
     const mergedRef = useMergeRefs<HTMLDivElement>(ref, groupRef)
@@ -306,9 +322,23 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
       unregisterFocusableSurface,
     }
 
+    // The scope div below is the box that actually determines Group's outward size;
+    // it never receives `className`, so sizing utilities on Group were trapped one
+    // level too deep to take effect. Forward the same growth utilities the item-level
+    // check above already recognizes.
+    const rootClassName = className || ""
+
     return (
       <GroupContext.Provider value={contextValue}>
-        <div ref={scopeRef} className={cn("group-scope", scopeProps.className)}>
+        <div
+          ref={scopeRef}
+          className={cn(
+            "group-scope",
+            scopeProps.className,
+            rootClassName.includes('w-full') && "w-full",
+            rootClassName.includes('flex-1') && "flex-1"
+          )}
+        >
           <div {...indicatorProps} />
           <div
             ref={mergedRef}
@@ -482,7 +512,7 @@ const GroupInput = React.forwardRef<HTMLInputElement, GroupInputProps>(
           ref={mergedRef}
           {...props}
           disabled={inputDisabled}
-          className="h-full w-full px-2"
+          className="h-full w-full"
         />
       </div>
     )
@@ -530,7 +560,7 @@ const GroupInputWrapper = React.forwardRef<HTMLInputElement, GroupInputWrapperPr
           ref={mergedRef}
           {...props}
           disabled={inputDisabled}
-          className="h-full w-full px-2"
+          className="h-full w-full"
         />
       </div>
     )

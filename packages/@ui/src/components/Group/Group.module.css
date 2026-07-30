@@ -1,5 +1,7 @@
 @reference "tailwindcss";
 
+@layer theme, base, components, utilities;
+
 @layer components.defaults {
   .group {
     --radius-size: calc(var(--spacing) * 1.5);
@@ -76,12 +78,13 @@
     @apply flex items-stretch;
     position: relative;
     isolation: isolate;
+    box-sizing: border-box;
+    min-width: 0;
     border-radius: var(--group-item-radius, 0);
     overflow: visible;
 
     &.grow {
       flex: 1;
-      min-width: 0;
     }
 
     &.divider {
@@ -96,6 +99,8 @@
   :is(.button, .input, .select, .expand) {
     height: 100%;
     min-height: var(--item-height);
+    min-width: 0;
+    box-sizing: border-box;
     position: relative;
     isolation: isolate;
     overflow: visible;

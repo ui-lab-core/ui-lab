@@ -8,6 +8,7 @@ declare const styles: {
   close: string;
   "close-icon": string;
   content: string;
+  "body-scroll": string;
   footer: string;
 };
 

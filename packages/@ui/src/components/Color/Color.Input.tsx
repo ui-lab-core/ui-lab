@@ -46,7 +46,7 @@ export const ColorInput = React.forwardRef<
       ref={ref}
       isDisabled={disabled}
       data-size={size}
-      className={cn("input-group", styles["input-group"], groupClassName)}
+      className={cn("input-group", "w-full", styles["input-group"], groupClassName)}
     >
       <Group.Input
         value={inputValue}
