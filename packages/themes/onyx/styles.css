@@ -646,7 +646,6 @@
   .progress > .track {
     --background: color-mix(in srgb, var(--background-500) 20%, transparent);
     --radius: calc(var(--spacing) * 0.8);
-    --border-color: var(--background-600)
   }
 
   .progress > .track > .range {

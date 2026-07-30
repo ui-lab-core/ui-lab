@@ -224,15 +224,15 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
 );
 Container.displayName = 'List';
 
-/** Sticky heading row above a section of list items */
+/** Semantic heading region for list content */
 const Header = React.forwardRef<HTMLElement, ListHeaderProps>(
-  ({ sticky, children, className, ...props }, ref) => {
+  ({ children, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
 
     return (
       <header
         ref={ref}
-        className={cn(styles.header, listStyles.header, sticky && styles.sticky, className)}
+        className={cn(listStyles.header, className)}
         {...props}
       >
         {children}
@@ -269,16 +269,15 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
 );
 Divider.displayName = 'List.Divider';
 
-/** Fixed bottom row beneath the list body */
+/** Semantic footer region for list content */
 const Footer = React.forwardRef<HTMLElement, FooterComponentProps>(
-  ({ align = 'center', children, className, ...props }, ref) => {
+  ({ children, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
 
     return (
       <footer
         ref={ref}
-        className={cn(styles.footer, listStyles.footer, className)}
-        data-align={align}
+        className={cn(listStyles.footer, className)}
         {...props}
       >
         {children}

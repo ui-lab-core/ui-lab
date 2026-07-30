@@ -26,7 +26,7 @@ export type PageStylesProp = StylesProp<PageStyleSlots>;
 
 export interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Maximum width of the page content area */
-  maxWidth?: string | number;
+  'max-width'?: string | number;
   /** Controls the internal padding of the page */
   padding?: PagePadding;
   /** Controls the space between direct page regions using the shared Flex gap contract. */

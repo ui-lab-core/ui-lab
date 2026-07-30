@@ -11,7 +11,7 @@ import { Select as UISelect } from '../Select';
 export interface ListStyleSlots {
   /** Outer list container */
   root?: StyleValue;
-  /** Sticky or section header row */
+  /** Semantic list header */
   header?: StyleValue;
   /** Clickable or focusable list row */
   item?: StyleValue;
@@ -29,7 +29,7 @@ export interface ListStyleSlots {
   actions?: StyleValue;
   /** Individual action button */
   action?: StyleValue;
-  /** Bottom footer row */
+  /** Semantic list footer */
   footer?: StyleValue;
 }
 
@@ -91,8 +91,6 @@ export interface ListContainerProps extends Omit<React.HTMLAttributes<HTMLDivEle
 }
 
 export interface ListHeaderProps extends React.HTMLAttributes<HTMLElement> {
-  /** Whether the header sticks to the top while scrolling */
-  sticky?: boolean;
   children: React.ReactNode;
 }
 
@@ -162,10 +160,7 @@ export interface ListActionGroupProps extends ActionGroupComponentProps {
 
 export interface ListDividerProps extends DividerProps {}
 
-export interface FooterComponentProps extends React.HTMLAttributes<HTMLElement> {
-  /** Controls the horizontal alignment of footer content */
-  align?: 'center' | 'start' | 'end';
-}
+export type FooterComponentProps = React.HTMLAttributes<HTMLElement>;
 
 export interface ListFooterProps extends FooterComponentProps {
   children: React.ReactNode;

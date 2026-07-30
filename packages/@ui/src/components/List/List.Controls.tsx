@@ -15,6 +15,7 @@ import {
 } from './list.types';
 import styles from './List.module.css';
 import { useListContext } from './list.context';
+import { markListItemSlot } from './list.item-layout';
 
 /** Interactive checkbox inside a list item */
 const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheckboxProps>(
@@ -38,6 +39,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheck
   }
 );
 Checkbox.displayName = 'List.Checkbox';
+markListItemSlot(Checkbox, (props) => props.placement === 'start' ? 'leading' : 'trailing');
 
 /** Non-interactive checkbox indicator inside a list item */
 const CheckboxIndicator = React.forwardRef<HTMLDivElement, ListCheckboxIndicatorProps>(
@@ -61,6 +63,7 @@ const CheckboxIndicator = React.forwardRef<HTMLDivElement, ListCheckboxIndicator
   }
 );
 CheckboxIndicator.displayName = 'List.CheckboxIndicator';
+markListItemSlot(CheckboxIndicator, () => 'leading');
 
 /** Interactive switch inside a list item */
 const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchProps>(
@@ -80,6 +83,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchPro
   }
 );
 Switch.displayName = 'List.Switch';
+markListItemSlot(Switch, () => 'trailing');
 
 /** Input element inside a list item */
 const Input = React.forwardRef<React.ElementRef<typeof UIInput>, ListInputProps>(
@@ -87,9 +91,13 @@ const Input = React.forwardRef<React.ElementRef<typeof UIInput>, ListInputProps>
     const { styles: listStyles } = useListContext();
 
     return (
-      <div className={cn(styles.control, listStyles.control, 'w-48', className)}>
+      <div
+        className={cn(styles.control, listStyles.control)}
+        data-control="input"
+      >
         <UIInput
           ref={ref}
+          className={className}
           {...props}
         />
       </div>
@@ -97,6 +105,7 @@ const Input = React.forwardRef<React.ElementRef<typeof UIInput>, ListInputProps>
   }
 );
 Input.displayName = 'List.Input';
+markListItemSlot(Input, () => 'trailing');
 
 /** Select element wrapper inside a list item */
 const Select = React.forwardRef<React.ElementRef<typeof UISelect>, ListSelectProps>(
@@ -117,5 +126,6 @@ const Select = React.forwardRef<React.ElementRef<typeof UISelect>, ListSelectPro
   }
 );
 Select.displayName = 'List.Select';
+markListItemSlot(Select, () => 'trailing');
 
 export { Checkbox, CheckboxIndicator, Switch, Input, Select };

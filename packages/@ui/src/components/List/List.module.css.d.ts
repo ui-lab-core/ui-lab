@@ -1,7 +1,5 @@
 declare const styles: {
   readonly container: string;
-  readonly header: string;
-  readonly sticky: string;
   readonly item: string;
   readonly actionGroup: string;
   readonly actions: string;
@@ -11,7 +9,6 @@ declare const styles: {
   readonly media: string;
   readonly title: string;
   readonly desc: string;
-  readonly footer: string;
 };
 
 export default styles;

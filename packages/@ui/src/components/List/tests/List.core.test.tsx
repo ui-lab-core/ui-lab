@@ -23,7 +23,7 @@ describe('List.core', () => {
   it('renders all sub-components correctly', () => {
     const container = renderList(
       <>
-        <List.Header sticky>Header Text</List.Header>
+        <List.Header>Header Text</List.Header>
         <List.Item value="1">
           <List.Media>Icon</List.Media>
           <div>
@@ -36,7 +36,7 @@ describe('List.core', () => {
           </List.ActionGroup>
         </List.Item>
         <List.Divider />
-        <List.Footer align="start">Footer Text</List.Footer>
+        <List.Footer>Footer Text</List.Footer>
       </>
     )
 
@@ -53,7 +53,6 @@ describe('List.core', () => {
     
     const footer = container.querySelector('footer')
     expect(footer).toHaveTextContent('Footer Text')
-    expect(footer).toHaveAttribute('data-align', 'start')
   })
 
   it('applies variant, gap, and spacing props to container', () => {

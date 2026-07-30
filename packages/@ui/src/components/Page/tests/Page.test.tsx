@@ -23,7 +23,7 @@ describe('Page composition', () => {
   it('keeps root options compatible and exposes slot classes to compound regions', () => {
     const { container } = render(
       <Page
-        maxWidth={960}
+        max-width={960}
         padding="xl"
         gap="sm"
         centered={false}

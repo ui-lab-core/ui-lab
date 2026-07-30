@@ -12,7 +12,7 @@
 
     --disabled-opacity: 0.6;
 
-    @apply relative inline-flex cursor-pointer items-center;
+    @apply relative inline-flex shrink-0 cursor-pointer items-center;
     user-select: none;
     border-radius: var(--radius);
     width: var(--width);

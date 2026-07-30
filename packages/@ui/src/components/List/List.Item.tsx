@@ -10,6 +10,7 @@ import styles from './List.module.css';
 import { createStylesResolver } from '@/lib/styles';
 import { Tooltip } from '@/components/Tooltip';
 import { focusAdjacentTabStop } from '@/utils/list-navigation';
+import { getListItemSlot } from './list.item-layout';
 
 const resolveListItemStyles = createStylesResolver(['root'] as const);
 
@@ -169,6 +170,22 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       domProps['data-disabled'] === 'true';
     const tabIndex = tabIndexProp ?? (focusable ? (isDisabled ? -1 : 0) : undefined);
     const hasRowClickAction = typeof onClickProp === 'function';
+    const itemChildren = React.Children.toArray(children);
+    const childSlots = itemChildren.map(getListItemSlot);
+    const lastLeadingIndex = childSlots.lastIndexOf('leading');
+    const firstTrailingIndex = childSlots.indexOf('trailing');
+    const hasStructuralSlots = lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || Boolean(actions?.length);
+    const leadingCount = lastLeadingIndex + 1;
+    const trailingStart = firstTrailingIndex >= 0 ? firstTrailingIndex : itemChildren.length;
+    const contentCount = Math.max(0, trailingStart - leadingCount);
+    const trailingCount = itemChildren.length - trailingStart + (actions?.length ? 1 : 0);
+    const layoutColumns = hasStructuralSlots
+      ? [
+          leadingCount > 0 ? `repeat(${leadingCount}, auto)` : '',
+          contentCount > 0 ? `repeat(${contentCount}, minmax(0, 1fr))` : '',
+          trailingCount > 0 ? `repeat(${trailingCount}, auto)` : '',
+        ].filter(Boolean).join(' ')
+      : undefined;
     const isFocusWithinRow = React.useCallback((element: EventTarget | null) => (
       element instanceof Node && itemRef.current?.contains(element)
     ), []);
@@ -313,6 +330,11 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         data-interactive={interactive ? 'true' : undefined}
         data-selected={selected ? 'true' : undefined}
         {...itemProps}
+        data-list-layout={hasStructuralSlots ? 'columns' : undefined}
+        style={{
+          ...itemProps.style,
+          gridTemplateColumns: layoutColumns,
+        }}
       >
         {children}
         {actions && actions.length > 0 && (

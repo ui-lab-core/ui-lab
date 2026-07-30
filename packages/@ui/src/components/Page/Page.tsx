@@ -41,7 +41,7 @@ function gapMultiplier(gap: PageGap): number {
 const PageRoot = React.forwardRef<HTMLDivElement, PageProps>(
   (
     {
-      maxWidth = '1400px',
+      'max-width': maxWidth = '1400px',
       padding = 'md',
       gap = 'lg',
       centered = true,

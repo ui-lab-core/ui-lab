@@ -45,7 +45,6 @@ export interface ScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   enabled?: boolean;
   hide?: boolean;
   inline?: boolean;
-  wheel?: boolean;
   styles?: ScrollStylesProp;
   storageKey?: string;
 }
@@ -128,7 +127,6 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       enabled = true,
       hide = true,
       inline = false,
-      wheel = true,
       styles,
       storageKey,
       style: propsStyle,
@@ -461,23 +459,6 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       [isHoriz, numPaddingY, clientPosKey, clientSizeKey, scrollPosKey, scrollSizeKey, handleMouseMove, handleMouseUp]
     );
 
-    const handleWheel = useCallback(
-      (e: React.WheelEvent) => {
-        if (!contentRef.current || !isHoriz) return;
-
-        const content = contentRef.current;
-        const scrollAmount = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-        const maxScroll = content.scrollWidth - content.clientWidth;
-        const nextScroll = Math.max(0, Math.min(maxScroll, content.scrollLeft + scrollAmount));
-
-        if (nextScroll === content.scrollLeft) return;
-
-        e.preventDefault();
-        content.scrollLeft = nextScroll;
-      },
-      [isHoriz]
-    );
-
     useLayoutEffect(() => {
       restoreStoredScrollPosition();
       connectObservers();
@@ -549,7 +530,6 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
             ref={mergedContentRef}
             className={cn(css.content, resolved.content)}
             onScroll={handleScroll}
-            onWheel={isHoriz && wheel ? handleWheel : undefined}
             style={{
               maxHeight: "inherit",
               maxWidth: "inherit",

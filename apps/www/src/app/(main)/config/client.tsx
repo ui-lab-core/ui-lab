@@ -678,7 +678,7 @@ export default function ConfigPage({
   return (
     <Page
       padding="none"
-      maxWidth="none"
+      max-width="none"
       centered={false}
       fullscreen
       className="bg-background-950 text-foreground-100 space-y-6"

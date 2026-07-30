@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useListContext } from './list.context';
 import { ListMediaProps } from './list.types';
 import styles from './List.module.css';
+import { markListItemSlot } from './list.item-layout';
 
 /** Slot sub-component for media content in a list item */
 const Media = React.forwardRef<HTMLDivElement, ListMediaProps>(
@@ -23,5 +24,6 @@ const Media = React.forwardRef<HTMLDivElement, ListMediaProps>(
   }
 );
 Media.displayName = 'List.Media';
+markListItemSlot(Media, () => 'leading');
 
 export { Media };

@@ -259,7 +259,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputRoot = (
       <div
         ref={containerRef}
-        className={cn('input', css.container, resolved.root)}
+        className={cn('input', css.container, resolved.root, groupContext && className)}
         data-input-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
@@ -292,7 +292,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           data-disabled={disabled || undefined}
           data-error={error ? "true" : undefined}
           data-variant={variant}
-          className={cn(css.input, className)}
+          className={css.input}
           style={inputPaddingStyle}
           {...mergeProps(focusProps, {
             onFocus: handleFocus,
@@ -359,7 +359,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         ref={scopeRef}
-        className={cn("input-scope", scopeProps.className, css.scope)}
+        className={cn("input-scope", scopeProps.className, css.scope, className)}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
         {inputRoot}
