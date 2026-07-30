@@ -30,7 +30,8 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@ui-lab-core/library": "0.1.7",
-    "ui-lab-registry": "workspace:*"
+    "ui-lab-registry": "workspace:*",
+    "yaml": "^2.6.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

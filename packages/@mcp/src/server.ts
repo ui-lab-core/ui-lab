@@ -3,6 +3,7 @@
  * Implements the Model Context Protocol for UI Lab
  */
 
+import YAML from 'yaml';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -65,7 +66,7 @@ async function createServer(): Promise<McpServer> {
         content: [
           {
             type: 'text',
-            text: JSON.stringify(result, null, 2),
+            text: YAML.stringify(result),
           },
         ],
       };
