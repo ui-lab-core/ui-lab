@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { type OklchColor } from "@/features/theme/lib/color-utils";
 import { useApp } from "@/features/theme/lib/app-context";
 import { CopyButton } from "./copy-button";
 import { LuChevronsDownUp } from "@/shared/icons/lu";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "ui-lab-components/button";
+import { Scroll } from "ui-lab-components/scroll";
 import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 import { type SimpleThemeColors } from "@/features/theme/constants/themes";
@@ -46,7 +47,6 @@ interface CodeProps {
   accentChromaLimit?: number;
   preHighlightedLight?: string;
   preHighlightedDark?: string;
-  eagerMeasure?: boolean;
 }
 
 const MAX_HEIGHT_LINES = 5;
@@ -98,22 +98,18 @@ export function Code({
   heading,
   preHighlightedLight,
   preHighlightedDark,
-  eagerMeasure = false,
   maxHeightLines = MAX_HEIGHT_LINES,
 }: CodeProps) {
   const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
 
   // Refs
   const rootRef = useRef<HTMLDivElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const scrollTrackRef = useRef<HTMLDivElement>(null);
 
   const [resolved, setResolved] = useState<{
     key: string;
     html: string;
     status: "resolved" | "failed";
   } | null>(null);
-  const [dimensions, setDimensions] = useState({ contentScrollWidth: 0, viewportWidth: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
   const isNearViewport = useNearViewport(rootRef);
 
@@ -128,30 +124,6 @@ export function Code({
   const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
   const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
   const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
-
-  const handleScrollTrack = useCallback(() => {
-    if (viewportRef.current && scrollTrackRef.current) {
-      viewportRef.current.scrollLeft = scrollTrackRef.current.scrollLeft;
-    }
-  }, []);
-
-  const handleScrollViewport = useCallback(() => {
-    if (viewportRef.current && scrollTrackRef.current) {
-      const diff = Math.abs(scrollTrackRef.current.scrollLeft - viewportRef.current.scrollLeft);
-      if (diff > 1) {
-        scrollTrackRef.current.scrollLeft = viewportRef.current.scrollLeft;
-      }
-    }
-  }, []);
-
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      if (viewportRef.current) {
-        viewportRef.current.scrollLeft += e.deltaX;
-        e.preventDefault();
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (!isNearViewport || !isThemeInitialized || !currentThemeColors) return;
@@ -186,33 +158,6 @@ export function Code({
     };
   }, [children, currentThemeColors, currentThemeMode, fallbackHtml, highlightKey, isNearViewport, isThemeInitialized, language]);
 
-  useLayoutEffect(() => {
-    if (!eagerMeasure && !isNearViewport && !isExpanded) return;
-    const measure = () => {
-      if (viewportRef.current) {
-        const contentScrollWidth = viewportRef.current.scrollWidth;
-        const viewportWidth = viewportRef.current.clientWidth;
-
-        setDimensions((current) => {
-          if (
-            current.contentScrollWidth === contentScrollWidth &&
-            current.viewportWidth === viewportWidth
-          ) {
-            return current;
-          }
-
-          return { contentScrollWidth, viewportWidth };
-        });
-      }
-    };
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    if (viewportRef.current) observer.observe(viewportRef.current);
-    return () => observer.disconnect();
-  }, [displayHtml, eagerMeasure, isExpanded, isNearViewport]);
-
-  const hasHorizontalOverflow = dimensions.contentScrollWidth > dimensions.viewportWidth;
   const hiddenCodeLines = totalCodeLines - maxHeightLines;
   const expanded = isExpanded;
   const shouldShowExpandButton = totalCodeLines > maxHeightLines;
@@ -247,47 +192,29 @@ export function Code({
           </Button>
         )}
         <CopyButton code={children} />
-        <div className="relative flex-1 min-h-0 min-w-0">
+        <Scroll
+          direction="horizontal"
+          maxWidth="100%"
+          hide={false}
+          styles={{
+            track: "bg-transparent backdrop-blur-sm",
+            thumb: "bg-background-700 hover:bg-background-600",
+          }}
+          className="relative flex-1 min-h-0 min-w-0"
+        >
           <div
-            ref={viewportRef}
-            onScroll={handleScrollViewport}
-            onWheel={handleWheel}
             dangerouslySetInnerHTML={{ __html: displayHtml }}
             className={cn(`
-                overflow-y-auto overflow-x-hidden
                 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
                 [&_code]:font-mono [&_code]:whitespace-pre
-
-                /* Custom Vertical Scrollbar Styling */
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-background-700
-                [&::-webkit-scrollbar-thumb]:rounded-full
-                [&::-webkit-scrollbar-thumb:hover]:bg-background-600
               `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
             style={{
-              overflowY: expanded ? 'auto' : 'hidden',
               maxHeight: !expanded ? `calc(${maxHeightLines} * 1.5em + 2rem)` : undefined,
               maskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
               WebkitMaskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
             }}
           />
-
-          {/* Absolutely positioned so mounting overflow state after hydration
-              never changes the block's height; hidden via opacity instead of
-              conditional rendering to keep server and client DOM identical. */}
-          <div
-            ref={scrollTrackRef}
-            onScroll={handleScrollTrack}
-            aria-hidden={hasHorizontalOverflow ? undefined : true}
-            className={cn(
-              "absolute bottom-0 left-0 right-0 overflow-x-auto bg-transparent backdrop-blur-sm transition-opacity",
-              hasHorizontalOverflow ? "opacity-100" : "pointer-events-none opacity-0"
-            )}
-          >
-            <div style={{ width: dimensions.contentScrollWidth || '100%', height: '12px' }} />
-          </div>
-        </div>
+        </Scroll>
 
         {shouldShowExpandButton && !expanded && (
           <button

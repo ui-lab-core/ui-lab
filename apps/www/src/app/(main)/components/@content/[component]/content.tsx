@@ -11,7 +11,11 @@ const Styles = lazy(loadStyles);
 
 type Tab = 'examples' | 'api' | 'styles';
 
-export function Content({ examples, componentId }: { examples: React.ReactNode; componentId: string }) {
+export function Content({ examples, componentId, actions }: {
+  examples: React.ReactNode;
+  componentId: string;
+  actions?: React.ReactNode;
+}) {
   const [active, setActive] = useState<Tab>('examples');
   const [visited, setVisited] = useState<Set<Tab>>(() => new Set(['examples']));
 
@@ -50,6 +54,7 @@ export function Content({ examples, componentId }: { examples: React.ReactNode; 
             <Tabs.Trigger value="styles">Styles</Tabs.Trigger>
           </Tabs.List>
         </div>
+        {actions ? <div className="ml-auto flex h-10 items-center gap-1">{actions}</div> : null}
       </Flex>
       <Tabs.Content value="examples" className="mt-6">
         {examples}

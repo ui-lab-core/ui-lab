@@ -1,9 +1,10 @@
-import { listElements, type ElementSourceEntry } from '@ui-lab-core/library/server';
+import { getElementGroup, listElements, type ElementSourceEntry } from '@ui-lab-core/library/server';
 import type { ComponentAPI, ComponentMetadata } from 'ui-lab-registry';
 import { Footer } from '@/features/layout/components/footer';
 import { CopyComponentPage } from '@/features/docs/page-actions/copy-component-page';
 import { OpenPage } from '@/features/docs/page-actions/open-page-button';
 import { highlightCode } from '@/features/docs/lib/shiki-server';
+import { Code } from '@/features/docs/components/code-display/code';
 import { ExampleCode, Playground, Preview } from './preview';
 import { isInteractivePreview } from './preview-utils';
 import { ExampleReference } from './example-reference';
@@ -70,7 +71,11 @@ export async function ComponentPage({
     code: entry.code,
   }));
   const first = examples[0];
-  const highlighted = first ? await highlightCode(first.code, 'typescript') : { light: '', dark: '' };
+  const highlighted = first ? await highlightCode(first.code, 'tsx') : { light: '', dark: '' };
+  const importPattern = getElementGroup('components', componentId)?.importPattern;
+  const importPatternHighlight = importPattern
+    ? await highlightCode(importPattern, 'typescript')
+    : null;
   const tocItems = examples
     .slice(1)
     .filter((example) => !isInteractivePreview(example.id))
@@ -123,18 +128,16 @@ export async function ComponentPage({
                     <h1 className="font-medium text-xl text-foreground-50">{component.name}</h1>
                     <p className="max-w-[66ch] text-md text-foreground-400">{component.description}</p>
                   </div>
-                  <nav className="flex h-10 gap-3" aria-label="Component resources">
-                    {sourceUrl ? (
-                      <Button href={sourceUrl} target="_blank" icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" className="h-9 px-2">
-                        Source
-                      </Button>
-                    ) : null}
-                    {reactAriaUrl ? (
-                      <Button href={reactAriaUrl} target="_blank" icon={<ReactAriaIcon />} variant="ghost" size="sm" className="h-9 px-2">
-                        React Aria
-                      </Button>
-                    ) : null}
-                  </nav>
+                  {importPatternHighlight && importPattern ? (
+                    <Code
+                      language="typescript"
+                      preHighlightedDark={importPatternHighlight.dark}
+                      preHighlightedLight={importPatternHighlight.light}
+                      className='mb-4'
+                    >
+                      {importPattern}
+                    </Code>
+                  ) : null}
                 </header>
 
                 {first ? (
@@ -144,7 +147,24 @@ export async function ComponentPage({
                   </section>
                 ) : null}
 
-                <Content examples={examplesPanel} componentId={componentId} />
+                <Content
+                  actions={(
+                    <nav aria-label="Component resources" className="flex items-center gap-1">
+                      {sourceUrl ? (
+                        <Button href={sourceUrl} target="_blank" icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" className="h-9 px-2">
+                          Source
+                        </Button>
+                      ) : null}
+                      {reactAriaUrl ? (
+                        <Button href={reactAriaUrl} target="_blank" icon={<ReactAriaIcon />} variant="ghost" size="sm" className="h-9 px-2">
+                          React Aria
+                        </Button>
+                      ) : null}
+                    </nav>
+                  )}
+                  examples={examplesPanel}
+                  componentId={componentId}
+                />
               </div>
             </div>
           </div>

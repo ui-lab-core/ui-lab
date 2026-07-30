@@ -6,6 +6,7 @@ import {
   getElementPreviewConfig,
   type ElementPreviewControl,
 } from '@ui-lab-core/library/previews';
+import { stripLeadingImports } from '@ui-lab-core/library/code';
 import { Code } from '@/features/docs/components/code-display/code';
 import { useNearViewport } from '@/shared/hooks/use-near-viewport';
 import { Select } from 'ui-lab-components/select';
@@ -41,7 +42,7 @@ export function Playground({
   const result = config?.factory?.(values, (updates) => {
     setValues((current) => ({ ...current, ...updates as Record<string, Value> }));
   });
-  const currentCode = result?.code ?? code;
+  const currentCode = stripLeadingImports(result?.code ?? code);
 
   const change = (name: string, value: Value) => {
     setValues((current) => ({ ...current, [name]: value }));
@@ -117,7 +118,7 @@ export function Playground({
       <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700 bg-background-950/40">
         <Code
           className="rounded-none border-0"
-          language="typescript"
+          language="tsx"
           preHighlightedDark={currentCode === code ? dark : undefined}
           preHighlightedLight={currentCode === code ? light : undefined}
           showLineNumbers
@@ -137,10 +138,10 @@ export function ExampleCode({ id, code }: { id: string; code: string }) {
     control.defaultValue ?? control.options?.[0]?.value ?? '',
   ]));
   const result = config?.factory?.(values, () => {});
-  const currentCode = result?.code ?? code;
+  const currentCode = stripLeadingImports(result?.code ?? code);
 
   return (
-    <Code className="rounded-none border-0" eagerMeasure language="typescript" showLineNumbers>
+    <Code className="rounded-none border-0" language="tsx" showLineNumbers>
       {currentCode}
     </Code>
   );
