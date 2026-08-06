@@ -5,7 +5,6 @@ export interface Styles {
   inner: string;
   search: string;
   input: string;
-  "input-clear": string;
   "input-empty": string;
   list: string;
   item: string;

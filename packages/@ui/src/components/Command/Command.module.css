@@ -67,11 +67,16 @@
   }
 
   /* Search Section */
-  .content .search {
+  .search {
     @apply flex p-1.5;
     border-bottom: none;
     --input-active-border-color: transparent;
     --input-active-box-shadow: none;
+  }
+
+  .search :global(.input-scope) {
+    flex: 1;
+    min-width: 0;
   }
 
   .input {
@@ -89,20 +94,6 @@
 
   .search :global([data-focus-indicator="local"]) {
     display: none;
-  }
-
-  .input-clear {
-    position: relative;
-  }
-
-  .input-clear :global(input) {
-    padding-right: calc(2rem + var(--adornment-offset)) !important;
-  }
-
-  .input-clear :global([data-end-adornments]) {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-end: 0;
   }
 
   .input-empty :global([data-actions-position="right"]) {

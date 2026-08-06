@@ -449,7 +449,7 @@ describe('Command', () => {
     expect(ref.current).toBe(input)
   })
 
-  it('reserves clear-action space before and after entering a query', async () => {
+  it('keeps the default clear action as a trailing Input adornment', async () => {
     render(
       <Command open>
         <Command.Input />
@@ -460,14 +460,15 @@ describe('Command', () => {
     const action = screen.getByRole('button', { name: 'Clear search', hidden: true })
 
     expect(action).toBeInTheDocument()
-    expect(input.parentElement).toHaveClass(styles['input-clear'])
     expect(input.parentElement).toHaveClass(styles['input-empty'])
-    expect(input).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
+    expect(input.closest('.input-scope')).not.toBeNull()
+    expect(input.parentElement?.querySelector('[data-end-adornments]')).toContainElement(action)
+    expect(input).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
 
     fireEvent.change(input, { target: { value: 'settings' } })
 
     expect(input.parentElement).not.toHaveClass(styles['input-empty'])
-    expect(input).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
+    expect(input).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
   })
 
   describe('keyboard navigation scrolling', () => {
