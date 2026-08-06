@@ -39,8 +39,8 @@ export function PreviewContainer({ layoutConfig, children }: PreviewContainerPro
 
   return (
     <div className="relative w-full h-full min-h-56 bg-background-950 border-b border-background-700 overflow-hidden">
-      <div className={`absolute inset-0 p-12 ${centeringClass}`}>
-        <div className="flex h-full w-full items-center justify-center" style={buildPreviewStyles(previewConfig)}>
+      <div className={`absolute inset-0 flex p-12 ${centeringClass}`}>
+        <div className="flex h-full w-full min-w-0 items-center justify-center" style={buildPreviewStyles(previewConfig)}>
           {children}
         </div>
       </div>

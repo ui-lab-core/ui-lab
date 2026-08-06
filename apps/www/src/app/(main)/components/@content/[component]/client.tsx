@@ -36,9 +36,14 @@ const ReactAriaSvg = () => (
   </svg>
 );
 
-function ExampleConfigurator({ example, hero = false }: {
+// Layout/container components are expected to fill the preview container and
+// therefore should not be constrained to an isolated width.
+const FILL_COMPONENT_IDS = new Set(["page", "grid", "flex", "gallery", "panel"]);
+
+function ExampleConfigurator({ example, hero = false, constrainPreview = true }: {
   example?: ComponentExample;
   hero?: boolean;
+  constrainPreview?: boolean;
 }) {
   return (
     <ComponentConfigurator
@@ -51,6 +56,7 @@ function ExampleConfigurator({ example, hero = false }: {
       renderPreview={example?.renderPreview}
       previewLayout={example?.previewLayout}
       resizable={example?.resizable}
+      constrainPreview={constrainPreview}
     >
       {example?.preview ?? <div className="h-10 w-32 bg-background-800 rounded animate-pulse" />}
     </ComponentConfigurator>
@@ -69,6 +75,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
 }) {
   const component = useMemo(() => getComponentById(componentId), [componentId]);
   const examples = component?.examples ?? [];
+  const constrainPreview = !FILL_COMPONENT_IDS.has(componentId);
 
   const [activeTab, setActiveTab] = useState("examples");
   const [visitedTabs, setVisitedTabs] = useState<Set<string>>(new Set(["examples"]));
@@ -161,7 +168,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
               </div>
             </div>
             <div className="space-y-4 mb-12">
-              <ExampleConfigurator example={firstExample} hero />
+              <ExampleConfigurator example={firstExample} hero constrainPreview={constrainPreview} />
             </div>
             <Tabs variant="underline" value={activeTab} onValueChange={(tab) => { setActiveTab(tab); setVisitedTabs((prev) => new Set(prev).add(tab)); }}>
               <Flex direction="row" justify-between className="border-b border-background-700">
@@ -176,7 +183,7 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
                   <div className="space-y-4">
                     {remainingExamples.map((example) => (
                       <div key={example.id} id={example.id}>
-                        <ExampleConfigurator example={example} />
+                        <ExampleConfigurator example={example} constrainPreview={constrainPreview} />
                       </div>
                     ))}
                   </div>

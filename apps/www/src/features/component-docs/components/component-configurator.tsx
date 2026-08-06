@@ -68,9 +68,19 @@ interface ComponentConfiguratorProps {
   hidePreviewToggle?: boolean;
   previewLayout?: "center" | "start";
   resizable?: boolean;
+  /**
+   * Constrain the preview to an isolated, centered width. Fill components
+   * (page, grid, flex, gallery, panel) opt out by passing `false`.
+   */
+  constrainPreview?: boolean;
+  /** Tailwind width class used when the preview is constrained. */
+  previewWidthClass?: string;
   preHighlightedLight?: string;
   preHighlightedDark?: string;
 }
+
+/** Default isolated-preview width. Change here to adjust every constrained preview. */
+const DEFAULT_PREVIEW_WIDTH = "w-90";
 
 const EMPTY_TABS: Array<{ label: string; code: string }> = [];
 const EMPTY_CONTROLS: ControlDef[] = [];
@@ -102,6 +112,8 @@ export function ComponentConfigurator({
   hidePreviewToggle = false,
   previewLayout = "center",
   resizable = false,
+  constrainPreview = true,
+  previewWidthClass = DEFAULT_PREVIEW_WIDTH,
   preHighlightedLight,
   preHighlightedDark,
 }: ComponentConfiguratorProps) {
@@ -142,6 +154,18 @@ export function ComponentConfigurator({
 
   const PreviewRenderer = renderPreview;
   const CustomRenderer = customRenderer;
+  // Constrain isolated components to a centered width so they neither stretch
+  // to fill the container nor shrink when centered. Resizable previews are
+  // governed by the width slider instead.
+  const shouldConstrain = constrainPreview && !resizable;
+  const previewInner = factoryResult ? factoryResult.preview : PreviewRenderer ? (
+    <PreviewRenderer
+      {...controlValues}
+      handleControlChange={handleControlChange}
+      previewWidth={previewWidth}
+      setPreviewWidth={resizable ? setPreviewWidth : undefined}
+    />
+  ) : children;
   const previewContent = (
     <Scroll className="h-full" styles={{ track: "pr-6" }} inline maxHeight="40rem">
       <div
@@ -151,14 +175,17 @@ export function ComponentConfigurator({
         )}
         style={{ "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties}
       >
-        {factoryResult ? factoryResult.preview : PreviewRenderer ? (
-          <PreviewRenderer
-            {...controlValues}
-            handleControlChange={handleControlChange}
-            previewWidth={previewWidth}
-            setPreviewWidth={resizable ? setPreviewWidth : undefined}
-          />
-        ) : children}
+        {shouldConstrain ? (
+          <div
+            className={cn(
+              previewWidthClass,
+              "max-w-full mx-auto",
+              previewLayout === "center" && "flex flex-col items-center justify-center"
+            )}
+          >
+            {previewInner}
+          </div>
+        ) : previewInner}
       </div>
     </Scroll>
   );

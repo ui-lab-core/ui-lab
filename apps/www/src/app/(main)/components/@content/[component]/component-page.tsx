@@ -31,6 +31,19 @@ const ReactAriaIcon = () => (
   </svg>
 );
 
+// Layout/container components are expected to fill the preview container and
+// therefore should not be constrained to an isolated width.
+const FILL_COMPONENT_IDS = new Set(['page', 'grid', 'flex', 'gallery', 'panel']);
+
+// Box/canvas components whose content should fill the constrained width instead
+// of collapsing to its intrinsic size (which looks compressed when centered).
+const FILL_WIDTH_COMPONENT_IDS = new Set(['card', 'mask', 'frame']);
+
+// Per-component width overrides. Anything not listed uses the shared default.
+const PREVIEW_WIDTH_OVERRIDES: Record<string, string> = {
+  mask: 'w-140',
+};
+
 function isExample(entry: ElementSourceEntry, componentId: string) {
   return entry.package === 'components' &&
     entry.previewEligible &&
@@ -63,6 +76,9 @@ export async function ComponentPage({
   reactAriaUrl: string | null;
   sourceUrl: string | null;
 }) {
+  const constrainPreview = !FILL_COMPONENT_IDS.has(componentId);
+  const fillPreviewWidth = FILL_WIDTH_COMPONENT_IDS.has(componentId);
+  const previewWidthClass = PREVIEW_WIDTH_OVERRIDES[componentId];
   const examples = getExamples(componentId).map((entry) => ({
     id: entry.id,
     path: entry.path,
@@ -105,7 +121,7 @@ export async function ComponentPage({
                 <p className="text-sm max-w-[45ch] text-foreground-400">{example.description}</p>
               </div>
             ) : null}
-            <Preview id={example.id} flushBottom />
+            <Preview id={example.id} flushBottom constrain={constrainPreview} fillWidth={fillPreviewWidth} widthClass={previewWidthClass} />
             <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700">
               <ExampleCode id={example.id} code={example.code} />
             </div>
@@ -143,7 +159,7 @@ export async function ComponentPage({
                 {first ? (
                   <section className="mb-12 space-y-4">
                     {!isInteractivePreview(first.id) ? <ExampleReference id={first.title} level={2} /> : null}
-                    <Playground id={first.id} code={first.code} light={highlighted.light} dark={highlighted.dark} />
+                    <Playground id={first.id} code={first.code} light={highlighted.light} dark={highlighted.dark} constrain={constrainPreview} fillWidth={fillPreviewWidth} widthClass={previewWidthClass} />
                   </section>
                 ) : null}
 

@@ -16,18 +16,60 @@ type Value = string | number | boolean;
 
 const emptyControls: ElementPreviewControl[] = [];
 
+/**
+ * Default width for isolated (non-fill) component previews. Change here to
+ * adjust every constrained preview at once.
+ */
+const CONSTRAINED_PREVIEW_WIDTH = 'w-90';
+
+interface ConstraintOptions {
+  /** Tailwind width class for the constrained box. Defaults to the shared width. */
+  widthClass?: string;
+  /**
+   * When true the direct child fills the constrained width (block layout) instead
+   * of being centered at its intrinsic size. Use for box/canvas components
+   * (card, mask, frame) that otherwise collapse to their content width.
+   */
+  fillWidth?: boolean;
+}
+
+/**
+ * Builds the wrapper class that constrains an isolated component to a centered
+ * width so it neither stretches to fill the container nor shrinks too small.
+ * Returns null when the component should fill the container (fill components).
+ */
+function getConstraintClass(
+  layout: string | undefined,
+  constrain: boolean,
+  { widthClass = CONSTRAINED_PREVIEW_WIDTH, fillWidth = false }: ConstraintOptions = {},
+): string | null {
+  if (!constrain) return null;
+  const base = `${widthClass} max-w-full mx-auto`;
+  // Box/canvas components and start-aligned layouts fill the width as a block;
+  // everything else centers its intrinsic content.
+  return fillWidth || layout === 'start'
+    ? base
+    : `${base} flex flex-col items-center justify-center`;
+}
+
 export function Playground({
   id,
   code,
   light,
   dark,
   previewHeight,
+  constrain = true,
+  widthClass,
+  fillWidth,
 }: {
   id: string;
   code: string;
   light: string;
   dark: string;
   previewHeight?: number;
+  constrain?: boolean;
+  widthClass?: string;
+  fillWidth?: boolean;
 }) {
   const config = getElementPreviewConfig('components', id);
   const Preview = getElementPreview('components', id);
@@ -56,7 +98,11 @@ export function Playground({
           style={{ minHeight: fixedPreviewHeight }}
         >
           <Suspense fallback={null}>
-            {result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />)}
+            {(() => {
+              const node = result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />);
+              const constraintClass = getConstraintClass(config?.previewLayout, constrain, { widthClass, fillWidth });
+              return constraintClass ? <div className={constraintClass}>{node}</div> : node;
+            })()}
           </Suspense>
         </div>
         {controls.length ? (
@@ -147,18 +193,20 @@ export function ExampleCode({ id, code }: { id: string; code: string }) {
   );
 }
 
-export function Preview({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
-  return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} key={id} />;
+export function Preview({ id, previewHeight, flushBottom, constrain = true, widthClass, fillWidth }: { id: string; previewHeight?: number; flushBottom?: boolean; constrain?: boolean; widthClass?: string; fillWidth?: boolean }) {
+  return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} constrain={constrain} widthClass={widthClass} fillWidth={fillWidth} key={id} />;
 }
 
-function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
+function PreviewInstance({ id, previewHeight, flushBottom, constrain = true, widthClass, fillWidth }: { id: string; previewHeight?: number; flushBottom?: boolean; constrain?: boolean; widthClass?: string; fillWidth?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isNearViewport = useNearViewport(rootRef, { rootMargin: '600px 0px' });
   const [loaded, setLoaded] = useState(false);
   const [overlayGone, setOverlayGone] = useState(false);
   const Implementation = getElementPreview('components', id);
-  const fixedPreviewHeight = previewHeight ?? getElementPreviewConfig('components', id)?.previewHeight ?? 320;
+  const config = getElementPreviewConfig('components', id);
+  const fixedPreviewHeight = previewHeight ?? config?.previewHeight ?? 320;
+  const constraintClass = getConstraintClass(config?.previewLayout, constrain, { widthClass, fillWidth });
 
   useLayoutEffect(() => {
     if (!isNearViewport) return;
@@ -219,7 +267,13 @@ function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previ
         inert={loaded ? undefined : true}
       >
         <Suspense fallback={null}>
-          {isNearViewport && Implementation ? <Implementation /> : null}
+          {isNearViewport && Implementation ? (
+            constraintClass ? (
+              <div className={constraintClass}><Implementation /></div>
+            ) : (
+              <Implementation />
+            )
+          ) : null}
         </Suspense>
       </div>
 
