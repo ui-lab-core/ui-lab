@@ -105,6 +105,17 @@ export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "siz
   styles?: InputStylesProp;
   /** Hides the spinner controls for number inputs */
   "hide-controls"?: boolean;
+  /**
+   * Custom content rendered in place of the native `<input>`, keeping the
+   * surrounding shell (focus surface, icons, actions, hint) intact. Used by
+   * composite fields such as Date.Input that own several focusable segments
+   * instead of one text input.
+   *
+   * In this mode the input-specific props (`type`, `value`, `placeholder`, the
+   * forwarded ref, …) have no element to apply to and are ignored — the content
+   * owns its own values. `disabled`, `error` and `variant` still style the shell.
+   */
+  children?: React.ReactNode;
 }
 
 function isInputIconSlots(icon: InputProps["icon"]): icon is InputIconSlots {
@@ -164,6 +175,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onBlur,
       styles: stylesProp,
       "hide-controls": hideControls = false,
+      children,
       ...props
     },
     ref
@@ -193,7 +205,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const scopeRef = React.useRef<HTMLDivElement>(null);
     const mergedRef = useMergeRefs(ref, inputRef);
 
-    const { focusProps, isFocusVisible } = useFocusRing();
+    // With custom content the focusable element is one of the children, so the
+    // ring has to track focus anywhere within the content wrapper.
+    const hasCustomContent = children !== undefined && children !== null;
+    const { focusProps, isFocusVisible } = useFocusRing({ within: hasCustomContent, isTextInput: !hasCustomContent });
     const { scopeProps, indicatorProps } = useFocus({
       scopeRef,
       containerRef,
@@ -283,6 +298,30 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </div>
         )}
+        {hasCustomContent ? (
+          <div
+            className={cn(css.input, css.content)}
+            style={inputPaddingStyle}
+            data-input-content="true"
+            data-focus-visible={isFocusVisible ? "true" : undefined}
+            data-focused={isFocused ? "true" : undefined}
+            data-disabled={disabled || undefined}
+            data-error={error ? "true" : undefined}
+            data-variant={variant}
+            {...mergeProps(focusProps, {
+              onFocus: (event: React.FocusEvent<HTMLDivElement>) => {
+                setIsFocused(true);
+                onFocus?.(event as unknown as React.FocusEvent<HTMLInputElement>);
+              },
+              onBlur: (event: React.FocusEvent<HTMLDivElement>) => {
+                setIsFocused(false);
+                onBlur?.(event as unknown as React.FocusEvent<HTMLInputElement>);
+              },
+            })}
+          >
+            {children}
+          </div>
+        ) : (
         <input
           ref={mergedRef}
           type={type}
@@ -305,6 +344,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ...props,
           })}
         />
+        )}
         {hasEndAdornment && (
           <div className={css['end-adornments']} data-end-adornments>
             {hasSuffix && (

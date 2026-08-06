@@ -52,6 +52,13 @@
     }
   }
 
+  /* Content wrapper used in place of the native input when children are
+     provided. Shares .input's box so composite fields line up with plain ones. */
+  .content {
+    @apply flex items-center;
+    cursor: text;
+  }
+
   .icon-wrapper {
     @apply z-10 flex items-center;
     pointer-events: none;

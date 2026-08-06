@@ -1,6 +1,7 @@
 declare const styles: {
   scope: string;
   input: string;
+  content: string;
   "icon-wrapper": string;
   icon: string;
   container: string;
