@@ -69,7 +69,6 @@
   /* Search Section */
   .search {
     @apply flex p-1.5;
-    border-bottom: none;
     --input-active-border-color: transparent;
     --input-active-box-shadow: none;
   }

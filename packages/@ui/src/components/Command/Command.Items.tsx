@@ -3,7 +3,6 @@ import type { Key } from "react-aria";
 import { cn } from "@/lib/utils";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Badge } from "../Badge";
-import { Card } from "../Card";
 import { Frame } from "../Frame";
 import { List } from "../List";
 import { Scroll } from "../Scroll";
@@ -31,7 +30,7 @@ export const CommandCategory = React.forwardRef<HTMLDivElement, CommandCategoryP
 CommandCategory.displayName = "Command.Category";
 
 export interface CommandFooterProps { children?: React.ReactNode; className?: string; }
-export const CommandFooter = React.forwardRef<HTMLDivElement, CommandFooterProps>(({ children, className }, ref) => <Card.Footer ref={ref} className={cn(styles.footer, className)}>{children}</Card.Footer>);
+export const CommandFooter = React.forwardRef<HTMLDivElement, CommandFooterProps>(({ children, className }, ref) => <div ref={ref} className={cn(styles.footer, className)}>{children}</div>);
 CommandFooter.displayName = "Command.Footer";
 
 export interface CommandGroupsProps { renderCategory?: (category: string | undefined) => React.ReactNode; renderItem: (command: CommandItemData, hint?: string) => React.ReactNode; className?: string; }

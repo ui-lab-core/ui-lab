@@ -2,7 +2,6 @@ import * as React from "react";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { Card } from "../Card";
 import { Input, type InputProps } from "../Input";
 import styles from "./Command.module.css";
 import { useCommandContext } from "./Command.shared";
@@ -32,7 +31,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
     const usesDefaultClearAction = actions === undefined;
     const resolvedActions = actions ?? [{ icon: <>✕</>, title: "Clear search", onClick: () => { setSearchValue(""); } }];
     const inputStyles = cn(styles.input, usesDefaultClearAction && !value && styles["input-empty"]);
-    return <Card.Header className={styles.search}><Input ref={inputRef} state={{ value: value as string }} onChange={handleChange} onBlur={handleBlur} variant="ghost" icon={icon ?? <Search className="w-4 h-4" />} actions={resolvedActions} placeholder={placeholder} aria-label="Search commands" styles={{ root: inputStyles }} {...props} /></Card.Header>;
+    return <div className={styles.search}><Input ref={inputRef} state={{ value: value as string }} onChange={handleChange} onBlur={handleBlur} variant="ghost" icon={icon ?? <Search className="w-4 h-4" />} actions={resolvedActions} placeholder={placeholder} aria-label="Search commands" styles={{ root: inputStyles }} {...props} /></div>;
   },
 );
 
