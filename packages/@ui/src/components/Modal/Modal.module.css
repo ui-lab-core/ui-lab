@@ -2,6 +2,18 @@
 
 @layer components.defaults {
   .overlay {
+    /* Positioning is real CSS (not Tailwind utility classes) so the overlay
+       centers and covers the viewport correctly regardless of whether the
+       consuming app's Tailwind build happens to generate `fixed`/`inset-0`/
+       `flex`/`items-center`/`justify-center` — those class names only exist
+       in this package's compiled JS output, not in any app's own source, so
+       relying on the consumer to regenerate them for us is unreliable. */
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     isolation: isolate;
   }
 
@@ -134,12 +146,15 @@
     border-top: var(--border-width-base, 1px) solid var(--background-border);
   }
 
-  /* Size variants */
-  .panel[data-size="fit"] {
+  /* Size variants. :where() keeps these at the same specificity as `.panel`
+     itself (an attribute selector alone would outrank a plain consumer
+     className like `max-w-3xl`, which should always be free to override the
+     default size). */
+  .panel:where([data-size="fit"]) {
     width: fit-content;
   }
 
-  .panel[data-size="auto"] {
+  .panel:where([data-size="auto"]) {
     max-width: min(90vw, 28rem);
   }
 

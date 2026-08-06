@@ -408,7 +408,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
     return (
       <div
         ref={rootRef}
-        className={cn("w-full", css["radio-item"], scopeProps.className, resolved.item)}
+        className={cn(css["radio-item"], scopeProps.className, resolved.item)}
         data-disabled={disabled ? "true" : undefined}
       >
         <div {...indicatorProps} data-focus-indicator="local" />

@@ -157,13 +157,23 @@
 
   .canvas {
     position: relative;
-    width: 96%;
+    width: 240px;
+    height: 160px;
     @apply mx-auto mt-2 rounded-sm;
     cursor: crosshair;
     touch-action: none;
     display: flex;
     flex-direction: column;
-    min-height: 160px;
+  }
+
+  .canvas[data-size="sm"] {
+    width: 200px;
+    height: 130px;
+  }
+
+  .canvas[data-size="lg"] {
+    width: 280px;
+    height: 190px;
   }
 
   .canvas[data-focus-visible="true"] {

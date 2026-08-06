@@ -100,7 +100,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
     return (
       <div
         ref={ref}
-        className={cn('card', 'footer', variantClassName, styles.footer, footer.className, className)}
+        className={cn('footer', variantClassName, styles.footer, footer.className, className)}
         style={{ ...footer.style, ...style }}
         {...props}
       />

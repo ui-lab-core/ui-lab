@@ -5,10 +5,10 @@
     --radius: 9999px;
     --inner-radius: calc(var(--radius) - var(--border-width-base, 1px));
 
-    --width: 2.825rem;
-    --height: 1.325rem;
-    --thumb-size: 0.825rem;
-    --thumb-offset: 0.25rem;
+    --width: 2.75rem;
+    --height: 1.625rem;
+    --thumb-size: 1.25rem;
+    --thumb-offset: 0.1875rem;
 
     --disabled-opacity: 0.6;
 
@@ -61,9 +61,9 @@
 
 
   .switch-sm {
-    --width: 1.875rem;
-    --height: 0.875rem;
-    --thumb-size: 0.5rem;
-    --thumb-offset: 0.1875rem;
+    --width: 2rem;
+    --height: 1.125rem;
+    --thumb-size: 0.875rem;
+    --thumb-offset: 0.125rem;
   }
 }

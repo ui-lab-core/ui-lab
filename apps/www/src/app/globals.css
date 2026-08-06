@@ -6,14 +6,19 @@
    also expose `src`; using the stable package root covers both layouts. */
 @source "../../node_modules/@ui-lab-core/library";
 @source "../../node_modules/ui-lab-registry/src";
-@import "./theme.css";
-
 @import "ui-lab-theme-onyx";
 
-/* Static typography + layout baseline. The site never customizes these at
-   runtime anymore (only colors are user-themable); the config route scopes its
-   own overrides to the preview. Generated from the default theme config via
-   computeStyleVariables — regenerate there if the defaults change. */
+@import "./theme.css";
+@import "ui-lab-components/styles.css";
+
+/* Static typography baseline. Deliberately kept OUT of @theme: --text-xs
+   through --text-5xl are Tailwind's own font-size scale keys, so declaring
+   them inside @theme would rewire every text-xs/text-sm/... utility class
+   site-wide onto this scale instead of Tailwind's defaults. Plain :root
+   custom properties are consumed explicitly via var() (body, typography.css,
+   header-text-*) without that collision. The site never customizes these at
+   runtime (only colors are user-themable); the config route scopes its own
+   overrides to the preview. */
 :root {
   --font-interface: "Work Sans Variable", system-ui, sans-serif;
   --header-scale: 0.75;
@@ -78,25 +83,6 @@
   --letter-spacing-header-xl: normal;
   --letter-spacing-code: normal;
   --font-weight-code: 400;
-  --spacing-scale: 0.9;
-  --spacing-xs: clamp(0.450rem, 2.25vw, 0.675rem);
-  --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
-  --spacing-base: clamp(0.760rem, 3.81vw, 1.141rem);
-  --spacing-md: clamp(0.989rem, 4.94vw, 1.483rem);
-  --spacing-lg: clamp(1.285rem, 6.43vw, 1.928rem);
-  --spacing-xl: clamp(1.670rem, 8.35vw, 2.507rem);
-  --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
-  --spacing: clamp(0.180rem, 2.25vw, 0.225rem);
-  --radius-xs: 0.225rem;
-  --radius-sm: 0.450rem;
-  --radius-base: 0.900rem;
-  --radius-md: 1.350rem;
-  --radius-lg: 2.250rem;
-  --radius-xl: 3.375rem;
-  --radius-2xl: 4.500rem;
-  --radius-full: 9999px;
-  --radius-ratio: 2.25;
-  --border-width-base: 1.0px;
   /* Derived deep root layer. Keep the token opaque so fixed surfaces do not
      reveal content underneath them; callers can add opacity explicitly when
      translucency is intentional. */
@@ -107,6 +93,14 @@
   --font-interface: "Work Sans Variable", system-ui, sans-serif;
 }
 
+/* Static layout baseline (spacing/radius/border-width). Generated from the
+   default theme config via computeStyleVariables (spacingScale 0.9 / radius
+   0.9 / borderWidth 1 — see DEFAULT_LAYOUT_CONFIG) — regenerate there if the
+   defaults change. These belong in @theme (unlike the typography block above)
+   because Tailwind needs --spacing, --radius-*, and --border-width-* registered
+   there to drive its own dynamic utility scales — this mirrors the @theme
+   block generateThemeSetupFiles() produces for downloaded projects, so the
+   showcase renders identically to a copy-pasted bundle at default settings. */
 @theme {
   --font-body: var(--font-interface);
   --font-heading: var(--font-interface);
@@ -123,8 +117,25 @@
   --header-scale: 0.75;
   --body-scale: 0.75;
 
-  --spacing-scale: 1;
-  --spacing: clamp(0.200rem, 2.5vw, 0.250rem);
+  --spacing-scale: 0.9;
+  --spacing-xs: clamp(0.450rem, 2.25vw, 0.675rem);
+  --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
+  --spacing-base: clamp(0.760rem, 3.81vw, 1.141rem);
+  --spacing-md: clamp(0.989rem, 4.94vw, 1.483rem);
+  --spacing-lg: clamp(1.285rem, 6.43vw, 1.928rem);
+  --spacing-xl: clamp(1.670rem, 8.35vw, 2.507rem);
+  --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
+  --spacing: clamp(0.180rem, 2.25vw, 0.225rem);
+
+  --radius-xs: 0.225rem;
+  --radius-sm: 0.450rem;
+  --radius-base: 0.900rem;
+  --radius-md: 1.350rem;
+  --radius-lg: 2.250rem;
+  --radius-xl: 3.375rem;
+  --radius-2xl: 4.500rem;
+  --radius-full: 9999px;
+  --radius-ratio: 2.25;
 
   /* Border Width Scale */
   --border-width-none: 0;

@@ -14,7 +14,7 @@
   .text {
     display: block;
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
+    font-size: var(--text-xs, 0.875rem);
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);

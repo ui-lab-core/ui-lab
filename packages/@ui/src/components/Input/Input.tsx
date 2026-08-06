@@ -232,8 +232,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasEndAdornment = hasSuffix || hasRightActions || hasHint || showControls;
     const adornmentPadding = "var(--adornment-offset)";
     const inputPaddingStyle: React.CSSProperties = {
-      ...(hasStartAdornment ? { paddingLeft: adornmentPadding } : {}),
-      ...(hasEndAdornment ? { paddingRight: adornmentPadding } : {}),
+      ...(hasStartAdornment ? { paddingInlineStart: adornmentPadding } : {}),
+      ...(hasEndAdornment ? { paddingInlineEnd: adornmentPadding } : {}),
     };
 
     const renderAction = (action: InputAction, index: number) => {

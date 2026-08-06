@@ -205,7 +205,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
           )}
         </svg>
 
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10 h-full">{children}</div>
       </div>
     );
   }

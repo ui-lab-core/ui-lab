@@ -165,6 +165,10 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const dragStartRef = useRef({ origin: 0, scrollOrigin: 0 });
     const thumbSizeRef = useRef(0);
+    const activeDragListenersRef = useRef<{
+      move: (e: MouseEvent) => void;
+      up: () => void;
+    } | null>(null);
     const resizeObserverRef = useRef<ResizeObserver | null>(null);
     const mutationObserverRef = useRef<MutationObserver | null>(null);
     const animationFrameRef = useRef<number | null>(null);
@@ -238,8 +242,12 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     }, [cleanupAnimationFrame, updateScrollbar]);
 
     const cleanupDragListeners = useCallback(() => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      const active = activeDragListenersRef.current;
+      if (active) {
+        document.removeEventListener("mousemove", active.move);
+        document.removeEventListener("mouseup", active.up);
+        activeDragListenersRef.current = null;
+      }
       document.body.style.userSelect = "";
     }, []);
 
@@ -408,6 +416,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           scrollOrigin: contentRef.current[scrollPosKey],
         };
         setIsDragging(true);
+        activeDragListenersRef.current = { move: handleMouseMove, up: handleMouseUp };
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
         document.body.style.userSelect = "none";
@@ -452,6 +461,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           scrollOrigin: contentRef.current[scrollPosKey],
         };
         setIsDragging(true);
+        activeDragListenersRef.current = { move: handleMouseMove, up: handleMouseUp };
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
         document.body.style.userSelect = "none";

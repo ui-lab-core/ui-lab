@@ -149,7 +149,7 @@ describe('Input actions', () => {
       />
     )
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
+    expect(screen.getByRole('textbox')).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
   })
 
   it('adds inline start padding when left actions are rendered', () => {
@@ -160,7 +160,7 @@ describe('Input actions', () => {
       />
     )
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingLeft: 'var(--adornment-offset)' })
+    expect(screen.getByRole('textbox')).toHaveStyle({ paddingInlineStart: 'var(--adornment-offset)' })
   })
 
   it('adds inline end padding when hint is rendered', () => {
@@ -168,6 +168,6 @@ describe('Input actions', () => {
       <Input aria-label="Search" hint="Ctrl+K" />
     )
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingRight: 'var(--adornment-offset)' })
+    expect(screen.getByRole('textbox')).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
   })
 })

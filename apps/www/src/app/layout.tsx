@@ -1,7 +1,4 @@
 import "./globals.css";
-// The showcase indexes every preview, so load the aggregate once and suppress
-// its otherwise-duplicate automatic package sidecars in next.config.
-import "ui-lab-components/styles.css";
 import "ui-lab-components/typography.css";
 
 import { Metadata } from "next";

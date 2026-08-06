@@ -14,7 +14,7 @@ import {
   addRecentColor,
   isValidColor,
 } from "./color-utils";
-import { ColorCanvas } from "./Color.Canvas";
+import { ColorCanvas as ColorCanvasPrimitive } from "./Color.Canvas";
 import { ColorRecentColors } from "./Color.RecentColors";
 import { ColorInput } from "./Color.Input";
 import { Popover, type PopoverProps } from "../Popover";
@@ -747,6 +747,63 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
 );
 ColorSlider.displayName = "Color.Slider";
 
+export interface ColorCanvasFieldProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** Current hue (0-360). Defaults to the value from context. */
+  hue?: number;
+  /** Current saturation (0-100). Defaults to the value from context. */
+  saturation?: number;
+  /** Current brightness (0-100). Defaults to the value from context. */
+  brightness?: number;
+  /** Called when the user drags the canvas pointer with updated saturation and brightness values. */
+  onChange?: (saturation: number, brightness: number) => void;
+  disabled?: boolean;
+  size?: "sm" | "md" | "lg";
+}
+
+const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>(
+  ({ hue, saturation, brightness, onChange, disabled, size, className, ...props }, ref) => {
+    const context = useOptionalColorContext();
+    const usesContextValue = hue === undefined && saturation === undefined && brightness === undefined;
+
+    const resolvedHue = hue ?? context?.hue ?? 0;
+    const resolvedSaturation = saturation ?? context?.canvasSaturation ?? 0;
+    const resolvedBrightness = brightness ?? context?.canvasBrightness ?? 0;
+    const resolvedDisabled = disabled ?? context?.disabled ?? false;
+    const resolvedSize = size ?? context?.size ?? "md";
+
+    const handleChange = React.useCallback(
+      (s: number, b: number) => {
+        onChange?.(s, b);
+
+        if (usesContextValue) {
+          context?.handleCanvasChange(s, b);
+        }
+      },
+      [context, onChange, usesContextValue]
+    );
+
+    return (
+      <ColorCanvasPrimitive
+        ref={ref}
+        hue={resolvedHue}
+        saturation={resolvedSaturation}
+        brightness={resolvedBrightness}
+        onChange={handleChange}
+        disabled={resolvedDisabled}
+        size={resolvedSize}
+        className={className ?? context?.resolved.canvas}
+        innerClassName={context?.resolved.canvasInner}
+        gradientHueClassName={context?.resolved.canvasGradientHue}
+        gradientSaturationClassName={context?.resolved.canvasGradientSaturation}
+        gradientBrightnessClassName={context?.resolved.canvasGradientBrightness}
+        pointerClassName={context?.resolved.canvasPointer}
+        {...props}
+      />
+    );
+  }
+);
+ColorCanvasField.displayName = "Color.Canvas";
+
 const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
   ({ className, variant = "standalone", ...props }, ref) => {
     const {
@@ -788,20 +845,7 @@ const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
           swatchClassName={resolved.recentColorSwatch}
         />
 
-        <ColorCanvas
-          hue={hue}
-          saturation={canvasSaturation}
-          brightness={canvasBrightness}
-          onChange={handleCanvasChange}
-          disabled={disabled}
-          size={size}
-          className={resolved.canvas}
-          innerClassName={resolved.canvasInner}
-          gradientHueClassName={resolved.canvasGradientHue}
-          gradientSaturationClassName={resolved.canvasGradientSaturation}
-          gradientBrightnessClassName={resolved.canvasGradientBrightness}
-          pointerClassName={resolved.canvasPointer}
-        />
+        <ColorCanvasField />
 
         <div className={cn("controls", styles["controls"], resolved.controls)}>
           <ColorSlider
@@ -935,4 +979,4 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
 );
 ColorTrigger.displayName = "Color.Trigger";
 
-export { ColorArea, ColorRoot, ColorSlider, ColorTrigger };
+export { ColorArea, ColorCanvasField, ColorRoot, ColorSlider, ColorTrigger };
