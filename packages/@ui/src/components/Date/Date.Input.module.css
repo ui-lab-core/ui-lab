@@ -1,0 +1,69 @@
+@reference "tailwindcss";
+
+@layer components.defaults {
+  /* Anchors the popover to the whole field rather than the calendar button. */
+  .anchor {
+    @apply flex;
+    position: relative;
+    min-width: 0;
+  }
+
+  .field {
+    @apply flex;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .segments {
+    @apply flex items-center;
+    min-width: 0;
+  }
+
+  .segment {
+    @apply text-center;
+    min-width: 0;
+    padding: 0 1px;
+    font: inherit;
+    color: var(--foreground);
+    background-color: transparent;
+    border: none;
+    border-radius: calc(var(--radius-sm, 0.375rem) * 0.5);
+    outline: none;
+    box-sizing: content-box;
+    /* Sized from the region's character count so segments never reflow as
+       they fill: "05" occupies the same box as the empty placeholder. */
+    width: calc(var(--segment-length, 2) * 1ch);
+    caret-color: transparent;
+
+    &::selection {
+      background-color: transparent;
+    }
+
+    &::placeholder {
+      color: var(--placeholder);
+    }
+
+    &[data-focused="true"] {
+      background-color: var(--background-700);
+      color: var(--foreground);
+    }
+
+    &[data-disabled="true"] {
+      color: var(--disabled-foreground);
+      cursor: not-allowed;
+    }
+  }
+
+  .separator {
+    @apply select-none;
+    color: var(--placeholder);
+    pointer-events: none;
+  }
+
+  /* Spacing between the start and end halves of a range field. */
+  .range-separator {
+    @apply select-none px-1.5;
+    color: var(--foreground);
+    pointer-events: none;
+  }
+}

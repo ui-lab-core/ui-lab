@@ -29,8 +29,19 @@ export type {
 export { Badge } from "./components/Badge";
 export type { BadgeProps } from "./components/Badge";
 
-export { Date, DateHeader, DateGrid, DateDay } from "./components/Date";
-export type { DateProps, DateContextValue, DateState } from "./components/Date";
+export { Date, DateHeader, DateGrid, DateDay, DateInput } from "./components/Date";
+export type {
+  DateProps,
+  DateSingleProps,
+  DateRangeProps,
+  DateContextValue,
+  DateState,
+  DateRangeState,
+  DateRangeValue,
+  DateInputProps,
+  DateInputSingleProps,
+  DateInputRangeProps,
+} from "./components/Date";
 
 export { Banner } from "./components/Banner";
 export type { BannerProps } from "./components/Banner";
@@ -248,6 +259,15 @@ export { generateColorModeScript } from "./providers/themeScript";
 
 export { useFilter } from "./hooks/useFilter";
 export { useAnimatedWidth } from "./hooks/useAnimatedWidth";
+export { useRegionCoordinator, useRegion, isRegionFilled } from "./hooks/useRegionCoordinator";
+export type {
+  RegionConfig,
+  RegionValues,
+  RegionCoordinator,
+  RegionDOMProps,
+  UseRegionCoordinatorOptions,
+  UseRegionResult,
+} from "./hooks/useRegionCoordinator";
 
 export type { StyleValue } from "./lib/utils";
 export { infer } from "./lib/infer";

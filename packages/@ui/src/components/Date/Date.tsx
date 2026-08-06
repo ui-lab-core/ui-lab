@@ -47,16 +47,26 @@ function normalizeDateStyles(styles: DateStylesProp | undefined) {
   };
 }
 
+/** A start/end pair describing a selected date range. Either end may be null while a range is being picked. */
+export interface DateRangeValue {
+  start: Date | null
+  end: Date | null
+}
+
 /**
  * Context type for Calendar state management
  */
 export interface DateContextValue {
+  mode: "single" | "range"
   selectedDate: Date | null
+  rangeValue: DateRangeValue | null
+  hoverDate: Date | null
   focusedDate: Date | null
-  currentMonth: Date | null
+  currentMonth: Date
   today: Date | null
   selectDate: (date: Date) => void
   focusDate: (date: Date) => void
+  setHoverDate: (date: Date | null) => void
   navigateMonth: (offset: number) => void
   isDateDisabled: (date: Date) => boolean
   isDateOutOfRange: (date: Date) => boolean
@@ -73,14 +83,9 @@ function useDateContext() {
 }
 
 /**
- * Props for Calendar component
+ * Props shared by both single-date and range selection modes
  */
-export interface DateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
-  state?: DateState
-  /** Controlled selected date */
-  value?: Date | null
-  /** Called when the user selects a date */
-  onChange?: (date: Date) => void
+interface DateBaseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /** Function returning true for dates that should be unselectable */
   disabled?: (date: Date) => boolean
   /** Earliest selectable date */
@@ -92,7 +97,33 @@ export interface DateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: DateStylesProp;
 }
+
+/** Single-date selection: one click selects the date. */
+export interface DateSingleProps extends DateBaseProps {
+  mode?: "single"
+  state?: DateState
+  /** Controlled selected date */
+  value?: Date | null
+  /** Called when the user selects a date */
+  onChange?: (date: Date) => void
+}
+
+/** Range selection: first click sets the start, the next click sets the end. */
+export interface DateRangeProps extends DateBaseProps {
+  mode: "range"
+  state?: DateRangeState
+  /** Controlled selected range */
+  value?: DateRangeValue | null
+  /** Called whenever the start or end of the range changes */
+  onChange?: (range: DateRangeValue) => void
+}
+
+/**
+ * Props for Calendar component
+ */
+export type DateProps = DateSingleProps | DateRangeProps
 export interface DateState { value?: Date | null }
+export interface DateRangeState { value?: DateRangeValue | null }
 
 /**
  * Helper functions for date calculations
@@ -121,9 +152,7 @@ function isToday(date: Date, today: Date | null): boolean {
 /**
  * Calendar grid computation
  */
-function getCalendarGrid(currentMonth: Date | null): Date[][] {
-  if (!currentMonth) return [];
-
+function getCalendarGrid(currentMonth: Date): Date[][] {
   const daysInMonth = getDaysInMonth(currentMonth)
   const firstDay = getFirstDayOfMonth(currentMonth)
 
@@ -162,8 +191,9 @@ function getCalendarGrid(currentMonth: Date | null): Date[][] {
 }
 
 const Date = React.forwardRef<HTMLDivElement, DateProps>(
-  (
-    {
+  (props, ref) => {
+    const {
+      mode = "single",
       value: controlledValue,
       state: controlledState,
       onChange,
@@ -173,20 +203,24 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
       defaultMonth,
       className,
       styles,
-      ...props
-    },
-    ref
-  ) => {
-    const [uncontrolledValue, setUncontrolledValue] = useControlledState(
+      ...rest
+    } = props
+
+    const [uncontrolledValue, setUncontrolledValue] = useControlledState<Date | DateRangeValue | null>(
       controlledState?.value,
       controlledValue,
-      null,
+      mode === "range" ? { start: null, end: null } : null,
     )
     const [today, setToday] = React.useState<Date | null>(null)
-    const [currentMonth, setCurrentMonth] = React.useState<Date | null>(null)
+    // Initialized synchronously (not via effect) so the grid is present on
+    // the very first render, server and client alike — gating this behind
+    // an effect leaves the calendar blank until after hydration.
+    const [currentMonth, setCurrentMonth] = React.useState<Date>(() => defaultMonth ?? new NativeDate())
     const [focusedDate, setFocusedDate] = React.useState<Date | null>(null)
+    const [hoverDate, setHoverDate] = React.useState<Date | null>(null)
 
-    const selectedDate = uncontrolledValue
+    const selectedDate = mode === "single" ? (uncontrolledValue as Date | null) : null
+    const rangeValue = mode === "range" ? (uncontrolledValue as DateRangeValue) : null
 
     const resolved = resolveDateBaseStyles(normalizeDateStyles(styles));
 
@@ -202,7 +236,6 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
 
     const isDateOutOfRange = React.useCallback(
       (date: Date): boolean => {
-        if (!currentMonth) return false;
         return (
           date.getMonth() !== currentMonth.getMonth() ||
           date.getFullYear() !== currentMonth.getFullYear()
@@ -213,13 +246,28 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
 
     const selectDate = React.useCallback(
       (date: Date) => {
-        if (!isDateDisabled(date)) {
+        if (isDateDisabled(date)) return
+
+        if (mode === "range") {
+          const prevRange = rangeValue ?? { start: null, end: null }
+          // Start a new range whenever there's no in-progress start, the previous
+          // range already completed, or the click lands before the current anchor.
+          const next: DateRangeValue =
+            !prevRange.start || prevRange.end || date < prevRange.start
+              ? { start: date, end: null }
+              : { start: prevRange.start, end: date }
+
+          setUncontrolledValue(next)
+            ; (onChange as ((range: DateRangeValue) => void) | undefined)?.(next)
+        } else {
           setUncontrolledValue(date)
-          onChange?.(date)
-          setFocusedDate(null)
+            ; (onChange as ((date: Date) => void) | undefined)?.(date)
         }
+
+        setHoverDate(null)
+        setFocusedDate(null)
       },
-      [onChange, isDateDisabled, setUncontrolledValue]
+      [onChange, isDateDisabled, setUncontrolledValue, mode, rangeValue]
     )
 
     const focusDate = React.useCallback((date: Date) => {
@@ -227,32 +275,36 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
     }, [])
 
     const navigateMonth = React.useCallback((offset: number) => {
-      setCurrentMonth(prev => {
-        const baseDate = prev ?? new NativeDate(); // Handle null prev
-        const newMonth = new NativeDate(baseDate.getFullYear(), baseDate.getMonth() + offset, 1)
-        return newMonth
-      })
+      setCurrentMonth(prev => new NativeDate(prev.getFullYear(), prev.getMonth() + offset, 1))
     }, [])
 
     const calendarGrid = React.useMemo(
-      () => currentMonth ? getCalendarGrid(currentMonth) : [],
+      () => getCalendarGrid(currentMonth),
       [currentMonth]
     )
 
     const contextValue: DateContextValue = React.useMemo(
       () => ({
+        mode,
         selectedDate,
+        rangeValue,
+        hoverDate,
         focusedDate,
         currentMonth,
         today,
         selectDate,
         focusDate,
+        setHoverDate,
         navigateMonth,
         isDateDisabled,
         isDateOutOfRange,
       }),
-      [selectedDate, focusedDate, currentMonth, today, selectDate, focusDate, navigateMonth, isDateDisabled, isDateOutOfRange]
+      [mode, selectedDate, rangeValue, hoverDate, focusedDate, currentMonth, today, selectDate, focusDate, navigateMonth, isDateDisabled, isDateOutOfRange]
     )
+
+    const handlePointerLeave = React.useCallback(() => {
+      if (mode === "range") setHoverDate(null)
+    }, [mode])
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -304,7 +356,7 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
         if (newFocusedDate) {
           setFocusedDate(newFocusedDate)
           // Auto-navigate month if needed
-          if (newFocusedDate.getMonth() !== currentMonth!.getMonth() || newFocusedDate.getFullYear() !== currentMonth!.getFullYear()) {
+          if (newFocusedDate.getMonth() !== currentMonth.getMonth() || newFocusedDate.getFullYear() !== currentMonth.getFullYear()) {
             setCurrentMonth(new NativeDate(newFocusedDate.getFullYear(), newFocusedDate.getMonth(), 1))
           }
         }
@@ -312,19 +364,18 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
       [focusedDate, currentMonth, selectDate, navigateMonth]
     )
 
-    // Set initial focus, today, and current month on client mount
+    // Set initial focus and today's date on client mount — these only
+    // affect the focus ring and the `data-today` marker, not whether the
+    // grid itself renders, so it's safe to leave them client-only.
     React.useEffect(() => {
       const now = new NativeDate()
       setToday(now)
 
-      if (currentMonth === null) { // Only set if not yet initialized
-        setCurrentMonth(defaultMonth ?? now)
-      }
-
       if (focusedDate === null) { // Only set if not yet initialized
-        setFocusedDate(selectedDate ?? now)
+        const anchor = mode === "range" ? (rangeValue?.end ?? rangeValue?.start ?? null) : selectedDate
+        setFocusedDate(anchor ?? now)
       }
-    }, [defaultMonth, currentMonth, focusedDate, selectedDate]) // Add relevant dependencies
+    }, [focusedDate, selectedDate, rangeValue, mode])
 
     return (
       <DateContext.Provider value={contextValue}>
@@ -332,17 +383,15 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>(
           ref={ref}
           className={cn("date", dateModuleStyles.calendar, dateModuleStyles.grid, className, resolved.root)}
           role="application"
-          aria-label="Date picker calendar"
+          aria-label={mode === "range" ? "Date range picker calendar" : "Date picker calendar"}
+          data-mode={mode}
           onKeyDown={handleKeyDown}
-          {...props}
+          onPointerLeave={handlePointerLeave}
+          {...rest}
         >
-          {currentMonth && (
-            <>
-              <DateHeader className={resolved.header} />
-              <DateDayHeaders className={resolved["day-headers"]} />
-              <DateGrid grid={calendarGrid} dayCellClassName={resolved["day-cell"]} />
-            </>
-          )}
+          <DateHeader className={resolved.header} />
+          <DateDayHeaders className={resolved["day-headers"]} />
+          <DateGrid grid={calendarGrid} dayCellClassName={resolved["day-cell"]} />
         </div>
       </DateContext.Provider>
     )
@@ -368,12 +417,10 @@ const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
     const { targetProps: prevTargetProps } = useFocus({ mode: "target" })
     const { targetProps: nextTargetProps } = useFocus({ mode: "target" })
 
-    const monthYear = currentMonth
-      ? currentMonth.toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      })
-      : ""
+    const monthYear = currentMonth.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    })
 
     return (
       <div
@@ -384,26 +431,26 @@ const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
         <div className={cn("title", dateModuleStyles["month-year"])}>
           {monthYear}
         </div>
-          <button
-            {...asElementProps<"button">(mergeProps(prevFocusProps, prevTargetProps))}
-            onClick={() => navigateMonth(-1)}
-            className={cn("button", "prev-button", dateModuleStyles["nav-button"])}
-            aria-label="Previous month"
-            data-focused={isPrevFocused ? "true" : undefined}
-            data-focus-visible={isPrevFocusVisible ? "true" : undefined}
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            {...asElementProps<"button">(mergeProps(nextFocusProps, nextTargetProps))}
-            onClick={() => navigateMonth(1)}
-            className={cn("button", "next-button", dateModuleStyles["nav-button"])}
-            aria-label="Next month"
-            data-focused={isNextFocused ? "true" : undefined}
-            data-focus-visible={isNextFocusVisible ? "true" : undefined}
-          >
-            <ChevronRight size={16} />
-          </button>
+        <button
+          {...asElementProps<"button">(mergeProps(prevFocusProps, prevTargetProps))}
+          onClick={() => navigateMonth(-1)}
+          className={cn("button", "prev-button", dateModuleStyles["nav-button"])}
+          aria-label="Previous month"
+          data-focused={isPrevFocused ? "true" : undefined}
+          data-focus-visible={isPrevFocusVisible ? "true" : undefined}
+        >
+          <ChevronLeft size={16} />
+        </button>
+        <button
+          {...asElementProps<"button">(mergeProps(nextFocusProps, nextTargetProps))}
+          onClick={() => navigateMonth(1)}
+          className={cn("button", "next-button", dateModuleStyles["nav-button"])}
+          aria-label="Next month"
+          data-focused={isNextFocused ? "true" : undefined}
+          data-focus-visible={isNextFocusVisible ? "true" : undefined}
+        >
+          <ChevronRight size={16} />
+        </button>
       </div>
     )
   }
@@ -479,11 +526,15 @@ interface DateDayProps extends React.HTMLAttributes<HTMLButtonElement> {
 const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
   ({ date, className, onClick, ...props }, ref) => {
     const {
+      mode,
       selectedDate,
+      rangeValue,
+      hoverDate,
       focusedDate,
       today,
       selectDate,
       focusDate,
+      setHoverDate,
       isDateDisabled,
       isDateOutOfRange,
     } = useDateContext()
@@ -493,13 +544,54 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
     const buttonRef = React.useRef<HTMLButtonElement>(null)
     const mergedRef = useMergeRefs(ref, buttonRef)
     const { focusProps, isFocused: isFocusRingFocused, isFocusVisible } = useFocusRing()
-    const { hoverProps, isHovered } = useHover({ isDisabled })
+    const { hoverProps, isHovered } = useHover({
+      isDisabled,
+      onHoverStart: () => {
+        if (mode === "range") setHoverDate(date)
+      },
+    })
     const { targetProps } = useFocus({ mode: "target" })
 
-    const isSelected = selectedDate ? isSameDay(date, selectedDate) : false
     const isFocused = focusedDate ? isSameDay(date, focusedDate) : false
     const isCurrentToday = isToday(date, today)
     const isOutOfRange = isDateOutOfRange(date)
+
+    let isSelected = selectedDate ? isSameDay(date, selectedDate) : false
+    let isRangeStart = false
+    let isRangeEnd = false
+    let isInRange = false
+    // Whether this cell's range band continues into the day immediately to its
+    // left/right within the same week row. These drive which corners stay
+    // square (Date.module.css) so consecutive days fuse into one connected
+    // strip instead of a row of separate rounded pills.
+    let connectsLeft = false
+    let connectsRight = false
+
+    if (mode === "range" && rangeValue?.start) {
+      // While the end hasn't been picked yet, preview the range using the
+      // hovered date, but only looking forward — a backward click restarts
+      // the anchor instead of completing the range, so the preview shouldn't
+      // promise a range that clicking wouldn't actually produce.
+      const previewEnd = rangeValue.end ?? (hoverDate && hoverDate >= rangeValue.start ? hoverDate : null)
+
+      isRangeStart = isSameDay(date, rangeValue.start)
+      if (previewEnd) {
+        isRangeEnd = isSameDay(date, previewEnd) && !isSameDay(rangeValue.start, previewEnd)
+        isInRange = date > rangeValue.start && date < previewEnd
+
+        // date.getDay() is this cell's grid column (0 = Sun ... 6 = Sat, the
+        // grid is Sunday-first). The band continues into a neighbour only when
+        // the range spans past this day in that direction and the neighbour
+        // isn't across a week boundary — so the range's outer ends and each
+        // wrapped row's caps keep their rounding.
+        const isInBand = isRangeStart || isRangeEnd || isInRange
+        const column = date.getDay()
+        connectsLeft = isInBand && column !== 0 && date > rangeValue.start
+        connectsRight = isInBand && column !== 6 && date < previewEnd
+      }
+      isSelected = isRangeStart || isRangeEnd
+    }
+
     const handleClick = React.useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         selectDate(date)
@@ -519,6 +611,8 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
       }
     }, [isFocused])
 
+    const rangeLabel = mode === "range" ? (isRangeStart ? ", range start" : isRangeEnd ? ", range end" : "") : ""
+
     return (
       <button
         ref={mergedRef}
@@ -530,17 +624,22 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
         data-focused={isFocusRingFocused ? "true" : undefined}
         data-hovered={isHovered ? "true" : undefined}
         data-selected={isSelected ? "true" : undefined}
+        data-range-start={isRangeStart ? "true" : undefined}
+        data-range-end={isRangeEnd ? "true" : undefined}
+        data-in-range={isInRange ? "true" : undefined}
+        data-connect-left={connectsLeft ? "true" : undefined}
+        data-connect-right={connectsRight ? "true" : undefined}
         data-today={isCurrentToday ? "true" : undefined}
         data-disabled={isDisabled ? "true" : undefined}
         data-out-of-range={isOutOfRange ? "true" : undefined}
         data-focus-visible={isFocusVisible && isFocused ? "true" : undefined}
         disabled={isDisabled}
         aria-selected={isSelected}
-        aria-label={date.toLocaleDateString("en-US", {
+        aria-label={`${date.toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
           day: "numeric",
-        })}
+        })}${rangeLabel}`}
         {...mergeProps(focusProps, hoverProps, { onFocus: handleFocus }, props)}
       >
         {date.getDate()}

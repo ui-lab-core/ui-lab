@@ -4,11 +4,8 @@
   .calendar {
     --disabled-opacity: 0.5;
 
-    @apply inline-grid p-1.5 overflow-hidden gap-1;
+    @apply inline-grid gap-1;
     grid-template-columns: repeat(7, 1fr);
-    border-radius: var(--radius-sm);
-    background-color: var(--background);
-    border: var(--border-width-base) solid var(--border);
   }
 
   .day-headers {
@@ -31,10 +28,10 @@
   }
 
   .month-year {
-    @apply ml-2 mr-auto;
-    font: var(--font-weight-header-medium, 500) var(--header-text-lg, var(--text-lg, 1.125rem)) / var(--leading-heading, 1.25) var(--font-heading, var(--font-body, inherit));
+    @apply mr-auto;
+    font: var(--font-weight-header-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
     letter-spacing: normal;
-    text-align: center;
+    text-align: left;
   }
 
   .nav-button {
@@ -60,15 +57,18 @@
   }
 
   .grid {
-    @apply gap-1 px-4 pb-4;
+    @apply gap-x-1 gap-y-1;
   }
 
   .day-cell {
+    --day-cell-border-width: 2px;
+
     @apply flex min-h-8 items-center justify-center px-2.5 py-2 cursor-pointer;
+    position: relative;
     border-radius: var(--radius-base);
     background-color: var(--background, transparent);
     color: var(--foreground);
-    border: 2px solid transparent;
+    border: var(--day-cell-border-width) solid transparent;
     font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
     letter-spacing: normal;
     transition:
@@ -94,6 +94,70 @@
 /* Variant states - these are outside @layer */
 .day-cell[data-selected="true"] {
   font-weight: var(--font-weight-body-medium, 500);
+}
+
+/*
+ * .day-cell's background-color/border-color/color transition is tuned for
+ * single-cell hover affordance (instant on enter, a 300ms fade on leave, via
+ * --hover-duration). During range drag-preview, cells behind the cursor flip
+ * their in-range state without being :hover themselves, so they'd inherit the
+ * 300ms leave-fade and visibly trail the pointer. Range fill needs to track
+ * the pointer exactly, so make those three instant in range mode only; opacity
+ * (disabled/out-of-range dimming) keeps its normal duration. Positional
+ * override of transition-duration against the base rule's
+ * background-color/border-color/color/opacity transition-property order.
+ */
+[data-mode="range"] .day-cell {
+  transition-duration: 0s, 0s, 0s, var(--hover-duration, var(--hover-leave-duration, 300ms));
+}
+
+.day-cell[data-in-range="true"] {
+  background-color: var(--range-background, var(--background-700));
+  border-radius: var(--range-radius, 0.25rem);
+}
+
+.day-cell[data-range-start="true"],
+.day-cell[data-range-end="true"] {
+  background-color: var(--range-selected-background, var(--accent-500));
+  color: var(--range-selected-foreground, var(--accent-50));
+  border-radius: var(--range-radius, 0.25rem);
+}
+
+/*
+ * Square off the edges where the band continues into the adjacent day so
+ * consecutive cells fuse into one strip instead of a chain of rounded pills.
+ * data-connect-left/right are set in Date.tsx whenever the neighbouring day is
+ * part of the same range within the same week row. The grid keeps a real,
+ * constant gap-x-1 between every cell regardless of connect state (a cell's
+ * own box must never resize when its selection state changes), so the
+ * connecting side's ::after bridges that gap with a plain rectangle matching
+ * the cell's own background, giving a seamless strip without touching layout.
+ */
+.day-cell[data-connect-left="true"] {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.day-cell[data-connect-right="true"] {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.day-cell[data-connect-right="true"]::after {
+  content: "";
+  position: absolute;
+  /* Offsets are relative to the padding edge (the containing block for an
+   * absolutely-positioned descendant of a position:relative ancestor), which
+   * sits --day-cell-border-width inside the cell's visible border edge on
+   * every side. Both axes compensate for that inset so the bridge starts
+   * flush with the cell's own border edge and reaches exactly as far as the
+   * neighbouring cell's border edge — filling the gutter with no seam. */
+  top: calc(-1 * var(--day-cell-border-width));
+  height: calc(100% + 2 * var(--day-cell-border-width));
+  right: calc(-1 * (var(--spacing, 0.25rem) + var(--day-cell-border-width)));
+  width: var(--spacing, 0.25rem);
+  background-color: inherit;
+  pointer-events: none;
 }
 
 .day-cell[data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),
