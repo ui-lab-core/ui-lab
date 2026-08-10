@@ -7,13 +7,13 @@ ui-lab/
 ├── packages/
 │   ├── @ui/          — ui-lab-components  (the component library)
 │   ├── registry/     — ui-lab-registry    (metadata, examples, registry data)
-│   └── @mcp/         — ui-lab-mcp         (MCP server for AI tooling)
+│   └── @mcp/         — ui-lab              (MCP server for AI tooling)
 └── apps/
     └── site/         — @ui-lab/site       (documentation site → Vercel)
 ```
 
 `ui-lab-components` and `ui-lab-registry` always release together at the same version.
-`ui-lab-mcp` releases independently.
+`ui-lab` releases independently.
 
 ## Prerequisites
 
@@ -37,7 +37,7 @@ pnpm dev:site        # start the docs site with hot reload
 The site depends on the built packages. If you're changing `packages/@ui` or `packages/registry`, build them first:
 
 ```sh
-pnpm build:packages  # build ui-lab-components + ui-lab-registry + ui-lab-mcp
+pnpm build:packages  # build ui-lab-components + ui-lab-registry + ui-lab
 pnpm dev:site
 ```
 
@@ -153,7 +153,7 @@ This script does the following in order:
 |---------|-----|
 | `ui-lab-components` | ✓ |
 | `ui-lab-registry` | ✓ |
-| `ui-lab-mcp` | ✓ (independently versioned) |
+| `ui-lab` | ✓ (independently versioned) |
 | `@ui-lab/site` | ✗ (private, deployed to Vercel) |
 
 Vercel picks up the deployment automatically when the push lands on `master`.

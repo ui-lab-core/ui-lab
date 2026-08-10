@@ -1,4 +1,4 @@
-# ui-lab-mcp
+# ui-lab
 
 ## 0.4.3
 

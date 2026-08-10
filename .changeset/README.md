@@ -34,4 +34,4 @@ This script:
 - `major` — breaking changes to component APIs
 
 `ui-lab-components` and `ui-lab-registry` are **fixed** — they always release at the same version number.
-`ui-lab-mcp` releases independently.
+`ui-lab` releases independently.

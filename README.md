@@ -11,7 +11,7 @@ React component library and design system for building accessible, themeable int
 |---------|----------|---------|
 | `packages/@ui` | `ui-lab-components` | React component library — 40 accessible, themeable components |
 | `packages/registry` | `ui-lab-registry` | Public registry for the existing public site ecosystem |
-| `packages/@mcp` | `ui-lab-mcp` | MCP server — exposes library to AI assistants (Claude, Cursor) |
+| `packages/@mcp` | `ui-lab` | MCP server — exposes library to AI assistants (Claude, Cursor) |
 | `apps/www` | — | Next.js documentation site with live previews and public metadata |
 
 ---
@@ -57,7 +57,7 @@ npm install ui-lab-components
 
 ## MCP Integration
 
-The `ui-lab-mcp` package is a [Model Context Protocol](https://modelcontextprotocol.io/) server that connects UI Lab to AI coding assistants. Instead of pasting documentation into chat, the AI can query the library directly.
+The `ui-lab` package is a [Model Context Protocol](https://modelcontextprotocol.io/) server that connects UI Lab to AI coding assistants. Instead of pasting documentation into chat, the AI can query the library directly.
 
 **Works with:** Claude Desktop, Cursor, and any MCP-compatible tool.
 

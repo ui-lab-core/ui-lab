@@ -13,7 +13,7 @@ const PACKAGES = [
   { name: 'ui-lab-components', dir: 'packages/@ui' },
   { name: 'ui-lab-registry', dir: 'packages/registry' },
   { name: 'ui-lab-theme-onyx', dir: 'packages/themes/onyx' },
-  { name: 'ui-lab-mcp', dir: 'packages/@mcp' },
+  { name: 'ui-lab', dir: 'packages/@mcp' },
 ]
 
 function bumpVersion(current: string): string {
