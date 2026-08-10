@@ -14,7 +14,7 @@ The UI Lab MCP server gives AI agents direct, structured access to the component
 
 The server implements the [Model Context Protocol](https://modelcontextprotocol.io) over stdio (stdin/stdout). When connected, AI agents can call 10 tools and read 4 resource types to discover and use UI Lab's design system.
 
-The server is the `ui-lab-mcp` package. It runs as a child process that your AI client (Claude Desktop, Cursor, etc.) manages automatically.
+The server is the `ui-lab` package. It runs as a child process that your AI client (Claude Desktop, Cursor, etc.) manages automatically.
 
 ---
 
@@ -37,7 +37,7 @@ Add this to your Claude Desktop config file.
   "mcpServers": {
     "ui-lab": {
       "command": "npx",
-      "args": ["ui-lab-mcp"]
+      "args": ["ui-lab"]
     }
   }
 }
@@ -56,7 +56,7 @@ Add to `.cursor/mcp.json` in your project root (or the global Cursor settings):
   "mcpServers": {
     "ui-lab": {
       "command": "npx",
-      "args": ["ui-lab-mcp"]
+      "args": ["ui-lab"]
     }
   }
 }
@@ -69,9 +69,9 @@ Add to `.cursor/mcp.json` in your project root (or the global Cursor settings):
 If you prefer not to use `npx`, install the package directly:
 
 ```bash
-pnpm add -D ui-lab-mcp
+pnpm add -D ui-lab
 # or
-npm install --save-dev ui-lab-mcp
+npm install --save-dev ui-lab
 ```
 
 Then point your client to the installed binary:
@@ -81,7 +81,7 @@ Then point your client to the installed binary:
   "mcpServers": {
     "ui-lab": {
       "command": "node",
-      "args": ["./node_modules/.bin/ui-lab-mcp"]
+      "args": ["./node_modules/.bin/ui-lab"]
     }
   }
 }
@@ -137,7 +137,7 @@ node --version
 Test the server manually:
 
 ```bash
-npx ui-lab-mcp
+npx ui-lab
 # Should print: [UI Lab MCP] Server started successfully
 ```
 
@@ -149,7 +149,7 @@ The registry package must be built. If you're running from a local monorepo clon
 
 ```bash
 pnpm --filter ui-lab-registry run build
-pnpm --filter ui-lab-mcp run build
+pnpm --filter ui-lab run build
 ```
 
 ### Claude doesn't call any tools

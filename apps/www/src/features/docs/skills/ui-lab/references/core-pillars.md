@@ -12,7 +12,7 @@ Six orthogonal dimensions. Each pillar: what it measures, what to check, what to
 - Native HTML elements replaced with UI Lab equivalents (`<button>` → `<Button>`, `<a>` → `<Anchor>`, `<input>` → `<Input>`/`<Checkbox>`/`<Radio>`, `<div className="flex">` → `<Flex>`, styled `<div>` → `<Card>` / `<Group>`)
 - Tokens used for color (no hex, no rgba)
 - Semantic tokens for feedback states (success/danger/warning/info), not chromatic Tailwind
-- React Aria props (`isDisabled`, `onPress`, `isOpen`)
+- Component props (`disabled`, `onPress`, `isOpen`)
 - Compound sub-components where available
 - Theme provider from MCP `get_theme_setup`
 

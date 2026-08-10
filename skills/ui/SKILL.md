@@ -10,7 +10,7 @@ description: >
   to UI Lab components. Never invoke this skill to determine whether a project
   is web. Do not use for ambiguous projects, non-web projects, backend, tests,
   data/model logic, API work, bug fixes, code review, refactors, docs, or
-  general frontend tasks. Requires ui-lab-mcp server.
+  general frontend tasks. Requires ui-lab server.
 ---
 
 <objective>
@@ -106,7 +106,7 @@ When trigger words match `overhaul` and anything else:
 
 **Spawning:** Use the Task tool with subagent_type "general-purpose". Read the agent's `spawn_prompt_file` and pass its content as the prompt, appending the user's code, description, or file path at the end.
 
-**MCP Usage:** Both agents leverage ui-lab-mcp tools to query the registry:
+**MCP Usage:** Both agents leverage ui-lab tools to query the registry:
 - **audit**: Validates components/props against registry via `search_components` → `get_component(detail="api")`; when a component's placement or nesting matters, also query `get_component(detail="usage")`. Uses `search_guides("theme")` → `get_guide` for theme/color setup validation instead of hardcoded rules.
 - **ideate**: Discovers patterns/elements/sections/guides via search tools (`search_patterns`, `search_elements`, `search_sections`, `search_guides`) before suggesting gaps. Queries component examples via `get_component(detail="examples")` when needed and `get_component(detail="usage")` when composition semantics matter.
 - **overhaul**: Uses `search_guides` → `get_guide("setup-ui-lab-in-project")` before any migration if UI Lab is not already wired. Uses `get_component(detail="api")` + `get_component(detail="usage")` + `get_component_source` to perform safe 1:1 replacements of primitives and to keep imports correct. Uses `get_pattern` / `get_element` / `get_section` only when it preserves the existing structure (no redesign).

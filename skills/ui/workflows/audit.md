@@ -260,7 +260,7 @@ Native elements and raw Tailwind throughout; design system effectively bypassed.
 - `bg-white`: [WARNING] Raw neutral on root surface → replace with `bg-background-950`
 - `bg-red-500`: [WARNING] Chromatic Tailwind used for destructive feedback → replace with `bg-danger-500`
 - `bg-gray-200`: [WARNING] Neutral Tailwind on surface → replace with `bg-background-800`
-- Cancel button: [WARNING] `disabled` prop used → use `isDisabled` (React Aria)
+- Cancel button: [WARNING] legacy `isDisabled` prop used → use `disabled`
 - Delete button: [WARNING] `onClick` used → use `onPress` (React Aria)
 - Metadata `<div>`: [WARNING] `text-[11px] uppercase tracking-[0.22em]` — arbitrary typography utilities → use tokenized text style
 - Metadata `<div>`: [WARNING] `transition-all` on non-interactive text → remove

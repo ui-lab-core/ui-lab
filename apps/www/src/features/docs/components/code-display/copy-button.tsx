@@ -4,7 +4,7 @@ import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "ui-lab-components/button";
 
-export function CopyButton({ code }: { code: string }) {
+export function CopyButton({ code, className = "absolute right-2 top-2 z-10" }: { code: string; className?: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -19,9 +19,9 @@ export function CopyButton({ code }: { code: string }) {
       size="icon"
       onClick={handleCopy}
       aria-label={copied ? "Code copied" : "Copy code"}
-      className="absolute p-1 right-2 top-2 z-10"
+      icon={copied ? <Check size={14} /> : <Copy size={14} />}
+      className={className}
     >
-      {copied ? <Check size={14} /> : <Copy size={14} />}
     </Button>
   );
 }

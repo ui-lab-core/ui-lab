@@ -22,14 +22,14 @@ export default function AIIntegrationPage() {
         <h2 className="mb-4 text-2xl font-bold text-foreground-50">Use the MCP server</h2>
         <p className="mb-4 text-foreground-300">
           UI Lab does not ship a general-purpose CLI or an LLMs.txt file. Connect the
-          <code> ui-lab-mcp </code> server instead, so an AI client can query the current
+          <code> ui-lab </code> server instead, so an AI client can query the current
           component APIs, examples, design tokens, patterns, and sections.
         </p>
         <pre className="overflow-x-auto rounded border border-background-700 bg-background-900 p-4 text-sm text-foreground-300"><code>{`{
   "mcpServers": {
     "ui-lab": {
       "command": "npx",
-      "args": ["ui-lab-mcp"]
+      "args": ["ui-lab"]
     }
   }
 }`}</code></pre>

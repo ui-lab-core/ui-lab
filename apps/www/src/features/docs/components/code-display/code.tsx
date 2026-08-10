@@ -11,6 +11,8 @@ import { Scroll } from "ui-lab-components/scroll";
 import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 import { type SimpleThemeColors } from "@/features/theme/constants/themes";
+import { FileCode2 } from "lucide-react";
+import { SiCss3, SiReact } from "@/shared/icons/si";
 
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
 
@@ -33,8 +35,20 @@ function stripPreTabIndex(html: string): string {
   return html.replace(/<pre([^>]*)\s+tabindex="[^"]*"([^>]*)>/gi, "<pre$1$2>");
 }
 
+function FileIcon({ name, className }: { name: string; className?: string }) {
+  const extension = name.split(".").pop()?.toLowerCase();
+  if (extension === "tsx" || extension === "jsx") {
+    return <SiReact aria-hidden="true" size={14} className={className} />;
+  }
+  if (extension === "css") {
+    return <SiCss3 aria-hidden="true" size={14} className={className} />;
+  }
+  return <FileCode2 aria-hidden="true" size={14} className={className} />;
+}
+
 interface CodeProps {
   children: string;
+  files?: Array<{ name: string; code: string; language?: string }>;
   language?: string;
   className?: string;
   showLineNumbers?: boolean;
@@ -91,6 +105,7 @@ function requestHighlight(code: string, language: string, colors: SimpleThemeCol
 
 export function Code({
   children,
+  files,
   language = "ts",
   className,
   showLineNumbers = false,
@@ -111,16 +126,26 @@ export function Code({
     status: "resolved" | "failed";
   } | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [activeFile, setActiveFile] = useState(0);
   const isNearViewport = useNearViewport(rootRef);
 
-  const fallbackHtml = useMemo(() => generateFallbackHtml(children), [children]);
+  const codeFiles = files?.length
+    ? [{ name: heading || filename || "Example.tsx", code: children, language }, ...files]
+    : null;
+  const selectedFile = codeFiles?.[activeFile];
+  const activeCode = selectedFile?.code ?? children;
+  const activeLanguage = selectedFile?.language ?? language;
+
+  const fallbackHtml = useMemo(() => generateFallbackHtml(activeCode), [activeCode]);
   const themeKey = currentThemeColors ? JSON.stringify(currentThemeColors) : "uninitialized";
-  const highlightKey = `${language}\u0000${currentThemeMode}\u0000${themeKey}\u0000${children}`;
-  const staticHighlight = currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark;
+  const highlightKey = `${activeLanguage}\u0000${currentThemeMode}\u0000${themeKey}\u0000${activeCode}`;
+  const staticHighlight = activeFile === 0 || !codeFiles
+    ? (currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark)
+    : undefined;
   const highlightedCode = resolved?.key === highlightKey && resolved.status === "resolved"
     ? resolved.html
     : staticHighlight ?? fallbackHtml;
-  const totalCodeLines = children.split('\n').length;
+  const totalCodeLines = activeCode.split('\n').length;
   const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
   const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
   const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
@@ -131,7 +156,7 @@ export function Code({
 
     const highlight = async () => {
       try {
-        const result = await requestHighlight(children, language, currentThemeColors, currentThemeMode);
+        const result = await requestHighlight(activeCode, activeLanguage, currentThemeColors, currentThemeMode);
         const html = result.html;
 
         if (cancelled) return;
@@ -156,7 +181,7 @@ export function Code({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [children, currentThemeColors, currentThemeMode, fallbackHtml, highlightKey, isNearViewport, isThemeInitialized, language]);
+  }, [activeCode, activeLanguage, currentThemeColors, currentThemeMode, fallbackHtml, highlightKey, isNearViewport, isThemeInitialized]);
 
   const hiddenCodeLines = totalCodeLines - maxHeightLines;
   const expanded = isExpanded;
@@ -172,26 +197,64 @@ export function Code({
       )}
     >
       {(filename || heading) && (
-        <div className="flex-none flex text-xs  items-center justify-between border-b border-background-700 py-1.5 px-3 text-foreground-400">
-          <span>{heading || filename}</span>
-          {!heading && <span className="text-foreground-400">{language}</span>}
+        <div className="flex p-2 flex-none items-stretch justify-between text-xs text-foreground-400">
+          {heading ? (
+            <div className="flex gap-1  items-stretch">
+              {(codeFiles ?? [{ name: heading, code: children }]).map((file, index) => (
+                <button
+                  key={file.name}
+                  type="button"
+                  onClick={() => setActiveFile(index)}
+                  className={cn(
+                    "flex cursor-pointer items-center gap-2 rounded-sm py-2 px-2 transition-colors hover:bg-background-950 hover:text-foreground-100",
+                    index === activeFile ? "bg-background-950 text-foreground-200" : "text-foreground-400",
+                  )}
+                  aria-pressed={index === activeFile}
+                >
+                  <FileIcon name={file.name} className={index === activeFile ? "text-accent-500" : undefined} />
+                  <span>{file.name}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center justify-between px-3">
+              <span>{filename}</span>
+              <span className="text-foreground-400">{language}</span>
+            </div>
+          )}
+          {heading ? (
+            <div className="flex items-center gap-1 px-1.5" aria-label="Code actions">
+              {shouldShowExpandButton ? (
+                <Button
+                  type="button"
+                  onClick={() => setIsExpanded((current) => !current)}
+                  aria-label={expanded ? "Collapse code" : "Expand code"}
+                  variant="ghost"
+                  size="icon"
+                  icon={<HiOutlineChevronUpDown size={16} />}
+                  className="h-7 w-7"
+                />
+              ) : null}
+              <CopyButton code={activeCode} className="h-7 w-7" />
+            </div>
+          ) : null}
         </div>
       )}
 
       <div className="relative group flex-1 min-h-0 flex flex-col">
-        {expanded && shouldShowExpandButton && (
+        {!heading && expanded && shouldShowExpandButton && (
           <Button
             type="button"
             onClick={() => setIsExpanded(false)}
             aria-label="Collapse code"
             variant="ghost"
             size="icon"
-            className="absolute right-11 top-2 z-10 p-1"
+            icon={<LuChevronsDownUp size={14} />}
+            className="absolute right-11 top-2 z-10"
           >
-            <LuChevronsDownUp size={14} />
           </Button>
         )}
-        <CopyButton code={children} />
+        {!heading ? <CopyButton code={children} /> : null}
         <Scroll
           direction="horizontal"
           maxWidth="100%"

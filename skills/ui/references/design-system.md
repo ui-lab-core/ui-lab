@@ -99,7 +99,7 @@ Do not infer component APIs from memory. Fetch from MCP `get_component`. Theme p
 
 | Use | Not |
 |---|---|
-| `isDisabled` | `disabled` |
+| `disabled` | `disabled` |
 | `onPress` | `onClick` |
 | `isOpen` / `onOpenChange` | `isVisible` / `onVisibilityChange` |
 
