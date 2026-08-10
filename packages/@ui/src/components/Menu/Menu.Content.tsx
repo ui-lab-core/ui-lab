@@ -2,6 +2,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { mergeProps } from "react-aria"
 import { useFloating } from "../../hooks/useFloat/react/useFloating"
+import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation"
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
 import * as positioning from "../../utils/submenu-positioning"
 import { cn } from "@/lib/utils"
@@ -205,6 +206,13 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       })
     }, [navigateToNextItem, navigateToPrevItem, selectFocusedItem, close, items, setFocusedKey, isFocusedItemSubmenu, onEscapeKeyDown])
 
+    const { animationStyles } = useFloatAnimation({
+      open: isOpen,
+      isPositioned,
+      placement,
+      skipExitAnimation: true,
+    })
+
     const showContent = isOpen && isPositioned
     const resolved = resolveMenuContentStyles(styles);
 
@@ -236,7 +244,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
               data-state={showContent ? "open" : "closed"}
               data-placement={placement.split("-")[0]}
               onKeyDown={handleKeyDown}
-              style={{ outline: "none" }}
+              style={{ outline: "none", ...animationStyles }}
             >
               <div className={cn("viewport", resolved.list)} style={{ padding: "0.25rem" }}>
                 <List items={items} gap="xs">

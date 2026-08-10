@@ -12,7 +12,7 @@ describe('Select.disabled', () => {
   describe('disabled trigger', () => {
     it('disabled trigger does not respond to click', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { isDisabled: true })
+      const container = renderSelectWithItems(items, { disabled: true })
       const trigger = getSelectTrigger(container)
 
       await clickElement(trigger)
@@ -22,7 +22,7 @@ describe('Select.disabled', () => {
 
     it('disabled trigger does not open on hover', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'hover', isDisabled: true })
+      const container = renderSelectWithItems(items, { trigger: 'hover', disabled: true })
       const trigger = getSelectTrigger(container)
 
       await hoverElement(trigger)
@@ -32,7 +32,7 @@ describe('Select.disabled', () => {
 
     it('disabled trigger does not respond to keyboard', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { isDisabled: true })
+      const container = renderSelectWithItems(items, { disabled: true })
       const trigger = getSelectTrigger(container)
 
       await focusWithKeyboard(trigger)
@@ -43,7 +43,7 @@ describe('Select.disabled', () => {
 
     it('disabled trigger has aria-disabled="true"', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { isDisabled: true })
+      const container = renderSelectWithItems(items, { disabled: true })
       const trigger = getSelectTrigger(container)
 
       expect(trigger.getAttribute('aria-disabled')).toBe('true')
@@ -166,4 +166,3 @@ describe('Select.disabled', () => {
     })
   })
 })
-

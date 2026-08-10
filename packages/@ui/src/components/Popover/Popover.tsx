@@ -24,6 +24,7 @@ const POPOVER_GAP = 2;
 const ARROW_POSITIONING_SIZE = 6;
 
 type PopoverPosition = "top" | "right" | "bottom" | "left";
+type PopoverAlign = "start" | "center" | "end";
 
 const getFrameSide = (position: PopoverPosition): "top" | "right" | "bottom" | "left" => {
   switch (position) {
@@ -74,6 +75,10 @@ export interface PopoverProps {
   content: React.ReactNode;
   /** Preferred side of the trigger where the popover appears */
   position?: PopoverPosition;
+  /** Cross-axis alignment relative to the trigger. "start" and "end" follow reading direction along the trigger's edge; "center" (default) centers the panel over the trigger. */
+  align?: PopoverAlign;
+  /** Renders and closes the panel with no opacity/scale transition. */
+  "disable-animations"?: boolean;
   /** Keyed styles for named component parts. The frame slot controls panel layout such as padding. */
   styles?: PopoverStylesProp;
   /** Additional CSS class for the trigger element. */
@@ -91,7 +96,7 @@ export interface PopoverProps {
 export interface PopoverState { open?: boolean }
 
 const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
-  ({ children, content, position = "bottom", styles, className: externalClassName, open, state: controlledState, isOpen: legacyIsOpen, onOpenChange, showArrow = false }, ref) => {
+  ({ children, content, position = "bottom", align = "center", "disable-animations": disableAnimations = false, styles, className: externalClassName, open, state: controlledState, isOpen: legacyIsOpen, onOpenChange, showArrow = false }, ref) => {
 
     const resolvePopoverBaseStyles = createStylesResolver([
       'root',
@@ -126,8 +131,12 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       right: "right",
     };
 
+    const requestedPlacement = align === "center"
+      ? placementMap[position]
+      : `${placementMap[position]}-${align}` as const;
+
     const { refs, floatingStyles, placement, isPositioned } = useFloating({
-      placement: placementMap[position],
+      placement: requestedPlacement,
       strategy: "fixed",
       transform: false,
       whileElementsMounted: autoUpdate,
@@ -232,9 +241,10 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
             >
               <div
                 className={cn('content', css.content, resolved.content)}
+                data-instant={disableAnimations ? "true" : undefined}
                 style={{
                   opacity: isAnimating ? 1 : 0,
-                  transform: isAnimating ? "scale(1)" : getInitialTransform(placement),
+                  transform: isAnimating ? "scale(1)" : getInitialTransform(placement.split("-")[0]),
                   pointerEvents: isAnimating ? 'auto' : 'none',
                 }}
               >

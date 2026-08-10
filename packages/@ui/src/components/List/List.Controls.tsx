@@ -67,7 +67,7 @@ markListItemSlot(CheckboxIndicator, () => 'leading');
 
 /** Interactive switch inside a list item */
 const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchProps>(
-  ({ isSelected, isDisabled, className, ...props }, ref) => {
+  ({ isSelected, disabled, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
 
     return (
@@ -75,7 +75,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchPro
         <UISwitch
           ref={ref}
           isSelected={isSelected}
-          isDisabled={isDisabled}
+          disabled={disabled}
           {...props}
         />
       </div>
@@ -109,14 +109,14 @@ markListItemSlot(Input, () => 'trailing');
 
 /** Select element wrapper inside a list item */
 const Select = React.forwardRef<React.ElementRef<typeof UISelect>, ListSelectProps>(
-  ({ isDisabled, children, className, ...props }, ref) => {
+  ({ disabled, children, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
 
     return (
       <div className={cn(styles.control, listStyles.control, className)} data-list-primary-action="true">
         <UISelect
           ref={ref}
-          isDisabled={isDisabled}
+          disabled={disabled}
           {...props}
         >
           {children}

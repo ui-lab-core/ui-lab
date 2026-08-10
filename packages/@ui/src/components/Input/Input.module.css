@@ -146,7 +146,8 @@
 
   .action:global(.button):global(.icon) {
     --size: calc(var(--spacing, 0.25rem) * 7);
-    padding: calc(var(--spacing, 0.25rem) * 1.5);
+    --padding-block: calc(var(--spacing, 0.25rem) * 1.5);
+    --padding-inline: calc(var(--spacing, 0.25rem) * 1.5);
   }
 
   .action:hover {

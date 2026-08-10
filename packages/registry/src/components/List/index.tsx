@@ -12,7 +12,7 @@ export function Example() {
       </List.Header>
       <List.Item interactive>Item One</List.Item>
       <List.Item interactive>Item Two</List.Item>
-      <List.Footer align="center">
+      <List.Footer>
         <Button variant="primary" size="sm">Load More</Button>
       </List.Footer>
     </List>
@@ -50,7 +50,7 @@ export const listDetail: ComponentDetail = {
           <List.Item interactive>Item One</List.Item>
           <List.Item interactive>Item Two</List.Item>
           <List.Item interactive>Item Three</List.Item>
-          <List.Footer align="center">
+          <List.Footer>
             <Button variant="primary" size="sm">Load More</Button>
           </List.Footer>
         </List>
@@ -70,7 +70,7 @@ export const listDetail: ComponentDetail = {
           </List.Header>
           <List.Item interactive>Item One</List.Item>
           <List.Item interactive>Item Two</List.Item>
-          <List.Footer align="center">
+          <List.Footer>
             <Button variant="primary" size="sm">Load More</Button>
           </List.Footer>
         </List>
@@ -154,41 +154,6 @@ export function Example() {
             </List.ActionGroup>
           </List.Item>
         </List>
-      ),
-    },
-    {
-      id: 'sticky-header',
-      name: 'Sticky Header',
-      description: 'List with a sticky header that stays in place when scrolling.',
-      code: `import { List } from "ui-lab-components";
-
-export function Example() {
-  return (
-    <div className="h-64 overflow-y-auto">
-      <List aria-label="Items">
-        <List.Header sticky>
-          <h2>Items</h2>
-        </List.Header>
-        <List.Item interactive>Item One</List.Item>
-        <List.Item interactive>Item Two</List.Item>
-        <List.Item interactive>Item Three</List.Item>
-        <List.Item interactive>Item Four</List.Item>
-      </List>
-    </div>
-  );
-}`,
-      preview: (
-        <div className="h-40 overflow-y-auto border border-background-700 rounded">
-          <List aria-label="Sticky List">
-            <List.Header sticky>
-              <h3>Items</h3>
-            </List.Header>
-            <List.Item interactive>Item One</List.Item>
-            <List.Item interactive>Item Two</List.Item>
-            <List.Item interactive>Item Three</List.Item>
-            <List.Item interactive>Item Four</List.Item>
-          </List>
-        </div>
       ),
     },
   ],

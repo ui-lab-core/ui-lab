@@ -156,13 +156,13 @@ interface DateInputBaseProps {
   /** BCP 47 locale that determines segment order and separator. */
   locale?: string
   /** Function returning true for dates that should be unselectable. */
-  disabled?: (date: Date) => boolean
+  isDateDisabled?: (date: Date) => boolean
   /** Earliest selectable date. */
   minDate?: Date
   /** Latest selectable date. */
   maxDate?: Date
   /** Disables the whole field. */
-  isDisabled?: boolean
+  disabled?: boolean
   /** Whether the field is in an error state. */
   error?: boolean
   /** Visual style forwarded to the underlying Input. */
@@ -259,15 +259,15 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
     state: controlledState,
     onChange,
     locale = "en-US",
-    disabled: disabledProp,
+    isDateDisabled,
     minDate,
     maxDate,
-    isDisabled = false,
+    disabled = false,
     error = false,
     variant,
     label,
     className,
-  } = props as DateInputSingleProps & DateInputRangeProps
+  } = props
 
   const isRange = mode === "range"
   const [open, setOpen] = React.useState(false)
@@ -293,12 +293,12 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
 
   const isDateUnavailable = React.useCallback(
     (date: Date) => {
-      if (disabledProp?.(date)) return true
+      if (isDateDisabled?.(date)) return true
       if (minDate && date < minDate) return true
       if (maxDate && date > maxDate) return true
       return false
     },
-    [disabledProp, minDate, maxDate],
+    [isDateDisabled, minDate, maxDate],
   )
 
   // Typed segments flow back out as a date only once a bound is complete and
@@ -330,7 +330,7 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
   const coordinator = useRegionCoordinator({
     regions,
     onRegionChange: handleRegionChange,
-    disabled: isDisabled,
+    disabled,
   })
 
   const { setValues, values } = coordinator
@@ -398,7 +398,7 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
     icon: <CalendarIcon size={16} />,
     title: isRange ? "Open range calendar" : "Open calendar",
     onClick: () => {
-      if (isDisabled) return
+      if (disabled) return
       setOpen((previous) => !previous)
     },
   }
@@ -406,7 +406,7 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
   // Clicking anywhere in the empty part of the field lands on the first
   // segment, the way a plain text input would place a caret.
   const handleFieldMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (isDisabled) return
+    if (disabled) return
     if (event.target !== event.currentTarget) return
     event.preventDefault()
     coordinator.focusRegion(0)
@@ -435,7 +435,7 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
           <Input
             variant={variant}
             error={error}
-            disabled={isDisabled}
+            disabled={disabled}
             actions={{ right: [calendarAction] }}
           >
             {isRange ? (

@@ -218,7 +218,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
 
           <Tooltip content="Attach file"><Button icon={<HiPaperClip />} size="sm" variant="ghost" aria-label="Attach file" /></Tooltip>
           <Tooltip content="Use microphone"><Button icon={<HiMicrophone />} size="sm" variant="ghost" aria-label="Use microphone" /></Tooltip>
-          <Button onPress={sendMessage} icon={<FaArrowRight />} size="sm" isDisabled={!text.trim()} aria-label="Send message" />
+          <Button onPress={sendMessage} icon={<FaArrowRight />} size="sm" disabled={!text.trim()} aria-label="Send message" />
         </div>
       </div>
     </div>

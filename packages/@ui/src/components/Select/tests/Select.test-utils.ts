@@ -37,7 +37,7 @@ export function renderSelectWithItems(
       Select.Content,
       null,
       items.map(item =>
-        React.createElement(Select.Item, { key: item.key, value: item.key, isDisabled: item.isDisabled }, item.label)
+        React.createElement(Select.Item, { key: item.key, value: item.key, disabled: item.isDisabled }, item.label)
       )
     )
   )
@@ -60,7 +60,7 @@ export function renderMultiSelectWithItems(
       Select.Content,
       null,
       items.map(item =>
-        React.createElement(Select.Item, { key: item.key, value: item.key, isDisabled: item.isDisabled }, item.label)
+        React.createElement(Select.Item, { key: item.key, value: item.key, disabled: item.isDisabled }, item.label)
       )
     )
   )

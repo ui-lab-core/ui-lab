@@ -113,7 +113,7 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   /** Called when selection changes; receives a single key (single) or key array (multiple) */
   onSelectionChange?: (value: any) => void
   /** Disables the entire select and prevents interaction */
-  isDisabled?: boolean
+  disabled?: boolean
   /** Focuses the trigger automatically on mount */
   autoFocus?: boolean
   /** Maximum number of items visible before the dropdown scrolls */
@@ -151,7 +151,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       defaultValue,
       label,
       onSelectionChange,
-      isDisabled = false,
+      disabled: isDisabled = false,
       autoFocus = false,
       maxItems = 6,
       children,

@@ -59,7 +59,7 @@ export function TextEditor({ height }: ShowcasePanelProps) {
       <div className="shrink-0 border-b border-background-700">
         <div className="[&_.button]:aspect-square [&_.button]:p-0! px-1.5 h-14 flex items-center justify-between w-full">
           <Group className="flex">
-            <Group.Select selectedKey={state.textStyle} onSelectionChange={(v) => dispatch({ type: 'SET_TEXT_STYLE', payload: v })} className="w-40">
+            <Group.Select selectedKey={state.textStyle} onSelectionChange={(v) => dispatch({ type: 'SET_TEXT_STYLE', payload: v })}>
               <Select.Trigger>
                 <Select.Value placeholder="Paragraph" />
               </Select.Trigger>
@@ -76,7 +76,7 @@ export function TextEditor({ height }: ShowcasePanelProps) {
 
             <Divider />
 
-            <Group.Select selectedKey={state.fontSize} onSelectionChange={(v) => dispatch({ type: 'SET_FONT_SIZE', payload: v })} className="w-20">
+            <Group.Select selectedKey={state.fontSize} onSelectionChange={(v) => dispatch({ type: 'SET_FONT_SIZE', payload: v })}>
               <Select.Trigger>
                 <Select.Value placeholder="16" />
               </Select.Trigger>
@@ -98,26 +98,27 @@ export function TextEditor({ height }: ShowcasePanelProps) {
           <Divider orientation="vertical" />
           <Group spacing="xs">
             <Tooltip content="Bold">
-              <Group.Button active={state.bold} onClick={() => dispatch({ type: 'SET_BOLD', payload: !state.bold })}><FaBold size={13} /></Group.Button>
+              <Group.Button icon={<FaBold size={13} />} active={state.bold} onClick={() => dispatch({ type: 'SET_BOLD', payload: !state.bold })}></Group.Button>
             </Tooltip>
 
             <Tooltip content="Italic">
-              <Group.Button active={state.italic} onClick={() => dispatch({ type: 'SET_ITALIC', payload: !state.italic })}>
-                <FaItalic size={13} />
+              <Group.Button icon={<FaItalic size={13} />} active={state.italic} onClick={() => dispatch({ type: 'SET_ITALIC', payload: !state.italic })}>
               </Group.Button>
             </Tooltip>
 
             <Tooltip content="Underline">
-              <Group.Button active={state.underline} onClick={() => dispatch({ type: 'SET_UNDERLINE', payload: !state.underline })}>
-                <FaUnderline size={13} />
+              <Group.Button icon={<FaUnderline size={13} />} active={state.underline} onClick={() => dispatch({ type: 'SET_UNDERLINE', payload: !state.underline })}>
               </Group.Button>
             </Tooltip>
 
             <Divider />
 
-            <Tooltip content="Align Left"><Group.Button active={state.align === "left"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "left" })}><FaAlignLeft size={13} /></Group.Button></Tooltip>
-            <Tooltip content="Align Center"><Group.Button active={state.align === "center"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "center" })}><FaAlignCenter size={13} /></Group.Button></Tooltip>
-            <Tooltip content="Align Right"><Group.Button active={state.align === "right"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "right" })}><FaAlignRight size={13} /></Group.Button></Tooltip>
+            <Tooltip content="Align Left">
+              <Group.Button icon={<FaAlignLeft size={13} />} active={state.align === "left"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "left" })}>
+              </Group.Button>
+            </Tooltip>
+            <Tooltip content="Align Center"><Group.Button icon={<FaAlignCenter size={13} />} active={state.align === "center"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "center" })}></Group.Button></Tooltip>
+            <Tooltip content="Align Right"><Group.Button icon={<FaAlignRight size={13} />} active={state.align === "right"} onClick={() => dispatch({ type: 'SET_ALIGN', payload: "right" })}></Group.Button></Tooltip>
           </Group>
         </div>
       </div>

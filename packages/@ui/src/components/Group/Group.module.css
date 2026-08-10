@@ -108,14 +108,10 @@
 
   .button {
     @apply flex box-border;
+    --press-scale: 0.98;
+    --press-duration: 100ms;
     width: auto;
     border-radius: var(--group-item-radius, var(--background-inner-radius));
-
-    &[data-selected="true"] {
-      @apply relative;
-      background-color: var(--background);
-      color: var(--foreground);
-    }
   }
 
   .horizontal .item.icon-button-item {
@@ -134,15 +130,15 @@
 
   .item.icon-button-item .button:global(.icon) {
     --size: var(--item-height);
-    padding-inline: calc(var(--spacing) * 2);
+    --padding-inline: calc(var(--spacing) * 2);
   }
 
   .item.icon-button-item .button:global(.icon):global(.sm) {
-    padding-inline: calc(var(--spacing) * 1.5);
+    --padding-inline: calc(var(--spacing) * 1.5);
   }
 
   .item.icon-button-item .button:global(.icon):global(.lg) {
-    padding-inline: calc(var(--spacing) * 2.5);
+    --padding-inline: calc(var(--spacing) * 2.5);
   }
 
   .input {
@@ -207,14 +203,15 @@
       border: none;
     }
 
-    .button[data-selected="true"] {
-    }
-
     .item [role="separator"] {
       --background: var(--background-border);
     }
 
     &.none {
+      .button {
+        --press-scale: 0.99;
+      }
+
       .item:not(.divider) {
         overflow: hidden;
       }

@@ -6,12 +6,11 @@ import { Code } from "@/features/docs/components/code-display/code";
 import { DEVICE_PRESETS, PreviewContainer, calculateVariantFromWidth } from "@/features/preview";
 import { Button } from "ui-lab-components/button";
 import { Divider } from "ui-lab-components/divider";
-import { Group } from "ui-lab-components/group";
+import { Input } from "ui-lab-components/input";
 import { Scroll } from "ui-lab-components/scroll";
 import { Select } from "ui-lab-components/select";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
-import { FaMinus, FaPlus } from "@/shared/icons/fa6";
 
 
 
@@ -209,7 +208,6 @@ export function ComponentConfigurator({
       )}
       <Code
         className="rounded-none border-0"
-        eagerMeasure
         language={language}
         showLineNumbers
         preHighlightedLight={currentCode === code ? preHighlightedLight : undefined}
@@ -336,63 +334,31 @@ export function ComponentConfigurator({
                       </button>
                     )}
                     {control.type === "text" && (
-                      <input
-                        type="text"
+                      <Input
                         value={String(controlValues[control.name] ?? "")}
                         onChange={(e) =>
                           handleControlChange(control.name, e.target.value)
                         }
-                        className="w-full px-2 py-2 text-xs bg-background-800/50 border border-background-700 rounded-sm text-foreground-50 placeholder-foreground-400 hover:border-background-600 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                        variant="default"
+                        className="w-full"
                       />
                     )}
                     {control.type === "stepper" && (
-                      <Group spacing="none" className="h-9 w-fit max-w-max">
-                        <Group.Button
-                          variant="secondary"
-                          size="sm"
-                          isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) <= getStepperBounds(control).min}
-                          onClick={() =>
-                            handleControlChange(
-                              control.name,
-                              clampStepperValue(
-                                Number(controlValues[control.name] ?? control.defaultValue ?? 0) - getStepperBounds(control).step,
-                                control
-                              )
-                            )
+                      <Input
+                        type="number"
+                        value={Number(controlValues[control.name] ?? control.defaultValue ?? 0)}
+                        min={getStepperBounds(control).min}
+                        max={getStepperBounds(control).max}
+                        step={getStepperBounds(control).step}
+                        onChange={(e) => {
+                          const nextValue = Number(e.target.value);
+                          if (!Number.isNaN(nextValue)) {
+                            handleControlChange(control.name, clampStepperValue(nextValue, control));
                           }
-                        >
-                          <FaMinus size={10} />
-                        </Group.Button>
-                        <Divider />
-                        <Group.Input
-                          value={Number(controlValues[control.name] ?? control.defaultValue ?? 0)}
-                          variant="default"
-                          onChange={(e) => {
-                            const nextValue = Number(e.target.value);
-                            if (!Number.isNaN(nextValue)) {
-                              handleControlChange(control.name, clampStepperValue(nextValue, control));
-                            }
-                          }}
-                          className="w-12"
-                        />
-                        <Divider />
-                        <Group.Button
-                          variant="secondary"
-                          size="sm"
-                          isDisabled={Number(controlValues[control.name] ?? control.defaultValue ?? 0) >= getStepperBounds(control).max}
-                          onClick={() =>
-                            handleControlChange(
-                              control.name,
-                              clampStepperValue(
-                                Number(controlValues[control.name] ?? control.defaultValue ?? 0) + getStepperBounds(control).step,
-                                control
-                              )
-                            )
-                          }
-                        >
-                          <FaPlus size={10} />
-                        </Group.Button>
-                      </Group>
+                        }}
+                        variant="default"
+                        className="w-fit max-w-[5rem]"
+                      />
                     )}
                   </div>
                 );

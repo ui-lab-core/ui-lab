@@ -126,7 +126,7 @@ export interface SelectItemProps extends React.PropsWithChildren {
   /** Accessible text value used for search filtering and selection display; defaults to children string */
   textValue?: string
   /** Prevents the item from being selected or keyboard-focused */
-  isDisabled?: boolean
+  disabled?: boolean
   /** Additional CSS class names */
   className?: string
   /** Icon displayed to the left of the item label */
@@ -153,7 +153,7 @@ function resolveSelectItemStyles(styles: SelectItemStylesProp | undefined) {
 
 /** A single selectable option in the dropdown list */
 const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
-  ({ children, value, textValue, isDisabled = false, className, icon, description, styles: stylesProp }, ref) => {
+  ({ children, value, textValue, disabled: isDisabled = false, className, icon, description, styles: stylesProp }, ref) => {
     const {
       mode,
       onSelect,

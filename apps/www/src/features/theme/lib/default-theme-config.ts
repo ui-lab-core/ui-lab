@@ -15,7 +15,7 @@ import {
 const DEFAULT_THEME_MODE = "dark" as const;
 
 export const DEFAULT_LAYOUT_CONFIG: LayoutScaleConfig = {
-  radius: 0.9,
+  radius: 1.4,
   borderWidth: 1,
   spacingScale: 0.9,
 };

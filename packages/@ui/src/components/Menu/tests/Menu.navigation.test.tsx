@@ -9,7 +9,7 @@ import {
   pressEnter,
   pressEscape,
 } from '@/tests/utils'
-import { act } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
 
 describe('Menu.navigation', () => {
   describe('Arrow keys', () => {
@@ -142,7 +142,7 @@ describe('Menu.navigation', () => {
       const menu = document.querySelector('[role="menu"]') as HTMLElement
       await pressEscape(menu)
       
-      expect(document.querySelector('[role="menu"]')).not.toBeInTheDocument()
+      await waitFor(() => expect(document.querySelector('[role="menu"]')).not.toBeInTheDocument())
     })
   })
 })

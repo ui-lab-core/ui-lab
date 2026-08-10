@@ -235,7 +235,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
             )}
             <Button
               onClick={handleTrigger}
-              isDisabled={disabled || isLoading}
+              disabled={disabled || isLoading}
               variant={config.buttonVariant}
             >
               {labels.trigger}
@@ -258,7 +258,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                   size="sm"
                   variant="secondary"
                   onClick={handleCancel}
-                  isDisabled={isLoading}
+                  disabled={isLoading}
                 >
                   {cancelLabel}
                 </Button>
@@ -266,7 +266,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                   size="sm"
                   variant={config.confirmVariant}
                   onClick={handleConfirm}
-                  isDisabled={!canConfirm || !confirmValid || isLoading}
+                  disabled={!canConfirm || !confirmValid || isLoading}
                 >
                   {isLoading ? "..." : confirmLabel}
                 </Button>
@@ -333,7 +333,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
             {!isConfirming ? (
               <Button
                 onClick={handleTrigger}
-                isDisabled={disabled || isLoading}
+                disabled={disabled || isLoading}
                 variant={config.buttonVariant}
               >
                 {labels.trigger}
@@ -343,14 +343,14 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                 <Button
                   variant="secondary"
                   onClick={handleCancel}
-                  isDisabled={isLoading}
+                  disabled={isLoading}
                 >
                   {cancelLabel}
                 </Button>
                 <Button
                   variant={config.confirmVariant}
                   onClick={handleConfirm}
-                  isDisabled={!canConfirm || !confirmValid || isLoading}
+                  disabled={!canConfirm || !confirmValid || isLoading}
                 >
                   {isLoading ? "..." : confirmLabel}
                 </Button>

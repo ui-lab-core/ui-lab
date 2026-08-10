@@ -27,10 +27,10 @@ describe('List.controls', () => {
     expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true')
   })
 
-  it('passes isDisabled to the Switch', () => {
+  it('passes disabled to the Switch', () => {
     renderList(
       <List.Item value="1">
-        <List.Switch aria-label="Toggle" isDisabled />
+        <List.Switch aria-label="Toggle" disabled />
       </List.Item>
     )
     expect(screen.getByRole('switch')).toBeDisabled()
@@ -94,14 +94,14 @@ describe('List.controls', () => {
     expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument()
   })
 
-  it('List.Input wrapper has a constrained width class', () => {
+  it('List.Input wrapper identifies itself as a control for slot layout', () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Input />
       </List.Item>
     )
     const wrapper = container.querySelector(`.${styles.control}`)
-    expect(wrapper).toHaveClass('w-48')
+    expect(wrapper).toHaveAttribute('data-control', 'input')
   })
 
   // ─── List.Select ────────────────────────────────────────────────────────────
@@ -120,10 +120,10 @@ describe('List.controls', () => {
     expect(container.querySelector('[data-mode]')).toBeInTheDocument()
   })
 
-  it('passes isDisabled through to Select', () => {
+  it('passes disabled through to Select', () => {
     const { container } = renderList(
       <List.Item value="1">
-        <List.Select isDisabled>
+        <List.Select disabled>
           <Select.Trigger>Pick one</Select.Trigger>
           <Select.Content>
             <Select.Item key="a">Option A</Select.Item>

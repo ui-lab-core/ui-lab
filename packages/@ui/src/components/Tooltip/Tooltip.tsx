@@ -116,7 +116,7 @@ export interface TooltipProps {
   /** Milliseconds before the tooltip appears after hover */
   delay?: number;
   /** Whether the tooltip is disabled */
-  isDisabled?: boolean;
+  disabled?: boolean;
   /** Initial open state. For controlled usage, pass `state={{ open }}`. */
   open?: boolean;
   /** Controlled state. */
@@ -141,7 +141,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       position = "top",
       className,
       delay = DEFAULT_SHOW_DELAY_MS,
-      isDisabled = false,
+      disabled = false,
       open,
       state: controlledState,
       isOpen: legacyIsOpen,
@@ -180,7 +180,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         onOpenChangeRef.current?.(open);
       }, [setOpen]),
       delay,
-      isDisabled,
+      isDisabled: disabled,
     });
 
     const { tooltipProps: ariaTooltipProps } = useTooltip({}, state);
@@ -272,7 +272,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 
     useEffect(() => {
       const trigger = triggerRef.current;
-      if (!trigger || isDisabled) {
+      if (!trigger || disabled) {
         return;
       }
 
@@ -316,7 +316,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         trigger.removeEventListener("focusin", handleFocusIn);
         trigger.removeEventListener("focusout", handleFocusOut);
       };
-    }, [children, isDisabled, state]);
+    }, [children, disabled, state]);
 
     const trigger = triggerRef.current;
     const isTriggerVisible = !!(trigger && (trigger.offsetWidth > 0 || trigger.offsetHeight > 0));
@@ -327,7 +327,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         <span
           ref={triggerWrapperRef}
           className={cn(css.trigger, className, resolved.trigger)}
-          data-disabled={isDisabled ? "true" : undefined}
+          data-disabled={disabled ? "true" : undefined}
           data-hovered={isHovered ? "true" : "false"}
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
@@ -340,7 +340,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
           ref={mergedTriggerRef}
           className={cn(css.trigger, className, resolved.trigger)}
           style={{ display: "inline-block" }}
-          data-disabled={isDisabled ? "true" : undefined}
+          data-disabled={disabled ? "true" : undefined}
           data-hovered={isHovered ? "true" : "false"}
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}

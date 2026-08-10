@@ -75,7 +75,7 @@ describe('Button - Interactions', () => {
     const onClick = vi.fn()
     const user = userEvent.setup()
     render(
-      <Button isDisabled onClick={onClick}>
+      <Button disabled onClick={onClick}>
         Click me
       </Button>
     )
@@ -130,6 +130,24 @@ describe('Button - Component Specific', () => {
 
     expect(screen.getByTestId('shorthand-icon')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Hello' })).toBeInTheDocument()
+  })
+
+  it('infers icon size when a named icon is the only content', () => {
+    render(
+      <Button aria-label="Create draft" variant="secondary" icon={{ left: <svg data-testid="create-icon" /> }} />
+    )
+
+    const button = screen.getByRole('button', { name: 'Create draft' })
+    expect(button).toHaveClass('icon')
+    expect(button).not.toHaveClass('md')
+  })
+
+  it('keeps an explicit size for icon-only buttons', () => {
+    render(
+      <Button aria-label="Create draft" size="sm" icon={{ left: <svg data-testid="create-icon" /> }} />
+    )
+
+    expect(screen.getByRole('button', { name: 'Create draft' })).toHaveClass('icon', 'sm')
   })
 
   it('renders a hint as a secondary Badge', () => {
@@ -217,21 +235,21 @@ describe('Button - Component Specific', () => {
     expect(button).toHaveAttribute('data-focus-visible', 'true')
   })
 
-  it('respects isDisabled prop', () => {
-    render(<Button isDisabled>Disabled</Button>)
+  it('respects disabled prop', () => {
+    render(<Button disabled>Disabled</Button>)
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('data-disabled', 'true')
   })
 
   it('does not emit a forced hover state while disabled', () => {
-    render(<Button isDisabled data-hovered="true">Disabled</Button>)
+    render(<Button disabled data-hovered="true">Disabled</Button>)
 
     expect(screen.getByRole('button')).toHaveAttribute('data-hovered', 'false')
   })
 
-  it('renders disabled in SSR markup when isDisabled is true', () => {
-    const html = renderToString(<Button isDisabled aria-label="Send">Send</Button>)
+  it('renders disabled in SSR markup when disabled is true', () => {
+    const html = renderToString(<Button disabled aria-label="Send">Send</Button>)
 
     expect(html).toContain('disabled=""')
   })

@@ -23,6 +23,9 @@ export type {
   DateState,
   DateRangeState,
   DateRangeValue,
+  DateHeaderProps,
+  DateGridProps,
+  DateDayProps,
 } from "./Date"
 
 export type {

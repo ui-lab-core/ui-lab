@@ -9,6 +9,7 @@ import {
 import { stripLeadingImports } from '@ui-lab-core/library/code';
 import { Code } from '@/features/docs/components/code-display/code';
 import { useNearViewport } from '@/shared/hooks/use-near-viewport';
+import { Input } from 'ui-lab-components/input';
 import { Select } from 'ui-lab-components/select';
 import { Switch } from 'ui-lab-components/switch';
 
@@ -52,16 +53,7 @@ function getConstraintClass(
     : `${base} flex flex-col items-center justify-center`;
 }
 
-export function Playground({
-  id,
-  code,
-  light,
-  dark,
-  previewHeight,
-  constrain = true,
-  widthClass,
-  fillWidth,
-}: {
+export function Playground({ id, code, light, dark, previewHeight, constrain = true, widthClass, fillWidth }: {
   id: string;
   code: string;
   light: string;
@@ -84,7 +76,9 @@ export function Playground({
   const result = config?.factory?.(values, (updates) => {
     setValues((current) => ({ ...current, ...updates as Record<string, Value> }));
   });
-  const currentCode = stripLeadingImports(result?.code ?? code);
+  const currentCode = result?.files?.length
+    ? result.code
+    : stripLeadingImports(result?.code ?? code);
 
   const change = (name: string, value: Value) => {
     setValues((current) => ({ ...current, [name]: value }));
@@ -142,18 +136,23 @@ export function Playground({
                       state={{ checked: Boolean(values[control.name]) }}
                     />
                   </span>
-                ) : (
-                  <input
-                    className="min-h-9 rounded-sm border border-background-700 bg-background-800 px-2 text-foreground-100"
+                ) : control.type === 'stepper' ? (
+                  <Input
+                    className="w-full"
                     max={control.max}
                     min={control.min}
-                    onChange={(event) => change(
-                      control.name,
-                      control.type === 'stepper' ? event.target.valueAsNumber : event.target.value,
-                    )}
+                    onChange={(event) => change(control.name, Number(event.target.value))}
                     step={control.step}
-                    type={control.type === 'stepper' ? 'number' : 'text'}
+                    type="number"
+                    value={Number(values[control.name] ?? 0)}
+                    variant="default"
+                  />
+                ) : (
+                  <Input
+                    className="w-full"
+                    onChange={(event) => change(control.name, event.target.value)}
                     value={String(values[control.name] ?? '')}
+                    variant="default"
                   />
                 )}
               </label>
@@ -164,6 +163,8 @@ export function Playground({
       <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700 bg-background-950/40">
         <Code
           className="rounded-none border-0"
+          files={result?.files}
+          heading="Example.tsx"
           language="tsx"
           preHighlightedDark={currentCode === code ? dark : undefined}
           preHighlightedLight={currentCode === code ? light : undefined}
@@ -183,11 +184,13 @@ export function ExampleCode({ id, code }: { id: string; code: string }) {
     control.name,
     control.defaultValue ?? control.options?.[0]?.value ?? '',
   ]));
-  const result = config?.factory?.(values, () => {});
-  const currentCode = stripLeadingImports(result?.code ?? code);
+  const result = config?.factory?.(values, () => { });
+  const currentCode = result?.files?.length
+    ? result.code
+    : stripLeadingImports(result?.code ?? code);
 
   return (
-    <Code className="rounded-none border-0" language="tsx" showLineNumbers>
+    <Code className="rounded-none border-0" files={result?.files} heading="Example.tsx" language="tsx" showLineNumbers>
       {currentCode}
     </Code>
   );

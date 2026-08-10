@@ -582,7 +582,7 @@ describe('Group auto-focus behavior', () => {
 
     render(
       <Group>
-        <Group.Button isDisabled>-</Group.Button>
+        <Group.Button disabled>-</Group.Button>
         <Group.Input aria-label="Value" defaultValue="5" />
         <Group.Button>+</Group.Button>
       </Group>

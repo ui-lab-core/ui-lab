@@ -20,7 +20,7 @@ export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Variant class appended to the root element. Accepts any string. */
   variant?: string;
   /** When true, renders a dismiss button that hides the banner on click */
-  isDismissible?: boolean;
+  dismissible?: boolean;
   /** Called when the dismiss button is clicked */
   onDismiss?: () => void;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
@@ -91,7 +91,7 @@ const BannerRoot = React.forwardRef<HTMLDivElement, BannerProps>(
       className,
       styles,
       variant = "note",
-      isDismissible = false,
+      dismissible = false,
       onDismiss,
       children,
       ...props
@@ -125,7 +125,7 @@ const BannerRoot = React.forwardRef<HTMLDivElement, BannerProps>(
         <div className={cn("content", css.content, resolved.content)}>
           {children}
         </div>
-        {isDismissible && (
+        {dismissible && (
           <button
             onClick={handleDismiss}
             className={cn("dismiss", css.dismiss, resolved.dismiss)}

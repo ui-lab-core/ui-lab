@@ -44,7 +44,7 @@ export const ColorInput = React.forwardRef<
   return (
     <Group
       ref={ref}
-      isDisabled={disabled}
+      disabled={disabled}
       data-size={size}
       className={cn("input-group", "w-full", styles["input-group"], groupClassName)}
     >
@@ -65,7 +65,7 @@ export const ColorInput = React.forwardRef<
             handleFormatChange(key as "hex" | "rgb");
           }
         }}
-        isDisabled={disabled}
+        disabled={disabled}
         className={cn("format", styles["format"], formatClassName)}
       >
         <Select.Trigger aria-label="Color format">

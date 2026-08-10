@@ -316,7 +316,7 @@ export interface ExpandProps
   /** Alias for onExpandedChange */
   onChange?: (isExpanded: boolean) => void;
   /** Whether the expand is disabled */
-  isDisabled?: boolean;
+  disabled?: boolean;
   /** Compound sub-components or content nodes */
   children?: React.ReactNode;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
@@ -334,7 +334,7 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
       defaultExpanded = false,
       onExpandedChange,
       onChange,
-      isDisabled = false,
+      disabled = false,
       children,
       styles: stylesProp,
       ...props
@@ -371,10 +371,10 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
     const contextValue = React.useMemo<ExpandContextValue>(
       () => ({
         state,
-        isDisabled,
+        isDisabled: disabled,
         resolvedStyles,
       }),
-      [state, isDisabled, resolvedStyles],
+      [state, disabled, resolvedStyles],
     );
 
     return (
@@ -386,7 +386,7 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
             className={cn("expand", styles.expand, className, resolvedStyles.root)}
             data-selected={state.isSelected ? "true" : undefined}
             data-expanded={state.isSelected ? "true" : undefined}
-            data-disabled={isDisabled ? "true" : undefined}
+            data-disabled={disabled ? "true" : undefined}
             {...props}
           >
             {title !== undefined ? (

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
 import { useFloating } from "../../hooks/useFloat/react/useFloating"
+import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation"
 import { flip } from "../../hooks/useFloat/core/middleware/flip"
 import { offset } from "../../hooks/useFloat/core/middleware/offset"
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
@@ -296,6 +297,13 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
     const showContent = isOpen && isPositioned
 
+    const { animationStyles } = useFloatAnimation({
+      open: isOpen,
+      isPositioned,
+      placement,
+      skipExitAnimation: true,
+    })
+
     if (!mounted) return null
 
     const resolved = resolveSelectContentStyles(stylesProp);
@@ -398,6 +406,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             onKeyDown={handleKeyDown}
             style={{
               outline: 'none',
+              ...animationStyles,
             }}
           >
             {panelContent}

@@ -96,7 +96,7 @@ function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             actions={isSubmitted
               ? []
               : [
-                <Button key="join" type="submit" variant="primary" size="sm" disabled={isSubmitting} isDisabled={isSubmitting}>
+                <Button key="join" type="submit" variant="primary" size="sm" disabled={isSubmitting}>
                   {isSubmitting ? 'Joining...' : 'Join waitlist'}
                 </Button>,
               ]}

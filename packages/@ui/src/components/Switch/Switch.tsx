@@ -47,7 +47,7 @@ export interface SwitchProps
   defaultSelected?: boolean;
 
   /** Whether the switch is disabled */
-  isDisabled?: boolean;
+  disabled?: boolean;
   /** Size of the switch */
   size?: "default" | "sm";
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
@@ -59,7 +59,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
   ({
     className,
     styles: stylesProp,
-    isDisabled = false,
+    disabled = false,
     checked,
     state: controlledState,
     isSelected: legacySelected,
@@ -94,7 +94,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
 
     const { inputProps, isSelected } = useSwitch(
       {
-        isDisabled,
+        isDisabled: disabled,
         ...(resolvedAriaLabel && { "aria-label": resolvedAriaLabel }),
         ...(ariaLabelledby && { "aria-labelledby": ariaLabelledby }),
       },
@@ -102,7 +102,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       inputRef
     );
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
-    const { hoverProps, isHovered } = useHover({ isDisabled });
+    const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
 
     const { indicatorProps } = useFocus({
       scopeRef: rootRef,
@@ -135,7 +135,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         )}
         data-switch-focus-surface="true"
         data-selected={isSelected || undefined}
-        data-disabled={isDisabled || undefined}
+        data-disabled={disabled || undefined}
         data-focused={isFocused ? "true" : "false"}
         data-focus-visible={isFocusVisible ? "true" : "false"}
         data-hovered={isHovered || undefined}

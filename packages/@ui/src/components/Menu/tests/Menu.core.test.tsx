@@ -4,6 +4,7 @@ import { createMockMenuItems } from '@/tests/utils'
 import { Menu } from '../'
 import { Button } from '@/components/Button'
 import * as React from 'react'
+import { waitFor } from '@testing-library/react'
 
 describe('Menu.core', () => {
   describe('Trigger types', () => {
@@ -97,7 +98,7 @@ describe('Menu.core', () => {
       await selectMenuItem(items[0].label)
       
       const content = document.querySelector('[role="menu"]')
-      expect(content).not.toBeInTheDocument()
+      await waitFor(() => expect(content).not.toBeInTheDocument())
     })
   })
 

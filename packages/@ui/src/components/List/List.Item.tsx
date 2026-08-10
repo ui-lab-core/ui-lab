@@ -179,11 +179,15 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
     const trailingStart = firstTrailingIndex >= 0 ? firstTrailingIndex : itemChildren.length;
     const contentCount = Math.max(0, trailingStart - leadingCount);
     const trailingCount = itemChildren.length - trailingStart + (actions?.length ? 1 : 0);
+    const hasTrailing = trailingCount > 0;
+    const hasLeading = leadingCount > 0;
+    const hasContent = contentCount > 0;
     const layoutColumns = hasStructuralSlots
       ? [
-          leadingCount > 0 ? `repeat(${leadingCount}, auto)` : '',
-          contentCount > 0 ? `repeat(${contentCount}, minmax(0, 1fr))` : '',
-          trailingCount > 0 ? `repeat(${trailingCount}, auto)` : '',
+          hasLeading ? `repeat(${leadingCount}, auto)` : '',
+          !hasContent && hasTrailing ? 'minmax(0, 1fr)' : '',
+          hasContent ? `repeat(${contentCount}, minmax(0, 1fr))` : '',
+          hasTrailing ? `repeat(${trailingCount}, auto)` : '',
         ].filter(Boolean).join(' ')
       : undefined;
     const isFocusWithinRow = React.useCallback((element: EventTarget | null) => (

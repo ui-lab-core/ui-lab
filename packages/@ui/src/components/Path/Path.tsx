@@ -87,7 +87,7 @@ export interface PathItemProps {
   /** Whether this item represents the current page. */
   isCurrent?: boolean;
   /** Whether the item is non-interactive. */
-  isDisabled?: boolean;
+  disabled?: boolean;
   /** Additional CSS class names applied to the item root. */
   className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
@@ -112,7 +112,7 @@ const PathItem = React.forwardRef<HTMLElement, PathItemProps>(
       onPress,
       children,
       isCurrent = false,
-      isDisabled = false,
+      disabled = false,
       className,
       styles,
     },
@@ -120,7 +120,7 @@ const PathItem = React.forwardRef<HTMLElement, PathItemProps>(
   ) => {
     const itemRef = React.useRef<HTMLElement>(null);
     const mergedRef = useMergeRefs(ref, itemRef);
-    const isInteractive = !isCurrent && !isDisabled && Boolean(href || onPress);
+    const isInteractive = !isCurrent && !disabled && Boolean(href || onPress);
     const [isPressed, setIsPressed] = React.useState(false);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: !isInteractive });
@@ -199,7 +199,7 @@ const PathItem = React.forwardRef<HTMLElement, PathItemProps>(
 
     const stateProps = {
       "data-selected": isCurrent ? "true" : undefined,
-      "data-disabled": isDisabled ? "true" : undefined,
+      "data-disabled": disabled ? "true" : undefined,
       "data-focused": isFocused ? "true" : undefined,
       "data-focus-visible": isFocusVisible ? "true" : undefined,
       "data-hovered": isHovered ? "true" : undefined,
@@ -209,7 +209,7 @@ const PathItem = React.forwardRef<HTMLElement, PathItemProps>(
     };
 
     const surfaceClassName = cn("link", css.link, resolved.link);
-    const focusableTabIndex = isDisabled ? -1 : isCurrent ? 0 : undefined;
+    const focusableTabIndex = disabled ? -1 : isCurrent ? 0 : undefined;
 
     return (
       <React.Fragment>

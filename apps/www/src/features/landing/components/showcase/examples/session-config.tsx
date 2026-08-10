@@ -72,7 +72,7 @@ function Stepper({
       <Group.Button
         variant="secondary"
         size="sm"
-        isDisabled={value <= min}
+        disabled={value <= min}
         onClick={() => onChange(Math.max(min, value - step))}
       >
         <FaMinus size={10} />
@@ -93,7 +93,7 @@ function Stepper({
       <Group.Button
         variant="secondary"
         size="sm"
-        isDisabled={value >= max}
+        disabled={value >= max}
         onClick={() => onChange(Math.min(max, value + step))}
       >
         <FaPlus size={10} />

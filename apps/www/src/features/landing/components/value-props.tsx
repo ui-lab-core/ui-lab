@@ -34,7 +34,7 @@ function AgentPreview() {
       <div className="w-full max-w-72 overflow-hidden rounded-md border border-background-700 bg-background-800 font-mono text-xs leading-relaxed">
         <div className="flex items-center gap-2 border-b border-background-700 px-3 py-2 text-foreground-400">
           <span className="size-1.5 rounded-full bg-success-500" />
-          ui-lab-mcp
+          ui-lab
         </div>
         <div className="flex flex-col gap-1.5 px-3 py-3">
           <span className="text-foreground-400"><span className="text-foreground-200">search_components</span>("date picker")</span>

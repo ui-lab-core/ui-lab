@@ -65,7 +65,7 @@ describe('List.core', () => {
     expect(list).toHaveStyle({ '--list-gap-step': '6' })
   })
 
-  it('defaults to no gap when gap is omitted', () => {
+  it('does not set an inline gap override when gap is omitted', () => {
     const container = renderListWithItems([])
     const list = container.querySelector('[role="listbox"]')
 

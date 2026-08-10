@@ -598,7 +598,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled })
     const { pressProps, isPressed } = usePress({
       isDisabled: disabled,
-      onPress: handlePress,
+      onPressStart: handlePress,
     })
     const triggerProps = mergeProps(
       asElementProps<"button">(focusProps),

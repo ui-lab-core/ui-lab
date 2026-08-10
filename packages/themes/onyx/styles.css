@@ -62,12 +62,12 @@
     --background-border: var(--background-600);
   }
 
-  .button.sm { @apply px-2.5 py-1; }
-  .button.md { @apply px-5 py-2; }
-  .button.lg { @apply px-3.5 py-2.5; }
+  .button.sm { --padding-inline: calc(var(--spacing) * 2.5); --padding-block: calc(var(--spacing) * 1); }
+  .button.md { --padding-inline: calc(var(--spacing) * 5); --padding-block: calc(var(--spacing) * 2); }
+  .button.lg { --padding-inline: calc(var(--spacing) * 3.5); --padding-block: calc(var(--spacing) * 2.5); }
 
   .button[data-hint="true"] {
-    @apply pr-1;
+    --padding-inline-end: calc(var(--spacing) * 1);
   }
 
   .gallery > .item {
@@ -164,6 +164,7 @@
   .group {
     --background: var(--background-950);
     --background-border: var(--background-700);
+    --backdrop: color-mix(in srgb, var(--background-800) 35%, var(--background-950));
   }
 
   .group > .input,
@@ -199,7 +200,7 @@
   .group > .select > .value > .button,
   .group > .item > .select > .value > .button {
     height: 100%;
-    padding-inline: calc(var(--spacing) * 3) !important;
+    --padding-inline: calc(var(--spacing) * 3);
     border-radius: var(--background-inner-radius) 0 0
       var(--background-inner-radius);
   }

@@ -116,7 +116,7 @@ export async function ComponentPage({
         {examples.slice(1).map((example) => (
           <article className={css.section} id={example.id} key={example.id}>
             {!isInteractivePreview(example.id) ? (
-              <div className="flex justify-between space-y-2 border-b border-background-700 pb-5">
+              <div className="flex justify-between space-y-2 border-b border-background-700 pb-5 mb-5">
                 <ExampleReference id={example.title} />
                 <p className="text-sm max-w-[45ch] text-foreground-400">{example.description}</p>
               </div>

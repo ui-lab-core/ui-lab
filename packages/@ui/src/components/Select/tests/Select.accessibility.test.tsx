@@ -119,7 +119,7 @@ describe('Select.accessibility', () => {
 
     it('disabled trigger has aria-disabled attribute', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { isDisabled: true })
+      const container = renderSelectWithItems(items, { disabled: true })
       const trigger = getSelectTrigger(container)
 
       expect(trigger).toHaveAttribute('aria-disabled')

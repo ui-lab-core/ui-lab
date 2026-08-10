@@ -93,14 +93,6 @@
   --font-interface: "Work Sans Variable", system-ui, sans-serif;
 }
 
-/* Static layout baseline (spacing/radius/border-width). Generated from the
-   default theme config via computeStyleVariables (spacingScale 0.9 / radius
-   0.9 / borderWidth 1 — see DEFAULT_LAYOUT_CONFIG) — regenerate there if the
-   defaults change. These belong in @theme (unlike the typography block above)
-   because Tailwind needs --spacing, --radius-*, and --border-width-* registered
-   there to drive its own dynamic utility scales — this mirrors the @theme
-   block generateThemeSetupFiles() produces for downloaded projects, so the
-   showcase renders identically to a copy-pasted bundle at default settings. */
 @theme {
   --font-body: var(--font-interface);
   --font-heading: var(--font-interface);
@@ -127,13 +119,13 @@
   --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
   --spacing: clamp(0.180rem, 2.25vw, 0.225rem);
 
-  --radius-xs: 0.225rem;
-  --radius-sm: 0.450rem;
-  --radius-base: 0.900rem;
-  --radius-md: 1.350rem;
-  --radius-lg: 2.250rem;
-  --radius-xl: 3.375rem;
-  --radius-2xl: 4.500rem;
+  --radius-xs: 0.425rem;
+  --radius-sm: 0.650rem;
+  --radius-base: 1.100rem;
+  --radius-md: 1.550rem;
+  --radius-lg: 2.450rem;
+  --radius-xl: 3.575rem;
+  --radius-2xl: 4.700rem;
   --radius-full: 9999px;
   --radius-ratio: 2.25;
 
@@ -146,7 +138,7 @@
   --border-width-8: 8px;
 
   --header-height: 3.50rem;
-  --page-width: 1350px;
+  --page-width: 1400px;
   --content-width: 850px;
   --logo-width: 250px;
   --banner-height: 52px;
@@ -261,6 +253,10 @@ body {
 }
 p {
   font-weight: 500;
+}
+
+button .icon {
+  @apply p-2
 }
 
 article {

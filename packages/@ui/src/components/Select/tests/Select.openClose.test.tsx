@@ -162,7 +162,7 @@ describe('Select.openClose', () => {
   describe('disabled state', () => {
     it('disabled trigger does not open on click', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { isDisabled: true })
+      const container = renderSelectWithItems(items, { disabled: true })
       const trigger = getSelectTrigger(container)
 
       await clickElement(trigger)
@@ -172,7 +172,7 @@ describe('Select.openClose', () => {
 
     it('disabled trigger does not open on hover', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'hover', isDisabled: true })
+      const container = renderSelectWithItems(items, { trigger: 'hover', disabled: true })
       const trigger = getSelectTrigger(container)
 
       await hoverElement(trigger)
@@ -183,7 +183,7 @@ describe('Select.openClose', () => {
 
     it('disabled trigger has aria-disabled attribute', async () => {
       const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { isDisabled: true })
+      const container = renderSelectWithItems(items, { disabled: true })
       const trigger = getSelectTrigger(container)
 
       expect(trigger).toHaveAttribute('aria-disabled')

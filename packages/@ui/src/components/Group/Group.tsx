@@ -43,7 +43,7 @@ export interface GroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   /** Controls the gap between group items */
   spacing?: Spacing
   /** Whether all items in the group are non-interactive */
-  isDisabled?: boolean
+  disabled?: boolean
   /** The currently active button value for toggle group behavior */
   value?: string
   /** Called when a button with a value prop is pressed */
@@ -190,7 +190,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
       orientation = "horizontal",
       spacing = "none",
       children,
-      isDisabled = false,
+      disabled = false,
       value,
       onChange,
       styles: stylesProp,
@@ -310,7 +310,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
       isInGroup: true,
       groupOrientation: orientation,
       groupSpacing: spacing,
-      groupIsDisabled: isDisabled,
+      groupIsDisabled: disabled,
       groupValue: value,
       groupOnChange: onChange,
       groupVariant: variant,
@@ -353,8 +353,8 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
               className
             )}
             role="group"
-            aria-disabled={isDisabled || undefined}
-            data-disabled={isDisabled ? "true" : undefined}
+            aria-disabled={disabled || undefined}
+            data-disabled={disabled ? "true" : undefined}
             onKeyDown={handleGroupKeyDown}
             {...props}
           >
@@ -414,7 +414,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
     const mergedRef = useMergeRefs(buttonRef, ref)
 
     // Merge disabled state from group context
-    const isDisabled = restProps.isDisabled ?? context.groupIsDisabled
+    const isDisabled = restProps.disabled ?? context.groupIsDisabled
 
     // Derive active and onPress from toggle group context when value is provided
     const isActive = value !== undefined && context.groupValue !== undefined ? value === context.groupValue : active
@@ -455,7 +455,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
       onPointerDown: handlePointerDown,
       onMouseDown: handleMouseDown,
       variant: buttonVariant,
-      isDisabled,
+      disabled: isDisabled,
       "data-focus-surface": "true",
       "data-selected": isActive ? "true" : "false",
       className: cn(
@@ -573,13 +573,13 @@ interface GroupSelectProps extends SelectProps<any> { }
 
 /** Select dropdown integrated into the button group */
 const GroupSelect = React.forwardRef<HTMLDivElement, GroupSelectProps>(
-  ({ className, isDisabled, ...props }, ref) => {
+  ({ className, disabled: disabledProp, ...props }, ref) => {
     const context = useGroupContext()
     const selectRef = React.useRef<HTMLDivElement>(null)
     const mergedRef = useMergeRefs(selectRef, ref)
 
     // Merge disabled state from group context
-    const disabled = isDisabled ?? context.groupIsDisabled
+    const disabled = disabledProp ?? context.groupIsDisabled
 
     React.useEffect(() => {
       context.registerFocusableSurface?.(selectRef)
@@ -592,7 +592,7 @@ const GroupSelect = React.forwardRef<HTMLDivElement, GroupSelectProps>(
       <Select
         ref={mergedRef}
         {...props}
-        isDisabled={disabled}
+        disabled={disabled}
         data-focus-surface="true"
         className={cn("select", context.groupVariant, css.select, context.groupStyles.select, className)}
       />
@@ -606,10 +606,10 @@ interface GroupExpandProps extends ExpandProps { }
 
 /** Expand primitive integrated into the group */
 const GroupExpand = React.forwardRef<HTMLDivElement, GroupExpandProps>(
-  ({ className, isDisabled, styles: stylesProp, ...props }, ref) => {
+  ({ className, disabled: disabledProp, styles: stylesProp, ...props }, ref) => {
     const context = useGroupContext()
     const surfaceRef = React.useRef<HTMLDivElement>(null)
-    const disabled = isDisabled ?? context.groupIsDisabled
+    const disabled = disabledProp ?? context.groupIsDisabled
 
     React.useEffect(() => {
       context.registerFocusableSurface?.(surfaceRef)
@@ -629,7 +629,7 @@ const GroupExpand = React.forwardRef<HTMLDivElement, GroupExpandProps>(
           {...props}
           className={className}
           styles={stylesProp}
-          isDisabled={disabled}
+          disabled={disabled}
         />
       </div>
     )

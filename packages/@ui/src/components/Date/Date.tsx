@@ -403,7 +403,7 @@ Date.displayName = "Date"
 /**
  * Calendar Header component
  */
-interface DateHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DateHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Additional CSS class for the header */
   className?: string;
 }
@@ -493,7 +493,7 @@ DateDayHeaders.displayName = "Date.DayHeaders"
 /**
  * Calendar Grid component
  */
-interface DateGridProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DateGridProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Calendar grid rows, each containing 7 Date objects */
   grid: Date[][]
   /** Classes applied to each individual date cell (DateDay component) */
@@ -516,7 +516,7 @@ DateGrid.displayName = "Date.Grid"
 /**
  * Calendar Day component
  */
-interface DateDayProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface DateDayProps extends React.HTMLAttributes<HTMLButtonElement> {
   /** The date this cell represents */
   date: Date
 }

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
 import { useFloating } from "../../hooks/useFloat/react/useFloating"
+import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation"
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
 import { useHover } from "@react-aria/interactions"
 import { ChevronRight } from "lucide-react"
@@ -338,19 +339,21 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
       },
     })
 
+    // Effective open state derives synchronously from the parent's isOpen/focusedKey so it
+    // lands in the same render as the parent's change. Relaying it through submenuContext.isOpen
+    // via an effect instead would land a render late, causing the floating node to unmount and
+    // remount before the exit animation ever applies, which skips the CSS transition entirely.
     const parentSub = submenuContext?.parentSubmenuContext
     const effectiveParentIsOpen = parentSub?.isOpen ?? rootContext.isOpen
     const effectiveParentFocusedKey = parentSub?.focusedKey ?? rootContext.focusedKey
+    const effectiveOpen = !!submenuContext?.isOpen && effectiveParentIsOpen && effectiveParentFocusedKey === submenuContext?.triggerKey
 
     React.useEffect(() => {
       if (!submenuContext) return
-      if (!effectiveParentIsOpen && submenuContext.isOpen) {
+      if (!effectiveOpen && submenuContext.isOpen) {
         submenuContext.setIsOpen(false)
       }
-      if (submenuContext.isOpen && effectiveParentFocusedKey !== submenuContext.triggerKey) {
-        submenuContext.setIsOpen(false)
-      }
-    }, [effectiveParentIsOpen, effectiveParentFocusedKey, submenuContext])
+    }, [effectiveOpen, submenuContext])
 
     React.useEffect(() => {
       setMounted(true)
@@ -478,14 +481,23 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
       visibleKeys: new Set((submenuContext?.items ?? []).map(i => i.key)),
     }), [rootContext, submenuContext, stableRegisterItem, stableUnregisterItem])
 
+    const { isExiting, animationStyles } = useFloatAnimation({
+      open: effectiveOpen,
+      isPositioned,
+      placement,
+      // Submenus animate closed while the root select stays open, but if the root itself is
+      // closing (e.g. an outside click), every level should disappear instantly together.
+      skipExitAnimation: !rootContext.isOpen,
+    })
+
     if (!mounted || !submenuContext) return null
 
-    const showContent = submenuContext.isOpen && isPositioned
+    const showContent = effectiveOpen && isPositioned
     const resolved = resolveSelectSubContentStyles(stylesProp)
 
     return createPortal(
       <>
-        {showContent && (
+        {(showContent || isExiting) && (
           <div
             ref={mergedFloatingRef}
             className={cn('select', styles["sub-content-root"], resolved.overlay)}
@@ -506,6 +518,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
               onKeyDown={handleKeyDown}
               style={{
                 outline: "none",
+                ...animationStyles,
               }}
               {...asElementProps<"div">(hoverProps)}
             >

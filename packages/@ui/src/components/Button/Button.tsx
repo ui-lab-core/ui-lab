@@ -69,7 +69,7 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   /** Size class appended to the root element. Accepts any string. */
   size?: ButtonSize;
   /** Disables interaction and applies disabled styling */
-  isDisabled?: boolean;
+  disabled?: boolean;
   /** React Aria press handler — preferred over onClick for accessibility */
   onPress?: (e: { target: EventTarget | null }) => void;
   /** Icon slots rendered before (left) or after (right) the button label */
@@ -110,11 +110,23 @@ function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
   return (css as unknown as Record<string, string | undefined>)[`icon-${size}`];
 }
 
+function hasRenderableContent(value: React.ReactNode): boolean {
+  if (Array.isArray(value)) {
+    return value.some(hasRenderableContent);
+  }
+
+  if (value === null || value === undefined || typeof value === 'boolean') {
+    return false;
+  }
+
+  return typeof value === 'string' ? value.trim().length > 0 : true;
+}
+
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  ({ className, styles, variant = "primary", size, children, onClick, onPress, isDisabled, disabled, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
+  ({ className, styles, variant = "primary", size, children, onClick, onPress, disabled = false, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
     const mergedRef = useMergeRefs(ref, buttonRef);
-    const isButtonDisabled = isDisabled ?? disabled ?? false;
+    const isButtonDisabled = disabled;
     const [isPressed, setIsPressed] = React.useState(false);
     const isAnchor = !!href;
 
@@ -150,11 +162,12 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const isVisualHovered = !isButtonDisabled && (forcedHovered === "true" || (forcedHovered !== "false" && isHovered));
     const isVisualPressed = !isButtonDisabled && isPressed;
 
-    const actualSize = size ?? "md";
-    const isIconOnly = !children && !!icon;
-
     const resolved = resolveButtonStyles(styles);
     const resolvedIcon = resolveButtonIcon(icon);
+    const isIconOnly =
+      !hasRenderableContent(children) &&
+      (hasRenderableContent(resolvedIcon?.left) || hasRenderableContent(resolvedIcon?.right));
+    const actualSize = size ?? (isIconOnly ? "icon" : "md");
 
     const iconSizeClassName = resolveButtonIconSizeClass(actualSize);
     const iconSlotClassName = isIconOnly ? "icon" : undefined;
@@ -167,6 +180,15 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       css.button,
       className,
       resolved.root.className
+    );
+
+    const content = (
+      <span className={css.surface}>
+        {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
+        {children}
+        {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
+        {hasHint(hint) && <Badge variant="secondary" className={cn('hint', css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
+      </span>
     );
 
     const { targetProps } = useFocus({ mode: "target" });
@@ -192,10 +214,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           data-hint={hasHint(hint) ? "true" : undefined}
           style={{ ...resolved.root.style, ...props.style }}
         >
-          {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
-          {children}
-          {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
-          {hasHint(hint) && <Badge variant="secondary" className={cn(css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
+          {content}
         </a>
       );
     }
@@ -218,10 +237,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         data-hint={hasHint(hint) ? "true" : undefined}
         style={{ ...resolved.root.style, ...props.style }}
       >
-        {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
-        {children}
-        {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
-        {hasHint(hint) && <Badge variant="secondary" className={cn('hint', css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
+        {content}
       </button>
     );
   }
