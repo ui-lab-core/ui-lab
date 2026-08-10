@@ -31,7 +31,7 @@ import { guidesAdapter } from './adapters/guides-adapter.js';
 async function createServer(): Promise<McpServer> {
   const mcp = new McpServer(
     {
-      name: 'ui-lab-mcp',
+      name: 'ui-lab',
       version: '0.1.0',
     },
     {
