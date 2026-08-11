@@ -43,7 +43,7 @@ function resolveTooltipStyles(styles: ChartTooltipStylesProp | undefined) {
 /** Floating readout of every series' value at the active row */
 const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
   ({ className, children, styles: stylesProp }, ref) => {
-    const { activeIndex, data, series, xValues, xPositions, plot, formatX } = useChartContext()
+    const { activeIndex, data, series, xValues, xPositions, plot, yScale, formatX } = useChartContext()
     const resolved = resolveTooltipStyles(stylesProp)
     const row = activeIndex == null ? null : data[activeIndex]
 
@@ -59,17 +59,23 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
     let card: React.ReactNode = null
     if (activeIndex != null && row != null) {
       const position = xPositions[activeIndex] ?? plot.x
-      const flip = position > plot.x + plot.width / 2
+      const activeYs = series
+        .map(s => s.getValue(row))
+        .filter((value): value is number => value != null)
+        .map(value => yScale(value))
+      // Anchor to the topmost point so the card consistently sits above the data.
+      const anchorY = activeYs.length ? Math.min(...activeYs) : plot.y + 8
       card = (
         <div
           ref={ref}
           className={cn('tooltip', styles.tooltip, className, resolved.root)}
           aria-hidden="true"
-          data-placement={flip ? "left" : "right"}
+          data-placement="top-right"
           style={{
-            left: position,
-            top: plot.y + 8,
-            transform: flip ? "translateX(calc(-100% - 12px))" : "translateX(12px)",
+            left: 0,
+            top: 0,
+            // Anchor the card's bottom-left corner just above-and-right of the point.
+            transform: `translate(${position}px, ${anchorY}px) translate(12px, calc(-100% - 12px))`,
           }}
         >
           {typeof children === "function" ? (

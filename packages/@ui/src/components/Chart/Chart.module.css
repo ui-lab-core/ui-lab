@@ -132,6 +132,14 @@
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
+    transition: transform var(--chart-tooltip-move-duration, 200ms)
+      var(--chart-tooltip-move-easing, var(--ease-snappy-pop, ease-out));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tooltip {
+      transition: none;
+    }
   }
 
   .header {
