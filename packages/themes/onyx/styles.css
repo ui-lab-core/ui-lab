@@ -66,6 +66,11 @@
   .button.md { --padding-inline: calc(var(--spacing) * 5); --padding-block: calc(var(--spacing) * 2); }
   .button.lg { --padding-inline: calc(var(--spacing) * 3.5); --padding-block: calc(var(--spacing) * 2.5); }
 
+  .button.icon {
+    --padding-inline: calc( var( --spacing) * 0.35);
+    --padding-block: calc( var( --spacing) * 0.35);
+  }
+
   .button[data-hint="true"] {
     --padding-inline-end: calc(var(--spacing) * 1);
   }
@@ -935,6 +940,7 @@
   .button.ghost {
     --background: transparent;
     --background-border: transparent;
+    --backdrop: transparent;
     --foreground: var(--foreground-300);
   }
 

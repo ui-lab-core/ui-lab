@@ -221,7 +221,7 @@ export default function Header({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="p-2 text-foreground-300 transition-colors hover:text-foreground-200"
+                  className="text-foreground-300 transition-colors hover:text-foreground-200"
                   aria-label="Open command palette"
                   onClick={() => setIsCommandPaletteOpen(true)}
                 >

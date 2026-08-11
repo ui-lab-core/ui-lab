@@ -56,9 +56,10 @@ export function HeaderMenu() {
             variant="ghost"
             size="icon"
             aria-label="Open menu"
-            className="p-2 text-foreground-300 transition-colors hover:text-foreground-200"
+            icon={<FaBars size={16} />}
+            className="text-foreground-300 transition-colors hover:text-foreground-200"
           >
-            <FaBars size={16} />
+
           </Button>
         </Menu.Trigger>
         <Menu.Content

@@ -122,6 +122,21 @@ function hasRenderableContent(value: React.ReactNode): boolean {
   return typeof value === 'string' ? value.trim().length > 0 : true;
 }
 
+// Text (strings/numbers) makes a button label-bearing; React elements alone
+// (icons) do not. Used to treat an icon passed as `children` the same as one
+// passed through the `icon` prop.
+function hasTextContent(value: React.ReactNode): boolean {
+  if (Array.isArray(value)) {
+    return value.some(hasTextContent);
+  }
+
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
+  }
+
+  return typeof value === 'number';
+}
+
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   ({ className, styles, variant = "primary", size, children, onClick, onPress, disabled = false, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
@@ -165,12 +180,17 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const resolved = resolveButtonStyles(styles);
     const resolvedIcon = resolveButtonIcon(icon);
     const isIconOnly =
-      !hasRenderableContent(children) &&
-      (hasRenderableContent(resolvedIcon?.left) || hasRenderableContent(resolvedIcon?.right));
+      !hasTextContent(children) &&
+      (hasRenderableContent(children) ||
+        hasRenderableContent(resolvedIcon?.left) ||
+        hasRenderableContent(resolvedIcon?.right));
     const actualSize = size ?? (isIconOnly ? "icon" : "md");
 
     const iconSizeClassName = resolveButtonIconSizeClass(actualSize);
     const iconSlotClassName = isIconOnly ? "icon" : undefined;
+    // An icon passed through `children` (rather than the `icon` prop) still
+    // needs the `.icon` slot wrapper so slot-scoped styling applies to it.
+    const wrapChildrenAsIcon = isIconOnly && hasRenderableContent(children);
 
     const buttonClassName = cn(
       "button",
@@ -185,7 +205,9 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const content = (
       <span className={css.surface}>
         {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
-        {children}
+        {wrapChildrenAsIcon
+          ? <span className={cn(iconSlotClassName, iconSizeClassName)}>{children}</span>
+          : children}
         {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
         {hasHint(hint) && <Badge variant="secondary" className={cn('hint', css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
       </span>
