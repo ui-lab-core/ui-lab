@@ -52,6 +52,10 @@ export interface GalleryProps extends React.HTMLAttributes<HTMLDivElement> {
   columns?: GridColumns | ResponsiveColumns
   /** Gap between gallery items */
   gap?: GridGap | number | string
+  /** Override horizontal (column) gap between gallery items */
+  "gap-x"?: GridGap | number | string
+  /** Override vertical (row) gap between gallery items */
+  "gap-y"?: GridGap | number | string
   /** Number of rows in the gallery grid */
   rows?: GalleryRows
   /** Whether to enable container-query-based responsive columns */
@@ -175,6 +179,8 @@ const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
     {
       columns = 3,
       gap = "md",
+      "gap-x": gapX,
+      "gap-y": gapY,
       rows,
       responsive,
       className,
@@ -192,6 +198,8 @@ const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
           ref={ref}
           columns={mapColumnsToGrid(columns)}
           gap={mapGapToGrid(gap)}
+          gap-x={gapX !== undefined ? mapGapToGrid(gapX) : undefined}
+          gap-y={gapY !== undefined ? mapGapToGrid(gapY) : undefined}
           rows={rows}
           containerQueryResponsive={responsive}
           className={cn("gallery", className, resolved.root)}

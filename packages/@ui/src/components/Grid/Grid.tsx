@@ -78,6 +78,10 @@ export interface GridProps
   rowGap?: GridGap;
   /** Override gap between columns only */
   columnGap?: GridGap;
+  /** Override horizontal (column) gap. Alias for `columnGap`. */
+  "gap-x"?: GridGap;
+  /** Override vertical (row) gap. Alias for `rowGap`. */
+  "gap-y"?: GridGap;
   /** Horizontal alignment of items within their cells */
   justifyItems?: GridJustifyItems;
   /** Vertical distribution of the grid rows within its container */
@@ -155,6 +159,8 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       w,
       rowGap,
       columnGap,
+      "gap-x": gapX,
+      "gap-y": gapY,
       justifyItems = "stretch",
       alignContent = "start",
       autoFlow = "row",
@@ -232,8 +238,10 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       vars["--grid-gap-step"] = String(gapToStep(gap as GridGap));
     }
 
-    if (rowGap !== undefined) vars["--grid-row-gap-step"] = String(gapToStep(rowGap));
-    if (columnGap !== undefined) vars["--grid-col-gap-step"] = String(gapToStep(columnGap));
+    const rowGapVal = rowGap ?? gapY;
+    const colGapVal = columnGap ?? gapX;
+    if (rowGapVal !== undefined) vars["--grid-row-gap-step"] = String(gapToStep(rowGapVal));
+    if (colGapVal !== undefined) vars["--grid-col-gap-step"] = String(gapToStep(colGapVal));
 
     vars["--grid-ji"] = justifyItems;
     vars["--grid-ai"] = align ? alignVal[align] : "stretch";
@@ -258,8 +266,8 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       responsiveCols && css["responsive-cols"],
       responsiveGap && css["responsive-gap"],
       responsiveRows && css["responsive-rows"],
-      rowGap !== undefined && css["has-row-gap"],
-      columnGap !== undefined && css["has-col-gap"],
+      rowGapVal !== undefined && css["has-row-gap"],
+      colGapVal !== undefined && css["has-col-gap"],
       isMasonry && css.masonry,
       isMasonry && masonryColumnWidth && css["masonry-fixed-width"],
       isMasonry && responsiveMasonryColumnWidth && css["responsive-masonry-width"],

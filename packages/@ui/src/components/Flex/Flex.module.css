@@ -15,6 +15,14 @@
   /* Wrap variants */
   .flex.wrap { flex-wrap: wrap; }
 
+  /* Per-axis gap overrides */
+  .flex.has-col-gap {
+    column-gap: calc(var(--spacing, 0.25rem) * var(--flex-col-gap-step, var(--flex-gap-step, 0)) * var(--gap-scale, 1));
+  }
+  .flex.has-row-gap {
+    row-gap: calc(var(--spacing, 0.25rem) * var(--flex-row-gap-step, var(--flex-gap-step, 0)) * var(--gap-scale, 1));
+  }
+
   /* Justify-content variants */
   .flex.justify-start { justify-content: flex-start; }
   .flex.justify-end { justify-content: flex-end; }

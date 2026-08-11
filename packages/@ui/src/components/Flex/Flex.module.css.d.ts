@@ -3,6 +3,8 @@ declare const styles: {
   row: string;
   column: string;
   wrap: string;
+  "has-col-gap": string;
+  "has-row-gap": string;
   "justify-start": string;
   "justify-end": string;
   "justify-center": string;

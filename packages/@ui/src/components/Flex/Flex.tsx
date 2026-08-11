@@ -52,6 +52,10 @@ export interface FlexProps
   wrap?: boolean;
   /** Gap between flex items. A number maps directly to the Tailwind spacing scale (e.g. `gap={4}` behaves like `gap-4`). */
   gap?: FlexGap;
+  /** Override horizontal (column) gap between items. */
+  "gap-x"?: FlexGap;
+  /** Override vertical (row) gap between items. */
+  "gap-y"?: FlexGap;
   /** Root height. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS height. Overrides `style.height` and sizing classes. */
   h?: SizingValue;
   /** Root width. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS width. Overrides `style.width` and sizing classes. Defaults to full width. */
@@ -83,7 +87,7 @@ const alignMap = {
 } as const;
 
 const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
-  ({ className, style, direction, wrap, gap, h, w, containerQueryResponsive = false, children, ...rest }, ref) => {
+  ({ className, style, direction, wrap, gap, "gap-x": gapX, "gap-y": gapY, h, w, containerQueryResponsive = false, children, ...rest }, ref) => {
     let justify: FlexJustify | undefined;
     let align: FlexAlign | undefined;
     const props = rest as Record<string, unknown>;
@@ -97,10 +101,15 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
       delete props[key];
     }
 
+    const gapStep = (g?: FlexGap) =>
+      g === "none" || !g ? 0 : typeof g === "number" ? g : resolveGapStep(g);
+    const anyNumberGap =
+      typeof gap === "number" || typeof gapX === "number" || typeof gapY === "number";
     const layoutStyle = {
-      "--flex-gap-step":
-        gap === "none" || !gap ? 0 : typeof gap === "number" ? gap : resolveGapStep(gap),
-      ...(typeof gap === "number" ? { "--gap-scale": 1 } : null),
+      "--flex-gap-step": gapStep(gap),
+      ...(gapX !== undefined ? { "--flex-col-gap-step": gapStep(gapX) } : null),
+      ...(gapY !== undefined ? { "--flex-row-gap-step": gapStep(gapY) } : null),
+      ...(anyNumberGap ? { "--gap-scale": 1 } : null),
     } as React.CSSProperties;
     const rootStyle = { ...style, ...resolveSizingStyles({ h, w }) };
 
@@ -120,6 +129,8 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
               wrap && styles.wrap,
               justify && justifyMap[justify],
               align && alignMap[align],
+              gapX !== undefined && styles["has-col-gap"],
+              gapY !== undefined && styles["has-row-gap"],
               styles["container-responsive"]
             )}
             style={layoutStyle}
@@ -144,6 +155,8 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
           wrap && styles.wrap,
           justify && justifyMap[justify],
           align && alignMap[align],
+          gapX !== undefined && styles["has-col-gap"],
+          gapY !== undefined && styles["has-row-gap"],
           className
         )}
         style={{ ...rootStyle, ...layoutStyle }}
