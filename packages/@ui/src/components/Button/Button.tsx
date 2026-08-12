@@ -28,13 +28,14 @@ interface ButtonIconStyles {
 
 export interface ButtonStyleSlots {
   root?: SlotStyleValue;
+  content?: SlotStyleValue;
   icon?: SlotStyleValue | ButtonIconStyles;
   hint?: SlotStyleValue;
 }
 
 export type ButtonStylesProp = ButtonStyleSlots;
 
-const resolveButtonBaseStyles = createStylePropsResolver(['root', 'iconLeft', 'iconRight', 'hint'] as const);
+const resolveButtonBaseStyles = createStylePropsResolver(['root', 'content', 'iconLeft', 'iconRight', 'hint'] as const);
 
 function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconStyles {
   return typeof icon === 'object' && icon !== null && ('left' in icon || 'right' in icon);
@@ -42,7 +43,7 @@ function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconS
 
 function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
   if (!styles) return resolveButtonBaseStyles(styles)
-  const { root, icon, hint } = styles;
+  const { root, content, icon, hint } = styles;
 
   let iconLeft: SlotStyleValue | undefined;
   let iconRight: SlotStyleValue | undefined;
@@ -60,7 +61,7 @@ function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
     }
   }
 
-  return resolveButtonBaseStyles({ root, iconLeft, iconRight, hint });
+  return resolveButtonBaseStyles({ root, content, iconLeft, iconRight, hint });
 }
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "href" | "target"> {
@@ -90,7 +91,7 @@ function isButtonIconSlots(icon: ButtonProps["icon"]): icon is ButtonIconSlots {
   return typeof icon === "object" && icon !== null && !React.isValidElement(icon) && ('left' in icon || 'right' in icon);
 }
 
-function resolveButtonIcon(icon: ButtonProps["icon"]) {
+export function resolveButtonIcon(icon: ButtonProps["icon"]) {
   if (!icon) {
     return undefined;
   }
@@ -122,9 +123,8 @@ function hasRenderableContent(value: React.ReactNode): boolean {
   return typeof value === 'string' ? value.trim().length > 0 : true;
 }
 
-// Text (strings/numbers) makes a button label-bearing; React elements alone
-// (icons) do not. Used to treat an icon passed as `children` the same as one
-// passed through the `icon` prop.
+// Text (strings/numbers), including text nested in an element, makes a button
+// label-bearing. Elements without textual children are treated as icons.
 function hasTextContent(value: React.ReactNode): boolean {
   if (Array.isArray(value)) {
     return value.some(hasTextContent);
@@ -134,7 +134,27 @@ function hasTextContent(value: React.ReactNode): boolean {
     return value.trim().length > 0;
   }
 
-  return typeof value === 'number';
+  if (typeof value === 'number') {
+    return true;
+  }
+
+  if (React.isValidElement<{ children?: React.ReactNode }>(value)) {
+    return hasTextContent(value.props.children);
+  }
+
+  return false;
+}
+
+// Single source of truth for "is this button icon-only" so consumers that render
+// a Button indirectly (e.g. Group.Button) can match Button's own sizing decision
+// instead of re-deriving it from a narrower check like an explicit size prop.
+export function isIconOnlyContent(icon: ButtonIconSlots | undefined, children: React.ReactNode): boolean {
+  return (
+    !hasTextContent(children) &&
+    (hasRenderableContent(children) ||
+      hasRenderableContent(icon?.left) ||
+      hasRenderableContent(icon?.right))
+  );
 }
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
@@ -179,12 +199,9 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
 
     const resolved = resolveButtonStyles(styles);
     const resolvedIcon = resolveButtonIcon(icon);
-    const isIconOnly =
-      !hasTextContent(children) &&
-      (hasRenderableContent(children) ||
-        hasRenderableContent(resolvedIcon?.left) ||
-        hasRenderableContent(resolvedIcon?.right));
+    const isIconOnly = isIconOnlyContent(resolvedIcon, children);
     const actualSize = size ?? (isIconOnly ? "icon" : "md");
+    const isIconButton = isIconOnly || size === "icon";
 
     const iconSizeClassName = resolveButtonIconSizeClass(actualSize);
     const iconSlotClassName = isIconOnly ? "icon" : undefined;
@@ -196,14 +213,18 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       "button",
       variant,
       actualSize,
-      isIconOnly && "icon",
+      isIconButton && "icon",
+      isIconButton && css.icon,
       css.button,
       className,
       resolved.root.className
     );
 
     const content = (
-      <span className={css.surface}>
+      <span
+        className={cn("content", css.content, resolved.content.className)}
+        style={resolved.content.style}
+      >
         {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
         {wrapChildrenAsIcon
           ? <span className={cn(iconSlotClassName, iconSizeClassName)}>{children}</span>
@@ -234,6 +255,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
           data-hint={hasHint(hint) ? "true" : undefined}
+          data-icon-only={isIconButton ? "true" : undefined}
+          data-size={actualSize}
           style={{ ...resolved.root.style, ...props.style }}
         >
           {content}
@@ -257,6 +280,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         data-focused={isFocused ? "true" : "false"}
         data-focus-visible={isFocusVisible ? "true" : "false"}
         data-hint={hasHint(hint) ? "true" : undefined}
+        data-icon-only={isIconButton ? "true" : undefined}
+        data-size={actualSize}
         style={{ ...resolved.root.style, ...props.style }}
       >
         {content}

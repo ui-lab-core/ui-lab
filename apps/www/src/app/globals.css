@@ -255,10 +255,6 @@ p {
   font-weight: 500;
 }
 
-button .icon {
-  @apply p-2
-}
-
 article {
   max-width: var(--page-width);
   margin: 0 auto;

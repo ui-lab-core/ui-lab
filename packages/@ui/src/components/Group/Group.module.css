@@ -108,37 +108,37 @@
 
   .button {
     @apply flex box-border;
-    --press-scale: 0.98;
-    --press-duration: 100ms;
+    /* Keep connected controls geometrically stable while pressed. The theme's
+       pressed colors provide feedback without pulling the button away from its
+       neighboring group items. Use no transform at all rather than scale(1),
+       which can still subtly alter text rendering on a composited layer.
+       Standalone Buttons retain their scale effect. */
+    --press-transform: none;
     width: auto;
     border-radius: var(--group-item-radius, var(--background-inner-radius));
   }
 
-  .horizontal .item.icon-button-item {
-    @apply flex-1;
+  /* Button resolves icon-only state itself. Put the square sizing contract on
+     the flex item so its intrinsic inline contribution matches its rendered
+     width after the Group's block size is resolved. */
+  .horizontal .item:has(.button[data-icon-only="true"]):not(:has([role="separator"])) {
+    flex: 0 0 auto;
+    aspect-ratio: 1;
   }
 
-  /* Stretch plain wrapper elements between the item and a nested button */
-  .item.icon-button-item > :not(.button) {
-    @apply flex flex-1 min-w-0;
-  }
-
-  .item.icon-button-item .button {
-    @apply flex-1;
+  .horizontal .item:has(.button[data-icon-only="true"]):not(:has([role="separator"])) .button[data-icon-only="true"] {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
     aspect-ratio: auto;
   }
 
-  .item.icon-button-item .button:global(.icon) {
-    --size: var(--item-height);
-    --padding-inline: calc(var(--spacing) * 2);
-  }
-
-  .item.icon-button-item .button:global(.icon):global(.sm) {
-    --padding-inline: calc(var(--spacing) * 1.5);
-  }
-
-  .item.icon-button-item .button:global(.icon):global(.lg) {
-    --padding-inline: calc(var(--spacing) * 2.5);
+  .vertical .item .button[data-icon-only="true"],
+  .horizontal .item:has([role="separator"]) .button[data-icon-only="true"] {
+    flex: 0 0 auto;
+    width: auto;
+    height: 100%;
+    aspect-ratio: 1;
   }
 
   .input {
@@ -208,10 +208,6 @@
     }
 
     &.none {
-      .button {
-        --press-scale: 0.99;
-      }
-
       .item:not(.divider) {
         overflow: hidden;
       }

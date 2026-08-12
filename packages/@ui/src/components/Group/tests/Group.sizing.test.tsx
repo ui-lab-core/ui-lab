@@ -24,7 +24,7 @@ describe('Group child block-size contract', () => {
     const iconButtons = container.querySelectorAll(`.${buttonCss.button}.icon`)
     expect(iconButtons).toHaveLength(3)
     iconButtons.forEach((button) => {
-      expect(button.closest(`.${css.item}`)).toHaveClass(css['icon-button-item'])
+      expect(button.closest(`.${css.item}`)).not.toHaveClass(css.grow)
     })
     expect(container.querySelectorAll('[role="separator"]')).toHaveLength(2)
   })
@@ -43,6 +43,25 @@ describe('Group child block-size contract', () => {
     expect(screen.getByLabelText('icon')).toBeInTheDocument()
   })
 
+  it('sizes child-icon buttons from the actual height of an explicitly sized group', () => {
+    const { container } = render(
+      <Group className="h-9" spacing="none">
+        <Group.Button size="sm" aria-label="Decrease"><svg /></Group.Button>
+        <Divider />
+        <Group.Input aria-label="Value" className="w-12" />
+        <Divider />
+        <Group.Button size="sm" aria-label="Increase"><svg /></Group.Button>
+      </Group>
+    )
+
+    const iconButtons = container.querySelectorAll(`.${buttonCss.button}.icon`)
+    expect(iconButtons).toHaveLength(2)
+    iconButtons.forEach((button) => {
+      expect(button).toHaveAttribute('data-icon-only', 'true')
+      expect(button).toHaveClass('sm')
+    })
+  })
+
   it('supports pagination-like previous/page/next controls', () => {
     const { container } = render(
       <Group>
@@ -56,9 +75,9 @@ describe('Group child block-size contract', () => {
 
     const items = container.querySelectorAll(`.${css.item}`)
     expect(items).toHaveLength(5)
-    expect(items[0]).toHaveClass(css['icon-button-item'])
-    expect(items[4]).toHaveClass(css['icon-button-item'])
-    expect(items[1]).not.toHaveClass(css['icon-button-item'])
+    expect(items[0].querySelector('.icon')).toBeInTheDocument()
+    expect(items[4].querySelector('.icon')).toBeInTheDocument()
+    expect(items[1].querySelector('.icon')).not.toBeInTheDocument()
   })
 
   it('mixes buttons, inputs, selects, and dividers under the same item contract', () => {
@@ -81,15 +100,13 @@ describe('Group child block-size contract', () => {
     expect(container.querySelectorAll(`.${css.select}`)).toHaveLength(1)
   })
 
-  it('applies the icon-button-item block-size contract in both orientations', () => {
+  it('applies Button-resolved icon sizing in both orientations', () => {
     const horizontal = render(
       <Group orientation="horizontal">
         <Group.Button size="icon" aria-label="h">H</Group.Button>
       </Group>
     )
-    expect(
-      horizontal.container.querySelector(`.${css.item}`)
-    ).toHaveClass(css['icon-button-item'])
+    expect(horizontal.container.querySelector(`.${buttonCss.button}`)).toHaveClass('icon')
     horizontal.unmount()
 
     const vertical = render(
@@ -97,9 +114,7 @@ describe('Group child block-size contract', () => {
         <Group.Button size="icon" aria-label="v">V</Group.Button>
       </Group>
     )
-    expect(
-      vertical.container.querySelector(`.${css.item}`)
-    ).toHaveClass(css['icon-button-item'])
+    expect(vertical.container.querySelector(`.${buttonCss.button}`)).toHaveClass('icon')
   })
 
   it('never gives an icon button a fixed pixel size class outside the item contract', () => {

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { renderToString } from 'react-dom/server'
 import userEvent from '@testing-library/user-event'
 import { Button } from '../Button'
+import css from '../Button.module.css'
 import {
   testRefForwarding,
   testStyling,
@@ -139,6 +140,7 @@ describe('Button - Component Specific', () => {
 
     const button = screen.getByRole('button', { name: 'Create draft' })
     expect(button).toHaveClass('icon')
+    expect(button).toHaveClass(css.icon)
     expect(button).not.toHaveClass('md')
   })
 
@@ -148,6 +150,19 @@ describe('Button - Component Specific', () => {
     )
 
     expect(screen.getByRole('button', { name: 'Create draft' })).toHaveClass('icon', 'sm')
+  })
+
+  it('does not infer icon-only sizing when text is nested in child elements', () => {
+    render(
+      <Button>
+        <span><svg aria-hidden="true" /></span>
+        <span>Brush</span>
+        <span>⌘B</span>
+      </Button>
+    )
+
+    expect(screen.getByRole('button', { name: 'Brush ⌘B' })).toHaveClass('md')
+    expect(screen.getByRole('button', { name: 'Brush ⌘B' })).not.toHaveClass('icon', css.icon)
   })
 
   it('renders a hint as a secondary Badge', () => {
