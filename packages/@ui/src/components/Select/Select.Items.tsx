@@ -53,7 +53,7 @@ export interface SelectValueStyleSlots {
 
 export type SelectValueStylesProp = StylesProp<SelectValueStyleSlots>;
 
-export interface SelectValueProps {
+export interface SelectValueProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   /** Text shown in the trigger when no item is selected */
   placeholder?: string
   /** Additional CSS class names */
@@ -76,34 +76,38 @@ function resolveSelectValueStyles(styles: SelectValueStylesProp | undefined) {
 
 /** Renders the selected item's label inside the trigger */
 const SelectValue = React.forwardRef<HTMLDivElement, SelectValueProps>(
-  ({ placeholder = "Select an option", className, icon, children, styles: stylesProp }, ref) => {
+  ({ placeholder = "Select an option", className, icon, children, styles: stylesProp, ...domProps }, ref) => {
     const {
       selectedTextValue,
       selectedKey,
       items,
+      hasExternalValue,
+      isDisabled,
     } = useSelectContext()
 
     const selectedItem = items.find(item => item.key === selectedKey)
     const resolved = resolveSelectValueStyles(stylesProp);
 
-    const renderContent = () => {
+    const renderText = () => {
       if (typeof children === 'function') {
         return (children as (item: SelectItemData | null) => React.ReactNode)(selectedItem || null)
       }
-      return (
-        <>
-          {icon && <span className={cn(styles['value-icon'], resolved.icon)}>{icon}</span>}
-          <span className={cn(styles['value-text'], resolved.text)}>{selectedItem?.textValue || selectedTextValue || placeholder}</span>
-        </>
-      )
+      if (children !== null && children !== undefined) {
+        return children
+      }
+      return selectedItem?.textValue || selectedTextValue || placeholder
     }
 
     return (
       <div
         ref={ref}
         className={cn("value", styles.value, className, resolved.root)}
+        data-external={hasExternalValue ? "true" : undefined}
+        data-disabled={isDisabled ? "true" : undefined}
+        {...domProps}
       >
-        {renderContent()}
+        {icon && <span className={cn(styles['value-icon'], resolved.icon)}>{icon}</span>}
+        <span className={cn(styles['value-text'], resolved.text)}>{renderText()}</span>
       </div>
     )
   }

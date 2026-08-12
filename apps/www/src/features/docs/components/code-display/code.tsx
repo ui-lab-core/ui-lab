@@ -282,7 +282,7 @@ export function Code({
         {shouldShowExpandButton && !expanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-950 text-foreground-300 font-medium text-md transition-colors border-t border-background-700"
+            className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-950 text-foreground-300 font-medium text-xs transition-colors border-t border-background-700"
           >
             <HiOutlineChevronUpDown size={24} className="text-foreground-400 inline mr-3" /> Show {hiddenCodeLines} more lines
           </button>

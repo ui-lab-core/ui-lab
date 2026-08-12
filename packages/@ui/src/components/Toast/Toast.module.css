@@ -22,7 +22,7 @@
 
   .icon {
     @apply h-5 w-5;
-    color: var(--foreground);
+    color: var(--icon-foreground, var(--foreground));
   }
 
   .content {

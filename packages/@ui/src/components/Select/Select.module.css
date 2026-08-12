@@ -76,6 +76,27 @@
     @apply flex-none w-auto;
   }
 
+  /* A Value placed beside the Trigger is the label segment of one Select,
+     not another interactive control. Give that segment the same visual
+     treatment as a normal trigger value while keeping one focus target. */
+  .select.select-split > .value[data-external="true"] {
+    align-items: center;
+    padding: var(--trigger-padding-block) var(--trigger-padding-inline);
+    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+    background-color: var(--background, transparent);
+    transition-property: background-color;
+    transition-duration: var(--hover-duration, var(--hover-leave-duration));
+    transition-timing-function: var(--hover-transition-timing-function);
+
+    @media (hover: hover) {
+      &:not([data-disabled]):hover {
+        --hover-duration: var(--hover-enter-duration, 0ms);
+        --background: var(--trigger-background-hover, transparent);
+        background-color: var(--background);
+      }
+    }
+  }
+
   .select button.trigger { @apply p-0; }
 
   .value-section {
@@ -124,7 +145,12 @@
 
   .value-icon {
     @apply flex items-center justify-center shrink-0 w-4 h-4;
-    color: var(--foreground);
+    align-self: center;
+    color: var(--icon-foreground, currentColor);
+
+    > svg {
+      display: block;
+    }
   }
 
   .value-text {

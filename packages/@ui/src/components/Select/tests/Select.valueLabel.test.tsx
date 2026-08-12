@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import * as React from 'react'
-import { render as rtlRender } from '@testing-library/react'
+import { render as rtlRender, screen } from '@testing-library/react'
 import { renderSelectWithItems, getSelectTrigger } from './Select.test-utils'
 import { createMockSelectItems, waitForCondition } from '@/tests/utils'
 import { Select } from '../'
@@ -33,6 +33,26 @@ function renderWithValueLabel(
 // ─── tests ──────────────────────────────────────────────────────────────────
 
 describe('Select.label', () => {
+  it('renders an icon and value styling when an external Value uses a render function', () => {
+    const { container } = rtlRender(
+      <Select selectedKey="merge">
+        <Select.Value icon={<svg data-testid="strategy-icon" />}>
+          {() => 'Merge'}
+        </Select.Value>
+        <Select.Trigger aria-label="Choose merge strategy" />
+        <Select.Content>
+          <Select.Item value="merge" textValue="Merge">Merge</Select.Item>
+        </Select.Content>
+      </Select>
+    )
+
+    const value = screen.getByText('Merge').closest('.value')!
+
+    expect(screen.getByTestId('strategy-icon')).toBeInTheDocument()
+    expect(value).toHaveAttribute('data-external', 'true')
+    expect(value.parentElement).toHaveClass('select-split')
+  })
+
   describe('initial render display', () => {
     it('shows label text on initial render', () => {
       const items = createMockSelectItems(3)

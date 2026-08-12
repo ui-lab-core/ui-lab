@@ -37,7 +37,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
     const maskFilters: MaskFilter[] = [];
     let clipPath: string | undefined;
     let hasFixedFade = false;
-    let contentChildren: React.ReactNode[] = [];
+    const contentChildren: React.ReactNode[] = [];
     const supportsScrollFade = hasScrollFadeVariables(style);
     const resolved = resolveMaskBaseStyles(stylesProp);
 
@@ -81,23 +81,31 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
       } : {}),
     } as React.CSSProperties;
 
+    const asChildTarget =
+      contentChildren.length === 1 && React.isValidElement(contentChildren[0])
+        ? (contentChildren[0] as React.ReactElement<{
+            className?: string;
+            style?: React.CSSProperties;
+            ref?: React.Ref<HTMLDivElement>;
+          }>)
+        : null;
+
+    // Resolved unconditionally. `asChild` is an ordinary prop that a consumer can
+    // flip between renders, so merging the child ref inside the `asChild` branch
+    // would change this component's hook order when it does.
+    const asChildRef = useMergeRefs(ref, asChildTarget?.props.ref);
+
     if (asChild) {
-      if (contentChildren.length !== 1 || !React.isValidElement(contentChildren[0])) {
+      if (!asChildTarget) {
         throw new Error("Mask with asChild expects exactly one valid React element child.");
       }
 
-      const child = contentChildren[0] as React.ReactElement<{
-        className?: string;
-        style?: React.CSSProperties;
-        ref?: React.Ref<HTMLDivElement>;
-      }>;
-
-      return React.cloneElement(child, {
+      return React.cloneElement(asChildTarget, {
         ...props,
-        ref: useMergeRefs(ref, child.props.ref),
-        className: cn("mask", styles.mask, resolved.root, className, child.props.className),
+        ref: asChildRef,
+        className: cn("mask", styles.mask, resolved.root, className, asChildTarget.props.className),
         style: {
-          ...child.props.style,
+          ...asChildTarget.props.style,
           ...maskStyles,
         },
       });

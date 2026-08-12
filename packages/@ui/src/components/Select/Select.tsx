@@ -567,7 +567,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       >
         <div
           ref={mergedRootRef}
-          className={cn('select', styles.select, className, resolvedStyles.root)}
+          className={cn('select', styles.select, hasExternalValue && styles['select-split'], className, resolvedStyles.root)}
           data-mode={mode}
           data-select-focus-surface="true"
           data-focused={isFocused ? "true" : "false"}
