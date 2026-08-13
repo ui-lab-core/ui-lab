@@ -8,6 +8,7 @@ import {
   FaPuzzlePiece,
   FaTableCells,
   FaChartBar,
+  FaImage,
 } from 'react-icons/fa6';
 
 /**
@@ -24,4 +25,5 @@ export const categoryIconConfig = {
   navigation: { name: 'FaCompass', component: FaCompass },
   container: { name: 'FaLayerGroup', component: FaLayerGroup },
   display: { name: 'FaChartBar', component: FaChartBar },
+  media: { name: 'FaImage', component: FaImage },
 } as const;

@@ -111,6 +111,7 @@ export { Menu } from "./components/Menu";
 export type {
   MenuProps,
   MenuTriggerProps,
+  MenuTriggerAs,
   MenuPortalProps,
   MenuContentProps,
   MenuGroupProps,
@@ -222,6 +223,21 @@ export type {
 export { Code } from "./components/Code";
 export type { CodeProps } from "./components/Code";
 
+export {
+  DEFAULT_ICON_ASSET_BASE_URL,
+  Icon,
+  IconProvider,
+  normalizeIconId,
+  resolveIconSource,
+} from "./components/Icon";
+export type {
+  IconProps,
+  IconProviderProps,
+  IconSource,
+  IconSourceResolver,
+  IconVariant,
+} from "./components/Icon";
+
 export { List } from "./components/List";
 export type {
   ListRef,
@@ -258,7 +274,8 @@ export { generateThemeScript } from "./providers/themeScript";
 export { generateColorModeScript } from "./providers/themeScript";
 
 export { useFilter } from "./hooks/useFilter";
-export { useAnimatedWidth } from "./hooks/useAnimatedWidth";
+export { useAnimatedSize } from "./hooks/useAnimatedSize";
+export type { AnimatedDimension, UseAnimatedSizeOptions } from "./hooks/useAnimatedSize";
 export { useRegionCoordinator, useRegion, isRegionFilled } from "./hooks/useRegionCoordinator";
 export type {
   RegionConfig,

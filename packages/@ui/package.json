@@ -116,6 +116,10 @@
       "import": "./dist/input.es.js",
       "types": "./dist/input.d.ts"
     },
+    "./icon": {
+      "import": "./dist/icon.es.js",
+      "types": "./dist/icon.d.ts"
+    },
     "./label": {
       "import": "./dist/label.es.js",
       "types": "./dist/label.d.ts"
