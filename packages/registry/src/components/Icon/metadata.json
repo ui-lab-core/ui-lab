@@ -1,0 +1,29 @@
+{
+  "id": "icon",
+  "name": "Icon",
+  "description": "Framework-agnostic local SVG icon resolved by variant and filename.",
+  "category": "media",
+  "experimental": true,
+  "source": {
+    "packageName": "ui-lab-components",
+    "exportName": "Icon",
+    "packagePath": "dist/index.d.ts"
+  },
+  "relatedComponents": [
+    "button",
+    "badge"
+  ],
+  "tags": [
+    "icon",
+    "svg",
+    "mask",
+    "asset"
+  ],
+  "accessibility": {
+    "hasAriaSupport": true,
+    "notes": [
+      "Decorative by default with aria-hidden",
+      "Meaningful icons support an accessible label"
+    ]
+  }
+}
