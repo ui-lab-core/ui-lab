@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Icon } from "ui-lab-components/icon";
 import { CardAnimation } from "./timelines/card.animation";
 import { DividerAnimation } from "./timelines/divider.animation";
 import { ExpandAnimation } from "./timelines/expand.animation";
@@ -45,7 +46,6 @@ import { AlertAnimation } from "./timelines/Alert.animation";
 import { ChartAnimation } from "./timelines/chart.animation";
 import { TableAnimation } from "./timelines/table.animation";
 import { ImageAnimation } from "./timelines/image.animation";
-import { IconAnimation } from "./timelines/icon.animation";
 import { VideoAnimation } from "./timelines/video.animation";
 import { VoiceAnimation } from "./timelines/voice.animation";
 
@@ -133,7 +133,27 @@ export const previews: Record<string, React.ReactNode> = {
   alert: <AlertAnimation />,
   chart: <ChartAnimation />,
   image: <ImageAnimation />,
-  icon: <IconAnimation />,
+  icon: (
+    <div className="grid grid-cols-3 gap-4 text-foreground-300">
+      {[
+        "cake-fill",
+        "bell-simple-ringing-fill",
+        "magnifying-glass-plus-fill",
+        "person-fill",
+        "code-fill",
+        "warning-fill",
+      ].map((id, index) => (
+        <div
+          key={id}
+          className={index === 1
+            ? "flex size-12 items-center justify-center rounded-lg bg-accent-500/15 text-accent-500"
+            : "flex size-12 items-center justify-center rounded-lg bg-background-800"}
+        >
+          <Icon variant="fill" id={id} size={24} />
+        </div>
+      ))}
+    </div>
+  ),
   video: <VideoAnimation />,
   voice: <VoiceAnimation />,
 };

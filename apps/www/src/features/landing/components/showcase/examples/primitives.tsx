@@ -268,10 +268,8 @@ export function Menus({ height }: ShowcasePanelProps) {
   return (
     <Cell height={height}>
       <Menu type="pop-over">
-        <Menu.Trigger>
-          <Button size="sm" variant="ghost" icon={{ right: <ChevronDown size={14} /> }}>
-            Actions
-          </Button>
+        <Menu.Trigger size="sm" variant="ghost" icon={{ right: <ChevronDown size={14} /> }}>
+          Actions
         </Menu.Trigger>
         <Menu.Content side="bottom" align="center" offset={6}>
           <Menu.Item>

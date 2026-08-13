@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "([ -d ../../../private ] && pnpm --dir ../../../private --filter @ui-lab-core/library build || true) && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build",
-    "dev": "npm run generate:docs && next dev",
+    "prebuild": "([ -d ../../../private ] && pnpm --dir ../../../private --filter @ui-lab-core/library build || true) && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build && npm run prepare:icons",
+    "dev": "npm run prepare:icons && npm run generate:docs && next dev",
     "build": "npm run generate:docs && next build --webpack && npm run verify:component-css",
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
+    "prepare:icons": "node scripts/prepare-icon-assets.mjs",
     "generate:docs": "node --import tsx scripts/generate-docs.mts",
     "verify:private-library": "node --conditions development --import tsx scripts/verify-private-library-link.mts",
     "verify:component-css": "node scripts/verify-component-css.mjs"

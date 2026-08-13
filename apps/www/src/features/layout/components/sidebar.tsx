@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useMemo, memo, useState, type ComponentType } from 'react';
+import { useMemo, memo } from 'react';
 import { Divider } from 'ui-lab-components/divider';
 import { Scroll } from 'ui-lab-components/scroll';
 import { usePrefetchOnHover } from '@/shared/hooks/use-prefetch-on-hover';
@@ -18,14 +18,9 @@ import { useDocsNavigationData } from '@/features/navigation/lib/docs-navigation
 import { Flex } from 'ui-lab-components';
 import { Logo } from '@/features/layout/components/logo';
 import { FaTags } from '@/shared/icons/fa6';
+import { ElementsList } from '@/features/workshop/components/sidebar-content';
 
 type ElementsNavType = 'packages' | 'sections' | 'starters' | 'patterns';
-
-type ElementsProps = {
-  activeNav: ElementsNavType;
-  pathname: string;
-  activeCategory?: null;
-};
 
 function getElementsNav(pathname: string): ElementsNavType {
   if (pathname.startsWith('/workshop/sections')) return 'sections';
@@ -85,7 +80,6 @@ export function Sidebar({
   const { isOpen, closeSidebar } = useSidebarToggle();
   const docsNavigationData = useDocsNavigationData();
   const pathname = usePathname();
-  const [Elements, setElements] = useState<ComponentType<ElementsProps> | null>(null);
   const activeDomain = activeDomainProp ?? getActiveDomainForPathname(pathname);
   const activeNavItem = getActiveNavItemForDomain(activeDomain);
   const mainNavItems = useMemo(() => getMainNavItemsForDomain(activeDomain), [activeDomain]);
@@ -105,15 +99,6 @@ export function Sidebar({
     () => (isElementsOrSectionsOrStarters ? `sidebar-scroll-${activeElementsNav}` : `sidebar-scroll-${activeNavItem}`),
     [activeElementsNav, activeNavItem, isElementsOrSectionsOrStarters]
   );
-  useEffect(() => {
-    if (!isElementsOrSectionsOrStarters || Elements) return;
-    let active = true;
-    import('@/features/workshop/components/sidebar-content').then((module) => {
-      if (active) setElements(() => module.ElementsList as ComponentType<ElementsProps>);
-    });
-    return () => { active = false; };
-  }, [Elements, isElementsOrSectionsOrStarters]);
-
   const sidebarWidth = isElementsOrSectionsOrStarters ? 'w-78 md:w-66 lg:w-52 xl:w-62' : 'w-76 md:w-60 lg:w-46 xl:w-62';
 
   return (
@@ -204,11 +189,11 @@ export function Sidebar({
           >
             {isElementsOrSectionsOrStarters ? (
               <div className="px-4">
-                {Elements ? <Elements
+                <ElementsList
                   activeNav={activeElementsNav}
                   pathname={pathname}
                   activeCategory={null}
-                /> : null}
+                />
               </div>
             ) : (
               <div className="py-5 px-5 space-y-10">

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useCallback, useMemo } from 'react';
 import { elementRegistry, elementOrder } from '@ui-lab-core/library/catalog';
 import type { ElementMetadata } from '@ui-lab-core/library/catalog';
-import { ElementsGridClient, ElementsSearchHeader, ElementsFilterPopover, ElementsSortDropdown, ElementsLayoutToggle } from '@/features/workshop';
+import { ElementsGridClient, ElementsLayoutToggle, Toolbar } from '@/features/workshop';
 import { Divider } from 'ui-lab-components';
 
 function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetadata[] {
@@ -123,29 +123,18 @@ export default function PackageElementsClient({
     <div className="space-y-6">
       <Divider className='mt-16 mb-12 ' />
       <div className="hidden grid grid-cols-[400px_1fr] items-center pb-3 pt-2">
-        <div className="flex justify-center">
-          <ElementsSearchHeader
-            className="lg:w-[400px]"
-            currentQuery={searchQuery}
-            pathname={`/workshop/elements/${packageId}`}
-            onSearch={handleSearch}
-          />
-        </div>
-        <div className="flex items-center justify-end gap-2">
-          <ElementsSortDropdown
-            currentSort={sortBy}
-            onSortChange={handleSortChange}
-          />
-          <div className="h-4 w-[1px] bg-background-700 mx-1" />
-          <ElementsLayoutToggle />
-          <ElementsFilterPopover
-            selectedCategory={selectedCategory}
-            selectedTags={selectedTags}
-            onCategoryChange={handleCategoryChange}
-            onTagsChange={handleTagsChange}
-            onClearAll={handleClearAll}
-          />
-        </div>
+        <Toolbar
+          searchQuery={searchQuery}
+          sortBy={sortBy}
+          selectedCategory={selectedCategory}
+          selectedTags={selectedTags}
+          actions={<ElementsLayoutToggle />}
+          onSearch={handleSearch}
+          onSortChange={handleSortChange}
+          onCategoryChange={handleCategoryChange}
+          onTagsChange={handleTagsChange}
+          onClearAll={handleClearAll}
+        />
       </div>
       <ElementsGridClient elements={filteredElements} packageId={packageId} isPremium={isPremium} />
     </div>

@@ -1,7 +1,6 @@
 import type { ComponentCategory } from "ui-lab-registry";
 
-export type SiteOnlyComponentCategory = "media";
-export type SiteComponentCategory = ComponentCategory | SiteOnlyComponentCategory;
+export type SiteComponentCategory = ComponentCategory;
 
 export type SiteComponentCategoryDefinition = {
   id: SiteComponentCategory;
@@ -17,16 +16,6 @@ type ComingSoonComponent = {
   description: string;
   category: SiteComponentCategory;
 };
-
-export const siteOnlyComingSoonCategories = {
-  media: {
-    id: "media",
-    label: "Media",
-    name: "Media Components",
-    description: "Components for presenting images, video, icons, and rich visual assets.",
-    iconName: "Image",
-  },
-} satisfies Record<SiteOnlyComponentCategory, SiteComponentCategoryDefinition>;
 
 export const comingSoonComponents: ComingSoonComponent[] = [
   {
@@ -69,12 +58,6 @@ export const comingSoonComponents: ComingSoonComponent[] = [
     id: "image",
     name: "Image",
     description: "Displays responsive images with framing, loading, and presentation controls.",
-    category: "media",
-  },
-  {
-    id: "icon",
-    name: "Icon",
-    description: "Renders scalable symbols with consistent sizing, color, and accessibility.",
     category: "media",
   },
   {

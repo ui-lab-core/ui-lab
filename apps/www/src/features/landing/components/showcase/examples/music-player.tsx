@@ -133,9 +133,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               icon={<Plus size={14} />}
             />
             <Menu type="pop-over">
-              <Menu.Trigger>
-                <Button variant="ghost" icon={{ left: <MoreHorizontal size={14} /> }} aria-label="Track options" />
-              </Menu.Trigger>
+              <Menu.Trigger variant="ghost" icon={{ left: <MoreHorizontal size={14} /> }} aria-label="Track options" />
               <Menu.Content side="bottom" align="end" offset={6}>
                 <Menu.Item>
                   <Headphones size={14} className="mr-2 opacity-60" />

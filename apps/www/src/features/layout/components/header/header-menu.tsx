@@ -7,7 +7,6 @@ import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { useApp } from "@/features/theme/lib/app-context";
 import { FaBars, FaEllipsis, FaMoon, FaPaintRoller, FaSun, FaTags } from "@/shared/icons/fa6";
-import { Button } from "ui-lab-components/button";
 import { Menu } from "ui-lab-components/menu";
 
 export function HeaderMenu() {
@@ -51,17 +50,14 @@ export function HeaderMenu() {
   return (
     <>
       <Menu type="pop-over">
-        <Menu.Trigger ref={triggerRef}>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Open menu"
-            icon={<FaBars size={16} />}
-            className="text-foreground-300 transition-colors hover:text-foreground-200"
-          >
-
-          </Button>
-        </Menu.Trigger>
+        <Menu.Trigger
+          ref={triggerRef}
+          variant="ghost"
+          size="icon"
+          aria-label="Open menu"
+          icon={<FaBars size={16} />}
+          className="text-foreground-300 transition-colors hover:text-foreground-200"
+        />
         <Menu.Content
           side="bottom"
           align="end"

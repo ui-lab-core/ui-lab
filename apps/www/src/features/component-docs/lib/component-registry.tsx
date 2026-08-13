@@ -24,6 +24,7 @@ import { galleryDetail } from "ui-lab-registry/components/Gallery";
 import { gridDetail } from "ui-lab-registry/components/Grid";
 import { groupDetail } from "ui-lab-registry/components/Group";
 import { inputDetail } from "ui-lab-registry/components/Input";
+import { iconDetail } from "ui-lab-registry/components/Icon";
 import { labelDetail } from "ui-lab-registry/components/Label";
 import { menuDetail } from "ui-lab-registry/components/Menu";
 import { toastDetail } from "ui-lab-registry/components/Toast";
@@ -54,14 +55,12 @@ import { previews } from "@/gallery";
 import {
   categoryMap as registryCategoryMap,
   componentRegistry as registryData,
-  type ComponentCategory,
   type ComponentMetadata as RegistryMetadata,
   getComponentsInOrder,
   getCategoriesInOrder as getRegistryCategoriesInOrder,
   getCategoryIcon as getRegistryCategoryIcon,
 } from "ui-lab-registry";
 import {
-  siteOnlyComingSoonCategories,
   type SiteComponentCategory,
   type SiteComponentCategoryDefinition,
 } from "./coming-soon";
@@ -73,20 +72,13 @@ interface ComponentMetadata extends RegistryMetadata {
   experimental?: boolean;
 }
 
-export const categoryMap = {
-  ...registryCategoryMap,
-  ...siteOnlyComingSoonCategories,
-} as Record<SiteComponentCategory, SiteComponentCategoryDefinition>;
+export const categoryMap = registryCategoryMap as Record<SiteComponentCategory, SiteComponentCategoryDefinition>;
 
-export const getCategoriesInOrder = (): SiteComponentCategory[] => [
-  ...getRegistryCategoriesInOrder(),
-  ...Object.keys(siteOnlyComingSoonCategories),
-] as SiteComponentCategory[];
+export const getCategoriesInOrder = (): SiteComponentCategory[] =>
+  getRegistryCategoriesInOrder();
 
-export const getCategoryIcon = (category: SiteComponentCategory): React.ReactNode => {
-  if (category in siteOnlyComingSoonCategories) return null;
-  return getRegistryCategoryIcon(category as ComponentCategory);
-};
+export const getCategoryIcon = (category: SiteComponentCategory): React.ReactNode =>
+  getRegistryCategoryIcon(category);
 
 export const componentRegistry: ComponentMetadata[] = Object.entries(registryData).map(
   ([id, metadata]) => ({
@@ -121,7 +113,7 @@ export const getRelatedComponents = (id: string): ComponentMetadata[] => {
 
 export const getComponentsInCategoryOrder =
   (category: SiteComponentCategory): ComponentMetadata[] => {
-    const componentIds = getComponentsInOrder(category as ComponentCategory);
+    const componentIds = getComponentsInOrder(category);
     return componentIds
       .map((id: string) =>
         componentRegistry.find((c): c is ComponentMetadata => c.id === id),
@@ -139,6 +131,7 @@ const componentDetails: Record<string, ComponentDetail> = {
   grid: gridDetail,
   table: tableDetail,
   input: inputDetail,
+  icon: iconDetail,
   textarea: textareaDetail,
   label: labelDetail,
   select: selectDetail,

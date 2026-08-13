@@ -1,9 +1,7 @@
 export { ElementPreviewContent } from "./components/preview";
-export { ElementsFilterPopover } from "./components/filter";
 export { ElementsGridClient } from "./components/grid-client";
 export { ElementsLayoutToggle } from "./components/ui/layout-toggle";
-export { ElementsSearchHeader } from "./components/ui/search-header";
-export { ElementsSortDropdown } from "./components/ui/sort-dropdown";
+export { Toolbar } from "./components/toolbar";
 export { getPackageLayoutConfig } from "./lib/get-package-layout-config";
 export { getPackagePreviewComponent } from "./lib/get-package-preview";
 export { WaitlistModalClient, useWaitlistModal } from "./components/waitlist-modal";

@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState, useCallback, useMemo } from 'react';
 import type { LayoutConfig } from '@ui-lab-core/library/catalog';
 import { ContentIndex } from '@/features/layout/components/content-section-layout';
 import { GenericContentGrid } from '@/features/workshop/components/content-grid';
@@ -12,7 +11,7 @@ import {
   type SectionGridFilters,
   type SectionGridItem,
 } from '@/features/sections/lib/section-grid-data';
-import { ElementsSearchHeader, ElementsSortDropdown, ElementsFilterPopover, WaitlistModalClient, useWaitlistModal } from '@/features/workshop';
+import { Toolbar, WaitlistModalClient, useWaitlistModal } from '@/features/workshop';
 import { getCardPreviewComponent as getSectionCardPreviewComponent } from '@/features/sections/lib/get-section-preview';
 
 interface SectionsPageProps {
@@ -128,30 +127,18 @@ function SectionsPageContent({
   return (
     <ContentIndex
       controls={
-        <>
-          <div className="flex justify-center lg:justify-start">
-            <ElementsSearchHeader
-              className="lg:w-[400px]"
-              currentQuery={searchQuery}
-              pathname="/workshop/sections"
-              onSearch={handleSearch}
-            />
-          </div>
-          <div className="flex items-center justify-end gap-2">
-            <ElementsSortDropdown
-              currentSort={sortBy}
-              onSortChange={handleSortChange}
-            />
-            <div className="h-4 w-[1px] bg-background-700 mx-1" />
-            <ElementsFilterPopover
-              selectedCategory={selectedCategory}
-              selectedTags={selectedTags}
-              onCategoryChange={handleCategoryChange}
-              onTagsChange={handleTagsChange}
-              onClearAll={handleClearAll}
-            />
-          </div>
-        </>
+        <Toolbar
+          searchQuery={searchQuery}
+          searchPlaceholder="Search sections..."
+          sortBy={sortBy}
+          selectedCategory={selectedCategory}
+          selectedTags={selectedTags}
+          onSearch={handleSearch}
+          onSortChange={handleSortChange}
+          onCategoryChange={handleCategoryChange}
+          onTagsChange={handleTagsChange}
+          onClearAll={handleClearAll}
+        />
       }
     >
       <GenericContentGrid

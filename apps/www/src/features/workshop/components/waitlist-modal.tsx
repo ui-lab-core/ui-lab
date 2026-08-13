@@ -65,7 +65,7 @@ function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       onOpenChange={(nextIsOpen) => {
         if (!nextIsOpen) onClose();
       }}
-      className="max-w-lg"
+      size="auto"
     >
       <Modal.Header>
         <div>

@@ -61,8 +61,8 @@ export function PreviewCanvas() {
   const [range, setRange] = useState("1W");
 
   return (
-    <div className="flex w-full justify-center p-4">
-      <Card className="w-full max-w-md bg-transparent">
+    <div className="w-full p-4">
+      <Card className="w-full bg-transparent">
         <Card.Header >
           <Flex justify-between align-center>
             <span className="text-sm text-foreground-400">Total Sales</span>

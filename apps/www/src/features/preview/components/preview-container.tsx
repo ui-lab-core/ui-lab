@@ -38,7 +38,7 @@ export function PreviewContainer({ layoutConfig, children }: PreviewContainerPro
   const centeringClass = getCenteringClass(previewConfig?.centeringStrategy);
 
   return (
-    <div className="relative w-full h-full min-h-56 bg-background-950 border-b border-background-700 overflow-hidden">
+    <div className="relative w-full h-full min-h-56 bg-background-1000 border-b border-background-700 overflow-hidden">
       <div className={`absolute inset-0 flex p-12 ${centeringClass}`}>
         <div className="flex h-full w-full min-w-0 items-center justify-center" style={buildPreviewStyles(previewConfig)}>
           {children}
