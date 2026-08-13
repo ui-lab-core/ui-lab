@@ -17,6 +17,7 @@ import {
 } from "../../utils/list-navigation"
 import { useMergeRefs as useMergedRef } from "../../hooks/useMergeRefs"
 import { List } from "../List"
+import { Button } from "../Button"
 import { useScrollLock } from "../../hooks/useScrollLock"
 
 const resolveMenuTriggerBaseStyles = createStylesResolver(['root'] as const);
@@ -36,7 +37,7 @@ function resolveMenuContentStyles(styles: MenuContentProps["styles"]) {
 
 /** Wrapper element that opens the context menu on right-click */
 const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
-  ({ children, disabled = false, className, styles }, ref) => {
+  ({ children, disabled = false, className, styles, as, ...props }, ref) => {
     const { isOpen, setIsOpen, type, clickPositionRef, triggerRef: contextTriggerRef } = useMenuContext()
     const resolved = resolveMenuTriggerStyles(styles)
     const [isHovered, setIsHovered] = React.useState(false)
@@ -54,7 +55,14 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
       setIsOpen(prev => !prev)
     }, [disabled, type, setIsOpen, clickPositionRef])
 
-    const mergedRef = useMergedRef<HTMLElement>(contextTriggerRef, ref)
+    const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
+      if (disabled || type !== "pop-over" || (e.key !== "Enter" && e.key !== " ")) return
+      e.preventDefault()
+      clickPositionRef.current = { x: 0, y: 0 }
+      setIsOpen(prev => !prev)
+    }, [disabled, type, setIsOpen, clickPositionRef])
+
+    const positionerRef = contextTriggerRef
 
     const triggerProps = {
       onContextMenu: handleContextMenu,
@@ -66,41 +74,62 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
       'data-state': isOpen ? "open" : "closed",
       'data-hovered': isOpen || isHovered ? "true" : "false",
       'data-type': type,
+      'data-disabled': disabled ? "true" : undefined,
     }
 
-    const [child] = React.Children.toArray(children)
+    const childArray = React.Children.toArray(children)
+    const child = childArray.length === 1 ? childArray[0] : null
+    const childElement = React.isValidElement(child) && child.type !== React.Fragment
+      ? child as React.ReactElement<any>
+      : null
+    const isLegacyInteractiveChild = !!childElement && (
+      childElement.type === Button ||
+      childElement.type === "button" ||
+      childElement.type === "a"
+    )
+    const renderAs = as ?? (
+      isLegacyInteractiveChild
+        ? "child"
+        : type === "pop-over" ? "button" : "span"
+    )
+    const childRef = useMergedRef<HTMLElement>(ref, childElement?.props.ref)
+    let trigger: React.ReactElement
 
-    if (React.isValidElement(child) && child.type !== React.Fragment) {
-      const childElement = child as React.ReactElement<any>
-
-      return (
-        <div className="menu">
-          {React.cloneElement(childElement, {
-            ...mergeProps(triggerProps, childElement.props),
-            className: cn(
-              childElement.props.className,
-              'trigger',
-              css.trigger,
-              className,
-              resolved.root,
-            ),
-            ref: mergedRef,
-            'data-open': isOpen ? "true" : "false",
-            'data-hovered': isOpen || isHovered ? "true" : undefined,
-            'data-type': type,
-          } as any)}
-        </div>
+    if (renderAs === "child") {
+      if (!childElement) {
+        throw new Error('Menu.Trigger with as="child" expects exactly one non-Fragment React element child.')
+      }
+      trigger = React.cloneElement(childElement, {
+        ...mergeProps(triggerProps, props as any, childElement.props),
+        className: cn(childElement.props.className, triggerProps.className),
+        ref: childRef,
+      } as any)
+    } else if (renderAs === "span") {
+      const spanProps = type === "pop-over" ? { role: "button", tabIndex: disabled ? undefined : 0 } : {}
+      trigger = (
+        <span
+          {...mergeProps(triggerProps, { onKeyDown: handleKeyDown }, props as any)}
+          {...spanProps}
+          ref={ref as React.Ref<HTMLSpanElement>}
+        >
+          {children}
+        </span>
+      )
+    } else {
+      trigger = (
+        <Button
+          {...mergeProps(triggerProps, props as any)}
+          disabled={disabled}
+          ref={ref as React.Ref<HTMLButtonElement>}
+        >
+          {children}
+        </Button>
       )
     }
 
     return (
-      <div className="menu">
-        <div
-          ref={mergedRef as React.Ref<HTMLDivElement>}
-          {...triggerProps}
-        >
-          {children}
-        </div>
+      <div ref={positionerRef as React.Ref<HTMLDivElement>} className={cn('menu', css['trigger-root'])}>
+        {trigger}
       </div>
     )
   }

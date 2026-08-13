@@ -1,7 +1,6 @@
 import * as React from "react";
 import type { Key } from "react-aria";
 import { cn } from "@/lib/utils";
-import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Badge } from "../Badge";
 import { Frame } from "../Frame";
 import { List } from "../List";
@@ -9,10 +8,11 @@ import { Scroll } from "../Scroll";
 import styles from "./Command.module.css";
 import { type CommandItem as CommandItemData, useCommandContext } from "./Command.shared";
 
+/** `maxHeight` is an extra cap on the list alone; by default it fills the space the palette's `--height` leaves. */
 export interface CommandListProps { children?: React.ReactNode; emptyMessage?: string; className?: string; maxHeight?: string; }
-export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(({ children, emptyMessage = "No items found.", className, maxHeight = "44dvh" }, ref) => {
+export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(({ children, emptyMessage = "No items found.", className, maxHeight }, ref) => {
   const { scrollableRef, focusedKey } = useCommandContext();
-  return <Frame edges="top" strokeAlign="outside" className={cn(styles.inner, className)}><Scroll ref={useMergeRefs(ref, scrollableRef)} className={styles.list} maxHeight={maxHeight} fade-y><List aria-label="Commands" highlighted={focusedKey as string | number | null}>{!children ? <div className={styles.empty}>{emptyMessage}</div> : children}</List></Scroll></Frame>;
+  return <Frame edges="top" strokeAlign="outside" className={cn(styles.inner, className)}><Scroll ref={ref} viewportRef={scrollableRef} className={styles.list} maxHeight={maxHeight} fade-y><List aria-label="Commands" highlighted={focusedKey as string | number | null}>{!children ? <div className={styles.empty}>{emptyMessage}</div> : children}</List></Scroll></Frame>;
 });
 CommandList.displayName = "Command.List";
 

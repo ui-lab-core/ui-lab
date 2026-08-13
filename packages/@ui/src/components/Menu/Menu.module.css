@@ -1,6 +1,16 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
+  .trigger-root:global(.menu) {
+    display: inline-flex;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .trigger-root:global(.menu) > .trigger {
+    flex: 1 1 auto;
+  }
+
   .content-root:global(.menu),
   .sub-content-root:global(.menu) {
     display: block;

@@ -107,7 +107,7 @@ function ActiveMarker({ points, className }: { points: Array<PlotPoint | null>; 
 
 /** Polyline series connecting one y value per row */
 const ChartLine = React.forwardRef<SVGGElement, ChartLineProps>(
-  ({ y, label, color, curve = "linear", className, styles: stylesProp }, ref) => {
+  ({ y, label, color, curve = "smooth", className, styles: stylesProp }, ref) => {
     const me = useSeries({ type: "line", y, label, color })
     const points = usePoints(me)
     const { ready } = useChartContext()
@@ -130,7 +130,7 @@ ChartLine.displayName = "ChartLine"
 
 /** Line series with a translucent fill down to the baseline */
 const ChartArea = React.forwardRef<SVGGElement, ChartAreaProps>(
-  ({ y, label, color, curve = "linear", className, styles: stylesProp }, ref) => {
+  ({ y, label, color, curve = "smooth", className, styles: stylesProp }, ref) => {
     const me = useSeries({ type: "area", y, label, color })
     const points = usePoints(me)
     const { ready, yScale, yDomain } = useChartContext()

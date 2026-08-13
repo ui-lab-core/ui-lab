@@ -22,6 +22,7 @@ export const componentDependencies: Record<string, ComponentDeps> = {
   'grid': { npm: [], internal: [] },
   'group': { npm: [], internal: ['button', 'input', 'select'] },
   'input': { npm: [], internal: ['label'] },
+  'icon': { npm: [], internal: [] },
   'label': { npm: [], internal: [] },
   'panel': { npm: [], internal: [] },
   'menu': { npm: ['@floating-ui/react-dom'], internal: [] },

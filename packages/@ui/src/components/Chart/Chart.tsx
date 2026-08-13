@@ -47,6 +47,7 @@ export interface SeriesData extends SeriesRegistration {
 export interface ChartStyleSlots {
   root?: StyleValue;
   plot?: StyleValue;
+  columnHighlight?: StyleValue;
 }
 
 export type ChartStylesProp = StylesProp<ChartStyleSlots>;
@@ -108,15 +109,16 @@ export interface ChartProps<T = any> extends React.HTMLAttributes<HTMLDivElement
   styles?: ChartStylesProp;
 }
 
-const resolveChartBaseStyles = createStylesResolver(['root', 'plot'] as const);
+const resolveChartBaseStyles = createStylesResolver(['root', 'plot', 'columnHighlight'] as const);
 
 function resolveChartStyles(styles: ChartStylesProp | undefined) {
   if (!styles) return resolveChartBaseStyles(styles)
-  const { root, plot } = styles
-  return resolveChartBaseStyles({ root, plot })
+  const { root, plot, columnHighlight } = styles
+  return resolveChartBaseStyles({ root, plot, columnHighlight })
 }
 
 const SERIES_DISPLAY_NAMES = new Set(["ChartLine", "ChartArea", "ChartBar", "ChartPoint"])
+const DECORATIVE_DISPLAY_NAMES = new Set(["ChartReference", "ChartCursor"])
 
 function displayNameOf(child: React.ReactNode): string | undefined {
   return React.isValidElement(child) ? (child.type as any)?.displayName : undefined
@@ -196,12 +198,14 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
     const gridChildren = childArray.filter(child => displayNameOf(child) === "ChartGrid")
     const axisChildren = childArray.filter(child => displayNameOf(child) === "ChartAxis")
     const seriesChildren = childArray.filter(child => SERIES_DISPLAY_NAMES.has(displayNameOf(child) ?? ""))
-    const referenceChildren = childArray.filter(child => displayNameOf(child) === "ChartReference")
+    const hasOnlyBars = seriesChildren.length > 0 && seriesChildren.every(child => displayNameOf(child) === "ChartBar")
+    const decorativeChildren = childArray.filter(child => DECORATIVE_DISPLAY_NAMES.has(displayNameOf(child) ?? ""))
+    const hasCursor = decorativeChildren.some(child => displayNameOf(child) === "ChartCursor")
     const overlayChildren = childArray.filter(
       child =>
         displayNameOf(child) !== "ChartGrid" &&
         displayNameOf(child) !== "ChartAxis" &&
-        displayNameOf(child) !== "ChartReference" &&
+        !DECORATIVE_DISPLAY_NAMES.has(displayNameOf(child) ?? "") &&
         !SERIES_DISPLAY_NAMES.has(displayNameOf(child) ?? "")
     )
 
@@ -397,8 +401,34 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
               {gridChildren}
               {axisChildren}
             </g>
+            {hasBars && activeIndex != null && (
+              <rect
+                className={cn('column-highlight', styles["column-highlight"], resolvedStyles.columnHighlight)}
+                data-active="true"
+                data-layer="bar-column-highlight"
+                x={xPosition(activeIndex) - plot.width / data.length / 2}
+                y={plot.y}
+                width={plot.width / data.length}
+                height={plot.height}
+                rx={6}
+              />
+            )}
             <g data-layer="series">{seriesChildren}</g>
-            <g data-layer="reference">{referenceChildren}</g>
+            <g data-layer="decorative">
+              {decorativeChildren}
+              {!hasCursor && !hasOnlyBars && ready && activeIndex != null && (
+                <g className={cn('cursor', styles.cursor)}>
+                  <line
+                    className={cn('cursor-line', styles["cursor-line"])}
+                    data-active="true"
+                    x1={xPositions[activeIndex]}
+                    x2={xPositions[activeIndex]}
+                    y1={plot.y}
+                    y2={plot.y + plot.height}
+                  />
+                </g>
+              )}
+            </g>
           </svg>
           <div
             ref={surfaceRef}

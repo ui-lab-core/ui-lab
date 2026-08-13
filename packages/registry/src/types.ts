@@ -7,7 +7,8 @@ export type ComponentCategory =
   | 'action'
   | 'composition'
   | 'layout'
-  | 'display';
+  | 'display'
+  | 'media';
 
 export interface ComponentSource {
   packageName: 'ui-lab-components';

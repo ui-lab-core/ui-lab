@@ -378,7 +378,7 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
       mode="range"
       state={{ value: rangeValue }}
       onChange={handleCalendarRangeChange}
-      disabled={disabledProp}
+      disabled={isDateDisabled}
       minDate={minDate}
       maxDate={maxDate}
       defaultMonth={calendarAnchor ?? undefined}
@@ -387,7 +387,7 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>((props, ref) 
     <DateCalendar
       state={{ value: singleValue }}
       onChange={handleCalendarSingleChange}
-      disabled={disabledProp}
+      disabled={isDateDisabled}
       minDate={minDate}
       maxDate={maxDate}
       defaultMonth={calendarAnchor ?? undefined}

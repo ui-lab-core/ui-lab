@@ -1,4 +1,5 @@
 declare const styles: {
+  'trigger-root': string
   trigger: string
   content: string
   'content-root': string

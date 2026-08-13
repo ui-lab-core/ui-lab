@@ -15,6 +15,7 @@ export const componentOrder: Record<ComponentCategory, string[]> = {
   navigation: ['path', 'tabs', 'anchor'],
   container: ['card', 'modal', 'scroll', 'mask', 'frame'],
   display: ['divider', 'table', 'code', 'chart'],
+  media: ['icon'],
 };
 
 /**

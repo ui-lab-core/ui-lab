@@ -8,6 +8,8 @@ import { useOverlayTriggerState } from "@react-stately/overlays";
 import { filterDOMProps } from "@react-aria/utils";
 import { cn } from "@/lib/utils";
 import { useControlledState } from "@/hooks/useControlledState";
+import { useAnimatedSize } from "@/hooks/useAnimatedSize";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { usePresence } from "@/hooks/usePresence";
 import { useScrollLock } from "../../hooks/useScrollLock";
 import { Card } from "../Card";
@@ -65,12 +67,19 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     useScrollLock(!embedded && overlayState.isOpen, scrollableRef.current);
     const engine = useCommandEngine({ items, filter });
     const { focusedKey, setFocusedKey, filteredItems, groupedItems, registerItem, unregisterItem, actionRef, moveFocus, runFocusedAction, searchValue, setSearchValue } = engine;
+    const animatedHeightRef = useAnimatedSize<HTMLDivElement>({
+      dimensions: "height",
+      duration: 280,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      trigger: `${searchValue}\u0000${filteredItems.map((item) => item.id).join("\u0000")}`,
+    });
+    const surfaceRef = useMergeRefs(modalRef, animatedHeightRef);
     React.useImperativeHandle(ref, () => paletteRef.current as HTMLDivElement);
     React.useEffect(() => { setMounted(true); }, []);
     const { present, state: presenceState, finishExit } = usePresence(mounted && overlayState.isOpen, transitionDuration);
     const wasOpenRef = React.useRef(false);
     React.useEffect(() => { if (overlayState.isOpen) { wasOpenRef.current = true; return; } if (wasOpenRef.current && !present) { commandState.triggerRef.current?.focus({ preventScroll: true }); wasOpenRef.current = false; } }, [commandState, overlayState.isOpen, present]);
-    React.useEffect(() => { if (!overlayState.isOpen) scrollableRef.current = null; if (!overlayState.isOpen && !present) setSearchValue(""); }, [overlayState.isOpen, present, setSearchValue]);
+    React.useEffect(() => { if (!overlayState.isOpen && !present) setSearchValue(""); }, [overlayState.isOpen, present, setSearchValue]);
     const handleKeyDown = (event: React.KeyboardEvent) => {
       if (!overlayState.isOpen) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); moveFocus(event.key === "ArrowDown" ? "down" : "up"); }
@@ -80,7 +89,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     const handleOverlayClick = React.useCallback((event: React.MouseEvent) => { if (event.target === event.currentTarget) overlayState.close(); }, [overlayState]);
     const { dialogProps } = useDialog({ "aria-label": "Command palette" }, modalRef);
     if (!embedded && (!mounted || !present)) return null;
-    const content = <Card {...(!embedded ? filterDOMProps(dialogProps) : {})} ref={modalRef} onKeyDown={handleKeyDown} onPointerDownCapture={() => { pointerRef.current = true; window.setTimeout(() => { pointerRef.current = false; }, 0); }} className={cn(embedded && "command", "content", styles.content, embedded && styles.embedded, className, resolved.root)} role={embedded ? undefined : "dialog"} aria-modal={embedded ? undefined : "true"}><CommandContext.Provider value={{ isOpen: overlayState.isOpen, close: overlayState.close, focusedKey, setFocusedKey, registerItem, unregisterItem, actionRef, surfaceRef: modalRef, pointerRef, searchInputRef, scrollableRef, dismissOnBlur: embedded, searchValue, setSearchValue, filteredItems, groupedItems }}>{children}</CommandContext.Provider></Card>;
+    const content = <Card {...(!embedded ? filterDOMProps(dialogProps) : {})} ref={surfaceRef} onKeyDown={handleKeyDown} onPointerDownCapture={() => { pointerRef.current = true; window.setTimeout(() => { pointerRef.current = false; }, 0); }} className={cn(embedded && "command", "content", styles.content, embedded && styles.embedded, className, resolved.root)} role={embedded ? undefined : "dialog"} aria-modal={embedded ? undefined : "true"}><CommandContext.Provider value={{ isOpen: overlayState.isOpen, close: overlayState.close, focusedKey, setFocusedKey, registerItem, unregisterItem, actionRef, surfaceRef: modalRef, pointerRef, searchInputRef, scrollableRef, dismissOnBlur: embedded, searchValue, setSearchValue, filteredItems, groupedItems }}>{children}</CommandContext.Provider></Card>;
     if (embedded) return content;
     return createPortal(<FocusScope contain restoreFocus><div className={cn("command", styles.overlay, resolved.overlay)} onClick={handleOverlayClick} data-state={presenceState} onTransitionEnd={(event) => { if (event.target === event.currentTarget && event.propertyName === "opacity") finishExit(); }}>{content}</div></FocusScope>, document.body);
   },

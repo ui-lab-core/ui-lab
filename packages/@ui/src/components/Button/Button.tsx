@@ -28,14 +28,13 @@ interface ButtonIconStyles {
 
 export interface ButtonStyleSlots {
   root?: SlotStyleValue;
-  content?: SlotStyleValue;
   icon?: SlotStyleValue | ButtonIconStyles;
   hint?: SlotStyleValue;
 }
 
 export type ButtonStylesProp = ButtonStyleSlots;
 
-const resolveButtonBaseStyles = createStylePropsResolver(['root', 'content', 'iconLeft', 'iconRight', 'hint'] as const);
+const resolveButtonBaseStyles = createStylePropsResolver(['root', 'iconLeft', 'iconRight', 'hint'] as const);
 
 function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconStyles {
   return typeof icon === 'object' && icon !== null && ('left' in icon || 'right' in icon);
@@ -43,7 +42,7 @@ function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconS
 
 function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
   if (!styles) return resolveButtonBaseStyles(styles)
-  const { root, content, icon, hint } = styles;
+  const { root, icon, hint } = styles;
 
   let iconLeft: SlotStyleValue | undefined;
   let iconRight: SlotStyleValue | undefined;
@@ -61,7 +60,7 @@ function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
     }
   }
 
-  return resolveButtonBaseStyles({ root, content, iconLeft, iconRight, hint });
+  return resolveButtonBaseStyles({ root, iconLeft, iconRight, hint });
 }
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "href" | "target"> {
@@ -221,17 +220,14 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     );
 
     const content = (
-      <span
-        className={cn("content", css.content, resolved.content.className)}
-        style={resolved.content.style}
-      >
+      <>
         {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
         {wrapChildrenAsIcon
           ? <span className={cn(iconSlotClassName, iconSizeClassName)}>{children}</span>
           : children}
         {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
         {hasHint(hint) && <Badge variant="secondary" className={cn('hint', css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
-      </span>
+      </>
     );
 
     const { targetProps } = useFocus({ mode: "target" });

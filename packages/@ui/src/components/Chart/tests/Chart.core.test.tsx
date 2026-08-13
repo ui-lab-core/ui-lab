@@ -136,6 +136,12 @@ describe('Chart.core', () => {
       expect(bars).toHaveLength(sampleData.length)
     })
 
+    it('uses smooth interpolation for line series by default', () => {
+      const container = renderChart()
+      const line = container.querySelector('svg [data-series] path')
+      expect(line?.getAttribute('d')).toContain('C')
+    })
+
     it('renders one point per row', () => {
       const container = renderChart({}, [<Chart.Point key="a" y="mrr" />])
       const points = container.querySelectorAll('svg [data-series] circle')

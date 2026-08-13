@@ -329,6 +329,35 @@ export const componentRegistry: ComponentRegistry = {
     examples: [],
   },
 
+  icon: {
+    id: "icon",
+    name: "Icon",
+    description: "Framework-agnostic local SVG icon resolved by variant and filename.",
+    category: "media",
+    experimental: true,
+    source: {
+  "packageName": "ui-lab-components",
+  "exportName": "Icon",
+  "packagePath": "dist/index.d.ts"
+},
+    relatedComponents: ["button","badge"],
+    tags: ["icon","svg","mask","asset"],
+    accessibility: {"hasAriaSupport":true,"notes":["Decorative by default with aria-hidden","Meaningful icons support an accessible label"]},
+    usage: undefined,
+    examples: [
+    {
+        "title": "Fill icon",
+        "description": "Resolve a local fill SVG by its filename and inherit the surrounding text color.",
+        "code": "import { Icon } from 'ui-lab-components'\n\nexport function Example() {\n  return <Icon variant=\"fill\" id=\"cake-fill\" size={24} />\n}"
+    },
+    {
+        "title": "Meaningful icon",
+        "description": "Add a label when the icon communicates information without adjacent text.",
+        "code": "import { Icon } from 'ui-lab-components'\n\nexport function Example() {\n  return <Icon variant=\"fill\" id=\"warning-fill\" label=\"Warning\" />\n}"
+    }
+],
+  },
+
   input: {
     id: "input",
     name: "Input",

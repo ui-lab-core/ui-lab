@@ -1,11 +1,21 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
+  .content {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: 0;
+    /* Single source of truth for the palette height: the search row and footer
+       keep their intrinsic size and the list absorbs whatever is left, so
+       raising --height grows the scroll region instead of doing nothing. */
+    --content-max-height: var(--height, min(32rem, 60dvh));
+    max-height: var(--content-max-height);
+  }
+
   /* Overlay Container */
   .overlay {
-    @apply fixed inset-0 flex items-start justify-center;
+    @apply fixed inset-0;
     z-index: 999;
-    padding-top: 20vh;
     /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */
     background-color: var(--overlay);
     backdrop-filter: var(--overlay-backdrop);
@@ -23,7 +33,25 @@
 
   /* Content */
   .overlay .content {
-    @apply relative m-2 w-full max-w-[28rem];
+    @apply absolute;
+    /* --origin-x / --origin-y place the palette the way background-position
+       places an image: the palette's own x%/y% point meets the overlay's
+       x%/y% point, so every value from 0% to 100% stays fully on screen and
+       50% is dead centre. Both axes stay separate custom properties on
+       purpose: CSS cannot pull the halves out of a combined `--origin: x y`
+       pair, and substituting a pair into single-value properties like `top`
+       invalidates them, which drops the palette into the corner. */
+    --origin-x-resolved: var(--origin-x, 50%);
+    --origin-y-resolved: var(--origin-y, 20%);
+    left: var(--origin-x-resolved);
+    top: var(--origin-y-resolved);
+    translate: calc(-1 * var(--origin-x-resolved)) calc(-1 * var(--origin-y-resolved));
+    width: min(var(--width, 28rem), calc(100% - 2rem));
+    /* Alignment positioning keeps the palette on screen at any origin, so the
+       cap only has to leave the viewport gutter. */
+    max-height: min(var(--content-max-height), calc(100% - 2rem));
+    /* Scale out of the same point the palette is anchored to. */
+    transform-origin: var(--origin-x-resolved) var(--origin-y-resolved);
     border-radius: var(--radius-sm);
     background: var(--background);
     font-family: var(--font-body, inherit);
@@ -31,7 +59,6 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    margin-inline: 1rem;
     box-shadow: var(--background-shadow);
     opacity: 0;
     transform: scale(0.98);
@@ -48,7 +75,9 @@
   }
 
   .embedded {
-    @apply relative w-full;
+    @apply relative;
+    width: min(var(--width, 100%), 100%);
+    transform-origin: top center;
     border-radius: var(--radius-sm);
     background: var(--background);
     font-family: var(--font-body, inherit);
@@ -61,9 +90,22 @@
 
   .inner {
     @apply pt-1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     --stroke-color: var(--border);
     --fill: var(--background-list);
     --frame-radius: var(--radius-sm);
+  }
+
+  /* Frame wraps its children in a div; it has to shrink with the Frame so the
+     scroll region resolves its height against the palette, not its content. */
+  .inner > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
   }
 
   /* Search Section */

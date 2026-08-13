@@ -7,6 +7,9 @@ declare const styles: {
   marker: string;
   point: string;
   bar: string;
+  "column-highlight": string;
+  cursor: string;
+  "cursor-line": string;
   rule: string;
   grid: string;
   reference: string;

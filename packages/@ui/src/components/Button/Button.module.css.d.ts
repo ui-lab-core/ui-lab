@@ -1,7 +1,6 @@
 export interface Styles {
   button: string;
   icon: string;
-  surface: string;
   hint: string;
   "default": string;
   "primary": string;

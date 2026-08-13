@@ -1,7 +1,7 @@
 import { Chart as ChartRoot, ChartContext, useChartContext } from "./Chart"
 import { ChartLine, ChartArea, ChartBar, ChartPoint } from "./Chart.Series"
 import { ChartAxis, ChartGrid } from "./Chart.Axis"
-import { ChartReference } from "./Chart.Decorative"
+import { ChartCursor, ChartReference } from "./Chart.Decorative"
 import { ChartTooltip, ChartLegend } from "./Chart.Overlays"
 
 const Chart = Object.assign(ChartRoot, {
@@ -12,6 +12,7 @@ const Chart = Object.assign(ChartRoot, {
   Axis: ChartAxis,
   Grid: ChartGrid,
   Reference: ChartReference,
+  Cursor: ChartCursor,
   Tooltip: ChartTooltip,
   Legend: ChartLegend,
 })
@@ -46,6 +47,9 @@ export type {
   ChartReferenceProps,
   ChartReferenceStyleSlots,
   ChartReferenceStylesProp,
+  ChartCursorProps,
+  ChartCursorStyleSlots,
+  ChartCursorStylesProp,
 } from "./Chart.Decorative"
 export type {
   ChartTooltipProps,

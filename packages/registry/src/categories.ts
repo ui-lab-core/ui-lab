@@ -69,6 +69,13 @@ export const categories = {
     description: 'Components for presenting content and visual structure, such as dividers, tables, code, and data visualizations.',
     iconName: categoryIconConfig.display.name,
   },
+  media: {
+    id: 'media',
+    name: 'Media Components',
+    label: 'Media',
+    description: 'Components for presenting images, video, icons, and rich visual assets.',
+    iconName: categoryIconConfig.media.name,
+  },
 } as const;
 
 /**

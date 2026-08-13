@@ -123,7 +123,7 @@ export interface ChartGridStyleSlots {
 export type ChartGridStylesProp = StylesProp<ChartGridStyleSlots>;
 
 export interface ChartGridProps {
-  /** Restricts gridlines to one axis; omitted renders both */
+  /** Gridline axis; defaults to horizontal y-axis rules */
   axis?: "x" | "y"
   /** Additional CSS class names */
   className?: string
@@ -141,7 +141,7 @@ function resolveGridStyles(styles: ChartGridStylesProp | undefined) {
 
 /** Recessive hairline gridlines aligned to the axis ticks */
 const ChartGrid = React.forwardRef<SVGGElement, ChartGridProps>(
-  ({ axis, className, styles: stylesProp }, ref) => {
+  ({ axis = "y", className, styles: stylesProp }, ref) => {
     const { ready, plot, xTickIndices, xPosition, yTicks, yScale } = useChartContext()
     const resolved = resolveGridStyles(stylesProp)
     if (!ready) return null

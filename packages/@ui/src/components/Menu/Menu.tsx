@@ -188,6 +188,7 @@ export { Menu, MenuPortal }
 export type {
   MenuProps,
   MenuTriggerProps,
+  MenuTriggerAs,
   MenuPortalProps,
   MenuContentProps,
   MenuGroupProps,

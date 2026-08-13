@@ -74,6 +74,29 @@
   .bar {
     fill: currentColor;
     stroke: none;
+    transition: opacity var(--chart-bar-highlight-duration, 160ms) ease-out;
+  }
+
+  .bar[data-active="true"] {
+    filter: brightness(1.08);
+  }
+
+  .column-highlight {
+    fill: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .cursor {
+    pointer-events: none;
+  }
+
+  .cursor-line {
+    stroke: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    opacity: 0.75;
+    vector-effect: non-scaling-stroke;
   }
 
   .rule {
@@ -117,6 +140,7 @@
   .tooltip {
     position: absolute;
     z-index: 10;
+    box-sizing: border-box;
     pointer-events: none;
     display: flex;
     flex-direction: column;
@@ -137,7 +161,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .tooltip {
+    .tooltip,
+    .bar {
       transition: none;
     }
   }

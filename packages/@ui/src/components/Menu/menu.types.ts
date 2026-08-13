@@ -3,6 +3,7 @@ import type { Key } from "react-aria"
 import type { ItemData } from "../../utils/list-navigation"
 import type { StylesProp } from "@/lib/styles"
 import type { StyleValue } from "@/lib/utils"
+import type { ButtonProps } from "../Button"
 
 export type SelectionMode = "none" | "single" | "multiple"
 export type MenuType = "context-menu" | "pop-over"
@@ -86,11 +87,13 @@ export interface MenuProps extends React.PropsWithChildren {
   onSelectionChange?: (keys: Set<Key>) => void
 }
 
-export interface MenuTriggerProps extends React.PropsWithChildren {
+export type MenuTriggerAs = "button" | "span" | "child"
+
+export interface MenuTriggerProps extends Omit<ButtonProps, "children" | "className" | "disabled" | "styles">, React.PropsWithChildren {
   /** Whether the trigger is non-interactive */
   disabled?: boolean
-  /** Whether to render the trigger as its child element */
-  asChild?: boolean
+  /** Render using Button, a span, or exactly one child element. Defaults to button for pop-overs and span for context menus. */
+  as?: MenuTriggerAs
   /** Additional CSS class names */
   className?: string
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */

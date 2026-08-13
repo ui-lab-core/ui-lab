@@ -37,7 +37,7 @@ describe('Chart.interaction', () => {
     it('marks the active row on marks with data-active', () => {
       const container = renderChart()
       pointToIndex(container, 3)
-      const markers = container.querySelectorAll('svg [data-active="true"]')
+      const markers = container.querySelectorAll('svg circle[data-active="true"]')
       // One active marker per line series.
       expect(markers).toHaveLength(2)
     })
@@ -47,6 +47,23 @@ describe('Chart.interaction', () => {
       pointToIndex(container, 2)
       const active = container.querySelectorAll('svg path[data-active="true"]')
       expect(active).toHaveLength(1)
+      expect(container.querySelector('[data-layer="bar-column-highlight"]')).toBeInTheDocument()
+      expect(container.querySelector('.cursor-line')).not.toBeInTheDocument()
+    })
+
+    it('renders a dashed cursor at the active row', () => {
+      const container = renderChart({}, [
+        <Chart.Line key="line" y="mrr" />,
+        <Chart.Cursor key="cursor" />,
+      ])
+      pointToIndex(container, 2)
+      expect(container.querySelector('[data-layer="decorative"] line[data-active="true"]')).toBeInTheDocument()
+    })
+
+    it('renders the cursor by default', () => {
+      const container = renderChart()
+      pointToIndex(container, 2)
+      expect(container.querySelector('.cursor-line[data-active="true"]')).toBeInTheDocument()
     })
   })
 

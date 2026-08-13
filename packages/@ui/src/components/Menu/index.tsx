@@ -8,6 +8,7 @@ import { MenuSub, MenuSubContent, MenuSubTrigger } from "./Menu.Submenu"
 import type {
   MenuProps,
   MenuTriggerProps,
+  MenuTriggerAs,
   MenuPortalProps,
   MenuContentProps,
   MenuGroupProps,
@@ -61,6 +62,7 @@ export { Menu }
 export type {
   MenuProps,
   MenuTriggerProps,
+  MenuTriggerAs,
   MenuPortalProps,
   MenuContentProps,
   MenuGroupProps,
@@ -75,4 +77,3 @@ export type {
   MenuSubTriggerProps,
   MenuSubContentProps,
 }
-

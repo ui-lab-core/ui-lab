@@ -15,4 +15,14 @@
     vector-effect: non-scaling-stroke;
   }
 
+  /* Widens the shape's closed region by one whole stroke where it cuts the
+     border away — a stroke grows a filled region by half its width, so this is
+     twice the border. Half of that clears the border's own thickness; the other
+     half is the margin that keeps the two antialiased edges from landing on the
+     same pixel column and leaving a hairline of border behind. `CAP_OVERRUN` in
+     Frame.tsx is what runs the shape's outline back across it. */
+  .cut {
+    stroke-width: calc(var(--frame-stroke-width) * 2);
+    vector-effect: non-scaling-stroke;
+  }
 }

@@ -35,7 +35,7 @@ describe('Menu.core', () => {
     it('uses the child element as the trigger when given JSX children', async () => {
       const container = renderMenuWithChildren(
         <>
-          <Menu.Trigger>
+          <Menu.Trigger as="child">
             <Button className="custom-trigger">Open Menu</Button>
           </Menu.Trigger>
           <Menu.Content>
@@ -65,7 +65,7 @@ describe('Menu.core', () => {
       )
       const trigger = getMenuTrigger(container)
 
-      expect(trigger.tagName).toBe('DIV')
+      expect(trigger.tagName).toBe('SPAN')
       expect(trigger.textContent).toContain('Open Menu')
     })
   })

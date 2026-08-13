@@ -234,12 +234,16 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     }, []);
 
     const scheduleScrollbarUpdate = useCallback(() => {
-      cleanupAnimationFrame();
+      // Coalesce resize/mutation bursts without postponing the measurement.
+      // Replacing the pending frame here can starve updates while an ancestor
+      // is continuously resizing (for example during a Web Animations height
+      // transition).
+      if (animationFrameRef.current !== null) return;
       animationFrameRef.current = requestAnimationFrame(() => {
         animationFrameRef.current = null;
         updateScrollbar();
       });
-    }, [cleanupAnimationFrame, updateScrollbar]);
+    }, [updateScrollbar]);
 
     const cleanupDragListeners = useCallback(() => {
       const active = activeDragListenersRef.current;
@@ -325,7 +329,18 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
       if (typeof ResizeObserver !== "undefined") {
         const resizeObserver = new ResizeObserver(scheduleScrollbarUpdate);
         if (containerRef.current) resizeObserver.observe(containerRef.current);
+        if (maskRef.current) resizeObserver.observe(maskRef.current);
         if (contentRef.current) resizeObserver.observe(contentRef.current);
+
+        // A scroll viewport can be sized by percentage heights, flex/grid
+        // constraints, or an animated ancestor without its own content
+        // changing. Observe that sizing chain so the final constrained layout
+        // always causes a fresh overflow measurement.
+        let ancestor = containerRef.current?.parentElement ?? null;
+        while (ancestor) {
+          resizeObserver.observe(ancestor);
+          ancestor = ancestor.parentElement;
+        }
         resizeObserverRef.current = resizeObserver;
       }
 
@@ -334,6 +349,10 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
         mutationObserver.observe(contentRef.current, { childList: true, subtree: true });
         mutationObserverRef.current = mutationObserver;
       }
+
+      // Measure once after observer connection as well as synchronously above;
+      // percentage-based descendants may settle after this layout effect.
+      scheduleScrollbarUpdate();
     }, [cleanupObservers, scheduleScrollbarUpdate, updateScrollbar]);
 
     const handleContentRef = useCallback(
