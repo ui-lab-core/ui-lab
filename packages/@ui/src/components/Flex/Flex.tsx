@@ -21,6 +21,13 @@ type FlexAlign =
   | "align-stretch"
   | "align-baseline";
 type FlexGap = GapSize | "none" | number;
+type FlexLayout =
+  | "center"
+  | "stack"
+  | "cluster"
+  | "bar"
+  | "actions"
+  | "inline";
 
 const JUSTIFY_KEYS: readonly FlexJustify[] = [
   "justify-start",
@@ -62,6 +69,8 @@ export interface FlexProps
   w?: SizingValue;
   /** Wraps the flex container in a container query parent for breakpoint-aware responsiveness */
   containerQueryResponsive?: boolean;
+  /** Golden-standard layout preset. Sets sensible `direction`/`wrap`/`gap`/`justify`/`align` defaults that any explicit prop overrides. */
+  layout?: FlexLayout;
 }
 
 const directionMap = {
@@ -86,8 +95,35 @@ const alignMap = {
   "align-baseline": styles["align-baseline"],
 } as const;
 
+interface FlexLayoutConfig {
+  direction?: FlexDirection;
+  wrap?: boolean;
+  gap?: FlexGap;
+  justify?: FlexJustify;
+  align?: FlexAlign;
+}
+
+/**
+ * Golden-standard flex layouts, expressed as bundles of the primitive props.
+ * Any explicit prop the caller passes overrides the matching layout default.
+ */
+const FLEX_LAYOUTS: Record<FlexLayout, FlexLayoutConfig> = {
+  /** Content centered on both axes — empty states, loaders, hero copy. */
+  center: { justify: "justify-center", align: "align-center" },
+  /** Vertical column with consistent block-axis rhythm. */
+  stack: { direction: "column", gap: "md" },
+  /** Wrapping row of small items (chips, tags, avatars), vertically centered. */
+  cluster: { wrap: true, align: "align-center", gap: "sm" },
+  /** Space-between row with centered items — nav bars, headers, toolbars. */
+  bar: { justify: "justify-between", align: "align-center" },
+  /** Right-aligned action row — form footers, dialog buttons. */
+  actions: { justify: "justify-end", align: "align-center", gap: "sm" },
+  /** Label beside control on a single baseline-centered row. */
+  inline: { align: "align-center", gap: "sm" },
+};
+
 const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
-  ({ className, style, direction, wrap, gap, "gap-x": gapX, "gap-y": gapY, h, w, containerQueryResponsive = false, children, ...rest }, ref) => {
+  ({ className, style, direction, wrap, gap, "gap-x": gapX, "gap-y": gapY, h, w, containerQueryResponsive = false, layout, children, ...rest }, ref) => {
     let justify: FlexJustify | undefined;
     let align: FlexAlign | undefined;
     const props = rest as Record<string, unknown>;
@@ -100,6 +136,13 @@ const Flex = React.forwardRef<HTMLDivElement, FlexProps>(
       if (props[key]) align = key;
       delete props[key];
     }
+
+    const layoutConfig = layout ? FLEX_LAYOUTS[layout] : undefined;
+    direction = direction ?? layoutConfig?.direction;
+    wrap = wrap ?? layoutConfig?.wrap;
+    gap = gap ?? layoutConfig?.gap;
+    justify = justify ?? layoutConfig?.justify;
+    align = align ?? layoutConfig?.align;
 
     const gapStep = (g?: FlexGap) =>
       g === "none" || !g ? 0 : typeof g === "number" ? g : resolveGapStep(g);

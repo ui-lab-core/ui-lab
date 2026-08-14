@@ -9,6 +9,7 @@ import {
 import { stripLeadingImports } from '@ui-lab-core/library/code';
 import { Code } from '@/features/docs/components/code-display/code';
 import { useNearViewport } from '@/shared/hooks/use-near-viewport';
+import { ResizablePreview } from '@/features/preview';
 import { Input } from 'ui-lab-components/input';
 import { Select } from 'ui-lab-components/select';
 import { Switch } from 'ui-lab-components/switch';
@@ -17,51 +18,12 @@ type Value = string | number | boolean;
 
 const emptyControls: ElementPreviewControl[] = [];
 
-/**
- * Default width for isolated (non-fill) component previews. Change here to
- * adjust every constrained preview at once.
- */
-const CONSTRAINED_PREVIEW_WIDTH = 'w-90';
-
-interface ConstraintOptions {
-  /** Tailwind width class for the constrained box. Defaults to the shared width. */
-  widthClass?: string;
-  /**
-   * When true the direct child fills the constrained width (block layout) instead
-   * of being centered at its intrinsic size. Use for box/canvas components
-   * (card, mask, frame) that otherwise collapse to their content width.
-   */
-  fillWidth?: boolean;
-}
-
-/**
- * Builds the wrapper class that constrains an isolated component to a centered
- * width so it neither stretches to fill the container nor shrinks too small.
- * Returns null when the component should fill the container (fill components).
- */
-function getConstraintClass(
-  layout: string | undefined,
-  constrain: boolean,
-  { widthClass = CONSTRAINED_PREVIEW_WIDTH, fillWidth = false }: ConstraintOptions = {},
-): string | null {
-  if (!constrain) return null;
-  const base = `${widthClass} max-w-full mx-auto`;
-  // Box/canvas components and start-aligned layouts fill the width as a block;
-  // everything else centers its intrinsic content.
-  return fillWidth || layout === 'start'
-    ? base
-    : `${base} flex flex-col items-center justify-center`;
-}
-
-export function Playground({ id, code, light, dark, previewHeight, constrain = true, widthClass, fillWidth }: {
+export function Playground({ id, code, light, dark, previewHeight }: {
   id: string;
   code: string;
   light: string;
   dark: string;
   previewHeight?: number;
-  constrain?: boolean;
-  widthClass?: string;
-  fillWidth?: boolean;
 }) {
   const config = getElementPreviewConfig('components', id);
   const Preview = getElementPreview('components', id);
@@ -86,21 +48,19 @@ export function Playground({ id, code, light, dark, previewHeight, constrain = t
 
   return (
     <div>
-      <div className="flex flex-col rounded-sm rounded-b-none border border-background-700 md:flex-row md:items-stretch">
+      <div className="grid min-w-0 grid-cols-1 rounded-sm rounded-b-none border border-background-700 md:grid-cols-[minmax(15rem,1fr)_12rem]">
         <div
-          className={`flex min-h-0 min-w-0 flex-1 overflow-auto p-2 ${config?.previewLayout === 'start' ? 'items-start justify-start' : 'items-center justify-center'}`}
-          style={{ minHeight: fixedPreviewHeight }}
+          className="min-h-0 min-w-0 overflow-auto p-2"
+          style={{ height: fixedPreviewHeight }}
         >
-          <Suspense fallback={null}>
-            {(() => {
-              const node = result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />);
-              const constraintClass = getConstraintClass(config?.previewLayout, constrain, { widthClass, fillWidth });
-              return constraintClass ? <div className={constraintClass}>{node}</div> : node;
-            })()}
-          </Suspense>
+          <ResizablePreview layout={config?.previewLayout}>
+            <Suspense fallback={null}>
+              {result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />)}
+            </Suspense>
+          </ResizablePreview>
         </div>
         {controls.length ? (
-          <div className="w-full space-y-3 border-t border-background-700 p-3 md:w-48 md:shrink-0 md:border-l md:border-t-0">
+          <div className="w-full space-y-3 border-t border-background-700 p-3 md:w-auto md:border-l md:border-t-0">
             {controls.map((control) => (
               <label className="flex flex-col gap-2 text-xs font-medium text-foreground-400" key={control.name}>
                 <span>{control.label}</span>
@@ -196,11 +156,11 @@ export function ExampleCode({ id, code }: { id: string; code: string }) {
   );
 }
 
-export function Preview({ id, previewHeight, flushBottom, constrain = true, widthClass, fillWidth }: { id: string; previewHeight?: number; flushBottom?: boolean; constrain?: boolean; widthClass?: string; fillWidth?: boolean }) {
-  return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} constrain={constrain} widthClass={widthClass} fillWidth={fillWidth} key={id} />;
+export function Preview({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
+  return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} key={id} />;
 }
 
-function PreviewInstance({ id, previewHeight, flushBottom, constrain = true, widthClass, fillWidth }: { id: string; previewHeight?: number; flushBottom?: boolean; constrain?: boolean; widthClass?: string; fillWidth?: boolean }) {
+function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isNearViewport = useNearViewport(rootRef, { rootMargin: '600px 0px' });
@@ -209,7 +169,6 @@ function PreviewInstance({ id, previewHeight, flushBottom, constrain = true, wid
   const Implementation = getElementPreview('components', id);
   const config = getElementPreviewConfig('components', id);
   const fixedPreviewHeight = previewHeight ?? config?.previewHeight ?? 320;
-  const constraintClass = getConstraintClass(config?.previewLayout, constrain, { widthClass, fillWidth });
 
   useLayoutEffect(() => {
     if (!isNearViewport) return;
@@ -266,18 +225,14 @@ function PreviewInstance({ id, previewHeight, flushBottom, constrain = true, wid
       <div
         ref={contentRef}
         aria-hidden={loaded ? undefined : true}
-        className="flex h-full min-h-0 w-full items-center justify-center overflow-auto p-2"
+        className="h-full min-h-0 w-full overflow-auto p-2"
         inert={loaded ? undefined : true}
       >
-        <Suspense fallback={null}>
-          {isNearViewport && Implementation ? (
-            constraintClass ? (
-              <div className={constraintClass}><Implementation /></div>
-            ) : (
-              <Implementation />
-            )
-          ) : null}
-        </Suspense>
+        <ResizablePreview layout={config?.previewLayout}>
+          <Suspense fallback={null}>
+            {isNearViewport && Implementation ? <Implementation /> : null}
+          </Suspense>
+        </ResizablePreview>
       </div>
 
       {!overlayGone ? (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FocusScope } from "react-aria";
 import {
   Command,
   scoreCommandRelevance,
@@ -10,7 +9,6 @@ import {
 } from "ui-lab-components/command";
 import { Badge } from "ui-lab-components/badge";
 import { Divider } from "ui-lab-components/divider";
-import { Modal } from "ui-lab-components/modal";
 import { useApp } from "@/features/theme/lib/app-context";
 import { useCommands, type ComponentResult } from "../hooks/use-commands";
 import css from "./command-palette.module.css";
@@ -133,31 +131,14 @@ export default function CommandPalette() {
   }, []);
 
   return (
-    <Modal
+    <Command
+      className={css.palette}
       open={isCommandPaletteOpen}
       onOpenChange={setIsCommandPaletteOpen}
-      close={false}
-      aria-label="Command palette"
-      overlayClassName="command"
-      styles={{
-        overlay: css.overlay,
-        backdrop: css.backdrop,
-        root: css.panel,
-        content: css.content,
-      }}
+      items={commands}
+      filter={matchesSearch}
     >
-      <FocusScope contain restoreFocus>
-        <Command
-          className={css.palette}
-          open={isCommandPaletteOpen}
-          embedded
-          onOpenChange={setIsCommandPaletteOpen}
-          items={commands}
-          filter={matchesSearch}
-        >
-          <Content itemCount={commands.length} />
-        </Command>
-      </FocusScope>
-    </Modal>
+      <Content itemCount={commands.length} />
+    </Command>
   );
 }

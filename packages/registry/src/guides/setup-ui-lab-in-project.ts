@@ -39,7 +39,7 @@ const setupUiLabInProjectGuide: GuideMetadata = {
     'The app uses Tailwind v4 or another setup that can import UI Lab CSS.',
     'The agent can edit the app stylesheet entrypoint such as app/globals.css, src/index.css, or src/main.css.',
     'The package manager for the repo is known before writing install commands.',
-    'theme.css must be created (via get_theme_setup) before the stylesheet entrypoint is edited — the import will be broken otherwise.',
+    'The canonical theme guide must be consulted before creating theme.css so the stylesheet entrypoint does not reference a missing file.',
   ],
   steps: [
     {
@@ -66,12 +66,12 @@ const setupUiLabInProjectGuide: GuideMetadata = {
       title: 'Create the app-owned theme.css token file',
       goal: 'Provide the design token layer that UI Lab components depend on for color.',
       instructions: [
-        'Call get_theme_setup to get the canonical theme.css content and creation instructions.',
-        'Create the file at app/theme.css (Next.js) or src/theme.css (Vite) using the code returned by get_theme_setup.',
+        'Call search_guides with the exact query "theme-switching-nextjs" and detail "full" for the canonical theme.css content.',
+        'Create the file at app/theme.css (Next.js) or src/theme.css (Vite) using the code returned by that guide.',
         'Do not skip this step — if theme.css is missing, components will render without tokens and the site will look broken.',
         'theme.css must define the full foundational token contract for a fully app-owned theme, including --border-width-base: 1px. Missing foundational tokens can make component CSS compute invalid values (for example, square Switch thumbs instead of rounded ones).',
       ],
-      relatedTools: ['get_theme_setup'],
+      relatedTools: ['search_guides'],
     },
     {
       title: 'Import styles in the correct order',
@@ -130,13 +130,13 @@ export default function Home() {
         'Keep the base setup small and predictable, then branch into the dedicated theming workflow when needed.',
       instructions: [
         'If the task includes light/dark mode persistence or first-paint correctness, fetch the theme-switching guide next.',
-        'Use get_theme_setup only as supplementary MCP context if the repo still uses that provider-based path.',
+        'Use search_guides to retrieve the exact theming guide only when the task requires it.',
       ],
-      relatedTools: ['search_guides', 'get_guide', 'get_theme_setup'],
+      relatedTools: ['search_guides'],
     },
   ],
   validation: [
-    'theme.css exists in the project and was created using the content from get_theme_setup.',
+    'theme.css exists in the project and follows the canonical theming guide.',
     'A page renders at least one UI Lab component with non-default visual styling.',
     'The stylesheet import order is: tailwindcss → theme.css → ui-lab-components/styles.css.',
     'ui-lab-theme-onyx is not installed or imported — theme.css replaces it.',
@@ -144,8 +144,7 @@ export default function Home() {
     'theme.css defines --border-width-base and the rest of the foundational token contract UI Lab components read.',
     'The chosen install command matches the repo package manager.',
   ],
-  relatedTools: ['search_components', 'get_component', 'get_theme_setup', 'search_guides', 'get_guide'],
-  relatedResources: ['component://button', 'component://card', 'component://input'],
+  relatedTools: ['get_component', 'search_guides'],
   relatedGuides: ['theme-switching-nextjs', 'translate-existing-ui-to-ui-lab'],
   examplePrompts: [
     {

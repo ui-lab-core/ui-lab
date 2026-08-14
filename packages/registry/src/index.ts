@@ -70,30 +70,17 @@ export type {
   PackageMetadata,
   Example,
   ComponentExample,
-  ElementMetadata,
-  ElementVariant,
-  ElementFile,
-  ElementRegistry,
-  SectionMetadata,
-  SectionVariant,
-  SectionRegistry,
-  StarterMetadata,
-  StarterVariant,
-  StarterRegistry,
   GuideCategory,
   GuideStep,
   GuideExamplePrompt,
   GuideMetadata,
   GuideRegistry,
-  LayoutConfig,
   ControlOption,
   ControlDef,
   ComponentVariant,
   ComponentAccessibilityNote,
   SiteComponentExample,
-  ComponentDetail,
-  PricingInfo,
-  PatternComplexity
+  ComponentDetail
 } from './types.js';
 
 // Helpers
@@ -114,61 +101,6 @@ export {
 // Category utilities
 export { getCategoryIcon } from './utils/get-category-icon.js';
 
-// Catalog (elements, sections, starters, patterns) — snapshot of @ui-lab-core/library/catalog
-export {
-  elementRegistry,
-  elementsList,
-  getElementById,
-  getElementsByCategory,
-  getElementsByTag,
-  searchElements,
-  getAllCategories,
-  getAllTags,
-  elementCategories,
-  elementCategoryMapping,
-  getCategoryForElement,
-  getCategoryDefinition,
-  groupElementsByCategory,
-  getElementsInCategory,
-  getCategoriesWithElements,
-  elementPackages,
-  getPackageById,
-  getAllPackages,
-  getElementsInPackage,
-  getPackageForElement,
-  elementOrder,
-  getElementsInOrder,
-  getAllElementsInOrder,
-  sectionRegistry,
-  getAllSections,
-  getSectionById,
-  getSectionsByCategory,
-  getSectionsInCategory,
-  getSectionsByTag,
-  searchSections,
-  getAllSectionCategories,
-  getAllSectionTags,
-  sectionCategories,
-  getCategoryForSection,
-  groupSectionsByCategory,
-  starterRegistry,
-  getAllStarters,
-  getStarterById,
-  getStartersByCategory,
-  getStartersInCategory,
-  getStartersByTag,
-  searchStarters,
-  getAllStarterCategories,
-  getAllStarterTags,
-} from './catalog.js';
-export type {
-  ElementCategoryId,
-  ElementCategoryDefinition,
-  SectionCategoryId,
-  SectionCategoryDefinition,
-} from './catalog-types.js';
-export type { ElementPackageMetadata } from './types.js';
-
 // Guides
 export {
   guideRegistry,
@@ -178,25 +110,6 @@ export {
   getGuidesByTag,
   searchGuides,
 } from './guides/index.js';
-
-// Patterns
-export {
-  patternRegistry,
-  getPatternById,
-  getAllPatterns,
-  getPatternsByCategory,
-  getPatternsByTag,
-  searchPatterns,
-  getPatternsByComplexity,
-  getAllPatternCategories,
-  getAllPatternTags,
-} from './catalog.js';
-export type {
-  PatternMetadata,
-  PatternRegistry,
-  PatternCategory,
-  PatternVariation,
-} from './types.js';
 
 // Providers
 export {

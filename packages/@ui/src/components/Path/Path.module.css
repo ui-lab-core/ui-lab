@@ -21,8 +21,8 @@
   .link {
     @apply relative cursor-pointer px-2 py-1;
     border: 0;
-    /* Inherit the item radius so the focus ring matches rounded breadcrumbs. */
-    border-radius: inherit;
+    /* Small radius on each entry so the focus ring matches rounded breadcrumbs. */
+    border-radius: var(--radius-sm, 0.375rem);
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-body, inherit);

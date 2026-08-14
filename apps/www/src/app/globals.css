@@ -83,6 +83,17 @@
   --letter-spacing-header-xl: normal;
   --letter-spacing-code: normal;
   --font-weight-code: 400;
+  /* Semantic component spacing tokens are runtime values, not Tailwind theme
+     keys. Keeping them outside @theme prevents names such as --spacing-md and
+     --spacing-lg from replacing Tailwind's max-width container utilities. */
+  --spacing-scale: 0.9;
+  --spacing-xs: clamp(0.450rem, 2.25vw, 0.675rem);
+  --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
+  --spacing-base: clamp(0.760rem, 3.81vw, 1.141rem);
+  --spacing-md: clamp(0.989rem, 4.94vw, 1.483rem);
+  --spacing-lg: clamp(1.285rem, 6.43vw, 1.928rem);
+  --spacing-xl: clamp(1.670rem, 8.35vw, 2.507rem);
+  --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
   /* Derived deep root layer. Keep the token opaque so fixed surfaces do not
      reveal content underneath them; callers can add opacity explicitly when
      translucency is intentional. */
@@ -109,14 +120,6 @@
   --header-scale: 0.75;
   --body-scale: 0.75;
 
-  --spacing-scale: 0.9;
-  --spacing-xs: clamp(0.450rem, 2.25vw, 0.675rem);
-  --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
-  --spacing-base: clamp(0.760rem, 3.81vw, 1.141rem);
-  --spacing-md: clamp(0.989rem, 4.94vw, 1.483rem);
-  --spacing-lg: clamp(1.285rem, 6.43vw, 1.928rem);
-  --spacing-xl: clamp(1.670rem, 8.35vw, 2.507rem);
-  --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
   --spacing: clamp(0.180rem, 2.25vw, 0.225rem);
 
   --radius-xs: 0.425rem;

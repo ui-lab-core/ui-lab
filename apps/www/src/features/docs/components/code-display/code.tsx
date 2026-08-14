@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
 import { type OklchColor } from "@/features/theme/lib/color-utils";
 import { useApp } from "@/features/theme/lib/app-context";
 import { CopyButton } from "./copy-button";
@@ -54,6 +54,8 @@ interface CodeProps {
   showLineNumbers?: boolean;
   filename?: string;
   heading?: string;
+  /** Extra controls rendered at the right edge of the single-file (filename) header. */
+  headerActions?: ReactNode;
   maxHeightLines?: number;
   backgroundColor?: OklchColor;
   foregroundColor?: OklchColor;
@@ -111,6 +113,7 @@ export function Code({
   showLineNumbers = false,
   filename,
   heading,
+  headerActions,
   preHighlightedLight,
   preHighlightedDark,
   maxHeightLines = MAX_HEIGHT_LINES,
@@ -219,7 +222,10 @@ export function Code({
           ) : (
             <div className="flex flex-1 items-center justify-between px-3">
               <span>{filename}</span>
-              <span className="text-foreground-400">{language}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-foreground-400">{language}</span>
+                {headerActions}
+              </div>
             </div>
           )}
           {heading ? (

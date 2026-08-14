@@ -212,8 +212,7 @@
     --border: var(--background-700);
     --height: min(45rem, 70dvh);
     --width: 50rem;
-    --origin-x: 20%;
-    --origin-y: 90%;
+    --origin: 50% 10%;
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
     --overlay: rgb(0 0 0 / 20%);

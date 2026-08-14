@@ -19,6 +19,8 @@ import styles from "./Expand.module.css";
 
 type ExpandDirection = "below" | "above" | "left" | "right";
 
+export type ExpandLayout = "standalone" | "contained";
+
 interface ExpandIconStyles {
   collapsed?: StyleValue;
   expanded?: StyleValue;
@@ -303,6 +305,8 @@ export interface ExpandProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onChange"> {
   /** Header content rendered in preset mode */
   title?: React.ReactNode;
+  /** Controls whether the expand supplies its own radius or sits flush inside a bordered container. */
+  layout?: ExpandLayout;
   /** Initial expanded state. For controlled usage, pass `state={{ expanded }}`. */
   expanded?: boolean;
   /** Controlled state. */
@@ -328,6 +332,7 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
     {
       className,
       title,
+      layout = "standalone",
       expanded,
       state: controlledState,
       isExpanded: legacyExpanded,
@@ -387,6 +392,7 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
             data-selected={state.isSelected ? "true" : undefined}
             data-expanded={state.isSelected ? "true" : undefined}
             data-disabled={disabled ? "true" : undefined}
+            data-layout={layout}
             {...props}
           >
             {title !== undefined ? (

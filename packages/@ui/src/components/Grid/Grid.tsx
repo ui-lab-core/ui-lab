@@ -37,6 +37,13 @@ type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
 type GridTemplateColumns = GridColumns | (string & {});
 type GridMasonryColumnWidth = string & {};
 type GridGap = GapSize | "none" | number;
+type GridLayout =
+  | "cards"
+  | "dashboard"
+  | "sidebar"
+  | "sidebar-end"
+  | "split"
+  | "gallery";
 
 type ResponsiveValue<T> = { sm?: T; md?: T; lg?: T; xl?: T };
 
@@ -96,6 +103,8 @@ export interface GridProps
   masonryItemGap?: boolean;
   /** Wraps the grid in a container query parent for breakpoint-aware responsiveness */
   containerQueryResponsive?: boolean;
+  /** Golden-standard layout preset. Sets sensible `columns`/`rows`/`gap` defaults that any explicit prop overrides. */
+  layout?: GridLayout;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: GridStylesProp;
 }
@@ -147,14 +156,39 @@ const flowVal: Record<GridAutoFlow, string> = {
   "column-dense": "column dense",
 };
 
+interface GridLayoutConfig {
+  columns?: GridTemplateColumns | ResponsiveValue<GridTemplateColumns>;
+  rows?: GridRows | ResponsiveValue<GridRows>;
+  gap?: GridGap | ResponsiveValue<GridGap>;
+}
+
+/**
+ * Golden-standard grid layouts, expressed as bundles of the primitive props.
+ * Any explicit prop the caller passes overrides the matching layout default.
+ */
+const GRID_LAYOUTS: Record<GridLayout, GridLayoutConfig> = {
+  /** Fluid card grid — tracks auto-fit to the available width, no breakpoints. */
+  cards: { columns: "auto-fit", gap: "md" },
+  /** Metric/overview row that steps from 1 → 2 → 4 columns as space appears. */
+  dashboard: { columns: { sm: 1, md: 2, lg: 4 }, gap: "md" },
+  /** Fixed navigation rail beside fluid content. */
+  sidebar: { columns: "16rem minmax(0, 1fr)", gap: "lg" },
+  /** Fluid content beside a fixed aside / table of contents. */
+  "sidebar-end": { columns: "minmax(0, 1fr) 16rem", gap: "lg" },
+  /** Two equal panes. */
+  split: { columns: 2, gap: "lg" },
+  /** Masonry gallery that steps from 1 → 2 → 3 columns. */
+  gallery: { rows: "masonry", columns: { sm: 1, md: 2, lg: 3 }, gap: "md" },
+};
+
 const Grid = React.forwardRef<HTMLDivElement, GridProps>(
   (
     {
       className,
       style,
-      columns = 3,
-      rows = "auto",
-      gap = "md",
+      columns,
+      rows,
+      gap,
       h,
       w,
       rowGap,
@@ -168,12 +202,18 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       masonryColumnFill,
       masonryItemGap = true,
       containerQueryResponsive = false,
+      layout,
       styles,
       children,
       ...rest
     },
     ref
   ) => {
+    const layoutConfig = layout ? GRID_LAYOUTS[layout] : undefined;
+    columns = columns ?? layoutConfig?.columns ?? 3;
+    rows = rows ?? layoutConfig?.rows ?? "auto";
+    gap = gap ?? layoutConfig?.gap ?? "md";
+
     let justify: GridJustify | undefined;
     let align: GridAlign | undefined;
     const props = rest as Record<string, unknown>;

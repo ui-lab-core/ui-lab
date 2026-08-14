@@ -283,7 +283,7 @@ export function ThemeToggle() {
     'theme.css is imported before ui-lab-components/styles.css.',
     'The html element is only stamped for explicit light or dark overrides.',
   ],
-  relatedTools: ['get_theme_setup', 'search_guides', 'get_guide'],
+  relatedTools: ['search_guides', 'get_component'],
   relatedGuides: ['setup-ui-lab-in-project'],
   examplePrompts: [
     {

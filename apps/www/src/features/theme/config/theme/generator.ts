@@ -151,12 +151,20 @@ ${themeInlineMapping}
 @import "./theme.css";
 @import "ui-lab-components/styles.css";
 
-@theme {
+/* Runtime component tokens stay outside @theme. Tailwind treats names inside
+   @theme as utility namespaces: --spacing-lg would replace max-w-lg's
+   container width, and --text-sm would replace Tailwind's font-size scale. */
+:root {
 ${typographyCSS}
 ${codeTypographyCSS}
 ${headingAliasCSS}
 
 ${spacingCSS}
+}
+
+/* These scales intentionally customize Tailwind's rounded-* and border-*
+   utilities in addition to supplying UI Lab's component tokens. */
+@theme {
 ${radiusCSS}
 ${borderCSS}
 }

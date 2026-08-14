@@ -34,24 +34,19 @@
   /* Content */
   .overlay .content {
     @apply absolute;
-    /* --origin-x / --origin-y place the palette the way background-position
-       places an image: the palette's own x%/y% point meets the overlay's
-       x%/y% point, so every value from 0% to 100% stays fully on screen and
-       50% is dead centre. Both axes stay separate custom properties on
-       purpose: CSS cannot pull the halves out of a combined `--origin: x y`
-       pair, and substituting a pair into single-value properties like `top`
-       invalidates them, which drops the palette into the corner. */
-    --origin-x-resolved: var(--origin-x, 50%);
-    --origin-y-resolved: var(--origin-y, 20%);
-    left: var(--origin-x-resolved);
-    top: var(--origin-y-resolved);
-    translate: calc(-1 * var(--origin-x-resolved)) calc(-1 * var(--origin-y-resolved));
+    /* Anchor the palette's top center at a viewport-relative position. Keeping
+       the anchor on the top edge prevents filtering from moving the palette
+       when its animated height changes. */
+    offset-path: ray(0deg at var(--origin, 50% 20%));
+    offset-distance: 0;
+    offset-anchor: center top;
+    offset-rotate: 0deg;
     width: min(var(--width, 28rem), calc(100% - 2rem));
     /* Alignment positioning keeps the palette on screen at any origin, so the
        cap only has to leave the viewport gutter. */
     max-height: min(var(--content-max-height), calc(100% - 2rem));
-    /* Scale out of the same point the palette is anchored to. */
-    transform-origin: var(--origin-x-resolved) var(--origin-y-resolved);
+    /* Keep opening motion anchored to the same stable top edge. */
+    transform-origin: center top;
     border-radius: var(--radius-sm);
     background: var(--background);
     font-family: var(--font-body, inherit);

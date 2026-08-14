@@ -53,19 +53,12 @@ const translateExistingUiToUiLabGuide: GuideMetadata = {
       goal:
         'Choose the narrowest matching abstraction: component, pattern, element, or section.',
       instructions: [
-        'Use search_components for atomic parts such as buttons, inputs, cards, modals, lists, and tables.',
-        'Use search_patterns when the problem already has a repeatable UI structure like auth, empty states, or settings forms.',
-        'Use search_elements or search_sections when the current UI is already a multi-component block or landing-page section.',
+        'Use get_component for authoritative information about atomic parts such as buttons, inputs, cards, modals, lists, and tables.',
+        'Use search_workshop for compositional references, patterns, elements, sections, examples, and starters.',
       ],
       relatedTools: [
-        'search_components',
         'get_component',
-        'search_patterns',
-        'get_pattern',
-        'search_elements',
-        'get_element',
-        'search_sections',
-        'get_section',
+        'search_workshop',
       ],
     },
     {
@@ -75,7 +68,7 @@ const translateExistingUiToUiLabGuide: GuideMetadata = {
       instructions: [
         'Preserve prop names, event handlers, and rendering branches from the original implementation where possible.',
         'Replace only the visual wrappers and interactive primitives with UI Lab components.',
-        'After the structure is stable, use get_semantic_color or component APIs to refine variants and token usage.',
+        'After the structure is stable, use component variants and the foundation guide to refine intent and token usage.',
       ],
     },
     {
@@ -97,7 +90,7 @@ const translateExistingUiToUiLabGuide: GuideMetadata = {
         'Verify labels, button intent, keyboard behavior, and aria attributes are still correct.',
         'If the original view used ad-hoc Tailwind colors, replace them with UI Lab token families instead of raw Tailwind colors or hex values.',
       ],
-      relatedTools: ['get_semantic_color', 'get_component'],
+      relatedTools: ['get_component', 'search_guides'],
     },
   ],
   validation: [
@@ -107,15 +100,9 @@ const translateExistingUiToUiLabGuide: GuideMetadata = {
     'Interactive behavior and accessibility semantics remain intact.',
   ],
   relatedTools: [
-    'search_components',
     'get_component',
-    'get_semantic_color',
-    'search_patterns',
-    'get_pattern',
-    'search_elements',
-    'get_element',
-    'search_sections',
-    'get_section',
+    'search_guides',
+    'search_workshop',
   ],
   relatedGuides: ['setup-ui-lab-in-project'],
   examplePrompts: [
