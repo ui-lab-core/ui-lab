@@ -1,34 +1,38 @@
 import { guidesAdapter } from '../adapters/guides-adapter.js';
 
-export async function handleSearchGuides(input: { query: string }): Promise<any> {
-  const results = guidesAdapter.search(input.query, 10);
+function guideSummary(guide: NonNullable<ReturnType<typeof guidesAdapter.getGuide>>) {
   return {
-    success: true,
-    guides: results.map((guide: any) => ({
-      id: guide.id,
-      name: guide.name,
-      description: guide.description,
-      category: guide.category,
-      summary: guide.summary,
-      tags: guide.tags,
-      whenToUse: guide.whenToUse,
-      relatedTools: guide.relatedTools,
-    })),
-    count: results.length,
-    message:
-      results.length === 0
-        ? `No guides found for "${input.query}". Try: "setup", "dark mode", "theme switching", "translate existing UI", or "migration".`
-        : `Found ${results.length} guide(s). Use get_guide(id) before editing when one matches the task.`,
+    ref: guide.id,
+    name: guide.name,
+    description: guide.description,
+    category: guide.category,
+    summary: guide.summary,
+    tags: guide.tags,
+    whenToUse: guide.whenToUse,
   };
 }
 
-export async function handleGetGuide(input: { id: string }): Promise<any> {
-  const guide = guidesAdapter.getById(input.id);
-  if (!guide) {
-    throw new Error(`Guide not found: "${input.id}". Use search_guides to find valid IDs.`);
+export async function handleSearchGuides(input: {
+  query: string;
+  detail?: 'summary' | 'full';
+  limit?: number;
+}) {
+  const query = input.query.trim();
+  if (!query) throw new Error('Guide query must not be empty.');
+
+  const exact = guidesAdapter.getGuide(query.toLowerCase());
+  if (input.detail === 'full') {
+    const guide = exact ?? guidesAdapter.search(query, 1)[0];
+    if (!guide) throw new Error(`No UI Lab guide matches "${query}".`);
+    return { guide };
   }
-  return {
-    success: true,
-    guide,
-  };
+
+  if (exact) return { query, matches: [guideSummary(exact)] };
+
+  const limit = Math.min(10, Math.max(1, input.limit ?? 5));
+  const matches = guidesAdapter.search(query, limit).map(guideSummary);
+  if (matches.length === 0) {
+    throw new Error(`No UI Lab guide matches "${query}".`);
+  }
+  return { query, matches };
 }

@@ -1,163 +1,45 @@
-# UI Lab MCP Server
+# UI Lab MCP
 
-A Model Context Protocol (MCP) server for the UI Lab component library that enables Claude and other AI coding agents to discover, understand, and generate production-ready component code.
+A focused Model Context Protocol server that gives coding agents access to UI Lab’s design knowledge, component APIs, and implementation workshop.
 
-## Overview
+## Tools
 
-The UI Lab MCP Server bridges the gap between component metadata and AI agent capabilities, allowing agents to:
+The server intentionally exposes three flexible tools.
 
-- **Discover Components**: Search for components by name, description, or category
-- **Follow Task Guides**: Find workflow guides for setup, migration, translation, and theming work
-- **Understand APIs**: Get complete type information for component props and sub-components
-- **Generate Code**: Produce working TSX code with proper imports and type safety
-- **Resolve Dependencies**: Understand what npm packages and internal components are required
-- **Install Guidance**: Get step-by-step instructions for installing components
+### `get_component`
 
-## Phase 1 Features (MVP)
+Find a component or retrieve authoritative component context.
 
-### Tools (Agent-Callable Functions)
+- Natural-language queries return concise ranked matches.
+- Exact component IDs support `summary`, `api`, `usage`, `examples`, and `full` detail.
+- Component/example references return that exact public example source.
 
-1. **search_components** - Search for components by query and category
-2. **get_component** - Get full metadata for a specific component
-3. **get_semantic_color** - Get recommended color for a component with intent
-4. **get_theme_setup** - Get theme system setup instructions and code for light/dark mode
-5. **search_guides** - Find a workflow guide for setup, migration, translation, or theming tasks
-6. **get_guide** - Get a full guide with prerequisites, steps, and validation checks
-7. **search_patterns** - Search for reusable UI patterns
-8. **get_pattern** - Get full pattern metadata and code
-9. **search_elements** - Search multi-component UI blocks
-10. **get_element** - Get a full element definition
-11. **search_sections** - Search landing-page sections
-12. **get_section** - Get a full section definition
+### `search_guides`
 
-### Quick Start
+Search durable UI Lab guidance.
 
-#### Installation
+- Use `foundation` for the core design, composition, token, responsive, interaction, and accessibility rules.
+- Summary detail returns ranked guide metadata.
+- Full detail returns one exact or best-matching guide.
 
-```bash
-pnpm install
-```
+### `search_workshop`
 
-#### Build
+Search implementation references across component examples, patterns, elements, sections, and starters.
 
-```bash
-pnpm build
-```
+- Summary detail returns small ranked results without source-code noise.
+- Filter by `example`, `pattern`, `element`, `section`, or `starter` when useful.
+- Full detail retrieves one exact item and an optional variation, including source files when available.
 
-#### Development
+## Design
 
-```bash
-pnpm dev
-```
+The MCP is a thin retrieval layer. Canonical component, catalog, and guide content lives in `ui-lab-registry` and `@ui-lab-core/library`. Internal content categories remain searchable metadata rather than separate agent tools.
 
-#### Start Server
+Responses use progressive disclosure. Search calls default to five summaries, while complete APIs, guides, and implementation source require an explicit detail request. Tool failures use MCP errors instead of success flags and instructional response messages.
 
-```bash
-pnpm start
-```
-
-## Architecture
-
-### Directory Structure
-
-```
-packages/mcp/
-├── src/
-│   ├── index.ts                 # Entry point
-│   ├── server.ts                # MCP server setup
-│   ├── tools.ts                 # Tool implementations
-│   ├── types.ts                 # TypeScript type definitions
-│   ├── adapters/
-│   │   └── registry-adapter.ts  # Wrapper around ui-lab-registry
-│   └── utils/
-│       └── code-generator.ts    # Code generation utilities
-├── dist/                        # Compiled output
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-### Key Components
-
-**Registry Adapter** (`adapters/registry-adapter.ts`)
-- Wraps the `ui-lab-registry` package
-- Provides caching and query optimization
-- Handles component lookup, search, and filtering
-
-**Tools** (`tools.ts`)
-- Implements all Phase 1 MCP tools
-- Handles input validation and error handling
-- Dispatches tool calls to appropriate handlers
-
-**Code Generator** (`utils/code-generator.ts`)
-- Generates valid TypeScript/TSX code
-- Validates props against component APIs
-- Creates import statements and component usage
-
-**MCP Server** (`server.ts`)
-- Initializes the MCP server
-- Handles tool list requests
-- Dispatches tool calls
-- Uses stdio transport for communication
-
-## Usage with Claude Desktop
-
-To use this MCP server with Claude Desktop, add it to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "ui-lab": {
-      "command": "node",
-      "args": ["/path/to/packages/mcp/dist/index.js"]
-    }
-  }
-}
-```
-
-Then restart Claude Desktop.
-
-## Future Phases
-
-### Phase 2: Design System Integration
-- Design tokens (colors, typography, spacing)
-- Theme generation
-- CSS variable management
-- Tailwind CSS class suggestions
-
-### Phase 3: Advanced Patterns
-- Accessibility helpers
-- Compound component composition
-- Form validation patterns
-- Real-time component preview
-
-### Phase 4: Project Management
-- Project initialization/scaffolding
-- Component installation automation
-- Configuration management
-- Dependency conflict resolution
+The server exposes tools only. Registry resources are not separately advertised because they duplicate the same content without progressive disclosure.
 
 ## Development
 
-### Testing Tools Locally
+Install dependencies with `pnpm install`, compile with `pnpm build`, and start the stdio server with `pnpm start`.
 
-You can test individual tools using Node.js:
-
-```typescript
-import { handleSearchComponents } from './tools.js';
-
-const results = await handleSearchComponents({
-  query: 'button',
-  limit: 10
-});
-
-console.log(results);
-```
-
-### Type Safety
-
-The server is fully typed with TypeScript. All MCP inputs and outputs have corresponding type definitions in `types.ts`.
-
-## License
-
-MIT
+The package entry point is `dist/index.js` and requires Node.js 18 or newer.

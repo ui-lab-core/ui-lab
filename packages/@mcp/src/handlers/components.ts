@@ -1,14 +1,45 @@
+import { getElementEntry, listElements } from '@ui-lab-core/library/server';
+import type { ComponentMetadata } from 'ui-lab-registry';
 import { registryAdapter } from '../adapters/registry-adapter.js';
-import { formatDesignGuidelines } from '../context/design-guidelines.js';
-import { getElementEntry } from '@ui-lab-core/library/server';
+
+type ComponentDetail = 'summary' | 'api' | 'usage' | 'examples' | 'full';
+
+function componentSummary(component: ComponentMetadata) {
+  return {
+    id: component.id,
+    name: component.name,
+    description: component.description,
+    category: component.category,
+    tags: component.tags,
+    importPath: component.source.packagePath,
+    exportName: component.source.exportName,
+  };
+}
+
+function componentExamples(componentId: string) {
+  return listElements('components')
+    .filter(
+      (entry) =>
+        entry.groupPath[0] === componentId &&
+        entry.previewEligible &&
+        entry.visibility === 'public' &&
+        entry.access === 'free'
+    )
+    .map((entry) => ({
+      ref: `${componentId}/${entry.id}`,
+      name: entry.displayName,
+      description: entry.description,
+    }));
+}
 
 function getExample(reference: string) {
   const [componentId, exampleId, ...rest] = reference.split('/');
   if (!componentId || !exampleId || rest.length > 0) return null;
 
-  const example = getElementEntry('components', exampleId)
-    // Older published registry snapshots omit the numeric filename prefix.
-    ?? getElementEntry('components', exampleId.replace(/^\d+-/, ''));
+  const example =
+    getElementEntry('components', exampleId) ??
+    getElementEntry('components', exampleId.replace(/^\d+-/, ''));
+
   if (
     !example ||
     example.groupPath[0] !== componentId ||
@@ -19,135 +50,83 @@ function getExample(reference: string) {
     return null;
   }
 
-  return { componentId, example };
+  return {
+    ref: `${componentId}/${example.id}`,
+    component: componentId,
+    name: example.displayName,
+    description: example.description,
+    code: example.code,
+    files: example.files,
+  };
 }
 
-export async function handleSearchComponents(input: { query: string }): Promise<any> {
-  const results = registryAdapter.search(input.query, undefined, 10);
-
-  const clientOnlyPatterns = [
-    'button', 'input', 'select', 'checkbox', 'toggle', 'dialog', 'modal', 'popover',
-    'dropdown', 'menu', 'tabs', 'accordion', 'slider', 'tooltip', 'form', 'date-picker',
-    'time-picker', 'color-picker', 'file-input', 'search', 'pagination', 'textarea',
-    'radio', 'combobox', 'switch', 'rating', 'tag', 'autocomplete'
-  ];
-
+function componentImport(component: ComponentMetadata) {
   return {
-    success: true,
-    components: results.map((c: any) => {
-      const source = c.source || {
-        packageName: 'ui-lab-components',
-        exportName: c.id.charAt(0).toUpperCase() + c.id.slice(1).replace(/-./g, (x: string) => x[1].toUpperCase()),
-        packagePath: 'ui-lab-components',
-      };
-      const isClientComponent = clientOnlyPatterns.some(p => c.id.toLowerCase().includes(p));
-
-      return {
-        id: c.id,
-        name: c.name,
-        description: c.description,
-        packageName: source.packageName,
-        importPath: source.packagePath,
-        exportName: source.exportName,
-        isClientComponent,
-      };
-    }),
-    count: results.length,
-    message:
-      results.length === 0
-        ? `No components found for query "${input.query}". Try broader search terms.`
-        : `Found ${results.length} component(s). Use get_component(id) for full API or get_component_source(id) for import details.`,
+    packageName: component.source.packageName,
+    importPath: component.source.packagePath,
+    exportName: component.source.exportName,
+    statement: `import { ${component.source.exportName} } from '${component.source.packagePath}';`,
   };
 }
 
 export async function handleGetComponent(input: {
-  id: string;
-  detail?: 'api' | 'examples' | 'usage' | 'full';
-}): Promise<any> {
-  const exampleMatch = getExample(input.id);
-  if (exampleMatch) {
-    const { componentId, example } = exampleMatch;
-    return {
-      success: true,
-      reference: input.id,
-      component: {
-        id: componentId,
-        name: registryAdapter.getComponentById(componentId)?.name ?? componentId,
-      },
-      example: {
-        id: input.id,
-        name: example.displayName,
-        description: example.description,
-        code: example.code,
-        files: example.files,
-      },
-    };
-  }
+  query: string;
+  detail?: ComponentDetail;
+}) {
+  const query = input.query.trim();
+  if (!query) throw new Error('Component query must not be empty.');
 
-  const component = registryAdapter.getComponentById(input.id);
+  const example = getExample(query);
+  if (example) return { example };
+
+  const component = registryAdapter.getComponent(query.toLowerCase());
   if (!component) {
-    throw new Error(`Component or example not found: ${input.id}`);
+    const matches = registryAdapter.search(query, 5).map(componentSummary);
+    if (matches.length === 0) {
+      throw new Error(`No UI Lab component matches "${query}".`);
+    }
+    return { query, matches };
   }
 
-  const detail = input.detail ?? 'full';
+  const detail = input.detail ?? 'summary';
+  if (detail === 'summary') return { component: componentSummary(component) };
 
   if (detail === 'api') {
-    const source = component.source || {
-      packageName: 'ui-lab-components',
-      exportName: component.id.charAt(0).toUpperCase() + component.id.slice(1).replace(/-./g, (x: string) => x[1].toUpperCase()),
-      packagePath: 'ui-lab-components',
-    };
     return {
-      success: true,
       component: {
-        id: component.id,
-        name: component.name,
-        importPath: source.packagePath,
-        importStatement: `import { ${source.exportName} } from '${source.packagePath}';`,
-        api: component.api
-          ? { props: component.api.props, subComponents: component.api.subComponents }
-          : undefined,
-      },
-    };
-  }
-
-  if (detail === 'examples') {
-    return {
-      success: true,
-      component: {
-        id: component.id,
-        name: component.name,
-        description: component.description,
-        api: component.api ? { examples: component.api.examples } : undefined,
+        ...componentSummary(component),
+        import: componentImport(component),
+        api: component.api,
       },
     };
   }
 
   if (detail === 'usage') {
     return {
-      success: true,
       component: {
-        id: component.id,
-        name: component.name,
-        description: component.description,
+        ...componentSummary(component),
+        relatedComponents: component.relatedComponents,
         usage: component.usage,
       },
     };
   }
 
-  const source = component.source || {
-    packageName: 'ui-lab-components',
-    exportName: component.id.charAt(0).toUpperCase() + component.id.slice(1).replace(/-./g, (x: string) => x[1].toUpperCase()),
-    packagePath: 'ui-lab-components',
-  };
+  const examples = componentExamples(component.id);
+  if (detail === 'examples') {
+    return { component: componentSummary(component), examples };
+  }
 
   return {
-    success: true,
     component: {
-      ...component,
-      importPath: source.packagePath,
-      importStatement: `import { ${source.exportName} } from '${source.packagePath}';`,
+      ...componentSummary(component),
+      import: componentImport(component),
+      relatedComponents: component.relatedComponents,
+      accessibility: component.accessibility,
+      reactAriaUrl: component.reactAriaUrl,
+      api: component.api,
+      usage: component.usage,
+      examples,
+      experimental: component.experimental,
     },
-    designGuidelines: formatDesignGuidelines(),
   };
 }

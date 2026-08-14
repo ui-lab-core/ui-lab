@@ -1,25 +1,20 @@
-import { getAllGuides, getGuideById, searchGuides } from 'ui-lab-registry';
+import { getGuideById, searchGuides } from 'ui-lab-registry';
+import type { GuideMetadata } from 'ui-lab-registry';
 
-export const guidesAdapter = {
-  getById: (id: string) => {
-    try {
-      return getGuideById(id) ?? null;
-    } catch {
-      return null;
-    }
-  },
-  search: (query: string, limit = 10) => {
-    try {
-      return searchGuides(query).slice(0, limit);
-    } catch {
-      return [];
-    }
-  },
-  getAll: () => {
-    try {
-      return getAllGuides();
-    } catch {
-      return [];
-    }
-  },
-};
+function getGuide(id: string): GuideMetadata | null {
+  try {
+    return getGuideById(id) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function search(query: string, limit = 5): GuideMetadata[] {
+  try {
+    return searchGuides(query).slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+
+export const guidesAdapter = { getGuide, search };

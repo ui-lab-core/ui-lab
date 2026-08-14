@@ -1,5 +1,12 @@
 # ui-lab
 
+## Unreleased
+
+- Reduced the MCP surface from 17 category-specific tools to `get_component`, `search_guides`, and `search_workshop`.
+- Added progressive disclosure for component, guide, and workshop context.
+- Unified examples, patterns, elements, sections, and starters behind the workshop index.
+- Removed duplicated MCP resources, hardcoded semantic color recommendations, theme setup output, and injected design guidance.
+
 ## 0.4.3
 
 ### Patch Changes

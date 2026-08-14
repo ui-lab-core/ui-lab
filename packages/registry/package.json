@@ -56,7 +56,7 @@
   "scripts": {
     "build": "pnpm generate && rm -rf dist && tsc",
     "type-check": "tsc --noEmit",
-    "generate": "node --import tsx scripts/generate-catalog-snapshot.ts && node --import tsx scripts/generate-examples-json.ts && node --import tsx scripts/generate-registry-from-components.ts && node --import tsx scripts/generate-registry-data.ts",
+    "generate": "node --import tsx scripts/generate-examples-json.ts && node --import tsx scripts/generate-registry-from-components.ts && node --import tsx scripts/generate-registry-data.ts",
     "validate": "node --import tsx scripts/validate-registry.ts"
   },
   "dependencies": {
