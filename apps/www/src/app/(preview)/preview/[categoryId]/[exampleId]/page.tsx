@@ -145,6 +145,20 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
     );
   }
 
+  if (categoryId === 'patterns') {
+    // exampleId is the pattern or variation id, resolved directly by the renderer.
+    return (
+      <div className="w-screen h-screen bg-background-950 overflow-auto">
+        <PreviewRenderer
+          type="pattern"
+          demoPath={exampleId}
+          elementName={exampleId}
+          variantName="preview"
+        />
+      </div>
+    );
+  }
+
   if (exampleId === 'saas-1') {
     return (
       <div className="w-full h-full bg-background-950">

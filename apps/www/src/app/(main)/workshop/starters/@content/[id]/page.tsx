@@ -2,7 +2,7 @@ import StarterDetailClient from './client';
 import { starterRegistry } from '@ui-lab-core/library/catalog';
 import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
 
-const starterIds = ["nextjs-basic"];
+const starterIds = Object.keys(starterRegistry);
 
 export function generateStaticParams() {
   return starterIds.map((id) => ({ id }));

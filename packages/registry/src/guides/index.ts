@@ -1,9 +1,11 @@
 import type { GuideMetadata, GuideRegistry } from '../types.js';
+import foundationGuide from './foundation.js';
 import setupUiLabInProjectGuide from './setup-ui-lab-in-project.js';
 import themeSwitchingNextJsGuide from './theme-switching-nextjs.js';
 import translateExistingUiToUiLabGuide from './translate-existing-ui-to-ui-lab.js';
 
 export const guideRegistry: GuideRegistry = {
+  [foundationGuide.id]: foundationGuide,
   [setupUiLabInProjectGuide.id]: setupUiLabInProjectGuide,
   [themeSwitchingNextJsGuide.id]: themeSwitchingNextJsGuide,
   [translateExistingUiToUiLabGuide.id]: translateExistingUiToUiLabGuide,

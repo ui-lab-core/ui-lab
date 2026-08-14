@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Gallery, Frame, Badge } from 'ui-lab-components';
 import { Blocks, LayoutPanelTop, Puzzle, Rocket, Sparkles } from 'lucide-react';
@@ -44,22 +45,26 @@ const NOTCH = { ease: 45, depth: 35, span: 85, radius: 10 };
 const NOTCH_WIDTH = NOTCH.ease + NOTCH.span;
 
 /**
- * The step, authored along the top edge as Frame wants it: starting on the edge
- * at `0 0` and bulging *outwards*, to be mirrored into a cut by
- * `shapeMode="indent"`. It eases down to the notch floor, runs flat to the
- * corner, and turns into the right edge — so it ends deep in the adjoining edge
- * rather than back on the top one, which is what `shapeAlign="end"` is for.
- *
- * The cubic's handles are horizontal at both ends, so the curve leaves the top
- * edge and meets the notch floor tangentially and the step has no visible
- * joints. They sit a quarter of the run in, traced off the reference shape.
+ * Control-point x's for the flat run of the step, held off the endpoints so the
+ * notch floor stays level as it descends. Spaced off the reference shape.
  */
-const NOTCH_PATH = [
-  `M 0 0`,
-  `c ${NOTCH.ease * 0.25} 0 ${NOTCH.ease * 0.75} ${-NOTCH.depth} ${NOTCH.ease} ${-NOTCH.depth}`,
-  `L ${NOTCH_WIDTH - NOTCH.radius} ${-NOTCH.depth}`,
-  `a ${NOTCH.radius} ${NOTCH.radius} 0 0 0 ${NOTCH.radius} ${-NOTCH.radius}`,
-].join(' ');
+const NOTCH_C1 = NOTCH.ease + (NOTCH_WIDTH - NOTCH.radius - NOTCH.ease) * 0.26;
+const NOTCH_C2 = NOTCH.ease + (NOTCH_WIDTH - NOTCH.radius - NOTCH.ease) * 0.7;
+
+/**
+ * The premium frame's fixed top-edge step. Its geometry never changes on
+ * interaction; hover only changes the surface treatment.
+ */
+function notchPath(): string {
+  return [
+    `M 0 0`,
+    `C ${NOTCH.ease * 0.25} 0 ${NOTCH.ease * 0.75} ${-NOTCH.depth} ${NOTCH.ease} ${-NOTCH.depth}`,
+    `C ${NOTCH_C1} ${-NOTCH.depth} ${NOTCH_C2} ${-NOTCH.depth} ${NOTCH_WIDTH - NOTCH.radius} ${-NOTCH.depth}`,
+    `a ${NOTCH.radius} ${NOTCH.radius} 0 0 0 ${NOTCH.radius} ${-NOTCH.radius}`,
+  ].join(' ');
+}
+
+const PREMIUM_NOTCH_PATH = notchPath();
 
 /**
  * The premium surface itself, not an overlay on one: the step means the card's
@@ -68,7 +73,13 @@ const NOTCH_PATH = [
  * Children are clipped to that outline, so the label that sits *in* the cut-out
  * is a sibling of the Frame rather than a child of it.
  */
-function PremiumFrame({ children }: { children: React.ReactNode }) {
+function PremiumFrame({
+  active,
+  children,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <Frame
       edges="all"
@@ -76,9 +87,9 @@ function PremiumFrame({ children }: { children: React.ReactNode }) {
       side="top"
       shapeAlign="end"
       shapeMode="indent"
-      path={NOTCH_PATH}
+      path={PREMIUM_NOTCH_PATH}
       pathWidth={NOTCH_WIDTH}
-      className="h-full"
+      className="h-full [&_rect]:transition-[fill] [&_rect]:duration-300 [&_rect]:ease-out"
       style={
         {
           // The stroke sits *outside* the frame's bounds so it lands in the
@@ -88,7 +99,9 @@ function PremiumFrame({ children }: { children: React.ReactNode }) {
           // shape as its neighbours'.
           '--frame-radius': 'calc(var(--radius-sm) - 1px)',
           '--fill': 'var(--background)',
-          '--stroke-color': `color-mix(in oklch, ${PREMIUM_HUE} 70%, transparent)`,
+          '--stroke-color': active
+            ? `color-mix(in oklch, ${PREMIUM_HUE} 70%, transparent)`
+            : 'var(--background-border)',
         } as React.CSSProperties
       }
     >
@@ -97,6 +110,8 @@ function PremiumFrame({ children }: { children: React.ReactNode }) {
           aria-hidden
           className="pointer-events-none absolute inset-0 z-10"
           style={{
+            opacity: active ? 1 : 0,
+            transition: 'opacity 300ms ease-out',
             background: `radial-gradient(90% 70% at 100% ${NOTCH.depth}px, color-mix(in oklch, ${PREMIUM_HUE} 16%, transparent), transparent 60%)`,
           }}
         />
@@ -107,22 +122,61 @@ function PremiumFrame({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * The "Premium" mark, sat in the cut-out the frame leaves for it. Left readable
- * rather than aria-hidden: it is the only thing that says the card is paid, and
- * Gallery.Item names itself from its contents.
+ * The "Premium" mark, sat in the cut-out the frame leaves for it. It fades in
+ * The mark remains in the fixed notch and uses the same monochrome-to-premium
+ * color treatment as the frame.
  */
-function PremiumLabel() {
+function PremiumLabel({ active }: { active: boolean }) {
   return (
     <div
       className="pointer-events-none absolute right-2.5 top-0 z-20 flex items-center justify-center gap-1.5 text-md font-medium"
       style={{
         width: NOTCH.span,
         height: NOTCH.depth,
-        color: 'white'
+        transition: 'color 300ms ease-out',
+        color: active
+          ? `color-mix(in oklch, ${PREMIUM_HUE} 20%, white)`
+          : 'var(--foreground-300)',
       }}
     >
       Premium
     </div>
+  );
+}
+
+/**
+ * A premium card with fixed geometry. Hover/focus changes its monochrome
+ * surface to the premium hue and gradient without moving the frame.
+ */
+function PremiumGalleryItem({
+  itemProps,
+  children,
+}: {
+  itemProps: React.ComponentProps<typeof Gallery.Item>;
+  children: React.ReactNode;
+}) {
+  const [active, setActive] = useState(false);
+
+  return (
+    <Gallery.Item
+      {...itemProps}
+      className="relative overflow-visible"
+      // The item's border is handed to the Frame. The stable notch background
+      // stays monochrome until interaction reveals the premium hue.
+      style={{
+        backgroundColor: active ? PREMIUM_HUE : 'var(--background-border)',
+        borderColor: 'transparent',
+        transition: 'background-color 300ms ease-out',
+      }}
+      data-premium="true"
+      onPointerEnter={() => setActive(true)}
+      onPointerLeave={() => setActive(false)}
+      onFocus={() => setActive(true)}
+      onBlur={() => setActive(false)}
+    >
+      <PremiumFrame active={active}>{children}</PremiumFrame>
+      <PremiumLabel active={active} />
+    </Gallery.Item>
   );
 }
 
@@ -219,25 +273,28 @@ export function GenericContentGrid<T extends ContentItem>({
       </>
     );
 
+    const itemProps = {
+      href: onItemClick ? undefined : href,
+      onPress: handlePress,
+      columnSpan,
+      rowSpan: layoutConfig.rowSpan,
+    };
+
+    if (premium) {
+      return (
+        <PremiumGalleryItem key={item.id} itemProps={itemProps}>
+          {content}
+        </PremiumGalleryItem>
+      );
+    }
+
     return (
       <Gallery.Item
         key={item.id}
-        href={onItemClick ? undefined : href}
-        onPress={handlePress}
-        columnSpan={columnSpan}
-        rowSpan={layoutConfig.rowSpan}
-        className={premium ? 'relative overflow-visible' : 'relative overflow-hidden'}
-        style={premium ? { background: `color-mix(in oklch, ${PREMIUM_HUE} 100%, transparent)`, borderColor: 'transparent' } : undefined}
-        data-premium={premium ? 'true' : undefined}
+        {...itemProps}
+        className="relative overflow-hidden"
       >
-        {premium ? (
-          <>
-            <PremiumFrame>{content}</PremiumFrame>
-            <PremiumLabel />
-          </>
-        ) : (
-          content
-        )}
+        {content}
       </Gallery.Item>
     );
   };

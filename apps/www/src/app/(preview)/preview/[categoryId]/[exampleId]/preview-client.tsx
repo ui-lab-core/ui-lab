@@ -1,15 +1,18 @@
 'use client';
 
 import type React from 'react';
+import { Suspense } from 'react';
 import { getElementPreview } from '@ui-lab-core/library';
 import {
   elementRegistry,
   getPackageForElement,
 } from '@ui-lab-core/library/catalog';
 import { sectionRegistry } from '@ui-lab-core/library/catalog';
+import { getPreviewComponent as getPatternPreviewComponent } from '@/features/patterns/lib/get-pattern-preview';
 
 interface PreviewRendererProps {
-  type: 'element' | 'section';
+  type: 'element' | 'section' | 'pattern';
+  /** demoPath for element/section, or the pattern/variation id for patterns. */
   demoPath: string;
   elementName: string;
   variantName: string;
@@ -45,6 +48,10 @@ function getPrivatePreview(type: PreviewRendererProps['type'], demoPath: string)
     return getElementPreview(match.packageId, match.elementId) as DemoComponent | null;
   }
 
+  if (type === 'pattern') {
+    return getPatternPreviewComponent(demoPath) as DemoComponent | null;
+  }
+
   const sectionId = sectionDemoPathLookup.get(demoPath);
   if (!sectionId) return null;
   return getElementPreview('sections', sectionId) as DemoComponent | null;
@@ -63,5 +70,13 @@ export function PreviewRenderer({ type, demoPath, elementName, variantName }: Pr
     );
   }
 
-  return <DemoComponent />;
+  // A Suspense boundary is required here: the preview is a `next/dynamic`
+  // component that suspends while its chunk loads on the client. Without a
+  // boundary the suspense bubbles to the route and the server-rendered content
+  // is replaced by the blank route fallback after hydration.
+  return (
+    <Suspense fallback={<div className="h-full w-full" />}>
+      <DemoComponent />
+    </Suspense>
+  );
 }
