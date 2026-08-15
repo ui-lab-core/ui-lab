@@ -6,7 +6,7 @@ description: >
   frontend, React, component, or UI Lab mentions. After "/ui" is present, use
   only when the request or already-known context clearly identifies a web
   project/web UI and asks for front-end UI design work: auditing visual/interface
-  design, ideating screen/component layouts, or overhauling an existing web UI
+  design, ideating screen/component layouts, or conforming an existing web UI
   to UI Lab components. Never invoke this skill to determine whether a project
   is web. Do not use for ambiguous projects, non-web projects, backend, tests,
   data/model logic, API work, bug fixes, code review, refactors, docs, or
@@ -14,7 +14,7 @@ description: >
 ---
 
 <objective>
-Route manually-invoked `/ui` web front-end UI design tasks to specialized agents. ideate produces design briefs. audit validates visual/interface design against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports. overhaul performs a mechanical web UI swap to UI Lab components while preserving product logic (no redesign).
+Route manually-invoked `/ui` web front-end UI design tasks to specialized agents. ideate produces design briefs. audit validates visual/interface design against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports (no code changes). conform fixes what audit finds, or — without an audit in hand — finds and fixes the same adherence violations itself, replacing markup with field-tested UI Lab examples sourced via MCP while preserving product logic (no redesign).
 </objective>
 
 <quick_start>
@@ -32,7 +32,7 @@ Invoke this skill only when all gates pass:
 3. **UI design gate:** The user's current request must clearly concern web front-end UI design. Acceptable requests include:
    - Auditing, critiquing, or improving the visual/interface design of a web app, page, component, or screen.
    - Ideating what a web UI should contain, how a screen should be laid out, or which UI Lab components/patterns should be used.
-   - Replacing, migrating, or overhauling an existing web front-end UI with UI Lab components.
+   - Replacing, migrating, or conforming an existing web front-end UI to UI Lab components.
 
 Do not invoke this skill for:
 - Any request that does not include `/ui`, regardless of content.
@@ -49,9 +49,9 @@ If a `/ui` request mixes web UI design with non-design engineering work, use thi
 
 The `/ui` prefix is the contract between the user and the agent:
 
-- `/ui audit ...` routes to `audit` when the target is an existing web UI and the user wants a visual/interface/design-system review.
+- `/ui audit ...` routes to `audit` when the target is an existing web UI and the user wants a visual/interface/design-system review (report only, no code changes).
 - `/ui ideate ...` routes to `ideate` when the user wants holistic design direction, missing elements, or layout/component ideas.
-- `/ui overhaul ...` routes to `overhaul` when the user wants a mechanical UI Lab component migration.
+- `/ui conform ...` routes to `conform` when the user wants violations fixed — either from an existing audit report, or as a mechanical UI Lab component migration across the project.
 - `/ui ...` without an explicit mode may still be routed by the rules below.
 
 If the user asks about the UI Lab skill, edits this skill, or discusses its activation behavior without using `/ui`, answer or edit normally without spawning UI Lab agents.
@@ -64,7 +64,7 @@ If the user asks about the UI Lab skill, edits this skill, or discusses its acti
 |--------|-------|---------------|
 | Ideate / critique | `ideate` | what should this have, what am I missing, ideate, is this the right design, what would make this better, design critique |
 | Audit | `audit` | UI design review, visual audit, interface audit, design-system violations, layout/accessibility/usability critique |
-| Overhaul / replace UI | `overhaul` | overhaul, replace our ui, swap ui to ui lab, migrate project ui, convert ui to ui lab, refactor UI to UI Lab |
+| Conform / fix / replace UI | `conform` | conform, fix the audit findings, apply the audit, replace our ui, swap ui to ui lab, migrate project ui, convert ui to ui lab, refactor UI to UI Lab, bring this in line |
 
 **Routing disambiguation:**
 When trigger words match both `ideate` and `audit`:
@@ -72,9 +72,10 @@ When trigger words match both `ideate` and `audit`:
 - User asks "what should this have / what am I missing / is this right" with or without code → `ideate`
 - User says "improve" without qualifying: ask "Do you want design system violations checked, or holistic design feedback on what should exist?"
 
-When trigger words match `overhaul` and anything else:
-- If the user wants a mechanical swap (“replace all available components with UI Lab equivalents”, “overhaul our project UI with UI Lab components”) → `overhaul`
-- If the user wants a critique/audit of an existing UI (even if they also say “overhaul”) → ask whether they want (A) mechanical swap only or (B) swap + design critique; default to (A)
+When trigger words match `conform` and anything else:
+- If the user has an audit report (or says "fix"/"apply" the audit findings) → `conform`, working from that report
+- If the user wants a broad mechanical swap with no audit in hand (“replace all available components with UI Lab equivalents”, “conform our project UI to UI Lab components”) → `conform`, finding and fixing violations itself
+- If the user wants a critique/audit of an existing UI with no intent to fix it yet → ask whether they want (A) audit only, (B) fix/conform only, or (C) audit then conform; default to (C)
 
 </routing>
 
@@ -94,22 +95,22 @@ When trigger words match `overhaul` and anything else:
 
 </agent>
 
-<agent id="overhaul">
+<agent id="conform">
 
-<trigger>User wants a project-wide web UI replacement to UI Lab components/patterns while preserving all existing product logic, data flow, and behavior (“overhaul our web project UI with UI Lab components”, “swap/replace web UI to UI Lab”, “migrate web project UI”).</trigger>
+<trigger>User wants violations fixed rather than just reported: either working from an existing `audit` report ("fix these violations", "conform to the audit", "apply the audit findings"), or asking for a broad UI Lab component migration with no audit in hand ("conform our web project UI to UI Lab components", "swap/replace web UI to UI Lab", "migrate web project UI"), preserving all existing product logic, data flow, and behavior.</trigger>
 
-<spawn_prompt_file>workflows/overhaul.md</spawn_prompt_file>
+<spawn_prompt_file>workflows/conform.md</spawn_prompt_file>
 
 </agent>
 
 <orchestration>
 
-**Spawning:** Use the Task tool with subagent_type "general-purpose". Read the agent's `spawn_prompt_file` and pass its content as the prompt, appending the user's code, description, or file path at the end.
+**Spawning:** Use the Task tool with subagent_type "general-purpose". Read the agent's `spawn_prompt_file` and pass its content as the prompt, appending the user's code, description, audit report, or file path at the end.
 
-**MCP Usage:** Both agents leverage ui-lab tools to query the registry:
+**MCP Usage:** All agents leverage ui-lab tools to query the registry:
 - **audit**: Validates components/props against registry via `search_components` → `get_component(detail="api")`; when a component's placement or nesting matters, also query `get_component(detail="usage")`. Uses `search_guides("theme")` → `get_guide` for theme/color setup validation instead of hardcoded rules.
 - **ideate**: Discovers patterns/elements/sections/guides via search tools (`search_patterns`, `search_elements`, `search_sections`, `search_guides`) before suggesting gaps. Queries component examples via `get_component(detail="examples")` when needed and `get_component(detail="usage")` when composition semantics matter.
-- **overhaul**: Uses `search_guides` → `get_guide("setup-ui-lab-in-project")` before any migration if UI Lab is not already wired. Uses `get_component(detail="api")` + `get_component(detail="usage")` + `get_component_source` to perform safe 1:1 replacements of primitives and to keep imports correct. Uses `get_pattern` / `get_element` / `get_section` only when it preserves the existing structure (no redesign).
+- **conform**: Uses `search_guides` → `get_guide("setup-ui-lab-in-project")` before any fix if UI Lab is not already wired. Uses `get_component(detail="api")` + `get_component(detail="usage")` + `get_component_source` to perform safe 1:1 replacements and keep imports correct. Prefers `get_component(detail="examples")` for field-tested replacement markup over hand-written JSX, and uses `get_pattern` / `get_element` / `get_section` for larger structural matches — only when it preserves the existing structure (no redesign).
 
 </orchestration>
 
@@ -133,12 +134,14 @@ When trigger words match `overhaul` and anything else:
 - Top 5 suggestions ranked by spatial coherence impact first, then functional criticality
 - No code written; focus purely on "what should exist"
 
-**overhaul**: An overhaul is complete when:
+**conform**: A conform pass is complete when:
 - UI Lab is installed and styles/token layer are wired correctly (or it is explicitly confirmed already set up) using `search_guides` → `get_guide`
-- A scoped plan + replacement report is presented and the user explicitly confirms before any overhaul changes are applied
+- A scoped plan + replacement report is presented and the user explicitly confirms before any conform changes are applied
 - Only the view layer changes: preserve state, events, data fetching, routing, domain models, copy, and analytics hooks unless the user explicitly asks otherwise
-- All eligible UI primitives/wrappers are swapped to UI Lab equivalents (components/patterns/elements/sections) where a clear match exists in the registry
-- No “design improvement” changes are introduced (no new flows, no layout invention, no new features); any optional improvements are listed separately and not included in the patch
-- A migration report is provided: what was swapped, what couldn’t be swapped (and why), and the highest-risk files/components
+- If working from an audit report: every violation in it is addressed or explicitly explained as unfixable
+- If working without an audit report: violations are found using the same adherence checks audit uses, and all eligible UI primitives/wrappers are swapped to UI Lab equivalents (components/patterns/elements/sections) where a clear match exists in the registry
+- Replacement markup is sourced from MCP field-tested examples (`get_component(detail="examples")`, `get_pattern`, `get_element`, `get_section`) rather than hand-written from scratch, wherever an example exists
+- No “design improvement” changes are introduced beyond what was flagged (no new flows, no layout invention, no new features); any optional improvements are listed separately and not included in the patch
+- A conform report is provided: what was fixed/swapped and its MCP source, what couldn’t be fixed/swapped (and why), and the highest-risk files/components
 
 </success_criteria>
