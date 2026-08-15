@@ -2,7 +2,7 @@ import type { ElementPackageMetadata, LayoutConfig } from '@ui-lab-core/library/
 
 const defaultPackageLayout: LayoutConfig = {
   layoutClass: 'default-package',
-  columnSpan: 2,
+  columnSpan: 1,
   rowSpan: 1,
   previewConfig: {
     scale: 1,

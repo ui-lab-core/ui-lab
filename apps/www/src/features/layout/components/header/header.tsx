@@ -202,7 +202,7 @@ export default function Header({
                 </Button>
               */}
 
-              <Button size="sm" href="/config" variant="secondary" icon={<FaPlus size={12} />}>New Project</Button>
+              <Button href="/config" variant="secondary" icon={<FaPlus size={12} />}>New Project</Button>
               <Button
                 variant="ghost"
                 aria-label="GitHub repository"

@@ -194,7 +194,7 @@ export default function ConfigPage({
       max-width="var(--page-width)"
       className="bg-background-100 text-foreground-100 min-h-[calc(100dvh-var(--header-height))] xl:h-[calc(100dvh-var(--header-height))] xl:min-h-0 xl:overflow-hidden"
     >
-      <div className="grid w-full border-l border-background-700 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_25rem]">
+      <div className="grid w-full border-l border-background-700 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <section className="flex min-w-0 min-h-0 flex-col gap-3 pt-2 xl:overflow-hidden">
           <Tabs
             value={preview}

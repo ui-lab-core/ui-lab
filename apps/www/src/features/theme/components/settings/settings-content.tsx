@@ -231,7 +231,9 @@ export const SettingsContent = ({
       ) : null}
 
       <div className="flex-1 overflow-hidden">
-        <Scroll>
+        <Scroll inline>
+          <Scroll.Track className="border-l w-3 border-background-700" />
+          <Scroll.Thumb className="-translate-x-[2px] border-background-700" />
           <Tabs
             value={activeTab}
             variant="underline"

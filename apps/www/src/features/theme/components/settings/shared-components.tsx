@@ -114,22 +114,22 @@ const GlobalSlider = memo(
     onChange,
   }: GlobalSliderProps) => {
     return (
-      <div className="space-y-1.5 group">
-        <div className="space-y-1 flex justify-between items-center">
-          <Label styles={{ root: "mt-1.5", text: "text-xs font-medium" }}>
-            {label}
-          </Label>
-          <Badge>
-            {formatValue(value)}
-          </Badge>
+      <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-x-3 gap-y-1.5 group">
+        <Badge className="col-start-2 justify-self-end">
+          {formatValue(value)}
+        </Badge>
+        <span className="text-xs font-medium text-foreground-400">
+          {label}
+        </span>
+        <div className="min-w-0">
+          <Slider.Root
+            value={[value]}
+            onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
+            min={min}
+            max={max}
+            step={step}
+          />
         </div>
-        <Slider.Root
-          value={[value]}
-          onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
-          min={min}
-          max={max}
-          step={step}
-        />
       </div>
     );
   },
