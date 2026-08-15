@@ -5,19 +5,19 @@
     --disabled-opacity: 0.6;
     @apply relative flex w-full items-center;
     min-inline-size: var(--inline-size, 3.5rem);
-    min-height: var(--hit-size, var(--slider-hit-size, 2rem));
+    min-height: var(--hit-size, var(--slider-hit-size, 1.5rem));
     touch-action: none;
     user-select: none;
   }
 
   .track {
-    --thickness: var(--size, var(--slider-track-size, calc(var(--spacing-md) * 1.10)));
+    --thickness: var(--size, var(--slider-track-size, calc(var(--spacing-md) * 0.8)));
     --length: calc(var(--thickness) * var(--ratio, 0.5));
     @apply relative flex grow items-center;
     flex-grow: 1;
     height: var(--thickness);
     overflow: visible;
-    border-radius: var(--radius, var(--slider-track-radius, calc(var(--spacing-sm) * 0.50)));
+    border-radius: var(--radius, var(--slider-track-radius, calc(var(--spacing-sm) * 0.35)));
     border: var(--border-width-base) solid var(--border-color);
     background: var(--track-background, var(--slider-track-background, var(--background)));
   }
@@ -42,7 +42,7 @@
     width: var(--thumb-inline-size);
     height: var(--thumb-block-size);
     transform: var(--transform, translateX(-50%));
-    border-radius: var(--thumb-radius, var(--radius, calc(var(--spacing-xs) * 0.35)));
+    border-radius: var(--thumb-radius, var(--radius, calc(var(--spacing-xs) * 0.25)));
     outline: none;
     background: var(--thumb-background, var(--slider-thumb-background, var(--background)));
     border: var(--thumb-border, var(--slider-thumb-border, none));

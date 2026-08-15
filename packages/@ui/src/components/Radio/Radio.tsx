@@ -263,11 +263,23 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
     });
     const resolved = resolveRadioStyles(stylesProp);
 
+    // The hidden input only overlays the control, so a single row-level handler
+    // extends selection to the label, description, helper text and spacing.
+    // Clicks on the input or its <label htmlFor> already select natively, so we
+    // let those pass through to avoid a double activation.
+    const handleRowSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+      if (disabled) return;
+      if ((event.target as HTMLElement).closest("input, label")) return;
+      inputRef.current?.focus();
+      inputRef.current?.click();
+    };
+
     return (
       <div
         ref={rootRef}
         className={cn("w-full", css["radio-item"], scopeProps.className, resolved.item)}
         data-disabled={disabled ? "true" : undefined}
+        onClick={handleRowSelect}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
         <div
@@ -405,11 +417,23 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
     });
     const resolved = resolveRadioStyles(stylesProp);
 
+    // The hidden input only overlays the control, so a single row-level handler
+    // extends selection to the label, description, helper text and spacing.
+    // Clicks on the input or its <label htmlFor> already select natively, so we
+    // let those pass through to avoid a double activation.
+    const handleRowSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+      if (disabled) return;
+      if ((event.target as HTMLElement).closest("input, label")) return;
+      inputRef.current?.focus();
+      inputRef.current?.click();
+    };
+
     return (
       <div
         ref={rootRef}
         className={cn(css["radio-item"], scopeProps.className, resolved.item)}
         data-disabled={disabled ? "true" : undefined}
+        onClick={handleRowSelect}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
         <div

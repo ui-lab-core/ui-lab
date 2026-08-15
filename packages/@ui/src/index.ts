@@ -197,7 +197,7 @@ export type {
 } from "./components/Page";
 
 export { Scroll } from "./components/Scroll";
-export type { ScrollProps } from "./components/Scroll";
+export type { ScrollProps, ScrollTrackProps, ScrollThumbProps } from "./components/Scroll";
 
 export { Table } from "./components/Table";
 export type { TableProps, Column, TableCellRenderContext } from "./components/Table";

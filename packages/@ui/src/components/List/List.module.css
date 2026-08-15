@@ -96,7 +96,6 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground);
-    @apply truncate;
   }
 
   .desc {
@@ -106,7 +105,6 @@
     letter-spacing: normal;
     line-height: var(--leading-body, 1.5);
     color: var(--desc-foreground);
-    @apply truncate;
   }
 
   .actionGroup {

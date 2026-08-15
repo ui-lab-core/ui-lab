@@ -16,6 +16,13 @@
     opacity: 0;
     box-shadow: var(--ring-shadow, none);
     border: 0;
+    transition-property: border-radius;
+    transition-duration: 0ms;
+    transition-timing-function: var(--ring-transition-timing-function, ease-out);
+  }
+
+  .focus-indicator[data-transition-radius="true"] {
+    transition-duration: var(--ring-transition-duration, 200ms);
   }
 
   .focus-indicator[data-visible="true"] {
@@ -36,5 +43,11 @@
     inset: 0;
     box-shadow: 0 0 0 var(--ring-width, 2px) var(--ring);
     border: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .focus-indicator {
+      transition-duration: 0ms;
+    }
   }
 }

@@ -35,6 +35,7 @@ type GridAlignContent = "start" | "end" | "center" | "stretch" | "space-between"
 type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
 type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
 type GridTemplateColumns = GridColumns | (string & {});
+type GridTemplateRows = GridRows | (string & {});
 type GridMasonryColumnWidth = string & {};
 type GridGap = GapSize | "none" | number;
 type GridLayout =
@@ -73,8 +74,8 @@ export interface GridProps
     GridAlignProps {
   /** Grid template columns value, or responsive object per breakpoint */
   columns?: GridTemplateColumns | ResponsiveValue<GridTemplateColumns>;
-  /** Number of grid rows, or responsive object per breakpoint */
-  rows?: GridRows | ResponsiveValue<GridRows>;
+  /** Grid template rows value, or responsive object per breakpoint */
+  rows?: GridTemplateRows | ResponsiveValue<GridTemplateRows>;
   /** Gap between all grid cells, or responsive object per breakpoint. A number maps directly to the Tailwind spacing scale (e.g. `gap={4}` behaves like `gap-4`). */
   gap?: GridGap | ResponsiveValue<GridGap>;
   /** Root height. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS height. Overrides `style.height` and sizing classes. */
@@ -122,9 +123,10 @@ const colsToTpl = (c: GridTemplateColumns): string => {
 const colsToCount = (c: GridTemplateColumns): string =>
   typeof c === "number" ? String(c) : "1";
 
-const rowsToTpl = (r: GridRows): string => {
+const rowsToTpl = (r: GridTemplateRows): string => {
   if (r === "masonry" || r === "auto") return r;
-  return `repeat(${r}, auto)`;
+  if (/^[1-6]$/.test(r)) return `repeat(${r}, auto)`;
+  return r;
 };
 
 const gapToStep = (gap: GridGap): number => {
@@ -158,7 +160,7 @@ const flowVal: Record<GridAutoFlow, string> = {
 
 interface GridLayoutConfig {
   columns?: GridTemplateColumns | ResponsiveValue<GridTemplateColumns>;
-  rows?: GridRows | ResponsiveValue<GridRows>;
+  rows?: GridTemplateRows | ResponsiveValue<GridTemplateRows>;
   gap?: GridGap | ResponsiveValue<GridGap>;
 }
 
@@ -230,13 +232,13 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     const resolved = resolveGridBaseStyles(styles);
     const rootStyle = { ...style, ...resolveSizingStyles({ h, w }) };
     const responsiveCols = isResponsive<GridTemplateColumns>(columns);
-    const responsiveRows = isResponsive<GridRows>(rows);
+    const responsiveRows = isResponsive<GridTemplateRows>(rows);
     const responsiveGap = isResponsive<GridGap>(gap);
     const responsiveMasonryColumnWidth = isResponsive<GridMasonryColumnWidth>(masonryColumnWidth);
     const needsContainer = responsiveCols || responsiveRows || responsiveGap || responsiveMasonryColumnWidth || containerQueryResponsive;
 
     const isMasonry = responsiveRows
-      ? Object.values(rows as ResponsiveValue<GridRows>).includes("masonry")
+      ? Object.values(rows as ResponsiveValue<GridTemplateRows>).includes("masonry")
       : rows === "masonry";
 
     const vars: Record<string, string> = {};
@@ -259,13 +261,13 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     }
 
     if (responsiveRows) {
-      const rr = rows as ResponsiveValue<GridRows>;
+      const rr = rows as ResponsiveValue<GridTemplateRows>;
       if (rr.sm) vars["--grid-rows-sm"] = rowsToTpl(rr.sm);
       if (rr.md) vars["--grid-rows-md"] = rowsToTpl(rr.md);
       if (rr.lg) vars["--grid-rows-lg"] = rowsToTpl(rr.lg);
       if (rr.xl) vars["--grid-rows-xl"] = rowsToTpl(rr.xl);
     } else {
-      vars["--grid-rows"] = rowsToTpl(rows as GridRows);
+      vars["--grid-rows"] = rowsToTpl(rows as GridTemplateRows);
     }
 
     if (responsiveGap) {
@@ -331,7 +333,11 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
           data-container-responsive="true"
           {...props}
         >
-          <div className={cn(gridClasses, className)} style={vars as React.CSSProperties} {...dataAttrs}>
+          <div
+            className={cn(gridClasses, className)}
+            style={{ ...vars, ...(h !== undefined ? { height: "100%" } : {}) } as React.CSSProperties}
+            {...dataAttrs}
+          >
             {children}
           </div>
         </div>

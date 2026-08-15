@@ -42,6 +42,8 @@
     --ring-border-visible: var(--ring-border);
     --ring-shadow: 0 0 0 var(--ring-width) var(--ring);
     --ring-z: 10;
+    --ring-transition-duration: 200ms;
+    --ring-transition-timing-function: var(--ease-snappy-pop, ease-out);
   }
 
   .button {

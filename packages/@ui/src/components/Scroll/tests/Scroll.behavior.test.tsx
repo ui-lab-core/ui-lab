@@ -77,4 +77,23 @@ describe("Scroll behavior", () => {
     expect(track?.style.pointerEvents).toBe("none");
     expect(track?.querySelector("div")).toBeNull();
   });
+
+  it("renders authored scrollbar slots at their parent-owned locations", () => {
+    const { container } = render(
+      <Scroll>
+        <div data-content>Content</div>
+        <Scroll.Track className="custom-track" data-custom-track>
+          <Scroll.Thumb className="custom-thumb" />
+        </Scroll.Track>
+      </Scroll>
+    );
+
+    const root = container.querySelector(".scroll");
+    const viewport = root?.firstElementChild?.querySelector("div");
+    const track = root?.querySelector("[data-custom-track]");
+
+    expect(viewport?.querySelector("[data-custom-track]")).toBeNull();
+    expect(track?.parentElement).toBe(root);
+    expect(track).toHaveClass("custom-track");
+  });
 });

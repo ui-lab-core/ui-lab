@@ -371,6 +371,7 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
       surfaceSelector: '[data-expand-focus-surface="true"]',
       radiusSource: "surface",
       mode: "ring",
+      dependencies: [state.isSelected],
     });
 
     const contextValue = React.useMemo<ExpandContextValue>(

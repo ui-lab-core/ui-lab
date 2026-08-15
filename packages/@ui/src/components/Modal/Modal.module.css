@@ -2,12 +2,6 @@
 
 @layer components.defaults {
   .overlay {
-    /* Positioning is real CSS (not Tailwind utility classes) so the overlay
-       centers and covers the viewport correctly regardless of whether the
-       consuming app's Tailwind build happens to generate `fixed`/`inset-0`/
-       `flex`/`items-center`/`justify-center` — those class names only exist
-       in this package's compiled JS output, not in any app's own source, so
-       relying on the consumer to regenerate them for us is unreliable. */
     position: fixed;
     inset: 0;
     z-index: 9999;

@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { createComponentSlotResolver } from "@/lib/component-slots";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Mask } from "../Mask";
 import css from "./Scroll.module.css";
@@ -111,7 +112,101 @@ function hasPreHydrationScrollRestore(node: HTMLDivElement): boolean {
   return Boolean((node as HTMLDivElement & Record<string, unknown>)[SCROLL_RESTORE_FLAG]);
 }
 
-const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
+interface ScrollContextValue {
+  resolvedStyles: ReturnType<typeof resolveScrollStyles>;
+  hide: boolean;
+  needsScrollbar: boolean;
+  trackStyle: React.CSSProperties;
+  thumbStyle: React.CSSProperties;
+  thumbRef: React.Ref<HTMLDivElement>;
+  thumbSlot?: React.ReactElement<ScrollThumbProps>;
+  onTrackMouseDown: React.MouseEventHandler<HTMLDivElement>;
+  onThumbMouseDown: React.MouseEventHandler<HTMLDivElement>;
+}
+
+const ScrollContext = React.createContext<ScrollContextValue | null>(null);
+
+function useScrollContext() {
+  const context = React.useContext(ScrollContext);
+  if (!context) {
+    throw new Error("Scroll compound components must be used within Scroll");
+  }
+  return context;
+}
+
+export interface ScrollThumbProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const ScrollThumb = React.forwardRef<HTMLDivElement, ScrollThumbProps>(
+  ({ className, style, onMouseDown, ...props }, ref) => {
+    const {
+      resolvedStyles,
+      needsScrollbar,
+      thumbStyle,
+      thumbRef,
+      onThumbMouseDown,
+    } = useScrollContext();
+    const mergedRef = useMergeRefs(ref, thumbRef);
+
+    if (!needsScrollbar) return null;
+
+    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
+      onMouseDown?.(event);
+      if (!event.defaultPrevented) onThumbMouseDown(event);
+    };
+
+    return (
+      <div
+        {...props}
+        ref={mergedRef}
+        className={cn("thumb", css.thumb, resolvedStyles.thumb, className)}
+        style={{ ...thumbStyle, ...style }}
+        onMouseDown={handleMouseDown}
+      />
+    );
+  },
+);
+ScrollThumb.displayName = "Scroll.Thumb";
+
+export interface ScrollTrackProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const ScrollTrack = React.forwardRef<HTMLDivElement, ScrollTrackProps>(
+  ({ children, className, style, onMouseDown, ...props }, ref) => {
+    const {
+      resolvedStyles,
+      hide,
+      needsScrollbar,
+      trackStyle,
+      thumbSlot,
+      onTrackMouseDown,
+    } = useScrollContext();
+
+    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
+      onMouseDown?.(event);
+      if (!event.defaultPrevented) onTrackMouseDown(event);
+    };
+
+    return (
+      <div
+        {...props}
+        ref={ref}
+        className={cn("track", css.track, resolvedStyles.track, className)}
+        data-hide={String(hide)}
+        style={{ ...trackStyle, ...style }}
+        onMouseDown={handleMouseDown}
+      >
+        {needsScrollbar ? (children ?? thumbSlot ?? <ScrollThumb />) : null}
+      </div>
+    );
+  },
+);
+ScrollTrack.displayName = "Scroll.Track";
+
+const resolveScrollComponentSlots = createComponentSlotResolver({
+  track: ScrollTrack,
+  thumb: ScrollThumb,
+});
+
+const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
   (
     {
       children,
@@ -154,6 +249,7 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
     const mergedRef = useMergeRefs(ref, containerRef);
 
     const resolved = resolveScrollStyles(styles);
+    const { content: contentChildren, slots } = resolveScrollComponentSlots(children);
 
     const [needsScrollbar, setNeedsScrollbar] = useState(false);
     const [isHoveredRight, setIsHoveredRight] = useState(false);
@@ -520,92 +616,99 @@ const Scroll = React.forwardRef<HTMLDivElement, ScrollProps>(
           }}
           {...restProps}
         >
-          {children}
+          {contentChildren}
         </div>
       );
     }
 
     const showOpacity = needsScrollbar && (!hide || isHoveredRight || isDragging || isScrolling) ? 1 : 0;
 
+    const contextValue: ScrollContextValue = {
+      resolvedStyles: resolved,
+      hide,
+      needsScrollbar,
+      trackStyle: {
+        ...trackPlacement[direction],
+        pointerEvents: needsScrollbar ? "auto" : "none",
+      },
+      thumbStyle: {
+        [trackSizeKey]: `${thumbSize}px`,
+        [trackPosKey]: `${thumbPosition + (isHoriz ? 0 : numPaddingY)}px`,
+        opacity: showOpacity,
+      },
+      thumbRef,
+      thumbSlot: slots.thumb,
+      onTrackMouseDown: handleTrackClick,
+      onThumbMouseDown: handleMouseDown,
+    };
+
     return (
-      <div
-        ref={mergedRef}
-        className={cn(
-          "scroll",
-          css.root,
-          isHoriz ? css.horizontal : css.vertical,
-          className,
-          resolved.root
-        )}
-        style={{
-          [isHoriz ? "width" : "height"]: "100%",
-          ...axisConstraintStyle,
-          ...(!isHoriz && strPaddingY ? { "--scroll-padding-y": strPaddingY } : {}),
-          ...propsStyle,
-        } as React.CSSProperties}
-        onMouseMove={handleContainerMouseMove}
-        onMouseLeave={handleContainerMouseLeave}
-        data-pressed={isDragging || undefined}
-        data-inline={String(inline)}
-        {...restProps}
-      >
-        <Mask
-          ref={maskRef}
+      <ScrollContext.Provider value={contextValue}>
+        <div
+          ref={mergedRef}
+          className={cn(
+            "scroll",
+            css.root,
+            isHoriz ? css.horizontal : css.vertical,
+            className,
+            resolved.root
+          )}
           style={{
-            maxHeight: "inherit",
-            maxWidth: "inherit",
-            overflow: "hidden",
-            ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
+            [isHoriz ? "width" : "height"]: "100%",
+            ...axisConstraintStyle,
+            ...(!isHoriz && strPaddingY ? { "--scroll-padding-y": strPaddingY } : {}),
+            ...propsStyle,
           } as React.CSSProperties}
+          onMouseMove={handleContainerMouseMove}
+          onMouseLeave={handleContainerMouseLeave}
+          data-pressed={isDragging || undefined}
+          data-inline={String(inline)}
+          {...restProps}
         >
-          {!isHoriz && fadeY ? <Mask.Fade /> : null}
-          <div
-            ref={mergedContentRef}
-            className={cn(css.content, resolved.content)}
-            onScroll={handleScroll}
+          <Mask
+            ref={maskRef}
             style={{
               maxHeight: "inherit",
               maxWidth: "inherit",
-              minHeight: 0,
-              minWidth: 0,
-            }}
-            {...(storageKey
-              ? {
-                [SCROLL_RESTORE_STORAGE_KEY_ATTR]: storageKey,
-                [SCROLL_RESTORE_AXIS_ATTR]: direction,
-              }
-              : {})}
+              overflow: "hidden",
+              ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
+            } as React.CSSProperties}
           >
-            {children}
-          </div>
-        </Mask>
-
-        <div
-          className={cn("track", css.track, resolved.track)}
-          data-hide={String(hide)}
-          style={{
-            ...trackPlacement[direction],
-            opacity: showOpacity,
-            pointerEvents: needsScrollbar ? "auto" : "none",
-          }}
-          onMouseDown={handleTrackClick}
-        >
-          {needsScrollbar && (
+            {!isHoriz && fadeY ? <Mask.Fade /> : null}
             <div
-              ref={thumbRef}
-              className={cn("thumb", css.thumb, resolved.thumb)}
+              ref={mergedContentRef}
+              className={cn(css.content, resolved.content)}
+              onScroll={handleScroll}
               style={{
-                [trackSizeKey]: `${thumbSize}px`,
-                [trackPosKey]: `${thumbPosition}px`,
+                maxHeight: "inherit",
+                maxWidth: "inherit",
+                minHeight: 0,
+                minWidth: 0,
               }}
-              onMouseDown={handleMouseDown}
-            />
-          )}
+              {...(storageKey
+                ? {
+                  [SCROLL_RESTORE_STORAGE_KEY_ATTR]: storageKey,
+                  [SCROLL_RESTORE_AXIS_ATTR]: direction,
+                }
+                : {})}
+            >
+              {contentChildren}
+            </div>
+          </Mask>
+
+          {slots.track ?? <ScrollTrack />}
         </div>
-      </div>
+      </ScrollContext.Provider>
     );
   }
 );
+
+ScrollRoot.displayName = "Scroll";
+
+const Scroll = Object.assign(ScrollRoot, {
+  Track: ScrollTrack,
+  Thumb: ScrollThumb,
+});
 
 Scroll.displayName = "Scroll";
 

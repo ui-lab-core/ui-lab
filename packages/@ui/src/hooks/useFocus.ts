@@ -3,6 +3,7 @@ import css from "./useFocus.module.css";
 
 export interface FocusState {
   visible: boolean;
+  transitionRadius: boolean;
   left: number;
   top: number;
   width: number;
@@ -40,6 +41,7 @@ export interface UseFocusReturn {
     "data-ring": "true";
     "data-self-target"?: "true";
     "data-ring-inset"?: "true";
+    "data-transition-radius"?: "true";
     "data-visible": "true" | undefined;
     "aria-hidden": "true";
     style: React.CSSProperties;
@@ -54,6 +56,7 @@ export interface UseFocusReturn {
 
 const HIDDEN_FOCUS: FocusState = {
   visible: false,
+  transitionRadius: false,
   left: 0,
   top: 0,
   width: 0,
@@ -70,6 +73,7 @@ export function useFocus({
   dependencies = [],
 }: UseFocusOptions): UseFocusReturn {
   const focusSurfaceRef = React.useRef<HTMLElement | null>(null);
+  const visibleFocusSurfaceRef = React.useRef<HTMLElement | null>(null);
   const rafRef = React.useRef<number | null>(null);
   const [focus, setFocus] = React.useState<FocusState>(HIDDEN_FOCUS);
   const usesOverlay = mode !== "target";
@@ -90,6 +94,7 @@ export function useFocus({
       !container.contains(activeElement)
     ) {
       focusSurfaceRef.current = null;
+      visibleFocusSurfaceRef.current = null;
       setFocus(HIDDEN_FOCUS);
       return;
     }
@@ -97,6 +102,7 @@ export function useFocus({
     const surface = activeElement.closest(surfaceSelector);
     if (!(surface instanceof HTMLElement) || !container.contains(surface)) {
       focusSurfaceRef.current = null;
+      visibleFocusSurfaceRef.current = null;
       setFocus(HIDDEN_FOCUS);
       return;
     }
@@ -107,18 +113,26 @@ export function useFocus({
 
     if (!focusVisibleNode) {
       focusSurfaceRef.current = surface;
+      visibleFocusSurfaceRef.current = null;
       setFocus(HIDDEN_FOCUS);
       return;
     }
 
+    const isSameSurface = visibleFocusSurfaceRef.current === surface;
     focusSurfaceRef.current = surface;
+    visibleFocusSurfaceRef.current = surface;
 
     if (mode === "self") {
       const radius = window.getComputedStyle(scope).borderRadius;
       setFocus((prev) =>
         prev.visible && prev.radius === radius
           ? prev
-          : { ...HIDDEN_FOCUS, visible: true, radius }
+        : {
+            ...HIDDEN_FOCUS,
+            visible: true,
+            transitionRadius: isSameSurface,
+            radius,
+          }
       );
       return;
     }
@@ -142,6 +156,7 @@ export function useFocus({
 
     setFocus({
       visible: true,
+      transitionRadius: isSameSurface,
       left: snap(surfaceRect.left - scopePaddingBoxLeft),
       top: snap(surfaceRect.top - scopePaddingBoxTop),
       width: snap(surfaceRect.width),
@@ -225,6 +240,7 @@ export function useFocus({
       "data-ring": "true",
       "data-self-target": isSelf ? "true" : undefined,
       "data-ring-inset": isRing ? "true" : undefined,
+      "data-transition-radius": focus.transitionRadius ? "true" : undefined,
       "data-visible": focus.visible ? "true" : undefined,
       "aria-hidden": "true",
       style: isSelf

@@ -51,7 +51,7 @@
     background-color: var(--background);
   }
 
-  .track[data-hide="true"] {
+  .track[data-hide="true"] .thumb {
     transition-property: opacity;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
     transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
@@ -59,9 +59,9 @@
 
   .vertical .track {
     right: 4px;
-    top: var(--scroll-padding-y, 0);
+    top: 0;
     width: 12px;
-    height: calc(100% - 2 * var(--scroll-padding-y, 0));
+    height: 100%;
     box-sizing: border-box;
   }
 
@@ -76,7 +76,7 @@
     position: absolute;
     border-radius: calc(var(--radius-xs, 0.25rem) * 0.80);
     background-color: var(--background);
-    transition-property: background-color, width, height;
+    transition-property: opacity, background-color, width, height;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
     transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
@@ -88,7 +88,7 @@
   .vertical .thumb {
     width: 6px;
     margin-left: 6px;
-    transition-property: background-color, width, margin-left;
+    transition-property: opacity, background-color, width, margin-left;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
     transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
@@ -103,7 +103,7 @@
   .horizontal .thumb {
     height: 6px;
     margin-top: 6px;
-    transition-property: background-color, height, margin-top;
+    transition-property: opacity, background-color, height, margin-top;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
     transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
