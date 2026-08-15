@@ -15,38 +15,46 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
     return <DetailPageShell name="" description="" notFoundLabel="Pattern not found." />;
   }
 
+  const entries = [
+    ...(pattern.code ? [{
+      id: patternId,
+      name: pattern.name,
+      description: pattern.description,
+      code: pattern.code,
+      previewHeight: pattern.previewHeight,
+      scope: 'pattern' as const,
+    }] : []),
+    ...(pattern.variations ?? []).map((variation) => ({
+      ...variation,
+      scope: 'variation' as const,
+    })),
+  ];
+
   return (
     <DetailPageShell
       name={pattern.name}
       description={pattern.description}
       tags={[pattern.category, pattern.complexity]}
     >
-      {pattern.code ? (
-        <WorkshopPreview
-          headingId="pattern-preview"
-          code={pattern.code}
-          previewHeight={pattern.previewHeight}
-          previewLayout="start"
-          fullscreen={{ categoryId: 'patterns', exampleId: patternId }}
-        >
-          <PatternLivePreview scope="pattern" id={patternId} />
-        </WorkshopPreview>
-      ) : null}
-
-      {pattern.variations?.map((variation) => (
-        <WorkshopPreview
-          key={variation.id}
-          headingId={variation.id}
-          title={variation.name}
-          description={variation.description}
-          code={variation.code}
-          previewHeight={variation.previewHeight}
-          previewLayout="start"
-          fullscreen={{ categoryId: 'patterns', exampleId: variation.id }}
-        >
-          <PatternLivePreview scope="variation" id={variation.id} />
-        </WorkshopPreview>
-      ))}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        {entries.map((entry, index) => (
+          <WorkshopPreview
+            key={entry.id}
+            headingId={`pattern-preview-${index + 1}`}
+            title={entry.name}
+            description={entry.description}
+            code={entry.code}
+            previewHeight={Math.min(entry.previewHeight ?? 320, 240)}
+            previewLayout="start"
+            fillHeight
+            fullscreen={{ categoryId: 'patterns', exampleId: entry.id }}
+            disclosure="modal"
+            modalTitle={`patterns/${patternId}/${String(index + 1).padStart(2, '0')}`}
+          >
+            <PatternLivePreview scope={entry.scope} id={entry.id} />
+          </WorkshopPreview>
+        ))}
+      </div>
     </DetailPageShell>
   );
 }

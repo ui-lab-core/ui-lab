@@ -36,6 +36,7 @@ export default function ElementDetailClient({ elementId }: ElementDetailClientPr
             files={variant.files}
             previewHeight={variant.previewHeight}
             fullscreen={{ categoryId: "elements", exampleId: `${elementId}-${index}` }}
+            disclosure="modal"
           >
             {DemoComponent ? <DemoComponent /> : null}
           </WorkshopPreview>

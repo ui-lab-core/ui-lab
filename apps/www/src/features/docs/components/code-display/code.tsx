@@ -51,12 +51,17 @@ interface CodeProps {
   files?: Array<{ name: string; code: string; language?: string }>;
   language?: string;
   className?: string;
+  /** Whether to render the filename or tab header above the code. */
+  showHeader?: boolean;
   showLineNumbers?: boolean;
   filename?: string;
   heading?: string;
   /** Extra controls rendered at the right edge of the single-file (filename) header. */
   headerActions?: ReactNode;
-  maxHeightLines?: number;
+  /** Maximum visible source lines. Set to null to show the entire file. */
+  maxHeightLines?: number | null;
+  /** Fit the code viewport to its parent and scroll its contents internally. */
+  fillHeight?: boolean;
   backgroundColor?: OklchColor;
   foregroundColor?: OklchColor;
   accentColor?: OklchColor;
@@ -66,6 +71,7 @@ interface CodeProps {
 }
 
 const MAX_HEIGHT_LINES = 5;
+const MAX_EXPANDED_HEIGHT_LINES = 28;
 const HIGHLIGHT_DELAY_MS = 120;
 let highlightQueue = Promise.resolve();
 const highlightRequests = new Map<string, Promise<{ html: string }>>();
@@ -110,6 +116,7 @@ export function Code({
   files,
   language = "ts",
   className,
+  showHeader = true,
   showLineNumbers = false,
   filename,
   heading,
@@ -117,6 +124,7 @@ export function Code({
   preHighlightedLight,
   preHighlightedDark,
   maxHeightLines = MAX_HEIGHT_LINES,
+  fillHeight = false,
 }: CodeProps) {
   const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
 
@@ -186,20 +194,24 @@ export function Code({
     };
   }, [activeCode, activeLanguage, currentThemeColors, currentThemeMode, fallbackHtml, highlightKey, isNearViewport, isThemeInitialized]);
 
-  const hiddenCodeLines = totalCodeLines - maxHeightLines;
+  const hiddenCodeLines = totalCodeLines - (maxHeightLines ?? totalCodeLines);
   const expanded = isExpanded;
-  const shouldShowExpandButton = totalCodeLines > maxHeightLines;
+  const shouldShowExpandButton = !fillHeight && maxHeightLines !== null && totalCodeLines > maxHeightLines;
+  const hasHeader = showHeader && Boolean(filename || heading);
 
   return (
     <div
       ref={rootRef}
       className={cn(
-        "rounded-sm border border-background-700 bg-background-1000 flex flex-col overflow-hidden w-full min-w-0",
+        "rounded-sm border border-background-700 bg-background-1000 overflow-hidden w-full min-w-0",
+        fillHeight
+          ? cn("grid h-full min-h-0", hasHeader ? "grid-rows-[auto_minmax(0,1fr)]" : "grid-rows-[minmax(0,1fr)]")
+          : "flex flex-col",
         showLineNumbers && "code-block--line-numbers",
         className
       )}
     >
-      {(filename || heading) && (
+      {hasHeader && (
         <div className="flex p-2 flex-none items-stretch justify-between text-xs text-foreground-400">
           {heading ? (
             <div className="flex gap-1  items-stretch">
@@ -247,7 +259,7 @@ export function Code({
         </div>
       )}
 
-      <div className="relative group flex-1 min-h-0 flex flex-col">
+      <div className={cn("relative group min-h-0 flex flex-col", fillHeight ? "h-full overflow-hidden" : "flex-1")}>
         {!heading && expanded && shouldShowExpandButton && (
           <Button
             type="button"
@@ -261,29 +273,44 @@ export function Code({
           </Button>
         )}
         {!heading ? <CopyButton code={children} /> : null}
-        <Scroll
-          direction="horizontal"
-          maxWidth="100%"
-          hide={false}
-          styles={{
-            track: "bg-transparent backdrop-blur-sm",
-            thumb: "bg-background-700 hover:bg-background-600",
-          }}
-          className="relative flex-1 min-h-0 min-w-0"
-        >
-          <div
-            dangerouslySetInnerHTML={{ __html: displayHtml }}
-            className={cn(`
-                [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
-                [&_code]:font-mono [&_code]:whitespace-pre
-              `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
-            style={{
-              maxHeight: !expanded ? `calc(${maxHeightLines} * 1.5em + 2rem)` : undefined,
-              maskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
-              WebkitMaskImage: !expanded && shouldShowExpandButton ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
+        {fillHeight ? (
+          <Scroll
+            direction="vertical"
+            maxWidth="100%"
+            hide={false}
+            styles={{
+              track: "bg-transparent backdrop-blur-sm",
+              thumb: "bg-background-700 hover:bg-background-600",
+              content: "!overflow-x-auto",
             }}
-          />
-        </Scroll>
+            className="relative h-full min-h-0 min-w-0"
+          >
+            <CodeContent
+              html={displayHtml}
+              hasResolvedSyntax={hasResolvedSyntax}
+              faded={false}
+            />
+          </Scroll>
+        ) : (
+          <Scroll
+            direction="vertical"
+            maxHeight={maxHeightLines !== null ? `calc(${expanded ? MAX_EXPANDED_HEIGHT_LINES : maxHeightLines} * 1.5em + 2rem)` : undefined}
+            maxWidth="100%"
+            hide={false}
+            styles={{
+              track: "bg-transparent backdrop-blur-sm",
+              thumb: "bg-background-700 hover:bg-background-600",
+              content: "!overflow-x-auto",
+            }}
+            className="relative flex-1 min-h-0 min-w-0"
+          >
+            <CodeContent
+              html={displayHtml}
+              hasResolvedSyntax={hasResolvedSyntax}
+              faded={!expanded && shouldShowExpandButton}
+            />
+          </Scroll>
+        )}
 
         {shouldShowExpandButton && !expanded && (
           <button
@@ -295,5 +322,29 @@ export function Code({
         )}
       </div>
     </div>
+  );
+}
+
+function CodeContent({
+  html,
+  hasResolvedSyntax,
+  faded,
+}: {
+  html: string;
+  hasResolvedSyntax: boolean;
+  faded: boolean;
+}) {
+  return (
+    <div
+      dangerouslySetInnerHTML={{ __html: html }}
+      className={cn(`
+          [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
+          [&_code]:font-mono [&_code]:whitespace-pre
+        `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
+      style={{
+        maskImage: faded ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
+        WebkitMaskImage: faded ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
+      }}
+    />
   );
 }

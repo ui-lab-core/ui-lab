@@ -20,7 +20,7 @@ interface ContentItem {
  * not the theme's accent, which can be any hue. Everything else derives from it
  * through color-mix so the tint stays coherent in light and dark.
  */
-const PREMIUM_HUE = 'oklch(0.62 0.19 300)';
+const PREMIUM_HUE = 'oklch(0.60 0.17 230)';
 
 /**
  * True for any content behind the one-time purchase. Price is no longer shown,
@@ -305,7 +305,7 @@ export function GenericContentGrid<T extends ContentItem>({
   if (!getCategory) {
     return (
       <div className="flex flex-col gap-12">
-        <Gallery columns={{ sm: 1, md: 2, lg: 3 }} gap="sm" className='p-1'>
+        <Gallery columns={{ sm: 1, md: 2, lg: 3 }} gap="lg" className='p-1'>
           {items.map(renderItem)}
         </Gallery>
       </div>

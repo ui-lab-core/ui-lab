@@ -3,17 +3,15 @@
 import {
   Suspense,
   useEffect,
+  useId,
   useMemo,
   useState,
   type ReactNode,
 } from 'react';
 import type { ElementFile } from '@ui-lab-core/library/catalog';
 import { Code } from '@/features/docs/components/code-display/code';
-import { ResizablePreview } from '@/features/preview';
-import { useExternalWindow } from '@/features/preview/hooks/use-external-window';
 import { cn } from '@/shared/lib/utils';
-import { Button } from 'ui-lab-components/button';
-import { FaExpand } from '@/shared/icons/fa6';
+import { Modal, Panel } from 'ui-lab-components';
 import { Eye, EyeOff, FileCode2, Folder } from 'lucide-react';
 
 export interface WorkshopFullscreenTarget {
@@ -26,7 +24,7 @@ interface WorkshopPreviewProps {
   headingId?: string;
   title?: string;
   description?: string;
-  /** The live preview to render inside the resizable box. */
+  /** The live preview to render inside the preview box. */
   children?: ReactNode;
   /** Source files shown below the preview (entry point is displayed first). */
   files?: ElementFile[];
@@ -34,22 +32,32 @@ interface WorkshopPreviewProps {
   code?: string;
   language?: string;
   codeFilename?: string;
+  /** Whether the source display renders its filename header. */
+  showCodeHeader?: boolean;
+  /** Maximum visible source lines before the code display expands. */
+  codeMaxHeightLines?: number | null;
   previewHeight?: number;
   previewLayout?: 'center' | 'start';
-  /** When set, renders a button that opens the entry standalone at /preview/... */
+  /** Reserved for callers that still pass isolation targets. */
   fullscreen?: WorkshopFullscreenTarget;
   /** Render only the source (no live preview box). Used for full-project starters. */
   hidePreview?: boolean;
+  /** Fill the parent grid cell, allowing cards in a row to share a height. */
+  fillHeight?: boolean;
+  /** Show a preview-only gallery entry that opens this full view in a modal. */
+  disclosure?: 'inline' | 'modal';
+  /** Optional source-style label used as the modal title. */
+  modalTitle?: string;
+  /** Internal marker for the expanded modal content. */
+  isModalDetail?: boolean;
 }
 
 const DEFAULT_PREVIEW_HEIGHT = 320;
 
 /**
- * Renders a single workshop entry the same way component examples render: a
- * resizable preview box (shared app-wide resize design — no device toggle) with
- * the source code directly below it. Multi-file entries reveal a collapsible
- * file tree to the right of the code. A fullscreen button opens the entry in
- * isolation, the one piece unique to the workshop.
+ * Renders a single workshop entry with the source code directly below the
+ * preview. Multi-file entries reveal a collapsible file tree to the right of
+ * the code.
  */
 export function WorkshopPreview({
   headingId,
@@ -60,10 +68,15 @@ export function WorkshopPreview({
   code,
   language = 'tsx',
   codeFilename = 'Example.tsx',
+  showCodeHeader = true,
+  codeMaxHeightLines,
   previewHeight = DEFAULT_PREVIEW_HEIGHT,
   previewLayout = 'center',
-  fullscreen,
   hidePreview = false,
+  fillHeight = false,
+  disclosure = 'inline',
+  modalTitle,
+  isModalDetail = false,
 }: WorkshopPreviewProps) {
   const uniqueFiles = useMemo(() => {
     const source: ElementFile[] = files?.length
@@ -76,6 +89,10 @@ export function WorkshopPreview({
   const hasFileTree = uniqueFiles.length > 1;
   const [treeVisible, setTreeVisible] = useState(hasFileTree);
   const [activeFilename, setActiveFilename] = useState<string | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const splitId = useId().replace(/:/g, '');
+  const codePaneId = `${splitId}-code`;
+  const previewPaneId = `${splitId}-preview`;
 
   useEffect(() => {
     setTreeVisible(hasFileTree);
@@ -91,77 +108,193 @@ export function WorkshopPreview({
   }, [uniqueFiles, activeFilename]);
 
   const showTree = hasFileTree && treeVisible;
+  const isPreviewOnly = disclosure === 'modal';
+  const openDetail = () => setIsDetailOpen(true);
+
+  const handlePreviewKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openDetail();
+    }
+  };
 
   return (
-    <section className="scroll-mt-24" id={headingId}>
-      {title ? (
-        <div className="mb-5 flex items-start justify-between gap-4 border-b border-background-700 pb-5">
-          <h3 id={headingId ? `${headingId}-title` : undefined} className="text-foreground-50">
-            {title}
-          </h3>
-          {description ? (
-            <p className="max-w-[45ch] text-sm text-foreground-400">{description}</p>
-          ) : null}
-        </div>
-      ) : null}
-
-      {hidePreview ? null : (
-        <div className="min-w-0 rounded-sm rounded-b-none border border-background-700">
-          <div
-            className="relative min-h-0 min-w-0"
-            style={{ height: previewHeight }}
-          >
-            {fullscreen ? <FullscreenButton target={fullscreen} /> : null}
-            <div
-              className="h-full min-h-0 w-full overflow-auto p-2"
-            >
-              <ResizablePreview layout={previewLayout}>
-                <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
-              </ResizablePreview>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeFile ? (
-        <div
-          className={cn(
-            'overflow-hidden border border-background-700 bg-background-950/40',
-            hidePreview ? 'rounded-sm' : 'rounded-sm rounded-t-none border-t-0',
-          )}
-        >
-          <div className={cn('grid min-w-0 grid-cols-1', showTree && 'xl:grid-cols-[minmax(0,1fr)_18rem]')}>
-            <Code
-              className="rounded-none border-0"
-              language={activeFile.language}
-              filename={activeFile.filename}
-              showLineNumbers
-              headerActions={
-                hasFileTree ? (
-                  <button
-                    type="button"
-                    onClick={() => setTreeVisible((current) => !current)}
-                    className="inline-flex h-5 w-5 items-center justify-center rounded-xs text-foreground-400 transition-colors hover:bg-background-800 hover:text-foreground-200 focus:outline-none focus:ring-2 focus:ring-accent-500"
-                    aria-label={showTree ? 'Hide file tree' : 'Show file tree'}
-                  >
-                    {showTree ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                  </button>
-                ) : undefined
-              }
-            >
-              {activeFile.code ?? ''}
-            </Code>
-            {showTree ? (
-              <SourceFilesPanel
-                files={uniqueFiles}
-                activeFilename={activeFile.filename}
-                onSelect={setActiveFilename}
-              />
+    <>
+      <section
+        className={cn(
+          'scroll-mt-24',
+          fillHeight && !isModalDetail && 'flex h-full min-h-0 flex-col',
+          isModalDetail && 'h-full min-h-0',
+          isPreviewOnly && 'cursor-pointer',
+        )}
+        id={headingId}
+        role={isPreviewOnly ? 'button' : undefined}
+        tabIndex={isPreviewOnly ? 0 : undefined}
+        onClick={isPreviewOnly ? openDetail : undefined}
+        onKeyDown={isPreviewOnly ? handlePreviewKeyDown : undefined}
+      >
+        <WorkshopDetailLayout isModalDetail={isModalDetail}>
+        {title && !isPreviewOnly ? (
+          <div className="p-4 mb-5 flex items-start justify-between gap-4 border-b border-background-700 pb-5">
+            <h3 id={headingId ? `${headingId}-title` : undefined} className="text-foreground-50">
+              {title}
+            </h3>
+            {description ? (
+              <p className="max-w-[45ch] text-sm text-foreground-400">{description}</p>
             ) : null}
           </div>
-        </div>
+        ) : null}
+
+        {hidePreview ? null : (
+          <div
+            id={isModalDetail ? previewPaneId : undefined}
+            className={cn(
+            'min-w-0 overflow-hidden rounded-sm',
+            isPreviewOnly && 'border border-background-700',
+            !isPreviewOnly && 'rounded-b-none',
+            (fillHeight || isModalDetail) && 'flex min-h-0 flex-1 flex-col',
+            isModalDetail && 'order-3 h-full rounded-none lg:min-w-[25%] lg:max-w-[75%]',
+          )}
+          >
+            <div
+              className={cn('relative min-h-0 min-w-0', (fillHeight || isModalDetail) && 'h-full')}
+              style={fillHeight || isModalDetail ? undefined : { height: previewHeight }}
+            >
+              <div className="h-full min-h-0 w-full overflow-auto p-2">
+                {isPreviewOnly ? (
+                  <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
+                ) : (
+                  <div
+                    className={cn(
+                      'flex h-full min-h-0 w-full',
+                      previewLayout === 'start' ? 'items-start justify-center' : 'items-center justify-center',
+                    )}
+                  >
+                    <div className="min-w-0">
+                      <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isPreviewOnly && activeFile ? (
+          <div
+            id={isModalDetail ? codePaneId : undefined}
+            className={cn(
+              'overflow-hidden bg-background-950/40',
+              isModalDetail
+                ? 'order-1 h-full min-h-0 overflow-hidden rounded-none! border-t-0 lg:min-w-[25%] lg:max-w-[75%]'
+                : hidePreview
+                  ? 'rounded-sm'
+                  : 'rounded-sm rounded-t-none border-t-0',
+            )}
+          >
+            <div className={cn('grid min-w-0 grid-cols-1', isModalDetail && 'h-full min-h-0 grid-rows-[minmax(0,1fr)]', showTree && 'xl:grid-cols-[minmax(0,1fr)_18rem]')}>
+              <Code
+                className={cn(
+                  'rounded-none! border-0',
+                  isModalDetail && 'h-full border-t!',
+                )}
+                fillHeight={isModalDetail}
+                language={activeFile.language}
+                filename={activeFile.filename}
+                showHeader={showCodeHeader}
+                showLineNumbers
+                maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
+                headerActions={
+                  hasFileTree ? (
+                    <button
+                      type="button"
+                      onClick={() => setTreeVisible((current) => !current)}
+                      className="inline-flex h-5 w-5 items-center justify-center rounded-xs text-foreground-400 transition-colors hover:bg-background-800 hover:text-foreground-200 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                      aria-label={showTree ? 'Hide file tree' : 'Show file tree'}
+                    >
+                      {showTree ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    </button>
+                  ) : undefined
+                }
+              >
+                {activeFile.code ?? ''}
+              </Code>
+              {showTree ? (
+                <SourceFilesPanel
+                  files={uniqueFiles}
+                  activeFilename={activeFile.filename}
+                  onSelect={setActiveFilename}
+                />
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
+        {isModalDetail && !hidePreview && activeFile ? (
+          <Panel.Resize
+            aria-controls={`${codePaneId} ${previewPaneId}`}
+            aria-label="Resize code and preview panes"
+            className="order-2"
+          />
+        ) : null}
+
+        </WorkshopDetailLayout>
+      </section>
+      {isPreviewOnly ? (
+        <Modal
+          open={isDetailOpen}
+          onOpenChange={setIsDetailOpen}
+          className="h-[94%] max-h-none w-[min(94vw,112rem)] max-w-none"
+        >
+          <Modal.Body scrollable={false} className="min-h-0 p-0">
+            <WorkshopPreview
+              headingId={headingId}
+              files={files}
+              code={code}
+              language={language}
+              codeFilename={codeFilename}
+              showCodeHeader={false}
+              codeMaxHeightLines={null}
+              previewHeight={previewHeight}
+              previewLayout={previewLayout}
+              hidePreview={hidePreview}
+              fillHeight={fillHeight}
+              isModalDetail
+            >
+              {children}
+            </WorkshopPreview>
+          </Modal.Body>
+          {modalTitle ?? title ?? description ? (
+            <Modal.Footer className="flex-col items-start gap-1">
+              {modalTitle ?? title ? (
+                <h3 id={headingId ? `${headingId}-title` : undefined} className="text-foreground-50">
+                  {modalTitle ?? title}
+                </h3>
+              ) : null}
+              {description ? (
+                <p className="text-sm text-foreground-400">{description}</p>
+              ) : null}
+            </Modal.Footer>
+          ) : null}
+        </Modal>
       ) : null}
-    </section>
+    </>
+  );
+}
+
+function WorkshopDetailLayout({
+  children,
+  isModalDetail,
+}: {
+  children: ReactNode;
+  isModalDetail: boolean;
+}) {
+  if (!isModalDetail) return <>{children}</>;
+
+  return (
+    <Panel orientation="horizontal" collapseAt={900} spacing="none">
+      {children}
+    </Panel>
   );
 }
 
@@ -179,22 +312,6 @@ function PreviewLoadingOverlay() {
       />
       <span className="sr-only">Loading interactive preview</span>
     </div>
-  );
-}
-
-function FullscreenButton({ target }: { target: WorkshopFullscreenTarget }) {
-  const { openWindow } = useExternalWindow();
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      aria-label="Open preview in isolation"
-      title="Open in isolation"
-      onClick={() => openWindow({ categoryId: target.categoryId, exampleId: target.exampleId, width: 1200, height: 900 })}
-      icon={<FaExpand size={13} />}
-      className="absolute right-2 top-2 z-10 h-7 w-7 text-foreground-400"
-    />
   );
 }
 

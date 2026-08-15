@@ -32,6 +32,7 @@ export default function SectionDetailClient({ sectionId, section }: SectionDetai
           previewHeight={variant.previewHeight}
           previewLayout="start"
           fullscreen={{ categoryId: "sections", exampleId: `${sectionId}-${index}` }}
+          disclosure="modal"
         >
           {variant.demoPath ? <SectionLivePreview demoId={variant.demoPath} /> : null}
         </WorkshopPreview>

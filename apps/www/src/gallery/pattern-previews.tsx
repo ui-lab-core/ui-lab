@@ -2,246 +2,217 @@
 
 import React from "react";
 
+const previewRows = [0, 1] as const;
+
+function Preview({ children }: React.PropsWithChildren) {
+  return (
+    <div className="flex w-full flex-col justify-center gap-3 p-4">
+      {children}
+    </div>
+  );
+}
+
+function Lines({ short = false }: { short?: boolean }) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+      <div className={`h-2 rounded-full bg-background-500/50 ${short ? "w-1/2" : "w-2/3"}`} />
+      <div className="h-1.5 w-4/5 rounded-full bg-background-500/30" />
+    </div>
+  );
+}
+
 export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "media-object": () => (
-    <div className="flex flex-col gap-3 p-4 w-full">
-      {[0, 1, 2].map((n) => (
-        <div key={n} className="flex gap-3 items-start">
-          <div style={{ width: 36, height: 36 }} className="bg-background-800 border border-background-700 rounded-lg shrink-0" />
-          <div className="flex flex-col gap-2 flex-1">
-            <div style={{ height: 7, width: `${[70, 55, 80][n]}%` }} className="bg-background-700 rounded" />
-            <div style={{ height: 5 }} className="bg-background-800 rounded w-full" />
-          </div>
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <div className="size-8 shrink-0 rounded-[8px] bg-background-500/20" />
+          <Lines short={n === 1} />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "split-row": () => (
-    <div className="flex flex-col w-full p-3">
-      {[0, 1, 2].map((n) => (
-        <div key={n} className="flex items-center justify-between gap-3 py-2.5 border-b border-background-800">
-          <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-            <div style={{ height: 6, width: `${[68, 80, 55][n]}%` }} className="bg-background-700 rounded" />
-            <div style={{ height: 4, width: "45%" }} className="bg-background-800 rounded" />
-          </div>
-          <div style={{ width: 44, height: 18 }} className="bg-accent-900 border border-background-700 rounded-full shrink-0" />
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <Lines short={n === 0} />
+          <div className="h-5 w-12 shrink-0 rounded-md bg-background-500/20" />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "stat-block": () => (
-    <div className="flex gap-6 p-5 w-full items-start">
-      {[["48", "Active Users", true], ["1.2k", "Requests", false], ["99%", "Uptime", false]].map(([val, label, hasTrend], n) => (
-        <div key={String(val)} className="flex flex-col gap-1.5">
-          <div style={{ height: 28, width: `${[40, 48, 36][n]}px` }} className="bg-background-600 rounded" />
-          <div style={{ height: 5, width: `${[56, 48, 40][n]}px` }} className="bg-background-800 rounded" />
-          {hasTrend && <div style={{ height: 4, width: 64 }} className="bg-accent-900 rounded" />}
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <div className="h-8 w-12 shrink-0 rounded-md bg-background-500/20" />
+          <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-20" : "w-14"}`} />
+          {n === 0 && <div className="h-2 w-8 rounded-full bg-accent-500/50" />}
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "labeled-field": () => (
-    <div className="flex flex-col gap-4 p-4 w-full">
-      {[0, 1, 2].map((n) => (
-        <div key={n} className="flex flex-col gap-1.5">
-          <div style={{ height: 5, width: `${[52, 72, 60][n]}px` }} className="bg-background-700 rounded" />
-          <div style={{ height: 30 }} className="bg-background-900 border border-background-700 rounded w-full" />
-          {n === 1 && <div style={{ height: 4, width: 120 }} className="bg-background-800 rounded" />}
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <div className={`h-2 shrink-0 rounded-full bg-background-500/50 ${n === 0 ? "w-14" : "w-10"}`} />
+          <div className="h-8 flex-1 rounded-[8px] border-[2px] border-background-500/20 bg-background-950" />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "search-input": () => (
-    <div className="flex flex-col gap-3 p-4 w-full">
-      <div className="flex items-center gap-2 h-8 bg-background-900 border border-background-700 rounded px-3">
-        <div style={{ width: 12, height: 12 }} className="bg-background-700 rounded-full shrink-0" />
-        <div style={{ height: 5 }} className="bg-background-800 rounded flex-1" />
-      </div>
-      <div className="flex items-center justify-between h-8 bg-background-900 border border-background-700 rounded px-3">
-        <div className="flex items-center gap-2 flex-1">
-          <div style={{ width: 12, height: 12 }} className="bg-background-700 rounded-full shrink-0" />
-          <div style={{ height: 5, width: "50%" }} className="bg-background-800 rounded" />
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-2 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3">
+          <div className="size-3 shrink-0 rounded-full border-[2px] border-background-500/50" />
+          <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-2/3" : "w-1/2"}`} />
+          {n === 1 && <div className="ml-auto h-5 w-8 rounded-md bg-background-500/20" />}
         </div>
-        <div style={{ width: 28, height: 16 }} className="bg-background-800 border border-background-700 rounded" />
-      </div>
-      <div className="flex items-center gap-2 h-8 bg-background-900 border border-transparent rounded px-3">
-        <div style={{ width: 12, height: 12 }} className="bg-background-700 rounded-full shrink-0" />
-        <div style={{ height: 5, width: "40%" }} className="bg-background-800 rounded" />
-      </div>
-    </div>
+      ))}
+    </Preview>
   ),
 
   "toggle-setting-row": () => (
-    <div className="flex flex-col w-full p-3">
-      {[true, false, false].map((on, n) => (
-        <div key={n} className="flex items-start justify-between gap-3 py-2.5 border-b border-background-800">
-          <div className="flex flex-col gap-1.5">
-            <div style={{ height: 6, width: `${[80, 100, 64][n]}px` }} className="bg-background-700 rounded" />
-            <div style={{ height: 4, width: `${[120, 96, 80][n]}px` }} className="bg-background-800 rounded" />
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <Lines short={n === 1} />
+          <div className={`h-5 w-8 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/30"}`}>
+            <div className={`m-0.5 size-4 rounded-full bg-background-950 ${n === 0 ? "ml-3.5" : ""}`} />
           </div>
-          <div style={{ width: 28, height: 16 }} className={`rounded-full shrink-0 ${on ? "bg-accent-700" : "bg-background-700"}`} />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "select-row": () => (
-    <div className="flex flex-col w-full p-3">
-      {[0, 1, 2].map((n) => (
-        <div key={n} className="flex items-center justify-between gap-3 py-2.5 border-b border-background-800">
-          <div className="flex flex-col gap-1.5 flex-1">
-            <div style={{ height: 6, width: `${[80, 64, 96][n]}px` }} className="bg-background-700 rounded" />
-            {n !== 1 && <div style={{ height: 4, width: 100 }} className="bg-background-800 rounded" />}
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <Lines short={n === 0} />
+          <div className="flex h-8 w-20 shrink-0 items-center justify-end rounded-[8px] border-[2px] border-background-500/20 bg-background-950 px-2">
+            <div className="size-1.5 -translate-y-0.5 rotate-45 border-b-2 border-r-2 border-background-500/50" />
           </div>
-          <div style={{ width: 72, height: 26 }} className="bg-background-900 border border-background-700 rounded shrink-0" />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "badge-row": () => (
-    <div className="flex flex-col gap-3 p-4 w-full">
-      <div className="flex flex-wrap gap-1.5">
-        {[48, 56, 40, 64, 36].map((w) => (
-          <div key={w} style={{ width: w, height: 20 }} className="bg-background-800 border border-background-700 rounded-full" />
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-1.5">
-        {[[44, "bg-accent-900 border-background-700"], [60, "bg-background-800 border-background-700"], [40, "bg-background-800 border-background-700"], [52, "bg-background-700 border-background-600"]].map(([w, cls]) => (
-          <div key={`badge-${w}`} style={{ width: w as number, height: 20 }} className={`${cls} border rounded-full`} />
-        ))}
-      </div>
-    </div>
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-2 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          {[12, 16, 10].map((width, index) => (
+            <div
+              key={width}
+              className={`h-5 rounded-full ${n === 0 && index === 0 ? "bg-accent-500/40" : "bg-background-500/30"}`}
+              style={{ width: width * 4 }}
+            />
+          ))}
+        </div>
+      ))}
+    </Preview>
   ),
 
   "progress-metric": () => (
-    <div className="flex flex-col gap-3 p-4 w-full">
-      {[[70, "w-28"], [45, "w-24"], [85, "w-32"]].map(([pct, labelCls]) => (
-        <div key={pct} className="flex items-center gap-3">
-          <div style={{ height: 5 }} className={`${labelCls} bg-background-700 rounded shrink-0`} />
-          <div className="flex-1 h-1.5 bg-background-800 rounded-full overflow-hidden">
-            <div style={{ width: `${pct}%` }} className="h-full bg-accent-700 rounded-full" />
+    <Preview>
+      {[68, 42].map((percent, n) => (
+        <div key={percent} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <div className={`h-2 shrink-0 rounded-full bg-background-500/50 ${n === 0 ? "w-16" : "w-12"}`} />
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-background-500/20">
+            <div className="h-full rounded-full bg-accent-500/60" style={{ width: `${percent}%` }} />
           </div>
-          <div style={{ width: 24, height: 5 }} className="bg-background-700 rounded shrink-0" />
+          <div className="h-2 w-8 rounded-full bg-background-500/30" />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "data-table-row": () => (
-    <div className="flex flex-col w-full">
-      {[["bg-accent-900 border-accent-800", 65], ["bg-background-700 border-background-600", 80], ["bg-background-800 border-background-700", 50]].map(([badgeCls, w]) => (
-        <div key={String(w)} className="flex items-center gap-3 px-3 py-2.5 border-b border-background-800">
-          <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-            <div style={{ height: 6, width: `${w}%` }} className="bg-background-700 rounded" />
-            <div style={{ height: 4, width: "40%" }} className="bg-background-800 rounded" />
-          </div>
-          <div style={{ width: 44, height: 5 }} className="bg-background-800 rounded shrink-0" />
-          <div style={{ width: 40, height: 18 }} className={`${badgeCls} border rounded-full shrink-0`} />
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-1/3" : "w-1/4"}`} />
+          <div className="h-2 w-14 rounded-full bg-background-500/30" />
+          <div className="ml-auto h-5 w-12 rounded-md bg-background-500/20" />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "button-group-pattern": () => (
-    <div className="flex flex-col gap-4 p-4 w-full items-start">
-      <div className="flex">
-        {["Bold", "Italic", "Under"].map((label, n) => (
-          <div key={label} style={{ height: 28, width: 44 }} className={`flex items-center justify-center bg-background-900 border-y border-r border-background-700 ${n === 0 ? "border-l rounded-l-md" : ""} ${n === 2 ? "rounded-r-md" : ""}`}>
-            <div style={{ width: 24, height: 5 }} className="bg-background-700 rounded" />
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center gap-1">
-        {["btn-0", "btn-1", "sep", "btn-3", "btn-4"].map((id, n) => (
-          id === "sep"
-            ? <div key={id} style={{ width: 1, height: 20 }} className="bg-background-700 mx-0.5" />
-            : <div key={id} style={{ width: [36, 36, 1, 36, 36][n], height: 28 }} className="bg-background-900 border border-background-700 rounded-md" />
-        ))}
-      </div>
-      <div className="flex">
-        {[0, 1, 2].map((n) => (
-          <div key={n} style={{ height: 28, width: 36 }} className={`flex items-center justify-center bg-background-900 border-y border-r border-background-700 ${n === 0 ? "border-l rounded-l-md" : ""} ${n === 2 ? "rounded-r-md" : ""}`}>
-            <div style={{ width: 14, height: 14 }} className="bg-background-700 rounded-sm" />
-          </div>
-        ))}
-      </div>
-    </div>
+    <Preview>
+      {previewRows.map((row) => (
+        <div key={row} className="flex h-12 items-center rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          {[0, 1, 2].map((button) => (
+            <div
+              key={button}
+              className={`flex h-8 w-10 items-center justify-center border-[2px] border-background-500/20 bg-background-950 ${button > 0 ? "-ml-[2px]" : ""} ${button === 0 ? "rounded-l-[8px]" : ""} ${button === 2 ? "rounded-r-[8px]" : ""}`}
+            >
+              <div className={`rounded bg-background-500/50 ${row === 0 ? "h-2 w-5" : "size-2"}`} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </Preview>
   ),
 
   "icon-action-bar": () => (
-    <div className="flex flex-col w-full p-3">
-      {[0, 1, 2].map((n) => (
-        <div key={n} className="flex items-center justify-between gap-3 py-2.5 border-b border-background-800">
-          <div className="flex flex-col gap-1.5 flex-1">
-            <div style={{ height: 6, width: `${[72, 85, 60][n]}%` }} className="bg-background-700 rounded" />
-            <div style={{ height: 4, width: "40%" }} className="bg-background-800 rounded" />
-          </div>
-          <div className="flex gap-1 shrink-0">
-            {[0, 1, 2].map((m) => (
-              <div key={m} style={{ width: 26, height: 26 }} className="bg-background-800 border border-background-700 rounded flex items-center justify-center">
-                <div style={{ width: 10, height: 10 }} className="bg-background-600 rounded-sm" />
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-1/2" : "w-1/3"}`} />
+          <div className="ml-auto flex gap-1.5">
+            {[0, 1].map((action) => (
+              <div key={action} className="flex size-8 items-center justify-center rounded-[10px] bg-background-500/20">
+                <div className="size-2 rounded-sm bg-background-500/50" />
               </div>
             ))}
           </div>
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "tab-content-header": () => (
-    <div className="flex flex-col gap-4 p-4 w-full">
-      <div className="flex items-start justify-between gap-3 pb-3 border-b border-background-800">
-        <div className="flex flex-col gap-2">
-          <div style={{ height: 8, width: 100 }} className="bg-background-700 rounded" />
-          <div style={{ height: 5, width: 140 }} className="bg-background-800 rounded" />
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+          <Lines short={n === 1} />
+          <div className="h-8 w-16 shrink-0 rounded-[10px] bg-background-500/20" />
         </div>
-        <div style={{ width: 52, height: 26 }} className="bg-background-900 border border-background-700 rounded shrink-0" />
-      </div>
-      <div className="flex items-center justify-between gap-3 pb-3 border-b border-background-800">
-        <div style={{ height: 8, width: 80 }} className="bg-background-700 rounded" />
-        <div style={{ width: 44, height: 26 }} className="bg-background-900 border border-background-700 rounded shrink-0" />
-      </div>
-      <div className="flex items-center justify-between gap-3 pb-3 border-b border-background-800">
-        <div className="flex items-center gap-2">
-          <div style={{ height: 8, width: 72 }} className="bg-background-700 rounded" />
-          <div style={{ width: 22, height: 18 }} className="bg-background-800 border border-background-700 rounded" />
-        </div>
-        <div style={{ width: 52, height: 26 }} className="bg-background-900 border border-background-700 rounded shrink-0" />
-      </div>
-    </div>
+      ))}
+    </Preview>
   ),
 
   "inline-alert": () => (
-    <div className="flex flex-col gap-2 p-4 w-full">
-      {[
-        ["bg-background-800", "border-background-600", "bg-accent-800"],
-        ["bg-background-800", "border-background-600", "bg-background-600"],
-        ["bg-background-900", "border-background-700", "bg-background-700"],
-      ].map(([bg, border, iconBg]) => (
-        <div key={iconBg} className={`flex gap-2.5 px-3 py-2.5 rounded-lg border ${bg} ${border}`}>
-          <div style={{ width: 14, height: 14 }} className={`${iconBg} rounded-full shrink-0 mt-0.5`} />
-          <div className="flex flex-col gap-1.5 flex-1">
-            <div style={{ height: 6 }} className="bg-background-700 rounded w-3/4" />
-            <div style={{ height: 4 }} className="bg-background-800 rounded w-full" />
-          </div>
+    <Preview>
+      {previewRows.map((n) => (
+        <div key={n} className="flex h-12 items-center gap-2.5 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3">
+          <div className={`size-3 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/40"}`} />
+          <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-2/3" : "w-1/2"}`} />
         </div>
       ))}
-    </div>
+    </Preview>
   ),
 
   "empty-state-pattern": () => (
-    <div className="flex flex-col items-center justify-center gap-4 p-4 h-full w-full text-center">
-      <div style={{ width: 44, height: 44 }} className="bg-background-800 border border-background-700 rounded-full" />
-      <div className="flex flex-col gap-2 items-center">
-        <div style={{ height: 7, width: 100 }} className="bg-background-700 rounded" />
-        <div style={{ height: 5, width: 140 }} className="bg-background-800 rounded" />
+    <Preview>
+      <div className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div className="size-8 shrink-0 rounded-full bg-background-500/20" />
+        <Lines />
       </div>
-      <div style={{ width: 80, height: 28 }} className="bg-background-900 border border-background-700 rounded" />
-    </div>
+      <div className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2 pl-[52px]">
+        <div className="h-7 w-16 rounded-[8px] bg-background-500/20" />
+        <div className="h-2 w-14 rounded-full bg-background-500/30" />
+      </div>
+    </Preview>
   ),
 };
