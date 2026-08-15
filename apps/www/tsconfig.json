@@ -15,9 +15,7 @@
     "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      { "name": "next" }
-    ],
+    "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],

@@ -21,8 +21,11 @@ export function ToolbarAnimation() {
   return (
     <div className="flex items-center justify-center relative overflow-hidden font-sans">
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
-
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           {/* Toolbar container */}
           <rect
             x={toolbarX}
@@ -51,24 +54,132 @@ export function ToolbarAnimation() {
           />
 
           {/* Btn 0 — Bold: two horizontal bars */}
-          <rect x={btn(0) - 7} y={cy - 5} width={14} height={4} rx={2} fill="currentColor" className={config.highlight.idleClass} fillOpacity={0.55} />
-          <rect x={btn(0) - 7} y={cy + 3} width={14} height={4} rx={2} fill="currentColor" className={config.highlight.idleClass} fillOpacity={0.55} />
+          <rect
+            x={btn(0) - 7}
+            y={cy - 5}
+            width={14}
+            height={4}
+            rx={2}
+            fill="currentColor"
+            className={config.highlight.idleClass}
+            fillOpacity={0.55}
+          />
+          <rect
+            x={btn(0) - 7}
+            y={cy + 3}
+            width={14}
+            height={4}
+            rx={2}
+            fill="currentColor"
+            className={config.highlight.idleClass}
+            fillOpacity={0.55}
+          />
 
           {/* Btn 1 — Italic: shifted bars to suggest slant */}
-          <rect x={btn(1) - 3} y={cy - 6} width={10} height={3} rx={2} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(1) - 5} y={cy - 1} width={10} height={3} rx={2} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(1) - 7} y={cy + 4} width={10} height={3} rx={2} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
+          <rect
+            x={btn(1) - 3}
+            y={cy - 6}
+            width={10}
+            height={3}
+            rx={2}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(1) - 5}
+            y={cy - 1}
+            width={10}
+            height={3}
+            rx={2}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(1) - 7}
+            y={cy + 4}
+            width={10}
+            height={3}
+            rx={2}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
 
           {/* Btn 2 — Align: three horizontal bars (text-align style) */}
-          <rect x={btn(2) - 8} y={cy - 6} width={16} height={3} rx={2} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(2) - 8} y={cy - 1} width={12} height={3} rx={2} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(2) - 8} y={cy + 4} width={16} height={3} rx={2} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
+          <rect
+            x={btn(2) - 8}
+            y={cy - 6}
+            width={16}
+            height={3}
+            rx={2}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(2) - 8}
+            y={cy - 1}
+            width={12}
+            height={3}
+            rx={2}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(2) - 8}
+            y={cy + 4}
+            width={16}
+            height={3}
+            rx={2}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
 
           {/* Btn 3 — Grid: 2x2 small squares */}
-          <rect x={btn(3) - 8} y={cy - 7} width={6} height={6} rx={1} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(3) + 2} y={cy - 7} width={6} height={6} rx={1} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(3) - 8} y={cy + 1} width={6} height={6} rx={1} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
-          <rect x={btn(3) + 2} y={cy + 1} width={6} height={6} rx={1} fill="currentColor" className={config.dim.class} fillOpacity={0.45} />
+          <rect
+            x={btn(3) - 8}
+            y={cy - 7}
+            width={6}
+            height={6}
+            rx={1}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(3) + 2}
+            y={cy - 7}
+            width={6}
+            height={6}
+            rx={1}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(3) - 8}
+            y={cy + 1}
+            width={6}
+            height={6}
+            rx={1}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
+          <rect
+            x={btn(3) + 2}
+            y={cy + 1}
+            width={6}
+            height={6}
+            rx={1}
+            fill="currentColor"
+            className={config.dim.class}
+            fillOpacity={0.45}
+          />
 
           {/* Btn 4 — Share/Export: circle + outward arrow */}
           <circle

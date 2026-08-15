@@ -1,8 +1,8 @@
-import { getElementEntry, listElements } from '@ui-lab-core/library/server';
-import type { ComponentMetadata } from 'ui-lab-registry';
-import { registryAdapter } from '../adapters/registry-adapter.js';
+import { getElementEntry, listElements } from "@ui-lab-core/library/server";
+import type { ComponentMetadata } from "ui-lab-registry";
+import { registryAdapter } from "../adapters/registry-adapter.js";
 
-type ComponentDetail = 'summary' | 'api' | 'usage' | 'examples' | 'full';
+type ComponentDetail = "summary" | "api" | "usage" | "examples" | "full";
 
 function componentSummary(component: ComponentMetadata) {
   return {
@@ -17,13 +17,13 @@ function componentSummary(component: ComponentMetadata) {
 }
 
 function componentExamples(componentId: string) {
-  return listElements('components')
+  return listElements("components")
     .filter(
       (entry) =>
         entry.groupPath[0] === componentId &&
         entry.previewEligible &&
-        entry.visibility === 'public' &&
-        entry.access === 'free'
+        entry.visibility === "public" &&
+        entry.access === "free",
     )
     .map((entry) => ({
       ref: `${componentId}/${entry.id}`,
@@ -33,19 +33,19 @@ function componentExamples(componentId: string) {
 }
 
 function getExample(reference: string) {
-  const [componentId, exampleId, ...rest] = reference.split('/');
+  const [componentId, exampleId, ...rest] = reference.split("/");
   if (!componentId || !exampleId || rest.length > 0) return null;
 
   const example =
-    getElementEntry('components', exampleId) ??
-    getElementEntry('components', exampleId.replace(/^\d+-/, ''));
+    getElementEntry("components", exampleId) ??
+    getElementEntry("components", exampleId.replace(/^\d+-/, ""));
 
   if (
     !example ||
     example.groupPath[0] !== componentId ||
     !example.previewEligible ||
-    example.visibility !== 'public' ||
-    example.access !== 'free'
+    example.visibility !== "public" ||
+    example.access !== "free"
   ) {
     return null;
   }
@@ -69,12 +69,9 @@ function componentImport(component: ComponentMetadata) {
   };
 }
 
-export async function handleGetComponent(input: {
-  query: string;
-  detail?: ComponentDetail;
-}) {
+export async function handleGetComponent(input: { query: string; detail?: ComponentDetail }) {
   const query = input.query.trim();
-  if (!query) throw new Error('Component query must not be empty.');
+  if (!query) throw new Error("Component query must not be empty.");
 
   const example = getExample(query);
   if (example) return { example };
@@ -88,10 +85,10 @@ export async function handleGetComponent(input: {
     return { query, matches };
   }
 
-  const detail = input.detail ?? 'summary';
-  if (detail === 'summary') return { component: componentSummary(component) };
+  const detail = input.detail ?? "summary";
+  if (detail === "summary") return { component: componentSummary(component) };
 
-  if (detail === 'api') {
+  if (detail === "api") {
     return {
       component: {
         ...componentSummary(component),
@@ -101,7 +98,7 @@ export async function handleGetComponent(input: {
     };
   }
 
-  if (detail === 'usage') {
+  if (detail === "usage") {
     return {
       component: {
         ...componentSummary(component),
@@ -112,7 +109,7 @@ export async function handleGetComponent(input: {
   }
 
   const examples = componentExamples(component.id);
-  if (detail === 'examples') {
+  if (detail === "examples") {
     return { component: componentSummary(component), examples };
   }
 

@@ -3,7 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
 
-function getRoundedRectPath(x: number, y: number, w: number, h: number, r: { tl: number, tr: number, bl: number, br: number }) {
+function getRoundedRectPath(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
+) {
   return `
     M ${x + r.tl} ${y}
     H ${x + w - r.tr}
@@ -46,7 +52,9 @@ export function GroupAnimation() {
   const gap = isHovered ? 0 : 12;
 
   // Calculate centered start position
-  const totalWidth = isHovered ? (itemWidth * 2 + middleWidth) : (itemWidth * 2 + middleWidth + gap * 2);
+  const totalWidth = isHovered
+    ? itemWidth * 2 + middleWidth
+    : itemWidth * 2 + middleWidth + gap * 2;
   const startX = centerLine - totalWidth / 2;
 
   // X positions
@@ -57,9 +65,16 @@ export function GroupAnimation() {
   const rx = config.blockRx;
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="group-grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -72,14 +87,13 @@ export function GroupAnimation() {
 
           {/* Group Items */}
           <g style={{ transition: config.transition }}>
-
             {/* Left Item (Button) */}
             <path
               d={getRoundedRectPath(leftX, groupY, itemWidth, itemHeight, {
                 tl: rx,
                 tr: isHovered ? 0 : rx,
                 bl: rx,
-                br: isHovered ? 0 : rx
+                br: isHovered ? 0 : rx,
               })}
               className="text-background-950"
               fill="currentColor"
@@ -90,7 +104,7 @@ export function GroupAnimation() {
                 tl: rx,
                 tr: isHovered ? 0 : rx,
                 bl: rx,
-                br: isHovered ? 0 : rx
+                br: isHovered ? 0 : rx,
               })}
               className={isHovered ? config.highlight.hoverClass : config.highlight.idleClass}
               fill="currentColor"
@@ -99,7 +113,9 @@ export function GroupAnimation() {
               style={{
                 transition: config.transition,
                 fillOpacity: isHovered ? 0.05 : config.highlight.idleFillOpacity,
-                strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity: isHovered
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
             <rect
@@ -122,7 +138,7 @@ export function GroupAnimation() {
                 tl: isHovered ? 0 : rx,
                 tr: isHovered ? 0 : rx,
                 bl: isHovered ? 0 : rx,
-                br: isHovered ? 0 : rx
+                br: isHovered ? 0 : rx,
               })}
               className="text-background-950"
               fill="currentColor"
@@ -133,7 +149,7 @@ export function GroupAnimation() {
                 tl: isHovered ? 0 : rx,
                 tr: isHovered ? 0 : rx,
                 bl: isHovered ? 0 : rx,
-                br: isHovered ? 0 : rx
+                br: isHovered ? 0 : rx,
               })}
               className={config.dim.class}
               fill="currentColor"
@@ -167,7 +183,7 @@ export function GroupAnimation() {
               className={isHovered ? config.highlight.hoverClass : config.guidelines.colorClass}
               style={{
                 transition: config.transition,
-                opacity: isHovered ? 1 : 0.3
+                opacity: isHovered ? 1 : 0.3,
               }}
             />
 
@@ -177,7 +193,7 @@ export function GroupAnimation() {
                 tl: isHovered ? 0 : rx,
                 tr: rx,
                 bl: isHovered ? 0 : rx,
-                br: rx
+                br: rx,
               })}
               className="text-background-950"
               fill="currentColor"
@@ -188,7 +204,7 @@ export function GroupAnimation() {
                 tl: isHovered ? 0 : rx,
                 tr: rx,
                 bl: isHovered ? 0 : rx,
-                br: rx
+                br: rx,
               })}
               className={isHovered ? config.highlight.hoverClass : config.highlight.idleClass}
               fill="currentColor"
@@ -197,7 +213,9 @@ export function GroupAnimation() {
               style={{
                 transition: config.transition,
                 fillOpacity: isHovered ? 0.05 : config.highlight.idleFillOpacity,
-                strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity: isHovered
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
             <path
@@ -230,7 +248,7 @@ export function GroupAnimation() {
 
           {/* Grouping Highlight Ring */}
           <rect
-            x={centerLine - (isHovered ? (totalWidth + 20) : (totalWidth - 20)) / 2}
+            x={centerLine - (isHovered ? totalWidth + 20 : totalWidth - 20) / 2}
             y={groupY - 10}
             width={isHovered ? totalWidth + 20 : totalWidth - 20}
             height={itemHeight + 20}

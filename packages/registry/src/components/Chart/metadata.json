@@ -9,15 +9,8 @@
     "exportName": "Chart",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "tooltip",
-    "table"
-  ],
-  "tags": [
-    "data",
-    "visualization",
-    "graph"
-  ],
+  "relatedComponents": ["tooltip", "table"],
+  "tags": ["data", "visualization", "graph"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

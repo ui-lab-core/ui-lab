@@ -8,22 +8,10 @@
     "exportName": "Table",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card"
-  ],
-  "tags": [
-    "data",
-    "table",
-    "display",
-    "custom cells",
-    "rendering"
-  ],
+  "relatedComponents": ["card"],
+  "tags": ["data", "table", "display", "custom cells", "rendering"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Table role",
-      "Header associations",
-      "Keyboard navigation"
-    ]
+    "notes": ["Table role", "Header associations", "Keyboard navigation"]
   }
 }

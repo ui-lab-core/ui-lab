@@ -53,11 +53,7 @@ export function PathAnimation() {
       className="flex items-center justify-center relative overflow-hidden font-sans"
     >
       <div className="relative w-full max-w-[400px]">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-auto relative z-10"
-          aria-hidden="true"
-        >
+        <svg viewBox="0 0 400 300" className="w-full h-auto relative z-10" aria-hidden="true">
           <defs>
             <radialGradient id="path-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />

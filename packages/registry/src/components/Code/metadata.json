@@ -10,16 +10,9 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": [
-    "code",
-    "syntax-highlighting",
-    "display"
-  ],
+  "tags": ["code", "syntax-highlighting", "display"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Pre-formatted content",
-      "Copy button is keyboard accessible"
-    ]
+    "notes": ["Pre-formatted content", "Copy button is keyboard accessible"]
   }
 }

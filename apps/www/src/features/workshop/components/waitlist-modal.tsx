@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { CheckCircle2, Mail } from 'lucide-react';
-import { Button, Input, Modal } from 'ui-lab-components';
+import React from "react";
+import { CheckCircle2, Mail } from "lucide-react";
+import { Button, Input, Modal } from "ui-lab-components";
 
-const waitlistKey = 'ui-lab-premium-waitlist';
+const waitlistKey = "ui-lab-premium-waitlist";
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -12,10 +12,10 @@ interface WaitlistModalProps {
 }
 
 function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [error, setError] = React.useState('');
+  const [error, setError] = React.useState("");
 
   React.useEffect(() => {
     const stored = localStorage.getItem(waitlistKey);
@@ -23,7 +23,7 @@ function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
     try {
       const submission = JSON.parse(stored) as { email?: string };
-      setEmail(submission.email ?? '');
+      setEmail(submission.email ?? "");
       setIsSubmitted(true);
     } catch {
       localStorage.removeItem(waitlistKey);
@@ -32,28 +32,33 @@ function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError('');
+    setError("");
 
-    const input = event.currentTarget.querySelector('input[type="email"]') as HTMLInputElement | null;
+    const input = event.currentTarget.querySelector(
+      'input[type="email"]',
+    ) as HTMLInputElement | null;
     if (!email) {
-      setError('Email is required');
+      setError("Email is required");
       return;
     }
     if (!input?.validity.valid) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      localStorage.setItem(waitlistKey, JSON.stringify({
-        email,
-        source: 'ui-lab-waitlist',
-        timestamp: Date.now(),
-      }));
+      localStorage.setItem(
+        waitlistKey,
+        JSON.stringify({
+          email,
+          source: "ui-lab-waitlist",
+          timestamp: Date.now(),
+        }),
+      );
       setIsSubmitted(true);
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -70,14 +75,16 @@ function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       <Modal.Header>
         <div>
           <h2 className="text-xl font-bold text-foreground-50">What&apos;s coming to UI Lab</h2>
-          <p className="text-sm text-foreground-400">Be the first to know when premium content launches.</p>
+          <p className="text-sm text-foreground-400">
+            Be the first to know when premium content launches.
+          </p>
         </div>
       </Modal.Header>
 
       <Modal.Body className="space-y-5 px-6 py-6">
         <p className="text-sm leading-relaxed text-foreground-300">
-          We&apos;re building new elements, sections, and starters to help you ship polished interfaces faster.
-          Join the waitlist for launch updates and early access.
+          We&apos;re building new elements, sections, and starters to help you ship polished
+          interfaces faster. Join the waitlist for launch updates and early access.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -87,19 +94,27 @@ function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             value={email}
             onChange={(event) => {
               setEmail(event.currentTarget.value);
-              setError('');
+              setError("");
             }}
             placeholder="you@example.com"
             autoComplete="email"
             icon={<Mail className="h-4 w-4" />}
             disabled={isSubmitting || isSubmitted}
-            actions={isSubmitted
-              ? []
-              : [
-                <Button key="join" type="submit" variant="primary" size="sm" disabled={isSubmitting}>
-                  {isSubmitting ? 'Joining...' : 'Join waitlist'}
-                </Button>,
-              ]}
+            actions={
+              isSubmitted
+                ? []
+                : [
+                    <Button
+                      key="join"
+                      type="submit"
+                      variant="primary"
+                      size="sm"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Joining..." : "Join waitlist"}
+                    </Button>,
+                  ]
+            }
           />
           {error && <p className="text-sm text-danger-500">{error}</p>}
           {isSubmitted && (
@@ -126,7 +141,7 @@ const ModalContext = React.createContext<{
 export function useWaitlistModal() {
   const context = React.useContext(ModalContext);
   if (!context) {
-    throw new Error('useWaitlistModal must be used within WaitlistModalClient');
+    throw new Error("useWaitlistModal must be used within WaitlistModalClient");
   }
   return context;
 }

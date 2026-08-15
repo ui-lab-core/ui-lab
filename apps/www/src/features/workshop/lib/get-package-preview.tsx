@@ -1,5 +1,5 @@
-import type React from 'react';
-import { elementPackages } from '@ui-lab-core/library/catalog';
+import type React from "react";
+import { elementPackages } from "@ui-lab-core/library/catalog";
 
 type PreviewComponent = React.ComponentType<object>;
 

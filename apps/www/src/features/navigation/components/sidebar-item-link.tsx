@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { usePrefetchOnHover } from '@/shared/hooks/use-prefetch-on-hover';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { usePrefetchOnHover } from "@/shared/hooks/use-prefetch-on-hover";
 
 interface SidebarItemLinkProps {
   href: string;
@@ -21,7 +21,7 @@ export function SidebarItemLink({ href, className, children }: SidebarItemLinkPr
         prefetch={false}
         onMouseEnter={onMouseEnter}
         onFocus={onFocus}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         aria-hidden
       />
       <div
@@ -29,7 +29,7 @@ export function SidebarItemLink({ href, className, children }: SidebarItemLinkPr
         tabIndex={0}
         onClick={() => router.push(href)}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             router.push(href);
           }
         }}

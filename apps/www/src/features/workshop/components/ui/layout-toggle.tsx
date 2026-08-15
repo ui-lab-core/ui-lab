@@ -1,28 +1,32 @@
 "use client";
 
-import { cn } from '@/shared/lib/utils';
-import { useState } from 'react';
-import { FaTableCellsLarge, FaList } from '@/shared/icons/fa6';
+import { cn } from "@/shared/lib/utils";
+import { useState } from "react";
+import { FaTableCellsLarge, FaList } from "@/shared/icons/fa6";
 
 export function ElementsLayoutToggle() {
-  const [layout, setLayout] = useState('grid'); // Connect to your global state/URL
+  const [layout, setLayout] = useState("grid"); // Connect to your global state/URL
 
   return (
     <div className="flex items-center bg-background-900 border border-background-700 p-1 rounded-md">
       <button
-        onClick={() => setLayout('grid')}
+        onClick={() => setLayout("grid")}
         className={cn(
           "p-1.5 rounded-md transition-all",
-          layout === 'grid' ? "bg-background-700 text-foreground-50 shadow-sm" : "text-foreground-400 hover:text-foreground-300"
+          layout === "grid"
+            ? "bg-background-700 text-foreground-50 shadow-sm"
+            : "text-foreground-400 hover:text-foreground-300",
         )}
       >
         <FaTableCellsLarge size={14} />
       </button>
       <button
-        onClick={() => setLayout('list')}
+        onClick={() => setLayout("list")}
         className={cn(
           "p-1.5 rounded-md transition-all",
-          layout === 'list' ? "bg-background-700 text-foreground-50 shadow-sm" : "text-foreground-400 hover:text-foreground-300"
+          layout === "list"
+            ? "bg-background-700 text-foreground-50 shadow-sm"
+            : "text-foreground-400 hover:text-foreground-300",
         )}
       >
         <FaList size={14} />

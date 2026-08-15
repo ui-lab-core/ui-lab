@@ -1,5 +1,8 @@
 import { Divider } from "ui-lab-components/divider";
-import { TableOfContents, type TableOfContentsItem } from "@/features/docs/components/table-of-contents";
+import {
+  TableOfContents,
+  type TableOfContentsItem,
+} from "@/features/docs/components/table-of-contents";
 import { getMonthGroups, type Entry } from "./data";
 
 export const metadata = {
@@ -25,7 +28,9 @@ function Release({ entry }: { entry: Entry }) {
       <div className="min-w-0">
         <div className="flex items-baseline gap-3">
           <span className="text-sm font-medium text-foreground-50">{entry.title}</span>
-          <span className="text-sm font-mono text-foreground-400 whitespace-nowrap">v{entry.version}</span>
+          <span className="text-sm font-mono text-foreground-400 whitespace-nowrap">
+            v{entry.version}
+          </span>
         </div>
         {entry.description && (
           <div className="mt-2 text-sm text-foreground-300">{entry.description}</div>

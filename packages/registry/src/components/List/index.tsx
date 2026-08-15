@@ -1,6 +1,6 @@
-import React from 'react';
-import { List, Button } from 'ui-lab-components';
-import { ComponentDetail } from '@/types';
+import React from "react";
+import { List, Button } from "ui-lab-components";
+import { ComponentDetail } from "@/types";
 
 const basicListCode = `import { List, Button } from "ui-lab-components";
 
@@ -20,9 +20,9 @@ export function Example() {
 }`;
 
 export const listDetail: ComponentDetail = {
-  id: 'list',
-  name: 'List',
-  description: 'Compound component for displaying item collections with selection and actions.',
+  id: "list",
+  name: "List",
+  description: "Compound component for displaying item collections with selection and actions.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
@@ -38,9 +38,9 @@ export const listDetail: ComponentDetail = {
   ),
   examples: [
     {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Basic list usage with interactive items',
+      id: "preview",
+      title: "Preview",
+      description: "Basic list usage with interactive items",
       code: basicListCode,
       preview: (
         <List aria-label="Preview List">
@@ -51,7 +51,9 @@ export const listDetail: ComponentDetail = {
           <List.Item interactive>Item Two</List.Item>
           <List.Item interactive>Item Three</List.Item>
           <List.Footer>
-            <Button variant="primary" size="sm">Load More</Button>
+            <Button variant="primary" size="sm">
+              Load More
+            </Button>
           </List.Footer>
         </List>
       ),
@@ -59,9 +61,9 @@ export const listDetail: ComponentDetail = {
   ],
   variants: [
     {
-      id: 'basic',
-      name: 'Basic',
-      description: 'Standard list with interactive items.',
+      id: "basic",
+      name: "Basic",
+      description: "Standard list with interactive items.",
       code: basicListCode,
       preview: (
         <List aria-label="Basic List">
@@ -71,15 +73,17 @@ export const listDetail: ComponentDetail = {
           <List.Item interactive>Item One</List.Item>
           <List.Item interactive>Item Two</List.Item>
           <List.Footer>
-            <Button variant="primary" size="sm">Load More</Button>
+            <Button variant="primary" size="sm">
+              Load More
+            </Button>
           </List.Footer>
         </List>
       ),
     },
     {
-      id: 'with-selection',
-      name: 'With Selection',
-      description: 'List items with selection state.',
+      id: "with-selection",
+      name: "With Selection",
+      description: "List items with selection state.",
       code: `import { List } from "ui-lab-components";
 import { useState } from "react";
 
@@ -120,9 +124,9 @@ export function Example() {
       ),
     },
     {
-      id: 'with-actions',
-      name: 'With Actions',
-      description: 'List items with action groups.',
+      id: "with-actions",
+      name: "With Actions",
+      description: "List items with action groups.",
       code: `import { List } from "ui-lab-components";
 
 export function Example() {
@@ -149,8 +153,12 @@ export function Example() {
           <List.Item interactive>
             <p className="text-sm text-foreground-300">Item with actions</p>
             <List.ActionGroup justify="between">
-              <button className="text-sm text-foreground-300 hover:text-foreground-100 transition-colors">👍 Like</button>
-              <button className="text-sm text-foreground-300 hover:text-foreground-100 transition-colors">💬 Reply</button>
+              <button className="text-sm text-foreground-300 transition-colors hover:text-foreground-100">
+                👍 Like
+              </button>
+              <button className="text-sm text-foreground-300 transition-colors hover:text-foreground-100">
+                💬 Reply
+              </button>
             </List.ActionGroup>
           </List.Item>
         </List>

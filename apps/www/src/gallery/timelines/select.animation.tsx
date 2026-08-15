@@ -2,19 +2,16 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 function getRoundedRectPath(
-  x: number, y: number, w: number, h: number,
-  r: number | { tl: number, tr: number, bl: number, br: number }
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number | { tl: number; tr: number; bl: number; br: number },
 ) {
-  const radii = typeof r === 'number'
-    ? { tl: r, tr: r, bl: r, br: r }
-    : r;
+  const radii = typeof r === "number" ? { tl: r, tr: r, bl: r, br: r } : r;
 
   return `
     M ${x + radii.tl} ${y}
@@ -85,7 +82,7 @@ export function SelectAnimation() {
   const itemGap = 4;
   const numItems = 3;
   const padding = 6;
-  const dropdownH = (itemH * numItems) + (itemGap * (numItems - 1)) + (padding * 2);
+  const dropdownH = itemH * numItems + itemGap * (numItems - 1) + padding * 2;
   const dropdownY = triggerY + triggerH + 8; // fixed: 180
 
   // Shift the whole group up when open so trigger+dropdown are centered together
@@ -152,13 +149,18 @@ export function SelectAnimation() {
               <rect width="400" height="300" fill="url(#select-grid-fade)" />
             </mask>
             <clipPath id="dropdown-clip">
-              <rect x={triggerX} y={dropdownY} width={dropdownW} height={dropdownH} rx={config.blockRx} />
+              <rect
+                x={triggerX}
+                y={dropdownY}
+                width={dropdownW}
+                height={dropdownH}
+                rx={config.blockRx}
+              />
             </clipPath>
           </defs>
 
           {/* Trigger + Dropdown — shifted as a unit */}
           <g style={{ transform: `translateY(${groupShift}px)`, transition }}>
-
             {/* Trigger */}
             <g>
               {/* Trigger Background */}
@@ -176,7 +178,9 @@ export function SelectAnimation() {
                 style={{
                   transition,
                   fillOpacity: isOpen ? 0.05 : config.highlight.idleFillOpacity,
-                  strokeOpacity: isOpen ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                  strokeOpacity: isOpen
+                    ? config.highlight.hoverStrokeOpacity
+                    : config.highlight.idleStrokeOpacity,
                 }}
               />
 
@@ -209,7 +213,7 @@ export function SelectAnimation() {
                   transition,
                   opacity: 0.8,
                   transformOrigin: `${triggerX + triggerW - 20}px ${triggerY + 20}px`,
-                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                 }}
               />
             </g>
@@ -220,7 +224,7 @@ export function SelectAnimation() {
                 opacity: isOpen ? 1 : 0,
                 transform: isOpen ? "translateY(0)" : "translateY(-10px)",
                 transition,
-                pointerEvents: "none"
+                pointerEvents: "none",
               }}
             >
               {/* Dropdown Background */}
@@ -243,7 +247,7 @@ export function SelectAnimation() {
               {/* Items */}
               {[0, 1, 2].map((n) => {
                 const isActive = isHoveringOption && n === 1; // 2nd item is the one we interact with
-                const itemY = dropdownY + padding + (n * (itemH + itemGap));
+                const itemY = dropdownY + padding + n * (itemH + itemGap);
 
                 return (
                   <g key={n} style={{ transition }}>
@@ -251,14 +255,14 @@ export function SelectAnimation() {
                     <rect
                       x={triggerX + padding}
                       y={itemY}
-                      width={dropdownW - (padding * 2)}
+                      width={dropdownW - padding * 2}
                       height={itemH}
                       rx={config.barRx}
                       className={isActive ? config.highlight.hoverClass : "text-transparent"}
                       fill="currentColor"
                       style={{
                         fillOpacity: isActive ? 0.2 : 0,
-                        transition
+                        transition,
                       }}
                     />
 
@@ -266,14 +270,16 @@ export function SelectAnimation() {
                     <rect
                       x={triggerX + padding + 12}
                       y={itemY + 12}
-                      width={80 + (n * 20)} // Varying widths
+                      width={80 + n * 20} // Varying widths
                       height={10}
                       rx={3}
                       fill="currentColor"
-                      className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
+                      className={
+                        isActive ? config.highlight.hoverClass : config.highlight.idleClass
+                      }
                       style={{
                         opacity: isActive ? 0.9 : 0.4,
-                        transition
+                        transition,
                       }}
                     />
                     {/* Checkmark placeholder (optional, maybe for selected state logic, but keeping simple) */}
@@ -281,7 +287,8 @@ export function SelectAnimation() {
                 );
               })}
             </g>
-          </g>{/* end trigger+dropdown wrapper */}
+          </g>
+          {/* end trigger+dropdown wrapper */}
 
           <CursorProvider
             phase={stage}
@@ -296,7 +303,6 @@ export function SelectAnimation() {
           >
             <Cursor />
           </CursorProvider>
-
         </svg>
       </div>
     </div>

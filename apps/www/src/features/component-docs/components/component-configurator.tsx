@@ -12,8 +12,6 @@ import { Select } from "ui-lab-components/select";
 import { EasingPreview } from "./easing-preview";
 import { EASING_FUNCTIONS, EASING_KEYS, type EasingKey } from "../lib/easing";
 
-
-
 interface ControlOption {
   label: string;
   value: string | number | boolean;
@@ -120,12 +118,12 @@ export function ComponentConfigurator({
   const initialControlValues = useMemo(() => {
     const initialValues: Record<string, ControlValue> = {};
     controls.forEach((control) => {
-      initialValues[control.name] =
-        control.defaultValue ?? control.options?.[0]?.value ?? "";
+      initialValues[control.name] = control.defaultValue ?? control.options?.[0]?.value ?? "";
     });
     return initialValues;
   }, [controls]);
-  const [controlValues, setControlValues] = useState<Record<string, ControlValue>>(initialControlValues);
+  const [controlValues, setControlValues] =
+    useState<Record<string, ControlValue>>(initialControlValues);
   const [selectedEasing, setSelectedEasing] = useState<EasingKey>("snappyPop");
   const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.desktop);
 
@@ -143,11 +141,8 @@ export function ComponentConfigurator({
   const factoryResult = factory ? factory(controlValues, handleStateChange) : null;
   const hasCode = Boolean(factoryResult || code || tabs.length > 0);
 
-  const allTabs = hasCode && !factoryResult
-    ? code
-      ? [{ label: "Usage", code }, ...tabs]
-      : tabs
-    : EMPTY_TABS;
+  const allTabs =
+    hasCode && !factoryResult ? (code ? [{ label: "Usage", code }, ...tabs] : tabs) : EMPTY_TABS;
   const currentCode = factoryResult ? factoryResult.code : (allTabs[activeTab]?.code ?? code ?? "");
   const previewVariant = calculateVariantFromWidth(previewWidth);
 
@@ -157,34 +152,42 @@ export function ComponentConfigurator({
   // to fill the container nor shrink when centered. Resizable previews are
   // governed by the width slider instead.
   const shouldConstrain = constrainPreview && !resizable;
-  const previewInner = factoryResult ? factoryResult.preview : PreviewRenderer ? (
+  const previewInner = factoryResult ? (
+    factoryResult.preview
+  ) : PreviewRenderer ? (
     <PreviewRenderer
       {...controlValues}
       handleControlChange={handleControlChange}
       previewWidth={previewWidth}
       setPreviewWidth={resizable ? setPreviewWidth : undefined}
     />
-  ) : children;
+  ) : (
+    children
+  );
   const previewContent = (
     <Scroll className="h-full" styles={{ track: "pr-6" }} inline maxHeight="40rem">
       <div
         className={cn(
           "flex h-full w-full mx-auto min-h-80",
-          previewLayout === "center" ? "items-center justify-center" : "flex-col"
+          previewLayout === "center" ? "items-center justify-center" : "flex-col",
         )}
-        style={{ "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties}
+        style={
+          { "--button-easing": EASING_FUNCTIONS[selectedEasing].cssVar } as React.CSSProperties
+        }
       >
         {shouldConstrain ? (
           <div
             className={cn(
               previewWidthClass,
               "max-w-full mx-auto",
-              previewLayout === "center" && "flex flex-col items-center justify-center"
+              previewLayout === "center" && "flex flex-col items-center justify-center",
             )}
           >
             {previewInner}
           </div>
-        ) : previewInner}
+        ) : (
+          previewInner
+        )}
       </div>
     </Scroll>
   );
@@ -237,12 +240,9 @@ export function ComponentConfigurator({
       {title && (
         <div className="border-b space-y-2 border-background-700 py-5">
           <h4 className="text-foreground-50">{title}</h4>
-          {description && (
-            <p className="text-sm text-foreground-400">{description}</p>
-          )}
+          {description && <p className="text-sm text-foreground-400">{description}</p>}
         </div>
-      )
-      }
+      )}
 
       <div className="flex rounded-sm border border-background-700 rounded-b-none flex-col md:flex-row md:items-stretch">
         <div className="border-background-700 flex-1 min-w-0 overflow-hidden md:self-stretch">
@@ -263,16 +263,12 @@ export function ComponentConfigurator({
           )}
 
           {!hidePreviewToggle && !resizable && (
-            <div className="h-full rounded-sm">
-              {previewContent}
-            </div>
+            <div className="h-full rounded-sm">{previewContent}</div>
           )}
 
           {hidePreviewToggle && (
             <div className="overflow-hidden">
-              <div className="px-10 py-15">
-                {previewContent}
-              </div>
+              <div className="px-10 py-15">{previewContent}</div>
             </div>
           )}
         </div>
@@ -294,10 +290,13 @@ export function ComponentConfigurator({
                       <Select
                         className="w-full"
                         selectedKey={String(controlValues[control.name] ?? "")}
-                        defaultValue={control.options?.find(opt => opt.value === controlValues[control.name])?.label ?? control.options?.[0]?.label ?? ""}
-                        onSelectionChange={(key) =>
-                          handleControlChange(control.name, key)
+                        defaultValue={
+                          control.options?.find((opt) => opt.value === controlValues[control.name])
+                            ?.label ??
+                          control.options?.[0]?.label ??
+                          ""
                         }
+                        onSelectionChange={(key) => handleControlChange(control.name, key)}
                       >
                         <Select.Trigger className="w-full">
                           <Select.Value />
@@ -316,29 +315,22 @@ export function ComponentConfigurator({
                     {control.type === "toggle" && (
                       <button
                         onClick={() =>
-                          handleControlChange(
-                            control.name,
-                            !controlValues[control.name]
-                          )
+                          handleControlChange(control.name, !controlValues[control.name])
                         }
                         className={cn(
                           "w-full px-3 py-1.5 text-xs font-medium rounded-sm",
                           controlValues[control.name]
                             ? "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700"
-                            : "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700 opacity-50"
+                            : "bg-background-800 text-foreground-300 hover:bg-background-700 border border-background-700 opacity-50",
                         )}
                       >
-                        {controlValues[control.name]
-                          ? control.label
-                          : `${control.label} (Off)`}
+                        {controlValues[control.name] ? control.label : `${control.label} (Off)`}
                       </button>
                     )}
                     {control.type === "text" && (
                       <Input
                         value={String(controlValues[control.name] ?? "")}
-                        onChange={(e) =>
-                          handleControlChange(control.name, e.target.value)
-                        }
+                        onChange={(e) => handleControlChange(control.name, e.target.value)}
                         variant="default"
                         className="w-full"
                       />
@@ -353,7 +345,10 @@ export function ComponentConfigurator({
                         onChange={(e) => {
                           const nextValue = Number(e.target.value);
                           if (!Number.isNaN(nextValue)) {
-                            handleControlChange(control.name, clampStepperValue(nextValue, control));
+                            handleControlChange(
+                              control.name,
+                              clampStepperValue(nextValue, control),
+                            );
                           }
                         }}
                         variant="default"
@@ -372,13 +367,15 @@ export function ComponentConfigurator({
                     className="w-full"
                     selectedKey={selectedEasing}
                     defaultValue={EASING_FUNCTIONS[selectedEasing]?.name || ""}
-                    onSelectionChange={(key) =>
-                      setSelectedEasing(key as EasingKey)
-                    }
+                    onSelectionChange={(key) => setSelectedEasing(key as EasingKey)}
                   >
                     <Select.Trigger className="w-full">
                       <div className="flex items-center gap-2">
-                        <EasingPreview easing={selectedEasing} size="sm" className="text-accent-500" />
+                        <EasingPreview
+                          easing={selectedEasing}
+                          size="sm"
+                          className="text-accent-500"
+                        />
                         <span>{EASING_FUNCTIONS[selectedEasing].name}</span>
                       </div>
                     </Select.Trigger>
@@ -387,7 +384,11 @@ export function ComponentConfigurator({
                         {EASING_KEYS.map((easing: EasingKey) => (
                           <Select.Item key={easing} value={easing}>
                             <div className="flex items-center gap-2">
-                              <EasingPreview easing={easing} size="sm" className="text-accent-500" />
+                              <EasingPreview
+                                easing={easing}
+                                size="sm"
+                                className="text-accent-500"
+                              />
                               <span>{EASING_FUNCTIONS[easing].name}</span>
                             </div>
                           </Select.Item>

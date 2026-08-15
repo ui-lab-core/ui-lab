@@ -37,24 +37,19 @@ interface TableExpandedDetailsProps {
   className?: string;
 }
 
-export function TableExpandedDetails({
-  details,
-  className,
-}: TableExpandedDetailsProps) {
+export function TableExpandedDetails({ details, className }: TableExpandedDetailsProps) {
   if (details.length === 0) return null;
 
   return (
     <dl
       className={cn(
         "grid grid-cols-1 gap-x-6 gap-y-3 p-2 sm:grid-cols-[minmax(110px,160px)_1fr]",
-        className
+        className,
       )}
     >
       {details.map((detail) => (
         <Fragment key={detail.key}>
-          <dt className="text-xs font-medium text-foreground-500 sm:pt-1">
-            {detail.label}:
-          </dt>
+          <dt className="text-xs font-medium text-foreground-500 sm:pt-1">{detail.label}:</dt>
           <dd className="min-w-0 text-xs text-foreground-300">{detail.value}</dd>
         </Fragment>
       ))}
@@ -106,7 +101,7 @@ export function Table<T extends object>({
       if (!filterValue) return true;
       const cellValue = String((row as Record<string, unknown>)[key]).toLowerCase();
       return cellValue.includes(filterValue.toLowerCase());
-    })
+    }),
   );
 
   return (
@@ -122,9 +117,7 @@ export function Table<T extends object>({
                 <input
                   type="text"
                   value={filters[String(col.key)] || ""}
-                  onChange={(e) =>
-                    handleFilterChange(String(col.key), e.target.value)
-                  }
+                  onChange={(e) => handleFilterChange(String(col.key), e.target.value)}
                   placeholder={`Filter by ${col.label.toLowerCase()}`}
                   className="w-full px-3 py-2 rounded-sm border border-background-700 bg-background-950 text-foreground-50 placeholder-foreground-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
                 />
@@ -158,14 +151,12 @@ export function Table<T extends object>({
                 return (
                   <Fragment key={rowKey}>
                     <tr
-                      onClick={() =>
-                        expandRender ? toggleRow(rowKey) : onRowClick?.(row)
-                      }
+                      onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
                       className={cn(
                         "border-b border-background-800",
                         expandRender || onRowClick
                           ? "cursor-pointer hover:bg-background-900 transition-colors"
-                          : ""
+                          : "",
                       )}
                     >
                       {columns.map((col) => (
@@ -189,10 +180,7 @@ export function Table<T extends object>({
                       ))}
                       {expandRender && (
                         <td className="px-4 py-3 text-right">
-                          <Expand
-                            expanded={isExpanded}
-                            onExpandedChange={() => toggleRow(rowKey)}
-                          >
+                          <Expand expanded={isExpanded} onExpandedChange={() => toggleRow(rowKey)}>
                             <Expand.Trigger
                               aria-label={`Toggle details for row ${String(rowKey)}`}
                               onClick={(event) => event.stopPropagation()}
@@ -206,10 +194,7 @@ export function Table<T extends object>({
                     </tr>
                     {expandRender && isExpanded && (
                       <tr className="border-b border-background-800 last:border-b-0 bg-background-950">
-                        <td
-                          colSpan={columns.length + 1}
-                          className="px-4 py-3"
-                        >
+                        <td colSpan={columns.length + 1} className="px-4 py-3">
                           <Expand expanded={isExpanded}>
                             <Expand.Content>{expandRender(row)}</Expand.Content>
                           </Expand>

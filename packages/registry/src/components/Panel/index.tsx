@@ -1,10 +1,11 @@
-import React from 'react'
-import { ComponentDetail } from '@/types'
+import React from "react";
+import { ComponentDetail } from "@/types";
 
 export const panelDetail: ComponentDetail = {
-  id: 'panel',
-  name: 'Panel',
-  description: 'A container-aware layout coordinator for collapsible sidebars, main regions, and resizable panes.',
+  id: "panel",
+  name: "Panel",
+  description:
+    "A container-aware layout coordinator for collapsible sidebars, main regions, and resizable panes.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
@@ -20,10 +21,10 @@ export const panelDetail: ComponentDetail = {
       </p>
       <p>
         For split workspaces, place pane elements around Panel.Resize inside Panel.Group. Separators
-        support pointer and touch dragging plus Arrow, Home, and End keyboard controls with percentage
-        min/max constraints.
+        support pointer and touch dragging plus Arrow, Home, and End keyboard controls with
+        percentage min/max constraints.
       </p>
     </div>
   ),
   examples: [],
-}
+};

@@ -1,9 +1,9 @@
-import { SectionsPageClient } from '@/features/sections/components/sections-page-client';
-import { Metadata } from 'next';
-import { generateMetadata as buildMetadata } from '@/shared/lib/metadata';
+import { SectionsPageClient } from "@/features/sections/components/sections-page-client";
+import { Metadata } from "next";
+import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 
 export const metadata: Metadata = buildMetadata({
-  pathname: '/blocks',
+  pathname: "/blocks",
 });
 
 export default function SectionsPage() {

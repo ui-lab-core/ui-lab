@@ -1,6 +1,6 @@
-import React from 'react';
-import { Expand } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
+import React from "react";
+import { Expand } from "ui-lab-components";
+import { ControlDef, ComponentDetail } from "@/types";
 
 const basicExpandCode = `import { Expand } from "ui-lab-components";
 
@@ -15,24 +15,25 @@ export function Example() {
 }`;
 
 export const expandDetail: ComponentDetail = {
-  id: 'expand',
-  name: 'Expand',
-  description: 'A disclosure component that expands and collapses content sections with full keyboard support and ARIA compliance.',
+  id: "expand",
+  name: "Expand",
+  description:
+    "A disclosure component that expands and collapses content sections with full keyboard support and ARIA compliance.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Expand component provides a lightweight, accessible way to organize
-        collapsible content. Built with React Aria, it supports keyboard
-        navigation, proper ARIA roles and attributes, and smooth animations.
+        The Expand component provides a lightweight, accessible way to organize collapsible content.
+        Built with React Aria, it supports keyboard navigation, proper ARIA roles and attributes,
+        and smooth animations.
       </p>
     </div>
   ),
   examples: [],
   variants: [
     {
-      id: 'default',
-      name: 'Default',
-      description: 'Standard expand component in collapsed state.',
+      id: "default",
+      name: "Default",
+      description: "Standard expand component in collapsed state.",
       code: basicExpandCode,
       preview: (
         <Expand title="What is an Expand component?">
@@ -41,9 +42,9 @@ export const expandDetail: ComponentDetail = {
       ),
     },
     {
-      id: 'expanded',
-      name: 'Expanded',
-      description: 'Expand component in expanded state showing content.',
+      id: "expanded",
+      name: "Expanded",
+      description: "Expand component in expanded state showing content.",
       code: `<Expand title="Title" defaultExpanded>
   <p>Content goes here</p>
 </Expand>`,

@@ -11,6 +11,7 @@ The color-blend animation pattern works in three layers:
 3. **React** - Manages lifecycle and event listeners
 
 This approach is DRY, theme-aware, and smooth because:
+
 - GSAP animates a numeric value (smooth interpolation)
 - CSS `color-mix()` handles color blending automatically
 - Theme changes update CSS variables, so colors update mid-animation if needed
@@ -20,7 +21,12 @@ This approach is DRY, theme-aware, and smooth because:
 ### Basic Animation (GridAnimation style)
 
 ```tsx
-import { useAnimationTimeline, createColorBlendTimeline, injectStyles, COLOR_BLEND_CSS } from "@/gallery/timelines";
+import {
+  useAnimationTimeline,
+  createColorBlendTimeline,
+  injectStyles,
+  COLOR_BLEND_CSS,
+} from "@/gallery/timelines";
 import { useRef } from "react";
 
 export function MyAnimation() {
@@ -68,15 +74,15 @@ export const ACCENT_BLEND_CSS = `
 `;
 
 // In component:
-injectStyles("my-animation-styles", ACCENT_BLEND_CSS)
+injectStyles("my-animation-styles", ACCENT_BLEND_CSS);
 ```
 
 ### Custom Animation Config
 
 ```tsx
 createColorBlendTimeline(items, animations, {
-  duration: 1.2,  // default 0.8
-  ease: "power2.out",  // default "power1.inOut"
+  duration: 1.2, // default 0.8
+  ease: "power2.out", // default "power1.inOut"
 });
 ```
 
@@ -87,6 +93,7 @@ createColorBlendTimeline(items, animations, {
 Creates a GSAP timeline that animates `--color-progress` (0→1) alongside width/opacity.
 
 **Parameters:**
+
 - `items`: HTMLElement[] - Elements to animate
 - `animations`: Record<index, { width, opacity? }> - Animation config per item
 - `config`: { duration?, ease? } - Optional animation settings
@@ -98,6 +105,7 @@ Creates a GSAP timeline that animates `--color-progress` (0→1) alongside width
 React hook managing timeline lifecycle with parent element hover/leave events.
 
 **Features:**
+
 - Auto-plays on mouseenter
 - Auto-reverses on mouseleave
 - Cleans up listeners and kills timeline on unmount
@@ -108,6 +116,7 @@ React hook managing timeline lifecycle with parent element hover/leave events.
 One-time CSS injection into document head (idempotent).
 
 **Parameters:**
+
 - `id`: Unique identifier for the style tag
 - `css`: CSS content string
 

@@ -20,7 +20,10 @@ export function RequirementsSection() {
           </thead>
           <tbody>
             {requirementData.map((requirement) => (
-              <tr key={requirement.category} className="border-b border-background-800 last:border-b-0">
+              <tr
+                key={requirement.category}
+                className="border-b border-background-800 last:border-b-0"
+              >
                 <td className="px-4 py-3 text-foreground-300">{requirement.category}</td>
                 <td className="px-4 py-3 text-foreground-300">{requirement.technology}</td>
                 <td className="px-4 py-3 text-foreground-300">

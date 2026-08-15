@@ -1,6 +1,6 @@
-import StarterDetailClient from './client';
-import { starterRegistry } from '@ui-lab-core/library/catalog';
-import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
+import StarterDetailClient from "./client";
+import { starterRegistry } from "@ui-lab-core/library/catalog";
+import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
 
 const starterIds = Object.keys(starterRegistry);
 
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const starter = starterRegistry[starterId as keyof typeof starterRegistry];
 
   if (!starter) {
-    return generateSiteMetadata({ title: 'Starter Not Found' });
+    return generateSiteMetadata({ title: "Starter Not Found" });
   }
 
   return generateSiteMetadata({
@@ -22,11 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   });
 }
 
-export default async function StarterDetailPage({
-  params
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function StarterDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: starterId } = await params;
   return <StarterDetailClient starterId={starterId} />;
 }

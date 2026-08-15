@@ -1,26 +1,26 @@
 import { generateColorPaletteVariables } from "../colors/generator";
 import { type SimpleThemeColors } from "../../constants/themes";
 import { generateRadiusScaleCSS, applyRadiusScalesToDOM } from "../radius/generator";
-import { generateBorderWidthScaleCSS, applyBorderWidthScalesToDOM } from "../border-width/generator";
-import { generateFluidSpacingCSS } from "../spacing/generator";
 import {
-  generateCodeTypographyVars,
-  generateTypographyCSS,
-} from "../typography/generator";
+  generateBorderWidthScaleCSS,
+  applyBorderWidthScalesToDOM,
+} from "../border-width/generator";
+import { generateFluidSpacingCSS } from "../spacing/generator";
+import { generateCodeTypographyVars, generateTypographyCSS } from "../typography/generator";
 import { type TypographyConfig } from "../../lib/typography-config";
 
 interface GeneratedThemeSetupFiles {
-  themeCss: string
-  globalsCss: string
-  layoutTsx: string
-  themeToggleTsx: string
-  fullBundle: string
+  themeCss: string;
+  globalsCss: string;
+  layoutTsx: string;
+  themeToggleTsx: string;
+  fullBundle: string;
 }
 
 interface ThemeLayoutOptions {
-  radius: number
-  borderWidth: number
-  spacingScale: number
+  radius: number;
+  borderWidth: number;
+  spacingScale: number;
 }
 
 function renderCssVariables(variables: Record<string, string>): string {
@@ -35,10 +35,7 @@ function renderCssVariables(variables: Record<string, string>): string {
  * @param borderWidth - Base border width in px (0 - 4)
  * @returns Formatted CSS string ready to copy/paste
  */
-function generateThemeConfig(
-  radius: number,
-  borderWidth: number,
-): string {
+function generateThemeConfig(radius: number, borderWidth: number): string {
   const radiusLines = generateRadiusScaleCSS(radius).split("\n");
   const borderLines = generateBorderWidthScaleCSS(borderWidth).split("\n");
 
@@ -53,10 +50,7 @@ function generateThemeConfig(
  * @param radius - Base radius in rem (0 - 1.5)
  * @param borderWidth - Base border width in px (0 - 4)
  */
-export function applyDynamicThemeScales(
-  radius: number,
-  borderWidth: number,
-): void {
+function applyDynamicThemeScales(radius: number, borderWidth: number): void {
   applyRadiusScalesToDOM(radius);
   applyBorderWidthScalesToDOM(borderWidth);
 }
@@ -64,10 +58,7 @@ export function applyDynamicThemeScales(
 /**
  * Generates a user-friendly message with instructions
  */
-function generateConfigMessage(
-  radius: number,
-  borderWidth: number,
-): string {
+function generateConfigMessage(radius: number, borderWidth: number): string {
   const config = generateThemeConfig(radius, borderWidth);
 
   return `${config}\n\n/* Usage Instructions:\n * 1. Copy the above configuration\n * 2. Open your project's src/app/globals.css\n * 3. Paste this @theme block (replacing or adding to your existing one)\n * 4. Use standard Tailwind utilities in your components:\n *    - rounded-md, rounded-md, rounded-full, etc.\n *    - border, border-2, border-4, etc.\n * All utilities will automatically respect your custom values.\n */`;
@@ -102,8 +93,9 @@ export function generateThemeSetupFiles(
   const darkColorVariables = generateColorPaletteVariables(colors, "dark");
   const tokenNames = Array.from(
     new Set(
-      [...Object.keys(lightColorVariables), ...Object.keys(darkColorVariables)]
-        .map((name) => name.replace(/^--/, "")),
+      [...Object.keys(lightColorVariables), ...Object.keys(darkColorVariables)].map((name) =>
+        name.replace(/^--/, ""),
+      ),
     ),
   );
 

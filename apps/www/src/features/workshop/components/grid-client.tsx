@@ -1,10 +1,10 @@
-'use client';
-import React from 'react';
-import { GenericContentGrid } from './content-grid';
-import { getLayoutConfig } from '../lib/layout-registry';
-import { getPreviewComponent } from '@/features/workshop/lib/get-element-preview';
-import { useWaitlistModal } from './waitlist-modal';
-import type { ElementMetadata } from '@ui-lab-core/library/catalog';
+"use client";
+import React from "react";
+import { GenericContentGrid } from "./content-grid";
+import { getLayoutConfig } from "../lib/layout-registry";
+import { getPreviewComponent } from "@/features/workshop/lib/get-element-preview";
+import { useWaitlistModal } from "./waitlist-modal";
+import type { ElementMetadata } from "@ui-lab-core/library/catalog";
 
 interface ElementsGridClientProps {
   elements: ElementMetadata[];
@@ -52,7 +52,7 @@ function PremiumElementsGrid({ elements, packageId }: ElementsGridClientProps) {
 }
 
 function FreeElementsGrid({ elements, packageId }: ElementsGridClientProps) {
-  const basePath = packageId ? `/workshop/elements/${packageId}` : '/workshop/elements';
+  const basePath = packageId ? `/workshop/elements/${packageId}` : "/workshop/elements";
   const previews = buildPreviews(elements);
   const layoutConfigs = buildLayoutConfigs(elements);
 

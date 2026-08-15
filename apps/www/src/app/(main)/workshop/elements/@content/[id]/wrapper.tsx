@@ -1,7 +1,7 @@
 "use client";
 
-import { WaitlistModalClient } from '@/features/workshop';
-import PackageElementsClient from './client';
+import { WaitlistModalClient } from "@/features/workshop";
+import PackageElementsClient from "./client";
 
 interface PackageElementsClientWrapperProps {
   packageId: string;
@@ -9,7 +9,11 @@ interface PackageElementsClientWrapperProps {
   isPremium: boolean;
 }
 
-export default function PackageElementsClientWrapper({ packageId, elementIds, isPremium }: PackageElementsClientWrapperProps) {
+export default function PackageElementsClientWrapper({
+  packageId,
+  elementIds,
+  isPremium,
+}: PackageElementsClientWrapperProps) {
   return (
     <WaitlistModalClient>
       <PackageElementsClient packageId={packageId} elementIds={elementIds} isPremium={isPremium} />

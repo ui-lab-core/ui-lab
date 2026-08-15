@@ -1,9 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import {
-  type SimpleThemeColors,
-  DEFAULT_GLOBAL_ADJUSTMENTS,
-} from "../constants/themes";
+import { type SimpleThemeColors, DEFAULT_GLOBAL_ADJUSTMENTS } from "../constants/themes";
 import {
   getSourceConfig,
   validateThemeCache,
@@ -93,10 +90,7 @@ interface AppState {
 
 type PersistedAppPreferences = Omit<
   AppState,
-  | "isSettingsPanelOpen"
-  | "isCommandPaletteOpen"
-  | "panelPosition"
-  | "isThemeInitialized"
+  "isSettingsPanelOpen" | "isCommandPaletteOpen" | "panelPosition" | "isThemeInitialized"
 >;
 
 type AppAction =
@@ -143,9 +137,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
   }
 }
 
-function getPersistedPreferences(
-  sourceConfig: ThemeSourceConfig,
-): PersistedAppPreferences {
+function getPersistedPreferences(sourceConfig: ThemeSourceConfig): PersistedAppPreferences {
   const validatedColors: SimpleThemeColors = {
     ...sourceConfig.colors,
     codeTheme: normalizeCodeThemeId(sourceConfig.colors.codeTheme),
@@ -172,25 +164,18 @@ function getPersistedPreferences(
     radius: sourceConfig.layout.radius,
     borderWidth: sourceConfig.layout.borderWidth,
     spacingScale: sourceConfig.layout.spacingScale,
-    globalAdjustments:
-      sourceConfig.colors.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
+    globalAdjustments: sourceConfig.colors.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
     headerScale: normalizeTypographyScale(
       sourceConfig.typography.headerScale,
       DEFAULT_HEADER_SCALE,
     ),
-    bodyScale: normalizeTypographyScale(
-      sourceConfig.typography.bodyScale,
-      DEFAULT_BODY_SCALE,
-    ),
+    bodyScale: normalizeTypographyScale(sourceConfig.typography.bodyScale, DEFAULT_BODY_SCALE),
     monoFontSizeScale:
-      sourceConfig.typography.monoFontSizeScale ??
-      defaultPreferences.monoFontSizeScale,
+      sourceConfig.typography.monoFontSizeScale ?? defaultPreferences.monoFontSizeScale,
     monoFontWeightScale:
-      sourceConfig.typography.monoFontWeightScale ??
-      defaultPreferences.monoFontWeightScale,
+      sourceConfig.typography.monoFontWeightScale ?? defaultPreferences.monoFontWeightScale,
     monoLetterSpacingScale:
-      sourceConfig.typography.monoLetterSpacingScale ??
-      defaultPreferences.monoLetterSpacingScale,
+      sourceConfig.typography.monoLetterSpacingScale ?? defaultPreferences.monoLetterSpacingScale,
     monoLineHeight: normalizeTypographyLineHeight(
       sourceConfig.typography.monoLineHeight,
       defaultPreferences.monoLineHeight,
@@ -271,20 +256,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       radius: state.radius,
       setRadius: (value) => dispatch({ type: "set", key: "radius", value }),
       borderWidth: state.borderWidth,
-      setBorderWidth: (value) =>
-        dispatch({ type: "set", key: "borderWidth", value }),
+      setBorderWidth: (value) => dispatch({ type: "set", key: "borderWidth", value }),
       spacingScale: state.spacingScale,
-      setSpacingScale: (value) =>
-        dispatch({ type: "set", key: "spacingScale", value }),
+      setSpacingScale: (value) => dispatch({ type: "set", key: "spacingScale", value }),
       globalAdjustments: state.globalAdjustments,
       setGlobalAdjustments: (adjustments) =>
         dispatch({ type: "set", key: "globalAdjustments", value: adjustments }),
       headerScale: state.headerScale,
-      setHeaderScale: (scale) =>
-        dispatch({ type: "set", key: "headerScale", value: scale }),
+      setHeaderScale: (scale) => dispatch({ type: "set", key: "headerScale", value: scale }),
       bodyScale: state.bodyScale,
-      setBodyScale: (scale) =>
-        dispatch({ type: "set", key: "bodyScale", value: scale }),
+      setBodyScale: (scale) => dispatch({ type: "set", key: "bodyScale", value: scale }),
       monoFontSizeScale: state.monoFontSizeScale,
       setMonoFontSizeScale: (scale) =>
         dispatch({ type: "set", key: "monoFontSizeScale", value: scale }),
@@ -310,16 +291,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [state, dispatch],
   );
 
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
 export function useApp() {
   const context = useContext(AppContext);
-  if (context === undefined)
-    throw new Error("useApp must be used within an AppProvider");
+  if (context === undefined) throw new Error("useApp must be used within an AppProvider");
   return context;
 }

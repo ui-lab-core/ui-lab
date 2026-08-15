@@ -1,4 +1,11 @@
-import type { ColorRole, OklchColor, ScaleRange, ShadeScale, ChromaBounds, GlobalColorAdjustments } from './types';
+import type {
+  ColorRole,
+  OklchColor,
+  ScaleRange,
+  ShadeScale,
+  ChromaBounds,
+  GlobalColorAdjustments,
+} from "./types";
 
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
@@ -22,32 +29,107 @@ export const CHROMA_BOUNDARIES: Record<ColorRole, ChromaBounds> = {
   info: { min: 0.01, max: 0.24 },
 };
 
-export const DEFAULT_GLOBAL_ADJUSTMENTS: GlobalColorAdjustments = { lightnessShift: 0, chromaBoost: 1.0 };
+export const DEFAULT_GLOBAL_ADJUSTMENTS: GlobalColorAdjustments = {
+  lightnessShift: 0,
+  chromaBoost: 1.0,
+};
 
 export const ALL_SHADES: ShadeScale[] = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
 export const SCALES: Record<string, Partial<Record<ShadeScale, number>>> = {
-  dark: { 50: .98, 100: .95, 200: .9, 300: .84, 400: .65, 500: .5, 600: .32, 700: .26, 800: .23, 900: .21, 950: .18 },
-  light: { 50: .16, 100: .29, 200: .31, 300: .42, 400: .55, 500: .6, 600: .88, 700: .9, 800: .94, 900: .96, 950: .98 },
-  sem: { 50: .95, 100: .88, 200: .8, 300: .72, 400: .65, 500: .55, 600: .46, 700: .38, 800: .29, 900: .2, 950: .12 },
-  accLight: { 50: .92, 100: .82, 200: .70, 300: .55, 400: .40, 500: .28, 600: .12 },
-  accDark: { 50: .82, 100: .75, 200: .68, 300: .58, 400: .50, 500: .46, 600: .36 },
-  acc: { 50: .92, 100: .86, 200: .76, 300: .62, 400: .52, 500: .45, 600: .32 },
-  accNeutralLight: { 50: .99, 100: .97, 200: .91, 300: .72, 400: .58, 500: .32, 600: .28 },
-  accNeutralDark: { 50: .12, 100: .20, 200: .32, 300: .44, 400: .58, 500: .72, 600: .91 },
-  accSaturatedLight: { 50: .98, 100: .91, 200: .82, 300: .76, 400: .70, 500: .64, 600: .68 },
-  accSaturatedDark: { 50: .98, 100: .91, 200: .82, 300: .75, 400: .71, 500: .65, 600: .60 }
+  dark: {
+    50: 0.98,
+    100: 0.95,
+    200: 0.9,
+    300: 0.84,
+    400: 0.65,
+    500: 0.5,
+    600: 0.32,
+    700: 0.26,
+    800: 0.23,
+    900: 0.21,
+    950: 0.18,
+  },
+  light: {
+    50: 0.16,
+    100: 0.29,
+    200: 0.31,
+    300: 0.42,
+    400: 0.55,
+    500: 0.6,
+    600: 0.88,
+    700: 0.9,
+    800: 0.94,
+    900: 0.96,
+    950: 0.98,
+  },
+  sem: {
+    50: 0.95,
+    100: 0.88,
+    200: 0.8,
+    300: 0.72,
+    400: 0.65,
+    500: 0.55,
+    600: 0.46,
+    700: 0.38,
+    800: 0.29,
+    900: 0.2,
+    950: 0.12,
+  },
+  accLight: { 50: 0.92, 100: 0.82, 200: 0.7, 300: 0.55, 400: 0.4, 500: 0.28, 600: 0.12 },
+  accDark: { 50: 0.82, 100: 0.75, 200: 0.68, 300: 0.58, 400: 0.5, 500: 0.46, 600: 0.36 },
+  acc: { 50: 0.92, 100: 0.86, 200: 0.76, 300: 0.62, 400: 0.52, 500: 0.45, 600: 0.32 },
+  accNeutralLight: { 50: 0.99, 100: 0.97, 200: 0.91, 300: 0.72, 400: 0.58, 500: 0.32, 600: 0.28 },
+  accNeutralDark: { 50: 0.12, 100: 0.2, 200: 0.32, 300: 0.44, 400: 0.58, 500: 0.72, 600: 0.91 },
+  accSaturatedLight: { 50: 0.98, 100: 0.91, 200: 0.82, 300: 0.76, 400: 0.7, 500: 0.64, 600: 0.68 },
+  accSaturatedDark: { 50: 0.98, 100: 0.91, 200: 0.82, 300: 0.75, 400: 0.71, 500: 0.65, 600: 0.6 },
 };
 
-export const SHADE_NORM: Record<ShadeScale, number> = { 50: 0, 100: .1, 200: .2, 300: .3, 400: .4, 500: .5, 600: .6, 700: .7, 800: .8, 900: .9, 950: 1 };
+export const SHADE_NORM: Record<ShadeScale, number> = {
+  50: 0,
+  100: 0.1,
+  200: 0.2,
+  300: 0.3,
+  400: 0.4,
+  500: 0.5,
+  600: 0.6,
+  700: 0.7,
+  800: 0.8,
+  900: 0.9,
+  950: 1,
+};
 export const CHROMA_FACTORS = {
-  acc: { 50: .18, 100: .33, 200: .45, 300: .54, 400: .66, 500: .72, 600: .69, 700: .66, 800: .63, 900: .60, 950: .57 },
-  std: { 50: .4, 100: .5, 200: .65, 300: .8, 400: .9, 500: 1, 600: .95, 700: .9, 800: .75, 900: .65, 950: .55 }
+  acc: {
+    50: 0.18,
+    100: 0.33,
+    200: 0.45,
+    300: 0.54,
+    400: 0.66,
+    500: 0.72,
+    600: 0.69,
+    700: 0.66,
+    800: 0.63,
+    900: 0.6,
+    950: 0.57,
+  },
+  std: {
+    50: 0.4,
+    100: 0.5,
+    200: 0.65,
+    300: 0.8,
+    400: 0.9,
+    500: 1,
+    600: 0.95,
+    700: 0.9,
+    800: 0.75,
+    900: 0.65,
+    950: 0.55,
+  },
 } as const;
 
 export function getShadesForRole(role: ColorRole): ShadeScale[] {
   const range = SCALE_RANGES[role];
-  return ALL_SHADES.filter(s => s >= range.min && s <= range.max);
+  return ALL_SHADES.filter((s) => s >= range.min && s <= range.max);
 }
 
 export function clampChromaToRole(chroma: number, role: ColorRole): number {
@@ -56,7 +138,11 @@ export function clampChromaToRole(chroma: number, role: ColorRole): number {
   return Math.max(bounds.min, Math.min(bounds.max, chroma));
 }
 
-export function applyGlobalAdjustments(color: OklchColor, role: ColorRole, global: GlobalColorAdjustments): OklchColor {
+export function applyGlobalAdjustments(
+  color: OklchColor,
+  role: ColorRole,
+  global: GlobalColorAdjustments,
+): OklchColor {
   const adjustedL = clamp(color.l + global.lightnessShift);
   const adjustedC = clampChromaToRole(color.c * global.chromaBoost, role);
   return { l: adjustedL, c: adjustedC, h: color.h };

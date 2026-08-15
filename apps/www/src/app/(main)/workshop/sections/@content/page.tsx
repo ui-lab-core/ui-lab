@@ -14,14 +14,9 @@ export const metadata: Metadata = {
   description: "Browse UI Lab sections",
 };
 
-function buildLayoutConfigs(
-  sections: SectionGridItem[],
-): Record<string, LayoutConfig> {
+function buildLayoutConfigs(sections: SectionGridItem[]): Record<string, LayoutConfig> {
   return Object.fromEntries(
-    sections.map((section) => [
-      section.id,
-      { ...getSectionLayoutConfig(section), columnSpan: 1 },
-    ]),
+    sections.map((section) => [section.id, { ...getSectionLayoutConfig(section), columnSpan: 1 }]),
   );
 }
 

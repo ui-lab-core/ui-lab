@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
-import type { DocsNavigationData } from './sidebar-registry-resolver';
+import type { DocsNavigationData } from "./sidebar-registry-resolver";
 
 const EMPTY_DOCS_NAVIGATION_DATA: DocsNavigationData = {
   docs: {
     pageTree: [],
     pages: [],
   },
-  'design-system': {
+  "design-system": {
     pageTree: [],
     pages: [],
   },
@@ -23,11 +23,7 @@ interface DocsNavigationProviderProps {
 }
 
 export function DocsNavigationProvider({ children, data }: DocsNavigationProviderProps) {
-  return (
-    <DocsNavigationContext.Provider value={data}>
-      {children}
-    </DocsNavigationContext.Provider>
-  );
+  return <DocsNavigationContext.Provider value={data}>{children}</DocsNavigationContext.Provider>;
 }
 
 export function useDocsNavigationData() {

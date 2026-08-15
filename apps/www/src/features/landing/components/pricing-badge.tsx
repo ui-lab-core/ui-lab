@@ -5,6 +5,6 @@ interface PricingBadgeProps {
 }
 
 export function PricingBadge({ price }: PricingBadgeProps) {
-  if (price === null) return
+  if (price === null) return;
   return <Badge className="rounded-xl">${price.toFixed(2)}</Badge>;
 }

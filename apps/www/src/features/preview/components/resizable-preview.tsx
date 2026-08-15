@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { cn } from '@/shared/lib/utils';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from "react";
+import { cn } from "@/shared/lib/utils";
 
 /** Smallest width the preview can be dragged to, roughly a compact phone. */
 const MIN_PREVIEW_WIDTH = 240;
 
-type PreviewLayout = 'center' | 'start';
+type PreviewLayout = "center" | "start";
 
 /**
  * Wraps a preview so its width can be dragged in to test narrow/mobile layouts.
@@ -17,7 +23,13 @@ type PreviewLayout = 'center' | 'start';
  * This is the single, app-wide resize design. Do not reintroduce
  * device-preset toggles (mobile/tablet/desktop) alongside it.
  */
-export function ResizablePreview({ children, layout = 'center' }: { children: ReactNode; layout?: PreviewLayout }) {
+export function ResizablePreview({
+  children,
+  layout = "center",
+}: {
+  children: ReactNode;
+  layout?: PreviewLayout;
+}) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -35,15 +47,15 @@ export function ResizablePreview({ children, layout = 'center' }: { children: Re
       setWidth(Math.round(Math.max(MIN_PREVIEW_WIDTH, Math.min(next, max))));
     };
     const stop = () => setDragging(false);
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', stop);
-    document.body.style.cursor = 'ew-resize';
-    document.body.style.userSelect = 'none';
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+    document.body.style.cursor = "ew-resize";
+    document.body.style.userSelect = "none";
     return () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', stop);
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
     };
   }, [dragging]);
 
@@ -59,20 +71,16 @@ export function ResizablePreview({ children, layout = 'center' }: { children: Re
     <div className="group/resize relative h-full min-h-0">
       <div
         ref={boxRef}
-        className={cn(
-          'relative mx-auto h-full min-h-0 min-w-60 max-w-full',
-        )}
+        className={cn("relative mx-auto h-full min-h-0 min-w-60 max-w-full")}
         style={width === null ? undefined : { width }}
       >
         <div
           className={cn(
-            'grid h-full min-h-0 min-w-0 grid-cols-[minmax(0,1fr)] overflow-auto',
-            layout === 'start' ? 'items-start' : 'items-center',
+            "grid h-full min-h-0 min-w-0 grid-cols-[minmax(0,1fr)] overflow-auto",
+            layout === "start" ? "items-start" : "items-center",
           )}
         >
-          <div className="min-w-0 text-center [&>*]:mx-auto [&>*]:text-start">
-            {children}
-          </div>
+          <div className="min-w-0 text-center [&>*]:mx-auto [&>*]:text-start">{children}</div>
         </div>
         {dragging && width !== null ? (
           <span className="pointer-events-none absolute right-2 top-2 z-10 rounded font-mono px-1.5 py-0.5 text-xs font-medium text-foreground-400">
@@ -86,14 +94,14 @@ export function ResizablePreview({ children, layout = 'center' }: { children: Re
           title="Drag to resize · double-click to reset"
           aria-label="Resize preview width"
           className={cn(
-            'group/handle absolute inset-y-0 right-0 z-10 flex w-4 cursor-ew-resize touch-none items-center justify-center opacity-0 transition-opacity group-hover/resize:opacity-100',
-            dragging && 'opacity-100!',
+            "group/handle absolute inset-y-0 right-0 z-10 flex w-4 cursor-ew-resize touch-none items-center justify-center opacity-0 transition-opacity group-hover/resize:opacity-100",
+            dragging && "opacity-100!",
           )}
         >
           <span
             className={cn(
-              'h-10 w-1 rounded-full bg-background-600 transition-colors group-hover/handle:bg-background-500/80',
-              dragging && 'bg-background-500! group-hover/handle:bg-background-500!',
+              "h-10 w-1 rounded-full bg-background-600 transition-colors group-hover/handle:bg-background-500/80",
+              dragging && "bg-background-500! group-hover/handle:bg-background-500!",
             )}
           />
         </button>

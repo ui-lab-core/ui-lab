@@ -8,22 +8,10 @@
     "exportName": "Label",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "input",
-    "checkbox",
-    "radio",
-    "switch"
-  ],
-  "tags": [
-    "form",
-    "text",
-    "accessibility"
-  ],
+  "relatedComponents": ["input", "checkbox", "radio", "switch"],
+  "tags": ["form", "text", "accessibility"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Associates with form controls",
-      "Improves accessibility"
-    ]
+    "notes": ["Associates with form controls", "Improves accessibility"]
   }
 }

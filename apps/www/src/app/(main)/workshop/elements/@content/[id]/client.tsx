@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useState, useCallback, useMemo } from 'react';
-import { elementRegistry, elementOrder } from '@ui-lab-core/library/catalog';
-import type { ElementMetadata } from '@ui-lab-core/library/catalog';
-import { ElementsGridClient, ElementsLayoutToggle, Toolbar } from '@/features/workshop';
-import { Divider } from 'ui-lab-components';
+import { useRouter } from "next/navigation";
+import { useState, useCallback, useMemo } from "react";
+import { elementRegistry, elementOrder } from "@ui-lab-core/library/catalog";
+import type { ElementMetadata } from "@ui-lab-core/library/catalog";
+import { ElementsGridClient, ElementsLayoutToggle, Toolbar } from "@/features/workshop";
+import { Divider } from "ui-lab-components";
 
 function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetadata[] {
   const sorted = [...elements];
@@ -17,13 +17,13 @@ function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetad
     return Infinity;
   };
   switch (sortBy) {
-    case 'az':
+    case "az":
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
-    case 'za':
+    case "za":
       return sorted.sort((a, b) => b.name.localeCompare(a.name));
-    case 'default':
+    case "default":
       return sorted.sort((a, b) => getElementPosition(a.id) - getElementPosition(b.id));
-    case 'newest':
+    case "newest":
     default:
       return sorted.reverse();
   }
@@ -32,20 +32,20 @@ function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetad
 export default function PackageElementsClient({
   isPremium = false,
   packageId,
-  elementIds
+  elementIds,
 }: {
   isPremium?: boolean;
   packageId: string;
   elementIds: string[];
 }) {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('default');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("default");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const packageElements = useMemo(() => {
-    return elementIds.map(id => elementRegistry[id]).filter(Boolean);
+    return elementIds.map((id) => elementRegistry[id]).filter(Boolean);
   }, [elementIds]);
 
   const filteredElements = useMemo(() => {
@@ -56,72 +56,85 @@ export default function PackageElementsClient({
         (el) =>
           el.name.toLowerCase().includes(lowerQuery) ||
           el.description.toLowerCase().includes(lowerQuery) ||
-          el.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
+          el.tags.some((tag) => tag.toLowerCase().includes(lowerQuery)),
       );
     }
     if (selectedCategory) {
       elements = elements.filter((el) => el.category === selectedCategory);
     }
     if (selectedTags.length > 0) {
-      elements = elements.filter((el) =>
-        selectedTags.some((tag) => el.tags.includes(tag))
-      );
+      elements = elements.filter((el) => selectedTags.some((tag) => el.tags.includes(tag)));
     }
     return sortElements(elements, sortBy);
   }, [packageElements, searchQuery, selectedCategory, selectedTags, sortBy]);
 
-  const buildParams = useCallback((updates: Record<string, string | null>) => {
-    const urlParams = new URLSearchParams();
-    if (searchQuery) urlParams.set('q', searchQuery);
-    if (selectedCategory) urlParams.set('category', selectedCategory);
-    if (selectedTags.length > 0) urlParams.set('tags', selectedTags.join(','));
-    if (sortBy && sortBy !== 'newest') urlParams.set('sort', sortBy);
+  const buildParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      const urlParams = new URLSearchParams();
+      if (searchQuery) urlParams.set("q", searchQuery);
+      if (selectedCategory) urlParams.set("category", selectedCategory);
+      if (selectedTags.length > 0) urlParams.set("tags", selectedTags.join(","));
+      if (sortBy && sortBy !== "newest") urlParams.set("sort", sortBy);
 
-    Object.entries(updates).forEach(([key, value]) => {
-      if (value === null) {
-        urlParams.delete(key);
-      } else {
-        urlParams.set(key, value);
-      }
-    });
-    return urlParams.toString();
-  }, [searchQuery, selectedCategory, selectedTags, sortBy]);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null) {
+          urlParams.delete(key);
+        } else {
+          urlParams.set(key, value);
+        }
+      });
+      return urlParams.toString();
+    },
+    [searchQuery, selectedCategory, selectedTags, sortBy],
+  );
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-    const urlParams = buildParams({ q: query || null });
-    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
-  }, [buildParams, router, packageId]);
+  const handleSearch = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      const urlParams = buildParams({ q: query || null });
+      router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ""}`);
+    },
+    [buildParams, router, packageId],
+  );
 
-  const handleSortChange = useCallback((sort: string) => {
-    setSortBy(sort);
-    const urlParams = buildParams({ sort: sort !== 'default' ? sort : null });
-    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
-  }, [buildParams, router, packageId]);
+  const handleSortChange = useCallback(
+    (sort: string) => {
+      setSortBy(sort);
+      const urlParams = buildParams({ sort: sort !== "default" ? sort : null });
+      router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ""}`);
+    },
+    [buildParams, router, packageId],
+  );
 
-  const handleCategoryChange = useCallback((category: string | null) => {
-    setSelectedCategory(category);
-    const urlParams = buildParams({ category: category || null });
-    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
-  }, [buildParams, router, packageId]);
+  const handleCategoryChange = useCallback(
+    (category: string | null) => {
+      setSelectedCategory(category);
+      const urlParams = buildParams({ category: category || null });
+      router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ""}`);
+    },
+    [buildParams, router, packageId],
+  );
 
-  const handleTagsChange = useCallback((newTags: string[]) => {
-    setSelectedTags(newTags);
-    const urlParams = buildParams({ tags: newTags.length > 0 ? newTags.join(',') : null });
-    router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ''}`);
-  }, [buildParams, router, packageId]);
+  const handleTagsChange = useCallback(
+    (newTags: string[]) => {
+      setSelectedTags(newTags);
+      const urlParams = buildParams({ tags: newTags.length > 0 ? newTags.join(",") : null });
+      router.push(`/workshop/elements/${packageId}${urlParams ? `?${urlParams}` : ""}`);
+    },
+    [buildParams, router, packageId],
+  );
 
   const handleClearAll = useCallback(() => {
-    setSearchQuery('');
+    setSearchQuery("");
     setSelectedCategory(null);
     setSelectedTags([]);
-    setSortBy('default');
+    setSortBy("default");
     router.push(`/workshop/elements/${packageId}`);
   }, [router, packageId]);
 
   return (
     <div className="space-y-6">
-      <Divider className='mt-16 mb-12 ' />
+      <Divider className="mt-16 mb-12" />
       <div className="hidden grid grid-cols-[400px_1fr] items-center pb-3 pt-2">
         <Toolbar
           searchQuery={searchQuery}

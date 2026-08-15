@@ -1,56 +1,63 @@
 // Registry
-export { componentRegistry, componentMetadata } from './registry.js';
+export { componentRegistry, componentMetadata } from "./registry.js";
 
 // Generated data (auto-populated by scripts)
-export { generatedAPI, generatedSourceCode, reactAriaUrls, generatedComponentDependencies, generatedCoreNpmDependencies, packageMetadata } from './generated-data.js';
-export { generatedStyles } from './generated-styles.js';
+export {
+  generatedAPI,
+  generatedSourceCode,
+  reactAriaUrls,
+  generatedComponentDependencies,
+  generatedCoreNpmDependencies,
+  packageMetadata,
+} from "./generated-data.js";
+export { generatedStyles } from "./generated-styles.js";
 
 const BASE = "https://github.com/ui-lab-core/ui-lab/tree/master/packages/%40ui/src/components";
 
 export const sourceUrls: Record<string, string> = {
-  "anchor":       `${BASE}/Anchor`,
-  "badge":        `${BASE}/Badge`,
-  "banner":       `${BASE}/Banner`,
-  "path":        `${BASE}/Path`,
-  "button":       `${BASE}/Button`,
-  "card":         `${BASE}/Card`,
-  "chart":        `${BASE}/Chart`,
-  "checkbox":     `${BASE}/Checkbox`,
-  "code":         `${BASE}/Code`,
-  "command":      `${BASE}/Command`,
-  "confirmation": `${BASE}/Confirmation`,
-  "divider":      `${BASE}/Divider`,
-  "expand":       `${BASE}/Expand`,
-  "flex":         `${BASE}/Flex`,
-  "frame":        `${BASE}/Frame`,
-  "grid":         `${BASE}/Grid`,
-  "group":        `${BASE}/Group`,
-  "input":        `${BASE}/Input`,
-  "label":        `${BASE}/Label`,
-  "list":         `${BASE}/List`,
-  "menu":         `${BASE}/Menu`,
-  "modal":        `${BASE}/Modal`,
-  "page":         `${BASE}/Page`,
-  "panel":        `${BASE}/Panel`,
-  "popover":      `${BASE}/Popover`,
-  "progress":     `${BASE}/Progress`,
-  "radio":        `${BASE}/Radio`,
-  "scroll":       `${BASE}/Scroll`,
-  "skeleton":     `${BASE}/Skeleton`,
-  "select":       `${BASE}/Select`,
-  "slider":       `${BASE}/Slider`,
-  "switch":       `${BASE}/Switch`,
-  "tabs":         `${BASE}/Tabs`,
-  "textarea":     `${BASE}/Textarea`,
-  "toast":        `${BASE}/Toast`,
-  "tooltip":      `${BASE}/Tooltip`,
+  anchor: `${BASE}/Anchor`,
+  badge: `${BASE}/Badge`,
+  banner: `${BASE}/Banner`,
+  path: `${BASE}/Path`,
+  button: `${BASE}/Button`,
+  card: `${BASE}/Card`,
+  chart: `${BASE}/Chart`,
+  checkbox: `${BASE}/Checkbox`,
+  code: `${BASE}/Code`,
+  command: `${BASE}/Command`,
+  confirmation: `${BASE}/Confirmation`,
+  divider: `${BASE}/Divider`,
+  expand: `${BASE}/Expand`,
+  flex: `${BASE}/Flex`,
+  frame: `${BASE}/Frame`,
+  grid: `${BASE}/Grid`,
+  group: `${BASE}/Group`,
+  input: `${BASE}/Input`,
+  label: `${BASE}/Label`,
+  list: `${BASE}/List`,
+  menu: `${BASE}/Menu`,
+  modal: `${BASE}/Modal`,
+  page: `${BASE}/Page`,
+  panel: `${BASE}/Panel`,
+  popover: `${BASE}/Popover`,
+  progress: `${BASE}/Progress`,
+  radio: `${BASE}/Radio`,
+  scroll: `${BASE}/Scroll`,
+  skeleton: `${BASE}/Skeleton`,
+  select: `${BASE}/Select`,
+  slider: `${BASE}/Slider`,
+  switch: `${BASE}/Switch`,
+  tabs: `${BASE}/Tabs`,
+  textarea: `${BASE}/Textarea`,
+  toast: `${BASE}/Toast`,
+  tooltip: `${BASE}/Tooltip`,
 };
 
 // Categories
-export { categories, categoryMap } from './categories.js';
+export { categories, categoryMap } from "./categories.js";
 
 // Component Order
-export { componentOrder, getComponentsInOrder } from './component-order.js';
+export { componentOrder, getComponentsInOrder } from "./component-order.js";
 
 // Types
 export type {
@@ -80,8 +87,8 @@ export type {
   ComponentVariant,
   ComponentAccessibilityNote,
   SiteComponentExample,
-  ComponentDetail
-} from './types.js';
+  ComponentDetail,
+} from "./types.js";
 
 // Helpers
 export {
@@ -95,11 +102,11 @@ export {
   getRelatedComponents,
   searchComponents,
   getAllComponentIds,
-  getComponentCount
-} from './helpers.js';
+  getComponentCount,
+} from "./helpers.js";
 
 // Category utilities
-export { getCategoryIcon } from './utils/get-category-icon.js';
+export { getCategoryIcon } from "./utils/get-category-icon.js";
 
 // Guides
 export {
@@ -109,7 +116,7 @@ export {
   getGuidesByCategory,
   getGuidesByTag,
   searchGuides,
-} from './guides/index.js';
+} from "./guides/index.js";
 
 // Providers
 export {
@@ -122,7 +129,7 @@ export {
   searchProviders,
   getProviderCategoriesInOrder,
   getProviderCategoryDefinition,
-} from './providers/index.js';
+} from "./providers/index.js";
 export type {
   ProviderMetadata,
   ProviderCategory,
@@ -131,4 +138,4 @@ export type {
   ProviderExample,
   ProviderFeature,
   ProviderRegistry,
-} from './providers/index.js';
+} from "./providers/index.js";

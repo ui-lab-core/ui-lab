@@ -6,10 +6,7 @@ import type { ShowcasePanelProps } from "./types";
 
 export function QuickActions({ height }: ShowcasePanelProps) {
   return (
-    <div
-      className="flex w-full flex-col overflow-hidden"
-      style={{ height }}
-    >
+    <div className="flex w-full flex-col overflow-hidden" style={{ height }}>
       <div className="border-b border-background-700 p-2">
         <Group className="h-10" spacing="sm">
           <Group.Input
@@ -22,10 +19,18 @@ export function QuickActions({ height }: ShowcasePanelProps) {
         </Group>
       </div>
       <div className="grid min-h-0 flex-1 grid-cols-2 gap-2 p-3">
-        <Button variant="secondary" className="h-full justify-start" icon={{ left: <Sparkles size={17} /> }}>
+        <Button
+          variant="secondary"
+          className="h-full justify-start"
+          icon={{ left: <Sparkles size={17} /> }}
+        >
           Generate brief
         </Button>
-        <Button variant="secondary" className="h-full justify-start" icon={{ left: <FilePlus2 size={17} /> }}>
+        <Button
+          variant="secondary"
+          className="h-full justify-start"
+          icon={{ left: <FilePlus2 size={17} /> }}
+        >
           New doc
         </Button>
       </div>

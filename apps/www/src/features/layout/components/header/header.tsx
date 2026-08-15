@@ -11,15 +11,16 @@ import { Tooltip } from "ui-lab-components/tooltip";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { cn } from "@/shared/lib/utils";
-import {
-  FaBars,
-  FaGithub,
-  FaPlus,
-} from "@/shared/icons/fa6";
+import { FaBars, FaGithub, FaPlus } from "@/shared/icons/fa6";
 import { LuSearch } from "@/shared/icons/lu";
 import { HiX } from "@/shared/icons/hi";
 import { PanelRight } from "lucide-react";
-import { getTabGroupForPathname, getActiveTabForPathname, shouldApplyRevealCollapse, type TabConfig } from "@/features/layout/lib/route-config";
+import {
+  getTabGroupForPathname,
+  getActiveTabForPathname,
+  shouldApplyRevealCollapse,
+  type TabConfig,
+} from "@/features/layout/lib/route-config";
 import { MobileMenu } from "./mobile-menu";
 import { HeaderMenu } from "./header-menu";
 import { navigationData } from "./data";
@@ -45,10 +46,7 @@ interface HeaderProps {
   showNavigation?: boolean;
 }
 
-export default function Header({
-  pathname,
-  showNavigation = false,
-}: HeaderProps) {
+export default function Header({ pathname, showNavigation = false }: HeaderProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
@@ -63,7 +61,9 @@ export default function Header({
     import("@/features/command-palette/components/command-palette").then((module) => {
       if (active) setPalette(() => module.default);
     });
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [Palette, isCommandPaletteOpen]);
   const handleToggleSidebar = () => {
     if (isLandingPage) {
@@ -78,17 +78,33 @@ export default function Header({
   const activeTabId = useMemo(() => getActiveTabForPathname(pathname), [pathname]);
   const showPrimaryNavigation = isLandingPage || (showNavigation && !tabGroup);
 
-  const homeNavTabs = useMemo(() => navigationData
-    .filter((item) => item.name !== "tools")
-    .map((item) => ({
-      id: item.name,
-      label: item.label,
-      icon: item.icon,
-      path: item.name === "documentation" ? "/docs" : item.name === "workshop" ? "/workshop/elements" : "/components",
-      isPlaceholder: false,
-    })), []);
+  const homeNavTabs = useMemo(
+    () =>
+      navigationData
+        .filter((item) => item.name !== "tools")
+        .map((item) => ({
+          id: item.name,
+          label: item.label,
+          icon: item.icon,
+          path:
+            item.name === "documentation"
+              ? "/docs"
+              : item.name === "workshop"
+                ? "/workshop/elements"
+                : "/components",
+          isPlaceholder: false,
+        })),
+    [],
+  );
 
-  const activeHomeTab = pathname === "/docs" ? "documentation" : pathname === "/workshop/elements" ? "workshop" : pathname === "/components" ? "components" : undefined;
+  const activeHomeTab =
+    pathname === "/docs"
+      ? "documentation"
+      : pathname === "/workshop/elements"
+        ? "workshop"
+        : pathname === "/components"
+          ? "components"
+          : undefined;
   const handleTabsNavigation = (tabs: TabConfig[]) => (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement | null;
     const trigger = target?.closest("[data-tabs-value]");
@@ -110,7 +126,6 @@ export default function Header({
             "mx-auto",
           )}
         >
-
           {/* LEFT SECTION: Logo & Tabs - Added shrink-0 to prevent it being crushed */}
           <div className="flex h-full items-center shrink-0">
             <Link
@@ -134,7 +149,11 @@ export default function Header({
 
             <div className="h-full">
               {showPrimaryNavigation && (
-                <Tabs className="hidden h-full ml-8 lg:flex [&_.indicator]:!top-[calc(100%-2px)]" value={activeHomeTab || ""} variant="underline">
+                <Tabs
+                  className="hidden h-full ml-8 lg:flex [&_.indicator]:!top-[calc(100%-2px)]"
+                  value={activeHomeTab || ""}
+                  variant="underline"
+                >
                   <div className="h-full" onClickCapture={handleTabsNavigation(homeNavTabs)}>
                     <Tabs.List className="h-full !p-0">
                       {homeNavTabs.map((tab) => (
@@ -158,7 +177,11 @@ export default function Header({
               )}
 
               {hasRevealCollapse && tabGroup && (
-                <Tabs className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:!top-[calc(100%-2px)]" value={activeTabId || ""} variant="underline">
+                <Tabs
+                  className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:!top-[calc(100%-2px)]"
+                  value={activeTabId || ""}
+                  variant="underline"
+                >
                   <div className="h-full" onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
                     <Tabs.List className="h-full !p-0">
                       {tabGroup.tabs.map((tab) => (
@@ -202,7 +225,9 @@ export default function Header({
                 </Button>
               */}
 
-              <Button href="/config" variant="secondary" icon={<FaPlus size={12} />}>New Project</Button>
+              <Button href="/config" variant="secondary" icon={<FaPlus size={12} />}>
+                New Project
+              </Button>
               <Button
                 variant="ghost"
                 aria-label="GitHub repository"
@@ -211,9 +236,8 @@ export default function Header({
                 icon={<FaGithub size={16} />}
                 className="p-2"
                 size="icon"
-              >
-              </Button>
-              <Divider size='auto' orientation="vertical" />
+              ></Button>
+              <Divider size="auto" orientation="vertical" />
             </div>
 
             {featureFlags.commandPalette ? (
@@ -234,7 +258,11 @@ export default function Header({
               <HeaderMenu />
             </div>
 
-            <Tooltip showArrow content={isMobileMenuOpen ? "Close navigation" : "Open navigation"} position="bottom">
+            <Tooltip
+              showArrow
+              content={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
+              position="bottom"
+            >
               <Button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
                 variant="ghost"

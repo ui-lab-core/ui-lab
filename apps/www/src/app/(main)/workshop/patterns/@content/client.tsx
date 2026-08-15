@@ -1,9 +1,9 @@
-'use client';
-import React from 'react';
-import type { LayoutConfig } from '@ui-lab-core/library/catalog';
-import { ContentIndex } from '@/features/layout/components/content-section-layout';
-import { GenericContentGrid } from '@/features/workshop/components/content-grid';
-import { getCardPreviewComponent } from '@/features/patterns/lib/get-pattern-preview';
+"use client";
+import React from "react";
+import type { LayoutConfig } from "@ui-lab-core/library/catalog";
+import { ContentIndex } from "@/features/layout/components/content-section-layout";
+import { GenericContentGrid } from "@/features/workshop/components/content-grid";
+import { getCardPreviewComponent } from "@/features/patterns/lib/get-pattern-preview";
 
 type PatternGridItem = {
   id: string;
@@ -16,10 +16,7 @@ interface PatternsPageProps {
   layoutConfigs: Record<string, LayoutConfig>;
 }
 
-export default function PatternsPage({
-  patterns,
-  layoutConfigs,
-}: PatternsPageProps) {
+export default function PatternsPage({ patterns, layoutConfigs }: PatternsPageProps) {
   const previews: Record<string, React.ReactNode> = {};
 
   for (const pattern of patterns) {

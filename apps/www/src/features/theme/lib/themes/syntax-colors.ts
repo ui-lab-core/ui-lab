@@ -1,39 +1,50 @@
-import { OklchColor, ColorPalette, ThemeMode, EasingFunction, ChromaScalingFunction, generateColorPalette, applyGlobalAdjustments } from '../color-utils'
+import {
+  OklchColor,
+  ColorPalette,
+  ThemeMode,
+  EasingFunction,
+  ChromaScalingFunction,
+  generateColorPalette,
+  applyGlobalAdjustments,
+} from "../color-utils";
 
 interface SyntaxPalettes {
-  syntax_base: ColorPalette
-  syntax_accent: ColorPalette
+  syntax_base: ColorPalette;
+  syntax_accent: ColorPalette;
 }
 
 export function generateSyntaxPalettes(
   base: OklchColor,
   accent: OklchColor,
-  mode: ThemeMode = 'dark',
+  mode: ThemeMode = "dark",
   variation: number = 0,
   baseLimit: number = 0.01,
   accentLimit: number = 0.1,
   baseEase?: EasingFunction,
   baseScale?: ChromaScalingFunction,
   accentEase?: EasingFunction,
-  accentScale?: ChromaScalingFunction
+  accentScale?: ChromaScalingFunction,
 ): SyntaxPalettes {
   const applyVariation = (color: OklchColor, variationAmount: number): OklchColor => {
-    if (variationAmount === 0) return color
+    if (variationAmount === 0) return color;
 
-    const hueShift = variationAmount * 15
-    const lightnessShift = variationAmount * 0.05
+    const hueShift = variationAmount * 15;
+    const lightnessShift = variationAmount * 0.05;
 
     return {
       l: Math.max(0.01, Math.min(0.99, color.l + lightnessShift)),
       c: Math.max(0, color.c),
-      h: (color.h + hueShift + 360) % 360
-    }
-  }
+      h: (color.h + hueShift + 360) % 360,
+    };
+  };
 
-  const variedBase = applyVariation(base, variation)
-  const variedAccent = applyVariation(accent, variation)
+  const variedBase = applyVariation(base, variation);
+  const variedAccent = applyVariation(accent, variation);
 
-  const adjustedAccent = mode === 'light' ? applyGlobalAdjustments(variedAccent, 'accent', { lightnessShift: -0.3, chromaBoost: 0.75 }) : variedAccent
+  const adjustedAccent =
+    mode === "light"
+      ? applyGlobalAdjustments(variedAccent, "accent", { lightnessShift: -0.3, chromaBoost: 0.75 })
+      : variedAccent;
 
   return {
     syntax_base: generateColorPalette(
@@ -45,7 +56,7 @@ export function generateSyntaxPalettes(
       false,
       false,
       baseEase,
-      baseScale
+      baseScale,
     ),
     syntax_accent: generateColorPalette(
       adjustedAccent,
@@ -56,7 +67,7 @@ export function generateSyntaxPalettes(
       true,
       false,
       accentEase,
-      accentScale
-    )
-  }
+      accentScale,
+    ),
+  };
 }

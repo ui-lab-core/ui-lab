@@ -3,10 +3,7 @@ import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type {
-  ElementPackage,
-  ElementSourceEntry,
-} from "@ui-lab-core/library";
+import type { ElementPackage, ElementSourceEntry } from "@ui-lab-core/library";
 
 type RegistryModule = {
   getElementEntry(packageId: string, elementId: string): ElementSourceEntry | null;
@@ -59,9 +56,8 @@ function countElements(elements: ElementSourceEntry[]) {
     public: elements.filter((entry) => entry.visibility === "public").length,
     free: elements.filter((entry) => entry.access === "free").length,
     premium: elements.filter((entry) => entry.access === "premium").length,
-    publicFree: elements.filter(
-      (entry) => entry.visibility === "public" && entry.access === "free",
-    ).length,
+    publicFree: elements.filter((entry) => entry.visibility === "public" && entry.access === "free")
+      .length,
     publicPremium: elements.filter(
       (entry) => entry.visibility === "public" && entry.access === "premium",
     ).length,
@@ -69,9 +65,7 @@ function countElements(elements: ElementSourceEntry[]) {
 }
 
 function printRegistryCounts(registry: RegistryModule) {
-  const packages = registry
-    .listPackages()
-    .toSorted((a, b) => a.id.localeCompare(b.id));
+  const packages = registry.listPackages().toSorted((a, b) => a.id.localeCompare(b.id));
   const packageCounts = packages.map((pkg) => ({
     pkg,
     counts: countElements(registry.listElements(pkg.id)),
@@ -114,16 +108,11 @@ function printKnownPremiumPublicElements(registry: RegistryModule) {
     .flatMap((pkg) =>
       registry
         .listElements(pkg.id)
-        .filter(
-          (entry) =>
-            entry.visibility === "public" && entry.access === "premium",
-        )
+        .filter((entry) => entry.visibility === "public" && entry.access === "premium")
         .map((entry) => `${pkg.id}/${entry.id}`),
     )
     .toSorted((a, b) => a.localeCompare(b));
-  const prioritized = knownPremiumPublicElements.filter((id) =>
-    allPremiumPublic.includes(id),
-  );
+  const prioritized = knownPremiumPublicElements.filter((id) => allPremiumPublic.includes(id));
   const displayed = [
     ...prioritized,
     ...allPremiumPublic.filter((id) => !prioritized.includes(id)),
@@ -150,9 +139,7 @@ async function main() {
   let resolvedPackageJsonPath: string;
 
   try {
-    resolvedPackageJsonPath = require.resolve(
-      "@ui-lab-core/library/package.json",
-    );
+    resolvedPackageJsonPath = require.resolve("@ui-lab-core/library/package.json");
   } catch (error) {
     console.error("Unable to resolve @ui-lab-core/library/package.json.");
     console.error(error instanceof Error ? error.message : String(error));
@@ -170,9 +157,7 @@ async function main() {
 
   if (realPackageJsonPath !== expectedRealPackageJsonPath) {
     console.error("");
-    console.error(
-      "@ui-lab-core/library is not resolving to the local private package.",
-    );
+    console.error("@ui-lab-core/library is not resolving to the local private package.");
     console.error(
       "Run pnpm install from the app workspace and confirm package.json uses link:../../../private/packages/library.",
     );

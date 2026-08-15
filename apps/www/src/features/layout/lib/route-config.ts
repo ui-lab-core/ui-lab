@@ -1,51 +1,59 @@
-import { FaBook, FaShapes, FaRegWindowMaximize, FaBox, FaCube, FaSeedling, FaTableCells } from '@/shared/icons/fa6';
+import {
+  FaBook,
+  FaShapes,
+  FaRegWindowMaximize,
+  FaBox,
+  FaCube,
+  FaSeedling,
+  FaTableCells,
+} from "@/shared/icons/fa6";
 
-type DomainId = 'docs' | 'components' | 'packages' | 'sections' | 'starters' | 'patterns';
+type DomainId = "docs" | "components" | "packages" | "sections" | "starters" | "patterns";
 
 interface DomainConfig {
   id: DomainId;
   label: string;
   icon: React.ComponentType;
-  headerType: 'tabs' | 'search';
+  headerType: "tabs" | "search";
   headerHeight?: string;
 }
 
 const DOMAINS: Record<DomainId, DomainConfig> = {
   docs: {
-    id: 'docs',
-    label: 'Documentation',
+    id: "docs",
+    label: "Documentation",
     icon: FaBook,
-    headerType: 'tabs',
+    headerType: "tabs",
   },
   components: {
-    id: 'components',
-    label: 'Components',
+    id: "components",
+    label: "Components",
     icon: FaShapes,
-    headerType: 'tabs',
+    headerType: "tabs",
   },
   packages: {
-    id: 'packages',
-    label: 'Packages',
+    id: "packages",
+    label: "Packages",
     icon: FaBox,
-    headerType: 'search',
+    headerType: "search",
   },
   sections: {
-    id: 'sections',
-    label: 'Sections',
+    id: "sections",
+    label: "Sections",
     icon: FaRegWindowMaximize,
-    headerType: 'search',
+    headerType: "search",
   },
   starters: {
-    id: 'starters',
-    label: 'Starters',
+    id: "starters",
+    label: "Starters",
     icon: FaSeedling,
-    headerType: 'search',
+    headerType: "search",
   },
   patterns: {
-    id: 'patterns',
-    label: 'Patterns',
+    id: "patterns",
+    label: "Patterns",
     icon: FaTableCells,
-    headerType: 'search',
+    headerType: "search",
   },
 };
 
@@ -69,23 +77,23 @@ interface RouteTabGroupConfig {
 
 const TAB_GROUPS: Record<string, TabGroup> = {
   documentation: {
-    id: 'documentation',
+    id: "documentation",
     tabs: [
-      { id: 'docs', label: 'Documentation', icon: FaBook, path: '/docs' },
-      { id: 'components', label: 'Components', icon: FaShapes, path: '/components' },
-      { id: 'workshop', label: 'Workshop', icon: FaCube, path: '/workshop' },
+      { id: "docs", label: "Documentation", icon: FaBook, path: "/docs" },
+      { id: "components", label: "Components", icon: FaShapes, path: "/components" },
+      { id: "workshop", label: "Workshop", icon: FaCube, path: "/workshop" },
     ],
   },
 };
 
 const ROUTE_TAB_GROUPS: RouteTabGroupConfig[] = [
-  { path: '/docs', tabGroupId: 'documentation' },
-  { path: '/components', tabGroupId: 'documentation' },
-  { path: '/design-system', tabGroupId: 'documentation' },
-  { path: '/workshop', tabGroupId: 'documentation' },
-  { path: '/blocks', tabGroupId: 'documentation' },
-  { path: '/changelog', tabGroupId: 'documentation' },
-  { path: '/config', tabGroupId: 'documentation' },
+  { path: "/docs", tabGroupId: "documentation" },
+  { path: "/components", tabGroupId: "documentation" },
+  { path: "/design-system", tabGroupId: "documentation" },
+  { path: "/workshop", tabGroupId: "documentation" },
+  { path: "/blocks", tabGroupId: "documentation" },
+  { path: "/changelog", tabGroupId: "documentation" },
+  { path: "/config", tabGroupId: "documentation" },
 ];
 
 interface RouteConfig {
@@ -95,44 +103,44 @@ interface RouteConfig {
 
 const ROUTES: Record<string, RouteConfig> = {
   docs: {
-    path: '/docs',
-    domainId: 'docs',
+    path: "/docs",
+    domainId: "docs",
   },
   components: {
-    path: '/components',
-    domainId: 'components',
+    path: "/components",
+    domainId: "components",
   },
-  'design-system': {
-    path: '/design-system',
-    domainId: 'docs',
+  "design-system": {
+    path: "/design-system",
+    domainId: "docs",
   },
   packages: {
-    path: '/workshop/elements',
-    domainId: 'packages',
+    path: "/workshop/elements",
+    domainId: "packages",
   },
   sections: {
-    path: '/workshop/sections',
-    domainId: 'sections',
+    path: "/workshop/sections",
+    domainId: "sections",
   },
   patterns: {
-    path: '/workshop/patterns',
-    domainId: 'patterns',
+    path: "/workshop/patterns",
+    domainId: "patterns",
   },
   blocks: {
-    path: '/blocks',
-    domainId: 'packages',
+    path: "/blocks",
+    domainId: "packages",
   },
   starters: {
-    path: '/workshop/starters',
-    domainId: 'starters',
+    path: "/workshop/starters",
+    domainId: "starters",
   },
   changelog: {
-    path: '/changelog',
-    domainId: 'docs',
+    path: "/changelog",
+    domainId: "docs",
   },
   config: {
-    path: '/config',
-    domainId: 'docs',
+    path: "/config",
+    domainId: "docs",
   },
 };
 
@@ -147,7 +155,13 @@ export const shouldApplyRevealCollapse = (pathname: string): boolean => {
   const domainId = getDomainForPathname(pathname);
   if (!domainId) return false;
   const domain = DOMAINS[domainId];
-  return domain?.headerType === 'tabs' || domainId === 'packages' || domainId === 'sections' || domainId === 'starters' || domainId === 'patterns';
+  return (
+    domain?.headerType === "tabs" ||
+    domainId === "packages" ||
+    domainId === "sections" ||
+    domainId === "starters" ||
+    domainId === "patterns"
+  );
 };
 
 export const getTabGroupForPathname = (pathname: string): TabGroup | undefined => {
@@ -158,10 +172,10 @@ export const getTabGroupForPathname = (pathname: string): TabGroup | undefined =
 };
 
 const ACTIVE_TAB_OVERRIDES: Record<string, string | undefined> = {
-  '/design-system': 'docs',
-  '/workshop': 'workshop',
-  '/blocks': 'workshop',
-  '/changelog': 'docs',
+  "/design-system": "docs",
+  "/workshop": "workshop",
+  "/blocks": "workshop",
+  "/changelog": "docs",
 };
 
 export const getActiveTabForPathname = (pathname: string): string | undefined => {

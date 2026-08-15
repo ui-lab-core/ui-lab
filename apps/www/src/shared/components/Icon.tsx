@@ -1,5 +1,5 @@
 // src/shared/components/Icon.tsx
-import React from 'react';
+import React from "react";
 
 interface IconProps {
   IconComponent: React.ComponentType<any>;
@@ -12,7 +12,15 @@ interface IconProps {
   [key: string]: any;
 }
 
-const Icon: React.FC<IconProps> = ({ IconComponent, size = 24, className, color, style, strokeWidth, ...props }) => {
+const Icon: React.FC<IconProps> = ({
+  IconComponent,
+  size = 24,
+  className,
+  color,
+  style,
+  strokeWidth,
+  ...props
+}) => {
   const iconProps: {
     size: number;
     className?: string;

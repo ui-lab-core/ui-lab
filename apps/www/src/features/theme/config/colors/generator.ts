@@ -6,7 +6,10 @@ function renderCssVariables(variables: Record<string, string>): string {
     .join("\n");
 }
 
-export function generateColorPaletteVariables(colors: any, mode: "light" | "dark"): Record<string, string> {
+export function generateColorPaletteVariables(
+  colors: any,
+  mode: "light" | "dark",
+): Record<string, string> {
   const palettes = generateThemePalettes(
     colors.background,
     colors.foreground,

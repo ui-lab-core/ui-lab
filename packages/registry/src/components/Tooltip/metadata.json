@@ -8,20 +8,10 @@
     "exportName": "Tooltip",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "popover"
-  ],
-  "tags": [
-    "information",
-    "hover",
-    "help-text"
-  ],
+  "relatedComponents": ["popover"],
+  "tags": ["information", "hover", "help-text"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard accessible",
-      "ARIA labels",
-      "Focus management"
-    ]
+    "notes": ["Keyboard accessible", "ARIA labels", "Focus management"]
   }
 }

@@ -48,9 +48,7 @@ export function DetailPageShell({
               <h1 className="text-xl font-medium text-foreground-50">{name}</h1>
               <p className="max-w-[66ch] text-md text-foreground-400">{description}</p>
             </div>
-            {actions ? (
-              <div className="flex shrink-0 items-center gap-1">{actions}</div>
-            ) : null}
+            {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
           </div>
 
           {tags && tags.length > 0 ? (

@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import type { LayoutConfig } from '@ui-lab-core/library/catalog';
-import { ContentIndex } from '@/features/layout/components/content-section-layout';
-import { GenericContentGrid } from '@/features/workshop/components/content-grid';
-import { getLayoutConfig as getSectionLayoutConfig } from '@/features/sections/lib/layout-registry';
+import React, { useState, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import type { LayoutConfig } from "@ui-lab-core/library/catalog";
+import { ContentIndex } from "@/features/layout/components/content-section-layout";
+import { GenericContentGrid } from "@/features/workshop/components/content-grid";
+import { getLayoutConfig as getSectionLayoutConfig } from "@/features/sections/lib/layout-registry";
 import {
   filterSections,
   type SectionGridFilters,
   type SectionGridItem,
-} from '@/features/sections/lib/section-grid-data';
-import { Toolbar, WaitlistModalClient, useWaitlistModal } from '@/features/workshop';
-import { getCardPreviewComponent as getSectionCardPreviewComponent } from '@/features/sections/lib/get-section-preview';
+} from "@/features/sections/lib/section-grid-data";
+import { Toolbar, WaitlistModalClient, useWaitlistModal } from "@/features/workshop";
+import { getCardPreviewComponent as getSectionCardPreviewComponent } from "@/features/sections/lib/get-section-preview";
 
 interface SectionsPageProps {
   allSections: SectionGridItem[];
@@ -22,7 +22,9 @@ interface SectionsPageProps {
 }
 
 function buildLayoutConfigs(sections: SectionGridItem[]): Record<string, LayoutConfig> {
-  return Object.fromEntries(sections.map(s => [s.id, { ...getSectionLayoutConfig(s), columnSpan: 1 }]));
+  return Object.fromEntries(
+    sections.map((s) => [s.id, { ...getSectionLayoutConfig(s), columnSpan: 1 }]),
+  );
 }
 
 function SectionsPageContent({
@@ -35,7 +37,9 @@ function SectionsPageContent({
   const modalContext = useWaitlistModal();
   const [searchQuery, setSearchQuery] = useState(initialFilters.searchQuery);
   const [sortBy, setSortBy] = useState(initialFilters.sortBy);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialFilters.selectedCategory);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    initialFilters.selectedCategory,
+  );
   const [selectedTags, setSelectedTags] = useState<string[]>(initialFilters.selectedTags);
 
   const filteredSections = useMemo(() => {
@@ -43,7 +47,7 @@ function SectionsPageContent({
       searchQuery === initialFilters.searchQuery &&
       sortBy === initialFilters.sortBy &&
       selectedCategory === initialFilters.selectedCategory &&
-      selectedTags.join(',') === initialFilters.selectedTags.join(',')
+      selectedTags.join(",") === initialFilters.selectedTags.join(",")
     ) {
       return initialSections;
     }
@@ -75,53 +79,68 @@ function SectionsPageContent({
     return nextPreviews;
   }, [filteredSections]);
 
-  const buildParams = useCallback((updates: Record<string, string | null>) => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('q', searchQuery);
-    if (selectedCategory) params.set('category', selectedCategory);
-    if (selectedTags.length > 0) params.set('tags', selectedTags.join(','));
-    if (sortBy && sortBy !== 'newest') params.set('sort', sortBy);
+  const buildParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set("q", searchQuery);
+      if (selectedCategory) params.set("category", selectedCategory);
+      if (selectedTags.length > 0) params.set("tags", selectedTags.join(","));
+      if (sortBy && sortBy !== "newest") params.set("sort", sortBy);
 
-    Object.entries(updates).forEach(([key, value]) => {
-      if (value === null) {
-        params.delete(key);
-      } else {
-        params.set(key, value);
-      }
-    });
-    return params.toString();
-  }, [searchQuery, selectedCategory, selectedTags, sortBy]);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null) {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      });
+      return params.toString();
+    },
+    [searchQuery, selectedCategory, selectedTags, sortBy],
+  );
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-    const params = buildParams({ q: query || null });
-    router.push(`/workshop/sections${params ? '?' + params : ''}`);
-  }, [buildParams, router]);
+  const handleSearch = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      const params = buildParams({ q: query || null });
+      router.push(`/workshop/sections${params ? "?" + params : ""}`);
+    },
+    [buildParams, router],
+  );
 
-  const handleSortChange = useCallback((sort: string) => {
-    setSortBy(sort);
-    const params = buildParams({ sort: sort !== 'default' ? sort : null });
-    router.push(`/workshop/sections${params ? '?' + params : ''}`);
-  }, [buildParams, router]);
+  const handleSortChange = useCallback(
+    (sort: string) => {
+      setSortBy(sort);
+      const params = buildParams({ sort: sort !== "default" ? sort : null });
+      router.push(`/workshop/sections${params ? "?" + params : ""}`);
+    },
+    [buildParams, router],
+  );
 
-  const handleCategoryChange = useCallback((category: string | null) => {
-    setSelectedCategory(category);
-    const params = buildParams({ category: category || null });
-    router.push(`/workshop/sections${params ? '?' + params : ''}`);
-  }, [buildParams, router]);
+  const handleCategoryChange = useCallback(
+    (category: string | null) => {
+      setSelectedCategory(category);
+      const params = buildParams({ category: category || null });
+      router.push(`/workshop/sections${params ? "?" + params : ""}`);
+    },
+    [buildParams, router],
+  );
 
-  const handleTagsChange = useCallback((newTags: string[]) => {
-    setSelectedTags(newTags);
-    const params = buildParams({ tags: newTags.length > 0 ? newTags.join(',') : null });
-    router.push(`/workshop/sections${params ? '?' + params : ''}`);
-  }, [buildParams, router]);
+  const handleTagsChange = useCallback(
+    (newTags: string[]) => {
+      setSelectedTags(newTags);
+      const params = buildParams({ tags: newTags.length > 0 ? newTags.join(",") : null });
+      router.push(`/workshop/sections${params ? "?" + params : ""}`);
+    },
+    [buildParams, router],
+  );
 
   const handleClearAll = useCallback(() => {
-    setSearchQuery('');
+    setSearchQuery("");
     setSelectedCategory(null);
     setSelectedTags([]);
-    setSortBy('default');
-    router.push('/workshop/sections');
+    setSortBy("default");
+    router.push("/workshop/sections");
   }, [router]);
 
   return (
@@ -148,7 +167,7 @@ function SectionsPageContent({
         previews={previews}
         previewKind="section"
         onItemClick={(section) => {
-          if (section.status === 'coming-soon') {
+          if (section.status === "coming-soon") {
             modalContext.openModal();
             return true;
           }

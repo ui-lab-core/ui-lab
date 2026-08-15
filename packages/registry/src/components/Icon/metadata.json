@@ -9,16 +9,8 @@
     "exportName": "Icon",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "button",
-    "badge"
-  ],
-  "tags": [
-    "icon",
-    "svg",
-    "mask",
-    "asset"
-  ],
+  "relatedComponents": ["button", "badge"],
+  "tags": ["icon", "svg", "mask", "asset"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

@@ -1,12 +1,12 @@
-import type { ElementPackageMetadata, LayoutConfig } from '@ui-lab-core/library/catalog';
+import type { ElementPackageMetadata, LayoutConfig } from "@ui-lab-core/library/catalog";
 
 const defaultPackageLayout: LayoutConfig = {
-  layoutClass: 'default-package',
+  layoutClass: "default-package",
   columnSpan: 1,
   rowSpan: 1,
   previewConfig: {
     scale: 1,
-    centeringStrategy: 'full',
+    centeringStrategy: "full",
   },
 };
 

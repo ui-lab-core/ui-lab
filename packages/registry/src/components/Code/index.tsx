@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Code } from "ui-lab-components";
-import type { ComponentDetail } from '@/types';
+import type { ComponentDetail } from "@/types";
 
 const basicCode = `import { Code } from 'ui-lab-components';
 
@@ -40,14 +40,19 @@ const sampleCode = `export function Button({ children, onClick }: ButtonProps) {
 export const codeDetail: ComponentDetail = {
   id: "code",
   name: "Code",
-  description: "Syntax-highlighted code display with horizontal scroll, line expand, and copy button.",
+  description:
+    "Syntax-highlighted code display with horizontal scroll, line expand, and copy button.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        Code renders syntax-highlighted code using Shiki. It adapts to light and dark mode automatically, supports horizontal scrolling for wide code, collapses long files with an expand toggle, and provides a one-click copy button.
+        Code renders syntax-highlighted code using Shiki. It adapts to light and dark mode
+        automatically, supports horizontal scrolling for wide code, collapses long files with an
+        expand toggle, and provides a one-click copy button.
       </p>
       <p>
-        Pass a named Shiki theme string or a <code>{`{ light, dark }`}</code> object for automatic mode-aware theming. For SSR, pass pre-rendered HTML via <code>preHighlightedLight</code> / <code>preHighlightedDark</code> to avoid client-side flash.
+        Pass a named Shiki theme string or a <code>{`{ light, dark }`}</code> object for automatic
+        mode-aware theming. For SSR, pass pre-rendered HTML via <code>preHighlightedLight</code> /{" "}
+        <code>preHighlightedDark</code> to avoid client-side flash.
       </p>
     </div>
   ),
@@ -70,7 +75,9 @@ export const codeDetail: ComponentDetail = {
       code: withFilenameCode,
       preview: (
         <div className="w-full max-w-lg">
-          <Code language="tsx" filename="Button.tsx">{sampleCode}</Code>
+          <Code language="tsx" filename="Button.tsx">
+            {sampleCode}
+          </Code>
         </div>
       ),
     },

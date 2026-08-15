@@ -1,7 +1,15 @@
 "use client";
 
-import { categoryMap, getCategoriesInOrder, getComponentsInCategoryOrder, comingSoonComponents } from "@/features/component-docs";
-import { TableOfContents, type TableOfContentsItem } from "@/features/docs/components/table-of-contents";
+import {
+  categoryMap,
+  getCategoriesInOrder,
+  getComponentsInCategoryOrder,
+  comingSoonComponents,
+} from "@/features/component-docs";
+import {
+  TableOfContents,
+  type TableOfContentsItem,
+} from "@/features/docs/components/table-of-contents";
 import { previews } from "@/gallery";
 import Icon from "@/shared/components/Icon";
 import { Icons } from "@/shared/components/icon-registry";
@@ -25,8 +33,11 @@ export default function ComponentsPageClient() {
             <div className="space-y-32">
               {getCategoriesInOrder().map((category) => {
                 const componentsInCategory = getComponentsInCategoryOrder(category);
-                const comingSoonInCategory = comingSoonComponents.filter((c) => c.category === category);
-                if (componentsInCategory.length === 0 && comingSoonInCategory.length === 0) return null;
+                const comingSoonInCategory = comingSoonComponents.filter(
+                  (c) => c.category === category,
+                );
+                if (componentsInCategory.length === 0 && comingSoonInCategory.length === 0)
+                  return null;
                 return (
                   <div key={category} id={category} className="space-y-4">
                     <Flex className="gap-4">
@@ -50,7 +61,9 @@ export default function ComponentsPageClient() {
                     <Gallery
                       columns={1}
                       gap="lg"
-                      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))" }}
+                      style={{
+                        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))",
+                      }}
                     >
                       {componentsInCategory.map((component) => {
                         const href = `/components/${component.id}`;
@@ -58,8 +71,8 @@ export default function ComponentsPageClient() {
                           <div key={component.id}>
                             <Gallery.Item
                               href={href}
-                              className='group relative rounded-sm bg-background-950 hover:bg-background-900/50'
-                              orientation='vertical'
+                              className="group relative rounded-sm bg-background-950 hover:bg-background-900/50"
+                              orientation="vertical"
                               onClick={() => router.push(href)}
                             >
                               {component.experimental && (
@@ -69,13 +82,11 @@ export default function ComponentsPageClient() {
                                   </span>
                                 </Tooltip>
                               )}
-                              <Gallery.View
-                                className="w-full h-35 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0"
-                              >
-                                <div className='max-w-50 gap-2 flex items-center justify-center'>
+                              <Gallery.View className="w-full h-35 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0">
+                                <div className="max-w-50 gap-2 flex items-center justify-center">
                                   {previews[component.id] || <div />}
                                 </div>
-                                <div className='absolute top-0 left-0 w-full h-full'>
+                                <div className="absolute top-0 left-0 w-full h-full">
                                   {/* <div className='hidden grid-paper' /> */}
                                 </div>
                               </Gallery.View>
@@ -93,15 +104,16 @@ export default function ComponentsPageClient() {
                         );
                       })}
                       {comingSoonInCategory.map((component) => (
-                        <div key={component.id} className="opacity-40 pointer-events-none select-none">
+                        <div
+                          key={component.id}
+                          className="opacity-40 pointer-events-none select-none"
+                        >
                           <Gallery.Item
-                            className='group h-65 rounded-sm bg-background-1000'
-                            orientation='vertical'
+                            className="group h-65 rounded-sm bg-background-1000"
+                            orientation="vertical"
                           >
-                            <Gallery.View
-                              className="w-full h-35 flex items-center justify-center relative bg-background-1000 border-b border-background-700 shrink-0"
-                            >
-                              <div className='max-w-65 px-4 gap-2 flex items-center justify-center'>
+                            <Gallery.View className="w-full h-35 flex items-center justify-center relative bg-background-1000 border-b border-background-700 shrink-0">
+                              <div className="max-w-65 px-4 gap-2 flex items-center justify-center">
                                 {previews[component.id] || <div />}
                               </div>
                             </Gallery.View>
@@ -109,7 +121,7 @@ export default function ComponentsPageClient() {
                             <Gallery.Body className="pt-4">
                               <div className="relative flex items-center gap-1 w-full">
                                 <h4>{component.name}</h4>
-                                <div className='ml-auto'>
+                                <div className="ml-auto">
                                   <span className="inline-block px-2 py-1 text-xs font-semibold bg-background-700 text-foreground-400 rounded-md">
                                     Soon
                                   </span>

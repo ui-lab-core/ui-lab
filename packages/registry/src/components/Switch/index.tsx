@@ -1,6 +1,6 @@
-import React from 'react';
-import { Switch } from 'ui-lab-components';
-import { ComponentDetail } from '@/types';
+import React from "react";
+import { Switch } from "ui-lab-components";
+import { ComponentDetail } from "@/types";
 
 const switchBasicCode = `import { Switch } from "ui-lab-components";
 
@@ -16,10 +16,14 @@ export const switchDetail: ComponentDetail = {
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Switch component provides a clear, intuitive way to toggle between two states. It's ideal for settings, preferences, and feature flags where users need to enable or disable something.
+        The Switch component provides a clear, intuitive way to toggle between two states. It's
+        ideal for settings, preferences, and feature flags where users need to enable or disable
+        something.
       </p>
       <p>
-        Switches support multiple sizes, controlled and uncontrolled modes, and disabled states. The smooth animation and clear visual feedback make it easy for users to understand the current state.
+        Switches support multiple sizes, controlled and uncontrolled modes, and disabled states. The
+        smooth animation and clear visual feedback make it easy for users to understand the current
+        state.
       </p>
     </div>
   ),

@@ -90,22 +90,25 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
                   >
                     <List.Media>
                       <span
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-sm border ${active
-                          ? "border-background-600 bg-background-700 text-foreground-300"
-                          : "border-background-700/60 bg-background-700/50 text-foreground-500"
-                          }`}
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-sm border ${
+                          active
+                            ? "border-background-600 bg-background-700 text-foreground-300"
+                            : "border-background-700/60 bg-background-700/50 text-foreground-500"
+                        }`}
                         aria-hidden="true"
-                      >
-                      </span>
+                      ></span>
                     </List.Media>
                     <List.Title
-                      className={`truncate text-sm ${active ? "font-medium text-foreground-100" : "text-foreground-300"
-                        }`}
+                      className={`truncate text-sm ${
+                        active ? "font-medium text-foreground-100" : "text-foreground-300"
+                      }`}
                     >
                       {track.title}
                       <span className="text-foreground-500"> · {track.artist}</span>
                     </List.Title>
-                    <span className="text-sm text-foreground-500 tabular-nums">{track.duration}</span>
+                    <span className="text-sm text-foreground-500 tabular-nums">
+                      {track.duration}
+                    </span>
                   </List.Item>
                 );
               })}
@@ -116,9 +119,14 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
 
       <div className="border border-background-700 space-y-6 rounded-sm p-2">
         <div className="flex items-center gap-3.5">
-          <div className="h-14 w-14 flex-shrink-0 rounded-sm bg-background-700/50" aria-hidden="true" />
+          <div
+            className="h-14 w-14 flex-shrink-0 rounded-sm bg-background-700/50"
+            aria-hidden="true"
+          />
           <div className="flex flex-1 flex-col gap-1">
-            <div className="text-sm font-semibold text-foreground-100 truncate">{tracks[current].title}</div>
+            <div className="text-sm font-semibold text-foreground-100 truncate">
+              {tracks[current].title}
+            </div>
             <div className="text-sm text-foreground-400 truncate">
               {tracks[current].artist} · Visions of a New World
             </div>
@@ -133,7 +141,11 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               icon={<Plus size={14} />}
             />
             <Menu type="pop-over">
-              <Menu.Trigger variant="ghost" icon={{ left: <MoreHorizontal size={14} /> }} aria-label="Track options" />
+              <Menu.Trigger
+                variant="ghost"
+                icon={{ left: <MoreHorizontal size={14} /> }}
+                aria-label="Track options"
+              />
               <Menu.Content side="bottom" align="end" offset={6}>
                 <Menu.Item>
                   <Headphones size={14} className="mr-2 opacity-60" />

@@ -8,18 +8,39 @@ import { Divider } from "ui-lab-components/divider";
 import { Toaster } from "ui-lab-components/toast";
 import { ShowcaseToolbar } from "./toolbar";
 
-const panel = (load: () => Promise<ComponentType<ShowcasePanelProps>>) => dynamic<ShowcasePanelProps>(load);
+const panel = (load: () => Promise<ComponentType<ShowcasePanelProps>>) =>
+  dynamic<ShowcasePanelProps>(load);
 
-const IntegrationsPanel = panel(() => import("./examples/integrations").then((module) => module.IntegrationsPanel));
-const AIComposer = panel(() => import("./examples/ai-composer").then((module) => module.AIComposer));
-const MemberRolePanel = panel(() => import("./examples/team-members").then((module) => module.MemberRolePanel));
-const TextEditor = panel(() => import("./examples/text-editor").then((module) => module.TextEditor));
-const FileBrowser = panel(() => import("./examples/media-browser").then((module) => module.FileBrowser));
-const DeploymentList = panel(() => import("./examples/deployments").then((module) => module.DeploymentList));
-const ApiKeysPanel = panel(() => import("./examples/api-keys").then((module) => module.ApiKeysPanel));
-const MusicPlayer = panel(() => import("./examples/music-player").then((module) => module.MusicPlayer));
-const QuickActions = panel(() => import("./examples/compact").then((module) => module.QuickActions));
-const SessionConfigPanel = panel(() => import("./examples/session-config").then((module) => module.SessionConfigPanel));
+const IntegrationsPanel = panel(() =>
+  import("./examples/integrations").then((module) => module.IntegrationsPanel),
+);
+const AIComposer = panel(() =>
+  import("./examples/ai-composer").then((module) => module.AIComposer),
+);
+const MemberRolePanel = panel(() =>
+  import("./examples/team-members").then((module) => module.MemberRolePanel),
+);
+const TextEditor = panel(() =>
+  import("./examples/text-editor").then((module) => module.TextEditor),
+);
+const FileBrowser = panel(() =>
+  import("./examples/media-browser").then((module) => module.FileBrowser),
+);
+const DeploymentList = panel(() =>
+  import("./examples/deployments").then((module) => module.DeploymentList),
+);
+const ApiKeysPanel = panel(() =>
+  import("./examples/api-keys").then((module) => module.ApiKeysPanel),
+);
+const MusicPlayer = panel(() =>
+  import("./examples/music-player").then((module) => module.MusicPlayer),
+);
+const QuickActions = panel(() =>
+  import("./examples/compact").then((module) => module.QuickActions),
+);
+const SessionConfigPanel = panel(() =>
+  import("./examples/session-config").then((module) => module.SessionConfigPanel),
+);
 
 const Buttons = panel(() => import("./examples/primitives").then((module) => module.Buttons));
 const Inputs = panel(() => import("./examples/primitives").then((module) => module.Inputs));
@@ -31,7 +52,9 @@ const Radios = panel(() => import("./examples/primitives").then((module) => modu
 const Sliders = panel(() => import("./examples/primitives").then((module) => module.Sliders));
 const TabList = panel(() => import("./examples/primitives").then((module) => module.TabList));
 const Switches = panel(() => import("./examples/primitives").then((module) => module.Switches));
-const ProgressBar = panel(() => import("./examples/primitives").then((module) => module.ProgressBar));
+const ProgressBar = panel(() =>
+  import("./examples/primitives").then((module) => module.ProgressBar),
+);
 const Banners = panel(() => import("./examples/primitives").then((module) => module.Banners));
 const TextAreas = panel(() => import("./examples/primitives").then((module) => module.TextAreas));
 const Menus = panel(() => import("./examples/primitives").then((module) => module.Menus));
@@ -39,24 +62,54 @@ const Expands = panel(() => import("./examples/primitives").then((module) => mod
 const Groups = panel(() => import("./examples/primitives").then((module) => module.Groups));
 const Tooltips = panel(() => import("./examples/primitives").then((module) => module.Tooltips));
 
-const DashboardStats = panel(() => import("./examples/mockups").then((module) => module.dashboard.Stats));
-const DashboardChart = panel(() => import("./examples/mockups").then((module) => module.dashboard.Chart));
-const DashboardRows = panel(() => import("./examples/mockups").then((module) => module.dashboard.Rows));
-const DashboardMeters = panel(() => import("./examples/mockups").then((module) => module.dashboard.Meters));
-const DashboardSummary = panel(() => import("./examples/mockups").then((module) => module.dashboard.Summary));
-const DashboardEvents = panel(() => import("./examples/mockups").then((module) => module.dashboard.Events));
+const DashboardStats = panel(() =>
+  import("./examples/mockups").then((module) => module.dashboard.Stats),
+);
+const DashboardChart = panel(() =>
+  import("./examples/mockups").then((module) => module.dashboard.Chart),
+);
+const DashboardRows = panel(() =>
+  import("./examples/mockups").then((module) => module.dashboard.Rows),
+);
+const DashboardMeters = panel(() =>
+  import("./examples/mockups").then((module) => module.dashboard.Meters),
+);
+const DashboardSummary = panel(() =>
+  import("./examples/mockups").then((module) => module.dashboard.Summary),
+);
+const DashboardEvents = panel(() =>
+  import("./examples/mockups").then((module) => module.dashboard.Events),
+);
 const SalesStats = panel(() => import("./examples/mockups").then((module) => module.sales.Stats));
-const SalesPipeline = panel(() => import("./examples/mockups").then((module) => module.sales.Pipeline));
+const SalesPipeline = panel(() =>
+  import("./examples/mockups").then((module) => module.sales.Pipeline),
+);
 const SalesLeads = panel(() => import("./examples/mockups").then((module) => module.sales.Leads));
-const SalesTargets = panel(() => import("./examples/mockups").then((module) => module.sales.Targets));
+const SalesTargets = panel(() =>
+  import("./examples/mockups").then((module) => module.sales.Targets),
+);
 const SalesChart = panel(() => import("./examples/mockups").then((module) => module.sales.Chart));
-const SalesAccounts = panel(() => import("./examples/mockups").then((module) => module.sales.Accounts));
-const EntertainmentLibrary = panel(() => import("./examples/mockups").then((module) => module.entertainment.Library));
-const EntertainmentPlayer = panel(() => import("./examples/mockups").then((module) => module.entertainment.Player));
-const EntertainmentQueue = panel(() => import("./examples/mockups").then((module) => module.entertainment.Queue));
-const EntertainmentCharts = panel(() => import("./examples/mockups").then((module) => module.entertainment.Charts));
-const EntertainmentFeatured = panel(() => import("./examples/mockups").then((module) => module.entertainment.Featured));
-const EntertainmentHistory = panel(() => import("./examples/mockups").then((module) => module.entertainment.History));
+const SalesAccounts = panel(() =>
+  import("./examples/mockups").then((module) => module.sales.Accounts),
+);
+const EntertainmentLibrary = panel(() =>
+  import("./examples/mockups").then((module) => module.entertainment.Library),
+);
+const EntertainmentPlayer = panel(() =>
+  import("./examples/mockups").then((module) => module.entertainment.Player),
+);
+const EntertainmentQueue = panel(() =>
+  import("./examples/mockups").then((module) => module.entertainment.Queue),
+);
+const EntertainmentCharts = panel(() =>
+  import("./examples/mockups").then((module) => module.entertainment.Charts),
+);
+const EntertainmentFeatured = panel(() =>
+  import("./examples/mockups").then((module) => module.entertainment.Featured),
+);
+const EntertainmentHistory = panel(() =>
+  import("./examples/mockups").then((module) => module.entertainment.History),
+);
 
 type ShowcaseItem = {
   key: string;
@@ -85,8 +138,8 @@ const views: Record<string, ShowcaseItem[][]> = {
     ],
     [
       { key: "files", Panel: FileBrowser, height: three(0.42) },
-      { key: "editor", Panel: TextEditor, height: three(0.30) },
-      { key: "actions", Panel: QuickActions, height: three(0.20) },
+      { key: "editor", Panel: TextEditor, height: three(0.3) },
+      { key: "actions", Panel: QuickActions, height: three(0.2) },
     ],
     [
       { key: "session", Panel: SessionConfigPanel, height: three(0.59) },
@@ -101,7 +154,7 @@ const views: Record<string, ShowcaseItem[][]> = {
   primitives: [
     [
       { key: "button", Panel: Buttons, height: three(0.32) },
-      { key: "input", Panel: Inputs, height: three(0.30) },
+      { key: "input", Panel: Inputs, height: three(0.3) },
       { key: "checkbox", Panel: Checkboxes, height: three(0.38) },
     ],
     [
@@ -110,13 +163,13 @@ const views: Record<string, ShowcaseItem[][]> = {
     ],
     [
       { key: "select", Panel: Selects, height: three(0.32) },
-      { key: "radio", Panel: Radios, height: three(0.40) },
+      { key: "radio", Panel: Radios, height: three(0.4) },
       { key: "slider", Panel: Sliders, height: three(0.28) },
     ],
     [
-      { key: "tabs", Panel: TabList, height: three(0.30) },
-      { key: "switch", Panel: Switches, height: three(0.40) },
-      { key: "progress", Panel: ProgressBar, height: three(0.30) },
+      { key: "tabs", Panel: TabList, height: three(0.3) },
+      { key: "switch", Panel: Switches, height: three(0.4) },
+      { key: "progress", Panel: ProgressBar, height: three(0.3) },
     ],
     [
       { key: "banner", Panel: Banners, height: three(0.34) },
@@ -125,7 +178,7 @@ const views: Record<string, ShowcaseItem[][]> = {
     ],
     [
       { key: "expand", Panel: Expands, height: three(0.38) },
-      { key: "group", Panel: Groups, height: three(0.30) },
+      { key: "group", Panel: Groups, height: three(0.3) },
       { key: "tooltip", Panel: Tooltips, height: three(0.32) },
     ],
   ],
@@ -163,8 +216,8 @@ const views: Record<string, ShowcaseItem[][]> = {
       { key: "player", Panel: EntertainmentPlayer, height: two(0.34) },
     ],
     [
-      { key: "queue", Panel: EntertainmentQueue, height: two(0.60) },
-      { key: "charts", Panel: EntertainmentCharts, height: two(0.40) },
+      { key: "queue", Panel: EntertainmentQueue, height: two(0.6) },
+      { key: "charts", Panel: EntertainmentCharts, height: two(0.4) },
     ],
     [
       { key: "featured", Panel: EntertainmentFeatured, height: two(0.52) },
@@ -200,19 +253,19 @@ function ShowcaseColumn({ column, index, viewportRef }: ShowcaseColumnProps) {
   return (
     <div
       ref={columnRef}
-      className="flex h-full w-[var(--showcase-column-width)] flex-none flex-col [content-visibility:auto] [contain-intrinsic-size:calc(100vh-var(--header-height))]"
+      className="flex h-full w-[var(--showcase-column-width)] flex-none flex-col [contain-intrinsic-size:calc(100vh-var(--header-height))] [content-visibility:auto]"
     >
       {shouldRender
         ? column.map(({ key, Panel, height }) => (
-          <React.Fragment key={key}>
-            <div className="px-2 pb-2" style={{ height }}>
-              <div className="h-full w-full origin-top-left overflow-hidden rounded-sm border border-background-700 max-sm:h-[114%] max-sm:w-[114%] max-sm:scale-[0.88]">
-                <Panel height="100%" />
+            <React.Fragment key={key}>
+              <div className="px-2 pb-2" style={{ height }}>
+                <div className="h-full w-full origin-top-left overflow-hidden rounded-sm border border-background-700 max-sm:h-[114%] max-sm:w-[114%] max-sm:scale-[0.88]">
+                  <Panel height="100%" />
+                </div>
               </div>
-            </div>
-            <Divider className="hidden" spacing="none" color="bg-background-700" />
-          </React.Fragment>
-        ))
+              <Divider className="hidden" spacing="none" color="bg-background-700" />
+            </React.Fragment>
+          ))
         : null}
     </div>
   );
@@ -240,7 +293,8 @@ export function Showcase() {
     let lastX = Number.NaN;
     let isLooping = false;
 
-    const getHeaderHeight = () => document.querySelector("header")?.getBoundingClientRect().height ?? 0;
+    const getHeaderHeight = () =>
+      document.querySelector("header")?.getBoundingClientRect().height ?? 0;
     const getScrollY = () => window.scrollY || document.documentElement.scrollTop || 0;
 
     const update = () => {
@@ -248,14 +302,16 @@ export function Showcase() {
       rootTop = root.getBoundingClientRect().top + getScrollY();
       const scrollOffset = getScrollY() + headerHeight - rootTop;
       const activeDistance = distance + leadIn + leadOut;
-      const progress = distance > 0 ? Math.min(1, Math.max(0, (scrollOffset - leadIn) / distance)) : 0;
+      const progress =
+        distance > 0 ? Math.min(1, Math.max(0, (scrollOffset - leadIn) / distance)) : 0;
       const x = -distance * progress;
 
       if (x !== lastX) {
         track.style.transform = `translate3d(${x}px, 0, 0)`;
         lastX = x;
       }
-      track.style.willChange = scrollOffset > 0 && scrollOffset < activeDistance ? "transform" : "auto";
+      track.style.willChange =
+        scrollOffset > 0 && scrollOffset < activeDistance ? "transform" : "auto";
     };
 
     const isNearShowcase = () => {
@@ -263,7 +319,10 @@ export function Showcase() {
       const viewportHeight = window.innerHeight;
       rootTop = root.getBoundingClientRect().top + getScrollY();
       rootHeight = root.offsetHeight;
-      return scrollY + viewportHeight >= rootTop - viewportHeight && scrollY <= rootTop + rootHeight + viewportHeight;
+      return (
+        scrollY + viewportHeight >= rootTop - viewportHeight &&
+        scrollY <= rootTop + rootHeight + viewportHeight
+      );
     };
 
     const stopLoop = () => {
@@ -326,16 +385,16 @@ export function Showcase() {
   if (!featureFlags.showcase) return null;
 
   return (
-    <div ref={rootRef} className="w-full min-w-0 overflow-visible [container-type:inline-size]">
+    <div ref={rootRef} className="[container-type:inline-size] w-full min-w-0 overflow-visible">
       <div
         ref={stickyRef}
-        className="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height))] min-h-[32rem] w-full min-w-0 max-w-full flex-col overflow-hidden sm:h-[calc(100vh-var(--header-height))]"
+        className="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height))] min-h-[32rem] w-full max-w-full min-w-0 flex-col overflow-hidden sm:h-[calc(100vh-var(--header-height))]"
       >
         <ShowcaseToolbar value={view} onValueChange={setView} />
         <Toaster />
         <div
           ref={viewportRef}
-          className="isolate relative min-h-0 rounded-sm flex-1 overflow-hidden"
+          className="relative isolate min-h-0 flex-1 overflow-hidden rounded-sm"
         >
           <div
             ref={trackRef}
@@ -343,7 +402,12 @@ export function Showcase() {
           >
             {views[view].map((column, index) => (
               <React.Fragment key={column.map((item) => item.key).join("-")}>
-                <Divider className="hidden" color="bg-background-700" orientation="vertical" spacing="none" />
+                <Divider
+                  className="hidden"
+                  color="bg-background-700"
+                  orientation="vertical"
+                  spacing="none"
+                />
                 <ShowcaseColumn column={column} index={index} viewportRef={viewportRef} />
               </React.Fragment>
             ))}

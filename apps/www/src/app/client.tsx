@@ -1,13 +1,20 @@
-'use client';
+"use client";
 
 import { useCallback, useEffect } from "react";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { AppProvider, useApp } from "@/features/theme/lib/app-context";
-// import { PERF_OVERLAY_TOGGLE_EVENT, PerfOverlay } from "@/features/dev/components/perf-overlay";
 
 function KeyboardShortcuts() {
-  const { isSettingsPanelOpen, setIsSettingsPanelOpen, currentThemeMode, currentThemeColors, setCurrentThemeMode, setCurrentThemeColors, setIsCommandPaletteOpen } = useApp();
+  const {
+    isSettingsPanelOpen,
+    setIsSettingsPanelOpen,
+    currentThemeMode,
+    currentThemeColors,
+    setCurrentThemeMode,
+    setCurrentThemeColors,
+    setIsCommandPaletteOpen,
+  } = useApp();
   const { applyAndPersistModeAndColors } = useThemeStorage({
     onColorsChange: setCurrentThemeColors,
     onModeChange: setCurrentThemeMode,
@@ -44,7 +51,8 @@ function KeyboardShortcuts() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+        return;
 
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
@@ -72,12 +80,7 @@ function KeyboardShortcuts() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    isSettingsPanelOpen,
-    setIsCommandPaletteOpen,
-    setIsSettingsPanelOpen,
-    toggleThemeMode,
-  ]);
+  }, [isSettingsPanelOpen, setIsCommandPaletteOpen, setIsSettingsPanelOpen, toggleThemeMode]);
 
   return null;
 }

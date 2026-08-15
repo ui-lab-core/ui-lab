@@ -1,35 +1,35 @@
-'use client';
-import React from 'react';
-import type { LayoutConfig } from '@ui-lab-core/library/catalog';
+"use client";
+import React from "react";
+import type { LayoutConfig } from "@ui-lab-core/library/catalog";
 
 interface PreviewContainerProps {
   layoutConfig: LayoutConfig;
   children: React.ReactNode;
 }
 
-function buildPreviewStyles(config?: LayoutConfig['previewConfig']): React.CSSProperties {
+function buildPreviewStyles(config?: LayoutConfig["previewConfig"]): React.CSSProperties {
   const styles: React.CSSProperties = {};
   if (config?.scale !== undefined) {
     styles.transform = `scale(${config.scale})`;
-    styles.transformOrigin = 'top center';
+    styles.transformOrigin = "top center";
   }
   if (config?.maxHeight) {
     styles.maxHeight = config.maxHeight;
-    styles.width = '100%';
+    styles.width = "100%";
   }
   return styles;
 }
 
 function getCenteringClass(strategy?: string): string {
   switch (strategy) {
-    case 'horizontal':
-      return 'items-center justify-start';
-    case 'full':
-      return 'items-center justify-center';
-    case 'none':
-      return '';
+    case "horizontal":
+      return "items-center justify-start";
+    case "full":
+      return "items-center justify-center";
+    case "none":
+      return "";
     default:
-      return 'items-center justify-center';
+      return "items-center justify-center";
   }
 }
 
@@ -40,7 +40,10 @@ export function PreviewContainer({ layoutConfig, children }: PreviewContainerPro
   return (
     <div className="relative w-full h-full min-h-56 bg-background-1000 border-b border-background-700 overflow-hidden">
       <div className={`absolute inset-0 flex p-12 ${centeringClass}`}>
-        <div className="flex h-full w-full min-w-0 items-center justify-center" style={buildPreviewStyles(previewConfig)}>
+        <div
+          className="flex h-full w-full min-w-0 items-center justify-center"
+          style={buildPreviewStyles(previewConfig)}
+        >
           {children}
         </div>
       </div>

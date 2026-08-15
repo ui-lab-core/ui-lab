@@ -6,7 +6,8 @@ import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 export const metadata: Metadata = buildMetadata({
   pathname: "/docs/customization",
   title: "Customization",
-  description: "Customize theme tokens, typography, layout primitives, and component variants in UI Lab.",
+  description:
+    "Customize theme tokens, typography, layout primitives, and component variants in UI Lab.",
 });
 
 function ColorSystemSection() {
@@ -14,26 +15,33 @@ function ColorSystemSection() {
     <div id="color-system" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Color system</h2>
       <p className="text-foreground-300 mb-6">
-        UI Lab&apos;s base palette automatically inverts across light and dark modes. The palette runs from 50 (lightest) to 950 (darkest).
+        UI Lab&apos;s base palette automatically inverts across light and dark modes. The palette
+        runs from 50 (lightest) to 950 (darkest).
       </p>
 
-      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Understanding the base palette</h3>
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">
+        Understanding the base palette
+      </h3>
       <p className="text-foreground-300 mb-4">
-        In dark mode (default), lower values (50-400) are light colors used for text and overlays. Higher values (600-950) are dark colors for backgrounds.
+        In dark mode (default), lower values (50-400) are light colors used for text and overlays.
+        Higher values (600-950) are dark colors for backgrounds.
       </p>
       <p className="text-foreground-300 mb-6">
-        In light mode, this inverts: lower values become dark, higher values become light. This semantic approach eliminates the need to manage separate color systems.
+        In light mode, this inverts: lower values become dark, higher values become light. This
+        semantic approach eliminates the need to manage separate color systems.
       </p>
 
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`/* Dark mode (default) */
+        <pre className="text-sm text-foreground-300">
+          <code>{`/* Dark mode (default) */
 --color-base-50: #ffffff;    /* lightest, for text */
 --color-base-100: #f8f8f8;
 --color-base-200: #efefef;
 --color-base-900: #1a1a1a;   /* darkest, for bg */
 --color-base-950: #0f0f0f;
 
-/* Light mode inverts these automatically */`}</code></pre>
+/* Light mode inverts these automatically */`}</code>
+        </pre>
       </div>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Custom brand colors</h3>
@@ -41,7 +49,8 @@ function ColorSystemSection() {
         Add accent colors for your brand. Keep the base palette but extend it with semantic colors:
       </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`@theme {
+        <pre className="text-sm text-foreground-300">
+          <code>{`@theme {
   /* Keep base palette as-is */
   --color-base-50: #ffffff;
   /* ... */
@@ -54,16 +63,17 @@ function ColorSystemSection() {
   --color-success-500: #10b981;
   --color-warning-500: #f59e0b;
   --color-destructive-500: #ef4444;
-}`}</code></pre>
+}`}</code>
+        </pre>
       </div>
 
-      <p className="text-foreground-300">
-        Use these colors in components via Tailwind classes:
-      </p>
+      <p className="text-foreground-300">Use these colors in components via Tailwind classes:</p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`<Button className="bg-accent-500 hover:bg-accent-600">
+        <pre className="text-sm text-foreground-300">
+          <code>{`<Button className="bg-accent-500 hover:bg-accent-600">
   Branded Action
-</Button>`}</code></pre>
+</Button>`}</code>
+        </pre>
       </div>
     </div>
   );
@@ -74,30 +84,48 @@ function TypographySection() {
     <div id="typography" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Typography</h2>
       <p className="text-foreground-300 mb-6">
-        UI Lab has three font roles: body text, headers, and code. Components inherit body type; the optional <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">typography</code> layer gives long-form content a shared rhythm and applies the header role only to headings.
+        UI Lab has three font roles: body text, headers, and code. Components inherit body type; the
+        optional{" "}
+        <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">
+          typography
+        </code>{" "}
+        layer gives long-form content a shared rhythm and applies the header role only to headings.
       </p>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Font families</h3>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`@theme {
+        <pre className="text-sm text-foreground-300">
+          <code>{`@theme {
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-header: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Fira Code', 'Courier New', monospace;
   --font-sans: var(--font-body);
-}`}</code></pre>
+}`}</code>
+        </pre>
       </div>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Long-form content</h3>
       <p className="text-foreground-300 mb-4">
-        Import <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">ui-lab-components/typography.css</code> and add <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">typography</code> to an article, MDX body, or CMS output. It handles document flow and semantic elements without changing the rest of your interface.
+        Import{" "}
+        <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">
+          ui-lab-components/typography.css
+        </code>{" "}
+        and add{" "}
+        <code className="bg-background-900 text-foreground-200 px-1 py-0.5 rounded text-sm">
+          typography
+        </code>{" "}
+        to an article, MDX body, or CMS output. It handles document flow and semantic elements
+        without changing the rest of your interface.
       </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`@import "ui-lab-components/typography.css";
+        <pre className="text-sm text-foreground-300">
+          <code>{`@import "ui-lab-components/typography.css";
 
 <article className="typography">
   <h1>Article title</h1>
   <p>Body copy uses --font-body; headings use --font-header.</p>
-</article>`}</code></pre>
+</article>`}</code>
+        </pre>
       </div>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Font sizes</h3>
@@ -105,7 +133,8 @@ function TypographySection() {
         UI Lab uses a modular scale for sizes. Adjust in Tailwind config:
       </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`export default {
+        <pre className="text-sm text-foreground-300">
+          <code>{`export default {
   theme: {
     extend: {
       fontSize: {
@@ -120,7 +149,8 @@ function TypographySection() {
       },
     },
   },
-};`}</code></pre>
+};`}</code>
+        </pre>
       </div>
 
       <h3 className="text-lg font-semibold text-foreground-100 mb-4">Font weights</h3>
@@ -128,12 +158,14 @@ function TypographySection() {
         Components use specific weights. Define available weights:
       </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`@theme {
+        <pre className="text-sm text-foreground-300">
+          <code>{`@theme {
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-}`}</code></pre>
+}`}</code>
+        </pre>
       </div>
     </div>
   );
@@ -148,7 +180,8 @@ function SpacingSection() {
       </p>
 
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`@theme {
+        <pre className="text-sm text-foreground-300">
+          <code>{`@theme {
   --spacing: 0.25rem; /* 4px base unit */
 
   /* Components use multiples */
@@ -158,19 +191,20 @@ function SpacingSection() {
 /* Use in components */
 <div className="p-4 gap-6 m-8">
   {/* p-4 = 1rem, gap-6 = 1.5rem, m-8 = 2rem */}
-</div>`}</code></pre>
+</div>`}</code>
+        </pre>
       </div>
 
-      <p className="text-foreground-300">
-        Border radius follows the same consistent scale:
-      </p>
+      <p className="text-foreground-300">Border radius follows the same consistent scale:</p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`@theme {
+        <pre className="text-sm text-foreground-300">
+          <code>{`@theme {
   --radius-sm: 0.375rem;    /* 6px */
   --radius-md: 0.5rem;      /* 8px */
   --radius-lg: 0.75rem;     /* 12px */
   --radius-full: 9999px;
-}`}</code></pre>
+}`}</code>
+        </pre>
       </div>
     </div>
   );
@@ -181,15 +215,26 @@ function ComponentVariantsSection() {
     <div id="creating-component-variants" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Creating component variants</h2>
       <p className="text-foreground-300 mb-6">
-        UI Lab components support the <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">variant</code> prop. Create custom variants by extending component source:
+        UI Lab components support the{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          variant
+        </code>{" "}
+        prop. Create custom variants by extending component source:
       </p>
 
-      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Example: Custom button variant</h3>
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">
+        Example: Custom button variant
+      </h3>
       <p className="text-foreground-300 mb-4">
-        If you copied component source into <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">src/components/ui/button.tsx</code>, you can add variants:
+        If you copied component source into{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          src/components/ui/button.tsx
+        </code>
+        , you can add variants:
       </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`// components/ui/button.tsx
+        <pre className="text-sm text-foreground-300">
+          <code>{`// components/ui/button.tsx
 const variants = cva('base-button-styles', {
   variants: {
     variant: {
@@ -212,14 +257,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', ...props }, ref) => (
     <button ref={ref} className={variants({ variant })} {...props} />
   ),
-);`}</code></pre>
+);`}</code>
+        </pre>
       </div>
 
-      <p className="text-foreground-300">
-        Use your custom variant:
-      </p>
+      <p className="text-foreground-300">Use your custom variant:</p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`<Button variant="gradient">Gradient Button</Button>`}</code></pre>
+        <pre className="text-sm text-foreground-300">
+          <code>{`<Button variant="gradient">Gradient Button</Button>`}</code>
+        </pre>
       </div>
     </div>
   );
@@ -228,13 +274,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 function TailwindExtendSection() {
   return (
     <div id="extending-tailwind-configuration" className="mb-16">
-      <h2 className="text-2xl font-bold text-foreground-50 mb-6">Extending Tailwind configuration</h2>
+      <h2 className="text-2xl font-bold text-foreground-50 mb-6">
+        Extending Tailwind configuration
+      </h2>
       <p className="text-foreground-300 mb-6">
         Add project-specific utilities and styles through Tailwind&apos;s extend mechanism:
       </p>
 
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`// tailwind.config.js
+        <pre className="text-sm text-foreground-300">
+          <code>{`// tailwind.config.js
 export default {
   theme: {
     extend: {
@@ -257,16 +306,17 @@ export default {
       },
     },
   },
-};`}</code></pre>
+};`}</code>
+        </pre>
       </div>
 
-      <p className="text-foreground-300">
-        Use these custom utilities in your components:
-      </p>
+      <p className="text-foreground-300">Use these custom utilities in your components:</p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`<div className="p-gutter bg-brand-light rounded animate-slideDown">
+        <pre className="text-sm text-foreground-300">
+          <code>{`<div className="p-gutter bg-brand-light rounded animate-slideDown">
   Custom styled element
-</div>`}</code></pre>
+</div>`}</code>
+        </pre>
       </div>
     </div>
   );
@@ -277,11 +327,13 @@ function ThemeSwitchingSection() {
     <div id="theme-switching" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Theme switching</h2>
       <p className="text-foreground-300 mb-6">
-        UI Lab&apos;s base palette automatically inverts in light mode. Implement theme switching at your app root:
+        UI Lab&apos;s base palette automatically inverts in light mode. Implement theme switching at
+        your app root:
       </p>
 
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`// app/layout.tsx
+        <pre className="text-sm text-foreground-300">
+          <code>{`// app/layout.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -316,14 +368,20 @@ export default function RootLayout({
       </body>
     </html>
   );
-}`}</code></pre>
+}`}</code>
+        </pre>
       </div>
 
       <p className="text-foreground-300 mb-4">
-        In your CSS, use the <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">data-theme</code> attribute to adjust tokens:
+        In your CSS, use the{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          data-theme
+        </code>{" "}
+        attribute to adjust tokens:
       </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
-        <pre className="text-sm text-foreground-300"><code>{`/* globals.css */
+        <pre className="text-sm text-foreground-300">
+          <code>{`/* globals.css */
 html[data-theme="dark"] {
   @theme {
     --color-base-50: #ffffff;
@@ -336,7 +394,8 @@ html[data-theme="light"] {
     --color-base-50: #0f0f0f;
     --color-base-950: #ffffff;
   }
-}`}</code></pre>
+}`}</code>
+        </pre>
       </div>
     </div>
   );
@@ -347,24 +406,51 @@ function CustomizationBestPracticesSection() {
     <div id="customization-best-practices" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Customization best practices</h2>
 
-      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Use design tokens, not hard-coded values</h3>
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">
+        Use design tokens, not hard-coded values
+      </h3>
       <p className="text-foreground-300 mb-6">
-        Define tokens once in <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">globals.css</code> or <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">tailwind.config.js</code>, then reference them everywhere. This makes global changes trivial.
+        Define tokens once in{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          globals.css
+        </code>{" "}
+        or{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          tailwind.config.js
+        </code>
+        , then reference them everywhere. This makes global changes trivial.
       </p>
 
-      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Keep spacing and sizing consistent</h3>
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">
+        Keep spacing and sizing consistent
+      </h3>
       <p className="text-foreground-300 mb-6">
-        Use multiples of the base spacing unit (0.25rem) to maintain visual rhythm. Don&apos;t use arbitrary values like <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">p-[13px]</code>.
+        Use multiples of the base spacing unit (0.25rem) to maintain visual rhythm. Don&apos;t use
+        arbitrary values like{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          p-[13px]
+        </code>
+        .
       </p>
 
-      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Extend, don&apos;t override</h3>
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">
+        Extend, don&apos;t override
+      </h3>
       <p className="text-foreground-300 mb-6">
-        Use <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">theme.extend</code> in Tailwind config to add custom utilities. Overriding the base theme can break component consistency.
+        Use{" "}
+        <code className="bg-background-900 text-foreground-200 px-2 py-1 rounded text-sm">
+          theme.extend
+        </code>{" "}
+        in Tailwind config to add custom utilities. Overriding the base theme can break component
+        consistency.
       </p>
 
-      <h3 className="text-lg font-semibold text-foreground-100 mb-4">Avoid component className overrides for layout</h3>
+      <h3 className="text-lg font-semibold text-foreground-100 mb-4">
+        Avoid component className overrides for layout
+      </h3>
       <p className="text-foreground-300 mb-6">
-        Don&apos;t use className to override a component&apos;s core styles. Instead, wrap components or create variants. This preserves component semantics and accessibility.
+        Don&apos;t use className to override a component&apos;s core styles. Instead, wrap
+        components or create variants. This preserves component semantics and accessibility.
       </p>
     </div>
   );
@@ -375,13 +461,23 @@ function CustomizationNextStepsSection() {
     <div id="next-steps" className="mb-16">
       <h2 className="text-2xl font-bold text-foreground-50 mb-6">Next steps</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link href="/docs/best-practices" className="border border-background-700 hover:border-background-600 rounded p-6 transition-colors">
+        <Link
+          href="/docs/best-practices"
+          className="border border-background-700 hover:border-background-600 rounded p-6 transition-colors"
+        >
           <h3 className="text-foreground-50 font-semibold mb-2">Best practices</h3>
-          <p className="text-foreground-400 text-sm">Learn patterns for scalable, maintainable component usage.</p>
+          <p className="text-foreground-400 text-sm">
+            Learn patterns for scalable, maintainable component usage.
+          </p>
         </Link>
-        <Link href="/docs/accessibility" className="border border-background-700 hover:border-background-600 rounded p-6 transition-colors">
+        <Link
+          href="/docs/accessibility"
+          className="border border-background-700 hover:border-background-600 rounded p-6 transition-colors"
+        >
           <h3 className="text-foreground-50 font-semibold mb-2">Accessibility</h3>
-          <p className="text-foreground-400 text-sm">Understand built-in a11y features and best practices.</p>
+          <p className="text-foreground-400 text-sm">
+            Understand built-in a11y features and best practices.
+          </p>
         </Link>
       </div>
     </div>
@@ -394,11 +490,9 @@ function CustomizationContent() {
       <div className="flex flex-col lg:flex-row justify-between gap-0">
         <main className="w-full mx-auto max-w-3xl px-6 py-16 lg:w-48rem">
           <DocumentationHeader
-
             title="Customization"
 
             description="Customizing and extending UI Lab components for your needs."
-
           />
 
           <ColorSystemSection />
@@ -423,6 +517,6 @@ function CustomizationContent() {
 }
 
 export default async function CustomizationPage() {
-  'use cache'
+  "use cache";
   return <CustomizationContent />;
 }

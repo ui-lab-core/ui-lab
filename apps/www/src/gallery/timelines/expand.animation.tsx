@@ -3,7 +3,15 @@
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
 
-const RowHeaderContent = ({ state, isExpanded, transitionOverride }: { state: "idle" | "active" | "dim", isExpanded?: boolean, transitionOverride?: string }) => {
+const RowHeaderContent = ({
+  state,
+  isExpanded,
+  transitionOverride,
+}: {
+  state: "idle" | "active" | "dim";
+  isExpanded?: boolean;
+  transitionOverride?: string;
+}) => {
   const isActive = state === "active";
   const isDim = state === "dim";
   const transition = config.transition;
@@ -13,44 +21,73 @@ const RowHeaderContent = ({ state, isExpanded, transitionOverride }: { state: "i
     <g style={{ transition }}>
       {/* Icon/Media Box */}
       <rect
-        x={78} y={8} width={40} height={40} rx={10}
+        x={78}
+        y={8}
+        width={40}
+        height={40}
+        rx={10}
         className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.mediaActiveOpacity : (isDim ? config.skeleton.mediaDimOpacity : config.skeleton.mediaIdleOpacity),
-          transition
+          opacity: isActive
+            ? config.activeContent.mediaActiveOpacity
+            : isDim
+              ? config.skeleton.mediaDimOpacity
+              : config.skeleton.mediaIdleOpacity,
+          transition,
         }}
       />
       {/* Primary Label */}
       <rect
-        x={134} y={16} width={isActive ? 144 : 108} height={8} rx={4}
+        x={134}
+        y={16}
+        width={isActive ? 144 : 108}
+        height={8}
+        rx={4}
         className={isActive ? config.highlight.hoverClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.labelActiveOpacity : (isDim ? config.skeleton.textLine1DimOpacity : config.skeleton.textLine1IdleOpacity),
-          transition
+          opacity: isActive
+            ? config.activeContent.labelActiveOpacity
+            : isDim
+              ? config.skeleton.textLine1DimOpacity
+              : config.skeleton.textLine1IdleOpacity,
+          transition,
         }}
       />
       {/* Secondary Subtext */}
       <rect
-        x={134} y={30} width={isActive ? 96 : 72} height={6} rx={3}
+        x={134}
+        y={30}
+        width={isActive ? 96 : 72}
+        height={6}
+        rx={3}
         className={isActive ? config.activeContent.subtextClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.subtextActiveOpacity : (isDim ? config.skeleton.textLine2DimOpacity : config.skeleton.textLine2IdleOpacity),
-          transition
+          opacity: isActive
+            ? config.activeContent.subtextActiveOpacity
+            : isDim
+              ? config.skeleton.textLine2DimOpacity
+              : config.skeleton.textLine2IdleOpacity,
+          transition,
         }}
       />
       {/* Chevron Trigger */}
-      <g style={{
-        transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-        transformOrigin: `${R - 15}px 28px`,
-        transition: transitionOverride || "transform 0.45s cubic-bezier(0.25, 0, 0.25, 1)",
-      }}>
+      <g
+        style={{
+          transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+          transformOrigin: `${R - 15}px 28px`,
+          transition: transitionOverride || "transform 0.45s cubic-bezier(0.25, 0, 0.25, 1)",
+        }}
+      >
         <polyline
           points={`${R - 20},25 ${R - 15},31 ${R - 10},25`}
-          fill="none" stroke="currentColor" strokeWidth="2"
-          strokeLinecap="round" strokeLinejoin="round"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           className={isActive ? config.highlight.hoverClass : config.guidelines.colorClass}
           style={{ opacity: isActive ? 0.8 : 0.35 }}
         />
@@ -59,18 +96,65 @@ const RowHeaderContent = ({ state, isExpanded, transitionOverride }: { state: "i
   );
 };
 
-const ExpandedContent = ({ isVisible, transition }: { isVisible: boolean, transition?: string }) => {
+const ExpandedContent = ({
+  isVisible,
+  transition,
+}: {
+  isVisible: boolean;
+  transition?: string;
+}) => {
   const L = 80;
   return (
     <g style={{ opacity: isVisible ? 1 : 0, transition: transition || config.transition }}>
-      <rect x={L} y={71} width={180} height={6} rx={3} className="text-foreground-300" fill="currentColor" style={{ opacity: 0.15 }} />
-      <rect x={L} y={85} width={150} height={6} rx={3} className="text-foreground-300" fill="currentColor" style={{ opacity: 0.15 }} />
-      <rect x={L} y={99} width={120} height={6} rx={3} className="text-foreground-300" fill="currentColor" style={{ opacity: 0.15 }} />
+      <rect
+        x={L}
+        y={71}
+        width={180}
+        height={6}
+        rx={3}
+        className="text-foreground-300"
+        fill="currentColor"
+        style={{ opacity: 0.15 }}
+      />
+      <rect
+        x={L}
+        y={85}
+        width={150}
+        height={6}
+        rx={3}
+        className="text-foreground-300"
+        fill="currentColor"
+        style={{ opacity: 0.15 }}
+      />
+      <rect
+        x={L}
+        y={99}
+        width={120}
+        height={6}
+        rx={3}
+        className="text-foreground-300"
+        fill="currentColor"
+        style={{ opacity: 0.15 }}
+      />
     </g>
   );
 };
 
-const Row = ({ state, y, isHovered, isExpanded, opacity, transitionOverride }: { state: "idle" | "active" | "dim"; y: number, isHovered: boolean, isExpanded?: boolean, opacity?: number, transitionOverride?: string }) => {
+const Row = ({
+  state,
+  y,
+  isHovered,
+  isExpanded,
+  opacity,
+  transitionOverride,
+}: {
+  state: "idle" | "active" | "dim";
+  y: number;
+  isHovered: boolean;
+  isExpanded?: boolean;
+  opacity?: number;
+  transitionOverride?: string;
+}) => {
   const getOpacity = () => {
     if (opacity !== undefined) return opacity;
     if (state === "dim") return 0.5;
@@ -79,14 +163,28 @@ const Row = ({ state, y, isHovered, isExpanded, opacity, transitionOverride }: {
   };
 
   return (
-    <g style={{ transform: `translateY(${y}px)`, opacity: getOpacity(), transition: config.transition }}>
+    <g
+      style={{
+        transform: `translateY(${y}px)`,
+        opacity: getOpacity(),
+        transition: config.transition,
+      }}
+    >
       <rect
-        x={70} y={0} width={260} height={56} rx={config.blockRx}
+        x={70}
+        y={0}
+        width={260}
+        height={56}
+        rx={config.blockRx}
         className="text-transparent"
         fill="currentColor"
         style={{ transition: config.transition }}
       />
-      <RowHeaderContent state={state} isExpanded={isExpanded} transitionOverride={transitionOverride} />
+      <RowHeaderContent
+        state={state}
+        isExpanded={isExpanded}
+        transitionOverride={transitionOverride}
+      />
     </g>
   );
 };
@@ -120,9 +218,16 @@ export function ExpandAnimation() {
   const staggeredTransition = isHovered ? `${config.transition} 0.2s` : config.transition;
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="expand-grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -182,7 +287,11 @@ export function ExpandAnimation() {
           <g style={{ transform: `translateY(${activeRowY}px)`, transition: config.transition }}>
             {/* Highlight Background - Applies only to trigger header */}
             <rect
-              x={70} y={0} width={260} height={rowHeight} rx={config.blockRx}
+              x={70}
+              y={0}
+              width={260}
+              height={rowHeight}
+              rx={config.blockRx}
               className={config.highlight.hoverClass}
               fill="currentColor"
               stroke="currentColor"
@@ -195,7 +304,10 @@ export function ExpandAnimation() {
             />
             {/* Accent Dotted Outline - Spans full height including expansion */}
             <rect
-              x={60} y={-10} width={280} height={isHovered ? rowHeight + expandHeight + 20 : rowHeight + 20}
+              x={60}
+              y={-10}
+              width={280}
+              height={isHovered ? rowHeight + expandHeight + 20 : rowHeight + 20}
               rx={config.blockRx + 5}
               fill="none"
               stroke="currentColor"

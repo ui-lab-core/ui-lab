@@ -1,13 +1,13 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const REGISTRY_SRC_PATH = path.resolve(__dirname, '../src');
-const COMPONENTS_PATH = path.resolve(REGISTRY_SRC_PATH, 'components');
-const REGISTRY_OUTPUT_PATH = path.resolve(REGISTRY_SRC_PATH, 'registry.ts');
+const REGISTRY_SRC_PATH = path.resolve(__dirname, "../src");
+const COMPONENTS_PATH = path.resolve(REGISTRY_SRC_PATH, "components");
+const REGISTRY_OUTPUT_PATH = path.resolve(REGISTRY_SRC_PATH, "registry.ts");
 
 interface ComponentExample {
   title: string;
@@ -37,7 +37,7 @@ interface ComponentMetadata {
     whenToUse?: string[];
     whenNotToUse?: string[];
     rules?: Array<{
-      type: 'do' | 'avoid' | 'prefer';
+      type: "do" | "avoid" | "prefer";
       title: string;
       description: string;
       relatedComponents?: string[];
@@ -51,19 +51,19 @@ interface ComponentEntry {
 }
 
 function loadComponentData(componentPath: string): ComponentEntry | null {
-  const metadataPath = path.join(componentPath, 'metadata.json');
-  const examplesPath = path.join(componentPath, 'examples.json');
+  const metadataPath = path.join(componentPath, "metadata.json");
+  const examplesPath = path.join(componentPath, "examples.json");
 
   if (!fs.existsSync(metadataPath)) {
     return null;
   }
 
-  const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as ComponentMetadata;
+  const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf-8")) as ComponentMetadata;
   const examples: ComponentExample[] = [];
 
   if (fs.existsSync(examplesPath)) {
-    const examplesJson = JSON.parse(fs.readFileSync(examplesPath, 'utf-8'));
-    examples.push(...Object.values(examplesJson) as ComponentExample[]);
+    const examplesJson = JSON.parse(fs.readFileSync(examplesPath, "utf-8"));
+    examples.push(...(Object.values(examplesJson) as ComponentExample[]));
   }
 
   return { metadata, examples };
@@ -74,8 +74,8 @@ function generateRegistryContent(components: Record<string, ComponentEntry>): st
 
   const registryEntries = Object.entries(components)
     .map(([id, { metadata, examples }]) => {
-      const examplesArray = examples.length > 0 ? JSON.stringify(examples, null, 4) : '[]';
-      const keyQuotes = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(id) ? '' : '"';
+      const examplesArray = examples.length > 0 ? JSON.stringify(examples, null, 4) : "[]";
+      const keyQuotes = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(id) ? "" : '"';
 
       return `
   ${keyQuotes}${id}${keyQuotes}: {
@@ -83,7 +83,7 @@ function generateRegistryContent(components: Record<string, ComponentEntry>): st
     name: ${JSON.stringify(metadata.name)},
     description: ${JSON.stringify(metadata.description)},
     category: ${JSON.stringify(metadata.category)},
-    ${metadata.experimental ? `experimental: ${JSON.stringify(metadata.experimental)},\n    ` : ''}source: ${JSON.stringify(metadata.source, null, 2)},
+    ${metadata.experimental ? `experimental: ${JSON.stringify(metadata.experimental)},\n    ` : ""}source: ${JSON.stringify(metadata.source, null, 2)},
     relatedComponents: ${JSON.stringify(metadata.relatedComponents)},
     tags: ${JSON.stringify(metadata.tags)},
     accessibility: ${JSON.stringify(metadata.accessibility)},
@@ -91,7 +91,7 @@ function generateRegistryContent(components: Record<string, ComponentEntry>): st
     examples: ${examplesArray},
   },`;
     })
-    .join('\n');
+    .join("\n");
 
   return `${imports}
 
@@ -109,18 +109,18 @@ export const componentMetadata = Object.values(componentRegistry).map(comp => ({
 }
 
 async function generateRegistryFromComponents() {
-  console.log('🔧 Generating registry.ts from components...\n');
+  console.log("🔧 Generating registry.ts from components...\n");
 
   if (!fs.existsSync(COMPONENTS_PATH)) {
-    console.error('❌ Components directory not found:', COMPONENTS_PATH);
+    console.error("❌ Components directory not found:", COMPONENTS_PATH);
     process.exit(1);
   }
 
   try {
     const componentDirs = fs
       .readdirSync(COMPONENTS_PATH, { withFileTypes: true })
-      .filter(d => d.isDirectory())
-      .map(d => d.name);
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
 
     const components: Record<string, ComponentEntry> = {};
     let successCount = 0;
@@ -134,7 +134,9 @@ async function generateRegistryFromComponents() {
         // Use kebab-case ID for the key in registry
         const id = componentData.metadata.id;
         components[id] = componentData;
-        console.log(`✅ ${componentData.metadata.name} (${componentData.examples.length} examples)`);
+        console.log(
+          `✅ ${componentData.metadata.name} (${componentData.examples.length} examples)`,
+        );
         successCount++;
       } else {
         console.log(`⏭️  ${componentDir} - missing metadata.json`);
@@ -150,9 +152,11 @@ async function generateRegistryFromComponents() {
     console.log(`   📝 ${REGISTRY_OUTPUT_PATH}`);
     console.log(`   ✅ ${successCount} components`);
     console.log(`   ⏭️  ${skipCount} skipped`);
-    console.log(`\n   Total examples: ${Object.values(components).reduce((sum, c) => sum + c.examples.length, 0)}`);
+    console.log(
+      `\n   Total examples: ${Object.values(components).reduce((sum, c) => sum + c.examples.length, 0)}`,
+    );
   } catch (error) {
-    console.error('❌ Error generating registry:', error);
+    console.error("❌ Error generating registry:", error);
     process.exit(1);
   }
 }

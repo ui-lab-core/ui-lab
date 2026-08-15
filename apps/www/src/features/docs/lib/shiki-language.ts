@@ -12,8 +12,11 @@ const SHIKI_LANGUAGE_ALIASES: Record<string, string> = {
   yml: "yaml",
 };
 
-export function normalizeCodeLanguage(language?: string): string {
-  const normalized = language?.trim().toLowerCase().replace(/^language-/, "");
+function normalizeCodeLanguage(language?: string): string {
+  const normalized = language
+    ?.trim()
+    .toLowerCase()
+    .replace(/^language-/, "");
   if (!normalized) return "text";
   return SHIKI_LANGUAGE_ALIASES[normalized] ?? normalized;
 }

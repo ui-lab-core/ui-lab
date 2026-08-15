@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useMemo, useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from "react";
 
-const URL_SEARCH_CHANGE_EVENT = 'ui-lab:url-search-change';
-let currentSearch = '';
+const URL_SEARCH_CHANGE_EVENT = "ui-lab:url-search-change";
+let currentSearch = "";
 let hasPendingDispatch = false;
 
 declare global {
@@ -49,12 +49,12 @@ function patchHistoryMethods() {
     dispatchUrlSearchChange();
   };
 
-  window.addEventListener('popstate', dispatchUrlSearchChange);
+  window.addEventListener("popstate", dispatchUrlSearchChange);
   window.__uiLabUrlSearchPatched = true;
 }
 
 function subscribe(onStoreChange: () => void) {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return () => undefined;
   }
 
@@ -67,11 +67,11 @@ function subscribe(onStoreChange: () => void) {
 }
 
 function getSnapshot() {
-  return typeof window === 'undefined' ? '' : window.location.search;
+  return typeof window === "undefined" ? "" : window.location.search;
 }
 
 export function useUrlSearchParams() {
-  const search = useSyncExternalStore(subscribe, getSnapshot, () => '');
+  const search = useSyncExternalStore(subscribe, getSnapshot, () => "");
 
   return useMemo(() => new URLSearchParams(search), [search]);
 }

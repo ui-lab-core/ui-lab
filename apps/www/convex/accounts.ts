@@ -266,9 +266,7 @@ export const syncStripeSubscription = internalMutation({
       return null;
     }
 
-    const stripePremium = ACTIVE_STRIPE_SUBSCRIPTION_STATUSES.has(
-      args.subscriptionStatus,
-    );
+    const stripePremium = ACTIVE_STRIPE_SUBSCRIPTION_STATUSES.has(args.subscriptionStatus);
     const keepManualPremium =
       account.premium && account.premiumSource !== "stripe" && !stripePremium;
 

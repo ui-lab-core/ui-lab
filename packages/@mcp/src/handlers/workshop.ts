@@ -4,7 +4,7 @@ import {
   type WorkshopItem,
   type WorkshopKind,
   type WorkshopSummary,
-} from '../adapters/workshop-adapter.js';
+} from "../adapters/workshop-adapter.js";
 
 type SearchWorkshopResponse =
   | { item: WorkshopItem }
@@ -12,20 +12,20 @@ type SearchWorkshopResponse =
 
 export async function handleSearchWorkshop(input: {
   query: string;
-  kind?: WorkshopKind | 'all';
-  detail?: 'summary' | 'full';
+  kind?: WorkshopKind | "all";
+  detail?: "summary" | "full";
   variation?: string;
   limit?: number;
 }): Promise<SearchWorkshopResponse> {
   const query = input.query.trim();
-  if (!query) throw new Error('Workshop query must not be empty.');
+  if (!query) throw new Error("Workshop query must not be empty.");
 
-  const kind = input.kind ?? 'all';
-  if (input.detail === 'full') {
+  const kind = input.kind ?? "all";
+  if (input.detail === "full") {
     const item = getWorkshopItem(query, kind, input.variation);
     if (!item) {
       throw new Error(
-        `No exact workshop item${input.variation ? ' or variation' : ''} matches "${query}".`
+        `No exact workshop item${input.variation ? " or variation" : ""} matches "${query}".`,
       );
     }
     return { item };

@@ -5,6 +5,7 @@ A centralized, framework-agnostic component registry for the UI Lab ecosystem.
 ## Overview
 
 This package provides:
+
 - Component metadata (names, descriptions, categories)
 - Component source code references
 - Component relationships and dependencies
@@ -27,14 +28,14 @@ import {
   componentRegistry,
   getComponentById,
   getComponentsByCategory,
-  categories
-} from 'ui-lab-registry';
+  categories,
+} from "ui-lab-registry";
 
 // Get a single component
-const button = getComponentById('button');
+const button = getComponentById("button");
 
 // Get all components in a category
-const inputComponents = getComponentsByCategory('input');
+const inputComponents = getComponentsByCategory("input");
 
 // Get all categories
 console.log(categories);
@@ -48,14 +49,14 @@ import {
   getRelatedComponents,
   getComponentsGroupedByCategory,
   getAllComponentIds,
-  getComponentCount
-} from 'ui-lab-registry';
+  getComponentCount,
+} from "ui-lab-registry";
 
 // Search components by name, description, or tags
-const results = searchComponents('button');
+const results = searchComponents("button");
 
 // Get related components
-const relatedToButton = getRelatedComponents('button');
+const relatedToButton = getRelatedComponents("button");
 
 // Get components grouped by category
 const grouped = getComponentsGroupedByCategory();
@@ -70,10 +71,10 @@ const count = getComponentCount(); // 23
 ### Starter Presets
 
 ```typescript
-import { starterPresets, getStarterComponents } from 'ui-lab-registry';
+import { starterPresets, getStarterComponents } from "ui-lab-registry";
 
 // Get components for a specific starter template
-const nextComponents = getStarterComponents('next');
+const nextComponents = getStarterComponents("next");
 
 // Access preset metadata
 const preset = starterPresets.vite;
@@ -88,8 +89,8 @@ import type {
   ComponentCategory,
   ComponentSource,
   CategoryDefinition,
-  StarterPreset
-} from 'ui-lab-registry';
+  StarterPreset,
+} from "ui-lab-registry";
 
 function processComponent(comp: ComponentMetadata): void {
   console.log(comp.name, comp.category);

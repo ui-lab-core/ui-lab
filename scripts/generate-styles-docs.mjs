@@ -1,15 +1,15 @@
-import { glob } from 'glob';
-import fs from 'fs-extra';
-import path from 'path';
-import postcss from 'postcss';
-import ts from 'typescript'; // Import TypeScript
+import { glob } from "glob";
+import fs from "fs-extra";
+import path from "path";
+import postcss from "postcss";
+import ts from "typescript"; // Import TypeScript
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const UI_COMPONENTS_PATH = path.join(ROOT, 'packages/@ui/src/components');
-const REGISTRY_PATH = path.join(ROOT, 'packages/registry/src');
-const OUTPUT_FILE = path.join(REGISTRY_PATH, 'generated-styles.ts');
-const REGISTRY_DIST_PATH = path.join(ROOT, 'packages/registry/dist');
-const OUTPUT_JSON_FILE = path.join(REGISTRY_DIST_PATH, 'generated-styles.json');
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const UI_COMPONENTS_PATH = path.join(ROOT, "packages/@ui/src/components");
+const REGISTRY_PATH = path.join(ROOT, "packages/registry/src");
+const OUTPUT_FILE = path.join(REGISTRY_PATH, "generated-styles.ts");
+const REGISTRY_DIST_PATH = path.join(ROOT, "packages/registry/dist");
+const OUTPUT_JSON_FILE = path.join(REGISTRY_DIST_PATH, "generated-styles.json");
 
 // Helper to extract referenced variables and default values from a CSS value string
 function extractVarDetails(value) {
@@ -20,7 +20,8 @@ function extractVarDetails(value) {
 
   while ((match = varRegex.exec(value)) !== null) {
     referencedVars.add(match[1]); // The variable name itself
-    if (match[2] && defaultValue === null) { // Capture the first default value found
+    if (match[2] && defaultValue === null) {
+      // Capture the first default value found
       defaultValue = match[2].trim();
     }
   }
@@ -28,12 +29,12 @@ function extractVarDetails(value) {
 }
 
 function resolveSelector(rule) {
-  if (!rule || rule.type !== 'rule') return '';
+  if (!rule || rule.type !== "rule") return "";
   let selector = rule.selector;
-  if (rule.parent && rule.parent.type === 'rule') {
+  if (rule.parent && rule.parent.type === "rule") {
     const parentSelector = resolveSelector(rule.parent);
     if (!parentSelector) return selector;
-    if (selector.includes('&')) {
+    if (selector.includes("&")) {
       selector = selector.replace(/&/g, parentSelector);
     } else {
       selector = `${parentSelector} ${selector}`;
@@ -45,12 +46,12 @@ function resolveSelector(rule) {
 // New function to extract styleable parts from a .tsx file using TypeScript AST
 async function extractStyleablePartsFromTsx(tsxFilePath) {
   try {
-    const fileContent = await fs.readFile(tsxFilePath, 'utf-8');
+    const fileContent = await fs.readFile(tsxFilePath, "utf-8");
     const sourceFile = ts.createSourceFile(
       tsxFilePath,
       fileContent,
       ts.ScriptTarget.Latest,
-      true // Set setParentNodes to true to enable parent traversal
+      true, // Set setParentNodes to true to enable parent traversal
     );
 
     const typeMap = new Map();
@@ -61,13 +62,13 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
       if (ts.isInterfaceDeclaration(node)) {
         const name = node.name.text;
         typeMap.set(name, node);
-        if (name.endsWith('StyleSlots')) {
+        if (name.endsWith("StyleSlots")) {
           styleSlotsNodes.push(node);
         }
       } else if (ts.isTypeAliasDeclaration(node)) {
         const name = node.name.text;
         typeMap.set(name, node);
-        if (name.endsWith('StyleSlots')) {
+        if (name.endsWith("StyleSlots")) {
           styleSlotsNodes.push(node);
         }
       }
@@ -132,7 +133,7 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
       }
 
       for (const styleSlotsNode of styleSlotsNodes) {
-        walk('', styleSlotsNode);
+        walk("", styleSlotsNode);
       }
       styleableParts.push(...Array.from(results));
     }
@@ -142,11 +143,17 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
       function visit(node) {
         if (ts.isCallExpression(node)) {
           const callExpression = node;
-          if (ts.isIdentifier(callExpression.expression) && callExpression.expression.text === 'createStylesResolver') {
+          if (
+            ts.isIdentifier(callExpression.expression) &&
+            callExpression.expression.text === "createStylesResolver"
+          ) {
             if (callExpression.arguments.length > 0) {
               let arrayArgument = callExpression.arguments[0];
 
-              if (ts.isAsExpression(arrayArgument) && ts.isArrayLiteralExpression(arrayArgument.expression)) {
+              if (
+                ts.isAsExpression(arrayArgument) &&
+                ts.isArrayLiteralExpression(arrayArgument.expression)
+              ) {
                 arrayArgument = arrayArgument.expression;
               }
 
@@ -173,7 +180,7 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
 }
 
 async function main() {
-  console.log('Generating styles documentation...');
+  console.log("Generating styles documentation...");
 
   const cssModulePaths = await glob(`${UI_COMPONENTS_PATH}/**/*.module.css`);
   const generatedStyles = {};
@@ -194,14 +201,14 @@ async function main() {
 
     const uniqueStyleableParts = Array.from(new Set(extractedStyleableParts));
 
-    const rawCss = await fs.readFile(cssModulePath, 'utf-8');
+    const rawCss = await fs.readFile(cssModulePath, "utf-8");
     const cssVariables = []; // New array to store CSS variables
 
     const root = postcss.parse(rawCss);
 
     // Extract CSS variables (existing logic)
-    root.walkDecls(decl => {
-      if (decl.prop.startsWith('--')) {
+    root.walkDecls((decl) => {
+      if (decl.prop.startsWith("--")) {
         const { referencedVars, defaultValue } = extractVarDetails(decl.value);
         const selector = resolveSelector(decl.parent);
         cssVariables.push({
@@ -214,9 +221,10 @@ async function main() {
       }
     });
 
-    generatedStyles[componentLowerName] = { // Use lowercased component name for the key
+    generatedStyles[componentLowerName] = {
+      // Use lowercased component name for the key
       rawCss,
-      styleableParts: uniqueStyleableParts.map(name => ({ name })), // Map to { name: string } objects
+      styleableParts: uniqueStyleableParts.map((name) => ({ name })), // Map to { name: string } objects
       cssVariables,
     };
   }
@@ -233,12 +241,11 @@ export const generatedStyles: Record<string, { rawCss: string; styleableParts: A
   await fs.ensureDir(path.dirname(OUTPUT_JSON_FILE));
   await fs.writeFile(OUTPUT_JSON_FILE, jsonFileContent);
 
-
   console.log(`✅ Styles documentation generated at ${OUTPUT_FILE}`);
   console.log(`✅ Styles documentation generated at ${OUTPUT_JSON_FILE}`);
 }
 
-main().catch(error => {
-  console.error('Error generating styles documentation:', error);
+main().catch((error) => {
+  console.error("Error generating styles documentation:", error);
   process.exit(1);
 });

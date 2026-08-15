@@ -28,7 +28,12 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
       tags={starter.tags}
       actions={
         isPremium ? (
-          <Button icon={{ left: <Mail /> }} size="md" variant="primary" onClick={modalContext.openModal}>
+          <Button
+            icon={{ left: <Mail /> }}
+            size="md"
+            variant="primary"
+            onClick={modalContext.openModal}
+          >
             Join waitlist
           </Button>
         ) : undefined

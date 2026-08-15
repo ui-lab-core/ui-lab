@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 };
 
 function readTypographyCss(): string {
-  const workspaceTypographyCss = path.join(
-    process.cwd(),
-    "../../packages/@ui/src/typography.css",
-  );
+  const workspaceTypographyCss = path.join(process.cwd(), "../../packages/@ui/src/typography.css");
 
   if (existsSync(workspaceTypographyCss)) {
     return readFileSync(workspaceTypographyCss, "utf8");
@@ -21,10 +18,7 @@ function readTypographyCss(): string {
 
   const require = createRequire(import.meta.url);
   try {
-    return readFileSync(
-      require.resolve("ui-lab-components/typography.css"),
-      "utf8",
-    );
+    return readFileSync(require.resolve("ui-lab-components/typography.css"), "utf8");
   } catch {
     throw new Error("Unable to resolve ui-lab-components/typography.css");
   }

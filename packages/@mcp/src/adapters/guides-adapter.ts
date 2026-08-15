@@ -1,5 +1,5 @@
-import { getGuideById, searchGuides } from 'ui-lab-registry';
-import type { GuideMetadata } from 'ui-lab-registry';
+import { getGuideById, searchGuides } from "ui-lab-registry";
+import type { GuideMetadata } from "ui-lab-registry";
 
 function getGuide(id: string): GuideMetadata | null {
   try {

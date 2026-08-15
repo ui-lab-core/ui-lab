@@ -11,7 +11,7 @@ const DEFAULT_SEMANTIC_COLORS = themes["Vitesse"].dark.semantic!;
 export function getSemanticColorSafely(
   semantic: SemanticColors | undefined,
   type: SemanticColorType,
-  mode: "light" | "dark"
+  mode: "light" | "dark",
 ): OklchColor | null {
   if (!semantic || !semantic[type]) {
     const fallback = DEFAULT_SEMANTIC_COLORS[type];
@@ -23,19 +23,17 @@ export function getSemanticColorSafely(
 
   const config = semantic[type];
   if (!config || !config[mode]?.color) {
-    console.warn(
-      `[SemanticColors] Missing color for ${type}.${mode}, using default`
-    );
+    console.warn(`[SemanticColors] Missing color for ${type}.${mode}, using default`);
     return DEFAULT_SEMANTIC_COLORS[type][mode].color;
   }
 
   return config[mode].color;
 }
 
-export function getSemanticChromaLimit(
+function getSemanticChromaLimit(
   semantic: SemanticColors | undefined,
   type: SemanticColorType,
-  mode: "light" | "dark"
+  mode: "light" | "dark",
 ): number {
   if (!semantic || !semantic[type]) {
     return DEFAULT_SEMANTIC_COLORS[type][mode]?.chromaLimit ?? 0.025;
@@ -45,21 +43,14 @@ export function getSemanticChromaLimit(
   return config[mode]?.chromaLimit ?? 0.025;
 }
 
-function validateSemanticColorStructure(
-  semantic: unknown
-): SemanticColors | null {
+function validateSemanticColorStructure(semantic: unknown): SemanticColors | null {
   if (!semantic || typeof semantic !== "object") {
     return null;
   }
 
   const semanticObj = semantic as Record<string, unknown>;
   const result: Partial<SemanticColors> = {};
-  const semanticTypes: SemanticColorType[] = [
-    "success",
-    "danger",
-    "warning",
-    "info",
-  ];
+  const semanticTypes: SemanticColorType[] = ["success", "danger", "warning", "info"];
 
   for (const type of semanticTypes) {
     if (!(type in semanticObj)) continue;
@@ -71,11 +62,7 @@ function validateSemanticColorStructure(
     const light = configObj.light;
     const dark = configObj.dark;
 
-    if (
-      light &&
-      typeof light === "object" &&
-      (light as Record<string, unknown>).color
-    ) {
+    if (light && typeof light === "object" && (light as Record<string, unknown>).color) {
       const lightConfig = light as Record<string, unknown>;
       const darkConfig = dark as Record<string, unknown>;
 
@@ -88,9 +75,7 @@ function validateSemanticColorStructure(
             0.025,
         },
         dark: {
-          color:
-            (darkConfig?.color as OklchColor) ??
-            DEFAULT_SEMANTIC_COLORS[type].dark.color,
+          color: (darkConfig?.color as OklchColor) ?? DEFAULT_SEMANTIC_COLORS[type].dark.color,
           chromaLimit:
             (darkConfig?.chromaLimit as number) ??
             DEFAULT_SEMANTIC_COLORS[type]?.dark?.chromaLimit ??
@@ -105,18 +90,13 @@ function validateSemanticColorStructure(
 }
 
 function mergeSemanticColorsWithDefaults(
-  loaded: SemanticColors | null | undefined
+  loaded: SemanticColors | null | undefined,
 ): SemanticColors {
   if (!loaded) {
     return DEFAULT_SEMANTIC_COLORS;
   }
 
-  const semanticTypes: SemanticColorType[] = [
-    "success",
-    "danger",
-    "warning",
-    "info",
-  ];
+  const semanticTypes: SemanticColorType[] = ["success", "danger", "warning", "info"];
   const merged: SemanticColors = {
     success: loaded.success ?? DEFAULT_SEMANTIC_COLORS.success,
     danger: loaded.danger ?? DEFAULT_SEMANTIC_COLORS.danger,
@@ -132,13 +112,11 @@ function mergeSemanticColorsWithDefaults(
       merged[type] = {
         light: {
           color: loadedConfig.light?.color ?? defaultConfig.light.color,
-          chromaLimit:
-            loadedConfig.light?.chromaLimit ?? defaultConfig.light.chromaLimit,
+          chromaLimit: loadedConfig.light?.chromaLimit ?? defaultConfig.light.chromaLimit,
         },
         dark: {
           color: loadedConfig.dark?.color ?? defaultConfig.dark.color,
-          chromaLimit:
-            loadedConfig.dark?.chromaLimit ?? defaultConfig.dark.chromaLimit,
+          chromaLimit: loadedConfig.dark?.chromaLimit ?? defaultConfig.dark.chromaLimit,
         },
         hueRange: loadedConfig.hueRange ?? defaultConfig.hueRange,
       };
@@ -148,18 +126,14 @@ function mergeSemanticColorsWithDefaults(
   return merged;
 }
 
-export function ensureSemanticColorIntegrity(
-  semantic: SemanticColors | undefined
-): SemanticColors {
+export function ensureSemanticColorIntegrity(semantic: SemanticColors | undefined): SemanticColors {
   if (!semantic) {
     return DEFAULT_SEMANTIC_COLORS;
   }
 
   const validated = validateSemanticColorStructure(semantic);
   if (!validated) {
-    console.warn(
-      "[SemanticColors] Semantic colors failed validation, using defaults"
-    );
+    console.warn("[SemanticColors] Semantic colors failed validation, using defaults");
     return DEFAULT_SEMANTIC_COLORS;
   }
 

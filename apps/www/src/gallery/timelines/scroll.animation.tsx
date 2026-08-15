@@ -10,16 +10,19 @@ const DRAG_T = "transform 1.3s cubic-bezier(0.4, 0, 0.6, 1)";
 const DRAG_CURSOR_T = "transform 1.3s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.25s ease-out";
 
 // Container
-const CL = 108, CT = 72, CW = 184, CH = 156;
+const CL = 108,
+  CT = 72,
+  CW = 184,
+  CH = 156;
 
 // Scrollbar
 const SB_X = CL + CW - 10; // 282
-const SB_T = CT + 6;        // 78
-const SB_H = CH - 12;       // 144
+const SB_T = CT + 6; // 78
+const SB_H = CH - 12; // 144
 const SB_W = 4;
 const THUMB_H = 48;
-const THUMB_IDLE_Y = SB_T + 4;                    // 82
-const THUMB_DRAG_Y = SB_T + SB_H - THUMB_H - 4;  // 170
+const THUMB_IDLE_Y = SB_T + 4; // 82
+const THUMB_DRAG_Y = SB_T + SB_H - THUMB_H - 4; // 170
 
 const SCROLL_AMT = 90;
 
@@ -76,10 +79,7 @@ export function ScrollAnimation() {
   const x = CL + 14;
 
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center justify-center relative overflow-hidden"
-    >
+    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden">
       <div className="relative w-full max-w-[400px]">
         <svg
           viewBox="50 30 300 240"
@@ -102,8 +102,13 @@ export function ScrollAnimation() {
 
           {/* Container background */}
           <rect
-            x={CL} y={CT} width={CW} height={CH} rx={4}
-            fill="currentColor" className="text-background-950"
+            x={CL}
+            y={CT}
+            width={CW}
+            height={CH}
+            rx={4}
+            fill="currentColor"
+            className="text-background-950"
           />
 
           {/* Scrollable content — outer clips, inner translates */}
@@ -115,59 +120,263 @@ export function ScrollAnimation() {
               }}
             >
               {/* Section 1 */}
-              <rect x={x} y={85} width={56} height={5} rx={2.5} fill="currentColor" className="text-background-500" style={{ opacity: 0.5 }} />
-              <rect x={x} y={97} width={140} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={105} width={110} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={113} width={124} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
+              <rect
+                x={x}
+                y={85}
+                width={56}
+                height={5}
+                rx={2.5}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.5 }}
+              />
+              <rect
+                x={x}
+                y={97}
+                width={140}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={105}
+                width={110}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={113}
+                width={124}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
 
-              <line x1={x} y1={125} x2={x + 148} y2={125} stroke="currentColor" className="text-background-700" strokeWidth={0.5} style={{ opacity: 0.5 }} />
+              <line
+                x1={x}
+                y1={125}
+                x2={x + 148}
+                y2={125}
+                stroke="currentColor"
+                className="text-background-700"
+                strokeWidth={0.5}
+                style={{ opacity: 0.5 }}
+              />
 
               {/* Section 2 */}
-              <rect x={x} y={133} width={48} height={5} rx={2.5} fill="currentColor" className="text-background-500" style={{ opacity: 0.5 }} />
-              <rect x={x} y={145} width={128} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={153} width={96} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
+              <rect
+                x={x}
+                y={133}
+                width={48}
+                height={5}
+                rx={2.5}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.5 }}
+              />
+              <rect
+                x={x}
+                y={145}
+                width={128}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={153}
+                width={96}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
 
-              <line x1={x} y1={165} x2={x + 148} y2={165} stroke="currentColor" className="text-background-700" strokeWidth={0.5} style={{ opacity: 0.5 }} />
+              <line
+                x1={x}
+                y1={165}
+                x2={x + 148}
+                y2={165}
+                stroke="currentColor"
+                className="text-background-700"
+                strokeWidth={0.5}
+                style={{ opacity: 0.5 }}
+              />
 
               {/* Section 3 — visible */}
-              <rect x={x} y={175} width={55} height={5} rx={2.5} fill="currentColor" className="text-background-500" style={{ opacity: 0.5 }} />
-              <rect x={x} y={187} width={128} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={195} width={96} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={203} width={112} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
+              <rect
+                x={x}
+                y={175}
+                width={55}
+                height={5}
+                rx={2.5}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.5 }}
+              />
+              <rect
+                x={x}
+                y={187}
+                width={128}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={195}
+                width={96}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={203}
+                width={112}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
 
-              <line x1={x} y1={215} x2={x + 148} y2={215} stroke="currentColor" className="text-background-700" strokeWidth={0.5} style={{ opacity: 0.5 }} />
+              <line
+                x1={x}
+                y1={215}
+                x2={x + 148}
+                y2={215}
+                stroke="currentColor"
+                className="text-background-700"
+                strokeWidth={0.5}
+                style={{ opacity: 0.5 }}
+              />
 
               {/* Section 4 — starts below clip (y=228), revealed on scroll */}
-              <rect x={x} y={232} width={60} height={5} rx={2.5} fill="currentColor" className="text-background-500" style={{ opacity: 0.5 }} />
-              <rect x={x} y={244} width={140} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={252} width={100} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
+              <rect
+                x={x}
+                y={232}
+                width={60}
+                height={5}
+                rx={2.5}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.5 }}
+              />
+              <rect
+                x={x}
+                y={244}
+                width={140}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={252}
+                width={100}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
 
-              <line x1={x} y1={264} x2={x + 148} y2={264} stroke="currentColor" className="text-background-700" strokeWidth={0.5} style={{ opacity: 0.5 }} />
+              <line
+                x1={x}
+                y1={264}
+                x2={x + 148}
+                y2={264}
+                stroke="currentColor"
+                className="text-background-700"
+                strokeWidth={0.5}
+                style={{ opacity: 0.5 }}
+              />
 
               {/* Section 5 */}
-              <rect x={x} y={273} width={44} height={5} rx={2.5} fill="currentColor" className="text-background-500" style={{ opacity: 0.5 }} />
-              <rect x={x} y={285} width={132} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
-              <rect x={x} y={293} width={88} height={4} rx={2} fill="currentColor" className="text-background-500" style={{ opacity: 0.2 }} />
+              <rect
+                x={x}
+                y={273}
+                width={44}
+                height={5}
+                rx={2.5}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.5 }}
+              />
+              <rect
+                x={x}
+                y={285}
+                width={132}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={x}
+                y={293}
+                width={88}
+                height={4}
+                rx={2}
+                fill="currentColor"
+                className="text-background-500"
+                style={{ opacity: 0.2 }}
+              />
             </g>
           </g>
 
           {/* Top fade — appears as content scrolls */}
           <rect
-            x={CL} y={CT} width={CW - 16} height={22}
+            x={CL}
+            y={CT}
+            width={CW - 16}
+            height={22}
             fill="url(#scroll-fade-t)"
-            style={{ opacity: isDragging ? 1 : 0, transition: isDragging ? DRAG_T : T, pointerEvents: "none" }}
+            style={{
+              opacity: isDragging ? 1 : 0,
+              transition: isDragging ? DRAG_T : T,
+              pointerEvents: "none",
+            }}
           />
           {/* Bottom fade — always present */}
           <rect
-            x={CL} y={CT + CH - 22} width={CW - 16} height={22}
+            x={CL}
+            y={CT + CH - 22}
+            width={CW - 16}
+            height={22}
             fill="url(#scroll-fade-b)"
             style={{ pointerEvents: "none" }}
           />
 
           {/* Scrollbar thumb — appears on hover, drags on drag */}
           <rect
-            x={SB_X} y={THUMB_IDLE_Y} width={SB_W} height={THUMB_H} rx={2}
-            fill="currentColor" className="text-background-500"
+            x={SB_X}
+            y={THUMB_IDLE_Y}
+            width={SB_W}
+            height={THUMB_H}
+            rx={2}
+            fill="currentColor"
+            className="text-background-500"
             style={{
               opacity: isActive ? 0.6 : 0,
               transform: isDragging

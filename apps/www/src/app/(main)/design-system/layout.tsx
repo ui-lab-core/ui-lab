@@ -1,13 +1,9 @@
 import { DocsLayout } from "@/features/docs";
 import { generateMetadata } from "@/shared/lib/metadata";
 
-export const metadata = generateMetadata({ pathname: '/design-system' });
+export const metadata = generateMetadata({ pathname: "/design-system" });
 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
     <DocsLayout
       banner={

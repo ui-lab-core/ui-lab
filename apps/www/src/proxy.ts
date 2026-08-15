@@ -7,7 +7,7 @@ const isClerkMiddlewareConfigured = Boolean(
 
 const isDevelopmentClerkInstance = Boolean(
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith("pk_test_") ||
-    process.env.CLERK_FRONTEND_API_URL?.includes(".clerk.accounts.dev"),
+  process.env.CLERK_FRONTEND_API_URL?.includes(".clerk.accounts.dev"),
 );
 
 const enableClerkMiddleware =

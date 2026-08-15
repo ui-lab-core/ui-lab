@@ -14,10 +14,8 @@ await Promise.all(
   entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".svg"))
     .map((entry) =>
-      cp(
-        path.join(sourceDirectory, entry.name),
-        path.join(outputDirectory, entry.name),
-        { force: true },
-      ),
+      cp(path.join(sourceDirectory, entry.name), path.join(outputDirectory, entry.name), {
+        force: true,
+      }),
     ),
 );

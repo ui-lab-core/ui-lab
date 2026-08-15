@@ -1,5 +1,5 @@
 // src/shared/components/icon-registry.ts
-import type { ComponentType } from 'react';
+import type { ComponentType } from "react";
 import {
   Settings,
   XCircle,
@@ -13,14 +13,14 @@ import {
   Zap,
   Component,
   PlaySquare, // For action
-  Edit3,      // For input
-  Info,       // For information
+  Edit3, // For input
+  Info, // For information
   MessageSquare, // For feedback
-  Box,        // For container
-  Monitor,    // For display
+  Box, // For container
+  Monitor, // For display
   Image as ImageIcon,
-} from 'lucide-react';
-import { FaFlask, FaCircleXmark } from '@/shared/icons/fa6';
+} from "lucide-react";
+import { FaFlask, FaCircleXmark } from "@/shared/icons/fa6";
 
 type IconComponent = ComponentType<{
   size?: number;
@@ -52,7 +52,7 @@ export const Icons = {
   Image: ImageIcon,
 };
 
-export const CategoryIcons: Record<string, IconComponent> = {
+const CategoryIcons: Record<string, IconComponent> = {
   layout: Icons.LayoutGrid,
   composition: Icons.Component,
   action: Icons.PlaySquare,

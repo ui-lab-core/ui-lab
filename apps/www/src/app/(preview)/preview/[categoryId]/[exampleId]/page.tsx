@@ -1,11 +1,11 @@
-import { Dashboard } from '@/shared/lib/demos/dashboard';
-import { getElementById, getSectionById } from '@ui-lab-core/library/catalog';
+import { Dashboard } from "@/shared/lib/demos/dashboard";
+import { getElementById, getSectionById } from "@ui-lab-core/library/catalog";
 
 export const metadata = {
   title: "Component Preview",
   description: "Standalone preview of UI Lab components and design patterns.",
 };
-import { PreviewRenderer } from './preview-client';
+import { PreviewRenderer } from "./preview-client";
 
 interface PreviewPageProps {
   params: Promise<{
@@ -31,7 +31,9 @@ function PlaceholderContent({
     <div className="w-screen h-screen bg-background-950 flex items-center justify-center p-6">
       <div className="text-center max-w-md">
         <h1 className="text-3xl font-bold text-foreground-50 mb-4">{exampleName}</h1>
-        <p className="text-foreground-400 mb-2">Preview: {categoryId}/{exampleId}</p>
+        <p className="text-foreground-400 mb-2">
+          Preview: {categoryId}/{exampleId}
+        </p>
         <p className="text-foreground-400 text-sm">
           This is a standalone preview window for the {exampleName} example.
         </p>
@@ -46,33 +48,33 @@ function PlaceholderContent({
 }
 
 const exampleNames: Record<string, string> = {
-  'saas-1': 'Dashboard',
-  'saas-2': 'User Management',
-  'saas-3': 'Billing',
-  'saas-4': 'Settings',
-  'saas-5': 'Notifications',
-  'saas-6': 'Team Collaboration',
-  'docs-1': 'API Reference',
-  'docs-2': 'Component Showcase',
-  'docs-3': 'Search Results',
-  'docs-4': 'Code Examples',
-  'marketing-1': 'Landing Page',
-  'marketing-2': 'Features Showcase',
-  'marketing-3': 'Pricing Table',
-  'marketing-4': 'Testimonials',
-  'marketing-5': 'Blog Grid',
-  'marketing-6': 'Case Study',
-  'marketing-7': 'FAQ',
+  "saas-1": "Dashboard",
+  "saas-2": "User Management",
+  "saas-3": "Billing",
+  "saas-4": "Settings",
+  "saas-5": "Notifications",
+  "saas-6": "Team Collaboration",
+  "docs-1": "API Reference",
+  "docs-2": "Component Showcase",
+  "docs-3": "Search Results",
+  "docs-4": "Code Examples",
+  "marketing-1": "Landing Page",
+  "marketing-2": "Features Showcase",
+  "marketing-3": "Pricing Table",
+  "marketing-4": "Testimonials",
+  "marketing-5": "Blog Grid",
+  "marketing-6": "Case Study",
+  "marketing-7": "FAQ",
 };
 
 export default async function PreviewPage({ params }: PreviewPageProps) {
   const { categoryId, exampleId } = await params;
   const exampleName = exampleNames[exampleId] || exampleId;
 
-  if (categoryId === 'elements') {
-    const parts = exampleId.split('-');
+  if (categoryId === "elements") {
+    const parts = exampleId.split("-");
     const variantIndex = parseInt(parts[parts.length - 1], 10);
-    const elementId = parts.slice(0, -1).join('-');
+    const elementId = parts.slice(0, -1).join("-");
     const element = getElementById(elementId);
 
     if (element && element.variants[variantIndex]) {
@@ -90,7 +92,9 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">
-                <p className="text-foreground-400">Demo not available for {element.name} - {variant.name}</p>
+                <p className="text-foreground-400">
+                  Demo not available for {element.name} - {variant.name}
+                </p>
               </div>
             </div>
           )}
@@ -107,10 +111,10 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
     );
   }
 
-  if (categoryId === 'sections') {
-    const parts = exampleId.split('-');
+  if (categoryId === "sections") {
+    const parts = exampleId.split("-");
     const variantIndex = parseInt(parts[parts.length - 1], 10);
-    const sectionId = parts.slice(0, -1).join('-');
+    const sectionId = parts.slice(0, -1).join("-");
     const section = getSectionById(sectionId);
 
     if (section && section.variants[variantIndex]) {
@@ -128,7 +132,9 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">
-                <p className="text-foreground-400">Demo not available for {section.name} - {variant.name}</p>
+                <p className="text-foreground-400">
+                  Demo not available for {section.name} - {variant.name}
+                </p>
               </div>
             </div>
           )}
@@ -145,7 +151,7 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
     );
   }
 
-  if (categoryId === 'patterns') {
+  if (categoryId === "patterns") {
     // exampleId is the pattern or variation id, resolved directly by the renderer.
     return (
       <div className="w-screen h-screen bg-background-950 overflow-auto">
@@ -159,7 +165,7 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
     );
   }
 
-  if (exampleId === 'saas-1') {
+  if (exampleId === "saas-1") {
     return (
       <div className="w-full h-full bg-background-950">
         <DashboardContent />
@@ -168,10 +174,6 @@ export default async function PreviewPage({ params }: PreviewPageProps) {
   }
 
   return (
-    <PlaceholderContent
-      categoryId={categoryId}
-      exampleId={exampleId}
-      exampleName={exampleName}
-    />
+    <PlaceholderContent categoryId={categoryId} exampleId={exampleId} exampleName={exampleName} />
   );
 }

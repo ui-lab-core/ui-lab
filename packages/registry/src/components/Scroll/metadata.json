@@ -9,16 +9,9 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": [
-    "scroll",
-    "overflow",
-    "layout",
-    "scrollbar"
-  ],
+  "tags": ["scroll", "overflow", "layout", "scrollbar"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Custom scrollbar implementation for visual consistency"
-    ]
+    "notes": ["Custom scrollbar implementation for visual consistency"]
   }
 }

@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useColorVariables } from '../hooks/use-color-variables'
+import { useColorVariables } from "../hooks/use-color-variables";
 import {
   CHROMA_BOUNDARIES,
   getShadesForRole,
@@ -9,42 +9,42 @@ import {
   type ColorRole,
   type OklchColor,
   type ShadeScale,
-} from '../lib/color-utils'
-import { Divider, Table, type Column } from 'ui-lab-components'
-import { ColorPreviewCell, CopyableCell } from './color-table-cells'
+} from "../lib/color-utils";
+import { Divider, Table, type Column } from "ui-lab-components";
+import { ColorPreviewCell, CopyableCell } from "./color-table-cells";
 
 interface ColorScaleProps {
-  family: ColorRole
+  family: ColorRole;
 }
 
 interface ColorRow {
-  shade: number
-  color: OklchColor
-  hex: string
-  cssVariable: string
-  oklch: string
+  shade: number;
+  color: OklchColor;
+  hex: string;
+  cssVariable: string;
+  oklch: string;
 }
 
 export function ColorScale({ family }: ColorScaleProps) {
-  const colors = useColorVariables(family)
-  const chromaBounds = CHROMA_BOUNDARIES[family]
-  const shadesForFamily = getShadesForRole(family)
-  const isLoading = shadesForFamily.some(shade => colors[shade] === undefined)
-  const hasAnyColor = Object.values(colors).some(c => c !== null)
+  const colors = useColorVariables(family);
+  const chromaBounds = CHROMA_BOUNDARIES[family];
+  const shadesForFamily = getShadesForRole(family);
+  const isLoading = shadesForFamily.some((shade) => colors[shade] === undefined);
+  const hasAnyColor = Object.values(colors).some((c) => c !== null);
 
   if (isLoading) {
-    return null
+    return null;
   }
 
   if (!hasAnyColor) {
-    return <div className="text-foreground-400">No color data available</div>
+    return <div className="text-foreground-400">No color data available</div>;
   }
 
   const colorRows = shadesForFamily
-    .map(shade => ({ shade, color: colors[shade] }))
+    .map((shade) => ({ shade, color: colors[shade] }))
     .filter(
       (item): item is { shade: ShadeScale; color: OklchColor } =>
-        item.color !== null && item.color !== undefined
+        item.color !== null && item.color !== undefined,
     )
     .map(({ shade, color }) => ({
       shade,
@@ -52,49 +52,44 @@ export function ColorScale({ family }: ColorScaleProps) {
       hex: oklchToHex(color),
       cssVariable: `--${family}-${shade}`,
       oklch: oklchToCss(color),
-    }))
+    }));
 
   const columns: Column<ColorRow>[] = [
     {
-      key: 'color',
+      key: "color",
       header: <span className="sr-only">Color preview</span>,
       cell: ({ row }) => (
-        <ColorPreviewCell
-          oklch={row.color}
-          family={family}
-          shade={String(row.shade)}
-        />
+        <ColorPreviewCell oklch={row.color} family={family} shade={String(row.shade)} />
       ),
     },
     {
-      key: 'shade',
-      header: 'Shade',
-      cell: ({ row }) => (
-        <span className="font-semibold text-foreground-200">{row.shade}</span>
-      ),
+      key: "shade",
+      header: "Shade",
+      cell: ({ row }) => <span className="font-semibold text-foreground-200">{row.shade}</span>,
     },
     {
-      key: 'hex',
-      header: 'Hex',
+      key: "hex",
+      header: "Hex",
       cell: ({ row }) => <CopyableCell value={row.hex} label="hex" />,
     },
     {
-      key: 'cssVariable',
-      header: 'CSS Variable',
+      key: "cssVariable",
+      header: "CSS Variable",
       cell: ({ row }) => <CopyableCell value={row.cssVariable} label="CSS variable" />,
     },
     {
-      key: 'oklch',
-      header: 'OKLCH',
+      key: "oklch",
+      header: "OKLCH",
       cell: ({ row }) => <CopyableCell value={row.oklch} label="OKLCH" />,
     },
-  ]
+  ];
 
   return (
     <div>
-      <div className='mb-8'>
+      <div className="mb-8">
         <h3 className="text-md font-semibold text-foreground-100 capitalize">
-          {family} Colors ({shadesForFamily.length} shades: {shadesForFamily[0]}–{shadesForFamily[shadesForFamily.length - 1]})
+          {family} Colors ({shadesForFamily.length} shades: {shadesForFamily[0]}–
+          {shadesForFamily[shadesForFamily.length - 1]})
         </h3>
         <p className="text-sm text-foreground-400 mt-0!">
           Chroma range: {chromaBounds.min.toFixed(3)} – {chromaBounds.max.toFixed(3)}
@@ -102,7 +97,7 @@ export function ColorScale({ family }: ColorScaleProps) {
       </div>
 
       <Table className="my-6" data={colorRows} columns={columns} />
-      <Divider variant='dashed' className='my-24' />
+      <Divider variant="dashed" className="my-24" />
     </div>
-  )
+  );
 }

@@ -100,7 +100,7 @@ export const previews: Record<string, React.ReactNode> = {
   table: <TableAnimation />,
   page: <PageAnimation />,
 
-  "code": (
+  code: (
     <div className="w-[85%] rounded-[3px] border border-background-700 overflow-hidden">
       <div className="h-[22px] flex items-center justify-between px-2 bg-background-900 border-b border-background-700">
         <div className="w-[40px] h-1.5 opacity-20 rounded bg-background-500" />
@@ -124,7 +124,9 @@ export const previews: Record<string, React.ReactNode> = {
       </div>
     </div>
   ),
-  frame: <div className="w-[120px] h-[40px] flex bg-background-900 items-center justify-center border border-background-700 rounded-md"></div>,
+  frame: (
+    <div className="w-[120px] h-[40px] flex bg-background-900 items-center justify-center border border-background-700 rounded-md"></div>
+  ),
   toolbar: <ToolbarAnimation />,
   carousel: <CarouselAnimation />,
   timeline: <TimelineAnimation />,
@@ -145,9 +147,11 @@ export const previews: Record<string, React.ReactNode> = {
       ].map((id, index) => (
         <div
           key={id}
-          className={index === 1
-            ? "flex size-12 items-center justify-center rounded-lg bg-accent-500/15 text-accent-500"
-            : "flex size-12 items-center justify-center rounded-lg bg-background-800"}
+          className={
+            index === 1
+              ? "flex size-12 items-center justify-center rounded-lg bg-accent-500/15 text-accent-500"
+              : "flex size-12 items-center justify-center rounded-lg bg-background-800"
+          }
         >
           <Icon variant="fill" id={id} size={24} />
         </div>

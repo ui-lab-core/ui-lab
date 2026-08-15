@@ -8,23 +8,11 @@
     "exportName": "Modal",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "button",
-    "card"
-  ],
-  "tags": [
-    "dialog",
-    "overlay",
-    "container"
-  ],
+  "relatedComponents": ["button", "card"],
+  "tags": ["dialog", "overlay", "container"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Focus trap",
-      "Backdrop focus",
-      "Keyboard dismissal",
-      "ARIA dialog role"
-    ]
+    "notes": ["Focus trap", "Backdrop focus", "Keyboard dismissal", "ARIA dialog role"]
   },
   "usage": {
     "summary": "Use Modal for short, focused dialog tasks that need a dedicated overlay surface and clear dismissal path.",
@@ -48,21 +36,13 @@
         "type": "avoid",
         "title": "Avoid nested surfaced containers",
         "description": "Do not place Card or other panel-like surfaces inside the modal body unless there is a strong semantic need for a distinct sub-region.",
-        "relatedComponents": [
-          "card",
-          "panel",
-          "confirm"
-        ]
+        "relatedComponents": ["card", "panel", "confirm"]
       },
       {
         "type": "prefer",
         "title": "Prefer direct content plus layout primitives",
         "description": "Arrange modal content with Flex, Grid, Group, and Modal footer slots so the hierarchy stays shallow and the dialog reads as a single unit.",
-        "relatedComponents": [
-          "flex",
-          "grid",
-          "group"
-        ]
+        "relatedComponents": ["flex", "grid", "group"]
       }
     ]
   }

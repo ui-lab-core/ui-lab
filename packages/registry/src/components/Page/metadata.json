@@ -9,18 +9,8 @@
     "exportName": "Page",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "flex",
-    "card",
-    "grid"
-  ],
-  "tags": [
-    "container",
-    "layout",
-    "page-wrapper",
-    "responsive",
-    "seo"
-  ],
+  "relatedComponents": ["flex", "card", "grid"],
+  "tags": ["container", "layout", "page-wrapper", "responsive", "seo"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

@@ -8,20 +8,10 @@
     "exportName": "Tabs",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card"
-  ],
-  "tags": [
-    "navigation",
-    "organization",
-    "content-switching"
-  ],
+  "relatedComponents": ["card"],
+  "tags": ["navigation", "organization", "content-switching"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard navigation",
-      "ARIA tab roles",
-      "Focus management"
-    ]
+    "notes": ["Keyboard navigation", "ARIA tab roles", "Focus management"]
   }
 }

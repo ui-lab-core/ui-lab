@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 function getRoundedRectPath(
-  x: number, y: number, w: number, h: number,
-  r: { tl: number, tr: number, bl: number, br: number }
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
 ) {
   return `
     M ${x + r.tl} ${y}
@@ -153,30 +152,36 @@ export function ColorAnimation() {
               <stop offset="100%" stopColor="white" stopOpacity="0" />
             </radialGradient>
             <mask id="color-grid-mask">
-              <rect
-
-                width="400" height="300" fill="url(#color-grid-fade)" />
+              <rect width="400" height="300" fill="url(#color-grid-fade)" />
             </mask>
             <clipPath id="picker-clip">
               <path
                 d={getRoundedRectPath(x, y, width, height, {
-                  tl: rx, tr: rx, bl: rx, br: rx
+                  tl: rx,
+                  tr: rx,
+                  bl: rx,
+                  br: rx,
                 })}
               />
             </clipPath>
           </defs>
 
           {/* Main Container */}
-          <g style={{
-            filter: stage === "idle" ? "grayscale(100%)" : "grayscale(0%)",
-            opacity: stage === "idle" ? 0.7 : 1,
-            transition: `${config.transition}, filter 0.6s ease, opacity 0.6s ease`,
-            transform: "translateY(0)",
-          }}>
+          <g
+            style={{
+              filter: stage === "idle" ? "grayscale(100%)" : "grayscale(0%)",
+              opacity: stage === "idle" ? 0.7 : 1,
+              transition: `${config.transition}, filter 0.6s ease, opacity 0.6s ease`,
+              transform: "translateY(0)",
+            }}
+          >
             {/* Background Shell */}
             <path
               d={getRoundedRectPath(x, y, width, height, {
-                tl: rx, tr: rx, bl: rx, br: rx
+                tl: rx,
+                tr: rx,
+                bl: rx,
+                br: rx,
               })}
               className="text-background-950"
               fill="currentColor"
@@ -184,33 +189,44 @@ export function ColorAnimation() {
             {/* Border */}
             <path
               d={getRoundedRectPath(x, y, width, height, {
-                tl: rx, tr: rx, bl: rx, br: rx
+                tl: rx,
+                tr: rx,
+                bl: rx,
+                br: rx,
               })}
-              className={stage !== "idle" ? config.highlight.hoverClass : config.highlight.idleClass}
+              className={
+                stage !== "idle" ? config.highlight.hoverClass : config.highlight.idleClass
+              }
               fill="currentColor"
               stroke="currentColor"
               strokeWidth={config.strokeWidth}
               style={{
                 transition: config.transition,
                 fillOpacity: 0.05,
-                strokeOpacity: stage !== "idle" ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity:
+                  stage !== "idle"
+                    ? config.highlight.hoverStrokeOpacity
+                    : config.highlight.idleStrokeOpacity,
               }}
             />
 
             {/* Inner Content Wrapper */}
             <g transform={`translate(${x}, ${y})`}>
-
               {/* 1. Color Canvas (Top) */}
               <g>
                 {/* The Canvas Background */}
                 <path
                   d={getRoundedRectPath(4, 4, width - 8, canvasHeight, {
-                    tl: rx - 4, tr: rx - 4, bl: 4, br: 4
+                    tl: rx - 4,
+                    tr: rx - 4,
+                    bl: 4,
+                    br: 4,
                   })}
                   fill={currentColor}
                   style={{
                     opacity: stage === "idle" ? 0.4 : 1,
-                    transition: "fill 0.5s cubic-bezier(0.25, 0, 0.25, 1), opacity 0.5s cubic-bezier(0.25, 0, 0.25, 1)",
+                    transition:
+                      "fill 0.5s cubic-bezier(0.25, 0, 0.25, 1), opacity 0.5s cubic-bezier(0.25, 0, 0.25, 1)",
                   }}
                 />
 
@@ -224,16 +240,16 @@ export function ColorAnimation() {
                   stroke="white"
                   strokeWidth="2"
                   style={{
-                    transition: "cx 1s cubic-bezier(0.25, 0, 0.25, 1), cy 1s cubic-bezier(0.25, 0, 0.25, 1)",
+                    transition:
+                      "cx 1s cubic-bezier(0.25, 0, 0.25, 1), cy 1s cubic-bezier(0.25, 0, 0.25, 1)",
                     opacity: 0.8,
-                    filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))"
+                    filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))",
                   }}
                 />
               </g>
 
               {/* 2. Sliders (Middle) */}
               <g transform={`translate(12, ${canvasHeight + gap + 4})`}>
-
                 {/* Hue Slider Track */}
                 <rect
                   width={width - 24}
@@ -272,7 +288,7 @@ export function ColorAnimation() {
                   strokeWidth="1"
                   style={{
                     transition: "cx 1s cubic-bezier(0.25, 0, 0.25, 1)",
-                    filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))"
+                    filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))",
                   }}
                 />
 
@@ -293,7 +309,7 @@ export function ColorAnimation() {
                     fill={currentColor}
                     style={{
                       transition: "fill 1s cubic-bezier(0.25, 0, 0.25, 1)",
-                      opacity: 0.5 // Simulate some transparency
+                      opacity: 0.5, // Simulate some transparency
                     }}
                   />
                   <circle
@@ -304,7 +320,7 @@ export function ColorAnimation() {
                     stroke="rgba(0,0,0,0.1)"
                     strokeWidth="1"
                     style={{
-                      filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))"
+                      filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))",
                     }}
                   />
                 </g>
@@ -323,7 +339,6 @@ export function ColorAnimation() {
           >
             <Cursor />
           </CursorProvider>
-
         </svg>
       </div>
     </div>

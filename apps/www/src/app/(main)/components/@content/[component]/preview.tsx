@@ -1,42 +1,50 @@
-'use client';
+"use client";
 
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   getElementPreview,
   getElementPreviewConfig,
   type ElementPreviewControl,
-} from '@ui-lab-core/library/previews';
-import { stripLeadingImports } from '@ui-lab-core/library/code';
-import { Code } from '@/features/docs/components/code-display/code';
-import { useNearViewport } from '@/shared/hooks/use-near-viewport';
-import { ResizablePreview } from '@/features/preview';
-import { Input } from 'ui-lab-components/input';
-import { Select } from 'ui-lab-components/select';
-import { Switch } from 'ui-lab-components/switch';
+} from "@ui-lab-core/library/previews";
+import { stripLeadingImports } from "@ui-lab-core/library/code";
+import { Code } from "@/features/docs/components/code-display/code";
+import { useNearViewport } from "@/shared/hooks/use-near-viewport";
+import { ResizablePreview } from "@/features/preview";
+import { Input } from "ui-lab-components/input";
+import { Select } from "ui-lab-components/select";
+import { Switch } from "ui-lab-components/switch";
 
 type Value = string | number | boolean;
 
 const emptyControls: ElementPreviewControl[] = [];
 
-export function Playground({ id, code, light, dark, previewHeight }: {
+export function Playground({
+  id,
+  code,
+  light,
+  dark,
+  previewHeight,
+}: {
   id: string;
   code: string;
   light: string;
   dark: string;
   previewHeight?: number;
 }) {
-  const config = getElementPreviewConfig('components', id);
-  const Preview = getElementPreview('components', id);
+  const config = getElementPreviewConfig("components", id);
+  const Preview = getElementPreview("components", id);
   const controls = config?.controls ?? emptyControls;
   const fixedPreviewHeight = previewHeight ?? config?.previewHeight ?? 320;
   const [values, setValues] = useState<Record<string, Value>>(() =>
-    Object.fromEntries(controls.map((control) => [
-      control.name,
-      control.defaultValue ?? control.options?.[0]?.value ?? '',
-    ])),
+    Object.fromEntries(
+      controls.map((control) => [
+        control.name,
+        control.defaultValue ?? control.options?.[0]?.value ?? "",
+      ]),
+    ),
   );
   const result = config?.factory?.(values, (updates) => {
-    setValues((current) => ({ ...current, ...updates as Record<string, Value> }));
+    setValues((current) => ({ ...current, ...(updates as Record<string, Value>) }));
   });
   const currentCode = result?.files?.length
     ? result.code
@@ -49,10 +57,7 @@ export function Playground({ id, code, light, dark, previewHeight }: {
   return (
     <div>
       <div className="grid min-w-0 grid-cols-1 rounded-sm rounded-b-none border border-background-700 md:grid-cols-[minmax(15rem,1fr)_12rem]">
-        <div
-          className="min-h-0 min-w-0 overflow-auto p-2"
-          style={{ height: fixedPreviewHeight }}
-        >
+        <div className="min-h-0 min-w-0 overflow-auto p-2" style={{ height: fixedPreviewHeight }}>
           <ResizablePreview layout={config?.previewLayout}>
             <Suspense fallback={null}>
               {result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />)}
@@ -62,17 +67,25 @@ export function Playground({ id, code, light, dark, previewHeight }: {
         {controls.length ? (
           <div className="w-full space-y-3 border-t border-background-700 p-3 md:w-auto md:border-l md:border-t-0">
             {controls.map((control) => (
-              <label className="flex flex-col gap-2 text-xs font-medium text-foreground-400" key={control.name}>
+              <label
+                className="flex flex-col gap-2 text-xs font-medium text-foreground-400"
+                key={control.name}
+              >
                 <span>{control.label}</span>
-                {control.type === 'select' ? (
+                {control.type === "select" ? (
                   <Select
                     className="w-full"
-                    label={control.options?.find((option) => option.value === values[control.name])?.label}
+                    label={
+                      control.options?.find((option) => option.value === values[control.name])
+                        ?.label
+                    }
                     onSelectionChange={(key) => {
-                      const option = control.options?.find((entry) => String(entry.value) === String(key));
+                      const option = control.options?.find(
+                        (entry) => String(entry.value) === String(key),
+                      );
                       change(control.name, option?.value ?? String(key));
                     }}
-                    selectedKey={String(values[control.name] ?? '')}
+                    selectedKey={String(values[control.name] ?? "")}
                   >
                     <Select.Trigger className="w-full">
                       <Select.Value />
@@ -87,7 +100,7 @@ export function Playground({ id, code, light, dark, previewHeight }: {
                       </Select.List>
                     </Select.Content>
                   </Select>
-                ) : control.type === 'toggle' ? (
+                ) : control.type === "toggle" ? (
                   <span className="flex min-h-9 items-center">
                     <Switch
                       aria-label={control.label}
@@ -96,7 +109,7 @@ export function Playground({ id, code, light, dark, previewHeight }: {
                       state={{ checked: Boolean(values[control.name]) }}
                     />
                   </span>
-                ) : control.type === 'stepper' ? (
+                ) : control.type === "stepper" ? (
                   <Input
                     className="w-full"
                     max={control.max}
@@ -111,7 +124,7 @@ export function Playground({ id, code, light, dark, previewHeight }: {
                   <Input
                     className="w-full"
                     onChange={(event) => change(control.name, event.target.value)}
-                    value={String(values[control.name] ?? '')}
+                    value={String(values[control.name] ?? "")}
                     variant="default"
                   />
                 )}
@@ -138,36 +151,62 @@ export function Playground({ id, code, light, dark, previewHeight }: {
 }
 
 export function ExampleCode({ id, code }: { id: string; code: string }) {
-  const config = getElementPreviewConfig('components', id);
+  const config = getElementPreviewConfig("components", id);
   const controls = config?.controls ?? emptyControls;
-  const values = Object.fromEntries(controls.map((control) => [
-    control.name,
-    control.defaultValue ?? control.options?.[0]?.value ?? '',
-  ]));
-  const result = config?.factory?.(values, () => { });
+  const values = Object.fromEntries(
+    controls.map((control) => [
+      control.name,
+      control.defaultValue ?? control.options?.[0]?.value ?? "",
+    ]),
+  );
+  const result = config?.factory?.(values, () => {});
   const currentCode = result?.files?.length
     ? result.code
     : stripLeadingImports(result?.code ?? code);
 
   return (
-    <Code className="rounded-none border-0" files={result?.files} heading="Example.tsx" language="tsx" showLineNumbers>
+    <Code
+      className="rounded-none border-0"
+      files={result?.files}
+      heading="Example.tsx"
+      language="tsx"
+      showLineNumbers
+    >
       {currentCode}
     </Code>
   );
 }
 
-export function Preview({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
-  return <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} key={id} />;
+export function Preview({
+  id,
+  previewHeight,
+  flushBottom,
+}: {
+  id: string;
+  previewHeight?: number;
+  flushBottom?: boolean;
+}) {
+  return (
+    <PreviewInstance id={id} previewHeight={previewHeight} flushBottom={flushBottom} key={id} />
+  );
 }
 
-function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previewHeight?: number; flushBottom?: boolean }) {
+function PreviewInstance({
+  id,
+  previewHeight,
+  flushBottom,
+}: {
+  id: string;
+  previewHeight?: number;
+  flushBottom?: boolean;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const isNearViewport = useNearViewport(rootRef, { rootMargin: '600px 0px' });
+  const isNearViewport = useNearViewport(rootRef, { rootMargin: "600px 0px" });
   const [loaded, setLoaded] = useState(false);
   const [overlayGone, setOverlayGone] = useState(false);
-  const Implementation = getElementPreview('components', id);
-  const config = getElementPreviewConfig('components', id);
+  const Implementation = getElementPreview("components", id);
+  const config = getElementPreviewConfig("components", id);
   const fixedPreviewHeight = previewHeight ?? config?.previewHeight ?? 320;
 
   useLayoutEffect(() => {
@@ -185,17 +224,18 @@ function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previ
       });
     };
     const finish = () => {
-      const hasContent = Array.from(content.childNodes).some((node) =>
-        node.nodeType === Node.ELEMENT_NODE || Boolean(node.textContent?.trim()),
+      const hasContent = Array.from(content.childNodes).some(
+        (node) => node.nodeType === Node.ELEMENT_NODE || Boolean(node.textContent?.trim()),
       );
       if (hasContent) reveal();
       return hasContent;
     };
 
-    if (finish()) return () => {
-      cancelled = true;
-      if (frameId !== null) cancelAnimationFrame(frameId);
-    };
+    if (finish())
+      return () => {
+        cancelled = true;
+        if (frameId !== null) cancelAnimationFrame(frameId);
+      };
     const observer = new MutationObserver(() => {
       if (finish()) observer.disconnect();
     });
@@ -217,10 +257,10 @@ function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previ
     <div
       ref={rootRef}
       aria-busy={loaded ? undefined : true}
-      className={`relative flex w-full shrink-0 items-center justify-center overflow-hidden rounded-sm border border-background-700 ${flushBottom ? 'rounded-b-none' : ''}`}
+      className={`relative flex w-full shrink-0 items-center justify-center overflow-hidden rounded-sm border border-background-700 ${flushBottom ? "rounded-b-none" : ""}`}
       style={{ height: fixedPreviewHeight }}
-      data-preview-active={isNearViewport ? 'true' : 'false'}
-      data-preview-loaded={loaded ? 'true' : 'false'}
+      data-preview-active={isNearViewport ? "true" : "false"}
+      data-preview-loaded={loaded ? "true" : "false"}
     >
       <div
         ref={contentRef}
@@ -241,9 +281,12 @@ function PreviewInstance({ id, previewHeight, flushBottom }: { id: string; previ
           aria-live="polite"
           role="status"
           aria-hidden={loaded ? true : undefined}
-          className={`pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${loaded ? 'opacity-0' : 'opacity-100'}`}
+          className={`pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${loaded ? "opacity-0" : "opacity-100"}`}
         >
-          <span aria-hidden="true" className="size-5 animate-spin rounded-full border border-background-600 border-t-accent-500" />
+          <span
+            aria-hidden="true"
+            className="size-5 animate-spin rounded-full border border-background-600 border-t-accent-500"
+          />
           <span className="sr-only">Loading interactive preview</span>
         </div>
       ) : null}

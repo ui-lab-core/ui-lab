@@ -9,12 +9,7 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": [
-    "navigation",
-    "path",
-    "hierarchy",
-    "parent-pages"
-  ],
+  "tags": ["navigation", "path", "hierarchy", "parent-pages"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

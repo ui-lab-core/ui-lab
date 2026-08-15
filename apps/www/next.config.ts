@@ -8,13 +8,12 @@ const localPrivateLibrarySpecifier = "link:../../../private/packages/library";
 
 function usesLocalPrivateLibrary() {
   try {
-    const sitePackage = JSON.parse(
-      readFileSync(path.join(__dirname, "package.json"), "utf8"),
-    ) as { dependencies?: Record<string, string> };
+    const sitePackage = JSON.parse(readFileSync(path.join(__dirname, "package.json"), "utf8")) as {
+      dependencies?: Record<string, string>;
+    };
 
     return (
-      sitePackage.dependencies?.["@ui-lab-core/library"] ===
-      localPrivateLibrarySpecifier &&
+      sitePackage.dependencies?.["@ui-lab-core/library"] === localPrivateLibrarySpecifier &&
       existsSync(path.join(workspaceRoot, "private/packages/library/package.json"))
     );
   } catch {
@@ -30,10 +29,7 @@ function usesAuthProviders() {
   const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL?.trim();
   const development = process.env.NODE_ENV !== "production";
   const full = Boolean(
-    publishableKey &&
-    secretKey &&
-    convexUrl &&
-    !publishableKey.startsWith("pk_test_"),
+    publishableKey && secretKey && convexUrl && !publishableKey.startsWith("pk_test_"),
   );
   const clerk = Boolean(publishableKey && (development || full));
   const convex = Boolean(convexUrl && (development || full));
@@ -45,7 +41,7 @@ const nextConfig: NextConfig = {
   // `ui-lab-components` is a workspace-linked, prebuilt package. Transpiling it
   // makes Next track its dist files as development dependencies instead of
   // retaining an obsolete compiled module after the package is rebuilt.
-  transpilePackages: ['beautiful-mermaid', '@ui-lab-core/library', 'ui-lab-components'],
+  transpilePackages: ["beautiful-mermaid", "@ui-lab-core/library", "ui-lab-components"],
   experimental: {
     externalDir: true,
     // Keep source maps and module bookkeeping out of the long-lived dev

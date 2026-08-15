@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Command, Button, type Command as CommandType } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-
+import React, { useState } from "react";
+import { Command, Button, type Command as CommandType } from "ui-lab-components";
+import { ControlDef, ComponentDetail } from "@/types";
 
 const commandBasicCode = `import { Command, Button, Badge } from "ui-lab-components";
 import { useState } from "react";
@@ -62,18 +61,18 @@ const CommandPreview = () => {
   const [open, setOpen] = useState(false);
   const commands = [
     {
-      id: 'search',
-      label: 'Search',
-      description: 'Search documents',
-      shortcut: '⌘F',
-      action: () => console.log('Search'),
+      id: "search",
+      label: "Search",
+      description: "Search documents",
+      shortcut: "⌘F",
+      action: () => console.log("Search"),
     },
     {
-      id: 'create',
-      label: 'Create new',
-      description: 'Create a new document',
-      shortcut: '⌘N',
-      action: () => console.log('Create'),
+      id: "create",
+      label: "Create new",
+      description: "Create a new document",
+      shortcut: "⌘N",
+      action: () => console.log("Create"),
     },
   ];
   return (
@@ -84,14 +83,12 @@ const CommandPreview = () => {
         <Command.List>
           <Command.Groups
             renderItem={(cmd) => (
-              <Command.Item
-                value={cmd.id}
-                textValue={cmd.label}
-                action={cmd.action}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Command.Item value={cmd.id} textValue={cmd.label} action={cmd.action}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <div>{cmd.label}</div>
-                  {cmd.shortcut && <span style={{ fontSize: '0.875em', opacity: 0.7 }}>{cmd.shortcut}</span>}
+                  {cmd.shortcut && (
+                    <span style={{ fontSize: "0.875em", opacity: 0.7 }}>{cmd.shortcut}</span>
+                  )}
                 </div>
               </Command.Item>
             )}
@@ -103,25 +100,27 @@ const CommandPreview = () => {
 };
 
 export const commandDetail: ComponentDetail = {
-  id: 'command',
-  name: 'Command',
-  description: 'A searchable command palette for quick access to actions.',
+  id: "command",
+  name: "Command",
+  description: "A searchable command palette for quick access to actions.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Command Palette component provides a quick way to access actions and navigate through your application. It features keyboard-driven search and navigation for power users.
+        The Command Palette component provides a quick way to access actions and navigate through
+        your application. It features keyboard-driven search and navigation for power users.
       </p>
       <p>
-        With support for keyboard shortcuts, grouped commands, and custom actions, the Command Palette enhances user productivity and workflow efficiency.
+        With support for keyboard shortcuts, grouped commands, and custom actions, the Command
+        Palette enhances user productivity and workflow efficiency.
       </p>
     </div>
   ),
   examples: [],
   variants: [
     {
-      id: 'default',
-      name: 'Default',
-      description: 'Basic command with search functionality.',
+      id: "default",
+      name: "Default",
+      description: "Basic command with search functionality.",
       code: commandBasicCode,
       preview: <CommandPreview />,
     },

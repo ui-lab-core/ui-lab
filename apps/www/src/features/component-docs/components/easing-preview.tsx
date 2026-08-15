@@ -10,7 +10,7 @@ export const EasingPreview = forwardRef<SVGSVGElement, EasingPreviewProps>(
   ({ easing, size = "sm", className, style, ...props }, ref) => {
     const easingData = EASING_FUNCTIONS[easing];
     const match = easingData.bezier.match(
-      /cubic-bezier\(([\d.]+),\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)\)/
+      /cubic-bezier\(([\d.]+),\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)\)/,
     );
 
     if (!match) {
@@ -72,24 +72,12 @@ export const EasingPreview = forwardRef<SVGSVGElement, EasingPreviewProps>(
             strokeWidth="1.2"
             vectorEffect="non-scaling-stroke"
           />
-          <circle
-            cx={startX}
-            cy={startY}
-            r="0.8"
-            fill="currentColor"
-            opacity="0.6"
-          />
-          <circle
-            cx={endX}
-            cy={endY}
-            r="0.8"
-            fill="currentColor"
-            opacity="0.6"
-          />
+          <circle cx={startX} cy={startY} r="0.8" fill="currentColor" opacity="0.6" />
+          <circle cx={endX} cy={endY} r="0.8" fill="currentColor" opacity="0.6" />
         </g>
       </svg>
     );
-  }
+  },
 );
 
 EasingPreview.displayName = "EasingPreview";

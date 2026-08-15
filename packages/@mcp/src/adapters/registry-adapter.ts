@@ -3,33 +3,29 @@ import {
   generatedStyles,
   getComponentById as getRegistryComponent,
   searchComponents,
-} from 'ui-lab-registry';
-import type { ComponentMetadata } from 'ui-lab-registry';
+} from "ui-lab-registry";
+import type { ComponentMetadata } from "ui-lab-registry";
 
-function enrichComponentApi(id: string, api: ComponentMetadata['api']) {
+function enrichComponentApi(id: string, api: ComponentMetadata["api"]) {
   if (!api) return api;
 
   const styleableParts =
-    generatedStyles[id as keyof typeof generatedStyles]?.styleableParts?.map(
-      (part) => part.name
-    ) ?? [];
-  const hasStylesProp = api.props.some((prop) => prop.name === 'styles');
+    generatedStyles[id as keyof typeof generatedStyles]?.styleableParts?.map((part) => part.name) ??
+    [];
+  const hasStylesProp = api.props.some((prop) => prop.name === "styles");
 
   const props = api.props
     .filter(
-      (prop) =>
-        !(hasStylesProp && prop.name !== 'className' && /.+ClassName$/.test(prop.name))
+      (prop) => !(hasStylesProp && prop.name !== "className" && /.+ClassName$/.test(prop.name)),
     )
     .map((prop) => {
-      if (prop.name !== 'styles' || styleableParts.length === 0) return prop;
+      if (prop.name !== "styles" || styleableParts.length === 0) return prop;
 
-      const slots = `Available slots: ${styleableParts
-        .map((part) => `"${part}"`)
-        .join(', ')}.`;
+      const slots = `Available slots: ${styleableParts.map((part) => `"${part}"`).join(", ")}.`;
       return {
         ...prop,
         description: prop.description
-          ? prop.description.includes('Available slots:')
+          ? prop.description.includes("Available slots:")
             ? prop.description
             : `${prop.description} ${slots}`
           : slots,
@@ -44,7 +40,7 @@ function getComponent(id: string): ComponentMetadata | null {
     const component = getRegistryComponent(id);
     if (!component) return null;
 
-    const apiAliases: Record<string, string> = { confirm: 'confirmation' };
+    const apiAliases: Record<string, string> = { confirm: "confirmation" };
     const apiId = apiAliases[id] ?? id;
     const generated = generatedAPI[apiId as keyof typeof generatedAPI];
 

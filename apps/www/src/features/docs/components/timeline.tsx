@@ -1,5 +1,5 @@
-'use client';
-import React, { useMemo, ReactElement, ReactNode } from 'react';
+"use client";
+import React, { useMemo, ReactElement, ReactNode } from "react";
 
 interface TimelineStep {
   number: number | null;
@@ -14,10 +14,7 @@ export default function Timeline({ children }: { children: ReactNode }) {
     let currentStep: TimelineStep | null = null;
 
     childArray.forEach((child) => {
-      if (
-        React.isValidElement(child) &&
-        child.type === 'h2'
-      ) {
+      if (React.isValidElement(child) && child.type === "h2") {
         if (currentStep) {
           timelineSteps.push(currentStep);
         }
@@ -51,11 +48,14 @@ export default function Timeline({ children }: { children: ReactNode }) {
         // Clone the header (h2) and add mt-0 to remove top margin
         const headerElement = step.header as React.ReactElement<{ className?: string }>;
         const styledHeader = React.cloneElement(headerElement, {
-          className: `mt-0.5! ${headerElement.props.className || ''}`.trim(),
+          className: `mt-0.5! ${headerElement.props.className || ""}`.trim(),
         });
 
         return (
-          <div key={`${step.number ?? "step"}-${extractText(step.header)}`} className="mt-10 relative flex items-start">
+          <div
+            key={`${step.number ?? "step"}-${extractText(step.header)}`}
+            className="mt-10 relative flex items-start"
+          >
             {/* Circle marker */}
             <div
               className="absolute left-0 flex pr-px items-center justify-center rounded-sm border border-background-700 text-sm font-medium text-foreground-300 z-10"
@@ -82,11 +82,7 @@ export default function Timeline({ children }: { children: ReactNode }) {
             <div className="ml-8 pl-4 min-w-0 flex-1">
               <div className="space-y-4">
                 {styledHeader}
-                {step.content.length > 0 && (
-                  <div className="space-y-4">
-                    {step.content}
-                  </div>
-                )}
+                {step.content.length > 0 && <div className="space-y-4">{step.content}</div>}
               </div>
             </div>
           </div>
@@ -98,22 +94,18 @@ export default function Timeline({ children }: { children: ReactNode }) {
 
 function extractText(element: ReactElement): string {
   const props = element.props as { children?: ReactNode };
-  if (typeof props.children === 'string') {
+  if (typeof props.children === "string") {
     return props.children;
   }
   if (Array.isArray(props.children)) {
     return props.children
       .map((child: ReactNode) =>
-        typeof child === 'string'
-          ? child
-          : React.isValidElement(child)
-            ? extractText(child)
-            : ''
+        typeof child === "string" ? child : React.isValidElement(child) ? extractText(child) : "",
       )
-      .join('');
+      .join("");
   }
   if (React.isValidElement(props.children)) {
     return extractText(props.children);
   }
-  return '';
+  return "";
 }

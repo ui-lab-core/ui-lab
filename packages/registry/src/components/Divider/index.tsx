@@ -1,19 +1,17 @@
-import React from 'react';
+import React from "react";
 import { Divider } from "ui-lab-components";
 import { ControlDef, ComponentDetail } from "@/types";
 
 export const dividerDetail: ComponentDetail = {
   id: "divider",
   name: "Divider",
-  description:
-    "A simple yet flexible divider component for visual content separation",
+  description: "A simple yet flexible divider component for visual content separation",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Divider component is a lightweight utility component used to
-        visually separate content sections, groups, or list items. It supports
-        both horizontal and vertical orientations with customizable styling
-        options.
+        The Divider component is a lightweight utility component used to visually separate content
+        sections, groups, or list items. It supports both horizontal and vertical orientations with
+        customizable styling options.
       </p>
     </div>
   ),
@@ -32,7 +30,7 @@ export const dividerDetail: ComponentDetail = {
       description: "A vertical divider for side-by-side content separation.",
       code: `<Divider orientation="vertical" />`,
       preview: (
-        <div className="flex gap-4 h-16">
+        <div className="flex h-16 gap-4">
           <div className="flex items-center">Left</div>
           <Divider orientation="vertical" spacing="none" />
           <div className="flex items-center">Right</div>

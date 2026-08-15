@@ -42,7 +42,11 @@ function WithoutObservers() {
 
   return (
     <Scroll inline maxHeight="100%">
-      {items.map((item) => <div className="border-b border-background-700 p-2" key={item}>{item}</div>)}
+      {items.map((item) => (
+        <div className="border-b border-background-700 p-2" key={item}>
+          {item}
+        </div>
+      ))}
     </Scroll>
   );
 }
@@ -54,30 +58,46 @@ export default function ScrollDevPage() {
     <main className="mx-auto max-w-5xl space-y-6 p-8">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Scroll SSR and mount safety</h1>
-        <p className="text-sm text-foreground-400">All inline examples reserve the same 16px space immediately; toggle dynamic content to exercise observer updates.</p>
+        <p className="text-sm text-foreground-400">
+          All inline examples reserve the same 16px space immediately; toggle dynamic content to
+          exercise observer updates.
+        </p>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
         <Example title="Vertical inline: overflowing">
           <Scroll inline maxHeight="100%">
-            {items.map((item) => <div className="border-b border-background-700 p-2" key={item}>{item}</div>)}
+            {items.map((item) => (
+              <div className="border-b border-background-700 p-2" key={item}>
+                {item}
+              </div>
+            ))}
           </Scroll>
         </Example>
 
         <Example title="Vertical inline: no overflow">
           <Scroll inline maxHeight="100%">
-            <div className="p-2">This content fits, but its inline reservation remains deterministic.</div>
+            <div className="p-2">
+              This content fits, but its inline reservation remains deterministic.
+            </div>
           </Scroll>
         </Example>
 
         <Example title="Vertical inline: changes after mount">
           <div className="absolute right-5 top-2 z-20">
-            <button className="rounded border border-background-700 px-2 py-1 text-xs" onClick={() => setDynamicItems((count) => count === 2 ? 18 : 2)}>
+            <button
+              className="rounded border border-background-700 px-2 py-1 text-xs"
+              onClick={() => setDynamicItems((count) => (count === 2 ? 18 : 2))}
+            >
               Toggle content
             </button>
           </div>
           <Scroll inline maxHeight="100%">
-            {items.slice(0, dynamicItems).map((item) => <div className="border-b border-background-700 p-2" key={item}>{item}</div>)}
+            {items.slice(0, dynamicItems).map((item) => (
+              <div className="border-b border-background-700 p-2" key={item}>
+                {item}
+              </div>
+            ))}
           </Scroll>
         </Example>
 
@@ -91,10 +111,16 @@ export default function ScrollDevPage() {
         <div className="relative h-32 overflow-hidden border border-amber-500/70 bg-amber-500/15 pb-4">
           <Scroll inline direction="horizontal" maxWidth="100%">
             <div className="flex h-full w-max gap-3 p-2">
-              {items.slice(0, 8).map((item) => <div className="w-40 shrink-0 rounded border border-background-700 p-3" key={item}>{item}</div>)}
+              {items.slice(0, 8).map((item) => (
+                <div className="w-40 shrink-0 rounded border border-background-700 p-3" key={item}>
+                  {item}
+                </div>
+              ))}
             </div>
           </Scroll>
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-4 text-center text-[8px] text-amber-700">16px reserved inline scrollbar space</span>
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-4 text-center text-[8px] text-amber-700">
+            16px reserved inline scrollbar space
+          </span>
         </div>
       </section>
     </main>

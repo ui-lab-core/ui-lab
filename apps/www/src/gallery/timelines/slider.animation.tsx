@@ -2,11 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 export function SliderAnimation() {
   const [stage, setStage] = useState<"idle" | "hover" | "drag">("idle");

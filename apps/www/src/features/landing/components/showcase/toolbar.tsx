@@ -20,8 +20,7 @@ interface ShowcaseToolbarProps {
 }
 
 export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) {
-  const { currentThemeColors, setCurrentThemeColors, currentThemeMode } =
-    useApp();
+  const { currentThemeColors, setCurrentThemeColors, currentThemeMode } = useApp();
   const { applyAndPersistColors } = useThemeStorage({
     onColorsChange: setCurrentThemeColors,
     currentThemeMode,
@@ -30,21 +29,19 @@ export function ShowcaseToolbar({ value, onValueChange }: ShowcaseToolbarProps) 
   const backgroundHue = colors.background.c <= 0.005 ? 0 : colors.background.h;
 
   const applyBackground = (hue: number) => {
-    applyAndPersistColors(
-      setThemeColorFromHue(colors, "background", hue, currentThemeMode),
-    );
+    applyAndPersistColors(setThemeColorFromHue(colors, "background", hue, currentThemeMode));
   };
 
   return (
     <div className="flex w-full min-w-0 flex-col items-stretch p-2 sm:flex-row sm:items-center sm:justify-between">
-      <Tabs
-        value={value} onValueChange={onValueChange}>
+      <Tabs value={value} onValueChange={onValueChange}>
         <Tabs.List
           className="w-full max-w-full overflow-x-auto rounded-full border border-background-700 bg-background-950 px-[4px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit"
           styles={{
-            indicator: "bg-background-700 rounded-full"
+            indicator: "bg-background-700 rounded-full",
           }}
-          aria-label="Showcase categories" >
+          aria-label="Showcase categories"
+        >
           {tabs.map(({ value, label }) => (
             <Tabs.Trigger
               key={value}

@@ -1,34 +1,34 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Expand, Flex, Group } from 'ui-lab-components';
-import { FaCheck, FaFileLines } from '@/shared/icons/fa6';
+import { useState } from "react";
+import { Expand, Flex, Group } from "ui-lab-components";
+import { FaCheck, FaFileLines } from "@/shared/icons/fa6";
 
 export function CopyPage() {
   const [copiedLines, setCopiedLines] = useState<number | null>(null);
 
   const handleCopy = async () => {
     try {
-      const docContent = document.getElementById('doc-content');
+      const docContent = document.getElementById("doc-content");
       if (!docContent) {
-        console.error('Doc content not found');
+        console.error("Doc content not found");
         return;
       }
 
       const html = docContent.innerHTML;
-      const { default: TurndownService } = await import('turndown');
+      const { default: TurndownService } = await import("turndown");
       const turndownService = new TurndownService({
-        headingStyle: 'atx',
-        codeBlockStyle: 'fenced',
-        bulletListMarker: '-',
+        headingStyle: "atx",
+        codeBlockStyle: "fenced",
+        bulletListMarker: "-",
       });
 
       const markdown = turndownService.turndown(html);
       await navigator.clipboard.writeText(markdown);
-      setCopiedLines(markdown.split('\n').length);
+      setCopiedLines(markdown.split("\n").length);
       setTimeout(() => setCopiedLines(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   };
 
@@ -37,10 +37,14 @@ export function CopyPage() {
       <Expand.Trigger className="rounded-none">
         <Flex className="h-12 w-full cursor-pointer">
           <span className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
-            {copiedLines !== null ? <FaCheck size={12} className="text-foreground-400" /> : <FaFileLines />}
+            {copiedLines !== null ? (
+              <FaCheck size={12} className="text-foreground-400" />
+            ) : (
+              <FaFileLines />
+            )}
           </span>
           <span className="flex w-full items-center justify-start pl-4 text-sm font-medium text-foreground-300">
-            {copiedLines !== null ? `Copied ${copiedLines} lines!` : 'Copy Markdown'}
+            {copiedLines !== null ? `Copied ${copiedLines} lines!` : "Copy Markdown"}
             <Expand.Icon className="ml-auto bg-transparent text-foreground-400" />
           </span>
         </Flex>

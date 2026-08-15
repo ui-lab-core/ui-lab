@@ -1,6 +1,6 @@
-export { ElementPreviewContent } from "./components/preview";
+;
 export { WorkshopPreview } from "./components/workshop-preview";
-export type { WorkshopFullscreenTarget } from "./components/workshop-preview";
+;
 export { ElementsGridClient } from "./components/grid-client";
 export { ElementsLayoutToggle } from "./components/ui/layout-toggle";
 export { Toolbar } from "./components/toolbar";

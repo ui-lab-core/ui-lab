@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { elementsList } from '@ui-lab-core/library/catalog';
+import { elementsList } from "@ui-lab-core/library/catalog";
 
 function buildSourceCodeMap(): Record<string, string> {
   const map: Record<string, string> = {};
@@ -21,6 +21,6 @@ function buildSourceCodeMap(): Record<string, string> {
 
 const sourceCodeMap = buildSourceCodeMap();
 
-export function getElementSourceCode(demoPath: string): string | null {
+function getElementSourceCode(demoPath: string): string | null {
   return sourceCodeMap[demoPath] || null;
 }

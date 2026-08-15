@@ -44,7 +44,7 @@
   "guidelines": {
     "colorClass": "text-foreground-300",
     "idleOpacity": 0.15,
-    "hoverOpacity": 0.30
+    "hoverOpacity": 0.3
   },
   "accentOutline": {
     "colorClass": "text-accent-500",

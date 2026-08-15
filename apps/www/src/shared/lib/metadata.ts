@@ -56,7 +56,11 @@ export function generateMetadata(config: SiteMetadataConfig = {}): Metadata {
   }
 
   const baseUrl = DEFAULT_SITE_CONFIG.baseUrl;
-  const canonicalUrl = canonical ? `${baseUrl}${canonical}` : pathname ? `${baseUrl}${pathname}` : baseUrl;
+  const canonicalUrl = canonical
+    ? `${baseUrl}${canonical}`
+    : pathname
+      ? `${baseUrl}${pathname}`
+      : baseUrl;
   const fullOgImage = ogImage.startsWith("http") ? ogImage : `${baseUrl}${ogImage}`;
 
   const metadata: Metadata = {

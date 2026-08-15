@@ -1,7 +1,11 @@
-import ElementDetailClient from './client';
-import { elementRegistry, getAllPackages, getElementsInPackage } from '@ui-lab-core/library/catalog';
-import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
-import { extractElementMetadata } from '@/shared/lib/metadata-extractors';
+import ElementDetailClient from "./client";
+import {
+  elementRegistry,
+  getAllPackages,
+  getElementsInPackage,
+} from "@ui-lab-core/library/catalog";
+import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
+import { extractElementMetadata } from "@/shared/lib/metadata-extractors";
 
 export function generateStaticParams() {
   const packages = getAllPackages();
@@ -13,15 +17,15 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params
+  params,
 }: {
-  params: Promise<{ id: string; elementId: string }>
+  params: Promise<{ id: string; elementId: string }>;
 }) {
   const { elementId } = await params;
   const element = elementRegistry[elementId as keyof typeof elementRegistry];
 
   if (!element) {
-    return generateSiteMetadata({ title: 'Element Not Found' });
+    return generateSiteMetadata({ title: "Element Not Found" });
   }
 
   const extracted = extractElementMetadata(element);
@@ -32,9 +36,9 @@ export async function generateMetadata({
 }
 
 export default async function PackageElementDetailPage({
-  params
+  params,
 }: {
-  params: Promise<{ id: string; elementId: string }>
+  params: Promise<{ id: string; elementId: string }>;
 }) {
   const { elementId } = await params;
   return <ElementDetailClient elementId={elementId} />;

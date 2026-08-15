@@ -8,22 +8,10 @@
     "exportName": "Confirm",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "modal",
-    "button",
-    "card"
-  ],
-  "tags": [
-    "dialog",
-    "confirm",
-    "safety"
-  ],
+  "relatedComponents": ["modal", "button", "card"],
+  "tags": ["dialog", "confirm", "safety"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Focus management",
-      "Clear action buttons",
-      "Alert dialog role"
-    ]
+    "notes": ["Focus management", "Clear action buttons", "Alert dialog role"]
   }
 }

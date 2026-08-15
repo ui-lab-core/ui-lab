@@ -1,6 +1,6 @@
-import React from 'react';
-import { Group } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
+import React from "react";
+import { Group } from "ui-lab-components";
+import { ControlDef, ComponentDetail } from "@/types";
 
 const groupBasicCode = `import { Group } from "ui-lab-components";
 
@@ -28,14 +28,19 @@ export function Example() {
 export const groupDetail: ComponentDetail = {
   id: "group",
   name: "Group",
-  description: "A compound component for grouping related form controls and buttons with consistent spacing and styling.",
+  description:
+    "A compound component for grouping related form controls and buttons with consistent spacing and styling.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Group component is a container that groups related buttons, inputs, and selects together. It provides consistent spacing, alignment, and visual cohesion for related form controls.
+        The Group component is a container that groups related buttons, inputs, and selects
+        together. It provides consistent spacing, alignment, and visual cohesion for related form
+        controls.
       </p>
       <p>
-        Use it to create button groups, search filters, or any collection of related controls that should appear as a unified unit. It supports horizontal and vertical layouts, adjustable spacing, and automatic dividers between items.
+        Use it to create button groups, search filters, or any collection of related controls that
+        should appear as a unified unit. It supports horizontal and vertical layouts, adjustable
+        spacing, and automatic dividers between items.
       </p>
     </div>
   ),

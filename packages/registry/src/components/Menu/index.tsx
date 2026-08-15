@@ -1,8 +1,7 @@
-import React from 'react';
-import { Menu } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
-import { FaArrowsRotate, FaStar, FaTrash } from 'react-icons/fa6';
-
+import React from "react";
+import { Menu } from "ui-lab-components";
+import { ControlDef, ComponentDetail } from "@/types";
+import { FaArrowsRotate, FaStar, FaTrash } from "react-icons/fa6";
 
 const menuControls: ControlDef[] = [];
 
@@ -29,10 +28,13 @@ export const menuDetail: ComponentDetail = {
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        Context menus provide users with a set of options relevant to the current context, typically triggered by right-clicking on an element. They're essential for desktop-like interactions and can include items, separators, checkboxes, radio buttons, and nested submenus.
+        Context menus provide users with a set of options relevant to the current context, typically
+        triggered by right-clicking on an element. They're essential for desktop-like interactions
+        and can include items, separators, checkboxes, radio buttons, and nested submenus.
       </p>
       <p>
-        Use context menus to provide quick access to common actions, editing options, or context-specific commands.
+        Use context menus to provide quick access to common actions, editing options, or
+        context-specific commands.
       </p>
     </div>
   ),
@@ -45,7 +47,7 @@ export const menuDetail: ComponentDetail = {
       code: menuBasicCode,
       preview: (
         <Menu>
-          <Menu.Trigger className="flex items-center justify-center rounded-md border-2 border-dashed border-background-600 p-12 w-full cursor-context-menu select-none text-foreground-300 hover:border-background-500 transition-colors">
+          <Menu.Trigger className="flex w-full cursor-context-menu items-center justify-center rounded-md border-2 border-dashed border-background-600 p-12 text-foreground-300 transition-colors select-none hover:border-background-500">
             Right click here
           </Menu.Trigger>
           <Menu.Content>
@@ -55,7 +57,7 @@ export const menuDetail: ComponentDetail = {
           </Menu.Content>
         </Menu>
       ),
-    }
+    },
   ],
 
   variants: [
@@ -66,7 +68,7 @@ export const menuDetail: ComponentDetail = {
       code: menuBasicCode,
       preview: (
         <Menu>
-          <Menu.Trigger className="flex items-center justify-center rounded-md border-2 border-dashed border-background-600 p-8 cursor-context-menu select-none text-foreground-300">
+          <Menu.Trigger className="flex cursor-context-menu items-center justify-center rounded-md border-2 border-dashed border-background-600 p-8 text-foreground-300 select-none">
             Right click
           </Menu.Trigger>
           <Menu.Content>

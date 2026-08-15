@@ -66,7 +66,7 @@ function formatRem(value: number): string {
   return `${formatCssNumber(value)}rem`;
 }
 
-export function roundFontSizePx(
+function roundFontSizePx(
   valuePx: number,
   stepPx: number = DEFAULT_FONT_SIZE_ROUNDING_STEP_PX,
 ): number {
@@ -90,10 +90,8 @@ function deriveRoleTypographyVars(
   scale: number,
   minFontSizePx: number,
 ): Record<string, string> {
-  const baseline =
-    role === "header" ? HEADER_BASELINE_REM : BODY_BASELINE_REM;
-  const defaultScale =
-    role === "header" ? DEFAULT_HEADER_SCALE : DEFAULT_BODY_SCALE;
+  const baseline = role === "header" ? HEADER_BASELINE_REM : BODY_BASELINE_REM;
+  const defaultScale = role === "header" ? DEFAULT_HEADER_SCALE : DEFAULT_BODY_SCALE;
   const multiplier = getScaleMultiplier(scale, defaultScale);
   const minSizeRem = pxToRem(minFontSizePx);
   const prefix = role === "header" ? "header-text" : "text";
@@ -111,21 +109,14 @@ function deriveRoleTypographyVars(
   }
 
   const scaleOffset = clampScale(scale) - defaultScale;
-  const leading =
-    role === "header"
-      ? 1.25 - scaleOffset * 0.4
-      : 1.64 - scaleOffset * 0.48;
+  const leading = role === "header" ? 1.25 - scaleOffset * 0.4 : 1.64 - scaleOffset * 0.48;
   vars[`--leading-${role}`] = formatCssNumber(leading);
 
   const tracking = -scaleOffset * (role === "header" ? 0.04 : 0.02);
-  const trackingNames =
-    role === "header" ? ["sm", "md", "lg", "xl"] : textSizeNames;
+  const trackingNames = role === "header" ? ["sm", "md", "lg", "xl"] : textSizeNames;
   trackingNames.forEach((name) => {
-    vars[
-      role === "header"
-        ? `--letter-spacing-header-${name}`
-        : `--letter-spacing-${name}`
-    ] = `${formatCssNumber(tracking, 4)}em`;
+    vars[role === "header" ? `--letter-spacing-header-${name}` : `--letter-spacing-${name}`] =
+      `${formatCssNumber(tracking, 4)}em`;
   });
 
   const weightBaseline = role === "header" ? WEIGHTS : BODY_WEIGHT_BASELINE;
@@ -158,12 +149,7 @@ export function generateTypographyCSS(
   bodyMinFontSizePx: number,
 ): string {
   return Object.entries(
-    generateTypographyVars(
-      headerScale,
-      bodyScale,
-      headerMinFontSizePx,
-      bodyMinFontSizePx,
-    ),
+    generateTypographyVars(headerScale, bodyScale, headerMinFontSizePx, bodyMinFontSizePx),
   )
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
@@ -177,16 +163,9 @@ export function generateCodeTypographyVars(
   monoMinFontSizePx: number = 13,
 ): Record<string, string> {
   const codeSizeRem = pxToRem(
-    roundFontSizePx(
-      remToPx(
-        Math.max(0.875 * monoFontSizeScale, pxToRem(monoMinFontSizePx)),
-      ),
-    ),
+    roundFontSizePx(remToPx(Math.max(0.875 * monoFontSizeScale, pxToRem(monoMinFontSizePx)))),
   );
-  const codeWeight = Math.max(
-    100,
-    Math.min(900, Math.round(400 * monoFontWeightScale)),
-  );
+  const codeWeight = Math.max(100, Math.min(900, Math.round(400 * monoFontWeightScale)));
   const letterSpacing = (monoLetterSpacingScale - 1) * 0.01;
 
   return {

@@ -1,48 +1,59 @@
-'use client';
+"use client";
 
-import { lazy, Suspense, useCallback, useState } from 'react';
-import { Flex } from 'ui-lab-components/flex';
-import { Tabs } from 'ui-lab-components/tabs';
+import { lazy, Suspense, useCallback, useState } from "react";
+import { Flex } from "ui-lab-components/flex";
+import { Tabs } from "ui-lab-components/tabs";
 
-const loadAPI = () => import('./api-panel');
-const loadStyles = () => import('./styles-panel');
+const loadAPI = () => import("./api-panel");
+const loadStyles = () => import("./styles-panel");
 const API = lazy(loadAPI);
 const Styles = lazy(loadStyles);
 
-type Tab = 'examples' | 'api' | 'styles';
+type Tab = "examples" | "api" | "styles";
 
-export function Content({ examples, componentId, actions }: {
+export function Content({
+  examples,
+  componentId,
+  actions,
+}: {
   examples: React.ReactNode;
   componentId: string;
   actions?: React.ReactNode;
 }) {
-  const [active, setActive] = useState<Tab>('examples');
-  const [visited, setVisited] = useState<Set<Tab>>(() => new Set(['examples']));
+  const [active, setActive] = useState<Tab>("examples");
+  const [visited, setVisited] = useState<Set<Tab>>(() => new Set(["examples"]));
 
   const select = (value: string) => {
     const tab = value as Tab;
     setActive(tab);
     setVisited((current) => new Set(current).add(tab));
-    window.dispatchEvent(new CustomEvent('component-detail-tab', { detail: tab }));
+    window.dispatchEvent(new CustomEvent("component-detail-tab", { detail: tab }));
   };
 
-  const preload = useCallback((tab: Tab) => {
-    const pending = tab === 'api'
-      ? loadAPI().then((module) => module.preload(componentId))
-      : tab === 'styles'
-        ? loadStyles().then((module) => module.preload(componentId))
-        : null;
-    void pending?.catch((error) => console.error(error));
-  }, [componentId]);
+  const preload = useCallback(
+    (tab: Tab) => {
+      const pending =
+        tab === "api"
+          ? loadAPI().then((module) => module.preload(componentId))
+          : tab === "styles"
+            ? loadStyles().then((module) => module.preload(componentId))
+            : null;
+      void pending?.catch((error) => console.error(error));
+    },
+    [componentId],
+  );
 
-  const prepareHoveredTab = useCallback((event: React.SyntheticEvent<HTMLDivElement>) => {
-    const trigger = (event.target as Element).closest<HTMLElement>('[data-tabs-value]');
-    if (!trigger?.dataset.tabsValue) return;
+  const prepareHoveredTab = useCallback(
+    (event: React.SyntheticEvent<HTMLDivElement>) => {
+      const trigger = (event.target as Element).closest<HTMLElement>("[data-tabs-value]");
+      if (!trigger?.dataset.tabsValue) return;
 
-    const tab = trigger.dataset.tabsValue as Tab;
-    setVisited((current) => current.has(tab) ? current : new Set(current).add(tab));
-    preload(tab);
-  }, [preload]);
+      const tab = trigger.dataset.tabsValue as Tab;
+      setVisited((current) => (current.has(tab) ? current : new Set(current).add(tab)));
+      preload(tab);
+    },
+    [preload],
+  );
 
   return (
     <Tabs variant="underline" value={active} onValueChange={select}>
@@ -59,14 +70,14 @@ export function Content({ examples, componentId, actions }: {
       <Tabs.Content value="examples" className="mt-6">
         {examples}
       </Tabs.Content>
-      {visited.has('api') ? (
+      {visited.has("api") ? (
         <PersistentContent value="api" active={active}>
           <Suspense fallback={<Status />}>
             <API componentId={componentId} />
           </Suspense>
         </PersistentContent>
       ) : null}
-      {visited.has('styles') ? (
+      {visited.has("styles") ? (
         <PersistentContent value="styles" active={active}>
           <Suspense fallback={<Status />}>
             <Styles componentId={componentId} />
@@ -77,7 +88,11 @@ export function Content({ examples, componentId, actions }: {
   );
 }
 
-function PersistentContent({ value, active, children }: {
+function PersistentContent({
+  value,
+  active,
+  children,
+}: {
   value: Tab;
   active: Tab;
   children: React.ReactNode;
@@ -97,5 +112,9 @@ function PersistentContent({ value, active, children }: {
 }
 
 function Status() {
-  return <p className="py-8 text-foreground-400" role="status">Loading documentation…</p>;
+  return (
+    <p className="py-8 text-foreground-400" role="status">
+      Loading documentation…
+    </p>
+  );
 }

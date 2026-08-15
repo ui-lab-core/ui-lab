@@ -8,21 +8,10 @@
     "exportName": "Progress",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "slider"
-  ],
-  "tags": [
-    "feedback",
-    "status",
-    "progress"
-  ],
+  "relatedComponents": ["slider"],
+  "tags": ["feedback", "status", "progress"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "ARIA progressbar role",
-      "aria-valuenow",
-      "aria-valuemin",
-      "aria-valuemax"
-    ]
+    "notes": ["ARIA progressbar role", "aria-valuenow", "aria-valuemin", "aria-valuemax"]
   }
 }

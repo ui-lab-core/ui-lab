@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { HeaderClient } from "@/features/layout/components/header/client";
 import { SidebarProvider } from "@/features/layout/hooks/sidebar-context";
@@ -20,9 +20,7 @@ export function ClientShell({
       <SidebarProvider>
         <LandingSidebarProvider>
           <HeaderClient showNavigation={showNavigation} />
-          <main className="flex-1">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
         </LandingSidebarProvider>
       </SidebarProvider>
     </DocsNavigationProvider>

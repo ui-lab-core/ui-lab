@@ -8,21 +8,10 @@
     "exportName": "Popover",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "tooltip",
-    "modal"
-  ],
-  "tags": [
-    "overlay",
-    "content",
-    "information"
-  ],
+  "relatedComponents": ["tooltip", "modal"],
+  "tags": ["overlay", "content", "information"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Focus management",
-      "Dismissible",
-      "Keyboard support"
-    ]
+    "notes": ["Focus management", "Dismissible", "Keyboard support"]
   }
 }

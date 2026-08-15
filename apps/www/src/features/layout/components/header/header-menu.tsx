@@ -68,10 +68,7 @@ export function HeaderMenu() {
             <FaTags size={14} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Changelog</span>
           </Menu.Item>
-          <Menu.Item
-            onSelect={() => setIsSettingsPanelOpen(true)}
-            textValue="Theme settings"
-          >
+          <Menu.Item onSelect={() => setIsSettingsPanelOpen(true)} textValue="Theme settings">
             <FaPaintRoller size={14} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Theme settings</span>
             <Menu.Shortcut>T</Menu.Shortcut>

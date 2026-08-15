@@ -8,14 +8,19 @@ export function HeroSection() {
           <div className="flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-0">
             <div className="min-w-0">
               <h1 className="mb-5 max-w-[30ch] text-balance text-3xl font-semibold leading-snug tracking-normal text-foreground-100 md:text-4xl">
-                Make your Interfaces <br />Stand out in the era of Slop
+                Make your Interfaces <br />
+                Stand out in the era of Slop
               </h1>
               <h2 className="text-base font-medium leading-6 tracking-normal text-foreground-400 sm:text-md sm:leading-[28.8px]">
                 Your agent&apos;s favorite UI Library.
               </h2>
             </div>
             <div className="flex w-full flex-wrap gap-3 md:mb-0 md:mt-8 md:w-fit md:shrink-0 md:gap-4">
-              <Button className="bg-background-600 text-foreground-100 rounded-full" variant="primary" href="/docs">
+              <Button
+                className="bg-background-600 text-foreground-100 rounded-full"
+                variant="primary"
+                href="/docs"
+              >
                 Get Started
               </Button>
               <Button className="rounded-full" variant="secondary" href="/components">

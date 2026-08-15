@@ -7,16 +7,11 @@ import {
   getPatternById,
   getSectionById,
   getStarterById,
-} from '@ui-lab-core/library/catalog';
-import { getElementEntry, listElements } from '@ui-lab-core/library/server';
-import type { ElementSourceEntry } from '@ui-lab-core/library/server';
+} from "@ui-lab-core/library/catalog";
+import { getElementEntry, listElements } from "@ui-lab-core/library/server";
+import type { ElementSourceEntry } from "@ui-lab-core/library/server";
 
-export type WorkshopKind =
-  | 'example'
-  | 'pattern'
-  | 'element'
-  | 'section'
-  | 'starter';
+export type WorkshopKind = "example" | "pattern" | "element" | "section" | "starter";
 
 export interface WorkshopSummary {
   ref: string;
@@ -51,7 +46,10 @@ interface VariationLike {
 }
 
 function normalize(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
 function variationId(variation: VariationLike, index: number): string {
@@ -67,31 +65,30 @@ function summarizeVariations(variations: VariationLike[] | undefined) {
 }
 
 function publicComponentExamples(): ElementSourceEntry[] {
-  return listElements('components').filter(
-    (entry) =>
-      entry.previewEligible && entry.visibility === 'public' && entry.access === 'free'
+  return listElements("components").filter(
+    (entry) => entry.previewEligible && entry.visibility === "public" && entry.access === "free",
   );
 }
 
 function buildIndex(): IndexedWorkshopItem[] {
   const examples = publicComponentExamples().map((entry) => {
-    const componentId = entry.groupPath[0] ?? 'component';
+    const componentId = entry.groupPath[0] ?? "component";
     const id = `${componentId}/${entry.id}`;
     return {
       ref: `example:${id}`,
-      kind: 'example' as const,
+      kind: "example" as const,
       id,
       name: entry.displayName,
       description: entry.description,
       category: componentId,
-      tags: [componentId, 'component', 'example'],
+      tags: [componentId, "component", "example"],
       example: entry,
     };
   });
 
   const patterns = getAllPatterns().map((pattern) => ({
     ref: `pattern:${pattern.id}`,
-    kind: 'pattern' as const,
+    kind: "pattern" as const,
     id: pattern.id,
     name: pattern.name,
     description: pattern.description,
@@ -102,7 +99,7 @@ function buildIndex(): IndexedWorkshopItem[] {
 
   const elements = elementsList.map((element) => ({
     ref: `element:${element.id}`,
-    kind: 'element' as const,
+    kind: "element" as const,
     id: element.id,
     name: element.name,
     description: element.description,
@@ -115,7 +112,7 @@ function buildIndex(): IndexedWorkshopItem[] {
 
   const sections = getAllSections().map((section) => ({
     ref: `section:${section.id}`,
-    kind: 'section' as const,
+    kind: "section" as const,
     id: section.id,
     name: section.name,
     description: section.description,
@@ -128,7 +125,7 @@ function buildIndex(): IndexedWorkshopItem[] {
 
   const starters = getAllStarters().map((starter) => ({
     ref: `starter:${starter.id}`,
-    kind: 'starter' as const,
+    kind: "starter" as const,
     id: starter.id,
     name: starter.name,
     description: starter.description,
@@ -163,20 +160,20 @@ function score(item: WorkshopSummary, query: string): number {
   if (normalizedId.startsWith(normalizedQuery)) total += 80;
   if (normalizedName.startsWith(normalizedQuery)) total += 70;
 
-  const idTerms = new Set(normalizedId.split(' '));
-  const nameTerms = new Set(normalizedName.split(' '));
+  const idTerms = new Set(normalizedId.split(" "));
+  const nameTerms = new Set(normalizedName.split(" "));
   const tagTerms = item.tags.map(normalize);
   const searchable = normalize(
     [
-      item.description ?? '',
+      item.description ?? "",
       item.category,
       ...item.tags,
       ...(item.componentDependencies ?? []),
       ...(item.variations?.flatMap((variation) => [variation.id, variation.name]) ?? []),
-    ].join(' ')
+    ].join(" "),
   );
 
-  for (const term of normalizedQuery.split(' ').filter(Boolean)) {
+  for (const term of normalizedQuery.split(" ").filter(Boolean)) {
     if (idTerms.has(term)) total += 45;
     if (nameTerms.has(term)) total += 40;
     if (tagTerms.some((tag) => tag === term)) total += 30;
@@ -186,31 +183,28 @@ function score(item: WorkshopSummary, query: string): number {
   return total;
 }
 
-function filterByKind(items: IndexedWorkshopItem[], kind?: WorkshopKind | 'all') {
-  return !kind || kind === 'all' ? items : items.filter((item) => item.kind === kind);
+function filterByKind(items: IndexedWorkshopItem[], kind?: WorkshopKind | "all") {
+  return !kind || kind === "all" ? items : items.filter((item) => item.kind === kind);
 }
 
 function normalizeExampleReference(value: string): string {
-  const withoutPrefix = value.replace(/^example:/i, '');
-  const [componentId, exampleId, ...rest] = withoutPrefix.split('/');
+  const withoutPrefix = value.replace(/^example:/i, "");
+  const [componentId, exampleId, ...rest] = withoutPrefix.split("/");
   if (!componentId || !exampleId || rest.length > 0) return withoutPrefix;
-  return `${componentId}/${exampleId.replace(/^\d+-/, '')}`;
+  return `${componentId}/${exampleId.replace(/^\d+-/, "")}`;
 }
 
-function findExact(
-  query: string,
-  kind?: WorkshopKind | 'all'
-): IndexedWorkshopItem | null {
+function findExact(query: string, kind?: WorkshopKind | "all"): IndexedWorkshopItem | null {
   const candidates = filterByKind(getIndex(), kind);
   const lower = query.toLowerCase();
   const direct = candidates.find(
-    (item) => item.ref.toLowerCase() === lower || item.id.toLowerCase() === lower
+    (item) => item.ref.toLowerCase() === lower || item.id.toLowerCase() === lower,
   );
   if (direct) return direct;
 
   const normalizedExample = normalizeExampleReference(query).toLowerCase();
   const example = candidates.find(
-    (item) => item.kind === 'example' && item.id.toLowerCase() === normalizedExample
+    (item) => item.kind === "example" && item.id.toLowerCase() === normalizedExample,
   );
   if (example) return example;
 
@@ -220,7 +214,7 @@ function findExact(
 
 function resolveVariation(
   variations: VariationLike[] | undefined,
-  specifier?: string
+  specifier?: string,
 ): VariationLike | null {
   if (!variations?.length) return null;
   if (!specifier) return variations[0];
@@ -233,8 +227,7 @@ function resolveVariation(
   return (
     variations.find(
       (variation) =>
-        variation.id?.toLowerCase() === lower ||
-        variation.demoPath?.toLowerCase() === lower
+        variation.id?.toLowerCase() === lower || variation.demoPath?.toLowerCase() === lower,
     ) ??
     variations.find((variation) => variation.name?.toLowerCase().includes(lower)) ??
     null
@@ -242,11 +235,11 @@ function resolveVariation(
 }
 
 function fullExample(item: IndexedWorkshopItem) {
-  const [componentId, exampleId] = item.id.split('/');
+  const [componentId, exampleId] = item.id.split("/");
   const example =
     item.example ??
-    getElementEntry('components', exampleId) ??
-    getElementEntry('components', exampleId.replace(/^\d+-/, ''));
+    getElementEntry("components", exampleId) ??
+    getElementEntry("components", exampleId.replace(/^\d+-/, ""));
   if (!example || example.groupPath[0] !== componentId) return null;
 
   return {
@@ -290,17 +283,13 @@ function fullPattern(item: IndexedWorkshopItem, variation?: string) {
           description: selected.description,
           code: selected.code,
         }
-      : { id: 'main', name: pattern.name, code: pattern.code },
+      : { id: "main", name: pattern.name, code: pattern.code },
     availableVariations: summarizeVariations(pattern.variations),
   };
 }
 
-function fullCatalogItem(
-  item: IndexedWorkshopItem,
-  variation?: string
-) {
-  const catalogItem =
-    item.kind === 'element' ? getElementById(item.id) : getSectionById(item.id);
+function fullCatalogItem(item: IndexedWorkshopItem, variation?: string) {
+  const catalogItem = item.kind === "element" ? getElementById(item.id) : getSectionById(item.id);
   if (!catalogItem) return null;
 
   const selected = resolveVariation(catalogItem.variants, variation);
@@ -351,8 +340,8 @@ function fullStarter(item: IndexedWorkshopItem) {
 
 export function searchWorkshop(
   query: string,
-  kind: WorkshopKind | 'all' = 'all',
-  limit = 5
+  kind: WorkshopKind | "all" = "all",
+  limit = 5,
 ): WorkshopSummary[] {
   return filterByKind(getIndex(), kind)
     .map((item) => ({ item, score: score(item, query) }))
@@ -361,7 +350,7 @@ export function searchWorkshop(
       (a, b) =>
         b.score - a.score ||
         a.item.kind.localeCompare(b.item.kind) ||
-        a.item.name.localeCompare(b.item.name)
+        a.item.name.localeCompare(b.item.name),
     )
     .slice(0, Math.min(10, Math.max(1, limit)))
     .map(({ item }) => ({
@@ -380,15 +369,15 @@ export function searchWorkshop(
 
 export function getWorkshopItem(
   query: string,
-  kind: WorkshopKind | 'all' = 'all',
-  variation?: string
+  kind: WorkshopKind | "all" = "all",
+  variation?: string,
 ): WorkshopItem | null {
   const item = findExact(query, kind);
   if (!item) return null;
 
-  if (item.kind === 'example') return fullExample(item);
-  if (item.kind === 'pattern') return fullPattern(item, variation);
-  if (item.kind === 'element' || item.kind === 'section') {
+  if (item.kind === "example") return fullExample(item);
+  if (item.kind === "pattern") return fullPattern(item, variation);
+  if (item.kind === "element" || item.kind === "section") {
     return fullCatalogItem(item, variation);
   }
   return fullStarter(item);

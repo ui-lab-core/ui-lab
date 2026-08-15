@@ -46,7 +46,7 @@ function TasteSection() {
         if (total <= 0) return;
         const progress = Math.min(1, Math.max(0, -rect.top / total));
         const nextActive = Math.min(steps.length - 1, Math.floor(progress * steps.length));
-        setActive((current) => current === nextActive ? current : nextActive);
+        setActive((current) => (current === nextActive ? current : nextActive));
       });
     }
     onScroll();
@@ -63,39 +63,32 @@ function TasteSection() {
     <section className="w-full border-t border-background-700">
       <div className="flex flex-col justify-center h-[20rem] px-6 md:h-[30rem]">
         <h2 className="max-w-[34ch] mx-auto text-balance text-2xl font-medium leading-tight tracking-normal text-foreground-100 sm:text-3xl md:text-5xl">
-          Software should look Built,{" "}
-          <span className="text-foreground-400">
-            not Generated.
-          </span>
+          Software should look Built, <span className="text-foreground-400">not Generated.</span>
         </h2>
       </div>
 
       <div ref={containerRef} className="relative h-[220vh] md:h-[300vh]">
         <div className="sticky top-(--header-height) flex min-h-[calc(100svh-var(--header-height))] flex-col justify-center gap-6 py-10 md:h-[calc(100vh-var(--header-height))] md:min-h-0 md:flex-row md:items-center md:gap-8 md:py-0">
           <div className="mx-auto flex w-full flex-col gap-6 px-6 md:grid md:grid-cols-[30rem_1fr] md:items-center md:gap-8 md:px-0 max-w-(--page-width)">
-
             <div className="flex h-64 flex-col md:h-auto md:pl-18">
               {steps.map(({ title, desc }, i) => (
                 <div key={title} className="relative py-3 pl-6">
                   <span
-                    className={`absolute inset-y-0 left-0 w-px ${i === active
-                      ? "bg-foreground-200"
-                      : "bg-background-700"
-                      }`}
+                    className={`absolute inset-y-0 left-0 w-px ${
+                      i === active ? "bg-foreground-200" : "bg-background-700"
+                    }`}
                   />
                   <p
-                    className={`text-lg font-medium ${i === active
-                      ? "text-foreground-100"
-                      : "text-foreground-500"
-                      }`}
+                    className={`text-lg font-medium ${
+                      i === active ? "text-foreground-100" : "text-foreground-500"
+                    }`}
                   >
                     {title}
                   </p>
                   <div
-                    className={`grid transition-[grid-template-rows,opacity] duration-300 ${i === active
-                      ? "grid-rows-[1fr] opacity-100"
-                      : "grid-rows-[0fr] opacity-0"
-                      }`}
+                    className={`grid transition-[grid-template-rows,opacity] duration-300 ${
+                      i === active ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}
                   >
                     <p className="overflow-hidden text-md text-foreground-400">
                       <span className="block pt-1.5">{desc}</span>

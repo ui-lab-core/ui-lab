@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 export function ButtonAnimation() {
   const [isHovered, setIsHovered] = useState(false);
@@ -35,7 +31,13 @@ export function ButtonAnimation() {
 
   const main = {
     idle: { x: mainButtonInitialX, y: 130, w: mainButtonWidth, h: 40, rx: config.barRx + 2 },
-    hover: { x: mainButtonInitialX - mainButtonShift, y: 130, w: mainButtonWidth, h: 40, rx: config.barRx + 2 },
+    hover: {
+      x: mainButtonInitialX - mainButtonShift,
+      y: 130,
+      w: mainButtonWidth,
+      h: 40,
+      rx: config.barRx + 2,
+    },
   };
 
   const button = isHovered ? main.hover : main.idle;
@@ -43,7 +45,7 @@ export function ButtonAnimation() {
   const sq2XHover = sq1XHover + squareSize + gap;
 
   const sq1 = {
-    x: isHovered ? sq1XHover : (mainButtonInitialX + mainButtonWidth + gap),
+    x: isHovered ? sq1XHover : mainButtonInitialX + mainButtonWidth + gap,
     y: button.y + (button.h - squareSize) / 2,
     w: squareSize,
     h: squareSize,
@@ -51,7 +53,7 @@ export function ButtonAnimation() {
   };
 
   const sq2 = {
-    x: isHovered ? sq2XHover : (mainButtonInitialX + mainButtonWidth + gap + squareSize + gap),
+    x: isHovered ? sq2XHover : mainButtonInitialX + mainButtonWidth + gap + squareSize + gap,
     y: sq1.y,
     w: squareSize,
     h: squareSize,
@@ -137,7 +139,9 @@ export function ButtonAnimation() {
               rx={button.rx}
               className="text-background-950"
               fill="currentColor"
-              style={{ transition: `${config.transition}, x ${config.transition.split(" ")[1]}, width \${config.transition.split(" ")[1]}` }}
+              style={{
+                transition: `${config.transition}, x ${config.transition.split(" ")[1]}, width \${config.transition.split(" ")[1]}`,
+              }}
             />
             {/* Surface layer – animates width & x */}
             <rect
@@ -153,7 +157,9 @@ export function ButtonAnimation() {
               style={{
                 transition: `${config.transition}, x ${config.transition.split(" ")[1]}, width ${config.transition.split(" ")[1]}`,
                 fillOpacity: isHovered ? 0.05 : config.highlight.idleFillOpacity,
-                strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity: isHovered
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
 

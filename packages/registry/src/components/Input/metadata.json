@@ -8,22 +8,10 @@
     "exportName": "Input",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "label",
-    "form",
-    "group"
-  ],
-  "tags": [
-    "form",
-    "text",
-    "user-input"
-  ],
+  "relatedComponents": ["label", "form", "group"],
+  "tags": ["form", "text", "user-input"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Works with label elements",
-      "Supports placeholder text",
-      "Keyboard accessible"
-    ]
+    "notes": ["Works with label elements", "Supports placeholder text", "Keyboard accessible"]
   }
 }

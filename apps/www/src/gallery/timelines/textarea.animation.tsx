@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 function getRoundedRectPath(
-  x: number, y: number, w: number, h: number,
-  r: { tl: number; tr: number; bl: number; br: number }
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
 ) {
   return `
     M ${x + r.tl} ${y}
@@ -27,9 +26,9 @@ function getRoundedRectPath(
 }
 
 export function TextareaAnimation() {
-  const [stage, setStage] = useState<
-    "idle" | "hovering" | "focused" | "typing" | "completed"
-  >("idle");
+  const [stage, setStage] = useState<"idle" | "hovering" | "focused" | "typing" | "completed">(
+    "idle",
+  );
   const [typingProgress, setTypingProgress] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -44,26 +43,30 @@ export function TextareaAnimation() {
     const handleEnter = () => {
       setStage("hovering");
 
-      timers.push(setTimeout(() => {
-        setStage("focused");
-      }, 600));
+      timers.push(
+        setTimeout(() => {
+          setStage("focused");
+        }, 600),
+      );
 
-      timers.push(setTimeout(() => {
-        setStage("typing");
-        let start: number | null = null;
-        const duration = 1400;
-        const step = (timestamp: number) => {
-          if (!start) start = timestamp;
-          const progress = Math.min((timestamp - start) / duration, 1);
-          setTypingProgress(progress);
-          if (progress < 1) {
-            animationFrame = requestAnimationFrame(step);
-          } else {
-            setStage("completed");
-          }
-        };
-        animationFrame = requestAnimationFrame(step);
-      }, 1100));
+      timers.push(
+        setTimeout(() => {
+          setStage("typing");
+          let start: number | null = null;
+          const duration = 1400;
+          const step = (timestamp: number) => {
+            if (!start) start = timestamp;
+            const progress = Math.min((timestamp - start) / duration, 1);
+            setTypingProgress(progress);
+            if (progress < 1) {
+              animationFrame = requestAnimationFrame(step);
+            } else {
+              setStage("completed");
+            }
+          };
+          animationFrame = requestAnimationFrame(step);
+        }, 1100),
+      );
     };
 
     const handleLeave = () => {
@@ -99,7 +102,7 @@ export function TextareaAnimation() {
   // Three text lines grow in sequence
   const line1W = Math.max(0, Math.min(1, typingProgress / 0.35) * 160);
   const line2W = Math.max(0, Math.min(1, (typingProgress - 0.35) / 0.35) * 130);
-  const line3W = Math.max(0, Math.min(1, (typingProgress - 0.70) / 0.30) * 90);
+  const line3W = Math.max(0, Math.min(1, (typingProgress - 0.7) / 0.3) * 90);
 
   // Caret tracks the active line
   let caretX: number;
@@ -110,7 +113,7 @@ export function TextareaAnimation() {
   } else if (typingProgress < 0.35) {
     caretX = textareaX + 16 + line1W + 2;
     caretY = textareaY + 15;
-  } else if (typingProgress < 0.70) {
+  } else if (typingProgress < 0.7) {
     caretX = textareaX + 16 + line2W + 2;
     caretY = textareaY + 31;
   } else {
@@ -143,10 +146,7 @@ export function TextareaAnimation() {
       target: { x: 310, y: 240 },
       opacity: 0,
     },
-  } satisfies Record<
-    "idle" | "hovering" | "focused" | "typing" | "completed",
-    CursorFrame
-  >;
+  } satisfies Record<"idle" | "hovering" | "focused" | "typing" | "completed", CursorFrame>;
 
   return (
     <div
@@ -186,7 +186,12 @@ export function TextareaAnimation() {
 
           {/* Textarea background */}
           <path
-            d={getRoundedRectPath(textareaX, textareaY, textareaW, textareaH, { tl: rx, tr: rx, bl: rx, br: rx })}
+            d={getRoundedRectPath(textareaX, textareaY, textareaW, textareaH, {
+              tl: rx,
+              tr: rx,
+              bl: rx,
+              br: rx,
+            })}
             className="text-background-950"
             fill="currentColor"
             style={{ transition: config.transition }}
@@ -194,7 +199,12 @@ export function TextareaAnimation() {
 
           {/* Textarea border */}
           <path
-            d={getRoundedRectPath(textareaX, textareaY, textareaW, textareaH, { tl: rx, tr: rx, bl: rx, br: rx })}
+            d={getRoundedRectPath(textareaX, textareaY, textareaW, textareaH, {
+              tl: rx,
+              tr: rx,
+              bl: rx,
+              br: rx,
+            })}
             className={isFocused ? config.highlight.hoverClass : config.highlight.idleClass}
             fill="currentColor"
             stroke="currentColor"
@@ -202,7 +212,9 @@ export function TextareaAnimation() {
             style={{
               transition: config.transition,
               fillOpacity: isFocused ? 0.05 : config.highlight.idleFillOpacity,
-              strokeOpacity: isFocused ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+              strokeOpacity: isFocused
+                ? config.highlight.hoverStrokeOpacity
+                : config.highlight.idleStrokeOpacity,
             }}
           />
 
@@ -210,15 +222,21 @@ export function TextareaAnimation() {
           <g clipPath="url(#textarea-clip)">
             {/* Placeholder lines */}
             <rect
-              x={textareaX + 16} y={textareaY + 16}
-              width={100} height={7} rx={config.barRx}
+              x={textareaX + 16}
+              y={textareaY + 16}
+              width={100}
+              height={7}
+              rx={config.barRx}
               className={config.dim.class}
               fill="currentColor"
               style={{ opacity: showPlaceholder ? 0.25 : 0, transition: config.transition }}
             />
             <rect
-              x={textareaX + 16} y={textareaY + 30}
-              width={68} height={5} rx={config.barRx}
+              x={textareaX + 16}
+              y={textareaY + 30}
+              width={68}
+              height={5}
+              rx={config.barRx}
               className={config.dim.class}
               fill="currentColor"
               style={{ opacity: showPlaceholder ? 0.14 : 0, transition: config.transition }}
@@ -226,22 +244,31 @@ export function TextareaAnimation() {
 
             {/* Typed text lines */}
             <rect
-              x={textareaX + 16} y={textareaY + 16}
-              width={line1W} height={7} rx={config.barRx}
+              x={textareaX + 16}
+              y={textareaY + 16}
+              width={line1W}
+              height={7}
+              rx={config.barRx}
               className={config.highlight.hoverClass}
               fill="currentColor"
               style={{ opacity: hasContent ? config.bar.primaryOpacity : 0 }}
             />
             <rect
-              x={textareaX + 16} y={textareaY + 32}
-              width={line2W} height={7} rx={config.barRx}
+              x={textareaX + 16}
+              y={textareaY + 32}
+              width={line2W}
+              height={7}
+              rx={config.barRx}
               className={config.highlight.hoverClass}
               fill="currentColor"
               style={{ opacity: hasContent && line2W > 0 ? config.bar.primaryOpacity : 0 }}
             />
             <rect
-              x={textareaX + 16} y={textareaY + 48}
-              width={line3W} height={7} rx={config.barRx}
+              x={textareaX + 16}
+              y={textareaY + 48}
+              width={line3W}
+              height={7}
+              rx={config.barRx}
               className={config.highlight.hoverClass}
               fill="currentColor"
               style={{ opacity: hasContent && line3W > 0 ? config.bar.primaryOpacity : 0 }}
@@ -269,14 +296,22 @@ export function TextareaAnimation() {
             style={{ opacity: isFocused ? 0.45 : 0.2, transition: config.transition }}
           >
             <line
-              x1={textareaX + textareaW - 10} y1={textareaY + textareaH - 2}
-              x2={textareaX + textareaW - 2} y2={textareaY + textareaH - 10}
-              stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+              x1={textareaX + textareaW - 10}
+              y1={textareaY + textareaH - 2}
+              x2={textareaX + textareaW - 2}
+              y2={textareaY + textareaH - 10}
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             />
             <line
-              x1={textareaX + textareaW - 16} y1={textareaY + textareaH - 2}
-              x2={textareaX + textareaW - 2} y2={textareaY + textareaH - 16}
-              stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+              x1={textareaX + textareaW - 16}
+              y1={textareaY + textareaH - 2}
+              x2={textareaX + textareaW - 2}
+              y2={textareaY + textareaH - 16}
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             />
           </g>
 
@@ -284,16 +319,22 @@ export function TextareaAnimation() {
           <g>
             {/* Background track */}
             <rect
-              x={textareaX + textareaW - 60} y={textareaY + textareaH + 10}
-              width={60} height={5} rx={2.5}
+              x={textareaX + textareaW - 60}
+              y={textareaY + textareaH + 10}
+              width={60}
+              height={5}
+              rx={2.5}
               className={config.dim.class}
               fill="currentColor"
               style={{ opacity: isFocused ? 0.15 : 0, transition: config.transition }}
             />
             {/* Fill */}
             <rect
-              x={textareaX + textareaW - 60} y={textareaY + textareaH + 10}
-              width={charFillW} height={5} rx={2.5}
+              x={textareaX + textareaW - 60}
+              y={textareaY + textareaH + 10}
+              width={charFillW}
+              height={5}
+              rx={2.5}
               className={config.highlight.hoverClass}
               fill="currentColor"
               style={{ opacity: isFocused ? 0.7 : 0, transition: "opacity 0.4s" }}
@@ -305,8 +346,10 @@ export function TextareaAnimation() {
             frames={cursorFrames}
             appearance={{
               className: config.highlight.hoverClass,
-              motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-              shapeTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              motionTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              shapeTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
             }}
           >
             <Cursor />

@@ -5,11 +5,7 @@ import React from "react";
 const previewRows = [0, 1] as const;
 
 function Preview({ children }: React.PropsWithChildren) {
-  return (
-    <div className="flex w-full flex-col justify-center gap-3 p-4">
-      {children}
-    </div>
-  );
+  return <div className="flex w-full flex-col justify-center gap-3 p-4">{children}</div>;
 }
 
 function Lines({ short = false }: { short?: boolean }) {
@@ -25,7 +21,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "media-object": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <div className="size-8 shrink-0 rounded-[8px] bg-background-500/20" />
           <Lines short={n === 1} />
         </div>
@@ -36,7 +35,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "split-row": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <Lines short={n === 0} />
           <div className="h-5 w-12 shrink-0 rounded-md bg-background-500/20" />
         </div>
@@ -47,7 +49,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "stat-block": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <div className="h-8 w-12 shrink-0 rounded-md bg-background-500/20" />
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-20" : "w-14"}`} />
           {n === 0 && <div className="h-2 w-8 rounded-full bg-accent-500/50" />}
@@ -59,8 +64,13 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "labeled-field": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
-          <div className={`h-2 shrink-0 rounded-full bg-background-500/50 ${n === 0 ? "w-14" : "w-10"}`} />
+        <div
+          key={n}
+          className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
+          <div
+            className={`h-2 shrink-0 rounded-full bg-background-500/50 ${n === 0 ? "w-14" : "w-10"}`}
+          />
           <div className="h-8 flex-1 rounded-[8px] border-[2px] border-background-500/20 bg-background-950" />
         </div>
       ))}
@@ -70,7 +80,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "search-input": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-2 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-2 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3"
+        >
           <div className="size-3 shrink-0 rounded-full border-[2px] border-background-500/50" />
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-2/3" : "w-1/2"}`} />
           {n === 1 && <div className="ml-auto h-5 w-8 rounded-md bg-background-500/20" />}
@@ -82,10 +95,17 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "toggle-setting-row": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <Lines short={n === 1} />
-          <div className={`h-5 w-8 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/30"}`}>
-            <div className={`m-0.5 size-4 rounded-full bg-background-950 ${n === 0 ? "ml-3.5" : ""}`} />
+          <div
+            className={`h-5 w-8 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/30"}`}
+          >
+            <div
+              className={`m-0.5 size-4 rounded-full bg-background-950 ${n === 0 ? "ml-3.5" : ""}`}
+            />
           </div>
         </div>
       ))}
@@ -95,7 +115,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "select-row": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center justify-between gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <Lines short={n === 0} />
           <div className="flex h-8 w-20 shrink-0 items-center justify-end rounded-[8px] border-[2px] border-background-500/20 bg-background-950 px-2">
             <div className="size-1.5 -translate-y-0.5 rotate-45 border-b-2 border-r-2 border-background-500/50" />
@@ -108,7 +131,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "badge-row": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-2 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-2 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           {[12, 16, 10].map((width, index) => (
             <div
               key={width}
@@ -124,10 +150,18 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "progress-metric": () => (
     <Preview>
       {[68, 42].map((percent, n) => (
-        <div key={percent} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
-          <div className={`h-2 shrink-0 rounded-full bg-background-500/50 ${n === 0 ? "w-16" : "w-12"}`} />
+        <div
+          key={percent}
+          className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
+          <div
+            className={`h-2 shrink-0 rounded-full bg-background-500/50 ${n === 0 ? "w-16" : "w-12"}`}
+          />
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-background-500/20">
-            <div className="h-full rounded-full bg-accent-500/60" style={{ width: `${percent}%` }} />
+            <div
+              className="h-full rounded-full bg-accent-500/60"
+              style={{ width: `${percent}%` }}
+            />
           </div>
           <div className="h-2 w-8 rounded-full bg-background-500/30" />
         </div>
@@ -138,7 +172,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "data-table-row": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-4 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-1/3" : "w-1/4"}`} />
           <div className="h-2 w-14 rounded-full bg-background-500/30" />
           <div className="ml-auto h-5 w-12 rounded-md bg-background-500/20" />
@@ -150,7 +187,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "button-group-pattern": () => (
     <Preview>
       {previewRows.map((row) => (
-        <div key={row} className="flex h-12 items-center rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={row}
+          className="flex h-12 items-center rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           {[0, 1, 2].map((button) => (
             <div
               key={button}
@@ -167,11 +207,17 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "icon-action-bar": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-1/2" : "w-1/3"}`} />
           <div className="ml-auto flex gap-1.5">
             {[0, 1].map((action) => (
-              <div key={action} className="flex size-8 items-center justify-center rounded-[10px] bg-background-500/20">
+              <div
+                key={action}
+                className="flex size-8 items-center justify-center rounded-[10px] bg-background-500/20"
+              >
                 <div className="size-2 rounded-sm bg-background-500/50" />
               </div>
             ))}
@@ -184,7 +230,10 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "tab-content-header": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2">
+        <div
+          key={n}
+          className="flex h-12 items-center gap-3 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-2"
+        >
           <Lines short={n === 1} />
           <div className="h-8 w-16 shrink-0 rounded-[10px] bg-background-500/20" />
         </div>
@@ -195,8 +244,13 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
   "inline-alert": () => (
     <Preview>
       {previewRows.map((n) => (
-        <div key={n} className="flex h-12 items-center gap-2.5 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3">
-          <div className={`size-3 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/40"}`} />
+        <div
+          key={n}
+          className="flex h-12 items-center gap-2.5 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3"
+        >
+          <div
+            className={`size-3 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/40"}`}
+          />
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-2/3" : "w-1/2"}`} />
         </div>
       ))}

@@ -1,6 +1,6 @@
-import PatternDetailClient from './client';
-import { getAllPatterns, getPatternById } from '@ui-lab-core/library/catalog';
-import { generateMetadata as generateSiteMetadata } from '@/shared/lib/metadata';
+import PatternDetailClient from "./client";
+import { getAllPatterns, getPatternById } from "@ui-lab-core/library/catalog";
+import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
 
 export function generateStaticParams() {
   return getAllPatterns().map((pattern) => ({ id: pattern.id }));
@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const pattern = getPatternById(patternId);
 
   if (!pattern) {
-    return generateSiteMetadata({ title: 'Pattern Not Found' });
+    return generateSiteMetadata({ title: "Pattern Not Found" });
   }
 
   return generateSiteMetadata({
@@ -20,11 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   });
 }
 
-export default async function PatternDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function PatternDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: patternId } = await params;
   const pattern = getPatternById(patternId) ?? null;
 

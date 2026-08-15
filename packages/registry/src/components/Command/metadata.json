@@ -9,21 +9,10 @@
     "exportName": "CommandPalette",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "modal",
-    "input"
-  ],
-  "tags": [
-    "search",
-    "command",
-    "navigation"
-  ],
+  "relatedComponents": ["modal", "input"],
+  "tags": ["search", "command", "navigation"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Application-owned keyboard shortcuts",
-      "Search support",
-      "Focus management"
-    ]
+    "notes": ["Application-owned keyboard shortcuts", "Search support", "Focus management"]
   }
 }

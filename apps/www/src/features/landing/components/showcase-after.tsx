@@ -39,9 +39,7 @@ type NavItemProps = {
   toggle?: boolean;
 };
 
-const primaryItems: NavItemProps[] = [
-  { label: "Home", icon: Grid2X2, active: true },
-];
+const primaryItems: NavItemProps[] = [{ label: "Home", icon: Grid2X2, active: true }];
 
 const menuItems: NavItemProps[] = [
   { label: "Payments", icon: CreditCard },
@@ -57,20 +55,10 @@ const generalItems: NavItemProps[] = [
   { label: "Settings", icon: Settings },
 ];
 
-function NavItem({
-  label,
-  icon: Icon,
-  active,
-  count,
-  trailing,
-  toggle,
-}: NavItemProps) {
+function NavItem({ label, icon: Icon, active, count, trailing, toggle }: NavItemProps) {
   if (toggle) {
     return (
-      <Flex
-        align-center
-        className="h-10 w-full gap-3 px-3 text-sm text-foreground-300"
-      >
+      <Flex align-center className="h-10 w-full gap-3 px-3 text-sm text-foreground-300">
         <Icon size={22} strokeWidth={2} />
         <span className="flex flex-1 items-center justify-between">
           {label}
@@ -84,18 +72,17 @@ function NavItem({
     <Button
       size="sm"
       variant="ghost"
-      className={`h-10 gap-3 w-full justify-start px-3 text-sm font-normal ${active
+      className={`h-10 gap-3 w-full justify-start px-3 text-sm font-normal ${
+        active
           ? "bg-background-800 text-foreground-100 hover:bg-background-800"
           : "text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
-        }`}
+      }`}
       icon={<Icon size={22} strokeWidth={2} />}
     >
       <span className="flex w-full items-center justify-between">
         {label}
         {count ? <Badge variant="info" pill count={count} /> : null}
-        {trailing ? (
-          <span className="text-foreground-400">{trailing}</span>
-        ) : null}
+        {trailing ? <span className="text-foreground-400">{trailing}</span> : null}
       </span>
     </Button>
   );
@@ -159,12 +146,7 @@ function VolumeChart() {
           color="var(--foreground-400)"
           styles={{ mark: "opacity-70" }}
         />
-        <Chart.Line
-          y="current"
-          label="Today"
-          curve="smooth"
-          color="var(--accent-500)"
-        />
+        <Chart.Line y="current" label="Today" curve="smooth" color="var(--accent-500)" />
         <Chart.Point
           y={(row) => (row.now ? row.current : null)}
           label="Current time"
@@ -249,9 +231,7 @@ function MetricCard({
         </Badge>
       </Flex>
       <Flex align-baseline className="mt-2 gap-4">
-        <span className="text-2xl font-medium text-foreground-100">
-          {value}
-        </span>
+        <span className="text-2xl font-medium text-foreground-100">{value}</span>
         <span className="text-lg text-foreground-400">{comparison}</span>
       </Flex>
       <MiniChart tone={chartTone} />
@@ -266,10 +246,7 @@ function MetricCard({
 function ShowcaseAfter() {
   return (
     <div className="h-full w-[140%] absolute top-20 left-10 shadow-xl rounded-md border border-background-700 overflow-hidden bg-background-1000 text-foreground-100">
-      <div
-        className="origin-top-left"
-        style={{ height: "147.059%", width: "147.059%" }}
-      >
+      <div className="origin-top-left" style={{ height: "147.059%", width: "147.059%" }}>
         <Flex
           className="h-full w-full min-w-275 bg-background-950 text-left"
           gap="none"
@@ -288,12 +265,9 @@ function ShowcaseAfter() {
             >
               <span>
                 <span className="flex items-center gap-1 text-lg font-medium text-foreground-100">
-                  Acme Co.{" "}
-                  <ChevronDown size={15} className="text-foreground-400" />
+                  Acme Co. <ChevronDown size={15} className="text-foreground-400" />
                 </span>
-                <span className="mt-0.5 block text-xs text-foreground-400">
-                  Palo Alto, CA
-                </span>
+                <span className="mt-0.5 block text-xs text-foreground-400">Palo Alto, CA</span>
               </span>
             </Button>
 
@@ -302,9 +276,7 @@ function ShowcaseAfter() {
                 <NavItem key={item.label} {...item} />
               ))}
             </div>
-            <p className="mb-2 mt-6 px-3 text-xs font-medium text-foreground-400">
-              Main menu
-            </p>
+            <p className="mb-2 mt-6 px-3 text-xs font-medium text-foreground-400">Main menu</p>
             <div className="space-y-0.5">
               {menuItems.map((item) => (
                 <div key={item.label}>
@@ -313,9 +285,7 @@ function ShowcaseAfter() {
                 </div>
               ))}
             </div>
-            <p className="mb-2 mt-6 px-3 text-xs font-medium text-foreground-400">
-              General
-            </p>
+            <p className="mb-2 mt-6 px-3 text-xs font-medium text-foreground-400">General</p>
             <div className="space-y-0.5">
               {generalItems.map((item) => (
                 <NavItem key={item.label} {...item} />
@@ -333,11 +303,7 @@ function ShowcaseAfter() {
                   className="min-w-0 flex-1 text-sm"
                 />
                 <Divider orientation="vertical" />
-                <Group.Select
-                  defaultSelectedKey="all"
-                  defaultValue="All activity"
-                  className="w-32"
-                >
+                <Group.Select defaultSelectedKey="all" defaultValue="All activity" className="w-32">
                   <Select.Trigger aria-label="Activity type">
                     <Select.Value placeholder="Activity type" />
                   </Select.Trigger>
@@ -357,11 +323,7 @@ function ShowcaseAfter() {
                 <Button size="sm" variant="ghost" aria-label="Sort activity">
                   <ArrowUpDown size={15} />
                 </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  aria-label="Choose visible columns"
-                >
+                <Button size="sm" variant="ghost" aria-label="Choose visible columns">
                   <Columns3 size={15} />
                 </Button>
               </div>
@@ -375,64 +337,42 @@ function ShowcaseAfter() {
 
             <div className="px-10 py-9">
               <h3 className="text-md font-medium text-foreground-100">Today</h3>
-              <p className="mt-1 text-sm text-foreground-400">
-                Good to see you again, John
-              </p>
+              <p className="mt-1 text-sm text-foreground-400">Good to see you again, John</p>
 
               <Card className="mt-6 flex h-64 min-w-210 overflow-hidden rounded-sm border-background-700 bg-background-900">
                 <div className="min-w-185 flex-1 px-5 py-5">
                   <Flex className="gap-18">
                     <div>
-                      <Flex
-                        align-center
-                        className="gap-2 text-sm text-foreground-300"
-                      >
+                      <Flex align-center className="gap-2 text-sm text-foreground-300">
                         Gross Volume <ChevronDown size={13} />
                       </Flex>
                       <div className="mt-1 text-2xl font-medium text-foreground-100">
                         $128,197.72
                       </div>
-                      <div className="mt-1 text-xs text-foreground-400">
-                        01:00 PM
-                      </div>
+                      <div className="mt-1 text-xs text-foreground-400">01:00 PM</div>
                     </div>
                     <div>
-                      <Flex
-                        align-center
-                        className="gap-2 text-sm text-foreground-300"
-                      >
+                      <Flex align-center className="gap-2 text-sm text-foreground-300">
                         August 27, 2020 <ChevronDown size={13} />
                       </Flex>
-                      <div className="mt-1 text-xl text-foreground-400">
-                        $124,556.34
-                      </div>
+                      <div className="mt-1 text-xl text-foreground-400">$124,556.34</div>
                     </div>
                   </Flex>
                   <VolumeChart />
                 </div>
                 <div className="w-68 shrink-0 border-l border-background-700 px-6 py-5">
                   <p className="text-sm text-foreground-300">USD Balance</p>
-                  <p className="mt-1 text-2xl font-medium text-foreground-100">
-                    $133,089.84
-                  </p>
-                  <p className="mt-1 text-xs text-foreground-400">
-                    Available to Pay Out
-                  </p>
+                  <p className="mt-1 text-2xl font-medium text-foreground-100">$133,089.84</p>
+                  <p className="mt-1 text-xs text-foreground-400">Available to Pay Out</p>
                   <div className="my-5 border-t border-background-700" />
                   <p className="text-sm text-foreground-300">Payouts</p>
-                  <p className="mt-1 text-2xl font-medium text-foreground-100">
-                    $102,635.67
-                  </p>
-                  <p className="mt-1 text-xs text-foreground-400">
-                    Expected Today
-                  </p>
+                  <p className="mt-1 text-2xl font-medium text-foreground-100">$102,635.67</p>
+                  <p className="mt-1 text-xs text-foreground-400">Expected Today</p>
                 </div>
               </Card>
 
               <Flex align-center justify-between className="mt-10">
-                <h3 className="text-md font-medium text-foreground-100">
-                  Reports Overview
-                </h3>
+                <h3 className="text-md font-medium text-foreground-100">Reports Overview</h3>
                 <Button
                   size="sm"
                   variant="secondary"

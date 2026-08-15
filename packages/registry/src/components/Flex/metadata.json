@@ -8,17 +8,8 @@
     "exportName": "Flex",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card",
-    "group",
-    "divider"
-  ],
-  "tags": [
-    "layout",
-    "flex",
-    "container-queries",
-    "responsive"
-  ],
+  "relatedComponents": ["card", "group", "divider"],
+  "tags": ["layout", "flex", "container-queries", "responsive"],
   "accessibility": {
     "hasAriaSupport": false,
     "notes": [

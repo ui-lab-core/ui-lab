@@ -1,32 +1,32 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname, "..");
 
 // Configuration
 const PACKAGES = {
-  'ui-lab-registry': path.join(rootDir, 'packages/registry/package.json'),
-  'ui-lab-components': path.join(rootDir, 'packages/@ui/package.json'),
-  'ui-lab-theme-onyx': path.join(rootDir, 'packages/themes/onyx/package.json'),
+  "ui-lab-registry": path.join(rootDir, "packages/registry/package.json"),
+  "ui-lab-components": path.join(rootDir, "packages/@ui/package.json"),
+  "ui-lab-theme-onyx": path.join(rootDir, "packages/themes/onyx/package.json"),
 };
 
 const TARGET_FILES = [
-  path.join(rootDir, 'package.json'),
-  path.join(rootDir, 'apps/www/package.json'),
-  path.join(rootDir, 'packages/registry/package.json'),
-  path.join(rootDir, 'packages/@mcp/package.json'),
+  path.join(rootDir, "package.json"),
+  path.join(rootDir, "apps/www/package.json"),
+  path.join(rootDir, "packages/registry/package.json"),
+  path.join(rootDir, "packages/@mcp/package.json"),
 ];
 
 function readPackageJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
 
 function writePackageJson(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n');
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + "\n");
 }
 
 function getPackageVersions() {
@@ -39,11 +39,11 @@ function getPackageVersions() {
 }
 
 function isWorkspaceVersion(value) {
-  return typeof value === 'string' && value === 'workspace:*';
+  return typeof value === "string" && value === "workspace:*";
 }
 
 function isVersionNumber(value, packageName) {
-  return typeof value === 'string' && /^\d+\.\d+\.\d+/.test(value);
+  return typeof value === "string" && /^\d+\.\d+\.\d+/.test(value);
 }
 
 function getCurrentMode(versions) {
@@ -53,11 +53,11 @@ function getCurrentMode(versions) {
     const pkg = readPackageJson(filePath);
 
     for (const [name, version] of Object.entries(versions)) {
-      if ((pkg.dependencies?.[name] || pkg.devDependencies?.[name]) === 'workspace:*') {
-        return 'workspace';
+      if ((pkg.dependencies?.[name] || pkg.devDependencies?.[name]) === "workspace:*") {
+        return "workspace";
       }
       if ((pkg.dependencies?.[name] || pkg.devDependencies?.[name]) === version) {
-        return 'version';
+        return "version";
       }
     }
   }
@@ -68,8 +68,8 @@ function toggleVersions(targetMode) {
   const versions = getPackageVersions();
   const currentMode = getCurrentMode(versions);
 
-  if (targetMode === 'toggle') {
-    targetMode = currentMode === 'workspace' ? 'version' : 'workspace';
+  if (targetMode === "toggle") {
+    targetMode = currentMode === "workspace" ? "version" : "workspace";
   }
 
   if (targetMode === currentMode) {
@@ -89,20 +89,20 @@ function toggleVersions(targetMode) {
       const deps = pkg.dependencies?.[name];
       const devDeps = pkg.devDependencies?.[name];
 
-      if (targetMode === 'workspace') {
+      if (targetMode === "workspace") {
         if (isVersionNumber(deps, name)) {
-          pkg.dependencies[name] = 'workspace:*';
+          pkg.dependencies[name] = "workspace:*";
           modified = true;
           changedCount++;
           console.log(`✓ Updated ${name} in ${path.relative(rootDir, filePath)} to workspace:*`);
         }
         if (isVersionNumber(devDeps, name)) {
-          pkg.devDependencies[name] = 'workspace:*';
+          pkg.devDependencies[name] = "workspace:*";
           modified = true;
           changedCount++;
           console.log(`✓ Updated ${name} in ${path.relative(rootDir, filePath)} to workspace:*`);
         }
-      } else if (targetMode === 'version') {
+      } else if (targetMode === "version") {
         if (isWorkspaceVersion(deps)) {
           pkg.dependencies[name] = version;
           modified = true;
@@ -131,14 +131,14 @@ function showStatus() {
   const versions = getPackageVersions();
   const currentMode = getCurrentMode(versions);
 
-  console.log('\n📦 Package Versions:');
+  console.log("\n📦 Package Versions:");
   for (const [name, version] of Object.entries(versions)) {
     console.log(`  ${name}: ${version}`);
   }
 
-  console.log('\n📋 Current Mode:', currentMode || 'mixed/unknown');
+  console.log("\n📋 Current Mode:", currentMode || "mixed/unknown");
 
-  console.log('\n📝 Current References:');
+  console.log("\n📝 Current References:");
   for (const filePath of TARGET_FILES) {
     if (!fs.existsSync(filePath)) continue;
 
@@ -152,7 +152,7 @@ function showStatus() {
       }
     }
   }
-  console.log('');
+  console.log("");
 }
 
 function showHelp() {
@@ -177,24 +177,24 @@ Examples:
 `);
 }
 
-const command = process.argv[2] || 'toggle';
+const command = process.argv[2] || "toggle";
 
 switch (command) {
-  case 'to-workspace':
-    toggleVersions('workspace');
+  case "to-workspace":
+    toggleVersions("workspace");
     break;
-  case 'to-version':
-    toggleVersions('version');
+  case "to-version":
+    toggleVersions("version");
     break;
-  case 'toggle':
-    toggleVersions('toggle');
+  case "toggle":
+    toggleVersions("toggle");
     break;
-  case 'status':
+  case "status":
     showStatus();
     break;
-  case 'help':
-  case '-h':
-  case '--help':
+  case "help":
+  case "-h":
+  case "--help":
     showHelp();
     break;
   default:

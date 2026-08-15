@@ -12,18 +12,37 @@ import { WorkingAgreements } from "./elements/07-working-agreements";
 export function PreviewCanvas() {
   return (
     <div className="w-full space-y-4 p-4">
-      <Grid rows="minmax(0, 1fr)" columns={{ sm: 1, md: 2, lg: 3 }} gap="md" h="500px" alignContent="stretch" className="w-full">
+      <Grid
+        rows="minmax(0, 1fr)"
+        columns={{ sm: 1, md: 2, lg: 3 }}
+        gap="md"
+        h="500px"
+        alignContent="stretch"
+        className="w-full"
+      >
         <Profile />
         <FocusSpace />
         <WorkingAgreements />
       </Grid>
 
-      <Grid rows="masonry" columns={{ sm: 1, lg: 2 }} gap="md" className="w-full" masonryColumnFill="balance">
+      <Grid
+        rows="masonry"
+        columns={{ sm: 1, lg: 2 }}
+        gap="md"
+        className="w-full"
+        masonryColumnFill="balance"
+      >
         <Activity />
         <StudioRhythm />
       </Grid>
 
-      <Grid rows="masonry" columns={{ sm: 1, lg: 2 }} gap="md" className="w-full" masonryColumnFill="balance">
+      <Grid
+        rows="masonry"
+        columns={{ sm: 1, lg: 2 }}
+        gap="md"
+        className="w-full"
+        masonryColumnFill="balance"
+      >
         <ProjectSpace />
         <PracticeLibrary />
       </Grid>

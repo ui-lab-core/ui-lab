@@ -1,5 +1,5 @@
-import type React from 'react';
-import { elementPreviews } from '@/gallery/element-previews';
+import type React from "react";
+import { elementPreviews } from "@/gallery/element-previews";
 
 type PreviewComponent = React.ComponentType<object>;
 

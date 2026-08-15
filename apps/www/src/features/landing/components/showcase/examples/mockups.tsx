@@ -30,7 +30,10 @@ const stats = (tiles: number) =>
       <Frame height={height}>
         <div className="grid min-h-0 flex-1 grid-cols-2 gap-2 p-3">
           {Array.from({ length: tiles }, (_, i) => (
-            <div key={i} className="flex flex-col justify-center gap-2.5 rounded-sm bg-background-800/50 p-4">
+            <div
+              key={i}
+              className="flex flex-col justify-center gap-2.5 rounded-sm bg-background-800/50 p-4"
+            >
               <Line className="w-14 opacity-60" />
               <Line className="h-3 w-20" />
             </div>
@@ -92,7 +95,10 @@ const meters = (values: number[]) =>
                 <Line className="w-6 opacity-60" />
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-background-800/50">
-                <div className="h-full rounded-full bg-background-700/80" style={{ width: `${value}%` }} />
+                <div
+                  className="h-full rounded-full bg-background-700/80"
+                  style={{ width: `${value}%` }}
+                />
               </div>
             </div>
           ))}

@@ -6,7 +6,13 @@ import config from "./config.json";
 /**
  * Helper to generate a path for a rectangle with specific corner radii
  */
-function getRoundedRectPath(x: number, y: number, w: number, h: number, r: { tl: number, tr: number, bl: number, br: number }) {
+function getRoundedRectPath(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
+) {
   return `
     M ${x + r.tl} ${y}
     H ${x + w - r.tr}
@@ -51,9 +57,16 @@ export function GridAnimation() {
   });
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -92,7 +105,9 @@ export function GridAnimation() {
               transition: config.transition,
               transitionDelay: "0ms",
               fillOpacity: !isHovered ? config.highlight.idleFillOpacity : config.dim.fillOpacity,
-              strokeOpacity: !isHovered ? config.highlight.idleStrokeOpacity : config.dim.strokeOpacity,
+              strokeOpacity: !isHovered
+                ? config.highlight.idleStrokeOpacity
+                : config.dim.strokeOpacity,
             }}
           />
           <rect
@@ -152,7 +167,9 @@ export function GridAnimation() {
               transition: config.transition,
               transitionDelay: "50ms",
               fillOpacity: isHovered ? 0.05 : config.dim.fillOpacity,
-              strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.dim.strokeOpacity,
+              strokeOpacity: isHovered
+                ? config.highlight.hoverStrokeOpacity
+                : config.dim.strokeOpacity,
             }}
           />
           <rect
@@ -260,7 +277,7 @@ export function GridAnimation() {
                 tr: config.blockRx + 5,
                 bl: config.blockRx + 5,
                 br: config.blockRx + 5,
-              }
+              },
             )}
             fill="none"
             stroke="currentColor"

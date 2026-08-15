@@ -148,7 +148,11 @@ export function TableAnimation() {
       className="flex items-center justify-center relative overflow-hidden font-sans"
     >
       <div className="relative w-full max-w-[190px]">
-        <svg viewBox="0 0 300 200" className="w-full h-auto relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 300 200"
+          className="w-full h-auto relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <clipPath id="table-body-clip">
               <rect x={tableX} y={bodyY} width={tableWidth} height={rowHeight * visibleRows} />
@@ -178,7 +182,9 @@ export function TableAnimation() {
             strokeWidth={config.strokeWidth}
             style={{
               fillOpacity: 0.05,
-              strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+              strokeOpacity: isHovered
+                ? config.highlight.hoverStrokeOpacity
+                : config.highlight.idleStrokeOpacity,
               transition,
             }}
           />
@@ -265,7 +271,15 @@ export function TableAnimation() {
                   key={rowIndex}
                   y={bodyY + rowHeight * rowIndex}
                   rowIndex={rowIndex}
-                  state={isHovered ? (rowIndex === 2 ? "active" : rowIndex === 1 || rowIndex === 3 ? "idle" : "dim") : "idle"}
+                  state={
+                    isHovered
+                      ? rowIndex === 2
+                        ? "active"
+                        : rowIndex === 1 || rowIndex === 3
+                          ? "idle"
+                          : "dim"
+                      : "idle"
+                  }
                 />
               ))}
             </g>
@@ -310,7 +324,9 @@ export function TableAnimation() {
             strokeDasharray="4 4"
             className={config.accentOutline.colorClass}
             style={{
-              opacity: isHovered ? config.accentOutline.hoverOpacity : config.accentOutline.idleOpacity,
+              opacity: isHovered
+                ? config.accentOutline.hoverOpacity
+                : config.accentOutline.idleOpacity,
               transition,
             }}
           />

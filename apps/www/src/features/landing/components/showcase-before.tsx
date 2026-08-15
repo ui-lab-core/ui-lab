@@ -45,9 +45,7 @@ type NavItemProps = {
   toggle?: boolean;
 };
 
-const primaryItems: NavItemProps[] = [
-  { label: "Home", icon: Grid2X2, active: true },
-];
+const primaryItems: NavItemProps[] = [{ label: "Home", icon: Grid2X2, active: true }];
 
 const menuItems: NavItemProps[] = [
   { label: "Payments", icon: CreditCard },
@@ -63,13 +61,7 @@ const generalItems: NavItemProps[] = [
   { label: "Settings", icon: Settings },
 ];
 
-function Badge({
-  children,
-  tone = "blue",
-}: {
-  children: ReactNode;
-  tone?: Tone;
-}) {
+function Badge({ children, tone = "blue" }: { children: ReactNode; tone?: Tone }) {
   return (
     <span
       className={`inline-flex h-5 items-center rounded-md border px-2 text-[11px] font-bold ${TONE_COLORS[tone]}`}
@@ -97,15 +89,9 @@ function SlopCard() {
       </p>
       <div className="my-2 text-center text-xs text-white/60">• • •</div>
       <div className="grid gap-1.5 text-[11px] font-bold text-white/70">
-        <div className="rounded-md bg-white/10 px-2 py-1">
-          128 GB used this month
-        </div>
-        <div className="rounded-md bg-white/10 px-2 py-1">
-          3 team members near limit
-        </div>
-        <div className="rounded-md bg-white/10 px-2 py-1">
-          Auto cleanup available
-        </div>
+        <div className="rounded-md bg-white/10 px-2 py-1">128 GB used this month</div>
+        <div className="rounded-md bg-white/10 px-2 py-1">3 team members near limit</div>
+        <div className="rounded-md bg-white/10 px-2 py-1">Auto cleanup available</div>
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-white/15">
         <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300" />
@@ -140,8 +126,9 @@ function NavItem({ label, icon: Icon, active, count, toggle }: NavItemProps) {
 
   return (
     <button
-      className={`flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-semibold text-white transition hover:bg-white/15 ${active ? "bg-white/20" : "text-white/80"
-        }`}
+      className={`flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-semibold text-white transition hover:bg-white/15 ${
+        active ? "bg-white/20" : "text-white/80"
+      }`}
     >
       <Icon size={18} strokeWidth={2.2} />
       <span className="flex flex-1 items-center justify-between">
@@ -217,12 +204,7 @@ function VolumeChart() {
 
 function MiniChart({ tone = "blue" }: { tone?: "blue" | "cyan" }) {
   return (
-    <svg
-      viewBox="0 0 266 84"
-      className="mt-2 h-14 w-full"
-      preserveAspectRatio="none"
-      aria-hidden
-    >
+    <svg viewBox="0 0 266 84" className="mt-2 h-14 w-full" preserveAspectRatio="none" aria-hidden>
       <path
         d="M0 72 L20 30 L38 45 L56 18 L74 59 L95 20 L113 72 L131 25 L148 64 L166 16 L184 66 L202 24 L220 66 L237 18 L251 58 L266 12"
         fill="none"
@@ -256,9 +238,7 @@ function MetricCard({
   const badgeTone: Tone = isBadge ? "green" : "red";
   const TrendIcon = isBadge ? TrendingUp : TrendingDown;
   return (
-    <div
-      className={`${GLASS_CARD} min-w-72 flex-1 self-start bg-white/5 px-3 py-3 shadow-md`}
-    >
+    <div className={`${GLASS_CARD} min-w-72 flex-1 self-start bg-white/5 px-3 py-3 shadow-md`}>
       <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-white">
         <span>{title}</span>
         <Badge tone={badgeTone}>
@@ -330,9 +310,7 @@ function ShowcaseBefore() {
                   Acme Co.
                   <Sparkles size={16} strokeWidth={2.4} />
                 </span>
-                <span className="mt-0.5 block text-xs text-white/60">
-                  Palo Alto, CA
-                </span>
+                <span className="mt-0.5 block text-xs text-white/60">Palo Alto, CA</span>
               </span>
             </button>
 
@@ -342,12 +320,8 @@ function ShowcaseBefore() {
               ))}
             </div>
             <div className="mt-3 grid gap-2 px-2 text-[11px] font-bold text-white/60">
-              <div className="rounded-md bg-white/10 px-3 py-2">
-                Growth plan active
-              </div>
-              <div className="rounded-md bg-white/10 px-3 py-2">
-                Trial ends in 14 days
-              </div>
+              <div className="rounded-md bg-white/10 px-3 py-2">Growth plan active</div>
+              <div className="rounded-md bg-white/10 px-3 py-2">Trial ends in 14 days</div>
               <div className="rounded-md bg-gradient-to-r from-blue-500/30 to-cyan-500/30 px-3 py-4 text-center text-sm text-white">
                 Monthly Recap Ready
               </div>
@@ -397,18 +371,10 @@ function ShowcaseBefore() {
                 />
               </label>
               <div className="flex flex-wrap gap-2 text-xs font-bold text-white/60">
-                <span className="rounded-full bg-white/10 px-3 py-2">
-                  Quick filters
-                </span>
-                <span className="rounded-full bg-white/10 px-3 py-2">
-                  Smart insights
-                </span>
-                <span className="rounded-full bg-white/10 px-3 py-2">
-                  Revenue
-                </span>
-                <span className="rounded-full bg-white/10 px-3 py-2">
-                  Customers
-                </span>
+                <span className="rounded-full bg-white/10 px-3 py-2">Quick filters</span>
+                <span className="rounded-full bg-white/10 px-3 py-2">Smart insights</span>
+                <span className="rounded-full bg-white/10 px-3 py-2">Revenue</span>
+                <span className="rounded-full bg-white/10 px-3 py-2">Customers</span>
               </div>
               <button className="ml-auto flex h-13 shrink-0 items-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/30">
                 <Zap size={16} strokeWidth={2.5} />
@@ -432,8 +398,7 @@ function ShowcaseBefore() {
                         <Rocket size={36} strokeWidth={2.4} />
                       </h3>
                       <p className="mt-2 max-w-96 text-sm font-semibold text-white/70">
-                        Good to see you again, John. Here is your business
-                        overview.
+                        Good to see you again, John. Here is your business overview.
                       </p>
                     </div>
                     <div className="w-56 rounded-md border border-white/10 bg-gradient-to-br from-cyan-500/20 to-blue-700/20 p-3 text-sm font-bold text-white/70">
@@ -441,9 +406,7 @@ function ShowcaseBefore() {
                         <Gauge size={16} strokeWidth={2.4} />
                         Health score
                       </div>
-                      <div className="mt-1 text-3xl font-black text-white">
-                        94%
-                      </div>
+                      <div className="mt-1 text-3xl font-black text-white">94%</div>
                       <div className="mt-1">updated 4 minutes ago</div>
                     </div>
                   </div>
@@ -486,30 +449,22 @@ function ShowcaseBefore() {
                           <BarChart3 size={16} strokeWidth={2.4} />
                           Gross Volume
                         </div>
-                        <div className="mt-1 text-2xl font-black text-white">
-                          $128,197.72
-                        </div>
-                        <div className="mt-1 text-xs text-white/60">
-                          01:00 PM
-                        </div>
+                        <div className="mt-1 text-2xl font-black text-white">$128,197.72</div>
+                        <div className="mt-1 text-xs text-white/60">01:00 PM</div>
                       </div>
                       <div className="rounded-md bg-white/10 px-3 py-2">
                         <div className="flex items-center gap-2 text-sm font-bold text-white">
                           <CalendarDays size={16} strokeWidth={2.4} />
                           August 27, 2020
                         </div>
-                        <div className="mt-1 text-xl text-white/70">
-                          $124,556.34
-                        </div>
+                        <div className="mt-1 text-xl text-white/70">$124,556.34</div>
                       </div>
                       <div className="rounded-md bg-white/10 px-3 py-2">
                         <div className="flex items-center gap-2 text-sm font-bold text-white">
                           <AlertTriangle size={16} strokeWidth={2.4} />
                           Daily Average
                         </div>
-                        <div className="mt-1 text-xl text-white/70">
-                          $18,394.51
-                        </div>
+                        <div className="mt-1 text-xl text-white/70">$18,394.51</div>
                       </div>
                     </div>
                     <VolumeChart />
@@ -520,15 +475,9 @@ function ShowcaseBefore() {
                       <div className="rounded-md bg-white/10 px-3 py-2">
                         Successful payments 92%
                       </div>
-                      <div className="rounded-md bg-white/10 px-3 py-2">
-                        Failed payments 8%
-                      </div>
-                      <div className="rounded-md bg-white/10 px-3 py-2">
-                        New customers 148
-                      </div>
-                      <div className="rounded-md bg-white/10 px-3 py-2">
-                        Repeat customers 64
-                      </div>
+                      <div className="rounded-md bg-white/10 px-3 py-2">Failed payments 8%</div>
+                      <div className="rounded-md bg-white/10 px-3 py-2">New customers 148</div>
+                      <div className="rounded-md bg-white/10 px-3 py-2">Repeat customers 64</div>
                     </div>
                   </div>
                 </section>
@@ -567,15 +516,11 @@ function ShowcaseBefore() {
                       Priority Alerts
                     </div>
                     <div className="mt-2 space-y-1.5 text-xs font-bold text-white/70">
-                      <div className="rounded-md bg-white/10 px-3 py-2">
-                        4 invoices need review
-                      </div>
+                      <div className="rounded-md bg-white/10 px-3 py-2">4 invoices need review</div>
                       <div className="rounded-md bg-white/10 px-3 py-2">
                         2 customers need follow up
                       </div>
-                      <div className="rounded-md bg-white/10 px-3 py-2">
-                        1 workflow paused
-                      </div>
+                      <div className="rounded-md bg-white/10 px-3 py-2">1 workflow paused</div>
                     </div>
                   </div>
                 </section>
@@ -597,9 +542,7 @@ function ShowcaseBefore() {
                       <FileText size={15} strokeWidth={2.4} />
                       May 28 - Jun 3
                     </button>
-                    <span className="text-center text-sm text-white/60">
-                      compared to
-                    </span>
+                    <span className="text-center text-sm text-white/60">compared to</span>
                     <button className="h-8 rounded-md border border-white/20 bg-white/10 px-4 text-sm font-bold text-white">
                       Previous Period
                     </button>

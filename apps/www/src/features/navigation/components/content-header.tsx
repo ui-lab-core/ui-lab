@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from 'ui-lab-components/button';
-import { PricingBadge } from '@/features/landing/components/pricing-badge';
-import type { PricingInfo } from '@ui-lab-core/library/catalog';
-import { FaShop } from '@/shared/icons/fa6';
+import { Button } from "ui-lab-components/button";
+import { PricingBadge } from "@/features/landing/components/pricing-badge";
+import type { PricingInfo } from "@ui-lab-core/library/catalog";
+import { FaShop } from "@/shared/icons/fa6";
 
 interface ContentHeaderProps {
   title: string;
@@ -13,18 +13,20 @@ interface ContentHeaderProps {
   purchaseUrl?: string;
 }
 
-export function ContentHeader({ title, description, pricing, children, purchaseUrl }: ContentHeaderProps) {
+export function ContentHeader({
+  title,
+  description,
+  pricing,
+  children,
+  purchaseUrl,
+}: ContentHeaderProps) {
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 md:gap-8 mb-12">
-        <div className="flex items-center justify-center">
-          {children}
-        </div>
+        <div className="flex items-center justify-center">{children}</div>
         <div className="flex relative flex-col justify-between gap-4">
-          <div className='absolute right-8 ml-auto'>
-            {pricing && pricing.price !== null && (
-              <PricingBadge price={pricing.price} />
-            )}
+          <div className="absolute right-8 ml-auto">
+            {pricing && pricing.price !== null && <PricingBadge price={pricing.price} />}
           </div>
           <div className="flex flex-col sm:flex-row items-start justify-start gap-4">
             <div>

@@ -2,19 +2,29 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
 import { extractComponentMetadata } from "@/shared/lib/metadata-extractors";
-import { componentRegistry, generatedAPI, generatedStyles, reactAriaUrls, sourceUrls } from "ui-lab-registry";
+import {
+  componentRegistry,
+  generatedAPI,
+  generatedStyles,
+  reactAriaUrls,
+  sourceUrls,
+} from "ui-lab-registry";
 import { ComponentPage } from "./component-page";
 
 export function generateStaticParams() {
   return Object.keys(componentRegistry).map((component) => ({ component }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ component: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ component: string }>;
+}): Promise<Metadata> {
   const { component: componentId } = await params;
   const component = componentRegistry[componentId as keyof typeof componentRegistry];
 
   if (!component) {
-    return generateSiteMetadata({ title: 'Component Not Found' });
+    return generateSiteMetadata({ title: "Component Not Found" });
   }
 
   const extracted = extractComponentMetadata(component);
@@ -24,7 +34,11 @@ export async function generateMetadata({ params }: { params: Promise<{ component
   });
 }
 
-export default async function ComponentDetailPage({ params }: { params: Promise<{ component: string; }>; }) {
+export default async function ComponentDetailPage({
+  params,
+}: {
+  params: Promise<{ component: string }>;
+}) {
   const { component: componentId } = await params;
   const component = componentRegistry[componentId as keyof typeof componentRegistry];
 

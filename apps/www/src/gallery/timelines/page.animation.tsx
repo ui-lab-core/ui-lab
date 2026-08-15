@@ -3,13 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import config from "./config.json";
 
-function Sheet({
-  isFront,
-  isHovered,
-}: {
-  isFront: boolean;
-  isHovered: boolean;
-}) {
+function Sheet({ isFront, isHovered }: { isFront: boolean; isHovered: boolean }) {
   const color = isFront
     ? isHovered
       ? config.highlight.hoverClass
@@ -97,9 +91,7 @@ function Sheet({
         stroke="currentColor"
         strokeWidth={2}
         style={{
-          fillOpacity: isFront
-            ? config.activeContent.mediaActiveOpacity
-            : config.dim.fillOpacity,
+          fillOpacity: isFront ? config.activeContent.mediaActiveOpacity : config.dim.fillOpacity,
           strokeOpacity,
           transition: config.transition,
         }}
@@ -144,36 +136,28 @@ export function PageAnimation() {
           className="w-full h-full relative z-10 overflow-visible"
           aria-hidden="true"
         >
-          {Array.from({ length: SHEET_COUNT }, (_, index) => index).map(
-            (index) => {
-              const rel = index - CENTER_INDEX;
-              const isFront = rel === 0;
+          {Array.from({ length: SHEET_COUNT }, (_, index) => index).map((index) => {
+            const rel = index - CENTER_INDEX;
+            const isFront = rel === 0;
 
-              const angle = isHovered ? rel * 8 : rel * 4;
-              const spread = isHovered ? rel * 34 : rel * 16;
-              const lift = isHovered
-                ? isFront
-                  ? -18
-                  : 2
-                : isFront
-                  ? -10
-                  : 0;
+            const angle = isHovered ? rel * 8 : rel * 4;
+            const spread = isHovered ? rel * 34 : rel * 16;
+            const lift = isHovered ? (isFront ? -18 : 2) : isFront ? -10 : 0;
 
-              return (
-                <g
-                  key={index}
-                  style={{
-                    transform: `translate(${spread}px, ${lift}px) rotate(${angle}deg)`,
-                    transformOrigin: PIVOT,
-                    transition:
-                      "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s ease-out",
-                  }}
-                >
-                  <Sheet isFront={isFront} isHovered={isHovered} />
-                </g>
-              );
-            }
-          )}
+            return (
+              <g
+                key={index}
+                style={{
+                  transform: `translate(${spread}px, ${lift}px) rotate(${angle}deg)`,
+                  transformOrigin: PIVOT,
+                  transition:
+                    "transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s ease-out",
+                }}
+              >
+                <Sheet isFront={isFront} isHovered={isHovered} />
+              </g>
+            );
+          })}
         </svg>
       </div>
     </div>

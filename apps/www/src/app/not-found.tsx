@@ -41,9 +41,7 @@ export default function NotFound() {
           <Divider orientation="vertical" className="my-1" />
           <div className="text-left">
             <h4 className="text-foreground-50">Page not found.</h4>
-            <p className="text-sm text-foreground-300">
-              This page does not exist.
-            </p>
+            <p className="text-sm text-foreground-300">This page does not exist.</p>
           </div>
         </div>
       </article>

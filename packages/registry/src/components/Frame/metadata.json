@@ -12,8 +12,6 @@
   "tags": ["container", "decorative", "border", "svg", "custom-shapes"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Decorative SVG elements are properly hidden from assistive technology"
-    ]
+    "notes": ["Decorative SVG elements are properly hidden from assistive technology"]
   }
 }

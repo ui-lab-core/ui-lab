@@ -1,16 +1,14 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import { fileURLToPath } from 'url';
+import * as path from "path";
+import * as fs from "fs";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const COMPONENTS_DIR = path.resolve(__dirname, '../../@ui/src/components');
+const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
 
 function toKebabCase(pascalCase: string): string {
-  return pascalCase
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase();
+  return pascalCase.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 function getCssFile(componentDirName: string): string | null {
@@ -26,7 +24,7 @@ function extractComponentStyles(componentDirName: string): string | null {
   if (!cssFile) return null;
 
   try {
-    return fs.readFileSync(cssFile, 'utf-8');
+    return fs.readFileSync(cssFile, "utf-8");
   } catch (e) {
     console.warn(`Failed to read CSS for ${componentDirName}:`, e);
     return null;

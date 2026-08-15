@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React from 'react';
-import type { ElementPackageMetadata, LayoutConfig } from '@ui-lab-core/library/catalog';
-import { GenericContentGrid } from '@/features/workshop/components/content-grid';
+import React from "react";
+import type { ElementPackageMetadata, LayoutConfig } from "@ui-lab-core/library/catalog";
+import { GenericContentGrid } from "@/features/workshop/components/content-grid";
 import {
   getPackageLayoutConfig,
   getPackagePreviewComponent,
   WaitlistModalClient,
   useWaitlistModal,
-} from '@/features/workshop';
+} from "@/features/workshop";
 
 interface PackagesGridClientProps {
   packages: ElementPackageMetadata[];
@@ -33,7 +33,7 @@ function PackagesGridContent({ packages }: PackagesGridClientProps) {
       previews={previews}
       previewKind="package"
       onItemClick={(pkg) => {
-        if (pkg.status === 'coming-soon') {
+        if (pkg.status === "coming-soon") {
           modalContext.openModal();
           return true;
         }

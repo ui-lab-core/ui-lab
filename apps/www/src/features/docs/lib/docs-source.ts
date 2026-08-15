@@ -3,7 +3,7 @@ import {
   type DocsDomain,
   type GeneratedDocsPageManifest,
   type GeneratedDocsPageTreeSection,
-} from './generated-docs-manifest';
+} from "./generated-docs-manifest";
 
 export type DocsSourceDomain = DocsDomain;
 export type DocsSourcePageMetadata = GeneratedDocsPageManifest;
@@ -34,13 +34,13 @@ const PAGE_LOOKUPS = Object.fromEntries(
   (Object.keys(DOCS_MANIFEST) as DocsSourceDomain[]).map((domain) => [
     domain,
     new Map(DOCS_MANIFEST[domain].pages.map((page) => [page.slug, page])),
-  ])
+  ]),
 ) as Record<DocsSourceDomain, Map<string, GeneratedDocsPageManifest>>;
 
 function normalizeSlug(slug: string): string {
   return decodeURIComponent(slug)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\/+/g, '-')
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\/+/g, "-");
 }
 
 function getPageMetadata(domain: DocsSourceDomain, slug: string): GeneratedDocsPageManifest | null {
@@ -52,7 +52,7 @@ function getRootPageMetadata(domain: DocsSourceDomain): GeneratedDocsPageManifes
 }
 
 async function getPageBody(domain: DocsSourceDomain, slug: string): Promise<string | null> {
-  const { DOCS_BODIES } = await import('./generated-docs-bodies');
+  const { DOCS_BODIES } = await import("./generated-docs-bodies");
   return DOCS_BODIES[domain][normalizeSlug(slug)] ?? null;
 }
 

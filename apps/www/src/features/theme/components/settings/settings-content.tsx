@@ -4,17 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useApp } from "../../lib/app-context";
 import { themes, type SimpleThemeColors } from "../../constants/themes";
-import {
-  type OklchColor,
-  type GlobalColorAdjustments,
-} from "../../lib/color-utils";
+import { type OklchColor, type GlobalColorAdjustments } from "../../lib/color-utils";
 import { useThemeStorage } from "../../hooks/use-theme-storage";
 import { type TypographyConfig } from "../../lib/typography-config";
-import {
-  Tabs,
-  Button,
-  Scroll,
-} from "ui-lab-components";
+import { Tabs, Button, Scroll } from "ui-lab-components";
 import { type CodeThemeOptionId } from "../../lib/themes/shiki/code-theme-options";
 import { setThemeColor, type ThemeColorType } from "../../lib/color/set-color";
 import { ColorsPanel } from "./colors-panel";
@@ -22,7 +15,11 @@ import { TypographyPanel } from "./typography-panel";
 import { LayoutPanel } from "./layout-panel";
 
 type ConfigTab = "colors" | "layout" | "fonts";
-interface LayoutConfig { radius: number; borderWidth: number; spacingScale: number }
+interface LayoutConfig {
+  radius: number;
+  borderWidth: number;
+  spacingScale: number;
+}
 
 function useSettingsHandlers(
   localColors: SimpleThemeColors,
@@ -42,10 +39,7 @@ function useSettingsHandlers(
     });
   };
 
-  const handleGlobalAdjustmentChange = (
-    key: keyof GlobalColorAdjustments,
-    value: number,
-  ) => {
+  const handleGlobalAdjustmentChange = (key: keyof GlobalColorAdjustments, value: number) => {
     const updated = { ...localGlobalAdjustments, [key]: value };
     setLocalGlobalAdjustments(updated);
     setGlobalAdjustments(updated);
@@ -55,12 +49,7 @@ function useSettingsHandlers(
   };
 
   const handleColorChange = (type: string, newColor: OklchColor) => {
-    const updated = setThemeColor(
-      localColors,
-      type as ThemeColorType,
-      newColor,
-      currentThemeMode,
-    );
+    const updated = setThemeColor(localColors, type as ThemeColorType, newColor, currentThemeMode);
     setLocalColors(updated);
     applyAndPersistColors(updated);
   };
@@ -127,18 +116,12 @@ export const SettingsContent = ({
 
   const [activeTab, setActiveTab] = useState<ConfigTab>(panels[0] ?? "colors");
   const [previousThemeColors, setPreviousThemeColors] = useState(currentThemeColors);
-  const [localColors, setLocalColors] = useState(
-    currentThemeColors || themes["Vitesse"].dark,
-  );
+  const [localColors, setLocalColors] = useState(currentThemeColors || themes["Vitesse"].dark);
   const [expandedColor, setExpandedColor] = useState<string | null>(null);
   const [localGlobalAdjustments, setLocalGlobalAdjustments] =
     useState<GlobalColorAdjustments>(globalAdjustments);
 
-  if (
-    isThemeInitialized &&
-    currentThemeColors &&
-    currentThemeColors !== previousThemeColors
-  ) {
+  if (isThemeInitialized && currentThemeColors && currentThemeColors !== previousThemeColors) {
     setPreviousThemeColors(currentThemeColors);
     setLocalColors(currentThemeColors);
   }
@@ -149,30 +132,27 @@ export const SettingsContent = ({
   // const [localGlobalAdjustments, setLocalGlobalAdjustments] = useState(globalAdjustments);
   // if (prevGlobalAdjustments !== globalAdjustments) { setLocalGlobalAdjustments(globalAdjustments); ... }
 
-  const {
-    applyAndPersistColors,
-    applyAndPersistTypography,
-    applyAndPersistLayout,
-  } = useThemeStorage({
-    onColorsChange: setCurrentThemeColors,
-    onTypographyChange: (config: TypographyConfig) => {
-      setHeaderScale(config.headerScale);
-      setBodyScale(config.bodyScale);
-      setMonoFontSizeScale(config.monoFontSizeScale);
-      setMonoFontWeightScale(config.monoFontWeightScale);
-      setMonoLetterSpacingScale(config.monoLetterSpacingScale);
-      setMonoLineHeight(config.monoLineHeight);
-      setMonoMinFontSizePx(config.monoMinFontSizePx);
-      setBodyMinFontSizePx(config.bodyMinFontSizePx);
-      setHeaderMinFontSizePx(config.headerMinFontSizePx);
-    },
-    onLayoutChange: (config: LayoutConfig) => {
-      setRadius(config.radius);
-      setBorderWidth(config.borderWidth);
-      setSpacingScale(config.spacingScale);
-    },
-    currentThemeMode,
-  });
+  const { applyAndPersistColors, applyAndPersistTypography, applyAndPersistLayout } =
+    useThemeStorage({
+      onColorsChange: setCurrentThemeColors,
+      onTypographyChange: (config: TypographyConfig) => {
+        setHeaderScale(config.headerScale);
+        setBodyScale(config.bodyScale);
+        setMonoFontSizeScale(config.monoFontSizeScale);
+        setMonoFontWeightScale(config.monoFontWeightScale);
+        setMonoLetterSpacingScale(config.monoLetterSpacingScale);
+        setMonoLineHeight(config.monoLineHeight);
+        setMonoMinFontSizePx(config.monoMinFontSizePx);
+        setBodyMinFontSizePx(config.bodyMinFontSizePx);
+        setHeaderMinFontSizePx(config.headerMinFontSizePx);
+      },
+      onLayoutChange: (config: LayoutConfig) => {
+        setRadius(config.radius);
+        setBorderWidth(config.borderWidth);
+        setSpacingScale(config.spacingScale);
+      },
+      currentThemeMode,
+    });
 
   const currentTypography: TypographyConfig = {
     headerScale,
@@ -202,7 +182,6 @@ export const SettingsContent = ({
     setLocalGlobalAdjustments,
     setGlobalAdjustments,
   );
-
 
   const tabLabels: Record<ConfigTab, string> = {
     colors: "Theme",

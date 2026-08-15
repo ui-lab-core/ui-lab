@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Badge, Button, Input, Popover, Select } from 'ui-lab-components';
-import { getAllCategories, getAllTags } from '@ui-lab-core/library/catalog';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Badge, Button, Input, Popover, Select } from "ui-lab-components";
+import { getAllCategories, getAllTags } from "@ui-lab-core/library/catalog";
 import {
   FaArrowDownAZ,
   FaArrowUpZA,
@@ -11,16 +11,16 @@ import {
   FaMagnifyingGlass,
   FaSort,
   FaX,
-} from '@/shared/icons/fa6';
-import { cn } from '@/shared/lib/utils';
-import { X } from 'lucide-react';
+} from "@/shared/icons/fa6";
+import { cn } from "@/shared/lib/utils";
+import { X } from "lucide-react";
 
 const SORT_OPTIONS = [
-  { label: 'Default Order', value: 'default', icon: <FaSort /> },
-  { label: 'Newest First', value: 'newest', icon: <FaClock /> },
-  { label: 'Most Popular', value: 'popular', icon: <FaFire /> },
-  { label: 'Name (A-Z)', value: 'az', icon: <FaArrowDownAZ /> },
-  { label: 'Name (Z-A)', value: 'za', icon: <FaArrowUpZA /> },
+  { label: "Default Order", value: "default", icon: <FaSort /> },
+  { label: "Newest First", value: "newest", icon: <FaClock /> },
+  { label: "Most Popular", value: "popular", icon: <FaFire /> },
+  { label: "Name (A-Z)", value: "az", icon: <FaArrowDownAZ /> },
+  { label: "Name (Z-A)", value: "za", icon: <FaArrowUpZA /> },
 ];
 
 const EMPTY_TAGS: string[] = [];
@@ -40,9 +40,9 @@ interface ToolbarProps {
 }
 
 export function Toolbar({
-  searchQuery = '',
-  searchPlaceholder = 'Search elements...',
-  sortBy = 'default',
+  searchQuery = "",
+  searchPlaceholder = "Search elements...",
+  sortBy = "default",
   selectedCategory = null,
   selectedTags = EMPTY_TAGS,
   actions,
@@ -64,20 +64,26 @@ export function Toolbar({
     setSearchValue(searchQuery);
   }, [searchQuery]);
 
-  useEffect(() => () => {
-    if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
+    },
+    [],
+  );
 
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchValue(value);
-    if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
-    debounceTimeoutRef.current = setTimeout(() => onSearch(value), 300);
-  }, [onSearch]);
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchValue(value);
+      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
+      debounceTimeoutRef.current = setTimeout(() => onSearch(value), 300);
+    },
+    [onSearch],
+  );
 
   const handleSearchClear = useCallback(() => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
-    setSearchValue('');
-    onSearch('');
+    setSearchValue("");
+    onSearch("");
   }, [onSearch]);
 
   const toggleTag = (tag: string) => {
@@ -93,11 +99,17 @@ export function Toolbar({
       <Input
         type="text"
         icon={<FaMagnifyingGlass className="size-3.5 text-foreground-400" />}
-        actions={searchValue ? [{
-          icon: <FaX size={12} />,
-          title: 'Clear search',
-          onClick: handleSearchClear,
-        }] : undefined}
+        actions={
+          searchValue
+            ? [
+                {
+                  icon: <FaX size={12} />,
+                  title: "Clear search",
+                  onClick: handleSearchClear,
+                },
+              ]
+            : undefined
+        }
         placeholder={searchPlaceholder}
         value={searchValue}
         onChange={(event) => handleSearchChange(event.target.value)}
@@ -113,7 +125,7 @@ export function Toolbar({
           className="w-fit"
         >
           <Select.Trigger icon={{ prefix: <FaSort className="text-foreground-400" /> }}>
-            <span className="hidden lg:inline">{selectedSort?.label ?? 'Sort by'}</span>
+            <span className="hidden lg:inline">{selectedSort?.label ?? "Sort by"}</span>
           </Select.Trigger>
           <Select.Content>
             <Select.List>
@@ -139,12 +151,12 @@ export function Toolbar({
           position="bottom"
           align="end"
           styles={{
-            frame: 'block overflow-hidden p-0',
+            frame: "block overflow-hidden p-0",
           }}
           content={
             <div
               className="flex max-h-[min(36rem,calc(100vh-2rem))] flex-col"
-              style={{ width: 'min(24rem, calc(100vw - 1rem))' }}
+              style={{ width: "min(24rem, calc(100vw - 1rem))" }}
             >
               <div className="flex shrink-0 items-center justify-between gap-3 border-b border-background-700 px-4 py-1">
                 <div>
@@ -183,16 +195,16 @@ export function Toolbar({
                   <legend className="mb-2 text-xs font-medium text-foreground-400">Category</legend>
                   <div className="grid grid-cols-2 gap-1" role="radiogroup" aria-label="Category">
                     <Button
-                      variant={selectedCategory === null ? 'secondary' : 'ghost'}
+                      variant={selectedCategory === null ? "secondary" : "ghost"}
                       size="sm"
                       onPress={() => onCategoryChange(null)}
                       aria-pressed={selectedCategory === null}
                       styles={{
                         root: cn(
-                          'col-span-2 w-full justify-start text-left',
+                          "col-span-2 w-full justify-start text-left",
                           selectedCategory === null
-                            ? 'bg-background-700 text-foreground-200'
-                            : 'text-foreground-400 hover:bg-background-800 hover:text-foreground-100',
+                            ? "bg-background-700 text-foreground-200"
+                            : "text-foreground-400 hover:bg-background-800 hover:text-foreground-100",
                         ),
                       }}
                     >
@@ -201,16 +213,16 @@ export function Toolbar({
                     {categories.map((category) => (
                       <Button
                         key={category}
-                        variant={selectedCategory === category ? 'secondary' : 'ghost'}
+                        variant={selectedCategory === category ? "secondary" : "ghost"}
                         size="sm"
                         onPress={() => onCategoryChange(category)}
                         aria-pressed={selectedCategory === category}
                         styles={{
                           root: cn(
-                            'w-full justify-start overflow-hidden text-left',
+                            "w-full justify-start overflow-hidden text-left",
                             selectedCategory === category
-                              ? 'bg-background-700 text-foreground-200'
-                              : 'text-foreground-400 hover:bg-background-800 hover:text-foreground-100',
+                              ? "bg-background-700 text-foreground-200"
+                              : "text-foreground-400 hover:bg-background-800 hover:text-foreground-100",
                           ),
                         }}
                       >
@@ -221,7 +233,9 @@ export function Toolbar({
                 </fieldset>
 
                 <fieldset className="border-t border-background-700 pt-4">
-                  <legend className="mb-2 pr-2 text-xs font-medium text-foreground-400">Tags</legend>
+                  <legend className="mb-2 pr-2 text-xs font-medium text-foreground-400">
+                    Tags
+                  </legend>
                   <div className="flex flex-wrap gap-1.5" role="group" aria-label="Tags">
                     {tags.map((tag) => {
                       const isSelected = selectedTags.includes(tag);
@@ -229,16 +243,16 @@ export function Toolbar({
                       return (
                         <Button
                           key={tag}
-                          variant={isSelected ? 'secondary' : 'ghost'}
+                          variant={isSelected ? "secondary" : "ghost"}
                           size="sm"
                           onPress={() => toggleTag(tag)}
                           aria-pressed={isSelected}
                           styles={{
                             root: cn(
-                              'h-7 rounded-full border px-2.5 text-xs',
+                              "h-7 rounded-full border px-2.5 text-xs",
                               isSelected
-                                ? 'border-accent-500/40 bg-accent-500/10 text-accent-200'
-                                : 'border-background-700 bg-transparent text-foreground-400 hover:border-background-600 hover:bg-background-800 hover:text-foreground-200',
+                                ? "border-accent-500/40 bg-accent-500/10 text-accent-200"
+                                : "border-background-700 bg-transparent text-foreground-400 hover:border-background-600 hover:bg-background-800 hover:text-foreground-200",
                             ),
                           }}
                         >
@@ -257,10 +271,10 @@ export function Toolbar({
             size="sm"
             styles={{
               root: cn(
-                'border',
+                "border",
                 activeFilterCount > 0
-                  ? 'border-accent-500/40 bg-accent-500/10 text-accent-200 hover:border-accent-400'
-                  : 'border-background-700 bg-background-900 text-foreground-300 hover:border-background-600 hover:bg-background-800',
+                  ? "border-accent-500/40 bg-accent-500/10 text-accent-200 hover:border-accent-400"
+                  : "border-background-700 bg-background-900 text-foreground-300 hover:border-background-600 hover:bg-background-800",
               ),
             }}
           >

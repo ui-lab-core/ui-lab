@@ -1,6 +1,6 @@
-import React from 'react';
-import { Slider } from 'ui-lab-components';
-import { ComponentDetail } from '@/types';
+import React from "react";
+import { Slider } from "ui-lab-components";
+import { ComponentDetail } from "@/types";
 
 const sliderBasicCode = `import { Slider } from "ui-lab-components";
 
@@ -15,10 +15,13 @@ export const sliderDetail: ComponentDetail = {
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Slider component provides a clean, minimal range input for selecting values within a specified range. It features custom styling that completely overrides native HTML range input appearance, offering a consistent look across all browsers.
+        The Slider component provides a clean, minimal range input for selecting values within a
+        specified range. It features custom styling that completely overrides native HTML range
+        input appearance, offering a consistent look across all browsers.
       </p>
       <p>
-        Perfect for volume controls, brightness adjustment, price ranges, and other value selection scenarios.
+        Perfect for volume controls, brightness adjustment, price ranges, and other value selection
+        scenarios.
       </p>
     </div>
   ),

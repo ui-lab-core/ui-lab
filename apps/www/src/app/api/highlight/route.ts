@@ -24,7 +24,10 @@ export async function POST(request: Request) {
     typeof colors !== "object" ||
     (mode !== "light" && mode !== "dark")
   ) {
-    return Response.json({ error: "Code, language, colors, and mode are required" }, { status: 400 });
+    return Response.json(
+      { error: "Code, language, colors, and mode are required" },
+      { status: 400 },
+    );
   }
   if (code.length > MAX_SOURCE_LENGTH) {
     return Response.json({ error: "Source is too large" }, { status: 413 });

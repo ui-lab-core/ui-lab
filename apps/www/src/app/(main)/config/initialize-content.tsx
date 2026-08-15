@@ -17,10 +17,10 @@ const FRAMEWORKS: {
   name: string;
   Icon: ComponentType<IconBaseProps>;
 }[] = [
-    { id: "next", name: "Next.js", Icon: SiNextdotjs },
-    { id: "vite", name: "Vite", Icon: SiVite },
-    { id: "astro", name: "Astro", Icon: SiAstro },
-  ];
+  { id: "next", name: "Next.js", Icon: SiNextdotjs },
+  { id: "vite", name: "Vite", Icon: SiVite },
+  { id: "astro", name: "Astro", Icon: SiAstro },
+];
 
 const NEXT_LAYOUT_FILENAME = "app/layout.tsx";
 const ASTRO_LAYOUT_FILENAME = "src/layouts/Layout.astro";
@@ -149,32 +149,30 @@ export function InitializeContent({
 
       <div id="doc-content" className="typography max-w-none">
         <p>
-          UI Lab components ship without design tokens, so they look unstyled until a
-          theme is loaded. ui-lab-theme-onyx supplies that base theme; the generated
-          theme.css layers your configured tokens on top of it. A complete setup has
-          three parts: install the package, add your theme, then stamp the color mode
-          for your framework.
+          UI Lab components ship without design tokens, so they look unstyled until a theme is
+          loaded. ui-lab-theme-onyx supplies that base theme; the generated theme.css layers your
+          configured tokens on top of it. A complete setup has three parts: install the package, add
+          your theme, then stamp the color mode for your framework.
         </p>
 
         <h3>Choose your framework</h3>
         <p>
-          The install and theme steps are the same everywhere. Only how you stamp the
-          color mode onto the document changes.
+          The install and theme steps are the same everywhere. Only how you stamp the color mode
+          onto the document changes.
         </p>
         <FrameworkPicker value={framework} onChange={setFramework} />
 
         <h3>1. Install the package and a base theme</h3>
         <p>
-          ui-lab-theme-onyx is the base theme UI Lab components render against —
-          install it alongside the components, then override its tokens with your own.
+          ui-lab-theme-onyx is the base theme UI Lab components render against — install it
+          alongside the components, then override its tokens with your own.
         </p>
         <InstallCommand packages="ui-lab-components ui-lab-theme-onyx" />
 
         <h3>2. Add your theme</h3>
         <p>
-          Create app/theme.css with your generated tokens, then replace app/globals.css.
-          It imports ui-lab-theme-onyx first, so your tokens override its defaults.
-          Tailwind v4 is required.
+          Create app/theme.css with your generated tokens, then replace app/globals.css. It imports
+          ui-lab-theme-onyx first, so your tokens override its defaults. Tailwind v4 is required.
         </p>
         <Tabs default="theme">
           <Tabs.List>
@@ -198,8 +196,8 @@ export function InitializeContent({
         {framework === "next" && (
           <>
             <p>
-              Merge into your root layout. The server reads the ui-lab-theme cookie so
-              light and dark render correctly on first paint.
+              Merge into your root layout. The server reads the ui-lab-theme cookie so light and
+              dark render correctly on first paint.
             </p>
             <Code language="tsx" filename={NEXT_LAYOUT_FILENAME}>
               {layoutTsx}
@@ -209,9 +207,9 @@ export function InitializeContent({
         {framework === "astro" && (
           <>
             <p>
-              Astro pages render server-side by default, so the same cookie helpers
-              Next.js uses work here too — read the cookie in the layout frontmatter
-              and stamp {"<html>"} before the page ships.
+              Astro pages render server-side by default, so the same cookie helpers Next.js uses
+              work here too — read the cookie in the layout frontmatter and stamp {"<html>"} before
+              the page ships.
             </p>
             <Code language="astro" filename={ASTRO_LAYOUT_FILENAME}>
               {ASTRO_LAYOUT_TSX}
@@ -221,9 +219,9 @@ export function InitializeContent({
         {framework === "vite" && (
           <>
             <p>
-              A plain Vite SPA has no server render to stamp {"<html>"} ahead of time,
-              so fall back to an inline bootstrap script in the document head that
-              reads the stored mode before first paint.
+              A plain Vite SPA has no server render to stamp {"<html>"} ahead of time, so fall back
+              to an inline bootstrap script in the document head that reads the stored mode before
+              first paint.
             </p>
             <Code language="html" filename={VITE_INDEX_FILENAME}>
               {VITE_INDEX_HTML}
@@ -236,10 +234,9 @@ export function InitializeContent({
         <Expand title="Theme toggle" expanded={false}>
           <div className="space-y-3 p-4">
             <div className="text-sm text-foreground-400">
-              A minimal light/dark switch built on the useColorMode hook. Drop it
-              anywhere in your client tree, then restyle it however you like — swap
-              the label for your own icons, move it into a menu, or call
-              toggleThemeMode from any control you already have.
+              A minimal light/dark switch built on the useColorMode hook. Drop it anywhere in your
+              client tree, then restyle it however you like — swap the label for your own icons,
+              move it into a menu, or call toggleThemeMode from any control you already have.
             </div>
             <Code language="tsx" filename="components/theme-toggle.tsx">
               {themeToggleTsx}
@@ -250,9 +247,9 @@ export function InitializeContent({
         <Expand title="Long-form typography" expanded={false}>
           <div className="space-y-3 p-4">
             <div className="text-sm text-foreground-400">
-              Reading-surface styles for articles and rich text. Save as
-              app/typography.css, import it after your theme in globals.css, and add
-              the typography class to long-form containers — not the page root.
+              Reading-surface styles for articles and rich text. Save as app/typography.css, import
+              it after your theme in globals.css, and add the typography class to long-form
+              containers — not the page root.
             </div>
             <Code language="tsx" filename="import">
               {`@import "./typography.css";`}

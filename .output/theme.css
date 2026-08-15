@@ -15,7 +15,6 @@
   --hover-transition-timing-function: step-end;
 }
 
-
 @layer components {
   [data-ring="true"] {
     --ring: #ffdd00;
@@ -45,17 +44,29 @@
     --background-border: #0d0d0d;
   }
 
-  .button.sm { @apply px-2.5 py-1.5 text-xs font-semibold }
-  .button.md { @apply px-3 py-1.5 }
-  .button.lg { @apply px-10 py-2 }
+  .button.sm {
+    @apply px-2.5 py-1.5 text-xs font-semibold;
+  }
+  .button.md {
+    @apply px-3 py-1.5;
+  }
+  .button.lg {
+    @apply px-10 py-2;
+  }
 
   .button.icon {
     @apply aspect-square;
   }
 
-  .button.icon.sm { @apply p-1.5 }
-  .button.icon.md { @apply p-1.5 }
-  .button.icon.lg { @apply p-2 }
+  .button.icon.sm {
+    @apply p-1.5;
+  }
+  .button.icon.md {
+    @apply p-1.5;
+  }
+  .button.icon.lg {
+    @apply p-2;
+  }
 
   .gallery.item,
   [data-focus-surface="true"] {
@@ -131,7 +142,8 @@
   }
 
   .list > [role="listitem"][data-selected="true"]:hover:not([data-disabled="true"]),
-  .list[data-keyboard-mode="true"] > [role="listitem"][data-selected="true"][data-highlighted="true"] {
+  .list[data-keyboard-mode="true"]
+    > [role="listitem"][data-selected="true"][data-highlighted="true"] {
     --background: #e6c800;
   }
 
@@ -214,7 +226,6 @@
     --background: #ffdd00;
   }
 
-
   .date {
     --background: #f5f2ec;
     --border: #0d0d0d;
@@ -267,13 +278,21 @@
     --foreground: #b0aca6;
   }
 
-  .date > .grid > .day[data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),
+  .date
+    > .grid
+    > .day[data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),
   .date > .grid > .day:hover:not([data-disabled="true"]):not([data-out-of-range="true"]) {
     --background: #ffdd00;
   }
 
-  .date > .grid > .day[data-selected="true"][data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),
-  .date > .grid > .day[data-selected="true"]:hover:not([data-disabled="true"]):not([data-out-of-range="true"]) {
+  .date
+    > .grid
+    > .day[data-selected="true"][data-hovered="true"]:not([data-disabled="true"]):not(
+      [data-out-of-range="true"]
+    ),
+  .date
+    > .grid
+    > .day[data-selected="true"]:hover:not([data-disabled="true"]):not([data-out-of-range="true"]) {
     --background: #e6c800;
     --foreground: #0d0d0d;
   }
@@ -309,7 +328,12 @@
     --background: #ffe033;
   }
 
-  .table > .container > .element > .body > .row[data-selected="true"]:hover:not([data-disabled="true"]) > .cell {
+  .table
+    > .container
+    > .element
+    > .body
+    > .row[data-selected="true"]:hover:not([data-disabled="true"])
+    > .cell {
     --background: #e6c800;
   }
 
@@ -423,7 +447,7 @@
     --disabled-background: #ede9e3;
     --disabled-foreground: #b0aca6;
     font-size: var(--text-xs);
-    font-weight: var(--font-weight-medium)
+    font-weight: var(--font-weight-medium);
   }
 
   .input[data-error] {
@@ -548,7 +572,7 @@
     --focus-visible-background: #f5f2ec;
     --background-hover: #ffdd00;
     --background-pressed: #e6c800;
-    --foreground-size: var(--text-xs)
+    --foreground-size: var(--text-xs);
   }
 
   .select.ghost,
@@ -581,7 +605,9 @@
   .select > .sub-content [role="option"].item[data-highlighted="true"],
   .select > .sub-content [role="option"].sub-trigger[data-highlighted="true"],
   .select > .content [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]),
-  .select > .sub-content [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]) {
+  .select
+    > .sub-content
+    [role="option"].sub-trigger[data-open="true"]:not([data-highlighted="true"]) {
     --background: #ffdd00;
   }
 
@@ -696,15 +722,15 @@
   }
 
   .badge.sm {
-    @apply px-1.5 py-0.5 font-semibold
+    @apply px-1.5 py-0.5 font-semibold;
   }
 
   .badge.md {
-    @apply px-2 py-1.5
+    @apply px-2 py-1.5;
   }
 
   .badge.lg {
-    @apply px-3 py-1.5
+    @apply px-3 py-1.5;
   }
 
   .badge {
@@ -712,7 +738,7 @@
     --foreground: #0d0d0d;
     --background-border: #0d0d0d;
     font-weight: var(--font-weight-semibold);
-    font-size: var(--text-xs)
+    font-size: var(--text-xs);
   }
 
   .badge > .dismiss {
@@ -861,7 +887,7 @@
     --background-border: #0d0d0d;
     --open-animation: slide-in-from-top 0.08s step-end;
     --closed-animation: slide-out-to-top 0.08s step-end;
-    font-size: var(--text-xs)
+    font-size: var(--text-xs);
   }
 
   .menu.trigger {
@@ -1073,7 +1099,7 @@
     --background: transparent;
     --foreground: #0d0d0d;
     --background-border: #0d0d0d;
-    outline: unset !important /* override tailwindcss */
+    outline: unset !important; /* override tailwindcss */
   }
 
   .outline[data-hovered="true"]:not([data-disabled="true"]) {

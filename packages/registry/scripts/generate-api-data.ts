@@ -1,30 +1,30 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import { fileURLToPath } from 'url';
-import { withCustomConfig, type ComponentDoc, type PropItem } from 'react-docgen-typescript';
-import type { PropDefinition, ComponentAPI } from '../src/types';
-import { componentRegistry } from '../src/registry.js';
+import * as path from "path";
+import * as fs from "fs";
+import { fileURLToPath } from "url";
+import { withCustomConfig, type ComponentDoc, type PropItem } from "react-docgen-typescript";
+import type { PropDefinition, ComponentAPI } from "../src/types";
+import { componentRegistry } from "../src/registry.js";
 import {
   loadApiCache,
   saveApiCache,
   getCachedAPI,
   updateCacheEntry,
   pruneCache,
-} from './cache-api-data.js';
+} from "./cache-api-data.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const COMPONENTS_DIR = path.resolve(__dirname, '../../@ui/src/components');
+const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
 
-const parser = withCustomConfig(path.resolve(__dirname, '../../@ui/tsconfig.json'), {
+const parser = withCustomConfig(path.resolve(__dirname, "../../@ui/tsconfig.json"), {
   savePropValueAsString: true,
   shouldExtractLiteralValuesFromEnum: true,
   shouldRemoveUndefinedFromOptional: true,
   propFilter: (prop: PropItem) => {
     if (prop.declarations && prop.declarations.length > 0) {
       const hasPropAdditionalDescription = prop.declarations.find((declaration) => {
-        return !declaration.fileName.includes('node_modules');
+        return !declaration.fileName.includes("node_modules");
       });
       return Boolean(hasPropAdditionalDescription);
     }
@@ -33,26 +33,24 @@ const parser = withCustomConfig(path.resolve(__dirname, '../../@ui/tsconfig.json
 });
 
 function toKebabCase(pascalCase: string): string {
-  return pascalCase
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase();
+  return pascalCase.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 function formatType(type: string): string {
   return type
-    .replace(/\s+/g, ' ')
-    .replace(/\| undefined/g, '')
+    .replace(/\s+/g, " ")
+    .replace(/\| undefined/g, "")
     .trim();
 }
 
 function extractEnumValues(prop: PropItem): string[] | undefined {
-  const typeObj = (prop.type as any);
+  const typeObj = prop.type as any;
 
-  if (typeObj.name === 'enum' && Array.isArray(typeObj.value)) {
+  if (typeObj.name === "enum" && Array.isArray(typeObj.value)) {
     return typeObj.value
       .map((item: any) => {
-        const val = item.value || '';
-        return val.replace(/^["']|["']$/g, '');
+        const val = item.value || "";
+        return val.replace(/^["']|["']$/g, "");
       })
       .filter((val: string) => val.length > 0);
   }
@@ -65,7 +63,7 @@ function extractPropsFromDoc(doc: ComponentDoc): PropDefinition[] {
     const enumValues = extractEnumValues(prop);
     return {
       name,
-      type: enumValues ? enumValues.join(' | ') : formatType(prop.type.name),
+      type: enumValues ? enumValues.join(" | ") : formatType(prop.type.name),
       required: prop.required,
       defaultValue: prop.defaultValue?.value,
       description: prop.description || undefined,
@@ -74,17 +72,14 @@ function extractPropsFromDoc(doc: ComponentDoc): PropDefinition[] {
   });
 }
 
-function shouldHideLegacySlotClassNameProp(
-  prop: PropDefinition,
-  hasStylesProp: boolean
-): boolean {
+function shouldHideLegacySlotClassNameProp(prop: PropDefinition, hasStylesProp: boolean): boolean {
   if (!hasStylesProp) return false;
-  if (prop.name === 'className') return false;
+  if (prop.name === "className") return false;
   return /.+ClassName$/.test(prop.name);
 }
 
 function normalizeExtractedProps(props: PropDefinition[]): PropDefinition[] {
-  const hasStylesProp = props.some((prop) => prop.name === 'styles');
+  const hasStylesProp = props.some((prop) => prop.name === "styles");
 
   return props.filter((prop) => !shouldHideLegacySlotClassNameProp(prop, hasStylesProp));
 }
@@ -94,15 +89,16 @@ function getComponentFiles(componentDirName: string): string[] {
   if (!fs.existsSync(componentDir)) return [];
 
   const mainFileName = `${componentDirName}.tsx`;
-  return fs.readdirSync(componentDir)
-    .filter(f => f.endsWith('.tsx') && !f.endsWith('.test.tsx'))
+  return fs
+    .readdirSync(componentDir)
+    .filter((f) => f.endsWith(".tsx") && !f.endsWith(".test.tsx"))
     .sort((a, b) => {
       // Main component file first so allDocs[0] is always the root component
       if (a === mainFileName) return -1;
       if (b === mainFileName) return 1;
       return a.localeCompare(b);
     })
-    .map(f => path.join(componentDir, f));
+    .map((f) => path.join(componentDir, f));
 }
 
 function extractComponentAPI(componentDirName: string): ComponentAPI | null {
@@ -122,7 +118,7 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   if (allDocs.length === 0) return null;
 
   // Prefer the doc whose displayName matches the component directory name (e.g. "Modal" for Modal dir)
-  const mainDoc = allDocs.find(d => d.displayName === componentDirName) || allDocs[0];
+  const mainDoc = allDocs.find((d) => d.displayName === componentDirName) || allDocs[0];
   const mainProps = normalizeExtractedProps(extractPropsFromDoc(mainDoc));
 
   const subComponents: Record<string, { description?: string; props: PropDefinition[] }> = {};
@@ -188,7 +184,7 @@ export function extractAllComponentAPIs(componentDirNames: string[]): Record<str
   saveApiCache(cache);
 
   console.log(
-    `Cache: ${cacheHitCount} hits, ${parsedCount} parsed, total ${Object.keys(result).length} components`
+    `Cache: ${cacheHitCount} hits, ${parsedCount} parsed, total ${Object.keys(result).length} components`,
   );
 
   return result;

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState, useRef } from "react";
 import { useApp } from "@/features/theme/lib/app-context";
@@ -14,7 +14,7 @@ interface InlineCodeHighlightProps {
 export function InlineCodeHighlight({
   code,
   language = "typescript",
-  className = ""
+  className = "",
 }: InlineCodeHighlightProps) {
   const { currentThemeMode, currentThemeColors, isThemeInitialized } = useApp();
   const [highlightedCode, setHighlightedCode] = useState<string | null>(null);
@@ -22,15 +22,18 @@ export function InlineCodeHighlight({
   const isNearViewport = useNearViewport(htmlRef);
 
   useEffect(() => {
-    if (!isNearViewport || !isThemeInitialized || !currentThemeColors || code.trim().length < 4) return;
+    if (!isNearViewport || !isThemeInitialized || !currentThemeColors || code.trim().length < 4)
+      return;
     let cancelled = false;
 
     const highlight = () => {
-      highlightInlineCode(code, language, currentThemeColors, currentThemeMode).then((html) => {
-        if (!cancelled) setHighlightedCode(html);
-      }).catch((error) => {
-        console.error("Failed to highlight code:", error);
-      });
+      highlightInlineCode(code, language, currentThemeColors, currentThemeMode)
+        .then((html) => {
+          if (!cancelled) setHighlightedCode(html);
+        })
+        .catch((error) => {
+          console.error("Failed to highlight code:", error);
+        });
     };
 
     let timeout = 0;

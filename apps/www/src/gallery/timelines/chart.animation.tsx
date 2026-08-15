@@ -70,7 +70,11 @@ export function ChartAnimation() {
       className="flex items-center justify-center relative overflow-hidden font-sans"
     >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <rect
             x={chartX}
             y={chartY}
@@ -186,7 +190,8 @@ export function ChartAnimation() {
             strokeDasharray={1}
             strokeDashoffset={lineVisible ? 0 : 1}
             style={{
-              transition: "stroke-dashoffset 0.9s cubic-bezier(0.25, 0, 0.25, 1), opacity 0.4s ease, color 0.4s ease",
+              transition:
+                "stroke-dashoffset 0.9s cubic-bezier(0.25, 0, 0.25, 1), opacity 0.4s ease, color 0.4s ease",
             }}
           />
           {lineHeights.map((height, index) => (

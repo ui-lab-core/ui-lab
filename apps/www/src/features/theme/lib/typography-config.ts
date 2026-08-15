@@ -1,4 +1,4 @@
-export const ROOT_FONT_SIZE_PX = 16;
+const ROOT_FONT_SIZE_PX = 16;
 
 export const DEFAULT_FONT_SIZE_ROUNDING_STEP_PX = 0.5;
 
@@ -17,12 +17,12 @@ export const DEFAULT_HEADER_MIN_FONT_SIZE_PX = 12.0;
 
 export const DEFAULT_BODY_MIN_FONT_SIZE_PX = 13.5;
 
-export const DEFAULT_MONO_LINE_HEIGHT = 1.55;
-export const DEFAULT_MONO_MIN_FONT_SIZE_PX = 13.0;
+const DEFAULT_MONO_LINE_HEIGHT = 1.55;
+const DEFAULT_MONO_MIN_FONT_SIZE_PX = 13.0;
 
-export const DEFAULT_GLOBAL_MIN_FONT_SIZE_PX = DEFAULT_BODY_MIN_FONT_SIZE_PX;
-export const MIN_GLOBAL_MIN_FONT_SIZE_PX = MIN_MIN_FONT_SIZE_PX;
-export const MAX_GLOBAL_MIN_FONT_SIZE_PX = MAX_MIN_FONT_SIZE_PX;
+const DEFAULT_GLOBAL_MIN_FONT_SIZE_PX = DEFAULT_BODY_MIN_FONT_SIZE_PX;
+const MIN_GLOBAL_MIN_FONT_SIZE_PX = MIN_MIN_FONT_SIZE_PX;
+const MAX_GLOBAL_MIN_FONT_SIZE_PX = MAX_MIN_FONT_SIZE_PX;
 
 export interface TypographyConfig {
   // Header
@@ -58,14 +58,11 @@ export const DEFAULT_TYPOGRAPHY_CONFIG: TypographyConfig = {
   monoMinFontSizePx: DEFAULT_MONO_MIN_FONT_SIZE_PX,
 };
 
-export function clampMinFontSizePx(value: number): number {
-  return Math.max(
-    MIN_MIN_FONT_SIZE_PX,
-    Math.min(MAX_MIN_FONT_SIZE_PX, value),
-  );
+function clampMinFontSizePx(value: number): number {
+  return Math.max(MIN_MIN_FONT_SIZE_PX, Math.min(MAX_MIN_FONT_SIZE_PX, value));
 }
 
-export function clampGlobalMinFontSizePx(value: number): number {
+function clampGlobalMinFontSizePx(value: number): number {
   return clampMinFontSizePx(value);
 }
 
@@ -80,14 +77,11 @@ export function normalizeMinFontSizePx(
   return clampMinFontSizePx(value);
 }
 
-export function normalizeGlobalMinFontSizePx(value: unknown): number {
+function normalizeGlobalMinFontSizePx(value: unknown): number {
   return normalizeMinFontSizePx(value, DEFAULT_GLOBAL_MIN_FONT_SIZE_PX);
 }
 
-export function normalizeTypographyScale(
-  value: unknown,
-  fallback: number,
-): number {
+export function normalizeTypographyScale(value: unknown, fallback: number): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return fallback;
   }
@@ -96,16 +90,10 @@ export function normalizeTypographyScale(
 }
 
 function clampTypographyLineHeight(value: number): number {
-  return Math.max(
-    TYPOGRAPHY_LINE_HEIGHT_MIN,
-    Math.min(TYPOGRAPHY_LINE_HEIGHT_MAX, value),
-  );
+  return Math.max(TYPOGRAPHY_LINE_HEIGHT_MIN, Math.min(TYPOGRAPHY_LINE_HEIGHT_MAX, value));
 }
 
-export function normalizeTypographyLineHeight(
-  value: unknown,
-  fallback: number,
-): number {
+export function normalizeTypographyLineHeight(value: unknown, fallback: number): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return fallback;
   }

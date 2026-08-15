@@ -1,22 +1,19 @@
-'use client';
+"use client";
 
-import type React from 'react';
-import { getElementPreview } from '@ui-lab-core/library';
-import { patternPreviews } from '@/gallery/pattern-previews';
+import type React from "react";
+import { getElementPreview } from "@ui-lab-core/library";
+import { patternPreviews } from "@/gallery/pattern-previews";
 
 type PreviewComponent = React.ComponentType<object>;
 
 export function getPreviewComponent(patternId: string): PreviewComponent | null {
   return (
-    (getElementPreview('patterns', patternId) as PreviewComponent) ||
+    (getElementPreview("patterns", patternId) as PreviewComponent) ||
     (patternPreviews[patternId as keyof typeof patternPreviews] as PreviewComponent) ||
     null
   );
 }
 
 export function getCardPreviewComponent(patternId: string): PreviewComponent | null {
-  return (
-    (patternPreviews[patternId as keyof typeof patternPreviews] as PreviewComponent) ||
-    null
-  );
+  return (patternPreviews[patternId as keyof typeof patternPreviews] as PreviewComponent) || null;
 }

@@ -2,26 +2,48 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignore": [
     "packages/@ui/src/postcss-ui-lab.ts",
-    "packages/@ui/src/styles.css",
-    "packages/@ui/src/theme-server.ts",
     "scripts/write-changeset.ts"
   ],
-  "tags": [
-    "-lintignore"
-  ],
+  "tags": ["-lintignore"],
   "workspaces": {
     ".": {
       "ignoreBinaries": ["only-allow"]
     },
     "apps/www": {
-      "entry": ["src/app/**/*.{ts,tsx}"]
+      "entry": ["src/app/**/*.{ts,tsx}", "scripts/**/*.{js,mjs,ts,mts}"],
+      "ignoreDependencies": [
+        "@fontsource-variable/jetbrains-mono",
+        "@fontsource-variable/work-sans",
+        "@ui-lab-core/library",
+        "ui-lab-theme-onyx"
+      ]
     },
     "apps/site": {
       "entry": ["content/**/*.mdx"]
     },
-    "packages/@ui": {},
+    "packages/@ui": {
+      "entry": [
+        "src/index.ts",
+        "src/providers/index.ts",
+        "src/providers/themeScript.ts",
+        "src/theme-server.ts",
+        "src/scripts.ts",
+        "src/components/*/index.{ts,tsx}",
+        "src/base.css",
+        "src/typography.css",
+        "src/tests/**/*.{ts,tsx}",
+        "src/components/**/tests/**/*.{ts,tsx}"
+      ]
+    },
     "packages/@mcp": {},
-    "packages/registry": {},
-    "packages/themes/onyx": {}
+    "packages/registry": {
+      "entry": [
+        "src/components/**/index.tsx",
+        "src/components/**/examples/index.ts"
+      ]
+    },
+    "packages/themes/onyx": {
+      "ignoreDependencies": ["tailwindcss"]
+    }
   }
 }

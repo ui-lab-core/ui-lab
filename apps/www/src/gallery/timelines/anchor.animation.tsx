@@ -51,7 +51,6 @@ export function AnchorAnimation() {
       <div className="flex items-center justify-center w-full h-full">
         {/* Text block is the flow anchor — always centered */}
         <div className="relative flex flex-col gap-[7px] w-[148px]">
-
           {/* Dashed accent outline */}
           <div
             className="absolute pointer-events-none rounded-[10px]"
@@ -151,8 +150,7 @@ export function AnchorAnimation() {
           frames={cursorFrames}
           appearance={{
             className: config.highlight.hoverClass,
-            motionTransition:
-              "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+            motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
           }}
         >
           <Cursor />

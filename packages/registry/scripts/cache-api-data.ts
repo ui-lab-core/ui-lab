@@ -1,14 +1,14 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-import type { ComponentAPI } from '../src/types';
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
+import type { ComponentAPI } from "../src/types";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CACHE_DIR = path.resolve(__dirname, '../.cache');
-const CACHE_FILE = path.resolve(CACHE_DIR, 'api-data.json');
-const CACHE_VERSION = '1.1.0';
+const CACHE_DIR = path.resolve(__dirname, "../.cache");
+const CACHE_FILE = path.resolve(CACHE_DIR, "api-data.json");
+const CACHE_VERSION = "1.1.0";
 
 interface CacheEntry {
   mtime: number;
@@ -39,7 +39,7 @@ export function loadApiCache(): ApiCache {
       return { timestamp: 0, version: CACHE_VERSION, files: {} };
     }
 
-    const content = fs.readFileSync(CACHE_FILE, 'utf-8');
+    const content = fs.readFileSync(CACHE_FILE, "utf-8");
     const cache = JSON.parse(content) as ApiCache;
 
     if (cache.version !== CACHE_VERSION) {
@@ -48,7 +48,7 @@ export function loadApiCache(): ApiCache {
 
     return cache;
   } catch (error) {
-    console.warn('Failed to load API cache, starting fresh:', error);
+    console.warn("Failed to load API cache, starting fresh:", error);
     return { timestamp: 0, version: CACHE_VERSION, files: {} };
   }
 }
@@ -59,9 +59,9 @@ export function loadApiCache(): ApiCache {
 export function saveApiCache(cache: ApiCache): void {
   try {
     ensureCacheDir();
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2), 'utf-8');
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2), "utf-8");
   } catch (error) {
-    console.warn('Failed to save API cache:', error);
+    console.warn("Failed to save API cache:", error);
   }
 }
 
@@ -74,7 +74,7 @@ function getComponentsMtime(componentDirName: string, componentsDir: string): nu
   if (!fs.existsSync(componentDir)) return 0;
 
   const files = fs.readdirSync(componentDir);
-  const tsxFiles = files.filter(f => f.endsWith('.tsx') && !f.endsWith('.test.tsx'));
+  const tsxFiles = files.filter((f) => f.endsWith(".tsx") && !f.endsWith(".test.tsx"));
 
   let maxMtime = 0;
   for (const file of tsxFiles) {
@@ -94,11 +94,7 @@ function getComponentsMtime(componentDirName: string, componentsDir: string): nu
 /**
  * Checks if a component's cache entry is still valid
  */
-function isCacheValid(
-  componentDirName: string,
-  cache: ApiCache,
-  componentsDir: string
-): boolean {
+function isCacheValid(componentDirName: string, cache: ApiCache, componentsDir: string): boolean {
   const cacheEntry = cache.files[componentDirName];
   if (!cacheEntry) {
     return false;
@@ -114,7 +110,7 @@ function isCacheValid(
 export function getCachedAPI(
   componentDirName: string,
   cache: ApiCache,
-  componentsDir: string
+  componentsDir: string,
 ): ComponentAPI | null {
   if (!isCacheValid(componentDirName, cache, componentsDir)) {
     return null;
@@ -131,7 +127,7 @@ export function updateCacheEntry(
   componentDirName: string,
   cache: ApiCache,
   api: ComponentAPI | null,
-  componentsDir: string
+  componentsDir: string,
 ): ApiCache {
   const mtime = getComponentsMtime(componentDirName, componentsDir);
 
@@ -156,9 +152,9 @@ export function pruneCache(cache: ApiCache, componentsDir: string): ApiCache {
     fs.existsSync(componentsDir)
       ? fs
           .readdirSync(componentsDir, { withFileTypes: true })
-          .filter(dirent => dirent.isDirectory())
-          .map(dirent => dirent.name)
-      : []
+          .filter((dirent) => dirent.isDirectory())
+          .map((dirent) => dirent.name)
+      : [],
   );
 
   const prunedFiles: Record<string, CacheEntry> = {};
@@ -181,9 +177,9 @@ function clearCache(): void {
   try {
     if (fs.existsSync(CACHE_FILE)) {
       fs.unlinkSync(CACHE_FILE);
-      console.log('Cache cleared');
+      console.log("Cache cleared");
     }
   } catch (error) {
-    console.warn('Failed to clear cache:', error);
+    console.warn("Failed to clear cache:", error);
   }
 }

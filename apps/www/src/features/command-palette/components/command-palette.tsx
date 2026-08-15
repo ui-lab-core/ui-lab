@@ -19,11 +19,7 @@ function matchesSearch(command: CommandItem, query: string): boolean {
   const value = query.toLowerCase();
   if (scoreCommandRelevance(command.label, value) > 0) return true;
 
-  return Boolean(
-    command.keywords?.some(
-      (keyword) => scoreCommandRelevance(keyword, value) > 0,
-    ),
-  );
+  return Boolean(command.keywords?.some((keyword) => scoreCommandRelevance(keyword, value) > 0));
 }
 
 function Content({ itemCount }: { itemCount: number }) {
@@ -33,10 +29,7 @@ function Content({ itemCount }: { itemCount: number }) {
     <>
       <Command.Input placeholder="Search commands, components, docs..." />
 
-      <Command.List
-        className={css.list}
-        emptyMessage={`0 results for "${searchValue}"`}
-      >
+      <Command.List className={css.list} emptyMessage={`0 results for "${searchValue}"`}>
         {filteredItems.length > 0 ? (
           <Command.Groups
             className="[&>div:not(:first-child)_.category]:mt-8"
@@ -62,9 +55,7 @@ function Content({ itemCount }: { itemCount: number }) {
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm mb-1.5">{command.label}</h3>
                   {command.description ? (
-                    <p className="w-full break-words text-sm">
-                      {command.description}
-                    </p>
+                    <p className="w-full break-words text-sm">{command.description}</p>
                   ) : null}
                 </div>
               </Command.Item>
@@ -97,12 +88,8 @@ function Content({ itemCount }: { itemCount: number }) {
 
 export default function CommandPalette() {
   const [components, setComponents] = useState<ComponentResult[]>([]);
-  const {
-    isCommandPaletteOpen,
-    setIsCommandPaletteOpen,
-    currentThemeMode,
-    setCurrentThemeMode,
-  } = useApp();
+  const { isCommandPaletteOpen, setIsCommandPaletteOpen, currentThemeMode, setCurrentThemeMode } =
+    useApp();
   const commands = useCommands({
     components,
     currentThemeMode,

@@ -8,15 +8,8 @@
     "exportName": "Anchor",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "popover",
-    "breadcrumbs"
-  ],
-  "tags": [
-    "navigation",
-    "interactive",
-    "link"
-  ],
+  "relatedComponents": ["popover", "breadcrumbs"],
+  "tags": ["navigation", "interactive", "link"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

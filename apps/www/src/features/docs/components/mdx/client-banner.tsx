@@ -6,8 +6,4 @@ import React from "react";
 export const Banner = BannerComponent;
 export const BannerTitle = BannerComponent.Title;
 
-export const BannerBody = ({ children }: { children: React.ReactNode }) => (
-  <div>
-    {children}
-  </div>
-);
+export const BannerBody = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;

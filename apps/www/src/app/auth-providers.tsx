@@ -1,15 +1,12 @@
 import type { ReactNode } from "react";
 
-import {
-  getPremiumAuthSetup,
-} from "@/features/auth/auth-setup";
+import { getPremiumAuthSetup } from "@/features/auth/auth-setup";
 
 export async function AuthProviders({ children }: { children: ReactNode }) {
   const setup = getPremiumAuthSetup();
   const allowPartialDevAuth = process.env.NODE_ENV !== "production";
   const enableClerkProvider =
-    setup.clerkPublishableKeyConfigured &&
-    (allowPartialDevAuth || setup.fullAuthConfigured);
+    setup.clerkPublishableKeyConfigured && (allowPartialDevAuth || setup.fullAuthConfigured);
   const enableConvexProvider =
     setup.convexConfigured && (allowPartialDevAuth || setup.fullAuthConfigured);
 
@@ -17,10 +14,7 @@ export async function AuthProviders({ children }: { children: ReactNode }) {
 
   const { EnabledAuthProviders } = await import("./enabled-auth-providers");
   return (
-    <EnabledAuthProviders
-      clerk={enableClerkProvider}
-      convex={enableConvexProvider}
-    >
+    <EnabledAuthProviders clerk={enableClerkProvider} convex={enableConvexProvider}>
       {children}
     </EnabledAuthProviders>
   );

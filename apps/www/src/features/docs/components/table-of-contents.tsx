@@ -26,10 +26,10 @@ function formatTitle(title: string) {
   if (!match) return title;
 
   return match[1]
-    .replace(/^\d+-/, '')
-    .split('-')
+    .replace(/^\d+-/, "")
+    .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .join(" ");
 }
 
 function getRouteTocItems(pathname: string | null): TableOfContentsItem[] | null {
@@ -43,47 +43,51 @@ function getRouteTocItems(pathname: string | null): TableOfContentsItem[] | null
 }
 
 function getCurrentPageItems(initialItems: TableOfContentsItem[]): TableOfContentsItem[] {
-  const pageTocNode = document.querySelector('[data-docs-page-toc]');
+  const pageTocNode = document.querySelector("[data-docs-page-toc]");
 
   if (!(pageTocNode instanceof HTMLScriptElement)) {
     return initialItems;
   }
 
   try {
-    const parsedItems = JSON.parse(pageTocNode.textContent ?? '[]');
+    const parsedItems = JSON.parse(pageTocNode.textContent ?? "[]");
     if (!Array.isArray(parsedItems)) {
       return initialItems;
     }
 
-    return parsedItems
-      .filter((item): item is TableOfContentsItem => (
-        typeof item?.id === 'string' &&
-        typeof item?.title === 'string' &&
-        typeof item?.level === 'number'
-      ));
+    return parsedItems.filter(
+      (item): item is TableOfContentsItem =>
+        typeof item?.id === "string" &&
+        typeof item?.title === "string" &&
+        typeof item?.level === "number",
+    );
   } catch {
     return initialItems;
   }
 }
 
 function getHeadingRoot() {
-  return document.getElementById("doc-content")
-    ?? document.querySelector("#docs main")
-    ?? document.body;
+  return (
+    document.getElementById("doc-content") ?? document.querySelector("#docs main") ?? document.body
+  );
 }
 
-export function TableOfContents({ items: initialItems, mode = "dynamic", className }: TableOfContentsProps) {
+export function TableOfContents({
+  items: initialItems,
+  mode = "dynamic",
+  className,
+}: TableOfContentsProps) {
   const pathname = usePathname();
   const routeItems = useMemo(
     () => getRouteTocItems(pathname) ?? initialItems,
-    [initialItems, pathname]
+    [initialItems, pathname],
   );
   const [activeId, setActiveId] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isMounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
-    () => false
+    () => false,
   );
   const [visibleState, setVisibleState] = useState<{
     pathname: string | null;
@@ -98,11 +102,12 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
   const drawerScrollRef = useRef<HTMLDivElement | null>(null);
   const drawerRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const visibleItems = mode === "static"
-    ? routeItems
-    : visibleState.pathname === pathname
-      ? visibleState.items
-      : routeItems;
+  const visibleItems =
+    mode === "static"
+      ? routeItems
+      : visibleState.pathname === pathname
+        ? visibleState.items
+        : routeItems;
 
   useEffect(() => {
     if (!isDrawerOpen) return;
@@ -122,8 +127,8 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
 
       const focusable = Array.from(
         drawerRef.current.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        )
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
       );
       if (focusable.length === 0) {
         event.preventDefault();
@@ -157,7 +162,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
 
   const filterVisibleHeadings = useCallback(() => {
     const sourceItems = getCurrentPageItems(routeItems);
-    const registryIds = new Set(sourceItems.map(item => item.id));
+    const registryIds = new Set(sourceItems.map((item) => item.id));
     const seenIds = new Set<string>();
     const visible: TableOfContentsItem[] = [];
     const headingRoot = getHeadingRoot();
@@ -183,7 +188,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
         visible.push({
           id,
           title: heading.textContent || "",
-          level
+          level,
         });
       }
     });
@@ -266,7 +271,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
         nextId = element.id;
       }
 
-      setActiveId((currentId) => currentId === nextId ? currentId : nextId);
+      setActiveId((currentId) => (currentId === nextId ? currentId : nextId));
     };
 
     const scheduleUpdate = () => {
@@ -277,9 +282,8 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
       });
     };
 
-    const resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(scheduleUpdate);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleUpdate);
     if (resizeObserver) {
       resizeObserver.observe(document.body);
       for (const element of elements) {
@@ -288,14 +292,14 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
     }
 
     scheduleUpdate();
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
 
     return () => {
       if (frameId !== null) cancelAnimationFrame(frameId);
       resizeObserver?.disconnect();
-      window.removeEventListener('scroll', scheduleUpdate);
-      window.removeEventListener('resize', scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
     };
   }, [visibleItems]);
 
@@ -307,7 +311,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
       const scrollContent = maskEl?.firstElementChild as HTMLElement | undefined;
       if (!scrollContent) continue;
       const activeButton = scrollContent.querySelector(
-        `button[data-toc-id="${activeId}"]`
+        `button[data-toc-id="${activeId}"]`,
       ) as HTMLButtonElement | null;
       if (!activeButton) continue;
 
@@ -366,7 +370,7 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
 
             activeId === item.id
               ? "duration-0 text-foreground-50 bg-background-800"
-              : "duration-300 text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50"
+              : "duration-300 text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
           )}
         >
           <span className="tracking-(--letter-spacing-md) text-md font-medium whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
@@ -379,7 +383,12 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
 
   return (
     <>
-      <aside className={cn("ml-auto hidden w-full max-w-65 top-(--header-height) sticky min-[750px]:block self-start h-full min-h-0 overflow-hidden", className)}>
+      <aside
+        className={cn(
+          "ml-auto hidden w-full max-w-65 top-(--header-height) sticky min-[750px]:block self-start h-full min-h-0 overflow-hidden",
+          className,
+        )}
+      >
         <nav className="flex h-full min-h-0 flex-col pt-12">
           <h3 className="flex items-center gap-3 text-md text-foreground-400">
             <FaList aria-hidden="true" />
@@ -388,69 +397,80 @@ export function TableOfContents({ items: initialItems, mode = "dynamic", classNa
           </h3>
           <Divider variant="dashed" spacing="lg" />
           <div className="mt-2 flex min-h-0 flex-1 overflow-hidden max-h-160">
-            <Scroll inline fade-y ref={desktopScrollRef} className="w-full h-full min-h-0 max-h-160 overflow-auto">
+            <Scroll
+              inline
+              fade-y
+              ref={desktopScrollRef}
+              className="w-full h-full min-h-0 max-h-160 overflow-auto"
+            >
               {renderItems()}
             </Scroll>
           </div>
         </nav>
       </aside>
 
-      {isMounted && createPortal(
-        <div className="min-[750px]:hidden">
-          <button
-            ref={triggerRef}
-            type="button"
-            aria-label="Open table of contents"
-            aria-controls="table-of-contents-drawer"
-            aria-expanded={isDrawerOpen}
-            onClick={() => setIsDrawerOpen(true)}
-            className="fixed bottom-5 right-5 z-50 flex size-10 cursor-pointer items-center justify-center rounded-sm border border-background-700 bg-background-950 text-foreground-400 transition-colors hover:bg-background-700 hover:text-foreground-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
-          >
-            <FaList size={16} aria-hidden="true" />
-          </button>
+      {isMounted &&
+        createPortal(
+          <div className="min-[750px]:hidden">
+            <button
+              ref={triggerRef}
+              type="button"
+              aria-label="Open table of contents"
+              aria-controls="table-of-contents-drawer"
+              aria-expanded={isDrawerOpen}
+              onClick={() => setIsDrawerOpen(true)}
+              className="fixed bottom-5 right-5 z-50 flex size-10 cursor-pointer items-center justify-center rounded-sm border border-background-700 bg-background-950 text-foreground-400 transition-colors hover:bg-background-700 hover:text-foreground-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
+            >
+              <FaList size={16} aria-hidden="true" />
+            </button>
 
-          <div
-            className={cn(
-              "fixed inset-0 z-[60] bg-background-950/70 transition-opacity duration-300",
-              isDrawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-            )}
-            aria-hidden="true"
-            onClick={() => setIsDrawerOpen(false)}
-          />
-          <aside
-            ref={drawerRef}
-            id="table-of-contents-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Table of contents"
-            aria-hidden={!isDrawerOpen}
-            inert={!isDrawerOpen}
-            tabIndex={-1}
-            className={cn(
-              "fixed inset-y-0 right-0 z-[65] flex w-[min(22rem,calc(100vw-2rem))] flex-col bg-background-950 outline-none transition-transform duration-300 ease-out",
-              isDrawerOpen ? "translate-x-0" : "translate-x-full"
-            )}
-          >
-            <div className="flex h-14 shrink-0 items-center justify-between border-b border-background-700 px-5">
-              <h2 className="flex items-center gap-3 text-md font-medium text-foreground-200">
-                <FaList aria-hidden="true" /> Table of Contents
-              </h2>
-              <button
-                type="button"
-                aria-label="Close table of contents"
-                onClick={() => setIsDrawerOpen(false)}
-                className="flex size-9 cursor-pointer items-center justify-center rounded-sm text-xl text-foreground-400 transition-colors hover:bg-background-800 hover:text-foreground-100 focus-visible:outline-2 focus-visible:outline-accent-400"
+            <div
+              className={cn(
+                "fixed inset-0 z-[60] bg-background-950/70 transition-opacity duration-300",
+                isDrawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+              )}
+              aria-hidden="true"
+              onClick={() => setIsDrawerOpen(false)}
+            />
+            <aside
+              ref={drawerRef}
+              id="table-of-contents-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Table of contents"
+              aria-hidden={!isDrawerOpen}
+              inert={!isDrawerOpen}
+              tabIndex={-1}
+              className={cn(
+                "fixed inset-y-0 right-0 z-[65] flex w-[min(22rem,calc(100vw-2rem))] flex-col bg-background-950 outline-none transition-transform duration-300 ease-out",
+                isDrawerOpen ? "translate-x-0" : "translate-x-full",
+              )}
+            >
+              <div className="flex h-14 shrink-0 items-center justify-between border-b border-background-700 px-5">
+                <h2 className="flex items-center gap-3 text-md font-medium text-foreground-200">
+                  <FaList aria-hidden="true" /> Table of Contents
+                </h2>
+                <button
+                  type="button"
+                  aria-label="Close table of contents"
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="flex size-9 cursor-pointer items-center justify-center rounded-sm text-xl text-foreground-400 transition-colors hover:bg-background-800 hover:text-foreground-100 focus-visible:outline-2 focus-visible:outline-accent-400"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <Scroll
+                inline
+                fade-y
+                ref={drawerScrollRef}
+                className="min-h-0 flex-1 overflow-auto px-4 py-5"
               >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <Scroll inline fade-y ref={drawerScrollRef} className="min-h-0 flex-1 overflow-auto px-4 py-5">
-              {renderItems(true)}
-            </Scroll>
-          </aside>
-        </div>,
-        document.body
-      )}
+                {renderItems(true)}
+              </Scroll>
+            </aside>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

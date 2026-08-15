@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
 import { type OklchColor } from "@/features/theme/lib/color-utils";
@@ -14,7 +14,11 @@ import { type SimpleThemeColors } from "@/features/theme/constants/themes";
 import { FileCode2 } from "lucide-react";
 import { SiCss3, SiReact } from "@/shared/icons/si";
 
-const escapeHtml = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
+const escapeHtml = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[c] || c,
+  );
 
 function generateFallbackHtml(code: string): string {
   const lines = code
@@ -26,9 +30,7 @@ function generateFallbackHtml(code: string): string {
 }
 
 function stripSyntaxColorStyles(html: string): string {
-  return html
-    .replace(/background-color:\s*[^;"]+;?/g, "")
-    .replace(/(?<!-)color:\s*[^;"]+;?/g, "");
+  return html.replace(/background-color:\s*[^;"]+;?/g, "").replace(/(?<!-)color:\s*[^;"]+;?/g, "");
 }
 
 function stripPreTabIndex(html: string): string {
@@ -79,19 +81,25 @@ const highlightRequests = new Map<string, Promise<{ html: string }>>();
 function enqueueHighlight<T>(job: () => Promise<T>) {
   const result = highlightQueue.then(job, job);
   highlightQueue = result.then(
-    () => new Promise<void>((resolve) => {
-      if (typeof requestIdleCallback === "function") {
-        requestIdleCallback(() => resolve(), { timeout: 100 });
-      } else {
-        setTimeout(resolve, 0);
-      }
-    }),
+    () =>
+      new Promise<void>((resolve) => {
+        if (typeof requestIdleCallback === "function") {
+          requestIdleCallback(() => resolve(), { timeout: 100 });
+        } else {
+          setTimeout(resolve, 0);
+        }
+      }),
     () => undefined,
   );
   return result;
 }
 
-function requestHighlight(code: string, language: string, colors: SimpleThemeColors, mode: "light" | "dark") {
+function requestHighlight(
+  code: string,
+  language: string,
+  colors: SimpleThemeColors,
+  mode: "light" | "dark",
+) {
   const theme = JSON.stringify(colors);
   const key = `${language}\u0000${mode}\u0000${theme}\u0000${code}`;
   const existing = highlightRequests.get(key);
@@ -150,13 +158,17 @@ export function Code({
   const fallbackHtml = useMemo(() => generateFallbackHtml(activeCode), [activeCode]);
   const themeKey = currentThemeColors ? JSON.stringify(currentThemeColors) : "uninitialized";
   const highlightKey = `${activeLanguage}\u0000${currentThemeMode}\u0000${themeKey}\u0000${activeCode}`;
-  const staticHighlight = activeFile === 0 || !codeFiles
-    ? (currentThemeMode === "light" ? preHighlightedLight : preHighlightedDark)
-    : undefined;
-  const highlightedCode = resolved?.key === highlightKey && resolved.status === "resolved"
-    ? resolved.html
-    : staticHighlight ?? fallbackHtml;
-  const totalCodeLines = activeCode.split('\n').length;
+  const staticHighlight =
+    activeFile === 0 || !codeFiles
+      ? currentThemeMode === "light"
+        ? preHighlightedLight
+        : preHighlightedDark
+      : undefined;
+  const highlightedCode =
+    resolved?.key === highlightKey && resolved.status === "resolved"
+      ? resolved.html
+      : (staticHighlight ?? fallbackHtml);
+  const totalCodeLines = activeCode.split("\n").length;
   const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
   const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
   const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
@@ -167,16 +179,18 @@ export function Code({
 
     const highlight = async () => {
       try {
-        const result = await requestHighlight(activeCode, activeLanguage, currentThemeColors, currentThemeMode);
+        const result = await requestHighlight(
+          activeCode,
+          activeLanguage,
+          currentThemeColors,
+          currentThemeMode,
+        );
         const html = result.html;
 
         if (cancelled) return;
 
-        let styledHtml = html.replace(
-          /<code>/,
-          '<code style="display: block; padding: 1rem;">'
-        );
-        styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, '');
+        let styledHtml = html.replace(/<code>/, '<code style="display: block; padding: 1rem;">');
+        styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, "");
         styledHtml = stripPreTabIndex(styledHtml);
         setResolved({ key: highlightKey, html: styledHtml, status: "resolved" });
       } catch (error) {
@@ -192,11 +206,21 @@ export function Code({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [activeCode, activeLanguage, currentThemeColors, currentThemeMode, fallbackHtml, highlightKey, isNearViewport, isThemeInitialized]);
+  }, [
+    activeCode,
+    activeLanguage,
+    currentThemeColors,
+    currentThemeMode,
+    fallbackHtml,
+    highlightKey,
+    isNearViewport,
+    isThemeInitialized,
+  ]);
 
   const hiddenCodeLines = totalCodeLines - (maxHeightLines ?? totalCodeLines);
   const expanded = isExpanded;
-  const shouldShowExpandButton = !fillHeight && maxHeightLines !== null && totalCodeLines > maxHeightLines;
+  const shouldShowExpandButton =
+    !fillHeight && maxHeightLines !== null && totalCodeLines > maxHeightLines;
   const hasHeader = showHeader && Boolean(filename || heading);
 
   return (
@@ -205,10 +229,13 @@ export function Code({
       className={cn(
         "rounded-sm border border-background-700 bg-background-1000 overflow-hidden w-full min-w-0",
         fillHeight
-          ? cn("grid h-full min-h-0", hasHeader ? "grid-rows-[auto_minmax(0,1fr)]" : "grid-rows-[minmax(0,1fr)]")
+          ? cn(
+              "grid h-full min-h-0",
+              hasHeader ? "grid-rows-[auto_minmax(0,1fr)]" : "grid-rows-[minmax(0,1fr)]",
+            )
           : "flex flex-col",
         showLineNumbers && "code-block--line-numbers",
-        className
+        className,
       )}
     >
       {hasHeader && (
@@ -222,11 +249,16 @@ export function Code({
                   onClick={() => setActiveFile(index)}
                   className={cn(
                     "flex cursor-pointer items-center gap-2 rounded-sm py-2 px-2 transition-colors hover:bg-background-950 hover:text-foreground-100",
-                    index === activeFile ? "bg-background-950 text-foreground-200" : "text-foreground-400",
+                    index === activeFile
+                      ? "bg-background-950 text-foreground-200"
+                      : "text-foreground-400",
                   )}
                   aria-pressed={index === activeFile}
                 >
-                  <FileIcon name={file.name} className={index === activeFile ? "text-accent-500" : undefined} />
+                  <FileIcon
+                    name={file.name}
+                    className={index === activeFile ? "text-accent-500" : undefined}
+                  />
                   <span>{file.name}</span>
                 </button>
               ))}
@@ -259,7 +291,12 @@ export function Code({
         </div>
       )}
 
-      <div className={cn("relative group min-h-0 flex flex-col", fillHeight ? "h-full overflow-hidden" : "flex-1")}>
+      <div
+        className={cn(
+          "relative group min-h-0 flex flex-col",
+          fillHeight ? "h-full overflow-hidden" : "flex-1",
+        )}
+      >
         {!heading && expanded && shouldShowExpandButton && (
           <Button
             type="button"
@@ -269,8 +306,7 @@ export function Code({
             size="icon"
             icon={<LuChevronsDownUp size={14} />}
             className="absolute right-11 top-2 z-10"
-          >
-          </Button>
+          ></Button>
         )}
         {!heading ? <CopyButton code={children} /> : null}
         {fillHeight ? (
@@ -285,16 +321,16 @@ export function Code({
             }}
             className="relative h-full min-h-0 min-w-0"
           >
-            <CodeContent
-              html={displayHtml}
-              hasResolvedSyntax={hasResolvedSyntax}
-              faded={false}
-            />
+            <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
           </Scroll>
         ) : (
           <Scroll
             direction="vertical"
-            maxHeight={maxHeightLines !== null ? `calc(${expanded ? MAX_EXPANDED_HEIGHT_LINES : maxHeightLines} * 1.5em + 2rem)` : undefined}
+            maxHeight={
+              maxHeightLines !== null
+                ? `calc(${expanded ? MAX_EXPANDED_HEIGHT_LINES : maxHeightLines} * 1.5em + 2rem)`
+                : undefined
+            }
             maxWidth="100%"
             hide={false}
             styles={{
@@ -317,7 +353,8 @@ export function Code({
             onClick={() => setIsExpanded(true)}
             className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-950 text-foreground-300 font-medium text-xs transition-colors border-t border-background-700"
           >
-            <HiOutlineChevronUpDown size={24} className="text-foreground-400 inline mr-3" /> Show {hiddenCodeLines} more lines
+            <HiOutlineChevronUpDown size={24} className="text-foreground-400 inline mr-3" /> Show{" "}
+            {hiddenCodeLines} more lines
           </button>
         )}
       </div>
@@ -337,13 +374,15 @@ function CodeContent({
   return (
     <div
       dangerouslySetInnerHTML={{ __html: html }}
-      className={cn(`
-          [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
-          [&_code]:font-mono [&_code]:whitespace-pre
-        `, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
+      className={cn(`[&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
+          [&_code]:font-mono [&_code]:whitespace-pre`, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
       style={{
-        maskImage: faded ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
-        WebkitMaskImage: faded ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)' : 'none',
+        maskImage: faded
+          ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+          : "none",
+        WebkitMaskImage: faded
+          ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+          : "none",
       }}
     />
   );

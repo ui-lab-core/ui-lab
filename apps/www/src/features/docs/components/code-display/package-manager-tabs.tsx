@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Tabs } from 'ui-lab-components';
-import { FaNpm, FaYarn, FaBox } from '@/shared/icons/fa6';
+import { Tabs } from "ui-lab-components";
+import { FaNpm, FaYarn, FaBox } from "@/shared/icons/fa6";
 
-type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
+type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
 
 interface PackageManagerTabsProps {
   value: PackageManager;
@@ -11,10 +11,10 @@ interface PackageManagerTabsProps {
 }
 
 const packageManagers = [
-  { id: 'npm', label: 'npm', icon: <FaNpm size={16} /> },
-  { id: 'pnpm', label: 'pnpm', icon: <FaBox size={16} /> },
-  { id: 'yarn', label: 'yarn', icon: <FaYarn size={16} /> },
-  { id: 'bun', label: 'bun', icon: <FaBox size={16} /> },
+  { id: "npm", label: "npm", icon: <FaNpm size={16} /> },
+  { id: "pnpm", label: "pnpm", icon: <FaBox size={16} /> },
+  { id: "yarn", label: "yarn", icon: <FaYarn size={16} /> },
+  { id: "bun", label: "bun", icon: <FaBox size={16} /> },
 ] as const;
 
 export function PackageManagerTabs({ value, onValueChange }: PackageManagerTabsProps) {
@@ -22,11 +22,7 @@ export function PackageManagerTabs({ value, onValueChange }: PackageManagerTabsP
     <Tabs value={value} variant="underline" onValueChange={onValueChange as any}>
       <Tabs.List className="mr-auto rounded-none px-0">
         {packageManagers.map((pm) => (
-          <Tabs.Trigger
-            key={pm.id}
-            value={pm.id}
-            icon={pm.icon}
-          >
+          <Tabs.Trigger key={pm.id} value={pm.id} icon={pm.icon}>
             {pm.label}
           </Tabs.Trigger>
         ))}

@@ -1,11 +1,8 @@
-'use client';
+"use client";
 
-import type React from 'react';
-import { getElementPreview } from '@ui-lab-core/library';
-import {
-  elementRegistry,
-  getPackageForElement,
-} from '@ui-lab-core/library/catalog';
+import type React from "react";
+import { getElementPreview } from "@ui-lab-core/library";
+import { elementRegistry, getPackageForElement } from "@ui-lab-core/library/catalog";
 
 type DemoComponent = React.ComponentType<object>;
 

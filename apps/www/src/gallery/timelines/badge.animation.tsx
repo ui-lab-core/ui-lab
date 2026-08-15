@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 function getRoundedRectPath(
-  x: number, y: number, w: number, h: number,
-  r: { tl: number, tr: number, bl: number, br: number }
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
 ) {
   return `
     M ${x + r.tl} ${y}
@@ -120,14 +119,20 @@ export function BadgeAnimation() {
           <g style={{ transition: config.transition }}>
             <path
               d={getRoundedRectPath(badgeX, badgeY, badgeW, badgeH, {
-                tl: badgeRx, tr: badgeRx, bl: badgeRx, br: badgeRx
+                tl: badgeRx,
+                tr: badgeRx,
+                bl: badgeRx,
+                br: badgeRx,
               })}
               className="text-background-950"
               fill="currentColor"
             />
             <path
               d={getRoundedRectPath(badgeX, badgeY, badgeW, badgeH, {
-                tl: badgeRx, tr: badgeRx, bl: badgeRx, br: badgeRx
+                tl: badgeRx,
+                tr: badgeRx,
+                bl: badgeRx,
+                br: badgeRx,
               })}
               className={isHovered ? config.highlight.hoverClass : config.highlight.idleClass}
               fill="currentColor"
@@ -136,7 +141,9 @@ export function BadgeAnimation() {
               style={{
                 transition: config.transition,
                 fillOpacity: isHovered ? 0.05 : config.highlight.idleFillOpacity,
-                strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity: isHovered
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
 

@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { packageMetadata } from 'ui-lab-registry/generated-data';
+import { NextRequest, NextResponse } from "next/server";
+import { packageMetadata } from "ui-lab-registry/generated-data";
 
 export async function GET(request: NextRequest) {
   const llmsText = generateLLMsText();
 
   return new NextResponse(llmsText, {
     headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
     },
   });
 }
@@ -16,7 +16,7 @@ function generateLLMsText(): string {
   return `# UI Lab Components
 
 **Version:** ${packageMetadata.version}
-**Last Updated:** ${new Date().toISOString().split('T')[0]}
+**Last Updated:** ${new Date().toISOString().split("T")[0]}
 **Package:** ui-lab-components
 **Repository:** https://github.com/ui-lab-core/ui-lab
 **Documentation:** https://ui-lab

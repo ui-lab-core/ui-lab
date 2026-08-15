@@ -10,17 +10,9 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": [
-    "notification",
-    "feedback",
-    "temporary"
-  ],
+  "tags": ["notification", "feedback", "temporary"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "ARIA live regions",
-      "Role=\"status\"",
-      "Auto-dismiss support"
-    ]
+    "notes": ["ARIA live regions", "Role=\"status\"", "Auto-dismiss support"]
   }
 }

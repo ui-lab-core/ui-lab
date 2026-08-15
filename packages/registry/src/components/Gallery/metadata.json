@@ -8,18 +8,8 @@
     "exportName": "Gallery",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card",
-    "grid"
-  ],
-  "tags": [
-    "gallery",
-    "grid",
-    "media",
-    "images",
-    "video",
-    "responsive"
-  ],
+  "relatedComponents": ["card", "grid"],
+  "tags": ["gallery", "grid", "media", "images", "video", "responsive"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

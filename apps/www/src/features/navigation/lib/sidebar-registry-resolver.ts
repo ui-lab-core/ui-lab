@@ -1,4 +1,4 @@
-export type DocsNavigationDomain = 'docs' | 'design-system';
+export type DocsNavigationDomain = "docs" | "design-system";
 
 export interface DocsNavigationPage {
   domain: DocsNavigationDomain;
@@ -30,7 +30,7 @@ interface DocsNavigationDomainData {
 
 export interface DocsNavigationData {
   docs: DocsNavigationDomainData;
-  'design-system': DocsNavigationDomainData;
+  "design-system": DocsNavigationDomainData;
 }
 
 export function getSectionsForDomain(data: DocsNavigationData, domain: DocsNavigationDomain) {

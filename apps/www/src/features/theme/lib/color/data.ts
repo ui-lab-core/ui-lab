@@ -1,26 +1,37 @@
-import type { OklchColor, ShadeScale, ColorRole } from './types'
-import { cssToOklch } from './conversions'
-import { getShadesForRole } from './scales'
+import type { OklchColor, ShadeScale, ColorRole } from "./types";
+import { cssToOklch } from "./conversions";
+import { getShadesForRole } from "./scales";
 
 function getColorValue(role: ColorRole, shade: ShadeScale): OklchColor | null {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const css = getComputedStyle(document.documentElement)
       .getPropertyValue(`--${role}-${shade}`)
-      .trim()
-    return cssToOklch(css)
+      .trim();
+    return cssToOklch(css);
   }
-  return null
+  return null;
 }
 
 function getAllColorValues(role: ColorRole): Partial<Record<ShadeScale, OklchColor | null>> {
   const shades = getShadesForRole(role);
-  return shades.reduce((acc, shade) => {
-    acc[shade] = getColorValue(role, shade)
-    return acc
-  }, {} as Partial<Record<ShadeScale, OklchColor | null>>)
+  return shades.reduce(
+    (acc, shade) => {
+      acc[shade] = getColorValue(role, shade);
+      return acc;
+    },
+    {} as Partial<Record<ShadeScale, OklchColor | null>>,
+  );
 }
 
-export const COLOR_FAMILIES = ['background', 'foreground', 'accent', 'success', 'danger', 'warning', 'info'] as const;
+export const COLOR_FAMILIES = [
+  "background",
+  "foreground",
+  "accent",
+  "success",
+  "danger",
+  "warning",
+  "info",
+] as const;
 
 function getColorShades(role?: ColorRole): ShadeScale[] {
   return role ? getShadesForRole(role) : [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];

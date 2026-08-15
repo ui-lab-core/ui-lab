@@ -8,19 +8,10 @@
     "exportName": "Button",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "group"
-  ],
-  "tags": [
-    "cta",
-    "interactive",
-    "primary-action"
-  ],
+  "relatedComponents": ["group"],
+  "tags": ["cta", "interactive", "primary-action"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Supports keyboard navigation",
-      "Screen reader friendly"
-    ]
+    "notes": ["Supports keyboard navigation", "Screen reader friendly"]
   }
 }

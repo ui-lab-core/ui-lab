@@ -3,7 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
 
-function getRoundedRectPath(x: number, y: number, w: number, h: number, r: { tl: number, tr: number, bl: number, br: number }) {
+function getRoundedRectPath(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
+) {
   return `
     M ${x + r.tl} ${y}
     H ${x + w - r.tr}
@@ -18,67 +24,105 @@ function getRoundedRectPath(x: number, y: number, w: number, h: number, r: { tl:
   `;
 }
 
-const CommandItem = ({ state, y, x, width }: { state: "idle" | "active" | "dim"; y: number; x: number; width: number }) => {
+const CommandItem = ({
+  state,
+  y,
+  x,
+  width,
+}: {
+  state: "idle" | "active" | "dim";
+  y: number;
+  x: number;
+  width: number;
+}) => {
   const isActive = state === "active";
   const isDim = state === "dim";
   const transition = config.transition;
 
   const itemHeight = 30; // Adjusted from 44
-  const paddingX = 9;   // Adjusted from 12
+  const paddingX = 9; // Adjusted from 12
 
   return (
     <g style={{ transform: `translateY(${y}px)`, transition }}>
       {/* Base layer */}
       <rect
-        x={x + 4} y={1} width={width - 8} height={itemHeight - 4} rx={5} // Adjusted from x+6, y+2, width-12, height-4, rx=8
+        x={x + 4}
+        y={1}
+        width={width - 8}
+        height={itemHeight - 4}
+        rx={5} // Adjusted from x+6, y+2, width-12, height-4, rx=8
         className="text-background-950"
         fill="currentColor"
         style={{ transition }}
       />
       {/* Surface layer */}
       <rect
-        x={x + 4} y={1} width={width - 8} height={itemHeight - 4} rx={5} // Adjusted from x+6, y+2, width-12, height-4, rx=8
+        x={x + 4}
+        y={1}
+        width={width - 8}
+        height={itemHeight - 4}
+        rx={5} // Adjusted from x+6, y+2, width-12, height-4, rx=8
         className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
         fill="currentColor"
         stroke="currentColor"
         strokeWidth={config.strokeWidth}
         style={{
           transition,
-          fillOpacity: isActive ? config.highlight.hoverFillOpacity : (isDim ? config.dim.fillOpacity : 0),
-          strokeOpacity: isActive ? config.highlight.hoverStrokeOpacity : (isDim ? config.dim.strokeOpacity : 0),
+          fillOpacity: isActive
+            ? config.highlight.hoverFillOpacity
+            : isDim
+              ? config.dim.fillOpacity
+              : 0,
+          strokeOpacity: isActive
+            ? config.highlight.hoverStrokeOpacity
+            : isDim
+              ? config.dim.strokeOpacity
+              : 0,
         }}
       />
 
       {/* Icon placeholder */}
       <rect
-        x={x + paddingX + 4} y={8} width={14} height={14} rx={config.barRx} // Adjusted from x+paddingX+6, y+12, width=20, height=20
+        x={x + paddingX + 4}
+        y={8}
+        width={14}
+        height={14}
+        rx={config.barRx} // Adjusted from x+paddingX+6, y+12, width=20, height=20
         className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.bar.primaryOpacity : (isDim ? 0.15 : 0.3),
-          transition
+          opacity: isActive ? config.bar.primaryOpacity : isDim ? 0.15 : 0.3,
+          transition,
         }}
       />
 
       {/* Label */}
       <rect
-        x={x + paddingX + 24} y={11} width={isActive ? 82 : 61} height={4} rx={2} // Adjusted from x+paddingX+36, y+16, width=120/90, height=6, rx=3
+        x={x + paddingX + 24}
+        y={11}
+        width={isActive ? 82 : 61}
+        height={4}
+        rx={2} // Adjusted from x+paddingX+36, y+16, width=120/90, height=6, rx=3
         className={isActive ? config.highlight.hoverClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.labelActiveOpacity : (isDim ? 0.2 : 0.4),
-          transition
+          opacity: isActive ? config.activeContent.labelActiveOpacity : isDim ? 0.2 : 0.4,
+          transition,
         }}
       />
 
       {/* Subtext */}
       <rect
-        x={x + paddingX + 24} y={18} width={isActive ? 55 : 41} height={3} rx={1} // Adjusted from x+paddingX+36, y+26, width=80/60, height=4, rx=2
+        x={x + paddingX + 24}
+        y={18}
+        width={isActive ? 55 : 41}
+        height={3}
+        rx={1} // Adjusted from x+paddingX+36, y+26, width=80/60, height=4, rx=2
         className={isActive ? config.activeContent.subtextClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.subtextActiveOpacity : (isDim ? 0.1 : 0.2),
-          transition
+          opacity: isActive ? config.activeContent.subtextActiveOpacity : isDim ? 0.1 : 0.2,
+          transition,
         }}
       />
     </g>
@@ -149,7 +193,10 @@ export function CommandAnimation() {
             {/* Base Background */}
             <path
               d={getRoundedRectPath(startX, startY, paletteWidth, totalHeight, {
-                tl: rx, tr: rx, bl: rx, br: rx
+                tl: rx,
+                tr: rx,
+                bl: rx,
+                br: rx,
               })}
               className="text-background-950"
               fill="currentColor"
@@ -157,7 +204,10 @@ export function CommandAnimation() {
             {/* Surface / Border */}
             <path
               d={getRoundedRectPath(startX, startY, paletteWidth, totalHeight, {
-                tl: rx, tr: rx, bl: rx, br: rx
+                tl: rx,
+                tr: rx,
+                bl: rx,
+                br: rx,
               })}
               className={isHovered ? config.highlight.hoverClass : config.highlight.idleClass}
               fill="currentColor"
@@ -166,7 +216,9 @@ export function CommandAnimation() {
               style={{
                 transition,
                 fillOpacity: 0.05,
-                strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity
+                strokeOpacity: isHovered
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
 
@@ -174,68 +226,115 @@ export function CommandAnimation() {
             <g transform={`translate(${startX}, ${startY})`}>
               <rect width={paletteWidth} height={headerHeight} fill="none" />
               <line
-                x1={0} y1={headerHeight} x2={paletteWidth} y2={headerHeight}
+                x1={0}
+                y1={headerHeight}
+                x2={paletteWidth}
+                y2={headerHeight}
                 stroke="currentColor"
                 className={isHovered ? config.highlight.hoverClass : config.dim.strokeClass}
                 strokeWidth={1}
                 style={{ opacity: 0.3, transition }}
               />
-
               {/* Search Icon Placeholder */}
               <circle
-                cx={15} cy={headerHeight / 2} r={5}
-                fill="none" stroke="currentColor"
+                cx={15}
+                cy={headerHeight / 2}
+                r={5}
+                fill="none"
+                stroke="currentColor"
                 className={isHovered ? config.highlight.hoverClass : "text-background-500"}
                 strokeWidth="1.5"
                 style={{ opacity: 0.5, transition }}
               />
               <line
-                x1={18} y1={headerHeight / 2 + 3} x2={21} y2={headerHeight / 2 + 6}
+                x1={18}
+                y1={headerHeight / 2 + 3}
+                x2={21}
+                y2={headerHeight / 2 + 6}
                 stroke="currentColor"
                 className={isHovered ? config.highlight.hoverClass : "text-background-500"}
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 style={{ opacity: 0.5, transition }}
               />
-
               {/* Search Text Placeholder */}
               <rect
-                x={30} y={headerHeight / 2 - 3} width={isHovered ? 50 : 65} height={6} rx={3}
+                x={30}
+                y={headerHeight / 2 - 3}
+                width={isHovered ? 50 : 65}
+                height={6}
+                rx={3}
                 className={isHovered ? config.highlight.hoverClass : "text-background-500"}
                 fill="currentColor"
                 style={{
                   opacity: isHovered ? 0.6 : 0.2,
-                  transition
+                  transition,
                 }}
               />
-
               {/* Animated Cursor */}
               <rect
-                x={isHovered ? 83 : 30} y={headerHeight / 2 - 6} width={2} height={12} rx={1}
+                x={isHovered ? 83 : 30}
+                y={headerHeight / 2 - 6}
+                width={2}
+                height={12}
+                rx={1}
                 className={config.highlight.hoverClass}
                 fill="currentColor"
                 style={{
                   opacity: isHovered ? 1 : 0,
                   transition: `transform 0.4s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.2s`,
-                  transform: isHovered ? "translateX(0px)" : "translateX(-10px)"
+                  transform: isHovered ? "translateX(0px)" : "translateX(-10px)",
                 }}
-              />            </g>
+              />{" "}
+            </g>
 
             {/* List Area */}
             <g clipPath="url(#command-list-clip)">
-              <g transform={`translate(0, ${startY + headerHeight + listPaddingTop + scrollOffset})`} style={{ transition }}>
-                <CommandItem state={isHovered ? "dim" : "idle"} y={0} x={startX} width={paletteWidth} />
-                <CommandItem state={isHovered ? "active" : "idle"} y={itemHeight} x={startX} width={paletteWidth} />
-                <CommandItem state={isHovered ? "idle" : "idle"} y={itemHeight * 2} x={startX} width={paletteWidth} />
-                <CommandItem state={isHovered ? "dim" : "dim"} y={itemHeight * 3} x={startX} width={paletteWidth} />
+              <g
+                transform={`translate(0, ${startY + headerHeight + listPaddingTop + scrollOffset})`}
+                style={{ transition }}
+              >
+                <CommandItem
+                  state={isHovered ? "dim" : "idle"}
+                  y={0}
+                  x={startX}
+                  width={paletteWidth}
+                />
+                <CommandItem
+                  state={isHovered ? "active" : "idle"}
+                  y={itemHeight}
+                  x={startX}
+                  width={paletteWidth}
+                />
+                <CommandItem
+                  state={isHovered ? "idle" : "idle"}
+                  y={itemHeight * 2}
+                  x={startX}
+                  width={paletteWidth}
+                />
+                <CommandItem
+                  state={isHovered ? "dim" : "dim"}
+                  y={itemHeight * 3}
+                  x={startX}
+                  width={paletteWidth}
+                />
               </g>
             </g>
 
             {/* Footer */}
             <g transform={`translate(${startX}, ${startY + headerHeight + listHeight})`}>
-              <rect width={paletteWidth} height={footerHeight} className="text-background-950" fill="currentColor" style={{ opacity: 0.2 }} />
+              <rect
+                width={paletteWidth}
+                height={footerHeight}
+                className="text-background-950"
+                fill="currentColor"
+                style={{ opacity: 0.2 }}
+              />
               <line
-                x1={0} y1={0} x2={paletteWidth} y2={0}
+                x1={0}
+                y1={0}
+                x2={paletteWidth}
+                y2={0}
                 stroke="currentColor"
                 className={config.dim.strokeClass}
                 strokeWidth={1}
@@ -243,12 +342,48 @@ export function CommandAnimation() {
               />
 
               {/* Footer shortcuts placeholder */}
-              <rect x={9} y={10} width={28} height={6} rx={2} className={config.highlight.idleClass} fill="currentColor" style={{ opacity: 0.15 }} />
-              <rect x={40} y={10} width={35} height={6} rx={2} className={config.highlight.idleClass} fill="currentColor" style={{ opacity: 0.15 }} />
+              <rect
+                x={9}
+                y={10}
+                width={28}
+                height={6}
+                rx={2}
+                className={config.highlight.idleClass}
+                fill="currentColor"
+                style={{ opacity: 0.15 }}
+              />
+              <rect
+                x={40}
+                y={10}
+                width={35}
+                height={6}
+                rx={2}
+                className={config.highlight.idleClass}
+                fill="currentColor"
+                style={{ opacity: 0.15 }}
+              />
 
               {/* Esc key placeholder */}
-              <rect x={paletteWidth - 30} y={7} width={20} height={12} rx={3} className="text-background-950" fill="currentColor" style={{ opacity: 0.2 }} />
-              <rect x={paletteWidth - 25} y={10} width={10} height={3} rx={1} className={config.highlight.idleClass} fill="currentColor" style={{ opacity: 0.4 }} />
+              <rect
+                x={paletteWidth - 30}
+                y={7}
+                width={20}
+                height={12}
+                rx={3}
+                className="text-background-950"
+                fill="currentColor"
+                style={{ opacity: 0.2 }}
+              />
+              <rect
+                x={paletteWidth - 25}
+                y={10}
+                width={10}
+                height={3}
+                rx={1}
+                className={config.highlight.idleClass}
+                fill="currentColor"
+                style={{ opacity: 0.4 }}
+              />
             </g>
           </g>
 
@@ -265,8 +400,10 @@ export function CommandAnimation() {
             strokeWidth="1.5"
             strokeDasharray="4 4"
             style={{
-              opacity: isHovered ? config.accentOutline.hoverOpacity : config.accentOutline.idleOpacity,
-              transition
+              opacity: isHovered
+                ? config.accentOutline.hoverOpacity
+                : config.accentOutline.idleOpacity,
+              transition,
             }}
           />
         </svg>

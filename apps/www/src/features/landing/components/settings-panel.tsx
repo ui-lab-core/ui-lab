@@ -17,10 +17,7 @@ interface SettingsPanelProps {
   triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
-export const SettingsPanel = ({
-  showTrigger = true,
-  triggerRef,
-}: SettingsPanelProps = {}) => {
+export const SettingsPanel = ({ showTrigger = true, triggerRef }: SettingsPanelProps = {}) => {
   const { isSettingsPanelOpen, setIsSettingsPanelOpen } = useApp();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const anchorRef = triggerRef ?? buttonRef;
@@ -32,7 +29,9 @@ export const SettingsPanel = ({
     import("@/features/theme/components/settings-dialog").then((module) => {
       if (active) setDialog(() => module.SettingsDialog);
     });
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [Dialog, isSettingsPanelOpen]);
 
   return (

@@ -11,7 +11,11 @@ import {
 } from "../lib/theme-cache";
 import { type TypographyConfig } from "../lib/typography-config";
 import { getDefaultThemeSourceConfig } from "../lib/default-theme-config";
-interface LayoutConfig { radius: number; borderWidth: number; spacingScale: number }
+interface LayoutConfig {
+  radius: number;
+  borderWidth: number;
+  spacingScale: number;
+}
 
 interface ThemeStorageOptions {
   onColorsChange?: (colors: SimpleThemeColors) => void;
@@ -39,49 +43,71 @@ function computeAndCache(config: ThemeConfig): void {
   cacheCompleteTheme(cssVariables, config);
   // Only color variables reach the live document; everything else stays scoped
   // to the config preview.
-  applyThemeCacheToDOM({ cssVariables, themeMode: config.mode, sourceConfig: config, timestamp: Date.now(), version: 1 });
+  applyThemeCacheToDOM({
+    cssVariables,
+    themeMode: config.mode,
+    sourceConfig: config,
+    timestamp: Date.now(),
+    version: 1,
+  });
 }
 
 export function useThemeStorage(options: ThemeStorageOptions) {
-  const { onColorsChange, onTypographyChange, onLayoutChange, onModeChange, currentThemeMode } = options;
+  const { onColorsChange, onTypographyChange, onLayoutChange, onModeChange, currentThemeMode } =
+    options;
 
-  const applyAndPersistColors = useCallback((colors: SimpleThemeColors, mode?: "light" | "dark") => {
-    const themeMode = mode ?? currentThemeMode;
-    const config = buildConfig(getSourceConfig(), themeMode);
-    config.colors = colors;
-    computeAndCache(config);
-    onColorsChange?.(colors);
-  }, [currentThemeMode, onColorsChange]);
+  const applyAndPersistColors = useCallback(
+    (colors: SimpleThemeColors, mode?: "light" | "dark") => {
+      const themeMode = mode ?? currentThemeMode;
+      const config = buildConfig(getSourceConfig(), themeMode);
+      config.colors = colors;
+      computeAndCache(config);
+      onColorsChange?.(colors);
+    },
+    [currentThemeMode, onColorsChange],
+  );
 
-  const applyAndPersistTypography = useCallback((typography: TypographyConfig) => {
-    const config = buildConfig(getSourceConfig(), currentThemeMode);
-    config.typography = typography;
-    computeAndCache(config);
-    onTypographyChange?.(typography);
-  }, [currentThemeMode, onTypographyChange]);
+  const applyAndPersistTypography = useCallback(
+    (typography: TypographyConfig) => {
+      const config = buildConfig(getSourceConfig(), currentThemeMode);
+      config.typography = typography;
+      computeAndCache(config);
+      onTypographyChange?.(typography);
+    },
+    [currentThemeMode, onTypographyChange],
+  );
 
-  const applyAndPersistLayout = useCallback((layout: LayoutConfig) => {
-    const config = buildConfig(getSourceConfig(), currentThemeMode);
-    config.layout = layout;
-    computeAndCache(config);
-    onLayoutChange?.(layout);
-  }, [currentThemeMode, onLayoutChange]);
+  const applyAndPersistLayout = useCallback(
+    (layout: LayoutConfig) => {
+      const config = buildConfig(getSourceConfig(), currentThemeMode);
+      config.layout = layout;
+      computeAndCache(config);
+      onLayoutChange?.(layout);
+    },
+    [currentThemeMode, onLayoutChange],
+  );
 
-  const applyAndPersistMode = useCallback((mode: "light" | "dark") => {
-    const config = buildConfig(getSourceConfig(), currentThemeMode);
-    config.mode = mode;
-    computeAndCache(config);
-    onModeChange?.(mode);
-  }, [currentThemeMode, onModeChange]);
+  const applyAndPersistMode = useCallback(
+    (mode: "light" | "dark") => {
+      const config = buildConfig(getSourceConfig(), currentThemeMode);
+      config.mode = mode;
+      computeAndCache(config);
+      onModeChange?.(mode);
+    },
+    [currentThemeMode, onModeChange],
+  );
 
-  const applyAndPersistModeAndColors = useCallback((mode: "light" | "dark", colors: SimpleThemeColors) => {
-    const config = buildConfig(getSourceConfig(), mode);
-    config.mode = mode;
-    config.colors = colors;
-    computeAndCache(config);
-    onModeChange?.(mode);
-    onColorsChange?.(colors);
-  }, [onModeChange, onColorsChange]);
+  const applyAndPersistModeAndColors = useCallback(
+    (mode: "light" | "dark", colors: SimpleThemeColors) => {
+      const config = buildConfig(getSourceConfig(), mode);
+      config.mode = mode;
+      config.colors = colors;
+      computeAndCache(config);
+      onModeChange?.(mode);
+      onColorsChange?.(colors);
+    },
+    [onModeChange, onColorsChange],
+  );
 
   return {
     applyAndPersistColors,

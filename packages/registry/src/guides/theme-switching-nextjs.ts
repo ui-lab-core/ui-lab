@@ -1,52 +1,43 @@
-import type { GuideMetadata } from '../types.js';
+import type { GuideMetadata } from "../types.js";
 
 const themeSwitchingNextJsGuide: GuideMetadata = {
-  id: 'theme-switching-nextjs',
-  name: 'Theme Switching In Next.js',
+  id: "theme-switching-nextjs",
+  name: "Theme Switching In Next.js",
   description:
-    'Set up light and dark mode with an app-owned token file, cookie persistence, and a server-stamped Next.js layout.',
-  category: 'theming',
+    "Set up light and dark mode with an app-owned token file, cookie persistence, and a server-stamped Next.js layout.",
+  category: "theming",
   summary:
-    'Use this guide when the task is specifically about theme switching, first-paint correctness, or replacing an older inline-script theme setup.',
-  tags: [
-    'theme',
-    'dark-mode',
-    'light-mode',
-    'nextjs',
-    'cookies',
-    'theme.css',
-    'server-layout',
-  ],
+    "Use this guide when the task is specifically about theme switching, first-paint correctness, or replacing an older inline-script theme setup.",
+  tags: ["theme", "dark-mode", "light-mode", "nextjs", "cookies", "theme.css", "server-layout"],
   whenToUse: [
-    'The user asks for dark mode, light/dark switching, or theme persistence.',
-    'The repo is a Next.js app and the task mentions avoiding FOUC or fixing first paint.',
-    'The app already uses UI Lab and now needs the recommended theme contract.',
+    "The user asks for dark mode, light/dark switching, or theme persistence.",
+    "The repo is a Next.js app and the task mentions avoiding FOUC or fixing first paint.",
+    "The app already uses UI Lab and now needs the recommended theme contract.",
   ],
   notFor: [
-    'Do not use this guide as the default install path for every app. It is specifically for runtime theme switching.',
-    'Do not stamp system mode onto html. Leave system mode unstamped so prefers-color-scheme handles first paint.',
+    "Do not use this guide as the default install path for every app. It is specifically for runtime theme switching.",
+    "Do not stamp system mode onto html. Leave system mode unstamped so prefers-color-scheme handles first paint.",
   ],
   taskMatchers: [
-    'add dark mode',
-    'add light dark theme',
-    'theme switching nextjs',
-    'fix fouc with ui lab',
-    'cookie theme persistence',
-    'server stamped html theme',
+    "add dark mode",
+    "add light dark theme",
+    "theme switching nextjs",
+    "fix fouc with ui lab",
+    "cookie theme persistence",
+    "server stamped html theme",
   ],
   prerequisites: [
-    'The repo is using Next.js app router or another server-rendered layout flow with access to cookies().',
-    'The project can own a local theme.css file.',
-    'UI Lab styles are already installed or will be installed as part of the same task.',
+    "The repo is using Next.js app router or another server-rendered layout flow with access to cookies().",
+    "The project can own a local theme.css file.",
+    "UI Lab styles are already installed or will be installed as part of the same task.",
   ],
   steps: [
     {
-      title: 'Make the app own the token layer',
-      goal:
-        'Keep the active color tokens in the application so light and dark values are explicit and framework-safe.',
+      title: "Make the app own the token layer",
+      goal: "Keep the active color tokens in the application so light and dark values are explicit and framework-safe.",
       instructions: [
-        'Create or update a local theme.css file instead of depending on runtime color calculation.',
-        'Keep system mode in CSS using prefers-color-scheme and only use data-theme for explicit overrides.',
+        "Create or update a local theme.css file instead of depending on runtime color calculation.",
+        "Keep system mode in CSS using prefers-color-scheme and only use data-theme for explicit overrides.",
       ],
       code: `/* Default mode tokens live on :root. */
 :root {
@@ -201,31 +192,30 @@ const themeSwitchingNextJsGuide: GuideMetadata = {
   --color-info-500: var(--info-500);
   --color-info-600: var(--info-600);
 }`,
-      language: 'css',
-      path: 'app/theme.css',
+      language: "css",
+      path: "app/theme.css",
     },
     {
-      title: 'Import the local theme before UI Lab styles',
-      goal: 'Ensure the component styles consume the active app-owned tokens.',
+      title: "Import the local theme before UI Lab styles",
+      goal: "Ensure the component styles consume the active app-owned tokens.",
       instructions: [
-        'Import theme.css before ui-lab-components/styles.css.',
-        'Keep tailwindcss first if the project uses Tailwind v4 imports.',
-        'Import this stylesheet exactly once, before any other app or component module, from the application entry point (e.g. the root layout import in Next.js) — otherwise UI Lab\'s component CSS layers can register before Tailwind\'s layers.',
+        "Import theme.css before ui-lab-components/styles.css.",
+        "Keep tailwindcss first if the project uses Tailwind v4 imports.",
+        "Import this stylesheet exactly once, before any other app or component module, from the application entry point (e.g. the root layout import in Next.js) — otherwise UI Lab's component CSS layers can register before Tailwind's layers.",
       ],
       code: `@import "tailwindcss";
 @import "./theme.css";
 @import "ui-lab-components/styles.css";`,
-      language: 'css',
-      path: 'app/globals.css',
+      language: "css",
+      path: "app/globals.css",
     },
     {
-      title: 'Stamp explicit overrides from the server layout',
-      goal:
-        'Avoid an inline bootstrap script by reading the ui-lab-theme cookie in the server layout and only stamping explicit modes.',
+      title: "Stamp explicit overrides from the server layout",
+      goal: "Avoid an inline bootstrap script by reading the ui-lab-theme cookie in the server layout and only stamping explicit modes.",
       instructions: [
-        'Read the theme cookie in app/layout.tsx.',
-        'Resolve the root html state with parseThemeCookie() and resolveThemeRootState().',
-        'Leave system mode unstamped by using the empty-state return when there is no explicit light or dark override.',
+        "Read the theme cookie in app/layout.tsx.",
+        "Resolve the root html state with parseThemeCookie() and resolveThemeRootState().",
+        "Leave system mode unstamped by using the empty-state return when there is no explicit light or dark override.",
       ],
       code: `import { cookies } from "next/headers";
 import { parseThemeCookie, resolveThemeRootState } from "ui-lab-components/theme-server";
@@ -251,15 +241,15 @@ export default async function RootLayout({
     </html>
   );
 }`,
-      language: 'tsx',
-      path: 'app/layout.tsx',
+      language: "tsx",
+      path: "app/layout.tsx",
     },
     {
-      title: 'Add a client toggle only after the server path is in place',
-      goal: 'Persist explicit overrides without introducing a mismatch between server and client.',
+      title: "Add a client toggle only after the server path is in place",
+      goal: "Persist explicit overrides without introducing a mismatch between server and client.",
       instructions: [
-        'Use useColorMode() or the repo equivalent to toggle between resolved modes.',
-        'Keep the toggle focused on user intent instead of recomputing tokens at runtime.',
+        "Use useColorMode() or the repo equivalent to toggle between resolved modes.",
+        "Keep the toggle focused on user intent instead of recomputing tokens at runtime.",
       ],
       code: `"use client";
 
@@ -274,22 +264,22 @@ export function ThemeToggle() {
     </Button>
   );
 }`,
-      language: 'tsx',
+      language: "tsx",
     },
   ],
   validation: [
-    'System mode renders correctly on first paint without an inline theme bootstrap script.',
-    'Explicit light or dark overrides persist through the ui-lab-theme cookie.',
-    'theme.css is imported before ui-lab-components/styles.css.',
-    'The html element is only stamped for explicit light or dark overrides.',
+    "System mode renders correctly on first paint without an inline theme bootstrap script.",
+    "Explicit light or dark overrides persist through the ui-lab-theme cookie.",
+    "theme.css is imported before ui-lab-components/styles.css.",
+    "The html element is only stamped for explicit light or dark overrides.",
   ],
-  relatedTools: ['search_guides', 'get_component'],
-  relatedGuides: ['setup-ui-lab-in-project'],
+  relatedTools: ["search_guides", "get_component"],
+  relatedGuides: ["setup-ui-lab-in-project"],
   examplePrompts: [
     {
-      title: 'Upgrade older theme setup',
+      title: "Upgrade older theme setup",
       prompt:
-        'Replace this older UI Lab dark mode setup with the recommended app-owned theme.css plus cookie-backed server layout approach. Avoid introducing an inline bootstrap script if the repo can use the server layout path.',
+        "Replace this older UI Lab dark mode setup with the recommended app-owned theme.css plus cookie-backed server layout approach. Avoid introducing an inline bootstrap script if the repo can use the server layout path.",
     },
   ],
 };

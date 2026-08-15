@@ -4,11 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import React from "react";
 import { Frame } from "ui-lab-components";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 const TAIL_PATH =
   "M 0.00 0.00 C 3.00 0.00 7.50 -6.00 9.00 -6.00 C 10.50 -6.00 13.50 0.00 18.00 0.00";
@@ -69,7 +65,6 @@ export function PopoverAnimation() {
   return (
     <div ref={containerRef} className="w-full h-full">
       <div className="flex flex-col items-center justify-center w-full h-full">
-
         {/* Group wrapper — shifts to keep view centered during transition */}
         <div
           className="flex flex-col items-center gap-1"
@@ -92,7 +87,12 @@ export function PopoverAnimation() {
               path={TAIL_PATH}
               pathWidth={TAIL_WIDTH}
               className="p-2"
-              style={{ "--fill": "var(--color-background-900)", "--frame-radius": "4px" } as React.CSSProperties}
+              style={
+                {
+                  "--fill": "var(--color-background-900)",
+                  "--frame-radius": "4px",
+                } as React.CSSProperties
+              }
             >
               <div className="flex flex-col w-[132px]">
                 {/* Header */}
@@ -170,9 +170,7 @@ export function PopoverAnimation() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 style={{
-                  color: isActive
-                    ? "var(--color-accent-500)"
-                    : "var(--color-background-500)",
+                  color: isActive ? "var(--color-accent-500)" : "var(--color-background-500)",
                   opacity: isActive ? 0.65 : 0.4,
                   transition: T,
                 }}
@@ -193,8 +191,7 @@ export function PopoverAnimation() {
           frames={cursorFrames}
           appearance={{
             className: config.highlight.hoverClass,
-            motionTransition:
-              "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+            motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
           }}
         >
           <Cursor />

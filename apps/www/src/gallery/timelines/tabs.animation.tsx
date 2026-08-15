@@ -79,13 +79,26 @@ export function TabsAnimation() {
 
   // Content lines shift on active
   const contentLines = isActive
-    ? [{ width: 110, opacity: 0.15 }, { width: 80, opacity: 0.1 }]
-    : [{ width: 160, opacity: 0.15 }, { width: 100, opacity: 0.1 }];
+    ? [
+        { width: 110, opacity: 0.15 },
+        { width: 80, opacity: 0.1 },
+      ]
+    : [
+        { width: 160, opacity: 0.15 },
+        { width: 100, opacity: 0.1 },
+      ];
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <style>{`
               @keyframes tabs-ripple {
@@ -97,8 +110,10 @@ export function TabsAnimation() {
 
           {/* Tab bar bottom border */}
           <line
-            x1={barX} y1={barY + tabHeight}
-            x2={barX + barWidth} y2={barY + tabHeight}
+            x1={barX}
+            y1={barY + tabHeight}
+            x2={barX + barWidth}
+            y2={barY + tabHeight}
             stroke="currentColor"
             strokeWidth="1"
             className="text-background-600"
@@ -107,8 +122,10 @@ export function TabsAnimation() {
 
           {/* Tab 1 label */}
           <rect
-            x={barX + 12} y={barY + 13}
-            width={56} height={8}
+            x={barX + 12}
+            y={barY + 13}
+            width={56}
+            height={8}
             rx={config.barRx}
             className={isActive ? config.dim.class : config.highlight.hoverClass}
             fill="currentColor"
@@ -120,21 +137,25 @@ export function TabsAnimation() {
 
           {/* Tab 2 label */}
           <rect
-            x={barX + tabWidth + 12} y={barY + 13}
-            width={56} height={8}
+            x={barX + tabWidth + 12}
+            y={barY + 13}
+            width={56}
+            height={8}
             rx={config.barRx}
             className={isActive ? config.highlight.hoverClass : config.dim.class}
             fill="currentColor"
             style={{
-              opacity: isActive ? 0.65 : (isHovered ? 0.35 : 0.2),
+              opacity: isActive ? 0.65 : isHovered ? 0.35 : 0.2,
               transition,
             }}
           />
 
           {/* Tab 3 label */}
           <rect
-            x={barX + tabWidth * 2 + 12} y={barY + 13}
-            width={56} height={8}
+            x={barX + tabWidth * 2 + 12}
+            y={barY + 13}
+            width={56}
+            height={8}
             rx={config.barRx}
             className={config.dim.class}
             fill="currentColor"
@@ -213,7 +234,8 @@ export function TabsAnimation() {
               className: config.highlight.hoverClass,
               hotspot: { x: 5, y: 4 },
               transformOrigin: "7px 11px",
-              motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1) 0.1s, opacity 0.3s ease",
+              motionTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1) 0.1s, opacity 0.3s ease",
               shapeTransition: "transform 0.12s ease-in-out",
             })}
           >

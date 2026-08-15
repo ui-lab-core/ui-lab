@@ -1,11 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 const TW = 256;
 const TH = 50;
@@ -59,10 +55,12 @@ export function ToastAnimation() {
           className="w-full h-auto relative z-10 overflow-visible"
           aria-hidden="true"
         >
-          <g style={{
-            transform: isHovered ? `translateY(${HOVER_SHIFT}px)` : "translateY(0px)",
-            transition: config.transition,
-          }}>
+          <g
+            style={{
+              transform: isHovered ? `translateY(${HOVER_SHIFT}px)` : "translateY(0px)",
+              transition: config.transition,
+            }}
+          >
             {/* Accent outline on front toast when hovered */}
             <rect
               x={TX - 10}
@@ -100,9 +98,7 @@ export function ToastAnimation() {
             <g
               style={{
                 transformOrigin: stackOrigin,
-                transform: isHovered
-                  ? `translateY(${-STEP}px)`
-                  : `translateY(-5px) scaleX(0.91)`,
+                transform: isHovered ? `translateY(${-STEP}px)` : `translateY(-5px) scaleX(0.91)`,
                 opacity: isHovered ? 1 : 0.52,
                 transition:
                   "transform 0.45s cubic-bezier(0.25, 0, 0.25, 1) 0.04s, opacity 0.4s ease 0.04s",
@@ -133,19 +129,25 @@ export function ToastAnimation() {
 }
 
 function ToastCard({ isActive }: { isActive: boolean }) {
-  const iconClass = isActive
-    ? config.highlight.hoverClass
-    : config.highlight.idleClass;
+  const iconClass = isActive ? config.highlight.hoverClass : config.highlight.idleClass;
 
   return (
     <g>
       <rect
-        x={TX} y={T0_Y} width={TW} height={TH} rx={RX}
+        x={TX}
+        y={T0_Y}
+        width={TW}
+        height={TH}
+        rx={RX}
         className="text-background-900"
         fill="currentColor"
       />
       <rect
-        x={TX} y={T0_Y} width={TW} height={TH} rx={RX}
+        x={TX}
+        y={T0_Y}
+        width={TW}
+        height={TH}
+        rx={RX}
         fill="none"
         stroke="currentColor"
         className="text-background-500"
@@ -155,8 +157,11 @@ function ToastCard({ isActive }: { isActive: boolean }) {
 
       {/* Icon block */}
       <rect
-        x={TX + 12} y={T0_Y + TH / 2 - 8}
-        width={16} height={16} rx={3}
+        x={TX + 12}
+        y={T0_Y + TH / 2 - 8}
+        width={16}
+        height={16}
+        rx={3}
         fill="currentColor"
         className={iconClass}
         style={{ opacity: isActive ? 0.75 : 0.45, transition: config.transition }}
@@ -164,8 +169,11 @@ function ToastCard({ isActive }: { isActive: boolean }) {
 
       {/* Title bar */}
       <rect
-        x={TX + 36} y={T0_Y + TH / 2 - 7}
-        width={92} height={7} rx={3.5}
+        x={TX + 36}
+        y={T0_Y + TH / 2 - 7}
+        width={92}
+        height={7}
+        rx={3.5}
         fill="currentColor"
         className="text-foreground-400"
         style={{ opacity: isActive ? 0.6 : 0.3, transition: config.transition }}
@@ -173,8 +181,11 @@ function ToastCard({ isActive }: { isActive: boolean }) {
 
       {/* Subtitle bar */}
       <rect
-        x={TX + 36} y={T0_Y + TH / 2 + 3}
-        width={60} height={5} rx={2.5}
+        x={TX + 36}
+        y={T0_Y + TH / 2 + 3}
+        width={60}
+        height={5}
+        rx={2.5}
         fill="currentColor"
         className="text-foreground-400"
         style={{ opacity: isActive ? 0.3 : 0.15, transition: config.transition }}
@@ -182,8 +193,10 @@ function ToastCard({ isActive }: { isActive: boolean }) {
 
       {/* Close X */}
       <line
-        x1={TX + TW - 18} y1={T0_Y + 12}
-        x2={TX + TW - 12} y2={T0_Y + 18}
+        x1={TX + TW - 18}
+        y1={T0_Y + 12}
+        x2={TX + TW - 12}
+        y2={T0_Y + 18}
         stroke="currentColor"
         className="text-foreground-400"
         strokeWidth={1.5}
@@ -191,8 +204,10 @@ function ToastCard({ isActive }: { isActive: boolean }) {
         style={{ opacity: isActive ? 0.5 : 0.2, transition: config.transition }}
       />
       <line
-        x1={TX + TW - 12} y1={T0_Y + 12}
-        x2={TX + TW - 18} y2={T0_Y + 18}
+        x1={TX + TW - 12}
+        y1={T0_Y + 12}
+        x2={TX + TW - 18}
+        y2={T0_Y + 18}
         stroke="currentColor"
         className="text-foreground-400"
         strokeWidth={1.5}

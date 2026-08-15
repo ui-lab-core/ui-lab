@@ -9,18 +9,8 @@
     "exportName": "Group",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "button",
-    "input",
-    "select",
-    "expand"
-  ],
-  "tags": [
-    "composition",
-    "grouped",
-    "compound",
-    "form"
-  ],
+  "relatedComponents": ["button", "input", "select", "expand"],
+  "tags": ["composition", "grouped", "compound", "form"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

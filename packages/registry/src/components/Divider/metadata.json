@@ -8,20 +8,10 @@
     "exportName": "Divider",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card",
-    "modal"
-  ],
-  "tags": [
-    "separator",
-    "layout",
-    "visual"
-  ],
+  "relatedComponents": ["card", "modal"],
+  "tags": ["separator", "layout", "visual"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Semantic divider element",
-      "Visual separator only"
-    ]
+    "notes": ["Semantic divider element", "Visual separator only"]
   }
 }

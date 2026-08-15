@@ -15,24 +15,55 @@ interface Integration {
 }
 
 const INTEGRATIONS: Integration[] = [
-  { id: "github", name: "GitHub", desc: "Push-to-deploy from any branch.", icon: <SiGithub size={20} />, initiallyConnected: true },
-  { id: "slack", name: "Slack", desc: "Get build and deploy notifications.", icon: <SiSlack size={20} />, initiallyConnected: true },
-  { id: "vercel", name: "Vercel", desc: "Deploy previews on every push.", icon: <SiVercel size={20} />, initiallyConnected: true },
-  { id: "figma", name: "Figma", desc: "Design handoff with live preview.", icon: <SiFigma size={20} />, initiallyConnected: false },
-  { id: "linear", name: "Linear", desc: "Sync issues and pull requests.", icon: <SiLinear size={20} />, initiallyConnected: false },
+  {
+    id: "github",
+    name: "GitHub",
+    desc: "Push-to-deploy from any branch.",
+    icon: <SiGithub size={20} />,
+    initiallyConnected: true,
+  },
+  {
+    id: "slack",
+    name: "Slack",
+    desc: "Get build and deploy notifications.",
+    icon: <SiSlack size={20} />,
+    initiallyConnected: true,
+  },
+  {
+    id: "vercel",
+    name: "Vercel",
+    desc: "Deploy previews on every push.",
+    icon: <SiVercel size={20} />,
+    initiallyConnected: true,
+  },
+  {
+    id: "figma",
+    name: "Figma",
+    desc: "Design handoff with live preview.",
+    icon: <SiFigma size={20} />,
+    initiallyConnected: false,
+  },
+  {
+    id: "linear",
+    name: "Linear",
+    desc: "Sync issues and pull requests.",
+    icon: <SiLinear size={20} />,
+    initiallyConnected: false,
+  },
 ];
 
 export function IntegrationsPanel({ height }: ShowcasePanelProps) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<string | number | null>("all");
   const [connected, setConnected] = useState(
-    () => new Set(INTEGRATIONS.filter((i) => i.initiallyConnected).map((i) => i.id))
+    () => new Set(INTEGRATIONS.filter((i) => i.initiallyConnected).map((i) => i.id)),
   );
 
   const visible = useMemo(() => {
     const q = query.toLowerCase();
     return INTEGRATIONS.filter((item) => {
-      const matchesQuery = !q || item.name.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
+      const matchesQuery =
+        !q || item.name.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q);
       const isConnected = connected.has(item.id);
       const matchesFilter =
         filter === "all" ||
@@ -73,9 +104,15 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
             </Select.Trigger>
             <Select.Content>
               <Select.List>
-                <Select.Item value="all" textValue="All">All</Select.Item>
-                <Select.Item value="connected" textValue="Connected">Connected</Select.Item>
-                <Select.Item value="available" textValue="Available">Available</Select.Item>
+                <Select.Item value="all" textValue="All">
+                  All
+                </Select.Item>
+                <Select.Item value="connected" textValue="Connected">
+                  Connected
+                </Select.Item>
+                <Select.Item value="available" textValue="Available">
+                  Available
+                </Select.Item>
               </Select.List>
             </Select.Content>
           </Group.Select>
@@ -105,12 +142,17 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={(e) => { e.stopPropagation(); toggle(item.id); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggle(item.id);
+                    }}
                   >
                     {isConnected ? "Connected" : "Connect"}
                   </Button>
                 </List.Item>
-                {i < visible.length - 1 && <List.Divider color="bg-background-700" spacing="none" />}
+                {i < visible.length - 1 && (
+                  <List.Divider color="bg-background-700" spacing="none" />
+                )}
               </div>
             );
           })

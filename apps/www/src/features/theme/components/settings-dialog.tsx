@@ -55,7 +55,7 @@ export const SettingsDialog = ({
   triggerRef,
 }: FloatingSettingsDialogProps) => {
   const mounted = useSyncExternalStore(
-    () => () => { },
+    () => () => {},
     () => true,
     () => false,
   );
@@ -63,7 +63,12 @@ export const SettingsDialog = ({
   const [dialogState, dispatch] = useReducer(dialogReducer, INITIAL_DIALOG_STATE);
 
   // Refs for drag math
-  const dragStartRef = useRef<{ startX: number; startY: number; initialOffsetX: number; initialOffsetY: number } | null>(null);
+  const dragStartRef = useRef<{
+    startX: number;
+    startY: number;
+    initialOffsetX: number;
+    initialOffsetY: number;
+  } | null>(null);
 
   // Persists the last effective position across open/close cycles
   const lastPositionRef = useRef<{ top: number; left: number } | null>(null);
@@ -103,7 +108,7 @@ export const SettingsDialog = ({
       const viewportW = window.innerWidth;
       const viewportH = window.innerHeight;
 
-      let left = triggerRect.left + (triggerRect.width / 2) - (DIALOG_WIDTH / 2);
+      let left = triggerRect.left + triggerRect.width / 2 - DIALOG_WIDTH / 2;
       if (left < EDGE_PADDING) left = EDGE_PADDING;
       if (left + DIALOG_WIDTH > viewportW - EDGE_PADDING) {
         left = viewportW - DIALOG_WIDTH - EDGE_PADDING;
@@ -215,7 +220,7 @@ export const SettingsDialog = ({
         className="fixed z-[9999] rounded-[6px] border border-background-600 bg-background-950 backdrop-blur-md flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
-          if (e.key === 'Escape') onOpenChange(false);
+          if (e.key === "Escape") onOpenChange(false);
         }}
       >
         <div
@@ -243,6 +248,6 @@ export const SettingsDialog = ({
         </div>
       </div>
     </>,
-    document.body
+    document.body,
   );
 };

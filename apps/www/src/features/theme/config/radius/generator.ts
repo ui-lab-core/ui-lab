@@ -6,7 +6,7 @@ export function generateRadiusScaleCSS(radius: number): string {
     .join("\n");
 }
 
-export function generateRadiusRootCSS(radius: number): string {
+function generateRadiusRootCSS(radius: number): string {
   const lines: string[] = [":root {"];
   Object.entries(getRadiusCssVariables(radius)).forEach(([name, value]) => {
     if (name === "--radius-ratio") {

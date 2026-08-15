@@ -6,7 +6,13 @@ import config from "./config.json";
 /**
  * Helper to generate a path for a rectangle with specific corner radii
  */
-function getRoundedRectPath(x: number, y: number, w: number, h: number, r: { tl: number, tr: number, bl: number, br: number }) {
+function getRoundedRectPath(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
+) {
   return `
     M ${x + r.tl} ${y}
     H ${x + w - r.tr}
@@ -60,9 +66,16 @@ export function PanelAnimation() {
   const mainContentHeight = isHovered ? 180 - bottomPanelHeight - bottomPanelGap : 180;
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="panel-grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -76,25 +89,21 @@ export function PanelAnimation() {
           {/* Sidebar Panel */}
           <g>
             <path
-              d={getRoundedRectPath(
-                60 - 10,
-                60 - 10,
-                sidebarWidth + 20,
-                180 + 20,
-                {
-                  tl: config.blockRx + 5,
-                  tr: config.blockRx + 5,
-                  bl: config.blockRx + 5,
-                  br: config.blockRx + 5,
-                }
-              )}
+              d={getRoundedRectPath(60 - 10, 60 - 10, sidebarWidth + 20, 180 + 20, {
+                tl: config.blockRx + 5,
+                tr: config.blockRx + 5,
+                bl: config.blockRx + 5,
+                br: config.blockRx + 5,
+              })}
               fill="none"
               stroke="currentColor"
               className={config.accentOutline.colorClass}
               strokeWidth="1.5"
               strokeDasharray="4 4"
               style={{
-                opacity: isHovered ? config.accentOutline.hoverOpacity : config.accentOutline.idleOpacity,
+                opacity: isHovered
+                  ? config.accentOutline.hoverOpacity
+                  : config.accentOutline.idleOpacity,
                 transition: config.transition,
               }}
             />
@@ -121,19 +130,24 @@ export function PanelAnimation() {
               style={{
                 transition: config.transition,
                 fillOpacity: isHovered ? 0.05 : config.highlight.idleFillOpacity,
-                strokeOpacity: isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity: isHovered
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
             {/* Sidebar Icon Placeholder (visible when collapsed) */}
             <rect
-              x={60 + (sidebarWidth / 2) - 4}
+              x={60 + sidebarWidth / 2 - 4}
               y={80}
               width={8}
               height={8}
               rx={2}
               fill="currentColor"
               className={isHovered ? config.highlight.hoverClass : config.highlight.idleClass}
-              style={{ transition: config.transition, opacity: isHovered ? 0 : config.bar.primaryOpacity }}
+              style={{
+                transition: config.transition,
+                opacity: isHovered ? 0 : config.bar.primaryOpacity,
+              }}
             />
             {/* Sidebar List Items (Visible only when expanded) */}
             {[0, 1, 2, 3].map((n, i) => (
@@ -206,7 +220,7 @@ export function PanelAnimation() {
               transitionDelay: isHovered ? "0.15s" : "0s",
               opacity: isHovered ? 1 : 0,
               transform: `translateY(${isHovered ? 0 : 15}px)`,
-              pointerEvents: "none"
+              pointerEvents: "none",
             }}
           >
             <rect
@@ -247,7 +261,6 @@ export function PanelAnimation() {
               style={{ transition: config.transition, opacity: 0.2 }}
             />
           </g>
-
         </svg>
       </div>
     </div>

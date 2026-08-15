@@ -1,72 +1,65 @@
-import type { ComponentDeps } from './types.js'
+import type { ComponentDeps } from "./types.js";
 
 /**
  * Component dependency metadata
  * Specifies which npm packages and internal components each component requires
  */
 export const componentDependencies: Record<string, ComponentDeps> = {
-  'badge': { npm: [], internal: [] },
-  'path': { npm: [], internal: [] },
-  'button': { npm: [], internal: [] },
-  'card': { npm: [], internal: [] },
-  'chart': { npm: [], internal: [] },
-  'checkbox': { npm: [], internal: ['label'] },
-  'command': { npm: ['cmdk'], internal: ['card', 'badge', 'divider'] },
-  'confirm': { npm: [], internal: ['modal', 'button', 'card'] },
-  'divider': { npm: [], internal: [] },
-  'flex': { npm: [], internal: [] },
-  'expand': { npm: ['gsap', '@gsap/react'], internal: [] },
-  'frame': { npm: [], internal: [] },
-  'form': { npm: [], internal: ['input', 'label'] },
-  'gallery': { npm: [], internal: ['card'] },
-  'grid': { npm: [], internal: [] },
-  'group': { npm: [], internal: ['button', 'input', 'select'] },
-  'input': { npm: [], internal: ['label'] },
-  'icon': { npm: [], internal: [] },
-  'label': { npm: [], internal: [] },
-  'panel': { npm: [], internal: [] },
-  'menu': { npm: ['@floating-ui/react-dom'], internal: [] },
-  'modal': { npm: [], internal: ['card', 'button'] },
-  'page': { npm: [], internal: [] },
-  'popover': { npm: ['@floating-ui/react-dom'], internal: [] },
-  'progress': { npm: [], internal: [] },
-  'radio': { npm: [], internal: ['label'] },
-  'select': { npm: ['@floating-ui/react-dom'], internal: [] },
-  'slider': { npm: ['@react-stately/slider'], internal: [] },
-  'switch': { npm: ['@react-stately/toggle'], internal: [] },
-  'table': { npm: [], internal: ['card'] },
-  'tabs': { npm: [], internal: [] },
-  'textarea': { npm: [], internal: ['label'] },
-  'toast': { npm: [], internal: [] },
-  'tooltip': { npm: ['@floating-ui/react-dom'], internal: [] },
-  'scroll': { npm: [], internal: [] },
-  'skeleton': { npm: [], internal: [] },
-}
+  badge: { npm: [], internal: [] },
+  path: { npm: [], internal: [] },
+  button: { npm: [], internal: [] },
+  card: { npm: [], internal: [] },
+  chart: { npm: [], internal: [] },
+  checkbox: { npm: [], internal: ["label"] },
+  command: { npm: ["cmdk"], internal: ["card", "badge", "divider"] },
+  confirm: { npm: [], internal: ["modal", "button", "card"] },
+  divider: { npm: [], internal: [] },
+  flex: { npm: [], internal: [] },
+  expand: { npm: ["gsap", "@gsap/react"], internal: [] },
+  frame: { npm: [], internal: [] },
+  form: { npm: [], internal: ["input", "label"] },
+  gallery: { npm: [], internal: ["card"] },
+  grid: { npm: [], internal: [] },
+  group: { npm: [], internal: ["button", "input", "select"] },
+  input: { npm: [], internal: ["label"] },
+  icon: { npm: [], internal: [] },
+  label: { npm: [], internal: [] },
+  panel: { npm: [], internal: [] },
+  menu: { npm: ["@floating-ui/react-dom"], internal: [] },
+  modal: { npm: [], internal: ["card", "button"] },
+  page: { npm: [], internal: [] },
+  popover: { npm: ["@floating-ui/react-dom"], internal: [] },
+  progress: { npm: [], internal: [] },
+  radio: { npm: [], internal: ["label"] },
+  select: { npm: ["@floating-ui/react-dom"], internal: [] },
+  slider: { npm: ["@react-stately/slider"], internal: [] },
+  switch: { npm: ["@react-stately/toggle"], internal: [] },
+  table: { npm: [], internal: ["card"] },
+  tabs: { npm: [], internal: [] },
+  textarea: { npm: [], internal: ["label"] },
+  toast: { npm: [], internal: [] },
+  tooltip: { npm: ["@floating-ui/react-dom"], internal: [] },
+  scroll: { npm: [], internal: [] },
+  skeleton: { npm: [], internal: [] },
+};
 
 /**
  * Core npm dependencies required by all components
  * These are installed regardless of which components are chosen
  */
-export const coreNpmDependencies = [
-  'react-aria',
-  'clsx',
-  'class-variance-authority',
-] as const
+export const coreNpmDependencies = ["react-aria", "clsx", "class-variance-authority"] as const;
 
 /**
  * Peer dependencies required by the project
  */
-export const corePeerDependencies = [
-  'react',
-  'react-dom',
-] as const
+export const corePeerDependencies = ["react", "react-dom"] as const;
 
 function getComponentDeps(componentId: string): ComponentDeps | undefined {
-  return componentDependencies[componentId]
+  return componentDependencies[componentId];
 }
 
 function getAllComponentIds(): string[] {
-  return Object.keys(componentDependencies)
+  return Object.keys(componentDependencies);
 }
 
 /**
@@ -74,23 +67,23 @@ function getAllComponentIds(): string[] {
  * Used for annotating npm packages in installation plans
  */
 function buildNpmPackageComponentMap(): Record<string, string[]> {
-  const map: Record<string, string[]> = {}
+  const map: Record<string, string[]> = {};
 
   Object.entries(componentDependencies).forEach(([componentId, deps]) => {
-    deps.npm.forEach(npmPackage => {
+    deps.npm.forEach((npmPackage) => {
       if (!map[npmPackage]) {
-        map[npmPackage] = []
+        map[npmPackage] = [];
       }
-      map[npmPackage].push(componentId)
-    })
-  })
+      map[npmPackage].push(componentId);
+    });
+  });
 
-  return map
+  return map;
 }
 
 /**
  * Get the components that depend on a specific npm package
  */
 function getComponentsForNpmPackage(npmPackage: string): string[] {
-  return buildNpmPackageComponentMap()[npmPackage] ?? []
+  return buildNpmPackageComponentMap()[npmPackage] ?? [];
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Table, type Column } from "ui-lab-components";
-import { ComponentDetail } from '@/types';
+import { ComponentDetail } from "@/types";
 
 // Define examplesData locally
 
@@ -34,9 +34,12 @@ function CopyableColorValue({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => () => {
-    if (resetTimer.current) clearTimeout(resetTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    },
+    [],
+  );
 
   const copy = async () => {
     await navigator.clipboard.writeText(value);
@@ -137,17 +140,24 @@ export function Example({ colors }: { colors: ColorRow[] }) {
 export const tableDetail: ComponentDetail = {
   id: "table",
   name: "Table",
-  description: "A minimal table component for displaying tabular data with optional filtering capabilities.",
+  description:
+    "A minimal table component for displaying tabular data with optional filtering capabilities.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Table component provides a clean, semantic way to display structured data with optional filter controls. It's designed to be minimal yet functional, supporting both basic data display and advanced filtering scenarios.
+        The Table component provides a clean, semantic way to display structured data with optional
+        filter controls. It's designed to be minimal yet functional, supporting both basic data
+        display and advanced filtering scenarios.
       </p>
       <p>
-        Use filters to enable real-time data filtering, and row click handlers to create interactive experiences. The component manages filter state internally and provides callbacks for external state management.
+        Use filters to enable real-time data filtering, and row click handlers to create interactive
+        experiences. The component manages filter state internally and provides callbacks for
+        external state management.
       </p>
       <p>
-        Define a column&apos;s <code>cell</code> function to render any content or interaction from its value, row, and table coordinates. Table owns the tabular structure while your cell components own their behavior.
+        Define a column&apos;s <code>cell</code> function to render any content or interaction from
+        its value, row, and table coordinates. Table owns the tabular structure while your cell
+        components own their behavior.
       </p>
     </div>
   ),

@@ -9,10 +9,7 @@ import {
   type Column,
   type TableExpandedDetail,
 } from "@/features/docs/components/table";
-import {
-  Code,
-  InlineCodeHighlight,
-} from "@/features/docs/components/code-display";
+import { Code, InlineCodeHighlight } from "@/features/docs/components/code-display";
 import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
 import { cn } from "@/shared/lib/utils";
 import { Tabs, Button, Flex, Tooltip, Group } from "ui-lab-components";
@@ -40,7 +37,11 @@ const ReactAriaSvg = () => (
 // therefore should not be constrained to an isolated width.
 const FILL_COMPONENT_IDS = new Set(["page", "grid", "flex", "gallery", "panel"]);
 
-function ExampleConfigurator({ example, hero = false, constrainPreview = true }: {
+function ExampleConfigurator({
+  example,
+  hero = false,
+  constrainPreview = true,
+}: {
   example?: ComponentExample;
   hero?: boolean;
   constrainPreview?: boolean;
@@ -63,7 +64,16 @@ function ExampleConfigurator({ example, hero = false, constrainPreview = true }:
   );
 }
 
-export function ComponentClient({ componentId, api, styles, reactAriaUrl, sourceUrl, name, description, experimental }: {
+export function ComponentClient({
+  componentId,
+  api,
+  styles,
+  reactAriaUrl,
+  sourceUrl,
+  name,
+  description,
+  experimental,
+}: {
   componentId: string;
   api: ComponentAPI | null;
   styles: StyleInfo | null;
@@ -128,7 +138,9 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
           <div className="flex items-center">
             <div className="pt-12 mx-auto max-w-3xl pb-12">
               <h2 className="text-4xl font-bold text-foreground-50">Component Not Found</h2>
-              <p className="text-foreground-400 mt-4">The component you're looking for doesn't exist.</p>
+              <p className="text-foreground-400 mt-4">
+                The component you're looking for doesn't exist.
+              </p>
             </div>
           </div>
           <Footer />
@@ -156,21 +168,44 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
               </div>
               <div className="h-10 flex gap-3 flex-row mb-4 mt-4">
                 {sourceUrl && (
-                  <Button icon={<FaGithub className="text-foreground-400" />} variant="ghost" size="sm" className="px-2 h-9" onClick={() => window.open(sourceUrl, '_blank')}>
+                  <Button
+                    icon={<FaGithub className="text-foreground-400" />}
+                    variant="ghost"
+                    size="sm"
+                    className="px-2 h-9"
+                    onClick={() => window.open(sourceUrl, "_blank")}
+                  >
                     Source
                   </Button>
                 )}
                 {reactAriaUrl && (
-                  <Button icon={<ReactAriaSvg />} variant="ghost" size="sm" className="px-2 h-9" onClick={() => window.open(reactAriaUrl, '_blank')}>
+                  <Button
+                    icon={<ReactAriaSvg />}
+                    variant="ghost"
+                    size="sm"
+                    className="px-2 h-9"
+                    onClick={() => window.open(reactAriaUrl, "_blank")}
+                  >
                     React Aria
                   </Button>
                 )}
               </div>
             </div>
             <div className="space-y-4 mb-12">
-              <ExampleConfigurator example={firstExample} hero constrainPreview={constrainPreview} />
+              <ExampleConfigurator
+                example={firstExample}
+                hero
+                constrainPreview={constrainPreview}
+              />
             </div>
-            <Tabs variant="underline" value={activeTab} onValueChange={(tab) => { setActiveTab(tab); setVisitedTabs((prev) => new Set(prev).add(tab)); }}>
+            <Tabs
+              variant="underline"
+              value={activeTab}
+              onValueChange={(tab) => {
+                setActiveTab(tab);
+                setVisitedTabs((prev) => new Set(prev).add(tab));
+              }}
+            >
               <Flex direction="row" justify-between className="border-b border-background-700">
                 <Tabs.List className="grid w-fit grid-cols-3">
                   <Tabs.Trigger value="examples">Examples</Tabs.Trigger>
@@ -183,17 +218,28 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
                   <div className="space-y-4">
                     {remainingExamples.map((example) => (
                       <div key={example.id} id={example.id}>
-                        <ExampleConfigurator example={example} constrainPreview={constrainPreview} />
+                        <ExampleConfigurator
+                          example={example}
+                          constrainPreview={constrainPreview}
+                        />
                       </div>
                     ))}
                   </div>
                 </section>
               </Tabs.Content>
               <Tabs.Content value="api" className="mt-6">
-                {visitedTabs.has("api") && <APIDocumentation componentId={componentId} api={api} styleableParts={styles?.styleableParts || []} />}
+                {visitedTabs.has("api") && (
+                  <APIDocumentation
+                    componentId={componentId}
+                    api={api}
+                    styleableParts={styles?.styleableParts || []}
+                  />
+                )}
               </Tabs.Content>
               <Tabs.Content value="styles" className="mt-6">
-                {visitedTabs.has("styles") && <StylesDocumentation componentId={componentId} styles={styles} />}
+                {visitedTabs.has("styles") && (
+                  <StylesDocumentation componentId={componentId} styles={styles} />
+                )}
               </Tabs.Content>
             </Tabs>
           </div>
@@ -212,7 +258,13 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
             className="w-full [--background-border:var(--background-700)]"
           >
             <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
-            <CopyComponentPage componentId={componentId} component={component} api={api} styles={styles} grouped />
+            <CopyComponentPage
+              componentId={componentId}
+              component={component}
+              api={api}
+              styles={styles}
+              grouped
+            />
           </Group>
         </div>
       </div>
@@ -220,7 +272,14 @@ export function ComponentClient({ componentId, api, styles, reactAriaUrl, source
   );
 }
 
-function APIDocumentation({ api, styleableParts }: { componentId: string; api: any; styleableParts: Array<{ name: string }> }) {
+function APIDocumentation({
+  api,
+  styleableParts,
+}: {
+  componentId: string;
+  api: any;
+  styleableParts: Array<{ name: string }>;
+}) {
   if (!api) {
     return (
       <div className="text-foreground-400 py-8">
@@ -244,7 +303,8 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
       label: "Name",
       render: (value: any, row: any) => (
         <span className="font-mono text-foreground-50">
-          {value}{row.required && <span className="ml-1 text-background-500">?</span>}
+          {value}
+          {row.required && <span className="ml-1 text-background-500">?</span>}
         </span>
       ),
     },
@@ -275,7 +335,8 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
       label: "Name",
       render: (value: any, row: any) => (
         <span className="font-mono text-foreground-50">
-          {value}{row.required && <span className="ml-1 text-foreground-400">?</span>}
+          {value}
+          {row.required && <span className="ml-1 text-foreground-400">?</span>}
         </span>
       ),
     },
@@ -292,11 +353,9 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
     },
   ];
 
-  const createExpandedDetails = (
-    details: Array<TableExpandedDetail | null>
-  ) => {
+  const createExpandedDetails = (details: Array<TableExpandedDetail | null>) => {
     const filteredDetails = details.filter(
-      (detail): detail is TableExpandedDetail => detail !== null
+      (detail): detail is TableExpandedDetail => detail !== null,
     );
 
     if (filteredDetails.length === 0) return null;
@@ -316,10 +375,10 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
                 return createExpandedDetails([
                   row.description
                     ? {
-                      key: "description",
-                      label: "Description",
-                      value: <p className="text-foreground-400">{row.description}</p>,
-                    }
+                        key: "description",
+                        label: "Description",
+                        value: <p className="text-foreground-400">{row.description}</p>,
+                      }
                     : null,
                   {
                     key: "styleable-parts",
@@ -339,19 +398,17 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
               return createExpandedDetails([
                 row.description
                   ? {
-                    key: "description",
-                    label: "Description",
-                    value: <p className="text-foreground-400">{row.description}</p>,
-                  }
+                      key: "description",
+                      label: "Description",
+                      value: <p className="text-foreground-400">{row.description}</p>,
+                    }
                   : null,
                 row.defaultValue
                   ? {
-                    key: "default",
-                    label: "Default",
-                    value: (
-                      <InlineCodeHighlight code={row.defaultValue} language="typescript" />
-                    ),
-                  }
+                      key: "default",
+                      label: "Default",
+                      value: <InlineCodeHighlight code={row.defaultValue} language="typescript" />,
+                    }
                   : null,
               ]);
             }}
@@ -363,37 +420,45 @@ function APIDocumentation({ api, styleableParts }: { componentId: string; api: a
         <div id="api-subcomponents" className="scroll-mt-20">
           <h4 className="mt-12 text-lg font-semibold text-foreground-50">Sub-Components</h4>
           <div className="space-y-6">
-            {Object.entries(api.subComponents).map(([subComponentName, subProps]: [string, any]) => (
-              <div key={subComponentName} id={`api-${subComponentName}`} className="space-y-3 mt-20 first:mt-8 scroll-mt-20">
-                <div className="pl-2 pb-4 space-y-2">
-                  <h4 className="font-semibold text-foreground-100">
-                    <InlineCodeHighlight code={subComponentName} language="typescript" />
-                  </h4>
-                  {subProps.description && (
-                    <p className="text-foreground-400 text-sm">{subProps.description}</p>
+            {Object.entries(api.subComponents).map(
+              ([subComponentName, subProps]: [string, any]) => (
+                <div
+                  key={subComponentName}
+                  id={`api-${subComponentName}`}
+                  className="space-y-3 mt-20 first:mt-8 scroll-mt-20"
+                >
+                  <div className="pl-2 pb-4 space-y-2">
+                    <h4 className="font-semibold text-foreground-100">
+                      <InlineCodeHighlight code={subComponentName} language="typescript" />
+                    </h4>
+                    {subProps.description && (
+                      <p className="text-foreground-400 text-sm">{subProps.description}</p>
+                    )}
+                  </div>
+                  {subProps.props && subProps.props.length > 0 ? (
+                    <Table<SubPropData>
+                      data={subProps.props}
+                      columns={subPropsColumns}
+                      expandRender={(row) =>
+                        createExpandedDetails([
+                          row.description
+                            ? {
+                                key: "description",
+                                label: "Description",
+                                value: (
+                                  <p className="text-foreground-400 text-sm">{row.description}</p>
+                                ),
+                              }
+                            : null,
+                        ])
+                      }
+                    />
+                  ) : (
+                    <p className="text-foreground-400 text-sm">No props</p>
                   )}
                 </div>
-                {subProps.props && subProps.props.length > 0 ? (
-                  <Table<SubPropData>
-                    data={subProps.props}
-                    columns={subPropsColumns}
-                    expandRender={(row) =>
-                      createExpandedDetails([
-                        row.description
-                          ? {
-                            key: "description",
-                            label: "Description",
-                            value: <p className="text-foreground-400 text-sm">{row.description}</p>,
-                          }
-                          : null,
-                      ])
-                    }
-                  />
-                ) : (
-                  <p className="text-foreground-400 text-sm">No props</p>
-                )}
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </div>
       )}
@@ -430,12 +495,18 @@ const ColorSwatch = ({ color }: { color: string }) => {
   );
 };
 
-function StylesDocumentation({ componentId, styles }: { componentId: string; styles: StyleInfo | null }) {
+function StylesDocumentation({
+  componentId,
+  styles,
+}: {
+  componentId: string;
+  styles: StyleInfo | null;
+}) {
   const groupedVariables = useMemo(() => {
     if (!styles?.cssVariables) return {};
     const groups: Record<string, CssVariable[]> = {};
-    styles.cssVariables.forEach(variable => {
-      const variant = variable.variant || 'Base';
+    styles.cssVariables.forEach((variable) => {
+      const variant = variable.variant || "Base";
       if (!groups[variant]) groups[variant] = [];
       groups[variant].push(variable);
     });
@@ -448,7 +519,9 @@ function StylesDocumentation({ componentId, styles }: { componentId: string; sty
         <p>No structured styles documentation available for this component.</p>
         {styles?.rawCss && (
           <div className="mt-8">
-            <Code showLineNumbers language="css" heading="styles.module.css">{styles.rawCss}</Code>
+            <Code showLineNumbers language="css" heading="styles.module.css">
+              {styles.rawCss}
+            </Code>
           </div>
         )}
       </div>
@@ -457,17 +530,19 @@ function StylesDocumentation({ componentId, styles }: { componentId: string; sty
 
   const cssVariablesColumns: Column<CssVariable>[] = [
     {
-      key: 'name',
-      label: 'Variable',
-      render: (value: string | null | undefined) => <InlineCodeHighlight code={value ?? ''} language="css" />,
+      key: "name",
+      label: "Variable",
+      render: (value: string | null | undefined) => (
+        <InlineCodeHighlight code={value ?? ""} language="css" />
+      ),
     },
     {
-      key: 'value',
-      label: 'Value',
+      key: "value",
+      label: "Value",
       render: (value: string | null | undefined) => (
         <span className="flex items-center gap-2">
-          <ColorSwatch color={value ?? ''} />
-          <InlineCodeHighlight code={value ?? ''} language="css" />
+          <ColorSwatch color={value ?? ""} />
+          <InlineCodeHighlight code={value ?? ""} language="css" />
         </span>
       ),
     },
@@ -477,7 +552,10 @@ function StylesDocumentation({ componentId, styles }: { componentId: string; sty
     <div className="space-y-12">
       {Object.keys(groupedVariables).length > 0 && (
         <div>
-          <h3 id="css-variables" className="text-lg font-semibold text-foreground-50 mb-4 scroll-mt-20">
+          <h3
+            id="css-variables"
+            className="text-lg font-semibold text-foreground-50 mb-4 scroll-mt-20"
+          >
             CSS Variables
           </h3>
           <p className="text-foreground-400 mb-6">
@@ -498,11 +576,12 @@ function StylesDocumentation({ componentId, styles }: { componentId: string; sty
         </div>
       )}
 
-
-
       {styles.rawCss && (
         <div>
-          <h3 id="styles-css-module" className="text-lg font-semibold text-foreground-50 mb-4 scroll-mt-20">
+          <h3
+            id="styles-css-module"
+            className="text-lg font-semibold text-foreground-50 mb-4 scroll-mt-20"
+          >
             Full Stylesheet
           </h3>
           <Code showLineNumbers language="css" heading={`${componentId}.module.css`}>

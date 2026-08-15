@@ -2,7 +2,15 @@
 
 import { useReducer, useMemo } from "react";
 import { Group, Divider, Select, Checkbox } from "ui-lab-components";
-import { FaList, FaGrip, FaChevronLeft, FaChevronRight, FaMagnifyingGlass, FaTrash, FaEllipsis } from "@/shared/icons/fa6";
+import {
+  FaList,
+  FaGrip,
+  FaChevronLeft,
+  FaChevronRight,
+  FaMagnifyingGlass,
+  FaTrash,
+  FaEllipsis,
+} from "@/shared/icons/fa6";
 import type { ShowcasePanelProps } from "./types";
 
 const FILES = [
@@ -11,8 +19,6 @@ const FILES = [
   { name: "product-video.mp4", type: "MP4", size: "84.2 MB", modified: "3d ago" },
   { name: "design-system.fig", type: "FIG", size: "5.1 MB", modified: "1w ago" },
 ];
-
-
 
 interface BrowserState {
   view: "list" | "grid";
@@ -23,23 +29,23 @@ interface BrowserState {
 }
 
 type BrowserAction =
-  | { type: 'SET_VIEW'; payload: "list" | "grid" }
-  | { type: 'SET_SORT'; payload: string | number | null }
-  | { type: 'SET_PAGE'; payload: number }
-  | { type: 'SET_SEARCH'; payload: string }
-  | { type: 'SET_SELECTED'; payload: Set<string> };
+  | { type: "SET_VIEW"; payload: "list" | "grid" }
+  | { type: "SET_SORT"; payload: string | number | null }
+  | { type: "SET_PAGE"; payload: number }
+  | { type: "SET_SEARCH"; payload: string }
+  | { type: "SET_SELECTED"; payload: Set<string> };
 
 function browserReducer(state: BrowserState, action: BrowserAction): BrowserState {
   switch (action.type) {
-    case 'SET_VIEW':
+    case "SET_VIEW":
       return { ...state, view: action.payload };
-    case 'SET_SORT':
+    case "SET_SORT":
       return { ...state, sort: action.payload };
-    case 'SET_PAGE':
+    case "SET_PAGE":
       return { ...state, page: action.payload };
-    case 'SET_SEARCH':
+    case "SET_SEARCH":
       return { ...state, search: action.payload };
-    case 'SET_SELECTED':
+    case "SET_SELECTED":
       return { ...state, selected: action.payload };
     default:
       return state;
@@ -58,9 +64,8 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
 
   const filteredFiles = useMemo(() => {
     const query = state.search.toLowerCase();
-    return FILES.filter(file =>
-      file.name.toLowerCase().includes(query) ||
-      file.type.toLowerCase().includes(query)
+    return FILES.filter(
+      (file) => file.name.toLowerCase().includes(query) || file.type.toLowerCase().includes(query),
     );
   }, [state.search]);
 
@@ -72,19 +77,19 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
     const next = new Set(state.selected);
     if (next.has(fileName)) next.delete(fileName);
     else next.add(fileName);
-    dispatch({ type: 'SET_SELECTED', payload: next });
+    dispatch({ type: "SET_SELECTED", payload: next });
   };
 
   const toggleSelectAll = () => {
     if (isAllSelected) {
-      dispatch({ type: 'SET_SELECTED', payload: new Set() });
+      dispatch({ type: "SET_SELECTED", payload: new Set() });
     } else {
-      dispatch({ type: 'SET_SELECTED', payload: new Set(filteredFiles.map(f => f.name)) });
+      dispatch({ type: "SET_SELECTED", payload: new Set(filteredFiles.map((f) => f.name)) });
     }
   };
 
   const clearSelection = () => {
-    dispatch({ type: 'SET_SELECTED', payload: new Set() });
+    dispatch({ type: "SET_SELECTED", payload: new Set() });
   };
 
   return (
@@ -98,29 +103,49 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
             placeholder="Search files..."
             value={state.search}
             className="w-full! flex-1"
-            onChange={(e) => dispatch({ type: 'SET_SEARCH', payload: e.target.value })}
+            onChange={(e) => dispatch({ type: "SET_SEARCH", payload: e.target.value })}
             icon={<FaMagnifyingGlass size={12} className="text-foreground-500" />}
           />
           <Divider orientation="vertical" />
-          <Group.Select selectedKey={state.sort} onSelectionChange={(v) => dispatch({ type: 'SET_SORT', payload: v })} className="w-28">
+          <Group.Select
+            selectedKey={state.sort}
+            onSelectionChange={(v) => dispatch({ type: "SET_SORT", payload: v })}
+            className="w-28"
+          >
             <Select.Trigger>
               <Select.Value placeholder="Sort" />
             </Select.Trigger>
             <Select.Content>
               <Select.List>
-                <Select.Item value="newest" textValue="Newest">Newest</Select.Item>
-                <Select.Item value="oldest" textValue="Oldest">Oldest</Select.Item>
-                <Select.Item value="name" textValue="Name">Name</Select.Item>
-                <Select.Item value="size" textValue="Size">Size</Select.Item>
+                <Select.Item value="newest" textValue="Newest">
+                  Newest
+                </Select.Item>
+                <Select.Item value="oldest" textValue="Oldest">
+                  Oldest
+                </Select.Item>
+                <Select.Item value="name" textValue="Name">
+                  Name
+                </Select.Item>
+                <Select.Item value="size" textValue="Size">
+                  Size
+                </Select.Item>
               </Select.List>
             </Select.Content>
           </Group.Select>
           <Divider orientation="vertical" />
-          <Group.Button active={state.view === "list"} onClick={() => dispatch({ type: 'SET_VIEW', payload: "list" })} aria-label="List view">
+          <Group.Button
+            active={state.view === "list"}
+            onClick={() => dispatch({ type: "SET_VIEW", payload: "list" })}
+            aria-label="List view"
+          >
             <FaList size={13} />
           </Group.Button>
           <Divider orientation="vertical" />
-          <Group.Button active={state.view === "grid"} onClick={() => dispatch({ type: 'SET_VIEW', payload: "grid" })} aria-label="Grid view">
+          <Group.Button
+            active={state.view === "grid"}
+            onClick={() => dispatch({ type: "SET_VIEW", payload: "grid" })}
+            aria-label="Grid view"
+          >
             <FaGrip size={13} />
           </Group.Button>
         </Group>
@@ -128,9 +153,11 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
 
       {selectedCount > 0 && (
         <div className="px-3 py-2 border-b border-background-700 bg-background-300 flex items-center justify-between">
-          <span className="text-foreground-300">{selectedCount} file{selectedCount !== 1 ? 's' : ''} selected</span>
+          <span className="text-foreground-300">
+            {selectedCount} file{selectedCount !== 1 ? "s" : ""} selected
+          </span>
           <Group spacing="none">
-            <Group.Button onClick={() => { }} aria-label="Delete selected">
+            <Group.Button onClick={() => {}} aria-label="Delete selected">
               <FaTrash size={12} />
             </Group.Button>
             <Group.Button onClick={clearSelection} aria-label="Clear selection">
@@ -168,9 +195,13 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
                     state={{ checked: state.selected.has(file.name) }}
                     onChange={() => toggleSelect(file.name)}
                   />
-                  <span className="text-foreground-100 flex-1 truncate font-medium">{file.name}</span>
+                  <span className="text-foreground-100 flex-1 truncate font-medium">
+                    {file.name}
+                  </span>
                   <span className="text-foreground-500 shrink-0">{file.size}</span>
-                  <span className="text-foreground-500 shrink-0 w-16 text-right">{file.modified}</span>
+                  <span className="text-foreground-500 shrink-0 w-16 text-right">
+                    {file.modified}
+                  </span>
                   <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-foreground-500 hover:text-foreground-100">
                     <FaEllipsis size={12} />
                   </button>
@@ -192,7 +223,9 @@ export function FileBrowser({ height }: ShowcasePanelProps) {
                     onChange={() => toggleSelect(file.name)}
                   />
                 </div>
-                <span className="text-foreground-300 truncate w-full text-center font-medium">{file.name.split(".")[0]}</span>
+                <span className="text-foreground-300 truncate w-full text-center font-medium">
+                  {file.name.split(".")[0]}
+                </span>
                 <span className="text-foreground-500">{file.size}</span>
                 <button className="absolute bottom-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity p-1 text-foreground-500 hover:text-foreground-100">
                   <FaEllipsis size={11} />

@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import type { OklchColor } from '../lib/color-utils'
+import { useState } from "react";
+import type { OklchColor } from "../lib/color-utils";
 
 interface ColorPreviewCellProps {
-  oklch: OklchColor
-  family: string
-  shade: string
+  oklch: OklchColor;
+  family: string;
+  shade: string;
 }
 
 export function ColorPreviewCell({ oklch, family, shade }: ColorPreviewCellProps) {
-  const cssValue = `oklch(${(oklch.l * 100).toFixed(1)}% ${oklch.c.toFixed(3)} ${oklch.h.toFixed(1)})`
+  const cssValue = `oklch(${(oklch.l * 100).toFixed(1)}% ${oklch.c.toFixed(3)} ${oklch.h.toFixed(1)})`;
 
   return (
     <div
@@ -19,22 +19,22 @@ export function ColorPreviewCell({ oklch, family, shade }: ColorPreviewCellProps
       title={`${family} ${shade}`}
       aria-label={`${family} ${shade} color preview`}
     />
-  )
+  );
 }
 
 interface CopyableCellProps {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 export function CopyableCell({ value, label }: CopyableCellProps) {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(value)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <button
@@ -48,5 +48,5 @@ export function CopyableCell({ value, label }: CopyableCellProps) {
         <span className="text-foreground-400 truncate">{value}</span>
       )}
     </button>
-  )
+  );
 }

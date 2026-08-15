@@ -9,23 +9,10 @@
     "exportName": "Select",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "input",
-    "label",
-    "form",
-    "group"
-  ],
-  "tags": [
-    "form",
-    "dropdown",
-    "selection"
-  ],
+  "relatedComponents": ["input", "label", "form", "group"],
+  "tags": ["form", "dropdown", "selection"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard accessible",
-      "Screen reader friendly",
-      "ARIA roles included"
-    ]
+    "notes": ["Keyboard accessible", "Screen reader friendly", "ARIA roles included"]
   }
 }

@@ -1,17 +1,9 @@
-'use client';
+"use client";
 
 import { memo } from "react";
-import {
-  type OklchColor,
-  type GlobalColorAdjustments,
-} from "../../lib/color-utils";
-import {
-  getSemanticColorSafely,
-} from "../../lib/color/semantic";
-import {
-  ColorRow,
-  GlobalAdjustmentsPanel,
-} from "./shared-components";
+import { type OklchColor, type GlobalColorAdjustments } from "../../lib/color-utils";
+import { getSemanticColorSafely } from "../../lib/color/semantic";
+import { ColorRow, GlobalAdjustmentsPanel } from "./shared-components";
 import { Divider, Select } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 import { ThemeColors } from "../../constants/themes";
@@ -50,53 +42,32 @@ export const ColorsPanel = memo(
         <GlobalAdjustmentsPanel
           lightnessValue={localGlobalAdjustments.lightnessShift}
           chromaValue={localGlobalAdjustments.chromaBoost}
-          onLightnessChange={(v) =>
-            onGlobalAdjustmentChange("lightnessShift", v)
-          }
-          onChromaChange={(v) =>
-            onGlobalAdjustmentChange("chromaBoost", v)
-          }
+          onLightnessChange={(v) => onGlobalAdjustmentChange("lightnessShift", v)}
+          onChromaChange={(v) => onGlobalAdjustmentChange("chromaBoost", v)}
         />
         <Divider />
-        <div className={`${MICRO_LABEL} px-2 pt-2 opacity-70`}>
-          Core Colors
-        </div>
-        {([
-          "background",
-          "accent",
-        ] as const).map((colorType) => (
+        <div className={`${MICRO_LABEL} px-2 pt-2 opacity-70`}>Core Colors</div>
+        {(["background", "accent"] as const).map((colorType) => (
           <ColorRow
             key={colorType}
             type={colorType}
             color={localColors[colorType]}
             isExpanded={expandedColor === colorType}
-            onToggle={() =>
-              onExpandedColorChange(
-                expandedColor === colorType ? null : colorType,
-              )
-            }
+            onToggle={() => onExpandedColorChange(expandedColor === colorType ? null : colorType)}
             onChange={(c: OklchColor) => onColorChange(colorType, c)}
           />
         ))}
 
         <div className="pt-4 pb-2">
-          <div className={`${MICRO_LABEL} px-2 mb-2 opacity-70`}>
-            Semantic Layer
-          </div>
+          <div className={`${MICRO_LABEL} px-2 mb-2 opacity-70`}>Semantic Layer</div>
           <div className="space-y-2">
-            {([
-              "success",
-              "danger",
-              "warning",
-              "info",
-            ] as const).map((colorType) => {
+            {(["success", "danger", "warning", "info"] as const).map((colorType) => {
               const semanticColor = getSemanticColorSafely(
                 localColors.semantic,
                 colorType,
                 currentThemeMode,
               );
-              const hueRange =
-                localColors.semantic?.[colorType]?.hueRange;
+              const hueRange = localColors.semantic?.[colorType]?.hueRange;
 
               if (!semanticColor) return null;
 
@@ -107,13 +78,9 @@ export const ColorsPanel = memo(
                   color={semanticColor}
                   isExpanded={expandedColor === colorType}
                   onToggle={() =>
-                    onExpandedColorChange(
-                      expandedColor === colorType ? null : colorType,
-                    )
+                    onExpandedColorChange(expandedColor === colorType ? null : colorType)
                   }
-                  onChange={(c: OklchColor) =>
-                    onColorChange(colorType, c)
-                  }
+                  onChange={(c: OklchColor) => onColorChange(colorType, c)}
                   hueRange={hueRange}
                 />
               );
@@ -121,9 +88,7 @@ export const ColorsPanel = memo(
           </div>
         </div>
         <div className="mx-[6px] mb-1 rounded-[12px] border border-background-700 bg-background-900/40 p-3">
-          <div className={`${MICRO_LABEL} mb-2 block opacity-70`}>
-            Code Theme
-          </div>
+          <div className={`${MICRO_LABEL} mb-2 block opacity-70`}>Code Theme</div>
           <Select
             selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
             defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}
@@ -135,11 +100,7 @@ export const ColorsPanel = memo(
             </Select.Trigger>
             <Select.Content>
               {CODE_THEME_OPTIONS.map((theme) => (
-                <Select.Item
-                  key={theme.id}
-                  value={theme.id}
-                  textValue={theme.label}
-                >
+                <Select.Item key={theme.id} value={theme.id} textValue={theme.label}>
                   {theme.label}
                 </Select.Item>
               ))}

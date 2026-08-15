@@ -29,8 +29,7 @@ async function syncStripeCustomer(ctx: any, customer: any) {
 async function syncStripeSubscription(ctx: any, subscription: any) {
   const clerkUserId = stripeMetadataUserId(subscription.metadata);
   const item = subscription.items?.data?.[0];
-  const stripeCustomerId =
-    typeof subscription.customer === "string" ? subscription.customer : null;
+  const stripeCustomerId = typeof subscription.customer === "string" ? subscription.customer : null;
 
   if (!clerkUserId || !stripeCustomerId || typeof subscription.id !== "string") {
     return;

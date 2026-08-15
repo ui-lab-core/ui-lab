@@ -1,23 +1,9 @@
 "use client";
 
 import { memo, useMemo, useCallback } from "react";
-import {
-  FaChevronDown,
-  FaCheck,
-  FaSun,
-} from "@/shared/icons/fa6";
-import {
-  type OklchColor,
-  type HueRange,
-  oklchToCss,
-} from "../../lib/color-utils";
-import {
-  Slider,
-  Divider,
-  Label,
-  Badge,
-  Color,
-} from "ui-lab-components";
+import { FaChevronDown, FaCheck, FaSun } from "@/shared/icons/fa6";
+import { type OklchColor, type HueRange, oklchToCss } from "../../lib/color-utils";
+import { Slider, Divider, Label, Badge, Color } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 import {
   colorFromHue,
@@ -51,7 +37,7 @@ interface GlobalSliderProps {
   onChange: (value: number) => void;
 }
 
-export interface ColorRowProps {
+interface ColorRowProps {
   type: ThemeColorType;
   color: OklchColor;
   isExpanded: boolean;
@@ -75,7 +61,7 @@ interface SemanticColorPickerProps {
 
 export const SliderControl = memo(
   ({ label, value, min, max, step, unit, onChange }: SliderControlProps) => {
-    const safeValue = value ?? (min + (max - min) / 2);
+    const safeValue = value ?? min + (max - min) / 2;
     return (
       <div className="space-y-2 group">
         <div className="flex justify-between items-end">
@@ -104,23 +90,11 @@ export const SliderControl = memo(
 SliderControl.displayName = "SliderControl";
 
 const GlobalSlider = memo(
-  ({
-    label,
-    value,
-    min,
-    max,
-    step,
-    formatValue,
-    onChange,
-  }: GlobalSliderProps) => {
+  ({ label, value, min, max, step, formatValue, onChange }: GlobalSliderProps) => {
     return (
       <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-x-3 gap-y-1.5 group">
-        <Badge className="col-start-2 justify-self-end">
-          {formatValue(value)}
-        </Badge>
-        <span className="text-xs font-medium text-foreground-400">
-          {label}
-        </span>
+        <Badge className="col-start-2 justify-self-end">{formatValue(value)}</Badge>
+        <span className="text-xs font-medium text-foreground-400">{label}</span>
         <div className="min-w-0">
           <Slider.Root
             value={[value]}
@@ -140,7 +114,7 @@ GlobalSlider.displayName = "GlobalSlider";
 const getPreviewColor = (
   type: ColorRowProps["type"],
   color: OklchColor,
-  themeMode: "dark" | "light"
+  themeMode: "dark" | "light",
 ): OklchColor => {
   const isNeutral = color.c <= 0.005;
 
@@ -158,25 +132,16 @@ const getPreviewColor = (
 
   if (type === "accent") {
     if (isNeutral) {
-      return themeMode === "dark"
-        ? { l: 0.58, c: 0, h: 0 }
-        : { l: 0.58, c: 0, h: 0 };
+      return themeMode === "dark" ? { l: 0.58, c: 0, h: 0 } : { l: 0.58, c: 0, h: 0 };
     }
-    return { l: 0.70, c: Math.min(color.c, 0.32), h: color.h };
+    return { l: 0.7, c: Math.min(color.c, 0.32), h: color.h };
   }
 
-  return { l: 0.55, c: Math.min(color.c, 0.20), h: color.h };
+  return { l: 0.55, c: Math.min(color.c, 0.2), h: color.h };
 };
 
 export const ColorRow = memo(
-  ({
-    type,
-    color,
-    isExpanded,
-    onToggle,
-    onChange,
-    hueRange,
-  }: ColorRowProps) => {
+  ({ type, color, isExpanded, onToggle, onChange, hueRange }: ColorRowProps) => {
     const { currentThemeMode } = useApp();
     const previewStyle = useMemo(
       () => ({
@@ -195,10 +160,7 @@ export const ColorRow = memo(
             className="cursor-pointer w-full flex items-center gap-3 py-[10px] px-[10px] text-left outline-none"
           >
             <div className="relative">
-              <div
-                className="w-7 h-7 rounded-[8px]"
-                style={previewStyle}
-              />
+              <div className="w-7 h-7 rounded-[8px]" style={previewStyle} />
             </div>
 
             <div className="flex-1 min-w-0 flex flex-col justify-center">
@@ -220,11 +182,7 @@ export const ColorRow = memo(
             <div className="px-3 pb-4 pt-0">
               <div className="h-px w-full bg-background-700/30 mb-4" />
               {type === "background" || type === "accent" ? (
-                <CoreColorControls
-                  type={type}
-                  color={color}
-                  onChange={onChange}
-                />
+                <CoreColorControls type={type} color={color} onChange={onChange} />
               ) : (
                 <SemanticColorPicker
                   type={type}
@@ -244,47 +202,41 @@ export const ColorRow = memo(
 
 ColorRow.displayName = "ColorRow";
 
-const CoreColorControls = memo(
-  ({ color, onChange, type }: CoreColorControlsProps) => {
-    const { currentThemeMode } = useApp();
+const CoreColorControls = memo(({ color, onChange, type }: CoreColorControlsProps) => {
+  const { currentThemeMode } = useApp();
 
-    return (
-      <div className="space-y-4">
-        <div className="space-y-2 group">
-          <Label styles={{ text: "text-xs font-medium" }}>Hue</Label>
-          <Color.Slider
-            type="hue"
-            aria-label={`${type} hue`}
-            value={color.c <= 0.005 ? 0 : color.h}
-            onChange={(hue) =>
-              onChange(colorFromHue(type, hue, color, currentThemeMode))
-            }
-          />
-        </div>
-        <div className="space-y-2 group">
-          <Label styles={{ text: "text-xs font-medium" }}>Chroma</Label>
-          <Color.Slider
-            type="chroma"
-            aria-label={`${type} chroma`}
-            value={color.c}
-            color={oklchToCss(getPreviewColor(type, color, currentThemeMode))}
-            min={0}
-            max={getMaxChroma(type)}
-            previewMax={
-              type === "background"
-                ? getMaxChroma(type) * BACKGROUND_CHROMA_PREVIEW_MULTIPLIER
-                : undefined
-            }
-            step={0.001}
-            onChange={(chroma) =>
-              onChange(colorFromChroma(type, chroma, color))
-            }
-          />
-        </div>
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2 group">
+        <Label styles={{ text: "text-xs font-medium" }}>Hue</Label>
+        <Color.Slider
+          type="hue"
+          aria-label={`${type} hue`}
+          value={color.c <= 0.005 ? 0 : color.h}
+          onChange={(hue) => onChange(colorFromHue(type, hue, color, currentThemeMode))}
+        />
       </div>
-    );
-  },
-);
+      <div className="space-y-2 group">
+        <Label styles={{ text: "text-xs font-medium" }}>Chroma</Label>
+        <Color.Slider
+          type="chroma"
+          aria-label={`${type} chroma`}
+          value={color.c}
+          color={oklchToCss(getPreviewColor(type, color, currentThemeMode))}
+          min={0}
+          max={getMaxChroma(type)}
+          previewMax={
+            type === "background"
+              ? getMaxChroma(type) * BACKGROUND_CHROMA_PREVIEW_MULTIPLIER
+              : undefined
+          }
+          step={0.001}
+          onChange={(chroma) => onChange(colorFromChroma(type, chroma, color))}
+        />
+      </div>
+    </div>
+  );
+});
 
 CoreColorControls.displayName = "CoreColorControls";
 
@@ -294,7 +246,6 @@ const SemanticColorPicker = memo(
 
     const swatches = useMemo(() => {
       const hueSwatches = Array.from({ length: 7 }, (_, i) => {
-
         if (hueRange) return hueRange.min + (hueRange.max - hueRange.min) * (i / 6);
 
         return (i * (360 / 7)) % 360;
@@ -307,31 +258,23 @@ const SemanticColorPicker = memo(
 
     const getSwatchColor = (h: number): OklchColor => {
       if (type === "background") {
-        return currentThemeMode === "dark"
-          ? { l: 0.32, c: 0.008, h }
-          : { l: 0.88, c: 0.008, h };
+        return currentThemeMode === "dark" ? { l: 0.32, c: 0.008, h } : { l: 0.88, c: 0.008, h };
       }
       if (type === "foreground") {
-        return currentThemeMode === "dark"
-          ? { l: 0.95, c: 0.04, h }
-          : { l: 0.29, c: 0.04, h };
+        return currentThemeMode === "dark" ? { l: 0.95, c: 0.04, h } : { l: 0.29, c: 0.04, h };
       }
       if (type === "accent") {
-        return { l: 0.70, c: 0.18, h };
+        return { l: 0.7, c: 0.18, h };
       }
-      return { l: 0.55, c: 0.20, h };
+      return { l: 0.55, c: 0.2, h };
     };
 
     const getNeutralSwatchColor = (): OklchColor => {
       if (type === "background") {
-        return currentThemeMode === "dark"
-          ? { l: 0.30, c: 0, h: 0 }
-          : { l: 0.90, c: 0, h: 0 };
+        return currentThemeMode === "dark" ? { l: 0.3, c: 0, h: 0 } : { l: 0.9, c: 0, h: 0 };
       }
       if (type === "foreground") {
-        return currentThemeMode === "dark"
-          ? { l: 0.95, c: 0, h: 0 }
-          : { l: 0.29, c: 0, h: 0 };
+        return currentThemeMode === "dark" ? { l: 0.95, c: 0, h: 0 } : { l: 0.29, c: 0, h: 0 };
       }
       return { l: 0.58, c: 0, h: 0 };
     };
@@ -344,9 +287,7 @@ const SemanticColorPicker = memo(
     };
 
     const handleHueChange = (h: number) => {
-      const clampedH = hueRange
-        ? Math.min(hueRange.max, Math.max(hueRange.min, h))
-        : h;
+      const clampedH = hueRange ? Math.min(hueRange.max, Math.max(hueRange.min, h)) : h;
       onChange(colorFromHue(type, clampedH, color, currentThemeMode));
     };
 
@@ -355,16 +296,15 @@ const SemanticColorPicker = memo(
         <div className="grid grid-cols-4 gap-2">
           {swatches.map((h) => {
             const isNeutral = h === null;
-            const isSelected = color.c <= 0.005
-              ? isNeutral
-              : !isNeutral && Math.abs(h - color.h) < 2;
+            const isSelected =
+              color.c <= 0.005 ? isNeutral : !isNeutral && Math.abs(h - color.h) < 2;
             const displayColor = isNeutral
               ? oklchToCss(getNeutralSwatchColor())
               : oklchToCss(getSwatchColor(h));
 
             return (
               <button
-                key={h ?? 'neutral'}
+                key={h ?? "neutral"}
                 onClick={() => {
                   if (isNeutral) {
                     onChange({ l: 1, c: 0, h: 0 });
@@ -377,7 +317,9 @@ const SemanticColorPicker = memo(
               >
                 {isSelected && (
                   <FaCheck
-                    className={getCheckmarkDark(isNeutral) ? "text-background-950" : "text-accent-50"}
+                    className={
+                      getCheckmarkDark(isNeutral) ? "text-background-950" : "text-accent-50"
+                    }
                     size={14}
                   />
                 )}
@@ -398,15 +340,21 @@ const SemanticColorPicker = memo(
 SemanticColorPicker.displayName = "SemanticColorPicker";
 
 export const GlobalAdjustmentsPanel = memo(
-  ({ lightnessValue, chromaValue, onLightnessChange, onChromaChange }: {
+  ({
+    lightnessValue,
+    chromaValue,
+    onLightnessChange,
+    onChromaChange,
+  }: {
     lightnessValue: number;
     chromaValue: number;
     onLightnessChange: (value: number) => void;
     onChromaChange: (value: number) => void;
   }) => {
-    const formatLightness = useCallback((v: number) =>
-      `${v >= 0 ? "+" : ""}${(v * 100).toFixed(1)}%`
-      , []);
+    const formatLightness = useCallback(
+      (v: number) => `${v >= 0 ? "+" : ""}${(v * 100).toFixed(1)}%`,
+      [],
+    );
 
     const formatChroma = useCallback((v: number) => `×${v.toFixed(2)}`, []);
 

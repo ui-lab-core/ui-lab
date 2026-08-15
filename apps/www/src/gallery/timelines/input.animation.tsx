@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 function getRoundedRectPath(
-  x: number, y: number, w: number, h: number,
-  r: { tl: number, tr: number, bl: number, br: number }
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
 ) {
   return `
     M ${x + r.tl} ${y}
@@ -27,9 +26,9 @@ function getRoundedRectPath(
 }
 
 export function InputAnimation() {
-  const [stage, setStage] = useState<
-    "idle" | "hovering" | "focused" | "typing" | "completed"
-  >("idle");
+  const [stage, setStage] = useState<"idle" | "hovering" | "focused" | "typing" | "completed">(
+    "idle",
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
   // For typing simulation (0 to 1)
@@ -41,28 +40,32 @@ export function InputAnimation() {
     setStage("hovering");
 
     // Move to focus/click
-    timersRef.current.push(setTimeout(() => {
-      setStage("focused");
-    }, 600));
+    timersRef.current.push(
+      setTimeout(() => {
+        setStage("focused");
+      }, 600),
+    );
 
     // Start typing
-    timersRef.current.push(setTimeout(() => {
-      setStage("typing");
-      // Animate typing progress
-      let start: number | null = null;
-      const duration = 800; // ms to type
-      const step = (timestamp: number) => {
-        if (!start) start = timestamp;
-        const progress = Math.min((timestamp - start) / duration, 1);
-        setTypingProgress(progress);
-        if (progress < 1) {
-          animationFrameRef.current = requestAnimationFrame(step);
-        } else {
-          setStage("completed");
-        }
-      };
-      animationFrameRef.current = requestAnimationFrame(step);
-    }, 1100));
+    timersRef.current.push(
+      setTimeout(() => {
+        setStage("typing");
+        // Animate typing progress
+        let start: number | null = null;
+        const duration = 800; // ms to type
+        const step = (timestamp: number) => {
+          if (!start) start = timestamp;
+          const progress = Math.min((timestamp - start) / duration, 1);
+          setTypingProgress(progress);
+          if (progress < 1) {
+            animationFrameRef.current = requestAnimationFrame(step);
+          } else {
+            setStage("completed");
+          }
+        };
+        animationFrameRef.current = requestAnimationFrame(step);
+      }, 1100),
+    );
   }, []);
 
   const handleLeave = useCallback(() => {
@@ -122,17 +125,20 @@ export function InputAnimation() {
       target: { x: centerX + 80, y: centerY + 60 },
       opacity: 0,
     },
-  } satisfies Record<
-    "idle" | "hovering" | "focused" | "typing" | "completed",
-    CursorFrame
-  >;
+  } satisfies Record<"idle" | "hovering" | "focused" | "typing" | "completed", CursorFrame>;
 
   // Content dimensions
   const maxTextWidth = 120;
-  const currentTextWidth = isFocused ? (isTyping ? typingProgress * maxTextWidth : (isCompleted ? maxTextWidth : 0)) : 0;
+  const currentTextWidth = isFocused
+    ? isTyping
+      ? typingProgress * maxTextWidth
+      : isCompleted
+        ? maxTextWidth
+        : 0
+    : 0;
 
   // Placeholder visibility
-  // Fade out placeholder as we type? Or just hide it on focus? 
+  // Fade out placeholder as we type? Or just hide it on focus?
   // Standard behavior: placeholder hides when text > 0.
   const showPlaceholder = !isTyping && !isCompleted;
 
@@ -162,7 +168,10 @@ export function InputAnimation() {
             {/* Main Input Box Background */}
             <path
               d={getRoundedRectPath(inputX, inputY, inputW, inputH, {
-                tl: rx, tr: rx, bl: rx, br: rx
+                tl: rx,
+                tr: rx,
+                bl: rx,
+                br: rx,
               })}
               className="text-background-950"
               fill="currentColor"
@@ -172,7 +181,10 @@ export function InputAnimation() {
             {/* Main Input Box Border */}
             <path
               d={getRoundedRectPath(inputX, inputY, inputW, inputH, {
-                tl: rx, tr: rx, bl: rx, br: rx
+                tl: rx,
+                tr: rx,
+                bl: rx,
+                br: rx,
               })}
               className={isFocused ? config.highlight.hoverClass : config.highlight.idleClass}
               fill="currentColor"
@@ -181,7 +193,9 @@ export function InputAnimation() {
               style={{
                 transition: config.transition,
                 fillOpacity: isFocused ? 0.05 : config.highlight.idleFillOpacity,
-                strokeOpacity: isFocused ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity,
+                strokeOpacity: isFocused
+                  ? config.highlight.hoverStrokeOpacity
+                  : config.highlight.idleStrokeOpacity,
               }}
             />
 
@@ -198,7 +212,7 @@ export function InputAnimation() {
                 transition: config.transition,
                 opacity: showPlaceholder ? config.bar.secondaryOpacity : 0,
                 transformOrigin: "left center",
-                transform: showPlaceholder ? "scaleX(1)" : "scaleX(0.8)"
+                transform: showPlaceholder ? "scaleX(1)" : "scaleX(0.8)",
               }}
             />
 
@@ -212,7 +226,7 @@ export function InputAnimation() {
               className={config.highlight.hoverClass}
               fill="currentColor"
               style={{
-                opacity: (isTyping || isCompleted) ? config.bar.primaryOpacity : 0,
+                opacity: isTyping || isCompleted ? config.bar.primaryOpacity : 0,
               }}
             />
 
@@ -227,7 +241,7 @@ export function InputAnimation() {
               fill="currentColor"
               style={{
                 opacity: isFocused && !isCompleted ? 1 : 0,
-                transition: "opacity 0.2s, x 0.1s linear"
+                transition: "opacity 0.2s, x 0.1s linear",
               }}
             />
 
@@ -250,7 +264,6 @@ export function InputAnimation() {
                 strokeLinejoin="round"
               />
             </g>
-
           </g>
 
           <CursorProvider
@@ -258,8 +271,10 @@ export function InputAnimation() {
             frames={cursorFrames}
             appearance={{
               className: config.highlight.hoverClass,
-              motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-              shapeTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              motionTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              shapeTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
             }}
           >
             <Cursor />

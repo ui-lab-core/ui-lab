@@ -15,7 +15,7 @@ export function generateFluidSpacingCSS(spacingScale: number): string {
  * Applies dynamic fluid spacing scales to the DOM
  * @param spacingScale - Spacing scale factor (0.75 - 1.25)
  */
-export function applyDynamicSpacingScale(spacingScale: number): void {
+function applyDynamicSpacingScale(spacingScale: number): void {
   const root = document.documentElement;
   const vars = getSpacingCssVariables(spacingScale);
 

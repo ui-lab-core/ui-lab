@@ -1,13 +1,6 @@
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import {
-  FaBook,
-  FaWrench,
-  FaGithub,
-  FaMoon,
-  FaPuzzlePiece,
-  FaSun,
-} from "@/shared/icons/fa6";
+import { FaBook, FaWrench, FaGithub, FaMoon, FaPuzzlePiece, FaSun } from "@/shared/icons/fa6";
 import { useDocsNavigationData } from "@/features/navigation/lib/docs-navigation-context";
 import { getPagesForDomain } from "@/features/navigation/lib/sidebar-registry-resolver";
 import { toolsItems } from "@/features/layout/components/header/data";
@@ -36,7 +29,6 @@ export function useCommands({
 
   return useMemo(() => {
     const cmds: CommandItem[] = [];
-
 
     (["docs", "design-system"] as const).forEach((domain) => {
       getPagesForDomain(docsNavigationData, domain).forEach((page) => {
@@ -72,11 +64,7 @@ export function useCommands({
         description: component.description,
         category: "Components",
         icon: <FaPuzzlePiece className="w-4 h-4" />,
-        keywords: [
-          component.id,
-          component.name.toLowerCase(),
-          ...component.tags,
-        ],
+        keywords: [component.id, component.name.toLowerCase(), ...component.tags],
         action: () => router.push(`/components/${component.id}`),
       });
     });
@@ -101,11 +89,7 @@ export function useCommands({
       icon: <FaGithub className="w-4 h-4" />,
       keywords: ["github", "source", "repo"],
       action: () => {
-        window.open(
-          "https://github.com/ui-lab-core/ui-lab",
-          "_blank",
-          "noopener,noreferrer",
-        );
+        window.open("https://github.com/ui-lab-core/ui-lab", "_blank", "noopener,noreferrer");
       },
     });
 
@@ -121,16 +105,9 @@ export function useCommands({
           <FaSun className="w-4 h-4" />
         ),
       keywords: ["theme", "dark", "light", "mode"],
-      action: () =>
-        setCurrentThemeMode(currentThemeMode === "light" ? "dark" : "light"),
+      action: () => setCurrentThemeMode(currentThemeMode === "light" ? "dark" : "light"),
     });
 
     return cmds;
-  }, [
-    router,
-    components,
-    currentThemeMode,
-    docsNavigationData,
-    setCurrentThemeMode,
-  ]);
+  }, [router, components, currentThemeMode, docsNavigationData, setCurrentThemeMode]);
 }

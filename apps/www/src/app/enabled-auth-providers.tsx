@@ -1,6 +1,6 @@
-import { ClerkProvider } from '@clerk/nextjs';
-import { Suspense, type ReactNode } from 'react';
-import { ConvexClientProvider } from './convex-client-provider';
+import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense, type ReactNode } from "react";
+import { ConvexClientProvider } from "./convex-client-provider";
 
 export function EnabledAuthProviders({
   children,

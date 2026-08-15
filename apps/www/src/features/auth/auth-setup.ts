@@ -1,4 +1,4 @@
-export type PremiumAuthSetup = {
+type PremiumAuthSetup = {
   clerkPublishableKeyConfigured: boolean;
   clerkSecretKeyConfigured: boolean;
   clerkConfigured: boolean;
@@ -18,7 +18,7 @@ function usesDevelopmentClerkInstance(
 ): boolean {
   return Boolean(
     publishableKey?.trim().startsWith("pk_test_") ||
-      frontendApiUrl?.trim().includes(".clerk.accounts.dev"),
+    frontendApiUrl?.trim().includes(".clerk.accounts.dev"),
   );
 }
 
@@ -27,24 +27,19 @@ export function getPremiumAuthSetup(): PremiumAuthSetup {
   const clerkSecretKey = process.env.CLERK_SECRET_KEY;
   const clerkFrontendApiUrl = process.env.CLERK_FRONTEND_API_URL;
 
-  const clerkPublishableKeyConfigured = configured(
-    clerkPublishableKey,
-  );
+  const clerkPublishableKeyConfigured = configured(clerkPublishableKey);
   const clerkSecretKeyConfigured = configured(clerkSecretKey);
   const convexConfigured = configured(process.env.NEXT_PUBLIC_CONVEX_URL);
   const clerkUsesDevelopmentInstance = usesDevelopmentClerkInstance(
     clerkPublishableKey,
     clerkFrontendApiUrl,
   );
-  const clerkConfigured =
-    clerkPublishableKeyConfigured && clerkSecretKeyConfigured;
+  const clerkConfigured = clerkPublishableKeyConfigured && clerkSecretKeyConfigured;
   const productionClerkConfigured =
     process.env.NODE_ENV !== "production" || !clerkUsesDevelopmentInstance;
 
   const warnings = [
-    clerkPublishableKeyConfigured
-      ? null
-      : "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not configured.",
+    clerkPublishableKeyConfigured ? null : "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not configured.",
     clerkSecretKeyConfigured ? null : "CLERK_SECRET_KEY is not configured.",
     convexConfigured ? null : "NEXT_PUBLIC_CONVEX_URL is not configured.",
     process.env.NODE_ENV === "production" && clerkUsesDevelopmentInstance
@@ -58,18 +53,15 @@ export function getPremiumAuthSetup(): PremiumAuthSetup {
     clerkConfigured,
     clerkUsesDevelopmentInstance,
     convexConfigured,
-    fullAuthConfigured:
-      clerkConfigured && convexConfigured && productionClerkConfigured,
+    fullAuthConfigured: clerkConfigured && convexConfigured && productionClerkConfigured,
     warnings,
   };
 }
 
-export function assertProductionPremiumAuthSetup(setup: PremiumAuthSetup): void {
+function assertProductionPremiumAuthSetup(setup: PremiumAuthSetup): void {
   if (process.env.NODE_ENV !== "production" || setup.fullAuthConfigured) {
     return;
   }
 
-  throw new Error(
-    `Premium auth setup is incomplete: ${setup.warnings.join(" ")}`,
-  );
+  throw new Error(`Premium auth setup is incomplete: ${setup.warnings.join(" ")}`);
 }

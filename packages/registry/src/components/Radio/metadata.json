@@ -8,22 +8,10 @@
     "exportName": "Radio",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "checkbox",
-    "switch",
-    "label"
-  ],
-  "tags": [
-    "form",
-    "selection",
-    "single-choice"
-  ],
+  "relatedComponents": ["checkbox", "switch", "label"],
+  "tags": ["form", "selection", "single-choice"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard accessible",
-      "Radio group support",
-      "Arrow key navigation"
-    ]
+    "notes": ["Keyboard accessible", "Radio group support", "Arrow key navigation"]
   }
 }

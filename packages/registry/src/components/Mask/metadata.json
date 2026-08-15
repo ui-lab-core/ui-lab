@@ -9,20 +9,10 @@
     "exportName": "Mask",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card",
-    "scroll"
-  ],
-  "tags": [
-    "container",
-    "visual",
-    "effect",
-    "fade"
-  ],
+  "relatedComponents": ["card", "scroll"],
+  "tags": ["container", "visual", "effect", "fade"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Visual effect only, does not affect content semantics"
-    ]
+    "notes": ["Visual effect only, does not affect content semantics"]
   }
 }

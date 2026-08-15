@@ -21,13 +21,16 @@ interface ElementMetadata {
 }
 
 function truncateDescription(description: string | undefined, maxLength: number = 160): string {
-  if (!description || typeof description !== 'string') return '';
+  if (!description || typeof description !== "string") return "";
   if (description.length <= maxLength) return description;
-  return description.substring(0, maxLength - 3).trimEnd() + '...';
+  return description.substring(0, maxLength - 3).trimEnd() + "...";
 }
 
-function createFallbackDescription(title: string | undefined, type: 'component' | 'element' = 'component'): string {
-  if (!title) return '';
+function createFallbackDescription(
+  title: string | undefined,
+  type: "component" | "element" = "component",
+): string {
+  if (!title) return "";
   return `Learn about the ${title} ${type}.`;
 }
 
@@ -42,7 +45,7 @@ function extractDocMetadata(doc: DocMetadata): ExtractedMetadata {
 export function extractComponentMetadata(component: ComponentMetadata): ExtractedMetadata {
   const title = component.name;
   const description = truncateDescription(
-    component.description || createFallbackDescription(title, 'component')
+    component.description || createFallbackDescription(title, "component"),
   );
   return { title, description };
 }
@@ -50,7 +53,7 @@ export function extractComponentMetadata(component: ComponentMetadata): Extracte
 export function extractElementMetadata(element: ElementMetadata): ExtractedMetadata {
   const title = element.name;
   const description = truncateDescription(
-    element.description || createFallbackDescription(title, 'element')
+    element.description || createFallbackDescription(title, "element"),
   );
   return { title, description };
 }

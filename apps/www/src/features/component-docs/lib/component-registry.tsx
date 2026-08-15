@@ -60,50 +60,50 @@ import {
   getCategoriesInOrder as getRegistryCategoriesInOrder,
   getCategoryIcon as getRegistryCategoryIcon,
 } from "ui-lab-registry";
-import {
-  type SiteComponentCategory,
-  type SiteComponentCategoryDefinition,
-} from "./coming-soon";
+import { type SiteComponentCategory, type SiteComponentCategoryDefinition } from "./coming-soon";
 
-export type { SiteComponentCategory };
+;
 
 interface ComponentMetadata extends RegistryMetadata {
   preview: React.ReactNode;
   experimental?: boolean;
 }
 
-export const categoryMap = registryCategoryMap as Record<SiteComponentCategory, SiteComponentCategoryDefinition>;
+export const categoryMap = registryCategoryMap as Record<
+  SiteComponentCategory,
+  SiteComponentCategoryDefinition
+>;
 
-export const getCategoriesInOrder = (): SiteComponentCategory[] =>
-  getRegistryCategoriesInOrder();
+export const getCategoriesInOrder = (): SiteComponentCategory[] => getRegistryCategoriesInOrder();
 
-export const getCategoryIcon = (category: SiteComponentCategory): React.ReactNode =>
+const getCategoryIcon = (category: SiteComponentCategory): React.ReactNode =>
   getRegistryCategoryIcon(category);
 
-export const componentRegistry: ComponentMetadata[] = Object.entries(registryData).map(
+const componentRegistry: ComponentMetadata[] = Object.entries(registryData).map(
   ([id, metadata]) => ({
     ...metadata,
     preview: previews[id] || <div />,
   }),
 );
 
-const getComponentsByCategory =
-  (category: SiteComponentCategory): ComponentMetadata[] =>
-    componentRegistry.filter((c) => c.category === category);
+const getComponentsByCategory = (category: SiteComponentCategory): ComponentMetadata[] =>
+  componentRegistry.filter((c) => c.category === category);
 
-export const getComponentsGroupedByCategory =
-  (): Record<SiteComponentCategory, ComponentMetadata[]> => {
-    const result: Record<SiteComponentCategory, ComponentMetadata[]> = {} as Record<
-      SiteComponentCategory,
-      ComponentMetadata[]
-    >;
-    getCategoriesInOrder().forEach((catId) => {
-      result[catId] = getComponentsByCategory(catId);
-    });
-    return result;
-  };
+const getComponentsGroupedByCategory = (): Record<
+  SiteComponentCategory,
+  ComponentMetadata[]
+> => {
+  const result: Record<SiteComponentCategory, ComponentMetadata[]> = {} as Record<
+    SiteComponentCategory,
+    ComponentMetadata[]
+  >;
+  getCategoriesInOrder().forEach((catId) => {
+    result[catId] = getComponentsByCategory(catId);
+  });
+  return result;
+};
 
-export const getRelatedComponents = (id: string): ComponentMetadata[] => {
+const getRelatedComponents = (id: string): ComponentMetadata[] => {
   const component = componentRegistry.find((c) => c.id === id);
   if (!component) return [];
   return component.relatedComponents
@@ -111,15 +111,14 @@ export const getRelatedComponents = (id: string): ComponentMetadata[] => {
     .filter(Boolean) as ComponentMetadata[];
 };
 
-export const getComponentsInCategoryOrder =
-  (category: SiteComponentCategory): ComponentMetadata[] => {
-    const componentIds = getComponentsInOrder(category);
-    return componentIds
-      .map((id: string) =>
-        componentRegistry.find((c): c is ComponentMetadata => c.id === id),
-      )
-      .filter((c): c is ComponentMetadata => c !== undefined);
-  };
+export const getComponentsInCategoryOrder = (
+  category: SiteComponentCategory,
+): ComponentMetadata[] => {
+  const componentIds = getComponentsInOrder(category);
+  return componentIds
+    .map((id: string) => componentRegistry.find((c): c is ComponentMetadata => c.id === id))
+    .filter((c): c is ComponentMetadata => c !== undefined);
+};
 
 const componentDetails: Record<string, ComponentDetail> = {
   button: buttonDetail,
@@ -202,18 +201,20 @@ function getPrivateComponentExamples(componentId: string): ComponentDetail["exam
 
       const previewConfig = getElementPreviewConfig(entry.package, entry.id);
 
-      return [{
-        id: entry.id,
-        title: entry.displayName,
-        description: entry.description,
-        code: entry.code,
-        preview: React.createElement(Preview),
-        controls: previewConfig?.controls,
-        factory: previewConfig?.factory,
-        renderPreview: previewConfig?.renderPreview,
-        previewLayout: previewConfig?.previewLayout,
-        resizable: previewConfig?.resizable,
-      }];
+      return [
+        {
+          id: entry.id,
+          title: entry.displayName,
+          description: entry.description,
+          code: entry.code,
+          preview: React.createElement(Preview),
+          controls: previewConfig?.controls,
+          factory: previewConfig?.factory,
+          renderPreview: previewConfig?.renderPreview,
+          previewLayout: previewConfig?.previewLayout,
+          resizable: previewConfig?.resizable,
+        },
+      ];
     });
 }
 
@@ -231,21 +232,16 @@ function withPrivateComponentExamples(detail: ComponentDetail): ComponentDetail 
 
   const privateExampleIds = new Set(privateExamples.map((example) => example.id));
   const staticHero = detail.examples.find((example) => example.id === "preview");
-  const heroEasingControl = staticHero?.controls?.find(
-    (control) => control.name === "easing",
-  );
+  const heroEasingControl = staticHero?.controls?.find((control) => control.name === "easing");
 
   const interactiveExamples = privateExamples
     .filter((example) => isInteractiveExample(example.id))
     .map((example) =>
-      heroEasingControl &&
-      !example.controls?.some((control) => control.name === "easing")
+      heroEasingControl && !example.controls?.some((control) => control.name === "easing")
         ? { ...example, controls: [...(example.controls ?? []), heroEasingControl] }
         : example,
     );
-  const otherExamples = privateExamples.filter(
-    (example) => !isInteractiveExample(example.id),
-  );
+  const otherExamples = privateExamples.filter((example) => !isInteractiveExample(example.id));
 
   return {
     ...detail,
@@ -271,5 +267,5 @@ const componentDetailsWithPrivateExamples = Object.fromEntries(
 export const getComponentById = (id: string): ComponentDetail | undefined =>
   componentDetailsWithPrivateExamples[id];
 
-export const getComponentMetadata = (id: string): ComponentMetadata | undefined =>
+const getComponentMetadata = (id: string): ComponentMetadata | undefined =>
   componentRegistry.find((component) => component.id === id);

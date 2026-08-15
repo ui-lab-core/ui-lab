@@ -1,4 +1,4 @@
-export type PreviewDeviceVariant = "mobile" | "tablet" | "desktop";
+type PreviewDeviceVariant = "mobile" | "tablet" | "desktop";
 
 export const DEVICE_PRESETS: Record<PreviewDeviceVariant, number> = {
   mobile: 375,

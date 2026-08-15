@@ -9,16 +9,9 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": [
-    "label",
-    "status",
-    "tag"
-  ],
+  "tags": ["label", "status", "tag"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Semantic HTML",
-      "Use with proper context"
-    ]
+    "notes": ["Semantic HTML", "Use with proper context"]
   }
 }

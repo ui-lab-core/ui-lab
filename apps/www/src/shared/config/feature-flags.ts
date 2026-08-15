@@ -23,4 +23,4 @@ export const featureFlags = {
   showcase: !isOff(process.env.NEXT_PUBLIC_FF_SHOWCASE),
 } as const;
 
-export type FeatureFlags = typeof featureFlags;
+type FeatureFlags = typeof featureFlags;

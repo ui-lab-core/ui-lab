@@ -1,10 +1,6 @@
-import {
-  categoryMap,
-  getCategoriesInOrder,
-  getComponentsInCategoryOrder,
-} from 'ui-lab-registry';
-import { getSectionsForDomain, type DocsNavigationData } from './sidebar-registry-resolver';
-import { MainNavItem } from '@/app/lib/sidebar-config';
+import { categoryMap, getCategoriesInOrder, getComponentsInCategoryOrder } from "ui-lab-registry";
+import { getSectionsForDomain, type DocsNavigationData } from "./sidebar-registry-resolver";
+import { MainNavItem } from "@/app/lib/sidebar-config";
 
 interface SidebarSection {
   label: string;
@@ -15,13 +11,13 @@ interface SidebarSection {
 }
 
 const SECTION_LABEL_FILTERS: Record<MainNavItem, string[] | null> = {
-  'overview': null,
-  'components-core': null,
-  'design-system': null,
-  'packages': null,
-  'sections': null,
-  'starters': null,
-  'patterns': null
+  overview: null,
+  "components-core": null,
+  "design-system": null,
+  packages: null,
+  sections: null,
+  starters: null,
+  patterns: null,
 };
 
 function deduplicateSectionItems(section: SidebarSection): SidebarSection {
@@ -37,10 +33,13 @@ function deduplicateSectionItems(section: SidebarSection): SidebarSection {
       const stored = seenLabels.get(normalizedLabel)!;
       const storedId = uniqueItems[stored.index].id;
 
-      const storedHyphens = storedId.split('-').length;
-      const currentHyphens = item.id.split('-').length;
+      const storedHyphens = storedId.split("-").length;
+      const currentHyphens = item.id.split("-").length;
 
-      if (currentHyphens < storedHyphens || (currentHyphens === storedHyphens && item.id.length < storedId.length)) {
+      if (
+        currentHyphens < storedHyphens ||
+        (currentHyphens === storedHyphens && item.id.length < storedId.length)
+      ) {
         uniqueItems[stored.index] = item;
         seenLabels.set(normalizedLabel, { id: item.id, index: stored.index });
       }
@@ -66,17 +65,20 @@ function getComponentSections(): SidebarSection[] {
     }));
 }
 
-export function getSectionsForNav(nav: MainNavItem, docsNavigationData: DocsNavigationData): SidebarSection[] {
+export function getSectionsForNav(
+  nav: MainNavItem,
+  docsNavigationData: DocsNavigationData,
+): SidebarSection[] {
   let sections: SidebarSection[] = [];
 
   switch (nav) {
-    case 'overview':
-      sections = getSectionsForDomain(docsNavigationData, 'docs');
+    case "overview":
+      sections = getSectionsForDomain(docsNavigationData, "docs");
       break;
-    case 'components-core':
+    case "components-core":
       return getComponentSections();
-    case 'design-system':
-      sections = getSectionsForDomain(docsNavigationData, 'design-system');
+    case "design-system":
+      sections = getSectionsForDomain(docsNavigationData, "design-system");
       break;
     default:
       return getComponentSections();
@@ -84,7 +86,7 @@ export function getSectionsForNav(nav: MainNavItem, docsNavigationData: DocsNavi
 
   const allowedLabels = SECTION_LABEL_FILTERS[nav];
   if (allowedLabels) {
-    sections = sections.filter(s => allowedLabels.includes(s.label));
+    sections = sections.filter((s) => allowedLabels.includes(s.label));
   }
 
   return sections.map(deduplicateSectionItems);
@@ -92,21 +94,23 @@ export function getSectionsForNav(nav: MainNavItem, docsNavigationData: DocsNavi
 
 export function getHrefForNavItem(activeNav: MainNavItem, itemId: string): string {
   switch (activeNav) {
-    case 'overview':
-      return itemId === 'introduction' ? '/docs' : `/docs/${itemId}`;
-    case 'components-core':
-      return itemId === 'overview' ? '/components' : `/components/${itemId}`;
-    case 'design-system':
-      return itemId === 'overview' ? '/design-system' : `/design-system/${itemId}`;
+    case "overview":
+      return itemId === "introduction" ? "/docs" : `/docs/${itemId}`;
+    case "components-core":
+      return itemId === "overview" ? "/components" : `/components/${itemId}`;
+    case "design-system":
+      return itemId === "overview" ? "/design-system" : `/design-system/${itemId}`;
     default:
-      return itemId === 'overview' ? '/components' : `/components/${itemId}`;
+      return itemId === "overview" ? "/components" : `/components/${itemId}`;
   }
 }
 
 export function isNavItemActive(itemId: string, pathname: string, activeNav: MainNavItem): boolean {
   const href = getHrefForNavItem(activeNav, itemId);
   if (href === pathname) return true;
-  if (itemId === 'introduction' && (pathname === '/docs' || pathname === '/design-system')) return true;
-  if (itemId === 'overview' && (pathname === '/components' || pathname === '/design-system')) return true;
+  if (itemId === "introduction" && (pathname === "/docs" || pathname === "/design-system"))
+    return true;
+  if (itemId === "overview" && (pathname === "/components" || pathname === "/design-system"))
+    return true;
   return pathname.includes(`/${itemId}`);
 }

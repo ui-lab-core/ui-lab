@@ -37,7 +37,7 @@ type PartialTypographyConfig = Partial<ThemeSourceConfig["typography"]> & {
 };
 
 export const THEME_CACHE_KEY = "uilab_theme_complete";
-export const REQUIRED_COLOR_VARS = [
+const REQUIRED_COLOR_VARS = [
   "--background-500",
   "--foreground-100",
   "--accent-400",
@@ -52,7 +52,6 @@ export const COLOR_CSS_VARIABLE_PREFIXES = [
   "--info-",
   "--ui-lab-meta-",
 ] as const;
-
 
 function getDevicePreferredTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "dark";
@@ -71,9 +70,7 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
   const themeMode = d.themeMode as "light" | "dark";
   const defaultSourceConfig = getDefaultSourceConfig(themeMode);
   const sourceConfig = d.sourceConfig as Partial<ThemeSourceConfig> | undefined;
-  const sourceTypography = sourceConfig?.typography as
-    | PartialTypographyConfig
-    | undefined;
+  const sourceTypography = sourceConfig?.typography as PartialTypographyConfig | undefined;
   const legacyMinFontSizePx = sourceTypography?.globalMinFontSizePx;
   const {
     globalMinFontSizePx: _globalMinFontSizePx,
@@ -113,32 +110,32 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
     themeMode,
     sourceConfig: sourceConfig
       ? {
-        ...defaultSourceConfig,
-        ...sourceConfig,
-        colors: {
-          ...defaultSourceConfig.colors,
-          ...(sourceConfig.colors || {}),
-        },
-        typography: {
-          ...defaultSourceConfig.typography,
-          ...currentTypography,
-          headerScale,
-          bodyScale,
-          bodyMinFontSizePx,
-          headerMinFontSizePx:
-            sourceTypography?.headerMinFontSizePx ??
-            legacyMinFontSizePx ??
-            defaultSourceConfig.typography.headerMinFontSizePx,
-          monoMinFontSizePx:
-            sourceTypography?.monoMinFontSizePx ??
-            legacyMinFontSizePx ??
-            defaultSourceConfig.typography.monoMinFontSizePx,
-        },
-        layout: {
-          ...defaultSourceConfig.layout,
-          ...(sourceConfig.layout || {}),
-        },
-      }
+          ...defaultSourceConfig,
+          ...sourceConfig,
+          colors: {
+            ...defaultSourceConfig.colors,
+            ...(sourceConfig.colors || {}),
+          },
+          typography: {
+            ...defaultSourceConfig.typography,
+            ...currentTypography,
+            headerScale,
+            bodyScale,
+            bodyMinFontSizePx,
+            headerMinFontSizePx:
+              sourceTypography?.headerMinFontSizePx ??
+              legacyMinFontSizePx ??
+              defaultSourceConfig.typography.headerMinFontSizePx,
+            monoMinFontSizePx:
+              sourceTypography?.monoMinFontSizePx ??
+              legacyMinFontSizePx ??
+              defaultSourceConfig.typography.monoMinFontSizePx,
+          },
+          layout: {
+            ...defaultSourceConfig.layout,
+            ...(sourceConfig.layout || {}),
+          },
+        }
       : defaultSourceConfig,
     timestamp: typeof d.timestamp === "number" ? d.timestamp : Date.now(),
     version: 1,
@@ -185,7 +182,7 @@ export function cacheCompleteTheme(
   }
 }
 
-export function extractColorVariablesFromCache(
+function extractColorVariablesFromCache(
   cssVariables: Record<string, string>,
 ): Record<string, string> {
   return Object.fromEntries(
@@ -204,9 +201,7 @@ export function applyThemeCacheToDOM(cache: CompleteThemeCache): void {
   const root = document.documentElement;
   root.setAttribute("data-theme", cache.themeMode);
   root.style.colorScheme = cache.themeMode;
-  Object.entries(extractColorVariablesFromCache(cache.cssVariables)).forEach(
-    ([varName, value]) => {
-      root.style.setProperty(varName, value);
-    },
-  );
+  Object.entries(extractColorVariablesFromCache(cache.cssVariables)).forEach(([varName, value]) => {
+    root.style.setProperty(varName, value);
+  });
 }

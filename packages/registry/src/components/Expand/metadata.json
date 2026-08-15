@@ -8,16 +8,8 @@
     "exportName": "Expand",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "card",
-    "modal"
-  ],
-  "tags": [
-    "disclosure",
-    "accordion",
-    "collapsible",
-    "expandable"
-  ],
+  "relatedComponents": ["card", "modal"],
+  "tags": ["disclosure", "accordion", "collapsible", "expandable"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

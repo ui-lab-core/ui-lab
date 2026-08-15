@@ -9,20 +9,10 @@
     "exportName": "Menu",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "popover"
-  ],
-  "tags": [
-    "menu",
-    "right-click",
-    "actions"
-  ],
+  "relatedComponents": ["popover"],
+  "tags": ["menu", "right-click", "actions"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard accessible",
-      "Menu role",
-      "Focus management"
-    ]
+    "notes": ["Keyboard accessible", "Menu role", "Focus management"]
   }
 }

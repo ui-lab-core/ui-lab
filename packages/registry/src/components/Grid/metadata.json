@@ -8,18 +8,8 @@
     "exportName": "Grid",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "flex",
-    "card",
-    "divider"
-  ],
-  "tags": [
-    "layout",
-    "grid",
-    "container-queries",
-    "responsive",
-    "columns"
-  ],
+  "relatedComponents": ["flex", "card", "divider"],
+  "tags": ["layout", "grid", "container-queries", "responsive", "columns"],
   "accessibility": {
     "hasAriaSupport": false,
     "notes": [

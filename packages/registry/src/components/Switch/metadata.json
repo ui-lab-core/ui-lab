@@ -8,22 +8,10 @@
     "exportName": "Switch",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "checkbox",
-    "radio",
-    "label"
-  ],
-  "tags": [
-    "form",
-    "boolean",
-    "toggle"
-  ],
+  "relatedComponents": ["checkbox", "radio", "label"],
+  "tags": ["form", "boolean", "toggle"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard accessible",
-      "ARIA switch role",
-      "Visual state indication"
-    ]
+    "notes": ["Keyboard accessible", "ARIA switch role", "Visual state indication"]
   }
 }

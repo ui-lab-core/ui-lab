@@ -30,23 +30,28 @@ type State = {
 };
 
 type Action =
-  | { type: 'SET_ROLE'; index: number; role: string }
-  | { type: 'SET_SEARCH'; value: string }
-  | { type: 'SET_ROLE_FILTER'; value: string }
-  | { type: 'SET_INVITE_EMAIL'; value: string }
-  | { type: 'SET_INVITE_ROLE'; value: string };
+  | { type: "SET_ROLE"; index: number; role: string }
+  | { type: "SET_SEARCH"; value: string }
+  | { type: "SET_ROLE_FILTER"; value: string }
+  | { type: "SET_INVITE_EMAIL"; value: string }
+  | { type: "SET_INVITE_ROLE"; value: string };
 
 function memberReducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'SET_ROLE':
-      return { ...state, members: state.members.map((m, i) => i === action.index ? { ...m, role: action.role } : m) };
-    case 'SET_SEARCH':
+    case "SET_ROLE":
+      return {
+        ...state,
+        members: state.members.map((m, i) =>
+          i === action.index ? { ...m, role: action.role } : m,
+        ),
+      };
+    case "SET_SEARCH":
       return { ...state, search: action.value };
-    case 'SET_ROLE_FILTER':
+    case "SET_ROLE_FILTER":
       return { ...state, roleFilter: action.value };
-    case 'SET_INVITE_EMAIL':
+    case "SET_INVITE_EMAIL":
       return { ...state, inviteEmail: action.value };
-    case 'SET_INVITE_ROLE':
+    case "SET_INVITE_ROLE":
       return { ...state, inviteRole: action.value };
     default:
       return state;
@@ -76,7 +81,7 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
 
   function setRole(index: number, role: string | number | null) {
     if (!role) return;
-    dispatch({ type: 'SET_ROLE', index, role: String(role) });
+    dispatch({ type: "SET_ROLE", index, role: String(role) });
   }
 
   return (
@@ -84,7 +89,6 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
       className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
       style={{ height }}
     >
-
       <div className="border-b border-background-700 px-3 py-2">
         <Tabs default="members" className="w-fit">
           <Tabs.List aria-label="People">
@@ -102,33 +106,43 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
             icon={<FaMagnifyingGlass />}
             className="w-[220px]"
             value={search}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch({ type: 'SET_SEARCH', value: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              dispatch({ type: "SET_SEARCH", value: e.target.value })
+            }
           />
           <Divider />
           <Group.Select
             selectedKey={roleFilter}
-            onSelectionChange={(key) => dispatch({ type: 'SET_ROLE_FILTER', value: String(key) })}
+            onSelectionChange={(key) => dispatch({ type: "SET_ROLE_FILTER", value: String(key) })}
           >
             <Select.Trigger className="bg-background-900">
               {roleFilter === "all" ? "All Roles" : roleFilter}
             </Select.Trigger>
             <Select.Content>
               <Select.List>
-                <Select.Item key="all" value="all" textValue="All Roles">All Roles</Select.Item>
+                <Select.Item key="all" value="all" textValue="All Roles">
+                  All Roles
+                </Select.Item>
                 {ROLES.map((role) => (
-                  <Select.Item key={role} value={role} textValue={role}>{role}</Select.Item>
+                  <Select.Item key={role} value={role} textValue={role}>
+                    {role}
+                  </Select.Item>
                 ))}
               </Select.List>
             </Select.Content>
           </Group.Select>
         </Group>
-        <Button variant="ghost" className="text-foreground-400 w-10 h-10 p-0 ">
+        <Button variant="ghost" className="text-foreground-400 w-10 h-10 p-0">
           <FaGear size={19} />
         </Button>
       </div>
 
       {/* Member list */}
-      <List items={filtered} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
+      <List
+        items={filtered}
+        spacing="default"
+        className="min-h-0 flex-1 overflow-y-auto max-w-none"
+      >
         {filtered.map((member, i) => {
           const originalIndex = members.indexOf(member);
           return (
@@ -136,13 +150,17 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
               <List.Item value={member.email} className="px-4 py-3">
                 <List.Media>
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-background-800">
-                    <span className="text-sm font-semibold text-foreground-300">{member.initials}</span>
+                    <span className="text-sm font-semibold text-foreground-300">
+                      {member.initials}
+                    </span>
                   </div>
                 </List.Media>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-medium text-foreground-100 truncate">{member.name}</span>
+                    <span className="text-sm font-medium text-foreground-100 truncate">
+                      {member.name}
+                    </span>
                   </div>
                   <List.Desc>{member.email}</List.Desc>
                 </div>
@@ -152,13 +170,13 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
                   onSelectionChange={(key) => setRole(originalIndex, key)}
                   className="w-[108px] flex-none"
                 >
-                  <Select.Trigger variant="ghost">
-                    {member.role}
-                  </Select.Trigger>
+                  <Select.Trigger variant="ghost">{member.role}</Select.Trigger>
                   <Select.Content>
                     <Select.List>
                       {ROLES.map((role) => (
-                        <Select.Item key={role} value={role} textValue={role}>{role}</Select.Item>
+                        <Select.Item key={role} value={role} textValue={role}>
+                          {role}
+                        </Select.Item>
                       ))}
                     </Select.List>
                   </Select.Content>
@@ -178,7 +196,9 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
             </div>
           </List.Media>
           <div className="flex-1 min-w-0">
-            <span className="text-sm text-foreground-400 truncate block">{PENDING_INVITE.email}</span>
+            <span className="text-sm text-foreground-400 truncate block">
+              {PENDING_INVITE.email}
+            </span>
             <List.Desc>Invite sent {PENDING_INVITE.sentAt}</List.Desc>
           </div>
           <Badge variant="default">Pending</Badge>
@@ -193,25 +213,34 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
             className="flex-1"
             icon={<FaEnvelope />}
             value={inviteEmail}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch({ type: 'SET_INVITE_EMAIL', value: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              dispatch({ type: "SET_INVITE_EMAIL", value: e.target.value })
+            }
           />
           <Divider orientation="vertical" />
           <Group.Select
             selectedKey={inviteRole}
-            onSelectionChange={(key) => dispatch({ type: 'SET_INVITE_ROLE', value: String(key) })}
+            onSelectionChange={(key) => dispatch({ type: "SET_INVITE_ROLE", value: String(key) })}
           >
-            <Select.Trigger variant="ghost">
-              {inviteRole}
-            </Select.Trigger>
+            <Select.Trigger variant="ghost">{inviteRole}</Select.Trigger>
             <Select.Content>
               <Select.List>
                 {["Admin", "Member", "Viewer"].map((role) => (
-                  <Select.Item key={role} value={role} textValue={role}>{role}</Select.Item>
+                  <Select.Item key={role} value={role} textValue={role}>
+                    {role}
+                  </Select.Item>
                 ))}
               </Select.List>
             </Select.Content>
           </Group.Select>
-          <Group.Button className="gap-4" variant="primary" icon={{ right: <FaArrowTurnUp className="rotate-90 w-12" /> }} size="sm">Invite</Group.Button>
+          <Group.Button
+            className="gap-4"
+            variant="primary"
+            icon={{ right: <FaArrowTurnUp className="rotate-90 w-12" /> }}
+            size="sm"
+          >
+            Invite
+          </Group.Button>
         </Group>
       </div>
     </div>

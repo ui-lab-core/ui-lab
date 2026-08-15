@@ -1,5 +1,5 @@
-export { providerRegistry } from './registry.js'
-export { providerCategories } from './categories.js'
+export { providerRegistry } from "./registry.js";
+export { providerCategories } from "./categories.js";
 export {
   getProviderById,
   getAllProviders,
@@ -8,7 +8,7 @@ export {
   searchProviders,
   getProviderCategoriesInOrder,
   getProviderCategoryDefinition,
-} from './helpers.js'
+} from "./helpers.js";
 export type {
   ProviderMetadata,
   ProviderCategory,
@@ -17,4 +17,4 @@ export type {
   ProviderExample,
   ProviderFeature,
   ProviderRegistry,
-} from '../types.js'
+} from "../types.js";

@@ -8,16 +8,8 @@
     "exportName": "Skeleton",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "progress",
-    "card"
-  ],
-  "tags": [
-    "feedback",
-    "placeholder",
-    "loading",
-    "ssr"
-  ],
+  "relatedComponents": ["progress", "card"],
+  "tags": ["feedback", "placeholder", "loading", "ssr"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [

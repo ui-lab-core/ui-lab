@@ -9,10 +9,7 @@ export type SectionGridFilters = {
   selectedTags: string[];
 };
 
-export function sortSections(
-  sections: SectionGridItem[],
-  sortBy: string,
-): SectionGridItem[] {
+function sortSections(sections: SectionGridItem[], sortBy: string): SectionGridItem[] {
   const sorted = [...sections];
 
   switch (sortBy) {
@@ -44,9 +41,7 @@ export function filterSections(
   }
 
   if (filters.selectedCategory) {
-    filtered = filtered.filter(
-      (section) => section.category === filters.selectedCategory,
-    );
+    filtered = filtered.filter((section) => section.category === filters.selectedCategory);
   }
 
   if (filters.selectedTags.length > 0) {

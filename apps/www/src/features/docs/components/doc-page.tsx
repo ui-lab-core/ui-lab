@@ -1,20 +1,18 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
-import type { DocsSourcePage } from '../lib/docs-source'
-import { DocsMDX } from './docs-mdx'
-import { DocumentationHeader } from './documentation-header'
+import type { DocsSourcePage } from "../lib/docs-source";
+import { DocsMDX } from "./docs-mdx";
+import { DocumentationHeader } from "./documentation-header";
 
 interface DocPageProps {
-  page: DocsSourcePage
-  beforeBody?: ReactNode
-  afterBody?: ReactNode
-  className?: string
+  page: DocsSourcePage;
+  beforeBody?: ReactNode;
+  afterBody?: ReactNode;
+  className?: string;
 }
 
 export function DocPage({ page, beforeBody, afterBody, className }: DocPageProps) {
-  const serializedTocItems = JSON
-    .stringify(page.toc)
-    .replace(/</g, '\\u003c')
+  const serializedTocItems = JSON.stringify(page.toc).replace(/</g, "\\u003c");
 
   return (
     <main className={className}>
@@ -24,10 +22,7 @@ export function DocPage({ page, beforeBody, afterBody, className }: DocPageProps
         dangerouslySetInnerHTML={{ __html: serializedTocItems }}
       />
 
-      <DocumentationHeader
-        title={page.title}
-        description={page.description ?? undefined}
-      />
+      <DocumentationHeader title={page.title} description={page.description ?? undefined} />
 
       {beforeBody ?? <div className="h-px bg-background-800 my-12"></div>}
 
@@ -37,5 +32,5 @@ export function DocPage({ page, beforeBody, afterBody, className }: DocPageProps
 
       {afterBody}
     </main>
-  )
+  );
 }

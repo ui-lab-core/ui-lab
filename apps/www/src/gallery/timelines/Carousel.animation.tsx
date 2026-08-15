@@ -16,8 +16,14 @@ const Card = ({ active }: { active?: boolean }) => (
       style={{ opacity: active ? 0.12 : 0.06, background: "currentColor" }}
     />
     <div className="flex flex-col gap-1">
-      <div className="h-[4px] rounded-full w-[70%]" style={{ opacity: active ? 0.35 : 0.18, background: "currentColor" }} />
-      <div className="h-[3px] rounded-full w-[50%]" style={{ opacity: active ? 0.2 : 0.1, background: "currentColor" }} />
+      <div
+        className="h-[4px] rounded-full w-[70%]"
+        style={{ opacity: active ? 0.35 : 0.18, background: "currentColor" }}
+      />
+      <div
+        className="h-[3px] rounded-full w-[50%]"
+        style={{ opacity: active ? 0.2 : 0.1, background: "currentColor" }}
+      />
     </div>
   </div>
 );

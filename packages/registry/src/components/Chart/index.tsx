@@ -1,14 +1,14 @@
-import React from 'react';
-import { Chart } from 'ui-lab-components';
-import { ComponentDetail } from '@/types';
+import React from "react";
+import { Chart } from "ui-lab-components";
+import { ComponentDetail } from "@/types";
 
 const data = [
-  { month: 'Jan', revenue: 42 },
-  { month: 'Feb', revenue: 58 },
-  { month: 'Mar', revenue: 51 },
-  { month: 'Apr', revenue: 76 },
-  { month: 'May', revenue: 68 },
-  { month: 'Jun', revenue: 89 },
+  { month: "Jan", revenue: 42 },
+  { month: "Feb", revenue: 58 },
+  { month: "Mar", revenue: 51 },
+  { month: "Apr", revenue: 76 },
+  { month: "May", revenue: 68 },
+  { month: "Jun", revenue: 89 },
 ];
 
 const chartBasicCode = `import { Chart } from "ui-lab-components";
@@ -37,11 +37,18 @@ export function Example() {
 export const chartDetail: ComponentDetail = {
   id: "chart",
   name: "Chart",
-  description: "A composable data visualization component for lines, areas, bars, points, and annotations.",
+  description:
+    "A composable data visualization component for lines, areas, bars, points, and annotations.",
   overview: (
     <div className="space-y-4 text-foreground-300">
-      <p>Chart turns structured rows into accessible line, area, bar, and point visualizations with shared axes and scales.</p>
-      <p>Compose series with grids, references, legends, and tooltips to compare trends or highlight thresholds while preserving keyboard navigation.</p>
+      <p>
+        Chart turns structured rows into accessible line, area, bar, and point visualizations with
+        shared axes and scales.
+      </p>
+      <p>
+        Compose series with grids, references, legends, and tooltips to compare trends or highlight
+        thresholds while preserving keyboard navigation.
+      </p>
     </div>
   ),
   examples: [],

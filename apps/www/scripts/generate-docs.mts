@@ -1,25 +1,25 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CONTENT_DOMAINS = {
   docs: {
-    contentDir: path.join(__dirname, '../content/docs'),
-    baseUrl: '/docs',
+    contentDir: path.join(__dirname, "../content/docs"),
+    baseUrl: "/docs",
   },
-  'design-system': {
-    contentDir: path.join(__dirname, '../content/design-system'),
-    baseUrl: '/design-system',
+  "design-system": {
+    contentDir: path.join(__dirname, "../content/design-system"),
+    baseUrl: "/design-system",
   },
 } as const;
 
 const OUTPUT_FILES = {
-  manifest: path.join(__dirname, '../src/features/docs/lib/generated-docs-manifest.ts'),
-  bodies: path.join(__dirname, '../src/features/docs/lib/generated-docs-bodies.ts'),
+  manifest: path.join(__dirname, "../src/features/docs/lib/generated-docs-manifest.ts"),
+  bodies: path.join(__dirname, "../src/features/docs/lib/generated-docs-bodies.ts"),
 } as const;
 
 type DocsDomain = keyof typeof CONTENT_DOMAINS;
@@ -65,7 +65,7 @@ interface GeneratedDocsDomainManifest {
 
 interface GeneratedDocsManifest {
   docs: GeneratedDocsDomainManifest;
-  'design-system': GeneratedDocsDomainManifest;
+  "design-system": GeneratedDocsDomainManifest;
 }
 
 type GeneratedDocsBodies = Record<DocsDomain, Record<string, string>>;
@@ -99,12 +99,12 @@ interface OrderedDirectoryEntryBase {
 }
 
 interface OrderedDirectoryFileEntry extends OrderedDirectoryEntryBase {
-  kind: 'file';
+  kind: "file";
   file: ContentFile;
 }
 
 interface OrderedDirectoryDirectoryEntry extends OrderedDirectoryEntryBase {
-  kind: 'directory';
+  kind: "directory";
   directory: ContentDirectory;
 }
 
@@ -129,9 +129,9 @@ function stripGroupingFolder(name: string): string {
 
 function slugToTitle(slug: string): string {
   return slug
-    .split('-')
+    .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .join(" ");
 }
 
 function extractHeadings(markdown: string): GeneratedTocItem[] {
@@ -143,12 +143,12 @@ function extractHeadings(markdown: string): GeneratedTocItem[] {
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length;
     const rawTitle = match[2];
-    const title = rawTitle.replace(/<[^>]*>?/gm, '').trim();
+    const title = rawTitle.replace(/<[^>]*>?/gm, "").trim();
 
     let id = title
       .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-');
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-");
 
     const count = (idCounts.get(id) ?? 0) + 1;
     idCounts.set(id, count);
@@ -168,34 +168,38 @@ function parseFolderMeta(metaPath: string): FolderMeta | null {
     return null;
   }
 
-  const parsed = JSON.parse(fs.readFileSync(metaPath, 'utf8')) as { title?: unknown; pages?: unknown };
-  const title = typeof parsed.title === 'string' && parsed.title.length > 0 ? parsed.title : undefined;
+  const parsed = JSON.parse(fs.readFileSync(metaPath, "utf8")) as {
+    title?: unknown;
+    pages?: unknown;
+  };
+  const title =
+    typeof parsed.title === "string" && parsed.title.length > 0 ? parsed.title : undefined;
   const pages = Array.isArray(parsed.pages)
     ? parsed.pages.flatMap((entry) => {
-      if (typeof entry === 'string' && entry.length > 0) {
-        return [{ name: entry } satisfies FolderMetaPageEntry];
-      }
+        if (typeof entry === "string" && entry.length > 0) {
+          return [{ name: entry } satisfies FolderMetaPageEntry];
+        }
 
-      if (
-        typeof entry === 'object' &&
-        entry !== null &&
-        'name' in entry &&
-        typeof entry.name === 'string' &&
-        entry.name.length > 0
-      ) {
-        return [
-          {
-            name: entry.name,
-            title:
-              'title' in entry && typeof entry.title === 'string' && entry.title.length > 0
-                ? entry.title
-                : undefined,
-          } satisfies FolderMetaPageEntry,
-        ];
-      }
+        if (
+          typeof entry === "object" &&
+          entry !== null &&
+          "name" in entry &&
+          typeof entry.name === "string" &&
+          entry.name.length > 0
+        ) {
+          return [
+            {
+              name: entry.name,
+              title:
+                "title" in entry && typeof entry.title === "string" && entry.title.length > 0
+                  ? entry.title
+                  : undefined,
+            } satisfies FolderMetaPageEntry,
+          ];
+        }
 
-      return [];
-    })
+        return [];
+      })
     : undefined;
 
   return {
@@ -204,7 +208,7 @@ function parseFolderMeta(metaPath: string): FolderMeta | null {
   };
 }
 
-function scanContentDirectory(dirPath: string, name = ''): ContentDirectory {
+function scanContentDirectory(dirPath: string, name = ""): ContentDirectory {
   const entries = fs.existsSync(dirPath) ? fs.readdirSync(dirPath, { withFileTypes: true }) : [];
   const directories: ContentDirectory[] = [];
   const files: ContentFile[] = [];
@@ -217,10 +221,10 @@ function scanContentDirectory(dirPath: string, name = ''): ContentDirectory {
       continue;
     }
 
-    if (entry.isFile() && entry.name.endsWith('.mdx')) {
+    if (entry.isFile() && entry.name.endsWith(".mdx")) {
       files.push({
         filePath: entryPath,
-        name: entry.name.replace(/\.mdx$/, ''),
+        name: entry.name.replace(/\.mdx$/, ""),
       });
     }
   }
@@ -228,29 +232,38 @@ function scanContentDirectory(dirPath: string, name = ''): ContentDirectory {
   return {
     dirPath,
     name,
-    meta: parseFolderMeta(path.join(dirPath, 'meta.json')),
+    meta: parseFolderMeta(path.join(dirPath, "meta.json")),
     files,
     directories,
   };
 }
 
 function getDirectoryPageFile(directory: ContentDirectory): ContentFile | null {
-  return directory.files.find((file) => file.name === 'page') ?? directory.files.find((file) => file.name === 'index') ?? null;
+  return (
+    directory.files.find((file) => file.name === "page") ??
+    directory.files.find((file) => file.name === "index") ??
+    null
+  );
 }
 
 function getOrderedDirectoryEntries(directory: ContentDirectory): OrderedDirectoryEntry[] {
-  const metaPageMap = new Map((directory.meta?.pages ?? []).map((entry, index) => [entry.name, { index, title: entry.title }]));
+  const metaPageMap = new Map(
+    (directory.meta?.pages ?? []).map((entry, index) => [
+      entry.name,
+      { index, title: entry.title },
+    ]),
+  );
   const entries: OrderedDirectoryEntry[] = [
     ...directory.directories.map((child) => ({
-      kind: 'directory' as const,
+      kind: "directory" as const,
       name: child.name,
       title: metaPageMap.get(child.name)?.title,
       directory: child,
     })),
     ...directory.files
-      .filter((file) => file.name !== 'page' && file.name !== 'index')
+      .filter((file) => file.name !== "page" && file.name !== "index")
       .map((file) => ({
-        kind: 'file' as const,
+        kind: "file" as const,
         name: file.name,
         title: metaPageMap.get(file.name)?.title,
         file,
@@ -272,21 +285,25 @@ function getOrderedDirectoryEntries(directory: ContentDirectory): OrderedDirecto
 function createPageManifest(
   filePath: string,
   context: TraversalContext,
-  order: number
+  order: number,
 ): { page: GeneratedDocsPageManifest; body: string } {
-  const source = fs.readFileSync(filePath, 'utf8');
+  const source = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(source);
   const slugSegments = context.rawSegments.filter((segment) => !isGroupingFolder(segment));
-  const slug = slugSegments.length > 0 ? slugSegments.join('-') : 'index';
-  const isIndex = slug === 'index';
+  const slug = slugSegments.length > 0 ? slugSegments.join("-") : "index";
+  const isIndex = slug === "index";
   const title =
-    typeof data.title === 'string' && data.title.length > 0
+    typeof data.title === "string" && data.title.length > 0
       ? data.title
       : slugToTitle(slugSegments.at(-1) ?? slug);
-  const description = typeof data.description === 'string' ? data.description : null;
-  const section = isIndex ? null : context.section ?? (typeof data.category === 'string' ? data.category : null);
-  const publishedOn = typeof data.publishedOn === 'string' ? data.publishedOn : null;
-  const tags = Array.isArray(data.tags) ? data.tags.filter((tag): tag is string => typeof tag === 'string') : [];
+  const description = typeof data.description === "string" ? data.description : null;
+  const section = isIndex
+    ? null
+    : (context.section ?? (typeof data.category === "string" ? data.category : null));
+  const publishedOn = typeof data.publishedOn === "string" ? data.publishedOn : null;
+  const tags = Array.isArray(data.tags)
+    ? data.tags.filter((tag): tag is string => typeof tag === "string")
+    : [];
 
   return {
     page: {
@@ -312,10 +329,10 @@ function collectDirectoryPages(
   directory: ContentDirectory,
   context: TraversalContext,
   orderState: Map<string, number>,
-  pages: Array<{ page: GeneratedDocsPageManifest; body: string }>
+  pages: Array<{ page: GeneratedDocsPageManifest; body: string }>,
 ): void {
   const directoryPageFile = getDirectoryPageFile(directory);
-  const orderKey = context.section ?? '__root__';
+  const orderKey = context.section ?? "__root__";
 
   if (directoryPageFile && context.rawSegments.length > 0) {
     const order = orderState.get(orderKey) ?? 0;
@@ -324,7 +341,7 @@ function collectDirectoryPages(
   }
 
   for (const entry of getOrderedDirectoryEntries(directory)) {
-    if (entry.kind === 'directory') {
+    if (entry.kind === "directory") {
       collectDirectoryPages(
         entry.directory,
         {
@@ -336,7 +353,7 @@ function collectDirectoryPages(
           label: entry.title,
         },
         orderState,
-        pages
+        pages,
       );
       continue;
     }
@@ -354,8 +371,8 @@ function collectDirectoryPages(
           sectionOrder: context.sectionOrder,
           label: entry.title,
         },
-        order
-      )
+        order,
+      ),
     );
   }
 }
@@ -410,7 +427,10 @@ function buildPageTree(pages: GeneratedDocsPageManifest[]): GeneratedDocsPageTre
   }));
 }
 
-function readDomainContent(domain: DocsDomain): { pages: GeneratedDocsPageManifest[]; bodies: Record<string, string> } {
+function readDomainContent(domain: DocsDomain): {
+  pages: GeneratedDocsPageManifest[];
+  bodies: Record<string, string>;
+} {
   const { contentDir, baseUrl } = CONTENT_DOMAINS[domain];
   const rootDirectory = scanContentDirectory(contentDir);
   const rawPages: Array<{ page: GeneratedDocsPageManifest; body: string }> = [];
@@ -428,15 +448,15 @@ function readDomainContent(domain: DocsDomain): { pages: GeneratedDocsPageManife
           section: null,
           sectionOrder: 999,
         },
-        -1
-      )
+        -1,
+      ),
     );
   }
 
   let sectionOrder = 0;
 
   for (const entry of getOrderedDirectoryEntries(rootDirectory)) {
-    if (entry.kind === 'directory') {
+    if (entry.kind === "directory") {
       if (isSectionDirectory(entry.directory)) {
         collectDirectoryPages(
           entry.directory,
@@ -448,7 +468,7 @@ function readDomainContent(domain: DocsDomain): { pages: GeneratedDocsPageManife
             sectionOrder,
           },
           orderState,
-          rawPages
+          rawPages,
         );
         sectionOrder += 1;
         continue;
@@ -465,12 +485,12 @@ function readDomainContent(domain: DocsDomain): { pages: GeneratedDocsPageManife
           label: entry.title,
         },
         orderState,
-        rawPages
+        rawPages,
       );
       continue;
     }
 
-    const orderKey = '__root__';
+    const orderKey = "__root__";
     const order = orderState.get(orderKey) ?? 0;
     orderState.set(orderKey, order + 1);
     rawPages.push(
@@ -484,8 +504,8 @@ function readDomainContent(domain: DocsDomain): { pages: GeneratedDocsPageManife
           sectionOrder: 999,
           label: entry.title,
         },
-        order
-      )
+        order,
+      ),
     );
   }
 
@@ -559,8 +579,8 @@ export const DOCS_BODIES: GeneratedDocsBodies = ${JSON.stringify(bodies, null, 2
 
 function writeOutputFile(filePath: string, content: string): void {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, content, 'utf8');
-  console.log(`✓ Generated ${path.relative(path.join(__dirname, '..'), filePath)}`);
+  fs.writeFileSync(filePath, content, "utf8");
+  console.log(`✓ Generated ${path.relative(path.join(__dirname, ".."), filePath)}`);
 }
 
 async function generate(): Promise<void> {
@@ -582,6 +602,6 @@ async function generate(): Promise<void> {
 }
 
 generate().catch((error) => {
-  console.error('Failed to generate documentation:', error);
+  console.error("Failed to generate documentation:", error);
   process.exit(1);
 });

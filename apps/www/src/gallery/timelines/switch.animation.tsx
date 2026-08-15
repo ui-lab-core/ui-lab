@@ -2,11 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 export function SwitchAnimation() {
   const [stage, setStage] = useState<"idle" | "hover" | "toggled">("idle");
@@ -128,7 +124,11 @@ export function SwitchAnimation() {
                 >
                   {/* Row background */}
                   <rect
-                    x={rowX} y={0} width={rowW} height={rowH} rx={config.blockRx}
+                    x={rowX}
+                    y={0}
+                    width={rowW}
+                    height={rowH}
+                    rx={config.blockRx}
                     className="text-transparent"
                     fill="currentColor"
                   />
@@ -137,7 +137,11 @@ export function SwitchAnimation() {
                   {row.isActive && (
                     <>
                       <rect
-                        x={rowX} y={0} width={rowW} height={rowH} rx={config.blockRx}
+                        x={rowX}
+                        y={0}
+                        width={rowW}
+                        height={rowH}
+                        rx={config.blockRx}
                         className={config.highlight.hoverClass}
                         fill="currentColor"
                         style={{
@@ -146,7 +150,11 @@ export function SwitchAnimation() {
                         }}
                       />
                       <rect
-                        x={rowX} y={0} width={rowW} height={rowH} rx={config.blockRx}
+                        x={rowX}
+                        y={0}
+                        width={rowW}
+                        height={rowH}
+                        rx={config.blockRx}
                         fill="none"
                         stroke="currentColor"
                         strokeWidth={config.strokeWidth}
@@ -157,7 +165,10 @@ export function SwitchAnimation() {
                         }}
                       />
                       <rect
-                        x={rowX - 10} y={-10} width={rowW + 20} height={rowH + 20}
+                        x={rowX - 10}
+                        y={-10}
+                        width={rowW + 20}
+                        height={rowH + 20}
                         rx={config.blockRx + 5}
                         fill="none"
                         stroke="currentColor"
@@ -179,7 +190,9 @@ export function SwitchAnimation() {
                     width={row.labelW}
                     height={8}
                     rx={config.barRx}
-                    className={row.isActive && isHovered ? config.highlight.hoverClass : config.dim.class}
+                    className={
+                      row.isActive && isHovered ? config.highlight.hoverClass : config.dim.class
+                    }
                     fill="currentColor"
                     style={{
                       opacity: row.isActive ? (isHovered ? 0.9 : 0.4) : 0.25,
@@ -247,8 +260,10 @@ export function SwitchAnimation() {
             frames={cursorFrames}
             appearance={{
               className: config.highlight.hoverClass,
-              motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-              shapeTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              motionTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              shapeTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
             }}
           >
             <Cursor />

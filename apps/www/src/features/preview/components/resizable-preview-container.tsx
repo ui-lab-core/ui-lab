@@ -117,22 +117,13 @@ export function PreviewContainer({
 
   const renderPreviewContent = () => (
     <div className="flex w-full flex-col items-center">
-      <div
-        ref={wrapperRef}
-        className="relative max-w-full shrink-0"
-        style={{ width }}
-      >
+      <div ref={wrapperRef} className="relative max-w-full shrink-0" style={{ width }}>
         {showWidthLabel && (
-          <Badge
-            variant="secondary"
-            className="pointer-events-none absolute top-3 right-3 z-999"
-          >
+          <Badge variant="secondary" className="pointer-events-none absolute top-3 right-3 z-999">
             {Math.round(width)}px
           </Badge>
         )}
-        <div
-          className={cn("relative w-full overflow-auto", previewClassName)}
-        >
+        <div className={cn("relative w-full overflow-auto", previewClassName)}>
           <div className="w-full h-full">{children}</div>
         </div>
         <button
@@ -166,7 +157,11 @@ export function PreviewContainer({
             </button>
           )}
           {showCodeTab && (
-            <Tabs variant="underline" value={activeTab} onValueChange={(value) => onTabChange(value as "preview" | "code")}>
+            <Tabs
+              variant="underline"
+              value={activeTab}
+              onValueChange={(value) => onTabChange(value as "preview" | "code")}
+            >
               <Tabs.List>
                 <Tabs.Trigger value="preview">Preview</Tabs.Trigger>
                 <Tabs.Trigger value="code">Code</Tabs.Trigger>

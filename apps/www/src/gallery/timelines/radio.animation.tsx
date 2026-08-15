@@ -2,11 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 const RadioIcon = ({
   state,
@@ -44,7 +40,7 @@ const RadioIcon = ({
         strokeWidth={config.strokeWidth}
         style={{
           transition,
-          fillOpacity: isActive && isSelected ? 0.15 : (isDim ? 0.05 : 0.1),
+          fillOpacity: isActive && isSelected ? 0.15 : isDim ? 0.05 : 0.1,
           strokeOpacity: isActive ? 0.8 : 0.4,
         }}
       />
@@ -59,7 +55,8 @@ const RadioIcon = ({
           opacity: isSelected ? 0.6 : 0,
           transform: isSelected ? "scale(1)" : "scale(0.2)",
           transformOrigin: "10px 10px",
-          transition: "opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          transition:
+            "opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}
       />
     </g>
@@ -83,22 +80,30 @@ const RowContent = ({
 
       {/* Label Skeleton */}
       <rect
-        x={116} y={22} width={isActive ? 120 : 90} height={8} rx={4}
+        x={116}
+        y={22}
+        width={isActive ? 120 : 90}
+        height={8}
+        rx={4}
         className={isActive ? config.highlight.hoverClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.labelActiveOpacity : (isDim ? 0.2 : 0.4),
+          opacity: isActive ? config.activeContent.labelActiveOpacity : isDim ? 0.2 : 0.4,
           transition,
         }}
       />
 
       {/* Subtext Skeleton */}
       <rect
-        x={116} y={34} width={isActive ? 80 : 60} height={4} rx={2}
+        x={116}
+        y={34}
+        width={isActive ? 80 : 60}
+        height={4}
+        rx={2}
         className={isActive ? config.activeContent.subtextClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.subtextActiveOpacity : (isDim ? 0.1 : 0.2),
+          opacity: isActive ? config.activeContent.subtextActiveOpacity : isDim ? 0.1 : 0.2,
           transition,
         }}
       />
@@ -127,9 +132,19 @@ const Row = ({
   };
 
   return (
-    <g style={{ transform: `translateY(${y}px)`, opacity: getOpacity(), transition: config.transition }}>
+    <g
+      style={{
+        transform: `translateY(${y}px)`,
+        opacity: getOpacity(),
+        transition: config.transition,
+      }}
+    >
       <rect
-        x={70} y={0} width={260} height={56} rx={config.blockRx}
+        x={70}
+        y={0}
+        width={260}
+        height={56}
+        rx={config.blockRx}
         className="text-transparent"
         fill="currentColor"
         style={{ transition: config.transition }}
@@ -186,9 +201,16 @@ export function RadioAnimation() {
   } satisfies Record<"idle" | "hover", CursorFrame>;
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="radio-grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -228,7 +250,11 @@ export function RadioAnimation() {
           {/* Active row highlight */}
           <g style={{ transform: `translateY(${activeRowY}px)`, transition: config.transition }}>
             <rect
-              x={70} y={0} width={260} height={56} rx={config.blockRx}
+              x={70}
+              y={0}
+              width={260}
+              height={56}
+              rx={config.blockRx}
               className={config.highlight.hoverClass}
               fill="currentColor"
               stroke="currentColor"
@@ -240,7 +266,10 @@ export function RadioAnimation() {
               }}
             />
             <rect
-              x={60} y={-10} width={280} height={76}
+              x={60}
+              y={-10}
+              width={280}
+              height={76}
               rx={config.blockRx + 5}
               fill="none"
               stroke="currentColor"
@@ -259,8 +288,10 @@ export function RadioAnimation() {
             frames={cursorFrames}
             appearance={() => ({
               className: config.highlight.hoverClass,
-              motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-              shapeTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              motionTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
+              shapeTransition:
+                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
             })}
           >
             <Cursor />

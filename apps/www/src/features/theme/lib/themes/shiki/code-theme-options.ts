@@ -12,7 +12,7 @@ export type CodeThemeOptionId =
   | "solarized"
   | "material";
 
-export interface CodeThemeOption {
+interface CodeThemeOption {
   id: CodeThemeOptionId;
   label: string;
   themes: {
@@ -103,13 +103,9 @@ export const CODE_THEME_OPTIONS: CodeThemeOption[] = [
   },
 ];
 
-const CODE_THEME_OPTION_MAP = new Map(
-  CODE_THEME_OPTIONS.map((option) => [option.id, option]),
-);
+const CODE_THEME_OPTION_MAP = new Map(CODE_THEME_OPTIONS.map((option) => [option.id, option]));
 
-export function normalizeCodeThemeId(
-  value: string | null | undefined,
-): CodeThemeOptionId {
+export function normalizeCodeThemeId(value: string | null | undefined): CodeThemeOptionId {
   if (!value) return DEFAULT_CODE_THEME;
 
   return CODE_THEME_OPTION_MAP.has(value as CodeThemeOptionId)
@@ -117,9 +113,7 @@ export function normalizeCodeThemeId(
     : DEFAULT_CODE_THEME;
 }
 
-export function getCodeThemeOption(
-  value: string | null | undefined,
-): CodeThemeOption {
+function getCodeThemeOption(value: string | null | undefined): CodeThemeOption {
   return (
     CODE_THEME_OPTION_MAP.get(normalizeCodeThemeId(value)) ??
     CODE_THEME_OPTION_MAP.get(DEFAULT_CODE_THEME)!

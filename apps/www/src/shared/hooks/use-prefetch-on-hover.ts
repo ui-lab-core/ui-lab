@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 const PREFETCH_DEBOUNCE_MS = 100;
 const prefetchedUrls = new Set<string>();

@@ -8,13 +8,11 @@ export interface LayoutScaleConfig {
   spacingScale: number;
 }
 
-export const SPACING_SCALE_STEPS = baseSpacing;
-export const RADIUS_SCALE_STEPS = baseRadiusScale;
-export const BORDER_SCALE_STEPS = baseBorderScale;
+const SPACING_SCALE_STEPS = baseSpacing;
+const RADIUS_SCALE_STEPS = baseRadiusScale;
+const BORDER_SCALE_STEPS = baseBorderScale;
 
-export function getSpacingCssVariables(
-  spacingScale: number,
-): Record<string, string> {
+export function getSpacingCssVariables(spacingScale: number): Record<string, string> {
   const vars: Record<string, string> = {
     "--spacing-scale": String(spacingScale),
   };
@@ -23,8 +21,7 @@ export function getSpacingCssVariables(
     const scaledMin = (min * spacingScale).toFixed(3);
     const scaledFluid = (fluid * spacingScale).toFixed(2);
     const scaledMax = (max * spacingScale).toFixed(3);
-    vars[`--spacing-${name}`] =
-      `clamp(${scaledMin}rem, ${scaledFluid}vw, ${scaledMax}rem)`;
+    vars[`--spacing-${name}`] = `clamp(${scaledMin}rem, ${scaledFluid}vw, ${scaledMax}rem)`;
   });
 
   const scaledMin = (0.2 * spacingScale).toFixed(3);
@@ -41,8 +38,7 @@ export function getRadiusCssVariables(radius: number): Record<string, string> {
 
   baseRadiusScale.forEach(({ name, value }) => {
     const scaledValue = value * radiusScaleFactor;
-    vars[`--radius-${name}`] =
-      scaledValue > 100 ? "9999px" : `${scaledValue.toFixed(3)}rem`;
+    vars[`--radius-${name}`] = scaledValue > 100 ? "9999px" : `${scaledValue.toFixed(3)}rem`;
   });
 
   vars["--radius-full"] = "9999px";
@@ -51,9 +47,7 @@ export function getRadiusCssVariables(radius: number): Record<string, string> {
   return vars;
 }
 
-export function getBorderWidthCssVariables(
-  borderWidth: number,
-): Record<string, string> {
+export function getBorderWidthCssVariables(borderWidth: number): Record<string, string> {
   const vars: Record<string, string> = {};
   const borderScaleFactor = borderWidth / 1;
 
@@ -64,9 +58,7 @@ export function getBorderWidthCssVariables(
   return vars;
 }
 
-function getLayoutCssVariables(
-  layout: LayoutScaleConfig,
-): Record<string, string> {
+function getLayoutCssVariables(layout: LayoutScaleConfig): Record<string, string> {
   return {
     ...getSpacingCssVariables(layout.spacingScale),
     ...getRadiusCssVariables(layout.radius),

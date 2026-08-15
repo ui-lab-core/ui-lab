@@ -1,9 +1,9 @@
-import type { LayoutConfig } from '@ui-lab-core/library/catalog';
-import { elementRegistry } from '@ui-lab-core/library/catalog';
-import { createLayoutConfigGetter } from '@/shared/lib/layout-utils';
+import type { LayoutConfig } from "@ui-lab-core/library/catalog";
+import { elementRegistry } from "@ui-lab-core/library/catalog";
+import { createLayoutConfigGetter } from "@/shared/lib/layout-utils";
 
 const DEFAULT_LAYOUT: LayoutConfig = {
-  layoutClass: 'default',
+  layoutClass: "default",
   columnSpan: 1,
   rowSpan: 1,
 };

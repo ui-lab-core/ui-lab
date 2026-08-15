@@ -1,78 +1,78 @@
-import React from 'react';
-import { Divider, Frame, Grid } from 'ui-lab-components';
-import { ControlDef, ComponentDetail } from '@/types';
+import React from "react";
+import { Divider, Frame, Grid } from "ui-lab-components";
+import { ControlDef, ComponentDetail } from "@/types";
 
 const BASE_FRAME_STYLE = {
-  '--fill': 'var(--background-900)',
-  '--stroke-color': 'var(--background-600)',
+  "--fill": "var(--background-900)",
+  "--stroke-color": "var(--background-600)",
 } as React.CSSProperties;
 
 const gridControls: ControlDef[] = [
   {
-    name: 'columns',
-    label: 'Columns',
-    type: 'select',
+    name: "columns",
+    label: "Columns",
+    type: "select",
     options: [
-      { label: '1 Column', value: '1' },
-      { label: '2 Columns', value: '2' },
-      { label: '3 Columns', value: '3' },
-      { label: '4 Columns', value: '4' },
-      { label: '5 Columns', value: '5' },
-      { label: '6 Columns', value: '6' },
-      { label: 'Auto Fit', value: 'auto-fit' },
-      { label: 'Auto Fill', value: 'auto-fill' },
+      { label: "1 Column", value: "1" },
+      { label: "2 Columns", value: "2" },
+      { label: "3 Columns", value: "3" },
+      { label: "4 Columns", value: "4" },
+      { label: "5 Columns", value: "5" },
+      { label: "6 Columns", value: "6" },
+      { label: "Auto Fit", value: "auto-fit" },
+      { label: "Auto Fill", value: "auto-fill" },
     ],
-    defaultValue: '3',
+    defaultValue: "3",
   },
   {
-    name: 'gap',
-    label: 'Gap',
-    type: 'select',
+    name: "gap",
+    label: "Gap",
+    type: "select",
     options: [
-      { label: 'Extra Small', value: 'xs' },
-      { label: 'Small', value: 'sm' },
-      { label: 'Medium', value: 'md' },
-      { label: 'Large', value: 'lg' },
-      { label: 'Extra Large', value: 'xl' },
+      { label: "Extra Small", value: "xs" },
+      { label: "Small", value: "sm" },
+      { label: "Medium", value: "md" },
+      { label: "Large", value: "lg" },
+      { label: "Extra Large", value: "xl" },
     ],
-    defaultValue: 'md',
+    defaultValue: "md",
   },
   {
-    name: 'justifyItems',
-    label: 'Justify Items',
-    type: 'select',
+    name: "justifyItems",
+    label: "Justify Items",
+    type: "select",
     options: [
-      { label: 'Start', value: 'start' },
-      { label: 'Center', value: 'center' },
-      { label: 'End', value: 'end' },
-      { label: 'Stretch', value: 'stretch' },
+      { label: "Start", value: "start" },
+      { label: "Center", value: "center" },
+      { label: "End", value: "end" },
+      { label: "Stretch", value: "stretch" },
     ],
-    defaultValue: 'stretch',
+    defaultValue: "stretch",
   },
   {
-    name: 'alignItems',
-    label: 'Align Items',
-    type: 'select',
+    name: "alignItems",
+    label: "Align Items",
+    type: "select",
     options: [
-      { label: 'Start', value: 'start' },
-      { label: 'Center', value: 'center' },
-      { label: 'End', value: 'end' },
-      { label: 'Stretch', value: 'stretch' },
-      { label: 'Baseline', value: 'baseline' },
+      { label: "Start", value: "start" },
+      { label: "Center", value: "center" },
+      { label: "End", value: "end" },
+      { label: "Stretch", value: "stretch" },
+      { label: "Baseline", value: "baseline" },
     ],
-    defaultValue: 'stretch',
+    defaultValue: "stretch",
   },
   {
-    name: 'autoFlow',
-    label: 'Auto Flow',
-    type: 'select',
+    name: "autoFlow",
+    label: "Auto Flow",
+    type: "select",
     options: [
-      { label: 'Row', value: 'row' },
-      { label: 'Column', value: 'column' },
-      { label: 'Row Dense', value: 'row-dense' },
-      { label: 'Column Dense', value: 'column-dense' },
+      { label: "Row", value: "row" },
+      { label: "Column", value: "column" },
+      { label: "Row Dense", value: "row-dense" },
+      { label: "Column Dense", value: "column-dense" },
     ],
-    defaultValue: 'row',
+    defaultValue: "row",
   },
 ];
 
@@ -93,58 +93,65 @@ export function Example() {
 
 function GridFrame({ style }: { style: React.CSSProperties }) {
   return (
-    <Frame pathStroke="dashed" style={{ ...BASE_FRAME_STYLE, ...style }} className="w-full h-full">
+    <Frame pathStroke="dashed" style={{ ...BASE_FRAME_STYLE, ...style }} className="h-full w-full">
       <div className="size-full" />
     </Frame>
   );
 }
 
-function getPreviewSpecs(columns: number | 'auto-fit' | 'auto-fill') {
-  const trackCount = typeof columns === 'number' ? columns : 4;
+function getPreviewSpecs(columns: number | "auto-fit" | "auto-fill") {
+  const trackCount = typeof columns === "number" ? columns : 4;
   if (trackCount <= 2) {
     return [
-      { width: '100%', minHeight: '4rem' },
-      { width: '100%', minHeight: '8rem' },
-      { width: '100%', minHeight: '3rem' },
-      { width: '100%', minHeight: '5rem' },
-      { width: '100%', minHeight: '4rem' },
-      { width: '100%', minHeight: '3rem' },
+      { width: "100%", minHeight: "4rem" },
+      { width: "100%", minHeight: "8rem" },
+      { width: "100%", minHeight: "3rem" },
+      { width: "100%", minHeight: "5rem" },
+      { width: "100%", minHeight: "4rem" },
+      { width: "100%", minHeight: "3rem" },
     ] as React.CSSProperties[];
   }
 
   return [
-    { width: '100%', minHeight: '9rem', gridRow: 'span 2' },
-    { width: '100%', minHeight: '5rem', gridColumn: `span ${Math.max(1, trackCount - 1)}` },
-    { width: '100%', minHeight: '3rem' },
-    { width: '100%', minHeight: '3rem' },
-    { width: '100%', minHeight: '6rem', gridColumn: `span ${Math.min(2, trackCount)}` },
-    { width: '100%', minHeight: '4rem' },
+    { width: "100%", minHeight: "9rem", gridRow: "span 2" },
+    { width: "100%", minHeight: "5rem", gridColumn: `span ${Math.max(1, trackCount - 1)}` },
+    { width: "100%", minHeight: "3rem" },
+    { width: "100%", minHeight: "3rem" },
+    { width: "100%", minHeight: "6rem", gridColumn: `span ${Math.min(2, trackCount)}` },
+    { width: "100%", minHeight: "4rem" },
   ] as React.CSSProperties[];
 }
 
 export const gridDetail: ComponentDetail = {
-  id: 'grid',
-  name: 'Grid',
-  description: 'A powerful grid layout component for building responsive grid layouts. It abstracts standard CSS Grid properties and includes container-query based responsiveness.',
+  id: "grid",
+  name: "Grid",
+  description:
+    "A powerful grid layout component for building responsive grid layouts. It abstracts standard CSS Grid properties and includes container-query based responsiveness.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Grid component provides a convenient way to apply CSS Grid layout patterns. Unlike standard CSS classes, this component enforces consistency via the design system's spacing scale and simplifies responsive behavior through container queries.
+        The Grid component provides a convenient way to apply CSS Grid layout patterns. Unlike
+        standard CSS classes, this component enforces consistency via the design system's spacing
+        scale and simplifies responsive behavior through container queries.
       </p>
       <p>
-        Use the <strong>Interactive Preview</strong> below to adjust the wrapper size and see how the grid automatically responds to container width changes.
+        Use the <strong>Interactive Preview</strong> below to adjust the wrapper size and see how
+        the grid automatically responds to container width changes.
       </p>
     </div>
   ),
   examples: [
     {
-      id: 'preview',
-      title: 'Preview',
-      description: 'Adjust props to customize the component',
+      id: "preview",
+      title: "Preview",
+      description: "Adjust props to customize the component",
       code: gridBasicCode,
-      previewLayout: 'start',
+      previewLayout: "start",
       renderPreview: (props: any) => {
-        const columns = props.columns === 'auto-fit' || props.columns === 'auto-fill' ? props.columns : Number(props.columns ?? 3);
+        const columns =
+          props.columns === "auto-fit" || props.columns === "auto-fill"
+            ? props.columns
+            : Number(props.columns ?? 3);
         const specs = getPreviewSpecs(columns);
 
         return (
@@ -168,18 +175,30 @@ export const gridDetail: ComponentDetail = {
   ],
   variants: [
     {
-      id: 'default',
-      name: 'Default',
-      description: 'Standard grid with 3 columns and medium gap.',
+      id: "default",
+      name: "Default",
+      description: "Standard grid with 3 columns and medium gap.",
       code: gridBasicCode,
       preview: (
         <Grid columns={3} gap="md">
-          <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">1</div>
-          <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">2</div>
-          <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">3</div>
-          <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">4</div>
-          <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">5</div>
-          <div className="h-20 bg-accent-500/20 rounded border border-accent-500/50 flex items-center justify-center">6</div>
+          <div className="flex h-20 items-center justify-center rounded border border-accent-500/50 bg-accent-500/20">
+            1
+          </div>
+          <div className="flex h-20 items-center justify-center rounded border border-accent-500/50 bg-accent-500/20">
+            2
+          </div>
+          <div className="flex h-20 items-center justify-center rounded border border-accent-500/50 bg-accent-500/20">
+            3
+          </div>
+          <div className="flex h-20 items-center justify-center rounded border border-accent-500/50 bg-accent-500/20">
+            4
+          </div>
+          <div className="flex h-20 items-center justify-center rounded border border-accent-500/50 bg-accent-500/20">
+            5
+          </div>
+          <div className="flex h-20 items-center justify-center rounded border border-accent-500/50 bg-accent-500/20">
+            6
+          </div>
         </Grid>
       ),
     },

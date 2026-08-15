@@ -1,4 +1,4 @@
-import { guidesAdapter } from '../adapters/guides-adapter.js';
+import { guidesAdapter } from "../adapters/guides-adapter.js";
 
 function guideSummary(guide: NonNullable<ReturnType<typeof guidesAdapter.getGuide>>) {
   return {
@@ -14,14 +14,14 @@ function guideSummary(guide: NonNullable<ReturnType<typeof guidesAdapter.getGuid
 
 export async function handleSearchGuides(input: {
   query: string;
-  detail?: 'summary' | 'full';
+  detail?: "summary" | "full";
   limit?: number;
 }) {
   const query = input.query.trim();
-  if (!query) throw new Error('Guide query must not be empty.');
+  if (!query) throw new Error("Guide query must not be empty.");
 
   const exact = guidesAdapter.getGuide(query.toLowerCase());
-  if (input.detail === 'full') {
+  if (input.detail === "full") {
     const guide = exact ?? guidesAdapter.search(query, 1)[0];
     if (!guide) throw new Error(`No UI Lab guide matches "${query}".`);
     return { guide };

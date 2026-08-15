@@ -89,9 +89,8 @@ export const currentSubscriptions = query({
       return [];
     }
 
-    return await ctx.runQuery(
-      components.stripe.public.listSubscriptionsByUserId,
-      { userId: identity.subject },
-    );
+    return await ctx.runQuery(components.stripe.public.listSubscriptionsByUserId, {
+      userId: identity.subject,
+    });
   },
 });

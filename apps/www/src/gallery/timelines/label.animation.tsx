@@ -79,7 +79,7 @@ export function LabelAnimation() {
             className={isError ? "text-accent-500" : config.guidelines.colorClass}
             style={{
               transition: config.transition,
-              opacity: isError ? 0.8 : (isActive ? 0.5 : 0.35),
+              opacity: isError ? 0.8 : isActive ? 0.5 : 0.35,
             }}
           />
 
@@ -123,7 +123,9 @@ export function LabelAnimation() {
             style={{
               transition: config.transition,
               fillOpacity: isError ? config.highlight.hoverFillOpacity : config.dim.fillOpacity,
-              strokeOpacity: isError ? config.highlight.hoverStrokeOpacity : config.dim.strokeOpacity,
+              strokeOpacity: isError
+                ? config.highlight.hoverStrokeOpacity
+                : config.dim.strokeOpacity,
             }}
           />
 

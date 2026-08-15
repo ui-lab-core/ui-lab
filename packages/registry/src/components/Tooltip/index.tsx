@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Tooltip } from 'ui-lab-components';
-import { ComponentDetail } from '@/types';
+import React from "react";
+import { Button, Tooltip } from "ui-lab-components";
+import { ComponentDetail } from "@/types";
 
 const tooltipBasicCode = `import { Tooltip } from "ui-lab-components";
 import { Button } from "ui-lab-components";
@@ -22,15 +22,14 @@ export const tooltipDetail: ComponentDetail = {
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Tooltip component provides contextual information on hover. It uses
-        a portal to render content outside of the normal DOM hierarchy, ensuring
-        proper layering and positioning even within complex nested structures.
+        The Tooltip component provides contextual information on hover. It uses a portal to render
+        content outside of the normal DOM hierarchy, ensuring proper layering and positioning even
+        within complex nested structures.
       </p>
       <p>
-        With support for four positioning options (top, right, bottom, left),
-        configurable delay, and flexible content, tooltips enhance user
-        experience by providing helpful guidance and information without
-        cluttering the interface.
+        With support for four positioning options (top, right, bottom, left), configurable delay,
+        and flexible content, tooltips enhance user experience by providing helpful guidance and
+        information without cluttering the interface.
       </p>
     </div>
   ),

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useCallback, useMemo, useState } from 'react';
-import { Expand } from 'ui-lab-components';
-import { useUrlSearchParams } from '@/shared/hooks/use-url-search-params';
-import { cn } from '@/shared/lib/utils';
-import { SidebarItemLink } from '@/features/navigation';
+import { useCallback, useMemo, useState } from "react";
+import { Expand } from "ui-lab-components";
+import { useUrlSearchParams } from "@/shared/hooks/use-url-search-params";
+import { cn } from "@/shared/lib/utils";
+import { SidebarItemLink } from "@/features/navigation";
 import {
   getAllSections,
   getAllStarters,
@@ -16,32 +16,48 @@ import {
   getPatternsByCategory,
   type ElementCategoryId,
   type SectionCategoryId,
-} from '@ui-lab-core/library/catalog';
+} from "@ui-lab-core/library/catalog";
 
 interface ElementsSidebarContentProps {
-  activeNav: 'packages' | 'sections' | 'starters' | 'patterns';
+  activeNav: "packages" | "sections" | "starters" | "patterns";
   pathname: string;
   activeCategory?: ElementCategoryId | SectionCategoryId | null;
 }
 
-const NAV_LINK_BASE = 'block px-3 py-1.5 text-xs font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0';
-const LINK_ACTIVE = 'text-foreground-50 bg-background-800 font-medium';
-const LINK_INACTIVE = 'text-foreground-200 hover:text-foreground-200 hover:bg-background-800/50';
+const NAV_LINK_BASE =
+  "block px-3 py-1.5 text-xs font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0";
+const LINK_ACTIVE = "text-foreground-50 bg-background-800 font-medium";
+const LINK_INACTIVE = "text-foreground-200 hover:text-foreground-200 hover:bg-background-800/50";
 
 function getPathSegments(pathname: string) {
-  return pathname.split('/').filter(Boolean);
+  return pathname.split("/").filter(Boolean);
 }
 
-function NavLink({ href, isActive, children }: { href: string; isActive: boolean; children: React.ReactNode }) {
+function NavLink({
+  href,
+  isActive,
+  children,
+}: {
+  href: string;
+  isActive: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <SidebarItemLink href={href} className={cn(NAV_LINK_BASE, isActive ? LINK_ACTIVE : LINK_INACTIVE)}>
+    <SidebarItemLink
+      href={href}
+      className={cn(NAV_LINK_BASE, isActive ? LINK_ACTIVE : LINK_INACTIVE)}
+    >
       {children}
     </SidebarItemLink>
   );
 }
 
 function ExpandGroup({
-  name, isExpanded, onToggle, triggerBold, children,
+  name,
+  isExpanded,
+  onToggle,
+  triggerBold,
+  children,
 }: {
   name: string;
   isExpanded: boolean;
@@ -51,7 +67,10 @@ function ExpandGroup({
 }) {
   return (
     <Expand expanded={isExpanded} onExpandedChange={onToggle} className="rounded-sm">
-      <Expand.Trigger className="text-xs text-foreground-300" title={<span className={triggerBold ? 'font-medium' : undefined}>{name}</span>} />
+      <Expand.Trigger
+        className="text-xs text-foreground-300"
+        title={<span className={triggerBold ? "font-medium" : undefined}>{name}</span>}
+      />
       <Expand.Content className="pl-3">
         <div className="space-y-0.5 mt-1">{children}</div>
       </Expand.Content>
@@ -59,58 +78,58 @@ function ExpandGroup({
   );
 }
 
-function ElementsListContent({
-  activeNav,
-  pathname,
-  activeCategory,
-}: ElementsSidebarContentProps) {
+function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSidebarContentProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const searchParams = useUrlSearchParams();
-  const currentVariant = searchParams.get('variant');
+  const currentVariant = searchParams.get("variant");
 
-  const toggleItem = useCallback((id: string) => (expanded: boolean) => {
-    setExpandedItems(prev => {
-      const next = new Set(prev);
-      if (expanded) next.add(id); else next.delete(id);
-      return next;
-    });
-  }, []);
+  const toggleItem = useCallback(
+    (id: string) => (expanded: boolean) => {
+      setExpandedItems((prev) => {
+        const next = new Set(prev);
+        if (expanded) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+    },
+    [],
+  );
 
   const currentItemId = useMemo(() => {
     const segments = getPathSegments(pathname);
-    if (activeNav === 'sections') {
-      return segments[0] === 'sections' ? segments[1] ?? null : null;
+    if (activeNav === "sections") {
+      return segments[0] === "sections" ? (segments[1] ?? null) : null;
     }
-    if (activeNav === 'starters') {
-      return segments[0] === 'starters' ? segments[1] ?? null : null;
+    if (activeNav === "starters") {
+      return segments[0] === "starters" ? (segments[1] ?? null) : null;
     }
-    if (activeNav === 'patterns') {
-      return segments[0] === 'patterns' ? segments[1] ?? null : null;
+    if (activeNav === "patterns") {
+      return segments[0] === "patterns" ? (segments[1] ?? null) : null;
     }
-    return segments[0] === 'packages' ? segments[1] ?? null : null;
+    return segments[0] === "packages" ? (segments[1] ?? null) : null;
   }, [pathname, activeNav]);
 
   const currentPackageId = useMemo(() => {
-    if (activeNav !== 'packages') return null;
+    if (activeNav !== "packages") return null;
     const segments = getPathSegments(pathname);
-    return segments[0] === 'packages' ? segments[1] ?? null : null;
+    return segments[0] === "packages" ? (segments[1] ?? null) : null;
   }, [pathname, activeNav]);
 
   const currentElementId = useMemo(() => {
-    if (activeNav !== 'packages') return null;
+    if (activeNav !== "packages") return null;
     const segments = getPathSegments(pathname);
-    return segments[0] === 'packages' ? segments[2] ?? null : null;
+    return segments[0] === "packages" ? (segments[2] ?? null) : null;
   }, [pathname, activeNav]);
 
   const isOnPackageRoute = useMemo(() => {
-    return activeNav === 'packages' && currentPackageId !== null;
+    return activeNav === "packages" && currentPackageId !== null;
   }, [activeNav, currentPackageId]);
 
   const effectiveExpandedItems = useMemo(() => {
     const next = new Set(expandedItems);
     if (currentItemId) next.add(currentItemId);
     if (currentElementId) next.add(currentElementId);
-    if (currentPackageId && activeNav === 'packages') next.add(currentPackageId);
+    if (currentPackageId && activeNav === "packages") next.add(currentPackageId);
     return next;
   }, [expandedItems, currentItemId, currentElementId, currentPackageId, activeNav]);
 
@@ -118,30 +137,40 @@ function ElementsListContent({
   const starters = useMemo(() => getAllStarters(), []);
 
   const sortedSections = useMemo(() => {
-    const filtered = activeCategory ? getSectionsInCategory(sections, activeCategory as SectionCategoryId) : sections;
+    const filtered = activeCategory
+      ? getSectionsInCategory(sections, activeCategory as SectionCategoryId)
+      : sections;
     return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
   }, [sections, activeCategory]);
 
   const sortedStarters = useMemo(
     () => [...starters].sort((a, b) => a.name.localeCompare(b.name)),
-    [starters]
+    [starters],
   );
 
   const packages = useMemo(() => getAllPackages(), []);
   const packageElements = useMemo(() => {
     if (!currentPackageId) return [];
-    return getElementsInPackage(currentPackageId).map(id => elementRegistry[id]).filter(Boolean);
+    return getElementsInPackage(currentPackageId)
+      .map((id) => elementRegistry[id])
+      .filter(Boolean);
   }, [currentPackageId]);
 
-  if (activeNav === 'packages' && !isOnPackageRoute) {
+  if (activeNav === "packages" && !isOnPackageRoute) {
     return (
       <div className="space-y-1 pt-2">
         {packages.map((pkg) => {
-          const pkgElements = getElementsInPackage(pkg.id).map(id => elementRegistry[id]).filter(Boolean);
+          const pkgElements = getElementsInPackage(pkg.id)
+            .map((id) => elementRegistry[id])
+            .filter(Boolean);
           const href = `/workshop/elements/${pkg.id}`;
 
           if (pkgElements.length === 0) {
-            return <NavLink key={pkg.id} href={href} isActive={currentPackageId === pkg.id}>{pkg.name}</NavLink>;
+            return (
+              <NavLink key={pkg.id} href={href} isActive={currentPackageId === pkg.id}>
+                {pkg.name}
+              </NavLink>
+            );
           }
 
           return (
@@ -157,10 +186,10 @@ function ElementsListContent({
                     key={element.id}
                     href={`/workshop/elements/${pkg.id}/${element.id}`}
                     className={cn(
-                      'block last:mb-6 px-2 py-2 font-medium text-xs rounded-sm cursor-pointer transition-colors',
+                      "block last:mb-6 px-2 py-2 font-medium text-xs rounded-sm cursor-pointer transition-colors",
                       currentElementId === element.id
-                        ? 'text-foreground-300 bg-background-800 font-medium'
-                        : 'text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50'
+                        ? "text-foreground-300 bg-background-800 font-medium"
+                        : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
                     )}
                   >
                     {element.name}
@@ -174,7 +203,7 @@ function ElementsListContent({
     );
   }
 
-  if (activeNav === 'packages' && isOnPackageRoute) {
+  if (activeNav === "packages" && isOnPackageRoute) {
     if (packageElements.length === 0) {
       return (
         <div className="flex items-center justify-center h-full px-6 text-center">
@@ -190,7 +219,11 @@ function ElementsListContent({
           const href = `/workshop/elements/${currentPackageId}/${element.id}`;
 
           if (element.variants.length === 0) {
-            return <NavLink key={element.id} href={href} isActive={isActive}>{element.name}</NavLink>;
+            return (
+              <NavLink key={element.id} href={href} isActive={isActive}>
+                {element.name}
+              </NavLink>
+            );
           }
 
           return (
@@ -208,10 +241,10 @@ function ElementsListContent({
                     key={`${element.id}-${variantId}`}
                     href={`${href}?variant=${variantId}`}
                     className={cn(
-                      'block py-2 text-xs rounded-sm cursor-pointer transition-colors',
+                      "block py-2 text-xs rounded-sm cursor-pointer transition-colors",
                       isVariantActive
-                        ? 'text-foreground-300 bg-background-800 font-medium'
-                        : 'text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50'
+                        ? "text-foreground-300 bg-background-800 font-medium"
+                        : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
                     )}
                   >
                     {variant.name}
@@ -225,7 +258,7 @@ function ElementsListContent({
     );
   }
 
-  if (activeNav === 'starters') {
+  if (activeNav === "starters") {
     if (sortedStarters.length === 0) {
       return (
         <div className="flex items-center justify-center h-full px-6 text-center">
@@ -237,7 +270,11 @@ function ElementsListContent({
     return (
       <div className="space-y-1">
         {sortedStarters.map((starter) => (
-          <NavLink key={starter.id} href={`/workshop/starters/${starter.id}`} isActive={currentItemId === starter.id}>
+          <NavLink
+            key={starter.id}
+            href={`/workshop/starters/${starter.id}`}
+            isActive={currentItemId === starter.id}
+          >
             {starter.name}
           </NavLink>
         ))}
@@ -245,7 +282,7 @@ function ElementsListContent({
     );
   }
 
-  if (activeNav === 'patterns') {
+  if (activeNav === "patterns") {
     const patternCategories = getAllPatternCategories();
 
     return (
@@ -253,7 +290,7 @@ function ElementsListContent({
         {patternCategories.map((category) => {
           const patterns = getPatternsByCategory(category);
           return (
-            <div key={category} className='not-first:mt-8'>
+            <div key={category} className="not-first:mt-8">
               <p className="mb-1 text-md font-semibold text-foreground-50 capitalize">{category}</p>
               <div className="space-y-0.5">
                 {patterns.map((pattern) => {
@@ -294,7 +331,7 @@ function ElementsListContent({
     );
   }
 
-  if (activeNav === 'sections') {
+  if (activeNav === "sections") {
     if (sortedSections.length === 0) {
       return (
         <div className="flex items-center justify-center h-full px-6 text-center">
@@ -309,7 +346,11 @@ function ElementsListContent({
           const href = `/workshop/sections/${section.id}`;
 
           if (section.variants.length === 0) {
-            return <NavLink key={section.id} href={href} isActive={currentItemId === section.id}>{section.name}</NavLink>;
+            return (
+              <NavLink key={section.id} href={href} isActive={currentItemId === section.id}>
+                {section.name}
+              </NavLink>
+            );
           }
 
           return (

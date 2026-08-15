@@ -1,7 +1,7 @@
 import { generateMetadata } from "@/shared/lib/metadata";
 import type { ReactNode } from "react";
 
-export const metadata = generateMetadata({ pathname: '/config' });
+export const metadata = generateMetadata({ pathname: "/config" });
 
 export default function ConfigLayout({ children }: { children: ReactNode }) {
   return (

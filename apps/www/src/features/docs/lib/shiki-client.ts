@@ -23,15 +23,17 @@ export function highlightInlineCode(
   const cached = highlightCache.get(key);
   if (cached) return cached;
 
-  const request = loadShiki().then(async ({ bundledLanguages, bundledLanguagesAlias, codeToHtml }) => {
-    const html = await codeToHtml(code, {
-      lang: resolveShikiLanguage(language, bundledLanguages, bundledLanguagesAlias),
-      theme: resolveCodeThemeSelection(colors, mode, `custom-inline-${mode}`),
-    });
-    const codeMatch = html.match(/<code[^>]*>([\s\S]*?)<\/code>/);
-    if (!codeMatch) throw new Error("Shiki returned no code element");
-    return codeMatch[1]!;
-  });
+  const request = loadShiki().then(
+    async ({ bundledLanguages, bundledLanguagesAlias, codeToHtml }) => {
+      const html = await codeToHtml(code, {
+        lang: resolveShikiLanguage(language, bundledLanguages, bundledLanguagesAlias),
+        theme: resolveCodeThemeSelection(colors, mode, `custom-inline-${mode}`),
+      });
+      const codeMatch = html.match(/<code[^>]*>([\s\S]*?)<\/code>/);
+      if (!codeMatch) throw new Error("Shiki returned no code element");
+      return codeMatch[1]!;
+    },
+  );
 
   if (highlightCache.size >= MAX_CACHE_ENTRIES) {
     const oldest = highlightCache.keys().next().value;

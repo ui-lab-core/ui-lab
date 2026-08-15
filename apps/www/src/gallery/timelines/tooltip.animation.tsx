@@ -5,11 +5,7 @@ import React from "react";
 import { Frame } from "ui-lab-components";
 import { FaQuestion } from "@/shared/icons/fa6";
 import config from "./config.json";
-import {
-  Cursor,
-  CursorProvider,
-  type CursorFrame,
-} from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
 const TAIL_PATH =
   "M 0.00 0.00 C 3.00 0.00 7.50 -6.00 9.00 -6.00 C 10.50 -6.00 13.50 0.00 18.00 0.00";
@@ -81,7 +77,12 @@ export function TooltipAnimation() {
             path={TAIL_PATH}
             pathWidth={TAIL_WIDTH}
             className="p-2"
-            style={{ "--fill": "var(--color-background-900)", "--frame-radius": "4px" } as React.CSSProperties}
+            style={
+              {
+                "--fill": "var(--color-background-900)",
+                "--frame-radius": "4px",
+              } as React.CSSProperties
+            }
           >
             <div className="flex items-center gap-2.5 px-0.5">
               {/* Label skeleton */}
@@ -116,14 +117,11 @@ export function TooltipAnimation() {
           <FaQuestion
             size={12}
             style={{
-              color: isActive
-                ? "var(--color-accent-500)"
-                : "var(--color-background-500)",
+              color: isActive ? "var(--color-accent-500)" : "var(--color-background-500)",
               transition: T,
             }}
           />
         </div>
-
       </div>
 
       <svg

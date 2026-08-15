@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import type { PatternMetadata } from '@ui-lab-core/library/catalog';
-import { DetailPageShell } from '@/features/layout/components/detail-page-shell';
-import { WorkshopPreview } from '@/features/workshop';
-import { PatternLivePreview } from '@/features/patterns/components/pattern-live-preview';
+import type { PatternMetadata } from "@ui-lab-core/library/catalog";
+import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
+import { WorkshopPreview } from "@/features/workshop";
+import { PatternLivePreview } from "@/features/patterns/components/pattern-live-preview";
 
 interface PatternDetailClientProps {
   patternId: string;
@@ -16,17 +16,21 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
   }
 
   const entries = [
-    ...(pattern.code ? [{
-      id: patternId,
-      name: pattern.name,
-      description: pattern.description,
-      code: pattern.code,
-      previewHeight: pattern.previewHeight,
-      scope: 'pattern' as const,
-    }] : []),
+    ...(pattern.code
+      ? [
+          {
+            id: patternId,
+            name: pattern.name,
+            description: pattern.description,
+            code: pattern.code,
+            previewHeight: pattern.previewHeight,
+            scope: "pattern" as const,
+          },
+        ]
+      : []),
     ...(pattern.variations ?? []).map((variation) => ({
       ...variation,
-      scope: 'variation' as const,
+      scope: "variation" as const,
     })),
   ];
 
@@ -47,9 +51,9 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
             previewHeight={Math.min(entry.previewHeight ?? 320, 240)}
             previewLayout="start"
             fillHeight
-            fullscreen={{ categoryId: 'patterns', exampleId: entry.id }}
+            fullscreen={{ categoryId: "patterns", exampleId: entry.id }}
             disclosure="modal"
-            modalTitle={`patterns/${patternId}/${String(index + 1).padStart(2, '0')}`}
+            modalTitle={`patterns/${patternId}/${String(index + 1).padStart(2, "0")}`}
           >
             <PatternLivePreview scope={entry.scope} id={entry.id} />
           </WorkshopPreview>

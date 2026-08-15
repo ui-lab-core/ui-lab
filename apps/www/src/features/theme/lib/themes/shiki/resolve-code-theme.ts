@@ -1,17 +1,11 @@
 import { type SimpleThemeColors } from "@/features/theme/constants/themes";
-import {
-  generateThemePalettes,
-  type ThemeMode,
-} from "@/features/theme/lib/color-utils";
+import { generateThemePalettes, type ThemeMode } from "@/features/theme/lib/color-utils";
 
-import {
-  DEFAULT_CODE_THEME,
-  getBundledCodeTheme,
-} from "./code-theme-options";
+import { DEFAULT_CODE_THEME, getBundledCodeTheme } from "./code-theme-options";
 import { generateShikiTheme, type ShikiTheme } from "./generator";
 import { generateSyntaxPalettes } from "../syntax-colors";
 
-export function buildCustomCodeTheme(
+function buildCustomCodeTheme(
   colors: SimpleThemeColors,
   mode: ThemeMode,
   name = `custom-${mode}`,
@@ -35,11 +29,7 @@ export function buildCustomCodeTheme(
     colors.syntaxVariation ?? 0,
   );
 
-  return generateShikiTheme(
-    { ...palettes, ...syntaxPalettes },
-    mode,
-    name,
-  );
+  return generateShikiTheme({ ...palettes, ...syntaxPalettes }, mode, name);
 }
 
 export function resolveCodeThemeSelection(

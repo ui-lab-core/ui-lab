@@ -3,12 +3,7 @@
 import React, { useState } from "react";
 import { Code } from "./code";
 import { CodeWithPackageManager } from "./code-with-package-manager";
-import {
-  Card,
-  Badge,
-  Button,
-  Divider,
-} from "ui-lab-components";
+import { Card, Badge, Button, Divider } from "ui-lab-components";
 
 type Framework = "nextjs" | "vite" | "remix" | "tauri";
 type Manager = "npm" | "pnpm" | "yarn" | "bun";
@@ -76,11 +71,7 @@ const RemixSvg = () => (
 );
 
 const TauriSvg = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 128 128"
-    className="w-6 h-6"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" className="w-6 h-6">
     <path
       fill="currentColor"
       d="M86.242 46.547a12.19 12.19 0 0 1-24.379 0c0-6.734 5.457-12.191 12.191-12.191a12.19 12.19 0 0 1 12.188 12.191zm0 0"
@@ -141,10 +132,11 @@ export function InstallationFlow() {
             <div key={key} className="relative">
               <Card
                 onClick={() => setFramework(key)}
-                className={`cursor-pointer p-3 relative border ${framework === key
-                  ? "bg-background-700 border-background-600"
-                  : "bg-background-900 border-background-700 hover:border-background-600"
-                  } ${["vite", "remix", "tauri"].includes(key) ? "opacity-50" : ""}`}
+                className={`cursor-pointer p-3 relative border ${
+                  framework === key
+                    ? "bg-background-700 border-background-600"
+                    : "bg-background-900 border-background-700 hover:border-background-600"
+                } ${["vite", "remix", "tauri"].includes(key) ? "opacity-50" : ""}`}
               >
                 <div className="flex flex-col items-center gap-3 text-foreground-200">
                   {frameworkIcons[key]}
@@ -152,9 +144,7 @@ export function InstallationFlow() {
                 </div>
               </Card>
               {["vite", "remix", "tauri"].includes(key) && (
-                <Badge className="absolute top-2 right-2">
-                  Coming soon
-                </Badge>
+                <Badge className="absolute top-2 right-2">Coming soon</Badge>
               )}
             </div>
           ))}
@@ -224,10 +214,7 @@ export function InstallationFlow() {
           </div>
 
           <div>
-            <h4
-              id="import-styles"
-              className="text-foreground-200 font-medium mb-3 scroll-mt-20"
-            >
+            <h4 id="import-styles" className="text-foreground-200 font-medium mb-3 scroll-mt-20">
               3. Import styles in your app stylesheet
             </h4>
             <Code language="css" heading="app/globals.css">
@@ -238,24 +225,16 @@ export function InstallationFlow() {
           </div>
 
           <div>
-            <h4
-              id="load-stylesheet"
-              className="text-foreground-200 font-medium mb-3 scroll-mt-20"
-            >
+            <h4 id="load-stylesheet" className="text-foreground-200 font-medium mb-3 scroll-mt-20">
               4. Load that stylesheet from your root entry
             </h4>
-            <Code language="typescript">
-              {`import "./globals.css";`}
-            </Code>
+            <Code language="typescript">{`import "./globals.css";`}</Code>
           </div>
         </div>
       </section>
 
       <section className="space-y-4">
-        <h3
-          id="verification"
-          className="text-lg font-semibold text-foreground-200 scroll-mt-20"
-        >
+        <h3 id="verification" className="text-lg font-semibold text-foreground-200 scroll-mt-20">
           Verification
         </h3>
         <p className="text-foreground-300 text-sm">
@@ -269,9 +248,8 @@ export default function Home() {
 }`}
         </Code>
         <p className="text-sm text-foreground-400">
-          Tailwind v4 does not need `tailwind.config.ts` for this setup. If the
-          component renders with the expected tokens and spacing, the install is
-          working.
+          Tailwind v4 does not need `tailwind.config.ts` for this setup. If the component renders
+          with the expected tokens and spacing, the install is working.
         </p>
       </section>
     </div>

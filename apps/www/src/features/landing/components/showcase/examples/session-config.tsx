@@ -110,10 +110,7 @@ export function SessionConfigPanel({ height }: ShowcasePanelProps) {
   const [image, setImage] = useState("pytorch");
 
   const selectedGpu = gpus.find((item) => item.value === gpu) ?? gpus[0];
-  const cost = (
-    duration *
-    (cores * 0.014 + memory * 0.007 + selectedGpu.rate)
-  ).toFixed(2);
+  const cost = (duration * (cores * 0.014 + memory * 0.007 + selectedGpu.rate)).toFixed(2);
 
   const rows = [
     {
@@ -149,10 +146,7 @@ export function SessionConfigPanel({ height }: ShowcasePanelProps) {
   ];
 
   return (
-    <div
-      className="flex w-full flex-col overflow-hidden bg-background-200"
-      style={{ height }}
-    >
+    <div className="flex w-full flex-col overflow-hidden bg-background-200" style={{ height }}>
       <div className="flex items-center gap-3 border-b border-background-700 px-4 py-3">
         <div className="flex size-9 items-center justify-center rounded-sm bg-background-300">
           <SiGnubash size={19} />
@@ -163,9 +157,15 @@ export function SessionConfigPanel({ height }: ShowcasePanelProps) {
           </Select.Trigger>
           <Select.Content>
             <Select.List>
-              <Select.Item value="pytorch" textValue="PyTorch 2.8">PyTorch 2.8</Select.Item>
-              <Select.Item value="cuda" textValue="CUDA 13.0">CUDA 13.0</Select.Item>
-              <Select.Item value="ubuntu" textValue="Ubuntu 24.04">Ubuntu 24.04</Select.Item>
+              <Select.Item value="pytorch" textValue="PyTorch 2.8">
+                PyTorch 2.8
+              </Select.Item>
+              <Select.Item value="cuda" textValue="CUDA 13.0">
+                CUDA 13.0
+              </Select.Item>
+              <Select.Item value="ubuntu" textValue="Ubuntu 24.04">
+                Ubuntu 24.04
+              </Select.Item>
             </Select.List>
           </Select.Content>
         </Select>

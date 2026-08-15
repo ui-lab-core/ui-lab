@@ -37,9 +37,7 @@ type CursorAppearance = {
   pathStyle?: CSSProperties;
 };
 
-type CursorAppearanceInput<T extends string> =
-  | CursorAppearance
-  | ((phase: T) => CursorAppearance);
+type CursorAppearanceInput<T extends string> = CursorAppearance | ((phase: T) => CursorAppearance);
 
 type CursorContextValue = {
   groupStyle: CSSProperties;
@@ -55,7 +53,7 @@ const CursorContext = createContext<CursorContextValue | null>(null);
 
 function resolveAppearance<T extends string>(
   appearance: CursorAppearanceInput<T> | undefined,
-  phase: T
+  phase: T,
 ) {
   if (!appearance) {
     return {};
@@ -64,8 +62,7 @@ function resolveAppearance<T extends string>(
   return typeof appearance === "function" ? appearance(phase) : appearance;
 }
 
-function buildShapeTransform({ rotate, scale,
-}: Pick<CursorFrame, "rotate" | "scale">) {
+function buildShapeTransform({ rotate, scale }: Pick<CursorFrame, "rotate" | "scale">) {
   const transforms: string[] = [];
 
   if (rotate !== undefined && rotate !== 0) {
@@ -93,25 +90,20 @@ export function CursorProvider<T extends string>({
   const frame = frames[phase];
   const resolvedAppearance = resolveAppearance(appearance, phase);
   const hotspot = frame.hotspot ?? resolvedAppearance.hotspot ?? { x: 0, y: 0 };
-  const transformOrigin =
-    frame.transformOrigin ?? resolvedAppearance.transformOrigin;
+  const transformOrigin = frame.transformOrigin ?? resolvedAppearance.transformOrigin;
   const shapeTransform = buildShapeTransform(frame);
 
   const groupStyle: CSSProperties = {
     transform: `translate(${frame.target.x - hotspot.x}px, ${frame.target.y - hotspot.y}px)`,
     opacity: frame.opacity ?? 1,
     transition:
-      frame.motionTransition ??
-      resolvedAppearance.motionTransition ??
-      DEFAULT_MOTION_TRANSITION,
+      frame.motionTransition ?? resolvedAppearance.motionTransition ?? DEFAULT_MOTION_TRANSITION,
     pointerEvents: resolvedAppearance.pointerEvents ?? "none",
   };
 
   const pathStyle: CSSProperties = {
     transition:
-      frame.shapeTransition ??
-      resolvedAppearance.shapeTransition ??
-      DEFAULT_SHAPE_TRANSITION,
+      frame.shapeTransition ?? resolvedAppearance.shapeTransition ?? DEFAULT_SHAPE_TRANSITION,
     ...resolvedAppearance.pathStyle,
   };
 
@@ -131,9 +123,7 @@ export function CursorProvider<T extends string>({
   };
 
   return (
-    <CursorContext.Provider value={{ groupStyle, pathProps }}>
-      {children}
-    </CursorContext.Provider>
+    <CursorContext.Provider value={{ groupStyle, pathProps }}>{children}</CursorContext.Provider>
   );
 }
 

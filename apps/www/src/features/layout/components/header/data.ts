@@ -1,16 +1,11 @@
-import {
-  FaPalette,
-  FaFill,
-  FaIcons,
-  FaWandMagicSparkles,
-} from "@/shared/icons/fa6";
+import { FaPalette, FaFill, FaIcons, FaWandMagicSparkles } from "@/shared/icons/fa6";
 import type { ComponentType } from "react";
 
 interface NavigationItem {
   name: string;
   label: string;
   icon?: ComponentType;
-  isDropdown?: boolean
+  isDropdown?: boolean;
 }
 
 export const navigationData: NavigationItem[] = [
@@ -26,8 +21,7 @@ export const documentationItems = [
   { id: "usage", label: "Usage" },
 ];
 
-export const getDocumentationLink = (id: string) =>
-  id === "overview" ? "/docs" : `/docs/${id}`;
+export const getDocumentationLink = (id: string) => (id === "overview" ? "/docs" : `/docs/${id}`);
 
 export const toolsItems = [
   {

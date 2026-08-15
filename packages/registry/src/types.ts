@@ -1,17 +1,17 @@
 export type ComponentCategory =
-  | 'input'
-  | 'information'
-  | 'feedback'
-  | 'navigation'
-  | 'container'
-  | 'action'
-  | 'composition'
-  | 'layout'
-  | 'display'
-  | 'media';
+  | "input"
+  | "information"
+  | "feedback"
+  | "navigation"
+  | "container"
+  | "action"
+  | "composition"
+  | "layout"
+  | "display"
+  | "media";
 
 export interface ComponentSource {
-  packageName: 'ui-lab-components';
+  packageName: "ui-lab-components";
   exportName: string;
   packagePath: string;
 }
@@ -37,7 +37,7 @@ export interface ComponentAPI {
 }
 
 export interface ComponentUsageRule {
-  type: 'do' | 'avoid' | 'prefer';
+  type: "do" | "avoid" | "prefer";
   title: string;
   description: string;
   relatedComponents?: string[];
@@ -79,19 +79,19 @@ export interface Example {
 }
 
 export type GuideCategory =
-  | 'foundation'
-  | 'setup'
-  | 'migration'
-  | 'integration'
-  | 'workflow'
-  | 'theming';
+  | "foundation"
+  | "setup"
+  | "migration"
+  | "integration"
+  | "workflow"
+  | "theming";
 
 export interface GuideStep {
   title: string;
   goal?: string;
   instructions: string[];
   code?: string;
-  language?: 'bash' | 'tsx' | 'json' | 'css' | 'md' | 'text';
+  language?: "bash" | "tsx" | "json" | "css" | "md" | "text";
   path?: string;
   relatedTools?: string[];
 }
@@ -158,16 +158,16 @@ export interface CategoryDefinition {
 }
 
 interface StarterPreset {
-  templateName: 'next' | 'vite' | 'tauri';
+  templateName: "next" | "vite" | "tauri";
   components: string[];
   description: string;
 }
 
 export interface ComponentSourceCode {
-  tsx: string;              // Main component TypeScript file
-  css: string;              // CSS module content
-  cssTypes: string;         // CSS module TypeScript declarations
-  exportFile?: string;      // index.ts if it exists
+  tsx: string; // Main component TypeScript file
+  css: string; // CSS module content
+  cssTypes: string; // CSS module TypeScript declarations
+  exportFile?: string; // index.ts if it exists
 }
 
 export interface ComponentDeps {
@@ -188,7 +188,7 @@ export interface ControlOption {
 export interface ControlDef {
   name: string;
   label: string;
-  type: 'select' | 'toggle' | 'text' | 'stepper';
+  type: "select" | "toggle" | "text" | "stepper";
   options?: ControlOption[];
   defaultValue?: string | number | boolean;
   min?: number;
@@ -220,7 +220,7 @@ export interface SiteComponentExample {
   controls?: ControlDef[];
   factory?: (props: Record<string, unknown>) => { preview: React.ReactNode; code: string };
   renderPreview?: (props: Record<string, any>) => React.ReactNode;
-  previewLayout?: 'center' | 'start';
+  previewLayout?: "center" | "start";
   resizable?: boolean;
 }
 
@@ -242,7 +242,7 @@ export interface ComponentDetail {
 }
 
 // Provider Registry Types
-export type ProviderCategory = 'theme' | 'auth' | 'state' | 'data' | 'routing' | 'other';
+export type ProviderCategory = "theme" | "auth" | "state" | "data" | "routing" | "other";
 
 export interface ProviderHook {
   name: string;
@@ -257,13 +257,13 @@ export interface ProviderExample {
   title: string;
   description: string;
   filePath: string;
-  category: 'setup' | 'usage' | 'advanced' | 'patterns';
+  category: "setup" | "usage" | "advanced" | "patterns";
 }
 
 export interface ProviderFeature {
   name: string;
   description: string;
-  status?: 'automatic' | 'manual' | 'optional';
+  status?: "automatic" | "manual" | "optional";
   details?: string;
 }
 

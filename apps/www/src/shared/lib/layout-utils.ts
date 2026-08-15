@@ -1,4 +1,4 @@
-import type { LayoutConfig } from '@ui-lab-core/library/catalog';
+import type { LayoutConfig } from "@ui-lab-core/library/catalog";
 
 interface RegistryItem {
   layout?: Partial<LayoutConfig>;
@@ -10,7 +10,7 @@ interface Registry {
 
 export function createLayoutConfigGetter<T extends Registry>(
   registry: T,
-  defaultLayout: LayoutConfig
+  defaultLayout: LayoutConfig,
 ) {
   return function getLayoutConfig(itemId: string): LayoutConfig {
     const item = registry[itemId.toLowerCase()];
@@ -29,7 +29,7 @@ export function createLayoutConfigGetter<T extends Registry>(
 }
 
 export function createMetadataLayoutGetter<T extends { layout?: Partial<LayoutConfig> }>(
-  getItemLayoutConfig: (itemId: string) => LayoutConfig
+  getItemLayoutConfig: (itemId: string) => LayoutConfig,
 ) {
   return function getLayoutConfig(item: T): LayoutConfig {
     const centralizedConfig = getItemLayoutConfig((item as any).id);

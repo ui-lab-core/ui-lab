@@ -1,27 +1,14 @@
-import {
-  type OklchColor,
-  type SemanticColorType,
-  type SemanticColorConfig,
-} from "../color-utils";
+import { type OklchColor, type SemanticColorType, type SemanticColorConfig } from "../color-utils";
 import { type SimpleThemeColors } from "../../constants/themes";
 
-export type ThemeColorType =
-  | "background"
-  | "foreground"
-  | "accent"
-  | SemanticColorType;
+export type ThemeColorType = "background" | "foreground" | "accent" | SemanticColorType;
 
 type ThemeMode = "light" | "dark";
 
-const SEMANTIC_TYPES: readonly SemanticColorType[] = [
-  "success",
-  "danger",
-  "warning",
-  "info",
-];
+const SEMANTIC_TYPES: readonly SemanticColorType[] = ["success", "danger", "warning", "info"];
 
-export const MIN_BACKGROUND_CHROMA = 0.008;
-export const DEFAULT_SEMANTIC_CHROMA_LIMIT = 0.25;
+const MIN_BACKGROUND_CHROMA = 0.008;
+const DEFAULT_SEMANTIC_CHROMA_LIMIT = 0.25;
 const NEUTRAL_CHROMA_THRESHOLD = 0.005;
 
 const MAX_CHROMA: Record<string, number> = {
@@ -40,11 +27,11 @@ export function getMaxChroma(type: ThemeColorType): number {
   return MAX_CHROMA[type] ?? 0.2;
 }
 
-export function getDefaultChroma(type: ThemeColorType): number {
+function getDefaultChroma(type: ThemeColorType): number {
   return DEFAULT_CHROMA[type] ?? 0.2;
 }
 
-export function isNeutralColor(color: OklchColor): boolean {
+function isNeutralColor(color: OklchColor): boolean {
   return color.c <= NEUTRAL_CHROMA_THRESHOLD;
 }
 
@@ -78,10 +65,7 @@ export function colorFromHue(
     }
   }
 
-  const chroma = clampRoleChroma(
-    type,
-    isNeutral ? getDefaultChroma(type) : current.c,
-  );
+  const chroma = clampRoleChroma(type, isNeutral ? getDefaultChroma(type) : current.c);
 
   return { l: lightness, c: chroma, h: hue };
 }
@@ -142,8 +126,7 @@ export function setThemeColor(
       [mode]: {
         ...existing[mode],
         color: newColor,
-        chromaLimit:
-          existing[mode]?.chromaLimit ?? DEFAULT_SEMANTIC_CHROMA_LIMIT,
+        chromaLimit: existing[mode]?.chromaLimit ?? DEFAULT_SEMANTIC_CHROMA_LIMIT,
       },
     };
     updated.semantic = semantic;

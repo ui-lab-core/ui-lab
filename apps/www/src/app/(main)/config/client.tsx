@@ -20,7 +20,8 @@ function TypographyCanvas() {
         <h1>A quieter way to make a product feel clear</h1>
         <p>
           A good interface makes room for people to think. It uses <strong>clear hierarchy</strong>,
-          comfortable line lengths, and just enough contrast to direct attention without demanding it.
+          comfortable line lengths, and just enough contrast to direct attention without demanding
+          it.
         </p>
 
         <figure>
@@ -29,8 +30,7 @@ function TypographyCanvas() {
             aria-label="Placeholder for a product design image"
             className="grid place-items-center overflow-hidden rounded-md border border-background-700 bg-background-800"
           >
-            <div className="grid h-[20rem] w-2/3 grid-cols-3 gap-3 opacity-70">
-            </div>
+            <div className="grid h-[20rem] w-2/3 grid-cols-3 gap-3 opacity-70"></div>
           </div>
         </figure>
 
@@ -40,9 +40,7 @@ function TypographyCanvas() {
           <code> code </code> for implementation details, and links only when they help someone move
           forward.
         </p>
-        <blockquote>
-          Typography is the interface between the words and the reader.
-        </blockquote>
+        <blockquote>Typography is the interface between the words and the reader.</blockquote>
 
         <h3>Three useful defaults</h3>
         <ul>
@@ -61,20 +59,18 @@ function TypographyCanvas() {
           These settings are applied to every example here, so changes in the configuration panel
           immediately show how the system behaves in a realistic document.
         </p>
-        <pre><code>{`export const article = {
+        <pre>
+          <code>{`export const article = {
   rhythm: "comfortable",
   hierarchy: "clear",
-};`}</code></pre>
+};`}</code>
+        </pre>
       </article>
     </div>
   );
 }
 
-export default function ConfigPage({
-  baseTypographyCss,
-}: {
-  baseTypographyCss: string;
-}) {
+export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: string }) {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [preview, setPreview] = useState("components");
   const {
@@ -129,24 +125,18 @@ export default function ConfigPage({
     vars["--font-heading"] = vars["--font-header"];
     vars["--leading-heading"] = vars["--leading-header"];
     return vars as CSSProperties;
-  }, [
-    currentTypography,
-    radius,
-    borderWidth,
-    spacingScale,
-  ]);
+  }, [currentTypography, radius, borderWidth, spacingScale]);
 
   const typographyCss = baseTypographyCss;
 
   const themeSetup = useMemo(() => {
     if (!currentThemeColors) return null;
 
-    return generateThemeSetupFiles(
-      currentThemeColors,
-      currentThemeMode,
-      currentTypography,
-      { radius, borderWidth, spacingScale },
-    );
+    return generateThemeSetupFiles(currentThemeColors, currentThemeMode, currentTypography, {
+      radius,
+      borderWidth,
+      spacingScale,
+    });
   }, [
     currentThemeColors,
     currentThemeMode,
@@ -220,7 +210,10 @@ export default function ConfigPage({
               </Tabs.Trigger>
             </Tabs.List>
           </Tabs>
-          <Scroll className="h-[calc(100svh-var(--header-height))] min-h-0 flex-1 border-t border-background-700 xl:h-auto" fade-y>
+          <Scroll
+            className="h-[calc(100svh-var(--header-height))] min-h-0 flex-1 border-t border-background-700 xl:h-auto"
+            fade-y
+          >
             <div style={previewStyle}>
               {preview === "components" ? <PreviewCanvas /> : <TypographyCanvas />}
             </div>

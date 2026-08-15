@@ -1,8 +1,8 @@
-import type { GuideMetadata, GuideRegistry } from '../types.js';
-import foundationGuide from './foundation.js';
-import setupUiLabInProjectGuide from './setup-ui-lab-in-project.js';
-import themeSwitchingNextJsGuide from './theme-switching-nextjs.js';
-import translateExistingUiToUiLabGuide from './translate-existing-ui-to-ui-lab.js';
+import type { GuideMetadata, GuideRegistry } from "../types.js";
+import foundationGuide from "./foundation.js";
+import setupUiLabInProjectGuide from "./setup-ui-lab-in-project.js";
+import themeSwitchingNextJsGuide from "./theme-switching-nextjs.js";
+import translateExistingUiToUiLabGuide from "./translate-existing-ui-to-ui-lab.js";
 
 export const guideRegistry: GuideRegistry = {
   [foundationGuide.id]: foundationGuide,
@@ -26,7 +26,7 @@ export function getGuidesByCategory(category: string): GuideMetadata[] {
 export function getGuidesByTag(tag: string): GuideMetadata[] {
   const lowerTag = tag.toLowerCase();
   return Object.values(guideRegistry).filter((guide) =>
-    guide.tags.some((value) => value.toLowerCase().includes(lowerTag))
+    guide.tags.some((value) => value.toLowerCase().includes(lowerTag)),
   );
 }
 
@@ -77,4 +77,4 @@ export function searchGuides(query: string): GuideMetadata[] {
     .map(({ guide }) => guide);
 }
 
-export type { GuideMetadata, GuideRegistry, GuideCategory, GuideStep } from '../types.js';
+;

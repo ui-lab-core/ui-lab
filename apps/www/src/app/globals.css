@@ -26,9 +26,9 @@
   --leading-header: 1.25;
   --leading-body: 1.64;
   --text-xs: 0.84375rem;
-  --text-sm: 0.850rem;
-  --text-md: 0.900rem;
-  --text-base: 0.900rem;
+  --text-sm: 0.85rem;
+  --text-md: 0.9rem;
+  --text-base: 0.9rem;
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.5rem;
@@ -37,8 +37,8 @@
   --text-5xl: 2.75rem;
   --text-body-size: var(--text-base);
   /* One site-wide control for code and semantic mono text. */
-  --text-code-size: 0.90rem;
-  --leading-code: 1.70;
+  --text-code-size: 0.9rem;
+  --leading-code: 1.7;
   --header-text-xs: 0.75rem;
   --header-text-sm: 0.8225rem;
   --header-text-md: 0.9375rem;
@@ -87,12 +87,12 @@
      keys. Keeping them outside @theme prevents names such as --spacing-md and
      --spacing-lg from replacing Tailwind's max-width container utilities. */
   --spacing-scale: 0.9;
-  --spacing-xs: clamp(0.450rem, 2.25vw, 0.675rem);
+  --spacing-xs: clamp(0.45rem, 2.25vw, 0.675rem);
   --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
-  --spacing-base: clamp(0.760rem, 3.81vw, 1.141rem);
+  --spacing-base: clamp(0.76rem, 3.81vw, 1.141rem);
   --spacing-md: clamp(0.989rem, 4.94vw, 1.483rem);
   --spacing-lg: clamp(1.285rem, 6.43vw, 1.928rem);
-  --spacing-xl: clamp(1.670rem, 8.35vw, 2.507rem);
+  --spacing-xl: clamp(1.67rem, 8.35vw, 2.507rem);
   --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
   /* Derived deep root layer. Keep the token opaque so fixed surfaces do not
      reveal content underneath them; callers can add opacity explicitly when
@@ -120,15 +120,15 @@
   --header-scale: 0.75;
   --body-scale: 0.75;
 
-  --spacing: clamp(0.180rem, 2.25vw, 0.225rem);
+  --spacing: clamp(0.18rem, 2.25vw, 0.225rem);
 
   --radius-xs: 0.425rem;
-  --radius-sm: 0.650rem;
-  --radius-base: 1.100rem;
-  --radius-md: 1.550rem;
-  --radius-lg: 2.450rem;
+  --radius-sm: 0.65rem;
+  --radius-base: 1.1rem;
+  --radius-md: 1.55rem;
+  --radius-lg: 2.45rem;
   --radius-xl: 3.575rem;
-  --radius-2xl: 4.700rem;
+  --radius-2xl: 4.7rem;
   --radius-full: 9999px;
   --radius-ratio: 2.25;
 
@@ -140,7 +140,7 @@
   --border-width-4: 4px;
   --border-width-8: 8px;
 
-  --header-height: 3.50rem;
+  --header-height: 3.5rem;
   --page-width: 1400px;
   --content-width: 850px;
   --logo-width: 250px;
@@ -168,7 +168,6 @@ html.theme-transition *::after {
   transition: none;
 }
 
-
 pre.shiki .indent {
   display: inline-block;
   position: relative;
@@ -178,15 +177,16 @@ pre.shiki .indent {
 /* `font-mono` is semantic code text across the site, so its size has one
    owner. Change --text-code-size above to update every use at once. */
 .font-mono,
-.text-code, pre {
+.text-code,
+pre {
   font-size: var(--text-code-size);
   line-height: var(--leading-code);
   letter-spacing: 0.015em;
-  font-weight: 450
+  font-weight: 450;
 }
 
 pre.shiki .indent::before {
-  content: '';
+  content: "";
   position: absolute;
   opacity: 0.15;
   width: 1px;
@@ -213,13 +213,13 @@ pre.shiki .indent::before {
   color: var(--background-500);
 }
 
- pre.shiki .indent {
+pre.shiki .indent {
   display: inline-block;
   position: relative;
   left: calc(var(--indent-offset, 0px) + 0.4rem);
 }
 
- pre.shiki .indent:empty {
+pre.shiki .indent:empty {
   height: 1lh;
   vertical-align: bottom;
 }
@@ -238,7 +238,7 @@ pre.shiki .indent::before {
   z-index: -1;
 
   background-color: var(--color-background-500);
-  opacity: 0.30;
+  opacity: 0.3;
 
   /* Mask Logic */
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='25' height='25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cstyle%3Epath%7Bstroke:%23ffffff;stroke-width:1;stroke-linecap:square%7D%3C/style%3E%3C/defs%3E%3Cpath d='M21 25h8 M25 21v8' /%3E%3Cg stroke-dasharray='4 4'%3E%3Cpath d='M25 17 V0' /%3E%3Cpath d='M25 33 V50' /%3E%3Cpath d='M17 25 H0' /%3E%3Cpath d='M33 25 H25' /%3E%3C/g%3E%3C/svg%3E");
@@ -265,5 +265,5 @@ article {
 
 ::selection {
   background: color-mix(in srgb, var(--accent-600) 10%, transparent);
-  color: var(--accent-600)
+  color: var(--accent-600);
 }

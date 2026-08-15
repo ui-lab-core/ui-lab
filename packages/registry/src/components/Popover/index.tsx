@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Popover } from 'ui-lab-components';
-import { ComponentDetail } from '@/types';
+import React from "react";
+import { Button, Popover } from "ui-lab-components";
+import { ComponentDetail } from "@/types";
 const popoverBasicCode = `import { Popover, Button } from "ui-lab-components";
 
 export function Example() {
@@ -20,14 +20,14 @@ export const popoverDetail: ComponentDetail = {
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Popover component displays floating content relative to a trigger element.
-        Unlike tooltips which appear on hover, popovers are explicitly triggered by user
-        interaction and persist until dismissed.
+        The Popover component displays floating content relative to a trigger element. Unlike
+        tooltips which appear on hover, popovers are explicitly triggered by user interaction and
+        persist until dismissed.
       </p>
       <p>
-        Popovers support four positioning options (top, right, bottom, left), controlled
-        or uncontrolled state, and automatic dismissal via click-outside or Escape key.
-        Perfect for dropdown menus, notifications, forms, and contextual actions.
+        Popovers support four positioning options (top, right, bottom, left), controlled or
+        uncontrolled state, and automatic dismissal via click-outside or Escape key. Perfect for
+        dropdown menus, notifications, forms, and contextual actions.
       </p>
     </div>
   ),
@@ -54,7 +54,7 @@ export const popoverDetail: ComponentDetail = {
   <Button>Click me</Button>
 </Popover>`,
       preview: (
-        <div className="flex gap-4 justify-center">
+        <div className="flex justify-center gap-4">
           <Popover position="top" content="Top">
             <Button size="sm">Top</Button>
           </Popover>

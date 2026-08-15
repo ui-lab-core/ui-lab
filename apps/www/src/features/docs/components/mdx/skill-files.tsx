@@ -2,10 +2,7 @@ import fs from "fs";
 import path from "path";
 import { SkillFilesUI, type SkillFileData } from "./skill-files-ui";
 
-const SKILLS_DIR = path.join(
-  process.cwd(),
-  "src/features/docs/skills/ui-lab"
-);
+const SKILLS_DIR = path.join(process.cwd(), "src/features/docs/skills/ui-lab");
 
 function readSkillFile(relativePath: string): string {
   try {
@@ -58,18 +55,16 @@ const FILE_METADATA: {
 ];
 
 export function SkillFiles() {
-  const files: SkillFileData[] = FILE_METADATA.map(
-    ({ path: filePath, role, loadedBy }) => {
-      const content = readSkillFile(filePath);
-      return {
-        path: filePath,
-        lines: content.split("\n").length,
-        content,
-        role,
-        loadedBy,
-      };
-    }
-  );
+  const files: SkillFileData[] = FILE_METADATA.map(({ path: filePath, role, loadedBy }) => {
+    const content = readSkillFile(filePath);
+    return {
+      path: filePath,
+      lines: content.split("\n").length,
+      content,
+      role,
+      loadedBy,
+    };
+  });
 
   return <SkillFilesUI files={files} />;
 }

@@ -1,14 +1,20 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { Expand } from 'ui-lab-components/expand';
-import { Flex } from 'ui-lab-components/flex';
-import { Group } from 'ui-lab-components/group';
-import { FaGithub, FaArrowUpRightFromSquare } from '@/shared/icons/fa6';
-import { SiClaude, SiOpenai, SiGooglegemini } from '@/shared/icons/si';
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Expand } from "ui-lab-components/expand";
+import { Flex } from "ui-lab-components/flex";
+import { Group } from "ui-lab-components/group";
+import { FaGithub, FaArrowUpRightFromSquare } from "@/shared/icons/fa6";
+import { SiClaude, SiOpenai, SiGooglegemini } from "@/shared/icons/si";
 
-export function OpenPage({ componentId, sourceUrl }: { componentId?: string; sourceUrl?: string | null }) {
+export function OpenPage({
+  componentId,
+  sourceUrl,
+}: {
+  componentId?: string;
+  sourceUrl?: string | null;
+}) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,18 +25,18 @@ export function OpenPage({ componentId, sourceUrl }: { componentId?: string; sou
   const prompt = encodeURIComponent(`Read this and help me understand it: ${githubUrl}`);
 
   const options = [
-    ...(githubUrl ? [{ label: 'Open in GitHub', Icon: FaGithub, href: githubUrl }] : []),
-    { label: 'Open in Claude', Icon: SiClaude, href: `https://claude.ai/new?q=${prompt}` },
-    { label: 'Open in ChatGPT', Icon: SiOpenai, href: `https://chatgpt.com/?q=${prompt}` },
-    { label: 'Open in Gemini', Icon: SiGooglegemini, href: `https://gemini.google.com/app?q=${prompt}` },
+    ...(githubUrl ? [{ label: "Open in GitHub", Icon: FaGithub, href: githubUrl }] : []),
+    { label: "Open in Claude", Icon: SiClaude, href: `https://claude.ai/new?q=${prompt}` },
+    { label: "Open in ChatGPT", Icon: SiOpenai, href: `https://chatgpt.com/?q=${prompt}` },
+    {
+      label: "Open in Gemini",
+      Icon: SiGooglegemini,
+      href: `https://gemini.google.com/app?q=${prompt}`,
+    },
   ];
 
   return (
-    <Group.Expand
-      className="w-full"
-      expanded={isOpen}
-      onExpandedChange={setIsOpen}
-    >
+    <Group.Expand className="w-full" expanded={isOpen} onExpandedChange={setIsOpen}>
       <Expand.Trigger className="rounded-none">
         <Flex className="h-12 cursor-pointer border-b border-background-700">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
@@ -45,7 +51,10 @@ export function OpenPage({ componentId, sourceUrl }: { componentId?: string; sou
           </div>
         </Flex>
       </Expand.Trigger>
-      <Expand.Content from="below" className="-mt-(--border-width-base) mx-0 border-b border-background-700">
+      <Expand.Content
+        from="below"
+        className="-mt-(--border-width-base) mx-0 border-b border-background-700"
+      >
         {isOpen && (
           <div className="flex flex-col overflow-hidden">
             {options.map(({ label, Icon, href }) => (

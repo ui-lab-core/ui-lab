@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { CodeWithPackageManager } from './code-with-package-manager';
+import { useState } from "react";
+import { CodeWithPackageManager } from "./code-with-package-manager";
 
-type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
+type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
 
 const managerCommands: Record<PackageManager, string> = {
-  npm: 'npm install',
-  pnpm: 'pnpm add',
-  yarn: 'yarn add',
-  bun: 'bun add',
+  npm: "npm install",
+  pnpm: "pnpm add",
+  yarn: "yarn add",
+  bun: "bun add",
 };
 
 interface InstallCommandProps {
@@ -17,7 +17,7 @@ interface InstallCommandProps {
 }
 
 export function InstallCommand({ packages }: InstallCommandProps) {
-  const [manager, setManager] = useState<PackageManager>('pnpm');
+  const [manager, setManager] = useState<PackageManager>("pnpm");
 
   return (
     <CodeWithPackageManager

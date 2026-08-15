@@ -12,30 +12,54 @@ const RowContent = ({ state }: { state: "idle" | "active" | "dim" }) => {
   return (
     <g style={{ transition }}>
       <rect
-        x={78} y={8} width={40} height={40} rx={10}
+        x={78}
+        y={8}
+        width={40}
+        height={40}
+        rx={10}
         className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.mediaActiveOpacity : (isDim ? config.skeleton.mediaDimOpacity : config.skeleton.mediaIdleOpacity),
-          transition
+          opacity: isActive
+            ? config.activeContent.mediaActiveOpacity
+            : isDim
+              ? config.skeleton.mediaDimOpacity
+              : config.skeleton.mediaIdleOpacity,
+          transition,
         }}
       />
       <rect
-        x={134} y={16} width={isActive ? 144 : 108} height={8} rx={4}
+        x={134}
+        y={16}
+        width={isActive ? 144 : 108}
+        height={8}
+        rx={4}
         className={isActive ? config.highlight.hoverClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.labelActiveOpacity : (isDim ? config.skeleton.textLine1DimOpacity : config.skeleton.textLine1IdleOpacity),
-          transition
+          opacity: isActive
+            ? config.activeContent.labelActiveOpacity
+            : isDim
+              ? config.skeleton.textLine1DimOpacity
+              : config.skeleton.textLine1IdleOpacity,
+          transition,
         }}
       />
       <rect
-        x={134} y={30} width={isActive ? 96 : 72} height={6} rx={3}
+        x={134}
+        y={30}
+        width={isActive ? 96 : 72}
+        height={6}
+        rx={3}
         className={isActive ? config.activeContent.subtextClass : config.dim.class}
         fill="currentColor"
         style={{
-          opacity: isActive ? config.activeContent.subtextActiveOpacity : (isDim ? config.skeleton.textLine2DimOpacity : config.skeleton.textLine2IdleOpacity),
-          transition
+          opacity: isActive
+            ? config.activeContent.subtextActiveOpacity
+            : isDim
+              ? config.skeleton.textLine2DimOpacity
+              : config.skeleton.textLine2IdleOpacity,
+          transition,
         }}
       />
     </g>
@@ -47,7 +71,11 @@ const ActiveHighlight = ({ y, isHovered }: { y: number; isHovered: boolean }) =>
     <g style={{ transform: `translateY(${y}px)`, transition: config.transition }}>
       {/* Background Highlight Fill */}
       <rect
-        x={70} y={0} width={260} height={56} rx={config.blockRx}
+        x={70}
+        y={0}
+        width={260}
+        height={56}
+        rx={config.blockRx}
         className={config.highlight.hoverClass}
         fill="currentColor"
         stroke="currentColor"
@@ -60,7 +88,10 @@ const ActiveHighlight = ({ y, isHovered }: { y: number; isHovered: boolean }) =>
       />
       {/* Accent Outline (Dashed) */}
       <rect
-        x={60} y={-10} width={280} height={76}
+        x={60}
+        y={-10}
+        width={280}
+        height={76}
         rx={config.blockRx + 5}
         fill="none"
         stroke="currentColor"
@@ -76,7 +107,17 @@ const ActiveHighlight = ({ y, isHovered }: { y: number; isHovered: boolean }) =>
   );
 };
 
-const Row = ({ state, y, isHovered, opacity }: { state: "idle" | "active" | "dim"; y: number, isHovered: boolean, opacity?: number }) => {
+const Row = ({
+  state,
+  y,
+  isHovered,
+  opacity,
+}: {
+  state: "idle" | "active" | "dim";
+  y: number;
+  isHovered: boolean;
+  opacity?: number;
+}) => {
   const getOpacity = () => {
     if (opacity !== undefined) return opacity;
     if (state === "dim") return 0.5;
@@ -85,10 +126,20 @@ const Row = ({ state, y, isHovered, opacity }: { state: "idle" | "active" | "dim
   };
 
   return (
-    <g style={{ transform: `translateY(${y}px)`, opacity: getOpacity(), transition: config.transition }}>
+    <g
+      style={{
+        transform: `translateY(${y}px)`,
+        opacity: getOpacity(),
+        transition: config.transition,
+      }}
+    >
       {/* Background Surface (Consolidated) */}
       <rect
-        x={70} y={0} width={260} height={56} rx={config.blockRx}
+        x={70}
+        y={0}
+        width={260}
+        height={56}
+        rx={config.blockRx}
         className="text-transparent"
         fill="currentColor"
         style={{ transition: config.transition }}
@@ -125,9 +176,16 @@ export function ListAnimation() {
   const guidelineY = activeRowY + rowHeight / 2;
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="list-grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -151,11 +209,7 @@ export function ListAnimation() {
             y={isHovered ? startY : startY + step}
           />
 
-          <Row
-            state={isHovered ? "active" : "idle"}
-            isHovered={isHovered}
-            y={activeRowY}
-          />
+          <Row state={isHovered ? "active" : "idle"} isHovered={isHovered} y={activeRowY} />
 
           <Row
             state={isHovered ? "dim" : "idle"}

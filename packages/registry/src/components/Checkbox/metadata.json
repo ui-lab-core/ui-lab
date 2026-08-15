@@ -8,22 +8,10 @@
     "exportName": "Checkbox",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "radio",
-    "switch",
-    "label"
-  ],
-  "tags": [
-    "form",
-    "selection",
-    "boolean"
-  ],
+  "relatedComponents": ["radio", "switch", "label"],
+  "tags": ["form", "selection", "boolean"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": [
-      "Keyboard accessible",
-      "Visual focus indicator",
-      "Works with labels"
-    ]
+    "notes": ["Keyboard accessible", "Visual focus indicator", "Works with labels"]
   }
 }

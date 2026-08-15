@@ -21,15 +21,7 @@ import {
   TextArea,
   Tooltip,
 } from "ui-lab-components";
-import {
-  ChevronDown,
-  Copy,
-  FilePen,
-  Link2,
-  Search,
-  Share2,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, Copy, FilePen, Link2, Search, Share2, Trash2 } from "lucide-react";
 import type { ShowcasePanelProps } from "./types";
 
 interface CellProps extends ShowcasePanelProps {
@@ -50,10 +42,16 @@ export function Buttons({ height }: ShowcasePanelProps) {
   return (
     <Cell height={height}>
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <Button size="sm" variant="primary">Save changes</Button>
+        <Button size="sm" variant="primary">
+          Save changes
+        </Button>
         <Button size="sm">Duplicate</Button>
-        <Button size="sm" variant="secondary">Preview</Button>
-        <Button size="sm" variant="ghost">Discard</Button>
+        <Button size="sm" variant="secondary">
+          Preview
+        </Button>
+        <Button size="sm" variant="ghost">
+          Discard
+        </Button>
       </div>
     </Cell>
   );
@@ -187,7 +185,7 @@ const toggles = [
 
 export function Switches({ height }: ShowcasePanelProps) {
   const [enabled, setEnabled] = useState(
-    () => new Set(toggles.filter((t) => t.initiallyOn).map((t) => t.id))
+    () => new Set(toggles.filter((t) => t.initiallyOn).map((t) => t.id)),
   );
 
   function toggle(id: string, on: boolean) {
@@ -253,12 +251,7 @@ export function TextAreas({ height }: ShowcasePanelProps) {
   return (
     <Cell height={height}>
       <div className="w-full">
-        <TextArea
-          placeholder="Leave a comment…"
-          rows={3}
-          showCharacterCount
-          maxCharacters={280}
-        />
+        <TextArea placeholder="Leave a comment…" rows={3} showCharacterCount maxCharacters={280} />
       </div>
     </Cell>
   );

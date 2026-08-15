@@ -24,11 +24,7 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
         <Sidebar />
 
         <div className="docs-layout-inner grid grid-cols-1 min-w-0 min-h-0 min-[750px]:grid-cols-[minmax(0,1fr)_clamp(11rem,20vw,18.25rem)]">
-          {banner && (
-            <div className="col-span-full mt-(--header-height)">
-              {banner}
-            </div>
-          )}
+          {banner && <div className="col-span-full mt-(--header-height)">{banner}</div>}
 
           <div
             id="docs"
@@ -36,9 +32,7 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
           >
             <div className="flex items-center w-full min-w-0">
               <div className="w-full min-w-0 px-4 py-12 md:px-6">
-                <div className="mx-auto w-full min-w-0 max-w-[652px]">
-                  {children}
-                </div>
+                <div className="mx-auto w-full min-w-0 max-w-[652px]">{children}</div>
               </div>
             </div>
           </div>

@@ -8,21 +8,11 @@
     "exportName": "Card",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": [
-    "modal",
-    "divider"
-  ],
-  "tags": [
-    "container",
-    "grouping",
-    "layout"
-  ],
+  "relatedComponents": ["modal", "divider"],
+  "tags": ["container", "grouping", "layout"],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": [
-      "Semantic HTML structure",
-      "Proper heading hierarchy"
-    ]
+    "notes": ["Semantic HTML structure", "Proper heading hierarchy"]
   },
   "usage": {
     "summary": "Use Card as a top-level surface that groups related content into a single visual panel.",
@@ -46,23 +36,13 @@
         "type": "avoid",
         "title": "Do not nest Card inside overlay surfaces",
         "description": "Avoid putting Card inside Modal, Popover, Confirm, or Menu because it creates double-surface chrome and weakens hierarchy.",
-        "relatedComponents": [
-          "modal",
-          "popover",
-          "confirm",
-          "menu"
-        ]
+        "relatedComponents": ["modal", "popover", "confirm", "menu"]
       },
       {
         "type": "prefer",
         "title": "Prefer layout primitives for internal grouping",
         "description": "When content already sits inside a surfaced component, use Flex, Grid, Group, or the host component's slots to structure it instead of adding another Card.",
-        "relatedComponents": [
-          "flex",
-          "grid",
-          "group",
-          "modal"
-        ]
+        "relatedComponents": ["flex", "grid", "group", "modal"]
       }
     ]
   }

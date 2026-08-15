@@ -18,9 +18,33 @@ interface Deployment {
 }
 
 const DEPLOYMENTS: Deployment[] = [
-  { id: "dpl_1", commit: "9f2c1ab", message: "Fix hydration mismatch in theme script", branch: "main", status: "ready", time: "2m ago", duration: "38s" },
-  { id: "dpl_2", commit: "e41d90c", message: "Add masonry layout to showcase grid", branch: "feat/showcase", status: "building", time: "5m ago", duration: "…" },
-  { id: "dpl_3", commit: "b7a3f21", message: "Upgrade tailwind to v4.1", branch: "chore/deps", status: "error", time: "1h ago", duration: "12s" },
+  {
+    id: "dpl_1",
+    commit: "9f2c1ab",
+    message: "Fix hydration mismatch in theme script",
+    branch: "main",
+    status: "ready",
+    time: "2m ago",
+    duration: "38s",
+  },
+  {
+    id: "dpl_2",
+    commit: "e41d90c",
+    message: "Add masonry layout to showcase grid",
+    branch: "feat/showcase",
+    status: "building",
+    time: "5m ago",
+    duration: "…",
+  },
+  {
+    id: "dpl_3",
+    commit: "b7a3f21",
+    message: "Upgrade tailwind to v4.1",
+    branch: "chore/deps",
+    status: "error",
+    time: "1h ago",
+    duration: "12s",
+  },
 ];
 
 const STATUS: Record<Status, { label: string; variant: string; dot: string }> = {
@@ -37,10 +61,7 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
   );
 
   return (
-    <div
-      className="flex w-full flex-col overflow-hidden"
-      style={{ height }}
-    >
+    <div className="flex w-full flex-col overflow-hidden" style={{ height }}>
       <div className="border-b border-background-700 p-2">
         <Group className="h-10" spacing="sm">
           <Group.Select selectedKey={branch} onSelectionChange={(key) => setBranch(String(key))}>
@@ -49,10 +70,18 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
             </Select.Trigger>
             <Select.Content>
               <Select.List>
-                <Select.Item value="all" textValue="All branches">All branches</Select.Item>
-                <Select.Item value="main" textValue="main">main</Select.Item>
-                <Select.Item value="feat/showcase" textValue="feat/showcase">feat/showcase</Select.Item>
-                <Select.Item value="chore/deps" textValue="chore/deps">chore/deps</Select.Item>
+                <Select.Item value="all" textValue="All branches">
+                  All branches
+                </Select.Item>
+                <Select.Item value="main" textValue="main">
+                  main
+                </Select.Item>
+                <Select.Item value="feat/showcase" textValue="feat/showcase">
+                  feat/showcase
+                </Select.Item>
+                <Select.Item value="chore/deps" textValue="chore/deps">
+                  chore/deps
+                </Select.Item>
               </Select.List>
             </Select.Content>
           </Group.Select>
@@ -70,11 +99,21 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
             <Fragment key={d.id}>
               <List.Item value={d.id} className="px-4 py-3">
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-foreground-100 truncate">{d.message}</div>
+                  <div className="text-sm font-medium text-foreground-100 truncate">
+                    {d.message}
+                  </div>
                   <div className="flex items-center gap-2 text-sm text-foreground-400 mt-0.5">
-                    <span className="flex items-center gap-1"><GitBranch size={11} />{d.branch}</span>
-                    <span className="flex items-center gap-1 font-mono"><GitCommitHorizontal size={11} />{d.commit}</span>
-                    <span>{d.time} · {d.duration}</span>
+                    <span className="flex items-center gap-1">
+                      <GitBranch size={11} />
+                      {d.branch}
+                    </span>
+                    <span className="flex items-center gap-1 font-mono">
+                      <GitCommitHorizontal size={11} />
+                      {d.commit}
+                    </span>
+                    <span>
+                      {d.time} · {d.duration}
+                    </span>
                   </div>
                 </div>
                 {d.status === "error" ? (

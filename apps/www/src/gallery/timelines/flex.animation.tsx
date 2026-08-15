@@ -3,7 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import config from "./config.json";
 
-function getRoundedRectPath(x: number, y: number, w: number, h: number, r: { tl: number, tr: number, bl: number, br: number }) {
+function getRoundedRectPath(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: { tl: number; tr: number; bl: number; br: number },
+) {
   return `
     M ${x + r.tl} ${y}
     H ${x + w - r.tr}
@@ -41,36 +47,43 @@ export function FlexAnimation() {
   const xLines = [60, 160, 260, 340];
   const yLines = [60, 240];
 
-  // Accordion Layout: Elements stay on the same Y-axis. 
+  // Accordion Layout: Elements stay on the same Y-axis.
   // Delays create a staggered "wave" pushing from right to left, then left to right.
   const blocks = [
     {
-      row: { x: 60, y: 60, w: 80, h: 180 },   // Idle: Equal 1/3 width
-      col: { x: 60, y: 60, w: 160, h: 180 },  // Hover: Expands
+      row: { x: 60, y: 60, w: 80, h: 180 }, // Idle: Equal 1/3 width
+      col: { x: 60, y: 60, w: 160, h: 180 }, // Hover: Expands
       delayHover: "100ms", // Waits for B & C to shrink right before expanding
-      delayIdle: "0ms",    // Shrinks left immediately on leave
-      id: "A"
+      delayIdle: "0ms", // Shrinks left immediately on leave
+      id: "A",
     },
     {
       row: { x: 160, y: 60, w: 80, h: 180 },
-      col: { x: 240, y: 60, w: 40, h: 180 },  // Hover: Compresses into a tab
-      delayHover: "50ms",  // Staggers after C
-      delayIdle: "50ms",   // Staggers after A
-      id: "B"
+      col: { x: 240, y: 60, w: 40, h: 180 }, // Hover: Compresses into a tab
+      delayHover: "50ms", // Staggers after C
+      delayIdle: "50ms", // Staggers after A
+      id: "B",
     },
     {
       row: { x: 260, y: 60, w: 80, h: 180 },
-      col: { x: 300, y: 60, w: 40, h: 180 },  // Hover: Compresses into a tab
-      delayHover: "0ms",   // Shrinks and moves right immediately on hover
-      delayIdle: "100ms",  // Waits for A & B to settle before returning
-      id: "C"
-    }
+      col: { x: 300, y: 60, w: 40, h: 180 }, // Hover: Compresses into a tab
+      delayHover: "0ms", // Shrinks and moves right immediately on hover
+      delayIdle: "100ms", // Waits for A & B to settle before returning
+      id: "C",
+    },
   ];
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
           <defs>
             <radialGradient id="flex-grid-fade" cx="50%" cy="50%" r="50%">
               <stop offset="40%" stopColor="white" stopOpacity="1" />
@@ -110,7 +123,9 @@ export function FlexAnimation() {
                   rx={config.blockRx}
                   className={
                     isHighlighted
-                      ? isHovered ? config.highlight.hoverClass : config.highlight.idleClass
+                      ? isHovered
+                        ? config.highlight.hoverClass
+                        : config.highlight.idleClass
                       : config.dim.class
                   }
                   fill="currentColor"
@@ -120,10 +135,14 @@ export function FlexAnimation() {
                     transition: config.transition,
                     transitionDelay: currentDelay,
                     fillOpacity: isHighlighted
-                      ? isHovered ? 0.05 : config.highlight.idleFillOpacity
+                      ? isHovered
+                        ? 0.05
+                        : config.highlight.idleFillOpacity
                       : config.dim.fillOpacity,
                     strokeOpacity: isHighlighted
-                      ? isHovered ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity
+                      ? isHovered
+                        ? config.highlight.hoverStrokeOpacity
+                        : config.highlight.idleStrokeOpacity
                       : config.dim.strokeOpacity,
                   }}
                 />
@@ -132,7 +151,7 @@ export function FlexAnimation() {
                 <rect
                   x={current.x + 12}
                   y={current.y + 20}
-                  width={!isHovered ? 36 : (i === 0 ? 100 : 16)}
+                  width={!isHovered ? 36 : i === 0 ? 100 : 16}
                   height={8}
                   rx={config.barRx}
                   fill="currentColor"
@@ -146,7 +165,7 @@ export function FlexAnimation() {
                 <rect
                   x={current.x + 12}
                   y={current.y + 36}
-                  width={!isHovered ? 20 : (i === 0 ? 60 : 8)}
+                  width={!isHovered ? 20 : i === 0 ? 60 : 8}
                   height={8}
                   rx={config.barRx}
                   fill="currentColor"
@@ -173,7 +192,7 @@ export function FlexAnimation() {
                 tr: config.blockRx + 5,
                 bl: config.blockRx + 5,
                 br: config.blockRx + 5,
-              }
+              },
             )}
             fill="none"
             stroke="currentColor"

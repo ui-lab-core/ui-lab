@@ -9,7 +9,7 @@ const createRoundedRectPath = (
   y: number,
   width: number,
   height: number,
-  r: { tl: number; tr: number; br: number; bl: number }
+  r: { tl: number; tr: number; br: number; bl: number },
 ) => {
   return `M${x + r.tl},${y}
           h${width - r.tl - r.tr}
@@ -23,7 +23,15 @@ const createRoundedRectPath = (
           Z`;
 };
 
-const GallerySkeleton = ({ width, height, state }: { width: number, height: number, state: "idle" | "active" | "dim" }) => {
+const GallerySkeleton = ({
+  width,
+  height,
+  state,
+}: {
+  width: number;
+  height: number;
+  state: "idle" | "active" | "dim";
+}) => {
   const isActive = state === "active";
   const isDim = state === "dim";
   const colorClass = isActive ? config.highlight.hoverClass : config.highlight.idleClass;
@@ -35,29 +43,64 @@ const GallerySkeleton = ({ width, height, state }: { width: number, height: numb
         d={createRoundedRectPath(0, 0, width, height - 35, { tl: 6, tr: 6, br: 0, bl: 0 })}
         className={colorClass}
         fill="currentColor"
-        style={{ opacity: isDim ? config.skeleton.mediaDimOpacity : (isActive ? config.activeContent.mediaActiveOpacity : config.skeleton.mediaIdleOpacity), transition: config.transition }}
+        style={{
+          opacity: isDim
+            ? config.skeleton.mediaDimOpacity
+            : isActive
+              ? config.activeContent.mediaActiveOpacity
+              : config.skeleton.mediaIdleOpacity,
+          transition: config.transition,
+        }}
       />
       {/* Bottom Border for Media Placeholder */}
       <line
-        x1={0} y1={height - 35} x2={width} y2={height - 35}
+        x1={0}
+        y1={height - 35}
+        x2={width}
+        y2={height - 35}
         className={isActive ? config.highlight.hoverClass : config.dim.strokeClass}
         stroke="currentColor"
         strokeWidth={config.strokeWidth}
-        style={{ opacity: isDim ? config.dim.strokeOpacity : (isActive ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity) }}
+        style={{
+          opacity: isDim
+            ? config.dim.strokeOpacity
+            : isActive
+              ? config.highlight.hoverStrokeOpacity
+              : config.highlight.idleStrokeOpacity,
+        }}
       />
       {/* Text line */}
       <rect
-        x={5} y={height - 27} width={34} height={6} rx={3}
+        x={5}
+        y={height - 27}
+        width={34}
+        height={6}
+        rx={3}
         className={colorClass}
         fill="currentColor"
-        style={{ opacity: isDim ? config.skeleton.textLine1DimOpacity : (isActive ? config.activeContent.labelActiveOpacity : config.skeleton.textLine1IdleOpacity), transition: config.transition }}
+        style={{
+          opacity: isDim
+            ? config.skeleton.textLine1DimOpacity
+            : isActive
+              ? config.activeContent.labelActiveOpacity
+              : config.skeleton.textLine1IdleOpacity,
+          transition: config.transition,
+        }}
       />
       <rect
-        x={5} y={height - 16} width={48} height={4} rx={3}
+        x={5}
+        y={height - 16}
+        width={48}
+        height={4}
+        rx={3}
         className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
         fill="currentColor"
         style={{
-          opacity: isDim ? config.bar.secondaryOpacity : (isActive ? config.bar.secondaryOpacity : config.skeleton.textLine2IdleOpacity),
+          opacity: isDim
+            ? config.bar.secondaryOpacity
+            : isActive
+              ? config.bar.secondaryOpacity
+              : config.skeleton.textLine2IdleOpacity,
           transition: config.transition,
         }}
       />
@@ -65,7 +108,15 @@ const GallerySkeleton = ({ width, height, state }: { width: number, height: numb
   );
 };
 
-const GalleryActiveContent = ({ width, height, state }: { width: number, height: number, state: "idle" | "active" | "dim" }) => {
+const GalleryActiveContent = ({
+  width,
+  height,
+  state,
+}: {
+  width: number;
+  height: number;
+  state: "idle" | "active" | "dim";
+}) => {
   const isActive = state === "active";
   const colorClass = isActive ? config.highlight.hoverClass : config.highlight.idleClass;
 
@@ -76,25 +127,51 @@ const GalleryActiveContent = ({ width, height, state }: { width: number, height:
         d={createRoundedRectPath(0, 0, 90, height, { tl: 6, tr: 0, br: 0, bl: 6 })}
         className={colorClass}
         fill="currentColor"
-        style={{ opacity: isActive ? config.activeContent.mediaActiveOpacity : config.activeContent.mediaIdleOpacity, transition: config.transition }}
+        style={{
+          opacity: isActive
+            ? config.activeContent.mediaActiveOpacity
+            : config.activeContent.mediaIdleOpacity,
+          transition: config.transition,
+        }}
       />
       {/* Right Border for Media Slot */}
       <line
-        x1={90} y1={0} x2={90} y2={height}
+        x1={90}
+        y1={0}
+        x2={90}
+        y2={height}
         className={colorClass}
         stroke="currentColor"
         strokeWidth={config.strokeWidth}
-        style={{ opacity: isActive ? config.highlight.hoverStrokeOpacity : config.highlight.idleStrokeOpacity, transition: config.transition }}
+        style={{
+          opacity: isActive
+            ? config.highlight.hoverStrokeOpacity
+            : config.highlight.idleStrokeOpacity,
+          transition: config.transition,
+        }}
       />
       {/* Label and Subtext Lines */}
       <rect
-        x={100} y={16} width={width - 126} height={8} rx={4}
+        x={100}
+        y={16}
+        width={width - 126}
+        height={8}
+        rx={4}
         className={colorClass}
         fill="currentColor"
-        style={{ opacity: isActive ? config.activeContent.labelActiveOpacity : config.activeContent.labelIdleOpacity, transition: config.transition }}
+        style={{
+          opacity: isActive
+            ? config.activeContent.labelActiveOpacity
+            : config.activeContent.labelIdleOpacity,
+          transition: config.transition,
+        }}
       />
       <rect
-        x={100} y={30} width={width - 150} height={4} rx={3}
+        x={100}
+        y={30}
+        width={width - 150}
+        height={4}
+        rx={3}
         className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
         fill="currentColor"
         style={{
@@ -106,23 +183,45 @@ const GalleryActiveContent = ({ width, height, state }: { width: number, height:
   );
 };
 
-const Item = ({ width, height, state, isLarge }: { width: number, height: number, state: "idle" | "active" | "dim", isLarge?: boolean }) => {
+const Item = ({
+  width,
+  height,
+  state,
+  isLarge,
+}: {
+  width: number;
+  height: number;
+  state: "idle" | "active" | "dim";
+  isLarge?: boolean;
+}) => {
   const isActive = state === "active";
   const isDim = state === "dim";
 
   const bgClass = isActive ? config.highlight.hoverClass : config.highlight.idleClass;
-  const fillOpacity = isActive ? 0.05 : (isDim ? config.dim.fillOpacity : config.highlight.idleFillOpacity);
-  const strokeOpacity = isActive ? config.highlight.hoverStrokeOpacity : (isDim ? config.dim.strokeOpacity : config.highlight.idleStrokeOpacity);
+  const fillOpacity = isActive
+    ? 0.05
+    : isDim
+      ? config.dim.fillOpacity
+      : config.highlight.idleFillOpacity;
+  const strokeOpacity = isActive
+    ? config.highlight.hoverStrokeOpacity
+    : isDim
+      ? config.dim.strokeOpacity
+      : config.highlight.idleStrokeOpacity;
 
   return (
     <g>
       <rect
-        width={width} height={height} rx={config.blockRx}
+        width={width}
+        height={height}
+        rx={config.blockRx}
         className="text-background-950"
         fill="currentColor"
       />
       <rect
-        width={width} height={height} rx={config.blockRx}
+        width={width}
+        height={height}
+        rx={config.blockRx}
         className={bgClass}
         fill="currentColor"
         stroke="currentColor"
@@ -130,14 +229,14 @@ const Item = ({ width, height, state, isLarge }: { width: number, height: number
         style={{
           transition: config.transition,
           fillOpacity,
-          strokeOpacity
+          strokeOpacity,
         }}
       />
-      {
-        isLarge ?
-          <GalleryActiveContent width={width} height={height} state={state} /> :
-          <GallerySkeleton width={width} height={height} state={state} />
-      }
+      {isLarge ? (
+        <GalleryActiveContent width={width} height={height} state={state} />
+      ) : (
+        <GallerySkeleton width={width} height={height} state={state} />
+      )}
     </g>
   );
 };
@@ -147,7 +246,7 @@ const Row = ({
   state,
   y,
   isHovered,
-  opacity
+  opacity,
 }: {
   type: "featured" | "grid";
   state: "idle" | "active" | "dim";
@@ -171,7 +270,13 @@ const Row = ({
   const itemHeight = 80;
 
   return (
-    <g style={{ transform: `translateY(${y}px)`, opacity: getOpacity(), transition: config.transition }}>
+    <g
+      style={{
+        transform: `translateY(${y}px)`,
+        opacity: getOpacity(),
+        transition: config.transition,
+      }}
+    >
       {type === "featured" ? (
         /* TOP ROW (2 items) */
         <>
@@ -240,11 +345,17 @@ export function GalleryAnimation() {
   const activeRowY = row1Y;
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center relative overflow-hidden font-sans">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center relative overflow-hidden font-sans"
+    >
       <div className="relative w-full">
-        <svg viewBox="0 0 400 300" className="w-full h-full relative z-10 overflow-visible" aria-hidden="true">
-          <defs>
-          </defs>
+        <svg
+          viewBox="0 0 400 300"
+          className="w-full h-full relative z-10 overflow-visible"
+          aria-hidden="true"
+        >
+          <defs></defs>
 
           <g>
             {/* Row 0: Featured Row (Initial view, scrolls out) */}
@@ -287,7 +398,9 @@ export function GalleryAnimation() {
             strokeWidth="1.5"
             strokeDasharray="4 4"
             style={{
-              opacity: isHovered ? config.accentOutline.hoverOpacity : config.accentOutline.idleOpacity,
+              opacity: isHovered
+                ? config.accentOutline.hoverOpacity
+                : config.accentOutline.idleOpacity,
               transition: config.transition,
             }}
           />

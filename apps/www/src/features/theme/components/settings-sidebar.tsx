@@ -13,15 +13,10 @@ export function SettingsSidebar({ footer }: { footer?: ReactNode }) {
       )}
     >
       <div className="min-h-0 flex-1 overflow-hidden">
-        <SettingsContent
-          showFooterLink={false}
-          panels={["colors", "fonts", "layout"]}
-        />
+        <SettingsContent showFooterLink={false} panels={["colors", "fonts", "layout"]} />
       </div>
       {footer ? (
-        <div className="sticky bottom-0 shrink-0 border-t border-background-700 p-4">
-          {footer}
-        </div>
+        <div className="sticky bottom-0 shrink-0 border-t border-background-700 p-4">{footer}</div>
       ) : null}
     </aside>
   );

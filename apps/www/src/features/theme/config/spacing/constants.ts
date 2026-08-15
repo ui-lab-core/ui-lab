@@ -13,9 +13,21 @@ const spacingCurve = {
 function generateSpacingScale() {
   return spacingCurve.levels.map((name, index) => ({
     name,
-    min: parseFloat(exponentialCurve(spacingCurve.baseUnit, spacingCurve.growthFactor, index).toFixed(3)),
-    fluid: parseFloat((exponentialCurve(spacingCurve.baseUnit, spacingCurve.growthFactor, index) * spacingCurve.fluidMultiplier).toFixed(2)),
-    max: parseFloat((exponentialCurve(spacingCurve.baseUnit, spacingCurve.growthFactor, index) * spacingCurve.maxMultiplier).toFixed(3)),
+    min: parseFloat(
+      exponentialCurve(spacingCurve.baseUnit, spacingCurve.growthFactor, index).toFixed(3),
+    ),
+    fluid: parseFloat(
+      (
+        exponentialCurve(spacingCurve.baseUnit, spacingCurve.growthFactor, index) *
+        spacingCurve.fluidMultiplier
+      ).toFixed(2),
+    ),
+    max: parseFloat(
+      (
+        exponentialCurve(spacingCurve.baseUnit, spacingCurve.growthFactor, index) *
+        spacingCurve.maxMultiplier
+      ).toFixed(3),
+    ),
   }));
 }
 

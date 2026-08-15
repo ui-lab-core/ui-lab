@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "ui-lab-components/button";
 
-export function CopyButton({ code, className = "absolute right-2 top-2 z-10" }: { code: string; className?: string }) {
+export function CopyButton({
+  code,
+  className = "absolute right-2 top-2 z-10",
+}: {
+  code: string;
+  className?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -21,7 +27,6 @@ export function CopyButton({ code, className = "absolute right-2 top-2 z-10" }: 
       aria-label={copied ? "Code copied" : "Copy code"}
       icon={copied ? <Check size={14} /> : <Copy size={14} />}
       className={className}
-    >
-    </Button>
+    ></Button>
   );
 }

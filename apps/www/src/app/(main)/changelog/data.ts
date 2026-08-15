@@ -61,8 +61,7 @@ const entries: Entry[] = [
     version: "0.3.45",
     date: "2026-05-11",
     title: "Component styling and focus management",
-    description:
-      "A broad accessibility and styling pass across nine components.",
+    description: "A broad accessibility and styling pass across nine components.",
     changes: [
       "Overhauled Badge, Banner, Flex, Grid, List, Popover, Progress, Slider, and Tabs",
       "New useFocus hook for consistent focus management",
@@ -82,9 +81,7 @@ const entries: Entry[] = [
     version: "0.3.43",
     date: "2026-04-07",
     title: "Package reference fix",
-    changes: [
-      "Package references now point to published npm versions instead of workspace links",
-    ],
+    changes: ["Package references now point to published npm versions instead of workspace links"],
   },
   {
     version: "0.3.42",
@@ -101,8 +98,7 @@ const entries: Entry[] = [
     version: "0.3.41",
     date: "2026-03-30",
     title: "Server-side rendering support",
-    description:
-      "Core overlay and utility components no longer require a client boundary.",
+    description: "Core overlay and utility components no longer require a client boundary.",
     changes: [
       "Anchor, Mask, Scroll, and Tooltip are now SSR-compatible",
       "Anchor previews use Tooltip with an arrow indicator",
@@ -148,8 +144,7 @@ const entries: Entry[] = [
     version: "0.3.0",
     date: "2026-03-19",
     title: "Semantic theme system",
-    description:
-      "The theme system was redesigned around CSS variables and semantic color tokens.",
+    description: "The theme system was redesigned around CSS variables and semantic color tokens.",
     changes: [
       "New theme architecture with semantic color tokens",
       "Onyx theme introduced",
