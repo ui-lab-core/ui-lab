@@ -19,6 +19,7 @@ pnpm release
 ```
 
 This script:
+
 1. Reads all pending changesets and bumps versions accordingly
 2. Generates/updates `CHANGELOG.md` in each package
 3. Builds all packages

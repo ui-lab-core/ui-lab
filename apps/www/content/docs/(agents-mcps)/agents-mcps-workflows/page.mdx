@@ -12,20 +12,18 @@ Once the UI Lab MCP server is connected, AI agents have access to 10 tools and 4
 
 ## Tools overview
 
-
-| Tool | Purpose |
-|---|---|
-| `search_components` | Find components by natural language query |
-| `get_component` | Get full component metadata: API, examples, design guidance |
+| Tool                 | Purpose                                                             |
+| -------------------- | ------------------------------------------------------------------- |
+| `search_components`  | Find components by natural language query                           |
+| `get_component`      | Get full component metadata: API, examples, design guidance         |
 | `get_semantic_color` | Get ONE authoritative color recommendation for a component + intent |
-| `get_theme_setup` | Get complete light/dark theme setup with provider code |
-| `search_patterns` | Find design patterns by use case |
-| `get_pattern` | Get a pattern's full TSX code and design rationale |
-| `search_elements` | Find pre-built multi-component UI blocks |
-| `get_element` | Get an element's variations and file structure |
-| `search_sections` | Find landing page sections |
-| `get_section` | Get a section's variations |
-
+| `get_theme_setup`    | Get complete light/dark theme setup with provider code              |
+| `search_patterns`    | Find design patterns by use case                                    |
+| `get_pattern`        | Get a pattern's full TSX code and design rationale                  |
+| `search_elements`    | Find pre-built multi-component UI blocks                            |
+| `get_element`        | Get an element's variations and file structure                      |
+| `search_sections`    | Find landing page sections                                          |
+| `get_section`        | Get a section's variations                                          |
 
 ---
 
@@ -36,6 +34,7 @@ Once the UI Lab MCP server is connected, AI agents have access to 10 tools and 4
 Searches all UI Lab components using natural language. Returns up to 10 results ranked by relevance.
 
 **Input:**
+
 ```json
 {
   "query": "input form field text"
@@ -45,6 +44,7 @@ Searches all UI Lab components using natural language. Returns up to 10 results 
 **Returns:** Array of component summaries with `id`, `name`, `description`, `tags`.
 
 **Example queries:**
+
 - `"button primary action"` → Button
 - `"dropdown select option"` → Select
 - `"text input form field"` → Input
@@ -59,6 +59,7 @@ Searches all UI Lab components using natural language. Returns up to 10 results 
 Fetches complete component metadata by ID. Use after `search_components` to get the full API.
 
 **Input:**
+
 ```json
 {
   "id": "button",
@@ -67,11 +68,13 @@ Fetches complete component metadata by ID. Use after `search_components` to get 
 ```
 
 **`detail` options:**
+
 - `"api"` — props + subComponents only. Use when writing code — smallest response, no examples.
 - `"examples"` — description + usage examples only. Use when learning patterns.
 - `"full"` — everything: API, examples, design guidelines (default).
 
 **Returns:** Component metadata including:
+
 - `api.props` — all props with types, defaults, descriptions
 - `api.subComponents` — compound component slots (e.g. `Card.Header`, `Card.Footer`)
 - `api.examples` — working TSX code examples
@@ -98,6 +101,7 @@ Fetches complete component metadata by ID. Use after `search_components` to get 
 Returns ONE authoritative color recommendation for a component and intent combination. Does not offer options — it returns the correct choice.
 
 **Input:**
+
 ```json
 {
   "component": "button",
@@ -108,6 +112,7 @@ Returns ONE authoritative color recommendation for a component and intent combin
 **`semantic_intent` values:** `primary`, `secondary`, `danger`, `success`, `warning`, `info`
 
 **Returns:**
+
 ```json
 {
   "recommended": {
@@ -134,6 +139,7 @@ Call this before generating component code to get the right Tailwind token class
 Returns complete setup instructions and code for integrating the UI Lab theme system with light/dark mode.
 
 **Input:**
+
 ```json
 {
   "include_fouc_script": true
@@ -141,6 +147,7 @@ Returns complete setup instructions and code for integrating the UI Lab theme sy
 ```
 
 **Returns:**
+
 - `setup.provider` — `ThemeProvider` wrapper code for your root layout
 - `setup.hooks` — `useTheme`, `useThemeMode`, etc. with signatures
 - `setup.toggleComponent` — ready-to-use `ThemeToggle` component code
@@ -154,15 +161,13 @@ Returns complete setup instructions and code for integrating the UI Lab theme sy
 
 Shades invert automatically — no `dark:` prefix needed in Tailwind classes:
 
-
-| Shade | Dark mode equivalent |
-|---|---|
+| Shade            | Dark mode equivalent                |
+| ---------------- | ----------------------------------- |
 | `background-500` | ↔ `background-500` (stays constant) |
-| `background-600` | ↔ `background-900` |
-| `background-700` | ↔ `background-800` |
-| `background-900` | ↔ `background-600` |
-| `background-950` | ↔ `background-500` |
-
+| `background-600` | ↔ `background-900`                  |
+| `background-700` | ↔ `background-800`                  |
+| `background-900` | ↔ `background-600`                  |
+| `background-950` | ↔ `background-500`                  |
 
 ```tsx
 // This single class works correctly in both light and dark mode:
@@ -180,6 +185,7 @@ Patterns are opinionated, ready-to-use TSX implementations of common UI problems
 ### `search_patterns`
 
 **Input:**
+
 ```json
 {
   "query": "delete confirmation modal"
@@ -187,6 +193,7 @@ Patterns are opinionated, ready-to-use TSX implementations of common UI problems
 ```
 
 **Example queries:**
+
 - `"auth login form"` → auth-form
 - `"destructive confirm dialog"` → destructive-confirm
 - `"empty state placeholder"` → empty-state
@@ -204,6 +211,7 @@ Patterns are opinionated, ready-to-use TSX implementations of common UI problems
 Fetches the full pattern including complete TSX code and design notes.
 
 **Input:**
+
 ```json
 {
   "id": "destructive-confirm"
@@ -211,6 +219,7 @@ Fetches the full pattern including complete TSX code and design notes.
 ```
 
 **Returns:**
+
 - `pattern.code` — complete working TSX implementation
 - `pattern.designNotes` — why each token and component choice was made
 - `designGuidelines` — mandatory color rules
@@ -226,6 +235,7 @@ Elements are pre-built, multi-component UI blocks that solve complete UI problem
 ### `search_elements`
 
 **Input:**
+
 ```json
 {
   "query": "AI chat interface"
@@ -234,15 +244,14 @@ Elements are pre-built, multi-component UI blocks that solve complete UI problem
 
 **Available elements:**
 
-
-| Category | Elements |
-|---|---|
-| AI | Chat, AIChatInput, ChainOfThought |
-| Documentation | TOC, NextArticle, CopyPage |
-| Foundation | Page, Sidebar, Header, Carousel, Timeline, Rating, TreeView |
-
+| Category      | Elements                                                    |
+| ------------- | ----------------------------------------------------------- |
+| AI            | Chat, AIChatInput, ChainOfThought                           |
+| Documentation | TOC, NextArticle, CopyPage                                  |
+| Foundation    | Page, Sidebar, Header, Carousel, Timeline, Rating, TreeView |
 
 **Example queries:**
+
 - `"chat interface"` → Chat
 - `"AI input prompt"` → AIChatInput
 - `"sidebar navigation"` → Sidebar
@@ -254,6 +263,7 @@ Elements are pre-built, multi-component UI blocks that solve complete UI problem
 ### `get_element`
 
 **Input:**
+
 ```json
 {
   "id": "chat"
@@ -261,6 +271,7 @@ Elements are pre-built, multi-component UI blocks that solve complete UI problem
 ```
 
 **Returns:**
+
 - `element.variations` — all available variations with names and descriptions
 - `element.files` — file structure for each variation
 - `element.packageId` — which UI Lab package the element belongs to
@@ -276,6 +287,7 @@ Sections are full-width landing page blocks ready to drop into marketing pages.
 ### `search_sections`
 
 **Input:**
+
 ```json
 {
   "query": "pricing comparison table"
@@ -285,6 +297,7 @@ Sections are full-width landing page blocks ready to drop into marketing pages.
 **Available sections:** Hero, Features, CTA, Pricing, Testimonials
 
 **Each has multiple variations:**
+
 - `hero` → simple, with-image, with-video
 - `features` → grid, list
 - `pricing` → cards, comparison
@@ -296,6 +309,7 @@ Sections are full-width landing page blocks ready to drop into marketing pages.
 ### `get_section`
 
 **Input:**
+
 ```json
 {
   "id": "pricing"
@@ -312,14 +326,12 @@ In addition to tools, the server exposes all content as MCP resources. Agents ca
 
 **Resource URI schemes:**
 
-
-| Scheme | Example | Content |
-|---|---|---|
-| `component://` | `component://button` | Full component metadata |
-| `pattern://` | `pattern://auth-form` | Pattern with TSX code |
-| `element://` | `element://chat` | Element variations and files |
-| `section://` | `section://hero` | Section variations |
-
+| Scheme         | Example               | Content                      |
+| -------------- | --------------------- | ---------------------------- |
+| `component://` | `component://button`  | Full component metadata      |
+| `pattern://`   | `pattern://auth-form` | Pattern with TSX code        |
+| `element://`   | `element://chat`      | Element variations and files |
+| `section://`   | `section://hero`      | Section variations           |
 
 `ListResources` returns every component, pattern, element, and section indexed together. `ReadResource` reads a specific URI.
 
@@ -333,30 +345,26 @@ Every `get_component`, `get_pattern`, `get_semantic_color`, and `get_theme_setup
 
 These are the only color families allowed. No Tailwind built-in colors, no hex codes.
 
-
-| Family | Use for |
-|---|---|
-| `accent` | Primary actions, CTAs, brand elements |
-| `success` | Success states, confirmations, approved |
-| `danger` | Errors, destructive actions, delete |
-| `warning` | Warnings, cautions, pending states |
-| `info` | Information, help, neutral messages |
-| `background` | Page and card backgrounds (grayscale) |
-| `foreground` | Text, borders, labels (grayscale) |
-
+| Family       | Use for                                 |
+| ------------ | --------------------------------------- |
+| `accent`     | Primary actions, CTAs, brand elements   |
+| `success`    | Success states, confirmations, approved |
+| `danger`     | Errors, destructive actions, delete     |
+| `warning`    | Warnings, cautions, pending states      |
+| `info`       | Information, help, neutral messages     |
+| `background` | Page and card backgrounds (grayscale)   |
+| `foreground` | Text, borders, labels (grayscale)       |
 
 ### Shade ranges
 
 Shades are strictly bounded per family:
 
-
-| Family | Min shade | Max shade | Notes |
-|---|---|---|---|
-| `background` (bg) | 500 | 950 | 500 = lightest, 950 = darkest |
-| `foreground` (text/border) | 50 | 400 | 50 = lightest, 400 = darkest |
-| `accent` | 50 | 600 | |
-| `success`, `danger`, `warning`, `info` | 50 | 600 | |
-
+| Family                                 | Min shade | Max shade | Notes                         |
+| -------------------------------------- | --------- | --------- | ----------------------------- |
+| `background` (bg)                      | 500       | 950       | 500 = lightest, 950 = darkest |
+| `foreground` (text/border)             | 50        | 400       | 50 = lightest, 400 = darkest  |
+| `accent`                               | 50        | 600       |                               |
+| `success`, `danger`, `warning`, `info` | 50        | 600       |                               |
 
 ### Class format
 
@@ -369,19 +377,17 @@ hover:bg-{family}-{shade}
 
 ### Common mistakes and corrections
 
-
-| Wrong | Correct |
-|---|---|
-| `bg-white` | `bg-background-950` |
-| `text-gray-900` | `text-foreground-300` |
-| `bg-zinc-100` | `bg-background-600` |
-| `shadow-md` | _(remove — no shadows)_ |
-| `from-blue-500 to-purple-600` | _(remove — no gradients)_ |
-| `border-red-500` | `border-danger-600` |
-| `bg-background-50` | `bg-background-950` |
-| `text-foreground-500` | `text-foreground-400` (max is 400) |
-| `bg-accent-700` | `bg-accent-600` (max is 600) |
-
+| Wrong                         | Correct                            |
+| ----------------------------- | ---------------------------------- |
+| `bg-white`                    | `bg-background-950`                |
+| `text-gray-900`               | `text-foreground-300`              |
+| `bg-zinc-100`                 | `bg-background-600`                |
+| `shadow-md`                   | _(remove — no shadows)_            |
+| `from-blue-500 to-purple-600` | _(remove — no gradients)_          |
+| `border-red-500`              | `border-danger-600`                |
+| `bg-background-50`            | `bg-background-950`                |
+| `text-foreground-500`         | `text-foreground-400` (max is 400) |
+| `bg-accent-700`               | `bg-accent-600` (max is 600)       |
 
 ### Correct examples
 

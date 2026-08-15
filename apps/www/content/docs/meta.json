@@ -1,9 +1,3 @@
 {
-  "pages": [
-    "index",
-    "(getting-started)",
-    "(customization)",
-    "(guides)",
-    "(agents-mcps)"
-  ]
+  "pages": ["index", "(getting-started)", "(customization)", "(guides)", "(agents-mcps)"]
 }

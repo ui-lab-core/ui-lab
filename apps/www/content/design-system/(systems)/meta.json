@@ -1,7 +1,4 @@
 {
   "title": "Systems",
-  "pages": [
-    "tokens",
-    "variables"
-  ]
+  "pages": ["tokens", "variables"]
 }

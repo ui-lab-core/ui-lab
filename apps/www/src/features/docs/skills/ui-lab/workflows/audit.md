@@ -24,6 +24,7 @@ See `references/core-pillars.md` for full definitions. Audit in this order:
 ### 2. Registry validation (Adherence only)
 
 For each UI Lab component referenced in code:
+
 1. `search_components(name)` — confirm it exists
 2. `get_component(id, detail="api")` — retrieve prop signature
 3. `get_component(id, detail="usage")` when component nesting, placement, or surface semantics matter
@@ -34,6 +35,7 @@ For each UI Lab component referenced in code:
 ### 3. Audit
 
 For each pillar:
+
 1. Apply the Check / Flag lists from `core-pillars.md`
 2. For Adherence, also apply `design-system.md` rules
 3. For Slop Avoidance, also apply `references/slop-patterns.md`
@@ -41,11 +43,13 @@ For each pillar:
 5. Assign star rating (below)
 
 **Severity:**
+
 - `CRITICAL` — breaks functionality, accessibility, or a load-bearing pillar rule
 - `WARNING` — degrades experience or violates design system
 - `SUGGESTION` — improvement opportunity
 
 **Rating:**
+
 - 5 — no violations
 - 4 — suggestions only
 - 3 — 1–2 warnings, no critical
@@ -110,7 +114,7 @@ Every audit must follow this structure verbatim. No preamble, no closing remarks
 - Each bullet: `- <element/component>: [SEVERITY] <issue> → <fix>`
   - `<element>` is a concrete selector or component name (e.g., `Delete button`, `Toolbar`, `<button> on line 42`), never "the UI" or "various elements".
   - `[SEVERITY]` is one of `CRITICAL`, `WARNING`, `SUGGESTION`, in square brackets, uppercase.
-  - Issue and fix are separated by ` → ` (space, arrow, space).
+  - Issue and fix are separated by `→` (space, arrow, space).
   - Fix names the specific token, component, or prop. `text-foreground-50`, not "lighter text".
 - Within a pillar, order bullets `CRITICAL` → `WARNING` → `SUGGESTION`.
 - Summary line:
@@ -124,17 +128,17 @@ Every audit must follow this structure verbatim. No preamble, no closing remarks
 
 Scan code for native HTML elements first. Severities:
 
-| Native | Replacement | Severity |
-|---|---|---|
-| `<button>` | `<Button>` | CRITICAL |
-| `<a>` | `<Anchor>` | CRITICAL |
-| `<input>` (any type) | `<Input>` / `<Checkbox>` / `<Radio>` | CRITICAL |
-| `<select>` | `<Select>` | CRITICAL |
-| `<textarea>` | `<TextArea>` | WARNING |
-| `<label>` | `<Label>` | WARNING |
-| `<div className="flex">` | `<Flex>` | WARNING |
-| `<div className="grid">` | `<Grid>` | WARNING |
-| `<div>` with padding/bg className | `<Card>` / `<Group>` | WARNING |
+| Native                            | Replacement                          | Severity |
+| --------------------------------- | ------------------------------------ | -------- |
+| `<button>`                        | `<Button>`                           | CRITICAL |
+| `<a>`                             | `<Anchor>`                           | CRITICAL |
+| `<input>` (any type)              | `<Input>` / `<Checkbox>` / `<Radio>` | CRITICAL |
+| `<select>`                        | `<Select>`                           | CRITICAL |
+| `<textarea>`                      | `<TextArea>`                         | WARNING  |
+| `<label>`                         | `<Label>`                            | WARNING  |
+| `<div className="flex">`          | `<Flex>`                             | WARNING  |
+| `<div className="grid">`          | `<Grid>`                             | WARNING  |
+| `<div>` with padding/bg className | `<Card>` / `<Group>`                 | WARNING  |
 
 ### Token Usage
 
@@ -188,18 +192,24 @@ The following are the canonical output shapes. Match these exactly.
 ### Example 1 — Clean design, no violations
 
 **Input (abridged):**
+
 ```tsx
-import { Button, Card, Flex } from 'ui-lab-components'
+import { Button, Card, Flex } from "ui-lab-components";
 
 <Card>
   <Flex gap="md">
-    <Button variant="primary" onPress={save}>Save</Button>
-    <Button variant="ghost" onPress={cancel}>Cancel</Button>
+    <Button variant="primary" onPress={save}>
+      Save
+    </Button>
+    <Button variant="ghost" onPress={cancel}>
+      Cancel
+    </Button>
   </Flex>
-</Card>
+</Card>;
 ```
 
 **Output:**
+
 ```
 ## DESIGN AUDIT REPORT
 
@@ -238,6 +248,7 @@ No violations.
 ### Example 2 — Mixed severity across multiple pillars
 
 **Input (abridged):**
+
 ```tsx
 <div className="flex gap-2 bg-white p-4">
   <button className="bg-red-500 text-white" onClick={del}>Delete</button>
@@ -249,6 +260,7 @@ No violations.
 ```
 
 **Output:**
+
 ```
 ## DESIGN AUDIT REPORT
 
@@ -302,18 +314,22 @@ No violations.
 ### Example 3 — Mostly clean with a single warning
 
 **Input (abridged):**
+
 ```tsx
 <Card>
   <Card.Header>Project settings</Card.Header>
   <Flex gap="md">
     <Input label="Name" />
     <Button onPress={save}>Save</Button>
-    <Button onPress={save} variant="ghost">Save</Button>
+    <Button onPress={save} variant="ghost">
+      Save
+    </Button>
   </Flex>
 </Card>
 ```
 
 **Output:**
+
 ```
 ## DESIGN AUDIT REPORT
 

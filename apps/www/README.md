@@ -66,14 +66,14 @@ Billing checkout also needs a Stripe Price ID wherever the checkout UI passes
 
 Where to get each value:
 
-| Variable | Where to get it |
-| --- | --- |
-| `NEXT_PUBLIC_CONVEX_URL` | Convex Dashboard -> project -> deployment -> Settings -> URL & Deploy Key. Docs: https://docs.convex.dev/dashboard/deployments/deployment-settings |
-| `CONVEX_DEPLOYMENT` | Usually written by `convex dev`. You can also inspect `apps/www/.env.local` after linking the project. Convex env docs: https://docs.convex.dev/production/environment-variables |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Dashboard -> app/environment -> API Keys. Use the test key locally, but the live key in production. Docs: https://clerk.com/docs/deployments/clerk-environment-variables |
-| `CLERK_SECRET_KEY` | Clerk Dashboard -> app/environment -> API Keys. Use the test secret locally, but the live secret in production. Docs: https://clerk.com/docs/deployments/clerk-environment-variables |
-| `CLERK_FRONTEND_API_URL` | Clerk Dashboard -> app/environment -> JWT Templates -> Convex template / issuer URL, also called the Frontend API URL. Use the production issuer in deployed environments, not a `*.clerk.accounts.dev` URL. Convex + Clerk guide: https://clerk.com/docs/integrations/databases/convex |
-| Stripe Price ID | Stripe Dashboard -> Product catalog -> product -> pricing row, or direct test-mode prices: https://dashboard.stripe.com/test/prices |
+| Variable                            | Where to get it                                                                                                                                                                                                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_CONVEX_URL`            | Convex Dashboard -> project -> deployment -> Settings -> URL & Deploy Key. Docs: https://docs.convex.dev/dashboard/deployments/deployment-settings                                                                                                                                      |
+| `CONVEX_DEPLOYMENT`                 | Usually written by `convex dev`. You can also inspect `apps/www/.env.local` after linking the project. Convex env docs: https://docs.convex.dev/production/environment-variables                                                                                                        |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Dashboard -> app/environment -> API Keys. Use the test key locally, but the live key in production. Docs: https://clerk.com/docs/deployments/clerk-environment-variables                                                                                                          |
+| `CLERK_SECRET_KEY`                  | Clerk Dashboard -> app/environment -> API Keys. Use the test secret locally, but the live secret in production. Docs: https://clerk.com/docs/deployments/clerk-environment-variables                                                                                                    |
+| `CLERK_FRONTEND_API_URL`            | Clerk Dashboard -> app/environment -> JWT Templates -> Convex template / issuer URL, also called the Frontend API URL. Use the production issuer in deployed environments, not a `*.clerk.accounts.dev` URL. Convex + Clerk guide: https://clerk.com/docs/integrations/databases/convex |
+| Stripe Price ID                     | Stripe Dashboard -> Product catalog -> product -> pricing row, or direct test-mode prices: https://dashboard.stripe.com/test/prices                                                                                                                                                     |
 
 ### 3. Convex deployment environment
 
@@ -88,11 +88,11 @@ pnpm -C app --filter @ui-lab/site exec convex env set STRIPE_WEBHOOK_SECRET whse
 
 Where to get each Convex env value:
 
-| Variable | Where to get it |
-| --- | --- |
-| `CLERK_FRONTEND_API_URL` | Same Clerk issuer/frontend API URL used in `.env.local`: https://clerk.com/docs/integrations/databases/convex |
-| `STRIPE_SECRET_KEY` | Stripe Dashboard -> Developers -> API keys. Docs: https://docs.stripe.com/keys |
-| `STRIPE_WEBHOOK_SECRET` | Stripe Dashboard -> Developers -> Webhooks -> select endpoint -> Signing secret. Docs: https://docs.stripe.com/webhooks |
+| Variable                 | Where to get it                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `CLERK_FRONTEND_API_URL` | Same Clerk issuer/frontend API URL used in `.env.local`: https://clerk.com/docs/integrations/databases/convex           |
+| `STRIPE_SECRET_KEY`      | Stripe Dashboard -> Developers -> API keys. Docs: https://docs.stripe.com/keys                                          |
+| `STRIPE_WEBHOOK_SECRET`  | Stripe Dashboard -> Developers -> Webhooks -> select endpoint -> Signing secret. Docs: https://docs.stripe.com/webhooks |
 
 Convex environment variables can also be edited in the Convex Dashboard:
 https://dashboard.convex.dev
@@ -105,7 +105,7 @@ guide: https://clerk.com/docs/integrations/databases/convex
 The template name matters because server entitlement checks call:
 
 ```ts
-getToken({ template: "convex" })
+getToken({ template: "convex" });
 ```
 
 ### 5. Stripe webhook endpoint

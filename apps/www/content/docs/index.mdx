@@ -9,7 +9,9 @@ tags: ["getting-started", "setup", "basics"]
 <Banner>
   <Banner.Title>Early Development Stage</Banner.Title>
   <Banner.Body>
-    UI Lab is currently in early development. Features and APIs may change. If you encounter any issues or have feedback, please let us know by creating an issue in our [repository](https://github.com/ui-lab-core/ui-lab).
+    UI Lab is currently in early development. Features and APIs may change. If you encounter any
+    issues or have feedback, please let us know by creating an issue in our
+    [repository](https://github.com/ui-lab-core/ui-lab).
   </Banner.Body>
 </Banner>
 
@@ -34,7 +36,7 @@ pnpm add ui-lab-components
 Then add your app-owned token layer and import `ui-lab-components/styles.css`. Follow the [Installation guide](/docs/installation) for the required stylesheet order and a complete working setup.
 
 ```tsx
-import { Button, Group, Panel } from 'ui-lab-components';
+import { Button, Group, Panel } from "ui-lab-components";
 
 <Panel>
   <Panel.Header>Settings</Panel.Header>
@@ -44,7 +46,7 @@ import { Button, Group, Panel } from 'ui-lab-components';
       <Button variant="ghost">Cancel</Button>
     </Group>
   </Panel.Content>
-</Panel>
+</Panel>;
 ```
 
 For step-by-step setup, see the [Installation guide](/docs/installation).
@@ -55,15 +57,15 @@ UI Lab uses OKLCH — a perceptually-uniform color space that scales correctly a
 
 Seven semantic color families with enforced shade ranges:
 
-| Family | Shades | Use for |
-|--------|--------|---------|
+| Family       | Shades  | Use for                                      |
+| ------------ | ------- | -------------------------------------------- |
 | `background` | 500–950 | Page backgrounds, borders, cards, containers |
-| `foreground` | 50–400 | Text, icons |
-| `accent` | 50–600 | Primary buttons, links, focus rings |
-| `success` | 50–600 | Confirmations, positive states |
-| `danger` | 50–600 | Errors, destructive actions |
-| `warning` | 50–600 | Cautions, pending states |
-| `info` | 50–600 | Neutral information |
+| `foreground` | 50–400  | Text, icons                                  |
+| `accent`     | 50–600  | Primary buttons, links, focus rings          |
+| `success`    | 50–600  | Confirmations, positive states               |
+| `danger`     | 50–600  | Errors, destructive actions                  |
+| `warning`    | 50–600  | Cautions, pending states                     |
+| `info`       | 50–600  | Neutral information                          |
 
 ```tsx
 // Correct — works in light and dark mode automatically
@@ -115,7 +117,7 @@ Components are built to combine. Compound sub-components share state through con
   </Panel.Left>
   <Panel.Content>
     <List>
-      {items.map(item => (
+      {items.map((item) => (
         <List.Item key={item.id} value={item.id}>
           <List.Media>{item.icon}</List.Media>
           {item.label}

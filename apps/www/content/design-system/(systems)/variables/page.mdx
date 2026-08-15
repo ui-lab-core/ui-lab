@@ -15,6 +15,7 @@ CSS Variables (Custom Properties) provide direct access to all design tokens in 
 ## What Are CSS Variables?
 
 CSS Variables (also called CSS Custom Properties) are entities defined by CSS authors that contain specific values to be reused throughout a document. They provide:
+
 - Dynamic theming capabilities
 - Single-source-of-truth for design decisions
 - Reduced code duplication
@@ -25,7 +26,7 @@ CSS Variables (also called CSS Custom Properties) are entities defined by CSS au
 ```css
 /* Define a variable */
 :root {
-  --color-primary: #4F46E5;
+  --color-primary: #4f46e5;
   --spacing-base: 16px;
 }
 
@@ -48,6 +49,7 @@ All CSS variables follow the pattern: `--{category}-{property}`
 ### Examples
 
 **Colors**
+
 ```css
 --background-50
 --foreground-400
@@ -57,6 +59,7 @@ All CSS variables follow the pattern: `--{category}-{property}`
 ```
 
 **Typography**
+
 ```css
 --font-family-sans
 --font-size-md
@@ -66,6 +69,7 @@ All CSS variables follow the pattern: `--{category}-{property}`
 ```
 
 **Spacing**
+
 ```css
 --space-1
 --space-4
@@ -73,6 +77,7 @@ All CSS variables follow the pattern: `--{category}-{property}`
 ```
 
 **Other**
+
 ```css
 --radius-lg
 --shadow-md
@@ -103,6 +108,7 @@ Used for page backgrounds, containers, and surface layers:
 ```
 
 **Usage:**
+
 ```css
 body {
   background-color: var(--background-50);
@@ -130,6 +136,7 @@ Text and foreground elements:
 ```
 
 **Usage:**
+
 ```css
 body {
   color: var(--foreground-400);
@@ -157,6 +164,7 @@ Primary interactive elements and highlights:
 ```
 
 **Usage:**
+
 ```css
 .button-primary {
   background-color: var(--accent-600);
@@ -175,26 +183,31 @@ a {
 ### Semantic Colors
 
 **Success (Green)**
+
 ```css
 --success-50 through --success-950
 ```
 
 **Danger (Red)**
+
 ```css
 --danger-50 through --danger-950
 ```
 
 **Warning (Yellow)**
+
 ```css
 --warning-50 through --warning-950
 ```
 
 **Info (Blue)**
+
 ```css
 --info-50 through --info-950
 ```
 
 **Usage:**
+
 ```css
 .alert-success {
   background-color: var(--success-50);
@@ -221,6 +234,7 @@ a {
 ```
 
 **Usage:**
+
 ```css
 body {
   font-family: var(--font-family-sans);
@@ -245,6 +259,7 @@ pre {
 ```
 
 **Usage:**
+
 ```css
 h1 {
   font-size: var(--font-size-3xl);
@@ -268,6 +283,7 @@ body {
 ```
 
 **Usage:**
+
 ```css
 strong {
   font-weight: var(--font-weight-bold);
@@ -287,6 +303,7 @@ strong {
 ```
 
 **Usage:**
+
 ```css
 h1 {
   line-height: var(--line-height-tight);
@@ -319,6 +336,7 @@ Pre-combined typography variables:
 ```
 
 **Usage:**
+
 ```css
 h1 {
   font: var(--text-h1);
@@ -354,6 +372,7 @@ Spacing uses 4px as the base unit:
 ```
 
 **Usage:**
+
 ```css
 /* Single value */
 margin: var(--space-4);
@@ -389,6 +408,7 @@ margin: var(--space-6) var(--space-4) var(--space-3);
 ```
 
 **Usage:**
+
 ```css
 .button {
   border-radius: var(--radius-md);
@@ -419,6 +439,7 @@ margin: var(--space-6) var(--space-4) var(--space-3);
 ```
 
 **Usage:**
+
 ```css
 .card {
   box-shadow: var(--shadow-md);
@@ -454,6 +475,7 @@ margin: var(--space-6) var(--space-4) var(--space-3);
 ```
 
 **Usage:**
+
 ```css
 button {
   transition: all var(--duration-base) var(--ease-in-out);
@@ -656,16 +678,16 @@ CSS variables make theme switching simple and efficient:
 
 ```javascript
 function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme)
-  localStorage.setItem('theme', theme)
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
 }
 
 function getTheme() {
-  return localStorage.getItem('theme') || 'light'
+  return localStorage.getItem("theme") || "light";
 }
 
 // Apply theme on page load
-document.documentElement.setAttribute('data-theme', getTheme())
+document.documentElement.setAttribute("data-theme", getTheme());
 ```
 
 ---
@@ -673,6 +695,7 @@ document.documentElement.setAttribute('data-theme', getTheme())
 ## Browser Support
 
 CSS Variables are supported in all modern browsers:
+
 - Chrome 49+
 - Firefox 31+
 - Safari 9.1+
@@ -685,7 +708,7 @@ For older browser support, provide fallback values:
 
 ```css
 .button {
-  background-color: #4F46E5;  /* Fallback */
+  background-color: #4f46e5; /* Fallback */
   background-color: var(--accent-600);
 }
 ```
@@ -717,23 +740,25 @@ In the browser DevTools:
 
 ```javascript
 // Get all variables
-const variables = getComputedStyle(document.documentElement)
+const variables = getComputedStyle(document.documentElement);
 
 // Get a specific variable
-const accentColor = variables.getPropertyValue('--accent-600')
+const accentColor = variables.getPropertyValue("--accent-600");
 
 // Set a variable dynamically
-document.documentElement.style.setProperty('--accent-600', '#new-color')
+document.documentElement.style.setProperty("--accent-600", "#new-color");
 ```
 
 ### Common Issues
 
 **Variable not working:**
+
 - Check spelling and hyphenation
 - Verify it's defined in `:root` or parent scope
 - Ensure fallback value is valid CSS
 
 **Theme not switching:**
+
 - Verify CSS selector matches HTML element
 - Check that variables are redefined in new scope
 - Clear browser cache
@@ -745,15 +770,17 @@ document.documentElement.style.setProperty('--accent-600', '#new-color')
 ### From Hardcoded Values
 
 **Before:**
+
 ```css
 .button {
-  background-color: #4F46E5;
+  background-color: #4f46e5;
   padding: 8px 16px;
   color: #ffffff;
 }
 ```
 
 **After:**
+
 ```css
 .button {
   background-color: var(--accent-600);
@@ -768,4 +795,4 @@ document.documentElement.style.setProperty('--accent-600', '#new-color')
 
 - [MDN: CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*)
 - [CSS Variables Best Practices](https://www.smashingmagazine.com/2018/05/css-custom-properties-strategy-guide/)
-- [Using CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/var())
+- [Using CSS Variables](<https://developer.mozilla.org/en-US/docs/Web/CSS/var()>)

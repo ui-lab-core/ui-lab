@@ -17,6 +17,7 @@ Component guidelines define how UI Lab components should be used, when to use th
 ### When to Create Components
 
 Components should be created when:
+
 1. A pattern repeats across multiple interfaces
 2. The pattern has distinct, well-defined states
 3. The component would reduce code duplication
@@ -25,6 +26,7 @@ Components should be created when:
 ### When NOT to Create Components
 
 Don't create components for:
+
 1. One-off implementations
 2. Simple elements (use HTML elements instead)
 3. Experimental features
@@ -41,31 +43,31 @@ All components follow a consistent structure:
 ```tsx
 interface ComponentProps {
   // Required props
-  required: string
+  required: string;
 
   // Optional props with sensible defaults
-  optional?: string
-  variant?: 'primary' | 'secondary'
-  size?: 'small' | 'medium' | 'large'
-  disabled?: boolean
-  className?: string
-  children?: React.ReactNode
+  optional?: string;
+  variant?: "primary" | "secondary";
+  size?: "small" | "medium" | "large";
+  disabled?: boolean;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export function Component({
   required,
-  optional = 'default',
-  variant = 'primary',
-  size = 'medium',
+  optional = "default",
+  variant = "primary",
+  size = "medium",
   disabled = false,
-  className = '',
+  className = "",
   children,
 }: ComponentProps) {
   return (
     <div className={`component component--${variant} component--${size} ${className}`}>
       {children}
     </div>
-  )
+  );
 }
 ```
 
@@ -96,41 +98,41 @@ Buttons trigger actions or navigations. They're the primary way users interact w
 ### Variants
 
 **Primary**
+
 ```tsx
-<Button variant="primary">
-  Primary Action
-</Button>
+<Button variant="primary">Primary Action</Button>
 ```
+
 - Most prominent, use for main action
 - Background: accent-600
 - Hover: accent-700
 
 **Secondary**
+
 ```tsx
-<Button variant="secondary">
-  Secondary Action
-</Button>
+<Button variant="secondary">Secondary Action</Button>
 ```
+
 - Less prominent, use for secondary actions
 - Background: background-100
 - Hover: background-200
 
 **Danger**
+
 ```tsx
-<Button variant="danger">
-  Delete
-</Button>
+<Button variant="danger">Delete</Button>
 ```
+
 - For destructive actions
 - Background: danger-600
 - Hover: danger-700
 
 **Ghost**
+
 ```tsx
-<Button variant="ghost">
-  Dismiss
-</Button>
+<Button variant="ghost">Dismiss</Button>
 ```
+
 - Minimal style, use for tertiary actions
 - Background: transparent
 - Hover: background-100
@@ -153,14 +155,14 @@ Buttons trigger actions or navigations. They're the primary way users interact w
 
 ```tsx
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
-  size?: 'sm' | 'md' | 'lg'
-  disabled?: boolean
-  loading?: boolean
-  onClick?: () => void
-  children: React.ReactNode
-  className?: string
-  asChild?: boolean
+  variant?: "primary" | "secondary" | "danger" | "ghost";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  loading?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+  className?: string;
+  asChild?: boolean;
 }
 ```
 
@@ -217,26 +219,31 @@ Inputs collect user text data. They're essential for forms and searches.
 ### Types
 
 **Text Input**
+
 ```tsx
 <Input type="text" placeholder="Enter name" />
 ```
 
 **Email Input**
+
 ```tsx
 <Input type="email" placeholder="email@example.com" />
 ```
 
 **Password Input**
+
 ```tsx
 <Input type="password" placeholder="Enter password" />
 ```
 
 **Number Input**
+
 ```tsx
 <Input type="number" min="0" max="100" />
 ```
 
 **Search Input**
+
 ```tsx
 <Input type="search" placeholder="Search..." />
 ```
@@ -260,15 +267,15 @@ Inputs collect user text data. They're essential for forms and searches.
 
 ```tsx
 interface InputProps {
-  type?: 'text' | 'email' | 'password' | 'number' | 'search'
-  placeholder?: string
-  value?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  disabled?: boolean
-  error?: string
-  size?: 'sm' | 'md' | 'lg'
-  prefix?: React.ReactNode
-  suffix?: React.ReactNode
+  type?: "text" | "email" | "password" | "number" | "search";
+  placeholder?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  error?: string;
+  size?: "sm" | "md" | "lg";
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
 }
 ```
 
@@ -352,14 +359,14 @@ Selects allow users to choose from predefined options. Use instead of free-text 
 
 ```tsx
 interface SelectProps {
-  options: Array<{ label: string; value: string }>
-  value?: string
-  onChange?: (value: string) => void
-  placeholder?: string
-  disabled?: boolean
-  error?: string
-  size?: 'sm' | 'md' | 'lg'
-  searchable?: boolean
+  options: Array<{ label: string; value: string }>;
+  value?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  error?: string;
+  size?: "sm" | "md" | "lg";
+  searchable?: boolean;
 }
 ```
 
@@ -421,6 +428,7 @@ Cards are containers for grouped content. They provide visual organization and h
 ### Variants
 
 **Default**
+
 ```tsx
 <Card>
   <CardTitle>Title</CardTitle>
@@ -429,6 +437,7 @@ Cards are containers for grouped content. They provide visual organization and h
 ```
 
 **Interactive**
+
 ```tsx
 <Card interactive onClick={handleClick}>
   Content
@@ -436,23 +445,22 @@ Cards are containers for grouped content. They provide visual organization and h
 ```
 
 **Elevated**
+
 ```tsx
-<Card elevation="high">
-  Important content
-</Card>
+<Card elevation="high">Important content</Card>
 ```
 
 ### Props
 
 ```tsx
 interface CardProps {
-  children: React.ReactNode
-  title?: string
-  description?: string
-  interactive?: boolean
-  elevation?: 'low' | 'medium' | 'high'
-  padding?: 'sm' | 'md' | 'lg'
-  onClick?: () => void
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+  interactive?: boolean;
+  elevation?: "low" | "medium" | "high";
+  padding?: "sm" | "md" | "lg";
+  onClick?: () => void;
 }
 ```
 
@@ -500,12 +508,7 @@ interface CardProps {
     {/* Form field group */}
     <div className="form-group">
       <label htmlFor="email">Email Address</label>
-      <Input
-        id="email"
-        type="email"
-        required
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <Input id="email" type="email" required onChange={(e) => setEmail(e.target.value)} />
       <span className="help-text">We'll never share your email</span>
     </div>
 
@@ -628,7 +631,7 @@ describe('Button', () => {
 
 ```tsx
 <Button loading={isLoading} disabled={isLoading}>
-  {isLoading ? 'Saving...' : 'Save'}
+  {isLoading ? "Saving..." : "Save"}
 </Button>
 ```
 
@@ -636,7 +639,7 @@ describe('Button', () => {
 
 ```tsx
 <>
-  <Input error={error ? 'Required field' : ''} />
+  <Input error={error ? "Required field" : ""} />
   {error && <Alert variant="danger">{error}</Alert>}
 </>
 ```
@@ -644,19 +647,21 @@ describe('Button', () => {
 ### Confirmation Pattern
 
 ```tsx
-{showConfirm ? (
-  <div className="confirmation">
-    <p>Are you sure?</p>
-    <Button onClick={handleConfirm}>Yes</Button>
-    <Button variant="secondary" onClick={handleCancel}>
-      Cancel
+{
+  showConfirm ? (
+    <div className="confirmation">
+      <p>Are you sure?</p>
+      <Button onClick={handleConfirm}>Yes</Button>
+      <Button variant="secondary" onClick={handleCancel}>
+        Cancel
+      </Button>
+    </div>
+  ) : (
+    <Button variant="danger" onClick={() => setShowConfirm(true)}>
+      Delete
     </Button>
-  </div>
-) : (
-  <Button variant="danger" onClick={() => setShowConfirm(true)}>
-    Delete
-  </Button>
-)}
+  );
+}
 ```
 
 ### Disabled State Pattern
@@ -664,7 +669,7 @@ describe('Button', () => {
 ```tsx
 <Button
   disabled={!isFormValid || isSubmitting}
-  title={!isFormValid ? 'Please fill all required fields' : ''}
+  title={!isFormValid ? "Please fill all required fields" : ""}
 >
   Submit
 </Button>
@@ -685,6 +690,7 @@ Components can be customized using the `className` prop for emergency needs:
 ### When NOT to Customize
 
 Don't customize for:
+
 - Color changes (create a new variant)
 - Size changes (use size prop)
 - Spacing changes (design system mismatch)

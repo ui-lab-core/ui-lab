@@ -101,6 +101,7 @@ pnpm changeset
 ```
 
 This opens an interactive prompt:
+
 1. Select which packages your change affects
 2. Choose the bump type — `patch`, `minor`, or `major`
 3. Write a one-line summary of the change
@@ -109,11 +110,11 @@ A markdown file is created in `.changeset/`. Commit it alongside your code chang
 
 ### Bump type guide
 
-| Type | When |
-|------|------|
-| `patch` | Bug fix, style tweak, dependency update, internal refactor |
+| Type    | When                                                            |
+| ------- | --------------------------------------------------------------- |
+| `patch` | Bug fix, style tweak, dependency update, internal refactor      |
 | `minor` | New component, new prop/API, new feature (backwards compatible) |
-| `major` | Breaking change to a component API or exported type |
+| `major` | Breaking change to a component API or exported type             |
 
 Because `ui-lab-components` and `ui-lab-registry` are fixed, bumping one bumps both.
 
@@ -149,12 +150,12 @@ This script does the following in order:
 
 ### What gets published
 
-| Package | npm |
-|---------|-----|
-| `ui-lab-components` | ✓ |
-| `ui-lab-registry` | ✓ |
-| `ui-lab` | ✓ (independently versioned) |
-| `@ui-lab/site` | ✗ (private, deployed to Vercel) |
+| Package             | npm                             |
+| ------------------- | ------------------------------- |
+| `ui-lab-components` | ✓                               |
+| `ui-lab-registry`   | ✓                               |
+| `ui-lab`            | ✓ (independently versioned)     |
+| `@ui-lab/site`      | ✗ (private, deployed to Vercel) |
 
 Vercel picks up the deployment automatically when the push lands on `master`.
 

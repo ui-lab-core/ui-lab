@@ -15,6 +15,7 @@ Record the component types and imports you find — they drive Step 2.5 queries.
 ## Step 2 — Domain and context reasoning (do this before evaluating anything)
 
 Answer these questions explicitly before proceeding:
+
 - What domain does this interface serve? (developer tool, e-commerce, admin dashboard, onboarding flow, settings panel, etc.)
 - Who is the likely user and what is their mental model coming into this screen?
 - What workflow brought the user here? What were they doing before?
@@ -36,6 +37,7 @@ Generate 3–5 search queries based on domain, components seen, and suspected ga
 For each result, note `purpose`, `codeStructureHint`, `bestFor`, and `variationsSummary`.
 
 **Selective drill-down**: When a variation directly addresses a spotted gap, call the appropriate getter:
+
 - `get_pattern(id)` for patterns
 - `get_element(id)` for elements
 - `get_section(id)` for sections
@@ -48,6 +50,7 @@ Use sparingly — only when clearly applicable. Store findings as working materi
 ## Step 3 — Deconstruct into atomic elements
 
 List every element as a flat inventory. For each:
+
 - Name (e.g., "Submit button", "Empty state message", "Filter dropdown")
 - Current implementation (what's there, or "ABSENT" if missing)
 - Role in the interface (what job does it do for this specific user?)
@@ -62,6 +65,7 @@ Do not skip states. "No loading state" is itself an element to list as ABSENT.
 For each element in your inventory, rate its value relative to the domain and user you identified in Step 2: HIGH / MEDIUM / LOW / REMOVE.
 
 Ask yourself:
+
 - Does it serve this user's specific need, or does it exist for the builder's convenience?
 - Is it in the right place in this user's workflow, or does it appear too early/late?
 - Does its visual prominence match its functional importance for this domain?
@@ -78,18 +82,21 @@ REMOVE means: the element actively hurts by adding noise, creating false afforda
 Identify elements the interface should have but doesn't. Classify each gap into one or more categories:
 
 **CRITICAL gaps** (interface is broken or misleading without these):
+
 - Native HTML elements instead of UI Lab components: `<button>` → `<Button>`, `<a>` → `<Anchor>`, `<input>` → `<Input>`/`<Checkbox>`/`<Radio>`, `<select>` → `<Select>`, `<div className="flex">` → `<Flex>` — list each one found during ingestion
 - Missing feedback states: no empty state, no error state, no loading state, no success confirmation
 - Missing workflow connections: no way to go back, no next-step affordance, no escape hatch
 - Missing context: user can't tell where they are, what an action does, or what the data means
 
 **LAYOUT COHERENCE gaps** (interface works but feels disconnected or spatially scattered):
+
 - Spatially isolated elements that logically group with existing controls (e.g., search separated from filters, sort icon isolated from view toggles)
 - Opportunities to use compound patterns (Group.Select, split buttons, inline grouping) to unify related controls
 - Controls scattered across multiple UI regions when they should be proximate (discovery controls spread across top/sidebar instead of grouped)
 - Visual hierarchy that obscures relationships between related actions
 
 **PROGRESSIVE DISCLOSURE opportunities** (reduce visual load without losing functionality):
+
 - Secondary or low-frequency controls always visible that could hide in dropdowns, collapsibles, or tabs
 - Advanced options with marginal visibility that don't need permanent screen real estate
 - Related controls that could share a disclosure pattern (Group.Select, compound menu, expandable section)
@@ -100,6 +107,7 @@ Where a gathered pattern directly addresses a gap, note the structure hint in yo
 ## Step 6 — Actionable brief
 
 Return exactly this structure:
+
 ```
 DESIGN BRIEF
 
@@ -132,3 +140,4 @@ DOWNSTREAM ACTIONS
 - For audit: [What violation types to prioritize given this domain]
 
 Do not write code. Do not reference Tailwind classes or UI Lab APIs. Focus on what the interface should do, not how to build it.
+```

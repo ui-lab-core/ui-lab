@@ -4,15 +4,14 @@
 
 React component library and design system for building accessible, themeable interfaces. It ships 40 components built on React Aria, a typed registry of pre-built patterns and elements, an MCP server for AI-assisted development, and a documentation site with live previews and an interactive theme configurator.
 
-
 ## What's Included
 
-| Package | npm name | Purpose |
-|---------|----------|---------|
-| `packages/@ui` | `ui-lab-components` | React component library — 40 accessible, themeable components |
-| `packages/registry` | `ui-lab-registry` | Public registry for the existing public site ecosystem |
-| `packages/@mcp` | `ui-lab` | MCP server — exposes library to AI assistants (Claude, Cursor) |
-| `apps/www` | — | Next.js documentation site with live previews and public metadata |
+| Package             | npm name            | Purpose                                                           |
+| ------------------- | ------------------- | ----------------------------------------------------------------- |
+| `packages/@ui`      | `ui-lab-components` | React component library — 40 accessible, themeable components     |
+| `packages/registry` | `ui-lab-registry`   | Public registry for the existing public site ecosystem            |
+| `packages/@mcp`     | `ui-lab`            | MCP server — exposes library to AI assistants (Claude, Cursor)    |
+| `apps/www`          | —                   | Next.js documentation site with live previews and public metadata |
 
 ---
 
@@ -21,23 +20,24 @@ The private authoring workspace lives in the sibling `dev/` repo in this checkou
 ## Component Library
 
 **Install:**
+
 ```bash
 npm install ui-lab-components
 ```
 
 **40 components** across these categories:
 
-| Category | Components |
-|----------|-----------|
-| Layout | Grid, Flex, Gallery, Divider, Expand, Panel |
-| Composition | Group, List |
-| Action | Button, Confirm, Command, Skeleton |
-| Input | Date, Checkbox, Color, Input, Radio, Select, Slider, Switch, Textarea |
-| Information | Banner, Badge, Label, Tooltip |
-| Feedback | Popover, Progress, Toast |
-| Navigation | Path, Menu, Tabs, Anchor |
-| Container | Page, Card, Modal, Scroll, Mask, Frame |
-| Display | Table, Code |
+| Category    | Components                                                            |
+| ----------- | --------------------------------------------------------------------- |
+| Layout      | Grid, Flex, Gallery, Divider, Expand, Panel                           |
+| Composition | Group, List                                                           |
+| Action      | Button, Confirm, Command, Skeleton                                    |
+| Input       | Date, Checkbox, Color, Input, Radio, Select, Slider, Switch, Textarea |
+| Information | Banner, Badge, Label, Tooltip                                         |
+| Feedback    | Popover, Progress, Toast                                              |
+| Navigation  | Path, Menu, Tabs, Anchor                                              |
+| Container   | Page, Card, Modal, Scroll, Mask, Frame                                |
+| Display     | Table, Code                                                           |
 
 **Key characteristics:**
 
@@ -63,22 +63,23 @@ The `ui-lab` package is a [Model Context Protocol](https://modelcontextprotocol.
 
 **12 tools exposed:**
 
-| Tool | What it does |
-|------|-------------|
-| `search_components` | Find components by natural language query |
-| `get_component` | Get full API, examples, or design guidance for a component |
-| `get_semantic_color` | Get a recommended color pairing for a component + intent |
-| `get_theme_setup` | Get complete theme provider setup with FOUC prevention |
-| `search_patterns` | Find design patterns by use case |
-| `get_pattern` | Get pattern code and design rationale |
-| `search_elements` | Find multi-component UI blocks |
-| `get_element` | Get element variations and source |
-| `search_sections` | Find landing page sections |
-| `get_section` | Get section variations and source |
-| `get_inspiration` | Fuzzy discovery across all categories |
-| `get_variation_code` | Get source for a specific variation |
+| Tool                 | What it does                                               |
+| -------------------- | ---------------------------------------------------------- |
+| `search_components`  | Find components by natural language query                  |
+| `get_component`      | Get full API, examples, or design guidance for a component |
+| `get_semantic_color` | Get a recommended color pairing for a component + intent   |
+| `get_theme_setup`    | Get complete theme provider setup with FOUC prevention     |
+| `search_patterns`    | Find design patterns by use case                           |
+| `get_pattern`        | Get pattern code and design rationale                      |
+| `search_elements`    | Find multi-component UI blocks                             |
+| `get_element`        | Get element variations and source                          |
+| `search_sections`    | Find landing page sections                                 |
+| `get_section`        | Get section variations and source                          |
+| `get_inspiration`    | Fuzzy discovery across all categories                      |
+| `get_variation_code` | Get source for a specific variation                        |
 
 **Claude Desktop config:**
+
 ```json
 {
   "mcpServers": {
@@ -138,30 +139,30 @@ pnpm build:packages
 
 **All root commands:**
 
-| Command | Effect |
-|---------|--------|
-| `pnpm dev:site` | Start docs site at localhost:3000 |
-| `pnpm dev` | Start all apps |
-| `pnpm build` | Build everything |
-| `pnpm build:packages` | Build @ui, registry, @mcp only |
-| `pnpm build:site` | Build site only |
-| `pnpm type-check` | TypeScript check across all packages |
-| `pnpm lint` | Lint all packages |
+| Command               | Effect                               |
+| --------------------- | ------------------------------------ |
+| `pnpm dev:site`       | Start docs site at localhost:3000    |
+| `pnpm dev`            | Start all apps                       |
+| `pnpm build`          | Build everything                     |
+| `pnpm build:packages` | Build @ui, registry, @mcp only       |
+| `pnpm build:site`     | Build site only                      |
+| `pnpm type-check`     | TypeScript check across all packages |
+| `pnpm lint`           | Lint all packages                    |
 
 ---
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| Language | TypeScript ^5.9 |
-| UI framework | React 19.2.4 |
-| Web framework | Next.js 16.2.0 |
-| Component bundler | Vite ^5.3.4 |
-| Styling | Tailwind CSS ^4.1.11, CSS Modules, PostCSS |
-| Accessibility | React Aria ^3.14+, React Stately |
-| Animation | GSAP ^3.12.2 |
-| Syntax highlighting | Shiki ^3.17.1 |
-| Icons | Lucide React |
-| Package manager | pnpm 10.21.0 |
-| Node.js | >= 18 |
+| Category            | Technology                                 |
+| ------------------- | ------------------------------------------ |
+| Language            | TypeScript ^5.9                            |
+| UI framework        | React 19.2.4                               |
+| Web framework       | Next.js 16.2.0                             |
+| Component bundler   | Vite ^5.3.4                                |
+| Styling             | Tailwind CSS ^4.1.11, CSS Modules, PostCSS |
+| Accessibility       | React Aria ^3.14+, React Stately           |
+| Animation           | GSAP ^3.12.2                               |
+| Syntax highlighting | Shiki ^3.17.1                              |
+| Icons               | Lucide React                               |
+| Package manager     | pnpm 10.21.0                               |
+| Node.js             | >= 18                                      |

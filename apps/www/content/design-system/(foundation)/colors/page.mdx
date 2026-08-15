@@ -14,17 +14,15 @@ The UI Lab design system uses OKLCH, a perceptually-uniform color space, to ensu
 
 ## Quick Reference
 
-
-| Family | Purpose | Use Case |
-|--------|---------|----------|
+| Family         | Purpose                      | Use Case                                            |
+| -------------- | ---------------------------- | --------------------------------------------------- |
 | **Background** | Surface and container colors | Page backgrounds, borders, cards, elevated surfaces |
-| **Foreground** | Text and icon colors | Body text, labels, icons |
-| **Accent** | Interactive elements | Buttons, links, focus indicators |
-| **Success** | Positive states (green) | Confirmations, approved actions |
-| **Danger** | Error states (red) | Errors, destructive actions, failures |
-| **Warning** | Caution states (orange) | Warnings, pending states, alerts |
-| **Info** | Neutral information (blue) | Information, documentation, metadata |
-
+| **Foreground** | Text and icon colors         | Body text, labels, icons                            |
+| **Accent**     | Interactive elements         | Buttons, links, focus indicators                    |
+| **Success**    | Positive states (green)      | Confirmations, approved actions                     |
+| **Danger**     | Error states (red)           | Errors, destructive actions, failures               |
+| **Warning**    | Caution states (orange)      | Warnings, pending states, alerts                    |
+| **Info**       | Neutral information (blue)   | Information, documentation, metadata                |
 
 ---
 
@@ -62,16 +60,19 @@ Below is the comprehensive color palette for all color families. Click any value
 ### Core Colors
 
 **Background** — Grayscale palette for surfaces and containers
+
 - **Shade Scale**: 500–950 (only these shades exist; no 50–400 variants)
 - **Usage**: Page backgrounds, card surfaces, elevated containers, borders, dividers
 - **Tip**: Lower numbers (500–600) are used for primary surfaces; higher numbers (700–950) for deeper/elevated layers. Direction reverses between light and dark mode.
 
 **Foreground** — Grayscale palette optimized for text and icons
+
 - **Shade Scale**: 50–400 (only these shades exist; no 500–950 variants)
 - **Usage**: Body text, labels, icons
 - **Tip**: Lower numbers (50–100) are lighter; higher numbers (300–400) are darker. Direction reverses between light and dark mode.
 
 **Accent** — Primary interactive color (dynamically themable)
+
 - **Shade Scale**: 50–600 (only these shades exist)
 - **Usage**: Primary buttons, links, focus indicators, highlights
 - **Theming**: Can be customized per theme while maintaining accessibility
@@ -81,18 +82,22 @@ Below is the comprehensive color palette for all color families. Click any value
 All semantic families share the same shade range: **50–600 only**. Shades 700–950 do not exist for semantic colors.
 
 **Success** — Positive actions and confirmations
+
 - **Chroma Range**: 0.01 – 0.28
 - **Use**: Success messages, confirmations, approved states, positive feedback
 
 **Danger** — Errors and destructive actions
+
 - **Chroma Range**: 0.01 – 0.28
 - **Use**: Error messages, destructive action confirmations, failed states
 
 **Warning** — Cautions and attention-needed states
+
 - **Chroma Range**: 0.01 – 0.26
 - **Use**: Warning messages, pending states, important notices
 
 **Info** — Information and neutral states
+
 - **Chroma Range**: 0.01 – 0.24
 - **Use**: Info messages, documentation links, neutral metadata
 
@@ -113,6 +118,7 @@ All semantic families share the same shade range: **50–600 only**. Shades 700�
 ### Practical Examples
 
 **Success Message**
+
 ```html
 <!-- Background: success-50 or success-100 -->
 <!-- Text: success-500 or success-600 -->
@@ -120,6 +126,7 @@ All semantic families share the same shade range: **50–600 only**. Shades 700�
 ```
 
 **Error/Danger Button**
+
 ```html
 <!-- Background: danger-500 or danger-600 -->
 <!-- Text: foreground-50 -->
@@ -127,6 +134,7 @@ All semantic families share the same shade range: **50–600 only**. Shades 700�
 ```
 
 **Info Badge**
+
 ```html
 <!-- Background: info-100 or info-200 -->
 <!-- Text: info-500 or info-600 -->
@@ -143,6 +151,7 @@ All colors are available as CSS variables:
 **Examples**: `--background-900`, `--foreground-300`, `--accent-500`, `--success-700`, `--danger-600`, `--warning-400`, `--info-500`
 
 **In CSS:**
+
 ```css
 .button {
   background-color: var(--accent-600);
@@ -162,13 +171,13 @@ All colors are available as CSS variables:
 ```
 
 **In React/TSX:**
+
 ```tsx
-<div style={{ backgroundColor: 'var(--success-50)', color: 'var(--success-900)' }}>
-  Success!
-</div>
+<div style={{ backgroundColor: "var(--success-50)", color: "var(--success-900)" }}>Success!</div>
 ```
 
 **With Tailwind CSS v4:**
+
 ```html
 <div class="bg-success-50 text-success-900">Success!</div>
 <button class="bg-accent-600 text-foreground-50 hover:bg-accent-700">Click me</button>
@@ -206,17 +215,18 @@ All color combinations in this palette are designed to meet or exceed WCAG AA st
 The accent color family can be dynamically customized while maintaining accessibility:
 
 ```typescript
-import { generateThemePalettes } from '@/lib/color-utils'
+import { generateThemePalettes } from "@/lib/color-utils";
 
 const customTheme = generateThemePalettes(
-  { l: 0.16, c: 0.0, h: 0 },      // Background
-  { l: 0.9, c: 0.0, h: 0 },       // Foreground
-  { l: 0.5, c: 0.15, h: 260 },    // Accent (custom purple)
-  'dark'
-)
+  { l: 0.16, c: 0.0, h: 0 }, // Background
+  { l: 0.9, c: 0.0, h: 0 }, // Foreground
+  { l: 0.5, c: 0.15, h: 260 }, // Accent (custom purple)
+  "dark",
+);
 ```
 
 The system automatically:
+
 - Scales chroma appropriately across shades
 - Maintains perceptual uniformity
 - Respects WCAG AA compliance

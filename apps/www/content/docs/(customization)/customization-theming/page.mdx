@@ -55,15 +55,15 @@ A fully app-owned `theme.css` (no `ui-lab-theme-onyx` import) must define every 
 
 Each family has a bounded shade range:
 
-| Family | Shade range | Direction | Use for |
-|---|---|---|---|
-| `background` | 500–950 | 500 = lightest surface | Page, card, container backgrounds |
-| `foreground` | 50–400 | 50 = lightest text | Text, borders, icons, labels |
-| `accent` | 50–600 | 600 = strongest | Primary actions, CTAs, links |
-| `success` | 50–600 | 600 = strongest | Confirmations, positive states |
-| `danger` | 50–600 | 600 = strongest | Errors, destructive actions |
-| `warning` | 50–600 | 600 = strongest | Cautions, pending states |
-| `info` | 50–600 | 600 = strongest | Neutral information |
+| Family       | Shade range | Direction              | Use for                           |
+| ------------ | ----------- | ---------------------- | --------------------------------- |
+| `background` | 500–950     | 500 = lightest surface | Page, card, container backgrounds |
+| `foreground` | 50–400      | 50 = lightest text     | Text, borders, icons, labels      |
+| `accent`     | 50–600      | 600 = strongest        | Primary actions, CTAs, links      |
+| `success`    | 50–600      | 600 = strongest        | Confirmations, positive states    |
+| `danger`     | 50–600      | 600 = strongest        | Errors, destructive actions       |
+| `warning`    | 50–600      | 600 = strongest        | Cautions, pending states          |
+| `info`       | 50–600      | 600 = strongest        | Neutral information               |
 
 ---
 
@@ -82,10 +82,12 @@ There is no `dark:` prefix in UI Lab. Shades invert automatically when the theme
 ```
 
 ```tsx
-{/* No dark: variant needed — shade inversion handles it */}
+{
+  /* No dark: variant needed — shade inversion handles it */
+}
 <div className="bg-background-700 text-foreground-300 border border-foreground-100">
   Works in both light and dark mode
-</div>
+</div>;
 ```
 
 ---
@@ -155,13 +157,13 @@ The accent family is designed for dynamic customization. Override it in your app
 
 ```css
 :root {
-  --accent-50:  oklch(97% 0.012 262);
-  --accent-100: oklch(93% 0.030 262);
+  --accent-50: oklch(97% 0.012 262);
+  --accent-100: oklch(93% 0.03 262);
   --accent-200: oklch(86% 0.065 262);
-  --accent-300: oklch(74% 0.110 262);
+  --accent-300: oklch(74% 0.11 262);
   --accent-400: oklch(62% 0.145 262);
-  --accent-500: oklch(52% 0.170 262);
-  --accent-600: oklch(44% 0.190 262);
+  --accent-500: oklch(52% 0.17 262);
+  --accent-600: oklch(44% 0.19 262);
 }
 ```
 
@@ -171,15 +173,15 @@ All components that use `accent-*` tokens pick up the change automatically — n
 
 ## Common mistakes
 
-| Wrong | Correct |
-|---|---|
-| `bg-white` | `bg-background-500` |
-| `text-gray-900` | `text-foreground-400` |
-| `bg-zinc-100` | `bg-background-600` |
-| `bg-background-50` | `bg-background-500` — min shade is 500 |
+| Wrong                 | Correct                                  |
+| --------------------- | ---------------------------------------- |
+| `bg-white`            | `bg-background-500`                      |
+| `text-gray-900`       | `text-foreground-400`                    |
+| `bg-zinc-100`         | `bg-background-600`                      |
+| `bg-background-50`    | `bg-background-500` — min shade is 500   |
 | `text-foreground-500` | `text-foreground-400` — max shade is 400 |
-| `bg-accent-700` | `bg-accent-600` — max shade is 600 |
-| `border-red-500` | `border-danger-500` |
+| `bg-accent-700`       | `bg-accent-600` — max shade is 600       |
+| `border-red-500`      | `border-danger-500`                      |
 
 ---
 

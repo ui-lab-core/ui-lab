@@ -22,12 +22,12 @@ Component typography uses three family tokens: `--font-body`, `--font-heading`, 
 
 UI Lab's main color work happens through four families:
 
-| Family | Use For | Avoid |
-|---|---|---|
-| `foreground-*` | Text, icons, labels, code, metadata | Background fills |
-| `background-*` | Page layers, surfaces, borders, dividers, neutral states | High-emphasis brand or feedback color |
-| `accent-*` | Primary actions, brand emphasis, current product/location indicators, focus or small active cues | Passive selected chips, generic filter state, decorative fills |
-| `success-*`, `danger-*`, `warning-*`, `info-*` | Real feedback, validation, status, destructive or caution semantics | Decoration or arbitrary category coloring |
+| Family                                         | Use For                                                                                          | Avoid                                                          |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `foreground-*`                                 | Text, icons, labels, code, metadata                                                              | Background fills                                               |
+| `background-*`                                 | Page layers, surfaces, borders, dividers, neutral states                                         | High-emphasis brand or feedback color                          |
+| `accent-*`                                     | Primary actions, brand emphasis, current product/location indicators, focus or small active cues | Passive selected chips, generic filter state, decorative fills |
+| `success-*`, `danger-*`, `warning-*`, `info-*` | Real feedback, validation, status, destructive or caution semantics                              | Decoration or arbitrary category coloring                      |
 
 The background and foreground scales are bounded role scales. Do not read them as "50 is a light background and 950 is dark text." In this site, `foreground-50` is the brightest foreground and `background-950` is a deep page/root layer in the dark theme.
 
@@ -35,13 +35,13 @@ The background and foreground scales are bounded role scales. Do not read them a
 
 ## Foreground Tokens
 
-| Token | Role | Common Use |
-|---|---|---|
-| `foreground-50` | Maximum emphasis | Page titles, strong headings, labels on dark primary fills, rare high-contrast needs |
-| `foreground-100` | Strong emphasis | Active navigation text, important labels, compact headings when `foreground-50` is too loud |
-| `foreground-200` | High-readable emphasis | Selected neutral states, section labels, important control text |
-| `foreground-300` | Default readable foreground | Body text, default control labels, table or list content |
-| `foreground-400` | Muted foreground | Descriptions, metadata, placeholders, comments, quiet secondary labels, empty states |
+| Token            | Role                        | Common Use                                                                                  |
+| ---------------- | --------------------------- | ------------------------------------------------------------------------------------------- |
+| `foreground-50`  | Maximum emphasis            | Page titles, strong headings, labels on dark primary fills, rare high-contrast needs        |
+| `foreground-100` | Strong emphasis             | Active navigation text, important labels, compact headings when `foreground-50` is too loud |
+| `foreground-200` | High-readable emphasis      | Selected neutral states, section labels, important control text                             |
+| `foreground-300` | Default readable foreground | Body text, default control labels, table or list content                                    |
+| `foreground-400` | Muted foreground            | Descriptions, metadata, placeholders, comments, quiet secondary labels, empty states        |
 
 Use `foreground-50` sparingly. It is often too bright for compact controls, filter chips, metadata, secondary actions, and repeated list rows. Most ordinary UI text should start at `foreground-300`; supporting text usually belongs at `foreground-400`.
 
@@ -49,14 +49,14 @@ Use `foreground-50` sparingly. It is often too bright for compact controls, filt
 
 ## Background Tokens
 
-| Token | Role | Common Use |
-|---|---|---|
+| Token            | Role                                     | Common Use                                                                                       |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `background-500` | Strong or intentionally brighter surface | Rare highlights, generated diagrams, theme tooling where a noticeably brighter neutral is needed |
-| `background-600` | Secondary/highlight background | Strong hover borders, emphasized neutral fills, active support surfaces |
-| `background-700` | Default border and strong divider | Borders, dividers, selected neutral fills, scrollbar thumbs |
-| `background-800` | Elevated or interactive surface | Cards, panels, controls, hover fills, selected neutral rows |
-| `background-900` | First application layer | Secondary page layer, code headers, subdued panels, unselected chips |
-| `background-950` | Depth/root layer | Page backgrounds, header/sidebar roots, deep surrounding areas |
+| `background-600` | Secondary/highlight background           | Strong hover borders, emphasized neutral fills, active support surfaces                          |
+| `background-700` | Default border and strong divider        | Borders, dividers, selected neutral fills, scrollbar thumbs                                      |
+| `background-800` | Elevated or interactive surface          | Cards, panels, controls, hover fills, selected neutral rows                                      |
+| `background-900` | First application layer                  | Secondary page layer, code headers, subdued panels, unselected chips                             |
+| `background-950` | Depth/root layer                         | Page backgrounds, header/sidebar roots, deep surrounding areas                                   |
 
 The site commonly layers `background-950` as the page or app shell, `background-900` as a secondary layer, and `background-800` for elevated panels, cards, popovers, and controls. Borders and dividers commonly use `background-700`, moving toward `background-600` for stronger hover or selected edges.
 
@@ -95,12 +95,12 @@ className={isSelected
 
 Use semantic families only when the UI is communicating that semantic meaning.
 
-| Family | Use For | Example |
-|---|---|---|
+| Family      | Use For                                     | Example                                            |
+| ----------- | ------------------------------------------- | -------------------------------------------------- |
 | `success-*` | Completed, saved, valid, healthy, available | Successful purchase, synced state, positive status |
-| `danger-*` | Error, destructive, failed, invalid | Validation error, delete action, failed request |
-| `warning-*` | Caution, pending, risk, needs attention | Unsaved change, degraded state, warning notice |
-| `info-*` | Neutral information or guidance | Informational message, help state, neutral note |
+| `danger-*`  | Error, destructive, failed, invalid         | Validation error, delete action, failed request    |
+| `warning-*` | Caution, pending, risk, needs attention     | Unsaved change, degraded state, warning notice     |
+| `info-*`    | Neutral information or guidance             | Informational message, help state, neutral note    |
 
 Do not use semantic colors as decoration or as substitute brand colors. If a status needs only low emphasis, pair a subtle semantic fill such as `bg-success-600/10` with readable semantic text and a restrained border.
 
@@ -108,20 +108,20 @@ Do not use semantic colors as decoration or as substitute brand colors. If a sta
 
 ## State Recipes
 
-| Role | Preferred Tokens |
-|---|---|
-| Default text | `text-foreground-300` |
-| Muted text | `text-foreground-400` |
-| High-emphasis heading | `text-foreground-50` or `text-foreground-100` |
-| Page/root layer | `bg-background-950` |
-| Secondary application layer | `bg-background-900` |
-| Floating panels/popovers/cards | `bg-background-800` or component defaults, with `border-background-700` |
-| Borders/dividers | `border-background-700`, stronger as `border-background-600` |
-| Hover/highlight | `hover:bg-background-800`, `hover:border-background-600`, `hover:text-foreground-200` |
+| Role                                  | Preferred Tokens                                                                                                                               |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Default text                          | `text-foreground-300`                                                                                                                          |
+| Muted text                            | `text-foreground-400`                                                                                                                          |
+| High-emphasis heading                 | `text-foreground-50` or `text-foreground-100`                                                                                                  |
+| Page/root layer                       | `bg-background-950`                                                                                                                            |
+| Secondary application layer           | `bg-background-900`                                                                                                                            |
+| Floating panels/popovers/cards        | `bg-background-800` or component defaults, with `border-background-700`                                                                        |
+| Borders/dividers                      | `border-background-700`, stronger as `border-background-600`                                                                                   |
+| Hover/highlight                       | `hover:bg-background-800`, `hover:border-background-600`, `hover:text-foreground-200`                                                          |
 | Passive selected filter/chip/category | `bg-background-700` or `bg-background-800`, `border-background-600` or `border-background-700`, `text-foreground-200` or `text-foreground-300` |
-| Primary action or brand emphasis | `bg-accent-600 text-foreground-50`, `text-accent-500`, or a small `accent-*` indicator |
-| Error or destructive state | `danger-*` text, border, or fill with supporting copy/icon |
-| Success state | `success-*` text, border, or fill with supporting copy/icon |
+| Primary action or brand emphasis      | `bg-accent-600 text-foreground-50`, `text-accent-500`, or a small `accent-*` indicator                                                         |
+| Error or destructive state            | `danger-*` text, border, or fill with supporting copy/icon                                                                                     |
+| Success state                         | `success-*` text, border, or fill with supporting copy/icon                                                                                    |
 
 Hover states should clarify affordance without outranking active or selected states. If an unselected item hovers to `text-foreground-50` while the selected item sits at `text-foreground-300`, the hierarchy is backwards.
 

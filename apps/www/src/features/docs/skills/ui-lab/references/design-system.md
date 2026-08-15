@@ -8,42 +8,42 @@ Canonical rules for validating adherence to UI Lab tokens, components, and patte
 
 Tailwind neutrals are never allowed. Replace:
 
-| Disallowed | Replacement |
-|---|---|
-| `bg-white`, `bg-gray-*`, `bg-zinc-*`, `bg-slate-*`, `bg-stone-*`, `bg-neutral-*` | `bg-background-{500–950}` |
-| `bg-black` | `bg-background-950` |
-| `text-gray-*`, `text-zinc-*`, `text-slate-*`, `text-stone-*`, `text-neutral-*` | `text-foreground-{50–400}` |
+| Disallowed                                                                       | Replacement                |
+| -------------------------------------------------------------------------------- | -------------------------- |
+| `bg-white`, `bg-gray-*`, `bg-zinc-*`, `bg-slate-*`, `bg-stone-*`, `bg-neutral-*` | `bg-background-{500–950}`  |
+| `bg-black`                                                                       | `bg-background-950`        |
+| `text-gray-*`, `text-zinc-*`, `text-slate-*`, `text-stone-*`, `text-neutral-*`   | `text-foreground-{50–400}` |
 
 Surface is dark-first: higher shade = deeper surface.
 
-| Role | Shade |
-|---|---|
-| Root container | `bg-background-950` or `-900` |
+| Role                 | Shade                         |
+| -------------------- | ----------------------------- |
+| Root container       | `bg-background-950` or `-900` |
 | Card / panel / modal | `bg-background-800` or `-900` |
-| Toolbar / header | `bg-background-700` to `-800` |
-| Hover | One shade lighter than base |
+| Toolbar / header     | `bg-background-700` to `-800` |
+| Hover                | One shade lighter than base   |
 
 ### Semantic tokens
 
 Feedback states use semantic tokens, not chromatic Tailwind:
 
-| Intent | Use | Not |
-|---|---|---|
-| Success | `text-success-*`, `bg-success-*` | `*-green-*` |
-| Danger | `text-danger-*`, `bg-danger-*` | `*-red-*` |
+| Intent  | Use                              | Not                       |
+| ------- | -------------------------------- | ------------------------- |
+| Success | `text-success-*`, `bg-success-*` | `*-green-*`               |
+| Danger  | `text-danger-*`, `bg-danger-*`   | `*-red-*`                 |
 | Warning | `text-warning-*`, `bg-warning-*` | `*-yellow-*`, `*-amber-*` |
-| Info | `text-info-*`, `bg-info-*` | `*-blue-*` |
+| Info    | `text-info-*`, `bg-info-*`       | `*-blue-*`                |
 
 Chromatic Tailwind is allowed as intentional decoration (brand, file-type indicators, illustration). Only flag when it substitutes for a semantic token.
 
 ### Shade ranges
 
-| Token | Valid range |
-|---|---|
-| `text-foreground-*` | 50–400 (500+ does not exist) |
-| `bg-background-*` (surfaces) | 600–950 |
-| `bg-background-*` (text/icon-on-dark only) | any |
-| Semantic (`success`/`danger`/`warning`/`info`/`accent`) | max 600 |
+| Token                                                   | Valid range                  |
+| ------------------------------------------------------- | ---------------------------- |
+| `text-foreground-*`                                     | 50–400 (500+ does not exist) |
+| `bg-background-*` (surfaces)                            | 600–950                      |
+| `bg-background-*` (text/icon-on-dark only)              | any                          |
+| Semantic (`success`/`danger`/`warning`/`info`/`accent`) | max 600                      |
 
 `bg-background-{<600}` used as a surface fill is a depth inversion.
 
@@ -51,17 +51,18 @@ Chromatic Tailwind is allowed as intentional decoration (brand, file-type indica
 
 Borders use `border-background-*`, not `border-foreground-*`. `foreground` tokens are for text and icons only.
 
-| Role | Token |
-|---|---|
+| Role                                    | Token                   |
+| --------------------------------------- | ----------------------- |
 | Default divider / table row / card edge | `border-background-700` |
-| Subtle separator | `border-background-800` |
-| Emphasis / input focus ring | `border-background-600` |
+| Subtle separator                        | `border-background-800` |
+| Emphasis / input focus ring             | `border-background-600` |
 
 `border-foreground-*` is a [CRITICAL] violation — `foreground` tokens carry no border semantic and will render incorrectly across themes.
 
 ## Styling prohibitions
 
 Never use:
+
 - Hex: `#rrggbb`
 - `rgba()` in className or inline style
 - `shadow-*`, `drop-shadow-*`
@@ -72,40 +73,42 @@ Never use:
 
 Any native element with styling must be replaced with its UI Lab equivalent.
 
-| Native | UI Lab |
-|---|---|
-| `<button>` | `<Button>` |
-| `<a>` | `<Anchor>` |
-| `<input type="text">` | `<Input>` |
-| `<input type="checkbox">` | `<Checkbox>` |
-| `<input type="radio">` | `<Radio>` |
-| `<select>` | `<Select>` |
-| `<textarea>` | `<TextArea>` |
-| `<label>` | `<Label>` |
-| `<form>` | `<Form>` |
-| `<div className="flex">` | `<Flex>` |
-| `<div className="grid">` | `<Grid>` |
-| `<div>` (padded container) | `<Card>` |
-| `<div>` (grouping controls) | `<Group>` |
+| Native                      | UI Lab       |
+| --------------------------- | ------------ |
+| `<button>`                  | `<Button>`   |
+| `<a>`                       | `<Anchor>`   |
+| `<input type="text">`       | `<Input>`    |
+| `<input type="checkbox">`   | `<Checkbox>` |
+| `<input type="radio">`      | `<Radio>`    |
+| `<select>`                  | `<Select>`   |
+| `<textarea>`                | `<TextArea>` |
+| `<label>`                   | `<Label>`    |
+| `<form>`                    | `<Form>`     |
+| `<div className="flex">`    | `<Flex>`     |
+| `<div className="grid">`    | `<Grid>`     |
+| `<div>` (padded container)  | `<Card>`     |
+| `<div>` (grouping controls) | `<Group>`    |
 
 Imports:
+
 ```js
-import { ComponentName } from 'ui-lab-components'
+import { ComponentName } from "ui-lab-components";
 ```
 
 Do not infer component APIs from memory. Fetch from MCP `get_component`. Theme provider must come verbatim from MCP `get_theme_setup`.
 
 ### Prop conventions (React Aria)
 
-| Use | Not |
-|---|---|
-| `disabled` | `disabled` |
-| `onPress` | `onClick` |
+| Use                       | Not                                |
+| ------------------------- | ---------------------------------- |
+| `disabled`                | `disabled`                         |
+| `onPress`                 | `onClick`                          |
 | `isOpen` / `onOpenChange` | `isVisible` / `onVisibilityChange` |
 
 ### Compound sub-components
 
 Prefer compound forms over raw wrappers:
+
 - `<Card.Header>`, `<Card.Footer>` over `<div>`
 - `<Modal.Footer>` over footer wrapper
 - `<List.Item>` with `<List.Checkbox>` for selectable lists

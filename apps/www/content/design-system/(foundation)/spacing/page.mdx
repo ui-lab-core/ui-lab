@@ -16,21 +16,19 @@ Consistent spacing creates visual rhythm, improves layout balance, and makes int
 
 The spacing scale uses a **base unit of 4px**, with multipliers creating a proportional progression:
 
-
-| Token | Pixels | REM | Use Case |
-|-------|--------|-----|----------|
-| **space-0.5** | 2px | 0.125rem | Minimal gaps, hairlines |
-| **space-1** | 4px | 0.25rem | Tight spacing, icon spacing |
-| **space-2** | 8px | 0.5rem | Button padding, small gaps |
-| **space-3** | 12px | 0.75rem | Component padding, small margins |
-| **space-4** | 16px | 1rem | Standard spacing, primary unit |
-| **space-6** | 24px | 1.5rem | Section spacing, component margins |
-| **space-8** | 32px | 2rem | Major section spacing |
-| **space-12** | 48px | 3rem | Large section spacing |
-| **space-16** | 64px | 4rem | Hero sections, major divisions |
-| **space-20** | 80px | 5rem | Page-level spacing |
-| **space-24** | 96px | 6rem | Full-width sections |
-
+| Token         | Pixels | REM      | Use Case                           |
+| ------------- | ------ | -------- | ---------------------------------- |
+| **space-0.5** | 2px    | 0.125rem | Minimal gaps, hairlines            |
+| **space-1**   | 4px    | 0.25rem  | Tight spacing, icon spacing        |
+| **space-2**   | 8px    | 0.5rem   | Button padding, small gaps         |
+| **space-3**   | 12px   | 0.75rem  | Component padding, small margins   |
+| **space-4**   | 16px   | 1rem     | Standard spacing, primary unit     |
+| **space-6**   | 24px   | 1.5rem   | Section spacing, component margins |
+| **space-8**   | 32px   | 2rem     | Major section spacing              |
+| **space-12**  | 48px   | 3rem     | Large section spacing              |
+| **space-16**  | 64px   | 4rem     | Hero sections, major divisions     |
+| **space-20**  | 80px   | 5rem     | Page-level spacing                 |
+| **space-24**  | 96px   | 6rem     | Full-width sections                |
 
 ---
 
@@ -39,9 +37,11 @@ The spacing scale uses a **base unit of 4px**, with multipliers creating a propo
 ### Mathematical Foundation
 
 The spacing scale follows a **1.5x ratio** between steps, creating proportional relationships:
+
 - **4px** → 6px → **8px** → 12px → **16px** → 24px → **32px** → 48px...
 
 This ratio:
+
 - Creates visual harmony
 - Feels natural to the eye
 - Maintains mathematical relationships
@@ -50,6 +50,7 @@ This ratio:
 ### Base Unit (4px)
 
 Using 4px as the base unit:
+
 - Aligns with most modern design systems
 - Works well on all screen sizes
 - Divides evenly into common sizes
@@ -65,16 +66,14 @@ Space inside components between content and edges:
 
 #### Component Padding
 
-
-| Component | Padding |
-|-----------|----------|
-| **Buttons** | space-2 (8px) horizontal, space-1.5 (6px) vertical |
+| Component        | Padding                                            |
+| ---------------- | -------------------------------------------------- |
+| **Buttons**      | space-2 (8px) horizontal, space-1.5 (6px) vertical |
 | **Input Fields** | space-2 (8px) horizontal, space-1.5 (6px) vertical |
-| **Cards** | space-4 (16px) |
-| **Badges** | space-1 (4px) horizontal, space-0.5 (2px) vertical |
-| **Modals** | space-6 (24px) |
-| **Panels** | space-6 (24px) |
-
+| **Cards**        | space-4 (16px)                                     |
+| **Badges**       | space-1 (4px) horizontal, space-0.5 (2px) vertical |
+| **Modals**       | space-6 (24px)                                     |
+| **Panels**       | space-6 (24px)                                     |
 
 ### Margin (External Spacing)
 
@@ -112,6 +111,7 @@ Spacing between elements on the same line:
 ```
 
 **Common patterns:**
+
 - Form elements: space-2 (8px)
 - Navigation items: space-4 (16px)
 - Card controls: space-2 (8px)
@@ -129,6 +129,7 @@ Space between stacked elements:
 ```
 
 **Common patterns:**
+
 - Between heading and content: space-2 to space-3
 - Between content sections: space-6
 - Between major sections: space-12 to space-16
@@ -196,16 +197,19 @@ Nav height: 56px (mobile), 64px (desktop)
 Spacing adapts for different screen sizes while maintaining the scale:
 
 ### Desktop (1024px+)
+
 - Use spacing scale as documented
 - Generous margins on containers (space-6 to space-8)
 - Full implementation of spacing hierarchy
 
 ### Tablet (768px - 1023px)
+
 - Reduce horizontal padding on containers
 - Maintain vertical spacing hierarchy
 - Adjust margins for narrower viewports
 
 ### Mobile (< 768px)
+
 - Reduce large spacing (space-16+) slightly
 - Tighter horizontal padding (space-3 minimum)
 - Maintain standard spacing for touch targets
@@ -218,11 +222,13 @@ Spacing adapts for different screen sizes while maintaining the scale:
 Spacing considerations for touch interfaces:
 
 ### Minimum Touch Target
+
 - **44px × 44px** recommended
 - **40px × 40px** minimum acceptable
 - Includes padding around interactive element
 
 ### Gap Between Touch Targets
+
 - **Minimum**: 8px (space-2)
 - **Recommended**: 12px (space-3)
 - Prevents accidental taps
@@ -249,8 +255,8 @@ padding: var(--space-3) var(--space-4);
 gap: var(--space-2);
 
 /* Combining values */
-margin: var(--space-6) var(--space-4);      /* Vertical, Horizontal */
-padding: var(--space-4) var(--space-6);     /* All sides */
+margin: var(--space-6) var(--space-4); /* Vertical, Horizontal */
+padding: var(--space-4) var(--space-6); /* All sides */
 ```
 
 ### Practical Examples
@@ -354,6 +360,7 @@ Container A ← space-6 → Container B
 ### 4. Consider Content
 
 Adjust spacing based on content density:
+
 - Dense data: Tighter spacing (space-1 to space-2)
 - Standard content: Standard spacing (space-4)
 - Editorial content: Generous spacing (space-6 to space-8)
@@ -382,12 +389,20 @@ padding: var(--space-4);
 
 ```css
 /* ❌ Avoid */
-.card1 { padding: 16px; }
-.card2 { padding: 20px; }
-.card3 { padding: 12px; }
+.card1 {
+  padding: 16px;
+}
+.card2 {
+  padding: 20px;
+}
+.card3 {
+  padding: 12px;
+}
 
 /* ✓ Do */
-.card { padding: var(--space-4); }
+.card {
+  padding: var(--space-4);
+}
 ```
 
 ### Over-Spacing Content
@@ -409,21 +424,25 @@ padding: var(--space-4);
 ## Spacing in Different Contexts
 
 ### Marketing/Landing Pages
+
 - Generous spacing: space-6 to space-12
 - Large gaps between sections
 - Breathing room around content
 
 ### Data-Heavy Interfaces
+
 - Tighter spacing: space-2 to space-3
 - Compact layouts
 - Dense information display
 
 ### Mobile Apps
+
 - Conservative spacing: space-3 to space-4
 - Touch-friendly (minimum 44px targets)
 - Limited vertical space
 
 ### Editorial Content
+
 - Relaxed spacing: space-4 to space-6
 - Generous line height
 - Large paragraph gaps
@@ -433,16 +452,19 @@ padding: var(--space-4);
 ## Accessibility Considerations
 
 ### Touch Target Spacing
+
 - Ensure 44px minimum touch targets
 - Maintain 8px+ gaps between targets
 - Affects users on mobile and touch devices
 
 ### Visual Spacing for Clarity
+
 - Use spacing to group related content
 - Separate different sections clearly
 - Aid users with cognitive disabilities
 
 ### Motor Control
+
 - Adequate spacing between clickable elements
 - Reduces accidental interactions
 - Especially important for aging users
@@ -454,7 +476,9 @@ padding: var(--space-4);
 Spacing works with other design tokens:
 
 ### With Colors
+
 Use spacing to separate content with different color backgrounds
+
 ```css
 .success-card {
   background-color: var(--success-50);
@@ -464,7 +488,9 @@ Use spacing to separate content with different color backgrounds
 ```
 
 ### With Typography
+
 Spacing around text maintains hierarchy
+
 ```css
 h2 {
   font-size: var(--font-size-xl);
@@ -478,7 +504,9 @@ p {
 ```
 
 ### With Shadows/Elevation
+
 Spacing creates visual separation along with depth
+
 ```css
 .elevated-card {
   box-shadow: var(--shadow-md);

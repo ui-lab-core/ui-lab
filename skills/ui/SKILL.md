@@ -35,6 +35,7 @@ Invoke this skill only when all gates pass:
    - Replacing, migrating, or conforming an existing web front-end UI to UI Lab components.
 
 Do not invoke this skill for:
+
 - Any request that does not include `/ui`, regardless of content.
 - Non-web projects, including native mobile, desktop apps, terminal UIs, CLI tools, editor plugins, backend services, APIs, databases, infrastructure, scripting, tests, build tooling, documentation, or repository maintenance.
 - General code review, bug fixing, refactoring, performance work, type errors, lint errors, dependency updates, or product logic.
@@ -60,19 +61,21 @@ If the user asks about the UI Lab skill, edits this skill, or discusses its acti
 
 <routing>
 
-| Intent | Agent | Trigger words |
-|--------|-------|---------------|
-| Ideate / critique | `ideate` | what should this have, what am I missing, ideate, is this the right design, what would make this better, design critique |
-| Audit | `audit` | UI design review, visual audit, interface audit, design-system violations, layout/accessibility/usability critique |
+| Intent                     | Agent     | Trigger words                                                                                                                                                            |
+| -------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ideate / critique          | `ideate`  | what should this have, what am I missing, ideate, is this the right design, what would make this better, design critique                                                 |
+| Audit                      | `audit`   | UI design review, visual audit, interface audit, design-system violations, layout/accessibility/usability critique                                                       |
 | Conform / fix / replace UI | `conform` | conform, fix the audit findings, apply the audit, replace our ui, swap ui to ui lab, migrate project ui, convert ui to ui lab, refactor UI to UI Lab, bring this in line |
 
 **Routing disambiguation:**
 When trigger words match both `ideate` and `audit`:
+
 - User provides existing UI code/screenshots + asks for visual/interface/design review → `audit`
 - User asks "what should this have / what am I missing / is this right" with or without code → `ideate`
 - User says "improve" without qualifying: ask "Do you want design system violations checked, or holistic design feedback on what should exist?"
 
 When trigger words match `conform` and anything else:
+
 - If the user has an audit report (or says "fix"/"apply" the audit findings) → `conform`, working from that report
 - If the user wants a broad mechanical swap with no audit in hand (“replace all available components with UI Lab equivalents”, “conform our project UI to UI Lab components”) → `conform`, finding and fixing violations itself
 - If the user wants a critique/audit of an existing UI with no intent to fix it yet → ask whether they want (A) audit only, (B) fix/conform only, or (C) audit then conform; default to (C)
@@ -108,6 +111,7 @@ When trigger words match `conform` and anything else:
 **Spawning:** Use the Task tool with subagent_type "general-purpose". Read the agent's `spawn_prompt_file` and pass its content as the prompt, appending the user's code, description, audit report, or file path at the end.
 
 **MCP Usage:** All agents leverage ui-lab tools to query the registry:
+
 - **audit**: Validates components/props against registry via `search_components` → `get_component(detail="api")`; when a component's placement or nesting matters, also query `get_component(detail="usage")`. Uses `search_guides("theme")` → `get_guide` for theme/color setup validation instead of hardcoded rules.
 - **ideate**: Discovers patterns/elements/sections/guides via search tools (`search_patterns`, `search_elements`, `search_sections`, `search_guides`) before suggesting gaps. Queries component examples via `get_component(detail="examples")` when needed and `get_component(detail="usage")` when composition semantics matter.
 - **conform**: Uses `search_guides` → `get_guide("setup-ui-lab-in-project")` before any fix if UI Lab is not already wired. Uses `get_component(detail="api")` + `get_component(detail="usage")` + `get_component_source` to perform safe 1:1 replacements and keep imports correct. Prefers `get_component(detail="examples")` for field-tested replacement markup over hand-written JSX, and uses `get_pattern` / `get_element` / `get_section` for larger structural matches — only when it preserves the existing structure (no redesign).
@@ -117,6 +121,7 @@ When trigger words match `conform` and anything else:
 <success_criteria>
 
 **audit**: An audit is complete when:
+
 - Components validated against registry via `search_components` → `get_component(detail="api")`
 - Native HTML elements checked first (`<button>`, `<a>`, `<input>`, `<select>`, `<div className="...">`, etc.) — any found are CRITICAL violations in the Adherence pillar
 - Vibe-coded anti-patterns from `references/design-system.md` explicitly checked, including arbitrary typography utilities, over-specified text rhythm, and transition noise
@@ -127,6 +132,7 @@ When trigger words match `conform` and anything else:
 - Output follows star-rated format (no code generation)
 
 **ideate**: A brief is complete when:
+
 - Registry queried via appropriate search tools (`search_patterns`, `search_elements`, `search_sections`, `search_guides`)
 - Domain context, user mental model, and workflow reasoning documented (2–4 sentences)
 - Element inventory flat-listed with role, load-bearing status, and value rating
@@ -135,6 +141,7 @@ When trigger words match `conform` and anything else:
 - No code written; focus purely on "what should exist"
 
 **conform**: A conform pass is complete when:
+
 - UI Lab is installed and styles/token layer are wired correctly (or it is explicitly confirmed already set up) using `search_guides` → `get_guide`
 - A scoped plan + replacement report is presented and the user explicitly confirms before any conform changes are applied
 - Only the view layer changes: preserve state, events, data fetching, routing, domain models, copy, and analytics hooks unless the user explicitly asks otherwise

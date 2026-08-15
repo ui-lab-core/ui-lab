@@ -67,34 +67,34 @@ A concise pattern looks like this:
 :root {
   color-scheme: light;
 
-  --background-500: oklch(60.0% 0.008 51.4);
-  --background-900: oklch(96.0% 0.005 51.4);
-  --background-950: oklch(98.0% 0.004 51.4);
+  --background-500: oklch(60% 0.008 51.4);
+  --background-900: oklch(96% 0.005 51.4);
+  --background-950: oklch(98% 0.004 51.4);
 
-  --foreground-50: oklch(16.0% 0.010 51.4);
-  --foreground-200: oklch(31.0% 0.016 51.4);
-  --foreground-400: oklch(55.0% 0.023 51.4);
+  --foreground-50: oklch(16% 0.01 51.4);
+  --foreground-200: oklch(31% 0.016 51.4);
+  --foreground-400: oklch(55% 0.023 51.4);
 
-  --accent-100: oklch(97.0% 0.000 0.0);
-  --accent-500: oklch(32.0% 0.000 0.0);
-  --accent-600: oklch(28.0% 0.000 0.0);
+  --accent-100: oklch(97% 0 0);
+  --accent-500: oklch(32% 0 0);
+  --accent-600: oklch(28% 0 0);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     color-scheme: dark;
 
-    --background-500: oklch(50.0% 0.008 51.4);
-    --background-900: oklch(21.0% 0.005 51.4);
-    --background-950: oklch(18.0% 0.004 51.4);
+    --background-500: oklch(50% 0.008 51.4);
+    --background-900: oklch(21% 0.005 51.4);
+    --background-950: oklch(18% 0.004 51.4);
 
-    --foreground-50: oklch(98.0% 0.010 51.4);
-    --foreground-200: oklch(90.0% 0.016 51.4);
-    --foreground-400: oklch(65.0% 0.023 51.4);
+    --foreground-50: oklch(98% 0.01 51.4);
+    --foreground-200: oklch(90% 0.016 51.4);
+    --foreground-400: oklch(65% 0.023 51.4);
 
-    --accent-100: oklch(20.0% 0.000 0.0);
-    --accent-500: oklch(72.0% 0.000 0.0);
-    --accent-600: oklch(91.0% 0.000 0.0);
+    --accent-100: oklch(20% 0 0);
+    --accent-500: oklch(72% 0 0);
+    --accent-600: oklch(91% 0 0);
   }
 }
 
@@ -105,17 +105,17 @@ A concise pattern looks like this:
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --background-500: oklch(50.0% 0.008 51.4);
-  --background-900: oklch(21.0% 0.005 51.4);
-  --background-950: oklch(18.0% 0.004 51.4);
+  --background-500: oklch(50% 0.008 51.4);
+  --background-900: oklch(21% 0.005 51.4);
+  --background-950: oklch(18% 0.004 51.4);
 
-  --foreground-50: oklch(98.0% 0.010 51.4);
-  --foreground-200: oklch(90.0% 0.016 51.4);
-  --foreground-400: oklch(65.0% 0.023 51.4);
+  --foreground-50: oklch(98% 0.01 51.4);
+  --foreground-200: oklch(90% 0.016 51.4);
+  --foreground-400: oklch(65% 0.023 51.4);
 
-  --accent-100: oklch(20.0% 0.000 0.0);
-  --accent-500: oklch(72.0% 0.000 0.0);
-  --accent-600: oklch(91.0% 0.000 0.0);
+  --accent-100: oklch(20% 0 0);
+  --accent-500: oklch(72% 0 0);
+  --accent-600: oklch(91% 0 0);
 }
 
 @theme inline {
@@ -204,10 +204,7 @@ export function ThemeToggle() {
   const { themeMode, toggleThemeMode } = useColorMode();
 
   return (
-    <Button
-      onPress={toggleThemeMode}
-      variant="ghost"
-    >
+    <Button onPress={toggleThemeMode} variant="ghost">
       {themeMode === "dark" ? "Switch to light" : "Switch to dark"}
     </Button>
   );

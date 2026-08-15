@@ -12,9 +12,10 @@ You are performing a project-wide UI overhaul to UI Lab. The goal is not to rede
 ## Two-phase workflow (plan → confirm → execute)
 
 You must perform the overhaul in two phases:
-1) Produce a scoped plan + replacement report.
-2) Stop and ask the user to confirm.
-Only after explicit confirmation, proceed with code changes.
+
+1. Produce a scoped plan + replacement report.
+2. Stop and ask the user to confirm.
+   Only after explicit confirmation, proceed with code changes.
 
 ## Phase 1: Determine scope, verify setup, and propose a plan
 
@@ -52,6 +53,7 @@ Build and present:
   - For each item: where it is, what it becomes (UI Lab target), and confidence (High/Medium/Low)
 
 MCP guidance for mapping:
+
 - Use `search_components` → `get_component(detail="api")` to select correct UI Lab primitives and props.
 - Use `get_component(detail="usage")` when choosing between surface/layout components or when nesting one UI Lab component inside another.
 - Use `get_component_source` to ensure imports are correct and to flag likely client components.
@@ -60,6 +62,7 @@ MCP guidance for mapping:
 ### 4) Ask for confirmation
 
 Stop after the plan + report and ask:
+
 - “Do you want me to proceed with the overhaul exactly as planned?”
 - If there are any Low-confidence mappings, ask whether to (A) skip them, (B) keep existing UI for those parts, or (C) proceed and iterate.
 

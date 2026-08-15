@@ -14,9 +14,9 @@ If an audit report exists (or the user says "fix these violations" / "conform to
 
 ## Two-phase workflow (plan → confirm → execute)
 
-1) Produce a scoped plan + replacement report.
-2) Stop and ask the user to confirm.
-Only after explicit confirmation, proceed with code changes.
+1. Produce a scoped plan + replacement report.
+2. Stop and ask the user to confirm.
+   Only after explicit confirmation, proceed with code changes.
 
 ## Phase 1: Determine scope, gather findings, verify setup, propose a plan
 
@@ -43,6 +43,7 @@ Build and present:
 - **Replacement report** (per violation/item): where it is, current state, what it becomes (UI Lab target — component/pattern/element/section id), source of the replacement markup (which MCP example/pattern/usage doc it came from), and confidence (High/Medium/Low).
 
 MCP guidance for mapping:
+
 - `search_components` → `get_component(detail="api")` to select the correct primitive and props.
 - `get_component(detail="usage")` when choosing between surface/layout components or nesting one UI Lab component inside another.
 - `get_component(detail="examples")` to source field-tested markup instead of writing it from scratch.

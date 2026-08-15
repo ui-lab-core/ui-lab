@@ -95,7 +95,7 @@ Minor inconsistency.
 
 ### Getting holistic design feedback
 
-You're designing a new screen or questioning whether an existing layout is right. You want to know what the UI *should* contain, not what's wrong with what's there.
+You're designing a new screen or questioning whether an existing layout is right. You want to know what the UI _should_ contain, not what's wrong with what's there.
 
 **Say:** `"What am I missing in this layout?"` · `"What should this screen have?"` · `"Design critique on this component"`
 
@@ -163,16 +163,16 @@ Ready to proceed? Any Low-confidence items to skip or defer?
 
 What gets added to Claude's context window per invocation.
 
-| File | Lines | audit | ideate | overhaul |
-|------|-------|-------|--------|----------|
-| `SKILL.md` | 120 | ✓ | ✓ | ✓ |
-| `workflows/audit.md` | 360 | ✓ | — | — |
-| `workflows/ideate.md` | 134 | — | ✓ | — |
-| `workflows/overhaul.md` | 96 | — | — | ✓ |
-| `references/core-pillars.md` | 169 | ✓ | — | — |
-| `references/design-system.md` | 165 | ✓ | — | — |
-| `references/slop-patterns.md` | 118 | ✓ | — | — |
-| MCP results | varies | ✓ | ✓ | ✓ |
+| File                          | Lines  | audit | ideate | overhaul |
+| ----------------------------- | ------ | ----- | ------ | -------- |
+| `SKILL.md`                    | 120    | ✓     | ✓      | ✓        |
+| `workflows/audit.md`          | 360    | ✓     | —      | —        |
+| `workflows/ideate.md`         | 134    | —     | ✓      | —        |
+| `workflows/overhaul.md`       | 96     | —     | —      | ✓        |
+| `references/core-pillars.md`  | 169    | ✓     | —      | —        |
+| `references/design-system.md` | 165    | ✓     | —      | —        |
+| `references/slop-patterns.md` | 118    | ✓     | —      | —        |
+| MCP results                   | varies | ✓     | ✓      | ✓        |
 
 An audit invocation adds ~950 lines of skill context before any code or MCP results. Ideate and overhaul are lighter — ~250 lines each, with MCP queries adding 0.5–2K tokens per call depending on the component.
 

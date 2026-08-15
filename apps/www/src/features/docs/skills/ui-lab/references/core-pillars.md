@@ -9,6 +9,7 @@ Six orthogonal dimensions. Each pillar: what it measures, what to check, what to
 **Measures:** Use of UI Lab tokens, components, and patterns vs. raw HTML / custom styling.
 
 **Check:**
+
 - Native HTML elements replaced with UI Lab equivalents (`<button>` → `<Button>`, `<a>` → `<Anchor>`, `<input>` → `<Input>`/`<Checkbox>`/`<Radio>`, `<div className="flex">` → `<Flex>`, styled `<div>` → `<Card>` / `<Group>`)
 - Tokens used for color (no hex, no rgba)
 - Semantic tokens for feedback states (success/danger/warning/info), not chromatic Tailwind
@@ -17,6 +18,7 @@ Six orthogonal dimensions. Each pillar: what it measures, what to check, what to
 - Theme provider from MCP `get_theme_setup`
 
 **Flag:**
+
 - Any native HTML element with className or style
 - Styled `<div>` used as layout or container
 - Hex or rgba colors
@@ -32,6 +34,7 @@ See `design-system.md` for the full component mapping table and token rules.
 **Measures:** Alignment, padding consistency, spatial grouping, whitespace, vertical rhythm.
 
 **Check:**
+
 - Padding consistent within component families
 - Margin reflects logical grouping (related elements close, unrelated apart)
 - Text baselines, grid, and edges aligned
@@ -39,6 +42,7 @@ See `design-system.md` for the full component mapping table and token rules.
 - Responsive spacing holds across breakpoints
 
 **Flag:**
+
 - Related elements spatially isolated, or unrelated elements crowded
 - Inconsistent padding on similar components
 - Whitespace that flattens hierarchy instead of reinforcing it
@@ -51,6 +55,7 @@ See `design-system.md` for the full component mapping table and token rules.
 **Measures:** Keyboard support, ARIA, interactive state clarity, error recovery.
 
 **Check:**
+
 - ARIA labels and descriptions present where needed
 - Tab order logical; focus managed on navigation/modal open
 - Hover, active, disabled, focus states all visually distinct
@@ -61,6 +66,7 @@ See `design-system.md` for the full component mapping table and token rules.
 - Buttons and links visually distinguishable
 
 **Flag:**
+
 - Interactive element missing hover or focus state
 - Disabled state indistinguishable from enabled
 - Missing or cryptic ARIA labels
@@ -75,6 +81,7 @@ See `design-system.md` for the full component mapping table and token rules.
 **Measures:** Information density, progressive disclosure, visual noise, decision complexity.
 
 **Check:**
+
 - Critical info foregrounded; secondary info behind disclosure (dropdowns, collapsibles)
 - Defaults clear when many options exist
 - Hierarchy supports scanning
@@ -82,6 +89,7 @@ See `design-system.md` for the full component mapping table and token rules.
 - Decoration subordinate to content
 
 **Flag:**
+
 - All options flat on screen with weak hierarchy
 - Redundant or verbose copy
 - Multiple paths to the same task with no scope distinction
@@ -96,6 +104,7 @@ See `design-system.md` for the full component mapping table and token rules.
 **Measures:** Consistent typography, color semantics, visual weight, iconography, state feedback.
 
 **Check:**
+
 - Typography roles (heading / body / label) follow one set of rules
 - Same state always gets the same color (success = one token, danger = one token, etc.)
 - Primary actions carry more weight than secondary
@@ -105,6 +114,7 @@ See `design-system.md` for the full component mapping table and token rules.
 - Button variants (filled / outlined / ghost) applied by consistent rule
 
 **Flag:**
+
 - Primary and secondary actions at the same visual weight
 - Same state rendered in different colors across views
 - Icon + label saying the same thing with no hierarchy benefit
@@ -119,6 +129,7 @@ See `design-system.md` for the full component mapping table and token rules.
 **Measures:** AI-generated filler, decorative noise, structural cliches, and low-intent UI chrome.
 
 **Check:**
+
 - Decorative separators have a real section-boundary purpose
 - Gradients and shadows communicate data, depth, or state rather than decoration
 - Card and section copy avoids badge-led title/description scaffolds and other repeated metadata-first patterns
@@ -129,6 +140,7 @@ See `design-system.md` for the full component mapping table and token rules.
 - No placeholder chrome ships in non-dev surfaces
 
 **Flag:**
+
 - Decorative dots, repeated dividers, or separators without structural purpose
 - Gratuitous gradients or shadows on non-data surfaces
 - Badge-led section stacks and reflexive header + description patterns
@@ -146,14 +158,14 @@ See `slop-patterns.md` for the canonical pattern list, severity levels, and repo
 
 Each pillar scored 0–5:
 
-| Stars | Meaning |
-|---|---|
-| 5 | No violations |
-| 4 | Minor only — suggestions, low-priority warnings |
-| 3 | Moderate — real gaps, core intent intact |
-| 2 | Significant — pillar compromised, fix soon |
-| 1 | Critical — pillar fundamentally broken |
-| 0 | Missing or unusable |
+| Stars | Meaning                                         |
+| ----- | ----------------------------------------------- |
+| 5     | No violations                                   |
+| 4     | Minor only — suggestions, low-priority warnings |
+| 3     | Moderate — real gaps, core intent intact        |
+| 2     | Significant — pillar compromised, fix soon      |
+| 1     | Critical — pillar fundamentally broken          |
+| 0     | Missing or unusable                             |
 
 ---
 
