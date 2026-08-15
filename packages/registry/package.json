@@ -60,7 +60,6 @@
     "validate": "node --import tsx scripts/validate-registry.ts"
   },
   "dependencies": {
-    "lucide-react": "^0.562.0",
     "react-icons": "^5.5.0",
     "ui-lab-components": "workspace:*"
   },
@@ -71,7 +70,6 @@
     "postcss": "^8.5.6",
     "react": "^19",
     "react-docgen-typescript": "^2.2.2",
-    "ts-morph": "^27.0.2",
     "tsx": "^4.7.0",
     "typescript": "^5"
   }

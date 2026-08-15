@@ -13,12 +13,13 @@
     ".": {
       "ignoreBinaries": ["only-allow"]
     },
+    "apps/www": {
+      "entry": ["src/app/**/*.{ts,tsx}"]
+    },
     "apps/site": {
       "entry": ["content/**/*.mdx"]
     },
-    "packages/@ui": {
-      "entry": ["src/index.ts"]
-    },
+    "packages/@ui": {},
     "packages/@mcp": {},
     "packages/registry": {},
     "packages/themes/onyx": {}

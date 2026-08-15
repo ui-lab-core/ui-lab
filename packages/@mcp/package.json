@@ -29,7 +29,6 @@
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "@ui-lab-core/library": "link:../../../private/packages/library",
     "ui-lab-registry": "workspace:*",
     "yaml": "^2.6.1"
   },
