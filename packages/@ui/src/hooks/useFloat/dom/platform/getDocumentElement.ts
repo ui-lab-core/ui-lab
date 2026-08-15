@@ -1,1 +1,1 @@
-export {getDocumentElement} from '../../../../utils/dom';
+export { getDocumentElement } from "../../../../utils/dom";

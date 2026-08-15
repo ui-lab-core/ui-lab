@@ -1,7 +1,7 @@
-import type {Dimensions} from '../../core';
-import {round, getComputedStyle, isHTMLElement} from '../../../../utils/dom';
+import type { Dimensions } from "../../core";
+import { round, getComputedStyle, isHTMLElement } from "../../../../utils/dom";
 
-export function getCssDimensions(element: Element): Dimensions & {$: boolean} {
+export function getCssDimensions(element: Element): Dimensions & { $: boolean } {
   const css = getComputedStyle(element);
   // In testing environments, the `width` and `height` properties are empty
   // strings for SVG elements, returning NaN. Fallback to `0` in this case.
@@ -10,8 +10,7 @@ export function getCssDimensions(element: Element): Dimensions & {$: boolean} {
   const hasOffset = isHTMLElement(element);
   const offsetWidth = hasOffset ? element.offsetWidth : width;
   const offsetHeight = hasOffset ? element.offsetHeight : height;
-  const shouldFallback =
-    round(width) !== offsetWidth || round(height) !== offsetHeight;
+  const shouldFallback = round(width) !== offsetWidth || round(height) !== offsetHeight;
 
   if (shouldFallback) {
     width = offsetWidth;

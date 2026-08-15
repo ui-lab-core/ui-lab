@@ -66,7 +66,7 @@ pnpm add ui-lab-components ui-lab-theme-onyx
 @import "ui-lab-components/styles.css";
 ```
 
-Add your own stylesheet after Onyx to override its tokens or recipes. For a custom setup and light/dark mode, see the [installation guide](../../apps/www/content/docs/(getting-started)/installation/page.mdx) and the documentation site.
+Add your own stylesheet after Onyx to override its tokens or recipes. For a custom setup and light/dark mode, see the [installation guide](<../../apps/www/content/docs/(getting-started)/installation/page.mdx>) and the documentation site.
 
 ## Exports
 
@@ -99,7 +99,7 @@ Some components use compound APIs. `Card`, for example, exposes `Card.Header`, `
 
 UI Lab’s CSS uses semantic custom properties such as `--background-*`, `--foreground-*`, `--accent-*`, spacing, type, and component-level tokens. The component package deliberately does not choose your application’s visual language.
 
-Keep tokens in an app-owned stylesheet and import it before `styles.css`. The [Theming guide](../../apps/www/content/docs/(customization)/customization-theming/page.mdx) explains the token contract; the [theme-switching guide](../../apps/www/content/docs/(guides)/guides-theme-switching/page.mdx) covers server-stamped light/dark preferences in Next.js.
+Keep tokens in an app-owned stylesheet and import it before `styles.css`. The [Theming guide](<../../apps/www/content/docs/(customization)/customization-theming/page.mdx>) explains the token contract; the [theme-switching guide](<../../apps/www/content/docs/(guides)/guides-theme-switching/page.mdx>) covers server-stamped light/dark preferences in Next.js.
 
 ## Development
 

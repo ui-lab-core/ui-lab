@@ -71,8 +71,7 @@ export function IconProvider({
   return <IconContext.Provider value={value}>{children}</IconContext.Provider>;
 }
 
-export interface IconProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+export interface IconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** SVG filename with or without the `.svg` extension. */
   id: string;
   /** Icon collection to resolve. */

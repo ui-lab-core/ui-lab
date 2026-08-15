@@ -1,5 +1,5 @@
-import * as React from 'react'
-import type { RenderResult } from '@testing-library/react'
+import * as React from "react";
+import type { RenderResult } from "@testing-library/react";
 import {
   render as utilRender,
   createMockSelectItems,
@@ -9,17 +9,17 @@ import {
   getContent,
   typeText,
   getAllElementsByRole,
-} from '@/tests/utils'
-import { Select } from '../'
+} from "@/tests/utils";
+import { Select } from "../";
 
-const defaultItems = createMockSelectItems(5)
+const defaultItems = createMockSelectItems(5);
 
 // Helper to extract DOM container from RenderResult
 function getDOMContainer(result: RenderResult | HTMLElement): HTMLElement {
-  if ('container' in result) {
-    return result.container
+  if ("container" in result) {
+    return result.container;
   }
-  return result
+  return result;
 }
 
 /**
@@ -27,22 +27,26 @@ function getDOMContainer(result: RenderResult | HTMLElement): HTMLElement {
  */
 export function renderSelectWithItems(
   items = defaultItems,
-  props: React.ComponentProps<typeof Select> = {}
+  props: React.ComponentProps<typeof Select> = {},
 ): any {
   const element = React.createElement(
     Select,
-    { mode: 'single', ...props },
+    { mode: "single", ...props },
     React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
     React.createElement(
       Select.Content,
       null,
-      items.map(item =>
-        React.createElement(Select.Item, { key: item.key, value: item.key, disabled: item.isDisabled }, item.label)
-      )
-    )
-  )
-  const result = utilRender(element)
-  return Object.assign(result.container, result)
+      items.map((item) =>
+        React.createElement(
+          Select.Item,
+          { key: item.key, value: item.key, disabled: item.isDisabled },
+          item.label,
+        ),
+      ),
+    ),
+  );
+  const result = utilRender(element);
+  return Object.assign(result.container, result);
 }
 
 /**
@@ -50,22 +54,26 @@ export function renderSelectWithItems(
  */
 export function renderMultiSelectWithItems(
   items = defaultItems,
-  props: React.ComponentProps<typeof Select> = {}
+  props: React.ComponentProps<typeof Select> = {},
 ): any {
   const element = React.createElement(
     Select,
-    { mode: 'multiple', ...props },
+    { mode: "multiple", ...props },
     React.createElement(Select.Trigger),
     React.createElement(
       Select.Content,
       null,
-      items.map(item =>
-        React.createElement(Select.Item, { key: item.key, value: item.key, disabled: item.isDisabled }, item.label)
-      )
-    )
-  )
-  const result = utilRender(element)
-  return Object.assign(result.container, result)
+      items.map((item) =>
+        React.createElement(
+          Select.Item,
+          { key: item.key, value: item.key, disabled: item.isDisabled },
+          item.label,
+        ),
+      ),
+    ),
+  );
+  const result = utilRender(element);
+  return Object.assign(result.container, result);
 }
 
 /**
@@ -73,74 +81,81 @@ export function renderMultiSelectWithItems(
  */
 export function renderSelectWithChildren(
   children: React.ReactNode,
-  props: React.ComponentProps<typeof Select> = {}
+  props: React.ComponentProps<typeof Select> = {},
 ): any {
-  const element = React.createElement(Select, props, children)
-  const result = utilRender(element)
-  return Object.assign(result.container, result)
+  const element = React.createElement(Select, props, children);
+  const result = utilRender(element);
+  return Object.assign(result.container, result);
 }
 
 /**
  * Select an item by its text
  */
-export async function selectItem(containerOrText: HTMLElement | string, itemText?: string): Promise<HTMLElement> {
-  const text = typeof containerOrText === 'string' ? containerOrText : itemText!
+export async function selectItem(
+  containerOrText: HTMLElement | string,
+  itemText?: string,
+): Promise<HTMLElement> {
+  const text = typeof containerOrText === "string" ? containerOrText : itemText!;
   // Use screen (via getAllElementsByRole with role as first arg) instead of container because of Portals
   // Include hidden items because they might be rendered but visibility: hidden when closed
-  const items = getAllElementsByRole('option', { hidden: true })
-  const item = items.find(el => el.textContent?.includes(text))
-  if (!item) throw new Error(`Item "${text}" not found`)
-  await clickElement(item)
-  return item
+  const items = getAllElementsByRole("option", { hidden: true });
+  const item = items.find((el) => el.textContent?.includes(text));
+  if (!item) throw new Error(`Item "${text}" not found`);
+  await clickElement(item);
+  return item;
 }
 
 /**
  * Toggle an item in multi-select mode
  */
-export async function toggleItem(containerOrText: HTMLElement | string, itemText?: string): Promise<HTMLElement> {
-  const text = typeof containerOrText === 'string' ? containerOrText : itemText!
+export async function toggleItem(
+  containerOrText: HTMLElement | string,
+  itemText?: string,
+): Promise<HTMLElement> {
+  const text = typeof containerOrText === "string" ? containerOrText : itemText!;
   // Use screen instead of container because of Portals
-  const items = getAllElementsByRole('option', { hidden: true })
-  const item = items.find(el => el.textContent?.includes(text))
-  if (!item) throw new Error(`Item "${text}" not found`)
-  await clickElement(item)
-  return item
+  const items = getAllElementsByRole("option", { hidden: true });
+  const item = items.find((el) => el.textContent?.includes(text));
+  if (!item) throw new Error(`Item "${text}" not found`);
+  await clickElement(item);
+  return item;
 }
 
 /**
  * Open the select dropdown
  */
 export async function openSelect(trigger: HTMLElement): Promise<void> {
-  await clickElement(trigger)
+  await clickElement(trigger);
   // Wait for content to be in DOM and visible
   await waitForOpen(() => {
-    const contents = document.querySelectorAll('[role="listbox"], [role="list"]')
-    if (contents.length === 0) throw new Error('Dropdown content not found in DOM')
+    const contents = document.querySelectorAll('[role="listbox"], [role="list"]');
+    if (contents.length === 0) throw new Error("Dropdown content not found in DOM");
     // Find the first visible content
     for (const content of contents) {
-      const isHidden = content.getAttribute('aria-hidden') === 'true' ||
-        (content as HTMLElement).style.visibility === 'hidden' ||
-        (content as HTMLElement).style.display === 'none'
-      if (!isHidden) return content as HTMLElement
+      const isHidden =
+        content.getAttribute("aria-hidden") === "true" ||
+        (content as HTMLElement).style.visibility === "hidden" ||
+        (content as HTMLElement).style.display === "none";
+      if (!isHidden) return content as HTMLElement;
     }
-    throw new Error('No visible dropdown content found')
-  })
+    throw new Error("No visible dropdown content found");
+  });
 }
 
 /**
  * Close the select dropdown
  */
 export async function closeSelect(trigger: HTMLElement): Promise<void> {
-  await clickElement(trigger)
+  await clickElement(trigger);
 }
 
 /**
  * Type in search field (for searchable variant)
  */
 async function typeInSearch(text: string): Promise<void> {
-  const input = document.querySelector('input[type="text"]')
-  if (!input) throw new Error('Search input not found')
-  await typeText(input as HTMLElement, text)
+  const input = document.querySelector('input[type="text"]');
+  if (!input) throw new Error("Search input not found");
+  await typeText(input as HTMLElement, text);
 }
 
 /**
@@ -148,18 +163,18 @@ async function typeInSearch(text: string): Promise<void> {
  */
 export function getSelectedItems(): HTMLElement[] {
   // Use screen instead of container because of Portals
-  const items = getAllElementsByRole('option', { hidden: true })
-  return items.filter(item => item.getAttribute('aria-selected') === 'true')
+  const items = getAllElementsByRole("option", { hidden: true });
+  return items.filter((item) => item.getAttribute("aria-selected") === "true");
 }
 
 /**
  * Get the trigger button
  */
 export function getSelectTrigger(container: RenderResult | HTMLElement): HTMLElement {
-  const domContainer = getDOMContainer(container)
-  const trigger = getTrigger(domContainer)
-  if (!trigger) throw new Error('Trigger not found')
-  return trigger
+  const domContainer = getDOMContainer(container);
+  const trigger = getTrigger(domContainer);
+  if (!trigger) throw new Error("Trigger not found");
+  return trigger;
 }
 
 /**
@@ -167,7 +182,11 @@ export function getSelectTrigger(container: RenderResult | HTMLElement): HTMLEle
  */
 export function getSelectContent(container: RenderResult | HTMLElement): HTMLElement | null {
   // Portal content won't be in domContainer
-  return document.querySelector('[role="listbox"]') || document.querySelector('[role="list"]') || getContent(getDOMContainer(container))
+  return (
+    document.querySelector('[role="listbox"]') ||
+    document.querySelector('[role="list"]') ||
+    getContent(getDOMContainer(container))
+  );
 }
 
 /**
@@ -175,5 +194,5 @@ export function getSelectContent(container: RenderResult | HTMLElement): HTMLEle
  */
 export function getSelectItems(): HTMLElement[] {
   // Use screen instead of container because of Portals
-  return getAllElementsByRole('option', { hidden: true })
+  return getAllElementsByRole("option", { hidden: true });
 }

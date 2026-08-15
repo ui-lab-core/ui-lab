@@ -11,7 +11,7 @@ interface FrameStyleSlots {
 
 type FrameStylesProp = StylesProp<FrameStyleSlots>;
 
-const resolveFrameBaseStyles = createStylesResolver(['root'] as const);
+const resolveFrameBaseStyles = createStylesResolver(["root"] as const);
 
 type FrameSide = "top" | "bottom" | "left" | "right";
 type FrameShapeMode = "indent" | "extend";
@@ -29,7 +29,10 @@ type FrameShapeAlign = "start" | "center" | "end";
  * shape's local +x running against that axis, so `shapeAlign` keeps meaning the
  * start and end of the authored path rather than left and right of the screen.
  */
-const SIDE_PLACEMENT: Record<FrameSide, { rotate: number; axis: "x" | "y"; cross: string; reverse: boolean }> = {
+const SIDE_PLACEMENT: Record<
+  FrameSide,
+  { rotate: number; axis: "x" | "y"; cross: string; reverse: boolean }
+> = {
   top: { rotate: 0, axis: "x", cross: "0", reverse: false },
   bottom: { rotate: 180, axis: "x", cross: "100%", reverse: true },
   left: { rotate: -90, axis: "y", cross: "0", reverse: true },
@@ -39,7 +42,11 @@ const SIDE_PLACEMENT: Record<FrameSide, { rotate: number; axis: "x" | "y"; cross
 /** Point on the edge the shape is pinned to, and which of its ends lands there. */
 const ALIGN_ANCHOR: Record<FrameShapeAlign, string> = { start: "0%", center: "50%", end: "100%" };
 const ALIGN_SHIFT: Record<FrameShapeAlign, number> = { start: 0, center: 0.5, end: 1 };
-const ALIGN_FLIP: Record<FrameShapeAlign, FrameShapeAlign> = { start: "end", center: "center", end: "start" };
+const ALIGN_FLIP: Record<FrameShapeAlign, FrameShapeAlign> = {
+  start: "end",
+  center: "center",
+  end: "start",
+};
 
 /**
  * Slide *along* the edge that keeps a corner-anchored shape welded to the
@@ -121,8 +128,12 @@ function ShapeLayer({
   return (
     <svg x={axis === "x" ? anchor : cross} y={axis === "x" ? cross : anchor} overflow="visible">
       <g transform={`rotate(${rotate})`}>
-        <g style={{ transform: `translate(${ALIGN_INSET[align]}, var(--frame-stroke-offset, 0px))` }}>
-          <g transform={`translate(${-pathWidth * ALIGN_SHIFT[align]}, 0)${mirror ? " scale(1, -1)" : ""}`}>
+        <g
+          style={{ transform: `translate(${ALIGN_INSET[align]}, var(--frame-stroke-offset, 0px))` }}
+        >
+          <g
+            transform={`translate(${-pathWidth * ALIGN_SHIFT[align]}, 0)${mirror ? " scale(1, -1)" : ""}`}
+          >
             {children}
           </g>
         </g>
@@ -170,7 +181,24 @@ export interface FrameProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
-  ({ children, className, styles, style, path, pathWidth = 0, side = "top", shapeAlign = "center", shapeMode = "indent", pathStroke = "solid", edges = "all", strokeAlign = "center", ...props }, ref) => {
+  (
+    {
+      children,
+      className,
+      styles,
+      style,
+      path,
+      pathWidth = 0,
+      side = "top",
+      shapeAlign = "center",
+      shapeMode = "indent",
+      pathStroke = "solid",
+      edges = "all",
+      strokeAlign = "center",
+      ...props
+    },
+    ref,
+  ) => {
     const maskId = useId();
     const shapeMaskId = `shape-${maskId}`;
     const borderMaskId = `border-${maskId}`;
@@ -180,7 +208,10 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
 
     const indent = shapeMode === "indent";
 
-    const strokeDashProps: { strokeDasharray?: string; strokeLinecap?: React.SVGAttributes<SVGElement>["strokeLinecap"] } =
+    const strokeDashProps: {
+      strokeDasharray?: string;
+      strokeLinecap?: React.SVGAttributes<SVGElement>["strokeLinecap"];
+    } =
       pathStroke === "dashed"
         ? { strokeDasharray: "8 4" }
         : pathStroke === "dotted"
@@ -204,9 +235,19 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
         ? null
         : {
             top: { x: "-10%", y: "var(--frame-radius)", width: "120%", height: "120%" },
-            bottom: { x: "-10%", y: "-10%", width: "120%", height: "calc(110% - var(--frame-radius))" },
+            bottom: {
+              x: "-10%",
+              y: "-10%",
+              width: "120%",
+              height: "calc(110% - var(--frame-radius))",
+            },
             left: { x: "var(--frame-radius)", y: "-10%", width: "120%", height: "120%" },
-            right: { x: "-10%", y: "-10%", width: "calc(110% - var(--frame-radius))", height: "120%" },
+            right: {
+              x: "-10%",
+              y: "-10%",
+              width: "calc(110% - var(--frame-radius))",
+              height: "120%",
+            },
           }[edges];
 
     // Extra unrounded shape region covering the half opposite the kept edge,
@@ -228,10 +269,12 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
       <div
         ref={ref}
         className={cn("relative w-full group isolate", css.root, className, resolved.root)}
-        style={{
-          "--frame-stroke-offset": STROKE_ALIGN_OFFSET[strokeAlign],
-          ...style,
-        } as React.CSSProperties}
+        style={
+          {
+            "--frame-stroke-offset": STROKE_ALIGN_OFFSET[strokeAlign],
+            ...style,
+          } as React.CSSProperties
+        }
         {...props}
       >
         {/* Fill layer. Below the children, because it is their background. */}
@@ -329,7 +372,13 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
               {edgeMaskStyle && <rect fill="black" style={edgeMaskStyle} />}
               {shapeRegion && (
                 <ShapeLayer side={side} align={shapeAlign} pathWidth={pathWidth} mirror={indent}>
-                  <path d={shapeRegion} fill="black" stroke="black" strokeLinejoin="round" className={css.cut} />
+                  <path
+                    d={shapeRegion}
+                    fill="black"
+                    stroke="black"
+                    strokeLinejoin="round"
+                    className={css.cut}
+                  />
                 </ShapeLayer>
               )}
             </mask>
@@ -353,12 +402,14 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
                 stroke="white"
                 mask={`url(#${borderMaskId})`}
                 className={cn(css.shape, css.stroke)}
-                style={{
-                  x: "var(--frame-stroke-offset)",
-                  y: "var(--frame-stroke-offset)",
-                  width: "calc(100% - var(--frame-stroke-offset) * 2)",
-                  height: "calc(100% - var(--frame-stroke-offset) * 2)",
-                } as React.CSSProperties}
+                style={
+                  {
+                    x: "var(--frame-stroke-offset)",
+                    y: "var(--frame-stroke-offset)",
+                    width: "calc(100% - var(--frame-stroke-offset) * 2)",
+                    height: "calc(100% - var(--frame-stroke-offset) * 2)",
+                  } as React.CSSProperties
+                }
                 {...strokeDashProps}
               />
               {path && (
@@ -388,7 +439,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
 Frame.displayName = "Frame";

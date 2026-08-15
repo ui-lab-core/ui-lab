@@ -15,7 +15,7 @@ describe("Tooltip", () => {
         <button type="button" className="h-full" data-testid="trigger" onClick={onClick}>
           Articles
         </button>
-      </Tooltip>
+      </Tooltip>,
     );
 
     const trigger = screen.getByTestId("trigger");
@@ -30,13 +30,9 @@ describe("Tooltip", () => {
     const onOpenChange = vi.fn();
 
     render(
-      <Tooltip
-        content="Under Construction"
-        delay={0}
-        onOpenChange={onOpenChange}
-      >
+      <Tooltip content="Under Construction" delay={0} onOpenChange={onOpenChange}>
         <TestTrigger>Articles</TestTrigger>
-      </Tooltip>
+      </Tooltip>,
     );
 
     const trigger = screen.getByRole("button", { name: "Articles" });

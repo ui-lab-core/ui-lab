@@ -1,4 +1,4 @@
-export { Page } from './Page';
+export { Page } from "./Page";
 export type {
   PageProps,
   PagePadding,
@@ -9,4 +9,4 @@ export type {
   PageHeaderProps,
   PageBodyProps,
   PageFooterProps,
-} from './page.types';
+} from "./page.types";

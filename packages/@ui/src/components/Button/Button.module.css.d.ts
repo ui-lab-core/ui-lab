@@ -2,15 +2,15 @@ export interface Styles {
   button: string;
   icon: string;
   hint: string;
-  "default": string;
-  "primary": string;
-  "secondary": string;
-  "outline": string;
-  "ghost": string;
-  "danger": string;
-  "sm": string;
-  "md": string;
-  "lg": string;
+  default: string;
+  primary: string;
+  secondary: string;
+  outline: string;
+  ghost: string;
+  danger: string;
+  sm: string;
+  md: string;
+  lg: string;
 }
 
 declare const styles: Styles;

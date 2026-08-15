@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import { createPortal } from "react-dom";
@@ -93,16 +93,33 @@ export interface PopoverProps {
   /** Whether to render a directional arrow pointing at the trigger */
   showArrow?: boolean;
 }
-export interface PopoverState { open?: boolean }
+export interface PopoverState {
+  open?: boolean;
+}
 
 const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
-  ({ children, content, position = "bottom", align = "center", "disable-animations": disableAnimations = false, styles, className: externalClassName, open, state: controlledState, isOpen: legacyIsOpen, onOpenChange, showArrow = false }, ref) => {
-
+  (
+    {
+      children,
+      content,
+      position = "bottom",
+      align = "center",
+      "disable-animations": disableAnimations = false,
+      styles,
+      className: externalClassName,
+      open,
+      state: controlledState,
+      isOpen: legacyIsOpen,
+      onOpenChange,
+      showArrow = false,
+    },
+    ref,
+  ) => {
     const resolvePopoverBaseStyles = createStylesResolver([
-      'root',
-      'content',
-      'trigger',
-      'frame',
+      "root",
+      "content",
+      "trigger",
+      "frame",
     ] as const);
 
     const resolved = resolvePopoverBaseStyles(styles);
@@ -112,7 +129,11 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [isExiting, setIsExiting] = React.useState(false);
 
-    const [isOpen, setOpen] = useControlledState(controlledState?.open, open ?? legacyIsOpen, false);
+    const [isOpen, setOpen] = useControlledState(
+      controlledState?.open,
+      open ?? legacyIsOpen,
+      false,
+    );
     const state = useOverlayTriggerState({
       isOpen,
       onOpenChange: (next) => {
@@ -131,20 +152,15 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       right: "right",
     };
 
-    const requestedPlacement = align === "center"
-      ? placementMap[position]
-      : `${placementMap[position]}-${align}` as const;
+    const requestedPlacement =
+      align === "center" ? placementMap[position] : (`${placementMap[position]}-${align}` as const);
 
     const { refs, floatingStyles, placement, isPositioned } = useFloating({
       placement: requestedPlacement,
       strategy: "fixed",
       transform: false,
       whileElementsMounted: autoUpdate,
-      middleware: [
-        offset(POPOVER_GAP + ARROW_POSITIONING_SIZE),
-        flip(),
-        shift({ padding: 8 }),
-      ],
+      middleware: [offset(POPOVER_GAP + ARROW_POSITIONING_SIZE), flip(), shift({ padding: 8 })],
     });
 
     // Trigger animation when popover is opened and positioned
@@ -162,7 +178,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
         setIsExiting(true);
 
         requestAnimationFrame(() => setIsAnimating(false));
-        const timer = setTimeout(() => setIsExiting(false), 50)
+        const timer = setTimeout(() => setIsExiting(false), 50);
         return () => clearTimeout(timer);
       }
     }, [state.isOpen, isAnimating]);
@@ -204,27 +220,50 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     // Convert React Aria's onPress to onClick for native HTML elements
     const nativeProps = React.useMemo(() => {
       const props: any = { ...triggerProps };
-      if (props.onPress && typeof props.onPress === 'function') {
+      if (props.onPress && typeof props.onPress === "function") {
         const onPress = props.onPress;
         props.onClick = (e: React.MouseEvent) => {
-          onPress({ target: e.currentTarget, type: 'press', pointerType: 'mouse', ctrlKey: e.ctrlKey, metaKey: e.metaKey, shiftKey: e.shiftKey, altKey: e.altKey });
+          onPress({
+            target: e.currentTarget,
+            type: "press",
+            pointerType: "mouse",
+            ctrlKey: e.ctrlKey,
+            metaKey: e.metaKey,
+            shiftKey: e.shiftKey,
+            altKey: e.altKey,
+          });
         };
         delete props.onPress;
       }
       return props;
     }, [triggerProps]);
 
-    const triggerElement = React.isValidElement(children)
-      ? React.cloneElement(children as React.ReactElement<{ className?: string; ref?: React.Ref<HTMLButtonElement | HTMLDivElement> }>, {
-        ...nativeProps,
-        className: cn((children as React.ReactElement<{ className?: string }>).props.className, externalClassName, css.trigger, resolved.trigger),
-        ref: mergedRef,
-      })
-      : (
-        <span ref={mergedRef} {...nativeProps} className={cn(css.trigger, externalClassName, resolved.trigger)}>
-          {children}
-        </span>
-      );
+    const triggerElement = React.isValidElement(children) ? (
+      React.cloneElement(
+        children as React.ReactElement<{
+          className?: string;
+          ref?: React.Ref<HTMLButtonElement | HTMLDivElement>;
+        }>,
+        {
+          ...nativeProps,
+          className: cn(
+            (children as React.ReactElement<{ className?: string }>).props.className,
+            externalClassName,
+            css.trigger,
+            resolved.trigger,
+          ),
+          ref: mergedRef,
+        },
+      )
+    ) : (
+      <span
+        ref={mergedRef}
+        {...nativeProps}
+        className={cn(css.trigger, externalClassName, resolved.trigger)}
+      >
+        {children}
+      </span>
+    );
 
     return (
       <>
@@ -240,12 +279,14 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
               }}
             >
               <div
-                className={cn('content', css.content, resolved.content)}
+                className={cn("content", css.content, resolved.content)}
                 data-instant={disableAnimations ? "true" : undefined}
                 style={{
                   opacity: isAnimating ? 1 : 0,
-                  transform: isAnimating ? "scale(1)" : getInitialTransform(placement.split("-")[0]),
-                  pointerEvents: isAnimating ? 'auto' : 'none',
+                  transform: isAnimating
+                    ? "scale(1)"
+                    : getInitialTransform(placement.split("-")[0]),
+                  pointerEvents: isAnimating ? "auto" : "none",
                 }}
               >
                 <Frame
@@ -255,17 +296,15 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                   path={showArrow ? ARROW_PATH : undefined}
                   pathWidth={showArrow ? ARROW_WIDTH : undefined}
                 >
-                  <div className={cn('frame', css.frame, resolved.frame)}>
-                    {content}
-                  </div>
+                  <div className={cn("frame", css.frame, resolved.frame)}>{content}</div>
                 </Frame>
               </div>
             </div>,
-            document.body
+            document.body,
           )}
       </>
     );
-  }
+  },
 );
 
 Popover.displayName = "Popover";

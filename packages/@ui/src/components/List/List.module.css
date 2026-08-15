@@ -26,8 +26,10 @@
     background-color: var(--background);
     color: var(--foreground);
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .item[data-list-layout="columns"] {
@@ -113,9 +115,15 @@
     padding-right: 0.25rem;
   }
 
-  .actionGroup[data-justify="between"] { justify-content: space-between; }
-  .actionGroup[data-justify="start"] { justify-content: flex-start; }
-  .actionGroup[data-justify="end"] { justify-content: flex-end; }
+  .actionGroup[data-justify="between"] {
+    justify-content: space-between;
+  }
+  .actionGroup[data-justify="start"] {
+    justify-content: flex-start;
+  }
+  .actionGroup[data-justify="end"] {
+    justify-content: flex-end;
+  }
 
   .actions {
     align-items: center;
@@ -139,12 +147,13 @@
     color: var(--foreground);
     @apply p-2;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .action:hover {
     --hover-duration: var(--hover-enter-duration, 0ms);
   }
-
 }

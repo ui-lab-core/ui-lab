@@ -1,14 +1,14 @@
-import type { ThemeMode } from './theme-contract'
-import { DEFAULT_THEME_STORAGE_KEY, type ThemePreference } from './theme-mode'
+import type { ThemeMode } from "./theme-contract";
+import { DEFAULT_THEME_STORAGE_KEY, type ThemePreference } from "./theme-mode";
 
 interface ColorModeScriptOptions {
-  storageKey?: string
-  defaultMode?: ThemePreference
+  storageKey?: string;
+  defaultMode?: ThemePreference;
 }
 
 export function generateThemeScript(options: ColorModeScriptOptions = {}): string {
-  const storageKey = options.storageKey ?? DEFAULT_THEME_STORAGE_KEY
-  const defaultMode = options.defaultMode ?? 'system'
+  const storageKey = options.storageKey ?? DEFAULT_THEME_STORAGE_KEY;
+  const defaultMode = options.defaultMode ?? "system";
 
   return `(function(){
     var root = document.documentElement;
@@ -46,13 +46,12 @@ export function generateThemeScript(options: ColorModeScriptOptions = {}): strin
 
     root.dataset.theme = mode;
     root.style.colorScheme = mode;
-  })();`
+  })();`;
 }
 
-const THEME_SCRIPT = generateThemeScript()
-const COLOR_MODE_SCRIPT = generateThemeScript()
+const THEME_SCRIPT = generateThemeScript();
+const COLOR_MODE_SCRIPT = generateThemeScript();
 
 export function generateColorModeScript(options: ColorModeScriptOptions = {}): string {
-  return generateThemeScript(options)
+  return generateThemeScript(options);
 }
-

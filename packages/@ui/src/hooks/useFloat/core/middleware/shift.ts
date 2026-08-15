@@ -1,15 +1,8 @@
-import {
-  type Coords,
-  clamp,
-  evaluate,
-  getOppositeAxis,
-  getSide,
-  getSideAxis,
-} from '../../utils';
+import { type Coords, clamp, evaluate, getOppositeAxis, getSide, getSideAxis } from "../../utils";
 
-import {originSides} from '../constants';
-import type {DetectOverflowOptions} from '../detectOverflow';
-import type {Derivable, Middleware, MiddlewareState} from '../types';
+import { originSides } from "../constants";
+import type { DetectOverflowOptions } from "../detectOverflow";
+import type { Derivable, Middleware, MiddlewareState } from "../types";
 
 export interface ShiftOptions extends DetectOverflowOptions {
   /**
@@ -39,26 +32,21 @@ export interface ShiftOptions extends DetectOverflowOptions {
  * keep it in view when it will overflow the clipping boundary.
  * @see https://floating-ui.com/docs/shift
  */
-export const shift = (
-  options: ShiftOptions | Derivable<ShiftOptions> = {},
-): Middleware => ({
-  name: 'shift',
+export const shift = (options: ShiftOptions | Derivable<ShiftOptions> = {}): Middleware => ({
+  name: "shift",
   options,
   async fn(state) {
-    const {x, y, placement, platform} = state;
+    const { x, y, placement, platform } = state;
 
     const {
       mainAxis: checkMainAxis = true,
       crossAxis: checkCrossAxis = false,
-      limiter = {fn: ({x, y}: Coords) => ({x, y})},
+      limiter = { fn: ({ x, y }: Coords) => ({ x, y }) },
       ...detectOverflowOptions
     } = evaluate(options, state);
 
-    const coords = {x, y};
-    const overflow = await platform.detectOverflow(
-      state,
-      detectOverflowOptions,
-    );
+    const coords = { x, y };
+    const overflow = await platform.detectOverflow(state, detectOverflowOptions);
     const crossAxis = getSideAxis(getSide(placement));
     const mainAxis = getOppositeAxis(crossAxis);
 
@@ -66,8 +54,8 @@ export const shift = (
     let crossAxisCoord = coords[crossAxis];
 
     if (checkMainAxis) {
-      const minSide = mainAxis === 'y' ? 'top' : 'left';
-      const maxSide = mainAxis === 'y' ? 'bottom' : 'right';
+      const minSide = mainAxis === "y" ? "top" : "left";
+      const maxSide = mainAxis === "y" ? "bottom" : "right";
       const min = mainAxisCoord + overflow[minSide];
       const max = mainAxisCoord - overflow[maxSide];
 
@@ -75,8 +63,8 @@ export const shift = (
     }
 
     if (checkCrossAxis) {
-      const minSide = crossAxis === 'y' ? 'top' : 'left';
-      const maxSide = crossAxis === 'y' ? 'bottom' : 'right';
+      const minSide = crossAxis === "y" ? "top" : "left";
+      const maxSide = crossAxis === "y" ? "bottom" : "right";
       const min = crossAxisCoord + overflow[minSide];
       const max = crossAxisCoord - overflow[maxSide];
 
@@ -148,7 +136,7 @@ const limitShift = (
 } => ({
   options,
   fn(state) {
-    const {x, y, placement, rects, middlewareData} = state;
+    const { x, y, placement, rects, middlewareData } = state;
 
     const {
       offset = 0,
@@ -156,7 +144,7 @@ const limitShift = (
       crossAxis: checkCrossAxis = true,
     } = evaluate(options, state);
 
-    const coords = {x, y};
+    const coords = { x, y };
     const crossAxis = getSideAxis(placement);
     const mainAxis = getOppositeAxis(crossAxis);
 
@@ -165,20 +153,14 @@ const limitShift = (
 
     const rawOffset = evaluate(offset, state);
     const computedOffset =
-      typeof rawOffset === 'number'
-        ? {mainAxis: rawOffset, crossAxis: 0}
-        : {mainAxis: 0, crossAxis: 0, ...rawOffset};
+      typeof rawOffset === "number"
+        ? { mainAxis: rawOffset, crossAxis: 0 }
+        : { mainAxis: 0, crossAxis: 0, ...rawOffset };
 
     if (checkMainAxis) {
-      const len = mainAxis === 'y' ? 'height' : 'width';
-      const limitMin =
-        rects.reference[mainAxis] -
-        rects.floating[len] +
-        computedOffset.mainAxis;
-      const limitMax =
-        rects.reference[mainAxis] +
-        rects.reference[len] -
-        computedOffset.mainAxis;
+      const len = mainAxis === "y" ? "height" : "width";
+      const limitMin = rects.reference[mainAxis] - rects.floating[len] + computedOffset.mainAxis;
+      const limitMax = rects.reference[mainAxis] + rects.reference[len] - computedOffset.mainAxis;
 
       if (mainAxisCoord < limitMin) {
         mainAxisCoord = limitMin;
@@ -188,7 +170,7 @@ const limitShift = (
     }
 
     if (checkCrossAxis) {
-      const len = mainAxis === 'y' ? 'width' : 'height';
+      const len = mainAxis === "y" ? "width" : "height";
       const isOriginSide = originSides.has(getSide(placement));
       const limitMin =
         rects.reference[crossAxis] -

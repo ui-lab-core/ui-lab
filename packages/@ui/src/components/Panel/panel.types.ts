@@ -1,76 +1,75 @@
-import React from 'react'
-import { StyleValue } from '../../lib/utils'
-import { StylesProp } from '../../lib/styles'
+import React from "react";
+import { StyleValue } from "../../lib/utils";
+import { StylesProp } from "../../lib/styles";
 
-export type PanelSpacing = 'none' | 'sm' | 'md' | 'lg'
-export type PanelVariant = 'default' | 'compact'
-export type PanelSide = 'left' | 'right'
-export type PanelOrientation = 'horizontal' | 'vertical'
+export type PanelSpacing = "none" | "sm" | "md" | "lg";
+export type PanelVariant = "default" | "compact";
+export type PanelSide = "left" | "right";
+export type PanelOrientation = "horizontal" | "vertical";
 
 export interface PanelStyleSlots {
-  root?: StyleValue
+  root?: StyleValue;
 }
 
-export type PanelStylesProp = StylesProp<PanelStyleSlots>
+export type PanelStylesProp = StylesProp<PanelStyleSlots>;
 
 export interface PanelSidebarRegistration {
-  open: boolean
-  setOpen: (open: boolean) => void
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
 export interface PanelContextValue {
-  orientation: PanelOrientation
-  isStacked: boolean
-  containerRef: React.RefObject<HTMLDivElement | null>
-  sidebars: Record<string, PanelSidebarRegistration>
-  registerSidebar: (id: string, sidebar: PanelSidebarRegistration) => void
-  unregisterSidebar: (id: string) => void
+  orientation: PanelOrientation;
+  isStacked: boolean;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  sidebars: Record<string, PanelSidebarRegistration>;
+  registerSidebar: (id: string, sidebar: PanelSidebarRegistration) => void;
+  unregisterSidebar: (id: string) => void;
 }
 
 export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Axis along which direct child regions are arranged. */
-  orientation?: PanelOrientation
+  orientation?: PanelOrientation;
   /** Container width, in pixels, below which a horizontal layout stacks. */
-  collapseAt?: number
+  collapseAt?: number;
   /** Controls the gap between direct child regions. */
-  spacing?: PanelSpacing
+  spacing?: PanelSpacing;
   /** Controls the visual density of the layout. */
-  variant?: PanelVariant
-  children: React.ReactNode
+  variant?: PanelVariant;
+  children: React.ReactNode;
   /** Slot styles. */
-  styles?: PanelStylesProp
+  styles?: PanelStylesProp;
 }
 
 export interface PanelSidebarProps extends React.HTMLAttributes<HTMLElement> {
   /** Stable identifier used by a toggle's aria-controls attribute. */
-  id?: string
+  id?: string;
   /** Which edge receives the dividing border. */
-  side?: PanelSide
+  side?: PanelSide;
   /** Controlled visibility. */
-  open?: boolean
+  open?: boolean;
   /** Initial visibility when uncontrolled. */
-  defaultOpen?: boolean
+  defaultOpen?: boolean;
   /** Called whenever visibility changes. */
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (open: boolean) => void;
   /** Sidebar size along the panel orientation. */
-  size?: string | number
+  size?: string | number;
   /** Sidebar size when closed. */
-  collapsedSize?: string | number
+  collapsedSize?: string | number;
 }
 
-export interface PanelToggleProps
-  extends Omit<React.HTMLAttributes<HTMLElement>, 'children'> {
+export interface PanelToggleProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
   /** ID of the Panel.Sidebar this trigger controls. */
-  'aria-controls': string
+  "aria-controls": string;
   /** A single interactive element. Props and behavior are composed onto it. */
-  children: React.ReactElement
+  children: React.ReactElement;
 }
 
 export interface PanelResizeProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Space-separated IDs of the two sibling regions being resized. */
-  'aria-controls': string
+  "aria-controls": string;
   /** Accessible label for the separator. */
-  'aria-label'?: string
+  "aria-label"?: string;
   /** Percentage moved by each keyboard arrow press. */
-  keyboardStep?: number
+  keyboardStep?: number;
 }

@@ -10,19 +10,13 @@ import {
   isLastTraversableNode,
   isTableElement,
   isTopLayer,
-} from '../../../../utils/dom';
-import {isStaticPositioned} from '../utils/isStaticPositioned';
+} from "../../../../utils/dom";
+import { isStaticPositioned } from "../utils/isStaticPositioned";
 
 type Polyfill = (element: HTMLElement) => Element | null;
 
-function getTrueOffsetParent(
-  element: Element,
-  polyfill: Polyfill | undefined,
-): Element | null {
-  if (
-    !isHTMLElement(element) ||
-    getComputedStyle(element).position === 'fixed'
-  ) {
+function getTrueOffsetParent(element: Element, polyfill: Polyfill | undefined): Element | null {
+  if (!isHTMLElement(element) || getComputedStyle(element).position === "fixed") {
     return null;
   }
 
@@ -45,10 +39,7 @@ function getTrueOffsetParent(
 
 // Gets the closest ancestor positioned element. Handles some edge cases,
 // such as table ancestors and cross browser bugs.
-export function getOffsetParent(
-  element: Element,
-  polyfill?: Polyfill,
-): Element | Window {
+export function getOffsetParent(element: Element, polyfill?: Polyfill): Element | Window {
   const win = getWindow(element);
 
   if (isTopLayer(element)) {
@@ -68,11 +59,7 @@ export function getOffsetParent(
 
   let offsetParent = getTrueOffsetParent(element, polyfill);
 
-  while (
-    offsetParent &&
-    isTableElement(offsetParent) &&
-    isStaticPositioned(offsetParent)
-  ) {
+  while (offsetParent && isTableElement(offsetParent) && isStaticPositioned(offsetParent)) {
     offsetParent = getTrueOffsetParent(offsetParent, polyfill);
   }
 

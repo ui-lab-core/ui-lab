@@ -9,7 +9,7 @@ describe("Mask SSR", () => {
       <Mask className="h-48">
         <Mask.Fade direction="bottom" intensity={1} />
         <div>Content</div>
-      </Mask>
+      </Mask>,
     );
 
     expect(html).toContain("mask-image:linear-gradient");

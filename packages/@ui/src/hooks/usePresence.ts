@@ -1,10 +1,12 @@
 import * as React from "react";
 
-export type PresenceState = "entering" | "entered" | "exiting";
+type PresenceState = "entering" | "entered" | "exiting";
 
 function isReducedMotion() {
-  return typeof window !== "undefined"
-    && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+  );
 }
 
 /**

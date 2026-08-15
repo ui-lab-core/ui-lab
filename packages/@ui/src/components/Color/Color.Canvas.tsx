@@ -31,11 +31,24 @@ interface ColorCanvasProps {
 }
 
 /** 2D saturation/lightness gradient canvas for picking color values */
-export const ColorCanvas = React.forwardRef<
-  HTMLDivElement,
-  ColorCanvasProps
->(
-  ({ hue, saturation, brightness, onChange, disabled, size = "md", className, innerClassName, gradientHueClassName, gradientSaturationClassName, gradientBrightnessClassName, pointerClassName }, ref) => {
+export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
+  (
+    {
+      hue,
+      saturation,
+      brightness,
+      onChange,
+      disabled,
+      size = "md",
+      className,
+      innerClassName,
+      gradientHueClassName,
+      gradientSaturationClassName,
+      gradientBrightnessClassName,
+      pointerClassName,
+    },
+    ref,
+  ) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -60,13 +73,10 @@ export const ColorCanvas = React.forwardRef<
       if (!containerRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
-      const s = Math.max(
-        0,
-        Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)
-      );
+      const s = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
       const b = Math.max(
         0,
-        Math.min(100, ((rect.height - (e.clientY - rect.top)) / rect.height) * 100)
+        Math.min(100, ((rect.height - (e.clientY - rect.top)) / rect.height) * 100),
       );
 
       onChange?.(s, b);
@@ -104,14 +114,36 @@ export const ColorCanvas = React.forwardRef<
         aria-valuetext={`Saturation: ${saturation.toFixed(0)}%, Brightness: ${brightness.toFixed(0)}%`}
       >
         <div className={cn("canvas-inner", styles["canvas-inner"], innerClassName)}>
-          <div className={cn("canvas-gradient-hue", styles["canvas-gradient-hue"], gradientHueClassName)} style={gradientStyle} />
-          <div className={cn("canvas-gradient-saturation", styles["canvas-gradient-saturation"], gradientSaturationClassName)} />
-          <div className={cn("canvas-gradient-brightness", styles["canvas-gradient-brightness"], gradientBrightnessClassName)} />
+          <div
+            className={cn(
+              "canvas-gradient-hue",
+              styles["canvas-gradient-hue"],
+              gradientHueClassName,
+            )}
+            style={gradientStyle}
+          />
+          <div
+            className={cn(
+              "canvas-gradient-saturation",
+              styles["canvas-gradient-saturation"],
+              gradientSaturationClassName,
+            )}
+          />
+          <div
+            className={cn(
+              "canvas-gradient-brightness",
+              styles["canvas-gradient-brightness"],
+              gradientBrightnessClassName,
+            )}
+          />
         </div>
-        <div className={cn("pointer", styles["canvas-pointer"], pointerClassName)} style={positionStyle} />
+        <div
+          className={cn("pointer", styles["canvas-pointer"], pointerClassName)}
+          style={positionStyle}
+        />
       </div>
     );
-  }
+  },
 );
 
 ColorCanvas.displayName = "ColorCanvas";

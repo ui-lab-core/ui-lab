@@ -54,7 +54,9 @@ interface RadioGroupContextType {
   disabled?: boolean;
   size?: Size;
 }
-export interface RadioGroupState { value?: string }
+export interface RadioGroupState {
+  value?: string;
+}
 
 const RadioGroupContext = createContext<RadioGroupContextType | undefined>(undefined);
 
@@ -127,7 +129,7 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
       description,
       styles: stylesProp,
     },
-    ref
+    ref,
   ) => {
     const [selectedValue, setSelectedValue] = useControlledState(
       controlledState?.value,
@@ -150,7 +152,7 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
         label,
         description,
       },
-      state
+      state,
     );
 
     const resolved = resolveRadioGroupStyles(stylesProp);
@@ -175,13 +177,15 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
         </div>
       </RadioGroupContext.Provider>
     );
-  }
+  },
 );
 
 RadioGroup.displayName = "RadioGroup";
 
-export interface RadioItemProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "size"> {
+export interface RadioItemProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type" | "size"
+> {
   /** Size of the radio button */
   size?: Size;
   /** Label text or element displayed next to the radio */
@@ -216,7 +220,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
       styles: stylesProp,
       ...props
     },
-    ref
+    ref,
   ) => {
     const radioGroupContext = useRadioGroupContext();
     const generatedId = useId();
@@ -240,7 +244,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
     const resolvedAriaLabel = resolveAccessibleLabel(
       "Radio.Item",
       ariaLabelValue,
-      `Radio option ${value}`
+      `Radio option ${value}`,
     );
 
     const { inputProps } = useRadio(
@@ -250,7 +254,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
         "aria-label": resolvedAriaLabel,
       },
       state,
-      inputRef
+      inputRef,
     );
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
@@ -340,13 +344,15 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 RadioItem.displayName = "RadioItem";
 
-export interface RadioProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "size"> {
+export interface RadioProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type" | "size"
+> {
   /** Size of the radio button */
   size?: Size;
   /** Label text or element displayed next to the radio */
@@ -366,7 +372,9 @@ export interface RadioProps
   /** Controlled state. */
   state?: RadioState;
 }
-export interface RadioState { checked?: boolean }
+export interface RadioState {
+  checked?: boolean;
+}
 
 const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
   (
@@ -387,7 +395,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
       styles: stylesProp,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [checked, setChecked] = useControlledState(
       controlledState?.checked,
@@ -395,7 +403,6 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
       defaultChecked ?? false,
     );
     const generatedId = useId();
-
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
@@ -498,7 +505,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 RadioBase.displayName = "Radio";

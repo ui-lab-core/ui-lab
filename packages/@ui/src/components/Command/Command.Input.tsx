@@ -9,10 +9,33 @@ import { useCommandContext } from "./Command.shared";
 export interface CommandInputProps extends InputProps {}
 
 export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
-  ({ value: externalValue, onChange: externalOnChange, onBlur: externalOnBlur, icon, actions, placeholder = "Search...", ...props }, ref) => {
-    const { isOpen, close, surfaceRef, pointerRef, searchInputRef, dismissOnBlur, searchValue, setSearchValue } = useCommandContext();
+  (
+    {
+      value: externalValue,
+      onChange: externalOnChange,
+      onBlur: externalOnBlur,
+      icon,
+      actions,
+      placeholder = "Search...",
+      ...props
+    },
+    ref,
+  ) => {
+    const {
+      isOpen,
+      close,
+      surfaceRef,
+      pointerRef,
+      searchInputRef,
+      dismissOnBlur,
+      searchValue,
+      setSearchValue,
+    } = useCommandContext();
     const value = externalValue !== undefined ? externalValue : searchValue;
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => { setSearchValue(event.target.value); externalOnChange?.(event); };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(event.target.value);
+      externalOnChange?.(event);
+    };
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
       externalOnBlur?.(event);
       if (!dismissOnBlur || pointerRef.current) return;
@@ -23,15 +46,46 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
         const ownerDocument = input?.ownerDocument;
         if (!input || !ownerDocument?.hasFocus() || pointerRef.current) return;
         const activeElement = ownerDocument.activeElement;
-        if (activeElement === null || activeElement === ownerDocument.body || activeElement === ownerDocument.documentElement) close();
+        if (
+          activeElement === null ||
+          activeElement === ownerDocument.body ||
+          activeElement === ownerDocument.documentElement
+        )
+          close();
       });
     };
     const inputRef = useMergeRefs(ref, searchInputRef);
-    React.useLayoutEffect(() => { if (isOpen) searchInputRef.current?.focus({ preventScroll: true }); }, [isOpen, searchInputRef]);
+    React.useLayoutEffect(() => {
+      if (isOpen) searchInputRef.current?.focus({ preventScroll: true });
+    }, [isOpen, searchInputRef]);
     const usesDefaultClearAction = actions === undefined;
-    const resolvedActions = actions ?? [{ icon: <>✕</>, title: "Clear search", onClick: () => { setSearchValue(""); } }];
+    const resolvedActions = actions ?? [
+      {
+        icon: <>✕</>,
+        title: "Clear search",
+        onClick: () => {
+          setSearchValue("");
+        },
+      },
+    ];
     const inputStyles = cn(styles.input, usesDefaultClearAction && !value && styles["input-empty"]);
-    return <div className={styles.search}><Input ref={inputRef} state={{ value: value as string }} onChange={handleChange} onBlur={handleBlur} variant="ghost" icon={icon ?? <Search className="w-4 h-4" />} actions={resolvedActions} placeholder={placeholder} aria-label="Search commands" styles={{ root: inputStyles }} {...props} /></div>;
+    return (
+      <div className={styles.search}>
+        <Input
+          ref={inputRef}
+          state={{ value: value as string }}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          variant="ghost"
+          icon={icon ?? <Search className="w-4 h-4" />}
+          actions={resolvedActions}
+          placeholder={placeholder}
+          aria-label="Search commands"
+          styles={{ root: inputStyles }}
+          {...props}
+        />
+      </div>
+    );
   },
 );
 

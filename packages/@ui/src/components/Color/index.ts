@@ -18,5 +18,3 @@ export type {
   ColorTriggerProps,
   ColorState,
 } from "./Color";
-
-

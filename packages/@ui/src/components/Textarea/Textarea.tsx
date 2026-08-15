@@ -16,13 +16,13 @@ import css from "./Textarea.module.css";
 type TextareaSize = "sm" | "md" | "lg";
 type ResizeAxis = "both" | "x" | "y" | "none";
 
-export interface TextareaResizeHandleStyles {
+interface TextareaResizeHandleStyles {
   both?: StyleValue;
   x?: StyleValue;
   y?: StyleValue;
 }
 
-export interface TextareaStyleSlots {
+interface TextareaStyleSlots {
   root?: StyleValue;
   container?: StyleValue;
   surface?: StyleValue;
@@ -31,10 +31,12 @@ export interface TextareaStyleSlots {
   characterCount?: StyleValue;
 }
 
-export type TextareaStylesProp = StylesProp<TextareaStyleSlots>;
-export interface TextareaState { value?: string }
-export type TextAreaStyleSlots = TextareaStyleSlots;
-export type TextAreaStylesProp = TextareaStylesProp;
+type TextareaStylesProp = StylesProp<TextareaStyleSlots>;
+export interface TextareaState {
+  value?: string;
+}
+type TextAreaStyleSlots = TextareaStyleSlots;
+type TextAreaStylesProp = TextareaStylesProp;
 
 const resolveTextareaBaseStyles = createStylesResolver([
   "root",
@@ -82,7 +84,7 @@ function resolveTextareaStyles(styles: TextareaStylesProp | undefined) {
   });
 }
 
-export interface TextareaProps extends Omit<ComponentPropsWithoutRef<"textarea">, "size"> {
+interface TextareaProps extends Omit<ComponentPropsWithoutRef<"textarea">, "size"> {
   /** Controlled state. */
   state?: TextareaState;
   /** Size of the textarea. */
@@ -166,7 +168,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       styles,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [internalValue, setInternalValue] = useControlledState(
       controlledState?.value,
@@ -250,7 +252,8 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         const startY = event.clientY;
         const startWidth = surface.getBoundingClientRect().width;
         const startHeight = hasScrollSurface
-          ? (scrollWrapper?.getBoundingClientRect().height ?? surface.getBoundingClientRect().height)
+          ? (scrollWrapper?.getBoundingClientRect().height ??
+            surface.getBoundingClientRect().height)
           : surface.getBoundingClientRect().height;
 
         const onMouseMove = (nextEvent: MouseEvent) => {
@@ -275,7 +278,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         document.addEventListener("mouseup", onMouseUp);
         document.body.style.userSelect = "none";
       },
-      [canResize, hasScrollSurface, resizeAxis]
+      [canResize, hasScrollSurface, resizeAxis],
     );
 
     const effectiveMaxHeight = internalHeight !== null ? `${internalHeight}px` : maxHeight;
@@ -294,7 +297,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     const surfaceStyle: React.CSSProperties = {
       ...(internalWidth !== null ? { width: `${internalWidth}px`, maxWidth: "100%" } : {}),
-      ...(maxHeight === undefined && internalHeight !== null ? { height: `${internalHeight}px` } : {}),
+      ...(maxHeight === undefined && internalHeight !== null
+        ? { height: `${internalHeight}px` }
+        : {}),
     };
 
     const textareaStyle: React.CSSProperties = {
@@ -324,13 +329,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
         data-textarea-focus-surface={hasScrollSurface ? undefined : "true"}
-        className={cn(
-          "textarea",
-          css.textarea,
-          sizeMap[size],
-          textareaClassName,
-          resolved.root
-        )}
+        className={cn("textarea", css.textarea, sizeMap[size], textareaClassName, resolved.root)}
         style={textareaStyle}
         value={currentValue}
         {...mergeProps(focusProps, {
@@ -345,10 +344,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div ref={scopeRef} className={cn("scope", css.scope)}>
         <div {...indicatorProps} data-focus-indicator="local" />
-        <div
-          ref={containerRef}
-          className={cn("container", css.container, resolved.container)}
-        >
+        <div ref={containerRef} className={cn("container", css.container, resolved.container)}>
           <div
             ref={surfaceRef}
             className={cn("surface", css.surface, resolved.surface)}
@@ -367,12 +363,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                 data-error={error || isOverLimit ? "true" : undefined}
                 data-focused={isFocused ? "true" : undefined}
                 data-focus-visible={isFocusVisible ? "true" : undefined}
-                className={cn(
-                  "textarea",
-                  "scroll",
-                  css["scroll-wrapper"],
-                  resolved.scrollWrapper
-                )}
+                className={cn("textarea", "scroll", css["scroll-wrapper"], resolved.scrollWrapper)}
               >
                 <Scroll maxHeight={effectiveMaxHeight} style={{ height: "auto" }}>
                   {textareaElement}
@@ -391,7 +382,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                   "handle",
                   css["resize-handle"],
                   resizeHandleClassMap[resizeAxis],
-                  resolvedResizeHandle
+                  resolvedResizeHandle,
                 )}
                 onMouseDown={handleResizeMouseDown}
               />
@@ -399,12 +390,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           </div>
           {showCharacterCount && (
             <div
-              className={cn(
-                "textarea",
-                "count",
-                css["character-count"],
-                resolved.characterCount
-              )}
+              className={cn("textarea", "count", css["character-count"], resolved.characterCount)}
               data-over-limit={isOverLimit ? "true" : undefined}
             >
               {charCount}
@@ -414,11 +400,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 Textarea.displayName = "Textarea";
 
 const TextArea = Textarea;
 
-export { Textarea, TextArea };
+export {  TextArea };

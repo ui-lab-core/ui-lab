@@ -70,8 +70,10 @@ export type TableSortState<T> = {
 
 export type TableFilterState = Record<string, string>;
 
-export interface TableProps<T extends Record<string, any>>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface TableProps<T extends Record<string, any>> extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   /** Array of data rows to display */
   data: T[];
   /** Column definitions including key, label, and optional render function */
@@ -169,7 +171,7 @@ function getRowKey(row: Record<string, any>, index: number): React.Key {
 }
 
 type TableComponent = (<T extends Record<string, any>>(
-  props: TableProps<T> & React.RefAttributes<HTMLDivElement>
+  props: TableProps<T> & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactElement | null) & {
   displayName?: string;
   Header: typeof TableHeader;
@@ -192,7 +194,7 @@ const TableRoot = <T extends Record<string, any>>(
     "aria-label": ariaLabel = "Data table",
     ...props
   }: TableProps<T>,
-  ref: React.ForwardedRef<HTMLDivElement>
+  ref: React.ForwardedRef<HTMLDivElement>,
 ) => {
   const [filterState, setFilterState] = React.useState<TableFilterState>({});
   const [sortState] = React.useState<TableSortState<T>>(() => getDefaultSortState<T>());
@@ -200,7 +202,7 @@ const TableRoot = <T extends Record<string, any>>(
   const resolved = resolveTableBaseStyles(normalizeTableStyles(styles));
   const filterableColumns = React.useMemo(
     () => columns.filter((column) => column.filterable),
-    [columns]
+    [columns],
   );
 
   const setFilterValue = React.useCallback(
@@ -211,7 +213,7 @@ const TableRoot = <T extends Record<string, any>>(
         return nextFilters;
       });
     },
-    [onFilterChange]
+    [onFilterChange],
   );
 
   const filteredData = React.useMemo(
@@ -221,9 +223,9 @@ const TableRoot = <T extends Record<string, any>>(
           if (!filterValue) return true;
           const cellValue = String(row[key] ?? "").toLowerCase();
           return cellValue.includes(filterValue.toLowerCase());
-        })
+        }),
       ),
-    [data, filterState]
+    [data, filterState],
   );
 
   const contextValue = React.useMemo<TableContextValue<T>>(
@@ -248,7 +250,7 @@ const TableRoot = <T extends Record<string, any>>(
       setFilterValue,
       onRowClick,
       resolved,
-    ]
+    ],
   );
 
   return (
@@ -261,10 +263,7 @@ const TableRoot = <T extends Record<string, any>>(
         {...props}
       >
         {showFilters && filterableColumns.length > 0 && (
-          <div
-            className={cn("filter", css.filterBar, resolved.filterBar)}
-            data-slot="filter-bar"
-          >
+          <div className={cn("filter", css.filterBar, resolved.filterBar)} data-slot="filter-bar">
             <div
               className={cn("filter-grid", css.filterGrid, resolved.filterGrid)}
               data-slot="filter-grid"
@@ -299,12 +298,7 @@ const TableRoot = <T extends Record<string, any>>(
         )}
 
         <div className={cn("container", css.container, resolved.container)} data-slot="container">
-          <Scroll
-            className={css.scroller}
-            direction="horizontal"
-            inline
-            data-slot="scroller"
-          >
+          <Scroll className={css.scroller} direction="horizontal" inline data-slot="scroller">
             <table
               className={cn("element", css.table, resolved.table)}
               data-slot="element"
@@ -377,7 +371,7 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
         )}
       </thead>
     );
-  }
+  },
 );
 
 TableHeader.displayName = "Table.Header";
@@ -402,13 +396,14 @@ const TableHeaderCell = React.forwardRef<HTMLTableCellElement, TableHeaderCellPr
         {children}
       </th>
     );
-  }
+  },
 );
 
 TableHeaderCell.displayName = "Table.HeaderCell";
 
-interface TableBodyProps<T extends Record<string, any> = Record<string, any>>
-  extends React.HTMLAttributes<HTMLTableSectionElement> {
+interface TableBodyProps<
+  T extends Record<string, any> = Record<string, any>,
+> extends React.HTMLAttributes<HTMLTableSectionElement> {
   /** Optional body content. When omitted, filtered rows from Table context are rendered. */
   children?: React.ReactNode;
   /** Optional rows for custom body composition. Defaults to filtered context data. */
@@ -428,8 +423,8 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
         role="rowgroup"
         {...props}
       >
-        {children ?? (
-          bodyRows.length > 0 ? (
+        {children ??
+          (bodyRows.length > 0 ? (
             bodyRows.map((row, index) => (
               <TableRow key={getRowKey(row, index)} row={row} rowIndex={index} />
             ))
@@ -448,17 +443,17 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
                 No data available
               </td>
             </tr>
-          )
-        )}
+          ))}
       </tbody>
     );
-  }
+  },
 );
 
 TableBody.displayName = "Table.Body";
 
-interface TableRowProps<T extends Record<string, any> = Record<string, any>>
-  extends React.HTMLAttributes<HTMLTableRowElement> {
+interface TableRowProps<
+  T extends Record<string, any> = Record<string, any>,
+> extends React.HTMLAttributes<HTMLTableRowElement> {
   /** Row data used to render default cells. */
   row?: T;
   /** Zero-based index for generated rows. */
@@ -484,7 +479,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
         }
         onClick?.(event);
       },
-      [disabled, row, onClick, onRowClick]
+      [disabled, row, onClick, onRowClick],
     );
 
     return (
@@ -502,24 +497,26 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
         onClick={handleClick}
         {...props}
       >
-        {children ?? columns.map((column, columnIndex) => (
-          <TableCell
-            key={String(column.key)}
-            row={row}
-            column={column}
-            columnIndex={columnIndex}
-            rowIndex={rowIndex}
-          />
-        ))}
+        {children ??
+          columns.map((column, columnIndex) => (
+            <TableCell
+              key={String(column.key)}
+              row={row}
+              column={column}
+              columnIndex={columnIndex}
+              rowIndex={rowIndex}
+            />
+          ))}
       </tr>
     );
-  }
+  },
 );
 
 TableRow.displayName = "Table.Row";
 
-interface TableCellProps<T extends Record<string, any> = Record<string, any>>
-  extends React.TdHTMLAttributes<HTMLTableCellElement> {
+interface TableCellProps<
+  T extends Record<string, any> = Record<string, any>,
+> extends React.TdHTMLAttributes<HTMLTableCellElement> {
   /** Row data used with the column render function. */
   row?: T;
   /** Column definition for this cell. Inferred by columnIndex when omitted. */
@@ -536,8 +533,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
   ({ className, row, column, columnIndex = 0, rowIndex = 0, value, children, ...props }, ref) => {
     const { columns, styles } = useTableContext();
     const resolvedColumn = column ?? (columnIndex !== undefined ? columns[columnIndex] : undefined);
-    const resolvedValue =
-      value ?? (row && resolvedColumn ? row[resolvedColumn.key] : undefined);
+    const resolvedValue = value ?? (row && resolvedColumn ? row[resolvedColumn.key] : undefined);
     const content =
       children ??
       (resolvedColumn?.cell && row
@@ -549,8 +545,8 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
             columnIndex,
           })
         : resolvedColumn?.render && row
-        ? resolvedColumn.render(resolvedValue, row)
-        : String(resolvedValue ?? ""));
+          ? resolvedColumn.render(resolvedValue, row)
+          : String(resolvedValue ?? ""));
 
     return (
       <td
@@ -564,7 +560,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
         {content}
       </td>
     );
-  }
+  },
 );
 
 TableCell.displayName = "Table.Cell";
@@ -575,12 +571,4 @@ Table.Body = TableBody;
 Table.Row = TableRow;
 Table.Cell = TableCell;
 
-export {
-  Table,
-  TableHeader,
-  TableHeaderCell,
-  TableBody,
-  TableRow,
-  TableCell,
-  useTableContext,
-};
+export { Table, TableHeader, TableHeaderCell, TableBody, TableRow, TableCell, useTableContext };

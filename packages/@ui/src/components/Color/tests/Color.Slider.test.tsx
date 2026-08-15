@@ -6,7 +6,7 @@ import { Color } from "../index";
 
 function mockElementRect(
   element: Element,
-  rect: Pick<DOMRect, "left" | "top" | "width" | "height">
+  rect: Pick<DOMRect, "left" | "top" | "width" | "height">,
 ) {
   const { left, top, width, height } = rect;
 
@@ -27,7 +27,7 @@ describe("Color.Slider", () => {
   it("renders a standalone hue slider on top of the shared Slider primitive", () => {
     const onChange = vi.fn();
     const { container } = render(
-      <Color.Slider aria-label="Accent hue" value={0} onChange={onChange} />
+      <Color.Slider aria-label="Accent hue" value={0} onChange={onChange} />,
     );
 
     const root = container.querySelector(".hue-slider") as HTMLElement;
@@ -60,7 +60,7 @@ describe("Color.Slider", () => {
         defaultValue={0.25}
         color="rgb(10, 20, 30)"
         onChange={onChange}
-      />
+      />,
     );
 
     const root = container.querySelector(".opacity-slider") as HTMLElement;
@@ -100,7 +100,7 @@ describe("Color.Slider", () => {
           max={0.32}
           color="oklch(70% 0.09 240)"
         />
-      </Color>
+      </Color>,
     );
 
     const root = container.querySelector(".chroma-slider") as HTMLElement;
@@ -111,7 +111,7 @@ describe("Color.Slider", () => {
     expect(track).toHaveClass("chroma-track", "chroma-track-scope");
     expect(thumb).toHaveClass("chroma-thumb", "chroma-thumb-scope");
     expect(track.style.backgroundImage).toBe(
-      "linear-gradient(to right, oklch(0.7 0 240), oklch(0.7 0.32 240))"
+      "linear-gradient(to right, oklch(0.7 0 240), oklch(0.7 0.32 240))",
     );
     expect(thumb).toHaveAttribute("aria-valuemin", "0");
     expect(thumb).toHaveAttribute("aria-valuemax", "0.32");
@@ -143,7 +143,7 @@ describe("Color.Slider", () => {
     const { container } = render(<ControlledChromaSlider />);
 
     expect((container.querySelector(".chroma-track") as HTMLElement).style.backgroundImage).toBe(
-      "linear-gradient(to right, oklch(0.071 0 220), oklch(0.071 0.08 220))"
+      "linear-gradient(to right, oklch(0.071 0 220), oklch(0.071 0.08 220))",
     );
     const thumb = screen.getByRole("slider", { name: "Background chroma" });
     fireEvent.keyDown(thumb, { key: "End" });
@@ -159,7 +159,7 @@ describe("Color.Slider", () => {
     render(
       <Color defaultValue="#ff0000" showOpacity>
         <Color.Area />
-      </Color>
+      </Color>,
     );
 
     expect(screen.getByRole("slider", { name: "Hue" })).toHaveAttribute("aria-valuemax", "360");

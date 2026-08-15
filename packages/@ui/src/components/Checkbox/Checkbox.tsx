@@ -70,8 +70,10 @@ export interface CheckboxState {
   indeterminate?: boolean;
 }
 
-export interface CheckboxProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "checked"> {
+export interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size" | "checked"
+> {
   /** Initial checked value (uncontrolled). For controlled usage, pass `state={{ checked }}`. */
   checked?: boolean;
   /** Controlled state. Keys that are present are controlled; absent keys stay self-managed. */
@@ -120,7 +122,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       styles,
       ...props
     },
-    ref
+    ref,
   ) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const rootRef = React.useRef<HTMLDivElement>(null);
@@ -130,7 +132,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
     const resolvedHelper = helper ?? helperText;
     const resolvedIndeterminate = state?.indeterminate ?? (indeterminate || isIndeterminate);
     const [internalChecked, setInternalChecked] = useState(
-      () => state?.checked ?? checked ?? defaultChecked ?? false
+      () => state?.checked ?? checked ?? defaultChecked ?? false,
     );
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { scopeProps, indicatorProps } = useFocus({
@@ -173,9 +175,10 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       helperTextError ||
       propAriaInvalid === true ||
       propAriaInvalid === "true";
-    const describedBy = [props["aria-describedby"], resolvedHelper ? helperId : undefined]
-      .filter(Boolean)
-      .join(" ") || undefined;
+    const describedBy =
+      [props["aria-describedby"], resolvedHelper ? helperId : undefined]
+        .filter(Boolean)
+        .join(" ") || undefined;
 
     const resolved = resolveCheckboxStyles(styles);
     const mergedRootRef = useMergeRefs(rootRef, ref);
@@ -201,11 +204,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             id={inputId}
             disabled={disabled}
             {...(isControlled ? { checked: displayChecked } : { defaultChecked: internalChecked })}
-            className={cn(
-              css.box,
-              className,
-              resolved.checkbox
-            )}
+            className={cn(css.box, className, resolved.checkbox)}
             data-selected={displayChecked ? "true" : undefined}
             data-disabled={disabled ? "true" : undefined}
             data-invalid={resolvedInvalid ? "true" : undefined}
@@ -220,7 +219,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
           />
           {displayChecked && !resolvedIndeterminate && (
             <svg
-              className={cn('checkmark', css.checkmark, resolved["icon-checkmark"])}
+              className={cn("checkmark", css.checkmark, resolved["icon-checkmark"])}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -233,22 +232,26 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
           )}
           {resolvedIndeterminate && (
             <svg
-              className={cn('indeterminate', css.indeterminate, resolved["icon-indeterminate"])}
+              className={cn("indeterminate", css.indeterminate, resolved["icon-indeterminate"])}
               viewBox="0 0 24 24"
               fill="currentColor"
             >
-              <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              <line
+                x1="5"
+                y1="12"
+                x2="19"
+                y2="12"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
             </svg>
           )}
         </div>
         {label && (
           <label
             htmlFor={inputId}
-            className={cn(
-              css.label,
-              css["label-md"],
-              resolved.label
-            )}
+            className={cn(css.label, css["label-md"], resolved.label)}
             data-disabled={disabled ? "true" : undefined}
           >
             {label}
@@ -257,10 +260,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
         {resolvedHelper && (
           <p
             id={helperId}
-            className={cn(
-              css["helper-text"],
-              resolved["helper-text"]
-            )}
+            className={cn(css["helper-text"], resolved["helper-text"])}
             data-error={resolvedInvalid ? "true" : undefined}
           >
             {resolvedHelper}
@@ -268,7 +268,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Checkbox.displayName = "Checkbox";

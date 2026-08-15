@@ -43,7 +43,9 @@
   }
 
   .vertical .content::-webkit-scrollbar,
-  .horizontal .content::-webkit-scrollbar { display: none; }
+  .horizontal .content::-webkit-scrollbar {
+    display: none;
+  }
 
   .track {
     @apply absolute;
@@ -54,7 +56,10 @@
   .track[data-hide="true"] .thumb {
     transition-property: opacity;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
-    transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition-timing-function: var(
+      --hover-transition-timing-function,
+      var(--ease-snappy-pop, ease-out)
+    );
   }
 
   .vertical .track {
@@ -74,11 +79,14 @@
 
   .thumb {
     position: absolute;
-    border-radius: calc(var(--radius-xs, 0.25rem) * 0.80);
+    border-radius: calc(var(--radius-xs, 0.25rem) * 0.8);
     background-color: var(--background);
     transition-property: opacity, background-color, width, height;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
-    transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition-timing-function: var(
+      --hover-transition-timing-function,
+      var(--ease-snappy-pop, ease-out)
+    );
   }
 
   .thumb:hover {
@@ -90,7 +98,10 @@
     margin-left: 6px;
     transition-property: opacity, background-color, width, margin-left;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
-    transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition-timing-function: var(
+      --hover-transition-timing-function,
+      var(--ease-snappy-pop, ease-out)
+    );
   }
 
   .vertical .thumb:hover,
@@ -105,7 +116,10 @@
     margin-top: 6px;
     transition-property: opacity, background-color, height, margin-top;
     transition-duration: var(--hover-duration, var(--hover-leave-duration, 300ms));
-    transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition-timing-function: var(
+      --hover-transition-timing-function,
+      var(--ease-snappy-pop, ease-out)
+    );
   }
 
   .horizontal .thumb:hover,

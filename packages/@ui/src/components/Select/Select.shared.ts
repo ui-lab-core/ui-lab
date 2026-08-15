@@ -5,8 +5,6 @@ export {
   useListNavigation,
   useListPointerModality,
   useListScrollIntoView,
-} from "../../utils/list-navigation"
+} from "../../utils/list-navigation";
 
-export type {
-  ItemData,
-} from "../../utils/list-navigation"
+export type { ItemData } from "../../utils/list-navigation";

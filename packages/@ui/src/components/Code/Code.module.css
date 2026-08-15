@@ -25,13 +25,14 @@
     color: var(--foreground-400);
   }
 
-
   .body {
     @apply relative flex min-h-0 flex-1 flex-col;
     flex: 1;
   }
 
-  .viewport { @apply overflow-hidden; }
+  .viewport {
+    @apply overflow-hidden;
+  }
 
   .viewport :global(pre) {
     background: transparent;
@@ -60,8 +61,8 @@
   .viewport::-webkit-scrollbar-thumb {
     background-color: var(--background-700);
     border-radius: 9999px;
-    transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .viewport::-webkit-scrollbar-thumb:hover {
@@ -85,8 +86,8 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     border-top: 1px solid var(--border-color);
     background: transparent;
     border-left: none;
@@ -99,7 +100,10 @@
     background-color: var(--background-800);
   }
 
-  .expand-icon { @apply shrink-0; color: var(--foreground-400); }
+  .expand-icon {
+    @apply shrink-0;
+    color: var(--foreground-400);
+  }
 
   .copy-button {
     @apply absolute right-2 top-2 flex items-center justify-center p-1 cursor-pointer;
@@ -107,9 +111,12 @@
     color: var(--foreground-400);
     opacity: 0;
     transition:
-      opacity var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     background: transparent;
     border: none;
     z-index: 1;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import css from "./useFocus.module.css";
 
-export interface FocusState {
+interface FocusState {
   visible: boolean;
   transitionRadius: boolean;
   left: number;
@@ -11,7 +11,7 @@ export interface FocusState {
   radius: string;
 }
 
-export interface UseFocusOptions {
+interface UseFocusOptions {
   /** Container for absolute positioning context. Required for overlay modes. */
   scopeRef?: React.RefObject<HTMLElement | null>;
   /** Element containing focusable surfaces. Required for overlay modes. */
@@ -30,7 +30,7 @@ export interface UseFocusOptions {
   dependencies?: React.DependencyList;
 }
 
-export interface UseFocusReturn {
+interface UseFocusReturn {
   /** Props to spread on the scope wrapper element */
   scopeProps: {
     className: string;
@@ -127,12 +127,12 @@ export function useFocus({
       setFocus((prev) =>
         prev.visible && prev.radius === radius
           ? prev
-        : {
-            ...HIDDEN_FOCUS,
-            visible: true,
-            transitionRadius: isSameSurface,
-            radius,
-          }
+          : {
+              ...HIDDEN_FOCUS,
+              visible: true,
+              transitionRadius: isSameSurface,
+              radius,
+            },
       );
       return;
     }

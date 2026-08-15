@@ -44,7 +44,7 @@ export interface CommandGroupedItems {
   items: CommandItem[];
 }
 
-export interface CommandContextValue {
+interface CommandContextValue {
   isOpen: boolean;
   close: () => void;
   focusedKey: Key | null;
@@ -81,21 +81,24 @@ export function scoreCommandRelevance(text: string, query: string): number {
   return 0;
 }
 
-export function scoreItemRelevance(command: CommandItem, query: string) {
+function scoreItemRelevance(command: CommandItem, query: string) {
   return {
     label: scoreCommandRelevance(command.label, query),
-    keyword: Math.max(0, ...(command.keywords?.map((keyword) => scoreCommandRelevance(keyword, query)) ?? [])),
+    keyword: Math.max(
+      0,
+      ...(command.keywords?.map((keyword) => scoreCommandRelevance(keyword, query)) ?? []),
+    ),
   };
 }
 
 const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
 
-export interface UseCommandEngineOptions {
+interface UseCommandEngineOptions {
   items?: CommandItem[];
   filter?: (command: CommandItem, query: string) => boolean;
 }
 
-export interface CommandEngine {
+interface CommandEngine {
   itemsRef: React.MutableRefObject<Map<Key, string>>;
   actionRef: React.MutableRefObject<Map<Key, () => void | Promise<void>>>;
   focusedKey: Key | null;
@@ -116,7 +119,10 @@ export interface CommandEngine {
  * and the headless Command.Root primitive, so "how items are searched and
  * navigated" stays defined once regardless of what chrome sits around it.
  */
-export function useCommandEngine({ items = EMPTY_COMMAND_ITEMS, filter }: UseCommandEngineOptions): CommandEngine {
+export function useCommandEngine({
+  items = EMPTY_COMMAND_ITEMS,
+  filter,
+}: UseCommandEngineOptions): CommandEngine {
   const itemsRef = React.useRef<Map<Key, string>>(new Map());
   const actionRef = React.useRef<Map<Key, () => void | Promise<void>>>(new Map());
   const [focusedKey, setFocusedKey] = React.useState<Key | null>(null);
@@ -126,29 +132,83 @@ export function useCommandEngine({ items = EMPTY_COMMAND_ITEMS, filter }: UseCom
   const filteredItems = React.useMemo(() => {
     const matches = items.filter((command) => !filter || filter(command, searchValue));
     if (!searchValue.trim()) return matches;
-    return matches.map((command, index) => ({ command, index, score: scoreItemRelevance(command, searchValue) })).sort((a, b) => b.score.label - a.score.label || b.score.keyword - a.score.keyword || a.index - b.index).map(({ command }) => command);
+    return matches
+      .map((command, index) => ({
+        command,
+        index,
+        score: scoreItemRelevance(command, searchValue),
+      }))
+      .sort(
+        (a, b) =>
+          b.score.label - a.score.label || b.score.keyword - a.score.keyword || a.index - b.index,
+      )
+      .map(({ command }) => command);
   }, [filter, items, searchValue]);
 
   const groupedItems = React.useMemo<CommandGroupedItems[]>(() => {
     const groups = new Map<string | undefined, CommandItem[]>();
-    filteredItems.forEach((command) => { if (!groups.has(command.category)) groups.set(command.category, []); groups.get(command.category)!.push(command); });
-    return Array.from(groups.entries()).map(([category, grouped]) => ({ category, items: grouped }));
+    filteredItems.forEach((command) => {
+      if (!groups.has(command.category)) groups.set(command.category, []);
+      groups.get(command.category)!.push(command);
+    });
+    return Array.from(groups.entries()).map(([category, grouped]) => ({
+      category,
+      items: grouped,
+    }));
   }, [filteredItems]);
 
-  const orderedKeys = React.useMemo<Key[]>(() => filteredItems.length > 0 ? filteredItems.map((command) => command.id) : Array.from(itemsRef.current.keys()), [filteredItems, itemCount]);
+  const orderedKeys = React.useMemo<Key[]>(
+    () =>
+      filteredItems.length > 0
+        ? filteredItems.map((command) => command.id)
+        : Array.from(itemsRef.current.keys()),
+    [filteredItems, itemCount],
+  );
 
-  React.useEffect(() => { setFocusedKey(searchValue ? orderedKeys[0] ?? null : null); }, [orderedKeys, searchValue]);
+  React.useEffect(() => {
+    setFocusedKey(searchValue ? (orderedKeys[0] ?? null) : null);
+  }, [orderedKeys, searchValue]);
 
-  const registerItem = React.useCallback((key: Key, textValue: string) => { itemsRef.current.set(key, textValue); setItemCount((count) => count + 1); }, []);
-  const unregisterItem = React.useCallback((key: Key) => { itemsRef.current.delete(key); setItemCount((count) => count + 1); }, []);
+  const registerItem = React.useCallback((key: Key, textValue: string) => {
+    itemsRef.current.set(key, textValue);
+    setItemCount((count) => count + 1);
+  }, []);
+  const unregisterItem = React.useCallback((key: Key) => {
+    itemsRef.current.delete(key);
+    setItemCount((count) => count + 1);
+  }, []);
 
-  const moveFocus = React.useCallback((direction: "up" | "down") => {
-    if (!orderedKeys.length) return;
-    const index = focusedKey === null ? -1 : orderedKeys.indexOf(focusedKey);
-    setFocusedKey(direction === "down" ? orderedKeys[(index + 1) % orderedKeys.length] : orderedKeys[index <= 0 ? orderedKeys.length - 1 : index - 1]);
-  }, [focusedKey, orderedKeys]);
+  const moveFocus = React.useCallback(
+    (direction: "up" | "down") => {
+      if (!orderedKeys.length) return;
+      const index = focusedKey === null ? -1 : orderedKeys.indexOf(focusedKey);
+      setFocusedKey(
+        direction === "down"
+          ? orderedKeys[(index + 1) % orderedKeys.length]
+          : orderedKeys[index <= 0 ? orderedKeys.length - 1 : index - 1],
+      );
+    },
+    [focusedKey, orderedKeys],
+  );
 
-  const runFocusedAction = React.useCallback(() => focusedKey === null ? undefined : actionRef.current.get(focusedKey), [focusedKey]);
+  const runFocusedAction = React.useCallback(
+    () => (focusedKey === null ? undefined : actionRef.current.get(focusedKey)),
+    [focusedKey],
+  );
 
-  return { itemsRef, actionRef, focusedKey, setFocusedKey, searchValue, setSearchValue, filteredItems, groupedItems, orderedKeys, registerItem, unregisterItem, moveFocus, runFocusedAction };
+  return {
+    itemsRef,
+    actionRef,
+    focusedKey,
+    setFocusedKey,
+    searchValue,
+    setSearchValue,
+    filteredItems,
+    groupedItems,
+    orderedKeys,
+    registerItem,
+    unregisterItem,
+    moveFocus,
+    runFocusedAction,
+  };
 }

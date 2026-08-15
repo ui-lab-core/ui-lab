@@ -3,17 +3,17 @@
  * Extracted from @floating-ui/utils/dom.ts
  */
 
-export { round, max, createCoords } from '../index';
+export { round, max, createCoords } from "../index";
 
 function hasWindow() {
-  return typeof window !== 'undefined';
+  return typeof window !== "undefined";
 }
 
 export function getNodeName(node: Node | Window): string {
   if (isNode(node)) {
-    return (node.nodeName || '').toLowerCase();
+    return (node.nodeName || "").toLowerCase();
   }
-  return '#document';
+  return "#document";
 }
 
 export function getWindow(node: any): typeof window {
@@ -21,9 +21,7 @@ export function getWindow(node: any): typeof window {
 }
 
 export function getDocumentElement(node: Node | Window): HTMLElement {
-  return (
-    (isNode(node) ? node.ownerDocument : node.document) || window.document
-  )?.documentElement;
+  return ((isNode(node) ? node.ownerDocument : node.document) || window.document)?.documentElement;
 }
 
 function isNode(value: unknown): value is Node {
@@ -47,23 +45,18 @@ export function isHTMLElement(value: unknown): value is HTMLElement {
     return false;
   }
 
-  return (
-    value instanceof HTMLElement ||
-    value instanceof getWindow(value).HTMLElement
-  );
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
 }
 
 function isShadowRoot(value: unknown): value is ShadowRoot {
-  if (!hasWindow() || typeof ShadowRoot === 'undefined') {
+  if (!hasWindow() || typeof ShadowRoot === "undefined") {
     return false;
   }
 
-  return (
-    value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot
-  );
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
 }
 
-const invalidOverflowDisplayValues = new Set(['inline', 'contents']);
+const invalidOverflowDisplayValues = new Set(["inline", "contents"]);
 
 export function isOverflowElement(element: Element): boolean {
   const { overflow, overflowX, overflowY, display } = getComputedStyle(element);
@@ -73,13 +66,13 @@ export function isOverflowElement(element: Element): boolean {
   );
 }
 
-const tableElements = new Set(['table', 'td', 'th']);
+const tableElements = new Set(["table", "td", "th"]);
 
 export function isTableElement(element: Element): boolean {
   return tableElements.has(getNodeName(element));
 }
 
-const topLayerSelectors = [':popover-open', ':modal'];
+const topLayerSelectors = [":popover-open", ":modal"];
 
 export function isTopLayer(element: Element): boolean {
   return topLayerSelectors.some((selector) => {
@@ -91,44 +84,27 @@ export function isTopLayer(element: Element): boolean {
   });
 }
 
-const transformProperties = [
-  'transform',
-  'translate',
-  'scale',
-  'rotate',
-  'perspective',
-];
+const transformProperties = ["transform", "translate", "scale", "rotate", "perspective"];
 
-const willChangeValues = [
-  'transform',
-  'translate',
-  'scale',
-  'rotate',
-  'perspective',
-  'filter',
-];
+const willChangeValues = ["transform", "translate", "scale", "rotate", "perspective", "filter"];
 
-const containValues = ['paint', 'layout', 'strict', 'content'];
+const containValues = ["paint", "layout", "strict", "content"];
 
-export function isContainingBlock(
-  elementOrCss: Element | CSSStyleDeclaration,
-): boolean {
+export function isContainingBlock(elementOrCss: Element | CSSStyleDeclaration): boolean {
   const webkit = isWebKit();
-  const css = isElement(elementOrCss)
-    ? getComputedStyle(elementOrCss)
-    : elementOrCss;
+  const css = isElement(elementOrCss) ? getComputedStyle(elementOrCss) : elementOrCss;
 
   return (
     transformProperties.some((value) =>
       css[value as keyof CSSStyleDeclaration]
-        ? css[value as keyof CSSStyleDeclaration] !== 'none'
+        ? css[value as keyof CSSStyleDeclaration] !== "none"
         : false,
     ) ||
-    (css.containerType ? css.containerType !== 'normal' : false) ||
-    (!webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false)) ||
-    (!webkit && (css.filter ? css.filter !== 'none' : false)) ||
-    willChangeValues.some((value) => (css.willChange || '').includes(value)) ||
-    containValues.some((value) => (css.contain || '').includes(value))
+    (css.containerType ? css.containerType !== "normal" : false) ||
+    (!webkit && (css.backdropFilter ? css.backdropFilter !== "none" : false)) ||
+    (!webkit && (css.filter ? css.filter !== "none" : false)) ||
+    willChangeValues.some((value) => (css.willChange || "").includes(value)) ||
+    containValues.some((value) => (css.contain || "").includes(value))
   );
 }
 
@@ -149,11 +125,11 @@ export function getContainingBlock(element: Element): HTMLElement | null {
 }
 
 export function isWebKit(): boolean {
-  if (typeof CSS === 'undefined' || !CSS.supports) return false;
-  return CSS.supports('-webkit-backdrop-filter', 'none');
+  if (typeof CSS === "undefined" || !CSS.supports) return false;
+  return CSS.supports("-webkit-backdrop-filter", "none");
 }
 
-const lastTraversableNodeNames = new Set(['html', 'body', '#document']);
+const lastTraversableNodeNames = new Set(["html", "body", "#document"]);
 
 export function isLastTraversableNode(node: Node): boolean {
   return lastTraversableNodeNames.has(getNodeName(node));
@@ -181,7 +157,7 @@ export function getNodeScroll(element: Element | Window): {
 }
 
 export function getParentNode(node: Node): Node {
-  if (getNodeName(node) === 'html') {
+  if (getNodeName(node) === "html") {
     return node;
   }
 
@@ -198,9 +174,7 @@ function getNearestOverflowAncestor(node: Node): HTMLElement {
   const parentNode = getParentNode(node);
 
   if (isLastTraversableNode(parentNode)) {
-    return node.ownerDocument
-      ? node.ownerDocument.body
-      : (node as Document).body;
+    return node.ownerDocument ? node.ownerDocument.body : (node as Document).body;
   }
 
   if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
@@ -238,7 +212,5 @@ export function getOverflowAncestors(
 }
 
 export function getFrameElement(win: Window): Element | null {
-  return win.parent && Object.getPrototypeOf(win.parent)
-    ? win.frameElement
-    : null;
+  return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
 }

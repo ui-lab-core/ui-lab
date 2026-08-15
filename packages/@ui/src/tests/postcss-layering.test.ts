@@ -11,7 +11,7 @@ describe("demoteTailwindUtilityLayer", () => {
           display: flex;
         }
       }`,
-      { from: undefined }
+      { from: undefined },
     );
 
     expect(result.css).toContain("@layer components");

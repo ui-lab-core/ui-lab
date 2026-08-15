@@ -1,27 +1,36 @@
-import { describe, it, expect, vi } from 'vitest'
-import { screen } from '@testing-library/react'
-import { renderSelectWithItems, renderSelectWithChildren, selectItem, openSelect, getSelectTrigger, getSelectedItems } from './Select.test-utils'
-import { createMockSelectItems, createSelectionCallback } from '@/tests/utils'
-import styles from '../Select.module.css'
-import { Select } from '..'
+import { describe, it, expect, vi } from "vitest";
+import { screen } from "@testing-library/react";
+import {
+  renderSelectWithItems,
+  renderSelectWithChildren,
+  selectItem,
+  openSelect,
+  getSelectTrigger,
+  getSelectedItems,
+} from "./Select.test-utils";
+import { createMockSelectItems, createSelectionCallback } from "@/tests/utils";
+import styles from "../Select.module.css";
+import { Select } from "..";
 
-describe('Select.core', () => {
-  describe('single selection', () => {
-    it('uses extra-small list spacing in the dropdown', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items)
-      const trigger = getSelectTrigger(container)
+describe("Select.core", () => {
+  describe("single selection", () => {
+    it("uses extra-small list spacing in the dropdown", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items);
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      const list = document.querySelector('[role="listbox"][data-gap="xs"]')
-      expect(list).toBeInTheDocument()
-    })
+      const list = document.querySelector('[role="listbox"][data-gap="xs"]');
+      expect(list).toBeInTheDocument();
+    });
 
-    it('applies item spacing when options are wrapped in Select.List', async () => {
+    it("applies item spacing when options are wrapped in Select.List", async () => {
       const container = renderSelectWithChildren(
         <>
-          <Select.Trigger><Select.Value placeholder="Select an option" /></Select.Trigger>
+          <Select.Trigger>
+            <Select.Value placeholder="Select an option" />
+          </Select.Trigger>
           <Select.Content>
             <Select.List>
               <Select.Item value="option1">Option 1</Select.Item>
@@ -29,162 +38,162 @@ describe('Select.core', () => {
               <Select.Item value="option3">Option 3</Select.Item>
             </Select.List>
           </Select.Content>
-        </>
-      )
-      const trigger = getSelectTrigger(container)
+        </>,
+      );
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      const list = document.querySelector(`.${styles.list}`)
-      expect(list).toBeInTheDocument()
-      expect(list?.querySelectorAll('[role="option"]')).toHaveLength(3)
-    })
+      const list = document.querySelector(`.${styles.list}`);
+      expect(list).toBeInTheDocument();
+      expect(list?.querySelectorAll('[role="option"]')).toHaveLength(3);
+    });
 
-    it('controlled: selectedKey prop controls selection', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { selectedKey: items[0].key })
+    it("controlled: selectedKey prop controls selection", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { selectedKey: items[0].key });
 
-      const selectedItems = getSelectedItems(container)
-      expect(selectedItems).toHaveLength(1)
-      expect(selectedItems[0]).toHaveTextContent(items[0].label)
-    })
+      const selectedItems = getSelectedItems(container);
+      expect(selectedItems).toHaveLength(1);
+      expect(selectedItems[0]).toHaveTextContent(items[0].label);
+    });
 
-    it('uncontrolled: defaultSelectedKey sets initial selection', async () => {
-      const items = createMockSelectItems(3)
-      renderSelectWithItems(items, { defaultSelectedKey: items[1].key })
+    it("uncontrolled: defaultSelectedKey sets initial selection", async () => {
+      const items = createMockSelectItems(3);
+      renderSelectWithItems(items, { defaultSelectedKey: items[1].key });
 
-      const selectedItems = getSelectedItems(screen.getByRole('button').parentElement!)
-      expect(selectedItems).toHaveLength(1)
-      expect(selectedItems[0]).toHaveTextContent(items[1].label)
-    })
+      const selectedItems = getSelectedItems(screen.getByRole("button").parentElement!);
+      expect(selectedItems).toHaveLength(1);
+      expect(selectedItems[0]).toHaveTextContent(items[1].label);
+    });
 
-    it('onSelectionChange fires with selected key', async () => {
-      const items = createMockSelectItems(3)
-      const { callback, calls } = createSelectionCallback()
+    it("onSelectionChange fires with selected key", async () => {
+      const items = createMockSelectItems(3);
+      const { callback, calls } = createSelectionCallback();
 
-      renderSelectWithItems(items, { onSelectionChange: callback })
-      const trigger = getSelectTrigger(screen.getByRole('button').parentElement!)
+      renderSelectWithItems(items, { onSelectionChange: callback });
+      const trigger = getSelectTrigger(screen.getByRole("button").parentElement!);
 
-      await selectItem(trigger.parentElement!, items[0].label)
+      await selectItem(trigger.parentElement!, items[0].label);
 
-      expect(calls.length).toBeGreaterThan(0)
-      expect(calls[calls.length - 1][0]).toBe(items[0].key)
-    })
+      expect(calls.length).toBeGreaterThan(0);
+      expect(calls[calls.length - 1][0]).toBe(items[0].key);
+    });
 
-    it('selectedTextValue displays selected item text', async () => {
-      const items = createMockSelectItems(3)
-      renderSelectWithItems(items, { defaultSelectedKey: items[2].key })
+    it("selectedTextValue displays selected item text", async () => {
+      const items = createMockSelectItems(3);
+      renderSelectWithItems(items, { defaultSelectedKey: items[2].key });
 
-      const trigger = screen.getByRole('button')
-      expect(trigger).toHaveTextContent(items[2].label)
-    })
+      const trigger = screen.getByRole("button");
+      expect(trigger).toHaveTextContent(items[2].label);
+    });
 
-    it('default placeholder text when nothing selected', async () => {
-      const items = createMockSelectItems(3)
-      renderSelectWithItems(items)
+    it("default placeholder text when nothing selected", async () => {
+      const items = createMockSelectItems(3);
+      renderSelectWithItems(items);
 
-      const trigger = screen.getByRole('button')
+      const trigger = screen.getByRole("button");
       // Default placeholder behavior
-      expect(trigger.textContent).toBeTruthy()
-    })
+      expect(trigger.textContent).toBeTruthy();
+    });
 
-    it('mode prop switches to single mode', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { mode: 'single' })
+    it("mode prop switches to single mode", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { mode: "single" });
 
-      const selectRoot = container.querySelector('[data-mode="single"]')
-      expect(selectRoot).toBeInTheDocument()
-    })
-  })
+      const selectRoot = container.querySelector('[data-mode="single"]');
+      expect(selectRoot).toBeInTheDocument();
+    });
+  });
 
-  describe('multiple selection', () => {
-    it('controlled: selectedKeys prop controls selections', async () => {
-      const items = createMockSelectItems(5)
-      const selected = [items[0].key, items[2].key]
-
-      const container = renderSelectWithItems(items, {
-        mode: 'multiple',
-        selectedKeys: selected
-      })
-
-      const selectedItems = getSelectedItems(container)
-      expect(selectedItems).toHaveLength(2)
-    })
-
-    it('uncontrolled: defaultSelectedKeys sets initial selections', async () => {
-      const items = createMockSelectItems(5)
-      const selected = [items[1].key, items[3].key]
+  describe("multiple selection", () => {
+    it("controlled: selectedKeys prop controls selections", async () => {
+      const items = createMockSelectItems(5);
+      const selected = [items[0].key, items[2].key];
 
       const container = renderSelectWithItems(items, {
-        mode: 'multiple',
-        defaultSelectedKeys: selected
-      })
+        mode: "multiple",
+        selectedKeys: selected,
+      });
 
-      const selectedItems = getSelectedItems(container)
-      expect(selectedItems).toHaveLength(2)
-    })
+      const selectedItems = getSelectedItems(container);
+      expect(selectedItems).toHaveLength(2);
+    });
 
-    it('onSelectionChange fires with array of keys', async () => {
-      const items = createMockSelectItems(3)
-      const { callback, calls } = createSelectionCallback()
+    it("uncontrolled: defaultSelectedKeys sets initial selections", async () => {
+      const items = createMockSelectItems(5);
+      const selected = [items[1].key, items[3].key];
 
       const container = renderSelectWithItems(items, {
-        mode: 'multiple',
-        onSelectionChange: callback
-      })
+        mode: "multiple",
+        defaultSelectedKeys: selected,
+      });
 
-      await selectItem(container, items[0].label)
+      const selectedItems = getSelectedItems(container);
+      expect(selectedItems).toHaveLength(2);
+    });
 
-      expect(calls.length).toBeGreaterThan(0)
-      const lastCall = calls[calls.length - 1][0]
-      expect(Array.isArray(lastCall)).toBe(true)
-    })
+    it("onSelectionChange fires with array of keys", async () => {
+      const items = createMockSelectItems(3);
+      const { callback, calls } = createSelectionCallback();
 
-    it('multiple items can be selected', async () => {
-      const items = createMockSelectItems(5)
-      const container = renderSelectWithItems(items, { mode: 'multiple' })
+      const container = renderSelectWithItems(items, {
+        mode: "multiple",
+        onSelectionChange: callback,
+      });
 
-      await selectItem(container, items[0].label)
-      await selectItem(container, items[1].label)
+      await selectItem(container, items[0].label);
 
-      const selectedItems = getSelectedItems(container)
-      expect(selectedItems.length).toBeGreaterThanOrEqual(2)
-    })
+      expect(calls.length).toBeGreaterThan(0);
+      const lastCall = calls[calls.length - 1][0];
+      expect(Array.isArray(lastCall)).toBe(true);
+    });
 
-    it('mode prop switches to multiple mode', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { mode: 'multiple' })
+    it("multiple items can be selected", async () => {
+      const items = createMockSelectItems(5);
+      const container = renderSelectWithItems(items, { mode: "multiple" });
 
-      const selectRoot = container.querySelector('[data-mode="multiple"]')
-      expect(selectRoot).toBeInTheDocument()
-    })
-  })
+      await selectItem(container, items[0].label);
+      await selectItem(container, items[1].label);
 
-  describe('selection state', () => {
-    it('selection callback receives correct value type', async () => {
-      const items = createMockSelectItems(3)
-      const onSelectionChange = vi.fn()
+      const selectedItems = getSelectedItems(container);
+      expect(selectedItems.length).toBeGreaterThanOrEqual(2);
+    });
 
-      const container = renderSelectWithItems(items, { onSelectionChange })
-      await selectItem(container, items[0].label)
+    it("mode prop switches to multiple mode", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { mode: "multiple" });
 
-      expect(onSelectionChange).toHaveBeenCalled()
-    })
+      const selectRoot = container.querySelector('[data-mode="multiple"]');
+      expect(selectRoot).toBeInTheDocument();
+    });
+  });
 
-    it('null selectedKey means nothing selected', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { selectedKey: null })
+  describe("selection state", () => {
+    it("selection callback receives correct value type", async () => {
+      const items = createMockSelectItems(3);
+      const onSelectionChange = vi.fn();
 
-      const selectedItems = getSelectedItems(container)
-      expect(selectedItems).toHaveLength(0)
-    })
+      const container = renderSelectWithItems(items, { onSelectionChange });
+      await selectItem(container, items[0].label);
 
-    it('empty selectedKeys means nothing selected', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { mode: 'multiple', selectedKeys: [] })
+      expect(onSelectionChange).toHaveBeenCalled();
+    });
 
-      const selectedItems = getSelectedItems(container)
-      expect(selectedItems).toHaveLength(0)
-    })
-  })
-})
+    it("null selectedKey means nothing selected", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { selectedKey: null });
+
+      const selectedItems = getSelectedItems(container);
+      expect(selectedItems).toHaveLength(0);
+    });
+
+    it("empty selectedKeys means nothing selected", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { mode: "multiple", selectedKeys: [] });
+
+      const selectedItems = getSelectedItems(container);
+      expect(selectedItems).toHaveLength(0);
+    });
+  });
+});

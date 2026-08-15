@@ -1,117 +1,108 @@
-import * as React from 'react'
-import { describe, it, expect, vi } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { Input } from '../Input'
-import { Button } from '@/components/Button'
+import * as React from "react";
+import { describe, it, expect, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Input } from "../Input";
+import { Button } from "@/components/Button";
 
-const CopyIcon = () => <svg data-testid="copy-icon" />
+const CopyIcon = () => <svg data-testid="copy-icon" />;
 
-describe('Input actions', () => {
-  it('renders numeric controlled and default values', () => {
-    const { rerender, unmount } = render(<Input aria-label="Count" type="number" value={4} onChange={() => {}} />)
+describe("Input actions", () => {
+  it("renders numeric controlled and default values", () => {
+    const { rerender, unmount } = render(
+      <Input aria-label="Count" type="number" value={4} onChange={() => {}} />,
+    );
 
-    expect(screen.getByRole('spinbutton', { name: 'Count' })).toHaveValue(4)
+    expect(screen.getByRole("spinbutton", { name: "Count" })).toHaveValue(4);
 
-    rerender(<Input aria-label="Count" type="number" value={6} onChange={() => {}} />)
+    rerender(<Input aria-label="Count" type="number" value={6} onChange={() => {}} />);
 
-    expect(screen.getByRole('spinbutton', { name: 'Count' })).toHaveValue(6)
+    expect(screen.getByRole("spinbutton", { name: "Count" })).toHaveValue(6);
 
-    unmount()
-    render(<Input aria-label="Count" type="number" defaultValue={2} />)
+    unmount();
+    render(<Input aria-label="Count" type="number" defaultValue={2} />);
 
-    expect(screen.getByRole('spinbutton', { name: 'Count' })).toHaveValue(2)
-  })
+    expect(screen.getByRole("spinbutton", { name: "Count" })).toHaveValue(2);
+  });
 
-  it('renders a shared focus indicator and activates it on keyboard focus', async () => {
-    const user = userEvent.setup()
-    const { container } = render(<Input aria-label="Search" />)
+  it("renders a shared focus indicator and activates it on keyboard focus", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Input aria-label="Search" />);
 
-    const indicator = container.querySelector('[data-focus-indicator="local"]')
-    expect(indicator).toBeInTheDocument()
+    const indicator = container.querySelector('[data-focus-indicator="local"]');
+    expect(indicator).toBeInTheDocument();
 
-    await user.tab()
+    await user.tab();
 
-    expect(screen.getByRole('textbox')).toHaveFocus()
+    expect(screen.getByRole("textbox")).toHaveFocus();
     await waitFor(() => {
-      expect(indicator).toHaveAttribute('data-visible', 'true')
-    })
-  })
+      expect(indicator).toHaveAttribute("data-visible", "true");
+    });
+  });
 
-  it('renders hint content in a badge on the right side of the input', () => {
+  it("renders hint content in a badge on the right side of the input", () => {
+    const { container } = render(<Input aria-label="Search" hint="Ctrl+K" />);
+
+    expect(screen.getByText("Ctrl+K")).toBeInTheDocument();
+    expect(container.querySelector("[data-end-adornments] [data-hint]")).toBeInTheDocument();
+  });
+
+  it("renders shorthand icon as the prefix icon", () => {
+    const { container } = render(<Input aria-label="Search" icon={<CopyIcon />} />);
+
+    expect(screen.getByTestId("copy-icon")).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-start-adornments] [data-testid="copy-icon"]'),
+    ).toBeInTheDocument();
+  });
+
+  it("renders suffix icon when provided via the icon slots object", () => {
+    const { container } = render(<Input aria-label="Search" icon={{ suffix: <CopyIcon /> }} />);
+
+    expect(screen.getByTestId("copy-icon")).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-end-adornments] [data-testid="copy-icon"]'),
+    ).toBeInTheDocument();
+  });
+
+  it("renders no actions container when actions is not provided", () => {
+    const { container } = render(<Input aria-label="Search" />);
+
+    expect(container.querySelector("[data-actions]")).not.toBeInTheDocument();
+  });
+
+  it("renders action defs on the right side of the input", () => {
     const { container } = render(
-      <Input aria-label="Search" hint="Ctrl+K" />
-    )
+      <Input aria-label="Search" actions={[{ icon: <CopyIcon />, title: "Copy" }]} />,
+    );
 
-    expect(screen.getByText('Ctrl+K')).toBeInTheDocument()
-    expect(container.querySelector('[data-end-adornments] [data-hint]')).toBeInTheDocument()
-  })
+    expect(container.querySelector('[data-actions-position="right"]')).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Copy" })).toHaveClass("ghost", "icon");
+    expect(screen.getByRole("button", { name: "Copy" })).not.toHaveClass("md");
+    expect(screen.getByTestId("copy-icon")).toBeInTheDocument();
+  });
 
-  it('renders shorthand icon as the prefix icon', () => {
+  it("renders action defs on the left side of the input", () => {
     const { container } = render(
-      <Input aria-label="Search" icon={<CopyIcon />} />
-    )
+      <Input aria-label="Search" actions={{ left: [{ icon: <CopyIcon />, title: "Copy" }] }} />,
+    );
 
-    expect(screen.getByTestId('copy-icon')).toBeInTheDocument()
-    expect(container.querySelector('[data-start-adornments] [data-testid="copy-icon"]')).toBeInTheDocument()
-  })
+    expect(container.querySelector('[data-actions-position="left"]')).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Copy" })).toHaveClass("ghost");
+  });
 
-  it('renders suffix icon when provided via the icon slots object', () => {
-    const { container } = render(
-      <Input aria-label="Search" icon={{ suffix: <CopyIcon /> }} />
-    )
-
-    expect(screen.getByTestId('copy-icon')).toBeInTheDocument()
-    expect(container.querySelector('[data-end-adornments] [data-testid="copy-icon"]')).toBeInTheDocument()
-  })
-
-  it('renders no actions container when actions is not provided', () => {
-    const { container } = render(<Input aria-label="Search" />)
-
-    expect(container.querySelector('[data-actions]')).not.toBeInTheDocument()
-  })
-
-  it('renders action defs on the right side of the input', () => {
-    const { container } = render(
-      <Input
-        aria-label="Search"
-        actions={[{ icon: <CopyIcon />, title: 'Copy' }]}
-      />
-    )
-
-    expect(container.querySelector('[data-actions-position="right"]')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Copy' })).toHaveClass('ghost', 'icon')
-    expect(screen.getByRole('button', { name: 'Copy' })).not.toHaveClass('md')
-    expect(screen.getByTestId('copy-icon')).toBeInTheDocument()
-  })
-
-  it('renders action defs on the left side of the input', () => {
-    const { container } = render(
-      <Input
-        aria-label="Search"
-        actions={{ left: [{ icon: <CopyIcon />, title: 'Copy' }] }}
-      />
-    )
-
-    expect(container.querySelector('[data-actions-position="left"]')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Copy' })).toHaveClass('ghost')
-  })
-
-  it('calls onClick for action defs', () => {
-    const onClick = vi.fn()
+  it("calls onClick for action defs", () => {
+    const onClick = vi.fn();
 
     render(
-      <Input
-        aria-label="Search"
-        actions={[{ icon: <CopyIcon />, title: 'Copy', onClick }]}
-      />
-    )
+      <Input aria-label="Search" actions={[{ icon: <CopyIcon />, title: "Copy", onClick }]} />,
+    );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
-    expect(onClick).toHaveBeenCalledTimes(1)
-  })
+    fireEvent.click(screen.getByRole("button", { name: "Copy" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
 
-  it('renders custom action nodes', () => {
+  it("renders custom action nodes", () => {
     render(
       <Input
         aria-label="Search"
@@ -120,54 +111,54 @@ describe('Input actions', () => {
             Copy
           </Button>,
         ]}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByRole('button', { name: 'Copy' })).toBeInTheDocument()
-  })
+    expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
+  });
 
-  it('renders mixed action defs and custom nodes', () => {
+  it("renders mixed action defs and custom nodes", () => {
     render(
       <Input
         aria-label="Search"
         actions={{
-          left: [{ icon: <CopyIcon />, title: 'Copy' }],
-          right: [<button key="clear" type="button">Clear</button>],
+          left: [{ icon: <CopyIcon />, title: "Copy" }],
+          right: [
+            <button key="clear" type="button">
+              Clear
+            </button>,
+          ],
         }}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByRole('button', { name: 'Copy' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Clear' })).toBeInTheDocument()
-  })
+    expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Clear" })).toBeInTheDocument();
+  });
 
-  it('adds inline end padding when actions are rendered', () => {
+  it("adds inline end padding when actions are rendered", () => {
+    render(<Input aria-label="Search" actions={[{ icon: <CopyIcon />, title: "Copy" }]} />);
+
+    expect(screen.getByRole("textbox")).toHaveStyle({
+      paddingInlineEnd: "var(--adornment-offset)",
+    });
+  });
+
+  it("adds inline start padding when left actions are rendered", () => {
     render(
-      <Input
-        aria-label="Search"
-        actions={[{ icon: <CopyIcon />, title: 'Copy' }]}
-      />
-    )
+      <Input aria-label="Search" actions={{ left: [{ icon: <CopyIcon />, title: "Copy" }] }} />,
+    );
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
-  })
+    expect(screen.getByRole("textbox")).toHaveStyle({
+      paddingInlineStart: "var(--adornment-offset)",
+    });
+  });
 
-  it('adds inline start padding when left actions are rendered', () => {
-    render(
-      <Input
-        aria-label="Search"
-        actions={{ left: [{ icon: <CopyIcon />, title: 'Copy' }] }}
-      />
-    )
+  it("adds inline end padding when hint is rendered", () => {
+    render(<Input aria-label="Search" hint="Ctrl+K" />);
 
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingInlineStart: 'var(--adornment-offset)' })
-  })
-
-  it('adds inline end padding when hint is rendered', () => {
-    render(
-      <Input aria-label="Search" hint="Ctrl+K" />
-    )
-
-    expect(screen.getByRole('textbox')).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
-  })
-})
+    expect(screen.getByRole("textbox")).toHaveStyle({
+      paddingInlineEnd: "var(--adornment-offset)",
+    });
+  });
+});

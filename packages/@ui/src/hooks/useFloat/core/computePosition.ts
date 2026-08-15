@@ -1,6 +1,6 @@
-import {computeCoordsFromPlacement} from './computeCoordsFromPlacement';
-import {detectOverflow} from './detectOverflow';
-import type {ComputePosition, Middleware, MiddlewareData} from './types';
+import { computeCoordsFromPlacement } from "./computeCoordsFromPlacement";
+import { detectOverflow } from "./detectOverflow";
+import type { ComputePosition, Middleware, MiddlewareData } from "./types";
 
 /**
  * Computes the `x` and `y` coordinates that will place the floating element
@@ -9,29 +9,20 @@ import type {ComputePosition, Middleware, MiddlewareData} from './types';
  * This export does not have any `platform` interface logic. You will need to
  * write one for the platform you are using Floating UI with.
  */
-export const computePosition: ComputePosition = async (
-  reference,
-  floating,
-  config,
-) => {
-  const {
-    placement = 'bottom',
-    strategy = 'absolute',
-    middleware = [],
-    platform,
-  } = config;
+export const computePosition: ComputePosition = async (reference, floating, config) => {
+  const { placement = "bottom", strategy = "absolute", middleware = [], platform } = config;
 
   const validMiddleware = middleware.filter(Boolean) as Middleware[];
   const rtl = await platform.isRTL?.(floating);
 
-  let rects = await platform.getElementRects({reference, floating, strategy});
-  let {x, y} = computeCoordsFromPlacement(rects, placement, rtl);
+  let rects = await platform.getElementRects({ reference, floating, strategy });
+  let { x, y } = computeCoordsFromPlacement(rects, placement, rtl);
   let statefulPlacement = placement;
   let middlewareData: MiddlewareData = {};
   let resetCount = 0;
 
   for (let i = 0; i < validMiddleware.length; i++) {
-    const {name, fn} = validMiddleware[i];
+    const { name, fn } = validMiddleware[i];
 
     const {
       x: nextX,
@@ -50,7 +41,7 @@ export const computePosition: ComputePosition = async (
         ...platform,
         detectOverflow: platform.detectOverflow ?? detectOverflow,
       },
-      elements: {reference, floating},
+      elements: { reference, floating },
     });
 
     x = nextX ?? x;
@@ -67,7 +58,7 @@ export const computePosition: ComputePosition = async (
     if (reset && resetCount <= 50) {
       resetCount++;
 
-      if (typeof reset === 'object') {
+      if (typeof reset === "object") {
         if (reset.placement) {
           statefulPlacement = reset.placement;
         }
@@ -75,11 +66,11 @@ export const computePosition: ComputePosition = async (
         if (reset.rects) {
           rects =
             reset.rects === true
-              ? await platform.getElementRects({reference, floating, strategy})
+              ? await platform.getElementRects({ reference, floating, strategy })
               : reset.rects;
         }
 
-        ({x, y} = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+        ({ x, y } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
       }
 
       i = -1;

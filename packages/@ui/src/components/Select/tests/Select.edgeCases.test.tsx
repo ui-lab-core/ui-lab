@@ -1,125 +1,135 @@
-import { describe, it, expect, vi } from 'vitest'
-import * as React from 'react'
-import { renderSelectWithItems, renderSelectWithChildren, selectItem, openSelect, getSelectTrigger } from './Select.test-utils'
-import { createMockSelectItems, getAllElementsByRole, clickElement, hoverElement, pressArrowDown } from '@/tests/utils'
-import { Select } from '..'
-import * as SelectShared from '../Select.shared'
+import { describe, it, expect, vi } from "vitest";
+import * as React from "react";
+import {
+  renderSelectWithItems,
+  renderSelectWithChildren,
+  selectItem,
+  openSelect,
+  getSelectTrigger,
+} from "./Select.test-utils";
+import {
+  createMockSelectItems,
+  getAllElementsByRole,
+  clickElement,
+  hoverElement,
+  pressArrowDown,
+} from "@/tests/utils";
+import { Select } from "..";
+import * as SelectShared from "../Select.shared";
 
-describe('Select.edgeCases', () => {
-
-
-  describe('rapid interactions', () => {
-    it('rapid open/close cycles do not cause race conditions', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items)
-      const trigger = getSelectTrigger(container)
+describe("Select.edgeCases", () => {
+  describe("rapid interactions", () => {
+    it("rapid open/close cycles do not cause race conditions", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items);
+      const trigger = getSelectTrigger(container);
 
       for (let i = 0; i < 5; i++) {
-        await clickElement(trigger)
-        await clickElement(trigger)
+        await clickElement(trigger);
+        await clickElement(trigger);
       }
 
       // Should be in stable state
-      expect(trigger).toBeInTheDocument()
-    })
+      expect(trigger).toBeInTheDocument();
+    });
 
-    it('rapid selection changes handled correctly', async () => {
-      const items = createMockSelectItems(5)
-      const onSelectionChange = vi.fn()
+    it("rapid selection changes handled correctly", async () => {
+      const items = createMockSelectItems(5);
+      const onSelectionChange = vi.fn();
 
-      const container = renderSelectWithItems(items, { onSelectionChange })
+      const container = renderSelectWithItems(items, { onSelectionChange });
 
       // Rapidly select different items
       for (let i = 0; i < Math.min(3, items.length); i++) {
         try {
-          await selectItem(container, items[i].label)
-          await openSelect(getSelectTrigger(container))
+          await selectItem(container, items[i].label);
+          await openSelect(getSelectTrigger(container));
         } catch (e) {
           // Item might not be available
         }
       }
 
-      expect(onSelectionChange).toHaveBeenCalled()
-    })
-  })
+      expect(onSelectionChange).toHaveBeenCalled();
+    });
+  });
 
-  describe('large lists', () => {
-    it('large item lists (1000+) render without crashing', async () => {
-      const items = createMockSelectItems(1000)
-      const container = renderSelectWithItems(items, { maxItems: 10 })
-      const trigger = getSelectTrigger(container)
+  describe("large lists", () => {
+    it("large item lists (1000+) render without crashing", async () => {
+      const items = createMockSelectItems(1000);
+      const container = renderSelectWithItems(items, { maxItems: 10 });
+      const trigger = getSelectTrigger(container);
 
-      expect(trigger).toBeInTheDocument()
-    })
+      expect(trigger).toBeInTheDocument();
+    });
 
-    it('scroll virtualization keeps correct focused item in view', async () => {
-      const items = createMockSelectItems(100)
-      const container = renderSelectWithItems(items, { maxItems: 5 })
-      const trigger = getSelectTrigger(container)
+    it("scroll virtualization keeps correct focused item in view", async () => {
+      const items = createMockSelectItems(100);
+      const container = renderSelectWithItems(items, { maxItems: 5 });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
       // Navigate to middle of list
       for (let i = 0; i < 20; i++) {
-        await pressArrowDown(trigger)
+        await pressArrowDown(trigger);
       }
 
-      const focusedItem = document.querySelector('[data-focused="true"]')
-      expect(focusedItem).toBeInTheDocument()
-    })
+      const focusedItem = document.querySelector('[data-focused="true"]');
+      expect(focusedItem).toBeInTheDocument();
+    });
 
-    it('keyboard navigation still scrolls long lists into view', async () => {
-      const items = createMockSelectItems(100)
-      const container = renderSelectWithItems(items, { maxItems: 5 })
-      const trigger = getSelectTrigger(container)
-      const scrollSpy = vi.spyOn(SelectShared, 'scrollItemIntoView')
+    it("keyboard navigation still scrolls long lists into view", async () => {
+      const items = createMockSelectItems(100);
+      const container = renderSelectWithItems(items, { maxItems: 5 });
+      const trigger = getSelectTrigger(container);
+      const scrollSpy = vi.spyOn(SelectShared, "scrollItemIntoView");
 
       try {
-        await openSelect(trigger)
+        await openSelect(trigger);
 
-        scrollSpy.mockClear()
+        scrollSpy.mockClear();
 
         for (let i = 0; i < 12; i++) {
-          await pressArrowDown(trigger)
+          await pressArrowDown(trigger);
         }
 
-        expect(scrollSpy).toHaveBeenCalled()
+        expect(scrollSpy).toHaveBeenCalled();
       } finally {
-        scrollSpy.mockRestore()
+        scrollSpy.mockRestore();
       }
-    })
+    });
 
-    it('hovering after keyboard navigation does not trigger another scroll jump', async () => {
-      const items = createMockSelectItems(100)
-      const container = renderSelectWithItems(items, { maxItems: 5 })
-      const trigger = getSelectTrigger(container)
-      const scrollSpy = vi.spyOn(SelectShared, 'scrollItemIntoView')
+    it("hovering after keyboard navigation does not trigger another scroll jump", async () => {
+      const items = createMockSelectItems(100);
+      const container = renderSelectWithItems(items, { maxItems: 5 });
+      const trigger = getSelectTrigger(container);
+      const scrollSpy = vi.spyOn(SelectShared, "scrollItemIntoView");
 
       try {
-        await openSelect(trigger)
+        await openSelect(trigger);
 
         for (let i = 0; i < 12; i++) {
-          await pressArrowDown(trigger)
+          await pressArrowDown(trigger);
         }
 
-        scrollSpy.mockClear()
+        scrollSpy.mockClear();
 
         const visibleItems = Array.from(
-          document.querySelectorAll('[role="option"]:not([aria-hidden="true"])')
-        ) as HTMLElement[]
+          document.querySelectorAll('[role="option"]:not([aria-hidden="true"])'),
+        ) as HTMLElement[];
 
-        expect(visibleItems.length).toBeGreaterThan(0)
+        expect(visibleItems.length).toBeGreaterThan(0);
 
-        await hoverElement(visibleItems[visibleItems.length - 1]!)
+        await hoverElement(visibleItems[visibleItems.length - 1]!);
 
-        expect(scrollSpy).not.toHaveBeenCalled()
+        expect(scrollSpy).not.toHaveBeenCalled();
       } finally {
-        scrollSpy.mockRestore()
+        scrollSpy.mockRestore();
       }
-    })
+    });
 
-    it('searchable content keeps keyboard-scrolled options in view', async () => {
-      const items = createMockSelectItems(100)
+    it("searchable content keeps keyboard-scrolled options in view", async () => {
+      const items = createMockSelectItems(100);
       const container = renderSelectWithChildren(
         <>
           <Select.Trigger>
@@ -135,51 +145,55 @@ describe('Select.edgeCases', () => {
             </Select.List>
           </Select.Content>
         </>,
-        { maxItems: 5 }
-      )
-      const trigger = getSelectTrigger(container)
-      const scrollSpy = vi.spyOn(SelectShared, 'scrollItemIntoView')
+        { maxItems: 5 },
+      );
+      const trigger = getSelectTrigger(container);
+      const scrollSpy = vi.spyOn(SelectShared, "scrollItemIntoView");
 
       try {
-        await openSelect(trigger)
-        const searchInput = document.querySelector('[role="combobox"]') as HTMLElement
+        await openSelect(trigger);
+        const searchInput = document.querySelector('[role="combobox"]') as HTMLElement;
 
-        scrollSpy.mockClear()
+        scrollSpy.mockClear();
 
         for (let i = 0; i < 8; i++) {
-          await pressArrowDown(searchInput)
+          await pressArrowDown(searchInput);
         }
 
-        expect(scrollSpy).toHaveBeenCalled()
+        expect(scrollSpy).toHaveBeenCalled();
       } finally {
-        scrollSpy.mockRestore()
+        scrollSpy.mockRestore();
       }
-    })
+    });
 
-    it('does not mount scroll chrome when the content is below maxItems', async () => {
+    it("does not mount scroll chrome when the content is below maxItems", async () => {
       const items = [
         {
-          label: 'github',
-          label: 'GitHub',
+          label: "github",
+          label: "GitHub",
           description: "The world's leading software development platform",
         },
         {
-          label: 'gitlab',
-          label: 'GitLab',
-          description: 'Complete DevOps platform with built-in CI/CD',
+          label: "gitlab",
+          label: "GitLab",
+          description: "Complete DevOps platform with built-in CI/CD",
         },
         {
-          label: 'bitbucket',
-          label: 'Bitbucket',
-          description: 'Git solution for professional teams by Atlassian',
+          label: "bitbucket",
+          label: "Bitbucket",
+          description: "Git solution for professional teams by Atlassian",
         },
-      ]
+      ];
 
       const container = renderSelectWithChildren(
         React.createElement(
           React.Fragment,
           null,
-          React.createElement(Select.Trigger, null, React.createElement(Select.Value, { placeholder: 'Select provider' })),
+          React.createElement(
+            Select.Trigger,
+            null,
+            React.createElement(Select.Value, { placeholder: "Select provider" }),
+          ),
           React.createElement(
             Select.Content,
             null,
@@ -195,58 +209,61 @@ describe('Select.edgeCases', () => {
                     textValue: item.label,
                     description: item.description,
                   },
-                  item.label
-                )
-              )
-            )
-          )
+                  item.label,
+                ),
+              ),
+            ),
+          ),
         ),
         {
-          selectedKey: 'github',
-          label: 'GitHub',
+          selectedKey: "github",
+          label: "GitHub",
           onSelectionChange: vi.fn(),
-          className: 'w-80',
-        }
-      )
+          className: "w-80",
+        },
+      );
 
-      const trigger = getSelectTrigger(container)
-      await openSelect(trigger)
+      const trigger = getSelectTrigger(container);
+      await openSelect(trigger);
 
-      expect(document.querySelector('[data-hide]')).toBeNull()
-    })
-  })
+      expect(document.querySelector("[data-hide]")).toBeNull();
+    });
+  });
 
-  describe('memory and cleanup', () => {
-    it('ref forwarding: ref prop on Select points to the root div', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items)
+  describe("memory and cleanup", () => {
+    it("ref forwarding: ref prop on Select points to the root div", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items);
 
-      const rootDiv = container.querySelector('[data-mode="single"]')
-      expect(rootDiv).toBeInTheDocument()
-      expect(container.querySelector('.focus-scope')).not.toBeInTheDocument()
-    })
+      const rootDiv = container.querySelector('[data-mode="single"]');
+      expect(rootDiv).toBeInTheDocument();
+      expect(container.querySelector(".focus-scope")).not.toBeInTheDocument();
+    });
+  });
 
-  })
-
-  describe('composed trigger layouts', () => {
-    it('allows explicit full-width sizing', () => {
+  describe("composed trigger layouts", () => {
+    it("allows explicit full-width sizing", () => {
       const container = renderSelectWithChildren(
-        React.createElement(Select.Trigger, null, 'NVIDIA L40S · 48 GB GDDR6'),
-        { className: 'w-full' }
-      )
+        React.createElement(Select.Trigger, null, "NVIDIA L40S · 48 GB GDDR6"),
+        { className: "w-full" },
+      );
 
-      const root = container.querySelector('[data-mode="single"]')
+      const root = container.querySelector('[data-mode="single"]');
 
-      expect(root).toHaveClass('w-full')
-    })
+      expect(root).toHaveClass("w-full");
+    });
 
-    it('renders a select trigger alongside sibling controls in fit-content layouts', () => {
+    it("renders a select trigger alongside sibling controls in fit-content layouts", () => {
       const container = renderSelectWithChildren(
         React.createElement(
           React.Fragment,
           null,
-          React.createElement('button', { type: 'button' }, 'Toggle camera'),
-          React.createElement(Select.Trigger, null, React.createElement(Select.Value, { placeholder: 'Select camera' })),
+          React.createElement("button", { type: "button" }, "Toggle camera"),
+          React.createElement(
+            Select.Trigger,
+            null,
+            React.createElement(Select.Value, { placeholder: "Select camera" }),
+          ),
           React.createElement(
             Select.Content,
             null,
@@ -254,40 +271,37 @@ describe('Select.edgeCases', () => {
               Select.List,
               null,
               createMockSelectItems(3).map((item) =>
-                React.createElement(Select.Item, { key: item.key, label: item.key }, item.label)
-              )
-            )
-          )
+                React.createElement(Select.Item, { key: item.key, label: item.key }, item.label),
+              ),
+            ),
+          ),
         ),
-        { className: 'w-fit' }
-      )
+        { className: "w-fit" },
+      );
 
-      expect(getSelectTrigger(container)).toBeInTheDocument()
-      expect(container.querySelector('button[type="button"]')).toBeInTheDocument()
-    })
-  })
+      expect(getSelectTrigger(container)).toBeInTheDocument();
+      expect(container.querySelector('button[type="button"]')).toBeInTheDocument();
+    });
+  });
 
+  describe("null and undefined edge cases", () => {
+    it("null selectedKey is handled", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { selectedKey: null });
 
-  describe('null and undefined edge cases', () => {
-    it('null selectedKey is handled', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { selectedKey: null })
+      const selectedItems = getAllElementsByRole(container, "option").filter(
+        (item) => item.getAttribute("aria-selected") === "true",
+      );
 
-      const selectedItems = getAllElementsByRole(container, 'option').filter(
-        item => item.getAttribute('aria-selected') === 'true'
-      )
+      expect(selectedItems.length).toBe(0);
+    });
 
-      expect(selectedItems.length).toBe(0)
-    })
+    it("undefined mode defaults to single", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items);
 
-    it('undefined mode defaults to single', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items)
-
-      const selectRoot = container.querySelector('[data-mode="single"]')
-      expect(selectRoot).toBeInTheDocument()
-    })
-
-  })
-
-})
+      const selectRoot = container.querySelector('[data-mode="single"]');
+      expect(selectRoot).toBeInTheDocument();
+    });
+  });
+});

@@ -9,7 +9,7 @@ async function filesIn(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await filesIn(file));
+    if (entry.isDirectory()) files.push(...(await filesIn(file)));
     else files.push(file);
   }
   return files;
@@ -28,11 +28,13 @@ for (const file of javascript) {
 
 const aggregate = await readFile(path.join(dist, "styles.css"), "utf8");
 const automatic = files.filter(
-  (file) => file.endsWith(".css") && !file.endsWith("styles.css") && !file.endsWith("typography.css"),
+  (file) =>
+    file.endsWith(".css") && !file.endsWith("styles.css") && !file.endsWith("typography.css"),
 );
 
 for (const file of automatic) {
-  if (!imported.has(file)) throw new Error(`CSS asset is not auto-imported: ${path.relative(dist, file)}`);
+  if (!imported.has(file))
+    throw new Error(`CSS asset is not auto-imported: ${path.relative(dist, file)}`);
 
   const css = await readFile(file, "utf8");
   if (!aggregate.includes(css)) {

@@ -43,7 +43,9 @@
     left: var(--thumb-offset);
     width: var(--thumb-size);
     height: var(--thumb-size);
-    transition: left var(--transition-duration) var(--transition-easing), background-color var(--transition-duration) var(--transition-easing);
+    transition:
+      left var(--transition-duration) var(--transition-easing),
+      background-color var(--transition-duration) var(--transition-easing);
     background-color: var(--foreground);
     border-radius: var(--inner-radius);
     z-index: 1;
@@ -54,11 +56,10 @@
     left: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));
   }
 
-.switch[data-disabled] {
+  .switch[data-disabled] {
     opacity: var(--disabled-opacity);
     cursor: not-allowed;
   }
-
 
   .switch-sm {
     --width: 2rem;

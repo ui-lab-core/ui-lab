@@ -1,7 +1,7 @@
 import type * as React from "react";
 
 export function asElementProps<T extends keyof React.JSX.IntrinsicElements>(
-  props: unknown
+  props: unknown,
 ): React.ComponentPropsWithoutRef<T> {
   return props as React.ComponentPropsWithoutRef<T>;
 }
@@ -17,13 +17,13 @@ export function asElementProps<T extends keyof React.JSX.IntrinsicElements>(
 export function resolveAccessibleLabel(
   componentName: string,
   ariaLabel: string | undefined,
-  fallbackLabel: string
+  fallbackLabel: string,
 ): string | undefined {
   if (ariaLabel) return ariaLabel;
 
   if (process.env.NODE_ENV !== "production") {
     console.warn(
-      `[ui-lab] ${componentName} is missing an accessible name. Pass \`label\` or \`aria-label\` to identify it for screen readers.`
+      `[ui-lab] ${componentName} is missing an accessible name. Pass \`label\` or \`aria-label\` to identify it for screen readers.`,
     );
   }
 

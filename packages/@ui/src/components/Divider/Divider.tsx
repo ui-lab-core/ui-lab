@@ -80,11 +80,10 @@ export interface DividerStyleSlots {
 
 export type DividerStylesProp = StylesProp<DividerStyleSlots>;
 
-const resolveDividerStyles = createStylesResolver(['root'] as const);
+const resolveDividerStyles = createStylesResolver(["root"] as const);
 
 export interface DividerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof dividerVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof dividerVariants> {
   /** Controls the line style of the divider */
   variant?: "solid" | "dashed" | "dotted";
   /** Controls the axis the divider spans */
@@ -100,7 +99,20 @@ export interface DividerProps
 }
 
 const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
-  ({ className, styles, variant = "solid", orientation, size = "auto", spacing, color, style, ...props }, ref) => {
+  (
+    {
+      className,
+      styles,
+      variant = "solid",
+      orientation,
+      size = "auto",
+      spacing,
+      color,
+      style,
+      ...props
+    },
+    ref,
+  ) => {
     const groupContext = React.useContext(GroupContext);
 
     const resolvedOrientation = (() => {
@@ -116,7 +128,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
     })();
     const getMaskStyles = (): React.CSSProperties => {
       const baseStyles: React.CSSProperties = color ? {} : { backgroundColor: "var(--background)" };
-      if (variant === "solid") return baseStyles
+      if (variant === "solid") return baseStyles;
 
       const svgDataUri =
         variant === "dashed"
@@ -148,10 +160,17 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
       <div
         ref={ref}
         className={cn(
-          'divider',
+          "divider",
           css.divider,
-          dividerVariants({ variant, orientation: resolvedOrientation, size, spacing: resolvedSpacing }),
-          color, className, resolved.root,
+          dividerVariants({
+            variant,
+            orientation: resolvedOrientation,
+            size,
+            spacing: resolvedSpacing,
+          }),
+          color,
+          className,
+          resolved.root,
         )}
         style={{ ...getMaskStyles(), ...getAutoSizeStyle(), ...style }}
         role="separator"

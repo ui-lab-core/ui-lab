@@ -11,7 +11,7 @@ describe("Scroll SSR", () => {
       <Scroll maxHeight="12rem" fade-y>
         <div>Alpha</div>
         <div>Beta</div>
-      </Scroll>
+      </Scroll>,
     );
 
     expect(html).toContain("--mask-top-fade:0%");
@@ -24,7 +24,7 @@ describe("Scroll SSR", () => {
     const html = renderToString(
       <Scroll inline maxHeight="12rem">
         <div>Content</div>
-      </Scroll>
+      </Scroll>,
     );
 
     expect(html).toContain('data-inline="true"');
@@ -36,7 +36,7 @@ describe("Scroll SSR", () => {
     container.innerHTML = renderToString(
       <Scroll inline maxHeight="12rem">
         <div>Content</div>
-      </Scroll>
+      </Scroll>,
     );
     const root = container.querySelector(".scroll");
 
@@ -47,7 +47,7 @@ describe("Scroll SSR", () => {
         container,
         <Scroll inline maxHeight="12rem">
           <div>Content</div>
-        </Scroll>
+        </Scroll>,
       );
     });
 
@@ -59,7 +59,7 @@ describe("Scroll SSR", () => {
     const html = renderToString(
       <Scroll maxHeight="12rem">
         <div>Content</div>
-      </Scroll>
+      </Scroll>,
     );
 
     expect(html).toContain('data-inline="false"');

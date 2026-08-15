@@ -8,10 +8,7 @@ type SizingProps = {
   w?: SizingValue;
 };
 
-function resolveSizingValue(
-  value: SizingValue,
-  axis: "height" | "width"
-): string {
+function resolveSizingValue(value: SizingValue, axis: "height" | "width"): string {
   if (typeof value === "number") {
     return `calc(var(--spacing, 0.25rem) * ${value})`;
   }
@@ -27,10 +24,7 @@ function resolveSizingValue(
  * Callers should merge this after the consumer's `style` prop so explicit
  * `h`/`w` props consistently take precedence.
  */
-export function resolveSizingStyles({
-  h,
-  w,
-}: SizingProps): React.CSSProperties {
+export function resolveSizingStyles({ h, w }: SizingProps): React.CSSProperties {
   return {
     ...(h !== undefined ? { height: resolveSizingValue(h, "height") } : null),
     ...(w !== undefined ? { width: resolveSizingValue(w, "width") } : null),

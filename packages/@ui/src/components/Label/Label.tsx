@@ -11,10 +11,14 @@ interface LabelStyleSlots {
 
 type LabelStylesProp = StylesProp<LabelStyleSlots>;
 
-const resolveLabelBaseStyles = createStylesResolver(["root", "text", "requiredIndicator", "helperText"] as const);
+const resolveLabelBaseStyles = createStylesResolver([
+  "root",
+  "text",
+  "requiredIndicator",
+  "helperText",
+] as const);
 
-export interface LabelProps
-  extends React.LabelHTMLAttributes<HTMLLabelElement> {
+export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: LabelStylesProp;
   /** Whether to show a required asterisk indicator */
@@ -45,17 +49,20 @@ const Label = ({
 }: LabelProps) => {
   const resolved = resolveLabelBaseStyles(styles);
   return (
-    <div className={cn('label', css.label, 'w-full', className, resolved.root)}>
+    <div className={cn("label", css.label, "w-full", className, resolved.root)}>
       <label
         className={cn("text", css.text, resolved.text)}
-        data-size={size ?? 'md'}
+        data-size={size ?? "md"}
         data-disabled={disabled || undefined}
         data-error={error || undefined}
         {...props}
       >
         {children}
         {required && (
-          <span className={cn("required", css["required-indicator"], resolved.requiredIndicator)} aria-label="required">
+          <span
+            className={cn("required", css["required-indicator"], resolved.requiredIndicator)}
+            aria-label="required"
+          >
             *
           </span>
         )}

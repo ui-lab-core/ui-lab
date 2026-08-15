@@ -4,7 +4,6 @@ export interface Styles {
   "switch-track": string;
   "switch-thumb": string;
   "switch-sm": string;
-
 }
 
 declare const styles: Styles;

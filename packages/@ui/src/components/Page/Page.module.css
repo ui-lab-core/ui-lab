@@ -21,15 +21,30 @@
     max-width: none;
   }
 
-  .padding-none { --padding: 0; padding: 0; }
+  .padding-none {
+    --padding: 0;
+    padding: 0;
+  }
 
-  .padding-sm { --padding: 0.5rem; padding: var(--padding); }
+  .padding-sm {
+    --padding: 0.5rem;
+    padding: var(--padding);
+  }
 
-  .padding-md { --padding: 1rem; padding: var(--padding); }
+  .padding-md {
+    --padding: 1rem;
+    padding: var(--padding);
+  }
 
-  .padding-lg { --padding: 1.5rem; padding: var(--padding); }
+  .padding-lg {
+    --padding: 1.5rem;
+    padding: var(--padding);
+  }
 
-  .padding-xl { --padding: 2rem; padding: var(--padding); }
+  .padding-xl {
+    --padding: 2rem;
+    padding: var(--padding);
+  }
 
   .header,
   .footer {

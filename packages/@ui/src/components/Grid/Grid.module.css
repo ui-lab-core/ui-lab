@@ -13,8 +13,14 @@
     grid-template-columns: var(--grid-tpl, repeat(3, 1fr));
     grid-template-rows: var(--grid-rows, auto);
     gap: calc(var(--spacing, 0.25rem) * var(--grid-gap-step, 4) * var(--gap-scale, 1));
-    row-gap: calc(var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
-    column-gap: calc(var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    row-gap: calc(
+      var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
+    column-gap: calc(
+      var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
     justify-items: var(--grid-ji, stretch);
     align-items: var(--grid-ai, stretch);
     justify-content: var(--grid-jc, start);
@@ -46,7 +52,10 @@
 
   @media (min-width: 1280px) {
     .grid.responsive-cols {
-      grid-template-columns: var(--grid-tpl-xl, var(--grid-tpl-lg, var(--grid-tpl-md, var(--grid-tpl-sm, 1fr))));
+      grid-template-columns: var(
+        --grid-tpl-xl,
+        var(--grid-tpl-lg, var(--grid-tpl-md, var(--grid-tpl-sm, 1fr)))
+      );
     }
   }
 
@@ -68,7 +77,10 @@
 
   @media (min-width: 1280px) {
     .grid.responsive-gap {
-      --grid-gap-step: var(--grid-gap-step-xl, var(--grid-gap-step-lg, var(--grid-gap-step-md, var(--grid-gap-step-sm, 4))));
+      --grid-gap-step: var(
+        --grid-gap-step-xl,
+        var(--grid-gap-step-lg, var(--grid-gap-step-md, var(--grid-gap-step-sm, 4)))
+      );
     }
   }
 
@@ -90,16 +102,25 @@
 
   @media (min-width: 1280px) {
     .grid.responsive-rows {
-      grid-template-rows: var(--grid-rows-xl, var(--grid-rows-lg, var(--grid-rows-md, var(--grid-rows-sm, auto))));
+      grid-template-rows: var(
+        --grid-rows-xl,
+        var(--grid-rows-lg, var(--grid-rows-md, var(--grid-rows-sm, auto)))
+      );
     }
   }
 
   .grid.has-row-gap {
-    row-gap: calc(var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    row-gap: calc(
+      var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
   }
 
   .grid.has-col-gap {
-    column-gap: calc(var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    column-gap: calc(
+      var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
   }
 
   @container grid-ctx (width < 400px) {
@@ -116,17 +137,23 @@
   .grid.masonry {
     display: block;
     column-count: var(--grid-col-count, 1);
-    column-gap: calc(var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    column-gap: calc(
+      var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
   }
 
   .grid.masonry.masonry-fixed-width {
-    --grid-masonry-gap: calc(var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    --grid-masonry-gap: calc(
+      var(--spacing, 0.25rem) * var(--grid-col-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
     column-width: var(--grid-masonry-col-width);
     width: max(
       100%,
       calc(
         (var(--grid-col-count, 1) * var(--grid-masonry-col-width)) +
-        ((var(--grid-col-count, 1) - 1) * var(--grid-masonry-gap))
+          ((var(--grid-col-count, 1) - 1) * var(--grid-masonry-gap))
       )
     );
   }
@@ -137,7 +164,10 @@
 
   .grid.masonry > * {
     break-inside: avoid;
-    margin-bottom: calc(var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) * var(--gap-scale, 1));
+    margin-bottom: calc(
+      var(--spacing, 0.25rem) * var(--grid-row-gap-step, var(--grid-gap-step, 4)) *
+        var(--gap-scale, 1)
+    );
   }
 
   .grid.masonry.masonry-no-item-gap > * {
@@ -158,7 +188,10 @@
     }
 
     .grid.masonry.responsive-masonry-width {
-      --grid-masonry-col-width: var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto));
+      --grid-masonry-col-width: var(
+        --grid-masonry-col-width-md,
+        var(--grid-masonry-col-width-sm, auto)
+      );
     }
   }
 
@@ -168,17 +201,29 @@
     }
 
     .grid.masonry.responsive-masonry-width {
-      --grid-masonry-col-width: var(--grid-masonry-col-width-lg, var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto)));
+      --grid-masonry-col-width: var(
+        --grid-masonry-col-width-lg,
+        var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto))
+      );
     }
   }
 
   @media (min-width: 1280px) {
     .grid.masonry.responsive-cols {
-      column-count: var(--grid-col-count-xl, var(--grid-col-count-lg, var(--grid-col-count-md, var(--grid-col-count-sm, 1))));
+      column-count: var(
+        --grid-col-count-xl,
+        var(--grid-col-count-lg, var(--grid-col-count-md, var(--grid-col-count-sm, 1)))
+      );
     }
 
     .grid.masonry.responsive-masonry-width {
-      --grid-masonry-col-width: var(--grid-masonry-col-width-xl, var(--grid-masonry-col-width-lg, var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto))));
+      --grid-masonry-col-width: var(
+        --grid-masonry-col-width-xl,
+        var(
+          --grid-masonry-col-width-lg,
+          var(--grid-masonry-col-width-md, var(--grid-masonry-col-width-sm, auto))
+        )
+      );
     }
   }
 

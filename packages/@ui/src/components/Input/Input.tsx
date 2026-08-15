@@ -2,8 +2,8 @@
 
 import React, { forwardRef, type ComponentPropsWithoutRef } from "react";
 
-import { useFocusRing } from "@react-aria/focus"
-import { mergeProps, } from "@react-aria/utils";
+import { useFocusRing } from "@react-aria/focus";
+import { mergeProps } from "@react-aria/utils";
 
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { cn, type StyleValue } from "@/lib/utils";
@@ -35,7 +35,9 @@ export interface InputStyleSlots {
 }
 
 export type InputStylesProp = StylesProp<InputStyleSlots>;
-export interface InputState { value?: string }
+export interface InputState {
+  value?: string;
+}
 
 export type InputAction = InputActionDef | React.ReactNode;
 type InputIconSlots = {
@@ -54,7 +56,13 @@ type InputActionSlots = {
   right?: InputAction[];
 };
 
-const resolveInputBaseStyles = createStylesResolver(['root', 'iconLeft', 'iconRight', 'stepperUp', 'stepperDown'] as const);
+const resolveInputBaseStyles = createStylesResolver([
+  "root",
+  "iconLeft",
+  "iconRight",
+  "stepperUp",
+  "stepperDown",
+] as const);
 
 function resolveInputStyles(styles: InputStylesProp | undefined) {
   if (!styles) return resolveInputBaseStyles(styles);
@@ -66,7 +74,7 @@ function resolveInputStyles(styles: InputStylesProp | undefined) {
   let stepperDown: StyleValue | undefined;
 
   if (icon) {
-    if (typeof icon === 'string' || Array.isArray(icon)) {
+    if (typeof icon === "string" || Array.isArray(icon)) {
       iconLeft = icon;
       iconRight = icon;
     } else {
@@ -76,7 +84,7 @@ function resolveInputStyles(styles: InputStylesProp | undefined) {
   }
 
   if (stepper) {
-    if (typeof stepper === 'string' || Array.isArray(stepper)) {
+    if (typeof stepper === "string" || Array.isArray(stepper)) {
       stepperUp = stepper;
       stepperDown = stepper;
     } else {
@@ -119,7 +127,12 @@ export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "siz
 }
 
 function isInputIconSlots(icon: InputProps["icon"]): icon is InputIconSlots {
-  return typeof icon === "object" && icon !== null && !React.isValidElement(icon) && ("prefix" in icon || "suffix" in icon);
+  return (
+    typeof icon === "object" &&
+    icon !== null &&
+    !React.isValidElement(icon) &&
+    ("prefix" in icon || "suffix" in icon)
+  );
 }
 
 function resolveInputIcon(icon: InputProps["icon"]) {
@@ -135,7 +148,13 @@ function resolveInputIcon(icon: InputProps["icon"]) {
 }
 
 function isInputActionSlots(actions: InputProps["actions"]): actions is InputActionSlots {
-  return typeof actions === "object" && actions !== null && !Array.isArray(actions) && !React.isValidElement(actions) && ("left" in actions || "right" in actions);
+  return (
+    typeof actions === "object" &&
+    actions !== null &&
+    !Array.isArray(actions) &&
+    !React.isValidElement(actions) &&
+    ("left" in actions || "right" in actions)
+  );
 }
 
 function resolveInputActions(actions: InputProps["actions"]): InputActionSlots {
@@ -178,7 +197,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const groupContext = React.useContext(GroupContext);
     const resolvedActions = resolveInputActions(actions);
@@ -208,7 +227,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     // With custom content the focusable element is one of the children, so the
     // ring has to track focus anywhere within the content wrapper.
     const hasCustomContent = children !== undefined && children !== null;
-    const { focusProps, isFocusVisible } = useFocusRing({ within: hasCustomContent, isTextInput: !hasCustomContent });
+    const { focusProps, isFocusVisible } = useFocusRing({
+      within: hasCustomContent,
+      isTextInput: !hasCustomContent,
+    });
     const { scopeProps, indicatorProps } = useFocus({
       scopeRef,
       containerRef,
@@ -252,7 +274,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     const renderAction = (action: InputAction, index: number) => {
-      const key = React.isValidElement(action) ? index : ((action as InputActionDef).title || index);
+      const key = React.isValidElement(action) ? index : (action as InputActionDef).title || index;
 
       return React.isValidElement(action) ? (
         <React.Fragment key={key}>{action}</React.Fragment>
@@ -274,7 +296,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputRoot = (
       <div
         ref={containerRef}
-        className={cn('input', css.container, resolved.root, groupContext && className)}
+        className={cn("input", css.container, resolved.root, groupContext && className)}
         data-input-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
@@ -283,12 +305,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         data-variant={variant}
       >
         {hasStartAdornment && (
-          <div className={css['start-adornments']} data-start-adornments>
+          <div className={css["start-adornments"]} data-start-adornments>
             {hasPrefix && (
-              <div className={cn('icon', css['icon-wrapper'], resolved.iconLeft)}>
-                <span className={css.icon}>
-                  {resolvedIcon?.prefix}
-                </span>
+              <div className={cn("icon", css["icon-wrapper"], resolved.iconLeft)}>
+                <span className={css.icon}>{resolvedIcon?.prefix}</span>
               </div>
             )}
             {hasLeftActions && (
@@ -322,36 +342,34 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {children}
           </div>
         ) : (
-        <input
-          ref={mergedRef}
-          type={type}
-          disabled={disabled}
-          data-focus-visible={isFocusVisible ? "true" : undefined}
-          data-focused={isFocused ? "true" : undefined}
-          data-disabled={disabled || undefined}
-          data-error={error ? "true" : undefined}
-          data-variant={variant}
-          className={css.input}
-          style={inputPaddingStyle}
-          {...mergeProps(focusProps, {
-            onFocus: handleFocus,
-            onBlur: handleBlur,
-            value: currentValue,
-            onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-              setCurrentValue(event.target.value);
-              onChange?.(event);
-            },
-            ...props,
-          })}
-        />
+          <input
+            ref={mergedRef}
+            type={type}
+            disabled={disabled}
+            data-focus-visible={isFocusVisible ? "true" : undefined}
+            data-focused={isFocused ? "true" : undefined}
+            data-disabled={disabled || undefined}
+            data-error={error ? "true" : undefined}
+            data-variant={variant}
+            className={css.input}
+            style={inputPaddingStyle}
+            {...mergeProps(focusProps, {
+              onFocus: handleFocus,
+              onBlur: handleBlur,
+              value: currentValue,
+              onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                setCurrentValue(event.target.value);
+                onChange?.(event);
+              },
+              ...props,
+            })}
+          />
         )}
         {hasEndAdornment && (
-          <div className={css['end-adornments']} data-end-adornments>
+          <div className={css["end-adornments"]} data-end-adornments>
             {hasSuffix && (
-              <div className={cn('icon', css['icon-wrapper'], resolved.iconRight)}>
-                <span className={css.icon}>
-                  {resolvedIcon?.suffix}
-                </span>
+              <div className={cn("icon", css["icon-wrapper"], resolved.iconRight)}>
+                <span className={css.icon}>{resolvedIcon?.suffix}</span>
               </div>
             )}
             {hasRightActions && (
@@ -359,15 +377,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 {rightActions.map(renderAction)}
               </div>
             )}
-            {hasHint && <span className={css.hint} data-hint>{hint}</span>}
+            {hasHint && (
+              <span className={css.hint} data-hint>
+                {hint}
+              </span>
+            )}
             {showControls && (
-              <div
-                className={css.controls}
-                data-disabled={disabled || undefined}
-              >
+              <div className={css.controls} data-disabled={disabled || undefined}>
                 <button
                   type="button"
-                  className={cn('stepper', css.stepper, resolved.stepperUp)}
+                  className={cn("stepper", css.stepper, resolved.stepperUp)}
                   onClick={() => handleSpinClick("up")}
                   disabled={disabled}
                   tabIndex={-1}
@@ -377,7 +396,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 </button>
                 <button
                   type="button"
-                  className={cn('stepper', css.stepper, resolved.stepperDown)}
+                  className={cn("stepper", css.stepper, resolved.stepperDown)}
                   onClick={() => handleSpinClick("down")}
                   disabled={disabled}
                   tabIndex={-1}
@@ -397,15 +416,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }
 
     return (
-      <div
-        ref={scopeRef}
-        className={cn("input-scope", scopeProps.className, css.scope, className)}
-      >
+      <div ref={scopeRef} className={cn("input-scope", scopeProps.className, css.scope, className)}>
         <div {...indicatorProps} data-focus-indicator="local" />
         {inputRoot}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

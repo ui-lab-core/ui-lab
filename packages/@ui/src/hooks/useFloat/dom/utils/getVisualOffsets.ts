@@ -1,5 +1,5 @@
-import type {Coords} from '../../core';
-import {createCoords, getWindow, isWebKit} from '../../../../utils/dom';
+import type { Coords } from "../../core";
+import { createCoords, getWindow, isWebKit } from "../../../../utils/dom";
 
 const noOffsets = createCoords(0);
 
@@ -21,10 +21,7 @@ export function shouldAddVisualOffsets(
   isFixed = false,
   floatingOffsetParent?: Element | Window | undefined,
 ): boolean {
-  if (
-    !floatingOffsetParent ||
-    (isFixed && floatingOffsetParent !== getWindow(element))
-  ) {
+  if (!floatingOffsetParent || (isFixed && floatingOffsetParent !== getWindow(element))) {
     return false;
   }
 

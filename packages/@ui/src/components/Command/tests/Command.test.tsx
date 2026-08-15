@@ -1,74 +1,74 @@
-import { describe, expect, it, vi, afterEach } from 'vitest'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { useState } from 'react'
-import { Command, useCommandState } from '../Command'
-import { Modal } from '../../Modal'
-import * as ListNavigation from '@/utils/list-navigation'
-import styles from '../Command.module.css'
-import listStyles from '../../List/List.module.css'
+import { describe, expect, it, vi, afterEach } from "vitest";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useState } from "react";
+import { Command, useCommandState } from "../Command";
+import { Modal } from "../../Modal";
+import * as ListNavigation from "@/utils/list-navigation";
+import styles from "../Command.module.css";
+import listStyles from "../../List/List.module.css";
 
 afterEach(() => {
-  vi.useRealTimers()
-  vi.restoreAllMocks()
-})
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
 
 function advanceEntrance() {
   act(() => {
-    vi.advanceTimersByTime(32)
-  })
+    vi.advanceTimersByTime(32);
+  });
 }
 
-describe('Command', () => {
-  it('can render as an embedded surface without its own dialog or overlay', () => {
+describe("Command", () => {
+  it("can render as an embedded surface without its own dialog or overlay", () => {
     const { container } = render(
       <Command open embedded>
         <Command.Input />
-      </Command>
-    )
+      </Command>,
+    );
 
-    expect(screen.queryByRole('dialog')).toBeNull()
-    expect(container.querySelector(`.${styles.overlay}`)).toBeNull()
-    expect(container.querySelector(`.${styles.embedded}`)).toHaveClass('command')
-  })
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(container.querySelector(`.${styles.overlay}`)).toBeNull();
+    expect(container.querySelector(`.${styles.embedded}`)).toHaveClass("command");
+  });
 
-  it('leaves Escape dismissal to the owner when embedded', () => {
-    const onOpenChange = vi.fn()
+  it("leaves Escape dismissal to the owner when embedded", () => {
+    const onOpenChange = vi.fn();
 
     render(
       <Command open embedded onOpenChange={onOpenChange}>
         <Command.Input />
-      </Command>
-    )
+      </Command>,
+    );
 
-    fireEvent.keyDown(screen.getByRole('textbox', { name: 'Search commands' }), {
-      key: 'Escape',
-    })
+    fireEvent.keyDown(screen.getByRole("textbox", { name: "Search commands" }), {
+      key: "Escape",
+    });
 
-    expect(onOpenChange).not.toHaveBeenCalled()
-  })
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
 
-  it('lets the owning modal dismiss the embedded palette on Escape', () => {
-    const onOpenChange = vi.fn()
+  it("lets the owning modal dismiss the embedded palette on Escape", () => {
+    const onOpenChange = vi.fn();
     render(
       <Modal open close={false} onOpenChange={onOpenChange} aria-label="Command palette">
         <Command open embedded onOpenChange={onOpenChange}>
           <Command.Input />
         </Command>
-      </Modal>
-    )
+      </Modal>,
+    );
 
-    fireEvent.keyDown(screen.getByRole('textbox', { name: 'Search commands' }), {
-      key: 'Escape',
-    })
+    fireEvent.keyDown(screen.getByRole("textbox", { name: "Search commands" }), {
+      key: "Escape",
+    });
 
-    expect(onOpenChange).toHaveBeenCalledOnce()
-    expect(onOpenChange).toHaveBeenCalledWith(false)
-  })
+    expect(onOpenChange).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
 
-  it('captures modal dismissal before document bubble handlers', () => {
-    const onOpenChange = vi.fn()
-    const handleKeyDown = (event: KeyboardEvent) => event.stopImmediatePropagation()
-    document.addEventListener('keydown', handleKeyDown)
+  it("captures modal dismissal before document bubble handlers", () => {
+    const onOpenChange = vi.fn();
+    const handleKeyDown = (event: KeyboardEvent) => event.stopImmediatePropagation();
+    document.addEventListener("keydown", handleKeyDown);
 
     try {
       render(
@@ -76,108 +76,108 @@ describe('Command', () => {
           <Command open embedded>
             <Command.Input />
           </Command>
-        </Modal>
-      )
+        </Modal>,
+      );
 
-      fireEvent.keyDown(screen.getByRole('textbox', { name: 'Search commands' }), {
-        key: 'Escape',
-      })
+      fireEvent.keyDown(screen.getByRole("textbox", { name: "Search commands" }), {
+        key: "Escape",
+      });
 
-      expect(onOpenChange).toHaveBeenCalledOnce()
-      expect(onOpenChange).toHaveBeenCalledWith(false)
+      expect(onOpenChange).toHaveBeenCalledOnce();
+      expect(onOpenChange).toHaveBeenCalledWith(false);
     } finally {
-      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener("keydown", handleKeyDown);
     }
-  })
+  });
 
-  it('dismisses an embedded palette when its focused input is cleared to the document', async () => {
-    const onOpenChange = vi.fn()
-    vi.spyOn(document, 'hasFocus').mockReturnValue(true)
+  it("dismisses an embedded palette when its focused input is cleared to the document", async () => {
+    const onOpenChange = vi.fn();
+    vi.spyOn(document, "hasFocus").mockReturnValue(true);
 
     render(
       <Command open embedded onOpenChange={onOpenChange}>
         <Command.Input />
-      </Command>
-    )
+      </Command>,
+    );
 
-    const input = screen.getByRole('textbox', { name: 'Search commands' })
-    expect(input).toHaveFocus()
+    const input = screen.getByRole("textbox", { name: "Search commands" });
+    expect(input).toHaveFocus();
 
     await act(async () => {
-      input.blur()
-      await Promise.resolve()
-    })
+      input.blur();
+      await Promise.resolve();
+    });
 
     await waitFor(() => {
-      expect(onOpenChange).toHaveBeenCalledOnce()
-      expect(onOpenChange).toHaveBeenCalledWith(false)
-    })
-  })
+      expect(onOpenChange).toHaveBeenCalledOnce();
+      expect(onOpenChange).toHaveBeenCalledWith(false);
+    });
+  });
 
-  it('keeps an embedded palette open when a pointer interaction moves focus', async () => {
-    const onOpenChange = vi.fn()
-    vi.spyOn(document, 'hasFocus').mockReturnValue(true)
+  it("keeps an embedded palette open when a pointer interaction moves focus", async () => {
+    const onOpenChange = vi.fn();
+    vi.spyOn(document, "hasFocus").mockReturnValue(true);
 
     const { container } = render(
       <Command open embedded onOpenChange={onOpenChange}>
         <Command.Input />
-      </Command>
-    )
+      </Command>,
+    );
 
     await act(async () => {
-      fireEvent.pointerDown(container.querySelector('.command') as HTMLElement)
-      screen.getByRole('textbox', { name: 'Search commands' }).blur()
-      await Promise.resolve()
-    })
+      fireEvent.pointerDown(container.querySelector(".command") as HTMLElement);
+      screen.getByRole("textbox", { name: "Search commands" }).blur();
+      await Promise.resolve();
+    });
 
-    expect(onOpenChange).not.toHaveBeenCalled()
-  })
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
 
-  it('renders an entering frame before promoting the palette to entered', () => {
-    vi.useFakeTimers()
+  it("renders an entering frame before promoting the palette to entered", () => {
+    vi.useFakeTimers();
     render(
       <Command open>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
+      </Command>,
+    );
 
-    const dialog = screen.getByRole('dialog')
-    const overlay = dialog.parentElement
-    expect(overlay).toHaveAttribute('data-state', 'entering')
+    const dialog = screen.getByRole("dialog");
+    const overlay = dialog.parentElement;
+    expect(overlay).toHaveAttribute("data-state", "entering");
 
-    advanceEntrance()
-    expect(overlay).toHaveAttribute('data-state', 'entered')
-  })
+    advanceEntrance();
+    expect(overlay).toHaveAttribute("data-state", "entered");
+  });
 
-  it('stays mounted through exit and unmounts after the transition duration', () => {
-    vi.useFakeTimers()
+  it("stays mounted through exit and unmounts after the transition duration", () => {
+    vi.useFakeTimers();
     const { rerender } = render(
       <Command open>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
-    const dialog = screen.getByRole('dialog')
-    advanceEntrance()
+      </Command>,
+    );
+    const dialog = screen.getByRole("dialog");
+    advanceEntrance();
 
     rerender(
       <Command open={false}>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
-    expect(dialog.parentElement).toHaveAttribute('data-state', 'exiting')
+      </Command>,
+    );
+    expect(dialog.parentElement).toHaveAttribute("data-state", "exiting");
 
     act(() => {
-      vi.advanceTimersByTime(180)
-    })
-    expect(screen.queryByRole('dialog')).toBeNull()
-  })
+      vi.advanceTimersByTime(180);
+    });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
 
-  it('keeps the search results stable until the exit transition finishes', () => {
-    vi.useFakeTimers()
+  it("keeps the search results stable until the exit transition finishes", () => {
+    vi.useFakeTimers();
     const items = [
-      { id: 'home', label: 'Home', action: vi.fn() },
-      { id: 'settings', label: 'Settings', action: vi.fn() },
-    ]
+      { id: "home", label: "Home", action: vi.fn() },
+      { id: "settings", label: "Settings", action: vi.fn() },
+    ];
     const palette = (open: boolean) => (
       <Command
         open={open}
@@ -196,37 +196,53 @@ describe('Command', () => {
           />
         </Command.List>
       </Command>
-    )
-    const { rerender, unmount } = render(
-      palette(true)
-    )
-    const input = screen.getByRole('textbox', { name: 'Search commands' })
-    fireEvent.change(input, { target: { value: 'settings' } })
-    advanceEntrance()
-    expect(screen.queryByRole('option', { name: 'Home' })).toBeNull()
+    );
+    const { rerender, unmount } = render(palette(true));
+    const input = screen.getByRole("textbox", { name: "Search commands" });
+    fireEvent.change(input, { target: { value: "settings" } });
+    advanceEntrance();
+    expect(screen.queryByRole("option", { name: "Home" })).toBeNull();
 
-    rerender(palette(false))
+    rerender(palette(false));
 
-    expect(input).toHaveValue('settings')
-    expect(screen.queryByRole('option', { name: 'Home' })).toBeNull()
-    expect(screen.getByRole('option', { name: 'Settings' })).toBeInTheDocument()
+    expect(input).toHaveValue("settings");
+    expect(screen.queryByRole("option", { name: "Home" })).toBeNull();
+    expect(screen.getByRole("option", { name: "Settings" })).toBeInTheDocument();
 
     act(() => {
-      vi.advanceTimersByTime(180)
-    })
+      vi.advanceTimersByTime(180);
+    });
 
-    expect(input).toHaveValue('')
-    unmount()
-  })
+    expect(input).toHaveValue("");
+    unmount();
+  });
 
-  it('ranks label matches ahead of keyword matches', () => {
+  it("ranks label matches ahead of keyword matches", () => {
     const items = [
-      { id: 'checkbox', label: 'Checkbox', category: 'Inputs', keywords: ['select'], action: vi.fn() },
-      { id: 'date', label: 'Date', category: 'Inputs', keywords: ['date selection'], action: vi.fn() },
-      { id: 'list', label: 'List', category: 'Inputs', keywords: ['select'], action: vi.fn() },
-      { id: 'radio', label: 'Radio', category: 'Inputs', keywords: ['select'], action: vi.fn() },
-      { id: 'select', label: 'Select', category: 'Components', keywords: ['select'], action: vi.fn() },
-    ]
+      {
+        id: "checkbox",
+        label: "Checkbox",
+        category: "Inputs",
+        keywords: ["select"],
+        action: vi.fn(),
+      },
+      {
+        id: "date",
+        label: "Date",
+        category: "Inputs",
+        keywords: ["date selection"],
+        action: vi.fn(),
+      },
+      { id: "list", label: "List", category: "Inputs", keywords: ["select"], action: vi.fn() },
+      { id: "radio", label: "Radio", category: "Inputs", keywords: ["select"], action: vi.fn() },
+      {
+        id: "select",
+        label: "Select",
+        category: "Components",
+        keywords: ["select"],
+        action: vi.fn(),
+      },
+    ];
 
     render(
       <Command
@@ -248,270 +264,289 @@ describe('Command', () => {
             )}
           />
         </Command.List>
-      </Command>
-    )
+      </Command>,
+    );
 
-    fireEvent.change(screen.getByRole('textbox', { name: 'Search commands' }), {
-      target: { value: 'select' },
-    })
+    fireEvent.change(screen.getByRole("textbox", { name: "Search commands" }), {
+      target: { value: "select" },
+    });
 
-    expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
-      'Select',
-      'Checkbox',
-      'List',
-      'Radio',
-      'Date',
-    ])
-  })
+    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
+      "Select",
+      "Checkbox",
+      "List",
+      "Radio",
+      "Date",
+    ]);
+  });
 
-  it('cancels a pending exit when controlled state reopens', () => {
-    vi.useFakeTimers()
+  it("cancels a pending exit when controlled state reopens", () => {
+    vi.useFakeTimers();
     const { rerender } = render(
       <Command open>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
-    const dialog = screen.getByRole('dialog')
-    advanceEntrance()
+      </Command>,
+    );
+    const dialog = screen.getByRole("dialog");
+    advanceEntrance();
 
     rerender(
       <Command open={false}>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
+      </Command>,
+    );
     act(() => {
-      vi.advanceTimersByTime(90)
-    })
+      vi.advanceTimersByTime(90);
+    });
     rerender(
       <Command open>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
+      </Command>,
+    );
 
-    expect(dialog.parentElement).toHaveAttribute('data-state', 'entered')
+    expect(dialog.parentElement).toHaveAttribute("data-state", "entered");
     act(() => {
-      vi.advanceTimersByTime(180)
-    })
-    expect(screen.getByRole('dialog')).toBe(dialog)
-  })
+      vi.advanceTimersByTime(180);
+    });
+    expect(screen.getByRole("dialog")).toBe(dialog);
+  });
 
-  it('does not install a document Cmd/Ctrl+K listener', () => {
-    vi.useFakeTimers()
+  it("does not install a document Cmd/Ctrl+K listener", () => {
+    vi.useFakeTimers();
     render(
       <Command>
         <Command.Input />
-      </Command>
-    )
+      </Command>,
+    );
 
-    fireEvent.keyDown(document, { key: 'k', ctrlKey: true })
-    expect(screen.queryByRole('dialog')).toBeNull()
-  })
+    fireEvent.keyDown(document, { key: "k", ctrlKey: true });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
 
-  it('opens and restores focus through an uncontrolled instance trigger', async () => {
-    vi.useFakeTimers()
+  it("opens and restores focus through an uncontrolled instance trigger", async () => {
+    vi.useFakeTimers();
     function Example() {
-      const command = useCommandState()
+      const command = useCommandState();
       return (
         <>
           <Command.Trigger state={command} asChild>
             <button type="button">Open first palette</button>
           </Command.Trigger>
-          <Command state={command}><Command.Input /></Command>
+          <Command state={command}>
+            <Command.Input />
+          </Command>
         </>
-      )
+      );
     }
 
-    render(<Example />)
-    const trigger = screen.getByRole('button', { name: 'Open first palette' })
-    trigger.focus()
-    fireEvent.click(trigger)
-    const dialog = screen.getByRole('dialog')
-    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    render(<Example />);
+    const trigger = screen.getByRole("button", { name: "Open first palette" });
+    trigger.focus();
+    fireEvent.click(trigger);
+    const dialog = screen.getByRole("dialog");
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
 
-    fireEvent.keyDown(dialog, { key: 'Escape' })
+    fireEvent.keyDown(dialog, { key: "Escape" });
     act(() => {
-      vi.advanceTimersByTime(180)
-    })
-    expect(screen.queryByRole('dialog')).toBeNull()
-    expect(trigger).toHaveFocus()
-  })
+      vi.advanceTimersByTime(180);
+    });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(trigger).toHaveFocus();
+  });
 
-  it('uses controlled state for its trigger and surface', async () => {
+  it("uses controlled state for its trigger and surface", async () => {
     function Example() {
-      const [open, setOpen] = useState(false)
-      const command = useCommandState({ open, onOpenChange: setOpen })
+      const [open, setOpen] = useState(false);
+      const command = useCommandState({ open, onOpenChange: setOpen });
       return (
         <>
-          <Command.Trigger state={command} asChild><button type="button">Open controlled palette</button></Command.Trigger>
-          <Command state={command}><Command.Input /></Command>
+          <Command.Trigger state={command} asChild>
+            <button type="button">Open controlled palette</button>
+          </Command.Trigger>
+          <Command state={command}>
+            <Command.Input />
+          </Command>
         </>
-      )
+      );
     }
 
-    render(<Example />)
-    fireEvent.click(screen.getByRole('button', { name: 'Open controlled palette' }))
-    expect(await screen.findByRole('dialog')).toBeInTheDocument()
-  })
+    render(<Example />);
+    fireEvent.click(screen.getByRole("button", { name: "Open controlled palette" }));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
 
-  it('keeps multiple instance triggers isolated', async () => {
+  it("keeps multiple instance triggers isolated", async () => {
     function Example() {
-      const first = useCommandState()
-      const second = useCommandState()
+      const first = useCommandState();
+      const second = useCommandState();
       return (
         <>
-          <Command.Trigger state={first} asChild><button type="button">Open first</button></Command.Trigger>
-          <Command state={first}><Command.Input placeholder="First" /></Command>
-          <Command.Trigger state={second} asChild><button type="button">Open second</button></Command.Trigger>
-          <Command state={second}><Command.Input placeholder="Second" /></Command>
+          <Command.Trigger state={first} asChild>
+            <button type="button">Open first</button>
+          </Command.Trigger>
+          <Command state={first}>
+            <Command.Input placeholder="First" />
+          </Command>
+          <Command.Trigger state={second} asChild>
+            <button type="button">Open second</button>
+          </Command.Trigger>
+          <Command state={second}>
+            <Command.Input placeholder="Second" />
+          </Command>
         </>
-      )
+      );
     }
 
-    render(<Example />)
-    fireEvent.click(screen.getByRole('button', { name: 'Open first' }))
-    expect(await screen.findByRole('textbox', { name: 'Search commands' })).toHaveAttribute('placeholder', 'First')
-    expect(screen.queryByPlaceholderText('Second')).toBeNull()
-  })
+    render(<Example />);
+    fireEvent.click(screen.getByRole("button", { name: "Open first" }));
+    expect(await screen.findByRole("textbox", { name: "Search commands" })).toHaveAttribute(
+      "placeholder",
+      "First",
+    );
+    expect(screen.queryByPlaceholderText("Second")).toBeNull();
+  });
 
-  it('applies root and overlay slot styles through the styles prop', async () => {
+  it("applies root and overlay slot styles through the styles prop", async () => {
     render(
-      <Command
-        open
-        className="custom-root"
-        styles={{ root: 'slot-root', overlay: 'slot-overlay' }}
-      >
+      <Command open className="custom-root" styles={{ root: "slot-root", overlay: "slot-overlay" }}>
         <Command.List emptyMessage="Nothing here" />
-      </Command>
-    )
+      </Command>,
+    );
 
-    const dialog = await screen.findByRole('dialog')
-    const overlay = dialog.parentElement
+    const dialog = await screen.findByRole("dialog");
+    const overlay = dialog.parentElement;
 
-    expect(dialog).toHaveClass(styles.content)
-    expect(dialog).toHaveClass('custom-root')
-    expect(dialog).toHaveClass('slot-root')
-    expect(overlay).toHaveClass(styles.overlay)
-    expect(overlay).toHaveClass('slot-overlay')
-  })
+    expect(dialog).toHaveClass(styles.content);
+    expect(dialog).toHaveClass("custom-root");
+    expect(dialog).toHaveClass("slot-root");
+    expect(overlay).toHaveClass(styles.overlay);
+    expect(overlay).toHaveClass("slot-overlay");
+  });
 
-  it('renders an item icon in the styled list media slot', () => {
+  it("renders an item icon in the styled list media slot", () => {
     render(
       <Command open>
         <Command.List>
           <Command.Item
             value="docs"
             textValue="Docs"
-            action={() => { }}
+            action={() => {}}
             icon={<svg data-testid="command-icon" />}
           >
             Docs
           </Command.Item>
         </Command.List>
-      </Command>
-    )
+      </Command>,
+    );
 
-    expect(screen.getByTestId('command-icon').parentElement).toHaveClass(
+    expect(screen.getByTestId("command-icon").parentElement).toHaveClass(
       listStyles.media,
-      styles['item-icon']
-    )
-  })
+      styles["item-icon"],
+    );
+  });
 
-  it('focuses the search input when opened', async () => {
+  it("focuses the search input when opened", async () => {
     const { rerender } = render(
       <Command open={false}>
         <Command.Input placeholder="Search commands" />
-      </Command>
-    )
+      </Command>,
+    );
 
     rerender(
       <Command open>
         <Command.Input placeholder="Search commands" />
-      </Command>
-    )
+      </Command>,
+    );
 
-    const input = await screen.findByRole('textbox', { name: 'Search commands' })
+    const input = await screen.findByRole("textbox", { name: "Search commands" });
 
-    expect(input).toHaveFocus()
-  })
+    expect(input).toHaveFocus();
+  });
 
-  it('keeps the command input focus behavior when a consumer ref is provided', async () => {
-    const ref = { current: null as HTMLInputElement | null }
+  it("keeps the command input focus behavior when a consumer ref is provided", async () => {
+    const ref = { current: null as HTMLInputElement | null };
 
     render(
       <Command open>
         <Command.Input ref={ref} placeholder="Search commands" />
-      </Command>
-    )
+      </Command>,
+    );
 
-    const input = await screen.findByRole('textbox', { name: 'Search commands' })
+    const input = await screen.findByRole("textbox", { name: "Search commands" });
 
-    expect(input).toHaveFocus()
-    expect(ref.current).toBe(input)
-  })
+    expect(input).toHaveFocus();
+    expect(ref.current).toBe(input);
+  });
 
-  it('keeps the default clear action as a trailing Input adornment', async () => {
+  it("keeps the default clear action as a trailing Input adornment", async () => {
     render(
       <Command open>
         <Command.Input />
-      </Command>
-    )
+      </Command>,
+    );
 
-    const input = await screen.findByRole('textbox', { name: 'Search commands' })
-    const action = screen.getByRole('button', { name: 'Clear search', hidden: true })
+    const input = await screen.findByRole("textbox", { name: "Search commands" });
+    const action = screen.getByRole("button", { name: "Clear search", hidden: true });
 
-    expect(action).toBeInTheDocument()
-    expect(input.parentElement).toHaveClass(styles['input-empty'])
-    expect(input.closest('.input-scope')).not.toBeNull()
-    expect(input.parentElement?.querySelector('[data-end-adornments]')).toContainElement(action)
-    expect(input).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
+    expect(action).toBeInTheDocument();
+    expect(input.parentElement).toHaveClass(styles["input-empty"]);
+    expect(input.closest(".input-scope")).not.toBeNull();
+    expect(input.parentElement?.querySelector("[data-end-adornments]")).toContainElement(action);
+    expect(input).toHaveStyle({ paddingInlineEnd: "var(--adornment-offset)" });
 
-    fireEvent.change(input, { target: { value: 'settings' } })
+    fireEvent.change(input, { target: { value: "settings" } });
 
-    expect(input.parentElement).not.toHaveClass(styles['input-empty'])
-    expect(input).toHaveStyle({ paddingInlineEnd: 'var(--adornment-offset)' })
-  })
+    expect(input.parentElement).not.toHaveClass(styles["input-empty"]);
+    expect(input).toHaveStyle({ paddingInlineEnd: "var(--adornment-offset)" });
+  });
 
-  describe('keyboard navigation scrolling', () => {
+  describe("keyboard navigation scrolling", () => {
     afterEach(() => {
-      vi.restoreAllMocks()
-    })
+      vi.restoreAllMocks();
+    });
 
     const palette = (
       <Command open>
         <Command.Input />
         <Command.List>
-          <Command.Item value="one" textValue="One" action={() => { }}>One</Command.Item>
-          <Command.Item value="two" textValue="Two" action={() => { }}>Two</Command.Item>
-          <Command.Item value="three" textValue="Three" action={() => { }}>Three</Command.Item>
+          <Command.Item value="one" textValue="One" action={() => {}}>
+            One
+          </Command.Item>
+          <Command.Item value="two" textValue="Two" action={() => {}}>
+            Two
+          </Command.Item>
+          <Command.Item value="three" textValue="Three" action={() => {}}>
+            Three
+          </Command.Item>
         </Command.List>
       </Command>
-    )
+    );
 
-    it('scrolls the highlighted item into view as arrow keys move the highlight', async () => {
-      const scrollSpy = vi.spyOn(ListNavigation, 'scrollItemIntoView')
-      render(palette)
-      await screen.findByRole('dialog')
-      const options = screen.getAllByRole('option')
+    it("scrolls the highlighted item into view as arrow keys move the highlight", async () => {
+      const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+      render(palette);
+      await screen.findByRole("dialog");
+      const options = screen.getAllByRole("option");
 
-      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowDown' })
-      expect(options[0]).toHaveAttribute('data-highlighted', 'true')
-      expect(scrollSpy).toHaveBeenCalledWith(options[0], 'instant')
+      fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowDown" });
+      expect(options[0]).toHaveAttribute("data-highlighted", "true");
+      expect(scrollSpy).toHaveBeenCalledWith(options[0], "instant");
 
-      scrollSpy.mockClear()
-      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowDown' })
-      expect(options[1]).toHaveAttribute('data-highlighted', 'true')
-      expect(scrollSpy).toHaveBeenCalledWith(options[1], 'instant')
-    })
+      scrollSpy.mockClear();
+      fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowDown" });
+      expect(options[1]).toHaveAttribute("data-highlighted", "true");
+      expect(scrollSpy).toHaveBeenCalledWith(options[1], "instant");
+    });
 
-    it('scrolls when the highlight wraps from the first to the last item', async () => {
-      const scrollSpy = vi.spyOn(ListNavigation, 'scrollItemIntoView')
-      render(palette)
-      await screen.findByRole('dialog')
-      const options = screen.getAllByRole('option')
+    it("scrolls when the highlight wraps from the first to the last item", async () => {
+      const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+      render(palette);
+      await screen.findByRole("dialog");
+      const options = screen.getAllByRole("option");
 
-      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowUp' })
-      expect(options[2]).toHaveAttribute('data-highlighted', 'true')
-      expect(scrollSpy).toHaveBeenCalledWith(options[2], 'instant')
-    })
-  })
-})
+      fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowUp" });
+      expect(options[2]).toHaveAttribute("data-highlighted", "true");
+      expect(scrollSpy).toHaveBeenCalledWith(options[2], "instant");
+    });
+  });
+});

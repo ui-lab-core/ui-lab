@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react"
-import { Gallery } from "../Gallery"
-import { describe, it, expect } from "vitest"
-import React from "react"
+import { render, screen } from "@testing-library/react";
+import { Gallery } from "../Gallery";
+import { describe, it, expect } from "vitest";
+import React from "react";
 
 describe("Gallery", () => {
   it("renders with default vertical orientation", () => {
@@ -11,14 +11,14 @@ describe("Gallery", () => {
           <Gallery.View>View</Gallery.View>
           <Gallery.Body>Body</Gallery.Body>
         </Gallery.Item>
-      </Gallery>
-    )
+      </Gallery>,
+    );
 
-    const item = screen.getByRole("button") // GalleryItem has role="button"
-    expect(item).toHaveAttribute("data-orientation", "vertical")
-    expect(item).toHaveAttribute("data-active", "true")
-    expect(item).not.toHaveAttribute("data-focus-surface")
-  })
+    const item = screen.getByRole("button"); // GalleryItem has role="button"
+    expect(item).toHaveAttribute("data-orientation", "vertical");
+    expect(item).toHaveAttribute("data-active", "true");
+    expect(item).not.toHaveAttribute("data-focus-surface");
+  });
 
   it("renders with horizontal orientation when specified", () => {
     render(
@@ -27,10 +27,10 @@ describe("Gallery", () => {
           <Gallery.View>View</Gallery.View>
           <Gallery.Body>Body</Gallery.Body>
         </Gallery.Item>
-      </Gallery>
-    )
+      </Gallery>,
+    );
 
-    const item = screen.getByRole("button")
-    expect(item).toHaveAttribute("data-orientation", "horizontal")
-  })
-})
+    const item = screen.getByRole("button");
+    expect(item).toHaveAttribute("data-orientation", "horizontal");
+  });
+});

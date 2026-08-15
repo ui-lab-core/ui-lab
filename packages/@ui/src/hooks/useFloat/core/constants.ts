@@ -1,1 +1,1 @@
-export const originSides = new Set(['left', 'top']);
+export const originSides = new Set(["left", "top"]);

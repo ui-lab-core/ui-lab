@@ -28,13 +28,19 @@
     border-radius: inherit;
     pointer-events: none;
     background: var(--range-background, var(--slider-range-background, var(--background)));
-    transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .thumb {
-    --thumb-inline-size: var(--thumb-width, var(--thumb-size, var(--slider-thumb-size, var(--width, var(--length)))));
-    --thumb-block-size: var(--thumb-height, var(--thumb-size, var(--slider-thumb-size, var(--height, 100%))));
+    --thumb-inline-size: var(
+      --thumb-width,
+      var(--thumb-size, var(--slider-thumb-size, var(--width, var(--length))))
+    );
+    --thumb-block-size: var(
+      --thumb-height,
+      var(--thumb-size, var(--slider-thumb-size, var(--height, 100%)))
+    );
 
     @apply absolute block;
     top: var(--top, 0);
@@ -48,10 +54,14 @@
     border: var(--thumb-border, var(--slider-thumb-border, none));
     box-shadow: var(--thumb-shadow, var(--slider-thumb-shadow, none));
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .slider[data-orientation="horizontal"] .range {
@@ -60,11 +70,7 @@
   }
 
   .slider[data-orientation="horizontal"] .thumb {
-    left: clamp(
-      var(--thumb-inset, 0px),
-      var(--position, 0%),
-      calc(100% - var(--thumb-inset, 0px))
-    );
+    left: clamp(var(--thumb-inset, 0px), var(--position, 0%), calc(100% - var(--thumb-inset, 0px)));
   }
 
   .slider[data-orientation="vertical"] {
@@ -102,12 +108,18 @@
   }
 
   .slider[data-disabled="true"] .range {
-    background: var(--disabled-background, var(--range-background, var(--slider-range-background, var(--background))));
+    background: var(
+      --disabled-background,
+      var(--range-background, var(--slider-range-background, var(--background)))
+    );
   }
 
   .thumb[data-disabled="true"] {
     cursor: not-allowed;
-    background: var(--disabled-background, var(--thumb-background, var(--slider-thumb-background, var(--background))));
+    background: var(
+      --disabled-background,
+      var(--thumb-background, var(--slider-thumb-background, var(--background)))
+    );
   }
 
   .thumb[data-pressed="true"] {

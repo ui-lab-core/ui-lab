@@ -16,7 +16,7 @@ import type {
   ShiftOptions as CoreShiftOptions,
   SizeOptions as CoreSizeOptions,
   Strategy,
-} from '../core';
+} from "../core";
 
 type Prettify<T> = {
   [K in keyof T]: T[K];
@@ -88,7 +88,7 @@ export interface Platform {
   getDocumentElement: (element: Element) => Promisable<HTMLElement>;
   getClientRects: (element: Element) => Promisable<Array<ClientRectObject>>;
   isRTL: (element: Element) => Promisable<boolean>;
-  getScale: (element: HTMLElement) => Promisable<{x: number; y: number}>;
+  getScale: (element: HTMLElement) => Promisable<{ x: number; y: number }>;
 }
 
 export interface NodeScroll {
@@ -99,16 +99,16 @@ export interface NodeScroll {
 /**
  * The clipping boundary area of the floating element.
  */
-export type Boundary = 'clippingAncestors' | Element | Array<Element> | Rect;
+export type Boundary = "clippingAncestors" | Element | Array<Element> | Rect;
 
 type DetectOverflowOptions = Prettify<
-  Omit<CoreDetectOverflowOptions, 'boundary'> & {
+  Omit<CoreDetectOverflowOptions, "boundary"> & {
     boundary?: Boundary;
   }
 >;
 
 export type ComputePositionConfig = Prettify<
-  Omit<CoreComputePositionConfig, 'middleware' | 'platform'> & {
+  Omit<CoreComputePositionConfig, "middleware" | "platform"> & {
     /**
      * Array of middleware objects to modify the positioning or provide data for
      * rendering.
@@ -140,7 +140,7 @@ export interface Elements {
 }
 
 export type MiddlewareState = Prettify<
-  Omit<CoreMiddlewareState, 'elements'> & {
+  Omit<CoreMiddlewareState, "elements"> & {
     elements: Elements;
   }
 >;
@@ -150,13 +150,13 @@ export type MiddlewareState = Prettify<
 type MiddlewareArguments = MiddlewareState;
 
 export type Middleware = Prettify<
-  Omit<CoreMiddleware, 'fn'> & {
+  Omit<CoreMiddleware, "fn"> & {
     fn(state: MiddlewareState): Promisable<MiddlewareReturn>;
   }
 >;
 
 type SizeOptions = Prettify<
-  Omit<CoreSizeOptions, 'apply' | 'boundary'> &
+  Omit<CoreSizeOptions, "apply" | "boundary"> &
     DetectOverflowOptions & {
       /**
        * Function that is called to perform style mutations to the floating element
@@ -172,19 +172,13 @@ type SizeOptions = Prettify<
     }
 >;
 type ArrowOptions = Prettify<
-  Omit<CoreArrowOptions, 'element'> & {
+  Omit<CoreArrowOptions, "element"> & {
     element: Element;
   }
 >;
 type AutoPlacementOptions = Prettify<
-  Omit<CoreAutoPlacementOptions, 'boundary'> & DetectOverflowOptions
+  Omit<CoreAutoPlacementOptions, "boundary"> & DetectOverflowOptions
 >;
-type ShiftOptions = Prettify<
-  Omit<CoreShiftOptions, 'boundary'> & DetectOverflowOptions
->;
-type FlipOptions = Prettify<
-  Omit<CoreFlipOptions, 'boundary'> & DetectOverflowOptions
->;
-type HideOptions = Prettify<
-  Omit<CoreHideOptions, 'boundary'> & DetectOverflowOptions
->;
+type ShiftOptions = Prettify<Omit<CoreShiftOptions, "boundary"> & DetectOverflowOptions>;
+type FlipOptions = Prettify<Omit<CoreFlipOptions, "boundary"> & DetectOverflowOptions>;
+type HideOptions = Prettify<Omit<CoreHideOptions, "boundary"> & DetectOverflowOptions>;

@@ -60,8 +60,10 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .color-provider .color-trigger:hover {
@@ -215,7 +217,9 @@
     height: 12px;
     border-radius: var(--radius-full);
     border: 2px solid var(--pointer-border);
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 2px 4px rgb(0 0 0 / 0.3);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.3),
+      0 2px 4px rgb(0 0 0 / 0.3);
     pointer-events: none;
     transform: translate(-50%, -50%);
     z-index: 10;
@@ -281,11 +285,7 @@
     --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);
 
     position: absolute;
-    left: clamp(
-      var(--thumb-inset, 0px),
-      var(--position, 0%),
-      calc(100% - var(--thumb-inset, 0px))
-    );
+    left: clamp(var(--thumb-inset, 0px), var(--position, 0%), calc(100% - var(--thumb-inset, 0px)));
     top: var(--top);
     box-sizing: border-box;
     width: var(--thumb-width);
@@ -472,8 +472,10 @@
     padding: 0;
     outline: none;
     transition:
-      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .recent-colors .recent-color-swatch:hover {

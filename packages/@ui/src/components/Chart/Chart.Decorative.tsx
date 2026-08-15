@@ -1,8 +1,8 @@
-import * as React from "react"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import styles from "./Chart.module.css"
-import { useChartContext } from "./Chart"
+import * as React from "react";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import styles from "./Chart.module.css";
+import { useChartContext } from "./Chart";
 
 export interface ChartReferenceStyleSlots {
   root?: StyleValue;
@@ -21,54 +21,54 @@ export type ChartCursorStylesProp = StylesProp<ChartCursorStyleSlots>;
 
 export interface ChartReferenceProps {
   /** X value the reference line marks; matches a row's x value or a numeric/time position */
-  x?: number | string | Date
+  x?: number | string | Date;
   /** Y value the reference line marks */
-  y?: number
+  y?: number;
   /** Annotation text rendered beside the line */
-  label?: string
+  label?: string;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ChartReferenceStylesProp;
 }
 
-const resolveReferenceBaseStyles = createStylesResolver(['root', 'line', 'label'] as const);
+const resolveReferenceBaseStyles = createStylesResolver(["root", "line", "label"] as const);
 
 function resolveReferenceStyles(styles: ChartReferenceStylesProp | undefined) {
-  if (!styles) return resolveReferenceBaseStyles(styles)
-  const { root, line, label } = styles
-  return resolveReferenceBaseStyles({ root, line, label })
+  if (!styles) return resolveReferenceBaseStyles(styles);
+  const { root, line, label } = styles;
+  return resolveReferenceBaseStyles({ root, line, label });
 }
 
-const resolveCursorBaseStyles = createStylesResolver(['root', 'line'] as const);
+const resolveCursorBaseStyles = createStylesResolver(["root", "line"] as const);
 
 function resolveCursorStyles(styles: ChartCursorStylesProp | undefined) {
-  if (!styles) return resolveCursorBaseStyles(styles)
-  const { root, line } = styles
-  return resolveCursorBaseStyles({ root, line })
+  if (!styles) return resolveCursorBaseStyles(styles);
+  const { root, line } = styles;
+  return resolveCursorBaseStyles({ root, line });
 }
 
 export interface ChartCursorProps {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and line. Use className for conventional root classes. */
-  styles?: ChartCursorStylesProp
+  styles?: ChartCursorStylesProp;
 }
 
 /** Dashed vertical guide following the active chart row */
 const ChartCursor = React.forwardRef<SVGGElement, ChartCursorProps>(
   ({ className, styles: stylesProp }, ref) => {
-    const { activeIndex, ready, plot, xPositions } = useChartContext()
-    const resolved = resolveCursorStyles(stylesProp)
-    if (!ready || activeIndex == null) return null
+    const { activeIndex, ready, plot, xPositions } = useChartContext();
+    const resolved = resolveCursorStyles(stylesProp);
+    if (!ready || activeIndex == null) return null;
 
-    const position = xPositions[activeIndex]
-    if (position == null) return null
+    const position = xPositions[activeIndex];
+    if (position == null) return null;
 
     return (
-      <g ref={ref} className={cn('cursor', styles.cursor, className, resolved.root)}>
+      <g ref={ref} className={cn("cursor", styles.cursor, className, resolved.root)}>
         <line
-          className={cn('cursor-line', styles["cursor-line"], resolved.line)}
+          className={cn("cursor-line", styles["cursor-line"], resolved.line)}
           data-active="true"
           x1={position}
           x2={position}
@@ -76,22 +76,22 @@ const ChartCursor = React.forwardRef<SVGGElement, ChartCursorProps>(
           y2={plot.y + plot.height}
         />
       </g>
-    )
-  }
-)
-ChartCursor.displayName = "ChartCursor"
+    );
+  },
+);
+ChartCursor.displayName = "ChartCursor";
 
 /** Annotation line marking a threshold or moment across the plot */
 const ChartReference = React.forwardRef<SVGGElement, ChartReferenceProps>(
   ({ x, y, label, className, styles: stylesProp }, ref) => {
-    const { ready, plot, yScale, xValuePosition } = useChartContext()
-    const resolved = resolveReferenceStyles(stylesProp)
-    if (!ready) return null
+    const { ready, plot, yScale, xValuePosition } = useChartContext();
+    const resolved = resolveReferenceStyles(stylesProp);
+    if (!ready) return null;
 
     if (y !== undefined) {
-      const position = yScale(y)
+      const position = yScale(y);
       return (
-        <g ref={ref} className={cn('reference', styles.reference, className, resolved.root)}>
+        <g ref={ref} className={cn("reference", styles.reference, className, resolved.root)}>
           <line
             className={cn(styles.rule, resolved.line)}
             x1={plot.x}
@@ -110,14 +110,14 @@ const ChartReference = React.forwardRef<SVGGElement, ChartReferenceProps>(
             </text>
           )}
         </g>
-      )
+      );
     }
 
     if (x !== undefined) {
-      const position = xValuePosition(x)
-      if (position == null) return null
+      const position = xValuePosition(x);
+      if (position == null) return null;
       return (
-        <g ref={ref} className={cn('reference', styles.reference, className, resolved.root)}>
+        <g ref={ref} className={cn("reference", styles.reference, className, resolved.root)}>
           <line
             className={cn(styles.rule, resolved.line)}
             x1={position}
@@ -136,12 +136,12 @@ const ChartReference = React.forwardRef<SVGGElement, ChartReferenceProps>(
             </text>
           )}
         </g>
-      )
+      );
     }
 
-    return null
-  }
-)
-ChartReference.displayName = "ChartReference"
+    return null;
+  },
+);
+ChartReference.displayName = "ChartReference";
 
-export { ChartReference, ChartCursor }
+export { ChartReference, ChartCursor };

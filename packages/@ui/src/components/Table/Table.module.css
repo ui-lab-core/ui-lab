@@ -67,8 +67,10 @@
   .row {
     display: table-row;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .row[data-interactive="true"] {
@@ -101,8 +103,10 @@
     border: 0;
     border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .row:last-child .cell {

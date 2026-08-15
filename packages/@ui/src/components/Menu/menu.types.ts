@@ -1,101 +1,116 @@
-import * as React from "react"
-import type { Key } from "react-aria"
-import type { ItemData } from "../../utils/list-navigation"
-import type { StylesProp } from "@/lib/styles"
-import type { StyleValue } from "@/lib/utils"
-import type { ButtonProps } from "../Button"
+import * as React from "react";
+import type { Key } from "react-aria";
+import type { ItemData } from "../../utils/list-navigation";
+import type { StylesProp } from "@/lib/styles";
+import type { StyleValue } from "@/lib/utils";
+import type { ButtonProps } from "../Button";
 
-export type SelectionMode = "none" | "single" | "multiple"
-export type MenuType = "context-menu" | "pop-over"
+export type SelectionMode = "none" | "single" | "multiple";
+export type MenuType = "context-menu" | "pop-over";
 
 export interface MenuItemExtras {
-  onSelect?: () => void
-  isSubmenuTrigger?: boolean
+  onSelect?: () => void;
+  isSubmenuTrigger?: boolean;
 }
 
 export interface MenuContextValue {
-  isOpen: boolean
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  type: MenuType
-  close: () => void
-  selectionMode: SelectionMode
-  selectedKeys: Set<Key>
-  onSelectionChange: (keys: Set<Key>) => void
-  toggleSelection: (key: Key) => void
-  items: ItemData[]
-  registerItem: (key: Key, textValue: string, isDisabled?: boolean, onSelect?: () => void, isSubmenuTrigger?: boolean) => void
-  unregisterItem: (key: Key) => void
-  focusedKey: Key | null
-  setFocusedKey: React.Dispatch<React.SetStateAction<Key | null>>
-  navigateToNextItem: () => void
-  navigateToPrevItem: () => void
-  selectFocusedItem: () => void
-  isFocusedItemSubmenu: () => boolean
-  radioGroups: Map<string, Key | null>
-  setRadioGroupValue: (groupName: string, value: Key | null) => void
-  getRadioGroupValue: (groupName: string) => Key | null
-  triggerRef: React.MutableRefObject<HTMLElement | null>
-  mouseMoveDetectedRef: React.MutableRefObject<boolean>
-  clickPositionRef: React.MutableRefObject<{ x: number; y: number }>
-  activeSubmenuKey: Key | null
-  setActiveSubmenuKey: React.Dispatch<React.SetStateAction<Key | null>>
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  type: MenuType;
+  close: () => void;
+  selectionMode: SelectionMode;
+  selectedKeys: Set<Key>;
+  onSelectionChange: (keys: Set<Key>) => void;
+  toggleSelection: (key: Key) => void;
+  items: ItemData[];
+  registerItem: (
+    key: Key,
+    textValue: string,
+    isDisabled?: boolean,
+    onSelect?: () => void,
+    isSubmenuTrigger?: boolean,
+  ) => void;
+  unregisterItem: (key: Key) => void;
+  focusedKey: Key | null;
+  setFocusedKey: React.Dispatch<React.SetStateAction<Key | null>>;
+  navigateToNextItem: () => void;
+  navigateToPrevItem: () => void;
+  selectFocusedItem: () => void;
+  isFocusedItemSubmenu: () => boolean;
+  radioGroups: Map<string, Key | null>;
+  setRadioGroupValue: (groupName: string, value: Key | null) => void;
+  getRadioGroupValue: (groupName: string) => Key | null;
+  triggerRef: React.MutableRefObject<HTMLElement | null>;
+  mouseMoveDetectedRef: React.MutableRefObject<boolean>;
+  clickPositionRef: React.MutableRefObject<{ x: number; y: number }>;
+  activeSubmenuKey: Key | null;
+  setActiveSubmenuKey: React.Dispatch<React.SetStateAction<Key | null>>;
 }
 
 export interface MenuSubmenuContextValue {
-  isOpen: boolean
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  triggerRef: React.MutableRefObject<HTMLElement | null>
-  parentMenuRef: React.MutableRefObject<HTMLDivElement | null>
-  submenuLevel: number
-  items: ItemData[]
-  focusedKey: Key | null
-  setFocusedKey: React.Dispatch<React.SetStateAction<Key | null>>
-  navigateToNextItem: () => void
-  navigateToPrevItem: () => void
-  registerItem: (key: Key, textValue: string, isDisabled?: boolean, onSelect?: () => void, isSubmenuTrigger?: boolean) => void
-  unregisterItem: (key: Key) => void
-  selectFocusedItem: () => void
-  isFocusedItemSubmenu: () => boolean
-  contentRef: React.MutableRefObject<HTMLDivElement | null>
-  closeTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>
-  mouseMoveDetectedRef: React.MutableRefObject<boolean>
-  triggerKey: Key | null
-  setTriggerKey: React.Dispatch<React.SetStateAction<Key | null>>
-  parentSubmenuContext: MenuSubmenuContextValue | null
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  triggerRef: React.MutableRefObject<HTMLElement | null>;
+  parentMenuRef: React.MutableRefObject<HTMLDivElement | null>;
+  submenuLevel: number;
+  items: ItemData[];
+  focusedKey: Key | null;
+  setFocusedKey: React.Dispatch<React.SetStateAction<Key | null>>;
+  navigateToNextItem: () => void;
+  navigateToPrevItem: () => void;
+  registerItem: (
+    key: Key,
+    textValue: string,
+    isDisabled?: boolean,
+    onSelect?: () => void,
+    isSubmenuTrigger?: boolean,
+  ) => void;
+  unregisterItem: (key: Key) => void;
+  selectFocusedItem: () => void;
+  isFocusedItemSubmenu: () => boolean;
+  contentRef: React.MutableRefObject<HTMLDivElement | null>;
+  closeTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>;
+  mouseMoveDetectedRef: React.MutableRefObject<boolean>;
+  triggerKey: Key | null;
+  setTriggerKey: React.Dispatch<React.SetStateAction<Key | null>>;
+  parentSubmenuContext: MenuSubmenuContextValue | null;
 }
 
 export interface RadioGroupContextValue {
-  name: string
-  value: Key | null
-  onValueChange: (value: Key) => void
+  name: string;
+  value: Key | null;
+  onValueChange: (value: Key) => void;
 }
 
 export interface MenuProps extends React.PropsWithChildren {
   /** Controlled state. */
-  state?: { open?: boolean; selected?: Set<Key> }
+  state?: { open?: boolean; selected?: Set<Key> };
   /** Initial open state. */
-  open?: boolean
+  open?: boolean;
   /** The behavior type of the menu */
-  type?: MenuType
+  type?: MenuType;
   /** Controls how many items can be selected at once */
-  selectionMode?: SelectionMode
+  selectionMode?: SelectionMode;
   /** Controlled set of selected item keys */
-  selectedKeys?: Set<Key>
+  selectedKeys?: Set<Key>;
   /** Initial selected keys for uncontrolled usage */
-  defaultSelectedKeys?: Set<Key>
+  defaultSelectedKeys?: Set<Key>;
   /** Called when the selected keys change */
-  onSelectionChange?: (keys: Set<Key>) => void
+  onSelectionChange?: (keys: Set<Key>) => void;
 }
 
-export type MenuTriggerAs = "button" | "span" | "child"
+export type MenuTriggerAs = "button" | "span" | "child";
 
-export interface MenuTriggerProps extends Omit<ButtonProps, "children" | "className" | "disabled" | "styles">, React.PropsWithChildren {
+export interface MenuTriggerProps
+  extends
+    Omit<ButtonProps, "children" | "className" | "disabled" | "styles">,
+    React.PropsWithChildren {
   /** Whether the trigger is non-interactive */
-  disabled?: boolean
+  disabled?: boolean;
   /** Render using Button, a span, or exactly one child element. Defaults to button for pop-overs and span for context menus. */
-  as?: MenuTriggerAs
+  as?: MenuTriggerAs;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuTriggerStylesProp;
 }
@@ -107,7 +122,7 @@ export type MenuTriggerStylesProp = StylesProp<MenuTriggerStyleSlots>;
 
 export interface MenuPortalProps extends React.PropsWithChildren {
   /** DOM element to portal the menu content into */
-  container?: HTMLElement
+  container?: HTMLElement;
 }
 
 export interface MenuContentStyleSlots {
@@ -119,19 +134,19 @@ export type MenuContentStylesProp = StylesProp<MenuContentStyleSlots>;
 
 export interface MenuContentProps extends React.PropsWithChildren {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** The side to position the menu content relative to the trigger (for pop-over type) */
-  side?: "top" | "bottom" | "left" | "right"
+  side?: "top" | "bottom" | "left" | "right";
   /** The alignment of the menu content relative to the trigger (for pop-over type) */
-  align?: "start" | "center" | "end"
+  align?: "start" | "center" | "end";
   /** Called when focus returns to the trigger after close */
-  onCloseAutoFocus?: (event: Event) => void
+  onCloseAutoFocus?: (event: Event) => void;
   /** Called when the Escape key is pressed */
-  onEscapeKeyDown?: (event: KeyboardEvent) => void
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
   /** Called when a pointer event occurs outside the menu */
-  onPointerDownOutside?: (event: PointerEvent) => void
+  onPointerDownOutside?: (event: PointerEvent) => void;
   /** Distance offset from the trigger in all directions (for pop-over type) */
-  offset?: number
+  offset?: number;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuContentStylesProp;
 }
@@ -145,15 +160,15 @@ export type MenuItemStylesProp = StylesProp<MenuItemStyleSlots>;
 
 export interface MenuItemProps extends React.PropsWithChildren {
   /** Whether the item is non-interactive */
-  disabled?: boolean
+  disabled?: boolean;
   /** Called when the item is selected */
-  onSelect?: () => void
+  onSelect?: () => void;
   /** Accessible text used for typeahead matching */
-  textValue?: string
+  textValue?: string;
   /** Whether to add leading inset padding */
-  inset?: boolean
+  inset?: boolean;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuItemStylesProp;
 }
@@ -166,26 +181,26 @@ export type MenuCheckboxItemStylesProp = StylesProp<MenuCheckboxItemStyleSlots>;
 
 export interface MenuCheckboxItemProps extends React.PropsWithChildren {
   /** Whether the checkbox item is checked */
-  checked?: boolean
+  checked?: boolean;
   /** Called when the checked state changes */
-  onCheckedChange?: (checked: boolean) => void
+  onCheckedChange?: (checked: boolean) => void;
   /** Whether the item is non-interactive */
-  disabled?: boolean
+  disabled?: boolean;
   /** Called when the item is selected */
-  onSelect?: () => void
+  onSelect?: () => void;
   /** Accessible text used for typeahead matching */
-  textValue?: string
+  textValue?: string;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuCheckboxItemStylesProp;
 }
 
 export interface MenuRadioGroupProps extends React.PropsWithChildren {
   /** Controlled value of the selected radio item */
-  value?: string
+  value?: string;
   /** Called when the selected radio value changes */
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: string) => void;
 }
 
 export interface MenuRadioItemStyleSlots {
@@ -196,24 +211,24 @@ export type MenuRadioItemStylesProp = StylesProp<MenuRadioItemStyleSlots>;
 
 export interface MenuRadioItemProps extends React.PropsWithChildren {
   /** Value this radio item represents */
-  value: string
+  value: string;
   /** Whether the item is non-interactive */
-  disabled?: boolean
+  disabled?: boolean;
   /** Called when the item is selected */
-  onSelect?: () => void
+  onSelect?: () => void;
   /** Accessible text used for typeahead matching */
-  textValue?: string
+  textValue?: string;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuRadioItemStylesProp;
 }
 
 export interface MenuLabelProps extends React.PropsWithChildren {
   /** Whether to add leading inset padding */
-  inset?: boolean
+  inset?: boolean;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuLabelStylesProp;
 }
@@ -225,7 +240,7 @@ export type MenuLabelStylesProp = StylesProp<MenuLabelStyleSlots>;
 
 export interface MenuSeparatorProps {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuSeparatorStylesProp;
 }
@@ -237,7 +252,7 @@ export type MenuSeparatorStylesProp = StylesProp<MenuSeparatorStyleSlots>;
 
 export interface MenuShortcutProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuShortcutStylesProp;
 }
@@ -249,11 +264,11 @@ export type MenuShortcutStylesProp = StylesProp<MenuShortcutStyleSlots>;
 
 export interface MenuSubProps extends React.PropsWithChildren {
   /** Controlled open state of the submenu */
-  open?: boolean
+  open?: boolean;
   /** Initial open state for uncontrolled usage */
-  defaultOpen?: boolean
+  defaultOpen?: boolean;
   /** Called when the submenu open state changes */
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (open: boolean) => void;
 }
 
 export interface MenuSubTriggerStyleSlots {
@@ -264,13 +279,13 @@ export type MenuSubTriggerStylesProp = StylesProp<MenuSubTriggerStyleSlots>;
 
 export interface MenuSubTriggerProps extends React.PropsWithChildren {
   /** Whether the trigger is non-interactive */
-  disabled?: boolean
+  disabled?: boolean;
   /** Whether to add leading inset padding */
-  inset?: boolean
+  inset?: boolean;
   /** Accessible text used for typeahead matching */
-  textValue?: string
+  textValue?: string;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuSubTriggerStylesProp;
 }
@@ -283,9 +298,9 @@ export type MenuSubContentStylesProp = StylesProp<MenuSubContentStyleSlots>;
 
 export interface MenuSubContentProps extends React.PropsWithChildren {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Distance offset from the trigger in all directions */
-  offset?: number
+  offset?: number;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MenuSubContentStylesProp;
 }

@@ -1,5 +1,5 @@
-import { Date as DateRoot, DateHeader, DateGrid, DateDay } from "./Date"
-import { DateInput } from "./Date.Input"
+import { Date as DateRoot, DateHeader, DateGrid, DateDay } from "./Date";
+import { DateInput } from "./Date.Input";
 
 /**
  * `Date.Input` is the recommended way to compose a full date field: typed
@@ -11,9 +11,9 @@ const Date = Object.assign(DateRoot, {
   Grid: DateGrid,
   Day: DateDay,
   Input: DateInput,
-})
+});
 
-export { Date, DateHeader, DateGrid, DateDay, DateInput }
+export { Date, DateHeader, DateGrid, DateDay, DateInput };
 
 export type {
   DateProps,
@@ -26,10 +26,6 @@ export type {
   DateHeaderProps,
   DateGridProps,
   DateDayProps,
-} from "./Date"
+} from "./Date";
 
-export type {
-  DateInputProps,
-  DateInputSingleProps,
-  DateInputRangeProps,
-} from "./Date.Input"
+export type { DateInputProps, DateInputSingleProps, DateInputRangeProps } from "./Date.Input";

@@ -1,8 +1,8 @@
-import type {Dimensions} from '../../core';
+import type { Dimensions } from "../../core";
 
-import {getCssDimensions} from '../utils/getCssDimensions';
+import { getCssDimensions } from "../utils/getCssDimensions";
 
 export function getDimensions(element: Element): Dimensions {
-  const {width, height} = getCssDimensions(element);
-  return {width, height};
+  const { width, height } = getCssDimensions(element);
+  return { width, height };
 }

@@ -49,7 +49,6 @@
     transition:
       opacity 180ms var(--ease-snappy-pop, ease-out),
       transform 180ms var(--ease-snappy-pop, ease-out);
-
   }
 
   .overlay[data-state="entered"] .panel {
@@ -102,8 +101,10 @@
     border: none;
     color: var(--foreground);
     transition:
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     &[data-hovered="true"] {
       --hover-duration: var(--hover-enter-duration, 0ms);
@@ -164,6 +165,5 @@
     .panel {
       margin: 1rem;
     }
-
   }
 }

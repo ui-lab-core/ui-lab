@@ -1,4 +1,4 @@
-import type {Alignment, Placement} from '../../utils';
+import type { Alignment, Placement } from "../../utils";
 import {
   evaluate,
   getAlignment,
@@ -6,10 +6,10 @@ import {
   getOppositeAlignmentPlacement,
   getSide,
   placements as ALL_PLACEMENTS,
-} from '../../utils';
+} from "../../utils";
 
-import type {DetectOverflowOptions} from '../detectOverflow';
-import type {Derivable, Middleware} from '../types';
+import type { DetectOverflowOptions } from "../detectOverflow";
+import type { Derivable, Middleware } from "../types";
 
 function getPlacementList(
   alignment: Alignment | null,
@@ -18,12 +18,8 @@ function getPlacementList(
 ) {
   const allowedPlacementsSortedByAlignment = alignment
     ? [
-        ...allowedPlacements.filter(
-          (placement) => getAlignment(placement) === alignment,
-        ),
-        ...allowedPlacements.filter(
-          (placement) => getAlignment(placement) !== alignment,
-        ),
+        ...allowedPlacements.filter((placement) => getAlignment(placement) === alignment),
+        ...allowedPlacements.filter((placement) => getAlignment(placement) !== alignment),
       ]
     : allowedPlacements.filter((placement) => getSide(placement) === placement);
 
@@ -31,9 +27,7 @@ function getPlacementList(
     if (alignment) {
       return (
         getAlignment(placement) === alignment ||
-        (autoAlignment
-          ? getOppositeAlignmentPlacement(placement) !== placement
-          : false)
+        (autoAlignment ? getOppositeAlignmentPlacement(placement) !== placement : false)
       );
     }
 
@@ -76,10 +70,10 @@ export interface AutoPlacementOptions extends DetectOverflowOptions {
 const autoPlacement = (
   options: AutoPlacementOptions | Derivable<AutoPlacementOptions> = {},
 ): Middleware => ({
-  name: 'autoPlacement',
+  name: "autoPlacement",
   options,
   async fn(state) {
-    const {rects, middlewareData, placement, platform, elements} = state;
+    const { rects, middlewareData, placement, platform, elements } = state;
 
     const {
       crossAxis = false,
@@ -94,10 +88,7 @@ const autoPlacement = (
         ? getPlacementList(alignment || null, autoAlignment, allowedPlacements)
         : allowedPlacements;
 
-    const overflow = await platform.detectOverflow(
-      state,
-      detectOverflowOptions,
-    );
+    const overflow = await platform.detectOverflow(state, detectOverflowOptions);
 
     const currentIndex = middlewareData.autoPlacement?.index || 0;
     const currentPlacement = placements[currentIndex];
@@ -129,7 +120,7 @@ const autoPlacement = (
 
     const allOverflows = [
       ...(middlewareData.autoPlacement?.overflows || []),
-      {placement: currentPlacement, overflows: currentOverflows},
+      { placement: currentPlacement, overflows: currentOverflows },
     ];
 
     const nextPlacement = placements[currentIndex + 1];
@@ -162,20 +153,18 @@ const autoPlacement = (
       })
       .sort((a, b) => a[1] - b[1]);
 
-    const placementsThatFitOnEachSide = placementsSortedByMostSpace.filter(
-      (d) =>
-        d[2]
-          .slice(
-            0,
-            // Aligned placements should not check their opposite crossAxis
-            // side.
-            getAlignment(d[0]) ? 2 : 3,
-          )
-          .every((v) => v <= 0),
+    const placementsThatFitOnEachSide = placementsSortedByMostSpace.filter((d) =>
+      d[2]
+        .slice(
+          0,
+          // Aligned placements should not check their opposite crossAxis
+          // side.
+          getAlignment(d[0]) ? 2 : 3,
+        )
+        .every((v) => v <= 0),
     );
 
-    const resetPlacement =
-      placementsThatFitOnEachSide[0]?.[0] || placementsSortedByMostSpace[0][0];
+    const resetPlacement = placementsThatFitOnEachSide[0]?.[0] || placementsSortedByMostSpace[0][0];
 
     if (resetPlacement !== placement) {
       return {

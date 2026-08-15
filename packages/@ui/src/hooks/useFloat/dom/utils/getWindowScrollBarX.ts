@@ -1,7 +1,7 @@
-import {getNodeScroll} from '../../../../utils/dom';
+import { getNodeScroll } from "../../../../utils/dom";
 
-import {getDocumentElement} from '../platform/getDocumentElement';
-import {getBoundingClientRect} from './getBoundingClientRect';
+import { getDocumentElement } from "../platform/getDocumentElement";
+import { getBoundingClientRect } from "./getBoundingClientRect";
 
 // If <html> has a CSS width greater than the viewport, then this will be
 // incorrect for RTL.

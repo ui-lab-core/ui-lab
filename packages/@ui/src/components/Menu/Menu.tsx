@@ -1,6 +1,6 @@
-import * as React from "react"
-import type { Key } from "react-aria"
-import { useListNavigation } from "../../utils/list-navigation"
+import * as React from "react";
+import type { Key } from "react-aria";
+import { useListNavigation } from "../../utils/list-navigation";
 import type {
   MenuContextValue,
   MenuSubmenuContextValue,
@@ -8,35 +8,35 @@ import type {
   MenuProps,
   MenuPortalProps,
   MenuItemExtras,
-} from "./menu.types"
-import { useControlledState } from "@/hooks/useControlledState"
+} from "./menu.types";
+import { useControlledState } from "@/hooks/useControlledState";
 
-const MenuContext = React.createContext<MenuContextValue | null>(null)
+const MenuContext = React.createContext<MenuContextValue | null>(null);
 
 export function useMenuContext() {
-  const context = React.useContext(MenuContext)
+  const context = React.useContext(MenuContext);
   if (!context) {
-    throw new Error("Menu component must be used within Menu root")
+    throw new Error("Menu component must be used within Menu root");
   }
-  return context
+  return context;
 }
 
-export const MenuSubmenuContext = React.createContext<MenuSubmenuContextValue | null>(null)
+export const MenuSubmenuContext = React.createContext<MenuSubmenuContextValue | null>(null);
 
 export function useMenuSubmenuContext() {
-  return React.useContext(MenuSubmenuContext)
+  return React.useContext(MenuSubmenuContext);
 }
 
-export const RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null)
+export const RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null);
 
 export function useRadioGroupContext() {
-  return React.useContext(RadioGroupContext)
+  return React.useContext(RadioGroupContext);
 }
 
 const MenuPortal = ({ children }: MenuPortalProps) => {
-  return <>{children}</>
-}
-MenuPortal.displayName = "MenuPortal"
+  return <>{children}</>;
+};
+MenuPortal.displayName = "MenuPortal";
 const Menu = ({
   children,
   type = "context-menu",
@@ -47,144 +47,166 @@ const Menu = ({
   state: controlledState,
   open,
 }: MenuProps) => {
-  const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false)
+  const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false);
   const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = useControlledState(
     controlledState?.selected,
-    controlledState?.selected ?? (controlledSelectedKeys ? new Set(controlledSelectedKeys) : undefined),
+    controlledState?.selected ??
+      (controlledSelectedKeys ? new Set(controlledSelectedKeys) : undefined),
     defaultSelectedKeys ?? new Set(),
-  )
-  const [radioGroups, setRadioGroups] = React.useState<Map<string, Key | null>>(new Map())
-  const [activeSubmenuKey, setActiveSubmenuKey] = React.useState<Key | null>(null)
+  );
+  const [radioGroups, setRadioGroups] = React.useState<Map<string, Key | null>>(new Map());
+  const [activeSubmenuKey, setActiveSubmenuKey] = React.useState<Key | null>(null);
 
-  const selectedKeys = uncontrolledSelectedKeys
+  const selectedKeys = uncontrolledSelectedKeys;
 
-  const nav = useListNavigation({ isOpen })
-  const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map())
-  const mouseMoveDetectedRef = React.useRef(true)
-  const clickPositionRef = React.useRef({ x: 0, y: 0 })
-  const triggerRef = React.useRef<HTMLElement | null>(null)
+  const nav = useListNavigation({ isOpen });
+  const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map());
+  const mouseMoveDetectedRef = React.useRef(true);
+  const clickPositionRef = React.useRef({ x: 0, y: 0 });
+  const triggerRef = React.useRef<HTMLElement | null>(null);
 
-  const registerItem = React.useCallback((key: Key, textValue: string, isDisabled?: boolean, onSelect?: () => void, isSubmenuTrigger?: boolean) => {
-    nav.registerItem(key, textValue, isDisabled)
-    itemExtrasRef.current.set(key, { onSelect, isSubmenuTrigger })
-  }, [nav.registerItem])
+  const registerItem = React.useCallback(
+    (
+      key: Key,
+      textValue: string,
+      isDisabled?: boolean,
+      onSelect?: () => void,
+      isSubmenuTrigger?: boolean,
+    ) => {
+      nav.registerItem(key, textValue, isDisabled);
+      itemExtrasRef.current.set(key, { onSelect, isSubmenuTrigger });
+    },
+    [nav.registerItem],
+  );
 
-  const unregisterItem = React.useCallback((key: Key) => {
-    nav.unregisterItem(key)
-    itemExtrasRef.current.delete(key)
-  }, [nav.unregisterItem])
+  const unregisterItem = React.useCallback(
+    (key: Key) => {
+      nav.unregisterItem(key);
+      itemExtrasRef.current.delete(key);
+    },
+    [nav.unregisterItem],
+  );
 
-  const handleSelectionChange = React.useCallback((keys: Set<Key>) => {
-    setUncontrolledSelectedKeys(keys)
-    onSelectionChange?.(keys)
-  }, [onSelectionChange, setUncontrolledSelectedKeys])
+  const handleSelectionChange = React.useCallback(
+    (keys: Set<Key>) => {
+      setUncontrolledSelectedKeys(keys);
+      onSelectionChange?.(keys);
+    },
+    [onSelectionChange, setUncontrolledSelectedKeys],
+  );
 
-  const toggleSelection = React.useCallback((key: Key) => {
-    const newKeys = new Set(selectedKeys)
-    if (selectionMode === "single") {
-      newKeys.clear()
-      newKeys.add(key)
-    } else if (selectionMode === "multiple") {
-      if (newKeys.has(key)) {
-        newKeys.delete(key)
-      } else {
-        newKeys.add(key)
+  const toggleSelection = React.useCallback(
+    (key: Key) => {
+      const newKeys = new Set(selectedKeys);
+      if (selectionMode === "single") {
+        newKeys.clear();
+        newKeys.add(key);
+      } else if (selectionMode === "multiple") {
+        if (newKeys.has(key)) {
+          newKeys.delete(key);
+        } else {
+          newKeys.add(key);
+        }
       }
-    }
-    handleSelectionChange(newKeys)
-  }, [selectedKeys, selectionMode, handleSelectionChange])
+      handleSelectionChange(newKeys);
+    },
+    [selectedKeys, selectionMode, handleSelectionChange],
+  );
 
   const close = React.useCallback(() => {
-    setIsOpen(false)
-    nav.setFocusedKey(null)
-  }, [nav.setFocusedKey])
+    setIsOpen(false);
+    nav.setFocusedKey(null);
+  }, [nav.setFocusedKey]);
 
   const selectFocusedItem = React.useCallback(() => {
-    if (nav.focusedKey === null) return
-    const item = nav.items.find(i => i.key === nav.focusedKey)
-    if (item?.isDisabled) return
-    const extras = itemExtrasRef.current.get(nav.focusedKey)
-    extras?.onSelect?.()
-  }, [nav.focusedKey, nav.items])
+    if (nav.focusedKey === null) return;
+    const item = nav.items.find((i) => i.key === nav.focusedKey);
+    if (item?.isDisabled) return;
+    const extras = itemExtrasRef.current.get(nav.focusedKey);
+    extras?.onSelect?.();
+  }, [nav.focusedKey, nav.items]);
 
   const isFocusedItemSubmenu = React.useCallback(() => {
-    if (nav.focusedKey === null) return false
-    const extras = itemExtrasRef.current.get(nav.focusedKey)
-    return extras?.isSubmenuTrigger ?? false
-  }, [nav.focusedKey])
+    if (nav.focusedKey === null) return false;
+    const extras = itemExtrasRef.current.get(nav.focusedKey);
+    return extras?.isSubmenuTrigger ?? false;
+  }, [nav.focusedKey]);
 
   const setRadioGroupValue = React.useCallback((groupName: string, value: Key | null) => {
-    setRadioGroups(prev => {
-      const next = new Map(prev)
-      next.set(groupName, value)
-      return next
-    })
-  }, [])
+    setRadioGroups((prev) => {
+      const next = new Map(prev);
+      next.set(groupName, value);
+      return next;
+    });
+  }, []);
 
-  const getRadioGroupValue = React.useCallback((groupName: string) => {
-    return radioGroups.get(groupName) ?? null
-  }, [radioGroups])
+  const getRadioGroupValue = React.useCallback(
+    (groupName: string) => {
+      return radioGroups.get(groupName) ?? null;
+    },
+    [radioGroups],
+  );
 
-  const contextValue = React.useMemo(() => ({
-    isOpen,
-    setIsOpen,
-    type,
-    close,
-    selectionMode,
-    selectedKeys,
-    onSelectionChange: handleSelectionChange,
-    toggleSelection,
-    items: nav.items,
-    registerItem,
-    unregisterItem,
-    focusedKey: nav.focusedKey,
-    setFocusedKey: nav.setFocusedKey,
-    navigateToNextItem: nav.navigateToNextItem,
-    navigateToPrevItem: nav.navigateToPrevItem,
-    selectFocusedItem,
-    isFocusedItemSubmenu,
-    radioGroups,
-    setRadioGroupValue,
-    getRadioGroupValue,
-    triggerRef,
-    mouseMoveDetectedRef,
-    clickPositionRef,
-    activeSubmenuKey,
-    setActiveSubmenuKey,
-  } satisfies MenuContextValue), [
-    isOpen,
-    setIsOpen,
-    type,
-    close,
-    selectionMode,
-    selectedKeys,
-    handleSelectionChange,
-    toggleSelection,
-    nav.items,
-    registerItem,
-    unregisterItem,
-    nav.focusedKey,
-    nav.setFocusedKey,
-    nav.navigateToNextItem,
-    nav.navigateToPrevItem,
-    selectFocusedItem,
-    isFocusedItemSubmenu,
-    radioGroups,
-    setRadioGroupValue,
-    getRadioGroupValue,
-    activeSubmenuKey,
-    setActiveSubmenuKey,
-  ])
+  const contextValue = React.useMemo(
+    () =>
+      ({
+        isOpen,
+        setIsOpen,
+        type,
+        close,
+        selectionMode,
+        selectedKeys,
+        onSelectionChange: handleSelectionChange,
+        toggleSelection,
+        items: nav.items,
+        registerItem,
+        unregisterItem,
+        focusedKey: nav.focusedKey,
+        setFocusedKey: nav.setFocusedKey,
+        navigateToNextItem: nav.navigateToNextItem,
+        navigateToPrevItem: nav.navigateToPrevItem,
+        selectFocusedItem,
+        isFocusedItemSubmenu,
+        radioGroups,
+        setRadioGroupValue,
+        getRadioGroupValue,
+        triggerRef,
+        mouseMoveDetectedRef,
+        clickPositionRef,
+        activeSubmenuKey,
+        setActiveSubmenuKey,
+      }) satisfies MenuContextValue,
+    [
+      isOpen,
+      setIsOpen,
+      type,
+      close,
+      selectionMode,
+      selectedKeys,
+      handleSelectionChange,
+      toggleSelection,
+      nav.items,
+      registerItem,
+      unregisterItem,
+      nav.focusedKey,
+      nav.setFocusedKey,
+      nav.navigateToNextItem,
+      nav.navigateToPrevItem,
+      selectFocusedItem,
+      isFocusedItemSubmenu,
+      radioGroups,
+      setRadioGroupValue,
+      getRadioGroupValue,
+      activeSubmenuKey,
+      setActiveSubmenuKey,
+    ],
+  );
 
-  return (
-    <MenuContext.Provider value={contextValue}>
-      {children}
-    </MenuContext.Provider>
-  )
-}
-Menu.displayName = "Menu"
+  return <MenuContext.Provider value={contextValue}>{children}</MenuContext.Provider>;
+};
+Menu.displayName = "Menu";
 
-export { Menu, MenuPortal }
+export { Menu, MenuPortal };
 export type {
   MenuProps,
   MenuTriggerProps,
@@ -202,4 +224,4 @@ export type {
   MenuSubProps,
   MenuSubTriggerProps,
   MenuSubContentProps,
-} from "./menu.types"
+} from "./menu.types";

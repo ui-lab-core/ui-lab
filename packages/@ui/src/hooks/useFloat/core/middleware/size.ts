@@ -1,14 +1,7 @@
-import {
-  evaluate,
-  getAlignment,
-  getSide,
-  getSideAxis,
-  max,
-  min,
-} from '../../utils';
+import { evaluate, getAlignment, getSide, getSideAxis, max, min } from "../../utils";
 
-import type {DetectOverflowOptions} from '../detectOverflow';
-import type {Derivable, Middleware, MiddlewareState} from '../types';
+import type { DetectOverflowOptions } from "../detectOverflow";
+import type { Derivable, Middleware, MiddlewareState } from "../types";
 
 export interface SizeOptions extends DetectOverflowOptions {
   /**
@@ -30,54 +23,39 @@ export interface SizeOptions extends DetectOverflowOptions {
  * width of the reference element.
  * @see https://floating-ui.com/docs/size
  */
-const size = (
-  options: SizeOptions | Derivable<SizeOptions> = {},
-): Middleware => ({
-  name: 'size',
+const size = (options: SizeOptions | Derivable<SizeOptions> = {}): Middleware => ({
+  name: "size",
   options,
   async fn(state) {
-    const {placement, rects, platform, elements} = state;
+    const { placement, rects, platform, elements } = state;
 
-    const {apply = () => {}, ...detectOverflowOptions} = evaluate(
-      options,
-      state,
-    );
+    const { apply = () => {}, ...detectOverflowOptions } = evaluate(options, state);
 
-    const overflow = await platform.detectOverflow(
-      state,
-      detectOverflowOptions,
-    );
+    const overflow = await platform.detectOverflow(state, detectOverflowOptions);
     const side = getSide(placement);
     const alignment = getAlignment(placement);
-    const isYAxis = getSideAxis(placement) === 'y';
-    const {width, height} = rects.floating;
+    const isYAxis = getSideAxis(placement) === "y";
+    const { width, height } = rects.floating;
 
-    let heightSide: 'top' | 'bottom';
-    let widthSide: 'left' | 'right';
+    let heightSide: "top" | "bottom";
+    let widthSide: "left" | "right";
 
-    if (side === 'top' || side === 'bottom') {
+    if (side === "top" || side === "bottom") {
       heightSide = side;
       widthSide =
-        alignment ===
-        ((await platform.isRTL?.(elements.floating)) ? 'start' : 'end')
-          ? 'left'
-          : 'right';
+        alignment === ((await platform.isRTL?.(elements.floating)) ? "start" : "end")
+          ? "left"
+          : "right";
     } else {
       widthSide = side;
-      heightSide = alignment === 'end' ? 'top' : 'bottom';
+      heightSide = alignment === "end" ? "top" : "bottom";
     }
 
     const maximumClippingHeight = height - overflow.top - overflow.bottom;
     const maximumClippingWidth = width - overflow.left - overflow.right;
 
-    const overflowAvailableHeight = min(
-      height - overflow[heightSide],
-      maximumClippingHeight,
-    );
-    const overflowAvailableWidth = min(
-      width - overflow[widthSide],
-      maximumClippingWidth,
-    );
+    const overflowAvailableHeight = min(height - overflow[heightSide], maximumClippingHeight);
+    const overflowAvailableWidth = min(width - overflow[widthSide], maximumClippingWidth);
 
     const noShift = !state.middlewareData.shift;
 
@@ -99,22 +77,15 @@ const size = (
 
       if (isYAxis) {
         availableWidth =
-          width -
-          2 *
-            (xMin !== 0 || xMax !== 0
-              ? xMin + xMax
-              : max(overflow.left, overflow.right));
+          width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : max(overflow.left, overflow.right));
       } else {
         availableHeight =
           height -
-          2 *
-            (yMin !== 0 || yMax !== 0
-              ? yMin + yMax
-              : max(overflow.top, overflow.bottom));
+          2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : max(overflow.top, overflow.bottom));
       }
     }
 
-    await apply({...state, availableWidth, availableHeight});
+    await apply({ ...state, availableWidth, availableHeight });
 
     const nextDimensions = await platform.getDimensions(elements.floating);
 

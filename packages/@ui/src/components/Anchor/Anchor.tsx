@@ -21,7 +21,7 @@ interface AnchorStyleSlots {
 
 type AnchorStylesProp = StylesProp<AnchorStyleSlots>;
 
-const resolveAnchorBaseStyles = createStylesResolver(['root', 'underline', 'preview'] as const);
+const resolveAnchorBaseStyles = createStylesResolver(["root", "underline", "preview"] as const);
 
 function resolveAnchorStyles(styles: AnchorStylesProp | undefined) {
   return resolveAnchorBaseStyles(styles);
@@ -98,8 +98,7 @@ function matchesCompoundComponent(
 
 // --- Sub-components ---
 
-export interface AnchorPreviewProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface AnchorPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
@@ -116,12 +115,15 @@ interface AnchorUnderlineProps extends React.HTMLAttributes<HTMLDivElement> {
 const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
   ({ className, variant = "solid", style, ...props }, ref) => {
     const getMaskStyles = (): React.CSSProperties => {
-      if (variant === "solid") return {}
+      if (variant === "solid") return {};
 
       const orientation = "horizontal";
       const weight = "sm";
 
-      const svgDataUri = variant === "dashed" ? getDashedMaskSvg(orientation, weight) : getDottedMaskSvg(orientation, weight);
+      const svgDataUri =
+        variant === "dashed"
+          ? getDashedMaskSvg(orientation, weight)
+          : getDottedMaskSvg(orientation, weight);
       const maskRepeat = "repeat-x";
       const encodedSvg = `url("data:image/svg+xml,${svgDataUri}")`;
 
@@ -142,14 +144,13 @@ const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
         {...props}
       />
     );
-  }
+  },
 );
 AnchorUnderline.displayName = ANCHOR_UNDERLINE_DISPLAY_NAME;
 
 // --- Main Anchor Component ---
 
-export interface AnchorProps
-  extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
+export interface AnchorProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
   children?: React.ReactNode;
   /** Additional CSS class for the anchor element */
   className?: string;
@@ -166,7 +167,19 @@ export interface AnchorProps
 }
 
 const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorProps>(
-  ({ className, children, href, target = "_blank", variant = "solid", styles, preview: previewProp, ...props }, ref) => {
+  (
+    {
+      className,
+      children,
+      href,
+      target = "_blank",
+      variant = "solid",
+      styles,
+      preview: previewProp,
+      ...props
+    },
+    ref,
+  ) => {
     const rootRef = React.useRef<HTMLAnchorElement | HTMLSpanElement>(null);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({});
@@ -184,7 +197,14 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
 
     const childrenArray = React.Children.toArray(children);
     const resolved = resolveAnchorStyles(styles);
-    const rootClassName = cn("anchor", variant, css.root, className, resolved.root, scopeProps.className);
+    const rootClassName = cn(
+      "anchor",
+      variant,
+      css.root,
+      className,
+      resolved.root,
+      scopeProps.className,
+    );
 
     let filteredChildren: React.ReactNode[] = [];
 
@@ -194,13 +214,17 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
         if (matchesCompoundComponent(child.type, AnchorPreview, ANCHOR_PREVIEW_DISPLAY_NAME)) {
           if (!previewProp) previewContent = (child.props as any).children;
           // Don't add to filteredChildren
-        } else if (matchesCompoundComponent(child.type, AnchorUnderline, ANCHOR_UNDERLINE_DISPLAY_NAME)) {
+        } else if (
+          matchesCompoundComponent(child.type, AnchorUnderline, ANCHOR_UNDERLINE_DISPLAY_NAME)
+        ) {
           hasUnderline = true;
           // Clone AnchorUnderline to inject resolved.underline
           const underlineChild = child as React.ReactElement<AnchorUnderlineProps>;
-          filteredChildren.push(React.cloneElement(underlineChild, {
-            className: cn(underlineChild.props.className, resolved.underline),
-          }));
+          filteredChildren.push(
+            React.cloneElement(underlineChild, {
+              className: cn(underlineChild.props.className, resolved.underline),
+            }),
+          );
         } else {
           filteredChildren.push(child);
         }
@@ -211,7 +235,13 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
 
     // Inject default underline if none provided
     if (!hasUnderline) {
-      filteredChildren.push(<AnchorUnderline key="__default_underline" className={resolved.underline} variant={variant} />);
+      filteredChildren.push(
+        <AnchorUnderline
+          key="__default_underline"
+          className={resolved.underline}
+          variant={variant}
+        />,
+      );
     }
 
     const { onChange, onChangeCapture, ...otherProps } = props as any;

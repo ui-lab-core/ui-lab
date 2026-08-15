@@ -8,8 +8,8 @@ import type {
   Rect,
   SideObject,
   Strategy,
-} from '../../../utils';
-import type {detectOverflow} from './detectOverflow';
+} from "../../../utils";
+import type { detectOverflow } from "./detectOverflow";
 
 type Promisable<T> = T | Promise<T>;
 
@@ -49,7 +49,7 @@ export interface Platform {
   getDocumentElement?: (element: any) => Promisable<any>;
   getClientRects?: (element: any) => Promisable<Array<ClientRectObject>>;
   isRTL?: (element: any) => Promisable<boolean>;
-  getScale?: (element: any) => Promisable<{x: number; y: number}>;
+  getScale?: (element: any) => Promisable<{ x: number; y: number }>;
   detectOverflow?: typeof detectOverflow;
 }
 
@@ -79,9 +79,9 @@ export interface MiddlewareData {
     referenceHiddenOffsets?: SideObject;
     escapedOffsets?: SideObject;
   };
-  offset?: Coords & {placement: Placement};
+  offset?: Coords & { placement: Placement };
   shift?: Coords & {
-    enabled: {[key in Axis]: boolean};
+    enabled: { [key in Axis]: boolean };
   };
 }
 
@@ -159,7 +159,7 @@ export interface MiddlewareState extends Coords {
   middlewareData: MiddlewareData;
   elements: Elements;
   rects: ElementRects;
-  platform: {detectOverflow: typeof detectOverflow} & Platform;
+  platform: { detectOverflow: typeof detectOverflow } & Platform;
 }
 /**
  * @deprecated use `MiddlewareState` instead.
@@ -167,5 +167,5 @@ export interface MiddlewareState extends Coords {
 type MiddlewareArguments = MiddlewareState;
 
 export type Boundary = any;
-export type RootBoundary = 'viewport' | 'document' | Rect;
-export type ElementContext = 'reference' | 'floating';
+export type RootBoundary = "viewport" | "document" | Rect;
+export type ElementContext = "reference" | "floating";

@@ -26,7 +26,13 @@ describe("Date focus indicator", () => {
   it("attaches the shared focus indicator to month navigation buttons", () => {
     render(<Date defaultMonth={new globalThis.Date(2026, 4, 1)} />);
 
-    expect(screen.getByRole("button", { name: "Previous month" })).toHaveAttribute("data-focus-indicator", "target");
-    expect(screen.getByRole("button", { name: "Next month" })).toHaveAttribute("data-focus-indicator", "target");
+    expect(screen.getByRole("button", { name: "Previous month" })).toHaveAttribute(
+      "data-focus-indicator",
+      "target",
+    );
+    expect(screen.getByRole("button", { name: "Next month" })).toHaveAttribute(
+      "data-focus-indicator",
+      "target",
+    );
   });
 });

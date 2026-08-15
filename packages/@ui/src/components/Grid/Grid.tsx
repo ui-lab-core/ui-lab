@@ -13,7 +13,7 @@ interface GridStyleSlots {
 
 type GridStylesProp = StylesProp<GridStyleSlots>;
 
-const resolveGridBaseStyles = createStylesResolver(['root'] as const);
+const resolveGridBaseStyles = createStylesResolver(["root"] as const);
 
 type GridColumns = number | "auto-fit" | "auto-fill";
 type GridRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto" | "masonry";
@@ -24,27 +24,23 @@ type GridJustify =
   | "justify-between"
   | "justify-around"
   | "justify-evenly";
-type GridAlign =
-  | "align-start"
-  | "align-end"
-  | "align-center"
-  | "align-stretch"
-  | "align-baseline";
+type GridAlign = "align-start" | "align-end" | "align-center" | "align-stretch" | "align-baseline";
 type GridJustifyItems = "start" | "end" | "center" | "stretch";
-type GridAlignContent = "start" | "end" | "center" | "stretch" | "space-between" | "space-around" | "space-evenly";
+type GridAlignContent =
+  | "start"
+  | "end"
+  | "center"
+  | "stretch"
+  | "space-between"
+  | "space-around"
+  | "space-evenly";
 type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
 type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
 type GridTemplateColumns = GridColumns | (string & {});
 type GridTemplateRows = GridRows | (string & {});
 type GridMasonryColumnWidth = string & {};
 type GridGap = GapSize | "none" | number;
-type GridLayout =
-  | "cards"
-  | "dashboard"
-  | "sidebar"
-  | "sidebar-end"
-  | "split"
-  | "gallery";
+type GridLayout = "cards" | "dashboard" | "sidebar" | "sidebar-end" | "split" | "gallery";
 
 type ResponsiveValue<T> = { sm?: T; md?: T; lg?: T; xl?: T };
 
@@ -69,9 +65,7 @@ type GridJustifyProps = { [K in GridJustify]?: boolean };
 type GridAlignProps = { [K in GridAlign]?: boolean };
 
 export interface GridProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    GridJustifyProps,
-    GridAlignProps {
+  extends React.HTMLAttributes<HTMLDivElement>, GridJustifyProps, GridAlignProps {
   /** Grid template columns value, or responsive object per breakpoint */
   columns?: GridTemplateColumns | ResponsiveValue<GridTemplateColumns>;
   /** Grid template rows value, or responsive object per breakpoint */
@@ -120,8 +114,7 @@ const colsToTpl = (c: GridTemplateColumns): string => {
   return c;
 };
 
-const colsToCount = (c: GridTemplateColumns): string =>
-  typeof c === "number" ? String(c) : "1";
+const colsToCount = (c: GridTemplateColumns): string => (typeof c === "number" ? String(c) : "1");
 
 const rowsToTpl = (r: GridTemplateRows): string => {
   if (r === "masonry" || r === "auto") return r;
@@ -209,7 +202,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       children,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const layoutConfig = layout ? GRID_LAYOUTS[layout] : undefined;
     columns = columns ?? layoutConfig?.columns ?? 3;
@@ -235,7 +228,12 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     const responsiveRows = isResponsive<GridTemplateRows>(rows);
     const responsiveGap = isResponsive<GridGap>(gap);
     const responsiveMasonryColumnWidth = isResponsive<GridMasonryColumnWidth>(masonryColumnWidth);
-    const needsContainer = responsiveCols || responsiveRows || responsiveGap || responsiveMasonryColumnWidth || containerQueryResponsive;
+    const needsContainer =
+      responsiveCols ||
+      responsiveRows ||
+      responsiveGap ||
+      responsiveMasonryColumnWidth ||
+      containerQueryResponsive;
 
     const isMasonry = responsiveRows
       ? Object.values(rows as ResponsiveValue<GridTemplateRows>).includes("masonry")
@@ -335,7 +333,9 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
         >
           <div
             className={cn(gridClasses, className)}
-            style={{ ...vars, ...(h !== undefined ? { height: "100%" } : {}) } as React.CSSProperties}
+            style={
+              { ...vars, ...(h !== undefined ? { height: "100%" } : {}) } as React.CSSProperties
+            }
             {...dataAttrs}
           >
             {children}
@@ -355,7 +355,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
         {children}
       </div>
     );
-  }
+  },
 );
 
 Grid.displayName = "Grid";

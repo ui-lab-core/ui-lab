@@ -9,7 +9,7 @@ export function deepEqual(a: any, b: any) {
     return false;
   }
 
-  if (typeof a === 'function' && a.toString() === b.toString()) {
+  if (typeof a === "function" && a.toString() === b.toString()) {
     return true;
   }
 
@@ -17,11 +17,11 @@ export function deepEqual(a: any, b: any) {
   let i: number;
   let keys: Array<string>;
 
-  if (a && b && typeof a === 'object') {
+  if (a && b && typeof a === "object") {
     if (Array.isArray(a)) {
       length = a.length;
       if (length !== b.length) return false;
-      for (i = length; i-- !== 0; ) {
+      for (i = length; i-- !== 0;) {
         if (!deepEqual(a[i], b[i])) {
           return false;
         }
@@ -36,15 +36,15 @@ export function deepEqual(a: any, b: any) {
       return false;
     }
 
-    for (i = length; i-- !== 0; ) {
+    for (i = length; i-- !== 0;) {
       if (!{}.hasOwnProperty.call(b, keys[i])) {
         return false;
       }
     }
 
-    for (i = length; i-- !== 0; ) {
+    for (i = length; i-- !== 0;) {
       const key = keys[i];
-      if (key === '_owner' && a.$$typeof) {
+      if (key === "_owner" && a.$$typeof) {
         continue;
       }
 

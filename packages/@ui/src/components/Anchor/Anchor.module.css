@@ -1,8 +1,9 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
-  .preview, .anchor {
-    display: inline
+  .preview,
+  .anchor {
+    display: inline;
   }
 
   .root {
@@ -33,8 +34,10 @@
     transform-origin: right;
     transform: scaleX(1);
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     pointer-events: none;
   }
 

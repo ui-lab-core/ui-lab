@@ -1,21 +1,21 @@
-import * as React from "react"
-import { createPortal } from "react-dom"
-import { useFloating } from "../../hooks/useFloat/react/useFloating"
-import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation"
-import { flip } from "../../hooks/useFloat/core/middleware/flip"
-import { offset } from "../../hooks/useFloat/core/middleware/offset"
-import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import { useMergeRefs } from "@/hooks/useMergeRefs"
-import styles from "./Select.module.css"
-import { useSelectContext } from "./Select"
-import { GroupContext } from "../Group/Group.Context"
-import { Scroll } from "../Scroll"
-import { Input } from "../Input"
-import { List } from "../List"
-import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared"
-import { useScrollLock } from "../../hooks/useScrollLock"
+import * as React from "react";
+import { createPortal } from "react-dom";
+import { useFloating } from "../../hooks/useFloat/react/useFloating";
+import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
+import { flip } from "../../hooks/useFloat/core/middleware/flip";
+import { offset } from "../../hooks/useFloat/core/middleware/offset";
+import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import styles from "./Select.module.css";
+import { useSelectContext } from "./Select";
+import { GroupContext } from "../Group/Group.Context";
+import { Scroll } from "../Scroll";
+import { Input } from "../Input";
+import { List } from "../List";
+import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared";
+import { useScrollLock } from "../../hooks/useScrollLock";
 
 export interface SelectContentStyleSlots {
   root?: StyleValue;
@@ -30,37 +30,55 @@ type SelectContentStylesProp = StylesProp<SelectContentStyleSlots>;
 
 export interface SelectContentProps extends React.PropsWithChildren {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Renders a search input inside the dropdown for filtering items */
-  searchable?: boolean
+  searchable?: boolean;
   /** Placeholder text for the search input when searchable is true */
-  searchPlaceholder?: string
+  searchPlaceholder?: string;
   /** Called when the search input value changes */
-  onSearch?: (value: string) => void
+  onSearch?: (value: string) => void;
   /** Content shown below the search input when no searchable results match */
-  emptyContent?: React.ReactNode
+  emptyContent?: React.ReactNode;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectContentStylesProp;
 }
 
 const resolveSelectContentBaseStyles = createStylesResolver([
-  'root',
-  'overlay',
-  'searchWrapper',
-  'searchInput',
-  'emptyState',
-  'listPaddingWrapper',
+  "root",
+  "overlay",
+  "searchWrapper",
+  "searchInput",
+  "emptyState",
+  "listPaddingWrapper",
 ] as const);
 
 function resolveSelectContentStyles(styles: SelectContentStylesProp | undefined) {
-  if (!styles) return resolveSelectContentBaseStyles(styles)
-  const { root, overlay, searchWrapper, searchInput, emptyState, listPaddingWrapper } = styles
-  return resolveSelectContentBaseStyles({ root, overlay, searchWrapper, searchInput, emptyState, listPaddingWrapper })
+  if (!styles) return resolveSelectContentBaseStyles(styles);
+  const { root, overlay, searchWrapper, searchInput, emptyState, listPaddingWrapper } = styles;
+  return resolveSelectContentBaseStyles({
+    root,
+    overlay,
+    searchWrapper,
+    searchInput,
+    emptyState,
+    listPaddingWrapper,
+  });
 }
 
 /** Floating panel that renders the list of selectable options */
 const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
-  ({ children, className, searchable = false, searchPlaceholder = "Search items...", onSearch, emptyContent = "No results found.", styles: stylesProp }, ref) => {
+  (
+    {
+      children,
+      className,
+      searchable = false,
+      searchPlaceholder = "Search items...",
+      onSearch,
+      emptyContent = "No results found.",
+      styles: stylesProp,
+    },
+    ref,
+  ) => {
     const {
       isOpen,
       setIsOpen,
@@ -85,21 +103,21 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       moveFocusFromTrigger,
       contentId,
       restoreFocus,
-    } = useSelectContext()
-    const groupContext = React.useContext(GroupContext)
-    const [mounted, setMounted] = React.useState(false)
-    const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null)
-    const floatingRootRef = React.useRef<HTMLDivElement | null>(null)
-    const inputRef = React.useRef<HTMLInputElement>(null)
-    const focusFrameRef = React.useRef<number | null>(null)
-    const justOpenedRef = React.useRef(false)
+    } = useSelectContext();
+    const groupContext = React.useContext(GroupContext);
+    const [mounted, setMounted] = React.useState(false);
+    const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null);
+    const floatingRootRef = React.useRef<HTMLDivElement | null>(null);
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const focusFrameRef = React.useRef<number | null>(null);
+    const justOpenedRef = React.useRef(false);
 
-    const offsetValue = groupContext?.isInGroup ? 4 : 2
+    const offsetValue = groupContext?.isInGroup ? 4 : 2;
 
     const { refs, floatingStyles, x, y, placement } = useFloating({
-      placement: 'bottom-start',
+      placement: "bottom-start",
       // Keep the panel anchored to viewport-fixed/sticky triggers without scroll lag.
-      strategy: 'fixed',
+      strategy: "fixed",
       whileElementsMounted: autoUpdate,
       middleware: [
         offset({
@@ -107,204 +125,249 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           crossAxis: groupContext?.isInGroup ? -1 : 0,
         }),
         flip({
-          fallbackPlacements: ['top-start'],
+          fallbackPlacements: ["top-start"],
         }),
       ],
-    })
+    });
 
     React.useLayoutEffect(() => {
       if (contentElement && isOpen && wrapperRef.current) {
-        const referenceWidth = wrapperRef.current.offsetWidth
-        const contentWidth = contentElement.scrollWidth
-        const width = Math.max(referenceWidth, contentWidth)
-        contentElement.style.width = `${width}px`
-        contentElement.style.minWidth = `${referenceWidth}px`
+        const referenceWidth = wrapperRef.current.offsetWidth;
+        const contentWidth = contentElement.scrollWidth;
+        const width = Math.max(referenceWidth, contentWidth);
+        contentElement.style.width = `${width}px`;
+        contentElement.style.minWidth = `${referenceWidth}px`;
       }
-    }, [contentElement, isOpen, wrapperRef])
+    }, [contentElement, isOpen, wrapperRef]);
 
-    const isPositioned = x !== null && y !== null
+    const isPositioned = x !== null && y !== null;
 
     React.useLayoutEffect(() => {
       if (wrapperRef.current) {
-        refs.setReference(wrapperRef.current)
+        refs.setReference(wrapperRef.current);
       }
-    }, [refs, wrapperRef.current])
+    }, [refs, wrapperRef.current]);
 
     React.useEffect(() => {
-      setMounted(true)
-    }, [])
+      setMounted(true);
+    }, []);
 
     React.useEffect(() => {
-      setContentPlacement(placement.startsWith("top") ? "top" : "bottom")
-    }, [placement, setContentPlacement])
+      setContentPlacement(placement.startsWith("top") ? "top" : "bottom");
+    }, [placement, setContentPlacement]);
 
     React.useEffect(() => {
       if (isOpen && searchable && inputRef.current) {
         focusFrameRef.current = requestAnimationFrame(() => {
-          inputRef.current?.focus({ preventScroll: true })
-        })
+          inputRef.current?.focus({ preventScroll: true });
+        });
       }
       return () => {
         if (focusFrameRef.current !== null) {
-          cancelAnimationFrame(focusFrameRef.current)
-          focusFrameRef.current = null
+          cancelAnimationFrame(focusFrameRef.current);
+          focusFrameRef.current = null;
         }
-      }
-    }, [isOpen, searchable])
+      };
+    }, [isOpen, searchable]);
 
     React.useEffect(() => {
-      const shouldKeepTriggerFocus = triggerType === "input" || triggerRef.current?.tagName === "INPUT"
+      const shouldKeepTriggerFocus =
+        triggerType === "input" || triggerRef.current?.tagName === "INPUT";
 
       if (isOpen && !searchable && shouldKeepTriggerFocus) {
         focusFrameRef.current = requestAnimationFrame(() => {
-          triggerRef.current?.focus({ preventScroll: true })
-        })
+          triggerRef.current?.focus({ preventScroll: true });
+        });
       }
 
       if (isOpen && !searchable && contentElement && !shouldKeepTriggerFocus) {
         focusFrameRef.current = requestAnimationFrame(() => {
-          contentElement?.focus({ preventScroll: true })
-        })
+          contentElement?.focus({ preventScroll: true });
+        });
       }
       return () => {
         if (focusFrameRef.current !== null) {
-          cancelAnimationFrame(focusFrameRef.current)
-          focusFrameRef.current = null
+          cancelAnimationFrame(focusFrameRef.current);
+          focusFrameRef.current = null;
         }
-      }
-    }, [isOpen, searchable, contentElement, triggerRef, triggerType])
+      };
+    }, [isOpen, searchable, contentElement, triggerRef, triggerType]);
 
     useListPointerModality({
       isOpen,
       mouseMoveDetectedRef,
-    })
+    });
 
-    useScrollLock(isOpen, contentElement)
+    useScrollLock(isOpen, contentElement);
 
     React.useEffect(() => {
       if (isOpen) {
-        justOpenedRef.current = true
+        justOpenedRef.current = true;
       }
-    }, [isOpen])
+    }, [isOpen]);
 
     React.useEffect(() => {
-      if (!isOpen || focusedKey === null || !contentElement) return
+      if (!isOpen || focusedKey === null || !contentElement) return;
 
-      const activeItem = contentElement.querySelector('[role="option"][data-focused="true"], [role="option"][data-highlighted="true"]') as HTMLElement | null
-      if (!activeItem) return
+      const activeItem = contentElement.querySelector(
+        '[role="option"][data-focused="true"], [role="option"][data-highlighted="true"]',
+      ) as HTMLElement | null;
+      if (!activeItem) return;
 
       if (justOpenedRef.current) {
-        justOpenedRef.current = false
-        scrollItemIntoView(activeItem, 'instant')
-        keyboardScrollIntentRef.current = false
-        return
+        justOpenedRef.current = false;
+        scrollItemIntoView(activeItem, "instant");
+        keyboardScrollIntentRef.current = false;
+        return;
       }
 
-      if (!keyboardScrollIntentRef.current || mouseMoveDetectedRef.current) return
+      if (!keyboardScrollIntentRef.current || mouseMoveDetectedRef.current) return;
 
-      scrollItemIntoView(activeItem)
-      keyboardScrollIntentRef.current = false
-    }, [contentElement, focusedKey, isOpen, keyboardScrollIntentRef, mouseMoveDetectedRef])
+      scrollItemIntoView(activeItem);
+      keyboardScrollIntentRef.current = false;
+    }, [contentElement, focusedKey, isOpen, keyboardScrollIntentRef, mouseMoveDetectedRef]);
 
-    const setSharedContentRef = React.useCallback((element: HTMLDivElement | null) => {
-      contentRef.current = element
-    }, [contentRef])
-    const mergedContentRef = useMergeRefs<HTMLDivElement>(setContentElement, setSharedContentRef, ref)
-    const mergedFloatingRef = React.useCallback((el: HTMLDivElement | null) => {
-      floatingRootRef.current = el
-      refs.setFloating(el)
-    }, [refs])
+    const setSharedContentRef = React.useCallback(
+      (element: HTMLDivElement | null) => {
+        contentRef.current = element;
+      },
+      [contentRef],
+    );
+    const mergedContentRef = useMergeRefs<HTMLDivElement>(
+      setContentElement,
+      setSharedContentRef,
+      ref,
+    );
+    const mergedFloatingRef = React.useCallback(
+      (el: HTMLDivElement | null) => {
+        floatingRootRef.current = el;
+        refs.setFloating(el);
+      },
+      [refs],
+    );
 
     const closeContent = React.useCallback(() => {
-      setIsOpen(false)
-      setSearchValue("")
-      restoreFocus()
-    }, [restoreFocus, setIsOpen, setSearchValue])
+      setIsOpen(false);
+      setSearchValue("");
+      restoreFocus();
+    }, [restoreFocus, setIsOpen, setSearchValue]);
 
-    const handleTabNavigation = React.useCallback((e: React.KeyboardEvent) => {
-      e.preventDefault()
-      const direction = e.shiftKey ? -1 : 1
-      setIsOpen(false)
-      setSearchValue("")
-      requestAnimationFrame(() => {
-        moveFocusFromTrigger(direction as 1 | -1)
-      })
-    }, [moveFocusFromTrigger, setIsOpen, setSearchValue])
+    const handleTabNavigation = React.useCallback(
+      (e: React.KeyboardEvent) => {
+        e.preventDefault();
+        const direction = e.shiftKey ? -1 : 1;
+        setIsOpen(false);
+        setSearchValue("");
+        requestAnimationFrame(() => {
+          moveFocusFromTrigger(direction as 1 | -1);
+        });
+      },
+      [moveFocusFromTrigger, setIsOpen, setSearchValue],
+    );
 
-    const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        handleTabNavigation(e)
-        return
-      }
+    const handleKeyDown = React.useCallback(
+      (e: React.KeyboardEvent) => {
+        if (e.key === "Tab") {
+          handleTabNavigation(e);
+          return;
+        }
 
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
-        markKeyboardNavigation()
-      }
+        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Home" || e.key === "End") {
+          markKeyboardNavigation();
+        }
 
-      const handled = handleListKeyDown(e, {
-        navigateNext: navigateToNextItem,
-        navigatePrev: navigateToPrevItem,
-        confirm: selectFocusedItem,
-        close: closeContent,
+        const handled = handleListKeyDown(e, {
+          navigateNext: navigateToNextItem,
+          navigatePrev: navigateToPrevItem,
+          confirm: selectFocusedItem,
+          close: closeContent,
+          filteredItems,
+          setFocusedKey,
+        });
+        if (!handled) {
+          keyboardScrollIntentRef.current = false;
+        }
+      },
+      [
+        closeContent,
         filteredItems,
+        handleTabNavigation,
+        keyboardScrollIntentRef,
+        markKeyboardNavigation,
+        navigateToNextItem,
+        navigateToPrevItem,
+        selectFocusedItem,
         setFocusedKey,
-      })
-      if (!handled) {
-        keyboardScrollIntentRef.current = false
-      }
-    }, [closeContent, filteredItems, handleTabNavigation, keyboardScrollIntentRef, markKeyboardNavigation, navigateToNextItem, navigateToPrevItem, selectFocusedItem, setFocusedKey])
+      ],
+    );
 
-    const handleInputKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Tab') {
-        handleTabNavigation(e)
-        return
-      }
+    const handleInputKeyDown = React.useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Tab") {
+          handleTabNavigation(e);
+          return;
+        }
 
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
-        markKeyboardNavigation()
-      }
+        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Home" || e.key === "End") {
+          markKeyboardNavigation();
+        }
 
-      const handled = handleListKeyDown(e, {
-        navigateNext: navigateToNextItem,
-        navigatePrev: navigateToPrevItem,
-        confirm: selectFocusedItem,
-        close: closeContent,
+        const handled = handleListKeyDown(e, {
+          navigateNext: navigateToNextItem,
+          navigatePrev: navigateToPrevItem,
+          confirm: selectFocusedItem,
+          close: closeContent,
+          filteredItems,
+          setFocusedKey,
+        });
+        if (!handled) {
+          keyboardScrollIntentRef.current = false;
+        }
+      },
+      [
+        closeContent,
         filteredItems,
+        handleTabNavigation,
+        keyboardScrollIntentRef,
+        markKeyboardNavigation,
+        navigateToNextItem,
+        navigateToPrevItem,
+        selectFocusedItem,
         setFocusedKey,
-      })
-      if (!handled) {
-        keyboardScrollIntentRef.current = false
-      }
-    }, [closeContent, filteredItems, handleTabNavigation, keyboardScrollIntentRef, markKeyboardNavigation, navigateToNextItem, navigateToPrevItem, selectFocusedItem, setFocusedKey])
+      ],
+    );
 
     React.useEffect(() => {
-      if (!isOpen || triggerMode === 'hover') return
+      if (!isOpen || triggerMode === "hover") return;
 
       const handlePointerDown = (e: MouseEvent) => {
-        const target = e.target as HTMLElement
-        const isClickInside = wrapperRef.current?.contains(target) ||
+        const target = e.target as HTMLElement;
+        const isClickInside =
+          wrapperRef.current?.contains(target) ||
           floatingRootRef.current?.contains(target) ||
-          Array.from(document.querySelectorAll('[data-select-submenu-content]')).some(el => el.contains(target))
+          Array.from(document.querySelectorAll("[data-select-submenu-content]")).some((el) =>
+            el.contains(target),
+          );
 
         if (!isClickInside) {
-          setIsOpen(false)
+          setIsOpen(false);
         }
-      }
+      };
 
-      document.addEventListener('mousedown', handlePointerDown)
-      return () => document.removeEventListener('mousedown', handlePointerDown)
-    }, [isOpen, triggerMode, wrapperRef, setIsOpen])
+      document.addEventListener("mousedown", handlePointerDown);
+      return () => document.removeEventListener("mousedown", handlePointerDown);
+    }, [isOpen, triggerMode, wrapperRef, setIsOpen]);
 
-    const showContent = isOpen && isPositioned
+    const showContent = isOpen && isPositioned;
 
     const { animationStyles } = useFloatAnimation({
       open: isOpen,
       isPositioned,
       placement,
       skipExitAnimation: true,
-    })
+    });
 
-    if (!mounted) return null
+    if (!mounted) return null;
 
     const resolved = resolveSelectContentStyles(stylesProp);
     const shouldConstrainListHeight = filteredItems.length > maxItems;
@@ -325,7 +388,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           {children}
         </List>
       </div>
-    )
+    );
 
     const bodyContent = (
       <React.Fragment key="body">
@@ -344,10 +407,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           listContent
         )}
       </React.Fragment>
-    )
+    );
 
     const searchContent = searchable ? (
-      <div key="search" className={cn(styles['search-wrapper'], resolved.searchWrapper)}>
+      <div key="search" className={cn(styles["search-wrapper"], resolved.searchWrapper)}>
         <Input
           ref={inputRef}
           type="text"
@@ -357,55 +420,55 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           aria-autocomplete="list"
           value={searchValue}
           onChange={(e) => {
-            setSearchValue(e.target.value)
-            onSearch?.(e.target.value)
+            setSearchValue(e.target.value);
+            onSearch?.(e.target.value);
           }}
           onKeyDown={handleInputKeyDown}
           placeholder={searchPlaceholder}
           variant="ghost"
-          className={cn(styles['search-content-input'], resolved.searchInput)}
+          className={cn(styles["search-content-input"], resolved.searchInput)}
         />
       </div>
-    ) : null
+    ) : null;
 
     const emptyStateContent = shouldShowEmptyState ? (
       <div
         key="empty-state"
-        className={cn('empty-state', styles['empty-state'], resolved.emptyState)}
+        className={cn("empty-state", styles["empty-state"], resolved.emptyState)}
         role="status"
         aria-live="polite"
       >
         {emptyContent}
       </div>
-    ) : null
+    ) : null;
 
-    const panelContent = placement.startsWith('top')
+    const panelContent = placement.startsWith("top")
       ? [bodyContent, emptyStateContent, searchContent]
-      : [searchContent, emptyStateContent, bodyContent]
+      : [searchContent, emptyStateContent, bodyContent];
 
     return createPortal(
       <>
         <div
           ref={mergedFloatingRef}
-          className={cn('select', styles['content-root'], resolved.overlay)}
+          className={cn("select", styles["content-root"], resolved.overlay)}
           style={{
             ...floatingStyles,
             zIndex: 50000,
-            visibility: showContent ? 'visible' : 'hidden',
-            display: isOpen && !shouldHideEmptySearchTriggerContent ? 'block' : 'none',
+            visibility: showContent ? "visible" : "hidden",
+            display: isOpen && !shouldHideEmptySearchTriggerContent ? "block" : "none",
           }}
         >
           <div
             ref={mergedContentRef}
             id={contentId}
             role="listbox"
-            className={cn('content', styles.content, className, resolved.root)}
+            className={cn("content", styles.content, className, resolved.root)}
             data-state={showContent ? "open" : "closed"}
-            data-placement={placement.split('-')[0]}
+            data-placement={placement.split("-")[0]}
             tabIndex={-1}
             onKeyDown={handleKeyDown}
             style={{
-              outline: 'none',
+              outline: "none",
               ...animationStyles,
             }}
           >
@@ -413,18 +476,18 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           </div>
         </div>
       </>,
-      document.body
-    )
-  }
-)
-SelectContent.displayName = "SelectContent"
+      document.body,
+    );
+  },
+);
+SelectContent.displayName = "SelectContent";
 
-type SearchableContentProps = Omit<SelectContentProps, 'searchable'>
+type SearchableContentProps = Omit<SelectContentProps, "searchable">;
 
 /** Dropdown panel with a built-in search input for filtering the option list */
-const SearchableContent = React.forwardRef<HTMLDivElement, SearchableContentProps>(
-  (props, ref) => <SelectContent {...props} searchable ref={ref} />
-)
-SearchableContent.displayName = "SearchableContent"
+const SearchableContent = React.forwardRef<HTMLDivElement, SearchableContentProps>((props, ref) => (
+  <SelectContent {...props} searchable ref={ref} />
+));
+SearchableContent.displayName = "SearchableContent";
 
-export { SelectContent, SearchableContent }
+export { SelectContent, SearchableContent };

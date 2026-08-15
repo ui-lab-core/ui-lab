@@ -1,95 +1,112 @@
-import { describe, it, expect, vi } from 'vitest'
-import { fireEvent } from '@testing-library/react'
-import { renderSelectWithItems, openSelect, closeSelect, getSelectTrigger, getSelectContent, getSelectItems } from './Select.test-utils'
-import { createMockSelectItems, clickElement, pressArrowUp, pressEscape, hoverElement, unhoverElement, waitForOpen, waitForClose, waitForCondition } from '@/tests/utils'
-import { Select, Searchable } from '../'
-import { render as utilRender } from '@/tests/utils'
+import { describe, it, expect, vi } from "vitest";
+import { fireEvent } from "@testing-library/react";
+import {
+  renderSelectWithItems,
+  openSelect,
+  closeSelect,
+  getSelectTrigger,
+  getSelectContent,
+  getSelectItems,
+} from "./Select.test-utils";
+import {
+  createMockSelectItems,
+  clickElement,
+  pressArrowUp,
+  pressEscape,
+  hoverElement,
+  unhoverElement,
+  waitForOpen,
+  waitForClose,
+  waitForCondition,
+} from "@/tests/utils";
+import { Select, Searchable } from "../";
+import { render as utilRender } from "@/tests/utils";
 
-describe('Select.openClose', () => {
-  describe('click trigger mode', () => {
-    it('opens on trigger click', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'click' })
-      const trigger = getSelectTrigger(container)
+describe("Select.openClose", () => {
+  describe("click trigger mode", () => {
+    it("opens on trigger click", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "click" });
+      const trigger = getSelectTrigger(container);
 
-      await clickElement(trigger)
-      await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true')
+      await clickElement(trigger);
+      await waitForCondition(() => trigger.getAttribute("aria-expanded") === "true");
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
-    })
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    });
 
-    it('opens on trigger mouse down and selects the hovered item on mouse up', () => {
-      const items = createMockSelectItems(3)
-      const onSelectionChange = vi.fn()
-      const container = renderSelectWithItems(items, { trigger: 'click', onSelectionChange })
-      const trigger = getSelectTrigger(container)
+    it("opens on trigger mouse down and selects the hovered item on mouse up", () => {
+      const items = createMockSelectItems(3);
+      const onSelectionChange = vi.fn();
+      const container = renderSelectWithItems(items, { trigger: "click", onSelectionChange });
+      const trigger = getSelectTrigger(container);
 
-      fireEvent.mouseDown(trigger, { button: 0 })
+      fireEvent.mouseDown(trigger, { button: 0 });
 
-      expect(trigger).toHaveAttribute('aria-expanded', 'true')
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
 
-      const option = getSelectItems()[1]
-      fireEvent.mouseEnter(option)
-      fireEvent.mouseUp(option, { button: 0 })
+      const option = getSelectItems()[1];
+      fireEvent.mouseEnter(option);
+      fireEvent.mouseUp(option, { button: 0 });
 
-      expect(onSelectionChange).toHaveBeenCalledWith(items[1].key)
-      expect(trigger).toHaveAttribute('aria-expanded', 'false')
-    })
+      expect(onSelectionChange).toHaveBeenCalledWith(items[1].key);
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+    });
 
-    it('closes on second trigger click', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'click' })
-      const trigger = getSelectTrigger(container)
+    it("closes on second trigger click", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "click" });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
+      await openSelect(trigger);
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
-      await clickElement(trigger)
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    })
+      await clickElement(trigger);
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    });
 
-    it('closes on ESC key', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'click' })
-      const trigger = getSelectTrigger(container)
+    it("closes on ESC key", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "click" });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
-      await pressEscape(trigger)
+      await openSelect(trigger);
+      await pressEscape(trigger);
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    })
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    });
 
-    it('opens on ArrowUp when the trigger is focused', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'click' })
-      const trigger = getSelectTrigger(container)
+    it("opens on ArrowUp when the trigger is focused", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "click" });
+      const trigger = getSelectTrigger(container);
 
-      await pressArrowUp(trigger)
-      await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true')
+      await pressArrowUp(trigger);
+      await waitForCondition(() => trigger.getAttribute("aria-expanded") === "true");
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
-    })
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    });
 
-    it('closes when clicking outside dropdown', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'click' })
-      const trigger = getSelectTrigger(container)
+    it("closes when clicking outside dropdown", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "click" });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
+      await openSelect(trigger);
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
-      const outsideElement = container.querySelector('html') || document.body
-      await clickElement(outsideElement as HTMLElement)
+      const outsideElement = container.querySelector("html") || document.body;
+      await clickElement(outsideElement as HTMLElement);
 
       // Wait for close with a timeout
-      await waitForClose(() => getSelectContent(container))
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    })
-  })
+      await waitForClose(() => getSelectContent(container));
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    });
+  });
 
-  describe('searchable trigger', () => {
-    it('opens on ArrowUp when the input trigger is focused', async () => {
-      const items = createMockSelectItems(3)
+  describe("searchable trigger", () => {
+    it("opens on ArrowUp when the input trigger is focused", async () => {
+      const items = createMockSelectItems(3);
       const { container } = utilRender(
         <Select>
           <Searchable.Input placeholder="Search items..." />
@@ -100,139 +117,142 @@ describe('Select.openClose', () => {
               </Select.Item>
             ))}
           </Searchable.Content>
-        </Select>
-      )
-      const trigger = getSelectTrigger(container)
+        </Select>,
+      );
+      const trigger = getSelectTrigger(container);
 
-      await pressArrowUp(trigger)
-      await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true')
+      await pressArrowUp(trigger);
+      await waitForCondition(() => trigger.getAttribute("aria-expanded") === "true");
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
-    })
-  })
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    });
+  });
 
-  describe('hover trigger mode', () => {
-    it('opens on hover', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'hover' })
-      const trigger = getSelectTrigger(container)
+  describe("hover trigger mode", () => {
+    it("opens on hover", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "hover" });
+      const trigger = getSelectTrigger(container);
 
-      await hoverElement(trigger)
-      await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true', { timeout: 200 })
+      await hoverElement(trigger);
+      await waitForCondition(() => trigger.getAttribute("aria-expanded") === "true", {
+        timeout: 200,
+      });
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
-    })
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    });
 
-    it('closes after leaving with 100ms delay', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'hover' })
-      const trigger = getSelectTrigger(container)
+    it("closes after leaving with 100ms delay", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "hover" });
+      const trigger = getSelectTrigger(container);
 
-      await hoverElement(trigger)
-      await waitForOpen(() => getSelectContent(container)!)
+      await hoverElement(trigger);
+      await waitForOpen(() => getSelectContent(container)!);
 
-      await unhoverElement(trigger)
+      await unhoverElement(trigger);
 
       // Should still be open immediately
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
       // Should close after ~100ms
-      await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'false', { timeout: 200 })
-    })
+      await waitForCondition(() => trigger.getAttribute("aria-expanded") === "false", {
+        timeout: 200,
+      });
+    });
 
-    it('hover intent detection works', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'hover' })
-      const trigger = getSelectTrigger(container)
+    it("hover intent detection works", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "hover" });
+      const trigger = getSelectTrigger(container);
 
       // Hover on trigger
-      await hoverElement(trigger)
-      await waitForOpen(() => getSelectContent(container)!)
+      await hoverElement(trigger);
+      await waitForOpen(() => getSelectContent(container)!);
 
       // Move to content area (should keep open)
-      const content = getSelectContent(container)
+      const content = getSelectContent(container);
       if (content) {
-        await hoverElement(content)
+        await hoverElement(content);
         // Still open
-        expect(trigger.getAttribute('aria-expanded')).toBe('true')
+        expect(trigger.getAttribute("aria-expanded")).toBe("true");
       }
-    })
-  })
+    });
+  });
 
-  describe('disabled state', () => {
-    it('disabled trigger does not open on click', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { disabled: true })
-      const trigger = getSelectTrigger(container)
+  describe("disabled state", () => {
+    it("disabled trigger does not open on click", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { disabled: true });
+      const trigger = getSelectTrigger(container);
 
-      await clickElement(trigger)
+      await clickElement(trigger);
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    })
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    });
 
-    it('disabled trigger does not open on hover', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { trigger: 'hover', disabled: true })
-      const trigger = getSelectTrigger(container)
+    it("disabled trigger does not open on hover", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { trigger: "hover", disabled: true });
+      const trigger = getSelectTrigger(container);
 
-      await hoverElement(trigger)
+      await hoverElement(trigger);
 
       // Should not open
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    })
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    });
 
-    it('disabled trigger has aria-disabled attribute', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items, { disabled: true })
-      const trigger = getSelectTrigger(container)
+    it("disabled trigger has aria-disabled attribute", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items, { disabled: true });
+      const trigger = getSelectTrigger(container);
 
-      expect(trigger).toHaveAttribute('aria-disabled')
-    })
-  })
+      expect(trigger).toHaveAttribute("aria-disabled");
+    });
+  });
 
-  describe('aria state', () => {
-    it('aria-expanded reflects isOpen state', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items)
-      const trigger = getSelectTrigger(container)
+  describe("aria state", () => {
+    it("aria-expanded reflects isOpen state", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items);
+      const trigger = getSelectTrigger(container);
 
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
 
-      await openSelect(trigger)
-      expect(trigger.getAttribute('aria-expanded')).toBe('true')
+      await openSelect(trigger);
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
-      await closeSelect(trigger)
-      expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    })
+      await closeSelect(trigger);
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    });
 
-    it('aria-haspopup is listbox', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithItems(items)
-      const trigger = getSelectTrigger(container)
+    it("aria-haspopup is listbox", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithItems(items);
+      const trigger = getSelectTrigger(container);
 
-      expect(trigger.getAttribute('aria-haspopup')).toBe('listbox')
-    })
-  })
+      expect(trigger.getAttribute("aria-haspopup")).toBe("listbox");
+    });
+  });
 
-  it('does not scroll to a bottom selected item when opening', async () => {
-    const items = createMockSelectItems(20)
-    const scrollToMock = vi.fn()
-    const originalScrollTo = HTMLElement.prototype.scrollTo
-    HTMLElement.prototype.scrollTo = scrollToMock
+  it("does not scroll to a bottom selected item when opening", async () => {
+    const items = createMockSelectItems(20);
+    const scrollToMock = vi.fn();
+    const originalScrollTo = HTMLElement.prototype.scrollTo;
+    HTMLElement.prototype.scrollTo = scrollToMock;
 
     try {
       const container = renderSelectWithItems(items, {
         defaultSelectedKey: items[items.length - 1].key,
         maxItems: 5,
-      })
-      const trigger = getSelectTrigger(container)
+      });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      expect(scrollToMock).not.toHaveBeenCalled()
+      expect(scrollToMock).not.toHaveBeenCalled();
     } finally {
-      HTMLElement.prototype.scrollTo = originalScrollTo
+      HTMLElement.prototype.scrollTo = originalScrollTo;
     }
-  })
-
-})
+  });
+});

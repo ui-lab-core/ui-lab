@@ -138,7 +138,7 @@ export function useRegionCoordinator({
 
   const values = React.useMemo(
     () => (isControlled ? { ...emptyValues(regions), ...controlledValues } : internalValues),
-    [isControlled, controlledValues, internalValues, regions]
+    [isControlled, controlledValues, internalValues, regions],
   );
 
   // Handlers read through this ref so a burst of keystrokes within one render
@@ -169,18 +169,18 @@ export function useRegionCoordinator({
       onRegionChange?.(changedId, next[changedId] ?? "", next);
 
       const allFilled = regionsRef.current.every((region) =>
-        isRegionFilled(region, next[region.id] ?? "")
+        isRegionFilled(region, next[region.id] ?? ""),
       );
       if (allFilled) onComplete?.(next);
     },
-    [isControlled, onRegionChange, onComplete]
+    [isControlled, onRegionChange, onComplete],
   );
 
   const setRegionValue = React.useCallback(
     (id: string, value: string) => {
       commit({ ...valuesRef.current, [id]: value }, id);
     },
-    [commit]
+    [commit],
   );
 
   const setValues = React.useCallback(
@@ -188,7 +188,7 @@ export function useRegionCoordinator({
       valuesRef.current = next;
       if (!isControlled) setInternalValues(next);
     },
-    [isControlled]
+    [isControlled],
   );
 
   const getRegionProps = React.useCallback(
@@ -324,12 +324,12 @@ export function useRegionCoordinator({
         },
       };
     },
-    [disabled, focusRegion, setRegionValue, commit]
+    [disabled, focusRegion, setRegionValue, commit],
   );
 
   const isComplete = React.useMemo(
     () => regions.every((region) => isRegionFilled(region, values[region.id] ?? "")),
-    [regions, values]
+    [regions, values],
   );
 
   return React.useMemo(
@@ -344,7 +344,17 @@ export function useRegionCoordinator({
       registerRegion,
       getRegionProps,
     }),
-    [regions, values, isComplete, disabled, setRegionValue, setValues, focusRegion, registerRegion, getRegionProps]
+    [
+      regions,
+      values,
+      isComplete,
+      disabled,
+      setRegionValue,
+      setValues,
+      focusRegion,
+      registerRegion,
+      getRegionProps,
+    ],
   );
 }
 
@@ -360,7 +370,7 @@ export function useRegion(coordinator: RegionCoordinator, index: number): UseReg
   const { registerRegion } = coordinator;
   const ref = React.useCallback(
     (node: HTMLInputElement | null) => registerRegion(index, node),
-    [registerRegion, index]
+    [registerRegion, index],
   );
 
   const value = coordinator.values[config.id] ?? "";

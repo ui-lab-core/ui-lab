@@ -1,7 +1,6 @@
-export { computePosition } from './computePosition';
+export { computePosition } from "./computePosition";
 
-
-export type { DetectOverflowOptions } from './detectOverflow';
+export type { DetectOverflowOptions } from "./detectOverflow";
 
 export type {
   MiddlewareState,
@@ -12,7 +11,7 @@ export type {
   RootBoundary,
   ComputePositionReturn,
   ComputePositionConfig,
-} from './types';
+} from "./types";
 
 // Re-export utility types and functions from utils for DOM layer
 export type {
@@ -22,22 +21,20 @@ export type {
   Strategy,
   ClientRectObject,
   ElementRects,
-} from '../../../utils';
+} from "../../../utils";
 
-export { rectToClientRect } from '../../../utils';
-
+export { rectToClientRect } from "../../../utils";
 
 // Middleware exports
 
-export type { FlipOptions } from './middleware/flip';
+export type { FlipOptions } from "./middleware/flip";
 
-export type { ShiftOptions } from './middleware/shift';
+export type { ShiftOptions } from "./middleware/shift";
 
-export type { ArrowOptions } from './middleware/arrow';
+export type { ArrowOptions } from "./middleware/arrow";
 
-export type { AutoPlacementOptions } from './middleware/autoPlacement';
+export type { AutoPlacementOptions } from "./middleware/autoPlacement";
 
-export type { HideOptions } from './middleware/hide';
+export type { HideOptions } from "./middleware/hide";
 
-
-export type { SizeOptions } from './middleware/size';
+export type { SizeOptions } from "./middleware/size";

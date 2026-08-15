@@ -1,178 +1,175 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { mergeProps, useFocusRing, useHover, usePress } from "react-aria"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import { useFocus } from "@/hooks/useFocus"
-import { useMergeRefs } from "@/hooks/useMergeRefs"
-import { Grid } from "../Grid"
-import css from "./Gallery.module.css"
+import * as React from "react";
+import { mergeProps, useFocusRing, useHover, usePress } from "react-aria";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useFocus } from "@/hooks/useFocus";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { Grid } from "../Grid";
+import css from "./Gallery.module.css";
 
-type GridColumns = number
-type GridGap = "xs" | "sm" | "md" | "lg" | "xl"
-type Orientation = "vertical" | "horizontal"
-type GalleryRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto"
+type GridColumns = number;
+type GridGap = "xs" | "sm" | "md" | "lg" | "xl";
+type Orientation = "vertical" | "horizontal";
+type GalleryRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto";
 type ResponsiveColumns = {
-  sm?: GridColumns
-  md?: GridColumns
-  lg?: GridColumns
-  xl?: GridColumns
-}
+  sm?: GridColumns;
+  md?: GridColumns;
+  lg?: GridColumns;
+  xl?: GridColumns;
+};
 
 export interface GalleryStyleSlots {
-  root?: StyleValue
-  item?: StyleValue
-  view?: StyleValue
-  body?: StyleValue
+  root?: StyleValue;
+  item?: StyleValue;
+  view?: StyleValue;
+  body?: StyleValue;
 }
 
-export type GalleryStylesProp = StylesProp<GalleryStyleSlots>
+export type GalleryStylesProp = StylesProp<GalleryStyleSlots>;
 
 export interface GalleryItemStyleSlots {
-  root?: StyleValue
+  root?: StyleValue;
 }
 
-export type GalleryItemStylesProp = StylesProp<GalleryItemStyleSlots>
+export type GalleryItemStylesProp = StylesProp<GalleryItemStyleSlots>;
 
 export interface GalleryViewStyleSlots {
-  root?: StyleValue
+  root?: StyleValue;
 }
 
-export type GalleryViewStylesProp = StylesProp<GalleryViewStyleSlots>
+export type GalleryViewStylesProp = StylesProp<GalleryViewStyleSlots>;
 
 export interface GalleryBodyStyleSlots {
-  root?: StyleValue
+  root?: StyleValue;
 }
 
-export type GalleryBodyStylesProp = StylesProp<GalleryBodyStyleSlots>
+export type GalleryBodyStylesProp = StylesProp<GalleryBodyStyleSlots>;
 
 export interface GalleryProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Number of columns in the gallery grid */
-  columns?: GridColumns | ResponsiveColumns
+  columns?: GridColumns | ResponsiveColumns;
   /** Gap between gallery items */
-  gap?: GridGap | number | string
+  gap?: GridGap | number | string;
   /** Override horizontal (column) gap between gallery items */
-  "gap-x"?: GridGap | number | string
+  "gap-x"?: GridGap | number | string;
   /** Override vertical (row) gap between gallery items */
-  "gap-y"?: GridGap | number | string
+  "gap-y"?: GridGap | number | string;
   /** Number of rows in the gallery grid */
-  rows?: GalleryRows
+  rows?: GalleryRows;
   /** Whether to enable container-query-based responsive columns */
-  responsive?: boolean
+  responsive?: boolean;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
-  styles?: GalleryStylesProp
+  styles?: GalleryStylesProp;
 }
 
 export interface GalleryItemProps extends React.HTMLAttributes<HTMLDivElement> {
   /** URL the item links to */
-  href?: string
+  href?: string;
   /** Called when the item is pressed */
-  onPress?: (href?: string) => void
+  onPress?: (href?: string) => void;
   /** Number of columns this item spans */
-  columnSpan?: number
+  columnSpan?: number;
   /** Number of rows this item spans */
-  rowSpan?: number
+  rowSpan?: number;
   /** Controls the item's layout orientation */
-  orientation?: Orientation
+  orientation?: Orientation;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
-  styles?: GalleryItemStylesProp
+  styles?: GalleryItemStylesProp;
 }
 
 export interface GalleryViewProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Aspect ratio of the view area (e.g. "16/9") */
-  aspectRatio?: string
+  aspectRatio?: string;
   /** Keyed styles for the root. Use className for conventional root classes. */
-  styles?: GalleryViewStylesProp
+  styles?: GalleryViewStylesProp;
 }
 
 export interface GalleryBodyProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Keyed styles for the root. Use className for conventional root classes. */
-  styles?: GalleryBodyStylesProp
+  styles?: GalleryBodyStylesProp;
 }
 
-const resolveGalleryBaseStyles = createStylesResolver([
-  "root",
-  "item",
-  "view",
-  "body",
-] as const)
+const resolveGalleryBaseStyles = createStylesResolver(["root", "item", "view", "body"] as const);
 
-const resolveGalleryItemBaseStyles = createStylesResolver(["root"] as const)
-const resolveGalleryViewBaseStyles = createStylesResolver(["root"] as const)
-const resolveGalleryBodyBaseStyles = createStylesResolver(["root"] as const)
+const resolveGalleryItemBaseStyles = createStylesResolver(["root"] as const);
+const resolveGalleryViewBaseStyles = createStylesResolver(["root"] as const);
+const resolveGalleryBodyBaseStyles = createStylesResolver(["root"] as const);
 
 function resolveGalleryStyles(
-  styles: GalleryStylesProp | undefined
+  styles: GalleryStylesProp | undefined,
 ): ReturnType<typeof resolveGalleryBaseStyles> {
   if (!styles) {
-    return resolveGalleryBaseStyles(styles)
+    return resolveGalleryBaseStyles(styles);
   }
 
-  const { root, item, view, body } = styles
-  return resolveGalleryBaseStyles({ root, item, view, body })
+  const { root, item, view, body } = styles;
+  return resolveGalleryBaseStyles({ root, item, view, body });
 }
 
 function resolveGalleryItemStyles(
-  styles: GalleryItemStylesProp | undefined
+  styles: GalleryItemStylesProp | undefined,
 ): ReturnType<typeof resolveGalleryItemBaseStyles> {
   if (!styles) {
-    return resolveGalleryItemBaseStyles(styles)
+    return resolveGalleryItemBaseStyles(styles);
   }
 
-  const { root } = styles
-  return resolveGalleryItemBaseStyles({ root })
+  const { root } = styles;
+  return resolveGalleryItemBaseStyles({ root });
 }
 
 function resolveGalleryViewStyles(
-  styles: GalleryViewStylesProp | undefined
+  styles: GalleryViewStylesProp | undefined,
 ): ReturnType<typeof resolveGalleryViewBaseStyles> {
   if (!styles) {
-    return resolveGalleryViewBaseStyles(styles)
+    return resolveGalleryViewBaseStyles(styles);
   }
 
-  const { root } = styles
-  return resolveGalleryViewBaseStyles({ root })
+  const { root } = styles;
+  return resolveGalleryViewBaseStyles({ root });
 }
 
 function resolveGalleryBodyStyles(
-  styles: GalleryBodyStylesProp | undefined
+  styles: GalleryBodyStylesProp | undefined,
 ): ReturnType<typeof resolveGalleryBodyBaseStyles> {
   if (!styles) {
-    return resolveGalleryBodyBaseStyles(styles)
+    return resolveGalleryBodyBaseStyles(styles);
   }
 
-  const { root } = styles
-  return resolveGalleryBodyBaseStyles({ root })
+  const { root } = styles;
+  return resolveGalleryBodyBaseStyles({ root });
 }
 
-type GalleryResolvedStyles = ReturnType<typeof resolveGalleryStyles>
+type GalleryResolvedStyles = ReturnType<typeof resolveGalleryStyles>;
 
-const GalleryStylesContext = React.createContext<GalleryResolvedStyles | undefined>(undefined)
+const GalleryStylesContext = React.createContext<GalleryResolvedStyles | undefined>(undefined);
 
-const mapColumnsToGrid = (columns?: GridColumns | ResponsiveColumns): GridColumns | ResponsiveColumns => {
-  if (!columns) return 3
-  if (typeof columns === "object") return columns
-  return columns
-}
+const mapColumnsToGrid = (
+  columns?: GridColumns | ResponsiveColumns,
+): GridColumns | ResponsiveColumns => {
+  if (!columns) return 3;
+  if (typeof columns === "object") return columns;
+  return columns;
+};
 
 const mapGapToGrid = (gap?: GridGap | number | string): GridGap => {
-  if (!gap) return "md"
+  if (!gap) return "md";
 
   if (typeof gap === "string" && ["xs", "sm", "md", "lg", "xl"].includes(gap)) {
-    return gap as GridGap
+    return gap as GridGap;
   }
 
   if (typeof gap === "number") {
-    if (gap <= 4) return "xs"
-    if (gap <= 8) return "sm"
-    if (gap <= 16) return "md"
-    if (gap <= 24) return "lg"
-    return "xl"
+    if (gap <= 4) return "xs";
+    if (gap <= 8) return "sm";
+    if (gap <= 16) return "md";
+    if (gap <= 24) return "lg";
+    return "xl";
   }
 
-  return "md"
-}
+  return "md";
+};
 
 const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
   (
@@ -188,9 +185,9 @@ const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const resolved = resolveGalleryStyles(stylesProp)
+    const resolved = resolveGalleryStyles(stylesProp);
 
     return (
       <GalleryStylesContext.Provider value={resolved}>
@@ -208,10 +205,10 @@ const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
           {children}
         </Grid>
       </GalleryStylesContext.Provider>
-    )
-  }
-)
-GalleryRoot.displayName = "Gallery"
+    );
+  },
+);
+GalleryRoot.displayName = "Gallery";
 
 const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
   (
@@ -227,30 +224,30 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const inherited = React.useContext(GalleryStylesContext)
-    const resolved = resolveGalleryItemStyles(stylesProp)
-    const itemRef = React.useRef<HTMLDivElement>(null)
-    const mergedRef = useMergeRefs(itemRef, ref)
-    const { focusProps, isFocused, isFocusVisible } = useFocusRing()
-    const { hoverProps, isHovered } = useHover({})
+    const inherited = React.useContext(GalleryStylesContext);
+    const resolved = resolveGalleryItemStyles(stylesProp);
+    const itemRef = React.useRef<HTMLDivElement>(null);
+    const mergedRef = useMergeRefs(itemRef, ref);
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const { hoverProps, isHovered } = useHover({});
     const { pressProps, isPressed } = usePress({
       onPress: () => onPress?.(href),
-    })
-    const { targetProps } = useFocus({ mode: "target" })
+    });
+    const { targetProps } = useFocus({ mode: "target" });
 
     const spanStyles: React.CSSProperties = {
       ...(columnSpan ? { gridColumn: `span ${columnSpan}` } : {}),
       ...(rowSpan ? { gridRow: `span ${rowSpan}` } : {}),
       ...style,
-    }
+    };
 
     const hasAccessibleName =
       props["aria-label"] ||
       props["aria-labelledby"] ||
       typeof props.title === "string" ||
-      React.Children.count(children) > 0
+      React.Children.count(children) > 0;
 
     return (
       <div
@@ -273,15 +270,15 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
       >
         {children}
       </div>
-    )
-  }
-)
-GalleryItem.displayName = "Gallery.Item"
+    );
+  },
+);
+GalleryItem.displayName = "Gallery.Item";
 
 const GalleryView = React.forwardRef<HTMLDivElement, GalleryViewProps>(
   ({ aspectRatio = "16/9", className, style, styles: stylesProp, children, ...props }, ref) => {
-    const inherited = React.useContext(GalleryStylesContext)
-    const resolved = resolveGalleryViewStyles(stylesProp)
+    const inherited = React.useContext(GalleryStylesContext);
+    const resolved = resolveGalleryViewStyles(stylesProp);
 
     return (
       <div
@@ -297,15 +294,15 @@ const GalleryView = React.forwardRef<HTMLDivElement, GalleryViewProps>(
       >
         {children}
       </div>
-    )
-  }
-)
-GalleryView.displayName = "Gallery.View"
+    );
+  },
+);
+GalleryView.displayName = "Gallery.View";
 
 const GalleryBody = React.forwardRef<HTMLDivElement, GalleryBodyProps>(
   ({ className, styles: stylesProp, children, ...props }, ref) => {
-    const inherited = React.useContext(GalleryStylesContext)
-    const resolved = resolveGalleryBodyStyles(stylesProp)
+    const inherited = React.useContext(GalleryStylesContext);
+    const resolved = resolveGalleryBodyStyles(stylesProp);
 
     return (
       <div
@@ -315,15 +312,15 @@ const GalleryBody = React.forwardRef<HTMLDivElement, GalleryBodyProps>(
       >
         {children}
       </div>
-    )
-  }
-)
-GalleryBody.displayName = "Gallery.Body"
+    );
+  },
+);
+GalleryBody.displayName = "Gallery.Body";
 
 const Gallery = Object.assign(GalleryRoot, {
   Item: GalleryItem,
   View: GalleryView,
   Body: GalleryBody,
-})
+});
 
-export { Gallery, GalleryItem, GalleryView, GalleryBody }
+export { Gallery, GalleryItem, GalleryView, GalleryBody };

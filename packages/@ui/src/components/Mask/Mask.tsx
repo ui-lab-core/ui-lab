@@ -29,7 +29,7 @@ type MaskFilter =
       kind: "scroll-fade";
     };
 
-const resolveMaskBaseStyles = createStylesResolver(['root', 'gradient'] as const);
+const resolveMaskBaseStyles = createStylesResolver(["root", "gradient"] as const);
 
 const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
   ({ asChild = false, className, children, style, styles: stylesProp, ...props }, ref) => {
@@ -72,13 +72,15 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
     const maskStyles = {
       ...style,
       ...(hasFixedFade ? { maxHeight: "inherit", overflow: "hidden" as const } : {}),
-      ...(clipPath ? { "--mask-clip-path": clipPath } as Record<string, string> : {}),
-      ...(resolvedMaskFilters.length > 0 ? {
-        WebkitMaskImage: resolvedMaskFilters.join(", "),
-        maskImage: resolvedMaskFilters.join(", "),
-        WebkitMaskComposite: resolvedMaskFilters.length > 1 ? "source-in" : "source-over",
-        maskComposite: resolvedMaskFilters.length > 1 ? "intersect" : "add",
-      } : {}),
+      ...(clipPath ? ({ "--mask-clip-path": clipPath } as Record<string, string>) : {}),
+      ...(resolvedMaskFilters.length > 0
+        ? {
+            WebkitMaskImage: resolvedMaskFilters.join(", "),
+            maskImage: resolvedMaskFilters.join(", "),
+            WebkitMaskComposite: resolvedMaskFilters.length > 1 ? "source-in" : "source-over",
+            maskComposite: resolvedMaskFilters.length > 1 ? "intersect" : "add",
+          }
+        : {}),
     } as React.CSSProperties;
 
     const asChildTarget =
@@ -121,7 +123,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
         {contentChildren}
       </div>
     );
-  }
+  },
 );
 
 MaskRoot.displayName = "Mask";
@@ -149,7 +151,7 @@ const MaskGradient = React.forwardRef<HTMLDivElement, MaskGradientProps>(
         {children}
       </div>
     );
-  }
+  },
 );
 
 MaskGradient.displayName = "MaskGradient";
@@ -167,7 +169,9 @@ const MaskFade: React.FC<MaskFadeProps> = () => null;
 MaskFade.displayName = "MaskFade";
 
 function isScrollFade(props: MaskFadeProps): boolean {
-  return props.direction === undefined && props.intensity === undefined && props.fixed === undefined;
+  return (
+    props.direction === undefined && props.intensity === undefined && props.fixed === undefined
+  );
 }
 
 function hasScrollFadeVariables(style: React.CSSProperties | undefined): boolean {
@@ -185,8 +189,14 @@ function generateMaskFilter(maskFilter: MaskFilter): string {
   return generateFadeMask(maskFilter.direction, maskFilter.intensity, maskFilter.fixed);
 }
 
-function generateFadeMask(direction: string = "bottom", intensity: number = 1, fixed?: boolean): string {
-  const fadeSize = fixed ? `${Math.min(50, 15 * intensity)}%` : `${Math.min(200, 40 * intensity)}px`;
+function generateFadeMask(
+  direction: string = "bottom",
+  intensity: number = 1,
+  fixed?: boolean,
+): string {
+  const fadeSize = fixed
+    ? `${Math.min(50, 15 * intensity)}%`
+    : `${Math.min(200, 40 * intensity)}px`;
   const directionMap = {
     top: `linear-gradient(to bottom, transparent 0, black ${fadeSize})`,
     bottom: `linear-gradient(to bottom, black calc(100% - ${fadeSize}), transparent 100%)`,
@@ -195,7 +205,6 @@ function generateFadeMask(direction: string = "bottom", intensity: number = 1, f
   };
   return directionMap[direction as keyof typeof directionMap] || directionMap.bottom;
 }
-
 
 interface MaskClipProps {
   /** CSS clip-path value applied to the container (e.g. polygon, circle) */

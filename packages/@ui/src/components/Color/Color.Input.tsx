@@ -23,79 +23,95 @@ interface ColorInputProps {
   previewClassName?: string;
 }
 
-export const ColorInput = React.forwardRef<
-  HTMLDivElement,
-  ColorInputProps
->(({ value, format, onFormatChange, onValueChange, disabled, size = "md", showPreview = false, previewColor, groupClassName, inputClassName, formatClassName, previewClassName }, ref) => {
-  const inputValue = value;
+export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
+  (
+    {
+      value,
+      format,
+      onFormatChange,
+      onValueChange,
+      disabled,
+      size = "md",
+      showPreview = false,
+      previewColor,
+      groupClassName,
+      inputClassName,
+      formatClassName,
+      previewClassName,
+    },
+    ref,
+  ) => {
+    const inputValue = value;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
 
-    if (isValidColor(newValue)) {
-      onValueChange?.(newValue);
-    }
-  };
+      if (isValidColor(newValue)) {
+        onValueChange?.(newValue);
+      }
+    };
 
-  const handleFormatChange = (newFormat: "hex" | "rgb") => {
-    onFormatChange?.(newFormat);
-  };
+    const handleFormatChange = (newFormat: "hex" | "rgb") => {
+      onFormatChange?.(newFormat);
+    };
 
-  return (
-    <Group
-      ref={ref}
-      disabled={disabled}
-      data-size={size}
-      className={cn("input-group", "w-full", styles["input-group"], groupClassName)}
-    >
-      <Group.Input
-        value={inputValue}
-        onChange={handleInputChange}
+    return (
+      <Group
+        ref={ref}
         disabled={disabled}
-        placeholder={format === "hex" ? "#000000" : "rgb(0, 0, 0)"}
-        aria-label="Color input"
-        className={cn("input", styles["input"], inputClassName)}
-      />
-      <Divider />
-      <Group.Select
-        selectedKey={format}
-        defaultValue={format === "hex" ? "Hex" : "RGB"}
-        onSelectionChange={(key: React.Key) => {
-          if (key) {
-            handleFormatChange(key as "hex" | "rgb");
-          }
-        }}
-        disabled={disabled}
-        className={cn("format", styles["format"], formatClassName)}
+        data-size={size}
+        className={cn("input-group", "w-full", styles["input-group"], groupClassName)}
       >
-        <Select.Trigger aria-label="Color format">
-          <Select.Value placeholder="Format" />
-        </Select.Trigger>
-        <Select.Content>
-          <Select.List>
-            <Select.Item value="hex" textValue="Hex">
-              Hex
-            </Select.Item>
-            <Select.Item value="rgb" textValue="RGB">
-              RGB
-            </Select.Item>
-          </Select.List>
-        </Select.Content>
-      </Group.Select>
-      {showPreview && (
-        <div
-          className={cn("swatch", styles["preview-swatch"], previewClassName)}
-          data-size={size}
-          data-disabled={disabled || undefined}
-          style={{
-            "--preview-color": previewColor || "transparent",
-          } as React.CSSProperties}
-          aria-label={`Color preview: ${value}`}
+        <Group.Input
+          value={inputValue}
+          onChange={handleInputChange}
+          disabled={disabled}
+          placeholder={format === "hex" ? "#000000" : "rgb(0, 0, 0)"}
+          aria-label="Color input"
+          className={cn("input", styles["input"], inputClassName)}
         />
-      )}
-    </Group>
-  );
-}
+        <Divider />
+        <Group.Select
+          selectedKey={format}
+          defaultValue={format === "hex" ? "Hex" : "RGB"}
+          onSelectionChange={(key: React.Key) => {
+            if (key) {
+              handleFormatChange(key as "hex" | "rgb");
+            }
+          }}
+          disabled={disabled}
+          className={cn("format", styles["format"], formatClassName)}
+        >
+          <Select.Trigger aria-label="Color format">
+            <Select.Value placeholder="Format" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.List>
+              <Select.Item value="hex" textValue="Hex">
+                Hex
+              </Select.Item>
+              <Select.Item value="rgb" textValue="RGB">
+                RGB
+              </Select.Item>
+            </Select.List>
+          </Select.Content>
+        </Group.Select>
+        {showPreview && (
+          <div
+            className={cn("swatch", styles["preview-swatch"], previewClassName)}
+            data-size={size}
+            data-disabled={disabled || undefined}
+            style={
+              {
+                "--preview-color": previewColor || "transparent",
+              } as React.CSSProperties
+            }
+            aria-label={`Color preview: ${value}`}
+          />
+        )}
+      </Group>
+    );
+  },
 );
 
 ColorInput.displayName = "ColorInput";

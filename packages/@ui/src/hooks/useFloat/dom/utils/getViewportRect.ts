@@ -1,8 +1,8 @@
-import type {Rect, Strategy} from '../../core';
-import {getWindow, isWebKit, getComputedStyle} from '../../../../utils/dom';
+import type { Rect, Strategy } from "../../core";
+import { getWindow, isWebKit, getComputedStyle } from "../../../../utils/dom";
 
-import {getDocumentElement} from '../platform/getDocumentElement';
-import {getWindowScrollBarX} from './getWindowScrollBarX';
+import { getDocumentElement } from "../platform/getDocumentElement";
+import { getWindowScrollBarX } from "./getWindowScrollBarX";
 
 // Safety check: ensure the scrollbar space is reasonable in case this
 // calculation is affected by unusual styles.
@@ -25,7 +25,7 @@ export function getViewportRect(element: Element, strategy: Strategy): Rect {
 
     const visualViewportBased = isWebKit();
 
-    if (!visualViewportBased || (visualViewportBased && strategy === 'fixed')) {
+    if (!visualViewportBased || (visualViewportBased && strategy === "fixed")) {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
     }
@@ -40,9 +40,8 @@ export function getViewportRect(element: Element, strategy: Strategy): Rect {
     const body = doc.body;
     const bodyStyles = getComputedStyle(body);
     const bodyMarginInline =
-      doc.compatMode === 'CSS1Compat'
-        ? parseFloat(bodyStyles.marginLeft) +
-            parseFloat(bodyStyles.marginRight) || 0
+      doc.compatMode === "CSS1Compat"
+        ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0
         : 0;
     const clippingStableScrollbarWidth = Math.abs(
       html.clientWidth - body.clientWidth - bodyMarginInline,

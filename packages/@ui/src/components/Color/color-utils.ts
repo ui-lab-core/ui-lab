@@ -37,8 +37,7 @@ function hexToRgb(hex: string): RGB {
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-  const a =
-    hex.length === 8 ? parseInt(hex.substring(6, 8), 16) / 255 : undefined;
+  const a = hex.length === 8 ? parseInt(hex.substring(6, 8), 16) / 255 : undefined;
 
   return { r, g, b, a };
 }
@@ -65,7 +64,7 @@ function rgbToHex(r: number, g: number, b: number, a?: number): string {
 /**
  * Convert RGB to HSL
  */
-export function rgbToHsl(r: number, g: number, b: number): HSL {
+function rgbToHsl(r: number, g: number, b: number): HSL {
   r /= 255;
   g /= 255;
   b /= 255;
@@ -103,7 +102,7 @@ export function rgbToHsl(r: number, g: number, b: number): HSL {
 /**
  * Convert HSL to RGB
  */
-export function hslToRgb(h: number, s: number, l: number): RGB {
+function hslToRgb(h: number, s: number, l: number): RGB {
   h = h / 360;
   s = s / 100;
   l = l / 100;
@@ -235,9 +234,7 @@ export function hsvToRgb(h: number, s: number, v: number): RGB {
 /**
  * Parse a color string (hex or rgb format) and return RGB object
  */
-export function parseColor(
-  color: string
-): RGB & { format?: "hex" | "rgb" } {
+export function parseColor(color: string): RGB & { format?: "hex" | "rgb" } {
   color = color.trim();
 
   if (color.startsWith("#")) {
@@ -271,12 +268,7 @@ export function formatColorHex(r: number, g: number, b: number, a?: number): str
 /**
  * Format RGB color as RGB string
  */
-export function formatColorRgb(
-  r: number,
-  g: number,
-  b: number,
-  a?: number
-): string {
+export function formatColorRgb(r: number, g: number, b: number, a?: number): string {
   r = Math.round(r);
   g = Math.round(g);
   b = Math.round(b);

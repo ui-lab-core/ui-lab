@@ -14,13 +14,6 @@ export {
   areaPath,
   roundedRectPath,
   formatValue,
-} from "../../utils/plot"
+} from "../../utils/plot";
 
-export type {
-  ScaleKind,
-  Curve,
-  PlotPoint,
-  StackInput,
-  Segment,
-  BarLayout,
-} from "../../utils/plot"
+export type { ScaleKind, Curve, PlotPoint,   BarLayout } from "../../utils/plot";

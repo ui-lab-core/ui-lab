@@ -1,4 +1,4 @@
-import type {Padding} from '../../utils';
+import type { Padding } from "../../utils";
 import {
   clamp,
   evaluate,
@@ -7,9 +7,9 @@ import {
   getAxisLength,
   getPaddingObject,
   min as mathMin,
-} from '../../utils';
+} from "../../utils";
 
-import type {Derivable, Middleware} from '../types';
+import type { Derivable, Middleware } from "../types";
 
 export interface ArrowOptions {
   /**
@@ -30,35 +30,30 @@ export interface ArrowOptions {
  * appears centered to the reference element.
  * @see https://floating-ui.com/docs/arrow
  */
-const arrow = (
-  options: ArrowOptions | Derivable<ArrowOptions>,
-): Middleware => ({
-  name: 'arrow',
+const arrow = (options: ArrowOptions | Derivable<ArrowOptions>): Middleware => ({
+  name: "arrow",
   options,
   async fn(state) {
-    const {x, y, placement, rects, platform, elements, middlewareData} = state;
+    const { x, y, placement, rects, platform, elements, middlewareData } = state;
     // Since `element` is required, we don't Partial<> the type.
-    const {element, padding = 0} = evaluate(options, state) || {};
+    const { element, padding = 0 } = evaluate(options, state) || {};
 
     if (element == null) {
       return {};
     }
 
     const paddingObject = getPaddingObject(padding);
-    const coords = {x, y};
+    const coords = { x, y };
     const axis = getAlignmentAxis(placement);
     const length = getAxisLength(axis);
     const arrowDimensions = await platform.getDimensions(element);
-    const isYAxis = axis === 'y';
-    const minProp = isYAxis ? 'top' : 'left';
-    const maxProp = isYAxis ? 'bottom' : 'right';
-    const clientProp = isYAxis ? 'clientHeight' : 'clientWidth';
+    const isYAxis = axis === "y";
+    const minProp = isYAxis ? "top" : "left";
+    const maxProp = isYAxis ? "bottom" : "right";
+    const clientProp = isYAxis ? "clientHeight" : "clientWidth";
 
     const endDiff =
-      rects.reference[length] +
-      rects.reference[axis] -
-      coords[axis] -
-      rects.floating[length];
+      rects.reference[length] + rects.reference[axis] - coords[axis] - rects.floating[length];
     const startDiff = coords[axis] - rects.reference[axis];
 
     const arrowOffsetParent = await platform.getOffsetParent?.(element);
@@ -73,8 +68,7 @@ const arrow = (
 
     // If the padding is large enough that it causes the arrow to no longer be
     // centered, modify the padding so that it is centered.
-    const largestPossiblePadding =
-      clientSize / 2 - arrowDimensions[length] / 2 - 1;
+    const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
     const minPadding = mathMin(paddingObject[minProp], largestPossiblePadding);
     const maxPadding = mathMin(paddingObject[maxProp], largestPossiblePadding);
 
@@ -82,8 +76,7 @@ const arrow = (
     // point is outside the floating element's bounds.
     const min = minPadding;
     const max = clientSize - arrowDimensions[length] - maxPadding;
-    const center =
-      clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
+    const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
     const offset = clamp(min, center, max);
 
     // If the reference is small enough that the arrow's padding causes it to
@@ -98,18 +91,14 @@ const arrow = (
         (center < min ? minPadding : maxPadding) -
         arrowDimensions[length] / 2 <
         0;
-    const alignmentOffset = shouldAddOffset
-      ? center < min
-        ? center - min
-        : center - max
-      : 0;
+    const alignmentOffset = shouldAddOffset ? (center < min ? center - min : center - max) : 0;
 
     return {
       [axis]: coords[axis] + alignmentOffset,
       data: {
         [axis]: offset,
         centerOffset: center - offset - alignmentOffset,
-        ...(shouldAddOffset && {alignmentOffset}),
+        ...(shouldAddOffset && { alignmentOffset }),
       },
       reset: shouldAddOffset,
     };

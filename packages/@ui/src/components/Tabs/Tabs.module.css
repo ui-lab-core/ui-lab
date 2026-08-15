@@ -67,9 +67,10 @@
     outline: none;
     box-shadow: none;
     transition:
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     &[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
       --hover-duration: var(--hover-enter-duration, 0ms);
@@ -84,7 +85,9 @@
       }
     }
 
-    &[data-selected="true"]:not([data-indicator-ready="true"]):not([data-indicator-fallback="true"]) {
+    &[data-selected="true"]:not([data-indicator-ready="true"]):not(
+        [data-indicator-fallback="true"]
+      ) {
       .list.underline & {
         border-bottom-color: var(--underline-border);
       }
@@ -133,7 +136,10 @@
       border-left: 2px solid transparent;
     }
 
-    .list.underline[data-orientation="vertical"] &[data-selected="true"]:not([data-indicator-ready="true"]):not([data-indicator-fallback="true"]) {
+    .list.underline[data-orientation="vertical"]
+      &[data-selected="true"]:not([data-indicator-ready="true"]):not(
+        [data-indicator-fallback="true"]
+      ) {
       border-left-color: var(--underline-border);
       border-bottom: none;
     }

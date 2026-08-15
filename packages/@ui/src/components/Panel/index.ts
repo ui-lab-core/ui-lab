@@ -1,5 +1,5 @@
-export { Panel, PanelContext } from './Panel'
-export { usePanelContext } from './panel.context'
+export { Panel, PanelContext } from "./Panel";
+export { usePanelContext } from "./panel.context";
 export type {
   PanelProps,
   PanelOrientation,
@@ -7,4 +7,4 @@ export type {
   PanelToggleProps,
   PanelResizeProps,
   PanelContextValue,
-} from './panel.types'
+} from "./panel.types";

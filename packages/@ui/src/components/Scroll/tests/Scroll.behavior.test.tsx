@@ -27,8 +27,8 @@ describe("Scroll behavior", () => {
       render(
         <Scroll inline maxHeight="12rem">
           <div>Content</div>
-        </Scroll>
-      )
+        </Scroll>,
+      ),
     ).not.toThrow();
   });
 
@@ -37,7 +37,7 @@ describe("Scroll behavior", () => {
       <Scroll maxHeight="12rem" hide={false}>
         <div>Alpha</div>
         <div>Beta</div>
-      </Scroll>
+      </Scroll>,
     );
 
     const root = container.querySelector(".scroll") as HTMLDivElement | null;
@@ -85,7 +85,7 @@ describe("Scroll behavior", () => {
         <Scroll.Track className="custom-track" data-custom-track>
           <Scroll.Thumb className="custom-thumb" />
         </Scroll.Track>
-      </Scroll>
+      </Scroll>,
     );
 
     const root = container.querySelector(".scroll");

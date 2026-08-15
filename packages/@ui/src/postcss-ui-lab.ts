@@ -11,25 +11,25 @@
  * This is similar to how Tailwind's @import "tailwindcss" works.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import postcssLib, { type Root, type AtRule } from 'postcss';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import postcssLib, { type Root, type AtRule } from "postcss";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default {
-  postcssPlugin: 'postcss-ui-lab',
+  postcssPlugin: "postcss-ui-lab",
   Once(root: Root) {
-    root.walkAtRules('import', (atRule: AtRule) => {
+    root.walkAtRules("import", (atRule: AtRule) => {
       // Match @import "ui-lab" or @import 'ui-lab'
       const match = atRule.params.match(/^["']ui-lab["']$/);
 
       if (match) {
         try {
           // Read the compiled styles.css file
-          const stylesPath = path.resolve(__dirname, 'styles.css');
-          const cssContent = fs.readFileSync(stylesPath, 'utf-8');
+          const stylesPath = path.resolve(__dirname, "styles.css");
+          const cssContent = fs.readFileSync(stylesPath, "utf-8");
 
           // Parse the CSS content into an AST
           const parsedCSS = postcssLib.parse(cssContent);
@@ -40,7 +40,7 @@ export default {
         } catch (err) {
           throw atRule.error(
             `Failed to load ui-lab styles: ${err instanceof Error ? err.message : String(err)}`,
-            { word: 'ui-lab' }
+            { word: "ui-lab" },
           );
         }
       }

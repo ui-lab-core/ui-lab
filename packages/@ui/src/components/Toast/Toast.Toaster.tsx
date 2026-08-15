@@ -49,10 +49,7 @@ const positionConfig: Record<
 
 const activePositions = new Map<string, symbol>();
 
-export type ToastPortalContainer =
-  | HTMLElement
-  | null
-  | (() => HTMLElement | null);
+export type ToastPortalContainer = HTMLElement | null | (() => HTMLElement | null);
 
 export interface ToasterProps {
   /**
@@ -108,8 +105,8 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
   };
 
   useLayoutEffect(() => {
-    const currentActiveIds = new Set(toasts.map(t => t.id));
-    const openToasts = toasts.filter(t => t.open);
+    const currentActiveIds = new Set(toasts.map((t) => t.id));
+    const openToasts = toasts.filter((t) => t.open);
     const targets: StackTarget[] = [];
 
     let cumulativeY = 0;
@@ -125,7 +122,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
       }
 
       const isNewlyVisible = !prevVisibleIdsRef.current.has(toast.id);
-      const isFromTop = toast.spawnDirection === 'top';
+      const isFromTop = toast.spawnDirection === "top";
       const height = el.offsetHeight || 60;
 
       let y = 0;
@@ -147,19 +144,27 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         }
       } else {
         if (activeIndex === 0) {
-          y = 0; scale = 1; opacity = 1;
+          y = 0;
+          scale = 1;
+          opacity = 1;
         } else if (activeIndex === 1) {
-          y = GAP * (isTop ? 1 : -1); scale = 0.96; opacity = 1;
+          y = GAP * (isTop ? 1 : -1);
+          scale = 0.96;
+          opacity = 1;
         } else if (activeIndex === 2) {
-          y = GAP * 2 * (isTop ? 1 : -1); scale = 0.92; opacity = 1;
+          y = GAP * 2 * (isTop ? 1 : -1);
+          scale = 0.92;
+          opacity = 1;
         } else {
-          y = GAP * 2 * (isTop ? 1 : -1); scale = 0.92; opacity = 0;
+          y = GAP * 2 * (isTop ? 1 : -1);
+          scale = 0.92;
+          opacity = 0;
           pointerEvents = "none";
         }
       }
 
       if (isNewlyVisible && isFromTop) {
-        const startY = isTop ? (y + 30) : (y - 30);
+        const startY = isTop ? y + 30 : y - 30;
         gsap.set(el, { y: startY, opacity: 0, scale: scale * 0.9 });
       }
 
@@ -190,11 +195,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
 
       let displacement = STANDALONE_DISMISS_OFFSET;
       if (followingTarget) {
-        const followingY = readGsapNumber(
-          followingTarget.element,
-          "y",
-          followingTarget.y,
-        );
+        const followingY = readGsapNumber(followingTarget.element, "y", followingTarget.y);
         displacement = followingTarget.y - followingY;
       }
 
@@ -225,23 +226,29 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     });
 
     if (motionTargets.length > 0) {
-      gsap.to(motionTargets.map((target) => target.element), {
-        y: (index: number) => motionTargets[index].y,
-        opacity: (index: number) => motionTargets[index].opacity,
-        duration: STACK_REFLOW_DURATION,
-        ease: "expo.out",
-        overwrite: "auto",
-        onComplete: () => completedDismissals.forEach((complete) => complete()),
-      });
+      gsap.to(
+        motionTargets.map((target) => target.element),
+        {
+          y: (index: number) => motionTargets[index].y,
+          opacity: (index: number) => motionTargets[index].opacity,
+          duration: STACK_REFLOW_DURATION,
+          ease: "expo.out",
+          overwrite: "auto",
+          onComplete: () => completedDismissals.forEach((complete) => complete()),
+        },
+      );
     }
 
     if (targets.length > 0) {
-      gsap.to(targets.map((target) => target.element), {
-        scale: (index: number) => targets[index].scale,
-        duration: STACK_REFLOW_DURATION,
-        ease: "expo.out",
-        overwrite: "auto",
-      });
+      gsap.to(
+        targets.map((target) => target.element),
+        {
+          scale: (index: number) => targets[index].scale,
+          duration: STACK_REFLOW_DURATION,
+          ease: "expo.out",
+          overwrite: "auto",
+        },
+      );
     }
 
     if (containerRef.current) {
@@ -254,7 +261,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
         });
       } else {
         const firstEl = openToasts[0] ? toastRefsMap.current.get(openToasts[0].id) : null;
-        totalHeight = (firstEl?.offsetHeight || 60) + (GAP * 2);
+        totalHeight = (firstEl?.offsetHeight || 60) + GAP * 2;
       }
 
       gsap.to(containerRef.current, {
@@ -269,7 +276,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
       if (!currentActiveIds.has(id)) toastRefsMap.current.delete(id);
     });
 
-    prevVisibleIdsRef.current = new Set(openToasts.map(t => t.id));
+    prevVisibleIdsRef.current = new Set(openToasts.map((t) => t.id));
   }, [isTop, isHovering, toasts]);
 
   const positionedStyle: React.CSSProperties = {
@@ -340,7 +347,11 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
               }}
               onDismissEnd={() => {
                 isDismissingCountRef.current--;
-                if (isDismissingCountRef.current === 0 && !isDraggingRef.current && !isMouseInContainerRef.current) {
+                if (
+                  isDismissingCountRef.current === 0 &&
+                  !isDraggingRef.current &&
+                  !isMouseInContainerRef.current
+                ) {
                   hoverTimeoutRef.current = setTimeout(() => setIsHovering(false), 200);
                 }
               }}
@@ -372,7 +383,7 @@ export const Toaster = ({ container, toasterId }: ToasterProps) => {
   const isViewportTarget = Boolean(
     portalTarget &&
     (portalTarget === portalTarget.ownerDocument.body ||
-      portalTarget === portalTarget.ownerDocument.documentElement)
+      portalTarget === portalTarget.ownerDocument.documentElement),
   );
 
   useEffect(() => {
@@ -383,12 +394,19 @@ export const Toaster = ({ container, toasterId }: ToasterProps) => {
       portalTarget.ownerDocument.defaultView?.getComputedStyle(portalTarget).position === "static"
     ) {
       console.warn(
-        "A custom Toast container must establish a containing block, for example with position: relative."
+        "A custom Toast container must establish a containing block, for example with position: relative.",
       );
     }
   }, [isViewportTarget, portalTarget]);
 
-  const positions: ToastPosition[] = ["top-left", "top", "top-right", "bottom-left", "bottom", "bottom-right"];
+  const positions: ToastPosition[] = [
+    "top-left",
+    "top",
+    "top-right",
+    "bottom-left",
+    "bottom",
+    "bottom-right",
+  ];
 
   const toastsByPosition = useMemo(() => {
     const grouped: Partial<Record<ToastPosition, ToastProps[]>> = {};
@@ -421,7 +439,7 @@ export const Toaster = ({ container, toasterId }: ToasterProps) => {
         );
       })}
     </>,
-    portalTarget
+    portalTarget,
   );
 };
 

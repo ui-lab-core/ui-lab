@@ -17,22 +17,19 @@ import css from "./Slider.module.css";
 
 type SliderOrientation = "horizontal" | "vertical";
 
-export interface SliderStyleSlots {
+interface SliderStyleSlots {
   root?: StyleValue;
   track?: StyleValue;
   range?: StyleValue;
   thumb?: StyleValue;
 }
 
-export type SliderStylesProp = StylesProp<SliderStyleSlots>;
-export interface SliderState { value?: number | number[] }
+type SliderStylesProp = StylesProp<SliderStyleSlots>;
+export interface SliderState {
+  value?: number | number[];
+}
 
-const resolveSliderBaseStyles = createStylesResolver([
-  "root",
-  "track",
-  "range",
-  "thumb",
-] as const);
+const resolveSliderBaseStyles = createStylesResolver(["root", "track", "range", "thumb"] as const);
 
 function resolveSliderStyles(styles: SliderStylesProp | undefined) {
   if (!styles) {
@@ -49,8 +46,10 @@ function resolveSliderStyles(styles: SliderStylesProp | undefined) {
   });
 }
 
-export interface SliderProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "value" | "onChange"> {
+export interface SliderProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "value" | "onChange"
+> {
   /** Whether the slider is disabled. */
   disabled?: boolean;
   /** Minimum value of the slider range. */
@@ -103,8 +102,12 @@ function snapToStep(value: number, min: number, max: number, step: number): numb
   const effectiveStep = Number.isFinite(step) && step > 0 ? step : 1;
   const snapped = Math.round((value - min) / effectiveStep) * effectiveStep + min;
   const precision = Math.min(
-    Math.max(getDecimalPrecision(effectiveStep), getDecimalPrecision(min), getDecimalPrecision(max)),
-    12
+    Math.max(
+      getDecimalPrecision(effectiveStep),
+      getDecimalPrecision(min),
+      getDecimalPrecision(max),
+    ),
+    12,
   );
 
   return clamp(Number(snapped.toFixed(precision)), min, max);
@@ -165,7 +168,7 @@ function getValueFromPointer(
   orientation: SliderOrientation,
   min: number,
   max: number,
-  step: number
+  step: number,
 ) {
   const rect = track.getBoundingClientRect();
   const size = orientation === "vertical" ? rect.height : rect.width;
@@ -204,7 +207,7 @@ function SliderThumb({
     (element: HTMLDivElement | null) => {
       onThumbRef(index, element);
     },
-    [index, onThumbRef]
+    [index, onThumbRef],
   );
   const mergedRef = useMergeRefs<HTMLDivElement>(thumbRef, handleThumbRef);
 
@@ -254,7 +257,7 @@ function SliderThumb({
         onValueChange(index, newValue);
       }
     },
-    [disabled, index, max, min, onValueChange, orientation, step, value]
+    [disabled, index, max, min, onValueChange, orientation, step, value],
   );
 
   const handleKeyUp = React.useCallback(() => {
@@ -320,7 +323,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       onLostPointerCapture,
       ...props
     },
-    ref
+    ref,
   ) => {
     const rootRef = React.useRef<HTMLDivElement>(null);
     const trackRef = React.useRef<HTMLDivElement>(null);
@@ -361,7 +364,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
         onValueChange?.(nextValues);
       },
-      [onValueChange, setInternalValues, values]
+      [onValueChange, setInternalValues, values],
     );
 
     const updateValueFromPointer = React.useCallback(
@@ -369,20 +372,12 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         const track = trackRef.current;
         if (!track) return undefined;
 
-        const newValue = getValueFromPointer(
-          clientX,
-          clientY,
-          track,
-          orientation,
-          min,
-          max,
-          step
-        );
+        const newValue = getValueFromPointer(clientX, clientY, track, orientation, min, max, step);
 
         handleValueChange(thumbIndex, newValue);
         return newValue;
       },
-      [handleValueChange, max, min, orientation, step]
+      [handleValueChange, max, min, orientation, step],
     );
 
     const stopPointerDrag = React.useCallback((pointerId: number, releaseCapture = true) => {
@@ -419,10 +414,12 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           orientation,
           min,
           max,
-          step
+          step,
         );
         const thumbIndex =
-          requestedThumbIndex !== undefined && requestedThumbIndex >= 0 && requestedThumbIndex < values.length
+          requestedThumbIndex !== undefined &&
+          requestedThumbIndex >= 0 &&
+          requestedThumbIndex < values.length
             ? requestedThumbIndex
             : getClosestValueIndex(values, nextValue);
 
@@ -442,7 +439,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         thumbRefs.current[thumbIndex]?.focus({ preventScroll: true });
         handleValueChange(thumbIndex, nextValue);
       },
-      [disabled, handleValueChange, max, min, orientation, step, values]
+      [disabled, handleValueChange, max, min, orientation, step, values],
     );
 
     const handleRootPointerDown = React.useCallback(
@@ -452,7 +449,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
         startPointerDrag(event, getThumbIndexFromTarget(event.target));
       },
-      [onPointerDown, startPointerDrag]
+      [onPointerDown, startPointerDrag],
     );
 
     const handleRootPointerMove = React.useCallback(
@@ -466,7 +463,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         event.preventDefault();
         updateValueFromPointer(activeDrag.thumbIndex, event.clientX, event.clientY);
       },
-      [disabled, onPointerMove, updateValueFromPointer]
+      [disabled, onPointerMove, updateValueFromPointer],
     );
 
     const handleRootPointerEnd = React.useCallback(
@@ -474,7 +471,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         onPointerUp?.(event);
         stopPointerDrag(event.pointerId);
       },
-      [onPointerUp, stopPointerDrag]
+      [onPointerUp, stopPointerDrag],
     );
 
     const handleRootPointerCancel = React.useCallback(
@@ -482,7 +479,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         onPointerCancel?.(event);
         stopPointerDrag(event.pointerId);
       },
-      [onPointerCancel, stopPointerDrag]
+      [onPointerCancel, stopPointerDrag],
     );
 
     const handleRootLostPointerCapture = React.useCallback(
@@ -490,7 +487,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         onLostPointerCapture?.(event);
         stopPointerDrag(event.pointerId, false);
       },
-      [onLostPointerCapture, stopPointerDrag]
+      [onLostPointerCapture, stopPointerDrag],
     );
 
     React.useEffect(() => {
@@ -500,20 +497,19 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       }
     }, [disabled, stopPointerDrag]);
 
-    const rangeStartPercent =
-      values.length > 1 ? getValuePercent(values[0], min, max) : 0;
+    const rangeStartPercent = values.length > 1 ? getValuePercent(values[0], min, max) : 0;
     const rangeEndPercent = getValuePercent(values[values.length - 1], min, max);
 
     const rangeStyle =
       orientation === "vertical"
         ? {
-          bottom: `${rangeStartPercent}%`,
-          height: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
-        }
+            bottom: `${rangeStartPercent}%`,
+            height: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
+          }
         : {
-          left: `${rangeStartPercent}%`,
-          width: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
-        };
+            left: `${rangeStartPercent}%`,
+            width: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
+          };
 
     return (
       <div
@@ -521,12 +517,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         data-disabled={disabled ? "true" : undefined}
         data-orientation={orientation}
         style={style}
-        className={cn(
-          "slider",
-          css.slider,
-          className,
-          resolved.root
-        )}
+        className={cn("slider", css.slider, className, resolved.root)}
         onPointerDown={handleRootPointerDown}
         onPointerMove={handleRootPointerMove}
         onPointerUp={handleRootPointerEnd}
@@ -570,7 +561,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 Slider.displayName = "Slider";

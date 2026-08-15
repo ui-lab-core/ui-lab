@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -10,11 +10,11 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   styles?: CardStylesProp;
 }
 
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 interface CardStyleSlots {
   root?: SlotStyleValue;
@@ -25,18 +25,23 @@ interface CardStyleSlots {
 
 type CardStylesProp = CardStyleSlots;
 
-const resolveCardBaseStyles = createStylePropsResolver(['root', 'header', 'body', 'footer'] as const);
+const resolveCardBaseStyles = createStylePropsResolver([
+  "root",
+  "header",
+  "body",
+  "footer",
+] as const);
 
 type CardContextValue = ReturnType<typeof resolveCardBaseStyles> & {
   variantClassName: string;
 };
 
 const CardStylesContext = React.createContext<CardContextValue>({
-  root: { className: '' },
-  header: { className: '' },
-  body: { className: '' },
-  footer: { className: '' },
-  variantClassName: 'default',
+  root: { className: "" },
+  header: { className: "" },
+  body: { className: "" },
+  footer: { className: "" },
+  variantClassName: "default",
 });
 
 const CardRoot = React.forwardRef<HTMLDivElement, CardProps>(
@@ -51,13 +56,13 @@ const CardRoot = React.forwardRef<HTMLDivElement, CardProps>(
       <CardStylesContext.Provider value={contextValue}>
         <div
           ref={ref}
-          className={cn('card', variant, styles.card, resolvedStyles.root.className, className)}
+          className={cn("card", variant, styles.card, resolvedStyles.root.className, className)}
           style={{ ...resolvedStyles.root.style, ...style }}
           {...(props as any)}
         />
       </CardStylesContext.Provider>
     );
-  }
+  },
 );
 CardRoot.displayName = "Card";
 
@@ -68,12 +73,19 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
     return (
       <div
         ref={ref}
-        className={cn('card', 'header', variantClassName, styles.header, header.className, className)}
+        className={cn(
+          "card",
+          "header",
+          variantClassName,
+          styles.header,
+          header.className,
+          className,
+        )}
         style={{ ...header.style, ...style }}
         {...props}
       />
     );
-  }
+  },
 );
 CardHeader.displayName = "Card.Header";
 
@@ -84,12 +96,12 @@ const CardBody = React.forwardRef<HTMLDivElement, CardBodyProps>(
     return (
       <div
         ref={ref}
-        className={cn('card', 'body', variantClassName, styles.body, body.className, className)}
+        className={cn("card", "body", variantClassName, styles.body, body.className, className)}
         style={{ ...body.style, ...style }}
         {...props}
       />
     );
-  }
+  },
 );
 CardBody.displayName = "Card.Body";
 
@@ -100,12 +112,12 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
     return (
       <div
         ref={ref}
-        className={cn('footer', variantClassName, styles.footer, footer.className, className)}
+        className={cn("footer", variantClassName, styles.footer, footer.className, className)}
         style={{ ...footer.style, ...style }}
         {...props}
       />
     );
-  }
+  },
 );
 CardFooter.displayName = "Card.Footer";
 

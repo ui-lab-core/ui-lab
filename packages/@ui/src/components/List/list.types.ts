@@ -1,12 +1,12 @@
-import React from 'react';
-import { DividerProps } from '@/components/Divider';
-import { type StyleValue } from '@/lib/utils';
-import { type StylesProp } from '@/lib/styles';
-import type { GapSize } from '@/lib/gap';
-import { Checkbox as UICheckbox } from '../Checkbox';
-import { Switch as UISwitch } from '../Switch';
-import { Input as UIInput } from '../Input';
-import { Select as UISelect } from '../Select';
+import React from "react";
+import { DividerProps } from "@/components/Divider";
+import { type StyleValue } from "@/lib/utils";
+import { type StylesProp } from "@/lib/styles";
+import type { GapSize } from "@/lib/gap";
+import { Checkbox as UICheckbox } from "../Checkbox";
+import { Switch as UISwitch } from "../Switch";
+import { Input as UIInput } from "../Input";
+import { Select as UISelect } from "../Select";
 
 export interface ListStyleSlots {
   /** Outer list container */
@@ -36,7 +36,7 @@ export interface ListStyleSlots {
 export type ListStylesProp = StylesProp<ListStyleSlots>;
 export type ListStyleSlot = keyof ListStyleSlots;
 
-export type ListOrientation = 'vertical' | 'horizontal';
+export type ListOrientation = "vertical" | "horizontal";
 export type ListGap = GapSize;
 
 // Ref API for List
@@ -70,17 +70,17 @@ export interface ListNavigateCallbacks {
 }
 
 // Root container props
-export interface ListContainerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+export interface ListContainerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
   /** Array of data items; length used for keyboard navigation bounds */
   items?: unknown[];
   /** Controls the visual style of the list */
-  variant?: 'default' | 'feed';
+  variant?: "default" | "feed";
   /** Controls whether list items are stacked vertically or laid out horizontally */
   orientation?: ListOrientation;
   /** Controls the gap between list items */
   gap?: ListGap;
   /** Controls the spacing between list items */
-  spacing?: 'default' | 'sm';
+  spacing?: "default" | "sm";
   /** Keyboard navigation event callbacks */
   onNavigate?: ListNavigateCallbacks;
   /** Value of the externally highlighted item; the container instantly scrolls the `[data-highlighted="true"]` item into view when this changes */
@@ -118,7 +118,7 @@ export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export interface ListCheckboxProps extends React.ComponentPropsWithoutRef<typeof UICheckbox> {
   /** Controls whether the checkbox is placed before or after row content. */
-  placement?: 'start' | 'end';
+  placement?: "start" | "end";
   /** Called with the next checked value when the checkbox changes. */
   onCheckedChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -151,7 +151,7 @@ export interface ListDescProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export interface ActionGroupComponentProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Controls the horizontal alignment of action group items */
-  justify?: 'start' | 'between' | 'end';
+  justify?: "start" | "between" | "end";
 }
 
 export interface ListActionGroupProps extends ActionGroupComponentProps {

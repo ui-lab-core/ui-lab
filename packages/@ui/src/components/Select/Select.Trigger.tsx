@@ -1,17 +1,17 @@
-import * as React from "react"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import { useMergeRefs } from "@/hooks/useMergeRefs"
-import { Input, type InputProps } from "../Input"
-import { ChevronDown } from "lucide-react"
-import styles from "./Select.module.css"
-import { useSelectContext } from "./Select"
-import { GroupContext } from "../Group/Group.Context"
-import groupStyles from "../Group/Group.module.css"
-import { handleListKeyDown } from "./Select.shared"
-import { infer } from "@/lib/infer"
+import * as React from "react";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { Input, type InputProps } from "../Input";
+import { ChevronDown } from "lucide-react";
+import styles from "./Select.module.css";
+import { useSelectContext } from "./Select";
+import { GroupContext } from "../Group/Group.Context";
+import groupStyles from "../Group/Group.module.css";
+import { handleListKeyDown } from "./Select.shared";
+import { infer } from "@/lib/infer";
 
-export const SelectTriggerContext = React.createContext<boolean>(false)
+const SelectTriggerContext = React.createContext<boolean>(false);
 
 interface SelectTriggerIconStyles {
   left?: StyleValue;
@@ -27,26 +27,29 @@ export interface SelectTriggerStyleSlots {
 
 export type SelectTriggerStylesProp = StylesProp<SelectTriggerStyleSlots>;
 
-export interface SelectTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "type"> {
+export interface SelectTriggerProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "disabled" | "type"
+> {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Custom chevron icon displayed on the right side of the trigger; defaults to ChevronDown */
-  chevron?: React.ReactNode
+  chevron?: React.ReactNode;
   /** Icon slot object for prefix and chevron overrides */
-  icon?: { prefix?: React.ReactNode; chevron?: React.ReactNode }
+  icon?: { prefix?: React.ReactNode; chevron?: React.ReactNode };
   /** Visual style variant; "ghost" removes the default button background */
-  variant?: 'ghost'
+  variant?: "ghost";
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SelectTriggerStylesProp;
 }
 
 /** Button that opens and closes the Select dropdown */
 const resolveSelectTriggerBaseStyles = createStylesResolver([
-  'root',
-  'valueSection',
-  'iconLeft',
-  'iconRight',
-  'iconSection',
+  "root",
+  "valueSection",
+  "iconLeft",
+  "iconRight",
+  "iconSection",
 ] as const);
 
 function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined) {
@@ -57,7 +60,7 @@ function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined)
   let iconRight: StyleValue | undefined;
 
   if (icon) {
-    if (typeof icon === 'string' || Array.isArray(icon)) {
+    if (typeof icon === "string" || Array.isArray(icon)) {
       iconLeft = icon;
       iconRight = icon;
     } else {
@@ -77,7 +80,7 @@ function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined)
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
   ({ children, className, chevron, icon, variant, styles: stylesProp, ...domProps }, ref) => {
-    const groupContext = React.useContext(GroupContext)
+    const groupContext = React.useContext(GroupContext);
     const {
       triggerProps,
       triggerRef,
@@ -90,18 +93,30 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
       isFocused,
       isFocusVisible,
       isDisabled,
-    } = useSelectContext()
-    const setTriggerRef = React.useCallback((element: HTMLButtonElement | null) => {
-      triggerRef.current = element
-    }, [triggerRef])
-    const mergedRef = useMergeRefs<HTMLButtonElement>(setTriggerRef, ref)
-    const isSplitTrigger = hasExternalValue && children === undefined && mode === "single"
+    } = useSelectContext();
+    const setTriggerRef = React.useCallback(
+      (element: HTMLButtonElement | null) => {
+        triggerRef.current = element;
+      },
+      [triggerRef],
+    );
+    const mergedRef = useMergeRefs<HTMLButtonElement>(setTriggerRef, ref);
+    const isSplitTrigger = hasExternalValue && children === undefined && mode === "single";
 
-    const resolvedChevron = icon?.chevron !== undefined ? icon.chevron : chevron !== undefined ? chevron : <ChevronDown size={14} />
+    const resolvedChevron =
+      icon?.chevron !== undefined ? (
+        icon.chevron
+      ) : chevron !== undefined ? (
+        chevron
+      ) : (
+        <ChevronDown size={14} />
+      );
     const resolved = resolveSelectTriggerStyles(stylesProp);
-    const content = infer("text", children)
-      ? <span className={styles.text}>{children}</span>
-      : children
+    const content = infer("text", children) ? (
+      <span className={styles.text}>{children}</span>
+    ) : (
+      children
+    );
 
     return (
       <SelectTriggerContext.Provider value={true}>
@@ -109,13 +124,13 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
           ref={mergedRef}
           role="button"
           className={cn(
-            'select',
-            'trigger',
+            "select",
+            "trigger",
             styles.trigger,
-            isSplitTrigger && styles['trigger-compact'],
+            isSplitTrigger && styles["trigger-compact"],
             groupContext ? (groupStyles as Record<string, string>).trigger : undefined,
             className,
-            resolved.root
+            resolved.root,
           )}
           type="button"
           data-variant={variant}
@@ -128,10 +143,12 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
           {...domProps}
           {...triggerProps}
         >
-          <div className={cn(styles['value-section'], resolved.valueSection)}>
-            {icon?.prefix && <span className={cn(styles['icon-prefix'], resolved.iconLeft)}>{icon.prefix}</span>}
+          <div className={cn(styles["value-section"], resolved.valueSection)}>
+            {icon?.prefix && (
+              <span className={cn(styles["icon-prefix"], resolved.iconLeft)}>{icon.prefix}</span>
+            )}
             {mode === "multiple" && children === undefined ? (
-              <span className={cn('placeholder', styles.placeholder)}>
+              <span className={cn("placeholder", styles.placeholder)}>
                 {selectedKeys && selectedKeys.size > 0
                   ? `${selectedKeys.size} selected`
                   : "Select items..."}
@@ -141,18 +158,16 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
             )}
           </div>
           {resolvedChevron !== null && (
-            <div className={cn(styles['icon-section'], resolved.iconSection)}>
-              <div className={cn(styles.icon, resolved.iconRight)}>
-                {resolvedChevron}
-              </div>
+            <div className={cn(styles["icon-section"], resolved.iconSection)}>
+              <div className={cn(styles.icon, resolved.iconRight)}>{resolvedChevron}</div>
             </div>
           )}
         </button>
       </SelectTriggerContext.Provider>
-    )
-  }
-)
-SelectTrigger.displayName = "SelectTrigger"
+    );
+  },
+);
+SelectTrigger.displayName = "SelectTrigger";
 
 export interface SearchableTriggerStyleSlots {
   root?: StyleValue;
@@ -164,23 +179,23 @@ export interface SearchableTriggerStyleSlots {
 
 export type SearchableTriggerStylesProp = StylesProp<SearchableTriggerStyleSlots>;
 
-export interface SearchableTriggerProps extends Omit<InputProps, 'value' | 'onChange' | 'styles'> {
+export interface SearchableTriggerProps extends Omit<InputProps, "value" | "onChange" | "styles"> {
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: SearchableTriggerStylesProp;
 }
 
 const resolveSearchableTriggerBaseStyles = createStylesResolver([
-  'root',
-  'valueSection',
-  'input',
-  'iconSection',
-  'icon',
+  "root",
+  "valueSection",
+  "input",
+  "iconSection",
+  "icon",
 ] as const);
 
 function resolveSearchableTriggerStyles(styles: SearchableTriggerStylesProp | undefined) {
-  if (!styles) return resolveSearchableTriggerBaseStyles(styles)
-  const { root, valueSection, input, iconSection, icon } = styles
-  return resolveSearchableTriggerBaseStyles({ root, valueSection, input, iconSection, icon })
+  if (!styles) return resolveSearchableTriggerBaseStyles(styles);
+  const { root, valueSection, input, iconSection, icon } = styles;
+  return resolveSearchableTriggerBaseStyles({ root, valueSection, input, iconSection, icon });
 }
 
 /** Combobox-style input that opens the dropdown on focus and filters items as you type */
@@ -202,86 +217,100 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
       filteredItems,
       setFocusedKey,
       restoreFocus,
-    } = useSelectContext()
-    const inputRef = React.useRef<HTMLInputElement>(null)
-    const [isSearchActive, setIsSearchActive] = React.useState(false)
-    const setTriggerRef = React.useCallback((element: HTMLInputElement | null) => {
-      triggerRef.current = element
-    }, [triggerRef])
-    const mergedRef = useMergeRefs<HTMLInputElement>(
-      inputRef,
-      setTriggerRef,
-      ref
-    )
+    } = useSelectContext();
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [isSearchActive, setIsSearchActive] = React.useState(false);
+    const setTriggerRef = React.useCallback(
+      (element: HTMLInputElement | null) => {
+        triggerRef.current = element;
+      },
+      [triggerRef],
+    );
+    const mergedRef = useMergeRefs<HTMLInputElement>(inputRef, setTriggerRef, ref);
 
     React.useEffect(() => {
       if (!isOpen) {
-        setIsSearchActive(false)
+        setIsSearchActive(false);
       }
-    }, [isOpen])
+    }, [isOpen]);
 
-    const displayValue = isOpen && isSearchActive ? searchValue : (selectedTextValue || "")
+    const displayValue = isOpen && isSearchActive ? searchValue : selectedTextValue || "";
     const resolved = resolveSearchableTriggerStyles(stylesProp);
 
-    const focusInput = React.useCallback((selectValue = false) => {
-      const input = inputRef.current
-      if (!input) return
+    const focusInput = React.useCallback(
+      (selectValue = false) => {
+        const input = inputRef.current;
+        if (!input) return;
 
-      input.focus({ preventScroll: true })
-      if (selectValue && selectedTextValue && !searchValue) {
-        input.select()
-      }
-    }, [searchValue, selectedTextValue])
+        input.focus({ preventScroll: true });
+        if (selectValue && selectedTextValue && !searchValue) {
+          input.select();
+        }
+      },
+      [searchValue, selectedTextValue],
+    );
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (!isOpen) {
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
-          e.preventDefault()
-          setIsOpen(true)
+        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+          e.preventDefault();
+          setIsOpen(true);
         }
-        return
+        return;
       }
       handleListKeyDown(e, {
         navigateNext: navigateToNextItem,
         navigatePrev: navigateToPrevItem,
         confirm: selectFocusedItem,
         close: () => {
-          setIsOpen(false)
-          setSearchValue("")
-          setIsSearchActive(false)
-          restoreFocus()
+          setIsOpen(false);
+          setSearchValue("");
+          setIsSearchActive(false);
+          restoreFocus();
         },
         filteredItems,
         setFocusedKey,
         requireCtrlForHomeEnd: true,
-      })
-    }
+      });
+    };
 
     const handleClick = () => {
-      focusInput(true)
+      focusInput(true);
       if (!isOpen) {
-        setIsOpen(true)
+        setIsOpen(true);
       }
-    }
+    };
 
     return (
       <div
-        className={cn('search-trigger', styles.trigger, styles['search-trigger'], className, resolved.root)}
+        className={cn(
+          "search-trigger",
+          styles.trigger,
+          styles["search-trigger"],
+          className,
+          resolved.root,
+        )}
         data-slot="trigger"
         data-open={isOpen ? "true" : undefined}
         data-disabled={isDisabled || undefined}
         data-placement={contentPlacement}
         onMouseDown={(e) => {
           if (e.target !== inputRef.current) {
-            e.preventDefault()
-            focusInput(true)
+            e.preventDefault();
+            focusInput(true);
             if (!isOpen) {
-              setIsOpen(true)
+              setIsOpen(true);
             }
           }
         }}
       >
-        <div className={cn(styles['value-section'], styles['search-value-section'], resolved.valueSection)}>
+        <div
+          className={cn(
+            styles["value-section"],
+            styles["search-value-section"],
+            resolved.valueSection,
+          )}
+        >
           <Input
             ref={mergedRef}
             type="text"
@@ -292,33 +321,33 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
             aria-autocomplete="list"
             value={displayValue}
             onChange={(e) => {
-              setSearchValue(e.target.value)
-              setIsSearchActive(true)
-              setIsOpen(true)
+              setSearchValue(e.target.value);
+              setIsSearchActive(true);
+              setIsOpen(true);
             }}
             onKeyDown={handleKeyDown}
             onClick={handleClick}
             onFocus={() => {
               if (!isOpen) {
-                setIsOpen(true)
+                setIsOpen(true);
               }
             }}
             placeholder={placeholder}
             disabled={isDisabled}
             variant="ghost"
-            className={cn('input', styles['input'], resolved.input)}
+            className={cn("input", styles["input"], resolved.input)}
             {...props}
           />
         </div>
-        <div className={cn(styles['search-icon-section'], resolved.iconSection)}>
+        <div className={cn(styles["search-icon-section"], resolved.iconSection)}>
           <div className={cn(styles.icon, resolved.icon)}>
             <ChevronDown size={14} />
           </div>
         </div>
       </div>
-    )
-  }
-)
-SearchableTrigger.displayName = "SearchableTrigger"
+    );
+  },
+);
+SearchableTrigger.displayName = "SearchableTrigger";
 
-export { SelectTrigger, SearchableTrigger }
+export { SelectTrigger, SearchableTrigger };

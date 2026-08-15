@@ -1,9 +1,15 @@
-import React from "react"
-import { Menu as MenuRoot, MenuPortal } from "./Menu"
-import { MenuTrigger, MenuContent } from "./Menu.Content"
-import { MenuItem, MenuCheckboxItem, MenuRadioItem } from "./Menu.Items"
-import { MenuLabel, MenuSeparator, MenuShortcut, MenuGroup, MenuRadioGroup } from "./Menu.Decorative"
-import { MenuSub, MenuSubContent, MenuSubTrigger } from "./Menu.Submenu"
+import React from "react";
+import { Menu as MenuRoot, MenuPortal } from "./Menu";
+import { MenuTrigger, MenuContent } from "./Menu.Content";
+import { MenuItem, MenuCheckboxItem, MenuRadioItem } from "./Menu.Items";
+import {
+  MenuLabel,
+  MenuSeparator,
+  MenuShortcut,
+  MenuGroup,
+  MenuRadioGroup,
+} from "./Menu.Decorative";
+import { MenuSub, MenuSubContent, MenuSubTrigger } from "./Menu.Submenu";
 
 import type {
   MenuProps,
@@ -22,23 +28,23 @@ import type {
   MenuSubProps,
   MenuSubTriggerProps,
   MenuSubContentProps,
-} from "./Menu"
+} from "./Menu";
 
 interface MenuComponent extends React.FC<React.PropsWithChildren<MenuProps>> {
-  Trigger: typeof MenuTrigger
-  Content: typeof MenuContent
-  Item: typeof MenuItem
-  CheckboxItem: typeof MenuCheckboxItem
-  RadioItem: typeof MenuRadioItem
-  Label: typeof MenuLabel
-  Separator: typeof MenuSeparator
-  Shortcut: typeof MenuShortcut
-  Group: typeof MenuGroup
-  RadioGroup: typeof MenuRadioGroup
-  Portal: typeof MenuPortal
-  Sub: typeof MenuSub
-  SubContent: typeof MenuSubContent
-  SubTrigger: typeof MenuSubTrigger
+  Trigger: typeof MenuTrigger;
+  Content: typeof MenuContent;
+  Item: typeof MenuItem;
+  CheckboxItem: typeof MenuCheckboxItem;
+  RadioItem: typeof MenuRadioItem;
+  Label: typeof MenuLabel;
+  Separator: typeof MenuSeparator;
+  Shortcut: typeof MenuShortcut;
+  Group: typeof MenuGroup;
+  RadioGroup: typeof MenuRadioGroup;
+  Portal: typeof MenuPortal;
+  Sub: typeof MenuSub;
+  SubContent: typeof MenuSubContent;
+  SubTrigger: typeof MenuSubTrigger;
 }
 
 const Menu: MenuComponent = Object.assign(MenuRoot, {
@@ -56,9 +62,9 @@ const Menu: MenuComponent = Object.assign(MenuRoot, {
   Sub: MenuSub,
   SubContent: MenuSubContent,
   SubTrigger: MenuSubTrigger,
-}) as MenuComponent
+}) as MenuComponent;
 
-export { Menu }
+export { Menu };
 export type {
   MenuProps,
   MenuTriggerProps,
@@ -76,4 +82,4 @@ export type {
   MenuSubProps,
   MenuSubTriggerProps,
   MenuSubContentProps,
-}
+};

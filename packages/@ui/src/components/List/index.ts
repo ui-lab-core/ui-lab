@@ -1,9 +1,15 @@
-import { Container as ListRoot, Header as ListHeader, ActionGroup as ListActionGroup, Divider as ListDivider, Footer as ListFooter } from './List';
-import { Item } from './List.Item';
-import { Checkbox, CheckboxIndicator, Switch, Input, Select } from './List.Controls';
-import { Media } from './List.Media';
-import { Title } from './List.Title';
-import { Desc } from './List.Desc';
+import {
+  Container as ListRoot,
+  Header as ListHeader,
+  ActionGroup as ListActionGroup,
+  Divider as ListDivider,
+  Footer as ListFooter,
+} from "./List";
+import { Item } from "./List.Item";
+import { Checkbox, CheckboxIndicator, Switch, Input, Select } from "./List.Controls";
+import { Media } from "./List.Media";
+import { Title } from "./List.Title";
+import { Desc } from "./List.Desc";
 
 const List = Object.assign(ListRoot, {
   Header: ListHeader,
@@ -22,7 +28,7 @@ const List = Object.assign(ListRoot, {
 });
 
 export { List };
-export type { ListActionDef } from './list.types';
+export type { ListActionDef } from "./list.types";
 export type {
   ListStyleSlots,
   ListStyleSlot,
@@ -41,4 +47,4 @@ export type {
   ListActionGroupProps,
   ListDividerProps,
   ListFooterProps,
-} from './list.types';
+} from "./list.types";

@@ -1,11 +1,17 @@
 // toast/store.ts
-import React from 'react';
-import { type StyleValue } from '@/lib/utils';
-import { type StylesProp } from '@/lib/styles';
+import React from "react";
+import { type StyleValue } from "@/lib/utils";
+import { type StylesProp } from "@/lib/styles";
 
-export type ToastVariant = 'default' | 'danger' | 'success' | 'info' | 'warning';
-export type ToastPosition = 'top-left' | 'top' | 'top-right' | 'bottom-left' | 'bottom' | 'bottom-right';
-export type ToastSpawnDirection = 'top' | 'bottom';
+export type ToastVariant = "default" | "danger" | "success" | "info" | "warning";
+export type ToastPosition =
+  | "top-left"
+  | "top"
+  | "top-right"
+  | "bottom-left"
+  | "bottom"
+  | "bottom-right";
+export type ToastSpawnDirection = "top" | "bottom";
 
 export interface ToastStyleSlots {
   root?: StyleValue;
@@ -55,12 +61,12 @@ export interface ToastProps {
 }
 
 type ToastAction =
-  | { type: 'ADD_TOAST'; toast: ToastProps }
-  | { type: 'UPDATE_TOAST'; toast: Partial<ToastProps> & { id: string } }
-  | { type: 'CLOSE_TOAST'; toastId: string }
-  | { type: 'DISMISS_TOAST'; toastId: string }
-  | { type: 'PAUSE_TOAST'; toastId: string }
-  | { type: 'RESUME_TOAST'; toastId: string; remaining: number };
+  | { type: "ADD_TOAST"; toast: ToastProps }
+  | { type: "UPDATE_TOAST"; toast: Partial<ToastProps> & { id: string } }
+  | { type: "CLOSE_TOAST"; toastId: string }
+  | { type: "DISMISS_TOAST"; toastId: string }
+  | { type: "PAUSE_TOAST"; toastId: string }
+  | { type: "RESUME_TOAST"; toastId: string; remaining: number };
 
 interface State {
   toasts: ToastProps[];
@@ -75,29 +81,28 @@ const broadcast = () => {
 
 const reducer = (state: State, action: ToastAction): State => {
   switch (action.type) {
-    case 'ADD_TOAST':
+    case "ADD_TOAST":
       return {
         ...state,
-        toasts: [{ ...action.toast, createdAt: action.toast.createdAt || Date.now(), open: true }, ...state.toasts].slice(0, 50),
+        toasts: [
+          { ...action.toast, createdAt: action.toast.createdAt || Date.now(), open: true },
+          ...state.toasts,
+        ].slice(0, 50),
       };
 
-    case 'UPDATE_TOAST':
+    case "UPDATE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t
-        ),
+        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
       };
 
-    case 'CLOSE_TOAST':
+    case "CLOSE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === action.toastId ? { ...t, open: false } : t
-        ),
+        toasts: state.toasts.map((t) => (t.id === action.toastId ? { ...t, open: false } : t)),
       };
 
-    case 'DISMISS_TOAST': {
+    case "DISMISS_TOAST": {
       const dismissedToast = state.toasts.find((t) => t.id === action.toastId);
       if (!dismissedToast) return state;
 
@@ -106,34 +111,32 @@ const reducer = (state: State, action: ToastAction): State => {
         toasts: state.toasts
           .filter((t) => t.id !== action.toastId)
           .map((t) =>
-            t.toasterId === dismissedToast?.toasterId && t.spawnDirection !== 'top'
-              ? { ...t, spawnDirection: 'top' as ToastSpawnDirection }
-              : t
+            t.toasterId === dismissedToast?.toasterId && t.spawnDirection !== "top"
+              ? { ...t, spawnDirection: "top" as ToastSpawnDirection }
+              : t,
           ),
       };
     }
 
-    case 'PAUSE_TOAST':
+    case "PAUSE_TOAST":
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === action.toastId
-            ? { ...t, _pausedAt: Date.now(), _remaining: t.duration }
-            : t
+          t.id === action.toastId ? { ...t, _pausedAt: Date.now(), _remaining: t.duration } : t,
         ),
       };
 
-    case 'RESUME_TOAST':
+    case "RESUME_TOAST":
       return {
         ...state,
         toasts: state.toasts.map((t) =>
           t.id === action.toastId
             ? {
-              ...t,
-              _remaining: action.remaining,
-              _pausedAt: undefined,
-            }
-            : t
+                ...t,
+                _remaining: action.remaining,
+                _pausedAt: undefined,
+              }
+            : t,
         ),
       };
 

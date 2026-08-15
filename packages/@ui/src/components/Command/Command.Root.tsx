@@ -2,7 +2,13 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { CommandContext, type CommandItem, type CommandStylesProp, resolveCommandBaseStyles, useCommandEngine } from "./Command.shared";
+import {
+  CommandContext,
+  type CommandItem,
+  type CommandStylesProp,
+  resolveCommandBaseStyles,
+  useCommandEngine,
+} from "./Command.shared";
 
 export interface CommandRootProps {
   className?: string;
@@ -25,28 +31,87 @@ const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
  * use the floating `Command` instead when you want the Cmd+K style overlay.
  */
 export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
-  ({ className, styles: commandStyles, items = EMPTY_COMMAND_ITEMS, filter, onOpenChange, closeOnSelect = false, children }, ref) => {
+  (
+    {
+      className,
+      styles: commandStyles,
+      items = EMPTY_COMMAND_ITEMS,
+      filter,
+      onOpenChange,
+      closeOnSelect = false,
+      children,
+    },
+    ref,
+  ) => {
     const surfaceRef = React.useRef<HTMLDivElement>(null);
     const pointerRef = React.useRef(false);
     const searchInputRef = React.useRef<HTMLInputElement>(null);
     const scrollableRef = React.useRef<HTMLDivElement>(null);
     const resolved = resolveCommandBaseStyles(commandStyles);
     const engine = useCommandEngine({ items, filter });
-    const { focusedKey, setFocusedKey, filteredItems, groupedItems, registerItem, unregisterItem, actionRef, moveFocus, runFocusedAction, searchValue, setSearchValue } = engine;
+    const {
+      focusedKey,
+      setFocusedKey,
+      filteredItems,
+      groupedItems,
+      registerItem,
+      unregisterItem,
+      actionRef,
+      moveFocus,
+      runFocusedAction,
+      searchValue,
+      setSearchValue,
+    } = engine;
     React.useImperativeHandle(ref, () => surfaceRef.current as HTMLDivElement);
-    const close = React.useCallback(() => { if (closeOnSelect) onOpenChange?.(false); }, [closeOnSelect, onOpenChange]);
+    const close = React.useCallback(() => {
+      if (closeOnSelect) onOpenChange?.(false);
+    }, [closeOnSelect, onOpenChange]);
     const handleKeyDown = (event: React.KeyboardEvent) => {
-      if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); moveFocus(event.key === "ArrowDown" ? "down" : "up"); }
-      if (event.key === "Enter") { event.preventDefault(); const action = runFocusedAction(); if (action) { action(); close(); } }
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        moveFocus(event.key === "ArrowDown" ? "down" : "up");
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const action = runFocusedAction();
+        if (action) {
+          action();
+          close();
+        }
+      }
     };
     return (
       <div
         ref={surfaceRef}
         onKeyDown={handleKeyDown}
-        onPointerDownCapture={() => { pointerRef.current = true; window.setTimeout(() => { pointerRef.current = false; }, 0); }}
+        onPointerDownCapture={() => {
+          pointerRef.current = true;
+          window.setTimeout(() => {
+            pointerRef.current = false;
+          }, 0);
+        }}
         className={cn("command", className, resolved.root)}
       >
-        <CommandContext.Provider value={{ isOpen: false, close, focusedKey, setFocusedKey, registerItem, unregisterItem, actionRef, surfaceRef, pointerRef, searchInputRef, scrollableRef, dismissOnBlur: false, searchValue, setSearchValue, filteredItems, groupedItems }}>
+        <CommandContext.Provider
+          value={{
+            isOpen: false,
+            close,
+            focusedKey,
+            setFocusedKey,
+            registerItem,
+            unregisterItem,
+            actionRef,
+            surfaceRef,
+            pointerRef,
+            searchInputRef,
+            scrollableRef,
+            dismissOnBlur: false,
+            searchValue,
+            setSearchValue,
+            filteredItems,
+            groupedItems,
+          }}
+        >
           {children}
         </CommandContext.Provider>
       </div>

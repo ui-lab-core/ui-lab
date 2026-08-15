@@ -37,7 +37,9 @@ export interface ExpandStyleSlots {
 }
 
 export type ExpandStylesProp = StylesProp<ExpandStyleSlots>;
-export interface ExpandState { expanded?: boolean }
+export interface ExpandState {
+  expanded?: boolean;
+}
 
 const resolveExpandBaseStyles = createStylesResolver([
   "root",
@@ -160,8 +162,8 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled });
 
-    const hasElementChildren = React.Children.toArray(children).some(
-      (child) => React.isValidElement(child),
+    const hasElementChildren = React.Children.toArray(children).some((child) =>
+      React.isValidElement(child),
     );
     const shouldRenderCompositeLabel = title !== undefined || !hasElementChildren;
 
@@ -169,12 +171,7 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
       <button
         ref={mergedRef}
         {...mergeProps(buttonProps, focusProps, hoverProps, props)}
-        className={cn(
-          "trigger",
-          styles.trigger,
-          resolvedStyles.trigger,
-          className,
-        )}
+        className={cn("trigger", styles.trigger, resolvedStyles.trigger, className)}
         type="button"
         aria-expanded={state.isSelected}
         data-selected={state.isSelected ? "true" : undefined}
@@ -188,9 +185,7 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
       >
         {shouldRenderCompositeLabel ? (
           <>
-            <span
-              className={cn("title", styles.title, resolvedStyles.title)}
-            >
+            <span className={cn("title", styles.title, resolvedStyles.title)}>
               {title ?? children}
             </span>
             <ExpandIcon />
@@ -218,25 +213,14 @@ const ExpandContent = React.forwardRef<HTMLDivElement, ExpandContentProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          "content",
-          styles.content,
-          resolvedStyles.content,
-          className,
-        )}
+        className={cn("content", styles.content, resolvedStyles.content, className)}
         data-selected={state.isSelected ? "true" : undefined}
         data-expanded={state.isSelected ? "true" : undefined}
         data-from={from && from !== "below" ? from : undefined}
         aria-hidden={!state.isSelected}
         {...props}
       >
-        <div
-          className={cn(
-            "content-inner",
-            styles["content-inner"],
-            resolvedStyles.contentInner,
-          )}
-        >
+        <div className={cn("content-inner", styles["content-inner"], resolvedStyles.contentInner)}>
           {children}
         </div>
       </div>
@@ -274,12 +258,14 @@ function prependContentChildren(
   content: React.ReactElement<ExpandContentProps>,
   prefix: React.ReactNode,
 ) {
-  return React.cloneElement(content, undefined, (
+  return React.cloneElement(
+    content,
+    undefined,
     <>
       {prefix}
       {content.props.children}
-    </>
-  ));
+    </>,
+  );
 }
 
 function moveDividersIntoContent(childrenArray: React.ReactNode[]) {
@@ -301,8 +287,10 @@ function moveDividersIntoContent(childrenArray: React.ReactNode[]) {
   return normalizedChildren;
 }
 
-export interface ExpandProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onChange"> {
+export interface ExpandProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "onChange"
+> {
   /** Header content rendered in preset mode */
   title?: React.ReactNode;
   /** Controls whether the expand supplies its own radius or sits flush inside a bordered container. */

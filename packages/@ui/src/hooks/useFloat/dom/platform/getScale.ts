@@ -1,10 +1,10 @@
-import type {Coords} from '../../core';
-import {createCoords, round} from '../../../../utils';
-import {isHTMLElement} from '../../../../utils/dom';
+import type { Coords } from "../../core";
+import { createCoords, round } from "../../../../utils";
+import { isHTMLElement } from "../../../../utils/dom";
 
-import type {VirtualElement} from '../types';
-import {getCssDimensions} from '../utils/getCssDimensions';
-import {unwrapElement} from '../utils/unwrapElement';
+import type { VirtualElement } from "../types";
+import { getCssDimensions } from "../utils/getCssDimensions";
+import { unwrapElement } from "../utils/unwrapElement";
 
 export function getScale(element: Element | VirtualElement): Coords {
   const domElement = unwrapElement(element);
@@ -14,7 +14,7 @@ export function getScale(element: Element | VirtualElement): Coords {
   }
 
   const rect = domElement.getBoundingClientRect();
-  const {width, height, $} = getCssDimensions(domElement);
+  const { width, height, $ } = getCssDimensions(domElement);
   let x = ($ ? round(rect.width) : rect.width) / width;
   let y = ($ ? round(rect.height) : rect.height) / height;
 

@@ -1,58 +1,58 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useFocusRing } from '@react-aria/focus';
-import { mergeProps } from '@react-aria/utils';
-import { cn } from '@/lib/utils';
-import { useListContext } from './list.context';
-import { ListItemProps, ListActionDef } from './list.types';
-import styles from './List.module.css';
-import { createStylesResolver } from '@/lib/styles';
-import { Tooltip } from '@/components/Tooltip';
-import { focusAdjacentTabStop } from '@/utils/list-navigation';
-import { getListItemSlot } from './list.item-layout';
+import React from "react";
+import { useFocusRing } from "@react-aria/focus";
+import { mergeProps } from "@react-aria/utils";
+import { cn } from "@/lib/utils";
+import { useListContext } from "./list.context";
+import { ListItemProps, ListActionDef } from "./list.types";
+import styles from "./List.module.css";
+import { createStylesResolver } from "@/lib/styles";
+import { Tooltip } from "@/components/Tooltip";
+import { focusAdjacentTabStop } from "@/utils/list-navigation";
+import { getListItemSlot } from "./list.item-layout";
 
-const resolveListItemStyles = createStylesResolver(['root'] as const);
+const resolveListItemStyles = createStylesResolver(["root"] as const);
 
 type ListItemDOMProps = React.HTMLAttributes<HTMLDivElement> & {
-  'data-disabled'?: boolean | 'true' | 'false';
-  'data-focused'?: string;
-  'data-focus-visible'?: string;
+  "data-disabled"?: boolean | "true" | "false";
+  "data-focused"?: string;
+  "data-focus-visible"?: string;
 };
 
 const NESTED_INTERACTIVE_SELECTOR = [
-  'a[href]',
-  'button',
-  'input',
-  'select',
-  'textarea',
+  "a[href]",
+  "button",
+  "input",
+  "select",
+  "textarea",
   '[role="button"]',
   '[role="checkbox"]',
   '[role="combobox"]',
   '[role="switch"]',
   '[tabindex]:not([tabindex="-1"])',
-].join(', ');
+].join(", ");
 
 const PRIMARY_ACTION_SELECTOR = '[data-list-primary-action="true"]';
-const ACTIONS_SELECTOR = '[data-actions]';
+const ACTIONS_SELECTOR = "[data-actions]";
 const ACTIVATABLE_SELECTOR = [
-  'a[href]',
-  'button',
-  'input',
-  'select',
+  "a[href]",
+  "button",
+  "input",
+  "select",
   '[role="button"]',
   '[role="checkbox"]',
   '[role="combobox"]',
   '[role="radio"]',
   '[role="switch"]',
-].join(', ');
+].join(", ");
 
 function isDisabledElement(element: HTMLElement) {
-  if (element.matches(':disabled')) return true;
+  if (element.matches(":disabled")) return true;
 
   return (
-    element.getAttribute('aria-disabled') === 'true' ||
-    element.getAttribute('data-disabled') === 'true'
+    element.getAttribute("aria-disabled") === "true" ||
+    element.getAttribute("data-disabled") === "true"
   );
 }
 
@@ -62,16 +62,16 @@ function isEditableElement(element: HTMLElement) {
   }
 
   if (element instanceof HTMLInputElement) {
-    const type = (element.type || 'text').toLowerCase();
-    if (type === 'checkbox' || type === 'radio') {
+    const type = (element.type || "text").toLowerCase();
+    if (type === "checkbox" || type === "radio") {
       return false;
     }
 
     return true;
   }
 
-  const role = element.getAttribute('role');
-  return role === 'textbox' || role === 'searchbox' || role === 'spinbutton';
+  const role = element.getAttribute("role");
+  return role === "textbox" || role === "searchbox" || role === "spinbutton";
 }
 
 function isEligibleActivatableElement(element: HTMLElement) {
@@ -82,8 +82,8 @@ function isEligibleActivatableElement(element: HTMLElement) {
   if (element instanceof HTMLInputElement) {
     if (element.readOnly) return false;
 
-    const type = (element.type || 'text').toLowerCase();
-    return type === 'checkbox' || type === 'radio' || element.getAttribute('role') === 'combobox';
+    const type = (element.type || "text").toLowerCase();
+    return type === "checkbox" || type === "radio" || element.getAttribute("role") === "combobox";
   }
 
   if (
@@ -94,20 +94,20 @@ function isEligibleActivatableElement(element: HTMLElement) {
     return true;
   }
 
-  const role = element.getAttribute('role');
+  const role = element.getAttribute("role");
   return (
-    role === 'button' ||
-    role === 'checkbox' ||
-    role === 'combobox' ||
-    role === 'radio' ||
-    role === 'switch'
+    role === "button" ||
+    role === "checkbox" ||
+    role === "combobox" ||
+    role === "radio" ||
+    role === "switch"
   );
 }
 
 function getEligibleActivatableDescendants(root: HTMLElement) {
-  return Array.from(root.querySelectorAll<HTMLElement>(ACTIVATABLE_SELECTOR)).filter((element) => (
-    !element.closest(ACTIONS_SELECTOR) && isEligibleActivatableElement(element)
-  ));
+  return Array.from(root.querySelectorAll<HTMLElement>(ACTIVATABLE_SELECTOR)).filter(
+    (element) => !element.closest(ACTIONS_SELECTOR) && isEligibleActivatableElement(element),
+  );
 }
 
 function resolveExplicitPrimaryTarget(element: HTMLElement) {
@@ -143,9 +143,18 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       onMouseEnter,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const { focusedItem, isFocusMode, orientation, rootRef, styles: listStyles, setFocusedItem, focusAdjacentItem, focusBoundaryItem } = useListContext();
+    const {
+      focusedItem,
+      isFocusMode,
+      orientation,
+      rootRef,
+      styles: listStyles,
+      setFocusedItem,
+      focusAdjacentItem,
+      focusBoundaryItem,
+    } = useListContext();
     const itemRef = React.useRef<HTMLDivElement>(null);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const isHighlighted = isFocusMode && focusedItem === itemRef.current;
@@ -161,20 +170,21 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       onKeyDown: onKeyDownProp,
       ...restDomProps
     } = domProps;
-    const dataFocused = domProps['data-focused'];
-    const dataFocusVisible = domProps['data-focus-visible'];
+    const dataFocused = domProps["data-focused"];
+    const dataFocusVisible = domProps["data-focus-visible"];
     const isDisabled =
-      domProps['aria-disabled'] === true ||
-      domProps['aria-disabled'] === 'true' ||
-      domProps['data-disabled'] === true ||
-      domProps['data-disabled'] === 'true';
+      domProps["aria-disabled"] === true ||
+      domProps["aria-disabled"] === "true" ||
+      domProps["data-disabled"] === true ||
+      domProps["data-disabled"] === "true";
     const tabIndex = tabIndexProp ?? (focusable ? (isDisabled ? -1 : 0) : undefined);
-    const hasRowClickAction = typeof onClickProp === 'function';
+    const hasRowClickAction = typeof onClickProp === "function";
     const itemChildren = React.Children.toArray(children);
     const childSlots = itemChildren.map(getListItemSlot);
-    const lastLeadingIndex = childSlots.lastIndexOf('leading');
-    const firstTrailingIndex = childSlots.indexOf('trailing');
-    const hasStructuralSlots = lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || Boolean(actions?.length);
+    const lastLeadingIndex = childSlots.lastIndexOf("leading");
+    const firstTrailingIndex = childSlots.indexOf("trailing");
+    const hasStructuralSlots =
+      lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || Boolean(actions?.length);
     const leadingCount = lastLeadingIndex + 1;
     const trailingStart = firstTrailingIndex >= 0 ? firstTrailingIndex : itemChildren.length;
     const contentCount = Math.max(0, trailingStart - leadingCount);
@@ -184,15 +194,19 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
     const hasContent = contentCount > 0;
     const layoutColumns = hasStructuralSlots
       ? [
-          hasLeading ? `repeat(${leadingCount}, auto)` : '',
-          !hasContent && hasTrailing ? 'minmax(0, 1fr)' : '',
-          hasContent ? `repeat(${contentCount}, minmax(0, 1fr))` : '',
-          hasTrailing ? `repeat(${trailingCount}, auto)` : '',
-        ].filter(Boolean).join(' ')
+          hasLeading ? `repeat(${leadingCount}, auto)` : "",
+          !hasContent && hasTrailing ? "minmax(0, 1fr)" : "",
+          hasContent ? `repeat(${contentCount}, minmax(0, 1fr))` : "",
+          hasTrailing ? `repeat(${trailingCount}, auto)` : "",
+        ]
+          .filter(Boolean)
+          .join(" ")
       : undefined;
-    const isFocusWithinRow = React.useCallback((element: EventTarget | null) => (
-      element instanceof Node && itemRef.current?.contains(element)
-    ), []);
+    const isFocusWithinRow = React.useCallback(
+      (element: EventTarget | null) =>
+        element instanceof Node && itemRef.current?.contains(element),
+      [],
+    );
     const getPrimaryActionTarget = React.useCallback(() => {
       const item = itemRef.current;
       if (!item || isDisabled) return null;
@@ -201,7 +215,9 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         return item;
       }
 
-      const explicitTargets = Array.from(item.querySelectorAll<HTMLElement>(PRIMARY_ACTION_SELECTOR))
+      const explicitTargets = Array.from(
+        item.querySelectorAll<HTMLElement>(PRIMARY_ACTION_SELECTOR),
+      )
         .filter((element) => !element.closest(ACTIONS_SELECTOR))
         .map(resolveExplicitPrimaryTarget)
         .filter((element): element is HTMLElement => element !== null);
@@ -238,7 +254,9 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       onClick: (event: React.MouseEvent<HTMLDivElement>) => {
         if (event.target instanceof Node && !event.currentTarget.contains(event.target)) return;
 
-        const interactiveTarget = (event.target as HTMLElement).closest(NESTED_INTERACTIVE_SELECTOR);
+        const interactiveTarget = (event.target as HTMLElement).closest(
+          NESTED_INTERACTIVE_SELECTOR,
+        );
         if (interactiveTarget && interactiveTarget !== itemRef.current) return;
 
         if (isDisabled) return;
@@ -254,39 +272,39 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         if (event.currentTarget !== event.target || isDisabled) return;
 
         switch (event.key) {
-          case 'ArrowDown':
-            if (orientation !== 'vertical') return;
+          case "ArrowDown":
+            if (orientation !== "vertical") return;
             event.preventDefault();
             focusAdjacentItem(event.currentTarget, 1);
             return;
-          case 'ArrowUp':
-            if (orientation !== 'vertical') return;
+          case "ArrowUp":
+            if (orientation !== "vertical") return;
             event.preventDefault();
             focusAdjacentItem(event.currentTarget, -1);
             return;
-          case 'ArrowRight':
-            if (orientation !== 'horizontal') return;
+          case "ArrowRight":
+            if (orientation !== "horizontal") return;
             event.preventDefault();
             focusAdjacentItem(event.currentTarget, 1);
             return;
-          case 'ArrowLeft':
-            if (orientation !== 'horizontal') return;
+          case "ArrowLeft":
+            if (orientation !== "horizontal") return;
             event.preventDefault();
             focusAdjacentItem(event.currentTarget, -1);
             return;
-          case 'Home':
+          case "Home":
             event.preventDefault();
-            focusBoundaryItem('first');
+            focusBoundaryItem("first");
             return;
-          case 'End':
+          case "End":
             event.preventDefault();
-            focusBoundaryItem('last');
+            focusBoundaryItem("last");
             return;
-          case 'Enter':
-          case ' ': {
+          case "Enter":
+          case " ": {
             const activationTarget = getPrimaryActionTarget();
             if (!activationTarget) {
-              if (event.key === ' ') {
+              if (event.key === " ") {
                 event.preventDefault();
               }
               return;
@@ -296,15 +314,24 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
             activationTarget.click();
             return;
           }
-          case 'Tab': {
+          case "Tab": {
             const direction = event.shiftKey ? -1 : 1;
-            const movedToRow = focusAdjacentItem(event.currentTarget, direction as 1 | -1, true, false);
+            const movedToRow = focusAdjacentItem(
+              event.currentTarget,
+              direction as 1 | -1,
+              true,
+              false,
+            );
             if (movedToRow) {
               event.preventDefault();
               return;
             }
 
-            const movedOutsideList = focusAdjacentTabStop(event.currentTarget, direction as 1 | -1, rootRef.current);
+            const movedOutsideList = focusAdjacentTabStop(
+              event.currentTarget,
+              direction as 1 | -1,
+              rootRef.current,
+            );
             if (movedOutsideList) {
               event.preventDefault();
             }
@@ -323,18 +350,18 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       <div
         ref={itemRef}
         role="option"
-        aria-selected={selected ? 'true' : 'false'}
+        aria-selected={selected ? "true" : "false"}
         tabIndex={tabIndex}
         className={cn(styles.item, listStyles.item, className, resolvedStyles.root)}
         data-list-focus-owner="true"
-        data-focused={dataFocused ?? (isFocused ? 'true' : 'false')}
-        data-focus-visible={dataFocusVisible ?? (isFocusVisible ? 'true' : 'false')}
-        data-highlighted={isHighlighted ? 'true' : 'false'}
+        data-focused={dataFocused ?? (isFocused ? "true" : "false")}
+        data-focus-visible={dataFocusVisible ?? (isFocusVisible ? "true" : "false")}
+        data-highlighted={isHighlighted ? "true" : "false"}
         data-value={value}
-        data-interactive={interactive ? 'true' : undefined}
-        data-selected={selected ? 'true' : undefined}
+        data-interactive={interactive ? "true" : undefined}
+        data-selected={selected ? "true" : undefined}
         {...itemProps}
-        data-list-layout={hasStructuralSlots ? 'columns' : undefined}
+        data-list-layout={hasStructuralSlots ? "columns" : undefined}
         style={{
           ...itemProps.style,
           gridTemplateColumns: layoutColumns,
@@ -344,7 +371,7 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         {actions && actions.length > 0 && (
           <div className={cn(styles.actions, listStyles.actions)} data-actions>
             {actions.map((action, i) => {
-              const key = React.isValidElement(action) ? i : ((action as ListActionDef).title || i);
+              const key = React.isValidElement(action) ? i : (action as ListActionDef).title || i;
               return React.isValidElement(action) ? (
                 <React.Fragment key={key}>{action}</React.Fragment>
               ) : (
@@ -364,8 +391,8 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         )}
       </div>
     );
-  }
+  },
 );
-Item.displayName = 'List.Item';
+Item.displayName = "List.Item";
 
 export { Item };

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import type { ListOrientation, ListStyleSlot } from './list.types';
+import React from "react";
+import type { ListOrientation, ListStyleSlot } from "./list.types";
 
 interface SetFocusedItemOptions {
   enterFocusMode?: boolean;
@@ -17,8 +17,13 @@ interface ListContextValue {
   rootRef: React.MutableRefObject<HTMLDivElement | null>;
   styles: ResolvedListStyles;
   setFocusedItem: (item: HTMLElement | null, options?: SetFocusedItemOptions) => void;
-  focusAdjacentItem: (currentItem: HTMLElement | null, direction: 1 | -1, scroll?: boolean, wrap?: boolean) => boolean;
-  focusBoundaryItem: (position: 'first' | 'last', scroll?: boolean) => boolean;
+  focusAdjacentItem: (
+    currentItem: HTMLElement | null,
+    direction: 1 | -1,
+    scroll?: boolean,
+    wrap?: boolean,
+  ) => boolean;
+  focusBoundaryItem: (position: "first" | "last", scroll?: boolean) => boolean;
 }
 
 export const ListContext = React.createContext<ListContextValue | undefined>(undefined);
@@ -26,7 +31,7 @@ export const ListContext = React.createContext<ListContextValue | undefined>(und
 export const useListContext = () => {
   const context = React.useContext(ListContext);
   if (!context) {
-    throw new Error('List sub-components must be used within a List component');
+    throw new Error("List sub-components must be used within a List component");
   }
   return context;
 };

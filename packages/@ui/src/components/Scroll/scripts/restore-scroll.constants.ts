@@ -25,7 +25,7 @@ function getScrollRestoreWindow(): ScrollRestoreWindow | null {
   return window as ScrollRestoreWindow;
 }
 
-export function isScrollRestoreDebugEnabled(): boolean {
+function isScrollRestoreDebugEnabled(): boolean {
   const scrollWindow = getScrollRestoreWindow();
   if (!scrollWindow) return false;
   if (scrollWindow.__uiLabScrollRestoreDebug === true) return true;
@@ -37,10 +37,7 @@ export function isScrollRestoreDebugEnabled(): boolean {
   }
 }
 
-export function recordScrollRestoreTrace(
-  type: string,
-  detail: Record<string, unknown> = {},
-): void {
+export function recordScrollRestoreTrace(type: string, detail: Record<string, unknown> = {}): void {
   if (!isScrollRestoreDebugEnabled()) return;
 
   const scrollWindow = getScrollRestoreWindow();
@@ -48,9 +45,10 @@ export function recordScrollRestoreTrace(
 
   const nextEntry = {
     type,
-    t: typeof performance !== "undefined" && typeof performance.now === "function"
-      ? performance.now()
-      : Date.now(),
+    t:
+      typeof performance !== "undefined" && typeof performance.now === "function"
+        ? performance.now()
+        : Date.now(),
     readyState: typeof document === "undefined" ? null : document.readyState,
     ...detail,
   };

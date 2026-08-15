@@ -2,9 +2,9 @@
 
 import React from "react";
 
-import { mergeProps, } from "@react-aria/utils";
+import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
-import { useFocusRing } from "@react-aria/focus"
+import { useFocusRing } from "@react-aria/focus";
 import { useSwitch } from "@react-aria/switch";
 
 import { useToggleState } from "react-stately";
@@ -17,8 +17,6 @@ import { useDragToggle } from "@/hooks/useDragToggle";
 
 import styles from "./Switch.module.css";
 
-
-
 interface SwitchStyleSlots {
   root?: StyleValue;
   track?: StyleValue;
@@ -27,14 +25,18 @@ interface SwitchStyleSlots {
 
 type SwitchStylesProp = StylesProp<SwitchStyleSlots>;
 
-const resolveSwitchBaseStyles = createStylesResolver(['root', 'track', 'thumb'] as const) as (stylesProp?: SwitchStylesProp) => SwitchStyleSlots;
+const resolveSwitchBaseStyles = createStylesResolver(["root", "track", "thumb"] as const) as (
+  stylesProp?: SwitchStylesProp,
+) => SwitchStyleSlots;
 
 export interface SwitchState {
   checked?: boolean;
 }
 
-export interface SwitchProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "onChange" | "checked" | "defaultChecked"> {
+export interface SwitchProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type" | "size" | "onChange" | "checked" | "defaultChecked"
+> {
   /** Initial checked state. For controlled usage, pass `state={{ checked }}`. */
   checked?: boolean;
   /** Controlled state. */
@@ -54,21 +56,21 @@ export interface SwitchProps
   styles?: SwitchStylesProp;
 }
 
-
 const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
-  ({
-    className,
-    styles: stylesProp,
-    disabled = false,
-    checked,
-    state: controlledState,
-    isSelected: legacySelected,
-    onChange,
-    defaultSelected,
-    size = "default",
-    ...props
-  },
-    ref
+  (
+    {
+      className,
+      styles: stylesProp,
+      disabled = false,
+      checked,
+      state: controlledState,
+      isSelected: legacySelected,
+      onChange,
+      defaultSelected,
+      size = "default",
+      ...props
+    },
+    ref,
   ) => {
     const [selected, setSelected] = useControlledState(
       controlledState?.checked,
@@ -90,7 +92,11 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     const { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledby, ...otherProps } = props;
     const resolvedAriaLabel = ariaLabelledby
       ? undefined
-      : resolveAccessibleLabel("Switch", ariaLabel, `Switch ${props.id ?? props.name ?? ""}`.trim());
+      : resolveAccessibleLabel(
+          "Switch",
+          ariaLabel,
+          `Switch ${props.id ?? props.name ?? ""}`.trim(),
+        );
 
     const { inputProps, isSelected } = useSwitch(
       {
@@ -99,7 +105,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         ...(ariaLabelledby && { "aria-labelledby": ariaLabelledby }),
       },
       toggleState,
-      inputRef
+      inputRef,
     );
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
@@ -115,23 +121,18 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     React.useImperativeHandle(ref, () => inputRef.current!);
 
     const resolved = resolveSwitchBaseStyles(stylesProp);
-    const dragToggleProps = useDragToggle(
-      "switch",
-      rootRef,
-      inputRef,
-      toggleState.setSelected,
-    );
+    const dragToggleProps = useDragToggle("switch", rootRef, inputRef, toggleState.setSelected);
 
     return (
       <div
         {...dragToggleProps}
         ref={rootRef}
         className={cn(
-          'switch',
+          "switch",
           styles.switch,
           size === "sm" && styles["switch-sm"],
           className,
-          resolved.root
+          resolved.root,
         )}
         data-switch-focus-surface="true"
         data-selected={isSelected || undefined}
@@ -141,20 +142,8 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         data-hovered={isHovered || undefined}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
-        <div
-          className={cn(
-            'switch-track',
-            styles["switch-track"],
-            resolved.track
-          )}
-        />
-        <div
-          className={cn(
-            'switch-thumb',
-            styles["switch-thumb"],
-            resolved.thumb
-          )}
-        />
+        <div className={cn("switch-track", styles["switch-track"], resolved.track)} />
+        <div className={cn("switch-thumb", styles["switch-thumb"], resolved.thumb)} />
         <input
           ref={inputRef}
           type="checkbox"
@@ -164,7 +153,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         />
       </div>
     );
-  }
+  },
 );
 
 Switch.displayName = "Switch";

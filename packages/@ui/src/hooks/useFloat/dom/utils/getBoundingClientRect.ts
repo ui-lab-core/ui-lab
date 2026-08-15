@@ -1,13 +1,13 @@
-import type { ClientRectObject } from '../../core';
-import { rectToClientRect } from '../../core';
-import { createCoords } from '../../../../utils';
-import { getComputedStyle, getWindow, getFrameElement } from '../../../../utils/dom';
+import type { ClientRectObject } from "../../core";
+import { rectToClientRect } from "../../core";
+import { createCoords } from "../../../../utils";
+import { getComputedStyle, getWindow, getFrameElement } from "../../../../utils/dom";
 
-import { getScale } from '../platform/getScale';
-import { isElement } from '../platform/isElement';
-import { getVisualOffsets, shouldAddVisualOffsets } from './getVisualOffsets';
-import { unwrapElement } from './unwrapElement';
-import type { VirtualElement } from '../types';
+import { getScale } from "../platform/getScale";
+import { isElement } from "../platform/isElement";
+import { getVisualOffsets, shouldAddVisualOffsets } from "./getVisualOffsets";
+import { unwrapElement } from "./unwrapElement";
+import type { VirtualElement } from "../types";
 
 export function getBoundingClientRect(
   element: Element | VirtualElement,
@@ -29,11 +29,7 @@ export function getBoundingClientRect(
     }
   }
 
-  const visualOffsets = shouldAddVisualOffsets(
-    domElement,
-    isFixedStrategy,
-    offsetParent,
-  )
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent)
     ? getVisualOffsets(domElement)
     : createCoords(0);
 
@@ -45,9 +41,7 @@ export function getBoundingClientRect(
   if (domElement) {
     const win = getWindow(domElement);
     const offsetWin =
-      offsetParent && isElement(offsetParent)
-        ? getWindow(offsetParent)
-        : offsetParent;
+      offsetParent && isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
 
     let currentWin = win;
     let currentIFrame = getFrameElement(currentWin);
@@ -56,12 +50,9 @@ export function getBoundingClientRect(
       const iframeRect = currentIFrame.getBoundingClientRect();
       const css = getComputedStyle(currentIFrame);
       const left =
-        iframeRect.left +
-        (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) *
-        iframeScale.x;
+        iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
       const top =
-        iframeRect.top +
-        (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
+        iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
 
       x *= iframeScale.x;
       y *= iframeScale.y;

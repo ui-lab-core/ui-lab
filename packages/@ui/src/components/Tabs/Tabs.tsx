@@ -1,64 +1,64 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { mergeProps, useFocusRing, usePress } from "react-aria"
-import { useHover, useInteractionModality } from "@react-aria/interactions"
-import { cn } from "@/lib/utils"
-import { StyleValue } from "@/lib/utils"
-import { asElementProps } from "@/lib/react-aria"
-import { StylesProp, createStylesResolver } from "@/lib/styles"
-import { useMergeRefs } from "@/hooks/useMergeRefs"
-import { useControlledState } from "@/hooks/useControlledState"
-import css from "./Tabs.module.css"
+import * as React from "react";
+import { mergeProps, useFocusRing, usePress } from "react-aria";
+import { useHover, useInteractionModality } from "@react-aria/interactions";
+import { cn } from "@/lib/utils";
+import { StyleValue } from "@/lib/utils";
+import { asElementProps } from "@/lib/react-aria";
+import { StylesProp, createStylesResolver } from "@/lib/styles";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useControlledState } from "@/hooks/useControlledState";
+import css from "./Tabs.module.css";
 
-type TabsVariant = "underline"
-type TabsOrientation = "horizontal" | "vertical"
+type TabsVariant = "underline";
+type TabsOrientation = "horizontal" | "vertical";
 
 interface IndicatorPosition {
-  left: number
-  top: number
-  width: number
-  height: number
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 }
 
 interface ListDimensions {
-  width: number
-  height: number
+  width: number;
+  height: number;
 }
 
 interface TabsContextValue {
-  selectedValue: string
-  setSelectedValue: (value: string) => void
-  variant?: TabsVariant
-  orientation: TabsOrientation
-  isDisabledTab: (value: string) => boolean
-  indicatorReady: boolean
-  setIndicatorReady: (ready: boolean) => void
+  selectedValue: string;
+  setSelectedValue: (value: string) => void;
+  variant?: TabsVariant;
+  orientation: TabsOrientation;
+  isDisabledTab: (value: string) => boolean;
+  indicatorReady: boolean;
+  setIndicatorReady: (ready: boolean) => void;
 }
 
-const TabsContext = React.createContext<TabsContextValue | null>(null)
-const TABS_INDICATOR_INSET = 4
-const TABS_UNDERLINE_THICKNESS = 2
-const TABS_UNDERLINE_OFFSET = 2
-const TABS_UNDERLINE_GUTTER = TABS_UNDERLINE_THICKNESS + TABS_UNDERLINE_OFFSET
-const TABS_UNDERLINE_FALLBACK_GUTTER = TABS_UNDERLINE_GUTTER
+const TabsContext = React.createContext<TabsContextValue | null>(null);
+const TABS_INDICATOR_INSET = 4;
+const TABS_UNDERLINE_THICKNESS = 2;
+const TABS_UNDERLINE_OFFSET = 2;
+const TABS_UNDERLINE_GUTTER = TABS_UNDERLINE_THICKNESS + TABS_UNDERLINE_OFFSET;
+const TABS_UNDERLINE_FALLBACK_GUTTER = TABS_UNDERLINE_GUTTER;
 
 interface TabsListContextValue {
-  indicatorClassName: string
+  indicatorClassName: string;
 }
 
-const TabsListContext = React.createContext<TabsListContextValue | null>(null)
+const TabsListContext = React.createContext<TabsListContextValue | null>(null);
 
 function useTabsContext() {
-  const context = React.useContext(TabsContext)
+  const context = React.useContext(TabsContext);
   if (!context) {
-    throw new Error("Tabs component must be used within Tabs root")
+    throw new Error("Tabs component must be used within Tabs root");
   }
-  return context
+  return context;
 }
 
 function useTabsListContext() {
-  return React.useContext(TabsListContext)
+  return React.useContext(TabsListContext);
 }
 
 function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
@@ -71,36 +71,38 @@ function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
     {
       [css["indicator-underline"]]: variant === "underline",
     },
-    indicator
-  )
+    indicator,
+  );
 }
 
-export interface TabsStyleSlots {
-  root?: StyleValue
+interface TabsStyleSlots {
+  root?: StyleValue;
 }
 
 interface TabsProps {
-  state?: TabsState
+  state?: TabsState;
   /** Optional alternate visual style of the tab list indicator */
-  variant?: TabsVariant
+  variant?: TabsVariant;
   /** Direction of the tab list layout */
-  orientation?: TabsOrientation
+  orientation?: TabsOrientation;
   /** Initially selected tab value for uncontrolled usage */
-  default?: string
+  default?: string;
   /** Controlled state. */
   /** Controlled selected tab value */
-  value?: string
+  value?: string;
   /** Called when the selected tab changes */
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: string) => void;
   /** Additional CSS class for the tabs root */
-  className?: string
+  className?: string;
   /** Custom styles for the component slots */
-  styles?: StylesProp<TabsStyleSlots>
-  children?: React.ReactNode
+  styles?: StylesProp<TabsStyleSlots>;
+  children?: React.ReactNode;
 }
-export interface TabsState { value?: string }
+export interface TabsState {
+  value?: string;
+}
 
-const resolveTabsBaseStyles = createStylesResolver(['root'] as const)
+const resolveTabsBaseStyles = createStylesResolver(["root"] as const);
 
 const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
   (
@@ -115,46 +117,46 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
       styles: stylesProp,
       children,
     },
-    ref
+    ref,
   ) => {
-    const { root } = resolveTabsBaseStyles(stylesProp)
+    const { root } = resolveTabsBaseStyles(stylesProp);
 
     const [uncontrolledValue, setUncontrolledValue] = useControlledState(
       controlledState?.value ?? controlledValue,
       undefined,
       defaultTab || "",
-    )
-    const [disabledTabs, setDisabledTabs] = React.useState<Set<string>>(new Set())
+    );
+    const [disabledTabs, setDisabledTabs] = React.useState<Set<string>>(new Set());
 
-    const selectedValue = uncontrolledValue
+    const selectedValue = uncontrolledValue;
     const isDisabledTab = React.useCallback(
       (value: string) => disabledTabs.has(value),
-      [disabledTabs]
-    )
+      [disabledTabs],
+    );
 
     const setSelectedValue = React.useCallback(
       (newValue: string) => {
         if (!isDisabledTab(newValue)) {
-          setUncontrolledValue(newValue)
-          onValueChange?.(newValue)
+          setUncontrolledValue(newValue);
+          onValueChange?.(newValue);
         }
       },
-      [isDisabledTab, onValueChange, setUncontrolledValue]
-    )
+      [isDisabledTab, onValueChange, setUncontrolledValue],
+    );
 
     const registerDisabledTab = React.useCallback((value: string) => {
-      setDisabledTabs((prev) => new Set(prev).add(value))
-    }, [])
+      setDisabledTabs((prev) => new Set(prev).add(value));
+    }, []);
 
     const unregisterDisabledTab = React.useCallback((value: string) => {
       setDisabledTabs((prev) => {
-        const newSet = new Set(prev)
-        newSet.delete(value)
-        return newSet
-      })
-    }, [])
+        const newSet = new Set(prev);
+        newSet.delete(value);
+        return newSet;
+      });
+    }, []);
 
-    const [indicatorReady, setIndicatorReady] = React.useState(false)
+    const [indicatorReady, setIndicatorReady] = React.useState(false);
 
     return (
       <TabsContext.Provider
@@ -176,103 +178,100 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
           {React.Children.map(children, (child) =>
             React.isValidElement(child) && child.type === TabsTrigger
               ? React.cloneElement(child, {
-                _registerDisabled: registerDisabledTab,
-                _unregisterDisabled: unregisterDisabledTab,
-              } as any)
-              : child
+                  _registerDisabled: registerDisabledTab,
+                  _unregisterDisabled: unregisterDisabledTab,
+                } as any)
+              : child,
           )}
         </div>
       </TabsContext.Provider>
-    )
-  }
-)
-TabsRoot.displayName = "Tabs"
+    );
+  },
+);
+TabsRoot.displayName = "Tabs";
 
-export interface TabsListStyleSlots {
-  root?: StyleValue
-  indicator?: StyleValue
+interface TabsListStyleSlots {
+  root?: StyleValue;
+  indicator?: StyleValue;
 }
 
 interface TabsListProps {
   /** Additional CSS class names */
-  className?: string
-  children?: React.ReactNode
+  className?: string;
+  children?: React.ReactNode;
   /** Accessible label for the tab list */
-  "aria-label"?: string
+  "aria-label"?: string;
   /** Custom styles for the component slots */
-  styles?: StylesProp<TabsListStyleSlots>
+  styles?: StylesProp<TabsListStyleSlots>;
 }
 
-const resolveTabsListBaseStyles = createStylesResolver(['root', 'indicator'] as const);
+const resolveTabsListBaseStyles = createStylesResolver(["root", "indicator"] as const);
 
 /** Container for the row of tab trigger buttons */
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
-    const { selectedValue, variant, orientation, setIndicatorReady } = useTabsContext()
-    const { root, indicator } = resolveTabsListBaseStyles(stylesProp)
-    const listRef = React.useRef<HTMLDivElement>(null)
+    const { selectedValue, variant, orientation, setIndicatorReady } = useTabsContext();
+    const { root, indicator } = resolveTabsListBaseStyles(stylesProp);
+    const listRef = React.useRef<HTMLDivElement>(null);
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
       top: 0,
       width: 0,
       height: 0,
-    })
+    });
     const [listDimensions, setListDimensions] = React.useState<ListDimensions>({
       width: 0,
       height: 0,
-    })
+    });
 
     const indicatorClassName = React.useMemo(
       () => getTabsIndicatorClassName(indicator, variant),
-      [indicator, variant]
-    )
-    const tabsListContext = React.useMemo(
-      () => ({ indicatorClassName }),
-      [indicatorClassName]
-    )
+      [indicator, variant],
+    );
+    const tabsListContext = React.useMemo(() => ({ indicatorClassName }), [indicatorClassName]);
 
     const measureTrigger = React.useCallback((element: HTMLElement | null) => {
-      if (!element) return null
+      if (!element) return null;
 
-      const rect = element.getBoundingClientRect()
-      const listRect = listRef.current?.getBoundingClientRect()
+      const rect = element.getBoundingClientRect();
+      const listRect = listRef.current?.getBoundingClientRect();
 
-      if (!listRect) return null
+      if (!listRect) return null;
 
-      const relativeLeft = rect.left - listRect.left
-      const relativeTop = rect.top - listRect.top
+      const relativeLeft = rect.left - listRect.left;
+      const relativeTop = rect.top - listRect.top;
 
       return {
         left: relativeLeft,
         top: relativeTop,
         width: rect.width,
         height: rect.height,
-      }
-    }, [])
+      };
+    }, []);
 
     const measureList = React.useCallback(() => {
-      if (!listRef.current) return
-      const rect = listRef.current.getBoundingClientRect()
+      if (!listRef.current) return;
+      const rect = listRef.current.getBoundingClientRect();
       setListDimensions({
         width: rect.width,
         height: rect.height,
-      })
-    }, [])
+      });
+    }, []);
 
     const updateIndicator = React.useCallback(
       (value: string) => {
-        if (!listRef.current) return false
+        if (!listRef.current) return false;
 
         const trigger = listRef.current.querySelector(
-          `[data-tabs-value="${value}"]`
-        ) as HTMLElement | null
+          `[data-tabs-value="${value}"]`,
+        ) as HTMLElement | null;
 
         if (trigger) {
-          const position = measureTrigger(trigger)
+          const position = measureTrigger(trigger);
           if (position) {
-            const hasMeasurement = position.width > 0 && position.height > 0
-            setIndicatorPosition(position)
-            return hasMeasurement
+            const hasMeasurement = position.width > 0 && position.height > 0;
+            setIndicatorPosition(position);
+            return hasMeasurement;
           }
         }
 
@@ -281,42 +280,42 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
           top: 0,
           width: 0,
           height: 0,
-        })
-        return false
+        });
+        return false;
       },
-      [measureTrigger]
-    )
+      [measureTrigger],
+    );
 
     React.useLayoutEffect(() => {
-      measureList()
-      setIndicatorReady(updateIndicator(selectedValue))
-    }, [selectedValue, updateIndicator, measureList, setIndicatorReady])
+      measureList();
+      setIndicatorReady(updateIndicator(selectedValue));
+    }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
 
     React.useEffect(() => {
-      if (!listRef.current) return
+      if (!listRef.current) return;
 
       const resizeObserver = new ResizeObserver(() => {
         requestAnimationFrame(() => {
-          measureList()
-          setIndicatorReady(updateIndicator(selectedValue))
-        })
-      })
+          measureList();
+          setIndicatorReady(updateIndicator(selectedValue));
+        });
+      });
 
-      resizeObserver.observe(listRef.current)
-      return () => resizeObserver.disconnect()
-    }, [selectedValue, updateIndicator, measureList, setIndicatorReady])
+      resizeObserver.observe(listRef.current);
+      return () => resizeObserver.disconnect();
+    }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
 
     React.useEffect(() => {
       const handleWindowResize = () => {
         requestAnimationFrame(() => {
-          measureList()
-          setIndicatorReady(updateIndicator(selectedValue))
-        })
-      }
+          measureList();
+          setIndicatorReady(updateIndicator(selectedValue));
+        });
+      };
 
-      window.addEventListener("resize", handleWindowResize)
-      return () => window.removeEventListener("resize", handleWindowResize)
-    }, [selectedValue, updateIndicator, measureList, setIndicatorReady])
+      window.addEventListener("resize", handleWindowResize);
+      return () => window.removeEventListener("resize", handleWindowResize);
+    }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
 
     const getIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = {
@@ -326,10 +325,10 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         pointerEvents: "none",
         margin: 0,
         opacity: indicatorPosition.width === 0 && indicatorPosition.height === 0 ? 0 : 1,
-      }
+      };
 
       if (indicatorPosition.width === 0 && indicatorPosition.height === 0) {
-        return baseStyle
+        return baseStyle;
       }
 
       if (orientation === "vertical") {
@@ -340,17 +339,17 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
             top: indicatorPosition.top,
             width: TABS_UNDERLINE_THICKNESS,
             height: indicatorPosition.height,
-          }
+          };
         }
-        const horizontalPadding = TABS_INDICATOR_INSET
-        const adjustedWidth = Math.max(0, listDimensions.width - horizontalPadding * 2)
+        const horizontalPadding = TABS_INDICATOR_INSET;
+        const adjustedWidth = Math.max(0, listDimensions.width - horizontalPadding * 2);
         return {
           ...baseStyle,
           left: horizontalPadding,
           top: indicatorPosition.top,
           width: adjustedWidth,
           height: indicatorPosition.height,
-        }
+        };
       }
 
       if (variant === "underline") {
@@ -360,7 +359,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
           top: indicatorPosition.top + indicatorPosition.height + TABS_UNDERLINE_OFFSET,
           width: indicatorPosition.width,
           height: TABS_UNDERLINE_THICKNESS,
-        }
+        };
       }
 
       return {
@@ -369,10 +368,10 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         top: indicatorPosition.top,
         width: indicatorPosition.width,
         height: indicatorPosition.height,
-      }
-    }, [indicatorPosition, listDimensions, variant, orientation])
+      };
+    }, [indicatorPosition, listDimensions, variant, orientation]);
 
-    const mergedRef = useMergeRefs(listRef, ref)
+    const mergedRef = useMergeRefs(listRef, ref);
 
     return (
       <TabsListContext.Provider value={tabsListContext}>
@@ -395,80 +394,85 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         >
           {children}
           {indicatorPosition.width > 0 && (
-            <div
-              aria-hidden="true"
-              className={indicatorClassName}
-              style={getIndicatorStyle}
-            />
+            <div aria-hidden="true" className={indicatorClassName} style={getIndicatorStyle} />
           )}
         </div>
       </TabsListContext.Provider>
-    )
-  }
-)
-TabsList.displayName = "TabsList"
+    );
+  },
+);
+TabsList.displayName = "TabsList";
 
 interface TabsTriggerIconStyles {
-  left?: StyleValue
-  right?: StyleValue
+  left?: StyleValue;
+  right?: StyleValue;
 }
 
 interface TabsTriggerIconSlots {
-  left?: React.ReactNode
-  right?: React.ReactNode
+  left?: React.ReactNode;
+  right?: React.ReactNode;
 }
 
-export interface TabsTriggerStyleSlots {
-  root?: StyleValue
-  icon?: StyleValue | TabsTriggerIconStyles
+interface TabsTriggerStyleSlots {
+  root?: StyleValue;
+  icon?: StyleValue | TabsTriggerIconStyles;
 }
 
 interface TabsTriggerProps {
   /** Unique identifier matching the associated TabsContent value */
-  value: string
+  value: string;
   /** Whether the tab trigger is disabled */
-  disabled?: boolean
+  disabled?: boolean;
   /** Icon element(s) rendered inside the trigger. Pass a node for left-only, or { left, right } for both sides. */
-  icon?: React.ReactNode | TabsTriggerIconSlots
+  icon?: React.ReactNode | TabsTriggerIconSlots;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Custom styles for the component slots */
-  styles?: StylesProp<TabsTriggerStyleSlots>
-  children?: React.ReactNode
-  _registerDisabled?: (value: string) => void
-  _unregisterDisabled?: (value: string) => void
+  styles?: StylesProp<TabsTriggerStyleSlots>;
+  children?: React.ReactNode;
+  _registerDisabled?: (value: string) => void;
+  _unregisterDisabled?: (value: string) => void;
 }
 
-const resolveTabsTriggerBaseStyles = createStylesResolver(['root', 'iconLeft', 'iconRight'] as const);
+const resolveTabsTriggerBaseStyles = createStylesResolver([
+  "root",
+  "iconLeft",
+  "iconRight",
+] as const);
 
 function isTabsTriggerIconSlots(icon: TabsTriggerProps["icon"]): icon is TabsTriggerIconSlots {
-  return typeof icon === "object" && icon !== null && !React.isValidElement(icon) && ('left' in icon || 'right' in icon)
+  return (
+    typeof icon === "object" &&
+    icon !== null &&
+    !React.isValidElement(icon) &&
+    ("left" in icon || "right" in icon)
+  );
 }
 
 function resolveTabsTriggerIcon(icon: TabsTriggerProps["icon"]): TabsTriggerIconSlots | undefined {
-  if (!icon) return undefined
-  if (isTabsTriggerIconSlots(icon)) return icon
-  return { left: icon }
+  if (!icon) return undefined;
+  if (isTabsTriggerIconSlots(icon)) return icon;
+  return { left: icon };
 }
 
 function resolveTabsTriggerStyles(styles: StylesProp<TabsTriggerStyleSlots> | undefined) {
-  if (!styles) return resolveTabsTriggerBaseStyles(styles)
-  const { root, icon } = styles
+  if (!styles) return resolveTabsTriggerBaseStyles(styles);
+  const { root, icon } = styles;
 
-  let iconLeft: StyleValue | undefined
-  let iconRight: StyleValue | undefined
+  let iconLeft: StyleValue | undefined;
+  let iconRight: StyleValue | undefined;
 
   if (icon) {
-    if (typeof icon === 'string' || Array.isArray(icon)) {
-      iconLeft = icon
-      iconRight = icon
+    if (typeof icon === "string" || Array.isArray(icon)) {
+      iconLeft = icon;
+      iconRight = icon;
     } else {
-      iconLeft = icon.left
-      iconRight = icon.right
+      iconLeft = icon.left;
+      iconRight = icon.right;
     }
   }
 
-  return resolveTabsTriggerBaseStyles({ root, iconLeft, iconRight })
+  return resolveTabsTriggerBaseStyles({ root, iconLeft, iconRight });
 }
 
 /** A tab button that activates its associated content panel */
@@ -484,15 +488,16 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       _registerDisabled,
       _unregisterDisabled,
     },
-    ref
+    ref,
   ) => {
-    const { selectedValue, setSelectedValue, indicatorReady, orientation, variant } = useTabsContext()
-    const tabsListContext = useTabsListContext()
-    const resolved = resolveTabsTriggerStyles(stylesProp)
-    const resolvedIcon = resolveTabsTriggerIcon(icon)
-    const buttonRef = React.useRef<HTMLButtonElement>(null)
-    const isSelected = value === selectedValue
-    const showIndicatorFallback = isSelected && !indicatorReady && !!tabsListContext
+    const { selectedValue, setSelectedValue, indicatorReady, orientation, variant } =
+      useTabsContext();
+    const tabsListContext = useTabsListContext();
+    const resolved = resolveTabsTriggerStyles(stylesProp);
+    const resolvedIcon = resolveTabsTriggerIcon(icon);
+    const buttonRef = React.useRef<HTMLButtonElement>(null);
+    const isSelected = value === selectedValue;
+    const showIndicatorFallback = isSelected && !indicatorReady && !!tabsListContext;
     const fallbackIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       if (variant === "underline") {
         if (orientation === "vertical") {
@@ -503,7 +508,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
             width: TABS_UNDERLINE_THICKNESS,
             height: "100%",
             margin: 0,
-          }
+          };
         }
 
         return {
@@ -513,102 +518,101 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
           width: "100%",
           height: TABS_UNDERLINE_THICKNESS,
           margin: 0,
-        }
+        };
       }
 
       return {
         inset: 0,
         margin: 0,
-      }
-    }, [orientation, variant])
+      };
+    }, [orientation, variant]);
 
-    const { focusProps, isFocused, isFocusVisible } = useFocusRing()
-    const interactionModality = useInteractionModality()
-    const showFocusVisible = isFocused && interactionModality !== "pointer" && isFocusVisible
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const interactionModality = useInteractionModality();
+    const showFocusVisible = isFocused && interactionModality !== "pointer" && isFocusVisible;
 
     React.useEffect(() => {
       if (disabled) {
-        _registerDisabled?.(value)
+        _registerDisabled?.(value);
       } else {
-        _unregisterDisabled?.(value)
+        _unregisterDisabled?.(value);
       }
-    }, [disabled, value, _registerDisabled, _unregisterDisabled])
+    }, [disabled, value, _registerDisabled, _unregisterDisabled]);
 
     const handlePress = React.useCallback(() => {
       if (!disabled) {
-        setSelectedValue(value)
+        setSelectedValue(value);
       }
-    }, [disabled, value, setSelectedValue])
+    }, [disabled, value, setSelectedValue]);
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent) => {
-        if (disabled) return
+        if (disabled) return;
 
-        const listElement = buttonRef.current?.parentElement
-        if (!listElement) return
+        const listElement = buttonRef.current?.parentElement;
+        if (!listElement) return;
 
         const triggers = Array.from(
-          listElement.querySelectorAll('[data-tabs-value]')
-        ) as HTMLButtonElement[]
-        const currentIndex = triggers.findIndex((el) => el.getAttribute("data-tabs-value") === value)
+          listElement.querySelectorAll("[data-tabs-value]"),
+        ) as HTMLButtonElement[];
+        const currentIndex = triggers.findIndex(
+          (el) => el.getAttribute("data-tabs-value") === value,
+        );
 
-        let nextValue: string | null = null
+        let nextValue: string | null = null;
 
         if (e.key === "Tab") {
-          const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1
-          const nextTrigger = triggers[nextIndex]
+          const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1;
+          const nextTrigger = triggers[nextIndex];
 
           if (nextTrigger) {
-            e.preventDefault()
-            nextTrigger.focus()
+            e.preventDefault();
+            nextTrigger.focus();
           }
-          return
+          return;
         }
 
         if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-          e.preventDefault()
-          const nextIndex = (currentIndex + 1) % triggers.length
-          nextValue = triggers[nextIndex].getAttribute("data-tabs-value")
+          e.preventDefault();
+          const nextIndex = (currentIndex + 1) % triggers.length;
+          nextValue = triggers[nextIndex].getAttribute("data-tabs-value");
         } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-          e.preventDefault()
-          const prevIndex = currentIndex === 0 ? triggers.length - 1 : currentIndex - 1
-          nextValue = triggers[prevIndex].getAttribute("data-tabs-value")
+          e.preventDefault();
+          const prevIndex = currentIndex === 0 ? triggers.length - 1 : currentIndex - 1;
+          nextValue = triggers[prevIndex].getAttribute("data-tabs-value");
         } else if (e.key === "Home") {
-          e.preventDefault()
-          nextValue = triggers[0].getAttribute("data-tabs-value")
+          e.preventDefault();
+          nextValue = triggers[0].getAttribute("data-tabs-value");
         } else if (e.key === "End") {
-          e.preventDefault()
-          nextValue = triggers[triggers.length - 1].getAttribute("data-tabs-value")
+          e.preventDefault();
+          nextValue = triggers[triggers.length - 1].getAttribute("data-tabs-value");
         }
 
         if (nextValue) {
-          setSelectedValue(nextValue)
+          setSelectedValue(nextValue);
           setTimeout(() => {
             const nextTrigger = listElement.querySelector(
-              `[data-tabs-value="${nextValue}"]`
-            ) as HTMLButtonElement | null
-            nextTrigger?.focus()
-          }, 0)
+              `[data-tabs-value="${nextValue}"]`,
+            ) as HTMLButtonElement | null;
+            nextTrigger?.focus();
+          }, 0);
         }
       },
-      [value, disabled, setSelectedValue]
-    )
+      [value, disabled, setSelectedValue],
+    );
 
-    const mergedRef = useMergeRefs(buttonRef, ref)
-    const { hoverProps, isHovered } = useHover({ isDisabled: disabled })
+    const mergedRef = useMergeRefs(buttonRef, ref);
+    const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
     const { pressProps, isPressed } = usePress({
       isDisabled: disabled,
       onPressStart: handlePress,
-    })
-    const triggerProps = mergeProps(
-      asElementProps<"button">(focusProps),
-      hoverProps,
-      pressProps,
-      { onKeyDown: handleKeyDown }
-    )
+    });
+    const triggerProps = mergeProps(asElementProps<"button">(focusProps), hoverProps, pressProps, {
+      onKeyDown: handleKeyDown,
+    });
 
     return (
-        <button
+      <button
         {...triggerProps}
         ref={mergedRef}
         id={`${value}-trigger`}
@@ -635,37 +639,41 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
             style={fallbackIndicatorStyle}
           />
         )}
-        {resolvedIcon?.left && <span className={cn(css.icon, resolved.iconLeft)}>{resolvedIcon.left}</span>}
+        {resolvedIcon?.left && (
+          <span className={cn(css.icon, resolved.iconLeft)}>{resolvedIcon.left}</span>
+        )}
         {children}
-        {resolvedIcon?.right && <span className={cn(css.icon, resolved.iconRight)}>{resolvedIcon.right}</span>}
+        {resolvedIcon?.right && (
+          <span className={cn(css.icon, resolved.iconRight)}>{resolvedIcon.right}</span>
+        )}
       </button>
-    )
-  }
-)
-TabsTrigger.displayName = "Tab"
+    );
+  },
+);
+TabsTrigger.displayName = "Tab";
 
-export interface TabsContentStyleSlots {
-  root?: StyleValue
+interface TabsContentStyleSlots {
+  root?: StyleValue;
 }
 
 interface TabsContentProps {
   /** Unique identifier matching the associated TabsTrigger value */
-  value: string
+  value: string;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Custom styles for the component slots */
-  styles?: StylesProp<TabsContentStyleSlots>
-  children?: React.ReactNode
+  styles?: StylesProp<TabsContentStyleSlots>;
+  children?: React.ReactNode;
 }
 
-const resolveTabsContentBaseStyles = createStylesResolver(['root'] as const);
+const resolveTabsContentBaseStyles = createStylesResolver(["root"] as const);
 
 /** Content panel shown when its corresponding tab is active */
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
   ({ value, className, children, styles: stylesProp }, ref) => {
-    const { selectedValue, orientation } = useTabsContext()
+    const { selectedValue, orientation } = useTabsContext();
     const { root } = resolveTabsContentBaseStyles(stylesProp);
-    const isVisible = value === selectedValue
+    const isVisible = value === selectedValue;
 
     return (
       <div
@@ -679,16 +687,16 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
       >
         {isVisible && children}
       </div>
-    )
-  }
-)
-TabsContent.displayName = "TabsContent"
+    );
+  },
+);
+TabsContent.displayName = "TabsContent";
 
 const Tabs = Object.assign(TabsRoot, {
   List: TabsList,
   Trigger: TabsTrigger,
   Content: TabsContent,
-})
+});
 
-export { Tabs }
-export type { TabsProps, TabsListProps, TabsTriggerProps, TabsContentProps }
+export { Tabs };
+export type { TabsProps, TabsListProps, TabsTriggerProps, TabsContentProps };

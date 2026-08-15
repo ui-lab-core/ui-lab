@@ -16,7 +16,8 @@
 
   .day-header {
     @apply flex items-center justify-center;
-    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem)
+      var(--font-body, inherit);
     letter-spacing: normal;
     color: var(--foreground);
   }
@@ -29,7 +30,8 @@
 
   .month-year {
     @apply mr-auto;
-    font: var(--font-weight-header-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    font: var(--font-weight-header-medium, 500) var(--text-sm, 0.875rem) /
+      var(--leading-sm, 1.25rem) var(--font-body, inherit);
     letter-spacing: normal;
     text-align: left;
   }
@@ -40,12 +42,16 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: 1px solid transparent;
-    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem)
+      var(--font-body, inherit);
     letter-spacing: normal;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .nav-button:focus-visible {
@@ -69,13 +75,18 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: var(--day-cell-border-width) solid transparent;
-    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem) var(--font-body, inherit);
+    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem)
+      var(--font-body, inherit);
     letter-spacing: normal;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      opacity var(--hover-duration, var(--hover-leave-duration, 300ms)) var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .day-cell:focus-visible {
@@ -196,4 +207,6 @@
   opacity: var(--disabled-opacity);
 }
 
-.day-cell[data-disabled="true"] { cursor: not-allowed; }
+.day-cell[data-disabled="true"] {
+  cursor: not-allowed;
+}

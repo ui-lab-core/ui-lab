@@ -91,11 +91,11 @@ export interface TooltipStyleSlots {
 export type TooltipStylesProp = StylesProp<TooltipStyleSlots>;
 
 const resolveTooltipBaseStyles = createStylesResolver([
-  'root',
-  'trigger',
-  'content',
-  'frame',
-  'hint',
+  "root",
+  "trigger",
+  "content",
+  "frame",
+  "hint",
 ] as const);
 
 function resolveTooltipStyles(styles: TooltipStylesProp | undefined) {
@@ -131,7 +131,9 @@ export interface TooltipProps {
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TooltipStylesProp;
 }
-export interface TooltipState { open?: boolean }
+export interface TooltipState {
+  open?: boolean;
+}
 
 const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
   (
@@ -150,7 +152,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       hint,
       styles,
     },
-    _ref
+    _ref,
   ) => {
     const triggerWrapperRef = useRef<HTMLSpanElement>(null);
     const triggerRef = useRef<HTMLElement>(null);
@@ -170,15 +172,22 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     const onOpenChangeRef = useRef(onOpenChange);
     onOpenChangeRef.current = onOpenChange;
 
-    const [isOpen, setOpen] = useControlledState(controlledState?.open, open ?? legacyIsOpen, false);
+    const [isOpen, setOpen] = useControlledState(
+      controlledState?.open,
+      open ?? legacyIsOpen,
+      false,
+    );
     const state = useTooltipTriggerState({
       isOpen,
-      onOpenChange: useCallback((open: boolean) => {
-        setOpen(open);
-        if (open) lastOpenTime = Date.now();
-        else lastCloseTime = Date.now();
-        onOpenChangeRef.current?.(open);
-      }, [setOpen]),
+      onOpenChange: useCallback(
+        (open: boolean) => {
+          setOpen(open);
+          if (open) lastOpenTime = Date.now();
+          else lastCloseTime = Date.now();
+          onOpenChangeRef.current?.(open);
+        },
+        [setOpen],
+      ),
       delay,
       isDisabled: disabled,
     });
@@ -190,11 +199,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       // Tooltips are commonly used in fixed headers; fixed positioning avoids scroll drift.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
-      middleware: [
-        offset(TOOLTIP_GAP + ARROW_POSITIONING_SIZE),
-        flip(),
-        shift({ padding: 8 }),
-      ],
+      middleware: [offset(TOOLTIP_GAP + ARROW_POSITIONING_SIZE), flip(), shift({ padding: 8 })],
     });
 
     const isPositioned = floatingStyles.transform !== undefined;
@@ -262,9 +267,8 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 
     useLayoutEffect(() => {
       const wrapper = triggerWrapperRef.current;
-      const reference = wrapper?.firstElementChild instanceof HTMLElement
-        ? wrapper.firstElementChild
-        : wrapper;
+      const reference =
+        wrapper?.firstElementChild instanceof HTMLElement ? wrapper.firstElementChild : wrapper;
 
       (triggerRef as React.MutableRefObject<HTMLElement | null>).current = reference;
       refs.setReference(reference);
@@ -322,8 +326,8 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     const isTriggerVisible = !!(trigger && (trigger.offsetWidth > 0 || trigger.offsetHeight > 0));
     const child = React.Children.only(children);
 
-    const triggerElement = React.isValidElement(child) && child.type !== React.Fragment
-      ? (
+    const triggerElement =
+      React.isValidElement(child) && child.type !== React.Fragment ? (
         <span
           ref={triggerWrapperRef}
           className={cn(css.trigger, className, resolved.trigger)}
@@ -334,8 +338,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         >
           {child}
         </span>
-      )
-      : (
+      ) : (
         <span
           ref={mergedTriggerRef}
           className={cn(css.trigger, className, resolved.trigger)}
@@ -365,10 +368,11 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
             >
               <div
                 className={cn("content", css.content, resolved.content)}
-                data-open={(isVisible && isTriggerVisible) ? "true" : "false"}
-                data-instant={(isInstant || !isTriggerVisible) ? "true" : undefined}
+                data-open={isVisible && isTriggerVisible ? "true" : "false"}
+                data-instant={isInstant || !isTriggerVisible ? "true" : undefined}
                 style={{
-                  transform: (isVisible && isTriggerVisible) ? "scale(1)" : getInitialTransform(placement),
+                  transform:
+                    isVisible && isTriggerVisible ? "scale(1)" : getInitialTransform(placement),
                 }}
               >
                 <Frame
@@ -378,18 +382,25 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                   pathWidth={showArrow ? ARROW_WIDTH : undefined}
                   style={{ "--frame-radius": "8px" } as React.CSSProperties}
                 >
-                  <div className={cn("frame", css.frame, resolved.frame)} data-hint={hasHint(hint) ? "true" : undefined}>
+                  <div
+                    className={cn("frame", css.frame, resolved.frame)}
+                    data-hint={hasHint(hint) ? "true" : undefined}
+                  >
                     {content}
-                    {hasHint(hint) && <Badge variant="secondary" className={cn(css.hint, resolved.hint)}>{renderHint(hint)}</Badge>}
+                    {hasHint(hint) && (
+                      <Badge variant="secondary" className={cn(css.hint, resolved.hint)}>
+                        {renderHint(hint)}
+                      </Badge>
+                    )}
                   </div>
                 </Frame>
               </div>
             </div>,
-            document.body
+            document.body,
           )}
       </>
     );
-  }
+  },
 );
 
 Tooltip.displayName = "Tooltip";

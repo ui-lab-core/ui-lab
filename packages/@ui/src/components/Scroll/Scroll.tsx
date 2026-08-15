@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-  useRef,
-  useLayoutEffect,
-  useState,
-  useCallback,
-} from "react";
+import React, { useRef, useLayoutEffect, useState, useCallback } from "react";
 import { cn, type StyleValue } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { createComponentSlotResolver } from "@/lib/component-slots";
@@ -138,13 +133,8 @@ export interface ScrollThumbProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const ScrollThumb = React.forwardRef<HTMLDivElement, ScrollThumbProps>(
   ({ className, style, onMouseDown, ...props }, ref) => {
-    const {
-      resolvedStyles,
-      needsScrollbar,
-      thumbStyle,
-      thumbRef,
-      onThumbMouseDown,
-    } = useScrollContext();
+    const { resolvedStyles, needsScrollbar, thumbStyle, thumbRef, onThumbMouseDown } =
+      useScrollContext();
     const mergedRef = useMergeRefs(ref, thumbRef);
 
     if (!needsScrollbar) return null;
@@ -171,14 +161,8 @@ export interface ScrollTrackProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const ScrollTrack = React.forwardRef<HTMLDivElement, ScrollTrackProps>(
   ({ children, className, style, onMouseDown, ...props }, ref) => {
-    const {
-      resolvedStyles,
-      hide,
-      needsScrollbar,
-      trackStyle,
-      thumbSlot,
-      onTrackMouseDown,
-    } = useScrollContext();
+    const { resolvedStyles, hide, needsScrollbar, trackStyle, thumbSlot, onTrackMouseDown } =
+      useScrollContext();
 
     const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
       onMouseDown?.(event);
@@ -239,7 +223,8 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
     const trackSizeKey = isHoriz ? "width" : "height";
     const trackPosKey = isHoriz ? "left" : "top";
 
-    const numPaddingY = typeof paddingY === "number" ? paddingY : parseInt(String(paddingY), 10) || 0;
+    const numPaddingY =
+      typeof paddingY === "number" ? paddingY : parseInt(String(paddingY), 10) || 0;
     const strPaddingY = typeof paddingY === "number" ? `${paddingY}px` : String(paddingY);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -278,7 +263,9 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       const viewportSize = content[clientSizeKey] || container[clientSizeKey];
       const contentSize = content[scrollSizeKey] || viewportSize;
       const currentScroll = content[scrollPosKey];
-      const trackSize = isHoriz ? container[clientSizeKey] : container[clientSizeKey] - numPaddingY * 2;
+      const trackSize = isHoriz
+        ? container[clientSizeKey]
+        : container[clientSizeKey] - numPaddingY * 2;
 
       const maxScroll = Math.max(0, contentSize - viewportSize);
       const needs = maxScroll > SCROLLBAR_VISIBILITY_EPSILON;
@@ -306,7 +293,16 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
           maskNode.style.setProperty("--mask-bottom-fade", "0%");
         }
       }
-    }, [isHoriz, clientSizeKey, scrollSizeKey, scrollPosKey, numPaddingY, fadeY, fadeDistance, fadeSize]);
+    }, [
+      isHoriz,
+      clientSizeKey,
+      scrollSizeKey,
+      scrollPosKey,
+      numPaddingY,
+      fadeY,
+      fadeDistance,
+      fadeSize,
+    ]);
 
     const cleanupScrollTimeout = useCallback(() => {
       if (scrollTimeoutRef.current) {
@@ -466,11 +462,19 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
           storageKey: storageKey ?? null,
           currentNodeId: getScrollRestoreDebugId(node),
           preHydrationFlag: hasPreHydrationScrollRestore(node),
-          bootstrapDebugId: storageKey ? getScrollRestoreDebugId(getBootstrapRestoredNode(storageKey)) : null,
+          bootstrapDebugId: storageKey
+            ? getScrollRestoreDebugId(getBootstrapRestoredNode(storageKey))
+            : null,
           debugIdPropertyKey: SCROLL_RESTORE_DEBUG_ID_KEY,
         });
       },
-      [cleanupAnimationFrame, cleanupDragListeners, cleanupObservers, cleanupScrollTimeout, storageKey]
+      [
+        cleanupAnimationFrame,
+        cleanupDragListeners,
+        cleanupObservers,
+        cleanupScrollTimeout,
+        storageKey,
+      ],
     );
     const mergedContentRef = useMergeRefs(viewportRef, handleContentRef);
 
@@ -494,7 +498,7 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         const newIsHovered = mousePos > rectSize - 20;
         if (newIsHovered !== isHoveredRight) setIsHoveredRight(newIsHovered);
       },
-      [isHoriz, isHoveredRight]
+      [isHoriz, isHoveredRight],
     );
 
     const handleContainerMouseLeave = useCallback(() => setIsHoveredRight(false), []);
@@ -504,16 +508,17 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         if (!contentRef.current || !containerRef.current) return;
 
         const delta = e[clientPosKey] - dragStartRef.current.origin;
-        const viewportSize = contentRef.current[clientSizeKey] || containerRef.current[clientSizeKey];
+        const viewportSize =
+          contentRef.current[clientSizeKey] || containerRef.current[clientSizeKey];
         const maxScroll = Math.max(0, contentRef.current[scrollSizeKey] - viewportSize);
         const scrollRatio = maxScroll / Math.max(1, viewportSize - thumbSizeRef.current);
 
         contentRef.current[scrollPosKey] = Math.max(
           0,
-          Math.min(maxScroll, dragStartRef.current.scrollOrigin + delta * scrollRatio)
+          Math.min(maxScroll, dragStartRef.current.scrollOrigin + delta * scrollRatio),
         );
       },
-      [clientPosKey, clientSizeKey, scrollPosKey, scrollSizeKey]
+      [clientPosKey, clientSizeKey, scrollPosKey, scrollSizeKey],
     );
 
     const handleMouseUp = useCallback(() => {
@@ -536,7 +541,7 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         document.addEventListener("mouseup", handleMouseUp);
         document.body.style.userSelect = "none";
       },
-      [clientPosKey, scrollPosKey, handleMouseMove, handleMouseUp]
+      [clientPosKey, scrollPosKey, handleMouseMove, handleMouseUp],
     );
 
     const handleTrackClick = useCallback(
@@ -556,7 +561,8 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         // Ignore clicks directly on the thumb (handled by handleMouseDown)
         if (clickPos >= relThumbStart && clickPos <= relThumbEnd) return;
 
-        const viewportSize = contentRef.current[clientSizeKey] || containerRef.current[clientSizeKey];
+        const viewportSize =
+          contentRef.current[clientSizeKey] || containerRef.current[clientSizeKey];
         const contentSize = contentRef.current[scrollSizeKey];
         const maxScroll = Math.max(0, contentSize - viewportSize);
         const trackSize = isHoriz
@@ -569,7 +575,10 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         const clampedThumbStart = Math.max(0, Math.min(maxThumbPos, targetThumbStart));
 
         const scrollProgress = maxThumbPos > 0 ? clampedThumbStart / maxThumbPos : 0;
-        contentRef.current[scrollPosKey] = Math.max(0, Math.min(maxScroll, scrollProgress * maxScroll));
+        contentRef.current[scrollPosKey] = Math.max(
+          0,
+          Math.min(maxScroll, scrollProgress * maxScroll),
+        );
 
         dragStartRef.current = {
           origin: e[clientPosKey],
@@ -581,7 +590,16 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         document.addEventListener("mouseup", handleMouseUp);
         document.body.style.userSelect = "none";
       },
-      [isHoriz, numPaddingY, clientPosKey, clientSizeKey, scrollPosKey, scrollSizeKey, handleMouseMove, handleMouseUp]
+      [
+        isHoriz,
+        numPaddingY,
+        clientPosKey,
+        clientSizeKey,
+        scrollPosKey,
+        scrollSizeKey,
+        handleMouseMove,
+        handleMouseUp,
+      ],
     );
 
     useLayoutEffect(() => {
@@ -593,7 +611,15 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         cleanupDragListeners();
         cleanupScrollTimeout();
       };
-    }, [restoreStoredScrollPosition, connectObservers, cleanupAnimationFrame, cleanupDragListeners, cleanupObservers, cleanupScrollTimeout, enabled]);
+    }, [
+      restoreStoredScrollPosition,
+      connectObservers,
+      cleanupAnimationFrame,
+      cleanupDragListeners,
+      cleanupObservers,
+      cleanupScrollTimeout,
+      enabled,
+    ]);
 
     const axisConstraintStyle = {
       ...(maxWidth ? { maxWidth } : {}),
@@ -621,7 +647,8 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       );
     }
 
-    const showOpacity = needsScrollbar && (!hide || isHoveredRight || isDragging || isScrolling) ? 1 : 0;
+    const showOpacity =
+      needsScrollbar && (!hide || isHoveredRight || isDragging || isScrolling) ? 1 : 0;
 
     const contextValue: ScrollContextValue = {
       resolvedStyles: resolved,
@@ -651,14 +678,16 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
             css.root,
             isHoriz ? css.horizontal : css.vertical,
             className,
-            resolved.root
+            resolved.root,
           )}
-          style={{
-            [isHoriz ? "width" : "height"]: "100%",
-            ...axisConstraintStyle,
-            ...(!isHoriz && strPaddingY ? { "--scroll-padding-y": strPaddingY } : {}),
-            ...propsStyle,
-          } as React.CSSProperties}
+          style={
+            {
+              [isHoriz ? "width" : "height"]: "100%",
+              ...axisConstraintStyle,
+              ...(!isHoriz && strPaddingY ? { "--scroll-padding-y": strPaddingY } : {}),
+              ...propsStyle,
+            } as React.CSSProperties
+          }
           onMouseMove={handleContainerMouseMove}
           onMouseLeave={handleContainerMouseLeave}
           data-pressed={isDragging || undefined}
@@ -667,12 +696,14 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         >
           <Mask
             ref={maskRef}
-            style={{
-              maxHeight: "inherit",
-              maxWidth: "inherit",
-              overflow: "hidden",
-              ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
-            } as React.CSSProperties}
+            style={
+              {
+                maxHeight: "inherit",
+                maxWidth: "inherit",
+                overflow: "hidden",
+                ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
+              } as React.CSSProperties
+            }
           >
             {!isHoriz && fadeY ? <Mask.Fade /> : null}
             <div
@@ -687,9 +718,9 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
               }}
               {...(storageKey
                 ? {
-                  [SCROLL_RESTORE_STORAGE_KEY_ATTR]: storageKey,
-                  [SCROLL_RESTORE_AXIS_ATTR]: direction,
-                }
+                    [SCROLL_RESTORE_STORAGE_KEY_ATTR]: storageKey,
+                    [SCROLL_RESTORE_AXIS_ATTR]: direction,
+                  }
                 : {})}
             >
               {contentChildren}
@@ -700,7 +731,7 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         </div>
       </ScrollContext.Provider>
     );
-  }
+  },
 );
 
 ScrollRoot.displayName = "Scroll";

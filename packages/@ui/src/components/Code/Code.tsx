@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { codeToHtml } from "shiki";
@@ -9,45 +9,51 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Code.module.css";
 
 const escapeHtml = (s: string) =>
-  s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c] || c));
+  s.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[c] || c,
+  );
 
 function generateFallbackHtml(code: string): string {
   return `<pre><code style="display: block; padding: 1rem">${escapeHtml(code)}</code></pre>`;
 }
 
-function useColorScheme(colorScheme: 'light' | 'dark' | 'system'): 'light' | 'dark' {
-  const [systemMode, setSystemMode] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    const domTheme = document.documentElement.getAttribute('data-theme');
-    if (domTheme === 'light' || domTheme === 'dark') return domTheme;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+function useColorScheme(colorScheme: "light" | "dark" | "system"): "light" | "dark" {
+  const [systemMode, setSystemMode] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "dark";
+    const domTheme = document.documentElement.getAttribute("data-theme");
+    if (domTheme === "light" || domTheme === "dark") return domTheme;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
 
   useEffect(() => {
-    if (colorScheme !== 'system') return;
+    if (colorScheme !== "system") return;
 
     const update = () => {
-      const domTheme = document.documentElement.getAttribute('data-theme');
-      if (domTheme === 'light' || domTheme === 'dark') {
+      const domTheme = document.documentElement.getAttribute("data-theme");
+      if (domTheme === "light" || domTheme === "dark") {
         setSystemMode(domTheme);
       } else {
-        setSystemMode(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        setSystemMode(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
       }
     };
 
     const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
 
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    mq.addEventListener('change', update);
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    mq.addEventListener("change", update);
 
     return () => {
       observer.disconnect();
-      mq.removeEventListener('change', update);
+      mq.removeEventListener("change", update);
     };
   }, [colorScheme]);
 
-  return colorScheme === 'system' ? systemMode : colorScheme;
+  return colorScheme === "system" ? systemMode : colorScheme;
 }
 
 function CopyButton({ code }: { code: string }) {
@@ -60,7 +66,7 @@ function CopyButton({ code }: { code: string }) {
   };
 
   return (
-    <button onClick={handleCopy} className={styles['copy-button']}>
+    <button onClick={handleCopy} className={styles["copy-button"]}>
       {copied ? <Check size={14} /> : <Copy size={14} />}
     </button>
   );
@@ -79,7 +85,7 @@ export interface CodeProps {
   /** Shiki theme name or separate light/dark theme names */
   theme?: string | { light: string; dark: string };
   /** Color scheme used for theme selection; 'system' follows the page data-theme attribute */
-  colorScheme?: 'light' | 'dark' | 'system';
+  colorScheme?: "light" | "dark" | "system";
   /** Pre-highlighted HTML string for light mode to skip client-side Shiki processing */
   preHighlightedLight?: string;
   /** Pre-highlighted HTML string for dark mode to skip client-side Shiki processing */
@@ -88,16 +94,16 @@ export interface CodeProps {
   styles?: CodeStylesProp;
 }
 
-export interface CodeStyleSlots {
+interface CodeStyleSlots {
   root?: StyleValue;
   header?: StyleValue;
   body?: StyleValue;
   viewport?: StyleValue;
 }
 
-export type CodeStylesProp = StylesProp<CodeStyleSlots>;
+type CodeStylesProp = StylesProp<CodeStyleSlots>;
 
-const resolveCodeStyles = createStylesResolver(['root', 'header', 'body', 'viewport'] as const);
+const resolveCodeStyles = createStylesResolver(["root", "header", "body", "viewport"] as const);
 
 const MAX_HEIGHT_LINES = 20;
 
@@ -108,23 +114,23 @@ export function Code({
   filename,
   heading,
   theme,
-  colorScheme = 'system',
+  colorScheme = "system",
   preHighlightedLight,
   preHighlightedDark,
   styles: stylesProp,
 }: CodeProps) {
   const mode = useColorScheme(colorScheme);
 
-  const lightTheme = typeof theme === 'string' ? theme : (theme?.light ?? 'github-light');
-  const darkTheme = typeof theme === 'string' ? theme : (theme?.dark ?? 'github-dark');
-  const activeTheme = mode === 'light' ? lightTheme : darkTheme;
+  const lightTheme = typeof theme === "string" ? theme : (theme?.light ?? "github-light");
+  const darkTheme = typeof theme === "string" ? theme : (theme?.dark ?? "github-dark");
+  const activeTheme = mode === "light" ? lightTheme : darkTheme;
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const scrollTrackRef = useRef<HTMLDivElement>(null);
 
   const [highlightedCode, setHighlightedCode] = useState<string>(() => {
-    if (mode === 'light' && preHighlightedLight) return preHighlightedLight;
-    if (mode === 'dark' && preHighlightedDark) return preHighlightedDark;
+    if (mode === "light" && preHighlightedLight) return preHighlightedLight;
+    if (mode === "dark" && preHighlightedDark) return preHighlightedDark;
     if (preHighlightedLight) return preHighlightedLight;
     return generateFallbackHtml(children);
   });
@@ -157,8 +163,14 @@ export function Code({
   }, []);
 
   useEffect(() => {
-    if (mode === 'light' && preHighlightedLight) { setHighlightedCode(preHighlightedLight); return; }
-    if (mode === 'dark' && preHighlightedDark) { setHighlightedCode(preHighlightedDark); return; }
+    if (mode === "light" && preHighlightedLight) {
+      setHighlightedCode(preHighlightedLight);
+      return;
+    }
+    if (mode === "dark" && preHighlightedDark) {
+      setHighlightedCode(preHighlightedDark);
+      return;
+    }
 
     const highlight = async () => {
       try {
@@ -168,7 +180,7 @@ export function Code({
           transformers: [transformerRenderIndentGuides()],
         });
         let styledHtml = html.replace(/<code>/, '<code style="display: block; padding: 1rem;">');
-        styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, '');
+        styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, "");
         setHighlightedCode(styledHtml);
       } catch {
         setHighlightedCode(generateFallbackHtml(children));
@@ -192,7 +204,7 @@ export function Code({
   }, [highlightedCode]);
 
   useEffect(() => {
-    setTotalCodeLines(children.split('\n').length);
+    setTotalCodeLines(children.split("\n").length);
   }, [children]);
 
   useEffect(() => {
@@ -210,11 +222,11 @@ export function Code({
   const resolved = resolveCodeStyles(stylesProp);
 
   return (
-    <div className={cn(styles['code'], resolved.root, className)}>
+    <div className={cn(styles["code"], resolved.root, className)}>
       {(filename || heading) && (
         <div className={cn(styles.header, resolved.header)}>
           <span>{heading || filename}</span>
-          {!heading && <span className={styles['header-lang']}>{language}</span>}
+          {!heading && <span className={styles["header-lang"]}>{language}</span>}
         </div>
       )}
 
@@ -226,26 +238,28 @@ export function Code({
           onWheel={handleWheel}
           className={cn(styles.viewport, resolved.viewport)}
           style={{
-            overflowY: isExpanded ? 'auto' : 'hidden',
-            maskImage: !isExpanded && shouldShowExpandButton
-              ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
-              : 'none',
-            WebkitMaskImage: !isExpanded && shouldShowExpandButton
-              ? 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
-              : 'none',
+            overflowY: isExpanded ? "auto" : "hidden",
+            maskImage:
+              !isExpanded && shouldShowExpandButton
+                ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+                : "none",
+            WebkitMaskImage:
+              !isExpanded && shouldShowExpandButton
+                ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+                : "none",
           }}
           dangerouslySetInnerHTML={{ __html: highlightedCode }}
         />
 
         {hasHorizontalOverflow && (
-          <div ref={scrollTrackRef} onScroll={handleScrollTrack} className={styles['scroll-track']}>
-            <div style={{ width: contentScrollWidth, height: '12px' }} />
+          <div ref={scrollTrackRef} onScroll={handleScrollTrack} className={styles["scroll-track"]}>
+            <div style={{ width: contentScrollWidth, height: "12px" }} />
           </div>
         )}
 
         {shouldShowExpandButton && !isExpanded && (
-          <button onClick={() => setIsExpanded(true)} className={styles['expand-button']}>
-            <ChevronDown size={14} className={styles['expand-icon']} />
+          <button onClick={() => setIsExpanded(true)} className={styles["expand-button"]}>
+            <ChevronDown size={14} className={styles["expand-icon"]} />
             Show {hiddenCodeLines} more lines
           </button>
         )}

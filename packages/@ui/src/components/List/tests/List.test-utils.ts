@@ -1,14 +1,14 @@
-import * as React from 'react'
-import type { RenderResult } from '@testing-library/react'
-import { render as utilRender, getAllElementsByRole } from '@/tests/utils'
-import { List } from '../'
+import * as React from "react";
+import type { RenderResult } from "@testing-library/react";
+import { render as utilRender, getAllElementsByRole } from "@/tests/utils";
+import { List } from "../";
 
 interface MockListItem {
-  key: string
-  label: string
-  value: string
-  interactive?: boolean
-  selected?: boolean
+  key: string;
+  label: string;
+  value: string;
+  interactive?: boolean;
+  selected?: boolean;
 }
 
 /**
@@ -20,7 +20,7 @@ function createMockListItems(count: number = 3): MockListItem[] {
     label: `Item ${i + 1}`,
     value: `value-${i}`,
     interactive: true,
-  }))
+  }));
 }
 
 /**
@@ -28,12 +28,10 @@ function createMockListItems(count: number = 3): MockListItem[] {
  */
 export function renderList(
   children: React.ReactNode,
-  props: Omit<React.ComponentProps<typeof List>, 'children'> & { ref?: React.Ref<any> } = {}
+  props: Omit<React.ComponentProps<typeof List>, "children"> & { ref?: React.Ref<any> } = {},
 ): any {
-  const result = utilRender(
-    React.createElement(List as any, props as any, children)
-  )
-  return Object.assign(result.container, result)
+  const result = utilRender(React.createElement(List as any, props as any, children));
+  return Object.assign(result.container, result);
 }
 
 /**
@@ -41,7 +39,9 @@ export function renderList(
  */
 export function renderListWithItems(
   items = createMockListItems(3),
-  props: Partial<Omit<React.ComponentProps<typeof List>, 'children'>> & { ref?: React.Ref<any> } = {}
+  props: Partial<Omit<React.ComponentProps<typeof List>, "children">> & {
+    ref?: React.Ref<any>;
+  } = {},
 ): any {
   const children = items.map((item) =>
     React.createElement(
@@ -52,10 +52,10 @@ export function renderListWithItems(
         interactive: item.interactive,
         selected: item.selected,
       },
-      item.label
-    )
-  )
-  return renderList(children, { items, ...props } as any)
+      item.label,
+    ),
+  );
+  return renderList(children, { items, ...props } as any);
 }
 
 /**
@@ -63,17 +63,17 @@ export function renderListWithItems(
  */
 export function getListItems(container?: HTMLElement): HTMLElement[] {
   if (container) {
-    return Array.from(container.querySelectorAll('[role="option"]'))
+    return Array.from(container.querySelectorAll('[role="option"]'));
   }
-  return getAllElementsByRole('listitem')
+  return getAllElementsByRole("listitem");
 }
 
 /**
  * Get a specific list item by its text content
  */
 export function getListItemByText(text: string, container?: HTMLElement): HTMLElement | undefined {
-  const items = getListItems(container)
-  return items.find((item) => item.textContent?.includes(text))
+  const items = getListItems(container);
+  return items.find((item) => item.textContent?.includes(text));
 }
 
 /**
@@ -81,7 +81,7 @@ export function getListItemByText(text: string, container?: HTMLElement): HTMLEl
  */
 export function getListContainer(container?: HTMLElement): HTMLElement | null {
   if (container) {
-    return container.querySelector('[role="listbox"]')
+    return container.querySelector('[role="listbox"]');
   }
-  return document.querySelector('[role="listbox"]')
+  return document.querySelector('[role="listbox"]');
 }

@@ -1,19 +1,19 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle, useRef, useEffect, useCallback } from 'react';
-import gsap from 'gsap';
+import React, { forwardRef, useImperativeHandle, useRef, useEffect, useCallback } from "react";
+import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
-import { cn, type StyleValue } from '@/lib/utils';
-import { type StylesProp, createStylesResolver } from '@/lib/styles';
-import css from './Toast.module.css';
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import css from "./Toast.module.css";
 import { ToastProps as ToastData, dispatch } from "./Toast.Store";
 
 import { Info, CircleCheck, TriangleAlert, CircleAlert, type LucideIcon } from "lucide-react";
 
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
 
 const DRAG_DISMISS_THRESHOLD = 100;
 const DRAG_LEFT_RESISTANCE = 20;
@@ -21,26 +21,22 @@ const DRAG_DISMISS_DURATION = 0.15;
 const STACK_REFLOW_DURATION = 0.55;
 const SPAWN_OFFSET = 24;
 
-function getSpawnY(
-  element: HTMLElement,
-  direction: 'top' | 'bottom',
-  boundary?: HTMLElement
-) {
-  if (typeof window === 'undefined') return direction === 'top' ? -80 : 80;
+function getSpawnY(element: HTMLElement, direction: "top" | "bottom", boundary?: HTMLElement) {
+  if (typeof window === "undefined") return direction === "top" ? -80 : 80;
 
   const rect = element.getBoundingClientRect();
   const boundaryRect = boundary?.getBoundingClientRect();
   const topBoundary = boundaryRect?.top ?? 0;
   const bottomBoundary = boundaryRect?.bottom ?? window.innerHeight;
 
-  if (direction === 'top') {
+  if (direction === "top") {
     return topBoundary - rect.bottom - SPAWN_OFFSET;
   }
 
   return bottomBoundary - rect.top + SPAWN_OFFSET;
 }
 
-export interface ToastStyleSlots {
+interface ToastStyleSlots {
   root?: StyleValue;
   iconWrap?: StyleValue;
   icon?: StyleValue;
@@ -51,17 +47,17 @@ export interface ToastStyleSlots {
   closeIcon?: StyleValue;
 }
 
-export type ToastStylesProp = StylesProp<ToastStyleSlots>;
+type ToastStylesProp = StylesProp<ToastStyleSlots>;
 
 const resolveToastBaseStyles = createStylesResolver([
-  'root',
-  'iconWrap',
-  'icon',
-  'content',
-  'title',
-  'description',
-  'close',
-  'closeIcon'
+  "root",
+  "iconWrap",
+  "icon",
+  "content",
+  "title",
+  "description",
+  "close",
+  "closeIcon",
 ] as const);
 
 function resolveToastStyles(styles: ToastStylesProp | undefined) {
@@ -69,7 +65,16 @@ function resolveToastStyles(styles: ToastStylesProp | undefined) {
 
   const { root, iconWrap, icon, content, title, description, close, closeIcon } = styles;
 
-  return resolveToastBaseStyles({ root, iconWrap, icon, content, title, description, close, closeIcon });
+  return resolveToastBaseStyles({
+    root,
+    iconWrap,
+    icon,
+    content,
+    title,
+    description,
+    close,
+    closeIcon,
+  });
 }
 
 const toastIcons: Record<string, LucideIcon | null> = {
@@ -106,7 +111,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
     onDismissAnimation,
     onDismissEnd,
   },
-  ref
+  ref,
 ) {
   const innerRef = useRef<HTMLDivElement>(null);
   useImperativeHandle(ref, () => innerRef.current!);
@@ -116,18 +121,21 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
     title,
     description,
     jsx,
-    variant = 'default',
+    variant = "default",
     duration = 5000,
     onDismiss,
-    position = 'bottom-right',
+    position = "bottom-right",
     styles,
   } = toast;
 
   const resolved = resolveToastStyles(styles);
-  const isTop = position.startsWith('top');
+  const isTop = position.startsWith("top");
   const { focusProps, isFocused, isFocusVisible } = useFocusRing();
   const { hoverProps, isHovered } = useHover({});
-  const closeInteractionProps = mergeProps(focusProps, hoverProps) as React.ButtonHTMLAttributes<HTMLButtonElement>;
+  const closeInteractionProps = mergeProps(
+    focusProps,
+    hoverProps,
+  ) as React.ButtonHTMLAttributes<HTMLButtonElement>;
 
   // Time tracking refs
   const elapsedRef = useRef(0);
@@ -152,17 +160,17 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
       const completeDismissal = () => {
         onDismissEnd?.();
         onDismiss?.();
-        dispatch({ type: 'DISMISS_TOAST', toastId: id });
+        dispatch({ type: "DISMISS_TOAST", toastId: id });
       };
       gsap.killTweensOf(innerRef.current);
 
       if (onDismissAnimation) {
         onDismissAnimation(completeDismissal);
-        dispatch({ type: 'CLOSE_TOAST', toastId: id });
+        dispatch({ type: "CLOSE_TOAST", toastId: id });
         return;
       }
 
-      dispatch({ type: 'CLOSE_TOAST', toastId: id });
+      dispatch({ type: "CLOSE_TOAST", toastId: id });
       gsap.to(innerRef.current, {
         opacity: 0,
         duration: STACK_REFLOW_DURATION,
@@ -173,101 +181,111 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
       });
     } else {
       onDismiss?.();
-      dispatch({ type: 'DISMISS_TOAST', toastId: id });
+      dispatch({ type: "DISMISS_TOAST", toastId: id });
     }
   }, [id, onDismiss, onDismissAnimation, onDismissEnd, onDismissStart]);
 
-  useGSAP(() => {
-    const element = innerRef.current;
-    if (!element) return;
+  useGSAP(
+    () => {
+      const element = innerRef.current;
+      if (!element) return;
 
-    const spawnDir = toast.spawnDirection ?? (isTop ? 'top' : 'bottom');
-    const fromY = getSpawnY(element, spawnDir, boundary);
+      const spawnDir = toast.spawnDirection ?? (isTop ? "top" : "bottom");
+      const fromY = getSpawnY(element, spawnDir, boundary);
 
-    gsap.fromTo(element, {
-      opacity: 0,
-      y: fromY,
-      scale: 0.96,
-    }, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.45,
-      ease: "expo.out",
-      overwrite: "auto",
-    });
-  }, { scope: innerRef });
-
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (innerRef.current?.dataset.dismissing) return;
-    dragStartXRef.current = e.clientX;
-    currentDeltaRef.current = 0;
-    dragPausedRef.current = true;
-    onDragStart?.();
-    gsap.killTweensOf(innerRef.current);
-
-    const onMove = (ev: PointerEvent) => {
-      if (!innerRef.current) return;
-      const delta = ev.clientX - dragStartXRef.current;
-      currentDeltaRef.current = delta;
-
-      if (delta >= 0) {
-        const progress = Math.min(delta / DRAG_DISMISS_THRESHOLD, 1);
-        gsap.set(innerRef.current, { x: delta, opacity: 1 - progress * 0.5 });
-      } else {
-        const x = -DRAG_LEFT_RESISTANCE * (1 - Math.exp(delta / DRAG_LEFT_RESISTANCE));
-        gsap.set(innerRef.current, { x, opacity: 1 });
-      }
-    };
-
-    const onUp = () => {
-      dragPausedRef.current = false;
-      onDragEnd?.();
-      document.removeEventListener('pointermove', onMove);
-      document.removeEventListener('pointerup', onUp);
-      document.removeEventListener('pointercancel', onUp);
-
-      const delta = currentDeltaRef.current;
-      currentDeltaRef.current = 0;
-
-      if (delta >= DRAG_DISMISS_THRESHOLD) {
-        if (innerRef.current) {
-          innerRef.current.dataset.dismissing = "true";
-          onDismissStart?.();
-          // Dispatch CLOSE_TOAST immediately to signal stack adjustment
-          dispatch({ type: 'CLOSE_TOAST', toastId: id });
-          gsap.killTweensOf(innerRef.current);
-          gsap.to(innerRef.current, {
-            x: "+=200",
-            opacity: 0,
-            duration: DRAG_DISMISS_DURATION,
-            ease: "power2.in",
-            onComplete: () => {
-              onDismissEnd?.();
-              onDismiss?.();
-              // Dispatch DISMISS_TOAST after animation completes
-              dispatch({ type: 'DISMISS_TOAST', toastId: id });
-            },
-          });
-        } else {
-          // If innerRef.current is null, just dismiss immediately
-          onDismiss?.();
-          dispatch({ type: 'DISMISS_TOAST', toastId: id });
-        }
-      } else if (innerRef.current) {
-        gsap.to(innerRef.current, {
-          x: 0,
+      gsap.fromTo(
+        element,
+        {
+          opacity: 0,
+          y: fromY,
+          scale: 0.96,
+        },
+        {
           opacity: 1,
-          duration: 0.55,
-          ease: "elastic.out(1, 0.55)",
-        });
-      }
-    };
+          y: 0,
+          scale: 1,
+          duration: 0.45,
+          ease: "expo.out",
+          overwrite: "auto",
+        },
+      );
+    },
+    { scope: innerRef },
+  );
 
-    document.addEventListener('pointermove', onMove);
-    document.addEventListener('pointerup', onUp);
-    document.addEventListener('pointercancel', onUp);
-  }, [id, isTop, onDismiss, onDragStart, onDragEnd, onDismissStart, onDismissEnd]);
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (innerRef.current?.dataset.dismissing) return;
+      dragStartXRef.current = e.clientX;
+      currentDeltaRef.current = 0;
+      dragPausedRef.current = true;
+      onDragStart?.();
+      gsap.killTweensOf(innerRef.current);
+
+      const onMove = (ev: PointerEvent) => {
+        if (!innerRef.current) return;
+        const delta = ev.clientX - dragStartXRef.current;
+        currentDeltaRef.current = delta;
+
+        if (delta >= 0) {
+          const progress = Math.min(delta / DRAG_DISMISS_THRESHOLD, 1);
+          gsap.set(innerRef.current, { x: delta, opacity: 1 - progress * 0.5 });
+        } else {
+          const x = -DRAG_LEFT_RESISTANCE * (1 - Math.exp(delta / DRAG_LEFT_RESISTANCE));
+          gsap.set(innerRef.current, { x, opacity: 1 });
+        }
+      };
+
+      const onUp = () => {
+        dragPausedRef.current = false;
+        onDragEnd?.();
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onUp);
+        document.removeEventListener("pointercancel", onUp);
+
+        const delta = currentDeltaRef.current;
+        currentDeltaRef.current = 0;
+
+        if (delta >= DRAG_DISMISS_THRESHOLD) {
+          if (innerRef.current) {
+            innerRef.current.dataset.dismissing = "true";
+            onDismissStart?.();
+            // Dispatch CLOSE_TOAST immediately to signal stack adjustment
+            dispatch({ type: "CLOSE_TOAST", toastId: id });
+            gsap.killTweensOf(innerRef.current);
+            gsap.to(innerRef.current, {
+              x: "+=200",
+              opacity: 0,
+              duration: DRAG_DISMISS_DURATION,
+              ease: "power2.in",
+              onComplete: () => {
+                onDismissEnd?.();
+                onDismiss?.();
+                // Dispatch DISMISS_TOAST after animation completes
+                dispatch({ type: "DISMISS_TOAST", toastId: id });
+              },
+            });
+          } else {
+            // If innerRef.current is null, just dismiss immediately
+            onDismiss?.();
+            dispatch({ type: "DISMISS_TOAST", toastId: id });
+          }
+        } else if (innerRef.current) {
+          gsap.to(innerRef.current, {
+            x: 0,
+            opacity: 1,
+            duration: 0.55,
+            ease: "elastic.out(1, 0.55)",
+          });
+        }
+      };
+
+      document.addEventListener("pointermove", onMove);
+      document.addEventListener("pointerup", onUp);
+      document.addEventListener("pointercancel", onUp);
+    },
+    [id, isTop, onDismiss, onDragStart, onDragEnd, onDismissStart, onDismissEnd],
+  );
 
   // Animation Frame Timer Logic
   useEffect(() => {
@@ -305,7 +323,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
   return (
     <div
       ref={innerRef}
-      className={cn('toast', css.root, variant, resolved.root)}
+      className={cn("toast", css.root, variant, resolved.root)}
       role="alert"
       onPointerDown={handlePointerDown}
     >
@@ -314,11 +332,15 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
           <Icon className={cn("glyph", css.icon, resolved.icon)} />
         </div>
       )}
-      <div className={cn('content', css.content, resolved.content)}>
+      <div className={cn("content", css.content, resolved.content)}>
         {jsx || (
           <>
-            {title && <h4 className={cn('title', css.title, resolved.title)}>{title}</h4>}
-            {description && <p className={cn('description', css.description, resolved.description)}>{description}</p>}
+            {title && <h4 className={cn("title", css.title, resolved.title)}>{title}</h4>}
+            {description && (
+              <p className={cn("description", css.description, resolved.description)}>
+                {description}
+              </p>
+            )}
           </>
         )}
         {toast.action}
@@ -326,7 +348,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
       <button
         {...closeInteractionProps}
         onClick={handleDismiss}
-        className={cn('close', css.close, resolved.close)}
+        className={cn("close", css.close, resolved.close)}
         aria-label="Close"
         data-hovered={isHovered ? "true" : "false"}
         data-focused={isFocused ? "true" : "false"}

@@ -1,282 +1,337 @@
-import * as React from "react"
-import { createPortal } from "react-dom"
-import { useFloating } from "../../hooks/useFloat/react/useFloating"
-import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation"
-import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate"
-import { useHover } from "@react-aria/interactions"
-import { ChevronRight } from "lucide-react"
-import { useSelectContext, SelectContext, type SelectContextValue } from "./Select"
-import type { Key } from "@react-types/shared"
-import styles from "./Select.module.css"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import { asElementProps } from "@/lib/react-aria"
-import { useMergeRefs } from "@/hooks/useMergeRefs"
-import { useListNavigation, handleListKeyDown } from "./Select.shared"
-import * as positioning from "../../utils/submenu-positioning"
-import type { ItemData } from "./Select.shared"
-import { Scroll } from "../Scroll"
-import { List } from "../List"
+import * as React from "react";
+import { createPortal } from "react-dom";
+import { useFloating } from "../../hooks/useFloat/react/useFloating";
+import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
+import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
+import { useHover } from "@react-aria/interactions";
+import { ChevronRight } from "lucide-react";
+import { useSelectContext, SelectContext, type SelectContextValue } from "./Select";
+import type { Key } from "@react-types/shared";
+import styles from "./Select.module.css";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { asElementProps } from "@/lib/react-aria";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useListNavigation, handleListKeyDown } from "./Select.shared";
+import * as positioning from "../../utils/submenu-positioning";
+import type { ItemData } from "./Select.shared";
+import { Scroll } from "../Scroll";
+import { List } from "../List";
 
 interface SelectSubmenuContextValue {
-  isOpen: boolean
-  setIsOpen: (open: boolean) => void
-  triggerRef: React.MutableRefObject<HTMLDivElement | null>
-  parentMenuRef: React.MutableRefObject<HTMLDivElement | null>
-  submenuLevel: number
-  items: ItemData[]
-  focusedKey: Key | null
-  setFocusedKey: React.Dispatch<React.SetStateAction<Key | null>>
-  navigateToNextItem: () => void
-  navigateToPrevItem: () => void
-  registerItem: (key: Key, textValue: string, isDisabled?: boolean, onSelect?: () => void, isSubmenuTrigger?: boolean) => void
-  unregisterItem: (key: Key) => void
-  selectFocusedItem: () => void
-  isFocusedItemSubmenu: () => boolean
-  contentRef: React.MutableRefObject<HTMLDivElement | null>
-  closeTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>
-  mouseMoveDetectedRef: React.MutableRefObject<boolean>
-  triggerKey: Key | null
-  setTriggerKey: React.Dispatch<React.SetStateAction<Key | null>>
-  parentSubmenuContext: SelectSubmenuContextValue | null
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  triggerRef: React.MutableRefObject<HTMLDivElement | null>;
+  parentMenuRef: React.MutableRefObject<HTMLDivElement | null>;
+  submenuLevel: number;
+  items: ItemData[];
+  focusedKey: Key | null;
+  setFocusedKey: React.Dispatch<React.SetStateAction<Key | null>>;
+  navigateToNextItem: () => void;
+  navigateToPrevItem: () => void;
+  registerItem: (
+    key: Key,
+    textValue: string,
+    isDisabled?: boolean,
+    onSelect?: () => void,
+    isSubmenuTrigger?: boolean,
+  ) => void;
+  unregisterItem: (key: Key) => void;
+  selectFocusedItem: () => void;
+  isFocusedItemSubmenu: () => boolean;
+  contentRef: React.MutableRefObject<HTMLDivElement | null>;
+  closeTimeoutRef: React.MutableRefObject<NodeJS.Timeout | null>;
+  mouseMoveDetectedRef: React.MutableRefObject<boolean>;
+  triggerKey: Key | null;
+  setTriggerKey: React.Dispatch<React.SetStateAction<Key | null>>;
+  parentSubmenuContext: SelectSubmenuContextValue | null;
 }
 
-const SelectSubmenuContext = React.createContext<SelectSubmenuContextValue | null>(null)
+const SelectSubmenuContext = React.createContext<SelectSubmenuContextValue | null>(null);
 
 function useSelectSubmenuContext() {
-  return React.useContext(SelectSubmenuContext)
+  return React.useContext(SelectSubmenuContext);
 }
 
 export interface SelectSubProps extends React.PropsWithChildren {
   /** Controlled open state of the submenu */
-  open?: boolean
+  open?: boolean;
   /** Initial open state for uncontrolled usage */
-  defaultOpen?: boolean
+  defaultOpen?: boolean;
   /** Called when the submenu open state changes */
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (open: boolean) => void;
 }
 
 export interface SelectSubTriggerProps extends React.PropsWithChildren {
   /** Prevents the trigger from opening the submenu */
-  disabled?: boolean
+  disabled?: boolean;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Accessible text value used for keyboard navigation registration; defaults to children string */
-  textValue?: string
+  textValue?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
-  styles?: SelectSubTriggerStylesProp
+  styles?: SelectSubTriggerStylesProp;
 }
 
 export interface SelectSubContentProps extends React.PropsWithChildren {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Distance in pixels between the submenu panel and its trigger along the main axis */
-  sideOffset?: number
+  sideOffset?: number;
   /** Offset in pixels along the cross axis for submenu panel alignment */
-  alignOffset?: number
+  alignOffset?: number;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
-  styles?: SelectSubContentStylesProp
+  styles?: SelectSubContentStylesProp;
 }
 
 interface SelectSubTriggerIconStyles {
-  right?: StyleValue
+  right?: StyleValue;
 }
 
 export interface SelectSubTriggerStyleSlots {
-  root?: StyleValue
-  icon?: StyleValue | SelectSubTriggerIconStyles
+  root?: StyleValue;
+  icon?: StyleValue | SelectSubTriggerIconStyles;
 }
 
-export type SelectSubTriggerStylesProp = StylesProp<SelectSubTriggerStyleSlots>
+export type SelectSubTriggerStylesProp = StylesProp<SelectSubTriggerStyleSlots>;
 
 export interface SelectSubContentStyleSlots {
-  root?: StyleValue
-  overlay?: StyleValue
-  list?: StyleValue
-  listPaddingWrapper?: StyleValue
+  root?: StyleValue;
+  overlay?: StyleValue;
+  list?: StyleValue;
+  listPaddingWrapper?: StyleValue;
 }
 
-export type SelectSubContentStylesProp = StylesProp<SelectSubContentStyleSlots>
+export type SelectSubContentStylesProp = StylesProp<SelectSubContentStyleSlots>;
 
-const resolveSelectSubTriggerBaseStyles = createStylesResolver(["root", "iconRight"] as const)
+const resolveSelectSubTriggerBaseStyles = createStylesResolver(["root", "iconRight"] as const);
 
 function resolveSelectSubTriggerStyles(styles: SelectSubTriggerStylesProp | undefined) {
-  if (!styles) return resolveSelectSubTriggerBaseStyles(styles)
-  const { root, icon } = styles
+  if (!styles) return resolveSelectSubTriggerBaseStyles(styles);
+  const { root, icon } = styles;
 
-  let iconRight: StyleValue | undefined
+  let iconRight: StyleValue | undefined;
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {
-      iconRight = icon
+      iconRight = icon;
     } else {
-      iconRight = icon.right
+      iconRight = icon.right;
     }
   }
 
-  return resolveSelectSubTriggerBaseStyles({ root, iconRight })
+  return resolveSelectSubTriggerBaseStyles({ root, iconRight });
 }
 
-const resolveSelectSubContentBaseStyles = createStylesResolver(["root", "overlay", "list", "listPaddingWrapper"] as const)
+const resolveSelectSubContentBaseStyles = createStylesResolver([
+  "root",
+  "overlay",
+  "list",
+  "listPaddingWrapper",
+] as const);
 
 function resolveSelectSubContentStyles(styles: SelectSubContentStylesProp | undefined) {
-  if (!styles) return resolveSelectSubContentBaseStyles(styles)
-  const { root, overlay, list, listPaddingWrapper } = styles
-  return resolveSelectSubContentBaseStyles({ root, overlay, list, listPaddingWrapper })
+  if (!styles) return resolveSelectSubContentBaseStyles(styles);
+  const { root, overlay, list, listPaddingWrapper } = styles;
+  return resolveSelectSubContentBaseStyles({ root, overlay, list, listPaddingWrapper });
 }
 
 /** Context provider that scopes a nested flyout submenu within the dropdown */
-const SelectSub = ({ children, open: controlledOpen, defaultOpen = false, onOpenChange }: SelectSubProps) => {
-  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen)
-  const [triggerKey, setTriggerKey] = React.useState<Key | null>(null)
-  const isOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen
+const SelectSub = ({
+  children,
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+}: SelectSubProps) => {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
+  const [triggerKey, setTriggerKey] = React.useState<Key | null>(null);
+  const isOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
 
-  const rootSelectContext = useSelectContext()
-  const nav = useListNavigation({ isOpen })
-  const itemExtrasRef = React.useRef<Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>>(new Map())
-  const mouseMoveDetectedRef = React.useRef(true)
+  const rootSelectContext = useSelectContext();
+  const nav = useListNavigation({ isOpen });
+  const itemExtrasRef = React.useRef<
+    Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>
+  >(new Map());
+  const mouseMoveDetectedRef = React.useRef(true);
 
-  const registerItem = React.useCallback((key: Key, textValue: string, isDisabled?: boolean, onSelect?: () => void, isSubmenuTrigger?: boolean) => {
-    nav.registerItem(key, textValue, isDisabled)
-    itemExtrasRef.current.set(key, { onSelect, isSubmenuTrigger })
-  }, [nav.registerItem])
+  const registerItem = React.useCallback(
+    (
+      key: Key,
+      textValue: string,
+      isDisabled?: boolean,
+      onSelect?: () => void,
+      isSubmenuTrigger?: boolean,
+    ) => {
+      nav.registerItem(key, textValue, isDisabled);
+      itemExtrasRef.current.set(key, { onSelect, isSubmenuTrigger });
+    },
+    [nav.registerItem],
+  );
 
-  const unregisterItem = React.useCallback((key: Key) => {
-    nav.unregisterItem(key)
-    itemExtrasRef.current.delete(key)
-  }, [nav.unregisterItem])
+  const unregisterItem = React.useCallback(
+    (key: Key) => {
+      nav.unregisterItem(key);
+      itemExtrasRef.current.delete(key);
+    },
+    [nav.unregisterItem],
+  );
 
-  const isOpenRef = React.useRef(isOpen)
-  isOpenRef.current = isOpen
+  const isOpenRef = React.useRef(isOpen);
+  isOpenRef.current = isOpen;
 
-  const setIsOpen = React.useCallback((open: boolean) => {
-    if (controlledOpen === undefined) {
-      setUncontrolledOpen(open)
-    }
-    onOpenChange?.(open)
-    if (!open) {
-      nav.setFocusedKey(null)
-    }
-  }, [controlledOpen, onOpenChange, nav.setFocusedKey])
+  const setIsOpen = React.useCallback(
+    (open: boolean) => {
+      if (controlledOpen === undefined) {
+        setUncontrolledOpen(open);
+      }
+      onOpenChange?.(open);
+      if (!open) {
+        nav.setFocusedKey(null);
+      }
+    },
+    [controlledOpen, onOpenChange, nav.setFocusedKey],
+  );
 
   const isFocusedItemSubmenu = React.useCallback(() => {
-    if (nav.focusedKey === null) return false
-    return itemExtrasRef.current.get(nav.focusedKey)?.isSubmenuTrigger ?? false
-  }, [nav.focusedKey])
+    if (nav.focusedKey === null) return false;
+    return itemExtrasRef.current.get(nav.focusedKey)?.isSubmenuTrigger ?? false;
+  }, [nav.focusedKey]);
 
   const selectFocusedItem = React.useCallback(() => {
-    if (nav.focusedKey === null) return
-    const item = nav.items.find(i => i.key === nav.focusedKey)
-    if (item?.isDisabled) return
-    const extras = itemExtrasRef.current.get(nav.focusedKey)
+    if (nav.focusedKey === null) return;
+    const item = nav.items.find((i) => i.key === nav.focusedKey);
+    if (item?.isDisabled) return;
+    const extras = itemExtrasRef.current.get(nav.focusedKey);
     if (extras?.onSelect) {
-      extras.onSelect()
+      extras.onSelect();
     } else {
-      rootSelectContext.onSelect(nav.focusedKey)
+      rootSelectContext.onSelect(nav.focusedKey);
     }
-  }, [nav.focusedKey, nav.items, rootSelectContext.onSelect])
+  }, [nav.focusedKey, nav.items, rootSelectContext.onSelect]);
 
-  const triggerRef = React.useRef<HTMLDivElement>(null)
-  const parentMenuRef = React.useRef<HTMLDivElement>(null)
-  const contentRef = React.useRef<HTMLDivElement>(null)
-  const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
-  const parentSubmenuCtx = useSelectSubmenuContext()
-  const submenuLevel = (parentSubmenuCtx?.submenuLevel ?? 0) + 1
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const parentMenuRef = React.useRef<HTMLDivElement>(null);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const parentSubmenuCtx = useSelectSubmenuContext();
+  const submenuLevel = (parentSubmenuCtx?.submenuLevel ?? 0) + 1;
 
-  const contextValue = React.useMemo(() => ({
-    isOpen,
-    setIsOpen,
-    triggerRef,
-    parentMenuRef,
-    submenuLevel,
-    items: nav.items,
-    focusedKey: nav.focusedKey,
-    setFocusedKey: nav.setFocusedKey,
-    navigateToNextItem: nav.navigateToNextItem,
-    navigateToPrevItem: nav.navigateToPrevItem,
-    registerItem,
-    unregisterItem,
-    selectFocusedItem,
-    isFocusedItemSubmenu,
-    contentRef,
-    closeTimeoutRef,
-    mouseMoveDetectedRef,
-    triggerKey,
-    setTriggerKey,
-    parentSubmenuContext: parentSubmenuCtx,
-  }), [isOpen, setIsOpen, submenuLevel, nav.items, nav.focusedKey, nav.setFocusedKey, nav.navigateToNextItem, nav.navigateToPrevItem, registerItem, unregisterItem, selectFocusedItem, isFocusedItemSubmenu, triggerKey, parentSubmenuCtx])
+  const contextValue = React.useMemo(
+    () => ({
+      isOpen,
+      setIsOpen,
+      triggerRef,
+      parentMenuRef,
+      submenuLevel,
+      items: nav.items,
+      focusedKey: nav.focusedKey,
+      setFocusedKey: nav.setFocusedKey,
+      navigateToNextItem: nav.navigateToNextItem,
+      navigateToPrevItem: nav.navigateToPrevItem,
+      registerItem,
+      unregisterItem,
+      selectFocusedItem,
+      isFocusedItemSubmenu,
+      contentRef,
+      closeTimeoutRef,
+      mouseMoveDetectedRef,
+      triggerKey,
+      setTriggerKey,
+      parentSubmenuContext: parentSubmenuCtx,
+    }),
+    [
+      isOpen,
+      setIsOpen,
+      submenuLevel,
+      nav.items,
+      nav.focusedKey,
+      nav.setFocusedKey,
+      nav.navigateToNextItem,
+      nav.navigateToPrevItem,
+      registerItem,
+      unregisterItem,
+      selectFocusedItem,
+      isFocusedItemSubmenu,
+      triggerKey,
+      parentSubmenuCtx,
+    ],
+  );
 
   return (
-    <SelectSubmenuContext.Provider value={contextValue}>
-      {children}
-    </SelectSubmenuContext.Provider>
-  )
-}
-SelectSub.displayName = "SelectSub"
+    <SelectSubmenuContext.Provider value={contextValue}>{children}</SelectSubmenuContext.Provider>
+  );
+};
+SelectSub.displayName = "SelectSub";
 
 /** Item that opens a nested submenu on hover or keyboard right-arrow */
 const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>(
   ({ children, disabled = false, textValue, className, styles: stylesProp }, ref) => {
-    const rootContext = useSelectContext()
-    const submenuContext = useSelectSubmenuContext()
-    const parentSub = submenuContext?.parentSubmenuContext
-    const parentCtx = parentSub ?? rootContext
-    const { setFocusedKey, focusedKey, mouseMoveDetectedRef } = parentCtx
-    const triggerRef = React.useRef<HTMLDivElement>(null)
-    const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+    const rootContext = useSelectContext();
+    const submenuContext = useSelectSubmenuContext();
+    const parentSub = submenuContext?.parentSubmenuContext;
+    const parentCtx = parentSub ?? rootContext;
+    const { setFocusedKey, focusedKey, mouseMoveDetectedRef } = parentCtx;
+    const triggerRef = React.useRef<HTMLDivElement>(null);
+    const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-    const id = React.useId()
-    const finalKey = textValue ?? String(children) ?? `subtrigger-${id}`
-    const finalTextValue = textValue ?? String(children)
-    const setSubmenuOpen = submenuContext?.setIsOpen
-    const isHighlighted = focusedKey === finalKey
-    const resolved = resolveSelectSubTriggerStyles(stylesProp)
+    const id = React.useId();
+    const finalKey = textValue ?? String(children) ?? `subtrigger-${id}`;
+    const finalTextValue = textValue ?? String(children);
+    const setSubmenuOpen = submenuContext?.setIsOpen;
+    const isHighlighted = focusedKey === finalKey;
+    const resolved = resolveSelectSubTriggerStyles(stylesProp);
 
-    const handleSelectRef = React.useRef<() => void>(null)
+    const handleSelectRef = React.useRef<() => void>(null);
     handleSelectRef.current = () => {
-      if (disabled) return
-      setSubmenuOpen?.(true)
-    }
+      if (disabled) return;
+      setSubmenuOpen?.(true);
+    };
 
     React.useEffect(() => {
-      parentCtx.registerItem(finalKey, finalTextValue, disabled, () => handleSelectRef.current?.(), true)
-      return () => parentCtx.unregisterItem(finalKey)
-    }, [finalKey, finalTextValue, disabled, parentCtx.registerItem, parentCtx.unregisterItem])
+      parentCtx.registerItem(
+        finalKey,
+        finalTextValue,
+        disabled,
+        () => handleSelectRef.current?.(),
+        true,
+      );
+      return () => parentCtx.unregisterItem(finalKey);
+    }, [finalKey, finalTextValue, disabled, parentCtx.registerItem, parentCtx.unregisterItem]);
 
     React.useEffect(() => {
-      submenuContext?.setTriggerKey(finalKey)
-    }, [finalKey, submenuContext])
+      submenuContext?.setTriggerKey(finalKey);
+    }, [finalKey, submenuContext]);
 
     const { hoverProps } = useHover({
       isDisabled: disabled,
       onHoverStart: () => {
-        setFocusedKey(finalKey)
-        mouseMoveDetectedRef.current = true
-        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
-        setSubmenuOpen?.(true)
+        setFocusedKey(finalKey);
+        mouseMoveDetectedRef.current = true;
+        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+        setSubmenuOpen?.(true);
       },
       onHoverEnd: () => {
         if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current)
-          hoverTimeoutRef.current = null
+          clearTimeout(hoverTimeoutRef.current);
+          hoverTimeoutRef.current = null;
         }
       },
-    })
+    });
 
     React.useEffect(() => {
       return () => {
-        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
-      }
-    }, [])
+        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      };
+    }, []);
 
     const mergedRef = useMergeRefs(
       triggerRef,
       (el: HTMLDivElement | null) => {
         if (submenuContext) {
-          submenuContext.triggerRef.current = el
+          submenuContext.triggerRef.current = el;
         }
       },
-      ref
-    )
+      ref,
+    );
 
     return (
       <List.Item
@@ -287,7 +342,7 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
         aria-expanded={submenuContext?.isOpen}
         tabIndex={-1}
         aria-disabled={disabled || undefined}
-        className={cn('trigger', styles["sub-trigger"], className, resolved.root)}
+        className={cn("trigger", styles["sub-trigger"], className, resolved.root)}
         data-highlighted={isHighlighted ? "true" : "false"}
         data-focused={isHighlighted ? "true" : "false"}
         data-disabled={disabled || undefined}
@@ -298,188 +353,205 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
         {children}
         <ChevronRight className={cn(styles["sub-trigger-chevron"], resolved.iconRight)} />
       </List.Item>
-    )
-  }
-)
-SelectSubTrigger.displayName = "SelectSubTrigger"
+    );
+  },
+);
+SelectSubTrigger.displayName = "SelectSubTrigger";
 
 /** Floating panel containing the items of a nested submenu */
 const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>(
   ({ children, className, sideOffset = 8, alignOffset = 0, styles: stylesProp }, ref) => {
-    const rootContext = useSelectContext()
-    const submenuContext = useSelectSubmenuContext()
-    const contentRef = React.useRef<HTMLDivElement>(null)
-    const [mounted, setMounted] = React.useState(false)
-    const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null)
-    const floatingRootRef = React.useRef<HTMLDivElement | null>(null)
-    const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+    const rootContext = useSelectContext();
+    const submenuContext = useSelectSubmenuContext();
+    const contentRef = React.useRef<HTMLDivElement>(null);
+    const [mounted, setMounted] = React.useState(false);
+    const [contentElement, setContentElement] = React.useState<HTMLDivElement | null>(null);
+    const floatingRootRef = React.useRef<HTMLDivElement | null>(null);
+    const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const { refs, floatingStyles, x, y, placement } = useFloating({
       placement: "right-start",
       // Keep nested panels aligned when the parent menu lives inside fixed/sticky layout chrome.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
-      middleware: positioning.getMiddleware({ mainAxis: sideOffset, crossAxis: alignOffset, fallbackPlacements: ["left-start"] }),
-    })
+      middleware: positioning.getMiddleware({
+        mainAxis: sideOffset,
+        crossAxis: alignOffset,
+        fallbackPlacements: ["left-start"],
+      }),
+    });
 
-    const isPositioned = x !== null && y !== null
+    const isPositioned = x !== null && y !== null;
 
     React.useLayoutEffect(() => {
       if (submenuContext?.isOpen && submenuContext.triggerRef.current) {
-        refs.setReference(submenuContext.triggerRef.current)
+        refs.setReference(submenuContext.triggerRef.current);
       }
-    }, [submenuContext?.isOpen, submenuContext?.triggerRef, refs])
+    }, [submenuContext?.isOpen, submenuContext?.triggerRef, refs]);
 
     const { hoverProps } = useHover({
       onHoverStart: () => {
         if (closeTimeoutRef.current) {
-          clearTimeout(closeTimeoutRef.current)
-          closeTimeoutRef.current = null
+          clearTimeout(closeTimeoutRef.current);
+          closeTimeoutRef.current = null;
         }
       },
-    })
+    });
 
     // Effective open state derives synchronously from the parent's isOpen/focusedKey so it
     // lands in the same render as the parent's change. Relaying it through submenuContext.isOpen
     // via an effect instead would land a render late, causing the floating node to unmount and
     // remount before the exit animation ever applies, which skips the CSS transition entirely.
-    const parentSub = submenuContext?.parentSubmenuContext
-    const effectiveParentIsOpen = parentSub?.isOpen ?? rootContext.isOpen
-    const effectiveParentFocusedKey = parentSub?.focusedKey ?? rootContext.focusedKey
-    const effectiveOpen = !!submenuContext?.isOpen && effectiveParentIsOpen && effectiveParentFocusedKey === submenuContext?.triggerKey
+    const parentSub = submenuContext?.parentSubmenuContext;
+    const effectiveParentIsOpen = parentSub?.isOpen ?? rootContext.isOpen;
+    const effectiveParentFocusedKey = parentSub?.focusedKey ?? rootContext.focusedKey;
+    const effectiveOpen =
+      !!submenuContext?.isOpen &&
+      effectiveParentIsOpen &&
+      effectiveParentFocusedKey === submenuContext?.triggerKey;
 
     React.useEffect(() => {
-      if (!submenuContext) return
+      if (!submenuContext) return;
       if (!effectiveOpen && submenuContext.isOpen) {
-        submenuContext.setIsOpen(false)
+        submenuContext.setIsOpen(false);
       }
-    }, [effectiveOpen, submenuContext])
+    }, [effectiveOpen, submenuContext]);
 
     React.useEffect(() => {
-      setMounted(true)
-    }, [])
+      setMounted(true);
+    }, []);
 
     React.useEffect(() => {
       return () => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-      }
-    }, [])
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+      };
+    }, []);
 
     React.useEffect(() => {
       if (submenuContext?.isOpen && contentElement) {
         if (submenuContext.items.length > 0) {
-          const firstEnabled = submenuContext.items.find(i => !i.isDisabled)
+          const firstEnabled = submenuContext.items.find((i) => !i.isDisabled);
           if (firstEnabled) {
-            submenuContext.setFocusedKey(firstEnabled.key)
+            submenuContext.setFocusedKey(firstEnabled.key);
           }
         }
-        contentElement.focus({ preventScroll: true })
+        contentElement.focus({ preventScroll: true });
       }
-    }, [submenuContext?.isOpen, contentElement])
+    }, [submenuContext?.isOpen, contentElement]);
 
     React.useEffect(() => {
-      if (!submenuContext?.isOpen) return
+      if (!submenuContext?.isOpen) return;
       const handleWindowKeyDown = (e: KeyboardEvent) => {
         if (["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
           if (submenuContext.mouseMoveDetectedRef) {
-            submenuContext.mouseMoveDetectedRef.current = false
+            submenuContext.mouseMoveDetectedRef.current = false;
           }
         }
-      }
+      };
       const handleWindowMouseMove = () => {
         if (submenuContext.mouseMoveDetectedRef && !submenuContext.mouseMoveDetectedRef.current) {
-          submenuContext.mouseMoveDetectedRef.current = true
+          submenuContext.mouseMoveDetectedRef.current = true;
         }
-      }
-      window.addEventListener("keydown", handleWindowKeyDown)
-      window.addEventListener("mousemove", handleWindowMouseMove)
+      };
+      window.addEventListener("keydown", handleWindowKeyDown);
+      window.addEventListener("mousemove", handleWindowMouseMove);
       return () => {
-        window.removeEventListener("keydown", handleWindowKeyDown)
-        window.removeEventListener("mousemove", handleWindowMouseMove)
-      }
-    }, [submenuContext?.isOpen])
+        window.removeEventListener("keydown", handleWindowKeyDown);
+        window.removeEventListener("mousemove", handleWindowMouseMove);
+      };
+    }, [submenuContext?.isOpen]);
 
-    const submenuContextRef = React.useRef(submenuContext)
-    submenuContextRef.current = submenuContext
-    const forwardedRefRef = React.useRef(ref)
-    forwardedRefRef.current = ref
+    const submenuContextRef = React.useRef(submenuContext);
+    submenuContextRef.current = submenuContext;
+    const forwardedRefRef = React.useRef(ref);
+    forwardedRefRef.current = ref;
 
-    const stableRegisterItem = React.useCallback((key: Key, textValue: string, isDisabled?: boolean) => {
-      submenuContextRef.current?.registerItem(key, textValue, isDisabled)
-    }, [])
+    const stableRegisterItem = React.useCallback(
+      (key: Key, textValue: string, isDisabled?: boolean) => {
+        submenuContextRef.current?.registerItem(key, textValue, isDisabled);
+      },
+      [],
+    );
 
     const stableUnregisterItem = React.useCallback((key: Key) => {
-      submenuContextRef.current?.unregisterItem(key)
-    }, [])
+      submenuContextRef.current?.unregisterItem(key);
+    }, []);
 
     const mergedContentRef = useMergeRefs(
       setContentElement,
       contentRef,
       (el: HTMLDivElement | null) => {
-        if (submenuContextRef.current) submenuContextRef.current.contentRef.current = el
-        const fRef = forwardedRefRef.current
-        if (typeof fRef === "function") fRef(el)
-        else if (fRef) fRef.current = el
-      }
-    )
+        if (submenuContextRef.current) submenuContextRef.current.contentRef.current = el;
+        const fRef = forwardedRefRef.current;
+        if (typeof fRef === "function") fRef(el);
+        else if (fRef) fRef.current = el;
+      },
+    );
 
-    const mergedFloatingRef = useMergeRefs(floatingRootRef, refs.setFloating)
+    const mergedFloatingRef = useMergeRefs(floatingRootRef, refs.setFloating);
 
-    const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
-      if (!submenuContext) return
+    const handleKeyDown = React.useCallback(
+      (e: React.KeyboardEvent) => {
+        if (!submenuContext) return;
 
-      if (e.key === "ArrowLeft" || e.key === "Escape") {
-        e.preventDefault()
-        e.stopPropagation()
-        submenuContext.setIsOpen(false)
-        if (submenuContext.triggerRef.current) {
-          submenuContext.triggerRef.current.focus()
-        }
-        return
-      }
-
-      if (e.key === "ArrowRight" && submenuContext.isFocusedItemSubmenu()) {
-        e.preventDefault()
-        e.stopPropagation()
-        submenuContext.selectFocusedItem()
-        return
-      }
-
-      e.stopPropagation()
-
-      handleListKeyDown(e, {
-        navigateNext: submenuContext.navigateToNextItem,
-        navigatePrev: submenuContext.navigateToPrevItem,
-        confirm: () => {
-          submenuContext.selectFocusedItem()
-        },
-        close: () => {
-          submenuContext.setIsOpen(false)
+        if (e.key === "ArrowLeft" || e.key === "Escape") {
+          e.preventDefault();
+          e.stopPropagation();
+          submenuContext.setIsOpen(false);
           if (submenuContext.triggerRef.current) {
-            submenuContext.triggerRef.current.focus()
+            submenuContext.triggerRef.current.focus();
           }
-        },
-        filteredItems: submenuContext.items,
-        setFocusedKey: submenuContext.setFocusedKey,
-      })
-    }, [submenuContext])
+          return;
+        }
 
-    const overriddenContextValue = React.useMemo<SelectContextValue>(() => ({
-      ...rootContext,
-      items: submenuContext?.items ?? [],
-      filteredItems: submenuContext?.items ?? [],
-      registerItem: stableRegisterItem,
-      unregisterItem: stableUnregisterItem,
-      focusedKey: submenuContext?.focusedKey ?? null,
-      setFocusedKey: submenuContext?.setFocusedKey ?? (() => { }),
-      navigateToNextItem: submenuContext?.navigateToNextItem ?? (() => { }),
-      navigateToPrevItem: submenuContext?.navigateToPrevItem ?? (() => { }),
-      selectFocusedItem: submenuContext?.selectFocusedItem ?? (() => { }),
-      isFocusedItemSubmenu: submenuContext?.isFocusedItemSubmenu ?? (() => false),
-      mouseMoveDetectedRef: submenuContext?.mouseMoveDetectedRef ?? rootContext.mouseMoveDetectedRef,
-      searchValue: "",
-      visibleKeys: new Set((submenuContext?.items ?? []).map(i => i.key)),
-    }), [rootContext, submenuContext, stableRegisterItem, stableUnregisterItem])
+        if (e.key === "ArrowRight" && submenuContext.isFocusedItemSubmenu()) {
+          e.preventDefault();
+          e.stopPropagation();
+          submenuContext.selectFocusedItem();
+          return;
+        }
+
+        e.stopPropagation();
+
+        handleListKeyDown(e, {
+          navigateNext: submenuContext.navigateToNextItem,
+          navigatePrev: submenuContext.navigateToPrevItem,
+          confirm: () => {
+            submenuContext.selectFocusedItem();
+          },
+          close: () => {
+            submenuContext.setIsOpen(false);
+            if (submenuContext.triggerRef.current) {
+              submenuContext.triggerRef.current.focus();
+            }
+          },
+          filteredItems: submenuContext.items,
+          setFocusedKey: submenuContext.setFocusedKey,
+        });
+      },
+      [submenuContext],
+    );
+
+    const overriddenContextValue = React.useMemo<SelectContextValue>(
+      () => ({
+        ...rootContext,
+        items: submenuContext?.items ?? [],
+        filteredItems: submenuContext?.items ?? [],
+        registerItem: stableRegisterItem,
+        unregisterItem: stableUnregisterItem,
+        focusedKey: submenuContext?.focusedKey ?? null,
+        setFocusedKey: submenuContext?.setFocusedKey ?? (() => {}),
+        navigateToNextItem: submenuContext?.navigateToNextItem ?? (() => {}),
+        navigateToPrevItem: submenuContext?.navigateToPrevItem ?? (() => {}),
+        selectFocusedItem: submenuContext?.selectFocusedItem ?? (() => {}),
+        isFocusedItemSubmenu: submenuContext?.isFocusedItemSubmenu ?? (() => false),
+        mouseMoveDetectedRef:
+          submenuContext?.mouseMoveDetectedRef ?? rootContext.mouseMoveDetectedRef,
+        searchValue: "",
+        visibleKeys: new Set((submenuContext?.items ?? []).map((i) => i.key)),
+      }),
+      [rootContext, submenuContext, stableRegisterItem, stableUnregisterItem],
+    );
 
     const { isExiting, animationStyles } = useFloatAnimation({
       open: effectiveOpen,
@@ -488,19 +560,19 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
       // Submenus animate closed while the root select stays open, but if the root itself is
       // closing (e.g. an outside click), every level should disappear instantly together.
       skipExitAnimation: !rootContext.isOpen,
-    })
+    });
 
-    if (!mounted || !submenuContext) return null
+    if (!mounted || !submenuContext) return null;
 
-    const showContent = effectiveOpen && isPositioned
-    const resolved = resolveSelectSubContentStyles(stylesProp)
+    const showContent = effectiveOpen && isPositioned;
+    const resolved = resolveSelectSubContentStyles(stylesProp);
 
     return createPortal(
       <>
         {(showContent || isExiting) && (
           <div
             ref={mergedFloatingRef}
-            className={cn('select', styles["sub-content-root"], resolved.overlay)}
+            className={cn("select", styles["sub-content-root"], resolved.overlay)}
             style={{
               ...floatingStyles,
               zIndex: 50001 + (submenuContext.submenuLevel ?? 0),
@@ -511,7 +583,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
               ref={mergedContentRef}
               role="listbox"
               tabIndex={-1}
-              className={cn('sub-content', styles["sub-content"], className, resolved.root)}
+              className={cn("sub-content", styles["sub-content"], className, resolved.root)}
               data-state={showContent ? "open" : "closed"}
               data-placement={placement.split("-")[0]}
               data-select-submenu-content="true"
@@ -542,10 +614,10 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
           </div>
         )}
       </>,
-      document.body
-    )
-  }
-)
-SelectSubContent.displayName = "SelectSubContent"
+      document.body,
+    );
+  },
+);
+SelectSubContent.displayName = "SelectSubContent";
 
-export { SelectSub, SelectSubTrigger, SelectSubContent }
+export { SelectSub, SelectSubTrigger, SelectSubContent };

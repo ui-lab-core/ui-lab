@@ -1,164 +1,182 @@
-import * as React from 'react'
-import { waitFor } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
-import { renderSelectWithItems, renderSelectWithChildren, openSelect, getSelectTrigger } from './Select.test-utils'
-import { createMockSelectItems, getAllElementsByRole, pressArrowDown, typeText } from '@/tests/utils'
-import { Select, Searchable } from '..'
+import * as React from "react";
+import { waitFor } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import {
+  renderSelectWithItems,
+  renderSelectWithChildren,
+  openSelect,
+  getSelectTrigger,
+} from "./Select.test-utils";
+import {
+  createMockSelectItems,
+  getAllElementsByRole,
+  pressArrowDown,
+  typeText,
+} from "@/tests/utils";
+import { Select, Searchable } from "..";
 
-describe('Select.filtering', () => {
-  describe('filter prop', () => {
-    it('filter prop filters items (excludes non-matching)', async () => {
-      const items = createMockSelectItems(5)
-      const filter = (item: any) => !item.label.includes('Option 2')
+describe("Select.filtering", () => {
+  describe("filter prop", () => {
+    it("filter prop filters items (excludes non-matching)", async () => {
+      const items = createMockSelectItems(5);
+      const filter = (item: any) => !item.label.includes("Option 2");
 
-      const container = renderSelectWithItems(items, { filter })
-      const trigger = getSelectTrigger(container)
+      const container = renderSelectWithItems(items, { filter });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      const options = getAllElementsByRole('option')
-      const hasFiltered = Array.from(options).some(option =>
-        option.textContent?.includes('Option 2')
-      )
+      const options = getAllElementsByRole("option");
+      const hasFiltered = Array.from(options).some((option) =>
+        option.textContent?.includes("Option 2"),
+      );
 
-      expect(hasFiltered).toBe(false)
-    })
+      expect(hasFiltered).toBe(false);
+    });
 
-    it('filteredItems reflects applied filter', async () => {
-      const items = createMockSelectItems(5)
-      const filter = (item: any) => item.label.includes('Option') && !item.label.includes('Option 5')
+    it("filteredItems reflects applied filter", async () => {
+      const items = createMockSelectItems(5);
+      const filter = (item: any) =>
+        item.label.includes("Option") && !item.label.includes("Option 5");
 
-      const container = renderSelectWithItems(items, { filter })
-      const trigger = getSelectTrigger(container)
+      const container = renderSelectWithItems(items, { filter });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      const options = getAllElementsByRole('option')
-      expect(options.length).toBeLessThan(items.length)
-    })
+      const options = getAllElementsByRole("option");
+      expect(options.length).toBeLessThan(items.length);
+    });
 
-    it('visibleKeys only includes non-filtered items', async () => {
-      const items = createMockSelectItems(5)
-      const filter = (item: any) => item.key !== 'item-1'
+    it("visibleKeys only includes non-filtered items", async () => {
+      const items = createMockSelectItems(5);
+      const filter = (item: any) => item.key !== "item-1";
 
-      const container = renderSelectWithItems(items, { filter })
-      const trigger = getSelectTrigger(container)
+      const container = renderSelectWithItems(items, { filter });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      const options = getAllElementsByRole('option')
-      const visibleCount = Array.from(options).filter(option =>
-        !option.textContent?.includes('Option 2') // item-1 is Option 2
-      ).length
+      const options = getAllElementsByRole("option");
+      const visibleCount = Array.from(options).filter(
+        (option) => !option.textContent?.includes("Option 2"), // item-1 is Option 2
+      ).length;
 
-      expect(visibleCount).toBeGreaterThan(0)
-    })
+      expect(visibleCount).toBeGreaterThan(0);
+    });
 
-    it('navigation respects filtered items (skips filtered-out items)', async () => {
-      const items = createMockSelectItems(5)
-      const filter = (item: any) => item.key !== 'item-2'
+    it("navigation respects filtered items (skips filtered-out items)", async () => {
+      const items = createMockSelectItems(5);
+      const filter = (item: any) => item.key !== "item-2";
 
-      const container = renderSelectWithItems(items, { filter })
-      const trigger = getSelectTrigger(container)
+      const container = renderSelectWithItems(items, { filter });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
-      await pressArrowDown(trigger)
-      await pressArrowDown(trigger)
+      await openSelect(trigger);
+      await pressArrowDown(trigger);
+      await pressArrowDown(trigger);
 
-      const focusedItems = document.querySelectorAll('[data-focused="true"]')
-      expect(focusedItems.length).toBeGreaterThan(0)
-    })
-  })
+      const focusedItems = document.querySelectorAll('[data-focused="true"]');
+      expect(focusedItems.length).toBeGreaterThan(0);
+    });
+  });
 
+  describe("filter with disabled items", () => {
+    it("search works with disabled items correctly", async () => {
+      const items = createMockSelectItems(5);
+      items[1].isDisabled = true;
+      items[3].isDisabled = true;
 
-  describe('filter with disabled items', () => {
-    it('search works with disabled items correctly', async () => {
-      const items = createMockSelectItems(5)
-      items[1].isDisabled = true
-      items[3].isDisabled = true
+      const filter = (item: any) => !item.label.includes("Option 5");
 
-      const filter = (item: any) => !item.label.includes('Option 5')
+      const container = renderSelectWithItems(items, { filter });
+      const trigger = getSelectTrigger(container);
 
-      const container = renderSelectWithItems(items, { filter })
-      const trigger = getSelectTrigger(container)
+      await openSelect(trigger);
 
-      await openSelect(trigger)
-
-      const options = getAllElementsByRole('option')
-      expect(options.length).toBeGreaterThan(0)
+      const options = getAllElementsByRole("option");
+      expect(options.length).toBeGreaterThan(0);
 
       const disabledOptions = Array.from(options).filter(
-        option => option.getAttribute('aria-disabled') === 'true'
-      )
-      expect(disabledOptions.length).toBeGreaterThan(0)
-    })
-  })
+        (option) => option.getAttribute("aria-disabled") === "true",
+      );
+      expect(disabledOptions.length).toBeGreaterThan(0);
+    });
+  });
 
-  describe('empty filtered state', () => {
-    it('handling when all items are filtered out', async () => {
-      const items = createMockSelectItems(3)
-      const filter = () => false // Filter everything out
+  describe("empty filtered state", () => {
+    it("handling when all items are filtered out", async () => {
+      const items = createMockSelectItems(3);
+      const filter = () => false; // Filter everything out
 
-      const container = renderSelectWithItems(items, { filter })
-      const trigger = getSelectTrigger(container)
+      const container = renderSelectWithItems(items, { filter });
+      const trigger = getSelectTrigger(container);
 
-      await openSelect(trigger)
+      await openSelect(trigger);
 
-      const options = getAllElementsByRole('option')
-      expect(options.length).toBe(0)
-    })
+      const options = getAllElementsByRole("option");
+      expect(options.length).toBe(0);
+    });
 
-    it('shows feedback under the in-panel search input when no searchable results match', async () => {
-      const items = createMockSelectItems(3)
-      const container = renderSelectWithChildren(
-        [
-          React.createElement(Select.Trigger, { key: 'trigger' }, React.createElement(Select.Value, { placeholder: 'Select item' })),
-          React.createElement(
-            Searchable.Content,
-            { key: 'content', searchPlaceholder: 'Search items...', emptyContent: 'No items found.' },
-            items.map(item =>
-              React.createElement(Select.Item, { key: item.key, value: item.key, textValue: item.label }, item.label)
-            )
-          )
-        ]
-      )
-      const trigger = getSelectTrigger(container)
-
-      await openSelect(trigger)
-      const searchInput = document.querySelector('[role="combobox"]') as HTMLElement
-      await typeText(searchInput, 'no-match')
-
-      expect(document.querySelector('[role="status"]')).toHaveTextContent('No items found.')
-      expect(getAllElementsByRole('option')).toHaveLength(0)
-    })
-
-    it('hides search trigger content when no entries are found', async () => {
-      const items = createMockSelectItems(3)
-      renderSelectWithChildren(
-        [
-          React.createElement(Searchable.Input, { key: 'trigger', placeholder: 'Search items...' }),
-          React.createElement(
-            Select.Content,
-            { key: 'content' },
+    it("shows feedback under the in-panel search input when no searchable results match", async () => {
+      const items = createMockSelectItems(3);
+      const container = renderSelectWithChildren([
+        React.createElement(
+          Select.Trigger,
+          { key: "trigger" },
+          React.createElement(Select.Value, { placeholder: "Select item" }),
+        ),
+        React.createElement(
+          Searchable.Content,
+          { key: "content", searchPlaceholder: "Search items...", emptyContent: "No items found." },
+          items.map((item) =>
             React.createElement(
-              Select.List,
-              null,
-              items.map(item =>
-                React.createElement(Select.Item, { key: item.key, value: item.key, textValue: item.label }, item.label)
-              )
-            )
-          )
-        ]
-      )
+              Select.Item,
+              { key: item.key, value: item.key, textValue: item.label },
+              item.label,
+            ),
+          ),
+        ),
+      ]);
+      const trigger = getSelectTrigger(container);
 
-      const searchInput = document.querySelector('[role="combobox"]') as HTMLElement
-      await typeText(searchInput, 'no-match')
+      await openSelect(trigger);
+      const searchInput = document.querySelector('[role="combobox"]') as HTMLElement;
+      await typeText(searchInput, "no-match");
 
-      const content = document.querySelector('[role="listbox"]')
+      expect(document.querySelector('[role="status"]')).toHaveTextContent("No items found.");
+      expect(getAllElementsByRole("option")).toHaveLength(0);
+    });
+
+    it("hides search trigger content when no entries are found", async () => {
+      const items = createMockSelectItems(3);
+      renderSelectWithChildren([
+        React.createElement(Searchable.Input, { key: "trigger", placeholder: "Search items..." }),
+        React.createElement(
+          Select.Content,
+          { key: "content" },
+          React.createElement(
+            Select.List,
+            null,
+            items.map((item) =>
+              React.createElement(
+                Select.Item,
+                { key: item.key, value: item.key, textValue: item.label },
+                item.label,
+              ),
+            ),
+          ),
+        ),
+      ]);
+
+      const searchInput = document.querySelector('[role="combobox"]') as HTMLElement;
+      await typeText(searchInput, "no-match");
+
+      const content = document.querySelector('[role="listbox"]');
       await waitFor(() => {
-        expect(content).not.toBeVisible()
-      })
-      expect(document.querySelector('[role="status"]')).not.toBeInTheDocument()
-    })
-  })
-})
+        expect(content).not.toBeVisible();
+      });
+      expect(document.querySelector('[role="status"]')).not.toBeInTheDocument();
+    });
+  });
+});

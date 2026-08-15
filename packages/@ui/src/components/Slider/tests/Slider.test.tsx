@@ -5,7 +5,7 @@ import { Slider } from "../Slider";
 
 function mockElementRect(
   element: Element,
-  rect: Pick<DOMRect, "left" | "top" | "width" | "height">
+  rect: Pick<DOMRect, "left" | "top" | "width" | "height">,
 ) {
   const { left, top, width, height } = rect;
 
@@ -26,7 +26,7 @@ describe("Slider", () => {
   it("updates from pointer down on styled track descendants and keeps dragging from the root", () => {
     const onValueChange = vi.fn();
     const { container } = render(
-      <Slider aria-label="Volume" defaultValue={0} onValueChange={onValueChange} />
+      <Slider aria-label="Volume" defaultValue={0} onValueChange={onValueChange} />,
     );
 
     const root = container.querySelector(".slider") as HTMLElement;
@@ -51,16 +51,13 @@ describe("Slider", () => {
 
     expect(onValueChange).toHaveBeenNthCalledWith(1, [25]);
     expect(onValueChange).toHaveBeenLastCalledWith([80]);
-    expect(screen.getByRole("slider", { name: "Volume" })).toHaveAttribute(
-      "aria-valuenow",
-      "80"
-    );
+    expect(screen.getByRole("slider", { name: "Volume" })).toHaveAttribute("aria-valuenow", "80");
   });
 
   it("uses the whole root surface as the pointer hit target and focuses the active thumb", () => {
     const onValueChange = vi.fn();
     const { container } = render(
-      <Slider aria-label="Volume" defaultValue={0} onValueChange={onValueChange} />
+      <Slider aria-label="Volume" defaultValue={0} onValueChange={onValueChange} />,
     );
 
     const root = container.querySelector(".slider") as HTMLElement;
@@ -92,7 +89,7 @@ describe("Slider", () => {
         step={5}
         defaultValue={10}
         onValueChange={onValueChange}
-      />
+      />,
     );
 
     const thumb = screen.getByRole("slider", { name: "Volume" });
@@ -106,7 +103,7 @@ describe("Slider", () => {
   it("does not respond to pointer or keyboard input when disabled", () => {
     const onValueChange = vi.fn();
     const { container } = render(
-      <Slider aria-label="Volume" defaultValue={40} disabled onValueChange={onValueChange} />
+      <Slider aria-label="Volume" defaultValue={40} disabled onValueChange={onValueChange} />,
     );
 
     const root = container.querySelector(".slider") as HTMLElement;

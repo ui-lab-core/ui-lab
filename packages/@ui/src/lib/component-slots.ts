@@ -8,7 +8,7 @@ type SlotElement<Component extends SlotComponent> = React.ReactElement<
   Component
 >;
 
-export type ResolvedComponentSlots<Definitions extends SlotDefinitions> = {
+type ResolvedComponentSlots<Definitions extends SlotDefinitions> = {
   [Name in keyof Definitions]?: SlotElement<Definitions[Name]>;
 };
 

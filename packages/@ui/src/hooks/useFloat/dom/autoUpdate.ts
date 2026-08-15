@@ -1,10 +1,10 @@
-import {floor, max, min} from '../../../utils';
-import {getDocumentElement, getOverflowAncestors} from '../../../utils/dom';
+import { floor, max, min } from "../../../utils";
+import { getDocumentElement, getOverflowAncestors } from "../../../utils/dom";
 
-import type {FloatingElement, ReferenceElement} from './types';
-import {getBoundingClientRect} from './utils/getBoundingClientRect';
-import {unwrapElement} from './utils/unwrapElement';
-import {rectsAreEqual} from './utils/rectsAreEqual';
+import type { FloatingElement, ReferenceElement } from "./types";
+import { getBoundingClientRect } from "./utils/getBoundingClientRect";
+import { unwrapElement } from "./utils/unwrapElement";
+import { rectsAreEqual } from "./utils/rectsAreEqual";
 
 interface AutoUpdateOptions {
   /**
@@ -55,7 +55,7 @@ function observeMove(element: Element, onMove: () => void) {
     cleanup();
 
     const elementRectForRootMargin = element.getBoundingClientRect();
-    const {left, top, width, height} = elementRectForRootMargin;
+    const { left, top, width, height } = elementRectForRootMargin;
 
     if (!skip) {
       onMove();
@@ -100,10 +100,7 @@ function observeMove(element: Element, onMove: () => void) {
 
       if (
         ratio === 1 &&
-        !rectsAreEqual(
-          elementRectForRootMargin,
-          element.getBoundingClientRect(),
-        )
+        !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())
       ) {
         // It's possible that even though the ratio is reported as 1, the
         // element is not actually fully within the IntersectionObserver's root
@@ -155,8 +152,8 @@ export function autoUpdate(
   const {
     ancestorScroll = true,
     ancestorResize = true,
-    elementResize = typeof ResizeObserver === 'function',
-    layoutShift = typeof IntersectionObserver === 'function',
+    elementResize = typeof ResizeObserver === "function",
+    layoutShift = typeof IntersectionObserver === "function",
     animationFrame = false,
   } = options;
 
@@ -175,13 +172,11 @@ export function autoUpdate(
   // ensuring the floating element follows scroll movement in real-time.
   // passive: true improves scroll performance without affecting update timing.
   ancestors.forEach((ancestor) => {
-    ancestorScroll &&
-      ancestor.addEventListener('scroll', update, {passive: true});
-    ancestorResize && ancestor.addEventListener('resize', update);
+    ancestorScroll && ancestor.addEventListener("scroll", update, { passive: true });
+    ancestorResize && ancestor.addEventListener("resize", update);
   });
 
-  const cleanupIo =
-    referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
 
   let reobserveFrame = -1;
   let resizeObserver: ResizeObserver | null = null;
@@ -228,8 +223,8 @@ export function autoUpdate(
 
   return () => {
     ancestors.forEach((ancestor) => {
-      ancestorScroll && ancestor.removeEventListener('scroll', update);
-      ancestorResize && ancestor.removeEventListener('resize', update);
+      ancestorScroll && ancestor.removeEventListener("scroll", update);
+      ancestorResize && ancestor.removeEventListener("resize", update);
     });
 
     cleanupIo?.();

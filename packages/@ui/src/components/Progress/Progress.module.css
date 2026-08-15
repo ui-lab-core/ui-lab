@@ -40,7 +40,7 @@
   }
 
   .track {
-    --thickness: var(--size, calc(var(--spacing-md) * 0.80));
+    --thickness: var(--size, calc(var(--spacing-md) * 0.8));
     --length: calc(var(--thickness) * var(--ratio, 0.666667));
     position: relative;
     width: 100%;
@@ -91,12 +91,21 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   @keyframes progress-indeterminate {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(400%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(400%);
+    }
   }
 }

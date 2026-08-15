@@ -1,6 +1,6 @@
-import {computePosition} from '../dom';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { computePosition } from "../dom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import type {
   ComputePositionConfig,
@@ -8,11 +8,11 @@ import type {
   UseFloatingData,
   UseFloatingOptions,
   UseFloatingReturn,
-} from './types';
-import {deepEqual} from './utils/deepEqual';
-import {getDPR} from './utils/getDPR';
-import {roundByDPR} from './utils/roundByDPR';
-import {useLatestRef} from './utils/useLatestRef';
+} from "./types";
+import { deepEqual } from "./utils/deepEqual";
+import { getDPR } from "./utils/getDPR";
+import { roundByDPR } from "./utils/roundByDPR";
+import { useLatestRef } from "./utils/useLatestRef";
 
 /**
  * Provides data to position a floating element.
@@ -22,11 +22,11 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
   options: UseFloatingOptions = {},
 ): UseFloatingReturn<RT> {
   const {
-    placement = 'bottom',
-    strategy = 'absolute',
+    placement = "bottom",
+    strategy = "absolute",
     middleware = [],
     platform,
-    elements: {reference: externalReference, floating: externalFloating} = {},
+    elements: { reference: externalReference, floating: externalFloating } = {},
     transform = true,
     whileElementsMounted,
     open,
@@ -94,30 +94,28 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
     // Compute position asynchronously, then apply immediately with flushSync.
     // flushSync ensures position updates are applied to the DOM synchronously
     // without React batching delays, eliminating scroll lag.
-    computePosition(referenceRef.current, floatingRef.current, config).then(
-      (data) => {
-        const fullData = {
-          ...data,
-          // The floating element's position may be recomputed while it's closed
-          // but still mounted (such as when transitioning out). To ensure
-          // `isPositioned` will be `false` initially on the next open, avoid
-          // setting it to `true` when `open === false` (must be specified).
-          isPositioned: openRef.current !== false,
-        };
-        if (isMountedRef.current && !deepEqual(dataRef.current, fullData)) {
-          dataRef.current = fullData;
-          ReactDOM.flushSync(() => {
-            setData(fullData);
-          });
-        }
-      },
-    );
+    computePosition(referenceRef.current, floatingRef.current, config).then((data) => {
+      const fullData = {
+        ...data,
+        // The floating element's position may be recomputed while it's closed
+        // but still mounted (such as when transitioning out). To ensure
+        // `isPositioned` will be `false` initially on the next open, avoid
+        // setting it to `true` when `open === false` (must be specified).
+        isPositioned: openRef.current !== false,
+      };
+      if (isMountedRef.current && !deepEqual(dataRef.current, fullData)) {
+        dataRef.current = fullData;
+        ReactDOM.flushSync(() => {
+          setData(fullData);
+        });
+      }
+    });
   }, [latestMiddleware, placement, strategy, platformRef, openRef]);
 
   React.useLayoutEffect(() => {
     if (open === false && dataRef.current.isPositioned) {
       dataRef.current.isPositioned = false;
-      setData((data: UseFloatingData) => ({...data, isPositioned: false}));
+      setData((data: UseFloatingData) => ({ ...data, isPositioned: false }));
     }
   }, [open]);
 
@@ -140,13 +138,7 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
 
       update();
     }
-  }, [
-    referenceEl,
-    floatingEl,
-    update,
-    whileElementsMountedRef,
-    hasWhileElementsMounted,
-  ]);
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
 
   const refs = React.useMemo(
     () => ({
@@ -159,7 +151,7 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
   );
 
   const elements = React.useMemo(
-    () => ({reference: referenceEl, floating: floatingEl}),
+    () => ({ reference: referenceEl, floating: floatingEl }),
     [referenceEl, floatingEl],
   );
 
@@ -184,7 +176,7 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
         // transform is computed fresh on every update, enabling instant
         // repositioning during scroll and layout changes.
         transform: `translate(${x}px, ${y}px)`,
-        ...(getDPR(elements.floating) >= 1.5 && {willChange: 'transform'}),
+        ...(getDPR(elements.floating) >= 1.5 && { willChange: "transform" }),
       };
     }
 

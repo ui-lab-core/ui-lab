@@ -13,7 +13,7 @@ describe("Table horizontal scrolling", () => {
           { key: "id", header: "ID" },
           { key: "name", header: "Name" },
         ]}
-      />
+      />,
     );
 
     const table = screen.getByRole("table", { name: "Users" });
@@ -32,7 +32,7 @@ describe("Table horizontal scrolling", () => {
           { key: "preview", header: "Preview", width: "7rem", minWidth: 96 },
           { key: "name", header: "Name" },
         ]}
-      />
+      />,
     );
 
     const previewColumn = container.querySelector('col[data-column="preview"]');

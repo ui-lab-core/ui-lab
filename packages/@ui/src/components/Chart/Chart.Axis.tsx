@@ -1,8 +1,8 @@
-import * as React from "react"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import styles from "./Chart.module.css"
-import { useChartContext } from "./Chart"
+import * as React from "react";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import styles from "./Chart.module.css";
+import { useChartContext } from "./Chart";
 
 export interface ChartAxisStyleSlots {
   root?: StyleValue;
@@ -15,37 +15,38 @@ export type ChartAxisStylesProp = StylesProp<ChartAxisStyleSlots>;
 
 export interface ChartAxisProps {
   /** Which axis to render */
-  axis: "x" | "y"
+  axis: "x" | "y";
   /** Preferred tick count */
-  ticks?: number
+  ticks?: number;
   /** Formats tick values for display */
-  format?: (value: any) => string
+  format?: (value: any) => string;
   /** Axis title rendered beside the ticks */
-  label?: string
+  label?: string;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ChartAxisStylesProp;
 }
 
-const resolveAxisBaseStyles = createStylesResolver(['root', 'line', 'tick', 'label'] as const);
+const resolveAxisBaseStyles = createStylesResolver(["root", "line", "tick", "label"] as const);
 
 function resolveAxisStyles(styles: ChartAxisStylesProp | undefined) {
-  if (!styles) return resolveAxisBaseStyles(styles)
-  const { root, line, tick, label } = styles
-  return resolveAxisBaseStyles({ root, line, tick, label })
+  if (!styles) return resolveAxisBaseStyles(styles);
+  const { root, line, tick, label } = styles;
+  return resolveAxisBaseStyles({ root, line, tick, label });
 }
 
 /** Axis line, tick labels and optional title for either dimension */
 const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
   ({ axis, format, label, className, styles: stylesProp }, ref) => {
-    const { ready, plot, xTickIndices, xValues, xPosition, yTicks, yScale, formatX } = useChartContext()
-    const resolved = resolveAxisStyles(stylesProp)
-    if (!ready) return null
+    const { ready, plot, xTickIndices, xValues, xPosition, yTicks, yScale, formatX } =
+      useChartContext();
+    const resolved = resolveAxisStyles(stylesProp);
+    if (!ready) return null;
 
     if (axis === "x") {
       return (
-        <g ref={ref} className={cn('axis', styles.axis, className, resolved.root)} data-axis="x">
+        <g ref={ref} className={cn("axis", styles.axis, className, resolved.root)} data-axis="x">
           <line
             className={cn(styles.rule, resolved.line)}
             x1={plot.x}
@@ -53,7 +54,7 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
             y1={plot.y + plot.height}
             y2={plot.y + plot.height}
           />
-          {xTickIndices.map(index => (
+          {xTickIndices.map((index) => (
             <text
               key={index}
               className={cn(styles.tick, resolved.tick)}
@@ -75,11 +76,11 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
             </text>
           )}
         </g>
-      )
+      );
     }
 
     return (
-      <g ref={ref} className={cn('axis', styles.axis, className, resolved.root)} data-axis="y">
+      <g ref={ref} className={cn("axis", styles.axis, className, resolved.root)} data-axis="y">
         <line
           className={cn(styles.rule, resolved.line)}
           x1={plot.x}
@@ -87,7 +88,7 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
           y1={plot.y}
           y2={plot.y + plot.height}
         />
-        {yTicks.map(value => (
+        {yTicks.map((value) => (
           <text
             key={value}
             className={cn(styles.tick, resolved.tick)}
@@ -110,10 +111,10 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
           </text>
         )}
       </g>
-    )
-  }
-)
-ChartAxis.displayName = "ChartAxis"
+    );
+  },
+);
+ChartAxis.displayName = "ChartAxis";
 
 export interface ChartGridStyleSlots {
   root?: StyleValue;
@@ -124,32 +125,32 @@ export type ChartGridStylesProp = StylesProp<ChartGridStyleSlots>;
 
 export interface ChartGridProps {
   /** Gridline axis; defaults to horizontal y-axis rules */
-  axis?: "x" | "y"
+  axis?: "x" | "y";
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ChartGridStylesProp;
 }
 
-const resolveGridBaseStyles = createStylesResolver(['root', 'line'] as const);
+const resolveGridBaseStyles = createStylesResolver(["root", "line"] as const);
 
 function resolveGridStyles(styles: ChartGridStylesProp | undefined) {
-  if (!styles) return resolveGridBaseStyles(styles)
-  const { root, line } = styles
-  return resolveGridBaseStyles({ root, line })
+  if (!styles) return resolveGridBaseStyles(styles);
+  const { root, line } = styles;
+  return resolveGridBaseStyles({ root, line });
 }
 
 /** Recessive hairline gridlines aligned to the axis ticks */
 const ChartGrid = React.forwardRef<SVGGElement, ChartGridProps>(
   ({ axis = "y", className, styles: stylesProp }, ref) => {
-    const { ready, plot, xTickIndices, xPosition, yTicks, yScale } = useChartContext()
-    const resolved = resolveGridStyles(stylesProp)
-    if (!ready) return null
+    const { ready, plot, xTickIndices, xPosition, yTicks, yScale } = useChartContext();
+    const resolved = resolveGridStyles(stylesProp);
+    if (!ready) return null;
 
     return (
-      <g ref={ref} className={cn('grid', styles.grid, className, resolved.root)}>
+      <g ref={ref} className={cn("grid", styles.grid, className, resolved.root)}>
         {axis !== "x" &&
-          yTicks.map(value => (
+          yTicks.map((value) => (
             <line
               key={`y${value}`}
               className={cn(styles.rule, resolved.line)}
@@ -160,7 +161,7 @@ const ChartGrid = React.forwardRef<SVGGElement, ChartGridProps>(
             />
           ))}
         {axis !== "y" &&
-          xTickIndices.map(index => (
+          xTickIndices.map((index) => (
             <line
               key={`x${index}`}
               className={cn(styles.rule, resolved.line)}
@@ -171,9 +172,9 @@ const ChartGrid = React.forwardRef<SVGGElement, ChartGridProps>(
             />
           ))}
       </g>
-    )
-  }
-)
-ChartGrid.displayName = "ChartGrid"
+    );
+  },
+);
+ChartGrid.displayName = "ChartGrid";
 
-export { ChartAxis, ChartGrid }
+export { ChartAxis, ChartGrid };

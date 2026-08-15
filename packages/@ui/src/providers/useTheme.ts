@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { useThemeVariables, type ThemeContextType } from './ThemeProvider'
+import { useThemeVariables, type ThemeContextType } from "./ThemeProvider";
 
 export function useTheme(): ThemeContextType {
-  return useThemeVariables()
+  return useThemeVariables();
 }
 
 export function useThemeMode() {
-  const { themeMode, setThemeMode, toggleThemeMode } = useThemeVariables()
-  return { themeMode, setThemeMode, toggleThemeMode }
+  const { themeMode, setThemeMode, toggleThemeMode } = useThemeVariables();
+  return { themeMode, setThemeMode, toggleThemeMode };
 }

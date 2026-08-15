@@ -2,30 +2,35 @@
   "name": "ui-lab-components",
   "version": "0.4.3",
   "description": "A collection of beautiful, accessible React components built with React Aria and Tailwind CSS",
-  "type": "module",
+  "keywords": [
+    "a11y",
+    "accessibility",
+    "components",
+    "react",
+    "tailwindcss",
+    "ui"
+  ],
+  "homepage": "https://github.com/ui-lab-core/ui-lab#readme",
+  "bugs": {
+    "url": "https://github.com/ui-lab-core/ui-lab/issues"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ui-lab-core/ui-lab"
+  },
+  "files": [
+    "dist",
+    "src/index.react-server.js",
+    "src/index.react-server.d.ts"
+  ],
+  "type": "module",
   "sideEffects": [
     "*.css",
     "**/*.css"
   ],
   "module": "./dist/ui-lab-ui.es.js",
   "types": "./dist/ui-lab-ui.d.ts",
-  "keywords": [
-    "react",
-    "components",
-    "ui",
-    "tailwindcss",
-    "accessibility",
-    "a11y"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ui-lab-core/ui-lab"
-  },
-  "homepage": "https://github.com/ui-lab-core/ui-lab#readme",
-  "bugs": {
-    "url": "https://github.com/ui-lab-core/ui-lab/issues"
-  },
   "exports": {
     ".": {
       "react-server": "./src/index.react-server.js",
@@ -233,11 +238,6 @@
       "default": "./dist/postcss-ui-lab.mjs"
     }
   },
-  "files": [
-    "dist",
-    "src/index.react-server.js",
-    "src/index.react-server.d.ts"
-  ],
   "publishConfig": {
     "access": "public"
   },
@@ -252,32 +252,6 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest --run",
     "test:coverage": "vitest --coverage"
-  },
-  "peerDependencies": {
-    "@shikijs/transformers": "^3.20.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "shiki": "^3.17.1"
-  },
-  "devDependencies": {
-    "@shikijs/transformers": "^3.20.0",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.1",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/jest-axe": "^3.5.9",
-    "@types/node": "^20.14.12",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^4.3.1",
-    "@vitest/ui": "^1.6.0",
-    "jest-axe": "^8.0.0",
-    "jsdom": "^27.3.0",
-    "postcss-cli": "^11.0.0",
-    "shiki": "^3.17.1",
-    "typescript": "^5",
-    "vite": "^5.3.4",
-    "vite-plugin-dts": "^3.9.1",
-    "vitest": "^1.6.1"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -298,5 +272,32 @@
     "postcss": "^8.5.6",
     "react-aria": "^3.44.0",
     "react-stately": "^3.42.0"
+  },
+  "devDependencies": {
+    "@shikijs/transformers": "^3.20.0",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest-axe": "^3.5.9",
+    "@types/node": "^20.14.12",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/ui": "^1.6.0",
+    "jest-axe": "^8.0.0",
+    "jsdom": "^27.3.0",
+    "postcss-cli": "^11.0.0",
+    "shiki": "^3.17.1",
+    "typescript": "^5",
+    "vite": "^5.3.4",
+    "vite-plugin-dts": "^3.9.1",
+    "vitest": "^1.6.1"
+  },
+  "peerDependencies": {
+    "@shikijs/transformers": "^3.20.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "shiki": "^3.17.1"
   }
 }

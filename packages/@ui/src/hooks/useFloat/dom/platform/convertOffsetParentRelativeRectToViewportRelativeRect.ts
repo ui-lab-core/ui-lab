@@ -1,5 +1,5 @@
-import type {Elements, Rect, Strategy} from '../../core';
-import {createCoords} from '../../../../utils';
+import type { Elements, Rect, Strategy } from "../../core";
+import { createCoords } from "../../../../utils";
 import {
   getDocumentElement,
   getNodeName,
@@ -7,11 +7,11 @@ import {
   isHTMLElement,
   isOverflowElement,
   isTopLayer,
-} from '../../../../utils/dom';
+} from "../../../../utils/dom";
 
-import {getBoundingClientRect} from '../utils/getBoundingClientRect';
-import {getScale} from './getScale';
-import {getHTMLOffset} from '../utils/getHTMLOffset';
+import { getBoundingClientRect } from "../utils/getBoundingClientRect";
+import { getScale } from "./getScale";
+import { getHTMLOffset } from "../utils/getHTMLOffset";
 
 export function convertOffsetParentRelativeRectToViewportRelativeRect({
   elements,
@@ -24,7 +24,7 @@ export function convertOffsetParentRelativeRectToViewportRelativeRect({
   offsetParent: Element | Window;
   strategy: Strategy;
 }): Rect {
-  const isFixed = strategy === 'fixed';
+  const isFixed = strategy === "fixed";
   const documentElement = getDocumentElement(offsetParent);
   const topLayer = elements ? isTopLayer(elements.floating) : false;
 
@@ -32,16 +32,13 @@ export function convertOffsetParentRelativeRectToViewportRelativeRect({
     return rect;
   }
 
-  let scroll = {scrollLeft: 0, scrollTop: 0};
+  let scroll = { scrollLeft: 0, scrollTop: 0 };
   let scale = createCoords(1);
   const offsets = createCoords(0);
   const isOffsetParentAnElement = isHTMLElement(offsetParent);
 
   if (isOffsetParentAnElement || (!isOffsetParentAnElement && !isFixed)) {
-    if (
-      getNodeName(offsetParent) !== 'body' ||
-      isOverflowElement(documentElement)
-    ) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
       scroll = getNodeScroll(offsetParent);
     }
 
@@ -61,8 +58,7 @@ export function convertOffsetParentRelativeRectToViewportRelativeRect({
   return {
     width: rect.width * scale.x,
     height: rect.height * scale.y,
-    x:
-      rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
+    x: rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
     y: rect.y * scale.y - scroll.scrollTop * scale.y + offsets.y + htmlOffset.y,
   };
 }

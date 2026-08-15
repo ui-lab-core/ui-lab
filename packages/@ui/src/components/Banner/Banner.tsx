@@ -56,17 +56,18 @@ const getBannerIcon = (variant: string) => {
   return <Icon className={css.icon} />;
 };
 
-const resolveBannerBaseStyles = createStylesResolver(['root', 'iconContainer', 'content', 'dismiss'] as const);
+const resolveBannerBaseStyles = createStylesResolver([
+  "root",
+  "iconContainer",
+  "content",
+  "dismiss",
+] as const);
 
 /** Heading text for the banner message */
 const BannerTitle = React.forwardRef<HTMLHeadingElement, BannerTitleProps>(
   ({ className, styles, ...props }, ref) => (
-    <h3
-      ref={ref}
-      className={cn("title", css.title, className, styles?.root)}
-      {...props}
-    />
-  )
+    <h3 ref={ref} className={cn("title", css.title, className, styles?.root)} {...props} />
+  ),
 );
 
 BannerTitle.displayName = "Banner.Title";
@@ -74,12 +75,8 @@ BannerTitle.displayName = "Banner.Title";
 /** Body text content of the banner */
 const BannerBody = React.forwardRef<HTMLParagraphElement, BannerBodyProps>(
   ({ className, styles, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn("body", css.body, className, styles?.root)}
-      {...props}
-    />
-  )
+    <p ref={ref} className={cn("body", css.body, className, styles?.root)} {...props} />
+  ),
 );
 
 BannerBody.displayName = "Banner.Body";
@@ -87,16 +84,8 @@ BannerBody.displayName = "Banner.Body";
 /** Full-width notification strip for system messages and alerts */
 const BannerRoot = React.forwardRef<HTMLDivElement, BannerProps>(
   (
-    {
-      className,
-      styles,
-      variant = "note",
-      dismissible = false,
-      onDismiss,
-      children,
-      ...props
-    },
-    ref
+    { className, styles, variant = "note", dismissible = false, onDismiss, children, ...props },
+    ref,
   ) => {
     const [isVisible, setIsVisible] = React.useState(true);
     const { hoverProps, isHovered } = useHover({});
@@ -121,10 +110,12 @@ const BannerRoot = React.forwardRef<HTMLDivElement, BannerProps>(
         data-variant={variant}
         data-hovered={isHovered ? "true" : "false"}
       >
-        {icon && <div className={cn("icon-container", css.iconContainer, resolved.iconContainer)}>{icon}</div>}
-        <div className={cn("content", css.content, resolved.content)}>
-          {children}
-        </div>
+        {icon && (
+          <div className={cn("icon-container", css.iconContainer, resolved.iconContainer)}>
+            {icon}
+          </div>
+        )}
+        <div className={cn("content", css.content, resolved.content)}>{children}</div>
         {dismissible && (
           <button
             onClick={handleDismiss}
@@ -149,12 +140,14 @@ const BannerRoot = React.forwardRef<HTMLDivElement, BannerProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 BannerRoot.displayName = "Banner";
 
-interface BannerComponent extends React.ForwardRefExoticComponent<BannerProps & React.RefAttributes<HTMLDivElement>> {
+interface BannerComponent extends React.ForwardRefExoticComponent<
+  BannerProps & React.RefAttributes<HTMLDivElement>
+> {
   Title: typeof BannerTitle;
   Body: typeof BannerBody;
 }

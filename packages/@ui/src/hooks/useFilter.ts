@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo } from "react";
 
 /**
  * Generic hook for filtering arrays of items based on a predicate function.
@@ -23,7 +23,7 @@ import { useMemo } from 'react'
  */
 export function useFilter<T>(items: T[], predicate?: (item: T) => boolean): T[] {
   return useMemo(() => {
-    if (!predicate) return items
-    return items.filter(predicate)
-  }, [items, predicate])
+    if (!predicate) return items;
+    return items.filter(predicate);
+  }, [items, predicate]);
 }

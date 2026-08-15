@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { createStylesResolver } from '@/lib/styles';
-import { resolveGapStep, type GapSize } from '@/lib/gap';
-import { Divider as FoldDivider } from '@/components/Divider';
-import styles from './List.module.css';
-import { ListContext, useListContext } from './list.context';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { createStylesResolver } from "@/lib/styles";
+import { resolveGapStep, type GapSize } from "@/lib/gap";
+import { Divider as FoldDivider } from "@/components/Divider";
+import styles from "./List.module.css";
+import { ListContext, useListContext } from "./list.context";
 import {
   ListStyleSlot,
   ListContainerProps,
@@ -14,22 +14,22 @@ import {
   ListRef,
   ActionGroupComponentProps,
   FooterComponentProps,
-} from './list.types';
-import { DividerProps } from '@/components/Divider';
-import { scrollItemIntoView } from '@/utils/list-navigation';
+} from "./list.types";
+import { DividerProps } from "@/components/Divider";
+import { scrollItemIntoView } from "@/utils/list-navigation";
 
 const resolveListBaseStyles = createStylesResolver([
-  'root',
-  'header',
-  'item',
-  'checkbox',
-  'control',
-  'media',
-  'title',
-  'desc',
-  'actions',
-  'action',
-  'footer',
+  "root",
+  "header",
+  "item",
+  "checkbox",
+  "control",
+  "media",
+  "title",
+  "desc",
+  "actions",
+  "action",
+  "footer",
 ] as const);
 
 // Ref container for keyboard navigation
@@ -37,10 +37,10 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
   (
     {
       items: _items = [],
-      variant = 'default',
-      orientation = 'vertical',
+      variant = "default",
+      orientation = "vertical",
       gap,
-      spacing = 'default',
+      spacing = "default",
       onNavigate,
       highlighted,
       children,
@@ -49,7 +49,7 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       style,
       ...props
     },
-    ref
+    ref,
   ) => {
     const rootRef = React.useRef<HTMLDivElement | null>(null);
     const [focusedItem, setFocusedItemState] = React.useState<HTMLElement | null>(null);
@@ -60,13 +60,14 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
     const getFocusableItems = React.useCallback(() => {
       if (!rootRef.current) return [];
 
-      return Array.from(rootRef.current.querySelectorAll<HTMLElement>('[role="option"]')).filter((item) => (
-        item.isConnected &&
-        item.tabIndex >= 0 &&
-        item.getAttribute('aria-hidden') !== 'true' &&
-        item.getAttribute('aria-disabled') !== 'true' &&
-        item.getAttribute('data-disabled') !== 'true'
-      ));
+      return Array.from(rootRef.current.querySelectorAll<HTMLElement>('[role="option"]')).filter(
+        (item) =>
+          item.isConnected &&
+          item.tabIndex >= 0 &&
+          item.getAttribute("aria-hidden") !== "true" &&
+          item.getAttribute("aria-disabled") !== "true" &&
+          item.getAttribute("data-disabled") !== "true",
+      );
     }, []);
 
     const getFocusedIndex = React.useCallback(() => {
@@ -75,88 +76,111 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       return itemIndex >= 0 ? itemIndex : null;
     }, [focusedItem, getFocusableItems, isFocusMode]);
 
-    const setFocusedItem = React.useCallback((
-      item: HTMLElement | null,
-      options: { enterFocusMode?: boolean; scroll?: boolean } = {},
-    ) => {
-      if (!item) {
-        shouldScrollFocusedItemRef.current = false;
-        setFocusedItemState(null);
-        setIsFocusMode(false);
-        return;
-      }
+    const setFocusedItem = React.useCallback(
+      (item: HTMLElement | null, options: { enterFocusMode?: boolean; scroll?: boolean } = {}) => {
+        if (!item) {
+          shouldScrollFocusedItemRef.current = false;
+          setFocusedItemState(null);
+          setIsFocusMode(false);
+          return;
+        }
 
-      if (options.scroll) {
-        shouldScrollFocusedItemRef.current = true;
-      }
+        if (options.scroll) {
+          shouldScrollFocusedItemRef.current = true;
+        }
 
-      setFocusedItemState(item);
-      setIsFocusMode(options.enterFocusMode ?? true);
-    }, []);
+        setFocusedItemState(item);
+        setIsFocusMode(options.enterFocusMode ?? true);
+      },
+      [],
+    );
 
-    const focusItemAtIndex = React.useCallback((index: number, scroll = true) => {
-      const itemsInOrder = getFocusableItems();
-      const target = itemsInOrder[index];
-      if (!target) return false;
+    const focusItemAtIndex = React.useCallback(
+      (index: number, scroll = true) => {
+        const itemsInOrder = getFocusableItems();
+        const target = itemsInOrder[index];
+        if (!target) return false;
 
-      // focus() synchronously blurs the previous item, whose handler clears the
-      // scroll flag via setFocusedItem(null) — arm it only after that dispatch.
-      target.focus({ preventScroll: true });
-      shouldScrollFocusedItemRef.current = scroll;
-      return true;
-    }, [getFocusableItems]);
+        // focus() synchronously blurs the previous item, whose handler clears the
+        // scroll flag via setFocusedItem(null) — arm it only after that dispatch.
+        target.focus({ preventScroll: true });
+        shouldScrollFocusedItemRef.current = scroll;
+        return true;
+      },
+      [getFocusableItems],
+    );
 
-    const focusAdjacentItem = React.useCallback((currentItem: HTMLElement | null, direction: 1 | -1, scroll = true, wrap = true) => {
-      const itemsInOrder = getFocusableItems();
-      if (itemsInOrder.length === 0) return false;
+    const focusAdjacentItem = React.useCallback(
+      (currentItem: HTMLElement | null, direction: 1 | -1, scroll = true, wrap = true) => {
+        const itemsInOrder = getFocusableItems();
+        if (itemsInOrder.length === 0) return false;
 
-      const currentIndex = currentItem ? itemsInOrder.indexOf(currentItem) : -1;
-      const nextIndex = currentIndex === -1
-        ? (direction === 1 ? 0 : itemsInOrder.length - 1)
-        : wrap
-          ? (currentIndex + direction + itemsInOrder.length) % itemsInOrder.length
-          : Math.min(Math.max(currentIndex + direction, 0), itemsInOrder.length - 1);
+        const currentIndex = currentItem ? itemsInOrder.indexOf(currentItem) : -1;
+        const nextIndex =
+          currentIndex === -1
+            ? direction === 1
+              ? 0
+              : itemsInOrder.length - 1
+            : wrap
+              ? (currentIndex + direction + itemsInOrder.length) % itemsInOrder.length
+              : Math.min(Math.max(currentIndex + direction, 0), itemsInOrder.length - 1);
 
-      if (currentIndex !== -1 && nextIndex === currentIndex) {
-        return false;
-      }
+        if (currentIndex !== -1 && nextIndex === currentIndex) {
+          return false;
+        }
 
-      return focusItemAtIndex(nextIndex, scroll);
-    }, [focusItemAtIndex, getFocusableItems]);
+        return focusItemAtIndex(nextIndex, scroll);
+      },
+      [focusItemAtIndex, getFocusableItems],
+    );
 
-    const focusBoundaryItem = React.useCallback((position: 'first' | 'last', scroll = true) => {
-      const itemsInOrder = getFocusableItems();
-      if (itemsInOrder.length === 0) return false;
+    const focusBoundaryItem = React.useCallback(
+      (position: "first" | "last", scroll = true) => {
+        const itemsInOrder = getFocusableItems();
+        if (itemsInOrder.length === 0) return false;
 
-      return focusItemAtIndex(position === 'first' ? 0 : itemsInOrder.length - 1, scroll);
-    }, [focusItemAtIndex, getFocusableItems]);
+        return focusItemAtIndex(position === "first" ? 0 : itemsInOrder.length - 1, scroll);
+      },
+      [focusItemAtIndex, getFocusableItems],
+    );
 
     // Expose ref methods for keyboard navigation
-    React.useImperativeHandle(ref, () => ({
-      focusNext: () => {
-        focusAdjacentItem(focusedItem, 1);
-        onNavigate?.down?.();
-      },
-      focusPrev: () => {
-        focusAdjacentItem(focusedItem, -1);
-        onNavigate?.up?.();
-      },
-      focusFirst: () => {
-        focusBoundaryItem('first');
-        onNavigate?.down?.();
-      },
-      focusLast: () => {
-        focusBoundaryItem('last');
-        onNavigate?.up?.();
-      },
-      selectHighlighted: () => {
-        onNavigate?.enter?.();
-      },
-      clearHighlight: () => {
-        setFocusedItem(null, { enterFocusMode: false });
-      },
-      getHighlightedIndex: () => getFocusedIndex(),
-    }), [focusAdjacentItem, focusBoundaryItem, focusedItem, getFocusedIndex, onNavigate, setFocusedItem]);
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        focusNext: () => {
+          focusAdjacentItem(focusedItem, 1);
+          onNavigate?.down?.();
+        },
+        focusPrev: () => {
+          focusAdjacentItem(focusedItem, -1);
+          onNavigate?.up?.();
+        },
+        focusFirst: () => {
+          focusBoundaryItem("first");
+          onNavigate?.down?.();
+        },
+        focusLast: () => {
+          focusBoundaryItem("last");
+          onNavigate?.up?.();
+        },
+        selectHighlighted: () => {
+          onNavigate?.enter?.();
+        },
+        clearHighlight: () => {
+          setFocusedItem(null, { enterFocusMode: false });
+        },
+        getHighlightedIndex: () => getFocusedIndex(),
+      }),
+      [
+        focusAdjacentItem,
+        focusBoundaryItem,
+        focusedItem,
+        getFocusedIndex,
+        onNavigate,
+        setFocusedItem,
+      ],
+    );
 
     React.useEffect(() => {
       if (!isFocusMode || !focusedItem || !shouldScrollFocusedItemRef.current) return;
@@ -170,7 +194,7 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       // Externally-driven highlights (e.g. Command palette filtering) change on
       // every keystroke while results reflow; a smooth scroll would chase the
       // moving target and read as layout jank. Jump instantly instead.
-      if (item) scrollItemIntoView(item, 'instant');
+      if (item) scrollItemIntoView(item, "instant");
     }, [highlighted]);
 
     React.useEffect(() => {
@@ -190,7 +214,15 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
         focusAdjacentItem,
         focusBoundaryItem,
       }),
-      [focusAdjacentItem, focusBoundaryItem, focusedItem, isFocusMode, orientation, resolvedStyles, setFocusedItem]
+      [
+        focusAdjacentItem,
+        focusBoundaryItem,
+        focusedItem,
+        isFocusMode,
+        orientation,
+        resolvedStyles,
+        setFocusedItem,
+      ],
     );
 
     return (
@@ -198,31 +230,28 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
         <div
           ref={rootRef}
           role="listbox"
-          className={cn(
-            'list',
-            styles.container,
-            className,
-            resolvedStyles.root,
-          )}
-          style={{
-            ...style,
-            ...(gap ? { "--list-gap-step": resolveGapStep(gap as GapSize) } : null),
-          } as React.CSSProperties}
+          className={cn("list", styles.container, className, resolvedStyles.root)}
+          style={
+            {
+              ...style,
+              ...(gap ? { "--list-gap-step": resolveGapStep(gap as GapSize) } : null),
+            } as React.CSSProperties
+          }
           data-variant={variant}
           data-orientation={orientation}
           data-gap={gap}
           data-spacing={spacing}
-          data-focus-mode={isFocusMode ? 'row' : undefined}
-          data-keyboard-mode={isFocusMode ? 'true' : undefined}
+          data-focus-mode={isFocusMode ? "row" : undefined}
+          data-keyboard-mode={isFocusMode ? "true" : undefined}
           {...(props as React.HTMLAttributes<HTMLDivElement>)}
         >
           {children}
         </div>
       </ListContext.Provider>
     );
-  }
+  },
 );
-Container.displayName = 'List';
+Container.displayName = "List";
 
 /** Semantic heading region for list content */
 const Header = React.forwardRef<HTMLElement, ListHeaderProps>(
@@ -230,44 +259,29 @@ const Header = React.forwardRef<HTMLElement, ListHeaderProps>(
     const { styles: listStyles } = useListContext();
 
     return (
-      <header
-        ref={ref}
-        className={cn(listStyles.header, className)}
-        {...props}
-      >
+      <header ref={ref} className={cn(listStyles.header, className)} {...props}>
         {children}
       </header>
     );
-  }
+  },
 );
-Header.displayName = 'List.Header';
+Header.displayName = "List.Header";
 
 /** Row of action buttons aligned to the right of a list item */
 const ActionGroup = React.forwardRef<HTMLDivElement, ActionGroupComponentProps>(
-  ({ justify = 'start', children, className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(styles.actionGroup, className)}
-      data-justify={justify}
-      {...props}
-    >
+  ({ justify = "start", children, className, ...props }, ref) => (
+    <div ref={ref} className={cn(styles.actionGroup, className)} data-justify={justify} {...props}>
       {children}
     </div>
-  )
+  ),
 );
-ActionGroup.displayName = 'List.ActionGroup';
+ActionGroup.displayName = "List.ActionGroup";
 
 /** Horizontal separator between list sections */
-const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
-  ({ className, ...props }, ref) => (
-    <FoldDivider
-      ref={ref}
-      className={className}
-      {...props}
-    />
-  )
-);
-Divider.displayName = 'List.Divider';
+const Divider = React.forwardRef<HTMLDivElement, DividerProps>(({ className, ...props }, ref) => (
+  <FoldDivider ref={ref} className={className} {...props} />
+));
+Divider.displayName = "List.Divider";
 
 /** Semantic footer region for list content */
 const Footer = React.forwardRef<HTMLElement, FooterComponentProps>(
@@ -275,17 +289,13 @@ const Footer = React.forwardRef<HTMLElement, FooterComponentProps>(
     const { styles: listStyles } = useListContext();
 
     return (
-      <footer
-        ref={ref}
-        className={cn(listStyles.footer, className)}
-        {...props}
-      >
+      <footer ref={ref} className={cn(listStyles.footer, className)} {...props}>
         {children}
       </footer>
     );
-  }
+  },
 );
-Footer.displayName = 'List.Footer';
+Footer.displayName = "List.Footer";
 
 // Compound component
 const List = Object.assign(Container, {

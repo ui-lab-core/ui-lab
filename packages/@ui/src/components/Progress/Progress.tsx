@@ -19,13 +19,13 @@ export interface ProgressStyleSlots {
 export type ProgressStylesProp = StylesProp<ProgressStyleSlots>;
 
 const resolveProgressBaseStyles = createStylesResolver([
-  'root',
-  'labelRow',
-  'label',
-  'value',
-  'track',
-  'range',
-  'thumb',
+  "root",
+  "labelRow",
+  "label",
+  "value",
+  "track",
+  "range",
+  "thumb",
 ] as const);
 
 function resolveProgressStyles(styles: ProgressStylesProp | undefined) {
@@ -57,8 +57,12 @@ function snapToStep(value: number, min: number, max: number, step: number): numb
   const effectiveStep = Number.isFinite(step) && step > 0 ? step : 1;
   const snapped = Math.round((value - min) / effectiveStep) * effectiveStep + min;
   const precision = Math.min(
-    Math.max(getDecimalPrecision(effectiveStep), getDecimalPrecision(min), getDecimalPrecision(max)),
-    12
+    Math.max(
+      getDecimalPrecision(effectiveStep),
+      getDecimalPrecision(min),
+      getDecimalPrecision(max),
+    ),
+    12,
   );
   return clamp(Number(snapped.toFixed(precision)), min, max);
 }
@@ -68,7 +72,7 @@ function getValueFromPointer(
   track: HTMLDivElement,
   min: number,
   max: number,
-  step: number
+  step: number,
 ): number {
   const rect = track.getBoundingClientRect();
   if (rect.width <= 0) return min;
@@ -132,7 +136,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
       onLostPointerCapture,
       ...props
     },
-    ref
+    ref,
   ) => {
     const trackRef = React.useRef<HTMLDivElement>(null);
     const activeDragRef = React.useRef<number | null>(null);
@@ -140,7 +144,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
 
     const isControlled = controlledValue !== undefined;
     const [internalValue, setInternalValue] = React.useState(
-      () => defaultValue ?? controlledValue ?? min
+      () => defaultValue ?? controlledValue ?? min,
     );
     const currentValue = isControlled ? controlledValue! : internalValue;
     const clampedValue = clamp(currentValue, min, max);
@@ -158,7 +162,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         if (!isControlled) setInternalValue(newValue);
         onValueChange?.(newValue);
       },
-      [isControlled, min, max, step, onValueChange]
+      [isControlled, min, max, step, onValueChange],
     );
 
     const handlePointerDown = React.useCallback(
@@ -168,20 +172,30 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         event.preventDefault();
         activeDragRef.current = event.pointerId;
         setIsDragging(true);
-        try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* noop */ }
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch {
+          /* noop */
+        }
         updateValue(event.clientX);
       },
-      [showControls, disabled, onPointerDown, updateValue]
+      [showControls, disabled, onPointerDown, updateValue],
     );
 
     const handlePointerMove = React.useCallback(
       (event: React.PointerEvent<HTMLDivElement>) => {
         onPointerMove?.(event);
-        if (!showControls || disabled || activeDragRef.current !== event.pointerId || event.defaultPrevented) return;
+        if (
+          !showControls ||
+          disabled ||
+          activeDragRef.current !== event.pointerId ||
+          event.defaultPrevented
+        )
+          return;
         event.preventDefault();
         updateValue(event.clientX);
       },
-      [showControls, disabled, onPointerMove, updateValue]
+      [showControls, disabled, onPointerMove, updateValue],
     );
 
     const stopDrag = React.useCallback((pointerId: number) => {
@@ -195,7 +209,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         onPointerUp?.(event);
         stopDrag(event.pointerId);
       },
-      [onPointerUp, stopDrag]
+      [onPointerUp, stopDrag],
     );
 
     const handlePointerCancel = React.useCallback(
@@ -203,7 +217,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         onPointerCancel?.(event);
         stopDrag(event.pointerId);
       },
-      [onPointerCancel, stopDrag]
+      [onPointerCancel, stopDrag],
     );
 
     const handleLostPointerCapture = React.useCallback(
@@ -211,7 +225,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         onLostPointerCapture?.(event);
         stopDrag(event.pointerId);
       },
-      [onLostPointerCapture, stopDrag]
+      [onLostPointerCapture, stopDrag],
     );
 
     React.useEffect(() => {
@@ -229,10 +243,8 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         data-dragging={isDragging ? "true" : undefined}
       >
         {hasLabelContent && (
-          <div className={cn("label-row", css['label-row'], resolved.labelRow)}>
-            {label && (
-              <span className={cn(css.label, resolved.label)}>{label}</span>
-            )}
+          <div className={cn("label-row", css["label-row"], resolved.labelRow)}>
+            {label && <span className={cn(css.label, resolved.label)}>{label}</span>}
             {showValue && !indeterminate && (
               <span className={cn(css.value, resolved.value)}>{Math.round(percentage)}%</span>
             )}
@@ -273,7 +285,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 Progress.displayName = "Progress";

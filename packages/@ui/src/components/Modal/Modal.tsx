@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -20,7 +20,7 @@ const useModalKeyboard = (
   isOpen: boolean,
   isDismissable: boolean,
   isKeyboardDismissDisabled: boolean,
-  onClose: () => void
+  onClose: () => void,
 ) => {
   const onCloseRef = React.useRef(onClose);
   onCloseRef.current = onClose;
@@ -46,7 +46,7 @@ const useModalKeyboard = (
   }, [element, isOpen, isDismissable, isKeyboardDismissDisabled]);
 };
 
-export interface ModalStyleSlots {
+interface ModalStyleSlots {
   root?: StyleValue;
   overlay?: StyleValue;
   backdrop?: StyleValue;
@@ -59,16 +59,37 @@ export interface ModalStyleSlots {
   footer?: StyleValue;
 }
 
-export type ModalStylesProp = StylesProp<ModalStyleSlots>;
+type ModalStylesProp = StylesProp<ModalStyleSlots>;
 
 const resolveModalBaseStyles = createStylesResolver([
-  'root', 'overlay', 'backdrop', 'header', 'title', 'spacer', 'close', 'closeIcon', 'content', 'footer'
+  "root",
+  "overlay",
+  "backdrop",
+  "header",
+  "title",
+  "spacer",
+  "close",
+  "closeIcon",
+  "content",
+  "footer",
 ] as const);
 
 function resolveModalStyles(styles: ModalStylesProp | undefined) {
   if (!styles) return resolveModalBaseStyles(styles);
-  const { root, overlay, backdrop, header, title, spacer, close, closeIcon, content, footer } = styles;
-  return resolveModalBaseStyles({ root, overlay, backdrop, header, title, spacer, close, closeIcon, content, footer });
+  const { root, overlay, backdrop, header, title, spacer, close, closeIcon, content, footer } =
+    styles;
+  return resolveModalBaseStyles({
+    root,
+    overlay,
+    backdrop,
+    header,
+    title,
+    spacer,
+    close,
+    closeIcon,
+    content,
+    footer,
+  });
 }
 
 export interface ModalProps {
@@ -107,7 +128,9 @@ export interface ModalProps {
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ModalStylesProp;
 }
-export interface ModalState { open?: boolean }
+export interface ModalState {
+  open?: boolean;
+}
 
 export interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
@@ -120,7 +143,6 @@ function getModalChildDisplayName(child: React.ReactNode) {
   const type = child.type as { displayName?: string };
   return type.displayName ?? null;
 }
-
 
 /**
  * Modal component that displays content in a centered dialog with a backdrop overlay.
@@ -148,7 +170,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       overlayClassName,
       styles,
     },
-    ref
+    ref,
   ) => {
     const modalRef = React.useRef<HTMLDivElement>(null);
     const [panelElement, setPanelElement] = React.useState<HTMLDivElement | null>(null);
@@ -181,22 +203,13 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       setMounted(true);
     }, []);
 
-    const { present, state, finishExit } = usePresence(
-      mounted && isOpen,
-      transitionDuration,
-    );
+    const { present, state, finishExit } = usePresence(mounted && isOpen, transitionDuration);
 
     // Use forwardRef callback to expose modalRef
     React.useImperativeHandle(ref, () => modalRef.current as HTMLDivElement);
 
     // Handle keyboard events and auto-focus
-    useModalKeyboard(
-      panelElement,
-      isOpen,
-      isDismissable,
-      isKeyboardDismissDisabled,
-      closeModal
-    );
+    useModalKeyboard(panelElement, isOpen, isDismissable, isKeyboardDismissDisabled, closeModal);
 
     // useDialog hook provides accessibility attributes and title handling
     const { dialogProps, titleProps } = useDialog({ "aria-label": ariaLabel }, modalRef);
@@ -246,40 +259,41 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
     });
 
     const headerContent =
-      slottedHeader.length > 0 ? (
-        slottedHeader
-      ) : (
-        (title || close) && (
-          <div className={cn("header", css.header, resolved.header)}>
-            {title && (
-              <h4 {...asElementProps<"h4">(titleProps)} className={cn("title", css.title, resolved.title)}>
-                {title}
-              </h4>
-            )}
-            {!title && close && <div className={cn("spacer", css.spacer, resolved.spacer)} />}
-            {close && (
-              <button
-                onClick={handleClose}
-                onMouseDown={handleCloseMouseDown}
-                onMouseEnter={handleCloseMouseEnter}
-                onMouseUp={handleCloseMouseUp}
-                onMouseLeave={handleCloseMouseLeave}
-                onFocus={handleCloseFocus}
-                onBlur={handleCloseBlur}
-                className={cn("close", css.close, resolved.close)}
-                aria-label="Close modal"
-                type="button"
-                data-pressed={isClosePressed ? "true" : "false"}
-                data-hovered={isCloseHovered ? "true" : "false"}
-                data-focused={isCloseFocused ? "true" : "false"}
-                data-focus-visible={isCloseFocusVisible ? "true" : "false"}
-              >
-                <X className={cn("close-icon", css["close-icon"], resolved.closeIcon)} />
-              </button>
-            )}
-          </div>
-        )
-      );
+      slottedHeader.length > 0
+        ? slottedHeader
+        : (title || close) && (
+            <div className={cn("header", css.header, resolved.header)}>
+              {title && (
+                <h4
+                  {...asElementProps<"h4">(titleProps)}
+                  className={cn("title", css.title, resolved.title)}
+                >
+                  {title}
+                </h4>
+              )}
+              {!title && close && <div className={cn("spacer", css.spacer, resolved.spacer)} />}
+              {close && (
+                <button
+                  onClick={handleClose}
+                  onMouseDown={handleCloseMouseDown}
+                  onMouseEnter={handleCloseMouseEnter}
+                  onMouseUp={handleCloseMouseUp}
+                  onMouseLeave={handleCloseMouseLeave}
+                  onFocus={handleCloseFocus}
+                  onBlur={handleCloseBlur}
+                  className={cn("close", css.close, resolved.close)}
+                  aria-label="Close modal"
+                  type="button"
+                  data-pressed={isClosePressed ? "true" : "false"}
+                  data-hovered={isCloseHovered ? "true" : "false"}
+                  data-focused={isCloseFocused ? "true" : "false"}
+                  data-focus-visible={isCloseFocusVisible ? "true" : "false"}
+                >
+                  <X className={cn("close-icon", css["close-icon"], resolved.closeIcon)} />
+                </button>
+              )}
+            </div>
+          );
 
     const bodyContent =
       slottedBody.length > 0 ? (
@@ -296,18 +310,15 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
 
     return createPortal(
       <div
-        className={cn(
-          "modal",
-          css.overlay,
-          overlayClassName,
-          resolved.overlay
-        )}
+        className={cn("modal", css.overlay, overlayClassName, resolved.overlay)}
         data-state={state}
       >
         {/* Backdrop overlay - click outside to dismiss */}
         <div
           className={cn("backdrop", css.backdrop, resolved.backdrop)}
-          onMouseDown={() => { if (isDismissable) closeModal(); }}
+          onMouseDown={() => {
+            if (isDismissable) closeModal();
+          }}
         />
 
         {/* Modal content */}
@@ -315,12 +326,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
           {...asElementProps<"div">(dialogProps)}
           aria-modal="true"
           ref={setPanelRef}
-          className={cn(
-            "panel",
-            css.panel,
-            className,
-            resolved.root
-          )}
+          className={cn("panel", css.panel, className, resolved.root)}
           onClick={(e) => e.stopPropagation()}
           onTransitionEnd={(event) => {
             if (event.target === event.currentTarget && event.propertyName === "opacity") {
@@ -340,15 +346,13 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
           {/* Footer */}
           {slottedFooter.length > 0 && slottedFooter}
           {!slottedFooter.length && footer && (
-            <div className={cn("footer", css.footer, resolved.footer)}>
-              {footer}
-            </div>
+            <div className={cn("footer", css.footer, resolved.footer)}>{footer}</div>
           )}
         </div>
       </div>,
-      document.body
+      document.body,
     );
-  }
+  },
 );
 
 ModalBase.displayName = "Modal";
@@ -370,37 +374,36 @@ ModalHeader.displayName = "Modal.Header";
 /**
  * ModalBody component for use with compound Modal pattern
  */
-const ModalBody = React.forwardRef<
-  HTMLDivElement,
-  ModalBodyProps
->(({ children, className, style, scrollable = true, ...props }, ref) => {
-  const bodyStyle = { height: "auto", flex: "1 1 auto", minHeight: 0, ...style };
+const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
+  ({ children, className, style, scrollable = true, ...props }, ref) => {
+    const bodyStyle = { height: "auto", flex: "1 1 auto", minHeight: 0, ...style };
 
-  if (!scrollable) {
+    if (!scrollable) {
+      return (
+        <div
+          ref={ref}
+          className={cn("content", css.content, css["body-static"], className)}
+          style={bodyStyle}
+          {...props}
+        >
+          {children}
+        </div>
+      );
+    }
+
     return (
-      <div
-        ref={ref}
-        className={cn("content", css.content, css["body-static"], className)}
+      <Scroll
+        viewportRef={ref}
+        className={cn("body-scroll", css["body-scroll"])}
         style={bodyStyle}
+        styles={{ content: cn("content", css.content, className) }}
         {...props}
       >
         {children}
-      </div>
+      </Scroll>
     );
-  }
-
-  return (
-    <Scroll
-      viewportRef={ref}
-      className={cn("body-scroll", css["body-scroll"])}
-      style={bodyStyle}
-      styles={{ content: cn("content", css.content, className) }}
-      {...props}
-    >
-      {children}
-    </Scroll>
-  );
-});
+  },
+);
 
 ModalBody.displayName = "Modal.Body";
 

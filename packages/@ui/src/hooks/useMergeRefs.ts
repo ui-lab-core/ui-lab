@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 
 export function useMergeRefs<T = any>(
   ...refs: Array<React.Ref<T> | undefined>
@@ -6,12 +6,12 @@ export function useMergeRefs<T = any>(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return React.useCallback((value: T | null) => {
     for (const ref of refs) {
-      if (!ref) continue
+      if (!ref) continue;
       if (typeof ref === "function") {
-        ref(value)
+        ref(value);
       } else {
-        (ref as React.MutableRefObject<T | null>).current = value
+        (ref as React.MutableRefObject<T | null>).current = value;
       }
     }
-  }, refs)
+  }, refs);
 }

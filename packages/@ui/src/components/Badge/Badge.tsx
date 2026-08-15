@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { useFocusRing } from "@react-aria/focus";
-import { mergeProps, } from "@react-aria/utils";
+import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useButton } from "@react-aria/button";
 
@@ -64,7 +64,7 @@ function DismissButton({ onDismiss, variant, className }: DismissButtonProps) {
       "aria-label": "Dismiss",
       onPress: onDismiss,
     },
-    buttonRef
+    buttonRef,
   );
 
   const { focusProps, isFocused, isFocusVisible } = useFocusRing();
@@ -87,13 +87,25 @@ function DismissButton({ onDismiss, variant, className }: DismissButtonProps) {
   );
 }
 
-const resolveBadgeBaseStyles = createStylesResolver(['root', 'icon', 'iconLeft', 'iconRight', 'dismiss'] as const);
+const resolveBadgeBaseStyles = createStylesResolver([
+  "root",
+  "icon",
+  "iconLeft",
+  "iconRight",
+  "dismiss",
+] as const);
 
 function resolveBadgeStyles(styles: BadgeStylesProp | undefined) {
   if (!styles) return resolveBadgeBaseStyles(styles);
   const { root, icon, iconLeft, iconRight, dismiss } = styles;
   if (!icon || typeof icon === "string" || Array.isArray(icon)) {
-    return resolveBadgeBaseStyles({ root, icon: icon as StyleValue | undefined, iconLeft, iconRight, dismiss });
+    return resolveBadgeBaseStyles({
+      root,
+      icon: icon as StyleValue | undefined,
+      iconLeft,
+      iconRight,
+      dismiss,
+    });
   }
 
   return resolveBadgeBaseStyles({
@@ -105,7 +117,12 @@ function resolveBadgeStyles(styles: BadgeStylesProp | undefined) {
 }
 
 function isBadgeIconSlots(icon: BadgeProps["icon"]): icon is BadgeIconSlots {
-  return typeof icon === "object" && icon !== null && !React.isValidElement(icon) && ("left" in icon || "right" in icon);
+  return (
+    typeof icon === "object" &&
+    icon !== null &&
+    !React.isValidElement(icon) &&
+    ("left" in icon || "right" in icon)
+  );
 }
 
 function resolveBadgeIcon(icon: BadgeProps["icon"]) {
@@ -134,7 +151,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       styles,
       ...props
     },
-    ref
+    ref,
   ) => {
     const resolved = resolveBadgeStyles(styles);
     const resolvedIcon = resolveBadgeIcon(icon);
@@ -148,7 +165,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
           pill && css.pill,
           dismissible && css.dismissible,
           className,
-          resolved.root
+          resolved.root,
         )}
         data-variant={variant}
         data-pill={pill ? "true" : undefined}
@@ -156,20 +173,28 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         {...props}
       >
         {resolvedIcon?.left && (
-          <span className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconLeft)} aria-hidden="true">
+          <span
+            className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconLeft)}
+            aria-hidden="true"
+          >
             {resolvedIcon.left}
           </span>
         )}
         {count !== undefined ? count : children}
         {resolvedIcon?.right && (
-          <span className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconRight)} aria-hidden="true">
+          <span
+            className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconRight)}
+            aria-hidden="true"
+          >
             {resolvedIcon.right}
           </span>
         )}
-        {dismissible && <DismissButton onDismiss={onDismiss} variant={variant} className={resolved.dismiss} />}
+        {dismissible && (
+          <DismissButton onDismiss={onDismiss} variant={variant} className={resolved.dismiss} />
+        )}
       </span>
     );
-  }
+  },
 );
 
 Badge.displayName = "Badge";

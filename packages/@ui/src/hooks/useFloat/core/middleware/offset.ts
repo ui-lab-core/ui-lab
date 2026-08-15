@@ -1,13 +1,7 @@
-import {
-  type Coords,
-  evaluate,
-  getAlignment,
-  getSide,
-  getSideAxis,
-} from '../../utils';
+import { type Coords, evaluate, getAlignment, getSide, getSideAxis } from "../../utils";
 
-import {originSides} from '../constants';
-import type {Derivable, Middleware, MiddlewareState} from '../types';
+import { originSides } from "../constants";
+import type { Derivable, Middleware, MiddlewareState } from "../types";
 
 type OffsetValue =
   | number
@@ -46,33 +40,33 @@ async function convertValueToCoords(
   state: MiddlewareState,
   options: OffsetOptions,
 ): Promise<Coords> {
-  const {placement, platform, elements} = state;
+  const { placement, platform, elements } = state;
   const rtl = await platform.isRTL?.(elements.floating);
 
   const side = getSide(placement);
   const alignment = getAlignment(placement);
-  const isVertical = getSideAxis(placement) === 'y';
+  const isVertical = getSideAxis(placement) === "y";
   const mainAxisMulti = originSides.has(side) ? -1 : 1;
   const crossAxisMulti = rtl && isVertical ? -1 : 1;
   const rawValue = evaluate(options, state);
 
   // eslint-disable-next-line prefer-const
-  let {mainAxis, crossAxis, alignmentAxis} =
-    typeof rawValue === 'number'
-      ? {mainAxis: rawValue, crossAxis: 0, alignmentAxis: null}
+  let { mainAxis, crossAxis, alignmentAxis } =
+    typeof rawValue === "number"
+      ? { mainAxis: rawValue, crossAxis: 0, alignmentAxis: null }
       : {
           mainAxis: rawValue.mainAxis || 0,
           crossAxis: rawValue.crossAxis || 0,
           alignmentAxis: rawValue.alignmentAxis,
         };
 
-  if (alignment && typeof alignmentAxis === 'number') {
-    crossAxis = alignment === 'end' ? alignmentAxis * -1 : alignmentAxis;
+  if (alignment && typeof alignmentAxis === "number") {
+    crossAxis = alignment === "end" ? alignmentAxis * -1 : alignmentAxis;
   }
 
   return isVertical
-    ? {x: crossAxis * crossAxisMulti, y: mainAxis * mainAxisMulti}
-    : {x: mainAxis * mainAxisMulti, y: crossAxis * crossAxisMulti};
+    ? { x: crossAxis * crossAxisMulti, y: mainAxis * mainAxisMulti }
+    : { x: mainAxis * mainAxisMulti, y: crossAxis * crossAxisMulti };
 }
 
 /**
@@ -83,18 +77,15 @@ async function convertValueToCoords(
  * @see https://floating-ui.com/docs/offset
  */
 export const offset = (options: OffsetOptions = 0): Middleware => ({
-  name: 'offset',
+  name: "offset",
   options,
   async fn(state) {
-    const {x, y, placement, middlewareData} = state;
+    const { x, y, placement, middlewareData } = state;
     const diffCoords = await convertValueToCoords(state, options);
 
     // If the placement is the same and the arrow caused an alignment offset
     // then we don't need to change the positioning coordinates.
-    if (
-      placement === middlewareData.offset?.placement &&
-      middlewareData.arrow?.alignmentOffset
-    ) {
+    if (placement === middlewareData.offset?.placement && middlewareData.arrow?.alignmentOffset) {
       return {};
     }
 

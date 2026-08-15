@@ -1,14 +1,14 @@
-import type {Coords, ElementRects, Placement} from '../../../utils';
+import type { Coords, ElementRects, Placement } from "../../../utils";
 import {
   getAlignment,
   getAlignmentAxis,
   getAxisLength,
   getSide,
   getSideAxis,
-} from '../../../utils';
+} from "../../../utils";
 
 export function computeCoordsFromPlacement(
-  {reference, floating}: ElementRects,
+  { reference, floating }: ElementRects,
   placement: Placement,
   rtl?: boolean,
 ): Coords {
@@ -16,7 +16,7 @@ export function computeCoordsFromPlacement(
   const alignmentAxis = getAlignmentAxis(placement);
   const alignLength = getAxisLength(alignmentAxis);
   const side = getSide(placement);
-  const isVertical = sideAxis === 'y';
+  const isVertical = sideAxis === "y";
 
   const commonX = reference.x + reference.width / 2 - floating.width / 2;
   const commonY = reference.y + reference.height / 2 - floating.height / 2;
@@ -24,27 +24,27 @@ export function computeCoordsFromPlacement(
 
   let coords: Coords;
   switch (side) {
-    case 'top':
-      coords = {x: commonX, y: reference.y - floating.height};
+    case "top":
+      coords = { x: commonX, y: reference.y - floating.height };
       break;
-    case 'bottom':
-      coords = {x: commonX, y: reference.y + reference.height};
+    case "bottom":
+      coords = { x: commonX, y: reference.y + reference.height };
       break;
-    case 'right':
-      coords = {x: reference.x + reference.width, y: commonY};
+    case "right":
+      coords = { x: reference.x + reference.width, y: commonY };
       break;
-    case 'left':
-      coords = {x: reference.x - floating.width, y: commonY};
+    case "left":
+      coords = { x: reference.x - floating.width, y: commonY };
       break;
     default:
-      coords = {x: reference.x, y: reference.y};
+      coords = { x: reference.x, y: reference.y };
   }
 
   switch (getAlignment(placement)) {
-    case 'start':
+    case "start":
       coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
       break;
-    case 'end':
+    case "end":
       coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
       break;
     default:

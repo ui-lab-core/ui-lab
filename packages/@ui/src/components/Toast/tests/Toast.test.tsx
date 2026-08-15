@@ -1,13 +1,5 @@
 import React, { StrictMode, useLayoutEffect } from "react";
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Toaster } from "../Toast.Toaster";
 import { toast } from "../Toast.UseToast";
@@ -145,7 +137,7 @@ describe("Toast channel routing", () => {
       <>
         <Toaster container={defaultTarget} />
         <Toaster toasterId="named" container={namedTarget} />
-      </>
+      </>,
     );
 
     showToast({ title: "Default channel" });
@@ -165,7 +157,7 @@ describe("Toast channel routing", () => {
       <>
         <Toaster toasterId="first" container={firstTarget} />
         <Toaster toasterId="second" container={secondTarget} />
-      </>
+      </>,
     );
 
     showToast({ toasterId: "first", position: "bottom-right", title: "First" });
@@ -183,15 +175,14 @@ describe("Toast channel routing", () => {
       <>
         <Toaster toasterId="duplicate" container={firstTarget} />
         <Toaster toasterId="duplicate" container={secondTarget} />
-      </>
+      </>,
     );
 
     showToast({ toasterId: "duplicate", title: "Only once" });
 
     await waitFor(() => expect(screen.getAllByRole("alert")).toHaveLength(1));
     expect(
-      within(firstTarget).queryByText("Only once") ||
-        within(secondTarget).queryByText("Only once")
+      within(firstTarget).queryByText("Only once") || within(secondTarget).queryByText("Only once"),
     ).toBeInTheDocument();
   });
 
@@ -217,7 +208,7 @@ describe("Toast channel routing", () => {
       <>
         <Toaster toasterId="first" container={firstTarget} />
         <Toaster toasterId="second" container={secondTarget} />
-      </>
+      </>,
     );
 
     const first = showToast({ toasterId: "first", title: "First original" });
@@ -259,9 +250,7 @@ describe("Toast container-relative layout", () => {
     await waitFor(() => expect(screen.getAllByRole("alert")).toHaveLength(6));
 
     Object.entries(expected).forEach(([position, styles]) => {
-      const group = target.querySelector(
-        `[data-toast-position="${position}"]`
-      ) as HTMLElement;
+      const group = target.querySelector(`[data-toast-position="${position}"]`) as HTMLElement;
       expect(group).toBeInTheDocument();
       expect(group.style.position).toBe("absolute");
       Object.entries(styles).forEach(([property, value]) => {
@@ -292,7 +281,7 @@ describe("Toast container-relative layout", () => {
         if (this === target) return rect(100, 400);
         if (this.getAttribute("role") === "alert") return rect(140, 200);
         return rect(0, 0);
-      }
+      },
     );
 
     render(<Toaster toasterId="boundary" container={target} />);
@@ -301,10 +290,10 @@ describe("Toast container-relative layout", () => {
 
     await waitFor(() => expect(gsapMocks.fromTo).toHaveBeenCalledTimes(2));
     const topCall = gsapMocks.fromTo.mock.calls.find(([element]) =>
-      (element as HTMLElement).textContent?.includes("Top spawn")
+      (element as HTMLElement).textContent?.includes("Top spawn"),
     );
     const bottomCall = gsapMocks.fromTo.mock.calls.find(([element]) =>
-      (element as HTMLElement).textContent?.includes("Bottom spawn")
+      (element as HTMLElement).textContent?.includes("Bottom spawn"),
     );
 
     expect(topCall?.[1].y).toBe(-124);
@@ -316,7 +305,7 @@ describe("Toast container-relative layout", () => {
     const view = render(
       <StrictMode>
         <Toaster toasterId="strict" container={() => firstTarget} />
-      </StrictMode>
+      </StrictMode>,
     );
     showToast({ toasterId: "strict", title: "Strict toast" });
 
@@ -327,7 +316,7 @@ describe("Toast container-relative layout", () => {
     render(
       <StrictMode>
         <Toaster toasterId="strict" container={() => secondTarget} />
-      </StrictMode>
+      </StrictMode>,
     );
 
     expect(await within(secondTarget).findByText("Strict toast")).toBeInTheDocument();
@@ -352,8 +341,9 @@ describe("Toast dismissal animation", () => {
     now = 1000;
     act(() => animationFrameCallback?.(now));
 
-    const dismissCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
-      Array.isArray(elements) && elements.includes(alert) && "opacity" in options
+    const dismissCall = gsapMocks.to.mock.calls.find(
+      ([elements, options]) =>
+        Array.isArray(elements) && elements.includes(alert) && "opacity" in options,
     );
 
     expect(dismissCall?.[1]).toMatchObject({
@@ -370,9 +360,9 @@ describe("Toast dismissal animation", () => {
     showToast({ title: "Behind" });
     showToast({ title: "Fade down" });
 
-    const alert = await screen.findByText("Fade down").then((node) =>
-      node.closest('[role="alert"]') as HTMLElement
-    );
+    const alert = await screen
+      .findByText("Fade down")
+      .then((node) => node.closest('[role="alert"]') as HTMLElement);
     const exitingWrapper = alert.parentElement as HTMLElement;
     const remainingAlert = screen.getByText("Behind").closest('[role="alert"]') as HTMLElement;
     const remainingWrapper = remainingAlert.parentElement as HTMLElement;
@@ -383,8 +373,9 @@ describe("Toast dismissal animation", () => {
     gsapMocks.to.mockClear();
     fireEvent.click(within(alert).getByRole("button", { name: "Close" }));
 
-    const dismissCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
-      Array.isArray(elements) && elements.includes(alert) && "opacity" in options
+    const dismissCall = gsapMocks.to.mock.calls.find(
+      ([elements, options]) =>
+        Array.isArray(elements) && elements.includes(alert) && "opacity" in options,
     );
     expect(dismissCall?.[1]).toMatchObject({
       duration: 0.55,
@@ -394,8 +385,9 @@ describe("Toast dismissal animation", () => {
     const resolveOpacity = dismissCall?.[1].opacity as (index: number) => number;
     expect(resolveOpacity(dismissElements.indexOf(alert))).toBe(0);
 
-    const sharedMotionCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
-      Array.isArray(elements) && elements.includes(exitingWrapper) && "y" in options
+    const sharedMotionCall = gsapMocks.to.mock.calls.find(
+      ([elements, options]) =>
+        Array.isArray(elements) && elements.includes(exitingWrapper) && "y" in options,
     );
     expect(sharedMotionCall).toBeDefined();
     const elements = sharedMotionCall?.[0] as HTMLElement[];
@@ -409,12 +401,14 @@ describe("Toast dismissal animation", () => {
     showToast({ title: "Expanded behind" });
     showToast({ title: "Expanded front" });
 
-    const alert = await screen.findByText("Expanded front").then((node) =>
-      node.closest('[role="alert"]') as HTMLElement
-    );
+    const alert = await screen
+      .findByText("Expanded front")
+      .then((node) => node.closest('[role="alert"]') as HTMLElement);
     const wrapper = alert.parentElement as HTMLElement;
     const stack = wrapper.parentElement as HTMLElement;
-    const remainingAlert = screen.getByText("Expanded behind").closest('[role="alert"]') as HTMLElement;
+    const remainingAlert = screen
+      .getByText("Expanded behind")
+      .closest('[role="alert"]') as HTMLElement;
     const remainingWrapper = remainingAlert.parentElement as HTMLElement;
     Object.defineProperty(wrapper, "offsetHeight", { configurable: true, value: 80 });
 
@@ -426,8 +420,9 @@ describe("Toast dismissal animation", () => {
     gsapMocks.to.mockClear();
     fireEvent.click(within(alert).getByRole("button", { name: "Close" }));
 
-    const sharedMotionCall = gsapMocks.to.mock.calls.find(([elements, options]) =>
-      Array.isArray(elements) && elements.includes(wrapper) && "y" in options
+    const sharedMotionCall = gsapMocks.to.mock.calls.find(
+      ([elements, options]) =>
+        Array.isArray(elements) && elements.includes(wrapper) && "y" in options,
     );
     expect(sharedMotionCall?.[1]).toMatchObject({
       duration: 0.55,
@@ -447,20 +442,20 @@ describe("Toast dismissal animation", () => {
     showToast({ title: "Dragged toast" });
     showToast({ title: "Remaining toast" });
 
-    const alert = await screen.findByText("Dragged toast").then((node) =>
-      node.closest('[role="alert"]') as HTMLElement
-    );
+    const alert = await screen
+      .findByText("Dragged toast")
+      .then((node) => node.closest('[role="alert"]') as HTMLElement);
     gsapMocks.to.mockClear();
 
     fireEvent.pointerDown(alert, { clientX: 0 });
     fireEvent.pointerMove(document, { clientX: 120 });
     fireEvent.pointerUp(document);
 
-    const slideCall = gsapMocks.to.mock.calls.find(([element, options]) =>
-      element === alert && options.x === "+=200"
+    const slideCall = gsapMocks.to.mock.calls.find(
+      ([element, options]) => element === alert && options.x === "+=200",
     );
-    const stackCall = gsapMocks.to.mock.calls.find(([element, options]) =>
-      element !== alert && options.duration === 0.55 && "y" in options
+    const stackCall = gsapMocks.to.mock.calls.find(
+      ([element, options]) => element !== alert && options.duration === 0.55 && "y" in options,
     );
 
     expect(slideCall?.[1]).toMatchObject({

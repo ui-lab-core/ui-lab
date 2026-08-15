@@ -1,36 +1,38 @@
-import * as React from "react"
-import { cn, type StyleValue } from "@/lib/utils"
-import { type StylesProp, createStylesResolver } from "@/lib/styles"
-import styles from "./Select.module.css"
+import * as React from "react";
+import { cn, type StyleValue } from "@/lib/utils";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import styles from "./Select.module.css";
 
 export interface SelectSeparatorStyleSlots {
-  root?: StyleValue
+  root?: StyleValue;
 }
 
-export type SelectSeparatorStylesProp = StylesProp<SelectSeparatorStyleSlots>
+export type SelectSeparatorStylesProp = StylesProp<SelectSeparatorStyleSlots>;
 
 export interface SelectSeparatorProps extends React.PropsWithChildren {
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
-  styles?: SelectSeparatorStylesProp
+  styles?: SelectSeparatorStylesProp;
 }
 
-const resolveSelectSeparatorBaseStyles = createStylesResolver(["root"] as const)
+const resolveSelectSeparatorBaseStyles = createStylesResolver(["root"] as const);
 
 function resolveSelectSeparatorStyles(styles: SelectSeparatorStylesProp | undefined) {
-  if (!styles) return resolveSelectSeparatorBaseStyles(styles)
-  const { root } = styles
-  return resolveSelectSeparatorBaseStyles({ root })
+  if (!styles) return resolveSelectSeparatorBaseStyles(styles);
+  const { root } = styles;
+  return resolveSelectSeparatorBaseStyles({ root });
 }
 
 /** Horizontal rule that visually separates groups of items in the dropdown */
 const SelectSeparator = React.forwardRef<HTMLDivElement, SelectSeparatorProps>(
   ({ className, styles: stylesProp }, ref) => {
-    const resolved = resolveSelectSeparatorStyles(stylesProp)
-    return <div ref={ref} className={cn(styles.separator, className, resolved.root)} role="separator" />
-  }
-)
-SelectSeparator.displayName = "SelectSeparator"
+    const resolved = resolveSelectSeparatorStyles(stylesProp);
+    return (
+      <div ref={ref} className={cn(styles.separator, className, resolved.root)} role="separator" />
+    );
+  },
+);
+SelectSeparator.displayName = "SelectSeparator";
 
-export { SelectSeparator }
+export { SelectSeparator };

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { useListContext } from './list.context';
-import { ListDescProps } from './list.types';
-import styles from './List.module.css';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { useListContext } from "./list.context";
+import { ListDescProps } from "./list.types";
+import styles from "./List.module.css";
 
 /** Secondary description text below the list item label */
 const Desc = React.forwardRef<HTMLDivElement, ListDescProps>(
@@ -12,16 +12,12 @@ const Desc = React.forwardRef<HTMLDivElement, ListDescProps>(
     const { styles: listStyles } = useListContext();
 
     return (
-      <div
-        ref={ref}
-        className={cn(styles.desc, listStyles.desc, className)}
-        {...props}
-      >
+      <div ref={ref} className={cn(styles.desc, listStyles.desc, className)} {...props}>
         {children}
       </div>
     );
-  }
+  },
 );
-Desc.displayName = 'List.Desc';
+Desc.displayName = "List.Desc";
 
 export { Desc };

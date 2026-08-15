@@ -204,18 +204,18 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
 
 type CanvasState = { s: number; v: number; h: number; hg: number };
 type CanvasAction =
-  | { type: 'SET_FROM_COLOR'; h: number; s: number; v: number }
-  | { type: 'SET_CANVAS'; s: number; v: number }
-  | { type: 'SET_HUE'; h: number; updateHg: boolean };
+  | { type: "SET_FROM_COLOR"; h: number; s: number; v: number }
+  | { type: "SET_CANVAS"; s: number; v: number }
+  | { type: "SET_HUE"; h: number; updateHg: boolean };
 
 function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
   switch (action.type) {
-    case 'SET_FROM_COLOR':
+    case "SET_FROM_COLOR":
       if (action.s > 0) return { s: action.s, v: action.v, h: action.h, hg: action.h };
       return { ...state, s: action.s, v: action.v };
-    case 'SET_CANVAS':
+    case "SET_CANVAS":
       return { ...state, s: action.s, v: action.v };
-    case 'SET_HUE':
+    case "SET_HUE":
       return { ...state, h: action.h, hg: action.updateHg ? action.h : state.hg };
     default:
       return state;
@@ -236,7 +236,9 @@ export interface ColorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   className?: string;
   styles?: ColorStylesProp;
 }
-export interface ColorState { value?: string }
+export interface ColorState {
+  value?: string;
+}
 
 type ResolvedColorStyles = ReturnType<typeof resolveColorStyles>;
 
@@ -296,7 +298,7 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [currentValue, setUncontrolledValue] = useControlledState(
       controlledState?.value,
@@ -318,7 +320,10 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
 
     // Source of truth for canvas position (HSV Saturation & Value) and hue
     const [canvasState, dispatchCanvas] = useReducer(canvasReducer, {
-      s: initialState.s, v: initialState.v, h: initialState.h, hg: initialState.h,
+      s: initialState.s,
+      v: initialState.v,
+      h: initialState.h,
+      hg: initialState.h,
     });
     const { s: canvasSaturation, v: canvasBrightness, h: hue, hg: hueWhenGrayscale } = canvasState;
 
@@ -334,14 +339,18 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
         const parsed = parseColor(currentValue);
         const { h, s, v } = rgbToHsv(parsed.r, parsed.g, parsed.b);
 
-        dispatchCanvas({ type: 'SET_FROM_COLOR', h, s, v });
+        dispatchCanvas({ type: "SET_FROM_COLOR", h, s, v });
 
         lastEmittedColor.current = currentValue;
       }
     }, [currentValue]);
 
     // Compute display color from current state (HSV -> RGB)
-    const { r: displayR, g: displayG, b: displayB } = hsvToRgb(hue, canvasSaturation, canvasBrightness);
+    const {
+      r: displayR,
+      g: displayG,
+      b: displayB,
+    } = hsvToRgb(hue, canvasSaturation, canvasBrightness);
 
     const displayValue =
       format === "hex"
@@ -353,7 +362,7 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
         setUncontrolledValue(newColor);
         onChange?.(newColor);
       },
-      [onChange, setUncontrolledValue]
+      [onChange, setUncontrolledValue],
     );
 
     const handleChangeComplete = useCallback(
@@ -361,53 +370,56 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
         addRecentColor(newColor);
         onChangeComplete?.(newColor);
       },
-      [onChangeComplete]
+      [onChangeComplete],
     );
 
     const handleCanvasChange = useCallback(
       (saturation: number, brightness: number) => {
         setIsDragging(true);
-        dispatchCanvas({ type: 'SET_CANVAS', s: saturation, v: brightness });
+        dispatchCanvas({ type: "SET_CANVAS", s: saturation, v: brightness });
 
         const { r, g, b } = hsvToRgb(hue, saturation, brightness);
-        const newColor = format === "hex"
-          ? formatColorHex(r, g, b, opacity < 1 ? opacity : undefined)
-          : formatColorRgb(r, g, b, opacity < 1 ? opacity : undefined);
+        const newColor =
+          format === "hex"
+            ? formatColorHex(r, g, b, opacity < 1 ? opacity : undefined)
+            : formatColorRgb(r, g, b, opacity < 1 ? opacity : undefined);
 
         lastEmittedColor.current = newColor;
         handleColorChange(newColor);
       },
-      [hue, opacity, format, handleColorChange]
+      [hue, opacity, format, handleColorChange],
     );
 
     const handleHueChange = useCallback(
       (newHue: number) => {
         setIsDragging(true);
-        dispatchCanvas({ type: 'SET_HUE', h: newHue, updateHg: canvasSaturation > 0 });
+        dispatchCanvas({ type: "SET_HUE", h: newHue, updateHg: canvasSaturation > 0 });
 
         const { r, g, b } = hsvToRgb(newHue, canvasSaturation, canvasBrightness);
-        const newColor = format === "hex"
-          ? formatColorHex(r, g, b, opacity < 1 ? opacity : undefined)
-          : formatColorRgb(r, g, b, opacity < 1 ? opacity : undefined);
+        const newColor =
+          format === "hex"
+            ? formatColorHex(r, g, b, opacity < 1 ? opacity : undefined)
+            : formatColorRgb(r, g, b, opacity < 1 ? opacity : undefined);
 
         lastEmittedColor.current = newColor;
         handleColorChange(newColor);
       },
-      [canvasSaturation, canvasBrightness, opacity, format, handleColorChange]
+      [canvasSaturation, canvasBrightness, opacity, format, handleColorChange],
     );
 
     const handleOpacityChange = useCallback(
       (newOpacity: number) => {
         setIsDragging(true);
         const { r, g, b } = hsvToRgb(hue, canvasSaturation, canvasBrightness);
-        const newColor = format === "hex"
-          ? formatColorHex(r, g, b, newOpacity < 1 ? newOpacity : undefined)
-          : formatColorRgb(r, g, b, newOpacity < 1 ? newOpacity : undefined);
+        const newColor =
+          format === "hex"
+            ? formatColorHex(r, g, b, newOpacity < 1 ? newOpacity : undefined)
+            : formatColorRgb(r, g, b, newOpacity < 1 ? newOpacity : undefined);
 
         lastEmittedColor.current = newColor;
         handleColorChange(newColor);
       },
-      [hue, canvasSaturation, canvasBrightness, format, handleColorChange]
+      [hue, canvasSaturation, canvasBrightness, format, handleColorChange],
     );
 
     const handleRecentColorSelect = useCallback(
@@ -415,13 +427,13 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
         // Update internal state immediately
         const parsed = parseColor(color);
         const { h, s, v } = rgbToHsv(parsed.r, parsed.g, parsed.b);
-        dispatchCanvas({ type: 'SET_FROM_COLOR', h, s, v });
+        dispatchCanvas({ type: "SET_FROM_COLOR", h, s, v });
 
         lastEmittedColor.current = color;
         handleColorChange(color);
         handleChangeComplete(color);
       },
-      [handleColorChange, handleChangeComplete]
+      [handleColorChange, handleChangeComplete],
     );
 
     const handleInputChange = useCallback(
@@ -430,22 +442,19 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
           // Update internal state immediately
           const parsed = parseColor(newValue);
           const { h, s, v } = rgbToHsv(parsed.r, parsed.g, parsed.b);
-          dispatchCanvas({ type: 'SET_FROM_COLOR', h, s, v });
+          dispatchCanvas({ type: "SET_FROM_COLOR", h, s, v });
 
           lastEmittedColor.current = newValue;
           handleColorChange(newValue);
           handleChangeComplete(newValue);
         }
       },
-      [handleColorChange, handleChangeComplete]
+      [handleColorChange, handleChangeComplete],
     );
 
-    const handleFormatChange = useCallback(
-      (newFormat: "hex" | "rgb") => {
-        setFormat(newFormat);
-      },
-      []
-    );
+    const handleFormatChange = useCallback((newFormat: "hex" | "rgb") => {
+      setFormat(newFormat);
+    }, []);
 
     const resolved = resolveColorStyles(stylesProp);
     const baseColor = formatColorRgb(displayR, displayG, displayB);
@@ -453,7 +462,7 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
       displayR,
       displayG,
       displayB,
-      opacity < 1 ? opacity : undefined
+      opacity < 1 ? opacity : undefined,
     );
     const contextValue = React.useMemo<ColorContextValue>(
       () => ({
@@ -499,7 +508,7 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
         handleOpacityChange,
         handleInputChange,
         handleFormatChange,
-      ]
+      ],
     );
 
     if (children === undefined) {
@@ -523,7 +532,7 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
         </div>
       </ColorContext.Provider>
     );
-  }
+  },
 );
 
 ColorRoot.displayName = "Color";
@@ -533,11 +542,10 @@ export interface ColorAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "standalone" | "popover";
 }
 
-export interface ColorSliderProps
-  extends Omit<
-    React.HTMLAttributes<HTMLDivElement>,
-    "defaultValue" | "value" | "onChange"
-  > {
+export interface ColorSliderProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "value" | "onChange"
+> {
   /** Which color channel this slider controls. */
   type?: "hue" | "opacity" | "chroma";
   /** Current slider value. Hue uses 0-360; opacity and OKLCH chroma use their native unit ranges. */
@@ -573,7 +581,7 @@ export interface ColorSliderProps
 
 function getChromaTrackBackground(color: string, maxChroma: number): string {
   const oklchMatch = color.match(
-    /^oklch\(\s*([+-]?(?:\d*\.\d+|\d+))(%?)\s+([+-]?(?:\d*\.\d+|\d+))\s+([+-]?(?:\d*\.\d+|\d+))\s*\)$/i
+    /^oklch\(\s*([+-]?(?:\d*\.\d+|\d+))(%?)\s+([+-]?(?:\d*\.\d+|\d+))\s+([+-]?(?:\d*\.\d+|\d+))\s*\)$/i,
   );
 
   if (oklchMatch) {
@@ -607,7 +615,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
       style,
       ...props
     },
-    ref
+    ref,
   ) => {
     const context = useOptionalColorContext();
     const usesContextValue = value === undefined && context !== null;
@@ -622,8 +630,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
             : undefined
         : undefined);
 
-    const resolvedDefaultValue =
-      defaultValue ?? (type === "opacity" ? 1 : 0);
+    const resolvedDefaultValue = defaultValue ?? (type === "opacity" ? 1 : 0);
     const resolvedDisabled = disabled ?? context?.disabled ?? false;
     const resolvedSize = size ?? context?.size ?? "md";
     const resolvedTrackColor = color ?? context?.baseColor ?? "rgb(0, 0, 0)";
@@ -667,7 +674,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
           contextOnChange?.(nextValue);
         }
       },
-      [contextOnChange, onChange, usesContextValue]
+      [contextOnChange, onChange, usesContextValue],
     );
 
     const sliderStyle = React.useMemo(
@@ -679,14 +686,14 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
             }
           : undefined),
       }),
-      [resolvedTrackColor, style, type]
+      [resolvedTrackColor, style, type],
     );
     const trackStyle = React.useMemo(
       () =>
         type === "chroma"
           ? { backgroundImage: getChromaTrackBackground(resolvedTrackColor, resolvedPreviewMax) }
           : undefined,
-      [resolvedPreviewMax, resolvedTrackColor, type]
+      [resolvedPreviewMax, resolvedTrackColor, type],
     );
 
     return (
@@ -695,7 +702,9 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
         min={resolvedMin}
         max={resolvedMax}
         step={resolvedStep}
-        aria-label={ariaLabel ?? (type === "opacity" ? "Opacity" : type === "chroma" ? "Chroma" : "Hue")}
+        aria-label={
+          ariaLabel ?? (type === "opacity" ? "Opacity" : type === "chroma" ? "Chroma" : "Hue")
+        }
         value={resolvedValue}
         defaultValue={resolvedValue === undefined ? resolvedDefaultValue : undefined}
         onValueChange={handleValueChange}
@@ -704,13 +713,17 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
         style={sliderStyle}
         trackStyle={trackStyle}
         className={cn(
-          type === "opacity" ? "opacity-slider" : type === "chroma" ? "chroma-slider" : "hue-slider",
+          type === "opacity"
+            ? "opacity-slider"
+            : type === "chroma"
+              ? "chroma-slider"
+              : "hue-slider",
           type === "opacity"
             ? styles["opacity-slider"]
             : type === "chroma"
               ? styles["chroma-slider"]
               : styles["hue-slider"],
-          resolvedClassName
+          resolvedClassName,
         )}
         styles={{
           track: cn(
@@ -720,7 +733,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
               : type === "chroma"
                 ? styles["chroma-track"]
                 : styles["hue-track"],
-            resolvedTrackClassName
+            resolvedTrackClassName,
           ),
           range: cn(
             type === "opacity" ? "opacity-range" : type === "chroma" ? "chroma-range" : "hue-range",
@@ -728,7 +741,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
               ? styles["opacity-range"]
               : type === "chroma"
                 ? styles["chroma-range"]
-                : styles["hue-range"]
+                : styles["hue-range"],
           ),
           thumb: cn(
             type === "opacity" ? "opacity-thumb" : type === "chroma" ? "chroma-thumb" : "hue-thumb",
@@ -737,17 +750,20 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
               : type === "chroma"
                 ? styles["chroma-thumb"]
                 : styles["hue-thumb"],
-            resolvedThumbClassName
+            resolvedThumbClassName,
           ),
         }}
         {...props}
       />
     );
-  }
+  },
 );
 ColorSlider.displayName = "Color.Slider";
 
-export interface ColorCanvasFieldProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface ColorCanvasFieldProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
   /** Current hue (0-360). Defaults to the value from context. */
   hue?: number;
   /** Current saturation (0-100). Defaults to the value from context. */
@@ -763,7 +779,8 @@ export interface ColorCanvasFieldProps extends Omit<React.HTMLAttributes<HTMLDiv
 const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>(
   ({ hue, saturation, brightness, onChange, disabled, size, className, ...props }, ref) => {
     const context = useOptionalColorContext();
-    const usesContextValue = hue === undefined && saturation === undefined && brightness === undefined;
+    const usesContextValue =
+      hue === undefined && saturation === undefined && brightness === undefined;
 
     const resolvedHue = hue ?? context?.hue ?? 0;
     const resolvedSaturation = saturation ?? context?.canvasSaturation ?? 0;
@@ -779,7 +796,7 @@ const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>
           context?.handleCanvasChange(s, b);
         }
       },
-      [context, onChange, usesContextValue]
+      [context, onChange, usesContextValue],
     );
 
     return (
@@ -800,7 +817,7 @@ const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>
         {...props}
       />
     );
-  }
+  },
 );
 ColorCanvasField.displayName = "Color.Canvas";
 
@@ -890,12 +907,14 @@ const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 ColorArea.displayName = "Color.Area";
 
-export interface ColorTriggerProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color"> {
+export interface ColorTriggerProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "color"
+> {
   /** Preferred side where the picker area appears. */
   position?: PopoverProps["position"];
   /** Picker content shown in the popover. Defaults to Color.Area. */
@@ -918,7 +937,7 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
       disabled: triggerDisabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const { disabled, displayValue, previewColor, resolved, size } = useColorContext();
     const isDisabled = disabled || triggerDisabled;
@@ -939,7 +958,7 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
               className={cn(
                 "color-trigger-swatch",
                 styles["color-trigger-swatch"],
-                resolved.triggerSwatch
+                resolved.triggerSwatch,
               )}
               style={{ "--preview-color": previewColor } as React.CSSProperties}
               aria-hidden="true"
@@ -948,7 +967,7 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
               className={cn(
                 "color-trigger-value",
                 styles["color-trigger-value"],
-                resolved.triggerValue
+                resolved.triggerValue,
               )}
             >
               {displayValue}
@@ -975,7 +994,7 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
         {trigger}
       </Popover>
     );
-  }
+  },
 );
 ColorTrigger.displayName = "Color.Trigger";
 

@@ -1,8 +1,8 @@
-import { Chart as ChartRoot, ChartContext, useChartContext } from "./Chart"
-import { ChartLine, ChartArea, ChartBar, ChartPoint } from "./Chart.Series"
-import { ChartAxis, ChartGrid } from "./Chart.Axis"
-import { ChartCursor, ChartReference } from "./Chart.Decorative"
-import { ChartTooltip, ChartLegend } from "./Chart.Overlays"
+import { Chart as ChartRoot, ChartContext, useChartContext } from "./Chart";
+import { ChartLine, ChartArea, ChartBar, ChartPoint } from "./Chart.Series";
+import { ChartAxis, ChartGrid } from "./Chart.Axis";
+import { ChartCursor, ChartReference } from "./Chart.Decorative";
+import { ChartTooltip, ChartLegend } from "./Chart.Overlays";
 
 const Chart = Object.assign(ChartRoot, {
   Line: ChartLine,
@@ -15,7 +15,7 @@ const Chart = Object.assign(ChartRoot, {
   Cursor: ChartCursor,
   Tooltip: ChartTooltip,
   Legend: ChartLegend,
-})
+});
 
 export type {
   ChartProps,
@@ -26,7 +26,7 @@ export type {
   SeriesData,
   SeriesRegistration,
   SeriesType,
-} from "./Chart"
+} from "./Chart";
 export type {
   ChartLineProps,
   ChartAreaProps,
@@ -34,7 +34,7 @@ export type {
   ChartPointProps,
   ChartSeriesStyleSlots,
   ChartSeriesStylesProp,
-} from "./Chart.Series"
+} from "./Chart.Series";
 export type {
   ChartAxisProps,
   ChartAxisStyleSlots,
@@ -42,7 +42,7 @@ export type {
   ChartGridProps,
   ChartGridStyleSlots,
   ChartGridStylesProp,
-} from "./Chart.Axis"
+} from "./Chart.Axis";
 export type {
   ChartReferenceProps,
   ChartReferenceStyleSlots,
@@ -50,7 +50,7 @@ export type {
   ChartCursorProps,
   ChartCursorStyleSlots,
   ChartCursorStylesProp,
-} from "./Chart.Decorative"
+} from "./Chart.Decorative";
 export type {
   ChartTooltipProps,
   ChartTooltipStyleSlots,
@@ -58,10 +58,6 @@ export type {
   ChartLegendProps,
   ChartLegendStyleSlots,
   ChartLegendStylesProp,
-} from "./Chart.Overlays"
+} from "./Chart.Overlays";
 
-export {
-  Chart,
-  ChartContext,
-  useChartContext,
-}
+export { Chart, ChartContext, useChartContext };

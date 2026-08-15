@@ -13,7 +13,7 @@ describe("Color.Trigger", () => {
     render(
       <Color defaultValue="#3b82f6">
         <Color.Trigger aria-label="Choose color" />
-      </Color>
+      </Color>,
     );
 
     expect(openPicker()).toHaveClass("p-0");
@@ -22,11 +22,8 @@ describe("Color.Trigger", () => {
   it("allows custom picker shell padding through the Popover frame slot", () => {
     render(
       <Color defaultValue="#3b82f6">
-        <Color.Trigger
-          aria-label="Choose color"
-          popoverStyles={{ frame: "p-1" }}
-        />
-      </Color>
+        <Color.Trigger aria-label="Choose color" popoverStyles={{ frame: "p-1" }} />
+      </Color>,
     );
 
     const frame = openPicker();

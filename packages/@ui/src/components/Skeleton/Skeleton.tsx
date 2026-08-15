@@ -19,14 +19,9 @@ export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   h?: React.CSSProperties["height"];
 }
 
-type SkeletonTextRowMode =
-  | { lines?: number; h?: never }
-  | { lines?: never; h?: number };
+type SkeletonTextRowMode = { lines?: number; h?: never } | { lines?: never; h?: number };
 
-export type SkeletonTextProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type SkeletonTextProps = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> &
   SkeletonTextRowMode & {
     /** Semantic row geometry. Body text defaults to three rows; heading and display default to one. */
     size?: SkeletonTextSize;
@@ -38,8 +33,7 @@ export type SkeletonTextProps = Omit<
     scale?: number;
   };
 
-export interface SkeletonImageProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface SkeletonImageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Width of the media placeholder. Numeric values are pixels. */
   w?: SkeletonDimension;
   /** Explicit height. When present, it takes precedence over ratio. */
@@ -49,9 +43,7 @@ export interface SkeletonImageProps
 }
 
 function normalizeScale(scale: number | undefined): number {
-  return typeof scale === "number" && Number.isFinite(scale) && scale > 0
-    ? scale
-    : 1;
+  return typeof scale === "number" && Number.isFinite(scale) && scale > 0 ? scale : 1;
 }
 
 function normalizeLines(lines: number): number {
@@ -86,17 +78,7 @@ function dimensionStyle(
 }
 
 const SkeletonRoot = React.forwardRef<HTMLDivElement, SkeletonProps>(
-  (
-    {
-      className,
-      style,
-      w,
-      h,
-      "aria-hidden": ariaHidden = true,
-      ...props
-    },
-    ref,
-  ) => (
+  ({ className, style, w, h, "aria-hidden": ariaHidden = true, ...props }, ref) => (
     <div
       ref={ref}
       className={cn("skeleton", css.shape, css.rectangle, className)}
@@ -188,18 +170,7 @@ SkeletonText.displayName = "Skeleton.Text";
 
 /** Decorative media placeholder with an explicit size or aspect ratio. */
 const SkeletonImage = React.forwardRef<HTMLDivElement, SkeletonImageProps>(
-  (
-    {
-      className,
-      style,
-      w,
-      h,
-      ratio,
-      "aria-hidden": ariaHidden = true,
-      ...props
-    },
-    ref,
-  ) => {
+  ({ className, style, w, h, ratio, "aria-hidden": ariaHidden = true, ...props }, ref) => {
     const imageStyle = {
       ...(w !== undefined ? { width: w } : null),
       ...(h !== undefined

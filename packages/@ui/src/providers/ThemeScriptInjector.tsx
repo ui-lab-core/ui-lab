@@ -1,4 +1,4 @@
-import { generateThemeScript } from './themeScript'
+import { generateThemeScript } from "./themeScript";
 
 /**
  * ThemeScriptInjector - Server Component for FOUC Prevention
@@ -58,7 +58,7 @@ import { generateThemeScript } from './themeScript'
  * 7. React hydrates (colors already correct = no flash)
  */
 export function ThemeScriptInjector() {
-  const script = generateThemeScript()
+  const script = generateThemeScript();
 
   return (
     <script
@@ -66,5 +66,5 @@ export function ThemeScriptInjector() {
       dangerouslySetInnerHTML={{ __html: script }}
       suppressHydrationWarning
     />
-  )
+  );
 }

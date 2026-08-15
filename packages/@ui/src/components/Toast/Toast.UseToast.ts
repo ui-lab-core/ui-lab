@@ -1,6 +1,6 @@
 import { dispatch, ToastProps } from "./Toast.Store";
 
-type ToastOptions = Omit<ToastProps, 'id' | 'open'>;
+type ToastOptions = Omit<ToastProps, "id" | "open">;
 
 let count = 0;
 function genId() {
@@ -10,13 +10,13 @@ function genId() {
 
 const toast = (options: ToastOptions) => {
   const id = genId();
-  dispatch({ type: 'ADD_TOAST', toast: { ...options, id } });
+  dispatch({ type: "ADD_TOAST", toast: { ...options, id } });
 
   return {
     id,
-    dismiss: () => dispatch({ type: 'DISMISS_TOAST', toastId: id }),
+    dismiss: () => dispatch({ type: "DISMISS_TOAST", toastId: id }),
     update: (props: Partial<ToastProps>) =>
-      dispatch({ type: 'UPDATE_TOAST', toast: { ...props, id } }),
+      dispatch({ type: "UPDATE_TOAST", toast: { ...props, id } }),
   };
 };
 

@@ -1,1 +1,1 @@
-export {isElement} from '../../../../utils/dom';
+export { isElement } from "../../../../utils/dom";

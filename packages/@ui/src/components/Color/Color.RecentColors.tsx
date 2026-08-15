@@ -18,43 +18,42 @@ interface ColorRecentColorsProps {
 }
 
 /** Palette of recently used colors for quick re-selection */
-export const ColorRecentColors = React.forwardRef<
-  HTMLDivElement,
-  ColorRecentColorsProps
->(({ onSelect, disabled, size = "md", className, swatchClassName }, ref) => {
-  const [recentColors, setRecentColors] = useState<string[]>([]);
+export const ColorRecentColors = React.forwardRef<HTMLDivElement, ColorRecentColorsProps>(
+  ({ onSelect, disabled, size = "md", className, swatchClassName }, ref) => {
+    const [recentColors, setRecentColors] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Load recent colors on mount
-    setRecentColors(getRecentColors());
-  }, []);
+    useEffect(() => {
+      // Load recent colors on mount
+      setRecentColors(getRecentColors());
+    }, []);
 
-  if (recentColors.length === 0) {
-    return null;
-  }
+    if (recentColors.length === 0) {
+      return null;
+    }
 
-  return (
-    <div
-      ref={ref}
-      className={cn("recent-colors", styles["recent-colors"], className)}
-      data-size={size}
-      role="group"
-      aria-label="Recent colors"
-    >
-      {recentColors.map((color, index) => (
-        <button
-          key={`${color}-${index}`}
-          className={cn("recent-color-swatch", styles["recent-color-swatch"], swatchClassName)}
-          style={{ backgroundColor: color }}
-          onClick={() => onSelect?.(color)}
-          disabled={disabled}
-          data-disabled={disabled || undefined}
-          aria-label={`Recent color ${color}`}
-          title={color}
-        />
-      ))}
-    </div>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        className={cn("recent-colors", styles["recent-colors"], className)}
+        data-size={size}
+        role="group"
+        aria-label="Recent colors"
+      >
+        {recentColors.map((color, index) => (
+          <button
+            key={`${color}-${index}`}
+            className={cn("recent-color-swatch", styles["recent-color-swatch"], swatchClassName)}
+            style={{ backgroundColor: color }}
+            onClick={() => onSelect?.(color)}
+            disabled={disabled}
+            data-disabled={disabled || undefined}
+            aria-label={`Recent color ${color}`}
+            title={color}
+          />
+        ))}
+      </div>
+    );
+  },
+);
 
 ColorRecentColors.displayName = "ColorRecentColors";

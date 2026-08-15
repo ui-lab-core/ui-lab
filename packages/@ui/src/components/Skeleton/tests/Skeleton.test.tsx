@@ -6,19 +6,12 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 import { auditA11y } from "@/tests/utils";
-import {
-  getSkeletonTextRowCount,
-  Skeleton,
-  SKELETON_TEXT_GEOMETRY,
-} from "../Skeleton";
+import { getSkeletonTextRowCount, Skeleton, SKELETON_TEXT_GEOMETRY } from "../Skeleton";
 import css from "../Skeleton.module.css";
 
 describe("Skeleton rectangle", () => {
   it("renders the default rectangle geometry and custom numeric dimensions", () => {
-    const componentCss = readFileSync(
-      "src/components/Skeleton/Skeleton.module.css",
-      "utf8",
-    );
+    const componentCss = readFileSync("src/components/Skeleton/Skeleton.module.css", "utf8");
     const { rerender, getByTestId } = render(<Skeleton data-testid="shape" />);
     const shape = getByTestId("shape");
 
@@ -73,9 +66,7 @@ describe("Skeleton.Text", () => {
   });
 
   it("renders explicit lines and only shortens a final row in multi-line text", () => {
-    const { container, rerender } = render(
-      <Skeleton.Text lines={4} lastLineWidth="62%" />,
-    );
+    const { container, rerender } = render(<Skeleton.Text lines={4} lastLineWidth="62%" />);
     let rows = container.querySelectorAll<HTMLElement>(".skeleton-text-row");
 
     expect(rows).toHaveLength(4);
@@ -108,9 +99,7 @@ describe("Skeleton.Text", () => {
   });
 
   it("uses stable inline geometry for calculated height after semantic size and scale", () => {
-    const { container } = render(
-      <Skeleton.Text h={200} size="heading" scale={1.25} />,
-    );
+    const { container } = render(<Skeleton.Text h={200} size="heading" scale={1.25} />);
 
     expect(getSkeletonTextRowCount(200, "heading", 1.25)).toBe(6);
     expect(container.querySelectorAll(".skeleton-text-row")).toHaveLength(6);
@@ -152,9 +141,7 @@ describe("Skeleton.Image", () => {
     expect(image).toHaveClass("skeleton", "skeleton-image", css.image);
     expect(image).toHaveStyle({ width: "320px", aspectRatio: "16/9" });
 
-    rerender(
-      <Skeleton.Image data-testid="image" w={320} h={180} ratio="1/1" />,
-    );
+    rerender(<Skeleton.Image data-testid="image" w={320} h={180} ratio="1/1" />);
     expect(image).toHaveStyle({
       width: "320px",
       height: "180px",
@@ -188,29 +175,18 @@ describe("Skeleton styling and accessibility contract", () => {
       </section>,
     );
 
-    expect(container.querySelector(".skeleton-image")).toHaveAttribute(
-      "aria-hidden",
-      "true",
-    );
-    expect(container.querySelector(".skeleton-text")).toHaveAttribute(
-      "aria-hidden",
-      "true",
-    );
+    expect(container.querySelector(".skeleton-image")).toHaveAttribute("aria-hidden", "true");
+    expect(container.querySelector(".skeleton-text")).toHaveAttribute("aria-hidden", "true");
     expect(container.querySelectorAll('[role="progressbar"]')).toHaveLength(0);
     await auditA11y(container);
   });
 
   it("defines static defaults, ancestor animation, theme control, and reduced motion in CSS", () => {
-    const componentCss = readFileSync(
-      "src/components/Skeleton/Skeleton.module.css",
-      "utf8",
-    );
+    const componentCss = readFileSync("src/components/Skeleton/Skeleton.module.css", "utf8");
     const themeCss = readFileSync("../themes/onyx/styles.css", "utf8");
 
     expect(componentCss).toContain(":global(.skeleton) {\n    animation: none;");
-    expect(componentCss).toContain(
-      ":global([data-skeleton-animate]) :global(.skeleton)",
-    );
+    expect(componentCss).toContain(":global([data-skeleton-animate]) :global(.skeleton)");
     expect(componentCss).toContain("animation: var(--animation, none)");
     expect(componentCss).toContain("@media (prefers-reduced-motion: reduce)");
     expect(componentCss).toContain("animation: none !important");

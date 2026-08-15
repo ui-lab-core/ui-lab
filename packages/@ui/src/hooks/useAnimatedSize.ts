@@ -41,7 +41,10 @@ export function useAnimatedSize<T extends HTMLElement = HTMLDivElement>({
 
     const runningAnimation = animationRef.current;
     const renderedSize = runningAnimation
-      ? { width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height }
+      ? {
+          width: element.getBoundingClientRect().width,
+          height: element.getBoundingClientRect().height,
+        }
       : previousSizeRef.current;
 
     runningAnimation?.cancel();
@@ -93,10 +96,13 @@ export function useAnimatedSize<T extends HTMLElement = HTMLDivElement>({
     animation.oncancel = restoreStyles;
   }, [disabled, dimensionKey, duration, easing, trigger]);
 
-  useLayoutEffect(() => () => {
-    animationRef.current?.cancel();
-    animationRef.current = null;
-  }, []);
+  useLayoutEffect(
+    () => () => {
+      animationRef.current?.cancel();
+      animationRef.current = null;
+    },
+    [],
+  );
 
   return elementRef;
 }

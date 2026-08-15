@@ -1,8 +1,8 @@
-import type {Rect, SideObject} from '../../utils';
-import {evaluate, sides} from '../../utils';
+import type { Rect, SideObject } from "../../utils";
+import { evaluate, sides } from "../../utils";
 
-import type {DetectOverflowOptions} from '../detectOverflow';
-import type {Derivable, Middleware} from '../types';
+import type { DetectOverflowOptions } from "../detectOverflow";
+import type { Derivable, Middleware } from "../types";
 
 function getSideOffsets(overflow: SideObject, rect: Rect) {
   return {
@@ -21,7 +21,7 @@ export interface HideOptions extends DetectOverflowOptions {
   /**
    * The strategy used to determine when to hide the floating element.
    */
-  strategy?: 'referenceHidden' | 'escaped';
+  strategy?: "referenceHidden" | "escaped";
 }
 
 /**
@@ -29,24 +29,19 @@ export interface HideOptions extends DetectOverflowOptions {
  * when it is not in the same clipping context as the reference element.
  * @see https://floating-ui.com/docs/hide
  */
-const hide = (
-  options: HideOptions | Derivable<HideOptions> = {},
-): Middleware => ({
-  name: 'hide',
+const hide = (options: HideOptions | Derivable<HideOptions> = {}): Middleware => ({
+  name: "hide",
   options,
   async fn(state) {
-    const {rects, platform} = state;
+    const { rects, platform } = state;
 
-    const {strategy = 'referenceHidden', ...detectOverflowOptions} = evaluate(
-      options,
-      state,
-    );
+    const { strategy = "referenceHidden", ...detectOverflowOptions } = evaluate(options, state);
 
     switch (strategy) {
-      case 'referenceHidden': {
+      case "referenceHidden": {
         const overflow = await platform.detectOverflow(state, {
           ...detectOverflowOptions,
-          elementContext: 'reference',
+          elementContext: "reference",
         });
         const offsets = getSideOffsets(overflow, rects.reference);
         return {
@@ -56,7 +51,7 @@ const hide = (
           },
         };
       }
-      case 'escaped': {
+      case "escaped": {
         const overflow = await platform.detectOverflow(state, {
           ...detectOverflowOptions,
           altBoundary: true,

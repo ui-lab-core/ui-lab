@@ -1,71 +1,71 @@
-import * as React from 'react'
-import { act } from 'react'
-import { describe, it, expect, vi } from 'vitest'
-import { screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { renderList, getListItems } from './List.test-utils'
-import { List } from '../'
-import { Select } from '../../Select'
-import { waitForCondition } from '@/tests/utils'
+import * as React from "react";
+import { act } from "react";
+import { describe, it, expect, vi } from "vitest";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderList, getListItems } from "./List.test-utils";
+import { List } from "../";
+import { Select } from "../../Select";
+import { waitForCondition } from "@/tests/utils";
 
-describe('List.activation', () => {
-  it('focused clickable row activates on Enter and Space', async () => {
-    const onClick = vi.fn()
-    const user = userEvent.setup()
+describe("List.activation", () => {
+  it("focused clickable row activates on Enter and Space", async () => {
+    const onClick = vi.fn();
+    const user = userEvent.setup();
     const container = renderList(
       <List.Item value="1" onClick={onClick}>
         Row 1
-      </List.Item>
-    )
-    const [item] = getListItems(container)
+      </List.Item>,
+    );
+    const [item] = getListItems(container);
 
     await act(async () => {
-      item!.focus()
-    })
-    await user.keyboard('{Enter}')
+      item!.focus();
+    });
+    await user.keyboard("{Enter}");
     await act(async () => {
-      item!.focus()
-    })
-    await user.keyboard(' ')
+      item!.focus();
+    });
+    await user.keyboard(" ");
 
-    expect(onClick).toHaveBeenCalledTimes(2)
-  })
+    expect(onClick).toHaveBeenCalledTimes(2);
+  });
 
-  it('focused checkbox-style row toggles on Enter and Space via row click', async () => {
-    const user = userEvent.setup()
+  it("focused checkbox-style row toggles on Enter and Space via row click", async () => {
+    const user = userEvent.setup();
 
     function CheckboxStyleRow() {
-      const [checked, setChecked] = React.useState(false)
+      const [checked, setChecked] = React.useState(false);
 
       return (
         <List.Item value="task" onClick={() => setChecked((value) => !value)}>
           <List.CheckboxIndicator checked={checked} />
-          <span>{checked ? 'Done' : 'Todo'}</span>
+          <span>{checked ? "Done" : "Todo"}</span>
         </List.Item>
-      )
+      );
     }
 
-    renderList(<CheckboxStyleRow />)
-    const row = screen.getByRole('option')
+    renderList(<CheckboxStyleRow />);
+    const row = screen.getByRole("option");
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard('{Enter}')
-    expect(screen.getByText('Done')).toBeInTheDocument()
+      row.focus();
+    });
+    await user.keyboard("{Enter}");
+    expect(screen.getByText("Done")).toBeInTheDocument();
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard(' ')
-    expect(screen.getByText('Todo')).toBeInTheDocument()
-  })
+      row.focus();
+    });
+    await user.keyboard(" ");
+    expect(screen.getByText("Todo")).toBeInTheDocument();
+  });
 
-  it('focused row toggles an interactive checkbox on Enter and Space', async () => {
-    const user = userEvent.setup()
+  it("focused row toggles an interactive checkbox on Enter and Space", async () => {
+    const user = userEvent.setup();
 
     function CheckboxRow() {
-      const [checked, setChecked] = React.useState(false)
+      const [checked, setChecked] = React.useState(false);
 
       return (
         <List.Item value="1">
@@ -75,61 +75,61 @@ describe('List.activation', () => {
             onChange={(event) => setChecked(event.target.checked)}
           />
         </List.Item>
-      )
+      );
     }
 
-    renderList(<CheckboxRow />)
-    const row = screen.getByRole('option')
-    const checkbox = screen.getByRole('checkbox')
+    renderList(<CheckboxRow />);
+    const row = screen.getByRole("option");
+    const checkbox = screen.getByRole("checkbox");
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard('{Enter}')
-    expect(checkbox).toBeChecked()
+      row.focus();
+    });
+    await user.keyboard("{Enter}");
+    expect(checkbox).toBeChecked();
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard(' ')
-    expect(checkbox).not.toBeChecked()
-  })
+      row.focus();
+    });
+    await user.keyboard(" ");
+    expect(checkbox).not.toBeChecked();
+  });
 
-  it('focused switch row toggles on Enter and Space', async () => {
-    const user = userEvent.setup()
+  it("focused switch row toggles on Enter and Space", async () => {
+    const user = userEvent.setup();
 
     function SwitchRow() {
-      const [isSelected, setIsSelected] = React.useState(false)
+      const [isSelected, setIsSelected] = React.useState(false);
 
       return (
         <List.Item value="1">
           <List.Switch aria-label="Dark mode" isSelected={isSelected} onChange={setIsSelected} />
         </List.Item>
-      )
+      );
     }
 
-    renderList(<SwitchRow />)
-    const row = screen.getByRole('option')
-    const control = screen.getByRole('switch')
+    renderList(<SwitchRow />);
+    const row = screen.getByRole("option");
+    const control = screen.getByRole("switch");
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard('{Enter}')
-    expect(control).toHaveAttribute('aria-checked', 'true')
+      row.focus();
+    });
+    await user.keyboard("{Enter}");
+    expect(control).toHaveAttribute("aria-checked", "true");
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard(' ')
-    expect(control).toHaveAttribute('aria-checked', 'false')
-  })
+      row.focus();
+    });
+    await user.keyboard(" ");
+    expect(control).toHaveAttribute("aria-checked", "false");
+  });
 
   it.each([
-    ['Enter', '{Enter}'],
-    ['Space', ' '],
-  ])('focused row opens an inline select on %s', async (_label, keyPress) => {
-    const user = userEvent.setup()
+    ["Enter", "{Enter}"],
+    ["Space", " "],
+  ])("focused row opens an inline select on %s", async (_label, keyPress) => {
+    const user = userEvent.setup();
     renderList(
       <List.Item value="1">
         <span>Timezone</span>
@@ -143,23 +143,23 @@ describe('List.activation', () => {
             </Select.List>
           </Select.Content>
         </List.Select>
-      </List.Item>
-    )
+      </List.Item>,
+    );
 
-    const row = screen.getByRole('option')
-    const trigger = screen.getByRole('button')
+    const row = screen.getByRole("option");
+    const trigger = screen.getByRole("button");
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard(keyPress)
-    await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'true')
+      row.focus();
+    });
+    await user.keyboard(keyPress);
+    await waitForCondition(() => trigger.getAttribute("aria-expanded") === "true");
 
-    expect(trigger).toHaveAttribute('aria-expanded', 'true')
-  })
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+  });
 
-  it('keeps the row highlighted when focus moves into an inline select trigger', async () => {
-    const user = userEvent.setup()
+  it("keeps the row highlighted when focus moves into an inline select trigger", async () => {
+    const user = userEvent.setup();
     renderList(
       <List.Item value="1">
         <span>Timezone</span>
@@ -173,20 +173,20 @@ describe('List.activation', () => {
             </Select.List>
           </Select.Content>
         </List.Select>
-      </List.Item>
-    )
+      </List.Item>,
+    );
 
-    const row = screen.getByRole('option')
-    const trigger = screen.getByRole('button')
+    const row = screen.getByRole("option");
+    const trigger = screen.getByRole("button");
 
-    await user.click(trigger)
+    await user.click(trigger);
 
-    expect(trigger).toHaveFocus()
-    expect(row).toHaveAttribute('data-highlighted', 'true')
-  })
+    expect(trigger).toHaveFocus();
+    expect(row).toHaveAttribute("data-highlighted", "true");
+  });
 
-  it('restores row highlight after selecting an inline select option', async () => {
-    const user = userEvent.setup()
+  it("restores row highlight after selecting an inline select option", async () => {
+    const user = userEvent.setup();
     renderList(
       <List.Item value="1">
         <span>Timezone</span>
@@ -201,26 +201,26 @@ describe('List.activation', () => {
             </Select.List>
           </Select.Content>
         </List.Select>
-      </List.Item>
-    )
+      </List.Item>,
+    );
 
-    const row = screen.getByRole('option')
-    const trigger = screen.getByRole('button')
+    const row = screen.getByRole("option");
+    const trigger = screen.getByRole("button");
 
-    await user.click(trigger)
-    await user.click(screen.getByRole('option', { name: 'EST' }))
+    await user.click(trigger);
+    await user.click(screen.getByRole("option", { name: "EST" }));
 
-    await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'false')
-    expect(row).toHaveAttribute('data-highlighted', 'true')
-    expect(document.activeElement).toBe(row)
-  })
+    await waitForCondition(() => trigger.getAttribute("aria-expanded") === "false");
+    expect(row).toHaveAttribute("data-highlighted", "true");
+    expect(document.activeElement).toBe(row);
+  });
 
-  it('does not activate a row checkbox when selecting an inline select option', async () => {
-    const user = userEvent.setup()
+  it("does not activate a row checkbox when selecting an inline select option", async () => {
+    const user = userEvent.setup();
 
     function SelectableCheckboxRow() {
-      const [checked, setChecked] = React.useState(true)
-      const [delivery, setDelivery] = React.useState<string | number | null>('email')
+      const [checked, setChecked] = React.useState(true);
+      const [delivery, setDelivery] = React.useState<string | number | null>("email");
 
       return (
         <List.Item value="1" onClick={() => setChecked((value) => !value)}>
@@ -243,84 +243,84 @@ describe('List.activation', () => {
             </Select.Content>
           </List.Select>
         </List.Item>
-      )
+      );
     }
 
-    renderList(<SelectableCheckboxRow />)
+    renderList(<SelectableCheckboxRow />);
 
-    const checkbox = screen.getByRole('checkbox')
-    const trigger = screen.getByRole('button')
+    const checkbox = screen.getByRole("checkbox");
+    const trigger = screen.getByRole("button");
 
-    expect(checkbox).toBeChecked()
+    expect(checkbox).toBeChecked();
 
-    await user.click(trigger)
-    await user.click(screen.getByRole('option', { name: 'Digest' }))
+    await user.click(trigger);
+    await user.click(screen.getByRole("option", { name: "Digest" }));
 
-    await waitForCondition(() => trigger.getAttribute('aria-expanded') === 'false')
-    expect(checkbox).toBeChecked()
-    expect(trigger).toHaveTextContent('Digest')
-  })
+    await waitForCondition(() => trigger.getAttribute("aria-expanded") === "false");
+    expect(checkbox).toBeChecked();
+    expect(trigger).toHaveTextContent("Digest");
+  });
 
-  it('does not double-trigger when focus is already inside a child control', async () => {
-    const user = userEvent.setup()
-    const onChange = vi.fn()
-    const onRowClick = vi.fn()
+  it("does not double-trigger when focus is already inside a child control", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const onRowClick = vi.fn();
     renderList(
       <List.Item value="1" onClick={onRowClick}>
         <List.Checkbox aria-label="Toggle task" checked={false} onChange={onChange} />
-      </List.Item>
-    )
+      </List.Item>,
+    );
 
-    const checkbox = screen.getByRole('checkbox')
+    const checkbox = screen.getByRole("checkbox");
 
-    await user.click(checkbox)
-    expect(checkbox).toHaveFocus()
-    onChange.mockClear()
-    onRowClick.mockClear()
+    await user.click(checkbox);
+    expect(checkbox).toHaveFocus();
+    onChange.mockClear();
+    onRowClick.mockClear();
 
-    await user.keyboard(' ')
+    await user.keyboard(" ");
 
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onRowClick).not.toHaveBeenCalled()
-  })
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onRowClick).not.toHaveBeenCalled();
+  });
 
-  it('does not interfere with text input editing when the input is focused', async () => {
-    const user = userEvent.setup()
+  it("does not interfere with text input editing when the input is focused", async () => {
+    const user = userEvent.setup();
     renderList(
       <List.Item value="1" onClick={vi.fn()}>
         <span>Name</span>
         <List.Input aria-label="Display name" defaultValue="" />
-      </List.Item>
-    )
+      </List.Item>,
+    );
 
-    const input = screen.getByRole('textbox')
+    const input = screen.getByRole("textbox");
 
-    await user.click(input)
-    await user.keyboard('abc')
+    await user.click(input);
+    await user.keyboard("abc");
 
-    expect(input).toHaveValue('abc')
-  })
+    expect(input).toHaveValue("abc");
+  });
 
-  it('does not invent a primary action for rows that only contain an input', async () => {
-    const user = userEvent.setup()
+  it("does not invent a primary action for rows that only contain an input", async () => {
+    const user = userEvent.setup();
     renderList(
       <List.Item value="1">
         <span>Name</span>
         <List.Input aria-label="Display name" defaultValue="Olivia" />
-      </List.Item>
-    )
+      </List.Item>,
+    );
 
-    const row = screen.getByRole('option')
+    const row = screen.getByRole("option");
 
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard('{Enter}')
+      row.focus();
+    });
+    await user.keyboard("{Enter}");
     await act(async () => {
-      row.focus()
-    })
-    await user.keyboard(' ')
+      row.focus();
+    });
+    await user.keyboard(" ");
 
-    expect(screen.getByRole('textbox')).toHaveValue('Olivia')
-  })
-})
+    expect(screen.getByRole("textbox")).toHaveValue("Olivia");
+  });
+});

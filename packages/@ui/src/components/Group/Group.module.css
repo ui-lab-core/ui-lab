@@ -13,17 +13,9 @@
     --vertical-spacing: calc(var(--spacing) * 4);
     --border-height: calc(var(--background-border-width) * 2);
     --padding-height: calc(var(--padding-size) * 2);
-    --control-height: calc(
-      var(--text-height) +
-      var(--vertical-spacing) +
-      var(--border-height)
-    );
+    --control-height: calc(var(--text-height) + var(--vertical-spacing) + var(--border-height));
     --item-height: max(
-      calc(
-        var(--control-height) -
-        var(--padding-height) -
-        var(--border-height)
-      ),
+      calc(var(--control-height) - var(--padding-height) - var(--border-height)),
       0px
     );
 
@@ -71,7 +63,6 @@
       --radius-size: calc(var(--spacing) * 1.25);
       @apply space-x-1;
     }
-
   }
 
   .item {
@@ -126,7 +117,9 @@
     aspect-ratio: 1;
   }
 
-  .horizontal .item:has(.button[data-icon-only="true"]):not(:has([role="separator"])) .button[data-icon-only="true"] {
+  .horizontal
+    .item:has(.button[data-icon-only="true"]):not(:has([role="separator"]))
+    .button[data-icon-only="true"] {
     flex: 1 1 auto;
     width: 100%;
     height: 100%;
@@ -160,7 +153,8 @@
     border-radius: inherit;
   }
 
-  .select > :global(.value):has(> :global(.button[data-hovered="true"]:not([data-disabled="true"]))) {
+  .select
+    > :global(.value):has(> :global(.button[data-hovered="true"]:not([data-disabled="true"]))) {
     --hover-duration: var(--hover-enter-duration, 0ms);
     background-color: var(--background, transparent);
   }
@@ -192,7 +186,8 @@
     border-radius: inherit;
   }
 
-  .trigger {}
+  .trigger {
+  }
 
   .group {
     .item :is(.button, .select) {
@@ -235,12 +230,12 @@
       }
 
       &.horizontal {
-        .item:first-child :is( .button, .trigger, .input > *, .select) {
+        .item:first-child :is(.button, .trigger, .input > *, .select) {
           border-top-left-radius: var(--background-inner-radius);
           border-bottom-left-radius: var(--background-inner-radius);
         }
 
-        .item:last-child :is( .button, .trigger, .input > *, .select) {
+        .item:last-child :is(.button, .trigger, .input > *, .select) {
           border-top-right-radius: var(--background-inner-radius);
           border-bottom-right-radius: var(--background-inner-radius);
         }

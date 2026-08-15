@@ -1,22 +1,18 @@
-import { screen, within } from '@testing-library/react'
+import { screen, within } from "@testing-library/react";
 
 /**
  * Get the currently focused element
  */
 function getFocusedElement(): HTMLElement | null {
-  return document.activeElement as HTMLElement | null
+  return document.activeElement as HTMLElement | null;
 }
 
 /**
  * Get all disabled elements in a container
  */
-function getDisabledElements(
-  container?: HTMLElement
-): HTMLElement[] {
-  const root = container || document.documentElement
-  return Array.from(
-    root.querySelectorAll('[disabled], [aria-disabled="true"]')
-  )
+function getDisabledElements(container?: HTMLElement): HTMLElement[] {
+  const root = container || document.documentElement;
+  return Array.from(root.querySelectorAll('[disabled], [aria-disabled="true"]'));
 }
 
 /**
@@ -25,17 +21,20 @@ function getDisabledElements(
 export function getElementByRole(
   containerOrRole: HTMLElement | string,
   roleOrOptions?: string | { name?: string; hidden?: boolean },
-  maybeOptions?: { name?: string; hidden?: boolean }
+  maybeOptions?: { name?: string; hidden?: boolean },
 ) {
   try {
-    if (typeof containerOrRole === 'string') {
-      return screen.getByRole(containerOrRole, roleOrOptions as { name?: string; hidden?: boolean })
+    if (typeof containerOrRole === "string") {
+      return screen.getByRole(
+        containerOrRole,
+        roleOrOptions as { name?: string; hidden?: boolean },
+      );
     }
-    const role = roleOrOptions as string
-    const options = maybeOptions as { name?: string; hidden?: boolean }
-    return within(containerOrRole).getByRole(role, options)
+    const role = roleOrOptions as string;
+    const options = maybeOptions as { name?: string; hidden?: boolean };
+    return within(containerOrRole).getByRole(role, options);
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -45,17 +44,17 @@ export function getElementByRole(
 export function getAllElementsByRole(
   containerOrRole: HTMLElement | string,
   roleOrOptions?: string | { hidden?: boolean },
-  maybeOptions?: { hidden?: boolean }
+  maybeOptions?: { hidden?: boolean },
 ) {
   try {
-    if (typeof containerOrRole === 'string') {
-      return screen.getAllByRole(containerOrRole, roleOrOptions as { hidden?: boolean })
+    if (typeof containerOrRole === "string") {
+      return screen.getAllByRole(containerOrRole, roleOrOptions as { hidden?: boolean });
     }
-    const role = roleOrOptions as string
-    const options = maybeOptions as { hidden?: boolean }
-    return within(containerOrRole).getAllByRole(role, options)
+    const role = roleOrOptions as string;
+    const options = maybeOptions as { hidden?: boolean };
+    return within(containerOrRole).getAllByRole(role, options);
   } catch {
-    return []
+    return [];
   }
 }
 
@@ -64,9 +63,9 @@ export function getAllElementsByRole(
  */
 function getElementByTestId(testId: string) {
   try {
-    return screen.getByTestId(testId)
+    return screen.getByTestId(testId);
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -75,9 +74,9 @@ function getElementByTestId(testId: string) {
  */
 function getElementByLabelText(labelText: string | RegExp) {
   try {
-    return screen.getByLabelText(labelText)
+    return screen.getByLabelText(labelText);
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -86,9 +85,9 @@ function getElementByLabelText(labelText: string | RegExp) {
  */
 function getElementByPlaceholderText(placeholder: string | RegExp) {
   try {
-    return screen.getByPlaceholderText(placeholder)
+    return screen.getByPlaceholderText(placeholder);
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -97,9 +96,9 @@ function getElementByPlaceholderText(placeholder: string | RegExp) {
  */
 function getElementByText(text: string | RegExp) {
   try {
-    return screen.getByText(text)
+    return screen.getByText(text);
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -107,68 +106,61 @@ function getElementByText(text: string | RegExp) {
  * Get all selected items in a listbox or similar
  */
 function getSelectedItems(container: HTMLElement): HTMLElement[] {
-  return Array.from(
-    container.querySelectorAll('[aria-selected="true"]')
-  )
+  return Array.from(container.querySelectorAll('[aria-selected="true"]'));
 }
 
 /**
  * Get the trigger/button that opens a dropdown
  */
 export function getTrigger(container: HTMLElement): HTMLElement | null {
-  return container.querySelector('[aria-expanded], [aria-haspopup]') as HTMLElement | null
+  return container.querySelector("[aria-expanded], [aria-haspopup]") as HTMLElement | null;
 }
 
 /**
  * Get the content/list that is toggled by a trigger
  */
 export function getContent(container: HTMLElement): HTMLElement | null {
-  const trigger = getTrigger(container)
-  if (!trigger) return null
+  const trigger = getTrigger(container);
+  if (!trigger) return null;
 
-  const contentId = trigger.getAttribute('aria-controls')
+  const contentId = trigger.getAttribute("aria-controls");
   if (contentId) {
-    return document.getElementById(contentId)
+    return document.getElementById(contentId);
   }
 
   // Try to find next sibling that is a list or menu
-  let next = trigger.nextElementSibling
+  let next = trigger.nextElementSibling;
   while (next) {
     if (
-      next.getAttribute('role') === 'menu' ||
-      next.getAttribute('role') === 'listbox' ||
-      next.getAttribute('role') === 'dialog'
+      next.getAttribute("role") === "menu" ||
+      next.getAttribute("role") === "listbox" ||
+      next.getAttribute("role") === "dialog"
     ) {
-      return next as HTMLElement
+      return next as HTMLElement;
     }
-    next = next.nextElementSibling
+    next = next.nextElementSibling;
   }
 
-  return null
+  return null;
 }
 
 /**
  * Get all items in a list/menu
  */
 export function getListItems(container: HTMLElement): HTMLElement[] {
-  const role = container.getAttribute('role')
-  if (!role) return []
+  const role = container.getAttribute("role");
+  if (!role) return [];
 
-  const itemRole =
-    role === 'menu'
-      ? 'menuitem'
-      : role === 'listbox'
-        ? 'option'
-        : 'option'
+  const itemRole = role === "menu" ? "menuitem" : role === "listbox" ? "option" : "option";
 
-  return Array.from(container.querySelectorAll(`[role="${itemRole}"]`))
+  return Array.from(container.querySelectorAll(`[role="${itemRole}"]`));
 }
 
 /**
  * Create a scoped query function that works within a container
  */
 function createScopedQueries(container: HTMLElement) {
-  const scopedWithin = within(container)
+  const scopedWithin = within(container);
 
   return {
     getByRole: scopedWithin.getByRole,
@@ -183,6 +175,5 @@ function createScopedQueries(container: HTMLElement) {
     queryByPlaceholderText: scopedWithin.queryByPlaceholderText,
     queryByText: scopedWithin.queryByText,
     queryByTestId: scopedWithin.queryByTestId,
-  }
+  };
 }
-

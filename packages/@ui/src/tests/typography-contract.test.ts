@@ -33,16 +33,19 @@ describe("component typography contract", () => {
 
   it("rejects retired aliases and raw component type values", () => {
     const invalid: string[] = [];
-    const retired = /--(?:font-(?:control|label|caption|body-text|heading-text|mono-text)|text-(?:control|body|label|caption|heading|mono)|weight-(?:control|body|label|caption|heading|mono)|leading-(?:control|body-text|label|caption|heading-text|mono)|tracking-(?:control|body|label|caption|heading|mono)|font-medium|font-weight-medium|font-weight-semibold|header-font-weight|filter-label-font-size)(?![-\w])/;
+    const retired =
+      /--(?:font-(?:control|label|caption|body-text|heading-text|mono-text)|text-(?:control|body|label|caption|heading|mono)|weight-(?:control|body|label|caption|heading|mono)|leading-(?:control|body-text|label|caption|heading-text|mono)|tracking-(?:control|body|label|caption|heading|mono)|font-medium|font-weight-medium|font-weight-semibold|header-font-weight|filter-label-font-size)(?![-\w])/;
     const raw = /^\s*(?:font-size|font-weight):\s*\d+(?:\.\d+)?(?:rem|px)?;/;
 
     for (const path of componentStylesheets()) {
       const relativePath = path.slice(componentRoot.length + 1);
-      readFileSync(path, "utf8").split("\n").forEach((line, index) => {
-        if (retired.test(line) || raw.test(line)) {
-          invalid.push(`${relativePath}:${index + 1}: ${line.trim()}`);
-        }
-      });
+      readFileSync(path, "utf8")
+        .split("\n")
+        .forEach((line, index) => {
+          if (retired.test(line) || raw.test(line)) {
+            invalid.push(`${relativePath}:${index + 1}: ${line.trim()}`);
+          }
+        });
     }
 
     expect(invalid).toEqual([]);

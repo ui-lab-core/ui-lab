@@ -54,8 +54,7 @@ export function useDragToggle(
   inputRef: React.RefObject<HTMLInputElement | null>,
   setValue?: (value: boolean) => void,
 ) {
-  const { suppressSelection, restoreSelection } =
-    useDocumentSelectionSuppression();
+  const { suppressSelection, restoreSelection } = useDocumentSelectionSuppression();
 
   const onPointerDownCapture = React.useCallback(
     (event: React.PointerEvent<HTMLElement>) => {
@@ -80,14 +79,7 @@ export function useDragToggle(
       root.ownerDocument.addEventListener("pointercancel", stopSession, true);
       applySession(root, input, activeSession, setValue);
     },
-    [
-      inputRef,
-      kind,
-      restoreSelection,
-      rootRef,
-      setValue,
-      suppressSelection,
-    ],
+    [inputRef, kind, restoreSelection, rootRef, setValue, suppressSelection],
   );
 
   const onPointerOverCapture = React.useCallback(() => {

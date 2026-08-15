@@ -1,112 +1,112 @@
-import { describe, it, expect, vi } from 'vitest'
-import { screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { renderList } from './List.test-utils'
-import { List } from '../'
-import { Select } from '../../Select'
-import styles from '../List.module.css'
+import { describe, it, expect, vi } from "vitest";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderList } from "./List.test-utils";
+import { List } from "../";
+import { Select } from "../../Select";
+import styles from "../List.module.css";
 
-describe('List.controls', () => {
+describe("List.controls", () => {
   // ─── List.Switch ────────────────────────────────────────────────────────────
 
-  it('renders a Switch inside the list item', () => {
+  it("renders a Switch inside the list item", () => {
     renderList(
       <List.Item value="1">
         <List.Switch aria-label="Toggle" />
-      </List.Item>
-    )
-    expect(screen.getByRole('switch')).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("switch")).toBeInTheDocument();
+  });
 
-  it('passes isSelected to the Switch', () => {
+  it("passes isSelected to the Switch", () => {
     renderList(
       <List.Item value="1">
         <List.Switch aria-label="Toggle" isSelected />
-      </List.Item>
-    )
-    expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true')
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("switch")).toHaveAttribute("aria-checked", "true");
+  });
 
-  it('passes disabled to the Switch', () => {
+  it("passes disabled to the Switch", () => {
     renderList(
       <List.Item value="1">
         <List.Switch aria-label="Toggle" disabled />
-      </List.Item>
-    )
-    expect(screen.getByRole('switch')).toBeDisabled()
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("switch")).toBeDisabled();
+  });
 
-  it('List.Switch wrapper has the control class', () => {
+  it("List.Switch wrapper has the control class", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Switch aria-label="Toggle" />
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument();
+  });
 
-  it('forwards className to the List.Switch wrapper', () => {
+  it("forwards className to the List.Switch wrapper", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Switch aria-label="Toggle" className="my-switch-wrapper" />
-      </List.Item>
-    )
-    expect(container.querySelector('.my-switch-wrapper')).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(".my-switch-wrapper")).toBeInTheDocument();
+  });
 
   // ─── List.Input ─────────────────────────────────────────────────────────────
 
-  it('renders an input element inside the list item', () => {
+  it("renders an input element inside the list item", () => {
     renderList(
       <List.Item value="1">
         <List.Input />
-      </List.Item>
-    )
-    expect(screen.getByRole('textbox')).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+  });
 
-  it('passes value and type through to the input', () => {
+  it("passes value and type through to the input", () => {
     renderList(
       <List.Item value="1">
         <List.Input type="email" value="test@example.com" readOnly />
-      </List.Item>
-    )
-    const input = screen.getByRole('textbox')
-    expect(input).toHaveAttribute('type', 'email')
-    expect(input).toHaveValue('test@example.com')
-  })
+      </List.Item>,
+    );
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("type", "email");
+    expect(input).toHaveValue("test@example.com");
+  });
 
-  it('passes disabled through to the input', () => {
+  it("passes disabled through to the input", () => {
     renderList(
       <List.Item value="1">
         <List.Input disabled />
-      </List.Item>
-    )
-    expect(screen.getByRole('textbox')).toBeDisabled()
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("textbox")).toBeDisabled();
+  });
 
-  it('List.Input wrapper has the control class', () => {
+  it("List.Input wrapper has the control class", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Input />
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument();
+  });
 
-  it('List.Input wrapper identifies itself as a control for slot layout', () => {
+  it("List.Input wrapper identifies itself as a control for slot layout", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Input />
-      </List.Item>
-    )
-    const wrapper = container.querySelector(`.${styles.control}`)
-    expect(wrapper).toHaveAttribute('data-control', 'input')
-  })
+      </List.Item>,
+    );
+    const wrapper = container.querySelector(`.${styles.control}`);
+    expect(wrapper).toHaveAttribute("data-control", "input");
+  });
 
   // ─── List.Select ────────────────────────────────────────────────────────────
 
-  it('renders a Select wrapper inside the list item', () => {
+  it("renders a Select wrapper inside the list item", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Select>
@@ -115,12 +115,12 @@ describe('List.controls', () => {
             <Select.Item key="a">Option A</Select.Item>
           </Select.Content>
         </List.Select>
-      </List.Item>
-    )
-    expect(container.querySelector('[data-mode]')).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector("[data-mode]")).toBeInTheDocument();
+  });
 
-  it('passes disabled through to Select', () => {
+  it("passes disabled through to Select", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Select disabled>
@@ -129,13 +129,13 @@ describe('List.controls', () => {
             <Select.Item key="a">Option A</Select.Item>
           </Select.Content>
         </List.Select>
-      </List.Item>
-    )
-    const trigger = container.querySelector('button[aria-disabled]')
-    expect(trigger).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    const trigger = container.querySelector("button[aria-disabled]");
+    expect(trigger).toBeInTheDocument();
+  });
 
-  it('List.Select wrapper has the control class', () => {
+  it("List.Select wrapper has the control class", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Select>
@@ -144,109 +144,112 @@ describe('List.controls', () => {
             <Select.Item key="a">Option A</Select.Item>
           </Select.Content>
         </List.Select>
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument();
+  });
 
   // ─── List.Checkbox (interactive) ────────────────────────────────────────────
 
-  it('renders a checkbox input', () => {
+  it("renders a checkbox input", () => {
     renderList(
       <List.Item value="1">
         <List.Checkbox checked={false} onChange={() => {}} />
-      </List.Item>
-    )
-    expect(screen.getByRole('checkbox')).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+  });
 
-  it('the interactive checkbox is not readOnly and does not have tabIndex -1', () => {
+  it("the interactive checkbox is not readOnly and does not have tabIndex -1", () => {
     renderList(
       <List.Item value="1">
         <List.Checkbox checked={false} onChange={() => {}} />
-      </List.Item>
-    )
-    const checkbox = screen.getByRole('checkbox')
-    expect(checkbox).not.toHaveAttribute('readOnly')
-    expect(checkbox).not.toHaveAttribute('tabindex', '-1')
-  })
+      </List.Item>,
+    );
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).not.toHaveAttribute("readOnly");
+    expect(checkbox).not.toHaveAttribute("tabindex", "-1");
+  });
 
-  it('passes checked state through to the checkbox', () => {
+  it("passes checked state through to the checkbox", () => {
     renderList(
       <List.Item value="1">
         <List.Checkbox checked onChange={() => {}} />
-      </List.Item>
-    )
-    expect(screen.getByRole('checkbox')).toBeChecked()
-  })
+      </List.Item>,
+    );
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
 
-  it('fires onChange when the interactive checkbox is clicked', async () => {
-    const onChange = vi.fn()
+  it("fires onChange when the interactive checkbox is clicked", async () => {
+    const onChange = vi.fn();
     renderList(
       <List.Item value="1">
         <List.Checkbox checked={false} onChange={onChange} />
-      </List.Item>
-    )
-    await userEvent.click(screen.getByRole('checkbox'))
-    expect(onChange).toHaveBeenCalled()
-  })
+      </List.Item>,
+    );
+    await userEvent.click(screen.getByRole("checkbox"));
+    expect(onChange).toHaveBeenCalled();
+  });
 
-  it('fires onCheckedChange with the next checked state', async () => {
-    const onCheckedChange = vi.fn()
+  it("fires onCheckedChange with the next checked state", async () => {
+    const onCheckedChange = vi.fn();
     renderList(
       <List.Item value="1">
         <List.Checkbox checked={false} onCheckedChange={onCheckedChange} />
-      </List.Item>
-    )
-    await userEvent.click(screen.getByRole('checkbox'))
-    expect(onCheckedChange).toHaveBeenCalledWith(true, expect.any(Object))
-  })
+      </List.Item>,
+    );
+    await userEvent.click(screen.getByRole("checkbox"));
+    expect(onCheckedChange).toHaveBeenCalledWith(true, expect.any(Object));
+  });
 
-  it('List.Checkbox (interactive) wrapper has the control class', () => {
+  it("List.Checkbox (interactive) wrapper has the control class", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Checkbox checked={false} onChange={() => {}} />
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument()
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.control}`)).toBeInTheDocument();
+  });
 
-  it('List.Checkbox supports start placement', () => {
+  it("List.Checkbox supports start placement", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.Checkbox checked={false} placement="start" onChange={() => {}} />
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.control}`)).toHaveAttribute('data-placement', 'start')
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.control}`)).toHaveAttribute(
+      "data-placement",
+      "start",
+    );
+  });
 
   // ─── List.CheckboxIndicator (renamed from old List.Checkbox) ────────────────
 
-  it('List.CheckboxIndicator renders with data-checked attribute', () => {
+  it("List.CheckboxIndicator renders with data-checked attribute", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.CheckboxIndicator checked />
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.checkbox}`)).toHaveAttribute('data-checked', 'true')
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.checkbox}`)).toHaveAttribute("data-checked", "true");
+  });
 
-  it('List.CheckboxIndicator unchecked renders data-checked false', () => {
+  it("List.CheckboxIndicator unchecked renders data-checked false", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.CheckboxIndicator checked={false} />
-      </List.Item>
-    )
-    expect(container.querySelector(`.${styles.checkbox}`)).toHaveAttribute('data-checked', 'false')
-  })
+      </List.Item>,
+    );
+    expect(container.querySelector(`.${styles.checkbox}`)).toHaveAttribute("data-checked", "false");
+  });
 
-  it('List.CheckboxIndicator inner input has tabIndex -1 (non-interactive)', () => {
+  it("List.CheckboxIndicator inner input has tabIndex -1 (non-interactive)", () => {
     const { container } = renderList(
       <List.Item value="1">
         <List.CheckboxIndicator checked />
-      </List.Item>
-    )
-    const input = container.querySelector('input[type="checkbox"]')
-    expect(input).toHaveAttribute('tabindex', '-1')
-  })
-})
+      </List.Item>,
+    );
+    const input = container.querySelector('input[type="checkbox"]');
+    expect(input).toHaveAttribute("tabindex", "-1");
+  });
+});

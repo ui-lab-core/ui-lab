@@ -2,9 +2,9 @@
 
 import * as React from "react";
 
-import { mergeProps, } from "@react-aria/utils";
+import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
-import { useFocusRing } from "@react-aria/focus"
+import { useFocusRing } from "@react-aria/focus";
 import { useButton } from "@react-aria/button";
 
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ import { type HintValue, hasHint, renderHint } from "@/lib/hint";
 import { Badge } from "../Badge";
 import css from "./Button.module.css";
 
-type ButtonSize = (string & {});
+type ButtonSize = string & {};
 type ButtonIconSlots = {
   left?: React.ReactNode;
   right?: React.ReactNode;
@@ -34,21 +34,26 @@ export interface ButtonStyleSlots {
 
 export type ButtonStylesProp = ButtonStyleSlots;
 
-const resolveButtonBaseStyles = createStylePropsResolver(['root', 'iconLeft', 'iconRight', 'hint'] as const);
+const resolveButtonBaseStyles = createStylePropsResolver([
+  "root",
+  "iconLeft",
+  "iconRight",
+  "hint",
+] as const);
 
-function isButtonIconStyles(icon: ButtonStyleSlots['icon']): icon is ButtonIconStyles {
-  return typeof icon === 'object' && icon !== null && ('left' in icon || 'right' in icon);
+function isButtonIconStyles(icon: ButtonStyleSlots["icon"]): icon is ButtonIconStyles {
+  return typeof icon === "object" && icon !== null && ("left" in icon || "right" in icon);
 }
 
 function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
-  if (!styles) return resolveButtonBaseStyles(styles)
+  if (!styles) return resolveButtonBaseStyles(styles);
   const { root, icon, hint } = styles;
 
   let iconLeft: SlotStyleValue | undefined;
   let iconRight: SlotStyleValue | undefined;
 
   if (icon) {
-    if (typeof icon === 'string' || Array.isArray(icon)) {
+    if (typeof icon === "string" || Array.isArray(icon)) {
       iconLeft = icon;
       iconRight = icon;
     } else if (isButtonIconStyles(icon)) {
@@ -63,7 +68,10 @@ function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
   return resolveButtonBaseStyles({ root, iconLeft, iconRight, hint });
 }
 
-export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "href" | "target"> {
+export interface ButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "href" | "target"
+> {
   /** Variant class appended to the root element. Accepts any string. */
   variant?: string;
   /** Size class appended to the root element. Accepts any string. */
@@ -87,7 +95,12 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
 }
 
 function isButtonIconSlots(icon: ButtonProps["icon"]): icon is ButtonIconSlots {
-  return typeof icon === "object" && icon !== null && !React.isValidElement(icon) && ('left' in icon || 'right' in icon);
+  return (
+    typeof icon === "object" &&
+    icon !== null &&
+    !React.isValidElement(icon) &&
+    ("left" in icon || "right" in icon)
+  );
 }
 
 export function resolveButtonIcon(icon: ButtonProps["icon"]) {
@@ -115,11 +128,11 @@ function hasRenderableContent(value: React.ReactNode): boolean {
     return value.some(hasRenderableContent);
   }
 
-  if (value === null || value === undefined || typeof value === 'boolean') {
+  if (value === null || value === undefined || typeof value === "boolean") {
     return false;
   }
 
-  return typeof value === 'string' ? value.trim().length > 0 : true;
+  return typeof value === "string" ? value.trim().length > 0 : true;
 }
 
 // Text (strings/numbers), including text nested in an element, makes a button
@@ -129,11 +142,11 @@ function hasTextContent(value: React.ReactNode): boolean {
     return value.some(hasTextContent);
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value.trim().length > 0;
   }
 
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     return true;
   }
 
@@ -147,7 +160,10 @@ function hasTextContent(value: React.ReactNode): boolean {
 // Single source of truth for "is this button icon-only" so consumers that render
 // a Button indirectly (e.g. Group.Button) can match Button's own sizing decision
 // instead of re-deriving it from a narrower check like an explicit size prop.
-export function isIconOnlyContent(icon: ButtonIconSlots | undefined, children: React.ReactNode): boolean {
+export function isIconOnlyContent(
+  icon: ButtonIconSlots | undefined,
+  children: React.ReactNode,
+): boolean {
   return (
     !hasTextContent(children) &&
     (hasRenderableContent(children) ||
@@ -157,43 +173,78 @@ export function isIconOnlyContent(icon: ButtonIconSlots | undefined, children: R
 }
 
 const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  ({ className, styles, variant = "primary", size, children, onClick, onPress, disabled = false, icon, hint, href, target, rel, "data-hovered": forcedHovered, ...props }, ref) => {
+  (
+    {
+      className,
+      styles,
+      variant = "primary",
+      size,
+      children,
+      onClick,
+      onPress,
+      disabled = false,
+      icon,
+      hint,
+      href,
+      target,
+      rel,
+      "data-hovered": forcedHovered,
+      ...props
+    },
+    ref,
+  ) => {
     const buttonRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null);
     const mergedRef = useMergeRefs(ref, buttonRef);
     const isButtonDisabled = disabled;
     const [isPressed, setIsPressed] = React.useState(false);
     const isAnchor = !!href;
 
-    const handlePress = React.useCallback((e: any) => {
-      if (onPress) onPress({ target: e.target });
-      if (onClick) onClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
-    }, [onPress, onClick]);
+    const handlePress = React.useCallback(
+      (e: any) => {
+        if (onPress) onPress({ target: e.target });
+        if (onClick) onClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
+      },
+      [onPress, onClick],
+    );
 
-    const handleMouseDown = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-      if (!isButtonDisabled) {
-        setIsPressed(true);
-      }
-      props.onMouseDown?.(e as any);
-    }, [isButtonDisabled, props]);
+    const handleMouseDown = React.useCallback(
+      (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        if (!isButtonDisabled) {
+          setIsPressed(true);
+        }
+        props.onMouseDown?.(e as any);
+      },
+      [isButtonDisabled, props],
+    );
 
-    const handleMouseUp = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-      setIsPressed(false);
-      props.onMouseUp?.(e as any);
-    }, [props]);
+    const handleMouseUp = React.useCallback(
+      (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        setIsPressed(false);
+        props.onMouseUp?.(e as any);
+      },
+      [props],
+    );
 
-    const handleMouseLeave = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-      setIsPressed(false);
-      props.onMouseLeave?.(e as any);
-    }, [props]);
+    const handleMouseLeave = React.useCallback(
+      (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        setIsPressed(false);
+        props.onMouseLeave?.(e as any);
+      },
+      [props],
+    );
 
-    const { buttonProps } = useButton({
-      isDisabled: isButtonDisabled,
-      onPress: handlePress,
-    }, buttonRef as React.RefObject<HTMLButtonElement>);
+    const { buttonProps } = useButton(
+      {
+        isDisabled: isButtonDisabled,
+        onPress: handlePress,
+      },
+      buttonRef as React.RefObject<HTMLButtonElement>,
+    );
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing({ autoFocus: props.autoFocus });
     const { hoverProps, isHovered } = useHover({ isDisabled: isButtonDisabled });
-    const isVisualHovered = !isButtonDisabled && (forcedHovered === "true" || (forcedHovered !== "false" && isHovered));
+    const isVisualHovered =
+      !isButtonDisabled && (forcedHovered === "true" || (forcedHovered !== "false" && isHovered));
     const isVisualPressed = !isButtonDisabled && isPressed;
 
     const resolved = resolveButtonStyles(styles);
@@ -216,17 +267,41 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       isIconButton && css.icon,
       css.button,
       className,
-      resolved.root.className
+      resolved.root.className,
     );
 
     const content = (
       <>
-        {resolvedIcon?.left && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)} style={resolved.iconLeft.style}>{resolvedIcon.left}</span>}
-        {wrapChildrenAsIcon
-          ? <span className={cn(iconSlotClassName, iconSizeClassName)}>{children}</span>
-          : children}
-        {resolvedIcon?.right && <span className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)} style={resolved.iconRight.style}>{resolvedIcon.right}</span>}
-        {hasHint(hint) && <Badge variant="secondary" className={cn('hint', css.hint, resolved.hint.className)} style={resolved.hint.style}>{renderHint(hint)}</Badge>}
+        {resolvedIcon?.left && (
+          <span
+            className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)}
+            style={resolved.iconLeft.style}
+          >
+            {resolvedIcon.left}
+          </span>
+        )}
+        {wrapChildrenAsIcon ? (
+          <span className={cn(iconSlotClassName, iconSizeClassName)}>{children}</span>
+        ) : (
+          children
+        )}
+        {resolvedIcon?.right && (
+          <span
+            className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)}
+            style={resolved.iconRight.style}
+          >
+            {resolvedIcon.right}
+          </span>
+        )}
+        {hasHint(hint) && (
+          <Badge
+            variant="secondary"
+            className={cn("hint", css.hint, resolved.hint.className)}
+            style={resolved.hint.style}
+          >
+            {renderHint(hint)}
+          </Badge>
+        )}
       </>
     );
 
@@ -283,7 +358,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         {content}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";
