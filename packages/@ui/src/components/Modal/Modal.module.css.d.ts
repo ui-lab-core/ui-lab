@@ -9,6 +9,7 @@ declare const styles: {
   "close-icon": string;
   content: string;
   "body-scroll": string;
+  "body-static": string;
   footer: string;
 };
 

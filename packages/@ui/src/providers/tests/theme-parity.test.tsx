@@ -4,8 +4,8 @@ import {
   generateThemePalettes as generatePackageThemePalettes, 
   palettesToCssVariables 
 } from '../extractThemeVars'
-import { generateThemePalettes as generateSiteThemePalettes } from '../../../../../apps/site/src/features/theme/lib/color/palette'
-import { paletteToCssVars } from '../../../../../apps/site/src/features/theme/lib/color/palette-css'
+import { generateThemePalettes as generateSiteThemePalettes } from '../../../../../apps/www/src/features/theme/lib/color/palette'
+import { paletteToCssVars } from '../../../../../apps/www/src/features/theme/lib/color/palette-css'
 import type { OklchColor } from '../extractThemeVars'
 
 describe('Theme generation parity with chroma boost and lightness shift', () => {

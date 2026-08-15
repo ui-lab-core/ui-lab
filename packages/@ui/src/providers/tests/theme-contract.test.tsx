@@ -14,10 +14,10 @@ import {
 } from '../theme-contract'
 import { useColorMode } from '../useColorMode'
 import { generateThemePalettes as generatePackageThemePalettes, palettesToCssVariables } from '../extractThemeVars'
-import { themes as siteThemes } from '../../../../../apps/site/src/features/theme/constants/themes'
-import { generateThemePalettes as generateSiteThemePalettes } from '../../../../../apps/site/src/features/theme/lib/color/palette'
-import { paletteToCssVars } from '../../../../../apps/site/src/features/theme/lib/color/palette-css'
-import { generateThemeSetupFiles } from '../../../../../apps/site/src/features/theme/config/theme/generator'
+import { themes as siteThemes } from '../../../../../apps/www/src/features/theme/constants/themes'
+import { generateThemePalettes as generateSiteThemePalettes } from '../../../../../apps/www/src/features/theme/lib/color/palette'
+import { paletteToCssVars } from '../../../../../apps/www/src/features/theme/lib/color/palette-css'
+import { generateThemeSetupFiles } from '../../../../../apps/www/src/features/theme/config/theme/generator'
 
 const lightTokens: ThemeTokenBatch = {
   'background-500': 'oklch(60% 0 0)',

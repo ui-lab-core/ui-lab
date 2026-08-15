@@ -17,11 +17,11 @@ export interface ConfirmStyleSlots {
   header?: StyleValue;
   body?: StyleValue;
   actions?: StyleValue;
-  rowText?: StyleValue;
+  "row-text"?: StyleValue;
   title?: StyleValue;
   description?: StyleValue;
-  errorMessage?: StyleValue;
-  warningBox?: StyleValue;
+  "error-message"?: StyleValue;
+  "warning-box"?: StyleValue;
   input?: StyleValue;
 }
 
@@ -35,11 +35,11 @@ const resolveConfirmBaseStyles = createStylesResolver([
   'header',
   'body',
   'actions',
-  'rowText',
+  'row-text',
   'title',
   'description',
-  'errorMessage',
-  'warningBox',
+  'error-message',
+  'warning-box',
   'input'
 ] as const);
 
@@ -83,15 +83,15 @@ export interface ConfirmProps {
   /** Custom icon shown in the dialog header */
   icon?: React.ReactNode
   /** Warning message displayed in a colored box before confirming. Dialog mode only. */
-  destructiveActionWarning?: string
+  "destructive-action-warning"?: string
   /** Seconds the user must wait before the confirm button becomes active */
-  countdownSeconds?: number
-  /** Whether the user must type confirmText to enable the confirm button. Dialog mode only. */
-  requiresReason?: boolean
-  /** Text the user must type to confirm when requiresReason is true */
-  confirmText?: string
+  "countdown-seconds"?: number
+  /** Whether the user must type confirm-text to enable the confirm button. Dialog mode only. */
+  "requires-reason"?: boolean
+  /** Text the user must type to confirm when requires-reason is true */
+  "confirm-text"?: string
   /** Milliseconds after which the inline confirm auto-resets to idle state */
-  autoResetAfter?: number
+  "auto-reset-after"?: number
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ConfirmStylesProp
 }
@@ -134,11 +134,11 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
       labels,
       disabled = false,
       icon,
-      destructiveActionWarning,
-      countdownSeconds,
-      requiresReason = false,
-      confirmText,
-      autoResetAfter,
+      "destructive-action-warning": destructiveActionWarning,
+      "countdown-seconds": countdownSeconds,
+      "requires-reason": requiresReason = false,
+      "confirm-text": confirmText,
+      "auto-reset-after": autoResetAfter,
       open,
       state: controlledState,
       styles: stylesProp,
@@ -226,7 +226,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
         <div ref={ref} className={cn('confirm', styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
           <div className={styles.row}>
             {(labels.idle?.title || labels.idle?.body) && (
-              <div className={cn(styles['row-text'], resolvedStyles.rowText)}>
+              <div className={cn(styles['row-text'], resolvedStyles['row-text'])}>
                 {labels.idle.title && <span className={cn(styles['row-title'], resolvedStyles.title)}>{labels.idle.title}</span>}
                 {labels.idle.body && (
                   <span className={cn(styles['row-description'], resolvedStyles.description)}>{labels.idle.body}</span>
@@ -281,7 +281,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                 <div className={cn(
                   styles['warning-box'],
                   config.warningBoxClass,
-                  resolvedStyles.warningBox
+                  resolvedStyles['warning-box']
                 )}>
                   {destructiveActionWarning}
                 </div>
@@ -309,7 +309,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                 </div>
               )}
               {error && (
-                <p className={cn(styles['error-message'], resolvedStyles.errorMessage)}>{error}</p>
+                <p className={cn(styles['error-message'], resolvedStyles['error-message'])}>{error}</p>
               )}
             </div>
           </Modal>
@@ -322,7 +322,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
       <div ref={ref} className={cn('confirm', styles.confirm, resolvedStyles.root, resolvedStyles.container)}>
         <div className={styles.row}>
           {(stage?.title || stage?.body) && (
-            <div className={cn(styles['row-text'], resolvedStyles.rowText)}>
+            <div className={cn(styles['row-text'], resolvedStyles['row-text'])}>
               {stage.title && <span className={cn(styles['row-title'], resolvedStyles.title)}>{stage.title}</span>}
               {stage.body && (
                 <span className={cn(styles['row-description'], resolvedStyles.description)}>{stage.body}</span>
@@ -359,7 +359,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
           </div>
         </div>
         {error && (
-          <p className={cn(styles['error-message'], resolvedStyles.errorMessage)}>{error}</p>
+          <p className={cn(styles['error-message'], resolvedStyles['error-message'])}>{error}</p>
         )}
       </div>
     )

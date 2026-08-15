@@ -560,10 +560,6 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
     let isRangeStart = false
     let isRangeEnd = false
     let isInRange = false
-    // Whether this cell's range band continues into the day immediately to its
-    // left/right within the same week row. These drive which corners stay
-    // square (Date.module.css) so consecutive days fuse into one connected
-    // strip instead of a row of separate rounded pills.
     let connectsLeft = false
     let connectsRight = false
 
@@ -579,11 +575,9 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
         isRangeEnd = isSameDay(date, previewEnd) && !isSameDay(rangeValue.start, previewEnd)
         isInRange = date > rangeValue.start && date < previewEnd
 
-        // date.getDay() is this cell's grid column (0 = Sun ... 6 = Sat, the
-        // grid is Sunday-first). The band continues into a neighbour only when
-        // the range spans past this day in that direction and the neighbour
-        // isn't across a week boundary — so the range's outer ends and each
-        // wrapped row's caps keep their rounding.
+        // Keep the range track continuous within a week row. The CSS uses the
+        // directional markers to run that track beneath, not through, either
+        // rounded endpoint.
         const isInBand = isRangeStart || isRangeEnd || isInRange
         const column = date.getDay()
         connectsLeft = isInBand && column !== 0 && date > rangeValue.start
@@ -642,7 +636,7 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
         })}${rangeLabel}`}
         {...mergeProps(focusProps, hoverProps, { onFocus: handleFocus }, props)}
       >
-        {date.getDate()}
+        <span>{date.getDate()}</span>
       </button>
     )
   }

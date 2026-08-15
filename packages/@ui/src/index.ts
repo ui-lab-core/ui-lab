@@ -99,7 +99,7 @@ export type { ToastProps, ToastVariant, ToastPosition } from "./components/Toast
 export type { ToasterProps, ToastPortalContainer } from "./components/Toast/Toast.Toaster";
 
 export { Modal, ModalHeader, ModalBody, ModalFooter } from "./components/Modal";
-export type { ModalProps, ModalState } from "./components/Modal";
+export type { ModalProps, ModalBodyProps, ModalState } from "./components/Modal";
 
 export { Mask } from "./components/Mask";
 export type { MaskProps } from "./components/Mask";

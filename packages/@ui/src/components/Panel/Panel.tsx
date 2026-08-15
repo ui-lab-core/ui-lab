@@ -267,7 +267,10 @@ const PanelResize = React.forwardRef<HTMLDivElement, PanelResizeProps>(
     const { orientation, containerRef } = usePanelContext()
     const [isDragging, setIsDragging] = React.useState(false)
     const [value, setValue] = React.useState(50)
-    const startRef = React.useRef(0)
+    const resizeRef = React.useRef<HTMLDivElement>(null)
+    const mergedRef = useMergeRefs(resizeRef, ref)
+    const pointerIdRef = React.useRef<number | null>(null)
+    const grabOffsetRef = React.useRef(0)
 
     const getRegions = React.useCallback(() => {
       const container = containerRef.current
@@ -334,14 +337,22 @@ const PanelResize = React.forwardRef<HTMLDivElement, PanelResizeProps>(
     React.useEffect(() => {
       if (!isDragging) return
       const move = (event: PointerEvent) => {
+        if (event.pointerId !== pointerIdRef.current) return
+        const resize = resizeRef.current
+        if (!resize) return
         const position = orientation === 'horizontal' ? event.clientX : event.clientY
-        resizeBy(position - startRef.current)
-        startRef.current = position
+        const rect = resize.getBoundingClientRect()
+        const handlePosition = orientation === 'horizontal' ? rect.left : rect.top
+        resizeBy(position - handlePosition - grabOffsetRef.current)
       }
-      const stop = () => setIsDragging(false)
+      const stop = (event: PointerEvent) => {
+        if (event.pointerId !== pointerIdRef.current) return
+        pointerIdRef.current = null
+        setIsDragging(false)
+      }
       window.addEventListener('pointermove', move)
-      window.addEventListener('pointerup', stop, { once: true })
-      window.addEventListener('pointercancel', stop, { once: true })
+      window.addEventListener('pointerup', stop)
+      window.addEventListener('pointercancel', stop)
       return () => {
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', stop)
@@ -353,7 +364,12 @@ const PanelResize = React.forwardRef<HTMLDivElement, PanelResizeProps>(
       onPointerDown?.(event)
       if (event.defaultPrevented || event.button !== 0 || !getRegions()) return
       event.preventDefault()
-      startRef.current = orientation === 'horizontal' ? event.clientX : event.clientY
+      const rect = event.currentTarget.getBoundingClientRect()
+      const position = orientation === 'horizontal' ? event.clientX : event.clientY
+      const handlePosition = orientation === 'horizontal' ? rect.left : rect.top
+      pointerIdRef.current = event.pointerId
+      grabOffsetRef.current = position - handlePosition
+      event.currentTarget.setPointerCapture?.(event.pointerId)
       setIsDragging(true)
     }
 
@@ -374,7 +390,7 @@ const PanelResize = React.forwardRef<HTMLDivElement, PanelResizeProps>(
 
     return (
       <div
-        ref={ref}
+        ref={mergedRef}
         role="separator"
         tabIndex={0}
         aria-label={ariaLabel}

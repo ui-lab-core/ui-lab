@@ -109,6 +109,12 @@ export interface ModalProps {
 }
 export interface ModalState { open?: boolean }
 
+export interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {
+  children?: React.ReactNode;
+  /** Whether Modal.Body owns vertical scrolling. Disable when a nested pane owns overflow. */
+  scrollable?: boolean;
+}
+
 function getModalChildDisplayName(child: React.ReactNode) {
   if (!React.isValidElement(child)) return null;
   const type = child.type as { displayName?: string };
@@ -281,7 +287,6 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       ) : (
         <Scroll
           className={cn("body-scroll", css["body-scroll"])}
-          maxHeight="90vh"
           style={{ height: "auto", flex: "1 1 auto", minHeight: 0 }}
           styles={{ content: cn("content", css.content, contentClassName, resolved.content) }}
         >
@@ -367,19 +372,35 @@ ModalHeader.displayName = "Modal.Header";
  */
 const ModalBody = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }
->(({ children, className, style, ...props }, ref) => (
-  <Scroll
-    viewportRef={ref}
-    className={cn("body-scroll", css["body-scroll"])}
-    maxHeight="90vh"
-    style={{ height: "auto", flex: "1 1 auto", minHeight: 0, ...style }}
-    styles={{ content: cn("content", css.content, className) }}
-    {...props}
-  >
-    {children}
-  </Scroll>
-));
+  ModalBodyProps
+>(({ children, className, style, scrollable = true, ...props }, ref) => {
+  const bodyStyle = { height: "auto", flex: "1 1 auto", minHeight: 0, ...style };
+
+  if (!scrollable) {
+    return (
+      <div
+        ref={ref}
+        className={cn("content", css.content, css["body-static"], className)}
+        style={bodyStyle}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <Scroll
+      viewportRef={ref}
+      className={cn("body-scroll", css["body-scroll"])}
+      style={bodyStyle}
+      styles={{ content: cn("content", css.content, className) }}
+      {...props}
+    >
+      {children}
+    </Scroll>
+  );
+});
 
 ModalBody.displayName = "Modal.Body";
 
