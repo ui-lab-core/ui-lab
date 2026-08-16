@@ -179,7 +179,6 @@ export function Sidebar({
               <nav className="py-3 px-2 space-y-1">
                 {mainNavItems.map((navItem) => {
                   const isActive = activeNavItem === navItem.id;
-                  const Icon = navItem.icon;
 
                   return (
                     <Link
@@ -245,7 +244,7 @@ export function Sidebar({
                               key={item.id}
                               href={href}
                               className={cn(
-                                "block relative px-[8px] py-2.5 font-medium text-md leading-[20px] tracking-normal rounded-[6px] cursor-pointer",
+                                "block relative px-3 py-2.5 font-medium text-md leading-[20px] tracking-normal rounded-[6px] cursor-pointer",
                                 "transition-colors duration-300 ease-out",
                                 "hover:duration-0  hover:bg-background-800/50",
                                 active

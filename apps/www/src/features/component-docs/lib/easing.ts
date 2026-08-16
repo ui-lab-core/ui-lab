@@ -25,15 +25,3 @@ export const EASING_FUNCTIONS = {
 export type EasingKey = keyof typeof EASING_FUNCTIONS;
 
 export const EASING_KEYS = Object.keys(EASING_FUNCTIONS) as EasingKey[];
-
-function getEasingByKey(key: EasingKey) {
-  return EASING_FUNCTIONS[key];
-}
-
-function getBezierValue(key: EasingKey): string {
-  return EASING_FUNCTIONS[key].bezier;
-}
-
-function getCssVar(key: EasingKey): string {
-  return EASING_FUNCTIONS[key].cssVar;
-}

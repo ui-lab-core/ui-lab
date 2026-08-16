@@ -778,11 +778,13 @@
     --foreground: var(--foreground-400);
   }
 
-  .tabs > .indicator {
+  .tabs > .indicator,
+  .tabs > .indicator-fallback-frame > .indicator {
     --background: color-mix(in srgb, var(--background-700) 50%, transparent);
   }
 
-  .tabs > .indicator.underline {
+  .tabs > .indicator.underline,
+  .tabs > .indicator-fallback-frame > .indicator.underline {
     --background: var(--accent-500);
   }
   .tabs > .list.underline[data-orientation="vertical"] {

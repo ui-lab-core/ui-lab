@@ -8,7 +8,7 @@ import { Download } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { SiAstro, SiNextdotjs, SiVite } from "@/shared/icons/si";
 import type { IconBaseProps } from "react-icons/lib";
-import "@/app/docs.css";
+import "@styles/docs.css";
 
 type Framework = "next" | "vite" | "astro";
 

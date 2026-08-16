@@ -22,5 +22,3 @@ export const featureFlags = {
   /** Landing-page interactive showcase. */
   showcase: !isOff(process.env.NEXT_PUBLIC_FF_SHOWCASE),
 } as const;
-
-type FeatureFlags = typeof featureFlags;

@@ -22,7 +22,7 @@ export function AlertAnimation() {
   const btn1X = btn2X - 8 - btnW;
 
   return (
-    <div className="bg-background-950 flex items-center justify-center relative overflow-hidden font-sans">
+    <div className="flex items-center justify-center relative overflow-hidden font-sans">
       <div className="relative w-full">
         <svg
           viewBox="0 0 400 300"

@@ -183,6 +183,14 @@ export const SettingsContent = ({
     setGlobalAdjustments,
   );
 
+  // Theme preferences are loaded from localStorage in AppProvider after mount.
+  // Do not render controls from the default palette during hydration: the
+  // client may immediately replace it with a cached palette, which would make
+  // the server and client markup differ.
+  if (!isThemeInitialized) {
+    return <div className="w-full h-full" aria-hidden="true" />;
+  }
+
   const tabLabels: Record<ConfigTab, string> = {
     colors: "Theme",
     fonts: "Fonts",

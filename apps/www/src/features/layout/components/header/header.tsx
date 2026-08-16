@@ -150,12 +150,12 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
             <div className="h-full">
               {showPrimaryNavigation && (
                 <Tabs
-                  className="hidden h-full ml-8 lg:flex [&_.indicator]:!top-[calc(100%-2px)]"
+                  className="hidden h-full ml-8 lg:flex [&_.indicator]:top-[calc(100%-2px)]!"
                   value={activeHomeTab || ""}
                   variant="underline"
                 >
                   <div className="h-full" onClickCapture={handleTabsNavigation(homeNavTabs)}>
-                    <Tabs.List className="h-full !p-0">
+                    <Tabs.List className="h-full p-0!">
                       {homeNavTabs.map((tab) => (
                         <TabItem key={tab.id} tab={tab} />
                       ))}
@@ -178,12 +178,12 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
 
               {hasRevealCollapse && tabGroup && (
                 <Tabs
-                  className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:!top-[calc(100%-2px)]"
+                  className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:top-[calc(100%-2px)]!"
                   value={activeTabId || ""}
                   variant="underline"
                 >
                   <div className="h-full" onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
-                    <Tabs.List className="h-full !p-0">
+                    <Tabs.List className="h-full p-0!">
                       {tabGroup.tabs.map((tab) => (
                         <TabItem key={tab.id} tab={tab} />
                       ))}

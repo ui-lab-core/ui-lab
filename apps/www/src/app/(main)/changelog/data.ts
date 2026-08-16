@@ -6,7 +6,7 @@ export interface Entry {
   changes: string[];
 }
 
-export interface MonthGroup {
+interface MonthGroup {
   id: string;
   label: string;
   entries: Entry[];

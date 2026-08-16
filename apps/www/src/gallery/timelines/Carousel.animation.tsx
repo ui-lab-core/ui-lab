@@ -44,7 +44,7 @@ const Chevron = ({ dir }: { dir: "left" | "right" }) => (
 
 export function CarouselAnimation() {
   return (
-    <div className="bg-background-950 flex items-center justify-center relative overflow-hidden font-sans w-full h-full">
+    <div className="flex items-center justify-center relative overflow-hidden font-sans w-full h-full">
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-row items-center gap-1.5">
           <Chevron dir="left" />

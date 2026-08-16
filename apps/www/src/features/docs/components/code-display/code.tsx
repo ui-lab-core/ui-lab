@@ -169,7 +169,9 @@ export function Code({
       ? resolved.html
       : (staticHighlight ?? fallbackHtml);
   const totalCodeLines = activeCode.split("\n").length;
-  const hasResolvedSyntax = isThemeInitialized && highlightedCode !== fallbackHtml;
+  // Server-provided highlighting is already deterministic and must render the
+  // same markup during hydration before the client theme finishes initializing.
+  const hasResolvedSyntax = highlightedCode !== fallbackHtml;
   const normalizedHtml = useMemo(() => stripPreTabIndex(highlightedCode), [highlightedCode]);
   const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
 
@@ -227,7 +229,7 @@ export function Code({
     <div
       ref={rootRef}
       className={cn(
-        "rounded-sm border border-background-700 bg-background-1000 overflow-hidden w-full min-w-0",
+        "w-full min-w-0 overflow-hidden rounded-sm border border-background-700 bg-background-1000",
         fillHeight
           ? cn(
               "grid h-full min-h-0",
@@ -239,16 +241,16 @@ export function Code({
       )}
     >
       {hasHeader && (
-        <div className="flex p-2 flex-none items-stretch justify-between text-xs text-foreground-400">
+        <div className="flex flex-none items-stretch justify-between p-2 text-xs text-foreground-400">
           {heading ? (
-            <div className="flex gap-1  items-stretch">
+            <div className="flex items-stretch gap-1">
               {(codeFiles ?? [{ name: heading, code: children }]).map((file, index) => (
                 <button
                   key={file.name}
                   type="button"
                   onClick={() => setActiveFile(index)}
                   className={cn(
-                    "flex cursor-pointer items-center gap-2 rounded-sm py-2 px-2 transition-colors hover:bg-background-950 hover:text-foreground-100",
+                    "flex cursor-pointer items-center gap-2 rounded-sm px-2 py-2 transition-colors hover:bg-background-950 hover:text-foreground-100",
                     index === activeFile
                       ? "bg-background-950 text-foreground-200"
                       : "text-foreground-400",
@@ -293,7 +295,7 @@ export function Code({
 
       <div
         className={cn(
-          "relative group min-h-0 flex flex-col",
+          "group relative flex min-h-0 flex-col",
           fillHeight ? "h-full overflow-hidden" : "flex-1",
         )}
       >
@@ -305,7 +307,7 @@ export function Code({
             variant="ghost"
             size="icon"
             icon={<LuChevronsDownUp size={14} />}
-            className="absolute right-11 top-2 z-10"
+            className="absolute top-2 right-11 z-10"
           ></Button>
         )}
         {!heading ? <CopyButton code={children} /> : null}
@@ -315,7 +317,7 @@ export function Code({
             maxWidth="100%"
             hide={false}
             styles={{
-              track: "bg-transparent backdrop-blur-sm",
+              track: "bg-transparent",
               thumb: "bg-background-700 hover:bg-background-600",
               content: "!overflow-x-auto",
             }}
@@ -334,11 +336,11 @@ export function Code({
             maxWidth="100%"
             hide={false}
             styles={{
-              track: "bg-transparent backdrop-blur-sm",
+              track: "bg-transparent",
               thumb: "bg-background-700 hover:bg-background-600",
               content: "!overflow-x-auto",
             }}
-            className="relative flex-1 min-h-0 min-w-0"
+            className="relative min-h-0 min-w-0 flex-1"
           >
             <CodeContent
               html={displayHtml}
@@ -351,9 +353,9 @@ export function Code({
         {shouldShowExpandButton && !expanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="w-full cursor-pointer px-1.5 flex items-center py-2 hover:bg-background-950 text-foreground-300 font-medium text-xs transition-colors border-t border-background-700"
+            className="flex w-full cursor-pointer items-center border-t border-background-700 px-1.5 py-2 text-xs font-medium text-foreground-300 transition-colors hover:bg-background-950"
           >
-            <HiOutlineChevronUpDown size={24} className="text-foreground-400 inline mr-3" /> Show{" "}
+            <HiOutlineChevronUpDown size={24} className="mr-3 inline text-foreground-400" /> Show{" "}
             {hiddenCodeLines} more lines
           </button>
         )}
@@ -374,8 +376,11 @@ function CodeContent({
   return (
     <div
       dangerouslySetInnerHTML={{ __html: html }}
-      className={cn(`[&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:m-0 [&_pre]:w-fit
-          [&_code]:font-mono [&_code]:whitespace-pre`, !hasResolvedSyntax && "[&_pre]:text-foreground-400 [&_code]:text-foreground-400 [&_span]:!text-inherit")}
+      className={cn(
+        `[&_code]:font-mono [&_code]:whitespace-pre [&_pre]:m-0 [&_pre]:w-fit [&_pre]:bg-transparent [&_pre]:p-0`,
+        !hasResolvedSyntax &&
+          "[&_code]:text-foreground-400 [&_pre]:text-foreground-400 [&_span]:!text-inherit",
+      )}
       style={{
         maskImage: faded
           ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"

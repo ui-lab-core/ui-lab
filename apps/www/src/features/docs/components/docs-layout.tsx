@@ -1,7 +1,7 @@
 import { Sidebar } from "@/features/layout/components/sidebar";
 import { TableOfContents, type TableOfContentsItem } from "./table-of-contents";
 import { CopyPage, OpenPage } from "../page-actions";
-import "../../../app/docs.css";
+import "@styles/docs.css";
 import { Footer } from "@/features/layout/components/footer";
 import { Group } from "ui-lab-components";
 

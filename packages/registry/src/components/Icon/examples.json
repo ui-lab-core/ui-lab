@@ -1,12 +1,1 @@
-{
-  "basic": {
-    "title": "Fill icon",
-    "description": "Resolve a local fill SVG by its filename and inherit the surrounding text color.",
-    "code": "import { Icon } from 'ui-lab-components'\n\nexport function Example() {\n  return <Icon variant=\"fill\" id=\"cake-fill\" size={24} />\n}"
-  },
-  "accessible": {
-    "title": "Meaningful icon",
-    "description": "Add a label when the icon communicates information without adjacent text.",
-    "code": "import { Icon } from 'ui-lab-components'\n\nexport function Example() {\n  return <Icon variant=\"fill\" id=\"warning-fill\" label=\"Warning\" />\n}"
-  }
-}
+{}
