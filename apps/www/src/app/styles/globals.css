@@ -1,0 +1,270 @@
+@import "tailwindcss";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/work-sans/wght.css";
+/* Scan the installed package root, not its development-only `src` directory.
+   Published packages contain compiled previews in `dist`, while workspace links
+   also expose `src`; using the stable package root covers both layouts. */
+@source "../../../node_modules/@ui-lab-core/library";
+@source "../../../node_modules/ui-lab-registry/src";
+@import "ui-lab-theme-onyx";
+
+@import "./theme.css";
+@import "ui-lab-components/styles.css";
+
+/* Static typography baseline. Deliberately kept OUT of @theme: --text-xs
+   through --text-5xl are Tailwind's own font-size scale keys, so declaring
+   them inside @theme would rewire every text-xs/text-sm/... utility class
+   site-wide onto this scale instead of Tailwind's defaults. Plain :root
+   custom properties are consumed explicitly via var() (body, typography.css,
+   header-text-*) without that collision. The site never customizes these at
+   runtime (only colors are user-themable); the config route scopes its own
+   overrides to the preview. */
+:root {
+  --font-interface: "Work Sans Variable", system-ui, sans-serif;
+  --header-scale: 0.75;
+  --body-scale: 0.75;
+  --leading-header: 1.25;
+  --leading-body: 1.64;
+  --text-xs: 0.84375rem;
+  --text-sm: 0.85rem;
+  --text-md: 0.9rem;
+  --text-base: 0.9rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 2.75rem;
+  --text-body-size: var(--text-base);
+
+  /* One site-wide control for code and semantic mono text. */
+  --text-code-size: 0.9rem;
+  --leading-code: 1.7;
+  --header-text-xs: 0.75rem;
+  --header-text-sm: 0.8225rem;
+  --header-text-md: 0.9375rem;
+  --header-text-base: 0.9375rem;
+  --header-text-lg: 1.125rem;
+  --header-text-xl: 1.25rem;
+  --header-text-2xl: 1.5rem;
+  --header-text-3xl: 1.75rem;
+  --header-text-4xl: 2.25rem;
+  --header-text-5xl: 2.75rem;
+  --font-weight-header-thin: 100;
+  --font-weight-body-thin: 105;
+  --font-weight-header-extralight: 200;
+  --font-weight-body-extralight: 210;
+  --font-weight-header-light: 300;
+  --font-weight-body-light: 315;
+  --font-weight-header-normal: 400;
+  --font-weight-body-normal: 500;
+  --font-weight-header-medium: 500;
+  --font-weight-body-medium: 500;
+  --font-weight-header-semibold: 600;
+  --font-weight-body-semibold: 600;
+  --font-weight-header-bold: 700;
+  --font-weight-body-bold: 700;
+  --font-weight-header-extrabold: 800;
+  --font-weight-body-extrabold: 840;
+  --font-weight-header-black: 900;
+  --font-weight-body-black: 900;
+  --letter-spacing-xs: normal;
+  --letter-spacing-sm: normal;
+  --letter-spacing-md: normal;
+  --letter-spacing-base: normal;
+  --letter-spacing-lg: normal;
+  --letter-spacing-xl: normal;
+  --letter-spacing-2xl: normal;
+  --letter-spacing-3xl: normal;
+  --letter-spacing-4xl: normal;
+  --letter-spacing-5xl: normal;
+  --letter-spacing-header-sm: normal;
+  --letter-spacing-header-md: normal;
+  --letter-spacing-header-lg: normal;
+  --letter-spacing-header-xl: normal;
+  --letter-spacing-code: normal;
+  --font-weight-code: 400;
+  /* Semantic component spacing tokens are runtime values, not Tailwind theme
+     keys. Keeping them outside @theme prevents names such as --spacing-md and
+     --spacing-lg from replacing Tailwind's max-width container utilities. */
+  --spacing-scale: 0.9;
+  --spacing-xs: clamp(0.45rem, 2.25vw, 0.675rem);
+  --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
+  --spacing-base: clamp(0.76rem, 3.81vw, 1.141rem);
+  --spacing-md: clamp(0.989rem, 4.94vw, 1.483rem);
+  --spacing-lg: clamp(1.285rem, 6.43vw, 1.928rem);
+  --spacing-xl: clamp(1.67rem, 8.35vw, 2.507rem);
+  --spacing-2xl: clamp(2.172rem, 10.86vw, 3.258rem);
+  /* Derived deep root layer. Keep the token opaque so fixed surfaces do not
+     reveal content underneath them; callers can add opacity explicitly when
+     translucency is intentional. */
+  --background-1000: oklch(from var(--background-950) calc(l * 1.5 - 0.125) c h);
+}
+
+:root[data-font="work-sans"] {
+  --font-interface: "Work Sans Variable", system-ui, sans-serif;
+}
+
+@theme {
+  --font-body: var(--font-interface);
+  --font-heading: var(--font-interface);
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
+  --font-sans: var(--font-body);
+
+  /* Color Palette */
+  --color-background: var(--background);
+  --color-background-1000: var(--background-1000);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+
+  --header-scale: 0.75;
+  --body-scale: 0.75;
+
+  --spacing: clamp(0.18rem, 2.25vw, 0.225rem);
+
+  --radius-xs: 0.425rem;
+  --radius-sm: 0.65rem;
+  --radius-base: 1.1rem;
+  --radius-md: 1.55rem;
+  --radius-lg: 2.45rem;
+  --radius-xl: 3.575rem;
+  --radius-2xl: 4.7rem;
+  --radius-full: 9999px;
+  --radius-ratio: 2.25;
+
+  /* Border Width Scale */
+  --border-width-none: 0;
+  --border-width-thin: 1px;
+  --border-width-base: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
+
+  --header-height: 3.5rem;
+  --page-width: 1400px;
+  --content-width: 850px;
+  --logo-width: 250px;
+  --banner-height: 52px;
+  /* adjust to match your banner content */
+  /* --indent-offset: 3px; */
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  font-weight: var(--font-weight-body-normal);
+  letter-spacing: normal;
+  line-height: var(--leading-body);
+  background: var(--color-background-950);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  color: var(--color-foreground-300);
+}
+
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: none !important;
+}
+
+pre.shiki .indent {
+  display: inline-block;
+  position: relative;
+  left: var(--indent-offset);
+}
+
+/* `font-mono` is semantic code text across the site, so its size has one
+   owner. Change --text-code-size above to update every use at once. */
+.font-mono,
+.text-code,
+pre {
+  font-size: var(--text-code-size);
+  line-height: var(--leading-code);
+  letter-spacing: 0.015em;
+  font-weight: 450;
+}
+
+pre.shiki .indent::before {
+  content: "";
+  position: absolute;
+  opacity: 0.15;
+  width: 1px;
+  height: 100%;
+  background-color: currentColor;
+}
+
+.code-block--line-numbers .shiki code {
+  counter-reset: step;
+  counter-increment: step 0;
+  display: block;
+  width: fit-content;
+  min-width: 100%;
+  white-space: pre;
+}
+
+.code-block--line-numbers .shiki .line::before {
+  content: counter(step);
+  counter-increment: step;
+  width: 1rem;
+  margin-right: 1rem;
+  display: inline-block;
+  text-align: right;
+  color: var(--background-500);
+}
+
+pre.shiki .indent {
+  display: inline-block;
+  position: relative;
+  left: calc(var(--indent-offset, 0px) + 0.4rem);
+}
+
+pre.shiki .indent:empty {
+  height: 1lh;
+  vertical-align: bottom;
+}
+
+.grid-paper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+}
+
+.grid-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background-color: var(--color-background-500);
+  opacity: 0.3;
+
+  /* Mask Logic */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='25' height='25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cstyle%3Epath%7Bstroke:%23ffffff;stroke-width:1;stroke-linecap:square%7D%3C/style%3E%3C/defs%3E%3Cpath d='M21 25h8 M25 21v8' /%3E%3Cg stroke-dasharray='4 4'%3E%3Cpath d='M25 17 V0' /%3E%3Cpath d='M25 33 V50' /%3E%3Cpath d='M17 25 H0' /%3E%3Cpath d='M33 25 H25' /%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg width='25' height='25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cstyle%3Epath%7Bstroke:%23ffffff;stroke-width:1;stroke-linecap:square%7D%3C/style%3E%3C/defs%3E%3Cpath d='M21 25h8 M25 21v8' /%3E%3Cg stroke-dasharray='4 4'%3E%3Cpath d='M25 17 V0' /%3E%3Cpath d='M25 33 V50' /%3E%3Cpath d='M17 25 H0' /%3E%3Cpath d='M33 25 H25' /%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  pointer-events: none;
+}
+
+html {
+  background: var(--background-950);
+}
+body {
+  background: var(--background-1000);
+}
+p {
+  font-weight: 500;
+}
+
+article {
+  max-width: var(--page-width);
+  margin: 0 auto;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent-600) 10%, transparent);
+  color: var(--accent-600);
+}

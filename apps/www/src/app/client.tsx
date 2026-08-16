@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { Suspense, useCallback, useEffect } from "react";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { AppProvider, useApp } from "@/features/theme/lib/app-context";
+import { ConvexClientProvider } from "./convex-client-provider";
 
 function KeyboardShortcuts() {
   const {
@@ -60,12 +61,6 @@ function KeyboardShortcuts() {
         return;
       }
 
-      // if (e.ctrlKey && (e.key === "d" || e.key === "D")) {
-      //   e.preventDefault();
-      //   window.dispatchEvent(new Event(PERF_OVERLAY_TOGGLE_EVENT));
-      //   return;
-      // }
-
       if (!e.ctrlKey && !e.metaKey && !e.altKey) {
         if (e.key === "d" || e.key === "D") {
           toggleThemeMode();
@@ -88,9 +83,13 @@ function KeyboardShortcuts() {
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
     <AppProvider>
-      <KeyboardShortcuts />
-      {/* <PerfOverlay /> */}
-      {children}
+      <Suspense fallback={children}>
+        <ConvexClientProvider>
+          <KeyboardShortcuts />
+          {/* <PerfOverlay /> */}
+          {children}
+        </ConvexClientProvider>
+      </Suspense>
     </AppProvider>
   );
 }

@@ -23,19 +23,6 @@ function usesLocalPrivateLibrary() {
 
 const nextRoot = usesLocalPrivateLibrary() ? workspaceRoot : appRoot;
 
-function usesAuthProviders() {
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim();
-  const secretKey = process.env.CLERK_SECRET_KEY?.trim();
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL?.trim();
-  const development = process.env.NODE_ENV !== "production";
-  const full = Boolean(
-    publishableKey && secretKey && convexUrl && !publishableKey.startsWith("pk_test_"),
-  );
-  const clerk = Boolean(publishableKey && (development || full));
-  const convex = Boolean(convexUrl && (development || full));
-  return clerk || convex;
-}
-
 const nextConfig: NextConfig = {
   cacheComponents: true,
   // `ui-lab-components` is a workspace-linked, prebuilt package. Transpiling it
@@ -71,25 +58,11 @@ const nextConfig: NextConfig = {
     root: nextRoot,
   },
   webpack: (config, { webpack }) => {
-    if (!usesAuthProviders()) {
-      const disabled = path.resolve(__dirname, "src/app/auth-providers-disabled.tsx");
-      config.plugins.push(
-        new webpack.NormalModuleReplacementPlugin(
-          /^\.\/auth-providers$/,
-          (resource: { context?: string; request?: string }) => {
-            if (resource.context === path.resolve(__dirname, "src/app")) {
-              resource.request = disabled;
-            }
-          },
-        ),
-      );
-    }
-
     // The component library auto-imports CSS per retained component chunk for
     // normal consumers. This showcase intentionally indexes every preview, so
     // it imports the identical aggregate bundle once in globals.css and drops
     // only the duplicate package sidecars from the JavaScript graph.
-    const emptyCss = path.resolve(__dirname, "src/empty-component-styles.css");
+    const emptyCss = path.resolve(__dirname, "src/empty.css");
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(
         /\.css$/,

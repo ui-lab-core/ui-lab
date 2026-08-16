@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@styles/globals.css";
 import "ui-lab-components/typography.css";
 
 import { Metadata } from "next";
