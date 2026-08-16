@@ -10,11 +10,16 @@
   }
 
   .list {
-    @apply relative flex w-full flex-row items-center gap-3 py-1;
+    @apply relative grid w-full items-center gap-3 py-1;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    justify-content: start;
     border-radius: var(--radius-sm, 0.375rem);
 
     &[data-orientation="vertical"] {
-      flex-direction: column;
+      grid-auto-flow: row;
+      grid-auto-columns: auto;
+      grid-auto-rows: max-content;
       width: fit-content;
       min-width: 0;
       height: auto;
@@ -50,7 +55,21 @@
   }
 
   .indicator-fallback {
-    z-index: -1;
+    z-index: 0;
+  }
+
+  .indicator-fallback-frame {
+    display: none;
+    position: absolute;
+    inset: 0;
+    min-width: 0;
+    min-height: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .trigger[data-selected="true"] + .indicator-fallback-frame {
+    display: block;
   }
 
   .indicator-underline {

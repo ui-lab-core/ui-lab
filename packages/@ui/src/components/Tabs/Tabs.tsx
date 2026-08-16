@@ -31,6 +31,7 @@ interface TabsContextValue {
   setSelectedValue: (value: string) => void;
   variant?: TabsVariant;
   orientation: TabsOrientation;
+  listStyle: string;
   isDisabledTab: (value: string) => boolean;
   indicatorReady: boolean;
   setIndicatorReady: (ready: boolean) => void;
@@ -41,13 +42,6 @@ const TABS_INDICATOR_INSET = 4;
 const TABS_UNDERLINE_THICKNESS = 2;
 const TABS_UNDERLINE_OFFSET = 2;
 const TABS_UNDERLINE_GUTTER = TABS_UNDERLINE_THICKNESS + TABS_UNDERLINE_OFFSET;
-const TABS_UNDERLINE_FALLBACK_GUTTER = TABS_UNDERLINE_GUTTER;
-
-interface TabsListContextValue {
-  indicatorClassName: string;
-}
-
-const TabsListContext = React.createContext<TabsListContextValue | null>(null);
 
 function useTabsContext() {
   const context = React.useContext(TabsContext);
@@ -55,10 +49,6 @@ function useTabsContext() {
     throw new Error("Tabs component must be used within Tabs root");
   }
   return context;
-}
-
-function useTabsListContext() {
-  return React.useContext(TabsListContext);
 }
 
 function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
@@ -77,6 +67,7 @@ function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
 
 interface TabsStyleSlots {
   root?: StyleValue;
+  list?: StyleValue;
 }
 
 interface TabsProps {
@@ -102,7 +93,7 @@ export interface TabsState {
   value?: string;
 }
 
-const resolveTabsBaseStyles = createStylesResolver(["root"] as const);
+const resolveTabsBaseStyles = createStylesResolver(["root", "list"] as const);
 
 const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
   (
@@ -119,7 +110,7 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
     },
     ref,
   ) => {
-    const { root } = resolveTabsBaseStyles(stylesProp);
+    const { root, list: listStyle } = resolveTabsBaseStyles(stylesProp);
 
     const [uncontrolledValue, setUncontrolledValue] = useControlledState(
       controlledState?.value ?? controlledValue,
@@ -165,6 +156,7 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
           setSelectedValue,
           variant,
           orientation,
+          listStyle,
           isDisabledTab,
           indicatorReady,
           setIndicatorReady,
@@ -192,7 +184,9 @@ TabsRoot.displayName = "Tabs";
 
 interface TabsListStyleSlots {
   root?: StyleValue;
+  list?: StyleValue;
   indicator?: StyleValue;
+  trigger?: StyleValue;
 }
 
 interface TabsListProps {
@@ -205,13 +199,22 @@ interface TabsListProps {
   styles?: StylesProp<TabsListStyleSlots>;
 }
 
-const resolveTabsListBaseStyles = createStylesResolver(["root", "indicator"] as const);
+const resolveTabsListBaseStyles = createStylesResolver(
+  ["root", "list", "indicator", "trigger"] as const,
+);
+
+interface TabsListContextValue {
+  triggerStyle: string;
+}
+
+const TabsListContext = React.createContext<TabsListContextValue | null>(null);
 
 /** Container for the row of tab trigger buttons */
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
-    const { selectedValue, variant, orientation, setIndicatorReady } = useTabsContext();
-    const { root, indicator } = resolveTabsListBaseStyles(stylesProp);
+    const { selectedValue, variant, orientation, listStyle, indicatorReady, setIndicatorReady } =
+      useTabsContext();
+    const { root, list, indicator, trigger: triggerStyle } = resolveTabsListBaseStyles(stylesProp);
     const listRef = React.useRef<HTMLDivElement>(null);
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
@@ -228,8 +231,6 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       () => getTabsIndicatorClassName(indicator, variant),
       [indicator, variant],
     );
-    const tabsListContext = React.useMemo(() => ({ indicatorClassName }), [indicatorClassName]);
-
     const measureTrigger = React.useCallback((element: HTMLElement | null) => {
       if (!element) return null;
 
@@ -374,7 +375,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const mergedRef = useMergeRefs(listRef, ref);
 
     return (
-      <TabsListContext.Provider value={tabsListContext}>
+      <TabsListContext.Provider value={{ triggerStyle }}>
         <div
           ref={mergedRef}
           role="tablist"
@@ -385,6 +386,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
             "list",
             variant === "underline" && "underline",
             css.list,
+            list,
+            listStyle,
             root,
             className,
           )}
@@ -392,10 +395,61 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
           data-variant={variant}
           style={{ position: "relative" }}
         >
-          {children}
-          {indicatorPosition.width > 0 && (
-            <div aria-hidden="true" className={indicatorClassName} style={getIndicatorStyle} />
-          )}
+        {React.Children.map(children, (child, index) => (
+          <React.Fragment key={React.isValidElement(child) ? child.key : index}>
+            {child}
+            {!indicatorReady && (
+              <span
+                aria-hidden="true"
+                className={cn("indicator-fallback-frame", css["indicator-fallback-frame"])}
+                data-indicator-fallback="true"
+                style={{
+                  gridColumn: `${orientation === "horizontal" ? index + 1 : 1} / span 1`,
+                  gridRow: `${orientation === "vertical" ? index + 1 : 1} / span 1`,
+                }}
+              >
+                <span
+                  className={cn(
+                    indicatorClassName,
+                    "indicator-fallback",
+                    css["indicator-fallback"],
+                  )}
+                  style={{
+                    zIndex: 0,
+                    ...(orientation === "vertical"
+                      ? variant === "underline"
+                        ? {
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            width: TABS_UNDERLINE_THICKNESS,
+                            margin: 0,
+                          }
+                        : {
+                            top: 0,
+                            bottom: 0,
+                            left: TABS_INDICATOR_INSET,
+                            right: TABS_INDICATOR_INSET,
+                            margin: 0,
+                          }
+                      : variant === "underline"
+                        ? {
+                            left: 0,
+                            right: 0,
+                            top: `calc(100% + ${TABS_UNDERLINE_OFFSET}px)`,
+                            height: TABS_UNDERLINE_THICKNESS,
+                            margin: 0,
+                          }
+                        : { inset: 0, margin: 0 }),
+                  }}
+                />
+              </span>
+            )}
+          </React.Fragment>
+        ))}
+        {indicatorPosition.width > 0 && (
+          <div aria-hidden="true" className={indicatorClassName} style={getIndicatorStyle} />
+        )}
         </div>
       </TabsListContext.Provider>
     );
@@ -490,42 +544,12 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     },
     ref,
   ) => {
-    const { selectedValue, setSelectedValue, indicatorReady, orientation, variant } =
-      useTabsContext();
-    const tabsListContext = useTabsListContext();
+    const { selectedValue, setSelectedValue, indicatorReady } = useTabsContext();
+    const tabsListContext = React.useContext(TabsListContext);
     const resolved = resolveTabsTriggerStyles(stylesProp);
     const resolvedIcon = resolveTabsTriggerIcon(icon);
     const buttonRef = React.useRef<HTMLButtonElement>(null);
     const isSelected = value === selectedValue;
-    const showIndicatorFallback = isSelected && !indicatorReady && !!tabsListContext;
-    const fallbackIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
-      if (variant === "underline") {
-        if (orientation === "vertical") {
-          return {
-            top: 0,
-            bottom: 0,
-            left: -TABS_UNDERLINE_FALLBACK_GUTTER,
-            width: TABS_UNDERLINE_THICKNESS,
-            height: "100%",
-            margin: 0,
-          };
-        }
-
-        return {
-          left: 0,
-          right: 0,
-          bottom: -TABS_UNDERLINE_FALLBACK_GUTTER,
-          width: "100%",
-          height: TABS_UNDERLINE_THICKNESS,
-          margin: 0,
-        };
-      }
-
-      return {
-        inset: 0,
-        margin: 0,
-      };
-    }, [orientation, variant]);
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const interactionModality = useInteractionModality();
@@ -623,22 +647,22 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         disabled={disabled}
         data-tabs-value={value}
         data-focus-surface="true"
-        className={cn("tabs", "trigger", css.trigger, resolved.root, className)}
+        className={cn(
+          "tabs",
+          "trigger",
+          css.trigger,
+          tabsListContext?.triggerStyle,
+          resolved.root,
+          className,
+        )}
         data-selected={isSelected ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         data-hovered={isHovered ? "true" : "false"}
         data-pressed={isPressed ? "true" : "false"}
         data-focus-visible={showFocusVisible ? "true" : "false"}
         data-indicator-ready={isSelected && indicatorReady ? "true" : undefined}
-        data-indicator-fallback={showIndicatorFallback ? "true" : undefined}
+        data-indicator-fallback={isSelected && !indicatorReady ? "true" : undefined}
       >
-        {showIndicatorFallback && tabsListContext && (
-          <span
-            aria-hidden="true"
-            className={cn(tabsListContext.indicatorClassName, css["indicator-fallback"])}
-            style={fallbackIndicatorStyle}
-          />
-        )}
         {resolvedIcon?.left && (
           <span className={cn(css.icon, resolved.iconLeft)}>{resolvedIcon.left}</span>
         )}
