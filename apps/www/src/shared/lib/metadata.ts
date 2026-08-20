@@ -18,8 +18,8 @@ const DEFAULT_SITE_CONFIG = {
   title: "UI Lab",
   description:
     "A comprehensive collection of UI components and patterns for building modern interfaces",
-  baseUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://ui-lab.dev",
-  ogImage: "/og-image.jpg",
+  baseUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://ui-lab.app",
+  ogImage: "/assets/thumbnail.png",
 };
 
 function formatPageTitle(title: string): string {
@@ -78,8 +78,8 @@ export function generateMetadata(config: SiteMetadataConfig = {}): Metadata {
       images: [
         {
           url: fullOgImage,
-          width: 1200,
-          height: 630,
+          width: 1916,
+          height: 952,
           alt: title,
         },
       ],

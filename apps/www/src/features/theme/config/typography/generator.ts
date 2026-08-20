@@ -148,9 +148,33 @@ export function generateTypographyCSS(
   headerMinFontSizePx: number,
   bodyMinFontSizePx: number,
 ): string {
+  const exportedTokenNames = new Set([
+    "--header-text-md",
+    "--header-text-lg",
+    "--header-text-xl",
+    "--header-text-2xl",
+    "--header-text-3xl",
+    "--text-xs",
+    "--text-sm",
+    "--text-md",
+    "--text-base",
+    "--text-body-size",
+    "--leading-header",
+    "--leading-body",
+    "--letter-spacing-base",
+    "--letter-spacing-header-md",
+    "--letter-spacing-header-lg",
+    "--letter-spacing-header-xl",
+    "--font-weight-header-medium",
+    "--font-weight-body-normal",
+    "--font-weight-body-medium",
+    "--font-weight-body-semibold",
+  ]);
+
   return Object.entries(
     generateTypographyVars(headerScale, bodyScale, headerMinFontSizePx, bodyMinFontSizePx),
   )
+    .filter(([name]) => exportedTokenNames.has(name))
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
 }

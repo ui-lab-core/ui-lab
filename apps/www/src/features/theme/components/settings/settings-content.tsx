@@ -13,6 +13,7 @@ import { setThemeColor, type ThemeColorType } from "../../lib/color/set-color";
 import { ColorsPanel } from "./colors-panel";
 import { TypographyPanel } from "./typography-panel";
 import { LayoutPanel } from "./layout-panel";
+import { FaPlus, FaWrench } from "@/shared/icons/fa6";
 
 type ConfigTab = "colors" | "layout" | "fonts";
 interface LayoutConfig {
@@ -183,14 +184,6 @@ export const SettingsContent = ({
     setGlobalAdjustments,
   );
 
-  // Theme preferences are loaded from localStorage in AppProvider after mount.
-  // Do not render controls from the default palette during hydration: the
-  // client may immediately replace it with a cached palette, which would make
-  // the server and client markup differ.
-  if (!isThemeInitialized) {
-    return <div className="w-full h-full" aria-hidden="true" />;
-  }
-
   const tabLabels: Record<ConfigTab, string> = {
     colors: "Theme",
     fonts: "Fonts",
@@ -284,9 +277,11 @@ export const SettingsContent = ({
       </div>
 
       {showFooterLink ? (
-        <div className="flex justify-end border-t border-background-700 bg-background-900/90 p-1.5">
-          <Link href="/config" className="m-2">
-            <Button size="sm">Configuration</Button>
+        <div className="flex h-12 justify-end border-t border-background-700 bg-background-900/90 p-1.5">
+          <Link href="/config">
+            <Button icon={<FaPlus size={16} />} variant="ghost">
+              New Project
+            </Button>
           </Link>
         </div>
       ) : null}

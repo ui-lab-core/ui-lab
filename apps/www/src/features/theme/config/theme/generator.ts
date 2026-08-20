@@ -1,10 +1,7 @@
 import { generateColorPaletteVariables } from "../colors/generator";
 import { type SimpleThemeColors } from "../../constants/themes";
-import { generateRadiusScaleCSS, applyRadiusScalesToDOM } from "../radius/generator";
-import {
-  generateBorderWidthScaleCSS,
-  applyBorderWidthScalesToDOM,
-} from "../border-width/generator";
+import { generateRadiusScaleCSS } from "../radius/generator";
+import { generateBorderWidthScaleCSS } from "../border-width/generator";
 import { generateFluidSpacingCSS } from "../spacing/generator";
 import { generateCodeTypographyVars, generateTypographyCSS } from "../typography/generator";
 import { type TypographyConfig } from "../../lib/typography-config";
@@ -29,39 +26,13 @@ function renderCssVariables(variables: Record<string, string>): string {
     .join("\n");
 }
 
-/**
- * Generates a complete @theme block with scaled radius and border-width values
- * @param radius - Base radius in rem (0 - 1.5)
- * @param borderWidth - Base border width in px (0 - 4)
- * @returns Formatted CSS string ready to copy/paste
- */
-function generateThemeConfig(radius: number, borderWidth: number): string {
-  const radiusLines = generateRadiusScaleCSS(radius).split("\n");
-  const borderLines = generateBorderWidthScaleCSS(borderWidth).split("\n");
-
-  const css = `@theme {\n  /* Border Radius - customize as needed */\n${radiusLines.map((line) => line).join("\n")}\n\n  /* Border Width - customize as needed */\n${borderLines.map((line) => line).join("\n")}\n}`;
-
-  return css;
-}
-
-/**
- * Applies dynamic theme scales to the DOM for radius and border-width only
- * Updates CSS variables for layout-related properties
- * @param radius - Base radius in rem (0 - 1.5)
- * @param borderWidth - Base border width in px (0 - 4)
- */
-function applyDynamicThemeScales(radius: number, borderWidth: number): void {
-  applyRadiusScalesToDOM(radius);
-  applyBorderWidthScalesToDOM(borderWidth);
-}
-
-/**
- * Generates a user-friendly message with instructions
- */
-function generateConfigMessage(radius: number, borderWidth: number): string {
-  const config = generateThemeConfig(radius, borderWidth);
-
-  return `${config}\n\n/* Usage Instructions:\n * 1. Copy the above configuration\n * 2. Open your project's src/app/globals.css\n * 3. Paste this @theme block (replacing or adding to your existing one)\n * 4. Use standard Tailwind utilities in your components:\n *    - rounded-md, rounded-md, rounded-full, etc.\n *    - border, border-2, border-4, etc.\n * All utilities will automatically respect your custom values.\n */`;
+function differingVariables(
+  variables: Record<string, string>,
+  comparison: Record<string, string>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(variables).filter(([name, value]) => comparison[name] !== value),
+  );
 }
 
 export function generateThemeSetupFiles(
@@ -91,6 +62,7 @@ export function generateThemeSetupFiles(
   const borderCSS = generateBorderWidthScaleCSS(layout.borderWidth);
   const lightColorVariables = generateColorPaletteVariables(colors, "light");
   const darkColorVariables = generateColorPaletteVariables(colors, "dark");
+  const darkOverrides = differingVariables(darkColorVariables, lightColorVariables);
   const tokenNames = Array.from(
     new Set(
       [...Object.keys(lightColorVariables), ...Object.keys(darkColorVariables)].map((name) =>
@@ -105,6 +77,7 @@ export function generateThemeSetupFiles(
 
   const themeCss = `/* Your configured tokens. Imported after ui-lab-theme-onyx so they override its defaults. */
 /* Generated from a ${mode} preview, but both light and dark tokens are included here. */
+/* :root is the light default and also covers explicit data-theme='light'. */
 :root {
   color-scheme: light;
 
@@ -116,21 +89,15 @@ ${renderCssVariables(lightColorVariables)}
   :root:not([data-theme]) {
     color-scheme: dark;
 
-${renderCssVariables(darkColorVariables)}
+${renderCssVariables(darkOverrides)}
   }
 }
 
-/* Explicit overrides come from the server-stamped html[data-theme]. */
-:root[data-theme='light'] {
-  color-scheme: light;
-
-${renderCssVariables(lightColorVariables)}
-}
-
+/* Explicit dark overrides come from the server-stamped html[data-theme]. */
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-${renderCssVariables(darkColorVariables)}
+${renderCssVariables(darkOverrides)}
 }
 
 /* Tailwind color utilities always point at the active tokens. */
@@ -143,9 +110,9 @@ ${themeInlineMapping}
 @import "./theme.css";
 @import "ui-lab-components/styles.css";
 
-/* Runtime component tokens stay outside @theme. Tailwind treats names inside
-   @theme as utility namespaces: --spacing-lg would replace max-w-lg's
-   container width, and --text-sm would replace Tailwind's font-size scale. */
+/* Runtime component tokens stay outside @theme. --text-sm and related names
+   would replace Tailwind's text utility scale. --spacing intentionally remains
+   runtime: Tailwind's numeric spacing utilities and UI Lab components share it. */
 :root {
 ${typographyCSS}
 ${codeTypographyCSS}
@@ -194,7 +161,6 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={rootTheme.className}
       data-theme={rootTheme.dataTheme}
-      style={rootTheme.colorScheme ? { colorScheme: rootTheme.colorScheme } : undefined}
     >
       <body>{children}</body>
     </html>

@@ -87,8 +87,8 @@ export const ColorsPanel = memo(
             })}
           </div>
         </div>
-        <div className="mx-[6px] mb-1 rounded-[12px] border border-background-700 bg-background-900/40 p-3">
-          <div className={`${MICRO_LABEL} mb-2 block opacity-70`}>Code Theme</div>
+        <div className="mx-[6px] flex  items-center justify-between mb-1 rounded-[7px]">
+          <div className={`${MICRO_LABEL} ml-3 block opacity-70`}>Code Theme</div>
           <Select
             selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
             defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}

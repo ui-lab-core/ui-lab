@@ -83,8 +83,8 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 2
           },
           {
-            "id": "mcp-server-ui-lab",
-            "title": "MCP server (`ui-lab`)",
+            "id": "mcp-server-ui-lab-mcp",
+            "title": "MCP server (`ui-lab-mcp`)",
             "level": 3
           },
           {

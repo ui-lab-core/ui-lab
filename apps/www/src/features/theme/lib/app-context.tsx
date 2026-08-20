@@ -101,27 +101,29 @@ type AppAction =
       value: AppState[keyof AppState];
     };
 
-const initialAppState: AppState = {
-  isSettingsPanelOpen: false,
-  isCommandPaletteOpen: false,
-  currentThemeColors: defaultPreferences.colors,
-  currentThemeMode: defaultPreferences.mode,
-  panelPosition: { x: 20, y: 80 },
-  isThemeInitialized: false,
-  radius: defaultPreferences.radius,
-  borderWidth: defaultPreferences.borderWidth,
-  spacingScale: defaultPreferences.spacingScale,
-  globalAdjustments: defaultPreferences.globalAdjustments,
-  headerScale: defaultPreferences.headerScale,
-  bodyScale: defaultPreferences.bodyScale,
-  monoFontSizeScale: defaultPreferences.monoFontSizeScale,
-  monoFontWeightScale: defaultPreferences.monoFontWeightScale,
-  monoLetterSpacingScale: defaultPreferences.monoLetterSpacingScale,
-  monoLineHeight: defaultPreferences.monoLineHeight,
-  monoMinFontSizePx: defaultPreferences.monoMinFontSizePx,
-  bodyMinFontSizePx: defaultPreferences.bodyMinFontSizePx,
-  headerMinFontSizePx: defaultPreferences.headerMinFontSizePx,
-};
+function getInitialAppState(): AppState {
+  return {
+    isSettingsPanelOpen: false,
+    isCommandPaletteOpen: false,
+    currentThemeColors: defaultPreferences.colors,
+    currentThemeMode: defaultPreferences.mode,
+    panelPosition: { x: 20, y: 80 },
+    isThemeInitialized: false,
+    radius: defaultPreferences.radius,
+    borderWidth: defaultPreferences.borderWidth,
+    spacingScale: defaultPreferences.spacingScale,
+    globalAdjustments: defaultPreferences.globalAdjustments,
+    headerScale: defaultPreferences.headerScale,
+    bodyScale: defaultPreferences.bodyScale,
+    monoFontSizeScale: defaultPreferences.monoFontSizeScale,
+    monoFontWeightScale: defaultPreferences.monoFontWeightScale,
+    monoLetterSpacingScale: defaultPreferences.monoLetterSpacingScale,
+    monoLineHeight: defaultPreferences.monoLineHeight,
+    monoMinFontSizePx: defaultPreferences.monoMinFontSizePx,
+    bodyMinFontSizePx: defaultPreferences.bodyMinFontSizePx,
+    headerMinFontSizePx: defaultPreferences.headerMinFontSizePx,
+  };
+}
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
@@ -196,7 +198,7 @@ function loadPreferencesFromStorage(): PersistedAppPreferences | null {
 }
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(appReducer, initialAppState);
+  const [state, dispatch] = useReducer(appReducer, undefined, getInitialAppState);
 
   useEffect(() => {
     const savedPrefs = loadPreferencesFromStorage();

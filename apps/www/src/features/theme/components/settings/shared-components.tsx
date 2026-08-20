@@ -153,14 +153,17 @@ export const ColorRow = memo(
     return (
       <div>
         <div
-          className={`mx-[6px] rounded-[12px] ${isExpanded ? "bg-background-700 border border-background-700" : "hover:bg-background-700 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
+          className={`mx-[6px] rounded-[7px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700 active:bg-background-950/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
         >
           <button
             onClick={onToggle}
             className="cursor-pointer w-full flex items-center gap-3 py-[10px] px-[10px] text-left outline-none"
           >
             <div className="relative">
-              <div className="w-7 h-7 rounded-[8px]" style={previewStyle} />
+              <div
+                className="w-6 -ring-2 ring-[previewStyle] h-6 rounded-full"
+                style={previewStyle}
+              />
             </div>
 
             <div className="flex-1 min-w-0 flex flex-col justify-center">
@@ -179,18 +182,20 @@ export const ColorRow = memo(
           <div
             className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"}`}
           >
-            <div className="px-3 pb-4 pt-0">
-              <div className="h-px w-full bg-background-700/30 mb-4" />
-              {type === "background" || type === "accent" ? (
-                <CoreColorControls type={type} color={color} onChange={onChange} />
-              ) : (
-                <SemanticColorPicker
-                  type={type}
-                  color={color}
-                  onChange={onChange}
-                  hueRange={hueRange}
-                />
-              )}
+            <div className="pb-4 pt-0">
+              <div className="h-px w-full bg-background-700 mb-4" />
+              <div className="px-4">
+                {type === "background" || type === "accent" ? (
+                  <CoreColorControls type={type} color={color} onChange={onChange} />
+                ) : (
+                  <SemanticColorPicker
+                    type={type}
+                    color={color}
+                    onChange={onChange}
+                    hueRange={hueRange}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -359,11 +364,7 @@ export const GlobalAdjustmentsPanel = memo(
     const formatChroma = useCallback((v: number) => `×${v.toFixed(2)}`, []);
 
     return (
-      <div className="mx-[6px] mb-2 p-3 bg-background-900/40 rounded-[12px] border border-background-700">
-        <div className={`${MICRO_LABEL} mb-3 flex items-center gap-2`}>
-          <FaSun size={12} className="text-foreground-400" />
-          Global Adjustments
-        </div>
+      <div className="mx-[6px] mb-2 p-3 bg-background-900 rounded-[7px] border border-background-700">
         <div className="space-y-3">
           <GlobalSlider
             label="Lightness"

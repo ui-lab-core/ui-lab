@@ -15,12 +15,11 @@ interface ContentItem {
 }
 
 /**
- * A violet accent reserved for paid/one-time-purchase content. Kept local and
- * literal rather than themed: it is a fixed product signal ("this is Premium"),
- * not the theme's accent, which can be any hue. Everything else derives from it
- * through color-mix so the tint stays coherent in light and dark.
+ * The theme's premium accent for paid/one-time-purchase content. Everything
+ * else derives from it through color-mix so the tint stays coherent in light
+ * and dark.
  */
-const PREMIUM_HUE = "oklch(0.60 0.17 230)";
+const PREMIUM_HUE = "var(--accent-500)";
 
 /**
  * True for any content behind the one-time purchase. Price is no longer shown,
@@ -208,7 +207,7 @@ function FallbackPreview({ kind }: { kind: PreviewKind }) {
 }
 
 export function GenericContentGrid<T extends ContentItem>({
-  items,
+  items: allItems,
   basePath,
   layoutConfigs,
   previews,
@@ -220,6 +219,10 @@ export function GenericContentGrid<T extends ContentItem>({
   previewKind = "element",
 }: GenericContentGridProps<T>) {
   const router = useRouter();
+
+  // Premium content is not surfaced in the grids; it stays reachable only by
+  // its own detail route.
+  const items = allItems.filter((item) => !isPremiumItem(item));
 
   if (items.length === 0) {
     return (

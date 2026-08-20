@@ -80,7 +80,7 @@ export function ResizablePreview({
             layout === "start" ? "items-start" : "items-center",
           )}
         >
-          <div className="min-w-0 text-center [&>*]:mx-auto [&>*]:text-start">{children}</div>
+          <div className="flex min-w-0 justify-center text-start">{children}</div>
         </div>
         {dragging && width !== null ? (
           <span className="pointer-events-none absolute right-2 top-2 z-10 rounded font-mono px-1.5 py-0.5 text-xs font-medium text-foreground-400">

@@ -7,6 +7,7 @@ import { getSpacingCssVariables } from "../shared/layout-variables";
  */
 export function generateFluidSpacingCSS(spacingScale: number): string {
   return Object.entries(getSpacingCssVariables(spacingScale))
+    .filter(([name]) => name !== "--spacing-scale")
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
 }

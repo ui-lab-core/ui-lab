@@ -55,7 +55,7 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
         >
           <div className="h-8 w-12 shrink-0 rounded-md bg-background-500/20" />
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-20" : "w-14"}`} />
-          {n === 0 && <div className="h-2 w-8 rounded-full bg-accent-500/50" />}
+          {n === 0 && <div className="h-2 w-8 rounded-full bg-background-600" />}
         </div>
       ))}
     </Preview>
@@ -101,7 +101,7 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
         >
           <Lines short={n === 1} />
           <div
-            className={`h-5 w-8 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/30"}`}
+            className={`h-5 w-8 shrink-0 rounded-full ${n === 0 ? "bg-background-600" : "bg-background-500/30"}`}
           >
             <div
               className={`m-0.5 size-4 rounded-full bg-background-950 ${n === 0 ? "ml-3.5" : ""}`}
@@ -138,7 +138,7 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
           {[12, 16, 10].map((width, index) => (
             <div
               key={width}
-              className={`h-5 rounded-full ${n === 0 && index === 0 ? "bg-accent-500/40" : "bg-background-500/30"}`}
+              className={`h-5 rounded-full ${n === 0 && index === 0 ? "bg-background-500" : "bg-background-500/30"}`}
               style={{ width: width * 4 }}
             />
           ))}
@@ -159,7 +159,7 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
           />
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-background-500/20">
             <div
-              className="h-full rounded-full bg-accent-500/60"
+              className="h-full rounded-full bg-background-600"
               style={{ width: `${percent}%` }}
             />
           </div>
@@ -249,7 +249,7 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
           className="flex h-12 items-center gap-2.5 rounded-[10px] border-[2px] border-background-500/20 bg-background-950 px-3"
         >
           <div
-            className={`size-3 shrink-0 rounded-full ${n === 0 ? "bg-accent-500/60" : "bg-background-500/40"}`}
+            className={`size-3 shrink-0 rounded-full ${n === 0 ? "bg-background-600" : "bg-background-500/40"}`}
           />
           <div className={`h-2 rounded-full bg-background-500/50 ${n === 0 ? "w-2/3" : "w-1/2"}`} />
         </div>
