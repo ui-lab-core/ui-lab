@@ -234,28 +234,24 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const measureTrigger = React.useCallback((element: HTMLElement | null) => {
       if (!element) return null;
 
-      const rect = element.getBoundingClientRect();
-      const listRect = listRef.current?.getBoundingClientRect();
-
-      if (!listRect) return null;
-
-      const relativeLeft = rect.left - listRect.left;
-      const relativeTop = rect.top - listRect.top;
-
+      // offsetLeft/Top are relative to the list (its nearest positioned
+      // ancestor) and, unlike getBoundingClientRect, are unaffected by any
+      // CSS transform scale applied to an ancestor. Mixing the two spaces
+      // would double-apply the scale once the indicator's own inline
+      // left/top/width styles get transformed again by that ancestor.
       return {
-        left: relativeLeft,
-        top: relativeTop,
-        width: rect.width,
-        height: rect.height,
+        left: element.offsetLeft,
+        top: element.offsetTop,
+        width: element.offsetWidth,
+        height: element.offsetHeight,
       };
     }, []);
 
     const measureList = React.useCallback(() => {
       if (!listRef.current) return;
-      const rect = listRef.current.getBoundingClientRect();
       setListDimensions({
-        width: rect.width,
-        height: rect.height,
+        width: listRef.current.offsetWidth,
+        height: listRef.current.offsetHeight,
       });
     }, []);
 
@@ -472,7 +468,8 @@ interface TabsTriggerStyleSlots {
   icon?: StyleValue | TabsTriggerIconStyles;
 }
 
-interface TabsTriggerProps {
+interface TabsTriggerProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "children"> {
   /** Unique identifier matching the associated TabsContent value */
   value: string;
   /** Whether the tab trigger is disabled */
@@ -541,6 +538,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       children,
       _registerDisabled,
       _unregisterDisabled,
+      ...rest
     },
     ref,
   ) => {
@@ -631,9 +629,13 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       isDisabled: disabled,
       onPressStart: handlePress,
     });
-    const triggerProps = mergeProps(asElementProps<"button">(focusProps), hoverProps, pressProps, {
-      onKeyDown: handleKeyDown,
-    });
+    const triggerProps = mergeProps(
+      rest,
+      asElementProps<"button">(focusProps),
+      hoverProps,
+      pressProps,
+      { onKeyDown: handleKeyDown },
+    );
 
     return (
       <button

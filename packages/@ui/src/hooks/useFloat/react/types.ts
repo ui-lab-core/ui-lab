@@ -72,6 +72,11 @@ export type UseFloatingOptions<RT extends ReferenceType = ReferenceType> = Prett
     /**
      * The `open` state of the floating element to synchronize with the
      * `isPositioned` value.
+     *
+     * It also gates `whileElementsMounted`: while `open` is explicitly `false`,
+     * position tracking is not subscribed at all. Pass it from any consumer
+     * that keeps its floating element mounted while closed, or that element
+     * will keep recomputing its position on every scroll event for nothing.
      * @default false
      */
     open?: boolean;

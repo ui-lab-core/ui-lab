@@ -3,6 +3,7 @@ import { ChartLine, ChartArea, ChartBar, ChartPoint } from "./Chart.Series";
 import { ChartAxis, ChartGrid } from "./Chart.Axis";
 import { ChartCursor, ChartReference } from "./Chart.Decorative";
 import { ChartTooltip, ChartLegend } from "./Chart.Overlays";
+import { GridChart } from "./GridChart";
 
 const Chart = Object.assign(ChartRoot, {
   Line: ChartLine,
@@ -15,6 +16,7 @@ const Chart = Object.assign(ChartRoot, {
   Cursor: ChartCursor,
   Tooltip: ChartTooltip,
   Legend: ChartLegend,
+  GridChart,
 });
 
 export type {
@@ -59,5 +61,11 @@ export type {
   ChartLegendStyleSlots,
   ChartLegendStylesProp,
 } from "./Chart.Overlays";
+export type {
+  GridChartProps,
+  GridChartCellContext,
+  GridChartStyleSlots,
+  GridChartStylesProp,
+} from "./GridChart";
 
-export { Chart, ChartContext, useChartContext };
+export { Chart, ChartContext, GridChart, useChartContext };

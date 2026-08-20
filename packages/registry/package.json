@@ -34,6 +34,10 @@
       "import": "./dist/generated-data.js",
       "types": "./dist/generated-data.d.ts"
     },
+    "./artifacts": {
+      "import": "./dist/artifacts.js",
+      "types": "./dist/artifacts.d.ts"
+    },
     "./components": {
       "import": "./dist/components/index.js",
       "types": "./dist/components/index.d.ts"
@@ -57,7 +61,8 @@
     "build": "pnpm generate && rm -rf dist && tsc",
     "type-check": "tsc --noEmit",
     "generate": "node --import tsx scripts/generate-examples-json.ts && node --import tsx scripts/generate-registry-from-components.ts && node --import tsx scripts/generate-registry-data.ts",
-    "validate": "node --import tsx scripts/validate-registry.ts"
+    "validate": "node --import tsx scripts/validate-registry.ts",
+    "test": "node --import tsx --test src/artifacts.test.ts scripts/generate-public-artifacts.test.ts"
   },
   "dependencies": {
     "react-icons": "^5.5.0",

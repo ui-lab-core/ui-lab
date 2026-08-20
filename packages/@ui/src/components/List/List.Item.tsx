@@ -4,13 +4,13 @@ import React from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import { cn } from "@/lib/utils";
-import { useListContext } from "./list.context";
-import { ListItemProps, ListActionDef } from "./list.types";
+import { useListContext, ListItemContext } from "./list.context";
+import { ListItemProps } from "./list.types";
 import styles from "./List.module.css";
 import { createStylesResolver } from "@/lib/styles";
-import { Tooltip } from "@/components/Tooltip";
 import { focusAdjacentTabStop } from "@/utils/list-navigation";
 import { getListItemSlot } from "./list.item-layout";
+import { Actions } from "./List.Actions";
 
 const resolveListItemStyles = createStylesResolver(["root"] as const);
 
@@ -181,14 +181,18 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
     const hasRowClickAction = typeof onClickProp === "function";
     const itemChildren = React.Children.toArray(children);
     const childSlots = itemChildren.map(getListItemSlot);
+    const hasActionsChild = itemChildren.some(
+      (child) => React.isValidElement(child) && child.type === Actions,
+    );
+    const shouldAppendActions = Boolean(actions?.length) && !hasActionsChild;
     const lastLeadingIndex = childSlots.lastIndexOf("leading");
     const firstTrailingIndex = childSlots.indexOf("trailing");
     const hasStructuralSlots =
-      lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || Boolean(actions?.length);
+      lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || shouldAppendActions;
     const leadingCount = lastLeadingIndex + 1;
     const trailingStart = firstTrailingIndex >= 0 ? firstTrailingIndex : itemChildren.length;
     const contentCount = Math.max(0, trailingStart - leadingCount);
-    const trailingCount = itemChildren.length - trailingStart + (actions?.length ? 1 : 0);
+    const trailingCount = itemChildren.length - trailingStart + (shouldAppendActions ? 1 : 0);
     const hasTrailing = trailingCount > 0;
     const hasLeading = leadingCount > 0;
     const hasContent = contentCount > 0;
@@ -346,50 +350,34 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       },
     });
 
+    const itemContextValue = React.useMemo(() => ({ actions }), [actions]);
+
     return (
-      <div
-        ref={itemRef}
-        role="option"
-        aria-selected={selected ? "true" : "false"}
-        tabIndex={tabIndex}
-        className={cn(styles.item, listStyles.item, className, resolvedStyles.root)}
-        data-list-focus-owner="true"
-        data-focused={dataFocused ?? (isFocused ? "true" : "false")}
-        data-focus-visible={dataFocusVisible ?? (isFocusVisible ? "true" : "false")}
-        data-highlighted={isHighlighted ? "true" : "false"}
-        data-value={value}
-        data-interactive={interactive ? "true" : undefined}
-        data-selected={selected ? "true" : undefined}
-        {...itemProps}
-        data-list-layout={hasStructuralSlots ? "columns" : undefined}
-        style={{
-          ...itemProps.style,
-          gridTemplateColumns: layoutColumns,
-        }}
-      >
-        {children}
-        {actions && actions.length > 0 && (
-          <div className={cn(styles.actions, listStyles.actions)} data-actions>
-            {actions.map((action, i) => {
-              const key = React.isValidElement(action) ? i : (action as ListActionDef).title || i;
-              return React.isValidElement(action) ? (
-                <React.Fragment key={key}>{action}</React.Fragment>
-              ) : (
-                <Tooltip key={key} content={(action as ListActionDef).title} position="top">
-                  <button
-                    type="button"
-                    className={cn(styles.action, listStyles.action)}
-                    aria-label={(action as ListActionDef).title}
-                    onClick={(action as ListActionDef).onClick}
-                  >
-                    {(action as ListActionDef).icon}
-                  </button>
-                </Tooltip>
-              );
-            })}
-          </div>
-        )}
-      </div>
+      <ListItemContext.Provider value={itemContextValue}>
+        <div
+          ref={itemRef}
+          role="option"
+          aria-selected={selected ? "true" : "false"}
+          tabIndex={tabIndex}
+          className={cn(styles.item, listStyles.item, className, resolvedStyles.root)}
+          data-list-focus-owner="true"
+          data-focused={dataFocused ?? (isFocused ? "true" : "false")}
+          data-focus-visible={dataFocusVisible ?? (isFocusVisible ? "true" : "false")}
+          data-highlighted={isHighlighted ? "true" : "false"}
+          data-value={value}
+          data-interactive={interactive ? "true" : undefined}
+          data-selected={selected ? "true" : undefined}
+          {...itemProps}
+          data-list-layout={hasStructuralSlots ? "columns" : undefined}
+          style={{
+            ...itemProps.style,
+            gridTemplateColumns: layoutColumns,
+          }}
+        >
+          {children}
+          {shouldAppendActions && <Actions />}
+        </div>
+      </ListItemContext.Provider>
     );
   },
 );

@@ -281,6 +281,8 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
     const { refs, floatingStyles, x, y, placement } = useFloating({
       placement: "right-start",
       whileElementsMounted: autoUpdate,
+      // Mounted while closed, like the root menu's wrapper.
+      open: submenuContext?.isOpen ?? false,
       middleware: positioning.getMiddleware({
         mainAxis: offset,
         crossAxis: offset,

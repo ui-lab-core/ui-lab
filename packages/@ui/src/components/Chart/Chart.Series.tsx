@@ -134,12 +134,13 @@ const ChartLine = React.forwardRef<SVGGElement, ChartLineProps>(
 );
 ChartLine.displayName = "ChartLine";
 
-/** Line series with a translucent fill down to the baseline */
+/** Line series with an accent fill that fades toward the baseline */
 const ChartArea = React.forwardRef<SVGGElement, ChartAreaProps>(
   ({ y, label, color, curve = "smooth", className, styles: stylesProp }, ref) => {
+    const gradientId = `chart-area-${React.useId().replace(/:/g, "")}`;
     const me = useSeries({ type: "area", y, label, color });
     const points = usePoints(me);
-    const { ready, yScale, yDomain } = useChartContext();
+    const { ready, plot, yScale, yDomain } = useChartContext();
     const resolved = resolveSeriesStyles(stylesProp);
     if (!me || !ready) return null;
     const baseline = yScale(Math.max(yDomain[0], Math.min(yDomain[1], 0)));
@@ -150,7 +151,24 @@ const ChartArea = React.forwardRef<SVGGElement, ChartAreaProps>(
         data-series={me.index}
         style={{ color: me.color }}
       >
-        <path className={cn(styles.area, resolved.mark)} d={areaPath(points, baseline, curve)} />
+        <defs>
+          <linearGradient
+            id={gradientId}
+            gradientUnits="userSpaceOnUse"
+            x1={0}
+            y1={plot.y}
+            x2={0}
+            y2={baseline}
+          >
+            <stop offset="0%" stopColor="currentColor" stopOpacity={0.2} />
+            <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <path
+          className={cn(styles.area, resolved.mark)}
+          d={areaPath(points, baseline, curve)}
+          fill={`url(#${gradientId})`}
+        />
         <path className={cn(styles.line, resolved.mark)} d={linePath(points, curve)} />
         <ActiveMarker points={points} className={resolved.marker} />
       </g>
@@ -161,7 +179,7 @@ ChartArea.displayName = "ChartArea";
 
 const BAR_GAP = 2;
 const BAR_MAX_WIDTH = 24;
-const BAR_RADIUS = 4;
+const BAR_RADIUS = 6;
 
 /** Bar series; band-scaled columns that stack by id or group side by side */
 const ChartBar = React.forwardRef<SVGGElement, ChartBarProps>(
@@ -210,7 +228,7 @@ const ChartBar = React.forwardRef<SVGGElement, ChartBarProps>(
                 columnWidth,
                 height,
                 BAR_RADIUS,
-                segment.cap ? (positive ? "top" : "bottom") : "none",
+                segment.cap ? "both" : "none",
               )}
               data-active={activeIndex === index ? "true" : undefined}
             />

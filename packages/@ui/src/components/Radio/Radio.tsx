@@ -259,6 +259,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
+    const [isPressed, setIsPressed] = React.useState(false);
     const { scopeProps, indicatorProps } = useFocus({
       scopeRef: rootRef,
       containerRef: rootRef,
@@ -278,12 +279,24 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
       inputRef.current?.click();
     };
 
+    // Tracked on the row rather than the hidden input: row clicks, label
+    // clicks, and drag-toggle selection all resolve to a programmatic
+    // input.click() that never dispatches pointerdown/pointerup on the input.
+    const handleMouseDown = () => {
+      if (!disabled) setIsPressed(true);
+    };
+    const handleMouseUp = () => setIsPressed(false);
+    const handleMouseLeave = () => setIsPressed(false);
+
     return (
       <div
         ref={rootRef}
         className={cn("w-full", css["radio-item"], scopeProps.className, resolved.item)}
         data-disabled={disabled ? "true" : undefined}
         onClick={handleRowSelect}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
         <div
@@ -298,6 +311,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
             data-disabled={disabled ? "true" : undefined}
             data-error={error ? "true" : undefined}
             data-hovered={isHovered ? "true" : "false"}
+            data-pressed={!disabled && isPressed ? "true" : "false"}
             role="presentation"
           >
             <div className={cn("dot", css.dot, resolved.dot)} />
@@ -406,6 +420,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
+    const [isPressed, setIsPressed] = React.useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setChecked(e.target.checked);
@@ -435,12 +450,24 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
       inputRef.current?.click();
     };
 
+    // Tracked on the row rather than the hidden input: row clicks, label
+    // clicks, and drag-toggle selection all resolve to a programmatic
+    // input.click() that never dispatches pointerdown/pointerup on the input.
+    const handleMouseDown = () => {
+      if (!disabled) setIsPressed(true);
+    };
+    const handleMouseUp = () => setIsPressed(false);
+    const handleMouseLeave = () => setIsPressed(false);
+
     return (
       <div
         ref={rootRef}
         className={cn(css["radio-item"], scopeProps.className, resolved.item)}
         data-disabled={disabled ? "true" : undefined}
         onClick={handleRowSelect}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
         <div
@@ -455,6 +482,7 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
             data-disabled={disabled ? "true" : undefined}
             data-error={error ? "true" : undefined}
             data-hovered={isHovered ? "true" : "false"}
+            data-pressed={!disabled && isPressed ? "true" : "false"}
             role="presentation"
           >
             <div className={cn("dot", css.dot, resolved.dot)} />

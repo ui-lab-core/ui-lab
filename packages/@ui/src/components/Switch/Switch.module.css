@@ -5,10 +5,10 @@
     --radius: 9999px;
     --inner-radius: calc(var(--radius) - var(--border-width-base, 1px));
 
-    --width: 2.75rem;
-    --height: 1.625rem;
-    --thumb-size: 1.25rem;
-    --thumb-offset: 0.1875rem;
+    --width: 2.4rem;
+    --height: 1.35rem;
+    --thumb-size: 1.05rem;
+    --thumb-offset: 0.15rem;
 
     --disabled-opacity: 0.6;
 

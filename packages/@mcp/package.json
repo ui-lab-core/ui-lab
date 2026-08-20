@@ -12,7 +12,7 @@
   ],
   "license": "MIT",
   "bin": {
-    "ui-lab": "./dist/index.js"
+    "ui-lab-mcp": "./dist/index.js"
   },
   "files": [
     "dist",
@@ -26,7 +26,7 @@
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
     "start": "node dist/index.js",
-    "test": "tsc && node dist/test.js"
+    "test": "tsc && node --test dist/*.test.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",

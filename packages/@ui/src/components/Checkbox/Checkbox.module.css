@@ -18,6 +18,9 @@
     border: var(--border-width-base, 1px) solid var(--background-border);
     border-radius: var(--radius-xs, 0.25rem);
     outline: none;
+    transition-property: transform;
+    transition-duration: var(--press-duration, 120ms);
+    transition-timing-function: var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
 
     &[data-invalid="true"] {
       border-color: var(--background-error-border, var(--danger-600));
@@ -32,6 +35,10 @@
       cursor: not-allowed;
       opacity: var(--disabled-opacity, 0.6);
       pointer-events: none;
+    }
+
+    &[data-pressed="true"]:not([data-disabled="true"]) {
+      transform: var(--press-transform, scale(0.96));
     }
   }
 

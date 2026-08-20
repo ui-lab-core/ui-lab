@@ -7,12 +7,32 @@
     display: block !important;
   }
 
+  /*
+   * `clip` keeps the rounded corners without making the container a scroll
+   * container, so a sticky header resolves against whatever ancestor really
+   * scrolls. Only the measured overflow case swaps in a scroll port, since a
+   * box that scrolls horizontally scrolls on both axes and would capture the
+   * header itself.
+   */
   .container {
-    @apply w-full min-w-0 max-w-full overflow-hidden rounded-sm;
+    @apply w-full min-w-0 max-w-full rounded-sm;
+    overflow: clip;
     /* Keep the public `.container` theme hook from applying Tailwind's breakpoint max-widths. */
     max-width: 100% !important;
     border: var(--border-width-base) solid var(--border, var(--background-border));
     background-color: var(--container-background, var(--background));
+  }
+
+  /* The Scroll port inside handles the overflow in this mode. */
+  .container[data-scroll="horizontal"] {
+    overflow: hidden;
+  }
+
+  /* Rows scroll on their own, so the container just hands down its height. */
+  .container[data-scroll="rows"] {
+    display: flex;
+    height: 100%;
+    min-height: 0;
   }
 
   .scroller {
@@ -62,6 +82,61 @@
     white-space: nowrap;
     border: 0;
     border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
+  }
+
+  /*
+   * `rows` layout: the header is a plain box above the scroll port instead of a
+   * sticky cell inside it, so it keeps ordinary borders, never shifts by a
+   * hairline, and the scrollbar runs beside the rows only. Header and body are
+   * separate boxes now, so every row lines up on one shared grid template.
+   */
+  .table.rowsLayout {
+    /* Grid, not flex: the row track hands the scroll port a definite height. */
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .table.rowsLayout .header {
+    display: block;
+  }
+
+  .bodyScroller {
+    @apply block w-full min-w-0;
+    min-height: 0;
+    overscroll-behavior-block: contain;
+  }
+
+  .table.rowsLayout .body {
+    display: block;
+  }
+
+  .table.rowsLayout .headerRow,
+  .table.rowsLayout .row,
+  .table.rowsLayout .emptyRow {
+    display: grid;
+    grid-template-columns: var(--table-columns, 1fr);
+    align-items: stretch;
+  }
+
+  /*
+   * Grid, not flex: a lone child still stretches to the cell's width, so
+   * `justify-end`, `w-full` children and truncation all behave like they did
+   * in a table cell, while `align-items` keeps the vertical centring.
+   */
+  .table.rowsLayout .headerCell,
+  .table.rowsLayout .cell {
+    display: grid;
+    align-items: center;
+    align-content: center;
+    min-width: 0;
+  }
+
+  .table.rowsLayout .emptyState {
+    display: block;
+    grid-column: 1 / -1;
   }
 
   .row {

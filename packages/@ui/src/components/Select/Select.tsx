@@ -6,8 +6,8 @@ import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useButton } from "@react-aria/button";
 
-import { cn, type StyleValue } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { cn } from "@/lib/utils";
+import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
@@ -35,10 +35,10 @@ export interface SelectState {
 }
 
 export interface SelectStyleSlots {
-  root?: StyleValue;
+  root?: SlotStyleValue;
 }
 
-export type SelectStylesProp = StylesProp<SelectStyleSlots>;
+export type SelectStylesProp = SelectStyleSlots;
 
 export interface SelectContextValue {
   isOpen: boolean;
@@ -92,6 +92,7 @@ export interface SelectContextValue {
   contentId: string;
   hasExternalValue: boolean;
   restoreFocus: (target?: "auto" | "trigger" | "row") => void;
+  rootStyle?: React.CSSProperties;
 }
 
 const SelectContext = React.createContext<SelectContextValue | null>(null);
@@ -147,13 +148,7 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   styles?: SelectStylesProp;
 }
 
-const resolveSelectBaseStyles = createStylesResolver(["root"] as const);
-
-function resolveSelectStyles(styles: SelectStylesProp | undefined) {
-  if (!styles) return resolveSelectBaseStyles(styles);
-  const { root } = styles;
-  return resolveSelectBaseStyles({ root });
-}
+const resolveSelectStyles = createStylePropsResolver(["root"] as const);
 
 const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
   (
@@ -634,6 +629,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
           contentId,
           hasExternalValue,
           restoreFocus,
+          rootStyle: resolvedStyles.root.style,
         }}
       >
         <div
@@ -643,8 +639,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
             styles.select,
             hasExternalValue && styles["select-split"],
             className,
-            resolvedStyles.root,
+            resolvedStyles.root.className,
           )}
+          style={resolvedStyles.root.style}
           data-mode={mode}
           data-select-focus-surface="true"
           data-focused={isFocused ? "true" : "false"}

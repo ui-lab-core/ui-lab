@@ -116,6 +116,13 @@ export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
+export interface ListActionsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Action definitions to render. Falls back to the parent List.Item's `actions` prop. */
+  actions?: Array<ListActionDef | React.ReactNode>;
+  /** Custom action content. Overrides `actions` when provided. */
+  children?: React.ReactNode;
+}
+
 export interface ListCheckboxProps extends React.ComponentPropsWithoutRef<typeof UICheckbox> {
   /** Controls whether the checkbox is placed before or after row content. */
   placement?: "start" | "end";

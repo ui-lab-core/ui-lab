@@ -5,8 +5,8 @@ import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation"
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
 import { offset } from "../../hooks/useFloat/core/middleware/offset";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
-import { cn, type StyleValue } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { cn } from "@/lib/utils";
+import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Select.module.css";
 import { useSelectContext } from "./Select";
@@ -18,15 +18,15 @@ import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from ".
 import { useScrollLock } from "../../hooks/useScrollLock";
 
 export interface SelectContentStyleSlots {
-  root?: StyleValue;
-  overlay?: StyleValue;
-  searchWrapper?: StyleValue;
-  searchInput?: StyleValue;
-  emptyState?: StyleValue;
-  listPaddingWrapper?: StyleValue;
+  root?: SlotStyleValue;
+  overlay?: SlotStyleValue;
+  searchWrapper?: SlotStyleValue;
+  searchInput?: SlotStyleValue;
+  emptyState?: SlotStyleValue;
+  listPaddingWrapper?: SlotStyleValue;
 }
 
-type SelectContentStylesProp = StylesProp<SelectContentStyleSlots>;
+type SelectContentStylesProp = SelectContentStyleSlots;
 
 export interface SelectContentProps extends React.PropsWithChildren {
   /** Additional CSS class names */
@@ -43,7 +43,7 @@ export interface SelectContentProps extends React.PropsWithChildren {
   styles?: SelectContentStylesProp;
 }
 
-const resolveSelectContentBaseStyles = createStylesResolver([
+const resolveSelectContentStyles = createStylePropsResolver([
   "root",
   "overlay",
   "searchWrapper",
@@ -51,19 +51,6 @@ const resolveSelectContentBaseStyles = createStylesResolver([
   "emptyState",
   "listPaddingWrapper",
 ] as const);
-
-function resolveSelectContentStyles(styles: SelectContentStylesProp | undefined) {
-  if (!styles) return resolveSelectContentBaseStyles(styles);
-  const { root, overlay, searchWrapper, searchInput, emptyState, listPaddingWrapper } = styles;
-  return resolveSelectContentBaseStyles({
-    root,
-    overlay,
-    searchWrapper,
-    searchInput,
-    emptyState,
-    listPaddingWrapper,
-  });
-}
 
 /** Floating panel that renders the list of selectable options */
 const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
@@ -103,6 +90,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       moveFocusFromTrigger,
       contentId,
       restoreFocus,
+      rootStyle,
     } = useSelectContext();
     const groupContext = React.useContext(GroupContext);
     const [mounted, setMounted] = React.useState(false);
@@ -119,6 +107,9 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       // Keep the panel anchored to viewport-fixed/sticky triggers without scroll lag.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
+      // The panel stays portalled and hidden while closed, so tracking has to
+      // be gated on the open state rather than on the mount.
+      open: isOpen,
       middleware: [
         offset({
           mainAxis: offsetValue,
@@ -380,8 +371,12 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
     const listContent = (
       <div
-        className={cn(resolved.listPaddingWrapper)}
-        style={{ padding: "0.25rem", display: shouldShowEmptyState ? "none" : undefined }}
+        className={cn(resolved.listPaddingWrapper.className)}
+        style={{
+          ...resolved.listPaddingWrapper.style,
+          padding: "0.25rem",
+          display: shouldShowEmptyState ? "none" : undefined,
+        }}
         aria-hidden={shouldShowEmptyState || undefined}
       >
         <List items={filteredItems} gap="xs">
@@ -410,7 +405,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     );
 
     const searchContent = searchable ? (
-      <div key="search" className={cn(styles["search-wrapper"], resolved.searchWrapper)}>
+      <div
+        key="search"
+        className={cn(styles["search-wrapper"], resolved.searchWrapper.className)}
+        style={resolved.searchWrapper.style}
+      >
         <Input
           ref={inputRef}
           type="text"
@@ -426,7 +425,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           onKeyDown={handleInputKeyDown}
           placeholder={searchPlaceholder}
           variant="ghost"
-          className={cn(styles["search-content-input"], resolved.searchInput)}
+          className={cn(styles["search-content-input"], resolved.searchInput.className)}
+          style={resolved.searchInput.style}
         />
       </div>
     ) : null;
@@ -434,7 +434,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const emptyStateContent = shouldShowEmptyState ? (
       <div
         key="empty-state"
-        className={cn("empty-state", styles["empty-state"], resolved.emptyState)}
+        className={cn("empty-state", styles["empty-state"], resolved.emptyState.className)}
+        style={resolved.emptyState.style}
         role="status"
         aria-live="polite"
       >
@@ -450,8 +451,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       <>
         <div
           ref={mergedFloatingRef}
-          className={cn("select", styles["content-root"], resolved.overlay)}
+          className={cn("select", styles["content-root"], resolved.overlay.className)}
           style={{
+            ...rootStyle,
+            ...resolved.overlay.style,
             ...floatingStyles,
             zIndex: 50000,
             visibility: showContent ? "visible" : "hidden",
@@ -462,12 +465,13 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             ref={mergedContentRef}
             id={contentId}
             role="listbox"
-            className={cn("content", styles.content, className, resolved.root)}
+            className={cn("content", styles.content, className, resolved.root.className)}
             data-state={showContent ? "open" : "closed"}
             data-placement={placement.split("-")[0]}
             tabIndex={-1}
             onKeyDown={handleKeyDown}
             style={{
+              ...resolved.root.style,
               outline: "none",
               ...animationStyles,
             }}

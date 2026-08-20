@@ -11,6 +11,16 @@ const data = [
   { month: "Jun", revenue: 89 },
 ];
 
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const activity = months.flatMap((month, monthIndex) =>
+  weekdays.map((day, dayIndex) => ({
+    month,
+    day,
+    contributions: (monthIndex * 7 + dayIndex * 11) % 18,
+  })),
+);
+
 const chartBasicCode = `import { Chart } from "ui-lab-components";
 
 const data = [
@@ -34,16 +44,42 @@ export function Example() {
   );
 }`;
 
+const chartGridCode = `import { GridChart } from "ui-lab-components";
+
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const activity = months.flatMap((month, monthIndex) =>
+  weekdays.map((day, dayIndex) => ({
+    month,
+    day,
+    contributions: (monthIndex * 7 + dayIndex * 11) % 18,
+  })),
+);
+
+export function Example() {
+  return (
+    <GridChart
+      data={activity}
+      x="month"
+      y="day"
+      value="contributions"
+      columns={months}
+      rows={weekdays}
+      levels={5}
+      aria-label="Contributions by month and weekday"
+    />
+  );
+}`;
+
 export const chartDetail: ComponentDetail = {
   id: "chart",
   name: "Chart",
   description:
-    "A composable data visualization component for lines, areas, bars, points, and annotations.",
+    "Composable line, area, bar, point, and grid data visualizations.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        Chart turns structured rows into accessible line, area, bar, and point visualizations with
-        shared axes and scales.
+        Chart turns structured rows into accessible line, area, bar, point, and grid visualizations.
       </p>
       <p>
         Compose series with grids, references, legends, and tooltips to compare trends or highlight
@@ -66,6 +102,24 @@ export const chartDetail: ComponentDetail = {
           <Chart.Line y="revenue" label="Revenue" />
           <Chart.Tooltip />
         </Chart>
+      ),
+    },
+    {
+      id: "grid",
+      name: "Grid",
+      description: "A stepped-color grid for heatmaps, contribution charts, and categorical matrices.",
+      code: chartGridCode,
+      preview: (
+        <Chart.GridChart
+          data={activity}
+          x="month"
+          y="day"
+          value="contributions"
+          columns={months}
+          rows={weekdays}
+          levels={5}
+          aria-label="Contributions by month and weekday"
+        />
       ),
     },
   ],

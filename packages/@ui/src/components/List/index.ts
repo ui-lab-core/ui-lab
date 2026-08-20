@@ -6,6 +6,7 @@ import {
   Footer as ListFooter,
 } from "./List";
 import { Item } from "./List.Item";
+import { Actions } from "./List.Actions";
 import { Checkbox, CheckboxIndicator, Switch, Input, Select } from "./List.Controls";
 import { Media } from "./List.Media";
 import { Title } from "./List.Title";
@@ -14,6 +15,7 @@ import { Desc } from "./List.Desc";
 const List = Object.assign(ListRoot, {
   Header: ListHeader,
   Item,
+  Actions,
   Checkbox,
   CheckboxIndicator,
   Switch,
@@ -40,6 +42,7 @@ export type {
   ListStylesProp,
   ListHeaderProps,
   ListItemProps,
+  ListActionsProps,
   ListCheckboxProps,
   ListMediaProps,
   ListTitleProps,

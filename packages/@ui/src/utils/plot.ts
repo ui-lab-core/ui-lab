@@ -66,6 +66,14 @@ export function bandwidth(count: number, size: number, padding = 0.2): number {
   return Math.max(0, (size / count) * (1 - padding));
 }
 
+/** Evenly spaced positions flush with both range edges — first/last points sit at r0/r1. */
+export function pointPosition(index: number, count: number, range: [number, number]): number {
+  const [r0, r1] = range;
+  if (count <= 1) return (r0 + r1) / 2;
+  const step = (r1 - r0) / (count - 1);
+  return r0 + step * index;
+}
+
 function niceNumber(value: number, round: boolean): number {
   const exponent = Math.floor(Math.log10(value));
   const fraction = value / 10 ** exponent;
@@ -321,11 +329,11 @@ export function roundedRectPath(
   width: number,
   height: number,
   radius: number,
-  rounded: "top" | "bottom" | "none",
+  rounded: "top" | "bottom" | "both" | "none",
 ): string {
   const w = Math.max(0, width);
   const h = Math.max(0, height);
-  const r = Math.min(Math.max(0, radius), w / 2, h);
+  const r = Math.min(Math.max(0, radius), w / 2, h / (rounded === "both" ? 2 : 1));
   const x1 = formatCoordinate(x);
   const x2 = formatCoordinate(x + w);
   const y1 = formatCoordinate(y);
@@ -336,7 +344,10 @@ export function roundedRectPath(
   if (rounded === "top") {
     return `M${x1},${y2}V${formatCoordinate(y + r)}Q${x1},${y1} ${formatCoordinate(x + r)},${y1}H${formatCoordinate(x + w - r)}Q${x2},${y1} ${x2},${formatCoordinate(y + r)}V${y2}Z`;
   }
-  return `M${x1},${y1}H${x2}V${formatCoordinate(y + h - r)}Q${x2},${y2} ${formatCoordinate(x + w - r)},${y2}H${formatCoordinate(x + r)}Q${x1},${y2} ${x1},${formatCoordinate(y + h - r)}Z`;
+  if (rounded === "bottom") {
+    return `M${x1},${y1}H${x2}V${formatCoordinate(y + h - r)}Q${x2},${y2} ${formatCoordinate(x + w - r)},${y2}H${formatCoordinate(x + r)}Q${x1},${y2} ${x1},${formatCoordinate(y + h - r)}Z`;
+  }
+  return `M${x1},${formatCoordinate(y + r)}Q${x1},${y1} ${formatCoordinate(x + r)},${y1}H${formatCoordinate(x + w - r)}Q${x2},${y1} ${x2},${formatCoordinate(y + r)}V${formatCoordinate(y + h - r)}Q${x2},${y2} ${formatCoordinate(x + w - r)},${y2}H${formatCoordinate(x + r)}Q${x1},${y2} ${x1},${formatCoordinate(y + h - r)}Z`;
 }
 
 export function formatValue(value: number | string | Date | null | undefined): string {

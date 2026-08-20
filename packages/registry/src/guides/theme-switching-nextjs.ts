@@ -143,7 +143,30 @@ const themeSwitchingNextJsGuide: GuideMetadata = {
   --info-600: oklch(81.0% 0.190 255.0);
 }
 
-/* Tailwind color utilities always point at the active tokens. */
+/* The @theme inline mapping that exposes these tokens as Tailwind color
+   utilities does NOT live here. Tailwind v4 only processes @theme in the
+   stylesheet that imports tailwindcss; under Next.js Turbopack an @import-ed
+   theme.css is handled by Next's own CSS loader, so an @theme rule here fails
+   at runtime with "Unknown at rule: @theme". Keep @theme in globals.css (see
+   the next step) and keep only plain custom-property blocks in this file. */`,
+      language: "css",
+      path: "app/theme.css",
+    },
+    {
+      title: "Import the local theme before UI Lab styles and map tokens to Tailwind here",
+      goal: "Ensure the component styles consume the active app-owned tokens and expose those tokens as Tailwind color utilities from the entry stylesheet.",
+      instructions: [
+        "Import theme.css before ui-lab-components/styles.css.",
+        "Keep tailwindcss first if the project uses Tailwind v4 imports.",
+        "Import this stylesheet exactly once, before any other app or component module, from the application entry point (e.g. the root layout import in Next.js) — otherwise UI Lab's component CSS layers can register before Tailwind's layers.",
+        "Put the @theme inline mapping in this entry stylesheet, not in theme.css. Tailwind only processes @theme in the file that imports tailwindcss; placed in an @import-ed file it errors under Next.js Turbopack with \"Unknown at rule: @theme\". Because the mapping uses var() references, the tokens it points at resolve at runtime regardless of import order.",
+      ],
+      code: `@import "tailwindcss";
+@import "./theme.css";
+@import "ui-lab-components/styles.css";
+
+/* Tailwind color utilities always point at the active tokens.
+   Must live in this entry stylesheet — see the theme.css step. */
 @theme inline {
   --color-background-500: var(--background-500);
   --color-background-600: var(--background-600);
@@ -192,20 +215,6 @@ const themeSwitchingNextJsGuide: GuideMetadata = {
   --color-info-500: var(--info-500);
   --color-info-600: var(--info-600);
 }`,
-      language: "css",
-      path: "app/theme.css",
-    },
-    {
-      title: "Import the local theme before UI Lab styles",
-      goal: "Ensure the component styles consume the active app-owned tokens.",
-      instructions: [
-        "Import theme.css before ui-lab-components/styles.css.",
-        "Keep tailwindcss first if the project uses Tailwind v4 imports.",
-        "Import this stylesheet exactly once, before any other app or component module, from the application entry point (e.g. the root layout import in Next.js) — otherwise UI Lab's component CSS layers can register before Tailwind's layers.",
-      ],
-      code: `@import "tailwindcss";
-@import "./theme.css";
-@import "ui-lab-components/styles.css";`,
       language: "css",
       path: "app/globals.css",
     },
@@ -265,6 +274,16 @@ export function ThemeToggle() {
   );
 }`,
       language: "tsx",
+    },
+    {
+      title: "Pick the right theme hook",
+      goal: "Avoid guessing between the four overlapping theme hooks the package exports.",
+      instructions: [
+        "useColorMode() — standalone light/dark control. Returns { themeMode, setThemeMode, toggleThemeMode } backed by storage; it does NOT require a ThemeProvider ancestor, which is why the toggle above uses it alongside the server-stamped layout. Use this for theme toggles in the cookie-backed setup.",
+        "useThemeMode() — the same { themeMode, setThemeMode, toggleThemeMode } shape, but read from ThemeProvider context. Use it only when the app is wrapped in ThemeProvider and you want the toggle to share that context.",
+        "useThemeVariables() — full ThemeProvider context (every resolved theme variable plus the mode controls). Use it when a component needs the computed token values, not just the mode.",
+        "useTheme() — thin alias for useThemeVariables(); prefer useThemeVariables() directly for clarity.",
+      ],
     },
   ],
   validation: [

@@ -22,7 +22,7 @@ export async function handleSearchWorkshop(input: {
 
   const kind = input.kind ?? "all";
   if (input.detail === "full") {
-    const item = getWorkshopItem(query, kind, input.variation);
+    const item = getWorkshopItem(query, kind);
     if (!item) {
       throw new Error(
         `No exact workshop item${input.variation ? " or variation" : ""} matches "${query}".`,

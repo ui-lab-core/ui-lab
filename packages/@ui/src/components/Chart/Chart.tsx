@@ -12,6 +12,7 @@ import {
   toNumeric,
   createLinearScale,
   bandPosition,
+  pointPosition,
   bandwidth,
   niceScale,
   tickIndices,
@@ -292,9 +293,10 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
     const xPosition = React.useCallback(
       (index: number) => {
         if (xLinear) return xLinear(xNumeric[index]);
-        return bandPosition(index, data.length, [plot.x, plot.x + plot.width]);
+        if (hasBars) return bandPosition(index, data.length, [plot.x, plot.x + plot.width]);
+        return pointPosition(index, data.length, [plot.x, plot.x + plot.width]);
       },
-      [xLinear, xNumeric, data.length, plot.x, plot.width],
+      [xLinear, xNumeric, hasBars, data.length, plot.x, plot.width],
     );
     const xPositions = React.useMemo(
       () => data.map((_, index) => xPosition(index)),

@@ -12,5 +12,6 @@ import { startServer } from "./server.js";
  */
 startServer().catch((error) => {
   console.error("[UI Lab MCP] Fatal error:", error);
+  console.error("[UI Lab MCP] The MCP command is ui-lab-mcp; ui-lab is owned by @ui-lab/cli.");
   process.exit(1);
 });

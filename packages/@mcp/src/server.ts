@@ -39,6 +39,6 @@ export async function startServer(): Promise<void> {
   const server = await createServer();
   await server.connect(new StdioServerTransport());
 
-  console.error("[UI Lab MCP] Server started successfully");
+  console.error("[UI Lab MCP] Server started successfully (command: ui-lab-mcp)");
   console.error("[UI Lab MCP] Listening for connections...");
 }

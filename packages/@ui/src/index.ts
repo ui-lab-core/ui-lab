@@ -228,7 +228,7 @@ export type { ScrollProps, ScrollTrackProps, ScrollThumbProps } from "./componen
 export { Table } from "./components/Table";
 export type { TableProps, Column, TableCellRenderContext } from "./components/Table";
 
-export { Chart, useChartContext } from "./components/Chart";
+export { Chart, GridChart, useChartContext } from "./components/Chart";
 export type {
   ChartProps,
   ChartState,
@@ -245,6 +245,10 @@ export type {
   ChartReferenceProps,
   ChartTooltipProps,
   ChartLegendProps,
+  GridChartProps,
+  GridChartCellContext,
+  GridChartStyleSlots,
+  GridChartStylesProp,
 } from "./components/Chart";
 
 export { Code } from "./components/Code";

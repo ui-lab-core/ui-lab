@@ -91,6 +91,12 @@
     border-radius: var(--background-radius);
     box-sizing: border-box;
     overflow: hidden;
+    transition: border-color var(--focus-transition-duration, 150ms)
+      var(--focus-transition-timing-function, var(--ease-snappy-pop, ease-out));
+
+    &[data-focused="true"]:not([data-disabled]) {
+      border-color: var(--focus-border, var(--background-border));
+    }
 
     &[data-disabled] {
       background-color: var(--disabled-background);

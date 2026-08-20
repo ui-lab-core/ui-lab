@@ -41,7 +41,6 @@
 
   .track {
     --thickness: var(--size, calc(var(--spacing-md) * 0.8));
-    --length: calc(var(--thickness) * var(--ratio, 0.666667));
     position: relative;
     width: 100%;
     height: var(--thickness);
@@ -71,10 +70,21 @@
   }
 
   .thumb {
+    --thumb-inline-size: var(
+      --thumb-width,
+      var(--thumb-size, var(--progress-thumb-size, var(--width, auto)))
+    );
+    --thumb-block-size: var(
+      --thumb-height,
+      var(--thumb-size, var(--progress-thumb-size, var(--height, 100%)))
+    );
+
     position: absolute;
     top: var(--top, 0);
-    width: var(--width, var(--length));
-    height: var(--height, 100%);
+    box-sizing: border-box;
+    width: var(--thumb-inline-size);
+    height: var(--thumb-block-size);
+    aspect-ratio: var(--thumb-ratio, var(--ratio, 0.666667));
     transform: var(--transform, translateX(-50%));
     border-radius: var(--radius, var(--radius-sm, 0.375rem));
     background: var(--background);

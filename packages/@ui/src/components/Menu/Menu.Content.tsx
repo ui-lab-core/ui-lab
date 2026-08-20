@@ -185,6 +185,9 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
           : (`${side}${align === "center" ? "" : `-${align}`}` as any),
       strategy: "absolute",
       whileElementsMounted: autoUpdate,
+      // The floating wrapper stays mounted while closed; only its children are
+      // conditional. Gate tracking on the open state.
+      open: isOpen,
       middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: offset }),
     });
 

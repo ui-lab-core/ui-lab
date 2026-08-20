@@ -4,6 +4,7 @@ export {
   toNumeric,
   createLinearScale,
   bandPosition,
+  pointPosition,
   bandwidth,
   niceScale,
   tickIndices,

@@ -135,6 +135,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       () => state?.checked ?? checked ?? defaultChecked ?? false,
     );
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const [isPressed, setIsPressed] = React.useState(false);
     const { scopeProps, indicatorProps } = useFocus({
       scopeRef: rootRef,
       containerRef: rootRef,
@@ -165,6 +166,15 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
       onChange: handleChange,
     }) as React.InputHTMLAttributes<HTMLInputElement>;
 
+    // Tracked on the root rather than the input: label clicks and
+    // drag-toggle selection resolve to a programmatic input.click() that
+    // never dispatches pointerdown/pointerup on the input itself.
+    const handleMouseDown = () => {
+      if (!disabled) setIsPressed(true);
+    };
+    const handleMouseUp = () => setIsPressed(false);
+    const handleMouseLeave = () => setIsPressed(false);
+
     // Controlled only when the caller passes state.checked
     const isControlled = state?.checked !== undefined;
     const displayChecked = state?.checked ?? internalChecked;
@@ -194,6 +204,9 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
         data-invalid={resolvedInvalid ? "true" : undefined}
         data-indeterminate={resolvedIndeterminate ? "true" : undefined}
         data-selected={displayChecked ? "true" : undefined}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
         <div className={cn(css.container)}>
@@ -210,6 +223,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             data-invalid={resolvedInvalid ? "true" : undefined}
             data-error={resolvedInvalid ? "true" : undefined}
             data-indeterminate={resolvedIndeterminate ? "true" : undefined}
+            data-pressed={!disabled && isPressed ? "true" : "false"}
             data-focused={isFocused ? "true" : "false"}
             data-focus-visible={isFocusVisible ? "true" : "false"}
             data-checkbox-focus-surface="true"

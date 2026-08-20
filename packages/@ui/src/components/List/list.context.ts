@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { ListOrientation, ListStyleSlot } from "./list.types";
+import type { ListActionDef, ListOrientation, ListStyleSlot } from "./list.types";
 
 interface SetFocusedItemOptions {
   enterFocusMode?: boolean;
@@ -35,3 +35,12 @@ export const useListContext = () => {
   }
   return context;
 };
+
+interface ListItemContextValue {
+  /** Action definitions supplied via the List.Item `actions` prop */
+  actions?: Array<ListActionDef | React.ReactNode>;
+}
+
+export const ListItemContext = React.createContext<ListItemContextValue>({});
+
+export const useListItemContext = () => React.useContext(ListItemContext);

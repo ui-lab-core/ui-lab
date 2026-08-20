@@ -262,6 +262,7 @@
     "@react-aria/radio": "^3.12.4",
     "@react-aria/switch": "^3.7.10",
     "@react-aria/utils": "^3.24.2",
+    "@react-stately/flags": "^3.1.2",
     "@react-stately/overlays": "^3.6.7",
     "@react-types/shared": "^3.33.0",
     "@vitest/coverage-v8": "^4.1.0",

@@ -1,4 +1,3 @@
-import { getElementEntry, listElements } from "@ui-lab-core/library/server";
 import type { ComponentMetadata } from "ui-lab-registry";
 import { registryAdapter } from "../adapters/registry-adapter.js";
 
@@ -17,56 +16,62 @@ function componentSummary(component: ComponentMetadata) {
 }
 
 function componentExamples(componentId: string) {
-  return listElements("components")
-    .filter(
-      (entry) =>
-        entry.groupPath[0] === componentId &&
-        entry.previewEligible &&
-        entry.visibility === "public" &&
-        entry.access === "free",
-    )
-    .map((entry) => ({
-      ref: `${componentId}/${entry.id}`,
-      name: entry.displayName,
-      description: entry.description,
-    }));
+  const component = registryAdapter.getComponent(componentId);
+  return (component?.examples ?? []).map((example, index) => ({
+    ref: `${componentId}/${example.id ?? index + 1}`,
+    name: example.name ?? example.title ?? `Example ${index + 1}`,
+    description: example.description,
+  }));
 }
 
 function getExample(reference: string) {
   const [componentId, exampleId, ...rest] = reference.split("/");
   if (!componentId || !exampleId || rest.length > 0) return null;
 
-  const example =
-    getElementEntry("components", exampleId) ??
-    getElementEntry("components", exampleId.replace(/^\d+-/, ""));
-
-  if (
-    !example ||
-    example.groupPath[0] !== componentId ||
-    !example.previewEligible ||
-    example.visibility !== "public" ||
-    example.access !== "free"
-  ) {
-    return null;
-  }
+  const component = registryAdapter.getComponent(componentId);
+  const example = component?.examples?.find(
+    (candidate, index) => (candidate.id ?? String(index + 1)) === exampleId,
+  );
+  if (!example) return null;
 
   return {
-    ref: `${componentId}/${example.id}`,
+    ref: `${componentId}/${example.id ?? exampleId}`,
     component: componentId,
-    name: example.displayName,
+    name: example.name ?? example.title,
     description: example.description,
     code: example.code,
-    files: example.files,
   };
 }
 
 function componentImport(component: ComponentMetadata) {
+  const { packageName, exportName } = component.source;
   return {
-    packageName: component.source.packageName,
-    importPath: component.source.packagePath,
-    exportName: component.source.exportName,
-    statement: `import { ${component.source.exportName} } from '${component.source.packagePath}';`,
+    packageName,
+    importPath: packageName,
+    exportName,
+    statement: `import { ${exportName} } from '${packageName}';`,
   };
+}
+
+// Compound components are exported as a namespace (Select.Content), but the
+// registry keys their subComponents by the flat runtime export name
+// (SelectContent). Surface the namespaced accessor agents actually write in JSX.
+function componentApi(component: ComponentMetadata) {
+  const api = component.api;
+  if (!api?.subComponents) return api;
+
+  const { exportName } = component.source;
+  const subComponents = Object.fromEntries(
+    Object.entries(api.subComponents).map(([key, value]) => {
+      const accessor =
+        key.startsWith(exportName) && key.length > exportName.length
+          ? `${exportName}.${key.slice(exportName.length)}`
+          : key;
+      return [accessor, value];
+    }),
+  );
+
+  return { ...api, subComponents };
 }
 
 export async function handleGetComponent(input: { query: string; detail?: ComponentDetail }) {
@@ -93,7 +98,7 @@ export async function handleGetComponent(input: { query: string; detail?: Compon
       component: {
         ...componentSummary(component),
         import: componentImport(component),
-        api: component.api,
+        api: componentApi(component),
       },
     };
   }
@@ -120,7 +125,7 @@ export async function handleGetComponent(input: { query: string; detail?: Compon
       relatedComponents: component.relatedComponents,
       accessibility: component.accessibility,
       reactAriaUrl: component.reactAriaUrl,
-      api: component.api,
+      api: componentApi(component),
       usage: component.usage,
       examples,
       experimental: component.experimental,

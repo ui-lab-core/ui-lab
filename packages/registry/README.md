@@ -1,15 +1,41 @@
 # ui-lab-registry
 
-A centralized, framework-agnostic component registry for the UI Lab ecosystem.
+The public, versioned knowledge artifact for UI Lab. It is the canonical input
+for documentation, the MCP, and the future CLI's planning decisions.
 
-## Overview
+## Responsibilities
 
-This package provides:
+- Publish public component metadata, APIs, usage guidance, dependencies, and
+  curated examples.
+- Publish framework-agnostic setup guidance and the requirements the CLI needs
+  to plan an installation.
+- Publish only public source artifacts that UI Lab explicitly supports copying.
+  A future source artifact must be generated, versioned, and complete: every
+  file, output path, entry point, dependency, and integrity hash belongs in its
+  manifest.
+- Preserve stable IDs and schemas so the MCP and CLI can work against the same
+  package version.
 
-- Component metadata (names, descriptions, categories)
-- Component source code references
-- Component relationships and dependencies
-- Category definitions and organization
+## Non-responsibilities
+
+- Installing dependencies, editing a consumer project, authenticating a user,
+  or storing credentials.
+- Distributing premium source. Premium items may be represented by metadata and
+  an access requirement, but their source must never be bundled here.
+- Serving network requests. This package is a local npm artifact, not a registry
+  service.
+
+## Current state
+
+Copyable source is represented by the separate `SourceArtifact` contract. It
+contains a schema version, stable ID/version, entrypoints, full file manifest,
+output paths, language/kind, integrity hashes, npm requirements, and UI Lab
+requirements. The generator recursively includes relative imports without
+rewriting source, plus explicitly declared CSS, assets, manifests, and support
+files. Standard components remain package installs from `ui-lab-components`.
+`generatedSourceCode` is retired from public exports and must not be used for
+installation. Premium entries may expose metadata and install intent only;
+premium source and file manifests are never published by this package.
 
 ## Installation
 

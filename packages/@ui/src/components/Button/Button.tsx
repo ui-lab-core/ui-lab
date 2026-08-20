@@ -6,6 +6,8 @@ import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useButton } from "@react-aria/button";
+import { enableShadowDOM } from "@react-stately/flags";
+import type { FocusableElement, PressEvent } from "@react-types/shared";
 
 import { cn } from "@/lib/utils";
 import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
@@ -14,6 +16,10 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { type HintValue, hasHint, renderHint } from "@/lib/hint";
 import { Badge } from "../Badge";
 import css from "./Button.module.css";
+
+// React Aria otherwise reads retargeted document-level events as coming from the
+// shadow host, which cancels presses completed inside a ShadowRoot.
+enableShadowDOM();
 
 type ButtonSize = string & {};
 type ButtonIconSlots = {
@@ -79,7 +85,7 @@ export interface ButtonProps extends Omit<
   /** Disables interaction and applies disabled styling */
   disabled?: boolean;
   /** React Aria press handler — preferred over onClick for accessibility */
-  onPress?: (e: { target: EventTarget | null }) => void;
+  onPress?: (e: PressEvent) => void;
   /** Icon slots rendered before (left) or after (right) the button label */
   icon?: React.ReactNode | ButtonIconSlots;
   /** Keyboard shortcut or hint rendered as a Badge at the end of the button. An array renders its segments joined by a `+` divider. */
@@ -182,6 +188,9 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       children,
       onClick,
       onPress,
+      onMouseDown,
+      onMouseUp,
+      onMouseLeave,
       disabled = false,
       icon,
       hint,
@@ -199,12 +208,11 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const [isPressed, setIsPressed] = React.useState(false);
     const isAnchor = !!href;
 
-    const handlePress = React.useCallback(
-      (e: any) => {
-        if (onPress) onPress({ target: e.target });
-        if (onClick) onClick(e as unknown as React.MouseEvent<HTMLButtonElement>);
+    const handleClick = React.useCallback(
+      (e: React.MouseEvent<FocusableElement>) => {
+        onClick?.(e as React.MouseEvent<HTMLButtonElement>);
       },
-      [onPress, onClick],
+      [onClick],
     );
 
     const handleMouseDown = React.useCallback(
@@ -212,31 +220,33 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         if (!isButtonDisabled) {
           setIsPressed(true);
         }
-        props.onMouseDown?.(e as any);
+        onMouseDown?.(e as any);
       },
-      [isButtonDisabled, props],
+      [isButtonDisabled, onMouseDown],
     );
 
     const handleMouseUp = React.useCallback(
       (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         setIsPressed(false);
-        props.onMouseUp?.(e as any);
+        onMouseUp?.(e as any);
       },
-      [props],
+      [onMouseUp],
     );
 
     const handleMouseLeave = React.useCallback(
       (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         setIsPressed(false);
-        props.onMouseLeave?.(e as any);
+        onMouseLeave?.(e as any);
       },
-      [props],
+      [onMouseLeave],
     );
 
     const { buttonProps } = useButton(
       {
+        elementType: isAnchor ? "a" : "button",
         isDisabled: isButtonDisabled,
-        onPress: handlePress,
+        onPress,
+        onClick: handleClick,
       },
       buttonRef as React.RefObject<HTMLButtonElement>,
     );
@@ -310,7 +320,11 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     if (isAnchor) {
       return (
         <a
-          {...mergeProps(focusProps, hoverProps, props as any)}
+          {...mergeProps(buttonProps, focusProps, hoverProps, props as any, {
+            onMouseDown: handleMouseDown,
+            onMouseUp: handleMouseUp,
+            onMouseLeave: handleMouseLeave,
+          })}
           {...targetProps}
           ref={mergedRef as unknown as React.RefObject<HTMLAnchorElement>}
           href={href}
@@ -337,13 +351,14 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
 
     return (
       <button
-        {...mergeProps(buttonProps, focusProps, hoverProps, props)}
+        {...mergeProps(buttonProps, focusProps, hoverProps, props, {
+          onMouseDown: handleMouseDown,
+          onMouseUp: handleMouseUp,
+          onMouseLeave: handleMouseLeave,
+        })}
         {...targetProps}
         disabled={isButtonDisabled}
         ref={mergedRef as unknown as React.RefObject<HTMLButtonElement>}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
         className={buttonClassName}
         data-disabled={isButtonDisabled ? "true" : undefined}
         data-pressed={isVisualPressed ? "true" : "false"}

@@ -36,11 +36,23 @@ export interface ScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: "vertical" | "horizontal";
   paddingY?: string | number;
   "fade-y"?: boolean;
+  "fade-x"?: boolean;
   fadeDistance?: number;
   fadeSize?: number;
   enabled?: boolean;
   hide?: boolean;
   inline?: boolean;
+
+  /**
+   * Controls whether the viewport itself consumes user scroll input.
+   *
+   * - "native": normal scroll container behavior.
+   * - "programmatic": the viewport can still be changed through scrollTop /
+   *   scrollLeft, but wheel/trackpad scrolling falls through to the document.
+   */
+  scrollMode?: "native" | "programmatic";
+
+  presentational?: boolean;
   styles?: ScrollStylesProp;
   storageKey?: string;
 }
@@ -62,10 +74,18 @@ const SCROLLBAR_VISIBILITY_EPSILON = 1;
 
 function getInitialScrollFadeVars(
   direction: ScrollProps["direction"],
+  fadeX: boolean,
   fadeY: boolean,
   fadeSize: number,
 ): React.CSSProperties {
-  if (direction !== "vertical" || !fadeY) {
+  if (direction === "horizontal") {
+    return {
+      "--mask-left-fade": "0%",
+      "--mask-right-fade": fadeX ? `${fadeSize}%` : "0%",
+    } as React.CSSProperties;
+  }
+
+  if (!fadeY) {
     return {
       "--mask-top-fade": "0%",
       "--mask-bottom-fade": "0%",
@@ -201,11 +221,14 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       direction = "vertical",
       paddingY = 4,
       "fade-y": fadeY = false,
+      "fade-x": fadeX = false,
       fadeDistance = 5,
       fadeSize = 4,
       enabled = true,
       hide = true,
       inline = false,
+      scrollMode = "native",
+      presentational = false,
       styles,
       storageKey,
       style: propsStyle,
@@ -281,16 +304,20 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       thumbSizeRef.current = newThumbSize;
       setThumbPosition(newThumbPos);
 
-      if (!isHoriz && maskRef.current) {
+      if (maskRef.current) {
         const maskNode = maskRef.current;
-        if (fadeY && needs) {
+        const fadeEnabled = isHoriz ? fadeX : fadeY;
+        const startFadeProperty = isHoriz ? "--mask-left-fade" : "--mask-top-fade";
+        const endFadeProperty = isHoriz ? "--mask-right-fade" : "--mask-bottom-fade";
+
+        if (fadeEnabled && needs) {
           const topP = Math.min(1, Math.max(0, currentScroll / fadeDistance));
           const botP = Math.min(1, Math.max(0, (maxScroll - currentScroll) / fadeDistance));
-          maskNode.style.setProperty("--mask-top-fade", `${topP * fadeSize}%`);
-          maskNode.style.setProperty("--mask-bottom-fade", `${botP * fadeSize}%`);
+          maskNode.style.setProperty(startFadeProperty, `${topP * fadeSize}%`);
+          maskNode.style.setProperty(endFadeProperty, `${botP * fadeSize}%`);
         } else {
-          maskNode.style.setProperty("--mask-top-fade", "0%");
-          maskNode.style.setProperty("--mask-bottom-fade", "0%");
+          maskNode.style.setProperty(startFadeProperty, "0%");
+          maskNode.style.setProperty(endFadeProperty, "0%");
         }
       }
     }, [
@@ -299,6 +326,7 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       scrollSizeKey,
       scrollPosKey,
       numPaddingY,
+      fadeX,
       fadeY,
       fadeDistance,
       fadeSize,
@@ -630,10 +658,13 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       vertical: {},
     } as const;
 
+    const presentationRole = presentational ? "presentation" : undefined;
+
     if (!enabled) {
       return (
         <div
           ref={ref}
+          role={presentationRole}
           className={cn("scroll", css.root, resolved.root, className)}
           style={{
             [isHoriz ? "width" : "height"]: "100%",
@@ -648,7 +679,11 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
     }
 
     const showOpacity =
-      needsScrollbar && (!hide || isHoveredRight || isDragging || isScrolling) ? 1 : 0;
+      scrollMode === "native" &&
+      needsScrollbar &&
+      (!hide || isHoveredRight || isDragging || isScrolling)
+        ? 1
+        : 0;
 
     const contextValue: ScrollContextValue = {
       resolvedStyles: resolved,
@@ -656,7 +691,7 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       needsScrollbar,
       trackStyle: {
         ...trackPlacement[direction],
-        pointerEvents: needsScrollbar ? "auto" : "none",
+        pointerEvents: needsScrollbar && scrollMode === "native" ? "auto" : "none",
       },
       thumbStyle: {
         [trackSizeKey]: `${thumbSize}px`,
@@ -673,6 +708,7 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
       <ScrollContext.Provider value={contextValue}>
         <div
           ref={mergedRef}
+          role={presentationRole}
           className={cn(
             "scroll",
             css.root,
@@ -696,18 +732,22 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
         >
           <Mask
             ref={maskRef}
+            role={presentationRole}
             style={
               {
                 maxHeight: "inherit",
                 maxWidth: "inherit",
                 overflow: "hidden",
-                ...getInitialScrollFadeVars(direction, fadeY, fadeSize),
+                ...getInitialScrollFadeVars(direction, fadeX, fadeY, fadeSize),
               } as React.CSSProperties
             }
           >
-            {!isHoriz && fadeY ? <Mask.Fade /> : null}
+            {(isHoriz ? fadeX : fadeY) ? (
+              <Mask.Fade axis={isHoriz ? "horizontal" : "vertical"} />
+            ) : null}
             <div
               ref={mergedContentRef}
+              role={presentationRole}
               className={cn(css.content, resolved.content)}
               onScroll={handleScroll}
               style={{
@@ -715,6 +755,18 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
                 maxWidth: "inherit",
                 minHeight: 0,
                 minWidth: 0,
+
+                ...(scrollMode === "programmatic"
+                  ? isHoriz
+                    ? {
+                        overflowX: "hidden",
+                        overflowY: "visible",
+                      }
+                    : {
+                        overflowY: "hidden",
+                        overflowX: "visible",
+                      }
+                  : {}),
               }}
               {...(storageKey
                 ? {

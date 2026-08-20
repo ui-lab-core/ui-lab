@@ -25,6 +25,18 @@ declare const styles: {
   legend: string;
   item: string;
   "live-region": string;
+  "grid-chart": string;
+  "grid-chart-viewport": string;
+  "grid-chart-layout": string;
+  "grid-chart-y-labels": string;
+  "grid-chart-y-label": string;
+  "grid-chart-cells": string;
+  "grid-chart-cell": string;
+  "grid-chart-cell-empty": string;
+  "grid-chart-x-labels": string;
+  "grid-chart-x-label": string;
+  "grid-chart-legend": string;
+  "grid-chart-legend-swatch": string;
 };
 
 export default styles;

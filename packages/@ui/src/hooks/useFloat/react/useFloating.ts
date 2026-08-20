@@ -132,13 +132,21 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
     if (floatingEl) floatingRef.current = floatingEl;
 
     if (referenceEl && floatingEl) {
-      if (whileElementsMountedRef.current) {
+      // `whileElementsMounted` (i.e. `autoUpdate`) subscribes to scroll and
+      // resize on every overflow ancestor and recomputes position on each
+      // event, forcing style and layout as it goes. A consumer that keeps its
+      // floating element mounted while closed — Select and Menu both portal it
+      // and hide it rather than unmounting — would otherwise pay that on every
+      // scroll frame for the life of the page, to position a `display: none`
+      // element with no box. Tracking belongs to the open state, not to the
+      // mount: this effect re-runs when `open` flips and positions it then.
+      if (whileElementsMountedRef.current && open !== false) {
         return whileElementsMountedRef.current(referenceEl, floatingEl, update);
       }
 
       update();
     }
-  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted, open]);
 
   const refs = React.useMemo(
     () => ({

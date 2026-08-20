@@ -27,6 +27,7 @@ type MaskFilter =
     }
   | {
       kind: "scroll-fade";
+      axis: "vertical" | "horizontal";
     };
 
 const resolveMaskBaseStyles = createStylesResolver(["root", "gradient"] as const);
@@ -46,7 +47,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
         if (child.type === MaskFade) {
           const fadeChild = child as React.ReactElement<MaskFadeProps>;
           if (isScrollFade(fadeChild.props) && supportsScrollFade) {
-            maskFilters.push({ kind: "scroll-fade" });
+            maskFilters.push({ kind: "scroll-fade", axis: fadeChild.props.axis ?? "vertical" });
           } else {
             if (fadeChild.props.fixed) hasFixedFade = true;
             maskFilters.push({
@@ -159,6 +160,8 @@ MaskGradient.displayName = "MaskGradient";
 interface MaskFadeProps {
   /** Edge of the container where the fade starts. Omit to use the variable-driven vertical scroll fade preset. */
   direction?: "top" | "bottom" | "left" | "right";
+  /** Axis used by the variable-driven scroll fade preset. */
+  axis?: "vertical" | "horizontal";
   /** Controls the size of the fade — higher values produce a longer fade */
   intensity?: number;
   /** Uses percentage-based fade size instead of pixel-based, for fixed-height containers */
@@ -178,11 +181,19 @@ function hasScrollFadeVariables(style: React.CSSProperties | undefined): boolean
   if (!style) return false;
 
   const styleEntries = style as Record<string, unknown>;
-  return "--mask-top-fade" in styleEntries || "--mask-bottom-fade" in styleEntries;
+  return (
+    "--mask-top-fade" in styleEntries ||
+    "--mask-bottom-fade" in styleEntries ||
+    "--mask-left-fade" in styleEntries ||
+    "--mask-right-fade" in styleEntries
+  );
 }
 
 function generateMaskFilter(maskFilter: MaskFilter): string {
   if (maskFilter.kind === "scroll-fade") {
+    if (maskFilter.axis === "horizontal") {
+      return "linear-gradient(to right, transparent 0%, black var(--mask-left-fade, 0%), black calc(100% - var(--mask-right-fade, 0%)), transparent 100%)";
+    }
     return "linear-gradient(to bottom, transparent 0%, black var(--mask-top-fade, 0%), black calc(100% - var(--mask-bottom-fade, 0%)), transparent 100%)";
   }
 

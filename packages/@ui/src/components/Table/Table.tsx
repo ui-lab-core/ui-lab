@@ -84,6 +84,20 @@ export interface TableProps<T extends Record<string, any>> extends Omit<
   onRowClick?: (row: T) => void;
   /** Called when any column filter value changes */
   onFilterChange?: (filters: Record<string, string>) => void;
+  /**
+   * What scrolls when the table does not fit.
+   *
+   * - `auto` (default): the table flows with the page. The header sits above
+   *   the rows, and a horizontal scroll port only appears when the columns are
+   *   genuinely too wide.
+   * - `rows`: only the rows scroll. The header stays out of the scroll port
+   *   entirely, so it is never sticky, never shifted, and the scrollbar runs
+   *   alongside the rows instead of over the header. Bound the table's height
+   *   (`className="h-full"`, `max-h-*`, a flex child, ...) and give every column
+   *   a `width` or `minWidth` you care about.
+   * - `none`: the table never creates a scroll port.
+   */
+  scroll?: "auto" | "rows" | "none";
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TableStylesProp;
   /** Optional composed table content. When omitted, the default header/body renderer is used. */
@@ -102,6 +116,7 @@ export interface TableContextValue<T extends Record<string, any> = Record<string
   filterState: TableFilterState;
   setFilterValue: (columnKey: string, value: string) => void;
   onRowClick?: (row: T) => void;
+  rowsLayout: boolean;
   styles: ResolvedTableStyles;
 }
 
@@ -166,6 +181,30 @@ function getDefaultSortState<T extends Record<string, any>>(): TableSortState<T>
   };
 }
 
+/**
+ * `rows` builds the table out of divs: its header and its scroll port are
+ * separate boxes, and a scroll port cannot live inside `<table>` markup. The
+ * ARIA roles every part already carries are what keep it a table either way.
+ */
+function tableElementType(rowsLayout: boolean, tag: string): React.ElementType {
+  return (rowsLayout ? "div" : tag) as React.ElementType;
+}
+
+/** `colspan` means nothing to a grid row, so carry it over as a track span. */
+function spanProps(
+  rowsLayout: boolean,
+  colSpan: number | undefined,
+  style: React.CSSProperties | undefined,
+) {
+  if (!rowsLayout) return { colSpan, style };
+  if (!colSpan || colSpan < 2) return { style };
+  return { "aria-colspan": colSpan, style: { gridColumn: `span ${colSpan}`, ...style } };
+}
+
+function toCssLength(value: React.CSSProperties["width"]): string {
+  return typeof value === "number" ? `${value}px` : String(value);
+}
+
 function getRowKey(row: Record<string, any>, index: number): React.Key {
   return row.id ?? row.key ?? index;
 }
@@ -188,6 +227,7 @@ const TableRoot = <T extends Record<string, any>>(
     showFilters = false,
     onRowClick,
     onFilterChange,
+    scroll = "auto",
     styles,
     className,
     children,
@@ -196,6 +236,16 @@ const TableRoot = <T extends Record<string, any>>(
   }: TableProps<T>,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const tableRef = React.useRef<HTMLElement>(null);
+  // Server output and the first client render keep the scroll port so a wide
+  // table is never clipped before measurement; `auto` drops it in a layout
+  // effect, before paint, when the columns actually fit.
+  const [overflows, setOverflows] = React.useState(scroll === "auto");
+  const rowsLayout = scroll === "rows";
+  // Only the flowing table can hand its overflow to a horizontal scroll port;
+  // in `rows` the grid tracks are resolved up front so nothing overflows.
+  const horizontalScroll = scroll === "auto" && overflows;
   const [filterState, setFilterState] = React.useState<TableFilterState>({});
   const [sortState] = React.useState<TableSortState<T>>(() => getDefaultSortState<T>());
   const selectedRows = React.useMemo(() => new Set<React.Key>(), []);
@@ -228,6 +278,42 @@ const TableRoot = <T extends Record<string, any>>(
     [data, filterState],
   );
 
+  React.useLayoutEffect(() => {
+    if (scroll !== "auto") return;
+
+    const container = containerRef.current;
+    const table = tableRef.current;
+    if (!container || !table) return;
+
+    // `min-width: max-content` keeps the table at its natural width in both
+    // states, so this measurement does not oscillate once the port is added.
+    const measure = () => setOverflows(table.scrollWidth - container.clientWidth > 1);
+
+    measure();
+
+    if (typeof ResizeObserver === "undefined") return;
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    observer.observe(table);
+    return () => observer.disconnect();
+    // `horizontalScroll` re-runs this after the table element is remounted into
+    // (or out of) the scroll port, so the observer always watches live nodes.
+  }, [scroll, horizontalScroll]);
+
+  // Rows and header are separate boxes in `rows`, so their columns can only line
+  // up on a template both of them resolve identically: no content-based tracks.
+  const columnTemplate = React.useMemo(() => {
+    if (!rowsLayout) return undefined;
+    return columns
+      .map((column) =>
+        column.width !== undefined
+          ? toCssLength(column.width)
+          : `minmax(${toCssLength(column.minWidth ?? 0)}, 1fr)`,
+      )
+      .join(" ");
+  }, [rowsLayout, columns]);
+
   const contextValue = React.useMemo<TableContextValue<T>>(
     () => ({
       columns,
@@ -238,6 +324,7 @@ const TableRoot = <T extends Record<string, any>>(
       filterState,
       setFilterValue,
       onRowClick,
+      rowsLayout,
       styles: resolved,
     }),
     [
@@ -249,8 +336,43 @@ const TableRoot = <T extends Record<string, any>>(
       filterState,
       setFilterValue,
       onRowClick,
+      rowsLayout,
       resolved,
     ],
+  );
+
+  const TableElement = tableElementType(rowsLayout, "table");
+  const tableElement = (
+    <TableElement
+      ref={tableRef}
+      className={cn("element", css.table, rowsLayout && css.rowsLayout, resolved.table)}
+      data-slot="element"
+      data-layout={rowsLayout ? "rows" : undefined}
+      role="table"
+      aria-label={ariaLabel}
+    >
+      {/* Column boxes are the grid template's job once the rows scroll on their own. */}
+      {rowsLayout ? null : (
+        <colgroup>
+          {columns.map((column) => (
+            <col
+              key={String(column.key)}
+              data-column={String(column.key)}
+              style={{
+                width: column.width,
+                minWidth: column.minWidth,
+              }}
+            />
+          ))}
+        </colgroup>
+      )}
+      {children ?? (
+        <>
+          <TableHeader />
+          <TableBody />
+        </>
+      )}
+    </TableElement>
   );
 
   return (
@@ -297,34 +419,25 @@ const TableRoot = <T extends Record<string, any>>(
           </div>
         )}
 
-        <div className={cn("container", css.container, resolved.container)} data-slot="container">
-          <Scroll className={css.scroller} direction="horizontal" inline data-slot="scroller">
-            <table
-              className={cn("element", css.table, resolved.table)}
-              data-slot="element"
-              role="table"
-              aria-label={ariaLabel}
+        <div
+          ref={containerRef}
+          className={cn("container", css.container, resolved.container)}
+          data-slot="container"
+          data-scroll={rowsLayout ? "rows" : horizontalScroll ? "horizontal" : undefined}
+          style={columnTemplate ? ({ "--table-columns": columnTemplate } as React.CSSProperties) : undefined}
+        >
+          {horizontalScroll ? (
+            <Scroll
+              className={css.scroller}
+              direction="horizontal"
+              inline
+              data-slot="scroller"
             >
-              <colgroup>
-                {columns.map((column) => (
-                  <col
-                    key={String(column.key)}
-                    data-column={String(column.key)}
-                    style={{
-                      width: column.width,
-                      minWidth: column.minWidth,
-                    }}
-                  />
-                ))}
-              </colgroup>
-              {children ?? (
-                <>
-                  <TableHeader />
-                  <TableBody />
-                </>
-              )}
-            </table>
-          </Scroll>
+              {tableElement}
+            </Scroll>
+          ) : (
+            tableElement
+          )}
         </div>
       </div>
     </TableContext.Provider>
@@ -335,17 +448,19 @@ const Table = React.forwardRef(TableRoot) as unknown as TableComponent;
 
 Table.displayName = "Table";
 
-interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+interface TableHeaderProps extends React.HTMLAttributes<HTMLElement> {
   /** Optional header content. When omitted, columns from Table context are rendered. */
   children?: React.ReactNode;
 }
 
-const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
+const TableHeader = React.forwardRef<HTMLElement, TableHeaderProps>(
   ({ className, children, ...props }, ref) => {
-    const { columns, styles } = useTableContext();
+    const { columns, rowsLayout, styles } = useTableContext();
+    const Element = tableElementType(rowsLayout, "thead");
+    const Row = tableElementType(rowsLayout, "tr");
 
     return (
-      <thead
+      <Element
         ref={ref}
         className={cn("header", css.header, styles.header, className)}
         data-slot="header"
@@ -353,7 +468,7 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
         {...props}
       >
         {children ?? (
-          <tr
+          <Row
             className={cn("header-row", css.headerRow, styles.headerRow)}
             data-slot="header-row"
             role="row"
@@ -367,34 +482,36 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
                 {column.header ?? column.label ?? String(column.key)}
               </TableHeaderCell>
             ))}
-          </tr>
+          </Row>
         )}
-      </thead>
+      </Element>
     );
   },
 );
 
 TableHeader.displayName = "Table.Header";
 
-interface TableHeaderCellProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+interface TableHeaderCellProps extends React.ThHTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
 }
 
-const TableHeaderCell = React.forwardRef<HTMLTableCellElement, TableHeaderCellProps>(
-  ({ className, children, ...props }, ref) => {
-    const { styles } = useTableContext();
+const TableHeaderCell = React.forwardRef<HTMLElement, TableHeaderCellProps>(
+  ({ className, colSpan, style, children, ...props }, ref) => {
+    const { rowsLayout, styles } = useTableContext();
+    const Element = tableElementType(rowsLayout, "th");
 
     return (
-      <th
+      <Element
         ref={ref}
         className={cn("header-cell", css.headerCell, styles.headerCell, className)}
         data-slot="header-cell"
-        scope="col"
+        {...spanProps(rowsLayout, colSpan, style)}
+        scope={rowsLayout ? undefined : "col"}
         role="columnheader"
         {...props}
       >
         {children}
-      </th>
+      </Element>
     );
   },
 );
@@ -403,20 +520,23 @@ TableHeaderCell.displayName = "Table.HeaderCell";
 
 interface TableBodyProps<
   T extends Record<string, any> = Record<string, any>,
-> extends React.HTMLAttributes<HTMLTableSectionElement> {
+> extends React.HTMLAttributes<HTMLElement> {
   /** Optional body content. When omitted, filtered rows from Table context are rendered. */
   children?: React.ReactNode;
   /** Optional rows for custom body composition. Defaults to filtered context data. */
   rows?: T[];
 }
 
-const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
+const TableBody = React.forwardRef<HTMLElement, TableBodyProps>(
   ({ className, children, rows, ...props }, ref) => {
-    const { columns, filteredData, styles } = useTableContext();
+    const { columns, filteredData, rowsLayout, styles } = useTableContext();
     const bodyRows = rows ?? filteredData;
+    const Element = tableElementType(rowsLayout, "tbody");
+    const Row = tableElementType(rowsLayout, "tr");
+    const Cell = tableElementType(rowsLayout, "td");
 
-    return (
-      <tbody
+    const body = (
+      <Element
         ref={ref}
         className={cn("body", css.body, styles.body, className)}
         data-slot="body"
@@ -429,22 +549,38 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
               <TableRow key={getRowKey(row, index)} row={row} rowIndex={index} />
             ))
           ) : (
-            <tr
+            <Row
               className={cn("empty", css.emptyRow, styles.emptyRow)}
               data-slot="empty-row"
               role="row"
             >
-              <td
-                colSpan={columns.length}
+              <Cell
+                {...spanProps(rowsLayout, columns.length, undefined)}
                 className={cn("empty-state", css.emptyState, styles.emptyState)}
                 data-slot="empty-state"
                 role="cell"
               >
                 No data available
-              </td>
-            </tr>
+              </Cell>
+            </Row>
           ))}
-      </tbody>
+      </Element>
+    );
+
+    if (!rowsLayout) return body;
+
+    // The rows are the scroll port: the header stays outside it, so it never
+    // scrolls away and the scrollbar runs beside the rows only.
+    return (
+      <Scroll
+        direction="vertical"
+        maxHeight="100%"
+        presentational
+        className={css.bodyScroller}
+        data-slot="body-scroller"
+      >
+        {body}
+      </Scroll>
     );
   },
 );
@@ -453,7 +589,7 @@ TableBody.displayName = "Table.Body";
 
 interface TableRowProps<
   T extends Record<string, any> = Record<string, any>,
-> extends React.HTMLAttributes<HTMLTableRowElement> {
+> extends React.HTMLAttributes<HTMLElement> {
   /** Row data used to render default cells. */
   row?: T;
   /** Zero-based index for generated rows. */
@@ -465,15 +601,16 @@ interface TableRowProps<
   children?: React.ReactNode;
 }
 
-const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
+const TableRow = React.forwardRef<HTMLElement, TableRowProps>(
   ({ className, row, rowIndex = 0, selected, disabled, children, onClick, ...props }, ref) => {
-    const { columns, selectedRows, onRowClick, styles } = useTableContext();
+    const { columns, rowsLayout, selectedRows, onRowClick, styles } = useTableContext();
+    const Element = tableElementType(rowsLayout, "tr");
     const rowKey = row ? getRowKey(row, rowIndex) : rowIndex;
     const isSelected = selected ?? selectedRows.has(rowKey);
     const isInteractive = Boolean(row && onRowClick && !disabled);
 
     const handleClick = React.useCallback(
-      (event: React.MouseEvent<HTMLTableRowElement>) => {
+      (event: React.MouseEvent<HTMLElement>) => {
         if (!disabled && row) {
           onRowClick?.(row);
         }
@@ -483,7 +620,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
     );
 
     return (
-      <tr
+      <Element
         ref={ref}
         className={cn("row", css.row, styles.row, isInteractive && css.interactive, className)}
         data-slot="row"
@@ -507,7 +644,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
               rowIndex={rowIndex}
             />
           ))}
-      </tr>
+      </Element>
     );
   },
 );
@@ -516,7 +653,7 @@ TableRow.displayName = "Table.Row";
 
 interface TableCellProps<
   T extends Record<string, any> = Record<string, any>,
-> extends React.TdHTMLAttributes<HTMLTableCellElement> {
+> extends React.TdHTMLAttributes<HTMLElement> {
   /** Row data used with the column render function. */
   row?: T;
   /** Column definition for this cell. Inferred by columnIndex when omitted. */
@@ -529,9 +666,13 @@ interface TableCellProps<
   value?: React.ReactNode;
 }
 
-const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
-  ({ className, row, column, columnIndex = 0, rowIndex = 0, value, children, ...props }, ref) => {
-    const { columns, styles } = useTableContext();
+const TableCell = React.forwardRef<HTMLElement, TableCellProps>(
+  (
+    { className, row, column, columnIndex = 0, rowIndex = 0, value, colSpan, style, children, ...props },
+    ref,
+  ) => {
+    const { columns, rowsLayout, styles } = useTableContext();
+    const Element = tableElementType(rowsLayout, "td");
     const resolvedColumn = column ?? (columnIndex !== undefined ? columns[columnIndex] : undefined);
     const resolvedValue = value ?? (row && resolvedColumn ? row[resolvedColumn.key] : undefined);
     const content =
@@ -549,16 +690,17 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
           : String(resolvedValue ?? ""));
 
     return (
-      <td
+      <Element
         ref={ref}
         className={cn("cell", css.cell, styles.cell, className)}
         data-slot="cell"
         role="cell"
+        {...spanProps(rowsLayout, colSpan, style)}
         data-column={resolvedColumn ? String(resolvedColumn.key) : undefined}
         {...props}
       >
         {content}
-      </td>
+      </Element>
     );
   },
 );

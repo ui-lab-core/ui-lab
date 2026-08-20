@@ -3,6 +3,8 @@ declare const styles: {
   container: string;
   scroller: string;
   table: string;
+  rowsLayout: string;
+  bodyScroller: string;
   header: string;
   body: string;
   headerRow: string;

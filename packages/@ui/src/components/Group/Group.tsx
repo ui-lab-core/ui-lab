@@ -441,16 +441,14 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
       value !== undefined && context.groupValue !== undefined
         ? value === context.groupValue
         : active;
-    const baseHandlePress =
-      value !== undefined && context.groupOnChange !== undefined
-        ? () => context.groupOnChange!(value)
-        : onPress;
-
     const handlePress = React.useCallback(
-      (e: { target: EventTarget | null }) => {
-        baseHandlePress?.(e);
+      (e: Parameters<NonNullable<ButtonProps["onPress"]>>[0]) => {
+        if (value !== undefined && context.groupOnChange !== undefined) {
+          context.groupOnChange(value);
+        }
+        onPress?.(e);
       },
-      [baseHandlePress],
+      [context.groupOnChange, onPress, value],
     );
 
     // Activate input on pointer down to avoid focus ring flicker

@@ -63,6 +63,7 @@ export interface StyleClass {
 export type ComponentStyles = string;
 
 export interface ComponentExample {
+  id?: string;
   title?: string;
   name?: string;
   description: string;
@@ -168,6 +169,47 @@ export interface ComponentSourceCode {
   css: string; // CSS module content
   cssTypes: string; // CSS module TypeScript declarations
   exportFile?: string; // index.ts if it exists
+}
+
+/** A complete, copyable source payload. This is deliberately separate from
+ * ComponentSourceCode, which is documentation-only and incomplete. */
+export type SourceArtifactAccess = "public" | "premium" | "package";
+
+export type SourceArtifactFileKind = "module" | "style" | "asset" | "manifest" | "config";
+
+export interface SourceArtifactFile {
+  /** Project-relative destination, relative to the selected target directory. */
+  outputPath: string;
+  language: "ts" | "tsx" | "js" | "jsx" | "css" | "json" | "md" | "text" | "binary";
+  kind: SourceArtifactFileKind;
+  integrity: string;
+  /** Present only for public, explicitly copyable artifacts. */
+  content?: string;
+}
+
+export interface SourceArtifactEntrypoint {
+  path: string;
+  exportName?: string;
+}
+
+export interface SourceArtifactInstallIntent {
+  artifactId: string;
+  access: "premium" | "package";
+  recommendedCommand: string;
+  reason: string;
+}
+
+export interface SourceArtifact {
+  schemaVersion: 1;
+  id: string;
+  version: string;
+  access: SourceArtifactAccess;
+  copyable: boolean;
+  entrypoints: SourceArtifactEntrypoint[];
+  files?: SourceArtifactFile[];
+  npmDependencies: Record<string, string>;
+  uiLabDependencies: string[];
+  installIntent?: SourceArtifactInstallIntent;
 }
 
 export interface ComponentDeps {

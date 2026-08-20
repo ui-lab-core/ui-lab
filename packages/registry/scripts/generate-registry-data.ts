@@ -3,7 +3,8 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 import { extractAllComponentAPIs } from "./generate-api-data";
 import { extractAllComponentStyles } from "./generate-styles-data";
-import { extractAllComponentSources } from "./extract-source";
+import { generatePublicArtifact } from "./generate-public-artifacts";
+import { publicArtifactDefinitions } from "./public-artifacts.config";
 import {
   componentDependencies,
   coreNpmDependencies,
@@ -14,7 +15,6 @@ import type {
   ComponentRegistry,
   ComponentAPI,
   ComponentStyles,
-  ComponentSourceCode,
   ComponentDeps,
 } from "../src/types";
 
@@ -23,6 +23,7 @@ const __dirname = path.dirname(__filename);
 
 const REGISTRY_PATH = path.resolve(__dirname, "../src/registry.ts");
 const GENERATED_DATA_PATH = path.resolve(__dirname, "../src/generated-data.ts");
+const GENERATED_ARTIFACTS_PATH = path.resolve(__dirname, "../src/generated-artifacts.ts");
 const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
 const PACKAGE_JSON_PATH = path.resolve(__dirname, "../package.json");
 
@@ -91,17 +92,14 @@ function toKebabCase(pascalCase: string): string {
 function generateDataFile(
   apiData: Record<string, ComponentAPI>,
   stylesData: Record<string, ComponentStyles>,
-  sourceData: Record<string, ComponentSourceCode>,
   reactAriaUrls: Record<string, string>,
   packageMetadata: { version: string },
 ): void {
-  const content = `import type { ComponentAPI, ComponentStyles, ComponentSourceCode, ComponentDeps, PackageMetadata } from './types';
+  const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata } from './types';
 
 export const generatedAPI: Record<string, ComponentAPI> = ${JSON.stringify(apiData, null, 2)};
 
 export const generatedStyles: Record<string, ComponentStyles> = ${JSON.stringify(stylesData, null, 2)};
-
-export const generatedSourceCode: Record<string, ComponentSourceCode> = ${JSON.stringify(sourceData, null, 2)};
 
 export const reactAriaUrls: Record<string, string> = ${JSON.stringify(reactAriaUrls, null, 2)};
 
@@ -118,6 +116,14 @@ export const packageMetadata: PackageMetadata = ${JSON.stringify(packageMetadata
   console.log(`Generated data written to: ${GENERATED_DATA_PATH}`);
 }
 
+function generateArtifactFile(): void {
+  const artifacts = Object.fromEntries(
+    publicArtifactDefinitions.map((definition) => [definition.id, generatePublicArtifact(definition)]),
+  );
+  const content = `import type { SourceArtifact } from "./types.js";\n\nexport const generatedPublicArtifacts: Record<string, SourceArtifact> = ${JSON.stringify(artifacts, null, 2)};\n\nexport const generatedPremiumArtifacts: Record<string, SourceArtifact> = {};\n`;
+  fs.writeFileSync(GENERATED_ARTIFACTS_PATH, content, "utf8");
+}
+
 async function main() {
   console.log("Starting registry data extraction...\n");
 
@@ -132,9 +138,9 @@ async function main() {
   const stylesData = extractAllComponentStyles(componentIds);
   console.log(`Extracted styles for ${Object.keys(stylesData).length} components\n`);
 
-  console.log("Extracting source code...");
-  const sourceData = extractAllComponentSources(componentIds);
-  console.log(`Extracted source code for ${Object.keys(sourceData).length} components\n`);
+  console.log("Generating explicitly public copyable artifacts...");
+  generateArtifactFile();
+  console.log(`Generated ${publicArtifactDefinitions.length} public source artifacts\n`);
 
   const reactAriaUrls: Record<string, string> = {};
   for (const id of componentIds) {
@@ -146,7 +152,7 @@ async function main() {
   const packageMetadata = getPackageMetadata();
   console.log(`Package version: ${packageMetadata.version}\n`);
 
-  generateDataFile(apiData, stylesData, sourceData, reactAriaUrls, packageMetadata);
+  generateDataFile(apiData, stylesData, reactAriaUrls, packageMetadata);
 
   console.log("\nSummary:");
   console.log("--------");
@@ -154,10 +160,9 @@ async function main() {
     const kebabId = toKebabCase(id);
     const hasApi = kebabId in apiData;
     const hasStyles = kebabId in stylesData;
-    const hasSource = kebabId in sourceData;
     const hasReactAria = reactAriaUrls[kebabId] !== "";
     console.log(
-      `${id}: API=${hasApi ? "✓" : "✗"} Styles=${hasStyles ? "✓" : "✗"} Source=${hasSource ? "✓" : "✗"} ReactAria=${hasReactAria ? "✓" : "-"}`,
+      `${id}: API=${hasApi ? "✓" : "✗"} Styles=${hasStyles ? "✓" : "✗"} ReactAria=${hasReactAria ? "✓" : "-"}`,
     );
   }
 

@@ -5,7 +5,8 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import css from "./Icon.module.css";
 
-export type IconVariant = "fill";
+/** Name of an icon variant folder (e.g. `stroke`, `fill`, `duotone`). Consuming apps define their own. */
+export type IconVariant = string;
 
 export interface IconSource {
   id: string;
@@ -43,6 +44,7 @@ export function resolveIconSource(
 
 interface IconContextValue {
   assetBaseUrl: string;
+  defaultVariant?: IconVariant;
   resolveSource?: IconSourceResolver;
 }
 
@@ -54,6 +56,8 @@ export interface IconProviderProps {
   children: React.ReactNode;
   /** Base URL containing variant folders. Defaults to `/ui-lab-icons`. */
   assetBaseUrl?: string;
+  /** Variant folder to use when an `<Icon>` doesn't specify one. */
+  defaultVariant?: IconVariant;
   /** Optional application-level resolver for base paths, CDNs, or custom asset layouts. */
   resolveSource?: IconSourceResolver;
 }
@@ -61,11 +65,12 @@ export interface IconProviderProps {
 export function IconProvider({
   children,
   assetBaseUrl = DEFAULT_ICON_ASSET_BASE_URL,
+  defaultVariant,
   resolveSource,
 }: IconProviderProps) {
   const value = React.useMemo(
-    () => ({ assetBaseUrl, resolveSource }),
-    [assetBaseUrl, resolveSource],
+    () => ({ assetBaseUrl, defaultVariant, resolveSource }),
+    [assetBaseUrl, defaultVariant, resolveSource],
   );
 
   return <IconContext.Provider value={value}>{children}</IconContext.Provider>;
@@ -74,7 +79,7 @@ export function IconProvider({
 export interface IconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** SVG filename with or without the `.svg` extension. */
   id: string;
-  /** Icon collection to resolve. */
+  /** Icon collection to resolve. Falls back to the `IconProvider`'s `defaultVariant`. */
   variant?: IconVariant;
   /** Width and height. Numeric values are interpreted as pixels. */
   size?: number | string;
@@ -88,7 +93,7 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
   (
     {
       id,
-      variant = "fill",
+      variant,
       size = 20,
       label,
       assetBaseUrl,
@@ -102,8 +107,14 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
     ref,
   ) => {
     const context = React.useContext(IconContext);
+    const resolvedVariant = variant ?? context.defaultVariant;
+    if (!resolvedVariant) {
+      throw new Error(
+        `<Icon id="${id}"> requires a "variant" prop or an <IconProvider defaultVariant="...">.`,
+      );
+    }
     const normalizedId = normalizeIconId(id);
-    const icon = { id: normalizedId, variant };
+    const icon = { id: normalizedId, variant: resolvedVariant };
     const source = context.resolveSource
       ? context.resolveSource(icon)
       : resolveIconSource(icon, assetBaseUrl ?? context.assetBaseUrl);
@@ -117,8 +128,8 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
         aria-label={accessibleLabel}
         aria-hidden={ariaHidden ?? (accessibleLabel ? undefined : true)}
         data-icon-id={normalizedId}
-        data-icon-variant={variant}
-        className={cn("icon", variant, css.icon, className)}
+        data-icon-variant={resolvedVariant}
+        className={cn("icon", resolvedVariant, css.icon, className)}
         style={{
           width: size,
           height: size,

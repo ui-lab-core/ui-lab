@@ -3,7 +3,7 @@ import { Tool } from "@modelcontextprotocol/sdk/types.js";
 export const searchWorkshopTool: Tool = {
   name: "search_workshop",
   description:
-    "Search UI Lab’s implementation workshop across component examples, reusable patterns, larger elements, landing sections, and project starters. Summary mode supports broad discovery without source-code noise. Full mode retrieves one exact or uniquely matched item and an optional variation.",
+    "Search public UI Lab artifact metadata. Full mode returns source only when the public registry explicitly marks an artifact copyable; package and premium items return a structured install intent.",
   inputSchema: {
     type: "object" as const,
     properties: {
@@ -22,7 +22,7 @@ export const searchWorkshopTool: Tool = {
         type: "string",
         enum: ["summary", "full"],
         description:
-          "Summary returns ranked metadata. Full returns one exact or uniquely matched implementation, including source files when available.",
+          "Summary returns ranked metadata. Full returns public copyable source only when the registry contract permits it.",
         default: "summary",
       },
       variation: {

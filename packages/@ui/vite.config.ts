@@ -48,8 +48,16 @@ function injectCssImports(): Plugin {
         return `import ${JSON.stringify(specifier)};`;
       });
 
+      const directive = '"use client";';
+      const hasClientDirective = code.startsWith(directive);
+
       return {
-        code: `${imports.join("\n")}\n${code}`,
+        // Keep the client directive first. A directive after an import is an
+        // ordinary string literal, which makes Next render client primitives
+        // through its server path during SSR.
+        code: hasClientDirective
+          ? `${directive}\n${imports.join("\n")}\n${code.slice(directive.length)}`
+          : `${imports.join("\n")}\n${code}`,
         map: null,
       };
     },
