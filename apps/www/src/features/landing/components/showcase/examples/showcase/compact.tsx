@@ -2,7 +2,7 @@
 
 import { Button, Divider, Group } from "ui-lab-components";
 import { ArrowUp, FilePlus2, Sparkles } from "lucide-react";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 export function QuickActions({ height }: ShowcasePanelProps) {
   return (

@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { List, Group, Select, Divider, Button } from "ui-lab-components";
 import { FaMagnifyingGlass } from "@/shared/icons/fa6";
 import { SiGithub, SiSlack, SiFigma, SiLinear, SiVercel } from "@/shared/icons/si";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 interface Integration {
   id: string;
@@ -88,7 +88,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
       style={{ height }}
     >
       <div className="px-3 py-2.5 border-b border-background-700">
-        <Group className="h-12" spacing="sm">
+        <Group>
           <Group.Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -135,20 +135,22 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
                       {item.icon}
                     </div>
                   </List.Media>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-foreground-100">{item.name}</div>
-                    <List.Desc>{item.desc}</List.Desc>
+                  <div className="flex flex-1 min-w-0 items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-foreground-100">{item.name}</div>
+                      <List.Desc className="text-foreground-400">{item.desc}</List.Desc>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggle(item.id);
+                      }}
+                    >
+                      {isConnected ? "Connected" : "Connect"}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggle(item.id);
-                    }}
-                  >
-                    {isConnected ? "Connected" : "Connect"}
-                  </Button>
                 </List.Item>
                 {i < visible.length - 1 && (
                   <List.Divider color="bg-background-700" spacing="none" />

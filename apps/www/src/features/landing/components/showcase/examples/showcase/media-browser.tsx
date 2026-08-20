@@ -11,7 +11,7 @@ import {
   FaTrash,
   FaEllipsis,
 } from "@/shared/icons/fa6";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 const FILES = [
   { name: "hero-banner.png", type: "PNG", size: "2.4 MB", modified: "2h ago" },

@@ -3,7 +3,7 @@
 import { Fragment, useMemo, useReducer } from "react";
 import { List, Group, Select, Badge, Divider, Button, Tabs } from "ui-lab-components";
 import { FaEnvelope, FaMagnifyingGlass, FaGear, FaArrowTurnUp } from "@/shared/icons/fa6";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 interface Member {
   name: string;

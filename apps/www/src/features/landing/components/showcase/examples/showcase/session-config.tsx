@@ -12,7 +12,7 @@ import {
   FaLayerGroup,
 } from "@/shared/icons/fa6";
 import { SiGnubash } from "@/shared/icons/si";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 const gpus = [
   { value: "b300", label: "NVIDIA B300", memory: "288 GB HBM3E", rate: 4.25 },

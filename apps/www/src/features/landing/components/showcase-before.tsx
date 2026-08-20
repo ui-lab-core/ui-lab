@@ -73,7 +73,7 @@ function Badge({ children, tone = "blue" }: { children: ReactNode; tone?: Tone }
 
 function SlopCard() {
   return (
-    <div className="w-full rounded-md border-2 border-cyan-300/20 bg-gradient-to-br from-blue-950 via-slate-800 to-cyan-950 p-2.5 text-white shadow-xl">
+    <div className="w-full rounded-md border-2 border-cyan-300/20 bg-gradient-to-br from-blue-950 via-slate-800 to-cyan-950 p-2.5 text-white">
       <div className="flex flex-wrap items-center gap-1.5">
         <Badge>New</Badge>
         <Badge tone="green">Pro</Badge>

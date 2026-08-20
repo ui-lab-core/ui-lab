@@ -17,7 +17,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { HiMicrophone, HiPaperClip } from "@/shared/icons/hi";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 type Provider = "openai" | "anthropic" | "google";
 type Message = { id: number; role: "user" | "assistant"; content: string };

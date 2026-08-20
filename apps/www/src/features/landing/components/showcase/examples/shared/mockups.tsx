@@ -1,6 +1,6 @@
 "use client";
 
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 function Line({ className = "" }: { className?: string }) {
   return <div className={`h-2 rounded-full bg-background-700/60 ${className}`} />;
@@ -145,15 +145,6 @@ function Player({ height }: ShowcasePanelProps) {
     </Frame>
   );
 }
-
-export const dashboard = {
-  Stats: stats(4),
-  Chart: chart([35, 55, 40, 70, 50, 85, 60, 75, 45, 90]),
-  Rows: rows(6),
-  Meters: meters([72, 45, 88]),
-  Summary: stats(2),
-  Events: rows(4),
-};
 
 export const sales = {
   Stats: stats(4),

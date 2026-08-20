@@ -13,7 +13,7 @@ import {
   FaListUl,
   FaLink,
 } from "@/shared/icons/fa6";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 interface EditorState {
   textStyle: string | number | null;

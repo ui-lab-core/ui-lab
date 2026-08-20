@@ -7,62 +7,46 @@ import {
   Expand,
   Flex,
   Group,
+  Icon,
   Select,
   Switch,
 } from "ui-lab-components";
 import type { ReactNode } from "react";
-import {
-  BarChart3,
-  Boxes,
-  BriefcaseBusiness,
-  ChevronDown,
-  Columns3,
-  Code2,
-  CreditCard,
-  FileText,
-  Filter,
-  Grid2X2,
-  Search,
-  Settings,
-  ArrowUpDown,
-  Users,
-  WalletCards,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Logo } from "@/features/layout/components/logo";
 
 type NavItemProps = {
   label: string;
-  icon: LucideIcon;
+  icon: string;
   active?: boolean;
   count?: number;
   trailing?: ReactNode;
   toggle?: boolean;
 };
 
-const primaryItems: NavItemProps[] = [{ label: "Home", icon: Grid2X2, active: true }];
+const primaryItems: NavItemProps[] = [{ label: "Dashboard", icon: "pin", active: true }];
 
 const menuItems: NavItemProps[] = [
-  { label: "Payments", icon: CreditCard },
-  { label: "Accounts", icon: BriefcaseBusiness, count: 453 },
-  { label: "Customers", icon: Users },
-  { label: "Products", icon: Boxes },
-  { label: "Reports", icon: FileText },
+  { label: "Payments", icon: "credit-card" },
+  { label: "Accounts", icon: "briefcase-09", count: 453 },
+  { label: "Customers", icon: "user-group-02" },
+  { label: "Products", icon: "shopping-cart-01" },
+  { label: "Reports", icon: "files-02" },
 ];
 
 const generalItems: NavItemProps[] = [
-  { label: "Developers", icon: Code2 },
-  { label: "View Test Data", icon: CreditCard, toggle: true },
-  { label: "Settings", icon: Settings },
+  { label: "Developers", icon: "code" },
+  { label: "View Test Data", icon: "credit-card", toggle: true },
+  { label: "Settings", icon: "settings-01" },
 ];
 
-function NavItem({ label, icon: Icon, active, count, trailing, toggle }: NavItemProps) {
+function NavItem({ label, icon, active, count, trailing, toggle }: NavItemProps) {
   if (toggle) {
     return (
       <Flex align-center className="h-10 w-full gap-3 px-3 text-sm text-foreground-300">
-        <Icon size={22} strokeWidth={2} />
+        <Icon id={icon} size={22} />
         <span className="flex flex-1 items-center justify-between">
           {label}
-          <Switch size="sm" aria-label={label} />
+          <Switch aria-label={label} />
         </span>
       </Flex>
     );
@@ -72,16 +56,16 @@ function NavItem({ label, icon: Icon, active, count, trailing, toggle }: NavItem
     <Button
       size="sm"
       variant="ghost"
-      className={`h-10 gap-3 w-full justify-start px-3 text-sm font-normal ${
+      className={`h-10 gap-3 w-full justify-start px-3 ${
         active
           ? "bg-background-800 text-foreground-100 hover:bg-background-800"
           : "text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
       }`}
-      icon={<Icon size={22} strokeWidth={2} />}
+      icon={<Icon id={icon} size={22} />}
     >
-      <span className="flex w-full items-center justify-between">
+      <span className="text-sm font-medium flex w-full items-center justify-between">
         {label}
-        {count ? <Badge variant="info" pill count={count} /> : null}
+        {count ? <Badge pill count={count} /> : null}
         {trailing ? <span className="text-foreground-400">{trailing}</span> : null}
       </span>
     </Button>
@@ -92,7 +76,7 @@ function BalancesItem() {
   return (
     <Expand className="w-full">
       <Expand.Trigger className="flex h-10 w-full items-center gap-3 rounded-sm px-3 text-sm text-foreground-300 hover:bg-background-800 hover:text-foreground-100">
-        <WalletCards size={22} strokeWidth={2} />
+        <Icon id="wallet-04" size={22} />
         <span>Balances</span>
         <Expand.Icon className="ml-auto text-foreground-400" />
       </Expand.Trigger>
@@ -135,18 +119,18 @@ function VolumeChart() {
         data={volumeData}
         x="hour"
         domain={[120000, 133000]}
-        className="h-26"
+        className="h-25"
         aria-label="Gross volume today compared with August 27"
       >
-        <Chart.Grid axis="x" />
-        <Chart.Line
+        <Chart.Grid />
+        <Chart.Area
           y="previous"
           label="August 27"
           curve="smooth"
           color="var(--foreground-400)"
           styles={{ mark: "opacity-70" }}
         />
-        <Chart.Line y="current" label="Today" curve="smooth" color="var(--accent-500)" />
+        <Chart.Area y="current" label="Today" curve="smooth" color="var(--accent-500)" />
         <Chart.Point
           y={(row) => (row.now ? row.current : null)}
           label="Current time"
@@ -190,6 +174,7 @@ function MiniChart({ tone = "blue" }: { tone?: "blue" | "gray" }) {
       className="mt-4 h-21"
       aria-label="Metric trend compared with the previous period"
     >
+      <Chart.Grid />
       <Chart.Line
         y="previous"
         label="Previous period"
@@ -197,7 +182,7 @@ function MiniChart({ tone = "blue" }: { tone?: "blue" | "gray" }) {
         color="var(--foreground-400)"
         styles={{ mark: "opacity-60" }}
       />
-      <Chart.Line
+      <Chart.Area
         y={tone === "blue" ? "positive" : "neutral"}
         label="Current period"
         curve="smooth"
@@ -223,7 +208,7 @@ function MetricCard({
   chartTone?: "blue" | "gray";
 }) {
   return (
-    <Card className="min-w-80 flex-1 rounded-none border-0 border-r border-background-700 bg-transparent px-5 py-5 last:border-r-0">
+    <Card className="min-w-110 rounded-none border-0 border-r border-background-700 bg-transparent px-5 py-5 last:border-r-0">
       <Flex align-center className="gap-2 text-sm text-foreground-300">
         <span>{title}</span>
         <Badge variant={tone} pill className="px-1.5 py-0.5 text-xs">
@@ -245,38 +230,40 @@ function MetricCard({
 
 function ShowcaseAfter() {
   return (
-    <div className="h-full w-[140%] absolute top-20 left-10 shadow-xl rounded-md border border-background-700 overflow-hidden bg-background-1000 text-foreground-100">
+    <div className="h-full w-[140%] absolute top-20 left-10 overflow-hidden rounded-sm border border-background-700 bg-background-1000 text-foreground-100">
       <div className="origin-top-left" style={{ height: "147.059%", width: "147.059%" }}>
         <Flex
-          className="h-full w-full min-w-275 bg-background-950 text-left"
+          className="h-full w-full min-w-70 bg-background-950 text-left"
           gap="none"
           aria-hidden="true"
           inert
         >
-          <aside className="flex w-67 shrink-0 flex-col border-r border-background-700/80 bg-background-950 px-3 py-5">
-            <Button
-              variant="ghost"
-              className="mb-7 h-auto justify-start px-2 py-0 text-left hover:bg-transparent"
-              icon={
-                <span className="grid h-11 w-11 place-items-center rounded-sm border border-background-700 text-foreground-400">
-                  <CreditCard size={22} strokeWidth={2} />
+          <aside className="flex w-62 shrink-0 flex-col border-r border-background-700/80 bg-background-950 px-2 py-2">
+            <header className="flex items-center justify-between mb-7 pr-4">
+              <Button
+                variant="ghost"
+                className="h-auto justify-start p-0 text-left hover:bg-transparent"
+                icon={
+                  <span className="grid h-10 w-10 place-items-center rounded-sm bg-background-900 border border-background-700 text-foreground-400">
+                    <Logo className="scale-80" />
+                  </span>
+                }
+              >
+                <span>
+                  <span className="flex items-center gap-0.5 text-lg font-medium text-foreground-100">
+                    Acme Co. <Icon id="arrow-down-01" size={15} className="text-foreground-400" />
+                  </span>
+                  <span className="block text-xs text-foreground-400">Palo Alto, CA</span>
                 </span>
-              }
-            >
-              <span>
-                <span className="flex items-center gap-1 text-lg font-medium text-foreground-100">
-                  Acme Co. <ChevronDown size={15} className="text-foreground-400" />
-                </span>
-                <span className="mt-0.5 block text-xs text-foreground-400">Palo Alto, CA</span>
-              </span>
-            </Button>
+              </Button>
+            </header>
 
             <div className="space-y-1">
               {primaryItems.map((item) => (
                 <NavItem key={item.label} {...item} />
               ))}
             </div>
-            <p className="mb-2 mt-6 px-3 text-xs font-medium text-foreground-400">Main menu</p>
+            <p className="mb-2 mt-6 px-1 text-xs font-medium text-foreground-400">Main menu</p>
             <div className="space-y-0.5">
               {menuItems.map((item) => (
                 <div key={item.label}>
@@ -294,12 +281,13 @@ function ShowcaseAfter() {
           </aside>
 
           <main className="min-w-0 flex-1 overflow-hidden">
-            <header className="flex gap-4 h-18 items-center border-b border-background-700/80 px-7">
+            <header className="flex gap-4 h-14 items-center border-b border-background-700/80 px-4">
+              <Icon className="text-foreground-400" id="sidebar-right" size={20} />
               <Group spacing="none" className="h-9 w-90 shrink-0">
                 <Group.Input
                   aria-label="Search activity"
                   placeholder="Search activity"
-                  icon={<Search size={16} />}
+                  icon={<Icon id="search-01" size={16} />}
                   className="min-w-0 flex-1 text-sm"
                 />
                 <Divider orientation="vertical" />
@@ -318,13 +306,13 @@ function ShowcaseAfter() {
               </Group>
               <div>
                 <Button size="sm" variant="ghost" aria-label="Filter activity">
-                  <Filter size={15} />
+                  <Icon id="filter" size={15} />
                 </Button>
                 <Button size="sm" variant="ghost" aria-label="Sort activity">
-                  <ArrowUpDown size={15} />
+                  <Icon id="arrow-up-down" size={15} />
                 </Button>
                 <Button size="sm" variant="ghost" aria-label="Choose visible columns">
-                  <Columns3 size={15} />
+                  <Icon id="kanban" size={15} />
                 </Button>
               </div>
               <Button
@@ -335,16 +323,15 @@ function ShowcaseAfter() {
               </Button>
             </header>
 
-            <div className="px-10 py-9">
-              <h3 className="text-md font-medium text-foreground-100">Today</h3>
-              <p className="mt-1 text-sm text-foreground-400">Good to see you again, John</p>
+            <div className="px-10 pt-6">
+              <h3 className="text-lg font-medium text-foreground-100">Overview</h3>
 
-              <Card className="mt-6 flex h-64 min-w-210 overflow-hidden rounded-sm border-background-700 bg-background-900">
-                <div className="min-w-185 flex-1 px-5 py-5">
+              <Card className="mt-3 flex h-64 min-w-210 overflow-hidden rounded-sm border-background-700 bg-background-900">
+                <div className="min-w-105 px-5 py-5">
                   <Flex className="gap-18">
                     <div>
                       <Flex align-center className="gap-2 text-sm text-foreground-300">
-                        Gross Volume <ChevronDown size={13} />
+                        Gross Volume <Icon id="arrow-down-01" size={13} />
                       </Flex>
                       <div className="mt-1 text-2xl font-medium text-foreground-100">
                         $128,197.72
@@ -353,7 +340,7 @@ function ShowcaseAfter() {
                     </div>
                     <div>
                       <Flex align-center className="gap-2 text-sm text-foreground-300">
-                        August 27, 2020 <ChevronDown size={13} />
+                        August 27, 2020 <Icon id="arrow-down-01" size={13} />
                       </Flex>
                       <div className="mt-1 text-xl text-foreground-400">$124,556.34</div>
                     </div>
@@ -370,24 +357,12 @@ function ShowcaseAfter() {
                   <p className="mt-1 text-xs text-foreground-400">Expected Today</p>
                 </div>
               </Card>
-
-              <Flex align-center justify-between className="mt-10">
-                <h3 className="text-md font-medium text-foreground-100">Reports Overview</h3>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="text-sm font-normal"
-                  icon={<BarChart3 size={15} />}
-                >
-                  Download
-                </Button>
-              </Flex>
               <Flex align-center className="mt-5 gap-3">
                 <Group spacing="sm" className="h-9">
                   <Group.Button
                     size="sm"
                     className="text-sm font-normal"
-                    icon={{ right: <ChevronDown size={14} /> }}
+                    icon={{ right: <Icon id="arrow-down-01" size={14} /> }}
                   >
                     Last 7 days
                   </Group.Button>
@@ -395,7 +370,7 @@ function ShowcaseAfter() {
                   <Group.Button
                     size="sm"
                     className="text-sm font-normal"
-                    icon={{ left: <FileText size={15} /> }}
+                    icon={{ left: <Icon id="file-01" size={15} /> }}
                   >
                     May 28 - Jun 3
                   </Group.Button>
@@ -405,14 +380,14 @@ function ShowcaseAfter() {
                   <Group.Button
                     size="sm"
                     className="text-sm font-normal"
-                    icon={{ right: <ChevronDown size={14} /> }}
+                    icon={{ right: <Icon id="arrow-down-01" size={14} /> }}
                   >
                     Previous Period
                   </Group.Button>
                 </Group>
               </Flex>
 
-              <Card className="mt-5 flex min-w-260 overflow-hidden rounded-sm border-background-700 bg-background-900">
+              <Card className="mt-5 flex min-w-90 overflow-hidden rounded-sm border-background-700 bg-background-900">
                 <MetricCard
                   title="Gross Volume"
                   value="$4,542,375.45"

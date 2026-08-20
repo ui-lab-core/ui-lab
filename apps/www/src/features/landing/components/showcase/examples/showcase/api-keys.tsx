@@ -3,7 +3,7 @@
 import { Fragment, useMemo, useState } from "react";
 import { List, Badge, Button, Group, Select, Divider } from "ui-lab-components";
 import { Copy, Check, Plus, Search } from "lucide-react";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 interface ApiKey {
   id: string;

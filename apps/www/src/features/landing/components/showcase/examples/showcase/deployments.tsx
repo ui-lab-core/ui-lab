@@ -3,7 +3,7 @@
 import { Fragment, useMemo, useState } from "react";
 import { List, Badge, Button, Group, Select, Divider } from "ui-lab-components";
 import { GitBranch, GitCommitHorizontal, RotateCcw, RefreshCw } from "lucide-react";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 type Status = "ready" | "building" | "error";
 
@@ -63,7 +63,7 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
   return (
     <div className="flex w-full flex-col overflow-hidden" style={{ height }}>
       <div className="border-b border-background-700 p-2">
-        <Group className="h-10" spacing="sm">
+        <Group>
           <Group.Select selectedKey={branch} onSelectionChange={(key) => setBranch(String(key))}>
             <Select.Trigger icon={{ prefix: <GitBranch size={13} /> }}>
               {branch === "all" ? "All branches" : branch}

@@ -22,7 +22,7 @@ import {
   Tooltip,
 } from "ui-lab-components";
 import { ChevronDown, Copy, FilePen, Link2, Search, Share2, Trash2 } from "lucide-react";
-import type { ShowcasePanelProps } from "./types";
+import type { ShowcasePanelProps } from "../types";
 
 interface CellProps extends ShowcasePanelProps {
   children: ReactNode;

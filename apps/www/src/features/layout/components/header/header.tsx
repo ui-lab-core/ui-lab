@@ -26,6 +26,7 @@ import { HeaderMenu } from "./header-menu";
 import { navigationData } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
 import { useLandingSidebarToggle } from "@/features/layout/hooks/landing-sidebar-context";
+import { FaUser } from "react-icons/fa6";
 
 const TabItem = memo(({ tab }: { tab: TabConfig }) => {
   return (
@@ -208,9 +209,6 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
 
           <div className="flex items-center gap-1 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              <Button variant="ghost" aria-label="Feedback">
-                Give Feedback
-              </Button>
               {/*
                 <Button
                 variant="ghost"
@@ -224,35 +222,39 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
                 Source
                 </Button>
               */}
-
-              <Button href="/config" variant="secondary" icon={<FaPlus size={12} />}>
+              <Button
+                href="/config"
+                variant="scondary"
+                className="rounded-full"
+                icon={<FaPlus size={13} />}
+              >
                 New Project
               </Button>
-              <Button
-                variant="ghost"
-                aria-label="GitHub repository"
-                target="_blank"
-                href="https://github.com/ui-lab-core/ui-lab"
-                icon={<FaGithub size={16} />}
-                className="p-2"
-                size="icon"
-              ></Button>
+              {featureFlags.commandPalette ? (
+                <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-foreground-300 transition-colors hover:text-foreground-200"
+                    aria-label="Open command palette"
+                    onClick={() => setIsCommandPaletteOpen(true)}
+                  >
+                    <LuSearch strokeWidth={2.5} size={16} />
+                  </Button>
+                </Tooltip>
+              ) : null}
               <Divider size="auto" orientation="vertical" />
             </div>
 
-            {featureFlags.commandPalette ? (
-              <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-foreground-300 transition-colors hover:text-foreground-200"
-                  aria-label="Open command palette"
-                  onClick={() => setIsCommandPaletteOpen(true)}
-                >
-                  <LuSearch strokeWidth={2.5} size={16} />
-                </Button>
-              </Tooltip>
-            ) : null}
+            <Button
+              variant="ghost"
+              aria-label="GitHub repository"
+              target="_blank"
+              href="https://github.com/ui-lab-core/ui-lab"
+              icon={<FaGithub size={16} />}
+              className="p-2"
+              size="icon"
+            ></Button>
 
             <div className="hidden md:block">
               <HeaderMenu />
