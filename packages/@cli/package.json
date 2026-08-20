@@ -1,0 +1,30 @@
+{
+  "name": "@ui-lab/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Project initialization and installation CLI for UI Lab",
+  "type": "module",
+  "bin": {
+    "ui-lab": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "test": "tsc && node --import ./test-resolver.mjs --test dist/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ui-lab-registry": "workspace:*",
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
+  }
+}

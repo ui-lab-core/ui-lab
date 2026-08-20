@@ -68,8 +68,8 @@
     --padding-block: calc(var(--spacing) * 1);
   }
   .button.md {
-    --padding-inline: calc(var(--spacing) * 5);
-    --padding-block: calc(var(--spacing) * 2);
+    --padding-inline: calc(var(--spacing) * 4);
+    --padding-block: calc(var(--spacing) * 1.5);
   }
   .button.lg {
     --padding-inline: calc(var(--spacing) * 3.5);
@@ -221,10 +221,10 @@
   .command {
     --background: var(--background-900);
     --background-list: var(--background-950);
-    --background-footer: var(--background-800);
+    --background-footer: var(--background-900);
     --border: var(--background-700);
-    --height: min(45rem, 70dvh);
-    --width: 50rem;
+    --height: min(35rem, 60dvh);
+    --width: 30rem;
     --origin: 50% 10%;
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
@@ -290,7 +290,7 @@
   }
 
   .table {
-    --background: none;
+    --background: var(--background-950);
     --border: var(--background-700);
     --focus-ring: var(--accent-400);
     --foreground: var(--foreground-300);
@@ -308,7 +308,7 @@
 
   .table .row:hover:not([data-disabled="true"]),
   .table .row[data-selected="true"]:not([data-disabled="true"]) {
-    --background: var(--background-800);
+    --background: var(--background-900);
   }
 
   .table > .filter > .label,
@@ -317,31 +317,20 @@
   }
 
   .checkbox {
-    --background: var(--background-900);
-    --background-border: var(--background-700);
+    --background: var(--background-700);
+    --background-border: var(--background-600);
     --helper-error-foreground: var(--danger-600);
     --helper-foreground: var(--foreground-400);
-    --ring: var(--accent-500);
-  }
-
-  .checkbox:hover:not([data-disabled="true"]),
-  .checkbox[data-hovered="true"]:not([data-disabled="true"]) {
-    --background: color-mix(in srgb, var(--background-500) 10%, var(--background-900));
-    --background-border: var(--background-600);
+    --ring: color-mix(in srgb, var(--background-500) 40%, transparent);
   }
 
   .checkbox:is([data-selected="true"], [data-indeterminate="true"]) {
-    --background: var(--background-900);
-    --background-border: var(--background-700);
-
-    &:is(:hover, [data-hovered="true"]):not([data-disabled="true"]) {
-      --background: var(--background-800);
-      --background-border: var(--background-600);
-    }
+    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+    --background-border: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
   }
 
   .checkbox > :is(.checkmark, .indeterminate) {
-    --foreground: var(--foreground-400);
+    --foreground: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
   }
 
   .color {
@@ -390,6 +379,7 @@
     --background-border: var(--background-700);
     --disabled-background: var(--background-900);
     --disabled-foreground: var(--foreground-400);
+    --focus-border: var(--background-600);
     --foreground: var(--foreground-300);
     --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
     --ring: var(--accent-500);
@@ -399,6 +389,7 @@
 
   .input[data-error] {
     --ring: var(--danger-600);
+    --focus-border: var(--danger-600);
   }
 
   .input[data-variant="ghost"] {
@@ -423,47 +414,24 @@
   }
 
   .radio {
-    --background: var(--background-900);
-    --background-border: var(--background-700);
-    --focus-visible: var(--accent-400);
+    --background: var(--background-700);
+    --background-border: var(--background-600);
+    --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
   }
   .radio.outline {
     --background: transparent;
   }
 
-  .radio:hover:not([data-disabled="true"]),
-  .radio[data-hovered="true"]:not([data-disabled="true"]) {
-    --background: color-mix(in srgb, var(--background-500) 10%, var(--background-900));
-    --background-border: var(--background-600);
-  }
-
   .radio[data-selected="true"] {
-    --background: var(--background-900);
-    --background-border: var(--background-700);
-  }
-
-  .radio.outline[data-selected="true"] {
-    --background: var(--background-600);
-    --background-border: var(--background-600);
-  }
-
-  .radio[data-selected="true"]:hover:not([data-disabled="true"]),
-  .radio[data-selected="true"][data-hovered="true"]:not([data-disabled="true"]) {
-    --background: var(--background-800);
-    --background-border: var(--background-600);
+    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+    --background-border: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
   }
 
   .radio[data-error="true"]:not([data-selected="true"]) {
     --background-border: var(--danger-600);
   }
   .radio > .dot {
-    --background: var(--foreground-300);
-  }
-  .radio[data-selected="true"] > .dot {
-    --background: var(--foreground-400);
-  }
-  .radio.outline[data-selected="true"] > .dot {
-    --background: var(--accent-500);
+    --background: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
   }
   .radio > .label {
     --foreground: var(--foreground-300);
@@ -488,11 +456,7 @@
     --foreground: var(--foreground-300);
     --size: var(--text-sm);
     --icon-foreground: var(--foreground-400);
-    --trigger-background-hover: color-mix(
-      in srgb,
-      var(--background-600) 50%,
-      var(--background-950)
-    );
+    --trigger-background-hover: var(--background-800);
   }
 
   .select[data-pressed="true"]:not([data-disabled]) {
@@ -500,7 +464,7 @@
   }
 
   .select[data-open="true"] {
-    --background: color-mix(in srgb, var(--background-800) 50%, transparent);
+    --background: var(--background-800)
   }
 
   .select.ghost {
@@ -541,40 +505,30 @@
   }
 
   .slider > .track > .thumb {
-    --background: var(--foreground-300);
-    --background-border: color-mix(in srgb, var(--background-500) 40%, transparent);
+    --background: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
+    --background-border: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
     --disabled-background: var(--background-500);
     --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
     --radius: calc(var(--spacing) * 0.6);
   }
 
   .slider > .track > .range {
-    --background: color-mix(in srgb, var(--background-500) 60%, transparent);
+    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
     --disabled-background: var(--background-600);
   }
 
   .switch {
     --background: var(--background-700);
     --background-border: var(--background-600);
-    --focus-visible: var(--accent-400);
-    --foreground: var(--background-500);
+    --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
+    --foreground: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
     --transition-duration: 120ms;
     --transition-easing: linear;
   }
 
   .switch[data-selected="true"] {
-    --background: color-mix(in srgb, var(--background-500) 90%, transparent);
-    --background-border: color-mix(in srgb, var(--background-500) 20%, transparent);
-    --foreground: color-mix(in srgb, var(--foreground-400) 20%, white);
-  }
-
-  .switch[data-selected="true"]:active:not([data-disabled="true"]),
-  .switch[data-selected="true"][data-hovered="true"]:not([data-disabled="true"]) {
-    --background-border: color-mix(in srgb, var(--background-500) 30%, transparent);
-  }
-
-  .switch[data-selected="true"]:active:not([data-disabled="true"]) {
-    --background: var(--background-600);
+    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+    --background-border: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
   }
 
   .textarea {
@@ -666,12 +620,13 @@
   }
 
   .progress > .track {
-    --background: color-mix(in srgb, var(--background-500) 20%, transparent);
+    --background: var(--background-700);
+    --border-color: var(--background-600);
     --radius: calc(var(--spacing) * 0.8);
   }
 
   .progress > .track > .range {
-    --background: var(--background-500);
+    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
     --radius: calc(var(--spacing) * 0.8);
   }
 
@@ -831,7 +786,7 @@
   }
 
   .anchor[data-hovered="true"]:not([data-disabled="true"]) {
-    --underline-background: var(--foreground-400);
+    --underline-background: var(--background-500);
   }
 
   .modal {
@@ -928,36 +883,36 @@
 
 @layer utilities {
   .button.primary {
-    --background: var(--foreground-100);
-    --background-border: var(--foreground-100);
-    --foreground: var(--background-900);
-    --icon-foreground: var(--background-700);
+    --background: var(--accent-600);
+    --background-border: var(--accent-600);
+    --foreground: var(--accent-50);
+    --icon-foreground: var(--accent-50);
   }
 
-  .button.primary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
-    --background: color-mix(in srgb, var(--foreground-100) 90%, var(--background-600));
-    --background-border: color-mix(in srgb, var(--foreground-100) 90%, var(--background-600));
+  .button.primary:is( [data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
+    --background: color-mix( in srgb, contrast-color(var(--background-900)) 5%, var(--accent-500));
+    --background-border: color-mix( in srgb, contrast-color(var(--background-900)) 5%, var(--accent-500));
   }
 
   .button.primary[data-pressed="true"]:not([data-disabled="true"]) {
-    --background: color-mix(in srgb, var(--foreground-100) 85%, var(--background-600));
-    --background-border: color-mix(in srgb, var(--foreground-100) 85%, var(--background-600));
+    --background: color-mix( in srgb, contrast-color(var(--background-900)) 15%, var(--accent-600));
+    --background-border: color-mix( in srgb, contrast-color(var(--background-900)) 15%, var(--accent-600));
   }
 
   .button.secondary {
-    --background: color-mix(in srgb, var(--background-800) 80%, transparent);
+    --background: var(--background-800);
     --background-border: var(--background-800);
     --foreground: var(--foreground-300);
   }
 
   .button.secondary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled="true"]) {
-    --background: var(--background-700);
-    --background-border: var(--background-700);
+    --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));
+    --background-border: transparent
   }
 
   .button.secondary[data-pressed="true"]:not([data-disabled="true"]) {
-    --background: color-mix(in srgb, var(--background-700) 60%, var(--background-950));
-    --background-border: var(--background-700);
+    --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));
+    --background-border: transparent
   }
 
   .button.ghost {
