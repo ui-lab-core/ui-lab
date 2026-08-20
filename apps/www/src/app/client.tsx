@@ -1,10 +1,10 @@
 "use client";
 
-import { Suspense, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { IconProvider } from "ui-lab-components";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { AppProvider, useApp } from "@/features/theme/lib/app-context";
-import { ConvexClientProvider } from "./convex-client-provider";
 
 function KeyboardShortcuts() {
   const {
@@ -82,14 +82,12 @@ function KeyboardShortcuts() {
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
-    <AppProvider>
-      <Suspense fallback={children}>
-        <ConvexClientProvider>
-          <KeyboardShortcuts />
-          {/* <PerfOverlay /> */}
-          {children}
-        </ConvexClientProvider>
-      </Suspense>
-    </AppProvider>
+    <IconProvider defaultVariant="stroke">
+      <AppProvider>
+        <KeyboardShortcuts />
+        {/* <PerfOverlay /> */}
+        {children}
+      </AppProvider>
+    </IconProvider>
   );
 }

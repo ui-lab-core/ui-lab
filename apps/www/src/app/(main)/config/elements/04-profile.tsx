@@ -41,7 +41,7 @@ export function Profile() {
           </Button>
         </Flex>
       </Card.Header>
-      <Card.Body className="flex min-h-0 flex-1 flex-col py-4">
+      <Card.Body className="flex min-h-0 flex-1 flex-col p-0 py-4">
         <Tabs default="profile" className="flex h-full flex-col">
           <Tabs.List aria-label="Profile settings" className="w-full">
             <Tabs.Trigger value="profile" className="flex-1">
@@ -56,7 +56,7 @@ export function Profile() {
               <div className="flex h-14 w-14 items-center justify-center rounded-sm border border-background-700 bg-background-800 text-sm font-semibold text-foreground-300">
                 YC
               </div>
-              <Flex direction="column" align-center gap="none" className="min-w-0">
+              <Flex direction="column" align-center gap="none" className="min-w-0 px-0">
                 <span className="text-base font-semibold text-foreground-100">Rin Park</span>
                 <span className="max-w-[15rem] text-sm leading-5 text-foreground-400">
                   Designer, developer, and curious builder
@@ -71,7 +71,7 @@ export function Profile() {
               <span className="text-xs font-medium text-foreground-400">Working style</span>
               <p className="text-sm leading-5 text-foreground-300">
                 Clear context over urgency. AI handles the first draft; people handle direction,
-                taste, and hard decisions.
+                consistency, and hard decisions.
               </p>
             </Flex>
           </Tabs.Content>

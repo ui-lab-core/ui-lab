@@ -43,7 +43,7 @@ const sessions = [
 ];
 
 export function StudioRhythm() {
-  const [openSession, setOpenSession] = useState("crit");
+  const [openSession, setOpenSession] = useState<string | null>("crit");
   const [selectedDate, setSelectedDate] = useState(14);
 
   return (

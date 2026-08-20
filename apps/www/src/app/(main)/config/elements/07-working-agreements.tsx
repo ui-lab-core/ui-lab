@@ -45,8 +45,8 @@ export function WorkingAgreements() {
           </span>
         </Flex>
       </Card.Header>
-      <Card.Body className="flex flex-1 flex-col gap-3 py-4">
-        <List aria-label="Working agreements" spacing="sm">
+      <Card.Body className="flex flex-1 flex-col gap-3 p-0">
+        <List className="gap-0" aria-label="Working agreements" spacing="sm">
           {agreements.map(({ id, icon: AgreementIcon, label, detail }) => {
             const selected = acknowledged.includes(id);
             return (
@@ -54,6 +54,7 @@ export function WorkingAgreements() {
                 key={id}
                 value={id}
                 interactive
+                className="rounded-none"
                 selected={selected}
                 onClick={() => toggle(id)}
               >
@@ -76,7 +77,7 @@ export function WorkingAgreements() {
             );
           })}
         </List>
-        <Flex direction="column" gap="sm" className="pt-2">
+        <Flex direction="column" gap="sm" className="pt-2 px-1.5">
           <TextArea
             placeholder="Suggest a change, exception, or agreement we’re missing."
             value={note}

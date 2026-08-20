@@ -2,15 +2,19 @@
 
 import type { CSSProperties } from "react";
 import { useCallback, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { useApp } from "@/features/theme/lib/app-context";
 import { generateThemeSetupFiles } from "@/features/theme/config";
 import { computeStyleVariables } from "@/features/theme/lib/css-variable-generator";
 import type { TypographyConfig } from "@/features/theme/lib/typography-config";
 import { SettingsSidebar } from "@/features/theme/components/settings-sidebar";
-import { InitializeContent } from "./initialize-content";
 import { PreviewCanvas } from "./preview-canvas";
 import { Button, Modal, Page, Scroll, Tabs } from "ui-lab-components";
 import { Download } from "lucide-react";
+
+const InitializeContent = dynamic(() =>
+  import("./initialize-content").then((module) => module.InitializeContent),
+);
 
 function TypographyCanvas() {
   return (
@@ -184,7 +188,7 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
       max-width="var(--page-width)"
       className="bg-background-100 text-foreground-100 min-h-[calc(100dvh-var(--header-height))] xl:h-[calc(100dvh-var(--header-height))] xl:min-h-0 xl:overflow-hidden"
     >
-      <div className="grid w-full border-l border-background-700 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid w-full border-l border-background-700 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_25rem]">
         <section className="flex min-w-0 min-h-0 flex-col gap-3 pt-2 xl:overflow-hidden">
           <Tabs
             value={preview}

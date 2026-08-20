@@ -38,7 +38,6 @@ const rootTheme = resolveThemeRootState(theme);
   lang="en"
   class={rootTheme.className}
   data-theme={rootTheme.dataTheme}
-  style={rootTheme.colorScheme ? \`color-scheme: \${rootTheme.colorScheme}\` : undefined}
 >
   <head>
     <slot name="head" />
@@ -151,8 +150,9 @@ export function InitializeContent({
         <p>
           UI Lab components ship without design tokens, so they look unstyled until a theme is
           loaded. ui-lab-theme-onyx supplies that base theme; the generated theme.css layers your
-          configured tokens on top of it. A complete setup has three parts: install the package, add
-          your theme, then stamp the color mode for your framework.
+          configured tokens on top of it. A complete setup has four parts: install the package, add
+          your theme, add the reading-surface typography styles, then stamp the color mode for your
+          framework.
         </p>
 
         <h3>Choose your framework</h3>
@@ -192,7 +192,31 @@ export function InitializeContent({
           </Tabs.Content>
         </Tabs>
 
-        <h3>3. Stamp the color mode</h3>
+        <h3>3. Add long-form typography</h3>
+        <p>
+          Create app/typography.css with these reading-surface styles, then import it after your
+          theme in globals.css. Add the typography class to article and rich-text containers — not
+          the page root.
+        </p>
+        <Tabs default="import">
+          <Tabs.List>
+            <Tabs.Trigger value="import">globals.css</Tabs.Trigger>
+            <Tabs.Trigger value="typography">typography.css</Tabs.Trigger>
+          </Tabs.List>
+
+          <Tabs.Content value="import">
+            <Code language="css" filename="app/globals.css">
+              {`@import "./typography.css";`}
+            </Code>
+          </Tabs.Content>
+          <Tabs.Content value="typography">
+            <Code language="css" filename="app/typography.css">
+              {typographyCss}
+            </Code>
+          </Tabs.Content>
+        </Tabs>
+
+        <h3>4. Stamp the color mode</h3>
         {framework === "next" && (
           <>
             <p>
@@ -240,22 +264,6 @@ export function InitializeContent({
             </div>
             <Code language="tsx" filename="components/theme-toggle.tsx">
               {themeToggleTsx}
-            </Code>
-          </div>
-        </Expand>
-
-        <Expand title="Long-form typography" expanded={false}>
-          <div className="space-y-3 p-4">
-            <div className="text-sm text-foreground-400">
-              Reading-surface styles for articles and rich text. Save as app/typography.css, import
-              it after your theme in globals.css, and add the typography class to long-form
-              containers — not the page root.
-            </div>
-            <Code language="tsx" filename="import">
-              {`@import "./typography.css";`}
-            </Code>
-            <Code language="css" filename="app/typography.css">
-              {typographyCss}
             </Code>
           </div>
         </Expand>

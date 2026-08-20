@@ -99,6 +99,7 @@
      reveal content underneath them; callers can add opacity explicitly when
      translucency is intentional. */
   --background-1000: oklch(from var(--background-950) calc(l * 1.5 - 0.125) c h);
+  --background-1050: oklch(from var(--background-950) calc(l * 1.5 - 0.150) c h);
 }
 
 :root[data-font="work-sans"] {
@@ -115,6 +116,7 @@
   /* Color Palette */
   --color-background: var(--background);
   --color-background-1000: var(--background-1000);
+  --color-background-1050: var(--background-1050);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
 
@@ -142,7 +144,7 @@
   --border-width-8: 8px;
 
   --header-height: 3.5rem;
-  --page-width: 1400px;
+  --page-width: 1350px;
   --content-width: 850px;
   --logo-width: 250px;
   --banner-height: 52px;
