@@ -62,10 +62,6 @@
     --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
-  .grid {
-    @apply gap-x-1 gap-y-1;
-  }
-
   .day-cell {
     --day-cell-border-width: 2px;
 
@@ -102,7 +98,7 @@
   }
 }
 
-/* Variant states - these are outside @layer */
+@layer components.defaults {
 .day-cell[data-selected="true"] {
   font-weight: var(--font-weight-body-medium, 500);
 }
@@ -123,7 +119,9 @@
 }
 
 .day-cell[data-in-range="true"] {
-  background-color: var(--range-background, var(--background-700));
+  --background: var(--background-700);
+
+  background-color: var(--background, var(--background-700));
   border-radius: 0;
 }
 
@@ -132,7 +130,7 @@
    * dimensions or participating in track sizing. The shifted shadow overlaps
    * the cell itself, so it reads as one continuous fill rather than a separate
    * per-gap bridge. */
-  box-shadow: var(--spacing, 0.25rem) 0 0 var(--range-background, var(--background-700));
+  box-shadow: var(--spacing, 0.25rem) 0 0 var(--background, var(--background-700));
 }
 
 .day-cell[data-in-range="true"]:not([data-connect-left="true"]) {
@@ -147,8 +145,11 @@
 
 .day-cell[data-range-start="true"],
 .day-cell[data-range-end="true"] {
+  --background: transparent;
+  --foreground: var(--accent-50);
+
   background-color: transparent;
-  color: var(--range-selected-foreground, var(--accent-50));
+  color: var(--foreground, var(--accent-50));
   border-radius: var(--radius-sm);
 }
 
@@ -158,11 +159,13 @@
  */
 .day-cell[data-range-start="true"][data-connect-right="true"]::before,
 .day-cell[data-range-end="true"][data-connect-left="true"]::before {
+  --background: var(--background-700);
+
   content: "";
   position: absolute;
   top: calc(-1 * var(--day-cell-border-width));
   height: calc(100% + 2 * var(--day-cell-border-width));
-  background-color: var(--range-background, var(--background-700));
+  background-color: var(--background, var(--background-700));
   pointer-events: none;
   z-index: 0;
 }
@@ -179,11 +182,13 @@
 
 .day-cell[data-range-start="true"]::after,
 .day-cell[data-range-end="true"]::after {
+  --background: var(--accent-500);
+
   content: "";
   position: absolute;
   inset: calc(-1 * var(--day-cell-border-width));
   border-radius: inherit;
-  background-color: var(--range-selected-background, var(--accent-500));
+  background-color: var(--background, var(--accent-500));
   pointer-events: none;
   z-index: 0;
 }
@@ -209,4 +214,5 @@
 
 .day-cell[data-disabled="true"] {
   cursor: not-allowed;
+}
 }

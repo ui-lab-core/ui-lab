@@ -25,7 +25,7 @@
 
   /* The Scroll port inside handles the overflow in this mode. */
   .container[data-scroll="horizontal"] {
-    overflow: hidden;
+    overflow: visible;
   }
 
   /* Rows scroll on their own, so the container just hands down its height. */
@@ -37,7 +37,20 @@
 
   .scroller {
     @apply block w-full min-w-0 max-w-full;
+    border-radius: inherit;
     overscroll-behavior-inline: contain;
+  }
+
+  .scroller :global(.mask) {
+    border-radius: inherit;
+  }
+
+  .scrollerTrack {
+    background-color: var(--background, transparent);
+  }
+
+  .scrollerThumb {
+    background-color: var(--background-500, var(--foreground));
   }
 
   .table {
@@ -161,7 +174,7 @@
     opacity: var(--disabled-opacity, 0.5);
   }
 
-  .row:focus-visible {
+  .row[data-focus-visible="true"] {
     outline: 2px solid var(--focus-ring);
     outline-offset: -2px;
   }

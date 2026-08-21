@@ -5,8 +5,8 @@ declare const styles: {
   "icon-wrapper": string;
   icon: string;
   container: string;
-  "start-adornments": string;
-  "end-adornments": string;
+  prefix: string;
+  suffix: string;
   actions: string;
   action: string;
   hint: string;

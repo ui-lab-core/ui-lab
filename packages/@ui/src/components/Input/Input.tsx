@@ -16,60 +16,115 @@ import { useControlledState } from "@/hooks/useControlledState";
 import { GroupContext } from "@/components/Group/Group.Context";
 import css from "./Input.module.css";
 
-type Variant = "default" | "ghost";
+/** Visual treatment applied to the input surface. */
+export type InputVariant = "default" | "ghost" | (string & {});
 
-type InputIconStyles = {
+/** Styles for icons rendered at either edge of the input. */
+export interface InputIconStyles {
+  /** Styles the icon before the input value. */
   left?: StyleValue;
+  /** Styles the icon after the input value. */
   right?: StyleValue;
-};
+}
 
-type InputStepperStyles = {
+export interface InputAdornmentStyles {
+  start?: StyleValue;
+  end?: StyleValue;
+}
+
+/** Styles for the number-input stepper buttons. */
+export interface InputStepperStyles {
+  /** Styles the increment button. */
   up?: StyleValue;
+  /** Styles the decrement button. */
   down?: StyleValue;
-};
+}
 
+/** Named style slots for the Input anatomy. */
 export interface InputStyleSlots {
+  /** Styles the visual input surface. */
   root?: StyleValue;
+  /** Styles the native input or custom input content surface. */
+  input?: StyleValue;
+  adornments?: InputAdornmentStyles;
+  /** Styles one or both icon wrappers. */
   icon?: StyleValue | InputIconStyles;
+  /** Styles one or both actions wrappers. */
+  actions?: StyleValue | InputActionStyles;
+  /** Styles the hint content. */
+  hint?: StyleValue;
+  /** Styles the number-input controls wrapper. */
+  controls?: StyleValue;
+  /** Styles one or both number-input stepper buttons. */
   stepper?: StyleValue | InputStepperStyles;
 }
 
+/** Styles for action groups at either edge of the input. */
+export interface InputActionStyles {
+  /** Styles the actions before the input value. */
+  left?: StyleValue;
+  /** Styles the actions after the input value. */
+  right?: StyleValue;
+}
+
 export type InputStylesProp = StylesProp<InputStyleSlots>;
+/** Controlled values accepted through the Input state abstraction. */
 export interface InputState {
+  /** Current input value. Takes precedence over the native value prop. */
   value?: string;
 }
 
+/** An inline action definition or custom action node. */
 export type InputAction = InputActionDef | React.ReactNode;
-type InputIconSlots = {
+/** Icon content positioned before and/or after the input value. */
+export interface InputIconSlots {
+  /** Content rendered before the input value. */
   prefix?: React.ReactNode;
+  /** Content rendered after the input value. */
   suffix?: React.ReactNode;
-};
+}
 
-export type InputActionDef = {
+/** Declarative inline action rendered as an icon button. */
+export interface InputActionDef {
+  /** Icon content for the action button. */
   icon: React.ReactNode;
+  /** Accessible name and tooltip content for the action button. */
   title: string;
+  /** Invoked when the action button is pressed. */
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-};
+}
 
-type InputActionSlots = {
+/** Inline actions positioned at either edge of the input. */
+export interface InputActionSlots {
+  /** Actions rendered before the input value. */
   left?: InputAction[];
+  /** Actions rendered after the input value. */
   right?: InputAction[];
-};
+}
 
 const resolveInputBaseStyles = createStylesResolver([
   "root",
-  "iconLeft",
-  "iconRight",
-  "stepperUp",
-  "stepperDown",
+  "input",
+  "adornments.start",
+  "adornments.end",
+  "icon.left",
+  "icon.right",
+  "actions.left",
+  "actions.right",
+  "hint",
+  "controls",
+  "stepper.up",
+  "stepper.down",
 ] as const);
 
 function resolveInputStyles(styles: InputStylesProp | undefined) {
   if (!styles) return resolveInputBaseStyles(styles);
-  const { root, icon, stepper } = styles;
+  const { root, input, adornments, icon, actions, hint, controls, stepper } = styles;
 
   let iconLeft: StyleValue | undefined;
   let iconRight: StyleValue | undefined;
+  let actionsLeft: StyleValue | undefined;
+  let actionsRight: StyleValue | undefined;
   let stepperUp: StyleValue | undefined;
   let stepperDown: StyleValue | undefined;
 
@@ -83,6 +138,16 @@ function resolveInputStyles(styles: InputStylesProp | undefined) {
     }
   }
 
+  if (actions) {
+    if (typeof actions === "string" || Array.isArray(actions)) {
+      actionsLeft = actions;
+      actionsRight = actions;
+    } else {
+      actionsLeft = actions.left;
+      actionsRight = actions.right;
+    }
+  }
+
   if (stepper) {
     if (typeof stepper === "string" || Array.isArray(stepper)) {
       stepperUp = stepper;
@@ -93,25 +158,62 @@ function resolveInputStyles(styles: InputStylesProp | undefined) {
     }
   }
 
-  return resolveInputBaseStyles({ root, iconLeft, iconRight, stepperUp, stepperDown });
+  return resolveInputBaseStyles({
+    root,
+    input,
+    "adornments.start": adornments?.start,
+    "adornments.end": adornments?.end,
+    "icon.left": iconLeft,
+    "icon.right": iconRight,
+    "actions.left": actionsLeft,
+    "actions.right": actionsRight,
+    hint,
+    controls,
+    "stepper.up": stepperUp,
+    "stepper.down": stepperDown,
+  });
 }
 
 export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "size"> {
-  /** Controlled state. */
+  /** Controlled state. Takes precedence over the native value prop.
+   * @category Core
+   * @typeDoc InputState
+   */
   state?: InputState;
-  /** Controls the visual style of the input */
-  variant?: Variant;
-  /** Whether the input is in an error state */
+  /** Controls the visual treatment of the input surface.
+   * @category Core
+   * @default "default"
+   * @typeDoc InputVariant
+   */
+  variant?: InputVariant;
+  /** Applies error styling to the input surface.
+   * @category Core
+   * @default false
+   */
   error?: boolean;
-  /** Icon displayed before the input value by default, or in named prefix/suffix slots */
+  /** Icon displayed before the input value by default, or in named prefix/suffix slots.
+   * @category Content
+   * @typeDoc InputIconSlots
+   */
   icon?: React.ReactNode | InputIconSlots;
-  /** Inline actions rendered on the left or right side of the input. Passing an array keeps the existing right-side behavior. */
+  /** Inline actions rendered on the left or right side of the input. An array renders on the right.
+   * @category Content
+   * @typeDoc InputActionSlots
+   */
   actions?: InputAction[] | InputActionSlots;
-  /** Hint content rendered inside a badge on the right side of the input, commonly used for keyboard shortcuts. */
+  /** Hint content rendered on the right side of the input, commonly used for keyboard shortcuts.
+   * @category Content
+   */
   hint?: React.ReactNode;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc InputStyleSlots
+   */
   styles?: InputStylesProp;
-  /** Hides the spinner controls for number inputs */
+  /** Hides the spinner controls for number inputs.
+   * @category Core
+   * @default false
+   */
   "hide-controls"?: boolean;
   /**
    * Custom content rendered in place of the native `<input>`, keeping the
@@ -179,6 +281,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
+      style,
       variant = "default",
       error = false,
       disabled,
@@ -296,7 +399,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputRoot = (
       <div
         ref={containerRef}
-        className={cn("input", css.container, resolved.root, groupContext && className)}
+        className={cn("input", variant, css.container, className, resolved.root)}
+        style={style}
         data-input-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
@@ -305,14 +409,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         data-variant={variant}
       >
         {hasStartAdornment && (
-          <div className={css["start-adornments"]} data-start-adornments>
+          <div className={cn("prefix", css.prefix, resolved["adornments.start"])}>
             {hasPrefix && (
-              <div className={cn("icon", css["icon-wrapper"], resolved.iconLeft)}>
+              <div className={cn("icon", "left", css["icon-wrapper"], resolved["icon.left"])}>
                 <span className={css.icon}>{resolvedIcon?.prefix}</span>
               </div>
             )}
             {hasLeftActions && (
-              <div className={css.actions} data-actions data-actions-position="left">
+              <div className={cn("actions", "left", css.actions, resolved["actions.left"])}>
                 {leftActions.map(renderAction)}
               </div>
             )}
@@ -320,9 +424,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         {hasCustomContent ? (
           <div
-            className={cn(css.input, css.content)}
+            className={cn(css.input, css.content, resolved.input)}
             style={inputPaddingStyle}
-            data-input-content="true"
             data-focus-visible={isFocusVisible ? "true" : undefined}
             data-focused={isFocused ? "true" : undefined}
             data-disabled={disabled || undefined}
@@ -351,7 +454,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             data-disabled={disabled || undefined}
             data-error={error ? "true" : undefined}
             data-variant={variant}
-            className={css.input}
+            className={cn(css.input, resolved.input)}
             style={inputPaddingStyle}
             {...mergeProps(focusProps, {
               onFocus: handleFocus,
@@ -366,27 +469,27 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         )}
         {hasEndAdornment && (
-          <div className={css["end-adornments"]} data-end-adornments>
+          <div className={cn("suffix", css.suffix, resolved["adornments.end"])}>
             {hasSuffix && (
-              <div className={cn("icon", css["icon-wrapper"], resolved.iconRight)}>
+              <div className={cn("icon", "right", css["icon-wrapper"], resolved["icon.right"])}>
                 <span className={css.icon}>{resolvedIcon?.suffix}</span>
               </div>
             )}
             {hasRightActions && (
-              <div className={css.actions} data-actions data-actions-position="right">
+              <div className={cn("actions", "right", css.actions, resolved["actions.right"])}>
                 {rightActions.map(renderAction)}
               </div>
             )}
             {hasHint && (
-              <span className={css.hint} data-hint>
+              <span className={cn("hint", css.hint, resolved.hint)}>
                 {hint}
               </span>
             )}
             {showControls && (
-              <div className={css.controls} data-disabled={disabled || undefined}>
+              <div className={cn("controls", css.controls, resolved.controls)} data-disabled={disabled || undefined}>
                 <button
                   type="button"
-                  className={cn("stepper", css.stepper, resolved.stepperUp)}
+                  className={cn("stepper", "up", css.stepper, resolved["stepper.up"])}
                   onClick={() => handleSpinClick("up")}
                   disabled={disabled}
                   tabIndex={-1}
@@ -396,7 +499,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 </button>
                 <button
                   type="button"
-                  className={cn("stepper", css.stepper, resolved.stepperDown)}
+                  className={cn("stepper", "down", css.stepper, resolved["stepper.down"])}
                   onClick={() => handleSpinClick("down")}
                   disabled={disabled}
                   tabIndex={-1}
@@ -416,7 +519,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }
 
     return (
-      <div ref={scopeRef} className={cn("input-scope", scopeProps.className, css.scope, className)}>
+      <div ref={scopeRef} className={cn("input-scope", scopeProps.className, css.scope)}>
         <div {...indicatorProps} data-focus-indicator="local" />
         {inputRoot}
       </div>

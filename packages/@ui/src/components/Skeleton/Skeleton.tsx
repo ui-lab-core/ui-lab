@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { type ColorToken, resolveColorToken } from "@/lib/color";
 import { cn } from "@/lib/utils";
 import css from "./Skeleton.module.css";
 
@@ -17,6 +18,8 @@ export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   w?: SkeletonDimension;
   /** Height of the placeholder. Numeric values are pixels. */
   h?: React.CSSProperties["height"];
+  /** Design-system color token used for the placeholder fill. */
+  color?: ColorToken;
 }
 
 type SkeletonTextRowMode = { lines?: number; h?: never } | { lines?: never; h?: number };
@@ -31,6 +34,8 @@ export type SkeletonTextProps = Omit<React.HTMLAttributes<HTMLDivElement>, "chil
     lastLineWidth?: SkeletonDimension;
     /** Multiplies row thickness and gap without changing width. Invalid values fall back to 1. */
     scale?: number;
+    /** Design-system color token used for each row's fill. */
+    color?: ColorToken;
   };
 
 export interface SkeletonImageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -40,6 +45,8 @@ export interface SkeletonImageProps extends Omit<React.HTMLAttributes<HTMLDivEle
   h?: React.CSSProperties["height"];
   /** CSS aspect ratio used when no explicit height is supplied. */
   ratio?: React.CSSProperties["aspectRatio"];
+  /** Design-system color token used for the placeholder fill. */
+  color?: ColorToken;
 }
 
 function normalizeScale(scale: number | undefined): number {
@@ -69,20 +76,22 @@ function dimensionStyle(
   style: React.CSSProperties | undefined,
   w: SkeletonDimension | undefined,
   h: React.CSSProperties["height"] | undefined,
+  color: ColorToken | undefined,
 ): React.CSSProperties {
   return {
     ...(w !== undefined ? { width: w } : null),
     ...(h !== undefined ? { height: h } : null),
+    ...(color !== undefined ? { "--skeleton-color": resolveColorToken(color) } : null),
     ...style,
-  };
+  } as React.CSSProperties;
 }
 
 const SkeletonRoot = React.forwardRef<HTMLDivElement, SkeletonProps>(
-  ({ className, style, w, h, "aria-hidden": ariaHidden = true, ...props }, ref) => (
+  ({ className, style, w, h, color, "aria-hidden": ariaHidden = true, ...props }, ref) => (
     <div
       ref={ref}
       className={cn("skeleton", css.shape, css.rectangle, className)}
-      style={dimensionStyle(style, w, h)}
+      style={dimensionStyle(style, w, h, color)}
       aria-hidden={ariaHidden}
       {...props}
     />
@@ -102,6 +111,7 @@ const SkeletonText = React.forwardRef<HTMLDivElement, SkeletonTextProps>(
       w,
       lastLineWidth,
       scale,
+      color,
       "aria-hidden": ariaHidden = true,
       ...props
     },
@@ -129,6 +139,7 @@ const SkeletonText = React.forwardRef<HTMLDivElement, SkeletonTextProps>(
       ...(heightMode ? { height: h } : null),
       ...style,
       "--scale": resolvedScale,
+      ...(color !== undefined ? { "--skeleton-color": resolveColorToken(color) } : null),
       ...geometryStyle,
     } as React.CSSProperties;
 
@@ -170,7 +181,7 @@ SkeletonText.displayName = "Skeleton.Text";
 
 /** Decorative media placeholder with an explicit size or aspect ratio. */
 const SkeletonImage = React.forwardRef<HTMLDivElement, SkeletonImageProps>(
-  ({ className, style, w, h, ratio, "aria-hidden": ariaHidden = true, ...props }, ref) => {
+  ({ className, style, w, h, ratio, color, "aria-hidden": ariaHidden = true, ...props }, ref) => {
     const imageStyle = {
       ...(w !== undefined ? { width: w } : null),
       ...(h !== undefined
@@ -178,6 +189,7 @@ const SkeletonImage = React.forwardRef<HTMLDivElement, SkeletonImageProps>(
         : ratio !== undefined
           ? { aspectRatio: ratio }
           : null),
+      ...(color !== undefined ? { "--skeleton-color": resolveColorToken(color) } : null),
       ...style,
     } as React.CSSProperties;
 

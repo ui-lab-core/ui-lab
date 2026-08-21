@@ -2,9 +2,11 @@ import { Command as CommandBase } from "./Command";
 import { CommandInput } from "./Command.Input";
 import {
   CommandCategory,
+  CommandDescription,
   CommandFooter,
   CommandGroups,
   CommandItem,
+  CommandLabel,
   CommandList,
 } from "./Command.Items";
 import { CommandRoot } from "./Command.Root";
@@ -15,6 +17,8 @@ const Command = Object.assign(CommandBase, {
   Input: CommandInput,
   List: CommandList,
   Item: CommandItem,
+  Label: CommandLabel,
+  Description: CommandDescription,
   Category: CommandCategory,
   Footer: CommandFooter,
   Groups: CommandGroups,
@@ -27,6 +31,7 @@ export type { CommandRootProps } from "./Command.Root";
 export type {
   CommandItem,
   CommandGroupedItems,
+  CommandItemStyles,
   CommandStyleSlots,
   CommandStylesProp,
 } from "./Command.shared";
@@ -40,4 +45,15 @@ export type {
   CommandGroupsProps,
 } from "./Command.Items";
 export type { CommandTriggerProps } from "./Command.Trigger";
-export { Command };
+export {
+  Command,
+  CommandRoot,
+  CommandInput,
+  CommandList,
+  CommandLabel,
+  CommandDescription,
+  CommandCategory,
+  CommandFooter,
+  CommandGroups,
+  CommandTrigger,
+};

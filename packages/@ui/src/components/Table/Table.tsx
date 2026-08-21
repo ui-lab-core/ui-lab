@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { useFocusRing } from "@react-aria/focus";
+import { mergeProps } from "@react-aria/utils";
 
 import { Input } from "@/components/Input";
 import { Scroll } from "@/components/Scroll";
@@ -33,8 +35,6 @@ export interface Column<T, K extends keyof T = keyof T> {
   minWidth?: React.CSSProperties["minWidth"];
   /** @deprecated Use header instead. */
   label?: string;
-  /** Whether the column supports sorting (reserved for future use) */
-  sortable?: boolean;
   /** Whether a filter input is shown for this column when showFilters is enabled */
   filterable?: boolean;
   /** Defines custom cell content using the value, row, and table coordinates. */
@@ -43,30 +43,57 @@ export interface Column<T, K extends keyof T = keyof T> {
   render?: (value: any, row: T) => React.ReactNode;
 }
 
-interface TableStyleSlots {
+/** Style overrides for the table root and its stable rendered parts. */
+export interface TableStyleSlots {
   root?: StyleValue;
   container?: StyleValue;
-  filterBar?: StyleValue;
-  filterGrid?: StyleValue;
-  filterLabel?: StyleValue;
-  filterInput?: StyleValue;
+  scroller?: StyleValue | TableScrollerStyles;
+  filter?: StyleValue | TableFilterStyles;
   table?: StyleValue;
-  header?: StyleValue;
-  body?: StyleValue;
-  headerRow?: StyleValue;
-  headerCell?: StyleValue;
+  header?: StyleValue | TableHeaderStyles;
+  body?: StyleValue | TableBodyStyles;
   row?: StyleValue;
   cell?: StyleValue;
-  emptyRow?: StyleValue;
-  emptyState?: StyleValue;
+  empty?: StyleValue | TableEmptyStyles;
 }
 
-type TableStylesProp = StylesProp<TableStyleSlots>;
+/** Styles for the horizontal table scroller and its scrollbar anatomy. */
+export interface TableScrollerStyles {
+  root?: StyleValue;
+  track?: StyleValue;
+  thumb?: StyleValue;
+}
 
-export type TableSortState<T> = {
-  column: keyof T | null;
-  direction: "ascending" | "descending" | null;
-};
+/** Styles for the optional filter controls. */
+export interface TableFilterStyles {
+  bar?: StyleValue;
+  grid?: StyleValue;
+  field?: StyleValue;
+  label?: StyleValue;
+  input?: StyleValue;
+}
+
+/** Styles for the table header and its direct row and cell anatomy. */
+export interface TableHeaderStyles {
+  root?: StyleValue;
+  row?: StyleValue;
+  cell?: StyleValue;
+}
+
+/** Styles for the table body and its rows-only scroll port. */
+export interface TableBodyStyles {
+  root?: StyleValue;
+  scroller?: StyleValue;
+}
+
+/** Styles for the empty row and its message cell. */
+export interface TableEmptyStyles {
+  row?: StyleValue;
+  state?: StyleValue;
+}
+
+/** Keyed class names applied to the table's stable rendered parts. */
+export type TableStylesProp = StylesProp<TableStyleSlots>;
 
 export type TableFilterState = Record<string, string>;
 
@@ -111,8 +138,6 @@ export interface TableContextValue<T extends Record<string, any> = Record<string
   columns: Column<T>[];
   data: T[];
   filteredData: T[];
-  selectedRows: Set<React.Key>;
-  sortState: TableSortState<T>;
   filterState: TableFilterState;
   setFilterValue: (columnKey: string, value: string) => void;
   onRowClick?: (row: T) => void;
@@ -133,15 +158,20 @@ function useTableContext<T extends Record<string, any> = Record<string, any>>() 
 const tableStyleSlotKeys = [
   "root",
   "container",
+  "scrollerRoot",
+  "scrollerTrack",
+  "scrollerThumb",
   "filterBar",
   "filterGrid",
+  "filterField",
   "filterLabel",
   "filterInput",
   "table",
-  "header",
-  "body",
+  "headerRoot",
   "headerRow",
   "headerCell",
+  "bodyRoot",
+  "bodyScroller",
   "row",
   "cell",
   "emptyRow",
@@ -150,35 +180,42 @@ const tableStyleSlotKeys = [
 
 const resolveTableBaseStyles = createStylesResolver(tableStyleSlotKeys);
 
-function normalizeTableStyles(styles: TableStylesProp | undefined) {
-  if (!styles) {
-    return styles;
-  }
+function resolveTableStyles(styles: TableStylesProp | undefined) {
+  if (!styles) return resolveTableBaseStyles(styles);
 
-  return {
-    root: styles.root,
-    container: styles.container,
-    filterBar: styles.filterBar,
-    filterGrid: styles.filterGrid,
-    filterLabel: styles.filterLabel,
-    filterInput: styles.filterInput,
-    table: styles.table,
-    header: styles.header,
-    body: styles.body,
-    headerRow: styles.headerRow,
-    headerCell: styles.headerCell,
-    row: styles.row,
-    cell: styles.cell,
-    emptyRow: styles.emptyRow,
-    emptyState: styles.emptyState,
-  };
-}
+  const { scroller, filter, header, body, empty, ...slots } = styles;
+  const shared = (value: StyleValue | object | undefined) =>
+    typeof value === "string" || Array.isArray(value) ? value : undefined;
 
-function getDefaultSortState<T extends Record<string, any>>(): TableSortState<T> {
-  return {
-    column: null,
-    direction: null,
-  };
+  const scrollerShared = shared(scroller);
+  const filterShared = shared(filter);
+  const headerShared = shared(header);
+  const bodyShared = shared(body);
+  const emptyShared = shared(empty);
+  const scrollerSlots = scrollerShared ? undefined : (scroller as TableScrollerStyles | undefined);
+  const filterSlots = filterShared ? undefined : (filter as TableFilterStyles | undefined);
+  const headerSlots = headerShared ? undefined : (header as TableHeaderStyles | undefined);
+  const bodySlots = bodyShared ? undefined : (body as TableBodyStyles | undefined);
+  const emptySlots = emptyShared ? undefined : (empty as TableEmptyStyles | undefined);
+
+  return resolveTableBaseStyles({
+    ...slots,
+    scrollerRoot: scrollerShared ?? scrollerSlots?.root,
+    scrollerTrack: scrollerShared ?? scrollerSlots?.track,
+    scrollerThumb: scrollerShared ?? scrollerSlots?.thumb,
+    filterBar: filterShared ?? filterSlots?.bar,
+    filterGrid: filterShared ?? filterSlots?.grid,
+    filterField: filterShared ?? filterSlots?.field,
+    filterLabel: filterShared ?? filterSlots?.label,
+    filterInput: filterShared ?? filterSlots?.input,
+    headerRoot: headerShared ?? headerSlots?.root,
+    headerRow: headerShared ?? headerSlots?.row,
+    headerCell: headerShared ?? headerSlots?.cell,
+    bodyRoot: bodyShared ?? bodySlots?.root,
+    bodyScroller: bodyShared ?? bodySlots?.scroller,
+    emptyRow: emptyShared ?? emptySlots?.row,
+    emptyState: emptyShared ?? emptySlots?.state,
+  });
 }
 
 /**
@@ -247,9 +284,7 @@ const TableRoot = <T extends Record<string, any>>(
   // in `rows` the grid tracks are resolved up front so nothing overflows.
   const horizontalScroll = scroll === "auto" && overflows;
   const [filterState, setFilterState] = React.useState<TableFilterState>({});
-  const [sortState] = React.useState<TableSortState<T>>(() => getDefaultSortState<T>());
-  const selectedRows = React.useMemo(() => new Set<React.Key>(), []);
-  const resolved = resolveTableBaseStyles(normalizeTableStyles(styles));
+  const resolved = resolveTableStyles(styles);
   const filterableColumns = React.useMemo(
     () => columns.filter((column) => column.filterable),
     [columns],
@@ -319,8 +354,6 @@ const TableRoot = <T extends Record<string, any>>(
       columns,
       data,
       filteredData,
-      selectedRows,
-      sortState,
       filterState,
       setFilterValue,
       onRowClick,
@@ -331,8 +364,6 @@ const TableRoot = <T extends Record<string, any>>(
       columns,
       data,
       filteredData,
-      selectedRows,
-      sortState,
       filterState,
       setFilterValue,
       onRowClick,
@@ -395,7 +426,11 @@ const TableRoot = <T extends Record<string, any>>(
                 const inputId = `table-filter-${columnKey}`;
 
                 return (
-                  <div key={columnKey} className={css.filterField}>
+                  <div
+                    key={columnKey}
+                    className={cn("filter-field", css.filterField, resolved.filterField)}
+                    data-slot="filter-field"
+                  >
                     <label
                       className={cn("label", css.filterLabel, resolved.filterLabel)}
                       data-slot="filter-label"
@@ -424,16 +459,23 @@ const TableRoot = <T extends Record<string, any>>(
           className={cn("container", css.container, resolved.container)}
           data-slot="container"
           data-scroll={rowsLayout ? "rows" : horizontalScroll ? "horizontal" : undefined}
-          style={columnTemplate ? ({ "--table-columns": columnTemplate } as React.CSSProperties) : undefined}
+          style={
+            columnTemplate
+              ? ({ "--table-columns": columnTemplate } as React.CSSProperties)
+              : undefined
+          }
         >
           {horizontalScroll ? (
             <Scroll
-              className={css.scroller}
+              className={cn(css.scroller, resolved.scroller)}
               direction="horizontal"
-              inline
+              hide={false}
               data-slot="scroller"
             >
               {tableElement}
+              <Scroll.Track className={cn(css.scrollerTrack, resolved.scrollerTrack)}>
+                <Scroll.Thumb className={cn(css.scrollerThumb, resolved.scrollerThumb)} />
+              </Scroll.Track>
             </Scroll>
           ) : (
             tableElement
@@ -462,22 +504,20 @@ const TableHeader = React.forwardRef<HTMLElement, TableHeaderProps>(
     return (
       <Element
         ref={ref}
-        className={cn("header", css.header, styles.header, className)}
+        className={cn("header", css.header, styles.headerRoot, className)}
         data-slot="header"
         role="rowgroup"
         {...props}
       >
         {children ?? (
           <Row
-            className={cn("header-row", css.headerRow, styles.headerRow)}
+            className={cn("item", "header-row", css.headerRow, styles.headerRow)}
             data-slot="header-row"
             role="row"
           >
             {columns.map((column) => (
               <TableHeaderCell
                 key={String(column.key)}
-                aria-sort="none"
-                data-sortable={column.sortable ? "true" : undefined}
               >
                 {column.header ?? column.label ?? String(column.key)}
               </TableHeaderCell>
@@ -538,7 +578,7 @@ const TableBody = React.forwardRef<HTMLElement, TableBodyProps>(
     const body = (
       <Element
         ref={ref}
-        className={cn("body", css.body, styles.body, className)}
+        className={cn("body", css.body, styles.bodyRoot, className)}
         data-slot="body"
         role="rowgroup"
         {...props}
@@ -550,7 +590,7 @@ const TableBody = React.forwardRef<HTMLElement, TableBodyProps>(
             ))
           ) : (
             <Row
-              className={cn("empty", css.emptyRow, styles.emptyRow)}
+              className={cn("item", "empty", css.emptyRow, styles.emptyRow)}
               data-slot="empty-row"
               role="row"
             >
@@ -576,7 +616,7 @@ const TableBody = React.forwardRef<HTMLElement, TableBodyProps>(
         direction="vertical"
         maxHeight="100%"
         presentational
-        className={css.bodyScroller}
+        className={cn(css.bodyScroller, styles.bodyScroller)}
         data-slot="body-scroller"
       >
         {body}
@@ -602,27 +642,60 @@ interface TableRowProps<
 }
 
 const TableRow = React.forwardRef<HTMLElement, TableRowProps>(
-  ({ className, row, rowIndex = 0, selected, disabled, children, onClick, ...props }, ref) => {
-    const { columns, rowsLayout, selectedRows, onRowClick, styles } = useTableContext();
+  (
+    {
+      className,
+      row,
+      rowIndex = 0,
+      selected,
+      disabled,
+      children,
+      onClick,
+      onKeyDown,
+      ...props
+    },
+    ref,
+  ) => {
+    const { columns, rowsLayout, onRowClick, styles } = useTableContext();
     const Element = tableElementType(rowsLayout, "tr");
-    const rowKey = row ? getRowKey(row, rowIndex) : rowIndex;
-    const isSelected = selected ?? selectedRows.has(rowKey);
+    const isSelected = selected ?? false;
     const isInteractive = Boolean(row && onRowClick && !disabled);
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
 
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLElement>) => {
-        if (!disabled && row) {
-          onRowClick?.(row);
+        if (disabled) {
+          event.preventDefault();
+          return;
         }
+        if (row) onRowClick?.(row);
         onClick?.(event);
       },
       [disabled, row, onClick, onRowClick],
     );
 
+    const handleKeyDown = React.useCallback(
+      (event: React.KeyboardEvent<HTMLElement>) => {
+        if (isInteractive && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          if (row) onRowClick?.(row);
+        }
+        onKeyDown?.(event);
+      },
+      [isInteractive, onKeyDown, onRowClick, row],
+    );
+
     return (
       <Element
         ref={ref}
-        className={cn("row", css.row, styles.row, isInteractive && css.interactive, className)}
+        className={cn(
+          "item",
+          "row",
+          css.row,
+          styles.row,
+          isInteractive && css.interactive,
+          className,
+        )}
         data-slot="row"
         role="row"
         tabIndex={isInteractive ? 0 : undefined}
@@ -631,8 +704,11 @@ const TableRow = React.forwardRef<HTMLElement, TableRowProps>(
         data-selected={isSelected ? "true" : undefined}
         data-interactive={isInteractive ? "true" : undefined}
         data-disabled={disabled ? "true" : undefined}
+        data-focused={isFocused ? "true" : undefined}
+        data-focus-visible={isFocusVisible ? "true" : undefined}
         onClick={handleClick}
-        {...props}
+        onKeyDown={handleKeyDown}
+        {...mergeProps(focusProps, props)}
       >
         {children ??
           columns.map((column, columnIndex) => (
@@ -668,7 +744,18 @@ interface TableCellProps<
 
 const TableCell = React.forwardRef<HTMLElement, TableCellProps>(
   (
-    { className, row, column, columnIndex = 0, rowIndex = 0, value, colSpan, style, children, ...props },
+    {
+      className,
+      row,
+      column,
+      columnIndex = 0,
+      rowIndex = 0,
+      value,
+      colSpan,
+      style,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const { columns, rowsLayout, styles } = useTableContext();

@@ -21,20 +21,32 @@ import css from "./Button.module.css";
 // shadow host, which cancels presses completed inside a ShadowRoot.
 enableShadowDOM();
 
+/** An open string type used to select a button size class. */
 type ButtonSize = string & {};
+
+/** Icon content rendered on either side of the button label. */
 type ButtonIconSlots = {
+  /** Content rendered before the button label. */
   left?: React.ReactNode;
+  /** Content rendered after the button label. */
   right?: React.ReactNode;
 };
 
+/** Side-specific styles used when the icon slot is configured as an object. */
 interface ButtonIconStyles {
+  /** Styles applied to the leading icon. */
   left?: SlotStyleValue;
+  /** Styles applied to the trailing icon. */
   right?: SlotStyleValue;
 }
 
+/** Style overrides for the button root and named content slots. */
 export interface ButtonStyleSlots {
+  /** Styles applied to the root element. */
   root?: SlotStyleValue;
+  /** Shared icon styles or separate leading and trailing icon styles. */
   icon?: SlotStyleValue | ButtonIconStyles;
+  /** Styles applied to the hint badge. */
   hint?: SlotStyleValue;
 }
 
@@ -78,25 +90,56 @@ export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "href" | "target"
 > {
-  /** Variant class appended to the root element. Accepts any string. */
+  /** Variant class appended to the root element. Accepts any string.
+   * @category Core
+   * @default primary
+   */
   variant?: string;
-  /** Size class appended to the root element. Accepts any string. */
+  /** Size class appended to the root element. Accepts any string.
+   * @category Core
+   * @typeDoc ButtonSize
+   */
   size?: ButtonSize;
-  /** Disables interaction and applies disabled styling */
+  /** Disables interaction and applies disabled styling. Disabled buttons cannot receive focus.
+   * @category Core
+   * @default false
+   * @see https://react-spectrum.adobe.com/react-aria/useButton.html
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled
+   */
   disabled?: boolean;
-  /** React Aria press handler — preferred over onClick for accessibility */
+  /** React Aria press handler, preferred over onClick for keyboard and pointer consistency.
+   * @category Events
+   * @see https://react-spectrum.adobe.com/react-aria/interactions.html#usepress
+   */
   onPress?: (e: PressEvent) => void;
-  /** Icon slots rendered before (left) or after (right) the button label */
+  /** Icon slots rendered before (left) or after (right) the button label.
+   * @category Content
+   * @typeDoc ButtonIconSlots
+   */
   icon?: React.ReactNode | ButtonIconSlots;
-  /** Keyboard shortcut or hint rendered as a Badge at the end of the button. An array renders its segments joined by a `+` divider. */
+  /** Keyboard shortcut or hint rendered as a Badge at the end of the button. Arrays render as shortcut segments joined by a plus divider.
+   * @category Content
+   * @typeDoc HintValue
+   */
   hint?: HintValue;
-  /** Renders the button as an anchor element when provided */
+  /** Renders the button as an anchor element when provided.
+   * @category Link behavior
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href
+   */
   href?: string;
-  /** Browsing context for the anchor variant (e.g. "_blank") */
+  /** Browsing context for the anchor variant, such as _blank.
+   * @category Link behavior
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
+   */
   target?: React.HTMLAttributeAnchorTarget;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc ButtonStyleSlots
+   */
   styles?: ButtonStylesProp;
-  /** Forces the visual hover state. Set by Menu.Trigger to keep the trigger highlighted while the menu is open. */
+  /** Forces the visual hover state. Set by Menu.Trigger to keep the trigger highlighted while the menu is open. This is an advanced visual-state escape hatch, not a pending state.
+   * @category Advanced
+   */
   "data-hovered"?: "true" | "false";
 }
 
@@ -210,9 +253,11 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
 
     const handleClick = React.useCallback(
       (e: React.MouseEvent<FocusableElement>) => {
-        onClick?.(e as React.MouseEvent<HTMLButtonElement>);
+        if (!isButtonDisabled) {
+          onClick?.(e as React.MouseEvent<HTMLButtonElement>);
+        }
       },
-      [onClick],
+      [isButtonDisabled, onClick],
     );
 
     const handleMouseDown = React.useCallback(
@@ -291,7 +336,12 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           </span>
         )}
         {wrapChildrenAsIcon ? (
-          <span className={cn(iconSlotClassName, iconSizeClassName)}>{children}</span>
+          <span
+            className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)}
+            style={resolved.iconLeft.style}
+          >
+            {children}
+          </span>
         ) : (
           children
         )}
@@ -330,9 +380,6 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           href={href}
           target={target}
           rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
           className={buttonClassName}
           data-disabled={isButtonDisabled ? "true" : undefined}
           data-pressed={isVisualPressed ? "true" : "false"}
@@ -341,6 +388,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           data-focus-visible={isFocusVisible ? "true" : "false"}
           data-hint={hasHint(hint) ? "true" : undefined}
           data-icon-only={isIconButton ? "true" : undefined}
+          data-variant={variant}
           data-size={actualSize}
           style={{ ...resolved.root.style, ...props.style }}
         >
@@ -367,6 +415,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         data-focus-visible={isFocusVisible ? "true" : "false"}
         data-hint={hasHint(hint) ? "true" : undefined}
         data-icon-only={isIconButton ? "true" : undefined}
+        data-variant={variant}
         data-size={actualSize}
         style={{ ...resolved.root.style, ...props.style }}
       >

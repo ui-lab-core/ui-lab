@@ -1,12 +1,28 @@
 import * as React from "react";
 import type { CommandState } from "./Command";
 
+/** Props for the element that opens a command palette. */
 export interface CommandTriggerProps {
+  /** Command state controller opened by the trigger and used to restore focus.
+   * @category Core
+   * @typeDoc CommandState
+   */
   state: CommandState;
+  /** Clones the child as the trigger instead of wrapping it in a button. Non-button children receive button role and keyboard behavior.
+   * @category Advanced
+   * @default false
+   */
   asChild?: boolean;
+  /** Single element rendered inside the default button or cloned when asChild is enabled.
+   * @category Content
+   */
   children: React.ReactElement;
 }
 
+/**
+ * Button trigger that opens a Command state controller and supplies dialog
+ * disclosure attributes. Must share its state instance with Command.
+ */
 export const CommandTrigger = React.forwardRef<HTMLElement, CommandTriggerProps>(
   ({ state, asChild = false, children }, forwardedRef) => {
     const child = React.Children.only(children) as React.ReactElement<Record<string, unknown>>;

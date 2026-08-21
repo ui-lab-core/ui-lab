@@ -3,11 +3,17 @@ import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Input, type InputProps } from "../Input";
-import styles from "./Command.module.css";
+import css from "./Command.module.css";
 import { useCommandContext } from "./Command.shared";
 
+/**
+ * Input props forwarded to the underlying Input component. Command manages the
+ * value when value is omitted and supplies search defaults for its icon,
+ * clear action, placeholder, and accessible name.
+ */
 export interface CommandInputProps extends InputProps {}
 
+/** Search input connected to the nearest Command or Command.Root context. */
 export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
   (
     {
@@ -16,6 +22,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
       onBlur: externalOnBlur,
       icon,
       actions,
+      styles: inputComponentStyles,
       placeholder = "Search...",
       ...props
     },
@@ -30,6 +37,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
       dismissOnBlur,
       searchValue,
       setSearchValue,
+      styles,
     } = useCommandContext();
     const value = externalValue !== undefined ? externalValue : searchValue;
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,9 +76,9 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
         },
       },
     ];
-    const inputStyles = cn(styles.input, usesDefaultClearAction && !value && styles["input-empty"]);
+    const inputStyles = cn(css.input, usesDefaultClearAction && !value && css["input-empty"], styles["input.root"]);
     return (
-      <div className={styles.search}>
+      <div className={cn("search", css.search, styles["search.root"])} data-slot="search">
         <Input
           ref={inputRef}
           state={{ value: value as string }}
@@ -81,8 +89,12 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
           actions={resolvedActions}
           placeholder={placeholder}
           aria-label="Search commands"
-          styles={{ root: inputStyles }}
+          styles={{
+            ...inputComponentStyles,
+            root: cn(inputStyles, inputComponentStyles?.root),
+          }}
           {...props}
+          data-slot="input"
         />
       </div>
     );

@@ -2,23 +2,41 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import css from "./Command.module.css";
 import {
   CommandContext,
   type CommandItem,
   type CommandStylesProp,
-  resolveCommandBaseStyles,
+  resolveCommandStyles,
   useCommandEngine,
 } from "./Command.shared";
 
-export interface CommandRootProps {
-  className?: string;
+/** Props for the always-mounted, headless Command root. */
+export interface CommandRootProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Keyed styles for the command surface and its named compound parts.
+   * @category Styling
+   * @typeDoc CommandStyleSlots
+   */
   styles?: CommandStylesProp;
+  /** Declarative commands used for filtering, grouping, focus order, and Command.Groups rendering.
+   * @category Items
+   * @default []
+   * @typeDoc CommandItem
+   */
   items?: CommandItem[];
+  /** Includes or excludes each declarative command before query relevance ranking.
+   * @category Items
+   */
   filter?: (command: CommandItem, query: string) => boolean;
-  /** Notify a parent that owns visibility (e.g. a Popover) that an item was selected. No-op unless `closeOnSelect` is set. */
+  /** Notifies a parent-owned overlay with false after selection when closeOnSelect is enabled.
+   * @category Events
+   */
   onOpenChange?: (open: boolean) => void;
+  /** Requests that the parent-owned overlay close after a command action is selected.
+   * @category Core
+   * @default false
+   */
   closeOnSelect?: boolean;
-  children?: React.ReactNode;
 }
 
 const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
@@ -40,6 +58,7 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
       onOpenChange,
       closeOnSelect = false,
       children,
+      ...props
     },
     ref,
   ) => {
@@ -47,7 +66,7 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
     const pointerRef = React.useRef(false);
     const searchInputRef = React.useRef<HTMLInputElement>(null);
     const scrollableRef = React.useRef<HTMLDivElement>(null);
-    const resolved = resolveCommandBaseStyles(commandStyles);
+    const resolved = resolveCommandStyles(commandStyles);
     const engine = useCommandEngine({ items, filter });
     const {
       focusedKey,
@@ -83,6 +102,7 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
     return (
       <div
         ref={surfaceRef}
+        {...props}
         onKeyDown={handleKeyDown}
         onPointerDownCapture={() => {
           pointerRef.current = true;
@@ -90,10 +110,12 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
             pointerRef.current = false;
           }, 0);
         }}
-        className={cn("command", className, resolved.root)}
+        className={cn("command", css.root, className, resolved["root.root"])}
+        data-slot="root"
       >
         <CommandContext.Provider
           value={{
+            styles: resolved,
             isOpen: false,
             close,
             focusedKey,

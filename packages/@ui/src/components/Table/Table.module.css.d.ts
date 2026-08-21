@@ -2,6 +2,8 @@ declare const styles: {
   root: string;
   container: string;
   scroller: string;
+  scrollerTrack: string;
+  scrollerThumb: string;
   table: string;
   rowsLayout: string;
   bodyScroller: string;

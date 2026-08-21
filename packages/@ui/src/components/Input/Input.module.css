@@ -20,18 +20,18 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    color: var(--foreground);
+    color: var(--foreground, currentColor);
     background-color: transparent;
     border: none;
     outline: none;
     box-sizing: border-box;
 
     &::placeholder {
-      color: var(--placeholder);
+      color: var(--placeholder, var(--foreground, currentColor));
     }
 
     &[data-disabled] {
-      color: var(--disabled-foreground);
+      color: var(--disabled-foreground, var(--foreground, currentColor));
       cursor: not-allowed;
     }
 
@@ -68,14 +68,6 @@
     color: var(--foreground, currentColor);
   }
 
-  .icon-left {
-    @apply relative;
-  }
-
-  .icon-right {
-    @apply relative;
-  }
-
   .container {
     --adornment-offset: calc(var(--spacing, 0.25rem) * 1.5);
     --action-inset: calc(var(--spacing, 0.25rem) * 0.5);
@@ -86,8 +78,8 @@
     align-items: center;
     min-width: 0;
     flex: 1;
-    background-color: var(--background);
-    border: var(--border-width-base, 1px) solid var(--background-border);
+    background-color: var(--background, transparent);
+    border: var(--border-width-base, 1px) solid var(--background-border, transparent);
     border-radius: var(--background-radius);
     box-sizing: border-box;
     overflow: hidden;
@@ -95,38 +87,34 @@
       var(--focus-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     &[data-focused="true"]:not([data-disabled]) {
-      border-color: var(--focus-border, var(--background-border));
+      border-color: var(--focus-border, var(--background-border, transparent));
     }
 
     &[data-disabled] {
-      background-color: var(--disabled-background);
+      background-color: var(--disabled-background, var(--background, transparent));
       cursor: not-allowed;
       opacity: 0.5;
     }
 
     &[data-variant="ghost"] {
-      --ring-shadow: none;
-      --ring-border: transparent;
-      --ring-border-visible: transparent;
-
       background-color: transparent;
       border-color: transparent;
     }
   }
 
-  .start-adornments,
-  .end-adornments {
+  .prefix,
+  .suffix {
     @apply flex items-center gap-1;
     align-self: stretch;
     flex-shrink: 0;
     pointer-events: none;
   }
 
-  .start-adornments {
+  .prefix {
     @apply pl-2.5;
   }
 
-  .end-adornments {
+  .suffix {
     padding-right: var(--adornment-offset);
 
     &:has(.actions) {
@@ -137,7 +125,7 @@
       padding-right: 0;
     }
 
-    &:has([data-hint]) {
+    &:has(.hint) {
       padding-right: 0;
     }
   }
@@ -151,7 +139,8 @@
   .action {
     @apply flex items-center justify-center;
     border-radius: var(--background-inner-radius);
-    color: var(--action-foreground);
+    background-color: var(--background, transparent);
+    color: var(--foreground, currentColor);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
@@ -167,8 +156,6 @@
 
   .action:hover {
     --hover-duration: var(--hover-enter-duration, 0ms);
-    background-color: var(--action-background-hover);
-    color: var(--action-foreground-hover);
   }
 
   .hint {
@@ -180,8 +167,8 @@
     font-size: var(--text-sm, 0.875rem);
     font-weight: var(--font-weight-body-medium, 500);
     line-height: 1; /* adornment is vertically centered by its fixed surface */
-    color: var(--foreground);
-    background-color: var(--background);
+    color: var(--foreground, currentColor);
+    background-color: var(--background, transparent);
     pointer-events: auto;
   }
 
@@ -189,7 +176,7 @@
     @apply flex w-7.5 flex-col;
     align-self: stretch;
     min-height: 100%;
-    border-left: var(--border-width-base, 1px) solid var(--background-border);
+    border-left: var(--border-width-base, 1px) solid var(--background-border, transparent);
     pointer-events: auto;
   }
 
@@ -203,7 +190,7 @@
     flex: 1;
     background-color: transparent;
     border: none;
-    color: var(--foreground);
+    color: var(--foreground, currentColor);
     --active-background: var(--background-700);
     --active-color: var(--foreground-100);
     transition:
@@ -213,18 +200,18 @@
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     & + .stepper {
-      border-top: var(--border-width-base, 1px) solid var(--background-border);
+      border-top: var(--border-width-base, 1px) solid var(--background-border, transparent);
     }
 
     &:hover:not(:disabled) {
       --hover-duration: var(--hover-enter-duration, 0ms);
-      background-color: var(--hover-background);
-      color: var(--hover-color);
+      background-color: var(--hover-background, transparent);
+      color: var(--hover-color, var(--foreground, currentColor));
     }
 
     &:active:not(:disabled) {
-      background-color: var(--active-background);
-      color: var(--active-color);
+      background-color: var(--active-background, var(--hover-background, transparent));
+      color: var(--active-color, var(--foreground, currentColor));
     }
 
     &:disabled {

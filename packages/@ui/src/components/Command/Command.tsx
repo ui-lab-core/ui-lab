@@ -13,47 +13,100 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { usePresence } from "@/hooks/usePresence";
 import { useScrollLock } from "../../hooks/useScrollLock";
 import { Card } from "../Card";
-import styles from "./Command.module.css";
+import css from "./Command.module.css";
 import {
   CommandContext,
   type CommandItem,
   type CommandStylesProp,
-  resolveCommandBaseStyles,
+  resolveCommandStyles,
   useCommandEngine,
 } from "./Command.shared";
 
 const transitionDuration = 180;
 const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
 
-export interface CommandProps {
+/** Props for the floating or embedded command palette surface. */
+export interface CommandProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** External state controller. When provided, it takes precedence over open, defaultOpen, and onOpenChange.
+   * @category Core
+   * @typeDoc CommandState
+   */
   state?: CommandState;
+  /** Controls whether the command palette is open when local state is used.
+   * @category Core
+   */
   open?: boolean;
+  /** Initial open state for an uncontrolled command palette.
+   * @category Core
+   * @default false
+   */
   defaultOpen?: boolean;
+  /** Called with the next open state when local state opens or closes the palette.
+   * @category Events
+   */
   onOpenChange?: (open: boolean) => void;
+  /** Renders the palette inline without a portal, backdrop, focus scope, or dialog semantics.
+   * @category Core
+   * @default false
+   */
   embedded?: boolean;
-  className?: string;
+  /** Keyed styles for the command surface and its named compound parts.
+   * @category Styling
+   * @typeDoc CommandStyleSlots
+   */
   styles?: CommandStylesProp;
+  /** Declarative commands used for filtering, grouping, focus order, and Command.Groups rendering.
+   * @category Items
+   * @default []
+   * @typeDoc CommandItem
+   */
   items?: CommandItem[];
+  /** Includes or excludes each declarative command before query relevance ranking.
+   * @category Items
+   */
   filter?: (command: CommandItem, query: string) => boolean;
+  /** Compound command content, typically Command.Input, Command.List, and item or group parts.
+   * @category Content
+   */
   children?: React.ReactNode;
 }
 
+/** Imperative open state and trigger registration shared by Command and Command.Trigger. */
 export interface CommandState {
+  /** Whether the command palette is currently open. */
   isOpen: boolean;
+  /** Sets the command palette to an explicit open state. */
   setOpen: (open: boolean) => void;
+  /** Opens the command palette. */
   open: () => void;
+  /** Closes the command palette. */
   close: () => void;
+  /** Toggles the current open state. */
   toggle: () => void;
+  /** Registers the trigger element that receives focus after the floating palette closes. */
   setTrigger: (element: HTMLElement | null) => void;
+  /** Mutable reference to the registered trigger element. */
   triggerRef: React.MutableRefObject<HTMLElement | null>;
 }
 
+/** Options for creating controlled or uncontrolled command palette state. */
 export interface UseCommandStateProps {
+  /** Controlled open state.
+   * @category Core
+   */
   open?: boolean;
+  /** Initial open state when uncontrolled.
+   * @category Core
+   * @default false
+   */
   defaultOpen?: boolean;
+  /** Called whenever the state controller receives a new open state.
+   * @category Events
+   */
   onOpenChange?: (open: boolean) => void;
 }
 
+/** Creates a command palette state controller for Command and Command.Trigger. */
 export function useCommandState({
   open: controlledOpen,
   defaultOpen,
@@ -85,6 +138,12 @@ export function useCommandState({
   );
 }
 
+/**
+ * Floating command palette with dialog semantics, keyboard navigation, search
+ * state, focus containment, and optional inline embedded rendering.
+ * @see https://react-spectrum.adobe.com/react-aria/useDialog.html
+ * @see https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+ */
 export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
   (
     {
@@ -98,6 +157,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       items = EMPTY_COMMAND_ITEMS,
       filter,
       children,
+      ...props
     },
     ref,
   ) => {
@@ -113,7 +173,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     const searchInputRef = React.useRef<HTMLInputElement>(null);
     const scrollableRef = React.useRef<HTMLDivElement>(null);
     const pointerRef = React.useRef(false);
-    const resolved = resolveCommandBaseStyles(commandStyles);
+    const resolved = resolveCommandStyles(commandStyles);
     useScrollLock(!embedded && overlayState.isOpen, scrollableRef.current);
     const engine = useCommandEngine({ items, filter });
     const {
@@ -190,6 +250,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       <Card
         {...(!embedded ? filterDOMProps(dialogProps) : {})}
         ref={surfaceRef}
+        {...props}
         onKeyDown={handleKeyDown}
         onPointerDownCapture={() => {
           pointerRef.current = true;
@@ -198,18 +259,21 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
           }, 0);
         }}
         className={cn(
-          embedded && "command",
+          "command",
           "content",
-          styles.content,
-          embedded && styles.embedded,
+          css.root,
+          css.content,
+          embedded && css.embedded,
           className,
-          resolved.root,
+          resolved["root.root"],
         )}
+        data-slot="root"
         role={embedded ? undefined : "dialog"}
         aria-modal={embedded ? undefined : "true"}
       >
         <CommandContext.Provider
           value={{
+            styles: resolved,
             isOpen: overlayState.isOpen,
             close: overlayState.close,
             focusedKey,
@@ -236,8 +300,9 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     return createPortal(
       <FocusScope contain restoreFocus>
         <div
-          className={cn("command", styles.overlay, resolved.overlay)}
+          className={cn("command", css.overlay, resolved["overlay.root"])}
           onClick={handleOverlayClick}
+          data-slot="overlay"
           data-state={presenceState}
           onTransitionEnd={(event) => {
             if (event.target === event.currentTarget && event.propertyName === "opacity")

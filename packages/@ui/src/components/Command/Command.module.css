@@ -1,6 +1,10 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
+  .root {
+    min-width: 0;
+  }
+
   .content {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
@@ -89,7 +93,7 @@
     flex-direction: column;
     min-height: 0;
     --stroke-color: var(--border);
-    --fill: var(--background-list);
+    --fill: var(--background);
     --frame-radius: var(--radius-sm);
   }
 
@@ -178,7 +182,7 @@
     @apply min-w-0;
   }
 
-  .item-label {
+  .item .label {
     font-family: var(--font-body, inherit);
     font-size: var(--size, var(--text-sm, 0.875rem));
     font-weight: var(--font-weight-body-medium, 500);
@@ -188,8 +192,8 @@
     @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
-  .item-description {
-    color: var(--foreground-muted);
+  .item .description {
+    color: var(--foreground);
     font-family: var(--font-body, inherit);
     font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
     font-weight: var(--font-weight-body-normal, 400);
@@ -214,7 +218,7 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    color: var(--foreground-muted);
+    color: var(--foreground);
   }
 
   /* Empty State */
@@ -226,13 +230,13 @@
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
     line-height: var(--leading, var(--leading-body, 1.5));
-    color: var(--foreground-muted);
+    color: var(--foreground);
   }
 
   /* Footer */
   .footer {
     @apply flex w-full items-center gap-2 px-1.5 py-2;
-    background-color: var(--background-footer);
+    background-color: var(--background);
     border-top: 1px solid var(--border);
     justify-content: flex-between;
     font-family: var(--font-body, inherit);

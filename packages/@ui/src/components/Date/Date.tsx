@@ -20,30 +20,70 @@ import dateModuleStyles from "./Date.module.css";
 // Alias global Date to avoid shadowing by component name
 const NativeDate = globalThis.Date;
 
-interface DateStyleSlots {
+export interface DateHeaderStyleSlots {
   root?: StyleValue;
-  header?: StyleValue;
-  "day-headers"?: StyleValue;
-  grid?: StyleValue;
-  "day-cell"?: StyleValue; // individual date button
+  title?: StyleValue;
+  navigation?:
+    | StyleValue
+    | {
+        previous?: StyleValue;
+        next?: StyleValue;
+      };
 }
 
-type DateStylesProp = StylesProp<DateStyleSlots>;
+export interface DateDayHeadersStyleSlots {
+  root?: StyleValue;
+  item?: StyleValue;
+}
 
-const dateStyleSlotKeys = ["root", "header", "day-headers", "grid", "day-cell"] as const;
+export interface DateStyleSlots {
+  root?: StyleValue;
+  header?: StyleValue | DateHeaderStyleSlots;
+  dayHeaders?: StyleValue | DateDayHeadersStyleSlots;
+  day?: StyleValue;
+}
+
+export type DateStylesProp = StylesProp<DateStyleSlots>;
+
+const dateStyleSlotKeys = [
+  "root",
+  "header.root",
+  "header.title",
+  "header.navigation.previous",
+  "header.navigation.next",
+  "dayHeaders.root",
+  "dayHeaders.item",
+  "day",
+] as const;
 const resolveDateBaseStyles = createStylesResolver(dateStyleSlotKeys);
 
+function isStyleGroup(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 function normalizeDateStyles(styles: DateStylesProp | undefined) {
-  if (!styles) {
-    return styles;
-  }
+  const headerValue = styles?.header;
+  const header = isStyleGroup(headerValue) ? (headerValue as DateHeaderStyleSlots) : undefined;
+  const headerShared = isStyleGroup(headerValue) ? undefined : headerValue;
+  const navigation = isStyleGroup(header?.navigation)
+    ? (header.navigation as { previous?: StyleValue; next?: StyleValue })
+    : undefined;
+  const navigationShared = isStyleGroup(header?.navigation) ? undefined : header?.navigation;
+  const dayHeadersValue = styles?.dayHeaders;
+  const dayHeaders = isStyleGroup(dayHeadersValue)
+    ? (dayHeadersValue as DateDayHeadersStyleSlots)
+    : undefined;
+  const dayHeadersShared = isStyleGroup(dayHeadersValue) ? undefined : dayHeadersValue;
 
   return {
-    root: styles.root,
-    header: styles.header,
-    "day-headers": styles["day-headers"],
-    grid: styles.grid,
-    "day-cell": styles["day-cell"],
+    root: styles?.root,
+    "header.root": header?.root ?? headerShared,
+    "header.title": header?.title,
+    "header.navigation.previous": navigation?.previous ?? navigationShared,
+    "header.navigation.next": navigation?.next ?? navigationShared,
+    "dayHeaders.root": dayHeaders?.root ?? dayHeadersShared,
+    "dayHeaders.item": dayHeaders?.item ?? dayHeadersShared,
+    day: styles?.day,
   };
 }
 
@@ -425,23 +465,31 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>((props, ref) => {
     <DateContext.Provider value={contextValue}>
       <div
         ref={ref}
+        {...rest}
         className={cn(
           "date",
           dateModuleStyles.calendar,
-          dateModuleStyles.grid,
           className,
           resolved.root,
         )}
+        data-slot="root"
         role="application"
         aria-label={mode === "range" ? "Date range picker calendar" : "Date picker calendar"}
         data-mode={mode}
         onKeyDown={handleKeyDown}
         onPointerLeave={handlePointerLeave}
-        {...rest}
       >
-        <DateHeader className={resolved.header} />
-        <DateDayHeaders className={resolved["day-headers"]} />
-        <DateGrid grid={calendarGrid} dayCellClassName={resolved["day-cell"]} />
+        <DateHeader
+          className={resolved["header.root"]}
+          titleClassName={resolved["header.title"]}
+          previousClassName={resolved["header.navigation.previous"]}
+          nextClassName={resolved["header.navigation.next"]}
+        />
+        <DateDayHeaders
+          className={resolved["dayHeaders.root"]}
+          itemClassName={resolved["dayHeaders.item"]}
+        />
+        <DateGrid grid={calendarGrid} dayCellClassName={resolved.day} />
       </div>
     </DateContext.Provider>
   );
@@ -455,11 +503,14 @@ Date.displayName = "Date";
 export interface DateHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Additional CSS class for the header */
   className?: string;
+  titleClassName?: string;
+  previousClassName?: string;
+  nextClassName?: string;
 }
 
 /** Navigation header with month/year display and prev/next controls */
 const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, titleClassName, previousClassName, nextClassName, ...props }, ref) => {
     const { currentMonth, navigateMonth } = useDateContext();
     const {
       focusProps: prevFocusProps,
@@ -480,12 +531,13 @@ const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
     });
 
     return (
-      <div ref={ref} className={cn("row", dateModuleStyles.header, className)} {...props}>
-        <div className={cn("title", dateModuleStyles["month-year"])}>{monthYear}</div>
+      <div ref={ref} {...props} className={cn("row", dateModuleStyles.header, className)} data-slot="header.root">
+        <div className={cn("title", dateModuleStyles["month-year"], titleClassName)} data-slot="header.title">{monthYear}</div>
         <button
           {...asElementProps<"button">(mergeProps(prevFocusProps, prevTargetProps))}
           onClick={() => navigateMonth(-1)}
-          className={cn("button", "prev-button", dateModuleStyles["nav-button"])}
+          className={cn("button", "prev-button", dateModuleStyles["nav-button"], previousClassName)}
+          data-slot="header.navigation.previous"
           aria-label="Previous month"
           data-focused={isPrevFocused ? "true" : undefined}
           data-focus-visible={isPrevFocusVisible ? "true" : undefined}
@@ -495,7 +547,8 @@ const DateHeader = React.forwardRef<HTMLDivElement, DateHeaderProps>(
         <button
           {...asElementProps<"button">(mergeProps(nextFocusProps, nextTargetProps))}
           onClick={() => navigateMonth(1)}
-          className={cn("button", "next-button", dateModuleStyles["nav-button"])}
+          className={cn("button", "next-button", dateModuleStyles["nav-button"], nextClassName)}
+          data-slot="header.navigation.next"
           aria-label="Next month"
           data-focused={isNextFocused ? "true" : undefined}
           data-focus-visible={isNextFocusVisible ? "true" : undefined}
@@ -515,15 +568,16 @@ DateHeader.displayName = "Date.Header";
 interface DateDayHeadersProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Additional CSS class for the day headers row */
   className?: string;
+  itemClassName?: string;
 }
 
 /** Row of weekday abbreviation labels above the calendar grid */
 const DateDayHeaders = React.forwardRef<HTMLDivElement, DateDayHeadersProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, itemClassName, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn("row", dateModuleStyles["day-headers"], className)} {...props}>
+      <div ref={ref} {...props} className={cn("row", dateModuleStyles["day-headers"], className)} data-slot="dayHeaders.root">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className={cn("label", dateModuleStyles["day-header"])}>
+          <div key={day} className={cn("label", dateModuleStyles["day-header"], itemClassName)} data-slot="dayHeaders.item">
             {day}
           </div>
         ))}
@@ -656,8 +710,10 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
     return (
       <button
         ref={mergedRef}
+        {...mergeProps(focusProps, hoverProps, { onFocus: handleFocus }, props)}
         onClick={handleClick}
         className={cn("day", dateModuleStyles["day-cell"], className)}
+        data-slot="day"
         data-ring={targetProps["data-ring"]}
         data-focus-indicator={targetProps["data-focus-indicator"]}
         data-ring-inset={targetProps["data-ring-inset"]}
@@ -680,7 +736,6 @@ const DateDay = React.forwardRef<HTMLButtonElement, DateDayProps>(
           month: "long",
           day: "numeric",
         })}${rangeLabel}`}
-        {...mergeProps(focusProps, hoverProps, { onFocus: handleFocus }, props)}
       >
         <span>{date.getDate()}</span>
       </button>

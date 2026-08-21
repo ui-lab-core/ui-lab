@@ -3,6 +3,7 @@ declare const styles: {
   list: string;
   indicator: string;
   "indicator-fallback": string;
+  "indicator-fallback-frame": string;
   "indicator-underline": string;
   trigger: string;
   icon: string;

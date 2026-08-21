@@ -2,49 +2,134 @@ import * as React from "react";
 
 import type { Key } from "react-aria";
 import { type StyleValue } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 
-export interface CommandStyleSlots {
+/** Styles for the stable elements rendered by each command item. */
+export interface CommandItemStyles {
+  /** Styles applied to the item option element. */
   root?: StyleValue;
-  overlay?: StyleValue;
-  input?: StyleValue;
-  list?: StyleValue;
-  item?: StyleValue;
-  itemContent?: StyleValue;
-  footer?: StyleValue;
+  /** Styles applied to the wrapper containing the icon and item label. */
+  content?: StyleValue;
+  /** Styles applied to the item icon container. */
+  icon?: StyleValue;
+  hint?: StyleValue;
 }
 
-export type CommandStylesProp = StylesProp<CommandStyleSlots>;
+type CommandRootStyles = {
+  root?: StyleValue;
+};
 
-export const resolveCommandBaseStyles = createStylesResolver([
-  "root",
-  "overlay",
-  "input",
-  "list",
-  "item",
-  "itemContent",
-  "footer",
+type CommandListStyles = CommandRootStyles & {
+  empty?: StyleValue;
+};
+
+type CommandGroupsStyles = CommandRootStyles & {
+  group?: StyleValue;
+};
+
+/** Style overrides for the command surface and its named compound parts. */
+export interface CommandStyleSlots {
+  /** Styles applied to the command surface. */
+  root?: CommandRootStyles;
+  /** Styles applied to the modal backdrop in floating mode. */
+  overlay?: CommandRootStyles;
+  /** Styles applied to the search input wrapper. */
+  search?: CommandRootStyles;
+  /** Styles applied to the search input root. */
+  input?: CommandRootStyles;
+  /** Styles applied to the framed list container. */
+  inner?: CommandRootStyles;
+  /** Styles applied to the scrollable command list. */
+  list?: CommandListStyles;
+  /** Styles applied to the empty-state message. */
+  empty?: CommandRootStyles;
+  /** Shared item styles or separate styles for the item anatomy. */
+  item?: CommandItemStyles;
+  /** Styles applied to category headers. */
+  category?: CommandRootStyles;
+  /** Styles applied to the command footer. */
+  footer?: CommandRootStyles;
+  /** Styles applied to the container rendered by Command.Groups. */
+  groups?: CommandGroupsStyles;
+}
+
+/** Keyed styles for the command surface and its stable compound parts. */
+export type CommandStylesProp = CommandStyleSlots;
+
+const resolveCommandBaseStyles = createStylesResolver([
+  "root.root",
+  "overlay.root",
+  "search.root",
+  "input.root",
+  "inner.root",
+  "list.root",
+  "empty.root",
+  "item.root",
+  "item.content",
+  "item.icon",
+  "item.hint",
+  "category.root",
+  "footer.root",
+  "groups.root",
+  "groups.group",
 ] as const);
 
+export function resolveCommandStyles(styles: CommandStylesProp | undefined) {
+  if (!styles) return resolveCommandBaseStyles(styles);
+  return resolveCommandBaseStyles({
+    "root.root": styles.root?.root,
+    "overlay.root": styles.overlay?.root,
+    "search.root": styles.search?.root,
+    "input.root": styles.input?.root,
+    "inner.root": styles.inner?.root,
+    "list.root": styles.list?.root,
+    "empty.root": styles.empty?.root,
+    "item.root": styles.item?.root,
+    "item.content": styles.item?.content,
+    "item.icon": styles.item?.icon,
+    "item.hint": styles.item?.hint,
+    "category.root": styles.category?.root,
+    "footer.root": styles.footer?.root,
+    "groups.root": styles.groups?.root,
+    "groups.group": styles.groups?.group,
+  });
+}
+
+type ResolvedCommandStyles = ReturnType<typeof resolveCommandStyles>;
+
+/** Declarative command data consumed by filtering and Command.Groups. */
 export interface CommandItem {
+  /** Stable identifier used for rendering, focus tracking, and action lookup. */
   id: string;
+  /** Primary searchable label for the command. */
   label: string;
+  /** Supplemental description available to custom item renderers. */
   description?: string;
+  /** Optional group name used by Command.Groups. */
   category?: string;
+  /** Keyboard shortcut text available to custom item renderers. */
   shortcut?: string;
+  /** Icon content available to custom item renderers. */
   icon?: React.ReactNode;
+  /** Additional terms considered when ranking a search query. */
   keywords?: string[];
+  /** Action invoked when this command is selected. */
   action: () => void | Promise<void>;
+  /** Compact hint text passed to the Command.Groups item renderer. */
   hint?: string;
 }
 
+/** A category and its filtered commands as supplied to Command.Groups. */
 export interface CommandGroupedItems {
+  /** Category name, or undefined for uncategorized commands. */
   category: string | undefined;
+  /** Filtered commands belonging to the category. */
   items: CommandItem[];
 }
 
 interface CommandContextValue {
+  styles: ResolvedCommandStyles;
   isOpen: boolean;
   close: () => void;
   focusedKey: Key | null;
@@ -65,12 +150,17 @@ interface CommandContextValue {
 
 export const CommandContext = React.createContext<CommandContextValue | undefined>(undefined);
 
+/** Returns the shared state for compound parts within Command or Command.Root. */
 export function useCommandContext() {
   const context = React.useContext(CommandContext);
   if (!context) throw new Error("Command sub-components must be used within Command");
   return context;
 }
 
+/**
+ * Scores a command label or keyword against a query using exact, prefix, word,
+ * and substring matching. Returns zero when no supported match is found.
+ */
 export function scoreCommandRelevance(text: string, query: string): number {
   const t = text.toLowerCase();
   const q = query.toLowerCase();

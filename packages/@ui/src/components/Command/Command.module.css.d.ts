@@ -1,4 +1,5 @@
 export interface Styles {
+  root: string;
   overlay: string;
   content: string;
   embedded: string;
@@ -11,8 +12,8 @@ export interface Styles {
   "item-content": string;
   "item-icon": string;
   "item-labels": string;
-  "item-label": string;
-  "item-description": string;
+  label: string;
+  description: string;
   "category-header": string;
   empty: string;
   footer: string;

@@ -13,5 +13,11 @@ export type {
   TableCellRenderContext,
   TableContextValue,
   TableFilterState,
-  TableSortState,
+  TableStyleSlots,
+  TableStylesProp,
+  TableScrollerStyles,
+  TableFilterStyles,
+  TableHeaderStyles,
+  TableBodyStyles,
+  TableEmptyStyles,
 } from "./Table";

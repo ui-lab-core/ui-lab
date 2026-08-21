@@ -22,7 +22,7 @@
       transform 0.2s ease-out;
     pointer-events: none;
     min-width: 200px;
-    max-width: 400px;
+    max-width: calc(100vw - 16px);
   }
 
   .content[data-visible="true"] {
