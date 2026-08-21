@@ -2,7 +2,14 @@ import * as React from "react";
 
 import { PlusIcon } from "@/assets";
 
-/** A hint is a single node, or a list of segments joined by a `+` divider. */
+/**
+ * Content displayed as a compact hint or keyboard shortcut.
+ * A single React node renders directly. An array renders each node as a shortcut
+ * segment, joined by a plus divider.
+ *
+ * @example "Esc"
+ * @example ["Ctrl", "K"]
+ */
 export type HintValue = React.ReactNode | React.ReactNode[];
 
 export function hasHint(hint: HintValue): boolean {

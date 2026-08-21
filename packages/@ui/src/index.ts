@@ -71,7 +71,20 @@ export type {
 } from "./components/Select";
 
 export { Input } from "./components/Input";
-export type { InputProps, InputState } from "./components/Input";
+export type {
+  InputAction,
+  InputActionDef,
+  InputActionSlots,
+  InputActionStyles,
+  InputIconSlots,
+  InputIconStyles,
+  InputProps,
+  InputState,
+  InputStepperStyles,
+  InputStyleSlots,
+  InputStylesProp,
+  InputVariant,
+} from "./components/Input";
 
 export { Label } from "./components/Label";
 export type { LabelProps } from "./components/Label";
@@ -148,6 +161,9 @@ export {
   SKELETON_TEXT_GEOMETRY,
   getSkeletonTextRowCount,
 } from "./components/Skeleton";
+
+export { resolveColorToken } from "./lib/color";
+export type { ColorToken } from "./lib/color";
 export type {
   SkeletonProps,
   SkeletonTextProps,
