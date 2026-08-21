@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { ComponentAPI } from "ui-lab-registry";
 import { API } from "./documentation";
 
-type Data = { api: ComponentAPI | null; parts: Array<{ name: string }> };
+type Data = { api: ComponentAPI | null };
 type Entry = { promise: Promise<Data>; data?: Data };
 
 const cache = new Map<string, Entry>();
@@ -53,5 +53,5 @@ export default function Panel({ componentId }: { componentId: string }) {
         Loading API…
       </p>
     );
-  return <API api={data.api} parts={data.parts} />;
+  return <API api={data.api} />;
 }

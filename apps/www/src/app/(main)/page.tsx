@@ -10,7 +10,6 @@ import {
   TokensSection,
   WorkshopSection,
 } from "@/features/landing/components/sections";
-import { Footer } from "@/features/layout/components/footer";
 import { Metadata } from "next";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 import { Nodes } from "@/shared/components/Nodes";
@@ -101,7 +100,6 @@ export default function Home() {
           </div>
         </main>
       </article>
-      <Footer />
     </>
   );
 }

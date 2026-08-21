@@ -12,10 +12,10 @@ interface ElementsGridClientProps {
   isPremium?: boolean;
 }
 
-function buildPreviews(elements: ElementMetadata[]) {
+function buildPreviews(elements: ElementMetadata[], packageId?: string) {
   const result: Record<string, React.ReactNode> = {};
   for (const el of elements) {
-    const C = getPreviewComponent(el.id);
+    const C = getPreviewComponent(el.id, packageId);
     if (C) result[el.id] = <C />;
   }
   return result;
@@ -32,7 +32,7 @@ function buildLayoutConfigs(elements: ElementMetadata[]) {
 function PremiumElementsGrid({ elements, packageId }: ElementsGridClientProps) {
   const basePath = `/workshop/elements/${packageId}`;
   const modalContext = useWaitlistModal();
-  const previews = buildPreviews(elements);
+  const previews = buildPreviews(elements, packageId);
   const layoutConfigs = buildLayoutConfigs(elements);
 
   const handleElementClick = () => {
@@ -53,7 +53,7 @@ function PremiumElementsGrid({ elements, packageId }: ElementsGridClientProps) {
 
 function FreeElementsGrid({ elements, packageId }: ElementsGridClientProps) {
   const basePath = packageId ? `/workshop/elements/${packageId}` : "/workshop/elements";
-  const previews = buildPreviews(elements);
+  const previews = buildPreviews(elements, packageId);
   const layoutConfigs = buildLayoutConfigs(elements);
 
   return (

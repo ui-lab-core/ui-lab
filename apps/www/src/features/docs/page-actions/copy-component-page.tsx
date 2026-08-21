@@ -136,7 +136,7 @@ export function CopyComponentPage({
 
   return (
     <Group.Expand className="w-full min-w-0" expanded={isOpen} onExpandedChange={setIsOpen}>
-      <Expand.Trigger className="flex w-full min-w-0 flex-col rounded-none border-b border-background-700">
+      <Expand.Trigger className="bg-background-1000 hover:bg-background-950 flex w-full min-w-0 flex-col rounded-none border-b border-background-700">
         <Flex className="h-12 w-full min-w-0 cursor-pointer">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             {copied ? <FaCheck size={12} className="text-foreground-400" /> : <FaRegClipboard />}

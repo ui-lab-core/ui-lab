@@ -34,7 +34,7 @@ export function CopyPage() {
 
   return (
     <Group.Expand className="w-full">
-      <Expand.Trigger className="rounded-none">
+      <Expand.Trigger className="bg-background-1000 hover:bg-background-950 rounded-none">
         <Flex className="h-12 w-full cursor-pointer">
           <span className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             {copiedLines !== null ? (

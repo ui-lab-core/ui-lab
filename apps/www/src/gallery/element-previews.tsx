@@ -2,223 +2,367 @@
 
 import React from "react";
 
+/**
+ * Abstract mini-previews for elements, one per element id. Same skeleton
+ * language as `pattern-previews.tsx`: no copy, no accent colors, no real
+ * controls — just the shape of the thing, so a card reads at a glance and every
+ * gallery on the site looks like one system.
+ */
+
+const previewRows = [0, 1] as const;
+
+function Preview({
+  children,
+  className = "",
+}: React.PropsWithChildren<{ className?: string }>) {
+  return (
+    <div className={`flex w-full flex-col justify-center gap-3 p-4 ${className}`}>{children}</div>
+  );
+}
+
+function Card({
+  children,
+  className = "",
+}: React.PropsWithChildren<{ className?: string }>) {
+  return (
+    <div
+      className={`rounded-[10px] border-[2px] border-background-500/20 bg-background-950 ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Lines({ short = false }: { short?: boolean }) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+      <div className={`h-2 rounded-full bg-background-500/50 ${short ? "w-1/2" : "w-2/3"}`} />
+      <div className="h-1.5 w-4/5 rounded-full bg-background-500/30" />
+    </div>
+  );
+}
+
+function Chevron({ direction = "right" }: { direction?: "left" | "right" | "down" }) {
+  const rotation = {
+    right: "rotate-[-45deg]",
+    left: "rotate-[135deg]",
+    down: "rotate-45",
+  } as const;
+
+  return (
+    <div
+      className={`size-1.5 shrink-0 border-b-2 border-r-2 border-background-500/40 ${rotation[direction]}`}
+    />
+  );
+}
+
 export const elementPreviews: Record<string, React.ComponentType<object>> = {
+  // Top bar: mark on the left, nav in the middle, actions on the right.
   header: () => (
-    <div className="flex flex-col gap-2 w-full">
-      <div
-        style={{ height: 36 }}
-        className="w-full gap-3 flex px-2 bg-background-900 items-center justify-between border border-background-700 rounded-sm"
-      >
-        <div style={{ width: 32, height: 20 }} className="bg-background-700 rounded-sm" />
-        <div className="flex gap-2">
-          <div
-            style={{ width: 16, height: 4 }}
-            className="bg-background-700 rounded-sm opacity-60"
-          />
-          <div
-            style={{ width: 16, height: 4 }}
-            className="bg-background-700 rounded-sm opacity-60"
-          />
-          <div
-            style={{ width: 16, height: 4 }}
-            className="bg-background-700 rounded-sm opacity-60"
-          />
+    <Preview>
+      <Card className="flex h-12 items-center gap-3 px-3">
+        <div className="size-6 shrink-0 rounded-[7px] bg-background-500/40" />
+        <div className="flex gap-3">
+          {[0, 1, 2].map((link) => (
+            <div
+              key={link}
+              className={`h-2 rounded-full ${link === 0 ? "w-10 bg-background-500/50" : "w-8 bg-background-500/25"}`}
+            />
+          ))}
         </div>
-      </div>
-    </div>
+        <div className="ml-auto flex items-center gap-2">
+          <div className="h-6 w-12 rounded-[8px] bg-background-500/15" />
+          <div className="size-6 rounded-full bg-background-500/30" />
+        </div>
+      </Card>
+    </Preview>
   ),
 
+  // Whole-page scaffold: bar, title, body well, footer.
   page: () => (
-    <div className="flex flex-col gap-1 w-full h-full">
-      <div
-        style={{ height: 28 }}
-        className="w-full bg-background-900 border border-background-700 rounded-sm"
-      />
-      <div style={{ height: 24 }} className="w-full flex gap-2 px-2">
-        <div
-          style={{ width: 80, height: 16 }}
-          className="bg-background-900 border border-background-700 rounded-sm"
-        />
-        <div
-          style={{ flex: 1, height: 16 }}
-          className="bg-background-900 border border-background-700 rounded-sm opacity-70"
-        />
-      </div>
-      <div
-        style={{ flex: 1 }}
-        className="w-full bg-background-900 border border-background-700 rounded-sm"
-      />
-      <div
-        style={{ height: 20 }}
-        className="w-full bg-background-900 border border-background-700 rounded-sm opacity-60"
-      />
-    </div>
-  ),
-
-  sidebar: () => (
-    <div className="flex flex-col gap-2 w-full h-full p-2 bg-background-950 border border-background-700 rounded-sm">
-      <div
-        style={{ height: 32 }}
-        className="w-full bg-background-900 border border-background-700 rounded-sm"
-      />
-      <div className="flex flex-col gap-1">
-        <div style={{ height: 6 }} className="w-full bg-background-700 rounded-sm opacity-70" />
-        <div style={{ height: 6 }} className="w-3/4 bg-background-700 rounded-sm opacity-60" />
-      </div>
-      <div className="flex flex-col gap-1 mt-2">
-        <div style={{ height: 6 }} className="w-full bg-background-700 rounded-sm opacity-70" />
-        <div style={{ height: 6 }} className="w-5/6 bg-background-700 rounded-sm opacity-60" />
-      </div>
-      <div className="flex flex-col gap-1 mt-2">
-        <div style={{ height: 6 }} className="w-full bg-background-700 rounded-sm opacity-70" />
-        <div style={{ height: 6 }} className="w-4/5 bg-background-700 rounded-sm opacity-60" />
-      </div>
-    </div>
-  ),
-
-  toc: () => (
-    <div className="flex flex-col gap-2 w-full h-full p-3 bg-background-900 rounded-sm border border-background-700">
-      <div className="space-y-2 text-sm">
-        <div className="font-semibold text-foreground-200 mb-2">Contents</div>
-        <div className="text-foreground-400">• Introduction</div>
-        <div className="ml-3 text-foreground-400 text-sm">◦ Overview</div>
-        <div className="ml-3 text-foreground-400 text-sm">◦ Getting Started</div>
-        <div className="text-foreground-400">• Installation</div>
-        <div className="text-foreground-400">• Usage</div>
-        <div className="ml-3 text-foreground-400 text-sm">◦ Basic</div>
-      </div>
-    </div>
-  ),
-
-  nextarticle: () => (
-    <div className="flex items-center justify-between w-full h-full p-4 bg-background-900 rounded-sm border border-background-700 cursor-pointer hover:bg-background-800 transition-colors">
-      <div className="flex-1">
-        <div className="text-sm text-foreground-400 mb-1">Next Article</div>
-        <div className="text-sm font-medium text-foreground-200">Advanced Setup Guide</div>
-      </div>
-      <div className="text-foreground-400">→</div>
-    </div>
-  ),
-
-  copypage: () => (
-    <div className="flex items-center justify-center w-full h-full p-3 bg-background-900 rounded-sm border border-background-700">
-      <button className="px-3 py-2 bg-accent-500 text-foreground-50 text-sm font-medium rounded hover:bg-accent-600 transition-colors flex items-center gap-2">
-        <span>📋</span>
-        Copy
-      </button>
-    </div>
-  ),
-
-  carousel: () => (
-    <div className="flex w-full items-center gap-2 p-4">
-      <div className="size-7 shrink-0 rounded-md border border-background-700 bg-background-800" />
-      <div className="h-16 flex-1 rounded-md border border-background-700 bg-background-900 p-2">
-        <div className="h-full rounded bg-background-800" />
-      </div>
-      <div className="size-7 shrink-0 rounded-md border border-background-700 bg-background-800" />
-    </div>
-  ),
-
-  timeline: () => (
-    <div className="flex w-full flex-col gap-3 p-4">
-      {[0, 1, 2].map((item) => (
-        <div key={item} className="flex items-center gap-3">
-          <div className="size-3 rounded-full border border-accent-700 bg-accent-900" />
-          <div className="h-2 flex-1 rounded bg-background-700" />
-          <div className="h-2 w-12 rounded bg-background-800" />
+    <Preview>
+      <Card className="flex h-7 items-center gap-2 px-2.5">
+        <div className="size-3 rounded-[4px] bg-background-500/40" />
+        <div className="ml-auto flex gap-1.5">
+          {previewRows.map((link) => (
+            <div key={link} className="h-1.5 w-6 rounded-full bg-background-500/25" />
+          ))}
         </div>
-      ))}
-    </div>
+      </Card>
+      <div className="flex flex-col gap-2 px-0.5">
+        <div className="h-2.5 w-1/2 rounded-full bg-background-500/50" />
+        <div className="h-1.5 w-3/4 rounded-full bg-background-500/25" />
+      </div>
+      <Card className="h-14 w-full" />
+      <Card className="flex h-6 items-center gap-2 px-2.5">
+        <div className="h-1.5 w-10 rounded-full bg-background-500/20" />
+        <div className="ml-auto h-1.5 w-6 rounded-full bg-background-500/20" />
+      </Card>
+    </Preview>
   ),
 
-  rating: () => (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-      <div className="flex gap-2">
-        {[0, 1, 2, 3, 4].map((item) => (
+  // Vertical nav rail: brand block, then grouped rows with one active.
+  sidebar: () => (
+    <Preview>
+      <Card className="flex flex-col gap-3 p-3">
+        <div className="flex items-center gap-2">
+          <div className="size-5 shrink-0 rounded-[6px] bg-background-500/40" />
+          <div className="h-2 w-1/2 rounded-full bg-background-500/40" />
+        </div>
+        {previewRows.map((group) => (
+          <div key={group} className="flex flex-col gap-1.5">
+            <div className="h-1.5 w-1/3 rounded-full bg-background-500/20" />
+            {previewRows.map((row) => (
+              <div
+                key={row}
+                className={`h-6 rounded-[7px] ${group === 0 && row === 0 ? "bg-background-600" : "bg-background-500/10"}`}
+              />
+            ))}
+          </div>
+        ))}
+      </Card>
+    </Preview>
+  ),
+
+  // Outline rail: entries indent by heading level, the current one marked.
+  toc: () => (
+    <Preview>
+      <div className="flex flex-col gap-2.5 border-l-[2px] border-background-500/15 pl-3">
+        <div className="-ml-3 h-1.5 w-1/3 rounded-full bg-background-500/20" />
+        {[
+          { width: "w-3/4", indent: 0, active: false },
+          { width: "w-1/2", indent: 12, active: false },
+          { width: "w-2/3", indent: 12, active: true },
+          { width: "w-4/5", indent: 0, active: false },
+          { width: "w-1/2", indent: 12, active: false },
+        ].map((entry, index) => (
           <div
-            key={item}
-            className={`size-5 rotate-45 rounded-sm ${item < 4 ? "bg-accent-800" : "bg-background-700"}`}
+            key={index}
+            className="relative flex items-center"
+            style={{ paddingLeft: entry.indent }}
+          >
+            {entry.active && (
+              <div className="absolute -left-[14px] h-3 w-[2px] rounded-full bg-background-600" />
+            )}
+            <div
+              className={`h-2 rounded-full ${entry.width} ${entry.active ? "bg-background-500/60" : "bg-background-500/25"}`}
+            />
+          </div>
+        ))}
+      </div>
+    </Preview>
+  ),
+
+  // Pager: previous and next cards, arrows pointing outward.
+  nextarticle: () => (
+    <Preview>
+      {previewRows.map((n) => (
+        <Card key={n} className="flex h-14 items-center gap-3 px-3">
+          {n === 0 && <Chevron direction="left" />}
+          <div className={`flex min-w-0 flex-1 flex-col gap-2 ${n === 1 ? "items-end" : ""}`}>
+            <div className="h-1.5 w-10 rounded-full bg-background-500/25" />
+            <div
+              className={`h-2.5 rounded-full bg-background-500/50 ${n === 0 ? "w-2/3" : "w-3/5"}`}
+            />
+          </div>
+          {n === 1 && <Chevron />}
+        </Card>
+      ))}
+    </Preview>
+  ),
+
+  // Copy action: a button with a duplicated-sheet glyph beside its label.
+  copypage: () => (
+    <Preview className="items-center">
+      <div className="flex h-9 items-center gap-2 rounded-[10px] bg-background-600 px-3">
+        <div className="relative size-4 shrink-0">
+          <div className="absolute inset-y-0 left-0 w-3 rounded-[3px] border-[2px] border-background-950/50" />
+          <div className="absolute inset-y-0.5 right-0 w-3 rounded-[3px] border-[2px] border-background-950 bg-background-600" />
+        </div>
+        <div className="h-2 w-10 rounded-full bg-background-950/60" />
+      </div>
+      <div className="h-1.5 w-24 rounded-full bg-background-500/20" />
+    </Preview>
+  ),
+
+  // Slide track: the current slide between two peeks, arrows and dots.
+  carousel: () => (
+    <Preview>
+      <div className="flex items-center gap-2">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-background-500/15">
+          <Chevron direction="left" />
+        </div>
+        <div className="h-16 w-4 shrink-0 rounded-[8px] bg-background-500/10" />
+        <Card className="h-16 flex-1" />
+        <div className="h-16 w-4 shrink-0 rounded-[8px] bg-background-500/10" />
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-background-500/15">
+          <Chevron />
+        </div>
+      </div>
+      <div className="flex justify-center gap-1.5">
+        {[0, 1, 2, 3].map((dot) => (
+          <div
+            key={dot}
+            className={`h-1.5 rounded-full ${dot === 1 ? "w-4 bg-background-600" : "w-1.5 bg-background-500/25"}`}
           />
         ))}
       </div>
-      <div className="h-2 w-24 rounded bg-background-800" />
-    </div>
+    </Preview>
   ),
 
-  "tree-view": () => (
-    <div className="flex w-full flex-col gap-3 p-4">
-      {[0, 1, 2].map((item) => (
-        <div
-          key={item}
-          className="flex items-center gap-2"
-          style={{ paddingLeft: `${item * 16}px` }}
-        >
-          <div className="size-3 rounded-sm border border-background-600 bg-background-800" />
-          <div className={`h-2 rounded bg-background-700 ${item === 1 ? "w-3/5" : "w-4/5"}`} />
-        </div>
-      ))}
-    </div>
+  // Events on a rail: markers on a spine, text and meta beside each.
+  timeline: () => (
+    <Preview>
+      <div className="relative flex flex-col gap-3 pl-5">
+        <div className="absolute bottom-2 left-[5px] top-2 w-[2px] rounded-full bg-background-500/15" />
+        {[0, 1, 2].map((event) => (
+          <div key={event} className="relative flex items-center gap-3">
+            <div
+              className={`absolute -left-5 size-3 rounded-full border-[2px] ${event === 0 ? "border-background-600 bg-background-600" : "border-background-500/30 bg-background-950"}`}
+            />
+            <Lines short={event === 1} />
+            <div className="h-1.5 w-8 shrink-0 rounded-full bg-background-500/20" />
+          </div>
+        ))}
+      </div>
+    </Preview>
   ),
 
+  // Score: a run of marks, partly filled, over a caption.
+  rating: () => (
+    <Preview className="items-center">
+      <div className="flex gap-2">
+        {[0, 1, 2, 3, 4].map((mark) => (
+          <div
+            key={mark}
+            className={`size-5 rotate-45 rounded-[3px] ${mark < 4 ? "bg-background-600" : "bg-background-500/20"}`}
+          />
+        ))}
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="h-2.5 w-8 rounded-full bg-background-500/50" />
+        <div className="h-1.5 w-14 rounded-full bg-background-500/25" />
+      </div>
+    </Preview>
+  ),
+
+  // Nested disclosure: rows indent by depth, open ones point down.
+  treeview: () => (
+    <Preview>
+      <Card className="flex flex-col gap-2.5 p-3">
+        {[
+          { depth: 0, open: true, width: "w-2/3" },
+          { depth: 1, open: true, width: "w-1/2" },
+          { depth: 2, open: false, width: "w-2/5" },
+          { depth: 2, open: false, width: "w-1/2" },
+          { depth: 1, open: false, width: "w-3/5" },
+        ].map((row, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2"
+            style={{ paddingLeft: row.depth * 14 }}
+          >
+            <Chevron direction={row.open ? "down" : "right"} />
+            <div className="size-3 shrink-0 rounded-[3px] bg-background-500/25" />
+            <div className={`h-2 rounded-full bg-background-500/40 ${row.width}`} />
+          </div>
+        ))}
+      </Card>
+    </Preview>
+  ),
+
+  // Composer: suggestion chips above a field with attachments and send.
   aichatinput: () => (
-    <div className="flex items-center gap-2 w-full h-full p-3 bg-background-900 rounded-sm border border-background-700">
-      <input
-        type="text"
-        placeholder="Ask AI..."
-        className="flex-1 bg-background-800 border border-background-700 rounded px-2 py-1 text-sm text-foreground-400 placeholder-foreground-400"
-        readOnly
-      />
-      <button className="px-2 py-1 bg-accent-500 text-foreground-50 rounded text-sm font-medium hover:bg-accent-600">
-        →
-      </button>
-    </div>
+    <Preview>
+      <div className="flex gap-2">
+        {[16, 22, 18].map((width) => (
+          <div
+            key={width}
+            className="h-6 rounded-full border-[2px] border-background-500/20"
+            style={{ width: width * 4 }}
+          />
+        ))}
+      </div>
+      <Card className="flex h-14 flex-col justify-between p-2.5">
+        <div className="h-2 w-1/2 rounded-full bg-background-500/30" />
+        <div className="flex items-center gap-2">
+          <div className="size-5 rounded-full bg-background-500/15" />
+          <div className="size-5 rounded-full bg-background-500/15" />
+          <div className="ml-auto size-7 rounded-full bg-background-600" />
+        </div>
+      </Card>
+    </Preview>
   ),
 
+  // Reasoning steps: numbered markers on a rail, the last one expanded.
   chainofthought: () => (
-    <div className="flex flex-col gap-2 w-full h-full p-3 bg-background-900 rounded-sm border border-background-700">
-      <div className="space-y-2 text-sm">
-        <div className="flex items-start gap-2">
-          <span className="text-accent-500 font-bold">1.</span>
-          <div className="text-foreground-400">Analyzing the problem</div>
-        </div>
-        <div className="flex items-start gap-2 ml-2 text-foreground-400">
-          <span>→</span>
-          <div>Breaking down requirements</div>
-        </div>
-        <div className="flex items-start gap-2">
-          <span className="text-accent-500 font-bold">2.</span>
-          <div className="text-foreground-400">Evaluating options</div>
-        </div>
+    <Preview>
+      <div className="relative flex flex-col gap-3 pl-7">
+        <div className="absolute bottom-3 left-[9px] top-3 w-[2px] rounded-full bg-background-500/15" />
+        {[0, 1, 2].map((step) => (
+          <div key={step} className="relative flex flex-col gap-1.5">
+            <div
+              className={`absolute -left-7 size-5 rounded-full ${step === 2 ? "bg-background-600" : "bg-background-500/20"}`}
+            />
+            <div
+              className={`h-2 rounded-full bg-background-500/50 ${step === 1 ? "w-1/2" : "w-2/3"}`}
+            />
+            {step === 2 && (
+              <Card className="flex flex-col gap-1.5 p-2">
+                <div className="h-1.5 w-4/5 rounded-full bg-background-500/25" />
+                <div className="h-1.5 w-3/5 rounded-full bg-background-500/25" />
+              </Card>
+            )}
+          </div>
+        ))}
       </div>
-    </div>
+    </Preview>
   ),
 
+  // Thread: alternating bubbles with an avatar, over a composer.
   chat: () => (
-    <div className="flex flex-col h-full w-full bg-background-900 rounded-sm border border-background-700 overflow-hidden">
-      <div className="flex-1 overflow-y-auto space-y-3 p-3">
-        <div className="flex justify-start">
-          <div className="bg-background-700 rounded px-3 py-2 max-w-xs text-sm text-foreground-400">
-            Hello, how can I help?
-          </div>
+    <Preview>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-end gap-2">
+          <div className="size-5 shrink-0 rounded-full bg-background-500/25" />
+          <div className="h-8 w-3/5 rounded-[10px] rounded-bl-[3px] bg-background-500/15" />
         </div>
-        <div className="flex justify-end">
-          <div className="bg-accent-500 rounded px-3 py-2 max-w-xs text-sm text-foreground-50">
-            I need some assistance
-          </div>
-        </div>
-        <div className="flex justify-start">
-          <div className="bg-background-700 rounded px-3 py-2 max-w-xs text-sm text-foreground-400">
-            I'm here to help!
-          </div>
+        <div className="ml-auto h-7 w-1/2 rounded-[10px] rounded-br-[3px] bg-background-600" />
+        <div className="flex items-end gap-2">
+          <div className="size-5 shrink-0 rounded-full bg-background-500/25" />
+          <div className="h-6 w-2/5 rounded-[10px] rounded-bl-[3px] bg-background-500/15" />
         </div>
       </div>
-      <div className="border-t border-background-700 p-2 bg-background-800">
-        <div className="h-6 bg-background-700 rounded text-sm flex items-center px-2 text-foreground-400">
-          Type a message...
+      <Card className="flex h-9 items-center gap-2 px-2.5">
+        <div className="h-2 w-1/3 rounded-full bg-background-500/25" />
+        <div className="ml-auto size-6 rounded-full bg-background-500/30" />
+      </Card>
+    </Preview>
+  ),
+
+  // Composition: a shell holding a rail and a content well of its own.
+  teststructure: () => (
+    <Preview>
+      <Card className="flex flex-col gap-2 p-2">
+        <div className="h-5 w-full rounded-[6px] bg-background-500/15" />
+        <div className="flex gap-2">
+          <Card className="flex w-1/3 shrink-0 flex-col gap-1.5 p-2">
+            {[0, 1, 2].map((row) => (
+              <div
+                key={row}
+                className={`h-1.5 rounded-full ${row === 0 ? "w-full bg-background-600" : "w-3/4 bg-background-500/25"}`}
+              />
+            ))}
+          </Card>
+          <Card className="flex flex-1 flex-col gap-2 p-2">
+            <div className="h-2 w-1/2 rounded-full bg-background-500/40" />
+            <div className="flex flex-1 gap-1.5">
+              <div className="h-8 flex-1 rounded-[6px] bg-background-500/15" />
+              <div className="h-8 flex-1 rounded-[6px] bg-background-500/10" />
+            </div>
+          </Card>
         </div>
-      </div>
-    </div>
+      </Card>
+    </Preview>
   ),
 };
-
-elementPreviews.treeview = elementPreviews["tree-view"];

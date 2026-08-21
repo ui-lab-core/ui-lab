@@ -20,7 +20,6 @@ import {
   VolumeX,
   Volume,
   Maximize2,
-  AudioLines,
 } from "lucide-react";
 import type { ShowcasePanelProps } from "../types";
 
@@ -75,10 +74,8 @@ const COVER_PALETTES = [
   { highlight: "30 95% 78%", mid: "22 92% 56%", rim: "16 95% 50%", baseHue: 20 }, // amber / ember
 ] as const;
 
-const pick = <T,>(rng: () => number, arr: readonly T[]): T =>
-  arr[Math.floor(rng() * arr.length)];
-const range = (rng: () => number, min: number, max: number): number =>
-  min + rng() * (max - min);
+const pick = <T,>(rng: () => number, arr: readonly T[]): T => arr[Math.floor(rng() * arr.length)];
+const range = (rng: () => number, min: number, max: number): number => min + rng() * (max - min);
 
 function coverStyle(input: string): React.CSSProperties {
   const rng = mulberry32(seedFrom(input));
@@ -186,18 +183,20 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
       )}
 
       <div className="border border-background-700 space-y-6 rounded-sm p-2">
-        <div className="flex items-center gap-3.5">
-          <div
-            className="h-14 w-14 flex-shrink-0 rounded-sm"
-            style={coverStyle(tracks[current].title)}
-            aria-hidden="true"
-          />
-          <div className="flex flex-1 flex-col gap-1">
-            <div className="text-sm font-semibold text-foreground-100 truncate">
-              {tracks[current].title}
-            </div>
-            <div className="text-sm text-foreground-400 truncate">
-              {tracks[current].artist} · Visions of a New World
+        <div className="flex justify-between items-start gap-3.5">
+          <div className="flex gap-4">
+            <div
+              className="h-12 w-12 flex-shrink-0 rounded-sm"
+              style={coverStyle(tracks[current].title)}
+              aria-hidden="true"
+            />
+            <div className="flex flex-1 flex-col gap-1">
+              <div className="text-sm font-semibold text-foreground-100 truncate">
+                {tracks[current].title}
+              </div>
+              <div className="text-sm max-w-[25ch] text-foreground-400 truncate">
+                {tracks[current].artist} · Visions of a New World
+              </div>
             </div>
           </div>
           <div className="flex space-x-1.5">
@@ -244,7 +243,10 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
             show-controls
             value={progress}
             onValueChange={setProgress}
-            styles={{ root: "flex-1", track: "h-5.5" }}
+            styles={{
+              root: " flex-1",
+              track: "overflow-hidden h-4.5",
+            }}
           />
           <span className="text-sm text-foreground-400 tabular-nums">5:05</span>
         </div>
@@ -277,7 +279,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               styles={{ root: shuffle ? "text-foreground-400" : "opacity-30" }}
               onPress={() => setShuffle(!shuffle)}
             />
-            <Group variant="default" orientation="horizontal" spacing="xs">
+            <Group variant="ghost" orientation="horizontal" spacing="xs">
               <Group.Button size="icon" aria-label="Previous">
                 <SkipBack size={16} />
               </Group.Button>

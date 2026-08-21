@@ -23,6 +23,42 @@ export interface PropDefinition {
   defaultValue?: string;
   description?: string;
   enumValues?: string[];
+  category?: string;
+  tags?: Record<string, string>;
+  links?: APIDocLink[];
+  typeTokens?: APITypeToken[];
+}
+
+export interface APIDocLink {
+  label: string;
+  url: string;
+}
+
+export interface APITypeToken {
+  text: string;
+  href?: string;
+  customType?: string;
+}
+
+export interface APICustomType {
+  name: string;
+  summary: string;
+  type: string;
+  kind?: "alias" | "interface";
+  members?: PropDefinition[];
+  examples?: string[];
+  notes?: string[];
+}
+
+export interface APIStateAttribute {
+  name: string;
+  description: string;
+  values?: string[];
+}
+
+export interface APIPropGroup {
+  name: string;
+  description?: string;
 }
 
 export interface SubComponentAPI {
@@ -32,6 +68,9 @@ export interface SubComponentAPI {
 
 export interface ComponentAPI {
   props: PropDefinition[];
+  propGroups?: APIPropGroup[];
+  stateAttributes?: APIStateAttribute[];
+  customTypes?: Record<string, APICustomType>;
   subComponents?: Record<string, SubComponentAPI>;
   examples?: ComponentExample[];
 }

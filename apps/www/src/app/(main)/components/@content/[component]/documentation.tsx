@@ -6,7 +6,13 @@ import {
   type Column,
   type TableExpandedDetail,
 } from "@/features/docs/components/table";
-import type { ComponentAPI, PropDefinition } from "ui-lab-registry";
+import { Popover } from "ui-lab-components";
+import type {
+  APIStateAttribute,
+  APITypeToken,
+  ComponentAPI,
+  PropDefinition,
+} from "ui-lab-registry";
 
 type CssVariable = { name: string; value: string; variant?: string | null };
 
@@ -28,7 +34,127 @@ function ColorSwatch({ color }: { color: string }) {
   );
 }
 
-export function API({ api, parts }: { api: ComponentAPI | null; parts: Array<{ name: string }> }) {
+function TypeToken({ token, api }: { token: APITypeToken; api: ComponentAPI }) {
+  const customType = token.customType ? api.customTypes?.[token.customType] : undefined;
+
+  if (customType) {
+    return (
+      <Popover
+        position="bottom"
+        align="start"
+        content={
+          <div className="mt-4 w-[min(36rem,calc(100vw-2rem))] space-y-4 text-xs">
+            <div>
+              <p className="font-mono font-semibold text-foreground-50">{customType.name}</p>
+              <p className="mt-1 text-foreground-400">{customType.summary}</p>
+            </div>
+            <InlineCodeHighlight code={customType.type} language="typescript" />
+            {customType.kind === "interface" && customType.members?.length ? (
+              <div className="mt-4">
+                <Table
+                  data={customType.members}
+                  getRowKey={(member) => member.name}
+                  columns={[
+                    {
+                      key: "name",
+                      label: "Member",
+                      width: "10rem",
+                      minWidth: "10rem",
+                      render: (value, member) => (
+                        <span className="whitespace-nowrap font-mono text-foreground-100">
+                          {String(value)}
+                          {member.required ? null : "?"}
+                        </span>
+                      ),
+                    },
+                    {
+                      key: "type",
+                      label: "Type",
+                      width: "18rem",
+                      minWidth: "18rem",
+                      render: (value) => (
+                        <InlineCodeHighlight code={String(value)} language="typescript" />
+                      ),
+                    },
+                    {
+                      key: "description",
+                      label: "Description",
+                      width: "24rem",
+                      minWidth: "24rem",
+                      render: (value) => (
+                        <span className="min-w-48 text-foreground-400">{String(value)}</span>
+                      ),
+                    },
+                  ]}
+                />
+              </div>
+            ) : null}
+            {customType.examples?.length ? (
+              <div className="space-y-1">
+                <p className="font-medium text-foreground-300">Examples</p>
+                {customType.examples.map((example) => (
+                  <InlineCodeHighlight key={example} code={example} language="tsx" />
+                ))}
+              </div>
+            ) : null}
+            {customType.notes?.map((note) => (
+              <p key={note} className="text-foreground-400">
+                {note}
+              </p>
+            ))}
+          </div>
+        }
+      >
+        <button
+          type="button"
+          className="font-mono text-xs text-accent-500 underline cursor-pointer"
+        >
+          {token.text}
+        </button>
+      </Popover>
+    );
+  }
+
+  if (token.href) {
+    return (
+      <a
+        href={token.href}
+        target="_blank"
+        rel="noreferrer"
+        className="font-mono text-xs text-accent-500 underline cursor-pointer"
+      >
+        {token.text}
+      </a>
+    );
+  }
+
+  return <span className="font-mono text-xs text-foreground-300">{token.text}</span>;
+}
+
+function TypeDisplay({ prop, api }: { prop: PropDefinition; api: ComponentAPI }) {
+  if (!prop.typeTokens?.length) {
+    return (
+      <InlineCodeHighlight
+        code={
+          prop.enumValues?.length
+            ? prop.enumValues.map((item) => `"${item}"`).join(" | ")
+            : prop.type
+        }
+        language="typescript"
+      />
+    );
+  }
+
+  return (
+    <span>
+      {prop.typeTokens.map((token, index) => (
+        <TypeToken key={`${token.text}-${index}`} token={token} api={api} />
+      ))}
+    </span>
+  );
+}
+
+export function API({ api }: { api: ComponentAPI | null }) {
   if (!api)
     return (
       <p className="py-8 text-foreground-400">No API documentation available for this component.</p>
@@ -48,16 +174,7 @@ export function API({ api, parts }: { api: ComponentAPI | null; parts: Array<{ n
     {
       key: "type",
       label: "Type",
-      render: (value, row) => (
-        <InlineCodeHighlight
-          code={
-            row.enumValues?.length
-              ? row.enumValues.map((item) => `"${item}"`).join(" | ")
-              : String(value)
-          }
-          language="typescript"
-        />
-      ),
+      render: (_value, row) => <TypeDisplay prop={row} api={api} />,
     },
   ];
 
@@ -77,18 +194,24 @@ export function API({ api, parts }: { api: ComponentAPI | null; parts: Array<{ n
             value: <InlineCodeHighlight code={prop.defaultValue} language="typescript" />,
           }
         : null,
-      prop.name === "styles" && parts.length
+      prop.links?.length
         ? {
-            key: "parts",
-            label: "Styleable parts",
+            key: "links",
+            label: "References",
             value: (
-              <ul className="grid grid-cols-1 gap-x-4 gap-y-1 text-xs text-foreground-400 sm:grid-cols-2">
-                {parts.map((part) => (
-                  <li key={part.name}>
-                    <InlineCodeHighlight code={`'${part.name}'`} language="typescript" />
-                  </li>
+              <span className="flex flex-wrap gap-3">
+                {prop.links.map((link) => (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-accent-500 underline cursor-pointer"
+                  >
+                    {link.label}
+                  </a>
                 ))}
-              </ul>
+              </span>
             ),
           }
         : null,
@@ -97,11 +220,52 @@ export function API({ api, parts }: { api: ComponentAPI | null; parts: Array<{ n
     return available.length ? <TableExpandedDetails details={available} /> : null;
   };
 
+  const configuredGroups = api.propGroups?.map((group) => group.name) ?? [];
+  const discoveredGroups = api.props
+    .map((prop) => prop.category)
+    .filter((category): category is string => Boolean(category));
+  const groupNames = [...new Set([...configuredGroups, ...discoveredGroups])];
+  const groupedProps = groupNames
+    .map((name) => ({ name, props: api.props.filter((prop) => prop.category === name) }))
+    .filter((group) => group.props.length);
+  const uncategorizedProps = api.props.filter((prop) => !prop.category);
+
+  const stateColumns: Column<APIStateAttribute>[] = [
+    {
+      key: "name",
+      label: "Attribute",
+      render: (value) => (
+        <span className="font-mono text-xs text-foreground-50">{String(value)}</span>
+      ),
+    },
+    { key: "description", label: "Description" },
+  ];
+
   return (
     <div className="space-y-8">
       {api.props?.length ? (
-        <section id="api-props" className="mb-18 scroll-mt-20">
-          <Table data={api.props} columns={columns} expandRender={expanded} />
+        <section id="api-props" className="mb-18 space-y-8 scroll-mt-20">
+          {groupedProps.map((group) => (
+            <section key={group.name} className="space-y-3">
+              <h3 className="text-base font-semibold text-foreground-100">{group.name}</h3>
+              <Table data={group.props} columns={columns} expandRender={expanded} />
+            </section>
+          ))}
+          {uncategorizedProps.length ? (
+            <section className="space-y-3">
+              {groupedProps.length ? (
+                <h3 className="text-base font-semibold text-foreground-100">Other</h3>
+              ) : null}
+              <Table data={uncategorizedProps} columns={columns} expandRender={expanded} />
+            </section>
+          ) : null}
+        </section>
+      ) : null}
+
+      {api.stateAttributes?.length ? (
+        <section id="api-state-attributes" className="mb-18 space-y-3 scroll-mt-20">
+          <h3 className="text-base font-semibold text-foreground-100">State attributes</h3>
+          <Table data={api.stateAttributes} columns={stateColumns} />
         </section>
       ) : null}
 

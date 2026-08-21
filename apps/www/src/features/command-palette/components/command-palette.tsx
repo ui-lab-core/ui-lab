@@ -53,9 +53,9 @@ function Content({ itemCount }: { itemCount: number }) {
                 hint={command.shortcut}
               >
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-sm mb-1.5">{command.label}</h3>
+                  <Command.Label className="mb-1.5">{command.label}</Command.Label>
                   {command.description ? (
-                    <p className="w-full break-words text-sm">{command.description}</p>
+                    <Command.Description className="w-full break-words">{command.description}</Command.Description>
                   ) : null}
                 </div>
               </Command.Item>

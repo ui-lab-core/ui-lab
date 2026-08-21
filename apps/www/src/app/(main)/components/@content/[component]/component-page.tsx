@@ -4,7 +4,6 @@ import {
   type ElementSourceEntry,
 } from "@ui-lab-core/library/server";
 import type { ComponentAPI, ComponentMetadata } from "ui-lab-registry";
-import { Footer } from "@/features/layout/components/footer";
 import { CopyComponentPage } from "@/features/docs/page-actions/copy-component-page";
 import { OpenPage } from "@/features/docs/page-actions/open-page-button";
 import { highlightCode } from "@/features/docs/lib/shiki-server";
@@ -209,7 +208,6 @@ export async function ComponentPage({
             </div>
           </div>
         </div>
-        <Footer />
       </main>
 
       <aside className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden min-[750px]:flex">

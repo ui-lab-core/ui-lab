@@ -198,7 +198,7 @@ const EVENTS: Event[] = [
  */
 export function TokensScreen() {
   return (
-    <div className="grid h-full w-full grid-cols-[minmax(0,1.77fr)_minmax(0,1fr)] gap-2 p-2">
+    <div className="grid mx-auto max-w-xl h-full w-full gap-2 p-2">
       <div className="flex min-h-0 min-w-0 flex-col pt-6">
         <div className="grid grid-cols-1 gap-4">
           <ChartPanel label="Revenue" total="$18,240" delta="+9.4%" periodLabel="Revenue period">
@@ -237,49 +237,6 @@ export function TokensScreen() {
           />
         </div>
       </div>
-
-      <Card className="flex min-h-0 flex-col bg-background-900">
-        <Card.Header className="flex flex-col gap-2.5 px-3.5 pb-0 pt-2.5">
-          <div className="flex justify-end">
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label="Activity options"
-              className="h-8 w-8 p-0 text-foreground-400"
-            >
-              <Ellipsis size={16} />
-            </Button>
-          </div>
-          <Tabs default="activity" variant="underline">
-            <Tabs.List aria-label="Workspace feed">
-              <Tabs.Trigger value="activity">Activity</Tabs.Trigger>
-              <Tabs.Trigger value="alerts">
-                Alerts <Badge variant="ghost">2</Badge>
-              </Tabs.Trigger>
-              <Tabs.Trigger value="audit">Audit</Tabs.Trigger>
-            </Tabs.List>
-          </Tabs>
-        </Card.Header>
-
-        <Card.Body className="min-h-0 flex-1 p-0">
-          <List items={EVENTS} spacing="default" className="max-w-none">
-            {EVENTS.map((event, index) => (
-              <Fragment key={event.id}>
-                <List.Item value={event.id} interactive={false} className="items-start px-3.5 py-3">
-                  <List.Media>
-                    <event.Icon size={15} className="mt-0.5 text-foreground-400" />
-                  </List.Media>
-                  <div className="flex min-w-0 flex-col gap-2">
-                    <List.Title className="text-sm">{event.title}</List.Title>
-                    <List.Desc className="text-sm leading-relaxed">{event.detail}</List.Desc>
-                  </div>
-                </List.Item>
-                {index < EVENTS.length - 1 && <List.Divider spacing="none" />}
-              </Fragment>
-            ))}
-          </List>
-        </Card.Body>
-      </Card>
     </div>
   );
 }

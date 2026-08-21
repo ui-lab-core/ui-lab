@@ -4,6 +4,7 @@ import { Layers3, LayoutGrid, Palette, Type } from "lucide-react";
 import { Button } from "ui-lab-components/button";
 import { Lattice, Section } from "./section";
 import { Divider } from "ui-lab-components";
+import { FaGraduationCap } from "react-icons/fa6";
 
 type DesignSystemArea = {
   title: string;
@@ -42,17 +43,23 @@ const areas: DesignSystemArea[] = [
 export function DesignSystemSection() {
   return (
     <Section ground="1000" rhythm="small">
-      <div className="border overflow-hidden border-background-700 rounded-sm pt-12">
-        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-20">
-          <div className="space-y-5">
-            <h2 className="max-w-[40ch] pl-6 text-balance text-3xl font-medium leading-tight tracking-normal text-foreground-100 sm:text-4xl">
-              One design language, from first principle to finished interface.
-            </h2>
+      <div className="grid-paper border overflow-hidden border-background-700 rounded-sm pt-12">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-20">
+          <div className="space-y-5 pl-12">
+            <h2 className="text-3xl text-foreground-100">Academy</h2>
+            <p className="text-md max-w-[29ch] text-foreground-400">
+              Powerful yet simple design system you can adapt to any project
+            </p>
+            <Button className="rounded-full" variant="secondary" href="/design-system">
+              Explore the system
+            </Button>
           </div>
 
-          <Button className="w-fit rounded-full mr-6" variant="secondary" href="/design-system">
-            Explore the system
-          </Button>
+          <div className="mr-6 w-fit space-y-6">
+            <h3 className="max-w-[31ch] text-xl font-medium text-foreground-100 sm:text-2xl">
+              One design language, from first principle to finished interface.
+            </h3>
+          </div>
         </div>
 
         <Divider className="mt-12" spacing="none" />
@@ -65,12 +72,12 @@ export function DesignSystemSection() {
             >
               <div className="self-center">
                 <h3 className="text-lg font-medium text-foreground-100">{title}</h3>
-                <p className="mt-3 max-w-[38ch] text-sm leading-relaxed text-foreground-400">
+                <p className="mt-3 max-w-[38ch] text-md leading-relaxed text-foreground-400">
                   {description}
                 </p>
               </div>
 
-              <span className="grid size-16 shrink-0 place-items-center rounded-sm bg-background-950 border border-background-700 text-foreground-300 transition-colors group-hover:bg-background-700 group-hover:text-foreground-100 sm:size-12 lg:size-20">
+              <span className="grid size-16 shrink-0 place-items-center rounded-md bg-background-950 border-2 border-background-800 text-foreground-300 transition-colors group-hover:bg-background-800 group-hover:text-foreground-100 sm:size-12 lg:size-20">
                 <Icon aria-hidden className="size-4 sm:size-6 lg:size-8" />
               </span>
             </Link>

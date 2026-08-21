@@ -4,6 +4,7 @@ import { useState, Fragment } from "react";
 import { cn } from "@/shared/lib/utils";
 import { InlineCodeHighlight } from "./code-display/inline-code-highlight";
 import { Expand } from "ui-lab-components";
+import { Table as UITable, type Column as UITableColumn } from "ui-lab-components/table";
 
 export interface TableExpandedDetail {
   key: string;
@@ -20,6 +21,7 @@ export interface Column<T> {
   codeLanguage?: string;
   render?: (value: T[keyof T], row: T) => React.ReactNode;
   width?: string;
+  minWidth?: string;
 }
 
 interface TableProps<T> {
@@ -104,6 +106,25 @@ export function Table<T extends object>({
     }),
   );
 
+  const tableColumns: UITableColumn<T>[] = columns.map((col) => ({
+    key: col.key,
+    header: col.label,
+    width: col.width,
+    minWidth: col.minWidth ?? col.width,
+    cell: ({ value, row }) =>
+      col.render ? (
+        col.render(value, row)
+      ) : col.isCode ? (
+        <InlineCodeHighlight
+          code={String(value)}
+          language={col.codeLanguage || "typescript"}
+          className="bg-background-900 px-2 py-1 rounded"
+        />
+      ) : (
+        String(value)
+      ),
+  }));
+
   return (
     <div className="w-full">
       {showFilters && filterableColumns.length > 0 && (
@@ -127,30 +148,43 @@ export function Table<T extends object>({
         </div>
       )}
 
-      <div className="overflow-x-auto border border-background-800 rounded-sm">
-        <table className="min-w-full text-xs">
-          <thead>
-            <tr className="border-b border-background-800 bg-background-900">
+      <UITable
+        data={filteredData}
+        columns={tableColumns}
+        scroll="auto"
+        aria-label="Documentation data"
+        styles={{
+          container: "border-background-800 rounded-sm",
+          table: "min-w-full text-xs",
+          header: "bg-background-900",
+          headerCell: "px-4 py-3 text-left font-semibold text-foreground-200",
+          cell: "px-4 py-3 text-foreground-300",
+          emptyState: "px-4 py-8 text-center text-foreground-400",
+        }}
+      >
+        <UITable.Header>
+          <tr className="border-b border-background-800 bg-background-900">
               {columns.map((col) => (
-                <th
+                <UITable.HeaderCell
                   key={String(col.key)}
-                  className="px-4 py-3 text-left font-semibold text-foreground-200"
                   style={{ width: col.width }}
                 >
                   {col.label}
-                </th>
+                </UITable.HeaderCell>
               ))}
-              {expandRender && <th className="w-10" />}
-            </tr>
-          </thead>
-          <tbody>
+              {expandRender && <UITable.HeaderCell className="w-10" />}
+          </tr>
+        </UITable.Header>
+        <UITable.Body rows={filteredData}>
             {filteredData.length > 0 ? (
-              filteredData.map((row) => {
+              filteredData.map((row, rowIndex) => {
                 const rowKey = resolveRowKey(row);
                 const isExpanded = expandedRows.has(rowKey);
                 return (
                   <Fragment key={rowKey}>
-                    <tr
+                    <UITable.Row
+                      row={row}
+                      rowIndex={rowIndex}
                       onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
                       className={cn(
                         "border-b border-background-800",
@@ -159,27 +193,18 @@ export function Table<T extends object>({
                           : "",
                       )}
                     >
-                      {columns.map((col) => (
-                        <td
+                      {tableColumns.map((col, columnIndex) => (
+                        <UITable.Cell
                           key={String(col.key)}
-                          className="px-4 py-3 text-foreground-300"
+                          row={row}
+                          rowIndex={rowIndex}
+                          column={col}
+                          columnIndex={columnIndex}
                           style={{ width: col.width }}
-                        >
-                          {col.render ? (
-                            col.render(row[col.key], row)
-                          ) : col.isCode ? (
-                            <InlineCodeHighlight
-                              code={String(row[col.key])}
-                              language={col.codeLanguage || "typescript"}
-                              className="bg-background-900 px-2 py-1 rounded"
-                            />
-                          ) : (
-                            String(row[col.key])
-                          )}
-                        </td>
+                        />
                       ))}
                       {expandRender && (
-                        <td className="px-4 py-3 text-right">
+                        <UITable.Cell className="px-4 py-3 text-right">
                           <Expand expanded={isExpanded} onExpandedChange={() => toggleRow(rowKey)}>
                             <Expand.Trigger
                               aria-label={`Toggle details for row ${String(rowKey)}`}
@@ -189,34 +214,33 @@ export function Table<T extends object>({
                               <Expand.Icon color="text-background-500" className="px-0 py-0" />
                             </Expand.Trigger>
                           </Expand>
-                        </td>
+                        </UITable.Cell>
                       )}
-                    </tr>
+                    </UITable.Row>
                     {expandRender && isExpanded && (
-                      <tr className="border-b border-background-800 last:border-b-0 bg-background-950">
-                        <td colSpan={columns.length + 1} className="px-4 py-3">
+                      <UITable.Row className="border-b border-background-800 last:border-b-0 bg-background-950">
+                        <UITable.Cell colSpan={columns.length + 1} className="px-4 py-3">
                           <Expand expanded={isExpanded}>
                             <Expand.Content>{expandRender(row)}</Expand.Content>
                           </Expand>
-                        </td>
-                      </tr>
+                        </UITable.Cell>
+                      </UITable.Row>
                     )}
                   </Fragment>
                 );
               })
             ) : (
-              <tr>
-                <td
+              <UITable.Row>
+                <UITable.Cell
                   colSpan={columns.length + (expandRender ? 1 : 0)}
                   className="px-4 py-8 text-center text-foreground-400"
                 >
                   No data available
-                </td>
-              </tr>
+                </UITable.Cell>
+              </UITable.Row>
             )}
-          </tbody>
-        </table>
-      </div>
+        </UITable.Body>
+      </UITable>
     </div>
   );
 }

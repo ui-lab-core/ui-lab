@@ -255,13 +255,13 @@ export function SlopSection() {
         <div className="grid items-stretch lg:grid-cols-[minmax(0,47fr)_minmax(0,53fr)]">
           {/* the plate: fixed height, so the list visibly runs past its own frame */}
           <div className="flex flex-col justify-between gap-10">
-            <div className="pl-4 pt-16">
+            <div className="pl-12 pt-16">
               <SectionHeading title="Slop, named and filed, from every domain of interface design to the tells a model reaches for without a pattern to follow." />
             </div>
 
             {/* the legend is the control: a card and its group row share one open state */}
             <div className="flex flex-col m-4 gap-3">
-              <p className="ml-auto mr-2 font-mono text-xs text-background-500">
+              <p className="ml-auto mr-2 text-xs text-background-500">
                 Four domains, {total} entries
               </p>
               <Lattice className="grid-cols-1 sm:grid-cols-2">
@@ -274,8 +274,8 @@ export function SlopSection() {
                       type="button"
                       aria-pressed={active}
                       onClick={() => toggle(id)}
-                      className={`flex flex-col gap-2 p-4 text-left transition-colors duration-200 motion-reduce:transition-none ${
-                        active ? "bg-background-900" : "bg-background-950 hover:bg-background-900"
+                      className={`flex flex-col gap-2 p-4 text-left ${
+                        active ? "bg-background-950" : "bg-background-1000 hover:bg-background-900"
                       }`}
                     >
                       <span className="flex items-center gap-2">
@@ -298,8 +298,8 @@ export function SlopSection() {
               </Lattice>
             </div>
           </div>
-          <div className="relative self-start">
-            <div className="overflow-hidden border-l border-background-700 bg-background-950">
+          <div className="relative self-start overflow-hidden">
+            <div className="border-l border-background-700 bg-background-1000">
               <div className="h-170">
                 <Table
                   data={entries}
@@ -308,8 +308,9 @@ export function SlopSection() {
                   scroll="rows"
                   className="h-full"
                   styles={{
-                    container: "rounded-none border-0 bg-transparent",
-                    table: "font-medium font-sans",
+                    container: "rounded-none border-0",
+                    table: "font-medium font-sans bg-background-1000 ",
+                    header: "bg-background-950",
                   }}
                 >
                   <Table.Header>
@@ -321,23 +322,25 @@ export function SlopSection() {
                     </Table.Row>
                   </Table.Header>
 
-                  <Table.Body>
+                  <Table.Body className="border-b border-background-700">
                     {domains.map((domain) => {
                       const expanded = open.includes(domain.id);
 
                       return (
                         <Fragment key={domain.id}>
                           <Table.Row>
-                            <Table.Cell colSpan={2} className="bg-background-900 p-0">
+                            <Table.Cell colSpan={2} className="bg-background-1000 p-0">
                               <Expand
                                 layout="contained"
                                 state={{ expanded }}
                                 onExpandedChange={() => toggle(domain.id)}
-                                styles={{ trigger: "bg-transparent" }}
+                                styles={{
+                                  trigger: "bg-background-1000 hover:bg-background-950",
+                                }}
                               >
                                 <Expand.Trigger className="group flex w-full items-center gap-2.5 px-4 py-3.5">
                                   <domain.Icon
-                                    className={`size-4 shrink-0 transition-colors duration-200 motion-reduce:transition-none ${
+                                    className={`size-4 shrink-0 ${
                                       expanded
                                         ? "text-foreground-100"
                                         : "text-background-500 group-hover:text-foreground-300"
@@ -362,7 +365,7 @@ export function SlopSection() {
                           {expanded
                             ? domain.entries.map((entry) => (
                                 <Table.Row key={entry.id} className="group">
-                                  <Table.Cell className="border-r border-background-800 items-start px-4 py-3 transition-colors duration-200 group-hover:bg-background-900 motion-reduce:transition-none">
+                                  <Table.Cell className="border-r bg-background-1000 border-background-800 items-start px-4 py-3 group-hover:bg-background-900">
                                     <span className="flex flex-col gap-1">
                                       <span className="text-sm leading-snug text-foreground-300">
                                         {entry.anti}
@@ -372,7 +375,7 @@ export function SlopSection() {
                                       </span>
                                     </span>
                                   </Table.Cell>
-                                  <Table.Cell className="items-start px-4 py-3 transition-colors duration-200 group-hover:bg-background-900 motion-reduce:transition-none">
+                                  <Table.Cell className="items-start bg-background-1000 px-4 py-3 group-hover:bg-background-900 motion-reduce:transition-none">
                                     <span className="flex flex-col gap-1">
                                       <span className="text-sm leading-snug text-foreground-100">
                                         {entry.fix}
@@ -393,8 +396,8 @@ export function SlopSection() {
               </div>
 
               {/* the pill lands over this bar, so its copy stays left of centre */}
-              <div className="border-t border-background-800 px-4 py-5">
-                <span className="font-mono text-xs text-background-500">
+              <div className="border-t border-background-800 px-4 py-3">
+                <span className="text-xs text-background-500">
                   {total} entries · {domains.length} domains · versioned with the system
                 </span>
               </div>

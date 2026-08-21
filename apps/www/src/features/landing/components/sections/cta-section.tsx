@@ -13,8 +13,8 @@ export function CtaSection() {
         />
 
         <div className="mx-auto flex max-w-(--page-width) flex-col items-center gap-6 px-6 py-24 text-center md:py-32">
-          <h2 className="max-w-[24ch] text-balance text-3xl font-medium leading-tight tracking-normal text-foreground-100 md:text-5xl">
-            Make your interfaces stand out in the era of slop.
+          <h2 className="text-balance text-3xl font-medium leading-tight tracking-normal text-foreground-100 md:text-5xl">
+            What will You Build?
           </h2>
           <div className="mt-4 flex flex-wrap justify-center gap-3">
             <Button className="rounded-full" variant="primary" href="/docs">

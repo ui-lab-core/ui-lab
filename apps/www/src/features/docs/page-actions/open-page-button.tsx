@@ -36,9 +36,9 @@ export function OpenPage({
   ];
 
   return (
-    <Group.Expand className="w-full" expanded={isOpen} onExpandedChange={setIsOpen}>
-      <Expand.Trigger className="rounded-none">
-        <Flex className="h-12 cursor-pointer border-b border-background-700">
+    <Group.Expand expanded={isOpen} onExpandedChange={setIsOpen}>
+      <Expand.Trigger className="bg-background-1000 hover:bg-background-950 rounded-none">
+        <Flex className="h-12 w-full cursor-pointer border-b border-background-700">
           <div className="flex items-center justify-center pl-3 text-foreground-400 text-sm font-medium">
             <FaArrowUpRightFromSquare size={13} />
           </div>
@@ -53,7 +53,7 @@ export function OpenPage({
       </Expand.Trigger>
       <Expand.Content
         from="below"
-        className="-mt-(--border-width-base) mx-0 border-b border-background-700"
+        className="-mt-(--border-width-base) mx-0 border-b border-background-700 bg-transparent"
       >
         {isOpen && (
           <div className="flex flex-col overflow-hidden">

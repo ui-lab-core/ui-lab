@@ -538,12 +538,12 @@ export function McpSection() {
       <style>{keyframes}</style>
       <div className="grid h-190 items-start lg:grid-cols-[minmax(0,42rem)_minmax(0,1fr)]">
         <div className="flex flex-col h-full gap-10">
-          <div className="pt-8 pl-6">
+          <div className="pt-8 pl-12">
             <SectionHeading title="Conventions, served over MCP, so your agent searches your workshop, reads each contract, and audits against your system." />
           </div>
 
           {/* four tools, one open at a time, each driving its own session beside it */}
-          <ol className="divide-y m-3 rounded-sm mt-auto divide-background-700 overflow-hidden border border-background-700 bg-background-950">
+          <ol className="divide-y m-3 rounded-sm mt-auto divide-background-700 overflow-hidden border border-background-700 bg-background-1000">
             {sessions.map((session, index) => {
               const current = index === active;
               const progress = current && playing ? turn / session.turns.length : 0;
@@ -557,7 +557,7 @@ export function McpSection() {
                     layout="contained"
                     state={{ expanded: current }}
                     onExpandedChange={() => select(index)}
-                    className={current ? "bg-background-900" : undefined}
+                    className={current ? "bg-background-950" : undefined}
                     styles={{ trigger: "bg-transparent", contentInner: "bg-transparent" }}
                   >
                     <Expand.Trigger className="group flex items-center justify-start gap-3 px-4 py-3.5">
