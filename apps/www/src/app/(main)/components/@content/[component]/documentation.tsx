@@ -7,14 +7,49 @@ import {
   type TableExpandedDetail,
 } from "@/features/docs/components/table";
 import { Popover } from "ui-lab-components";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
 import type {
   APIStateAttribute,
   APITypeToken,
+  APICustomType,
   ComponentAPI,
   PropDefinition,
 } from "ui-lab-registry";
 
 type CssVariable = { name: string; value: string; variant?: string | null };
+
+function CustomTypeDefinition({
+  customType,
+  api,
+  onCustomTypeSelect,
+}: {
+  customType: APICustomType;
+  api: ComponentAPI;
+  onCustomTypeSelect: (name: string) => void;
+}) {
+  const prefix =
+    customType.kind === "alias"
+      ? `type ${customType.name} = `
+      : customType.kind === "interface"
+        ? `interface ${customType.name} `
+        : "";
+  const suffix = customType.kind === "alias" ? ";" : "";
+  const type = {
+    name: customType.name,
+    type: customType.type,
+    required: true,
+    typeTokens: customType.typeTokens,
+  };
+
+  return (
+    <span className="font-mono text-xs text-foreground-300">
+      {prefix}
+      <TypeDisplay prop={type} api={api} onCustomTypeSelect={onCustomTypeSelect} />
+      {suffix}
+    </span>
+  );
+}
 
 export type StyleInfo = {
   rawCss: string;
@@ -34,76 +69,141 @@ function ColorSwatch({ color }: { color: string }) {
   );
 }
 
-function TypeToken({ token, api }: { token: APITypeToken; api: ComponentAPI }) {
+function CustomTypeInspector({ initialType, api }: { initialType: string; api: ComponentAPI }) {
+  const [path, setPath] = useState([initialType]);
+  const currentName = path.at(-1)!;
+  const customType = api.customTypes?.[currentName];
+
+  if (!customType) return null;
+
+  return (
+    <div
+      className="mt-4 w-[min(36rem,calc(100vw-2rem))] space-y-4 text-xs"
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <div>
+        <p className="flex flex-wrap items-center gap-1 font-mono font-semibold text-foreground-50">
+          {path.map((name, index) => (
+            <span key={`${name}-${index}`} className="flex items-center gap-1">
+              {index ? (
+                <ChevronRight size={14} aria-hidden className="text-foreground-400" />
+              ) : null}
+              {index === path.length - 1 ? (
+                <span>{name}</span>
+              ) : (
+                <button
+                  type="button"
+                  className="text-accent-500 underline cursor-pointer"
+                  onClick={() => setPath((current) => current.slice(0, index + 1))}
+                >
+                  {name}
+                </button>
+              )}
+            </span>
+          ))}
+        </p>
+        <p className="mt-1 text-foreground-400">{customType.summary}</p>
+      </div>
+      <CustomTypeDefinition
+        customType={customType}
+        api={api}
+        onCustomTypeSelect={(name) => setPath((current) => [...current, name])}
+      />
+      {customType.kind === "interface" && customType.members?.length ? (
+        <div className="mt-4">
+          <Table
+            data={customType.members}
+            getRowKey={(member) => member.name}
+            columns={customTypeColumns(api, (name) => setPath((current) => [...current, name]))}
+          />
+        </div>
+      ) : null}
+      {customType.examples?.length ? (
+        <div className="space-y-1">
+          <p className="font-medium text-foreground-300">Examples</p>
+          {customType.examples.map((example) => (
+            <InlineCodeHighlight key={example} code={example} language="tsx" />
+          ))}
+        </div>
+      ) : null}
+      {customType.notes?.map((note) => (
+        <p key={note} className="text-foreground-400">
+          {note}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function customTypeColumns(
+  api: ComponentAPI,
+  onSelect: (name: string) => void,
+): Column<PropDefinition>[] {
+  return [
+    {
+      key: "name",
+      label: "Member",
+      width: "10rem",
+      minWidth: "10rem",
+      render: (value, member) => (
+        <span className="whitespace-nowrap font-mono text-foreground-100">
+          {String(value)}
+          {member.required ? null : "?"}
+        </span>
+      ),
+    },
+    {
+      key: "type",
+      label: "Type",
+      width: "18rem",
+      minWidth: "18rem",
+      render: (_value, member) => (
+        <TypeDisplay prop={member} api={api} onCustomTypeSelect={onSelect} />
+      ),
+    },
+    {
+      key: "description",
+      label: "Description",
+      width: "24rem",
+      minWidth: "24rem",
+      render: (value) => (
+        <span className="min-w-48 font-sans font-medium text-foreground-400">{String(value)}</span>
+      ),
+    },
+  ];
+}
+
+function TypeToken({
+  token,
+  api,
+  onCustomTypeSelect,
+}: {
+  token: APITypeToken;
+  api: ComponentAPI;
+  onCustomTypeSelect?: (name: string) => void;
+}) {
   const customType = token.customType ? api.customTypes?.[token.customType] : undefined;
 
   if (customType) {
+    if (onCustomTypeSelect) {
+      return (
+        <button
+          type="button"
+          className="text-xs text-accent-500 underline cursor-pointer"
+          onClick={() => onCustomTypeSelect(customType.name)}
+        >
+          {token.text}
+        </button>
+      );
+    }
+
     return (
       <Popover
-        position="bottom"
+        position="top"
         align="start"
-        content={
-          <div className="mt-4 w-[min(36rem,calc(100vw-2rem))] space-y-4 text-xs">
-            <div>
-              <p className="font-mono font-semibold text-foreground-50">{customType.name}</p>
-              <p className="mt-1 text-foreground-400">{customType.summary}</p>
-            </div>
-            <InlineCodeHighlight code={customType.type} language="typescript" />
-            {customType.kind === "interface" && customType.members?.length ? (
-              <div className="mt-4">
-                <Table
-                  data={customType.members}
-                  getRowKey={(member) => member.name}
-                  columns={[
-                    {
-                      key: "name",
-                      label: "Member",
-                      width: "10rem",
-                      minWidth: "10rem",
-                      render: (value, member) => (
-                        <span className="whitespace-nowrap font-mono text-foreground-100">
-                          {String(value)}
-                          {member.required ? null : "?"}
-                        </span>
-                      ),
-                    },
-                    {
-                      key: "type",
-                      label: "Type",
-                      width: "18rem",
-                      minWidth: "18rem",
-                      render: (value) => (
-                        <InlineCodeHighlight code={String(value)} language="typescript" />
-                      ),
-                    },
-                    {
-                      key: "description",
-                      label: "Description",
-                      width: "24rem",
-                      minWidth: "24rem",
-                      render: (value) => (
-                        <span className="min-w-48 text-foreground-400">{String(value)}</span>
-                      ),
-                    },
-                  ]}
-                />
-              </div>
-            ) : null}
-            {customType.examples?.length ? (
-              <div className="space-y-1">
-                <p className="font-medium text-foreground-300">Examples</p>
-                {customType.examples.map((example) => (
-                  <InlineCodeHighlight key={example} code={example} language="tsx" />
-                ))}
-              </div>
-            ) : null}
-            {customType.notes?.map((note) => (
-              <p key={note} className="text-foreground-400">
-                {note}
-              </p>
-            ))}
-          </div>
-        }
+        showArrow
+        content={<CustomTypeInspector initialType={customType.name} api={api} />}
       >
         <button
           type="button"
@@ -131,7 +231,15 @@ function TypeToken({ token, api }: { token: APITypeToken; api: ComponentAPI }) {
   return <span className="font-mono text-xs text-foreground-300">{token.text}</span>;
 }
 
-function TypeDisplay({ prop, api }: { prop: PropDefinition; api: ComponentAPI }) {
+function TypeDisplay({
+  prop,
+  api,
+  onCustomTypeSelect,
+}: {
+  prop: PropDefinition;
+  api: ComponentAPI;
+  onCustomTypeSelect?: (name: string) => void;
+}) {
   if (!prop.typeTokens?.length) {
     return (
       <InlineCodeHighlight
@@ -148,7 +256,12 @@ function TypeDisplay({ prop, api }: { prop: PropDefinition; api: ComponentAPI })
   return (
     <span>
       {prop.typeTokens.map((token, index) => (
-        <TypeToken key={`${token.text}-${index}`} token={token} api={api} />
+        <TypeToken
+          key={`${token.text}-${index}`}
+          token={token}
+          api={api}
+          onCustomTypeSelect={onCustomTypeSelect}
+        />
       ))}
     </span>
   );
@@ -184,7 +297,11 @@ export function API({ api }: { api: ComponentAPI | null }) {
         ? {
             key: "description",
             label: "Description",
-            value: <p className="text-xs text-foreground-400">{prop.description}</p>,
+            value: (
+              <p className="font-sans font-medium text-xs text-foreground-400">
+                {prop.description}
+              </p>
+            ),
           }
         : null,
       prop.defaultValue
@@ -238,7 +355,13 @@ export function API({ api }: { api: ComponentAPI | null }) {
         <span className="font-mono text-xs text-foreground-50">{String(value)}</span>
       ),
     },
-    { key: "description", label: "Description" },
+    {
+      key: "description",
+      label: "Description",
+      render: (value) => (
+        <span className="font-sans font-medium text-foreground-400">{String(value)}</span>
+      ),
+    },
   ];
 
   return (
@@ -284,7 +407,9 @@ export function API({ api }: { api: ComponentAPI | null }) {
                     <InlineCodeHighlight code={name} language="typescript" />
                   </h4>
                   {component.description ? (
-                    <p className="text-sm text-foreground-400">{component.description}</p>
+                    <p className="font-sans font-medium text-sm text-foreground-400">
+                      {component.description}
+                    </p>
                   ) : null}
                 </div>
                 {component.props?.length ? (

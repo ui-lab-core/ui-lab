@@ -2,7 +2,7 @@
   "id": "modal",
   "name": "Modal",
   "description": "Modal dialog for focusing user attention on important content.",
-  "category": "container",
+  "category": "feedback",
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Modal",

@@ -77,7 +77,7 @@ export function DesignSystemSection() {
                 </p>
               </div>
 
-              <span className="grid size-16 shrink-0 place-items-center rounded-md bg-background-950 border-2 border-background-800 text-foreground-300 transition-colors group-hover:bg-background-800 group-hover:text-foreground-100 sm:size-12 lg:size-20">
+              <span className="grid size-16 shrink-0 place-items-center rounded-md text-foreground-300 transition-colors group-hover:text-foreground-100 sm:size-12 lg:size-20">
                 <Icon aria-hidden className="size-4 sm:size-6 lg:size-8" />
               </span>
             </Link>

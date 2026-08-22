@@ -255,7 +255,7 @@ export function SlopSection() {
         <div className="grid items-stretch lg:grid-cols-[minmax(0,47fr)_minmax(0,53fr)]">
           {/* the plate: fixed height, so the list visibly runs past its own frame */}
           <div className="flex flex-col justify-between gap-10">
-            <div className="pl-12 pt-16">
+            <div className="pl-12 pr-6 pt-16">
               <SectionHeading title="Slop, named and filed, from every domain of interface design to the tells a model reaches for without a pattern to follow." />
             </div>
 

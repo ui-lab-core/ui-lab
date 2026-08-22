@@ -44,6 +44,7 @@ export interface APICustomType {
   name: string;
   summary: string;
   type: string;
+  typeTokens?: APITypeToken[];
   kind?: "alias" | "interface";
   members?: PropDefinition[];
   examples?: string[];

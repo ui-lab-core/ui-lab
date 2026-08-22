@@ -2,7 +2,7 @@
   "id": "expand",
   "name": "Expand",
   "description": "Collapsible component for expanding hidden sections.",
-  "category": "layout",
+  "category": "container",
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Expand",

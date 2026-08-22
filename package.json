@@ -17,6 +17,8 @@
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "clean": "pnpm -r run clean",
+    "registry": "node packages/registry/scripts/actions.mjs",
+    "ui": "node packages/@ui/scripts/actions.mjs",
     "changeset": "changeset",
     "release": "tsx scripts/release.ts",
     "release:ci": "pnpm --filter ui-lab-components run build && node scripts/generate-styles-docs.mjs && pnpm --filter ui-lab-registry run build && tsx scripts/toggle-versions.ts to-version && pnpm changeset publish",

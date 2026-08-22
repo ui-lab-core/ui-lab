@@ -40,16 +40,17 @@ const TYPE_LINKS: Record<string, string> = {
 };
 
 function tokenizeType(type: string, customTypes: string[] = []): APITypeToken[] {
-  return type.split(/(\s*\|\s*)/).map((text) => {
+  const escapedCustomTypes = [...customTypes]
+    .sort((a, b) => b.length - a.length)
+    .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = escapedCustomTypes.length
+    ? type.split(new RegExp(`(\\b(?:${escapedCustomTypes.join("|")})\\b)`, "g"))
+    : type.split(/(\s*\|\s*)/);
+
+  return parts.filter(Boolean).map((text) => {
     const symbol = text.trim();
     if (!symbol || symbol === "|") return { text };
-    const customType = customTypes.find(
-      (name) =>
-        symbol === name ||
-        symbol === `${name}[]` ||
-        symbol === `Array<${name}>` ||
-        symbol === `ReadonlyArray<${name}>`,
-    );
+    const customType = customTypes.find((name) => symbol === name);
     if (customType) return { text, customType };
     return { text, href: TYPE_LINKS[symbol] };
   });
@@ -138,24 +139,24 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
     ButtonStyleSlots: {
       name: "ButtonStyleSlots",
       summary: "Style overrides for the button root and named content slots.",
-      type: "{ root?: SlotStyleValue; icon?: SlotStyleValue | ButtonIconStyles; hint?: SlotStyleValue }",
+      type: "{ root?: SlotStyle; icon?: SlotStyle | ButtonIconStyles; hint?: SlotStyle }",
       kind: "interface",
       members: [
         {
           name: "root",
-          type: "SlotStyleValue",
+          type: "SlotStyle",
           required: false,
           description: "Styles applied to the root element.",
         },
         {
           name: "icon",
-          type: "SlotStyleValue | ButtonIconStyles",
+          type: "SlotStyle | ButtonIconStyles",
           required: false,
           description: "Shared or side-specific icon styles.",
         },
         {
           name: "hint",
-          type: "SlotStyleValue",
+          type: "SlotStyle",
           required: false,
           description: "Styles applied to the hint badge.",
         },
@@ -258,24 +259,24 @@ function enrichCommandAPI(api: ComponentAPI): ComponentAPI {
     CommandStyleSlots: {
       name: "CommandStyleSlots",
       summary: "Style overrides for the command surface and its named compound parts.",
-      type: "{ root?: StyleValue; overlay?: StyleValue; search?: StyleValue; input?: StyleValue; inner?: StyleValue; list?: StyleValue; empty?: StyleValue; item?: StyleValue | CommandItemStyles; hint?: StyleValue; category?: StyleValue; footer?: StyleValue; groups?: StyleValue; group?: StyleValue }",
+      type: "{ root?: Style; overlay?: Style; search?: Style; input?: Style; inner?: Style; list?: Style; empty?: Style; item?: Style | CommandItemStyles; hint?: Style; category?: Style; footer?: Style; groups?: Style; group?: Style }",
       kind: "interface",
       members: [
-        { name: "root", type: "StyleValue", required: false, description: "Styles applied to the command surface." },
-        { name: "overlay", type: "StyleValue", required: false, description: "Styles applied to the modal backdrop in floating mode." },
-        { name: "search", type: "StyleValue", required: false, description: "Styles applied to the search input wrapper." },
-        { name: "input", type: "StyleValue", required: false, description: "Styles applied to the search input root." },
-        { name: "inner", type: "StyleValue", required: false, description: "Styles applied to the framed list container." },
-        { name: "list", type: "StyleValue", required: false, description: "Styles applied to the scrollable command list." },
-        { name: "empty", type: "StyleValue", required: false, description: "Styles applied to the empty-state message." },
-        { name: "item", type: "StyleValue | CommandItemStyles", required: false, description: "Shared item styles or separate root, content, and icon styles." },
-        { name: "hint", type: "StyleValue", required: false, description: "Styles applied to item hint badges." },
-        { name: "category", type: "StyleValue", required: false, description: "Styles applied to category headers." },
-        { name: "footer", type: "StyleValue", required: false, description: "Styles applied to the command footer." },
-        { name: "groups", type: "StyleValue", required: false, description: "Styles applied to the Command.Groups container." },
-        { name: "group", type: "StyleValue", required: false, description: "Styles applied to each group rendered by Command.Groups." },
+        { name: "root", type: "Style", required: false, description: "Styles applied to the command surface." },
+        { name: "overlay", type: "Style", required: false, description: "Styles applied to the modal backdrop in floating mode." },
+        { name: "search", type: "Style", required: false, description: "Styles applied to the search input wrapper." },
+        { name: "input", type: "Style", required: false, description: "Styles applied to the search input root." },
+        { name: "inner", type: "Style", required: false, description: "Styles applied to the framed list container." },
+        { name: "list", type: "Style", required: false, description: "Styles applied to the scrollable command list." },
+        { name: "empty", type: "Style", required: false, description: "Styles applied to the empty-state message." },
+        { name: "item", type: "Style | CommandItemStyles", required: false, description: "Shared item styles or separate root, content, and icon styles." },
+        { name: "hint", type: "Style", required: false, description: "Styles applied to item hint badges." },
+        { name: "category", type: "Style", required: false, description: "Styles applied to category headers." },
+        { name: "footer", type: "Style", required: false, description: "Styles applied to the command footer." },
+        { name: "groups", type: "Style", required: false, description: "Styles applied to the Command.Groups container." },
+        { name: "group", type: "Style", required: false, description: "Styles applied to each group rendered by Command.Groups." },
       ],
-      notes: ["The item slot accepts one shared StyleValue or a CommandItemStyles object with root, content, and icon members."],
+      notes: ["The item slot accepts one shared Style or a CommandItemStyles object with root, content, and icon members."],
     },
     CommandItem: {
       name: "CommandItem",
@@ -375,18 +376,18 @@ function enrichInputAPI(api: ComponentAPI): ComponentAPI {
     InputStyleSlots: {
       name: "InputStyleSlots",
       summary: "Named style slots for the Input anatomy.",
-      type: "{ root?: StyleValue; input?: StyleValue; startAdornments?: StyleValue; endAdornments?: StyleValue; icon?: StyleValue | InputIconStyles; actions?: StyleValue | InputActionStyles; hint?: StyleValue; controls?: StyleValue; stepper?: StyleValue | InputStepperStyles }",
+      type: "{ root?: Style; input?: Style; startAdornments?: Style; endAdornments?: Style; icon?: Style | InputIconStyles; actions?: Style | InputActionStyles; hint?: Style; controls?: Style; stepper?: Style | InputStepperStyles }",
       kind: "interface",
       members: [
-        { name: "root", type: "StyleValue", required: false, description: "Styles the visual input surface." },
-        { name: "input", type: "StyleValue", required: false, description: "Styles the native input or custom input content surface." },
-        { name: "startAdornments", type: "StyleValue", required: false, description: "Styles the wrapper for leading icons and actions." },
-        { name: "endAdornments", type: "StyleValue", required: false, description: "Styles the wrapper for trailing icons, actions, hints, and steppers." },
-        { name: "icon", type: "StyleValue | InputIconStyles", required: false, description: "Styles one or both icon wrappers." },
-        { name: "actions", type: "StyleValue | InputActionStyles", required: false, description: "Styles one or both actions wrappers." },
-        { name: "hint", type: "StyleValue", required: false, description: "Styles the hint content." },
-        { name: "controls", type: "StyleValue", required: false, description: "Styles the number-input controls wrapper." },
-        { name: "stepper", type: "StyleValue | InputStepperStyles", required: false, description: "Styles one or both number-input stepper buttons." },
+        { name: "root", type: "Style", required: false, description: "Styles the visual input surface." },
+        { name: "input", type: "Style", required: false, description: "Styles the native input or custom input content surface." },
+        { name: "startAdornments", type: "Style", required: false, description: "Styles the wrapper for leading icons and actions." },
+        { name: "endAdornments", type: "Style", required: false, description: "Styles the wrapper for trailing icons, actions, hints, and steppers." },
+        { name: "icon", type: "Style | InputIconStyles", required: false, description: "Styles one or both icon wrappers." },
+        { name: "actions", type: "Style | InputActionStyles", required: false, description: "Styles one or both actions wrappers." },
+        { name: "hint", type: "Style", required: false, description: "Styles the hint content." },
+        { name: "controls", type: "Style", required: false, description: "Styles the number-input controls wrapper." },
+        { name: "stepper", type: "Style | InputStepperStyles", required: false, description: "Styles one or both number-input stepper buttons." },
       ],
     },
   };
@@ -401,6 +402,60 @@ function enrichInputAPI(api: ComponentAPI): ComponentAPI {
       { name: "data-disabled", description: "The input is disabled.", values: ["true"] },
       { name: "data-error", description: "The input displays error styling.", values: ["true"] },
       { name: "data-variant", description: "The resolved variant name." },
+    ],
+    customTypes,
+  };
+}
+
+function enrichSelectAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    Style: { name: "Style", summary: "Class names accepted by class-based style slots.", type: "string | (string | false | null | undefined)[]", kind: "alias", notes: ["Array entries support conditional classes; false, null, and undefined entries are ignored."] },
+    SlotStyleObject: { name: "SlotStyleObject", summary: "Inline CSS properties accepted by a style slot.", type: "React.CSSProperties", kind: "alias" },
+    SlotStyleProps: { name: "SlotStyleProps", summary: "Object form that supplies className and style to one slot.", type: "{ className?: Style; style?: SlotStyleObject }", kind: "interface", members: [{ name: "className", type: "Style", required: false, description: "Classes applied to the slot element." }, { name: "style", type: "SlotStyleObject", required: false, description: "Inline CSS properties applied to the slot element." }] },
+    SlotStyle: { name: "SlotStyle", summary: "A style slot value expressed as classes, inline CSS properties, or both.", type: "Style | SlotStyleObject | SlotStyleProps", kind: "alias", notes: ["A plain object without className or style is treated as inline CSS properties."] },
+    SelectMode: { name: "SelectMode", summary: "Selection behavior for the Select root.", type: '"single" | "multiple"', kind: "alias" },
+    SelectTriggerMode: { name: "SelectTriggerMode", summary: "How a Select trigger opens its option panel.", type: '"click" | "hover"', kind: "alias", notes: ["Hover mode opens on pointer entry and closes shortly after the pointer leaves the trigger and panel."] },
+    SelectState: {
+      name: "SelectState", summary: "Controlled selection and open state supplied to Select.", type: "{ value?: Key | Key[]; open?: boolean }", kind: "interface",
+      members: [
+        { name: "value", type: "Key | Key[]", required: false, description: "Selected key in single mode or selected keys in multiple mode." },
+        { name: "open", type: "boolean", required: false, description: "Whether the option panel is open." },
+      ],
+    },
+    SelectStyleSlots: { name: "SelectStyleSlots", summary: "Style override for the Select root.", type: "{ root?: SlotStyle }", kind: "interface", members: [{ name: "root", type: "SlotStyle", required: false, description: "Styles the root wrapper and floating content overlay base style." }] },
+    SelectTriggerStyleSlots: { name: "SelectTriggerStyleSlots", summary: "Named styles for Select.Trigger anatomy.", type: "{ root?: Style; value?: Style; icon?: Style | { left?: Style; right?: Style }; iconSection?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the trigger button." }, { name: "value", type: "Style", required: false, description: "Styles the value section." }, { name: "icon", type: "Style | { left?: Style; right?: Style }", required: false, description: "Styles both icon wrappers or individual icon.left and icon.right slots." }, { name: "iconSection", type: "Style", required: false, description: "Styles the chevron section." }] },
+    SearchableTriggerStyleSlots: { name: "SearchableTriggerStyleSlots", summary: "Named styles for the searchable trigger anatomy.", type: "{ root?: Style; valueSection?: Style; input?: Style; iconSection?: Style; icon?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the wrapper." }, { name: "valueSection", type: "Style", required: false, description: "Styles the input section." }, { name: "input", type: "Style", required: false, description: "Styles the input." }, { name: "iconSection", type: "Style", required: false, description: "Styles the icon section." }, { name: "icon", type: "Style", required: false, description: "Styles the chevron icon." }] },
+    SelectContentStyleSlots: { name: "SelectContentStyleSlots", summary: "Named styles for the floating Select content anatomy.", type: "{ root?: SlotStyle; overlay?: SlotStyle; search?: { wrapper?: SlotStyle; input?: SlotStyle }; empty?: SlotStyle; list?: { padding?: SlotStyle } }", kind: "interface", members: [{ name: "root", type: "SlotStyle", required: false, description: "Styles the listbox panel." }, { name: "overlay", type: "SlotStyle", required: false, description: "Styles the positioned overlay." }, { name: "search", type: "{ wrapper?: SlotStyle; input?: SlotStyle }", required: false, description: "Styles search.wrapper and search.input." }, { name: "empty", type: "SlotStyle", required: false, description: "Styles the empty-results message." }, { name: "list", type: "{ padding?: SlotStyle }", required: false, description: "Styles list.padding." }] },
+    SelectValueStyleSlots: { name: "SelectValueStyleSlots", summary: "Named styles for the selected-value anatomy.", type: "{ root?: Style; icon?: Style; text?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the value wrapper." }, { name: "icon", type: "Style", required: false, description: "Styles the value icon." }, { name: "text", type: "Style", required: false, description: "Styles selected text." }] },
+    SelectItemStyleSlots: { name: "SelectItemStyleSlots", summary: "Named styles for a selectable option.", type: "{ root?: Style; icon?: Style; content?: Style; text?: Style; description?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the option." }, { name: "icon", type: "Style", required: false, description: "Styles the leading icon." }, { name: "content", type: "Style", required: false, description: "Styles the description wrapper." }, { name: "text", type: "Style", required: false, description: "Styles the label." }, { name: "description", type: "Style", required: false, description: "Styles secondary content." }] },
+    SelectGroupStyleSlots: { name: "SelectGroupStyleSlots", summary: "Named styles for an option group.", type: "{ root?: Style; title?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the group." }, { name: "title", type: "Style", required: false, description: "Styles the visible title." }] },
+    SelectListStyleSlots: { name: "SelectListStyleSlots", summary: "Style override for the list wrapper.", type: "{ root?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the list wrapper." }] },
+    SelectSeparatorStyleSlots: { name: "SelectSeparatorStyleSlots", summary: "Style override for a visual separator.", type: "{ root?: Style }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the separator." }] },
+    SelectSubTriggerStyleSlots: { name: "SelectSubTriggerStyleSlots", summary: "Named styles for a submenu trigger option.", type: "{ root?: Style; icon?: Style | { right?: Style } }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the submenu trigger." }, { name: "icon", type: "Style | { right?: Style }", required: false, description: "Styles the chevron or icon.right." }] },
+    SelectSubContentStyleSlots: { name: "SelectSubContentStyleSlots", summary: "Named styles for a floating submenu panel.", type: "{ root?: Style; overlay?: Style; list?: Style | { root?: Style; padding?: Style } }", kind: "interface", members: [{ name: "root", type: "Style", required: false, description: "Styles the submenu listbox." }, { name: "overlay", type: "Style", required: false, description: "Styles the positioned overlay." }, { name: "list", type: "Style | { root?: Style; padding?: Style }", required: false, description: "Styles all list descendants or list.root and list.padding." }] },
+  };
+  const enrichProps = (props: PropDefinition[]) => props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type, Object.keys(customTypes)) }));
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps(customType.members);
+  }
+  return {
+    ...api,
+    props: enrichProps(api.props),
+    subComponents: api.subComponents ? Object.fromEntries(Object.entries(api.subComponents).map(([name, component]) => [name, { ...component, props: enrichProps(component.props) }])) : undefined,
+    propGroups: [{ name: "Core" }, { name: "Content" }, { name: "Events" }, { name: "Styling" }, { name: "Forms" }, { name: "Accessibility" }, { name: "Advanced" }],
+    stateAttributes: [
+      { name: "data-mode", description: "The configured selection mode.", values: ["single", "multiple"] },
+      { name: "data-disabled", description: "The root, trigger, or option is disabled. The root and trigger omit it when enabled; options use \"true\" or \"false\" for selection-related states.", values: ["true"] },
+      { name: "data-open", description: "A trigger or submenu trigger is open. Trigger variants persistently emit \"true\" or \"false\"; the searchable trigger omits it when closed.", values: ["true", "false"] },
+      { name: "data-state", description: "A floating root or submenu panel is open or closed while it is mounted.", values: ["open", "closed"] },
+      { name: "data-placement", description: "The resolved floating panel side.", values: ["top", "bottom", "left", "right"] },
+      { name: "data-selected", description: "An option is selected; Select.Item persistently emits \"true\" or \"false\".", values: ["true", "false"] },
+      { name: "data-highlighted", description: "An option is the current keyboard or pointer navigation target; item triggers persistently emit \"true\" or \"false\".", values: ["true", "false"] },
+      { name: "data-focused", description: "The root or trigger has focus, or an option is the navigation focus target.", values: ["true", "false"] },
+      { name: "data-focus-visible", description: "The root or trigger has keyboard-visible focus.", values: ["true", "false"] },
+      { name: "data-pressed", description: "The button trigger is currently pressed.", values: ["true", "false"] },
+      { name: "data-hovered", description: "The button trigger is hovered.", values: ["true", "false"] },
     ],
     customTypes,
   };
@@ -473,6 +528,7 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   if (componentDirName === "Button") return enrichButtonAPI(api);
   if (componentDirName === "Command") return enrichCommandAPI(api);
   if (componentDirName === "Input") return enrichInputAPI(api);
+  if (componentDirName === "Select") return enrichSelectAPI(api);
   return api;
 }
 
@@ -517,6 +573,9 @@ export function extractAllComponentAPIs(componentDirNames: string[]): Record<str
     }
     if (dirName === "Input" && result[kebabId]) {
       result[kebabId] = enrichInputAPI(result[kebabId]);
+    }
+    if (dirName === "Select" && result[kebabId]) {
+      result[kebabId] = enrichSelectAPI(result[kebabId]);
     }
 
     // Add examples from registry metadata

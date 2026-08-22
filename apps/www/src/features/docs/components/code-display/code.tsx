@@ -334,18 +334,26 @@ export function Code({
                 : undefined
             }
             maxWidth="100%"
-            hide={false}
+            hide={!expanded}
             styles={{
               track: "bg-transparent",
               thumb: "bg-background-700 hover:bg-background-600",
               content: "!overflow-x-auto",
             }}
             className="relative min-h-0 min-w-0 flex-1"
+            style={{
+              maskImage: !expanded && shouldShowExpandButton
+                ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+                : "none",
+              WebkitMaskImage: !expanded && shouldShowExpandButton
+                ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+                : "none",
+            }}
           >
             <CodeContent
               html={displayHtml}
               hasResolvedSyntax={hasResolvedSyntax}
-              faded={!expanded && shouldShowExpandButton}
+              faded={false}
             />
           </Scroll>
         )}

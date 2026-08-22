@@ -45,6 +45,23 @@ npm install ui-lab-registry
 pnpm add ui-lab-registry
 ```
 
+## Maintenance CLI
+
+From this package directory, use the maintenance CLI to run common registry
+tasks without remembering the underlying commands:
+
+```bash
+pnpm registry                 # interactive quick actions
+pnpm registry generate        # regenerate registry data
+pnpm registry validate        # validate registry data
+pnpm registry rebuild         # rebuild the package
+pnpm registry rebuild generate validate # run tasks, then rebuild
+pnpm registry help
+```
+
+The same CLI is exposed as `ui-lab-registry` when the package is linked or
+installed.
+
 ## Usage
 
 ### Basic Registry Access

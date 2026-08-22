@@ -186,7 +186,7 @@ function MiniChart({ tone = "blue" }: { tone?: "blue" | "gray" }) {
         y={tone === "blue" ? "positive" : "neutral"}
         label="Current period"
         curve="smooth"
-        color={tone === "blue" ? "var(--info-500)" : "var(--foreground-300)"}
+        color="var(--foreground-400)"
       />
     </Chart>
   );
@@ -211,7 +211,7 @@ function MetricCard({
     <Card className="min-w-110 rounded-none border-0 border-r border-background-700 bg-transparent px-5 py-5 last:border-r-0">
       <Flex align-center className="gap-2 text-sm text-foreground-300">
         <span>{title}</span>
-        <Badge variant={tone} pill className="px-1.5 py-0.5 text-xs">
+        <Badge variant={tone} pill className="bg-transparent border-none px-1.5 py-0.5 text-xs">
           {tone === "success" ? "↑" : "↓"} {rate}
         </Badge>
       </Flex>

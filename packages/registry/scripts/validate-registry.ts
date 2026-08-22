@@ -23,31 +23,8 @@ interface ValidationResult {
   errors: string[];
   warnings: string[];
   stats: {
-    oldComponentCount: number;
     newComponentCount: number;
-    oldExampleCount: number;
-    newExampleCount: number;
   };
-}
-
-async function loadRegistry(registryPath: string) {
-  try {
-    const module = await import(registryPath);
-    return module.componentRegistry || {};
-  } catch (error) {
-    console.error("Failed to load registry from", registryPath);
-    return {};
-  }
-}
-
-function countExamples(registry: any): number {
-  let count = 0;
-  for (const component of Object.values(registry)) {
-    if ((component as any).examples && Array.isArray((component as any).examples)) {
-      count += (component as any).examples.length;
-    }
-  }
-  return count;
 }
 
 function validateComponentStructure(componentPath: string): { valid: boolean; errors: string[] } {
@@ -56,20 +33,6 @@ function validateComponentStructure(componentPath: string): { valid: boolean; er
   const metadataPath = path.join(componentPath, "metadata.json");
   if (!fs.existsSync(metadataPath)) {
     errors.push(`Missing metadata.json`);
-  }
-
-  const examplesDir = path.join(componentPath, "examples");
-  if (fs.existsSync(examplesDir)) {
-    const files = fs.readdirSync(examplesDir);
-    const tsxFiles = files.filter((f) => f.endsWith(".tsx"));
-    const hasIndex = files.includes("index.ts");
-
-    if (tsxFiles.length === 0) {
-      errors.push(`No .tsx example files found`);
-    }
-    if (!hasIndex) {
-      errors.push(`Missing examples/index.ts`);
-    }
   }
 
   return {
@@ -161,10 +124,7 @@ async function validateRegistry(): Promise<ValidationResult> {
     errors: [],
     warnings: [],
     stats: {
-      oldComponentCount: 0,
       newComponentCount: 0,
-      oldExampleCount: 0,
-      newExampleCount: 0,
     },
   };
 
@@ -194,21 +154,11 @@ async function validateRegistry(): Promise<ValidationResult> {
         });
       }
 
-      // Count examples
-      const examplesPath = path.join(componentPath, "examples.json");
-      if (fs.existsSync(examplesPath)) {
-        const examplesJson = JSON.parse(fs.readFileSync(examplesPath, "utf-8"));
-        result.stats.newExampleCount += Object.keys(examplesJson).length;
-      }
     }
 
     // Validation checks
     if (result.stats.newComponentCount === 0) {
       result.errors.push("No components found in components directory");
-    }
-
-    if (result.stats.newExampleCount === 0) {
-      result.warnings.push("No examples found - may be normal for fresh migration");
     }
 
     result.success = result.errors.length === 0;
@@ -240,7 +190,6 @@ async function printValidationResults(result: ValidationResult) {
 
   console.log("📈 Statistics:");
   console.log(`   Components: ${result.stats.newComponentCount}`);
-  console.log(`   Examples: ${result.stats.newExampleCount}`);
   console.log();
 
   if (result.success) {

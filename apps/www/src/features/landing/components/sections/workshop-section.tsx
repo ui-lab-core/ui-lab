@@ -187,7 +187,7 @@ function PreviewPlates({
                 return (
                   <Card
                     key={placement}
-                    className={`flex min-h-0 flex-col rounded-sm border-background-700 bg-background-1000 shadow-lg ${placement}`}
+                    className={`flex min-h-0 flex-col rounded-sm border-background-700 bg-background-1000 ${placement}`}
                     style={{ zIndex: plates.length - index }}
                   >
                     <div className="relative min-h-0 flex-1 overflow-hidden">{preview}</div>
@@ -208,7 +208,7 @@ function PreviewPlates({
               return (
                 <div
                   key={placement}
-                  className={`min-h-0 overflow-hidden rounded-sm border border-background-700 bg-background-950 shadow-lg ${plateClass ?? ""} ${placement}`}
+                  className={`min-h-0 overflow-hidden rounded-sm border border-background-700 bg-background-950 ${plateClass ?? ""} ${placement}`}
                   style={{ zIndex: plates.length - index }}
                 >
                   {preview}
