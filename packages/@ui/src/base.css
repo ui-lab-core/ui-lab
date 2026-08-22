@@ -57,18 +57,16 @@
     position: relative;
     z-index: var(--ring-z, auto);
     outline: none;
-    box-shadow: var(--ring-shadow, none);
-  }
-
-  [data-ring="true"][data-focus-visible="true"]:not([data-focus-indicator="target"]) {
-    border-color: var(--ring-border-visible, var(--ring-border, transparent));
+    box-shadow: slot(ring, shadow, none);
   }
 
   [data-ring="true"][data-focused="true"] {
     outline: none;
   }
 
-  [data-ring="true"][data-focused="true"]:not([data-focus-indicator="target"]) {
-    border-color: var(--ring-border, transparent);
+  [data-ring="true"][data-focus-visible="true"][data-focus-indicator="target"] {
+    outline: slot(ring, width, 0px) slot(ring-border, style, solid)
+      slot(ring-border, background-visible, slot(ring-border, background, transparent));
+    outline-offset: calc(slot(ring, width, 0px) * -1);
   }
 }

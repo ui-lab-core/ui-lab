@@ -38,6 +38,7 @@
 
     &[data-variant="underline"][data-orientation="vertical"] {
       border-bottom: none;
+      /* The vertical underline divider is outside the surface-border contract. */
       border-left: var(--border-width-base) solid var(--border);
       align-items: stretch;
       padding: 0 0 0 4px;
@@ -78,6 +79,7 @@
 
   .trigger {
     @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;
+    --ring-z: 1;
     height: auto;
     background-color: var(--background);
     border: none;
@@ -117,15 +119,6 @@
       }
     }
 
-    &:focus {
-      outline: none !important;
-      box-shadow: none !important;
-    }
-
-    &[data-focus-visible="true"] {
-      box-shadow: inset 0 0 0 var(--ring-width, 2px) var(--focus-visible) !important;
-    }
-
     &[data-disabled="true"] {
       --disabled-opacity: 0.5;
       opacity: var(--disabled-opacity);
@@ -138,16 +131,6 @@
       background-clip: padding-box;
       border-radius: var(--radius-sm, 0.375rem);
       border-bottom: 2px solid transparent;
-    }
-
-    .list.underline &:focus,
-    .list.underline &:focus-visible {
-      outline: none !important;
-      box-shadow: none !important;
-    }
-
-    .list.underline &[data-focus-visible="true"] {
-      box-shadow: inset 0 0 0 var(--ring-width, 2px) var(--focus-visible) !important;
     }
 
     .list.underline[data-orientation="vertical"] & {

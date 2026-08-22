@@ -2,13 +2,13 @@
 
 @layer components.defaults {
   .code {
-    --border-color: var(--background-700);
     --header-bg: mix(var(--background-900) 90%, transparent);
     --scroll-track-bg: mix(var(--background-950) 50%, transparent);
 
     max-height: 52.5rem;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
+    border: slot(border, width, 1px) slot(border, style, solid)
+      slot(border, background, var(--background-700));
     @apply flex w-full min-w-0 flex-col overflow-hidden;
   }
 
@@ -21,7 +21,8 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: slot(border, width, 1px) slot(border, style, solid)
+      slot(border, background, var(--background-700));
     color: var(--foreground-400);
   }
 
@@ -88,7 +89,8 @@
     line-height: var(--leading-sm, 1.25rem);
     transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
       var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-    border-top: 1px solid var(--border-color);
+    border-top: slot(border, width, 1px) slot(border, style, solid)
+      slot(border, background, var(--background-700));
     background: transparent;
     border-left: none;
     border-right: none;

@@ -2,6 +2,7 @@
 
 @layer components.defaults {
   .divider {
-    --background: var(--background-border, currentColor);
+  /* Divider keeps its legacy color hook because it is not a surface border. */
+  --background: var(--background-border, currentColor);
   }
 }

@@ -45,7 +45,8 @@
     width: 100%;
     height: var(--thickness);
     border-radius: var(--radius, var(--radius-sm, 0.375rem));
-    border: var(--border-width-base) solid var(--border-color);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     background-color: var(--background);
     overflow: visible;
   }

@@ -7,11 +7,10 @@
     --radius-size: calc(var(--spacing) * 1.5);
     --padding-size: var(--radius-size);
     --background-radius: var(--radius-sm, 0.375rem);
-    --background-border-width: var(--border-width-base, 1px);
-    --background-inner-radius: calc(var(--background-radius) - var(--background-border-width));
+    --background-inner-radius: calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)));
     --text-height: calc(0.8em * var(--leading-tight, 1.25));
     --vertical-spacing: calc(var(--spacing) * 4);
-    --border-height: calc(var(--background-border-width) * 2);
+    --border-height: calc(slot(border, width, var(--border-width-base, 1px)) * 2);
     --padding-height: calc(var(--padding-size) * 2);
     --control-height: calc(var(--text-height) + var(--vertical-spacing) + var(--border-height));
     --item-height: max(
@@ -22,7 +21,8 @@
     @apply flex overflow-hidden shrink-0 box-border;
     color: var(--foreground, currentColor);
     background-color: var(--background, transparent);
-    border: var(--background-border-width) solid var(--background-border, transparent);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     border-radius: var(--background-radius);
     padding: var(--padding-size);
 
@@ -199,7 +199,7 @@
     }
 
     .item [role="separator"] {
-      --background: var(--background-border);
+      --background: slot(border, background, transparent);
     }
 
     &.none {
@@ -283,9 +283,13 @@
   }
 
   .group [data-ring="true"] {
-    --ring-shadow: none;
-    --ring-border: transparent;
-    --ring-border-visible: transparent;
+    @slot ring {
+      --shadow: none;
+    }
+    @slot ring-border {
+      --background: transparent;
+      --background-visible: transparent;
+    }
   }
 
   .group :global(.focus-indicator) {

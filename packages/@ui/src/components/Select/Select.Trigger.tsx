@@ -233,6 +233,7 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
       filteredItems,
       setFocusedKey,
       restoreFocus,
+      markKeyboardNavigation,
     } = useSelectContext();
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [isSearchActive, setIsSearchActive] = React.useState(false);
@@ -273,6 +274,13 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
           setIsOpen(true);
         }
         return;
+      }
+      if (
+        e.key === "ArrowDown" ||
+        e.key === "ArrowUp" ||
+        (e.ctrlKey && (e.key === "Home" || e.key === "End"))
+      ) {
+        markKeyboardNavigation();
       }
       handleListKeyDown(e, {
         navigateNext: navigateToNextItem,

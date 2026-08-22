@@ -15,7 +15,8 @@
     @apply relative h-5 w-5 cursor-pointer appearance-none;
 
     background-color: var(--background);
-    border: var(--border-width-base, 1px) solid var(--background-border);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     border-radius: var(--radius-xs, 0.25rem);
     outline: none;
     transition-property: transform;
@@ -23,12 +24,12 @@
     transition-timing-function: var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
 
     &[data-invalid="true"] {
-      border-color: var(--background-error-border, var(--danger-600));
+      border-color: slot(border, background-error, var(--danger-600));
     }
 
     &[data-invalid="true"][data-selected="true"],
     &[data-invalid="true"][data-indeterminate="true"] {
-      border-color: var(--background-border);
+      border-color: slot(border, background, transparent);
     }
 
     &[data-disabled="true"] {

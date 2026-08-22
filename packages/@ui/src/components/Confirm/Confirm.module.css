@@ -8,7 +8,6 @@
     --countdown-foreground: var(--foreground-400);
     --label-foreground: var(--foreground-300);
     --input-background: var(--background-800);
-    --input-border-color: var(--background-700);
     --input-foreground: var(--foreground-100);
   }
 
@@ -62,7 +61,8 @@
 
   .warning-box {
     @apply p-3 rounded-sm;
-    border: var(--border-width-base, 1px) solid var(--warning-border-color);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, var(--warning-border-color-low));
     background-color: var(--warning-background);
     color: var(--warning-foreground);
     font: var(--font-weight-body-normal, 400) var(--text-body-size, var(--text-base, 0.9375rem)) /
@@ -72,25 +72,33 @@
 
   .warning-box-low {
     --warning-background: var(--warning-background-low);
-    --warning-border-color: var(--warning-border-color-low);
+    @slot border {
+      --background: var(--warning-border-color-low);
+    }
     --warning-foreground: var(--warning-foreground-low);
   }
 
   .warning-box-medium {
     --warning-background: var(--warning-background-medium);
-    --warning-border-color: var(--warning-border-color-medium);
+    @slot border {
+      --background: var(--warning-border-color-medium);
+    }
     --warning-foreground: var(--warning-foreground-medium);
   }
 
   .warning-box-high {
     --warning-background: var(--warning-background-high);
-    --warning-border-color: var(--warning-border-color-high);
+    @slot border {
+      --background: var(--warning-border-color-high);
+    }
     --warning-foreground: var(--warning-foreground-high);
   }
 
   .warning-box-critical {
     --warning-background: var(--warning-background-critical);
-    --warning-border-color: var(--warning-border-color-critical);
+    @slot border {
+      --background: var(--warning-border-color-critical);
+    }
     --warning-foreground: var(--warning-foreground-critical);
   }
 
@@ -112,7 +120,9 @@
   .input {
     @apply w-full mt-2 rounded-sm transition-all duration-200;
     --background: var(--input-background);
-    --background-border: var(--input-border-color);
+    @slot border {
+      --background: var(--background-700);
+    }
     --foreground: var(--input-foreground);
   }
 

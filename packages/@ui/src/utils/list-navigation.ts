@@ -12,7 +12,10 @@ export interface ItemData {
 
 export function scrollItemIntoView(el: HTMLElement, behavior: ScrollBehavior = "smooth") {
   let scroller: HTMLElement | null = el.parentElement;
-  while (scroller && scroller !== document.body && scroller.scrollHeight <= scroller.clientHeight) {
+  while (scroller && scroller !== document.body) {
+    const overflowY = getComputedStyle(scroller).overflowY;
+    const isScrollable = overflowY === "auto" || overflowY === "scroll";
+    if (isScrollable && scroller.scrollHeight > scroller.clientHeight) break;
     scroller = scroller.parentElement;
   }
   if (!scroller || scroller === document.body) return;

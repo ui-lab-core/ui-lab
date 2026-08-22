@@ -12,7 +12,7 @@
     --trigger-padding-inline: calc(var(--spacing) * 2);
     --trigger-padding-block: calc(var(--spacing) * 1.5);
     --background-radius: var(--radius-sm, 0.375rem);
-    --background-inner-radius: calc(var(--background-radius) - var(--border-width-base, 1px));
+    --background-inner-radius: calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)));
     font-family: var(--font-body, inherit);
     font-size: var(--size, var(--text-sm, 0.875rem));
     font-weight: var(--font-weight-body-medium, 500);
@@ -27,7 +27,10 @@
 
     background-color: var(--background);
     color: var(--foreground);
-    border: var(--border-width-base, 1px) solid var(--background-border);
+    border:
+      slot(border, width, var(--border-width-base, 1px))
+      slot(border, style, solid)
+      slot(border, background, transparent);
     border-radius: var(--background-radius);
 
     @apply select-none cursor-pointer;
@@ -163,11 +166,14 @@
   .sub-content {
     --content-padding: calc(var(--spacing) * 2);
     --content-radius: var(--radius-sm, 0.375rem);
-    --content-inner-radius: calc(var(--content-radius) - var(--border-width-base, 1px));
+    --content-inner-radius: calc(var(--content-radius) - slot(border, width, var(--border-width-base, 1px)));
     --disabled-opacity: 0.5;
     @apply overflow-hidden;
     background-color: var(--background);
-    border: var(--border-width-base, 1px) solid var(--background-border);
+    border:
+      slot(border, width, var(--border-width-base, 1px))
+      slot(border, style, solid)
+      slot(border, background, transparent);
     border-radius: var(--content-radius);
     transition:
       opacity 180ms var(--ease-snappy-pop, ease-out),
@@ -254,7 +260,7 @@
     margin-left: calc(var(--content-padding) / -2);
     margin-right: calc(var(--content-padding) / -2);
     height: 1px;
-    background-color: var(--background-border);
+    background-color: slot(border, background, transparent);
   }
 
   .placeholder {
@@ -289,11 +295,11 @@
 
   .input {
     padding-right: calc(var(--trigger-padding-inline) * 2 + 1rem);
-    @apply border-none rounded-none shadow-none bg-transparent;
+    @apply border-transparent rounded-none shadow-none bg-transparent;
 
     &[data-focused],
     &[data-focus-visible] {
-      @apply border-none shadow-none;
+      @apply border-transparent shadow-none;
     }
   }
 
@@ -308,7 +314,8 @@
 
   .search-wrapper {
     @apply overflow-hidden;
-    border-bottom: var(--border-width-base, 1px) solid var(--background-border);
+    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
   }
 
   .empty-state {
@@ -319,7 +326,8 @@
   .content[data-placement="top"] .search-wrapper {
     border-radius: 0;
     border-bottom: none;
-    border-top: var(--border-width-base, 1px) solid var(--background-border);
+    border-top: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
   }
 
   .sub-trigger {

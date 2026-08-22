@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Style } from "@/lib/utils";
 import { asElementProps } from "@/lib/react-aria";
 import { StylesProp, createStylesResolver } from "@/lib/styles";
+import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
 import css from "./Tabs.module.css";
@@ -35,6 +36,8 @@ interface TabsContextValue {
   isDisabledTab: (value: string) => boolean;
   indicatorReady: boolean;
   setIndicatorReady: (ready: boolean) => void;
+  skipIndicatorAnimation: boolean;
+  setSkipIndicatorAnimation: (skip: boolean) => void;
 }
 
 const TabsContext = React.createContext<TabsContextValue | null>(null);
@@ -148,6 +151,7 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
     }, []);
 
     const [indicatorReady, setIndicatorReady] = React.useState(false);
+    const [skipIndicatorAnimation, setSkipIndicatorAnimation] = React.useState(false);
 
     return (
       <TabsContext.Provider
@@ -160,6 +164,8 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
           isDisabledTab,
           indicatorReady,
           setIndicatorReady,
+          skipIndicatorAnimation,
+          setSkipIndicatorAnimation,
         }}
       >
         <div
@@ -212,8 +218,15 @@ const TabsListContext = React.createContext<TabsListContextValue | null>(null);
 /** Container for the row of tab trigger buttons */
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
-    const { selectedValue, variant, orientation, listStyle, indicatorReady, setIndicatorReady } =
-      useTabsContext();
+    const {
+      selectedValue,
+      variant,
+      orientation,
+      listStyle,
+      indicatorReady,
+      setIndicatorReady,
+      skipIndicatorAnimation,
+    } = useTabsContext();
     const { root, list, indicator, trigger: triggerStyle } = resolveTabsListBaseStyles(stylesProp);
     const listRef = React.useRef<HTMLDivElement>(null);
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
@@ -317,7 +330,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const getIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = {
         position: "absolute",
-        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: `all ${skipIndicatorAnimation ? "0ms" : "0.2s"} cubic-bezier(0.4, 0, 0.2, 1)`,
         willChange: "transform",
         pointerEvents: "none",
         margin: 0,
@@ -366,7 +379,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         width: indicatorPosition.width,
         height: indicatorPosition.height,
       };
-    }, [indicatorPosition, listDimensions, variant, orientation]);
+    }, [indicatorPosition, listDimensions, variant, orientation, skipIndicatorAnimation]);
 
     const mergedRef = useMergeRefs(listRef, ref);
 
@@ -542,7 +555,12 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     },
     ref,
   ) => {
-    const { selectedValue, setSelectedValue, indicatorReady } = useTabsContext();
+    const {
+      selectedValue,
+      setSelectedValue,
+      indicatorReady,
+      setSkipIndicatorAnimation,
+    } = useTabsContext();
     const tabsListContext = React.useContext(TabsListContext);
     const resolved = resolveTabsTriggerStyles(stylesProp);
     const resolvedIcon = resolveTabsTriggerIcon(icon);
@@ -550,6 +568,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     const isSelected = value === selectedValue;
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+    const { targetProps } = useFocus({ mode: "target" });
     const interactionModality = useInteractionModality();
     const showFocusVisible = isFocused && interactionModality !== "pointer" && isFocusVisible;
 
@@ -563,9 +582,10 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
     const handlePress = React.useCallback(() => {
       if (!disabled) {
+        setSkipIndicatorAnimation(false);
         setSelectedValue(value);
       }
-    }, [disabled, value, setSelectedValue]);
+    }, [disabled, value, setSelectedValue, setSkipIndicatorAnimation]);
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent) => {
@@ -582,6 +602,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         );
 
         let nextValue: string | null = null;
+        let isArrowNavigation = false;
 
         if (e.key === "Tab") {
           const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1;
@@ -596,10 +617,12 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
         if (e.key === "ArrowRight" || e.key === "ArrowDown") {
           e.preventDefault();
+          isArrowNavigation = true;
           const nextIndex = (currentIndex + 1) % triggers.length;
           nextValue = triggers[nextIndex].getAttribute("data-tabs-value");
         } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
           e.preventDefault();
+          isArrowNavigation = true;
           const prevIndex = currentIndex === 0 ? triggers.length - 1 : currentIndex - 1;
           nextValue = triggers[prevIndex].getAttribute("data-tabs-value");
         } else if (e.key === "Home") {
@@ -611,16 +634,18 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         }
 
         if (nextValue) {
+          setSkipIndicatorAnimation(isArrowNavigation);
           setSelectedValue(nextValue);
           setTimeout(() => {
             const nextTrigger = listElement.querySelector(
               `[data-tabs-value="${nextValue}"]`,
             ) as HTMLButtonElement | null;
             nextTrigger?.focus();
+            setSkipIndicatorAnimation(false);
           }, 0);
         }
       },
-      [value, disabled, setSelectedValue],
+      [value, disabled, setSelectedValue, setSkipIndicatorAnimation],
     );
 
     const mergedRef = useMergeRefs(buttonRef, ref);
@@ -640,6 +665,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     return (
       <button
         {...triggerProps}
+        {...targetProps}
         ref={mergedRef}
         id={`${value}-trigger`}
         role="tab"

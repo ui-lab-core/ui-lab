@@ -447,7 +447,12 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const searchContent = searchable ? (
       <div
         key="search"
-        className={cn(styles["search-wrapper"], resolved["search.wrapper"].className)}
+        className={cn(
+          "search-content-input",
+          styles["search-wrapper"],
+          styles["search-content-input"],
+          resolved["search.wrapper"].className,
+        )}
         style={resolved["search.wrapper"].style}
         data-slot="search.wrapper"
       >
@@ -466,7 +471,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           onKeyDown={handleInputKeyDown}
           placeholder={searchPlaceholder}
           variant="ghost"
-          className={cn(styles["search-content-input"], resolved["search.input"].className)}
+          className={resolved["search.input"].className}
           style={resolved["search.input"].style}
         />
       </div>

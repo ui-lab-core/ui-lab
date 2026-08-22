@@ -13,6 +13,7 @@
 
   .content {
     --fill: var(--background);
+    /* Frame's SVG stroke remains a documented decorative API. */
     --stroke-color: var(--background-border);
     opacity: 0;
     transition:

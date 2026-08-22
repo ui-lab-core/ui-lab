@@ -19,7 +19,8 @@
     overflow: clip;
     /* Keep the public `.container` theme hook from applying Tailwind's breakpoint max-widths. */
     max-width: 100% !important;
-    border: var(--border-width-base) solid var(--border, var(--background-border));
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     background-color: var(--container-background, var(--background));
   }
 
@@ -94,7 +95,8 @@
     line-height: var(--leading-sm, 1.25rem);
     white-space: nowrap;
     border: 0;
-    border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
+    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
   }
 
   /*
@@ -189,7 +191,8 @@
     background-color: var(--background, transparent);
     color: var(--foreground);
     border: 0;
-    border-bottom: var(--border-width-base) solid var(--border, var(--background-border));
+    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
@@ -221,7 +224,8 @@
 
   .filterBar {
     @apply mb-4 rounded-xs border p-4;
-    border: var(--border-width-base) solid var(--background-border);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     background-color: var(--background);
   }
 

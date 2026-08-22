@@ -23,7 +23,8 @@
   .radio {
     --disabled-opacity: 0.6;
     @apply relative flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center;
-    border: var(--border-width-base, 1px) solid var(--background-border);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
     border-radius: 9999px;
     background-color: var(--background);
     color: var(--foreground);
@@ -37,6 +38,10 @@
 
     &[data-pressed="true"]:not([data-disabled="true"]) {
       transform: var(--press-transform, scale(0.96));
+    }
+
+    &[data-error="true"]:not([data-selected="true"]) {
+      border-color: slot(border, background-error, slot(border, background, transparent));
     }
   }
 

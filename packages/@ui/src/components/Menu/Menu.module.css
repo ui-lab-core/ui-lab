@@ -24,12 +24,13 @@
     .sub-content {
       --content-padding: calc(var(--spacing) * 2);
       --content-radius: var(--radius-sm, 0.375rem);
-      --content-inner-radius: calc(var(--content-radius) - var(--border-width-base, 1px));
+      --content-inner-radius: calc(var(--content-radius) - slot(border, width, var(--border-width-base, 1px)));
       --disabled-opacity: 0.5;
 
       @apply min-w-40 max-w-80 overflow-hidden;
       background-color: var(--background);
-      border: var(--border-width-base, 1px) solid var(--background-border);
+      border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+        slot(border, background, transparent);
       border-radius: var(--content-radius);
       outline: none;
       transition:
@@ -132,7 +133,7 @@
       margin-left: calc(var(--content-padding) / -2);
       margin-right: calc(var(--content-padding) / -2);
       height: 1px;
-      background-color: var(--background-border);
+      background-color: slot(border, background, transparent);
     }
 
     .shortcut {
