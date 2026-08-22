@@ -1,6 +1,6 @@
 import React from "react";
 import { DividerProps } from "@/components/Divider";
-import { type StyleValue } from "@/lib/utils";
+import { type Style } from "@/lib/utils";
 import { type StylesProp } from "@/lib/styles";
 import type { GapSize } from "@/lib/gap";
 import { Checkbox as UICheckbox } from "../Checkbox";
@@ -10,27 +10,27 @@ import { Select as UISelect } from "../Select";
 
 export interface ListStyleSlots {
   /** Outer list container */
-  root?: StyleValue;
+  root?: Style;
   /** Semantic list header */
-  header?: StyleValue;
+  header?: Style;
   /** Clickable or focusable list row */
-  item?: StyleValue;
+  item?: Style;
   /** Non-interactive checkbox indicator wrapper */
-  checkbox?: StyleValue;
+  checkbox?: Style;
   /** Embedded interactive control wrapper */
-  control?: StyleValue;
+  control?: Style;
   /** Leading icon or media area */
-  media?: StyleValue;
+  media?: Style;
   /** Primary text label */
-  title?: StyleValue;
+  title?: Style;
   /** Secondary description text */
-  desc?: StyleValue;
+  desc?: Style;
   /** Trailing actions container */
-  actions?: StyleValue;
+  actions?: Style;
   /** Individual action button */
-  action?: StyleValue;
+  action?: Style;
   /** Semantic list footer */
-  footer?: StyleValue;
+  footer?: Style;
 }
 
 export type ListStylesProp = StylesProp<ListStyleSlots>;

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { mergeProps, useFocusRing, useHover, usePress } from "react-aria";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -21,28 +21,28 @@ type ResponsiveColumns = {
 };
 
 export interface GalleryStyleSlots {
-  root?: StyleValue;
-  item?: StyleValue;
-  view?: StyleValue;
-  body?: StyleValue;
+  root?: Style;
+  item?: Style;
+  view?: Style;
+  body?: Style;
 }
 
 export type GalleryStylesProp = StylesProp<GalleryStyleSlots>;
 
 export interface GalleryItemStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 export type GalleryItemStylesProp = StylesProp<GalleryItemStyleSlots>;
 
 export interface GalleryViewStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 export type GalleryViewStylesProp = StylesProp<GalleryViewStyleSlots>;
 
 export interface GalleryBodyStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 export type GalleryBodyStylesProp = StylesProp<GalleryBodyStyleSlots>;

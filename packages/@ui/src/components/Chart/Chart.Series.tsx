@@ -1,14 +1,14 @@
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
 import { useChartContext, type SeriesData, type SeriesType } from "./Chart";
 import { linePath, areaPath, roundedRectPath, type Curve, type PlotPoint } from "./Chart.shared";
 
 export interface ChartSeriesStyleSlots {
-  root?: StyleValue;
-  mark?: StyleValue;
-  marker?: StyleValue;
+  root?: Style;
+  mark?: Style;
+  marker?: Style;
 }
 
 export type ChartSeriesStylesProp = StylesProp<ChartSeriesStyleSlots>;

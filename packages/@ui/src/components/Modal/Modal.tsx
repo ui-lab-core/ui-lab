@@ -3,7 +3,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useDialog } from "react-aria";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { X } from "lucide-react";
@@ -47,16 +47,16 @@ const useModalKeyboard = (
 };
 
 interface ModalStyleSlots {
-  root?: StyleValue;
-  overlay?: StyleValue;
-  backdrop?: StyleValue;
-  header?: StyleValue;
-  title?: StyleValue;
-  spacer?: StyleValue;
-  close?: StyleValue;
-  closeIcon?: StyleValue;
-  content?: StyleValue;
-  footer?: StyleValue;
+  root?: Style;
+  overlay?: Style;
+  backdrop?: Style;
+  header?: Style;
+  title?: Style;
+  spacer?: Style;
+  close?: Style;
+  closeIcon?: Style;
+  content?: Style;
+  footer?: Style;
 }
 
 type ModalStylesProp = StylesProp<ModalStyleSlots>;

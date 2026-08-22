@@ -2,16 +2,16 @@
 
 import * as React from "react";
 import { useHover, mergeProps } from "react-aria";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Banner.module.css";
 import { Info, CircleCheck, TriangleAlert, CircleAlert } from "lucide-react";
 
 interface BannerStyleSlots {
-  root?: StyleValue;
-  iconContainer?: StyleValue;
-  content?: StyleValue;
-  dismiss?: StyleValue;
+  root?: Style;
+  iconContainer?: Style;
+  content?: Style;
+  dismiss?: Style;
 }
 
 type BannerStylesProp = StylesProp<BannerStyleSlots>;
@@ -29,12 +29,12 @@ export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 interface BannerTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /** Keyed styles for the root. Use className for conventional root classes. */
-  styles?: StylesProp<{ root?: StyleValue }>;
+  styles?: StylesProp<{ root?: Style }>;
 }
 
 interface BannerBodyProps extends React.HTMLAttributes<HTMLParagraphElement> {
   /** Keyed styles for the root. Use className for conventional root classes. */
-  styles?: StylesProp<{ root?: StyleValue }>;
+  styles?: StylesProp<{ root?: Style }>;
 }
 
 const bannerIcons = {

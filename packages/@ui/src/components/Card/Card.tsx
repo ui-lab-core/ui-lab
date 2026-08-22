@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
+import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import styles from "./Card.module.css";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -17,10 +17,10 @@ interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 interface CardStyleSlots {
-  root?: SlotStyleValue;
-  header?: SlotStyleValue;
-  body?: SlotStyleValue;
-  footer?: SlotStyleValue;
+  root?: SlotStyle;
+  header?: SlotStyle;
+  body?: SlotStyle;
+  footer?: SlotStyle;
 }
 
 type CardStylesProp = CardStyleSlots;

@@ -8,7 +8,7 @@ import { useFocusRing } from "@react-aria/focus";
 import { useSwitch } from "@react-aria/switch";
 
 import { useToggleState } from "react-stately";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { resolveAccessibleLabel } from "@/lib/react-aria";
@@ -18,9 +18,9 @@ import { useDragToggle } from "@/hooks/useDragToggle";
 import styles from "./Switch.module.css";
 
 interface SwitchStyleSlots {
-  root?: StyleValue;
-  track?: StyleValue;
-  thumb?: StyleValue;
+  root?: Style;
+  track?: Style;
+  thumb?: Style;
 }
 
 type SwitchStylesProp = StylesProp<SwitchStyleSlots>;

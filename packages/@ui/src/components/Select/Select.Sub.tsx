@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
@@ -8,7 +10,7 @@ import { ChevronRight } from "lucide-react";
 import { useSelectContext, SelectContext, type SelectContextValue } from "./Select";
 import type { Key } from "@react-types/shared";
 import styles from "./Select.module.css";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -54,55 +56,84 @@ function useSelectSubmenuContext() {
 }
 
 export interface SelectSubProps extends React.PropsWithChildren {
-  /** Controlled open state of the submenu */
+  /** Controls whether this nested submenu is open.
+   * @category Core */
   open?: boolean;
-  /** Initial open state for uncontrolled usage */
+  /** Sets the initial open state when open is not controlled.
+   * @category Core
+   * @default false */
   defaultOpen?: boolean;
-  /** Called when the submenu open state changes */
+  /** Runs when this submenu requests an open-state change.
+   * @category Events */
   onOpenChange?: (open: boolean) => void;
 }
 
 export interface SelectSubTriggerProps extends React.PropsWithChildren {
-  /** Prevents the trigger from opening the submenu */
+  /** Prevents this option from opening its nested submenu.
+   * @category Core
+   * @default false */
   disabled?: boolean;
-  /** Additional CSS class names */
+  /** Adds classes to the submenu trigger option.
+   * @category Styling */
   className?: string;
-  /** Accessible text value used for keyboard navigation registration; defaults to children string */
+  /** Supplies the label registered for keyboard navigation when children are not plain text.
+   * @category Accessibility */
   textValue?: string;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles submenu-trigger anatomy: root and icon.right.
+   * @category Styling
+   * @typeDoc SelectSubTriggerStyleSlots */
   styles?: SelectSubTriggerStylesProp;
 }
 
 export interface SelectSubContentProps extends React.PropsWithChildren {
-  /** Additional CSS class names */
+  /** Adds classes to the portalled submenu listbox.
+   * @category Styling */
   className?: string;
-  /** Distance in pixels between the submenu panel and its trigger along the main axis */
+  /** Sets the main-axis distance between this submenu panel and its trigger.
+   * @category Advanced
+   * @default 8 */
   sideOffset?: number;
-  /** Offset in pixels along the cross axis for submenu panel alignment */
+  /** Sets the cross-axis alignment offset for this submenu panel.
+   * @category Advanced
+   * @default 0 */
   alignOffset?: number;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles submenu-content anatomy: root, overlay, list.root, and list.padding.
+   * @category Styling
+   * @typeDoc SelectSubContentStyleSlots */
   styles?: SelectSubContentStylesProp;
 }
 
 interface SelectSubTriggerIconStyles {
-  right?: StyleValue;
+  /** Styles the right-pointing submenu indicator. */
+  right?: Style;
 }
 
 export interface SelectSubTriggerStyleSlots {
-  root?: StyleValue;
-  icon?: StyleValue | SelectSubTriggerIconStyles;
+  /** Styles the submenu trigger option. */
+  root?: Style;
+  /** Styles the indicator, either shared or through icon.right. */
+  icon?: Style | SelectSubTriggerIconStyles;
 }
 
 export type SelectSubTriggerStylesProp = StylesProp<SelectSubTriggerStyleSlots>;
 
 export interface SelectSubContentStyleSlots {
-  root?: StyleValue;
-  overlay?: StyleValue;
-  list?: StyleValue;
-  listPaddingWrapper?: StyleValue;
+  /** Styles the submenu listbox. */
+  root?: Style;
+  /** Styles the positioned submenu overlay. */
+  overlay?: Style;
+  /** Styles all list descendants or separately styles list.root and list.padding. */
+  list?: Style | SelectSubContentListStyles;
 }
 
 export type SelectSubContentStylesProp = StylesProp<SelectSubContentStyleSlots>;
+
+export interface SelectSubContentListStyles {
+  /** Styles the scrollable list surface. */
+  root?: Style;
+  /** Styles the inner list padding wrapper. */
+  padding?: Style;
+}
 
 const resolveSelectSubTriggerBaseStyles = createStylesResolver(["root", "iconRight"] as const);
 
@@ -110,7 +141,7 @@ function resolveSelectSubTriggerStyles(styles: SelectSubTriggerStylesProp | unde
   if (!styles) return resolveSelectSubTriggerBaseStyles(styles);
   const { root, icon } = styles;
 
-  let iconRight: StyleValue | undefined;
+  let iconRight: Style | undefined;
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {
       iconRight = icon;
@@ -125,14 +156,21 @@ function resolveSelectSubTriggerStyles(styles: SelectSubTriggerStylesProp | unde
 const resolveSelectSubContentBaseStyles = createStylesResolver([
   "root",
   "overlay",
-  "list",
-  "listPaddingWrapper",
+  "list.root",
+  "list.padding",
 ] as const);
 
 function resolveSelectSubContentStyles(styles: SelectSubContentStylesProp | undefined) {
-  if (!styles) return resolveSelectSubContentBaseStyles(styles);
-  const { root, overlay, list, listPaddingWrapper } = styles;
-  return resolveSelectSubContentBaseStyles({ root, overlay, list, listPaddingWrapper });
+  const list = styles?.list;
+  const sharedList = typeof list === "string" || Array.isArray(list) ? list : undefined;
+  const listStyles: SelectSubContentListStyles | undefined =
+    typeof list === "object" && !Array.isArray(list) ? list : undefined;
+  return resolveSelectSubContentBaseStyles({
+    root: styles?.root,
+    overlay: styles?.overlay,
+    "list.root": sharedList ?? listStyles?.root,
+    "list.padding": sharedList ?? listStyles?.padding,
+  });
 }
 
 /** Context provider that scopes a nested flyout submenu within the dropdown */
@@ -260,7 +298,7 @@ const SelectSub = ({
     <SelectSubmenuContext.Provider value={contextValue}>{children}</SelectSubmenuContext.Provider>
   );
 };
-SelectSub.displayName = "SelectSub";
+SelectSub.displayName = "Select.Sub";
 
 /** Item that opens a nested submenu on hover or keyboard right-arrow */
 const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>(
@@ -343,6 +381,7 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
         tabIndex={-1}
         aria-disabled={disabled || undefined}
         className={cn("trigger", styles["sub-trigger"], className, resolved.root)}
+        data-slot="root"
         data-highlighted={isHighlighted ? "true" : "false"}
         data-focused={isHighlighted ? "true" : "false"}
         data-disabled={disabled || undefined}
@@ -356,7 +395,7 @@ const SelectSubTrigger = React.forwardRef<HTMLDivElement, SelectSubTriggerProps>
     );
   },
 );
-SelectSubTrigger.displayName = "SelectSubTrigger";
+SelectSubTrigger.displayName = "Select.SubTrigger";
 
 /** Floating panel containing the items of a nested submenu */
 const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>(
@@ -574,7 +613,8 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
         {(showContent || isExiting) && (
           <div
             ref={mergedFloatingRef}
-            className={cn("select", styles["sub-content-root"], resolved.overlay)}
+        className={cn("select", styles["sub-content-root"], resolved.overlay)}
+            data-slot="overlay"
             style={{
               ...floatingStyles,
               zIndex: 50001 + (submenuContext.submenuLevel ?? 0),
@@ -586,6 +626,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
               role="listbox"
               tabIndex={-1}
               className={cn("sub-content", styles["sub-content"], className, resolved.root)}
+              data-slot="root"
               data-state={showContent ? "open" : "closed"}
               data-placement={placement.split("-")[0]}
               data-select-submenu-content="true"
@@ -597,14 +638,14 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
               {...asElementProps<"div">(hoverProps)}
             >
               <Scroll
-                className={cn(styles.list, resolved.list)}
+                className={cn(styles.list, resolved["list.root"])}
                 maxHeight={positioning.maxHeight}
                 maxWidth={positioning.maxWidth}
                 direction="vertical"
                 fade-y
                 hide={false}
               >
-                <div className={cn(resolved.listPaddingWrapper)} style={{ padding: "0.25rem" }}>
+                <div className={cn(resolved["list.padding"])} style={{ padding: "0.25rem" }}>
                   <SelectContext.Provider value={overriddenContextValue}>
                     <List items={submenuContext.items} gap="xs">
                       {children}
@@ -620,6 +661,6 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
     );
   },
 );
-SelectSubContent.displayName = "SelectSubContent";
+SelectSubContent.displayName = "Select.SubContent";
 
 export { SelectSub, SelectSubTrigger, SelectSubContent };

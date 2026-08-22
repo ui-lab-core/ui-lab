@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef, useReducer } from "react";
 import { useControlledState } from "@/hooks/useControlledState";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Color.module.css";
 import {
@@ -21,37 +21,37 @@ import { Popover, type PopoverProps } from "../Popover";
 import { Slider } from "../Slider";
 
 type ColorCanvasGradientStyles = {
-  hue?: StyleValue;
-  saturation?: StyleValue;
-  brightness?: StyleValue;
+  hue?: Style;
+  saturation?: Style;
+  brightness?: Style;
 };
 
 type ColorSliderStyles = {
-  hue?: StyleValue;
-  opacity?: StyleValue;
-  chroma?: StyleValue;
+  hue?: Style;
+  opacity?: Style;
+  chroma?: Style;
 };
 
 export interface ColorStyleSlots {
-  provider?: StyleValue;
-  root?: StyleValue;
-  trigger?: StyleValue;
-  triggerSwatch?: StyleValue;
-  triggerValue?: StyleValue;
-  controls?: StyleValue;
-  canvas?: StyleValue;
-  canvasInner?: StyleValue;
-  canvasGradient?: StyleValue | ColorCanvasGradientStyles;
-  canvasPointer?: StyleValue;
-  slider?: StyleValue | ColorSliderStyles;
-  sliderTrack?: StyleValue | ColorSliderStyles;
-  sliderThumb?: StyleValue | ColorSliderStyles;
-  recentColors?: StyleValue;
-  recentColorSwatch?: StyleValue;
-  inputGroup?: StyleValue;
-  input?: StyleValue;
-  format?: StyleValue;
-  previewSwatch?: StyleValue;
+  provider?: Style;
+  root?: Style;
+  trigger?: Style;
+  triggerSwatch?: Style;
+  triggerValue?: Style;
+  controls?: Style;
+  canvas?: Style;
+  canvasInner?: Style;
+  canvasGradient?: Style | ColorCanvasGradientStyles;
+  canvasPointer?: Style;
+  slider?: Style | ColorSliderStyles;
+  sliderTrack?: Style | ColorSliderStyles;
+  sliderThumb?: Style | ColorSliderStyles;
+  recentColors?: Style;
+  recentColorSwatch?: Style;
+  inputGroup?: Style;
+  input?: Style;
+  format?: Style;
+  previewSwatch?: Style;
 }
 
 export type ColorStylesProp = StylesProp<ColorStyleSlots>;
@@ -110,18 +110,18 @@ function resolveColorStyles(styles: ColorStylesProp | undefined) {
     previewSwatch,
   } = styles;
 
-  let canvasGradientHue: StyleValue | undefined;
-  let canvasGradientSaturation: StyleValue | undefined;
-  let canvasGradientBrightness: StyleValue | undefined;
-  let sliderHue: StyleValue | undefined;
-  let sliderOpacity: StyleValue | undefined;
-  let sliderChroma: StyleValue | undefined;
-  let sliderTrackHue: StyleValue | undefined;
-  let sliderTrackOpacity: StyleValue | undefined;
-  let sliderTrackChroma: StyleValue | undefined;
-  let sliderThumbHue: StyleValue | undefined;
-  let sliderThumbOpacity: StyleValue | undefined;
-  let sliderThumbChroma: StyleValue | undefined;
+  let canvasGradientHue: Style | undefined;
+  let canvasGradientSaturation: Style | undefined;
+  let canvasGradientBrightness: Style | undefined;
+  let sliderHue: Style | undefined;
+  let sliderOpacity: Style | undefined;
+  let sliderChroma: Style | undefined;
+  let sliderTrackHue: Style | undefined;
+  let sliderTrackOpacity: Style | undefined;
+  let sliderTrackChroma: Style | undefined;
+  let sliderThumbHue: Style | undefined;
+  let sliderThumbOpacity: Style | undefined;
+  let sliderThumbChroma: Style | undefined;
 
   if (canvasGradient) {
     if (typeof canvasGradient === "string" || Array.isArray(canvasGradient)) {

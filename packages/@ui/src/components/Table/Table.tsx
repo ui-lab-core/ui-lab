@@ -6,7 +6,7 @@ import { mergeProps } from "@react-aria/utils";
 
 import { Input } from "@/components/Input";
 import { Scroll } from "@/components/Scroll";
-import { type StyleValue, cn } from "@/lib/utils";
+import { type Style, cn } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 
 import css from "./Table.module.css";
@@ -45,51 +45,51 @@ export interface Column<T, K extends keyof T = keyof T> {
 
 /** Style overrides for the table root and its stable rendered parts. */
 export interface TableStyleSlots {
-  root?: StyleValue;
-  container?: StyleValue;
-  scroller?: StyleValue | TableScrollerStyles;
-  filter?: StyleValue | TableFilterStyles;
-  table?: StyleValue;
-  header?: StyleValue | TableHeaderStyles;
-  body?: StyleValue | TableBodyStyles;
-  row?: StyleValue;
-  cell?: StyleValue;
-  empty?: StyleValue | TableEmptyStyles;
+  root?: Style;
+  container?: Style;
+  scroller?: Style | TableScrollerStyles;
+  filter?: Style | TableFilterStyles;
+  table?: Style;
+  header?: Style | TableHeaderStyles;
+  body?: Style | TableBodyStyles;
+  row?: Style;
+  cell?: Style;
+  empty?: Style | TableEmptyStyles;
 }
 
 /** Styles for the horizontal table scroller and its scrollbar anatomy. */
 export interface TableScrollerStyles {
-  root?: StyleValue;
-  track?: StyleValue;
-  thumb?: StyleValue;
+  root?: Style;
+  track?: Style;
+  thumb?: Style;
 }
 
 /** Styles for the optional filter controls. */
 export interface TableFilterStyles {
-  bar?: StyleValue;
-  grid?: StyleValue;
-  field?: StyleValue;
-  label?: StyleValue;
-  input?: StyleValue;
+  bar?: Style;
+  grid?: Style;
+  field?: Style;
+  label?: Style;
+  input?: Style;
 }
 
 /** Styles for the table header and its direct row and cell anatomy. */
 export interface TableHeaderStyles {
-  root?: StyleValue;
-  row?: StyleValue;
-  cell?: StyleValue;
+  root?: Style;
+  row?: Style;
+  cell?: Style;
 }
 
 /** Styles for the table body and its rows-only scroll port. */
 export interface TableBodyStyles {
-  root?: StyleValue;
-  scroller?: StyleValue;
+  root?: Style;
+  scroller?: Style;
 }
 
 /** Styles for the empty row and its message cell. */
 export interface TableEmptyStyles {
-  row?: StyleValue;
-  state?: StyleValue;
+  row?: Style;
+  state?: Style;
 }
 
 /** Keyed class names applied to the table's stable rendered parts. */
@@ -130,9 +130,6 @@ export interface TableProps<T extends Record<string, any>> extends Omit<
   /** Optional composed table content. When omitted, the default header/body renderer is used. */
   children?: React.ReactNode;
 }
-
-type TableSlotKey = keyof TableStyleSlots;
-type ResolvedTableStyles = Record<TableSlotKey, string>;
 
 export interface TableContextValue<T extends Record<string, any> = Record<string, any>> {
   columns: Column<T>[];
@@ -178,13 +175,15 @@ const tableStyleSlotKeys = [
   "emptyState",
 ] as const;
 
+type ResolvedTableStyles = Record<(typeof tableStyleSlotKeys)[number], string>;
+
 const resolveTableBaseStyles = createStylesResolver(tableStyleSlotKeys);
 
 function resolveTableStyles(styles: TableStylesProp | undefined) {
   if (!styles) return resolveTableBaseStyles(styles);
 
   const { scroller, filter, header, body, empty, ...slots } = styles;
-  const shared = (value: StyleValue | object | undefined) =>
+  const shared = (value: Style | object | undefined) =>
     typeof value === "string" || Array.isArray(value) ? value : undefined;
 
   const scrollerShared = shared(scroller);
@@ -467,7 +466,7 @@ const TableRoot = <T extends Record<string, any>>(
         >
           {horizontalScroll ? (
             <Scroll
-              className={cn(css.scroller, resolved.scroller)}
+              className={cn(css.scroller, resolved.scrollerRoot)}
               direction="horizontal"
               hide={false}
               data-slot="scroller"

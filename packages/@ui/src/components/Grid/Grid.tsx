@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { resolveGapStep, type GapSize } from "@/lib/gap";
 import { resolveSizingStyles, type SizingValue } from "@/lib/sizing";
 import css from "./Grid.module.css";
 
 interface GridStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 type GridStylesProp = StylesProp<GridStyleSlots>;

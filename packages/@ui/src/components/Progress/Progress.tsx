@@ -1,19 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Progress.module.css";
 
 export interface ProgressStyleSlots {
-  root?: StyleValue;
-  labelRow?: StyleValue;
-  label?: StyleValue;
-  value?: StyleValue;
-  track?: StyleValue;
-  range?: StyleValue;
-  thumb?: StyleValue;
+  root?: Style;
+  labelRow?: Style;
+  label?: Style;
+  value?: Style;
+  track?: Style;
+  range?: Style;
+  thumb?: Style;
 }
 
 export type ProgressStylesProp = StylesProp<ProgressStyleSlots>;

@@ -10,7 +10,7 @@ import { enableShadowDOM } from "@react-stately/flags";
 import type { FocusableElement, PressEvent } from "@react-types/shared";
 
 import { cn } from "@/lib/utils";
-import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
+import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { type HintValue, hasHint, renderHint } from "@/lib/hint";
@@ -35,19 +35,19 @@ type ButtonIconSlots = {
 /** Side-specific styles used when the icon slot is configured as an object. */
 interface ButtonIconStyles {
   /** Styles applied to the leading icon. */
-  left?: SlotStyleValue;
+  left?: SlotStyle;
   /** Styles applied to the trailing icon. */
-  right?: SlotStyleValue;
+  right?: SlotStyle;
 }
 
 /** Style overrides for the button root and named content slots. */
 export interface ButtonStyleSlots {
   /** Styles applied to the root element. */
-  root?: SlotStyleValue;
+  root?: SlotStyle;
   /** Shared icon styles or separate leading and trailing icon styles. */
-  icon?: SlotStyleValue | ButtonIconStyles;
+  icon?: SlotStyle | ButtonIconStyles;
   /** Styles applied to the hint badge. */
-  hint?: SlotStyleValue;
+  hint?: SlotStyle;
 }
 
 export type ButtonStylesProp = ButtonStyleSlots;
@@ -67,8 +67,8 @@ function resolveButtonStyles(styles: ButtonStylesProp | undefined) {
   if (!styles) return resolveButtonBaseStyles(styles);
   const { root, icon, hint } = styles;
 
-  let iconLeft: SlotStyleValue | undefined;
-  let iconRight: SlotStyleValue | undefined;
+  let iconLeft: SlotStyle | undefined;
+  let iconRight: SlotStyle | undefined;
 
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {

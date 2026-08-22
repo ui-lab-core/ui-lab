@@ -7,7 +7,7 @@ import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useButton } from "@react-aria/button";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Badge.module.css";
 
@@ -19,16 +19,16 @@ type BadgeIconSlots = {
 };
 
 interface BadgeIconStyles {
-  left?: StyleValue;
-  right?: StyleValue;
+  left?: Style;
+  right?: Style;
 }
 
 export interface BadgeStyleSlots {
-  root?: StyleValue;
-  icon?: StyleValue | BadgeIconStyles;
-  iconLeft?: StyleValue;
-  iconRight?: StyleValue;
-  dismiss?: StyleValue;
+  root?: Style;
+  icon?: Style | BadgeIconStyles;
+  iconLeft?: Style;
+  iconRight?: Style;
+  dismiss?: Style;
 }
 
 export type BadgeStylesProp = StylesProp<BadgeStyleSlots>;
@@ -53,7 +53,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 interface DismissButtonProps {
   onDismiss?: () => void;
   variant: string;
-  className?: StyleValue;
+  className?: Style;
 }
 
 function DismissButton({ onDismiss, variant, className }: DismissButtonProps) {
@@ -101,7 +101,7 @@ function resolveBadgeStyles(styles: BadgeStylesProp | undefined) {
   if (!icon || typeof icon === "string" || Array.isArray(icon)) {
     return resolveBadgeBaseStyles({
       root,
-      icon: icon as StyleValue | undefined,
+      icon: icon as Style | undefined,
       iconLeft,
       iconRight,
       dismiss,

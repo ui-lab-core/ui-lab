@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -18,19 +18,19 @@ import {
 import css from "./Group.module.css";
 
 type GroupItemStyles = {
-  first?: StyleValue;
-  last?: StyleValue;
-  divider?: StyleValue;
-  grow?: StyleValue;
+  first?: Style;
+  last?: Style;
+  divider?: Style;
+  grow?: Style;
 };
 
 export interface GroupStyleSlots {
-  root?: StyleValue;
-  item?: StyleValue | GroupItemStyles;
-  button?: StyleValue;
-  input?: StyleValue;
-  select?: StyleValue;
-  expand?: StyleValue;
+  root?: Style;
+  item?: Style | GroupItemStyles;
+  button?: Style;
+  input?: Style;
+  select?: Style;
+  expand?: Style;
 }
 
 export type GroupStylesProp = StylesProp<GroupStyleSlots>;
@@ -77,11 +77,11 @@ function resolveGroupStyles(styles: GroupStylesProp | undefined) {
   if (!styles) return resolveGroupBaseStyles(styles);
   const { root, item, button, input, select, expand } = styles;
 
-  let itemResolved: StyleValue | undefined;
-  let itemFirst: StyleValue | undefined;
-  let itemLast: StyleValue | undefined;
-  let itemDivider: StyleValue | undefined;
-  let itemGrow: StyleValue | undefined;
+  let itemResolved: Style | undefined;
+  let itemFirst: Style | undefined;
+  let itemLast: Style | undefined;
+  let itemDivider: Style | undefined;
+  let itemGrow: Style | undefined;
 
   if (item) {
     if (typeof item === "string" || Array.isArray(item)) {

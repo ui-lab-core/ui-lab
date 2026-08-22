@@ -124,12 +124,6 @@
     background: transparent;
     box-shadow: none;
     font-weight: var(--font-weight-body-medium, 500);
-
-    &[data-active],
-    &[data-focus-visible] {
-      border-color: transparent;
-      box-shadow: none;
-    }
   }
 
   .search :global([data-focus-indicator="local"]) {

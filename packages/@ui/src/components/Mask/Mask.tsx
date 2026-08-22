@@ -1,12 +1,12 @@
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Mask.module.css";
 
 interface MaskStyleSlots {
-  root?: StyleValue;
-  gradient?: StyleValue;
+  root?: Style;
+  gradient?: Style;
 }
 
 type MaskStylesProp = StylesProp<MaskStyleSlots>;

@@ -1,18 +1,24 @@
+"use client";
+
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Select.module.css";
 
 export interface SelectSeparatorStyleSlots {
-  root?: StyleValue;
+  /** Styles the separator element. */
+  root?: Style;
 }
 
 export type SelectSeparatorStylesProp = StylesProp<SelectSeparatorStyleSlots>;
 
-export interface SelectSeparatorProps extends React.PropsWithChildren {
-  /** Additional CSS class names */
+export interface SelectSeparatorProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Adds classes to the separator element.
+   * @category Styling */
   className?: string;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles the separator root.
+   * @category Styling
+   * @typeDoc SelectSeparatorStyleSlots */
   styles?: SelectSeparatorStylesProp;
 }
 
@@ -26,13 +32,13 @@ function resolveSelectSeparatorStyles(styles: SelectSeparatorStylesProp | undefi
 
 /** Horizontal rule that visually separates groups of items in the dropdown */
 const SelectSeparator = React.forwardRef<HTMLDivElement, SelectSeparatorProps>(
-  ({ className, styles: stylesProp }, ref) => {
+  ({ className, styles: stylesProp, ...domProps }, ref) => {
     const resolved = resolveSelectSeparatorStyles(stylesProp);
     return (
-      <div ref={ref} className={cn(styles.separator, className, resolved.root)} role="separator" />
+      <div ref={ref} className={cn(styles.separator, className, resolved.root)} data-slot="root" role="separator" {...domProps} />
     );
   },
 );
-SelectSeparator.displayName = "SelectSeparator";
+SelectSeparator.displayName = "Select.Separator";
 
 export { SelectSeparator };

@@ -8,7 +8,7 @@ import { useFocusRing } from "@react-aria/focus";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { type StyleValue, cn } from "@/lib/utils";
+import { type Style, cn } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 import { asElementProps } from "@/lib/react-aria";
@@ -21,26 +21,26 @@ import dateModuleStyles from "./Date.module.css";
 const NativeDate = globalThis.Date;
 
 export interface DateHeaderStyleSlots {
-  root?: StyleValue;
-  title?: StyleValue;
+  root?: Style;
+  title?: Style;
   navigation?:
-    | StyleValue
+    | Style
     | {
-        previous?: StyleValue;
-        next?: StyleValue;
+        previous?: Style;
+        next?: Style;
       };
 }
 
 export interface DateDayHeadersStyleSlots {
-  root?: StyleValue;
-  item?: StyleValue;
+  root?: Style;
+  item?: Style;
 }
 
 export interface DateStyleSlots {
-  root?: StyleValue;
-  header?: StyleValue | DateHeaderStyleSlots;
-  dayHeaders?: StyleValue | DateDayHeadersStyleSlots;
-  day?: StyleValue;
+  root?: Style;
+  header?: Style | DateHeaderStyleSlots;
+  dayHeaders?: Style | DateDayHeadersStyleSlots;
+  day?: Style;
 }
 
 export type DateStylesProp = StylesProp<DateStyleSlots>;
@@ -61,19 +61,25 @@ function isStyleGroup(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function normalizeDateStyles(styles: DateStylesProp | undefined) {
+function normalizeDateStyles(
+  styles: DateStylesProp | undefined,
+): Partial<Record<(typeof dateStyleSlotKeys)[number], Style>> {
   const headerValue = styles?.header;
   const header = isStyleGroup(headerValue) ? (headerValue as DateHeaderStyleSlots) : undefined;
-  const headerShared = isStyleGroup(headerValue) ? undefined : headerValue;
+  const headerShared = isStyleGroup(headerValue) ? undefined : (headerValue as Style | undefined);
   const navigation = isStyleGroup(header?.navigation)
-    ? (header.navigation as { previous?: StyleValue; next?: StyleValue })
+    ? (header.navigation as { previous?: Style; next?: Style })
     : undefined;
-  const navigationShared = isStyleGroup(header?.navigation) ? undefined : header?.navigation;
+  const navigationShared = isStyleGroup(header?.navigation)
+    ? undefined
+    : (header?.navigation as Style | undefined);
   const dayHeadersValue = styles?.dayHeaders;
   const dayHeaders = isStyleGroup(dayHeadersValue)
     ? (dayHeadersValue as DateDayHeadersStyleSlots)
     : undefined;
-  const dayHeadersShared = isStyleGroup(dayHeadersValue) ? undefined : dayHeadersValue;
+  const dayHeadersShared = isStyleGroup(dayHeadersValue)
+    ? undefined
+    : (dayHeadersValue as Style | undefined);
 
   return {
     root: styles?.root,

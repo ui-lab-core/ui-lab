@@ -1,4 +1,4 @@
-import { Select as SelectRoot, SelectContext, useSelectContext, type SelectMode } from "./Select";
+import { Select as SelectRoot } from "./Select";
 import { SelectTrigger, SearchableTrigger } from "./Select.Trigger";
 import { SelectContent, SearchableContent } from "./Select.Content";
 import { SelectGroup, SelectValue, SelectItem, SelectList } from "./Select.Items";
@@ -30,8 +30,14 @@ const Multi = Object.assign(SelectRoot, {
   Item: SelectItem,
 });
 
-export type { SelectProps, SelectState, SelectStyleSlots, SelectStylesProp } from "./Select";
-export type { SelectContentProps, SelectContentStyleSlots } from "./Select.Content";
+export type { SelectItemData, SelectMode, SelectProps, SelectState, SelectStyleSlots, SelectStylesProp, SelectTriggerMode } from "./Select";
+export type {
+  SelectContentListStyles,
+  SelectContentProps,
+  SelectContentSearchStyles,
+  SelectContentStyleSlots,
+  SelectContentStylesProp,
+} from "./Select.Content";
 export type {
   SelectTriggerProps,
   SelectTriggerStyleSlots,
@@ -49,6 +55,7 @@ export type {
   SelectSubProps,
   SelectSubTriggerProps,
   SelectSubContentProps,
+  SelectSubContentListStyles,
   SelectSubTriggerStyleSlots,
   SelectSubTriggerStylesProp,
   SelectSubContentStyleSlots,
@@ -69,4 +76,20 @@ export type {
   SelectListStylesProp,
 } from "./Select.Items";
 
-export { Select, Searchable, Multi, useSelectContext };
+export {
+  Select,
+  Searchable,
+  Multi,
+  SelectContent,
+  SearchableContent,
+  SelectTrigger,
+  SearchableTrigger,
+  SelectList,
+  SelectItem,
+  SelectGroup,
+  SelectValue,
+  SelectSeparator,
+  SelectSub,
+  SelectSubTrigger,
+  SelectSubContent,
+};

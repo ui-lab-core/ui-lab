@@ -2,7 +2,6 @@
 
 @layer components.defaults {
   .page {
-    --padding: 1rem;
     --gap: 0;
 
     @apply relative flex w-full min-w-0 flex-col;
@@ -10,6 +9,7 @@
     container-type: inline-size;
     max-width: var(--max-width);
     gap: var(--gap);
+    padding: var(--page-padding);
   }
 
   .page[data-centered="true"] {
@@ -19,31 +19,6 @@
   .page[data-fullscreen="true"] {
     min-height: 100dvh;
     max-width: none;
-  }
-
-  .padding-none {
-    --padding: 0;
-    padding: 0;
-  }
-
-  .padding-sm {
-    --padding: 0.5rem;
-    padding: var(--padding);
-  }
-
-  .padding-md {
-    --padding: 1rem;
-    padding: var(--padding);
-  }
-
-  .padding-lg {
-    --padding: 1.5rem;
-    padding: var(--padding);
-  }
-
-  .padding-xl {
-    --padding: 2rem;
-    padding: var(--padding);
   }
 
   .header,
@@ -74,12 +49,12 @@
 
   .header.divided {
     border-bottom: var(--border-width-base, 1px) solid var(--background-700);
-    padding-bottom: var(--padding);
+    padding-bottom: var(--page-padding);
   }
 
   .footer.divided {
     border-top: var(--border-width-base, 1px) solid var(--background-700);
-    padding-top: var(--padding);
+    padding-top: var(--page-padding);
   }
 
   .body {

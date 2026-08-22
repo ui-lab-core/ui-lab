@@ -1,20 +1,20 @@
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
 import { useChartContext } from "./Chart";
 
 export interface ChartReferenceStyleSlots {
-  root?: StyleValue;
-  line?: StyleValue;
-  label?: StyleValue;
+  root?: Style;
+  line?: Style;
+  label?: Style;
 }
 
 export type ChartReferenceStylesProp = StylesProp<ChartReferenceStyleSlots>;
 
 export interface ChartCursorStyleSlots {
-  root?: StyleValue;
-  line?: StyleValue;
+  root?: Style;
+  line?: Style;
 }
 
 export type ChartCursorStylesProp = StylesProp<ChartCursorStyleSlots>;

@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useId } from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Frame.module.css";
 
 interface FrameStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 type FrameStylesProp = StylesProp<FrameStyleSlots>;
@@ -112,27 +112,35 @@ const CAP_OVERRUN = 1.5;
 function ShapeLayer({
   side,
   align,
+  shapeOffset,
   pathWidth,
   mirror,
   children,
 }: {
   side: FrameSide;
   align: FrameShapeAlign;
+  shapeOffset?: number;
   pathWidth: number;
   mirror: boolean;
   children: React.ReactNode;
 }) {
   const { rotate, axis, cross, reverse } = SIDE_PLACEMENT[side];
-  const anchor = ALIGN_ANCHOR[reverse ? ALIGN_FLIP[align] : align];
+  const resolvedAlign = shapeOffset === undefined ? align : "center";
+  const anchor =
+    shapeOffset === undefined
+      ? ALIGN_ANCHOR[reverse ? ALIGN_FLIP[resolvedAlign] : resolvedAlign]
+      : shapeOffset;
 
   return (
     <svg x={axis === "x" ? anchor : cross} y={axis === "x" ? cross : anchor} overflow="visible">
       <g transform={`rotate(${rotate})`}>
         <g
-          style={{ transform: `translate(${ALIGN_INSET[align]}, var(--frame-stroke-offset, 0px))` }}
+          style={{
+            transform: `translate(${ALIGN_INSET[resolvedAlign]}, var(--frame-stroke-offset, 0px))`,
+          }}
         >
           <g
-            transform={`translate(${-pathWidth * ALIGN_SHIFT[align]}, 0)${mirror ? " scale(1, -1)" : ""}`}
+            transform={`translate(${-pathWidth * ALIGN_SHIFT[resolvedAlign]}, 0)${mirror ? " scale(1, -1)" : ""}`}
           >
             {children}
           </g>
@@ -164,6 +172,11 @@ export interface FrameProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   shapeAlign?: FrameShapeAlign;
   /**
+   * Center coordinate of the path shape along its edge, measured from that
+   * edge's logical start. Overrides `shapeAlign` when provided.
+   */
+  shapeOffset?: number;
+  /**
    * Whether the path shape is cut into the frame or protrudes from it. Either
    * way the frame clips its content to the resulting outline, so anything that
    * should sit in a cutout — an avatar in a notch, say — belongs alongside the
@@ -191,6 +204,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
       pathWidth = 0,
       side = "top",
       shapeAlign = "center",
+      shapeOffset,
       shapeMode = "indent",
       pathStroke = "solid",
       edges = "all",
@@ -290,7 +304,13 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
               <rect width="100%" height="100%" fill="white" className={css.shape} />
               {edgeShapeProps && <rect fill="white" {...edgeShapeProps} />}
               {shapeRegion && (
-                <ShapeLayer side={side} align={shapeAlign} pathWidth={pathWidth} mirror={indent}>
+                <ShapeLayer
+                  side={side}
+                  align={shapeAlign}
+                  shapeOffset={shapeOffset}
+                  pathWidth={pathWidth}
+                  mirror={indent}
+                >
                   <path d={shapeRegion} fill={indent ? "black" : "white"} />
                 </ShapeLayer>
               )}
@@ -371,7 +391,13 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
               <rect x="-100%" y="-100%" width="300%" height="300%" fill="white" />
               {edgeMaskStyle && <rect fill="black" style={edgeMaskStyle} />}
               {shapeRegion && (
-                <ShapeLayer side={side} align={shapeAlign} pathWidth={pathWidth} mirror={indent}>
+                <ShapeLayer
+                  side={side}
+                  align={shapeAlign}
+                  shapeOffset={shapeOffset}
+                  pathWidth={pathWidth}
+                  mirror={indent}
+                >
                   <path
                     d={shapeRegion}
                     fill="black"
@@ -413,7 +439,13 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
                 {...strokeDashProps}
               />
               {path && (
-                <ShapeLayer side={side} align={shapeAlign} pathWidth={pathWidth} mirror={indent}>
+                <ShapeLayer
+                  side={side}
+                  align={shapeAlign}
+                  shapeOffset={shapeOffset}
+                  pathWidth={pathWidth}
+                  mirror={indent}
+                >
                   <path
                     d={path}
                     fill="none"

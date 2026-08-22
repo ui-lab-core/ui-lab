@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Chart.module.css";
@@ -9,12 +9,12 @@ import { formatValue } from "./Chart.shared";
 const TOOLTIP_GAP = 12;
 
 export interface ChartTooltipStyleSlots {
-  root?: StyleValue;
-  header?: StyleValue;
-  row?: StyleValue;
-  swatch?: StyleValue;
-  label?: StyleValue;
-  value?: StyleValue;
+  root?: Style;
+  header?: Style;
+  row?: Style;
+  swatch?: Style;
+  label?: Style;
+  value?: Style;
 }
 
 export type ChartTooltipStylesProp = StylesProp<ChartTooltipStyleSlots>;
@@ -164,10 +164,10 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
 ChartTooltip.displayName = "ChartTooltip";
 
 export interface ChartLegendStyleSlots {
-  root?: StyleValue;
-  item?: StyleValue;
-  swatch?: StyleValue;
-  label?: StyleValue;
+  root?: Style;
+  item?: Style;
+  swatch?: Style;
+  label?: Style;
 }
 
 export type ChartLegendStylesProp = StylesProp<ChartLegendStyleSlots>;

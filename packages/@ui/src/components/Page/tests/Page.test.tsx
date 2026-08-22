@@ -36,10 +36,13 @@ describe("Page composition", () => {
     );
 
     const root = container.firstElementChild as HTMLElement;
-    expect(root).toHaveClass(css["padding-xl"], "custom-root");
+    expect(root).toHaveClass("custom-root");
     expect(root).toHaveAttribute("data-gap", "sm");
     expect(root).toHaveAttribute("data-centered", "false");
     expect(root.style.getPropertyValue("--max-width")).toBe("960px");
+    expect(root.style.getPropertyValue("--page-padding")).toBe(
+      "calc(var(--spacing, 0.25rem) * 8)",
+    );
     expect(screen.getByRole("main")).toHaveClass("custom-body");
   });
 

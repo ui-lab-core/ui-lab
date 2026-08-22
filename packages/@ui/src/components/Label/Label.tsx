@@ -1,12 +1,12 @@
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Label.module.css";
 
 interface LabelStyleSlots {
-  root?: StyleValue;
-  text?: StyleValue;
-  requiredIndicator?: StyleValue;
-  helperText?: StyleValue;
+  root?: Style;
+  text?: Style;
+  requiredIndicator?: Style;
+  helperText?: Style;
 }
 
 type LabelStylesProp = StylesProp<LabelStyleSlots>;

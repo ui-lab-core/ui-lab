@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { useFocusRing } from "@react-aria/focus";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 import styles from "./Chart.module.css";
@@ -48,9 +48,9 @@ export interface SeriesData extends SeriesRegistration {
 }
 
 export interface ChartStyleSlots {
-  root?: StyleValue;
-  plot?: StyleValue;
-  columnHighlight?: StyleValue;
+  root?: Style;
+  plot?: Style;
+  columnHighlight?: Style;
 }
 
 export type ChartStylesProp = StylesProp<ChartStyleSlots>;

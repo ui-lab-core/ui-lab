@@ -4,7 +4,7 @@ import * as React from "react";
 import { mergeProps, useFocusRing, usePress } from "react-aria";
 import { useHover, useInteractionModality } from "@react-aria/interactions";
 import { cn } from "@/lib/utils";
-import { StyleValue } from "@/lib/utils";
+import { Style } from "@/lib/utils";
 import { asElementProps } from "@/lib/react-aria";
 import { StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -66,8 +66,8 @@ function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
 }
 
 interface TabsStyleSlots {
-  root?: StyleValue;
-  list?: StyleValue;
+  root?: Style;
+  list?: Style;
 }
 
 interface TabsProps {
@@ -183,10 +183,10 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
 TabsRoot.displayName = "Tabs";
 
 interface TabsListStyleSlots {
-  root?: StyleValue;
-  list?: StyleValue;
-  indicator?: StyleValue;
-  trigger?: StyleValue;
+  root?: Style;
+  list?: Style;
+  indicator?: Style;
+  trigger?: Style;
 }
 
 interface TabsListProps {
@@ -454,8 +454,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 TabsList.displayName = "TabsList";
 
 interface TabsTriggerIconStyles {
-  left?: StyleValue;
-  right?: StyleValue;
+  left?: Style;
+  right?: Style;
 }
 
 interface TabsTriggerIconSlots {
@@ -464,8 +464,8 @@ interface TabsTriggerIconSlots {
 }
 
 interface TabsTriggerStyleSlots {
-  root?: StyleValue;
-  icon?: StyleValue | TabsTriggerIconStyles;
+  root?: Style;
+  icon?: Style | TabsTriggerIconStyles;
 }
 
 interface TabsTriggerProps
@@ -510,8 +510,8 @@ function resolveTabsTriggerStyles(styles: StylesProp<TabsTriggerStyleSlots> | un
   if (!styles) return resolveTabsTriggerBaseStyles(styles);
   const { root, icon } = styles;
 
-  let iconLeft: StyleValue | undefined;
-  let iconRight: StyleValue | undefined;
+  let iconLeft: Style | undefined;
+  let iconRight: Style | undefined;
 
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {
@@ -679,7 +679,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
 TabsTrigger.displayName = "Tab";
 
 interface TabsContentStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 interface TabsContentProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useLayoutEffect, useState, useCallback } from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { createComponentSlotResolver } from "@/lib/component-slots";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -20,10 +20,10 @@ import {
 } from "./scripts/restore-scroll.constants";
 
 export interface ScrollStyleSlots {
-  root?: StyleValue;
-  content?: StyleValue;
-  track?: StyleValue;
-  thumb?: StyleValue;
+  root?: Style;
+  content?: Style;
+  track?: Style;
+  thumb?: Style;
 }
 
 export type ScrollStylesProp = StylesProp<ScrollStyleSlots>;

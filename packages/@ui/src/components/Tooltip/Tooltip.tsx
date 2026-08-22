@@ -8,6 +8,7 @@ import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
 import { offset } from "../../hooks/useFloat/core/middleware/offset";
 import { shift } from "../../hooks/useFloat/core/middleware/shift";
+import { arrow } from "../../hooks/useFloat/core/middleware/arrow";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import { cn } from "@/lib/utils";
 import { useTooltipTriggerState } from "react-stately";
@@ -18,11 +19,14 @@ import { Frame } from "../Frame";
 import { Badge } from "../Badge";
 import css from "./Tooltip.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { type StyleValue } from "@/lib/utils";
+import { type Style } from "@/lib/utils";
 import { useControlledState } from "@/hooks/useControlledState";
+import { getArrowShapeOffset, getFrameSideFromPlacement } from "@/utils/arrow-positioning";
 
 const ARROW_PATH = "M 0 0 C 3 0 4 -9 6 -9 C 8 -9 9 0 12 0";
 const ARROW_WIDTH = 12;
+const ARROW_HEIGHT = 9;
+const ARROW_PADDING = 8;
 const TOOLTIP_GAP = 4;
 const ARROW_POSITIONING_SIZE = 6;
 const DEFAULT_SHOW_DELAY_MS = 600;
@@ -52,19 +56,6 @@ function useTimeout() {
 
 type TooltipPosition = "top" | "right" | "bottom" | "left";
 
-const getFrameSide = (position: TooltipPosition): "top" | "right" | "bottom" | "left" => {
-  switch (position) {
-    case "top":
-      return "bottom";
-    case "bottom":
-      return "top";
-    case "left":
-      return "right";
-    case "right":
-      return "left";
-  }
-};
-
 const getInitialTransform = (placement: string): string => {
   switch (placement) {
     case "top":
@@ -81,11 +72,11 @@ const getInitialTransform = (placement: string): string => {
 };
 
 export interface TooltipStyleSlots {
-  root?: StyleValue;
-  trigger?: StyleValue;
-  content?: StyleValue;
-  frame?: StyleValue;
-  hint?: StyleValue;
+  root?: Style;
+  trigger?: Style;
+  content?: Style;
+  frame?: Style;
+  hint?: Style;
 }
 
 export type TooltipStylesProp = StylesProp<TooltipStyleSlots>;
@@ -157,6 +148,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     const triggerWrapperRef = useRef<HTMLSpanElement>(null);
     const triggerRef = useRef<HTMLElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null);
     const [shouldRender, setShouldRender] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [isInstant, setIsInstant] = useState(false);
@@ -194,13 +186,26 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 
     const { tooltipProps: ariaTooltipProps } = useTooltip({}, state);
 
-    const { refs, floatingStyles, placement } = useFloating({
+    const { refs, floatingStyles, placement, middlewareData } = useFloating({
       placement: position,
       // Tooltips are commonly used in fixed headers; fixed positioning avoids scroll drift.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
-      middleware: [offset(TOOLTIP_GAP + ARROW_POSITIONING_SIZE), flip(), shift({ padding: 8 })],
+      middleware: [
+        offset(TOOLTIP_GAP + ARROW_POSITIONING_SIZE),
+        flip(),
+        shift({ padding: 8 }),
+        showArrow ? arrow({ element: arrowElement, padding: ARROW_PADDING }) : null,
+      ],
     });
+
+    const frameSide = getFrameSideFromPlacement(placement);
+    const shapeOffset = showArrow
+      ? getArrowShapeOffset(placement, middlewareData.arrow, {
+          width: ARROW_WIDTH,
+          height: ARROW_HEIGHT,
+        })
+      : undefined;
 
     const isPositioned = floatingStyles.transform !== undefined;
 
@@ -376,10 +381,11 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                 }}
               >
                 <Frame
-                  side={showArrow ? getFrameSide(position) : position}
+                  side={showArrow ? (frameSide ?? position) : position}
                   shapeMode={showArrow ? "extend" : undefined}
                   path={showArrow ? ARROW_PATH : undefined}
                   pathWidth={showArrow ? ARROW_WIDTH : undefined}
+                  {...(showArrow && shapeOffset !== undefined ? { shapeOffset } : {})}
                   style={{ "--frame-radius": "8px" } as React.CSSProperties}
                 >
                   <div
@@ -394,6 +400,19 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                     )}
                   </div>
                 </Frame>
+                {showArrow && (
+                  <div
+                    ref={setArrowElement}
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      width: ARROW_WIDTH,
+                      height: ARROW_HEIGHT,
+                      visibility: "hidden",
+                      pointerEvents: "none",
+                    }}
+                  />
+                )}
               </div>
             </div>,
             document.body,

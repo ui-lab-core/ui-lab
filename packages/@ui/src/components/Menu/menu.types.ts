@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Key } from "react-aria";
 import type { ItemData } from "../../utils/list-navigation";
 import type { StylesProp } from "@/lib/styles";
-import type { StyleValue } from "@/lib/utils";
+import type { Style } from "@/lib/utils";
 import type { ButtonProps } from "../Button";
 
 export type SelectionMode = "none" | "single" | "multiple";
@@ -116,7 +116,7 @@ export interface MenuTriggerProps
 }
 
 export interface MenuTriggerStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 export type MenuTriggerStylesProp = StylesProp<MenuTriggerStyleSlots>;
 
@@ -126,8 +126,8 @@ export interface MenuPortalProps extends React.PropsWithChildren {
 }
 
 export interface MenuContentStyleSlots {
-  root?: StyleValue;
-  list?: StyleValue;
+  root?: Style;
+  list?: Style;
 }
 
 export type MenuContentStylesProp = StylesProp<MenuContentStyleSlots>;
@@ -154,7 +154,7 @@ export interface MenuContentProps extends React.PropsWithChildren {
 export interface MenuGroupProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export interface MenuItemStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 export type MenuItemStylesProp = StylesProp<MenuItemStyleSlots>;
 
@@ -174,8 +174,8 @@ export interface MenuItemProps extends React.PropsWithChildren {
 }
 
 export interface MenuCheckboxItemStyleSlots {
-  root?: StyleValue;
-  indicator?: StyleValue;
+  root?: Style;
+  indicator?: Style;
 }
 export type MenuCheckboxItemStylesProp = StylesProp<MenuCheckboxItemStyleSlots>;
 
@@ -204,8 +204,8 @@ export interface MenuRadioGroupProps extends React.PropsWithChildren {
 }
 
 export interface MenuRadioItemStyleSlots {
-  root?: StyleValue;
-  indicator?: StyleValue;
+  root?: Style;
+  indicator?: Style;
 }
 export type MenuRadioItemStylesProp = StylesProp<MenuRadioItemStyleSlots>;
 
@@ -234,7 +234,7 @@ export interface MenuLabelProps extends React.PropsWithChildren {
 }
 
 export interface MenuLabelStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 export type MenuLabelStylesProp = StylesProp<MenuLabelStyleSlots>;
 
@@ -246,7 +246,7 @@ export interface MenuSeparatorProps {
 }
 
 export interface MenuSeparatorStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 export type MenuSeparatorStylesProp = StylesProp<MenuSeparatorStyleSlots>;
 
@@ -258,7 +258,7 @@ export interface MenuShortcutProps extends React.HTMLAttributes<HTMLSpanElement>
 }
 
 export interface MenuShortcutStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 export type MenuShortcutStylesProp = StylesProp<MenuShortcutStyleSlots>;
 
@@ -272,8 +272,8 @@ export interface MenuSubProps extends React.PropsWithChildren {
 }
 
 export interface MenuSubTriggerStyleSlots {
-  root?: StyleValue;
-  chevron?: StyleValue;
+  root?: Style;
+  chevron?: Style;
 }
 export type MenuSubTriggerStylesProp = StylesProp<MenuSubTriggerStyleSlots>;
 
@@ -291,8 +291,8 @@ export interface MenuSubTriggerProps extends React.PropsWithChildren {
 }
 
 export interface MenuSubContentStyleSlots {
-  root?: StyleValue;
-  list?: StyleValue;
+  root?: Style;
+  list?: Style;
 }
 export type MenuSubContentStylesProp = StylesProp<MenuSubContentStyleSlots>;
 

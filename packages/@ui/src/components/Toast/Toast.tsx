@@ -6,7 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Toast.module.css";
 import { ToastProps as ToastData, dispatch } from "./Toast.Store";
@@ -37,14 +37,14 @@ function getSpawnY(element: HTMLElement, direction: "top" | "bottom", boundary?:
 }
 
 interface ToastStyleSlots {
-  root?: StyleValue;
-  iconWrap?: StyleValue;
-  icon?: StyleValue;
-  content?: StyleValue;
-  title?: StyleValue;
-  description?: StyleValue;
-  close?: StyleValue;
-  closeIcon?: StyleValue;
+  root?: Style;
+  iconWrap?: Style;
+  icon?: Style;
+  content?: Style;
+  title?: Style;
+  description?: Style;
+  close?: Style;
+  closeIcon?: Style;
 }
 
 type ToastStylesProp = StylesProp<ToastStyleSlots>;

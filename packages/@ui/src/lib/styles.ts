@@ -1,14 +1,26 @@
 import "../base.css";
 import type * as React from "react";
-import { cn, type StyleValue } from "./utils";
+import { cn, type Style } from "./utils";
 
-export type StylesProp<S extends { root?: StyleValue }> = S;
+export type StylesProp<S extends { root?: Style }> = S;
+/**
+ * Inline CSS properties accepted by a style slot.
+ * @typeDoc SlotStyleObject
+ */
 export type SlotStyleObject = React.CSSProperties;
+/**
+ * Object form of a style slot, allowing className and style to be supplied together.
+ * @typeDoc SlotStyleProps
+ */
 export type SlotStyleProps = {
-  className?: StyleValue;
+  className?: Style;
   style?: SlotStyleObject;
 };
-export type SlotStyleValue = StyleValue | SlotStyleObject | SlotStyleProps;
+/**
+ * A style slot value: class names, inline CSS properties, or both in an object.
+ * @typeDoc SlotStyle
+ */
+export type SlotStyle = Style | SlotStyleObject | SlotStyleProps;
 type ResolvedSlotStyle = {
   className: string;
   style?: SlotStyleObject;
@@ -17,7 +29,7 @@ type ResolvedSlotStyles<K extends string> = Record<K, ResolvedSlotStyle>;
 
 function resolveStyles<K extends string>(
   slotKeys: readonly K[],
-  styles: Partial<Record<K, StyleValue>> | undefined,
+  styles: Partial<Record<K, Style>> | undefined,
 ): Record<K, string> {
   const result = {} as Record<K, string>;
 
@@ -33,7 +45,7 @@ function resolveStyles<K extends string>(
 }
 
 export function createStylesResolver<K extends string>(slotKeys: readonly K[]) {
-  return (styles: Partial<Record<K, StyleValue>> | undefined): Record<K, string> =>
+  return (styles: Partial<Record<K, Style>> | undefined): Record<K, string> =>
     resolveStyles(slotKeys, styles);
 }
 
@@ -45,7 +57,7 @@ function isSlotStyleProps(value: unknown): value is SlotStyleProps {
   return isPlainObject(value) && ("className" in value || "style" in value);
 }
 
-function normalizeSlotStyleValue(value: SlotStyleValue | undefined): ResolvedSlotStyle {
+function normalizeSlotStyle(value: SlotStyle | undefined): ResolvedSlotStyle {
   if (!value) return { className: "" };
 
   if (typeof value === "string" || Array.isArray(value)) {
@@ -63,7 +75,7 @@ function normalizeSlotStyleValue(value: SlotStyleValue | undefined): ResolvedSlo
 }
 
 export function createStylePropsResolver<K extends string>(slotKeys: readonly K[]) {
-  return (styles: Partial<Record<K, SlotStyleValue>> | undefined): ResolvedSlotStyles<K> => {
+  return (styles: Partial<Record<K, SlotStyle>> | undefined): ResolvedSlotStyles<K> => {
     const result = {} as ResolvedSlotStyles<K>;
     for (const key of slotKeys) {
       result[key] = { className: "" };
@@ -74,7 +86,7 @@ export function createStylePropsResolver<K extends string>(slotKeys: readonly K[
     }
 
     for (const key of slotKeys) {
-      result[key] = normalizeSlotStyleValue(styles[key]);
+      result[key] = normalizeSlotStyle(styles[key]);
     }
 
     return result;

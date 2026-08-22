@@ -4,23 +4,23 @@ import * as React from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { useHover } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Path.module.css";
 
 interface PathItemStyleSlots {
-  root?: StyleValue;
-  link?: StyleValue;
+  root?: Style;
+  link?: Style;
 }
 
 type PathItemStylesProp = StylesProp<PathItemStyleSlots>;
 
 interface PathStyleSlots {
-  root?: StyleValue;
-  list?: StyleValue;
-  separator?: StyleValue;
+  root?: Style;
+  list?: Style;
+  separator?: Style;
 }
 
 type PathStylesProp = StylesProp<PathStyleSlots>;

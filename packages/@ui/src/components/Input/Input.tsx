@@ -6,7 +6,7 @@ import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Button } from "@/components/Button";
 import { Tooltip } from "@/components/Tooltip";
@@ -22,49 +22,49 @@ export type InputVariant = "default" | "ghost" | (string & {});
 /** Styles for icons rendered at either edge of the input. */
 export interface InputIconStyles {
   /** Styles the icon before the input value. */
-  left?: StyleValue;
+  left?: Style;
   /** Styles the icon after the input value. */
-  right?: StyleValue;
+  right?: Style;
 }
 
 export interface InputAdornmentStyles {
-  start?: StyleValue;
-  end?: StyleValue;
+  start?: Style;
+  end?: Style;
 }
 
 /** Styles for the number-input stepper buttons. */
 export interface InputStepperStyles {
   /** Styles the increment button. */
-  up?: StyleValue;
+  up?: Style;
   /** Styles the decrement button. */
-  down?: StyleValue;
+  down?: Style;
 }
 
 /** Named style slots for the Input anatomy. */
 export interface InputStyleSlots {
   /** Styles the visual input surface. */
-  root?: StyleValue;
+  root?: Style;
   /** Styles the native input or custom input content surface. */
-  input?: StyleValue;
+  input?: Style;
   adornments?: InputAdornmentStyles;
   /** Styles one or both icon wrappers. */
-  icon?: StyleValue | InputIconStyles;
+  icon?: Style | InputIconStyles;
   /** Styles one or both actions wrappers. */
-  actions?: StyleValue | InputActionStyles;
+  actions?: Style | InputActionStyles;
   /** Styles the hint content. */
-  hint?: StyleValue;
+  hint?: Style;
   /** Styles the number-input controls wrapper. */
-  controls?: StyleValue;
+  controls?: Style;
   /** Styles one or both number-input stepper buttons. */
-  stepper?: StyleValue | InputStepperStyles;
+  stepper?: Style | InputStepperStyles;
 }
 
 /** Styles for action groups at either edge of the input. */
 export interface InputActionStyles {
   /** Styles the actions before the input value. */
-  left?: StyleValue;
+  left?: Style;
   /** Styles the actions after the input value. */
-  right?: StyleValue;
+  right?: Style;
 }
 
 export type InputStylesProp = StylesProp<InputStyleSlots>;
@@ -121,12 +121,12 @@ function resolveInputStyles(styles: InputStylesProp | undefined) {
   if (!styles) return resolveInputBaseStyles(styles);
   const { root, input, adornments, icon, actions, hint, controls, stepper } = styles;
 
-  let iconLeft: StyleValue | undefined;
-  let iconRight: StyleValue | undefined;
-  let actionsLeft: StyleValue | undefined;
-  let actionsRight: StyleValue | undefined;
-  let stepperUp: StyleValue | undefined;
-  let stepperDown: StyleValue | undefined;
+  let iconLeft: Style | undefined;
+  let iconRight: Style | undefined;
+  let actionsLeft: Style | undefined;
+  let actionsRight: Style | undefined;
+  let stepperUp: Style | undefined;
+  let stepperDown: Style | undefined;
 
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {

@@ -5,7 +5,7 @@ import React, { forwardRef, useState, type ComponentPropsWithoutRef } from "reac
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -17,18 +17,18 @@ type TextareaSize = "sm" | "md" | "lg";
 type ResizeAxis = "both" | "x" | "y" | "none";
 
 interface TextareaResizeHandleStyles {
-  both?: StyleValue;
-  x?: StyleValue;
-  y?: StyleValue;
+  both?: Style;
+  x?: Style;
+  y?: Style;
 }
 
 interface TextareaStyleSlots {
-  root?: StyleValue;
-  container?: StyleValue;
-  surface?: StyleValue;
-  scrollWrapper?: StyleValue;
-  resizeHandle?: StyleValue | TextareaResizeHandleStyles;
-  characterCount?: StyleValue;
+  root?: Style;
+  container?: Style;
+  surface?: Style;
+  scrollWrapper?: Style;
+  resizeHandle?: Style | TextareaResizeHandleStyles;
+  characterCount?: Style;
 }
 
 type TextareaStylesProp = StylesProp<TextareaStyleSlots>;
@@ -56,9 +56,9 @@ function resolveTextareaStyles(styles: TextareaStylesProp | undefined) {
 
   const { root, container, surface, scrollWrapper, resizeHandle, characterCount } = styles;
 
-  let resizeHandleBoth: StyleValue | undefined;
-  let resizeHandleX: StyleValue | undefined;
-  let resizeHandleY: StyleValue | undefined;
+  let resizeHandleBoth: Style | undefined;
+  let resizeHandleX: Style | undefined;
+  let resizeHandleY: Style | undefined;
 
   if (resizeHandle) {
     if (typeof resizeHandle === "string" || Array.isArray(resizeHandle)) {

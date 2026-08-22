@@ -1,51 +1,74 @@
+"use client";
+
 import * as React from "react";
-import { Key } from "@react-types/shared";
+import type { Key } from "@react-types/shared";
 
-import { mergeProps } from "@react-aria/utils";
-import { useHover } from "@react-aria/interactions";
-import { useFocusRing } from "@react-aria/focus";
 import { useButton } from "@react-aria/button";
+import { useFocusRing } from "@react-aria/focus";
+import { useHover } from "@react-aria/interactions";
+import { mergeProps } from "@react-aria/utils";
 
-import { cn } from "@/lib/utils";
-import { type SlotStyleValue, createStylePropsResolver } from "@/lib/styles";
+import { useControlledState } from "@/hooks/useControlledState";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { useControlledState } from "@/hooks/useControlledState";
+import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
+import { cn } from "@/lib/utils";
+
 import styles from "./Select.module.css";
 import {
-  useListNavigation,
-  handleListKeyDown,
-  focusAdjacentTabStop,
-  type ItemData,
-} from "./Select.shared";
-import {
+  clearSelectRegistry,
+  closeOtherSelects,
   registerSelectCloseCallback,
   unregisterSelectCloseCallback,
-  closeOtherSelects,
-  clearSelectRegistry,
 } from "./Select.registry";
+import {
+  focusAdjacentTabStop,
+  handleListKeyDown,
+  type ItemData,
+  useListNavigation,
+} from "./Select.shared";
 
+/** Registered option data used by Select.Value render functions and data-driven navigation. */
 export type SelectItemData = ItemData;
 
+/** Selects whether the trigger opens from a press or pointer hover. */
 export type SelectTriggerMode = "click" | "hover";
+
+/** Selects one item or independently toggles multiple items. */
 export type SelectMode = "single" | "multiple";
+
+/** Controlled state accepted by the Select root. */
 export interface SelectState {
+  /** Selected key in single mode, or selected keys in multiple mode. */
   value?: Key | Key[];
+
+  /** Whether the option panel is open. */
   open?: boolean;
 }
 
+/** Named style overrides for the Select root. */
 export interface SelectStyleSlots {
-  root?: SlotStyleValue;
+  /** Styles the root wrapper and is inherited as inline style by the floating content overlay. */
+  root?: SlotStyle;
 }
 
 export type SelectStylesProp = SelectStyleSlots;
 
+type ContentPlacement = "top" | "bottom";
+type TriggerType = "button" | "input";
+type RestoreFocusTarget = "auto" | "trigger" | "row";
+
+interface ItemExtras {
+  onSelect?: () => void;
+  isSubmenuTrigger?: boolean;
+}
+
 export interface SelectContextValue {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  contentPlacement: "top" | "bottom";
-  setContentPlacement: React.Dispatch<React.SetStateAction<"top" | "bottom">>;
-  triggerType: "button" | "input";
+  contentPlacement: ContentPlacement;
+  setContentPlacement: React.Dispatch<React.SetStateAction<ContentPlacement>>;
+  triggerType: TriggerType;
   mode: SelectMode;
   selectedKey: Key | null;
   selectedKeys?: Set<Key>;
@@ -91,64 +114,126 @@ export interface SelectContextValue {
   filter?: (item: any) => boolean;
   contentId: string;
   hasExternalValue: boolean;
-  restoreFocus: (target?: "auto" | "trigger" | "row") => void;
+  restoreFocus: (target?: RestoreFocusTarget) => void;
   rootStyle?: React.CSSProperties;
 }
 
-const SelectContext = React.createContext<SelectContextValue | null>(null);
+export const SelectContext = React.createContext<SelectContextValue | null>(null);
 
-export function useSelectContext() {
+function useSelectContext() {
   const context = React.useContext(SelectContext);
+
   if (!context) {
     throw new Error("Select component must be used within Select root");
   }
+
   return context;
 }
 
 export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElement> {
-  /** Controlled state. `value` is a key (single) or key array (multiple). */
+  /** Controls the selection and/or open state. Its supplied values take precedence over the corresponding standalone controlled props.
+   * @category Core
+   * @typeDoc SelectState */
   state?: SelectState;
-  /** Initial selected value. */
+
+  /** Controls the selected key in single mode or selected keys in multiple mode. In single mode it takes precedence over selectedKey.
+   * @category Core */
   value?: Key | Key[];
-  /** Initial open state. */
+
+  /** Controls whether the option panel is open.
+   * @category Core */
   open?: boolean;
-  /** Selection mode: "single" for one item, "multiple" for multi-item selection */
+
+  /** Chooses whether selecting an item replaces one key or toggles it in a set.
+   * @category Core
+   * @default "single"
+   * @typeDoc SelectMode */
   mode?: SelectMode;
-  /** External items array — used when items are provided as data rather than JSX */
+
+  /** Supplies external item data for navigation and filtering; JSX Select.Item children still provide rendered options.
+   * @category Content */
   items?: Array<T>;
-  /** Controlled selected key for single-select mode */
+
+  /** Controls the selected key when mode is single and value/state.value do not supply one.
+   * @category Core */
   selectedKey?: Key | null;
-  /** Default selected key for uncontrolled single-select */
+
+  /** Sets the initial selected key for uncontrolled single-select usage.
+   * @category Core
+   * @default null */
   defaultSelectedKey?: Key | null;
-  /** Controlled selected keys for multi-select mode */
+
+  /** Controls selected keys in multiple mode when value/state.value do not supply an array.
+   * @category Core */
   selectedKeys?: Key[];
-  /** Default selected keys for uncontrolled multi-select */
+
+  /** Sets the initial selected keys for uncontrolled multiple-select usage.
+   * @category Core
+   * @default [] */
   defaultSelectedKeys?: Key[];
-  /** Default display text shown in the trigger when nothing is selected */
+
+  /** Provides fallback trigger text when the selected item has not registered or no item is selected.
+   * @category Content */
   defaultValue?: string;
-  /** Display text for the currently selected value — used for SSR/SSG to avoid
-   * flash of placeholder before items register. Provide alongside selectedKey or
-   * defaultSelectedKey so the correct label renders on the first pass. */
+
+  /** Provides selected trigger text before items register, avoiding an SSR/SSG placeholder flash. Pair it with selectedKey or defaultSelectedKey.
+   * @category Content */
   label?: string;
-  /** Called when selection changes; receives a single key (single) or key array (multiple) */
+
+  /** Runs after a selection changes with a key in single mode or the complete key array in multiple mode.
+   * @category Events */
   onSelectionChange?: (value: any) => void;
-  /** Disables the entire select and prevents interaction */
+
+  /** Prevents opening, selection, hover opening, and trigger focus interaction.
+   * @category Core
+   * @default false */
   disabled?: boolean;
-  /** Focuses the trigger automatically on mount */
+
+  /** Focuses the registered trigger after mount.
+   * @category Accessibility
+   * @default false
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autofocus */
   autoFocus?: boolean;
-  /** Maximum number of items visible before the dropdown scrolls */
+
+  /** Limits visible option rows before the floating panel becomes scrollable.
+   * @category Content
+   * @default 6 */
   maxItems?: number;
-  /** Additional CSS class for the root wrapper */
+
+  /** Adds classes to the root wrapper.
+   * @category Styling */
   className?: string;
-  /** How the dropdown opens: "click" (default) or "hover" */
+
+  /** Chooses press or hover opening. Hover mode closes shortly after the pointer leaves both trigger and panel.
+   * @category Core
+   * @default "click"
+   * @typeDoc SelectTriggerMode */
   trigger?: SelectTriggerMode;
-  /** Custom filter predicate applied to the items array */
+
+  /** Filters registered or external items for searchable Select content. It receives item data with label mapped from textValue.
+   * @category Content */
   filter?: (item: T) => boolean;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+
+  /** Styles the named Select anatomy. className remains the conventional root class API.
+   * @category Styling
+   * @typeDoc SelectStyleSlots */
   styles?: SelectStylesProp;
 }
 
+const TRIGGER_NAMES = ["Select.Trigger", "Select.SearchableTrigger"];
+const CONTENT_NAMES = ["Select.Content", "Select.SearchableContent"];
+
 const resolveSelectStyles = createStylePropsResolver(["root"] as const);
+
+function getChildDisplayName(child: React.ReactNode) {
+  if (!React.isValidElement(child)) return undefined;
+  return (child.type as { displayName?: string })?.displayName;
+}
+
+function isNamedChild(child: React.ReactNode, names: string[]) {
+  const displayName = getChildDisplayName(child);
+  return displayName !== undefined && names.includes(displayName);
+}
 
 const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
   (
@@ -177,118 +262,76 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     },
     ref,
   ) => {
-    const triggerRef = React.useRef<HTMLElement>(null);
+    // Refs
+
     const scopeRef = React.useRef<HTMLDivElement>(null);
     const wrapperRef = React.useRef<HTMLDivElement>(null);
+    const triggerRef = React.useRef<HTMLElement>(null);
     const contentRef = React.useRef<HTMLElement>(null);
+
+    const itemExtrasRef = React.useRef<Map<Key, ItemExtras>>(new Map());
+    const hoverTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
     const mouseMoveDetectedRef = React.useRef(true);
     const triggerMouseDownRef = React.useRef(false);
     const openedOnMouseDownRef = React.useRef(false);
-    const itemExtrasRef = React.useRef<
-      Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>
-    >(new Map());
-    const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false);
-    const [contentPlacement, setContentPlacement] = React.useState<"top" | "bottom">("bottom");
-    const contentId = React.useId();
-    const selectId = React.useId();
-    const hoverTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const keyboardScrollIntentRef = React.useRef(false);
 
-    const handleHoverIntent = React.useCallback(
-      (isHovering: boolean) => {
-        if (triggerMode !== "hover" || isDisabled) return;
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-          hoverTimeoutRef.current = null;
-        }
+    // IDs
 
-        if (isHovering) {
-          setIsOpen(true);
-        } else {
-          hoverTimeoutRef.current = setTimeout(() => {
-            setIsOpen(false);
-          }, 100);
-        }
-      },
-      [triggerMode, isDisabled],
-    );
+    const contentId = React.useId();
+    const selectId = React.useId();
 
-    React.useEffect(() => {
-      if (!isOpen || triggerMode !== "hover" || isDisabled) return;
+    // Open state
 
-      const handleMouseMove = (e: MouseEvent) => {
-        const target = e.target as HTMLElement;
-        const isOver = wrapperRef.current?.contains(target) || contentRef.current?.contains(target);
+    const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false);
+    const [contentPlacement, setContentPlacement] = React.useState<ContentPlacement>("bottom");
 
-        if (!isOver) {
-          handleHoverIntent(false);
-        } else {
-          handleHoverIntent(true);
-        }
-      };
+    // Selection state
 
-      window.addEventListener("mousemove", handleMouseMove);
-      return () => window.removeEventListener("mousemove", handleMouseMove);
-    }, [isOpen, triggerMode, isDisabled, handleHoverIntent]);
-
-    React.useEffect(() => {
-      return () => {
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-        }
-      };
-    }, []);
-
-    React.useEffect(() => {
-      registerSelectCloseCallback(selectId, (shouldClose) => {
-        if (shouldClose) {
-          setIsOpen(false);
-        }
-      });
-      return () => {
-        unregisterSelectCloseCallback(selectId);
-        clearSelectRegistry(selectId);
-      };
-    }, [selectId]);
-
-    React.useEffect(() => {
-      if (isOpen) {
-        closeOtherSelects(selectId);
-      }
-    }, [isOpen, selectId]);
-
-    const [uncontrolledSelectedKey, setUncontrolledSelectedKey] = useControlledState(
+    const controlledSingleStateValue =
       mode === "single" && !Array.isArray(controlledState?.value)
         ? (controlledState?.value as Key | null | undefined)
-        : undefined,
-      !Array.isArray(value) ? (value ?? controlledSelectedKey) : undefined,
+        : undefined;
+
+    const controlledSingleValue = !Array.isArray(value)
+      ? (value ?? controlledSelectedKey)
+      : undefined;
+
+    const [selectedKey, setSelectedKey] = useControlledState(
+      controlledSingleStateValue,
+      controlledSingleValue,
       defaultSelectedKey ?? null,
     );
+
     const controlledMultipleValues =
-      mode === "multiple"
-        ? Array.isArray(controlledState?.value)
+      mode !== "multiple"
+        ? undefined
+        : Array.isArray(controlledState?.value)
           ? controlledState.value
           : Array.isArray(value)
             ? value
-            : controlledSelectedKeys
-        : undefined;
+            : controlledSelectedKeys;
+
     const controlledMultipleKeys = React.useMemo(
       () =>
         controlledMultipleValues === undefined ? undefined : new Set(controlledMultipleValues),
       [controlledMultipleValues],
     );
-    const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = useControlledState(
+
+    const [selectedKeys, setSelectedKeys] = useControlledState(
       controlledMultipleKeys,
       undefined,
       new Set(defaultSelectedKeys),
     );
+
     const [selectedTextValue, setSelectedTextValue] = React.useState(label ?? defaultValue ?? "");
-    const selectedKey = uncontrolledSelectedKey;
-    const selectedKeys = uncontrolledSelectedKeys;
+
+    // Navigation
 
     const nav = useListNavigation({
       isOpen,
-      externalItems: propItems.length > 0 ? propItems : undefined,
+      externalItems: propItems.length ? propItems : undefined,
       filter: filter ? (item: any) => filter({ ...item, label: item.textValue } as any) : undefined,
     });
 
@@ -296,11 +339,11 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       (
         key: Key,
         textValue: string,
-        isDisabled?: boolean,
+        itemDisabled?: boolean,
         onSelect?: () => void,
         isSubmenuTrigger?: boolean,
       ) => {
-        nav.registerItem(key, textValue, isDisabled);
+        nav.registerItem(key, textValue, itemDisabled);
         itemExtrasRef.current.set(key, { onSelect, isSubmenuTrigger });
       },
       [nav.registerItem],
@@ -316,6 +359,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
     const isFocusedItemSubmenu = React.useCallback(() => {
       if (nav.focusedKey === null) return false;
+
       return itemExtrasRef.current.get(nav.focusedKey)?.isSubmenuTrigger ?? false;
     }, [nav.focusedKey]);
 
@@ -324,17 +368,20 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       keyboardScrollIntentRef.current = true;
     }, []);
 
+    // Focus
+
     const moveFocusFromTrigger = React.useCallback((direction: 1 | -1) => {
-      const triggerElement = triggerRef.current;
-      if (!triggerElement) return false;
-      return focusAdjacentTabStop(triggerElement, direction, wrapperRef.current);
+      if (!triggerRef.current) return false;
+
+      return focusAdjacentTabStop(triggerRef.current, direction, wrapperRef.current);
     }, []);
 
-    const restoreFocus = React.useCallback((target: "auto" | "trigger" | "row" = "auto") => {
+    const restoreFocus = React.useCallback((target: RestoreFocusTarget = "auto") => {
       const triggerElement = triggerRef.current;
       if (!triggerElement) return;
 
       const ownerRow = triggerElement.closest<HTMLElement>('[data-list-focus-owner="true"]');
+
       const focusTarget =
         target === "row"
           ? ownerRow
@@ -345,156 +392,165 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       focusTarget?.focus({ preventScroll: true });
     }, []);
 
+    // Selection
+
     const onSelect = React.useCallback(
       (key: Key) => {
-        const item = nav.items.find((i) => i.key === key);
+        const item = nav.items.find((item) => item.key === key);
+
         if (item) {
           setSelectedTextValue(item.textValue);
         }
-        setUncontrolledSelectedKey(key);
+
+        setSelectedKey(key);
         onSelectionChange?.(key);
+
         setIsOpen(false);
         nav.setSearchValue("");
         restoreFocus();
       },
-      [onSelectionChange, nav.items, restoreFocus, setUncontrolledSelectedKey],
+      [nav.items, nav.setSearchValue, onSelectionChange, restoreFocus, setIsOpen, setSelectedKey],
     );
 
     const onToggle = React.useCallback(
       (key: Key) => {
-        const newKeys = new Set(selectedKeys);
-        if (newKeys.has(key)) {
-          newKeys.delete(key);
+        const nextKeys = new Set(selectedKeys);
+
+        if (nextKeys.has(key)) {
+          nextKeys.delete(key);
         } else {
-          newKeys.add(key);
+          nextKeys.add(key);
         }
-        setUncontrolledSelectedKeys(newKeys);
-        onSelectionChange?.(Array.from(newKeys));
+
+        setSelectedKeys(nextKeys);
+        onSelectionChange?.(Array.from(nextKeys));
       },
-      [selectedKeys, onSelectionChange, setUncontrolledSelectedKeys],
+      [onSelectionChange, selectedKeys, setSelectedKeys],
     );
 
     const selectFocusedItem = React.useCallback(() => {
-      if (nav.focusedKey !== null) {
-        const item = nav.enabledFilteredItems.find((item) => item.key === nav.focusedKey);
-        if (item && !item.isDisabled) {
-          const extras = itemExtrasRef.current.get(nav.focusedKey);
-          if (extras?.onSelect) {
-            extras.onSelect();
-          } else if (mode === "multiple") {
-            onToggle(nav.focusedKey);
-          } else {
-            onSelect(nav.focusedKey);
-          }
-        }
+      if (nav.focusedKey === null) return;
+
+      const item = nav.enabledFilteredItems.find((item) => item.key === nav.focusedKey);
+
+      if (!item || item.isDisabled) return;
+
+      const extras = itemExtrasRef.current.get(nav.focusedKey);
+
+      if (extras?.onSelect) {
+        extras.onSelect();
+      } else if (mode === "multiple") {
+        onToggle(nav.focusedKey);
+      } else {
+        onSelect(nav.focusedKey);
       }
-    }, [nav.focusedKey, nav.enabledFilteredItems, onSelect, onToggle, mode]);
+    }, [mode, nav.enabledFilteredItems, nav.focusedKey, onSelect, onToggle]);
 
-    React.useEffect(() => {
-      if (isOpen) {
-        // Only initialize focusedKey if it's not already valid
-        if (nav.focusedKey !== null && nav.visibleKeys.has(nav.focusedKey)) {
-          const item = nav.filteredItems.find((item) => item.key === nav.focusedKey);
-          if (item && !item.isDisabled) {
-            return; // Keep current keyboard focus, don't reset it
-          }
+    // Hover behavior
+
+    const handleHoverIntent = React.useCallback(
+      (isHovering: boolean) => {
+        if (triggerMode !== "hover" || isDisabled) return;
+
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+          hoverTimeoutRef.current = null;
         }
 
-        const focusKey =
-          mode === "multiple" && selectedKeys.size > 0 ? Array.from(selectedKeys)[0] : selectedKey;
+        if (isHovering) {
+          setIsOpen(true);
+          return;
+        }
 
-        if (focusKey !== null && nav.visibleKeys.has(focusKey)) {
-          const item = nav.filteredItems.find((item) => item.key === focusKey);
-          if (item && !item.isDisabled) {
-            nav.setFocusedKey(focusKey);
-            return;
-          }
-        }
-        if (nav.enabledFilteredItems.length > 0) {
-          nav.setFocusedKey(nav.enabledFilteredItems[0].key);
-        } else {
-          nav.setFocusedKey(null);
-        }
-      }
-    }, [
-      isOpen,
-      selectedKey,
-      selectedKeys,
-      nav.visibleKeys,
-      nav.enabledFilteredItems,
-      nav.filteredItems,
-      mode,
-      nav.focusedKey,
-    ]);
+        hoverTimeoutRef.current = setTimeout(() => {
+          setIsOpen(false);
+        }, 100);
+      },
+      [isDisabled, setIsOpen, triggerMode],
+    );
+
+    // React Aria state
 
     const { buttonProps, isPressed } = useButton(
       {
         isDisabled,
-        onPress: (e) => {
-          if (isDisabled) return;
-          // Keyboard interactions are handled by onKeyDown to prevent conflicts
-          if (e.pointerType !== "keyboard") {
-            // A closed Select opens on mouse down. Do not immediately undo that
-            // state change when React Aria completes the same press on mouse up.
-            if (openedOnMouseDownRef.current) {
-              openedOnMouseDownRef.current = false;
-              return;
-            }
-            setIsOpen((prev) => !prev);
+        onPress: (event) => {
+          if (isDisabled || event.pointerType === "keyboard") return;
+
+          // A closed Select opens on mouse down. Do not immediately undo that
+          // state change when React Aria completes the same press on mouse up.
+          if (openedOnMouseDownRef.current) {
+            openedOnMouseDownRef.current = false;
+            return;
           }
+
+          setIsOpen((current) => !current);
         },
       },
       triggerRef,
     );
+
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
+
     const { hoverProps, isHovered } = useHover({
       isDisabled,
       onHoverStart: () => handleHoverIntent(true),
       onHoverEnd: () => handleHoverIntent(false),
     });
 
-    const triggerProps = mergeProps(buttonProps, focusProps, hoverProps, {
-      "aria-haspopup": "listbox" as const,
-      "aria-expanded": isOpen,
-      "aria-controls": isOpen ? contentId : undefined,
-      "aria-disabled": isDisabled || undefined,
-      onMouseDown: (e: React.MouseEvent) => {
-        if (isDisabled || e.button !== 0) return;
+    // Trigger interaction
+
+    const handleTriggerMouseDown = React.useCallback(
+      (event: React.MouseEvent) => {
+        if (isDisabled || event.button !== 0) return;
 
         triggerMouseDownRef.current = true;
         openedOnMouseDownRef.current = !isOpen;
+
         if (!isOpen) {
           setIsOpen(true);
         }
       },
-      onKeyDown: (e: React.KeyboardEvent) => {
+      [isDisabled, isOpen, setIsOpen],
+    );
+
+    const handleTriggerKeyDown = React.useCallback(
+      (event: React.KeyboardEvent) => {
         if (!isOpen) {
-          if (
-            e.key === "ArrowDown" ||
-            e.key === "ArrowUp" ||
-            e.key === "Enter" ||
-            (e.key === " " && !isDisabled)
-          ) {
-            e.preventDefault();
+          const shouldOpen =
+            event.key === "ArrowDown" ||
+            event.key === "ArrowUp" ||
+            event.key === "Enter" ||
+            (event.key === " " && !isDisabled);
+
+          if (shouldOpen) {
+            event.preventDefault();
             setIsOpen(true);
           }
+
           return;
         }
 
-        if (e.key === "Tab") {
-          e.preventDefault();
-          const direction = e.shiftKey ? -1 : 1;
+        if (event.key === "Tab") {
+          event.preventDefault();
+
           setIsOpen(false);
           nav.setSearchValue("");
-          moveFocusFromTrigger(direction as 1 | -1);
+          moveFocusFromTrigger(event.shiftKey ? -1 : 1);
+
           return;
         }
 
-        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Home" || e.key === "End") {
+        if (
+          event.key === "ArrowDown" ||
+          event.key === "ArrowUp" ||
+          event.key === "Home" ||
+          event.key === "End"
+        ) {
           markKeyboardNavigation();
         }
 
-        handleListKeyDown(e, {
+        handleListKeyDown(event, {
           navigateNext: nav.navigateToNextItem,
           navigatePrev: nav.navigateToPrevItem,
           confirm: selectFocusedItem,
@@ -507,7 +563,77 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
           setFocusedKey: nav.setFocusedKey,
         });
       },
+      [
+        isDisabled,
+        isOpen,
+        markKeyboardNavigation,
+        moveFocusFromTrigger,
+        nav.filteredItems,
+        nav.navigateToNextItem,
+        nav.navigateToPrevItem,
+        nav.setFocusedKey,
+        nav.setSearchValue,
+        restoreFocus,
+        selectFocusedItem,
+        setIsOpen,
+      ],
+    );
+
+    const triggerProps = mergeProps(buttonProps, focusProps, hoverProps, {
+      "aria-haspopup": "listbox" as const,
+      "aria-expanded": isOpen,
+      "aria-controls": isOpen ? contentId : undefined,
+      "aria-disabled": isDisabled || undefined,
+      onMouseDown: handleTriggerMouseDown,
+      onKeyDown: handleTriggerKeyDown,
     });
+
+    // Lifecycle
+
+    React.useEffect(() => {
+      registerSelectCloseCallback(selectId, (shouldClose) => {
+        if (shouldClose) setIsOpen(false);
+      });
+
+      return () => {
+        unregisterSelectCloseCallback(selectId);
+        clearSelectRegistry(selectId);
+      };
+    }, [selectId, setIsOpen]);
+
+    React.useEffect(() => {
+      if (isOpen) {
+        closeOtherSelects(selectId);
+      }
+    }, [isOpen, selectId]);
+
+    React.useEffect(() => {
+      if (!isOpen || triggerMode !== "hover" || isDisabled) return;
+
+      const handleMouseMove = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+
+        const isOverSelect =
+          wrapperRef.current?.contains(target) || contentRef.current?.contains(target);
+
+        handleHoverIntent(Boolean(isOverSelect));
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
+    }, [handleHoverIntent, isDisabled, isOpen, triggerMode]);
+
+    React.useEffect(
+      () => () => {
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+        }
+      },
+      [],
+    );
 
     React.useEffect(() => {
       const handleMouseUp = () => {
@@ -515,63 +641,102 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       };
 
       window.addEventListener("mouseup", handleMouseUp);
-      return () => window.removeEventListener("mouseup", handleMouseUp);
+
+      return () => {
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
     }, []);
 
     React.useEffect(() => {
-      if (autoFocus && triggerRef.current) {
-        triggerRef.current.focus({ preventScroll: true });
+      if (autoFocus) {
+        triggerRef.current?.focus({ preventScroll: true });
       }
     }, [autoFocus]);
 
     React.useEffect(() => {
-      if (mode === "single") {
-        if (selectedKey === null) {
-          setSelectedTextValue("");
-        } else {
-          const selectedItem = nav.items.find((item) => item.key === selectedKey);
-          if (selectedItem) {
-            setSelectedTextValue(selectedItem.textValue);
-          } else if (label !== undefined) {
-            setSelectedTextValue(label);
-          } else if (defaultValue !== undefined && defaultValue !== null) {
-            setSelectedTextValue(defaultValue);
-          }
+      if (!isOpen) return;
+
+      // Keep the current keyboard focus when it is still visible and enabled.
+      if (nav.focusedKey !== null && nav.visibleKeys.has(nav.focusedKey)) {
+        const focusedItem = nav.filteredItems.find((item) => item.key === nav.focusedKey);
+
+        if (focusedItem && !focusedItem.isDisabled) {
+          return;
         }
       }
-    }, [selectedKey, nav.items, mode, defaultValue, label]);
+
+      const initialFocusKey =
+        mode === "multiple" && selectedKeys.size > 0
+          ? selectedKeys.values().next().value
+          : selectedKey;
+
+      if (initialFocusKey != null && nav.visibleKeys.has(initialFocusKey)) {
+        const selectedItem = nav.filteredItems.find((item) => item.key === initialFocusKey);
+
+        if (selectedItem && !selectedItem.isDisabled) {
+          nav.setFocusedKey(initialFocusKey);
+          return;
+        }
+      }
+
+      nav.setFocusedKey(nav.enabledFilteredItems[0]?.key ?? null);
+    }, [
+      isOpen,
+      mode,
+      nav.enabledFilteredItems,
+      nav.filteredItems,
+      nav.focusedKey,
+      nav.setFocusedKey,
+      nav.visibleKeys,
+      selectedKey,
+      selectedKeys,
+    ]);
+
+    React.useEffect(() => {
+      if (mode !== "single") return;
+
+      if (selectedKey === null) {
+        setSelectedTextValue("");
+        return;
+      }
+
+      const selectedItem = nav.items.find((item) => item.key === selectedKey);
+
+      if (selectedItem) {
+        setSelectedTextValue(selectedItem.textValue);
+      } else if (label !== undefined) {
+        setSelectedTextValue(label);
+      } else if (defaultValue !== undefined && defaultValue !== null) {
+        setSelectedTextValue(defaultValue);
+      }
+    }, [defaultValue, label, mode, nav.items, selectedKey]);
+
+    // Children
 
     const childrenArray = React.Children.toArray(children);
-    const trigger = childrenArray.find(
-      (child) =>
-        React.isValidElement(child) &&
-        ((child.type as any)?.displayName === "SelectTrigger" ||
-          (child.type as any)?.displayName === "SearchableTrigger"),
-    );
-    const contentItems = childrenArray.filter(
-      (child) =>
-        React.isValidElement(child) &&
-        ((child.type as any)?.displayName === "SelectContent" ||
-          (child.type as any)?.displayName === "SearchableContent"),
-    );
+
+    const trigger = childrenArray.find((child) => isNamedChild(child, TRIGGER_NAMES));
+
+    const contentItems = childrenArray.filter((child) => isNamedChild(child, CONTENT_NAMES));
+
     const otherContent = childrenArray.filter(
-      (child) =>
-        !React.isValidElement(child) ||
-        ((child.type as any)?.displayName !== "SelectTrigger" &&
-          (child.type as any)?.displayName !== "SearchableTrigger" &&
-          (child.type as any)?.displayName !== "SelectContent" &&
-          (child.type as any)?.displayName !== "SearchableContent"),
+      (child) => !isNamedChild(child, TRIGGER_NAMES) && !isNamedChild(child, CONTENT_NAMES),
     );
+
     const hasExternalValue = otherContent.some(
-      (child) => React.isValidElement(child) && (child.type as any)?.displayName === "SelectValue",
+      (child) => getChildDisplayName(child) === "Select.Value",
     );
-    const triggerType =
-      React.isValidElement(trigger) && (trigger.type as any)?.displayName === "SearchableTrigger"
-        ? "input"
-        : "button";
+
+    const triggerType: TriggerType =
+      getChildDisplayName(trigger) === "Select.SearchableTrigger" ? "input" : "button";
+
+    // Styling and focus indicator
 
     const resolvedStyles = resolveSelectStyles(stylesProp);
+    const rootStyle = resolvedStyles.root.style;
+
     const mergedRootRef = useMergeRefs<HTMLDivElement>(scopeRef, wrapperRef, ref);
+
     const { indicatorProps } = useFocus({
       scopeRef,
       containerRef: wrapperRef,
@@ -581,57 +746,68 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       dependencies: [mode],
     });
 
+    // Context
+
+    const contextValue: SelectContextValue = {
+      isOpen,
+      setIsOpen,
+      contentPlacement,
+      setContentPlacement,
+      triggerType,
+      mode,
+
+      selectedKey,
+      selectedKeys: mode === "multiple" ? selectedKeys : undefined,
+      selectedTextValue,
+      onSelect,
+      onToggle: mode === "multiple" ? onToggle : undefined,
+
+      triggerRef,
+      wrapperRef,
+      contentRef,
+      triggerProps,
+
+      isFocused,
+      isFocusVisible,
+      isPressed,
+      isHovered,
+      isDisabled,
+
+      items: nav.items,
+      registerItem,
+      unregisterItem,
+
+      searchValue: nav.searchValue,
+      setSearchValue: nav.setSearchValue,
+      filteredItems: nav.filteredItems,
+      visibleKeys: nav.visibleKeys,
+      focusedKey: nav.focusedKey,
+      setFocusedKey: nav.setFocusedKey,
+      navigateToNextItem: nav.navigateToNextItem,
+      navigateToPrevItem: nav.navigateToPrevItem,
+      selectFocusedItem,
+      isFocusedItemSubmenu,
+
+      maxItems,
+      triggerMode,
+      handleHoverIntent,
+
+      mouseMoveDetectedRef,
+      triggerMouseDownRef,
+      keyboardScrollIntentRef,
+      markKeyboardNavigation,
+
+      moveFocusFromTrigger,
+      restoreFocus,
+
+      filter,
+      contentId,
+      hasExternalValue,
+      rootStyle,
+    };
+
     return (
-      <SelectContext.Provider
-        value={{
-          isOpen,
-          setIsOpen,
-          contentPlacement,
-          setContentPlacement,
-          triggerType,
-          mode,
-          selectedKey,
-          selectedKeys: mode === "multiple" ? selectedKeys : undefined,
-          selectedTextValue,
-          onSelect,
-          onToggle: mode === "multiple" ? onToggle : undefined,
-          triggerRef,
-          wrapperRef,
-          contentRef,
-          triggerProps,
-          isFocused,
-          isFocusVisible,
-          isPressed,
-          isHovered,
-          isDisabled,
-          items: nav.items,
-          registerItem,
-          unregisterItem,
-          searchValue: nav.searchValue,
-          setSearchValue: nav.setSearchValue,
-          filteredItems: nav.filteredItems,
-          visibleKeys: nav.visibleKeys,
-          focusedKey: nav.focusedKey,
-          setFocusedKey: nav.setFocusedKey,
-          navigateToNextItem: nav.navigateToNextItem,
-          navigateToPrevItem: nav.navigateToPrevItem,
-          selectFocusedItem,
-          isFocusedItemSubmenu,
-          maxItems,
-          triggerMode,
-          handleHoverIntent,
-          mouseMoveDetectedRef,
-          triggerMouseDownRef,
-          keyboardScrollIntentRef,
-          markKeyboardNavigation,
-          moveFocusFromTrigger,
-          filter,
-          contentId,
-          hasExternalValue,
-          restoreFocus,
-          rootStyle: resolvedStyles.root.style,
-        }}
-      >
+      <SelectContext.Provider value={contextValue}>
         <div
           ref={mergedRootRef}
           className={cn(
@@ -641,14 +817,17 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
             className,
             resolvedStyles.root.className,
           )}
-          style={resolvedStyles.root.style}
+          style={rootStyle}
+          data-slot="root"
           data-mode={mode}
+          data-disabled={isDisabled ? "true" : undefined}
           data-select-focus-surface="true"
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
           {...domProps}
         >
           <div {...indicatorProps} data-focus-indicator="local" />
+
           {otherContent}
           {trigger}
           {contentItems}
@@ -657,6 +836,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     );
   },
 );
+
 Select.displayName = "Select";
 
-export { Select, SelectContext };
+export { Select, useSelectContext };

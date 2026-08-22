@@ -1,5 +1,5 @@
 import React from "react";
-import type { StyleValue } from "../../lib/utils";
+import type { Style } from "../../lib/utils";
 import type { StylesProp } from "../../lib/styles";
 import type { GapSize } from "../../lib/gap";
 
@@ -16,10 +16,10 @@ export interface PageSeo {
 }
 
 export interface PageStyleSlots {
-  root?: StyleValue;
-  header?: StyleValue;
-  body?: StyleValue;
-  footer?: StyleValue;
+  root?: Style;
+  header?: Style;
+  body?: Style;
+  footer?: Style;
 }
 
 export type PageStylesProp = StylesProp<PageStyleSlots>;

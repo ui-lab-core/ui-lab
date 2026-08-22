@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { codeToHtml } from "shiki";
 import { transformerRenderIndentGuides } from "@shikijs/transformers";
 import { Copy, Check, ChevronDown } from "lucide-react";
-import { cn, type StyleValue } from "../../lib/utils";
+import { cn, type Style } from "../../lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Code.module.css";
 
@@ -95,10 +95,10 @@ export interface CodeProps {
 }
 
 interface CodeStyleSlots {
-  root?: StyleValue;
-  header?: StyleValue;
-  body?: StyleValue;
-  viewport?: StyleValue;
+  root?: Style;
+  header?: Style;
+  body?: Style;
+  viewport?: Style;
 }
 
 type CodeStylesProp = StylesProp<CodeStyleSlots>;

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
 
@@ -10,18 +10,18 @@ type GridChartKey = string | number | Date;
 type GridChartAccessor<T, V> = keyof T | ((row: T) => V);
 
 export interface GridChartStyleSlots {
-  root?: StyleValue;
-  viewport?: StyleValue;
-  layout?: StyleValue;
-  yLabels?: StyleValue;
-  yLabel?: StyleValue;
-  cells?: StyleValue;
-  cell?: StyleValue;
-  xLabels?: StyleValue;
-  xLabel?: StyleValue;
-  legend?: StyleValue;
-  legendLabel?: StyleValue;
-  legendSwatch?: StyleValue;
+  root?: Style;
+  viewport?: Style;
+  layout?: Style;
+  yLabels?: Style;
+  yLabel?: Style;
+  cells?: Style;
+  cell?: Style;
+  xLabels?: Style;
+  xLabel?: Style;
+  legend?: Style;
+  legendLabel?: Style;
+  legendSwatch?: Style;
 }
 
 export type GridChartStylesProp = StylesProp<GridChartStyleSlots>;

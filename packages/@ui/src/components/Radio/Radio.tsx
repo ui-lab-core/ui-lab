@@ -8,7 +8,7 @@ import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useRadioGroup, useRadio } from "@react-aria/radio";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps, resolveAccessibleLabel } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
@@ -19,13 +19,13 @@ import css from "./Radio.module.css";
 type Size = "sm" | "md" | "lg";
 
 export interface RadioStyleSlots {
-  root?: StyleValue;
-  item?: StyleValue;
-  input?: StyleValue;
-  dot?: StyleValue;
-  label?: StyleValue;
-  description?: StyleValue;
-  helperText?: StyleValue;
+  root?: Style;
+  item?: Style;
+  input?: Style;
+  dot?: Style;
+  label?: Style;
+  description?: Style;
+  helperText?: Style;
 }
 
 export type RadioStylesProp = StylesProp<RadioStyleSlots>;
@@ -66,10 +66,10 @@ const useRadioGroupContext = () => {
 };
 
 export interface RadioGroupStyleSlots {
-  root?: StyleValue;
-  label?: StyleValue;
-  description?: StyleValue;
-  group?: StyleValue;
+  root?: Style;
+  label?: Style;
+  description?: Style;
+  group?: Style;
 }
 
 export type RadioGroupStylesProp = StylesProp<RadioGroupStyleSlots>;

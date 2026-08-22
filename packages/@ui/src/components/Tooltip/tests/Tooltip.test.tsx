@@ -2,6 +2,32 @@ import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Tooltip } from "../Tooltip";
 
+vi.mock("../../Frame", () => ({
+  Frame: ({ side, shapeOffset, children }: { side?: string; shapeOffset?: number; children: React.ReactNode }) => (
+    <div data-testid="frame" data-side={side} data-shape-offset={shapeOffset}>
+      {children}
+    </div>
+  ),
+}));
+
+vi.mock("../../../hooks/useFloat/react/useFloating", () => {
+  const refs = {
+    reference: { current: null },
+    floating: { current: null },
+    setReference: () => {},
+    setFloating: () => {},
+  };
+
+  return {
+    useFloating: () => ({
+      refs,
+      floatingStyles: { position: "fixed", transform: "translate(0px, 0px)" },
+      placement: "bottom",
+      middlewareData: { arrow: { x: 26, centerOffset: 0 } },
+    }),
+  };
+});
+
 function TestTrigger({ children }: { children: React.ReactNode }) {
   return <button type="button">{children}</button>;
 }
@@ -40,5 +66,18 @@ describe("Tooltip", () => {
     fireEvent.focusIn(trigger);
 
     expect(onOpenChange).toHaveBeenCalledWith(true);
+  });
+
+  it("uses the resolved placement and arrow position for the Frame path", async () => {
+    render(
+      <Tooltip content="Under Construction" position="top" open showArrow>
+        <button type="button">Articles</button>
+      </Tooltip>,
+    );
+
+    const frame = await screen.findByTestId("frame");
+
+    expect(frame).toHaveAttribute("data-side", "top");
+    expect(frame).toHaveAttribute("data-shape-offset", "32");
   });
 });

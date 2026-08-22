@@ -1,14 +1,14 @@
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
 import { useChartContext } from "./Chart";
 
 export interface ChartAxisStyleSlots {
-  root?: StyleValue;
-  line?: StyleValue;
-  tick?: StyleValue;
-  label?: StyleValue;
+  root?: Style;
+  line?: Style;
+  tick?: Style;
+  label?: Style;
 }
 
 export type ChartAxisStylesProp = StylesProp<ChartAxisStyleSlots>;
@@ -117,8 +117,8 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
 ChartAxis.displayName = "ChartAxis";
 
 export interface ChartGridStyleSlots {
-  root?: StyleValue;
-  line?: StyleValue;
+  root?: Style;
+  line?: Style;
 }
 
 export type ChartGridStylesProp = StylesProp<ChartGridStyleSlots>;

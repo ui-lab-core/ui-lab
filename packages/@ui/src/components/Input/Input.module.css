@@ -87,7 +87,7 @@
       var(--focus-transition-timing-function, var(--ease-snappy-pop, ease-out));
 
     &[data-focused="true"]:not([data-disabled]) {
-      border-color: var(--focus-border, var(--background-border, transparent));
+      border-color: var(--background-focus, var(--background-border, transparent));
     }
 
     &[data-disabled] {

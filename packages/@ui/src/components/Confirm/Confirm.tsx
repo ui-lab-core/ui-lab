@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Button } from "../Button";
 import { Input } from "../Input";
@@ -11,18 +11,18 @@ import styles from "./Confirm.module.css";
 import { useControlledState } from "@/hooks/useControlledState";
 
 export interface ConfirmStyleSlots {
-  root?: StyleValue;
-  container?: StyleValue;
-  panel?: StyleValue;
-  header?: StyleValue;
-  body?: StyleValue;
-  actions?: StyleValue;
-  "row-text"?: StyleValue;
-  title?: StyleValue;
-  description?: StyleValue;
-  "error-message"?: StyleValue;
-  "warning-box"?: StyleValue;
-  input?: StyleValue;
+  root?: Style;
+  container?: Style;
+  panel?: Style;
+  header?: Style;
+  body?: Style;
+  actions?: Style;
+  "row-text"?: Style;
+  title?: Style;
+  description?: Style;
+  "error-message"?: Style;
+  "warning-box"?: Style;
+  input?: Style;
 }
 
 export type ConfirmStylesProp = StylesProp<ConfirmStyleSlots>;

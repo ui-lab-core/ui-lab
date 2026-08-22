@@ -1,6 +1,6 @@
 // toast/store.ts
 import React from "react";
-import { type StyleValue } from "@/lib/utils";
+import { type Style } from "@/lib/utils";
 import { type StylesProp } from "@/lib/styles";
 
 export type ToastVariant = "default" | "danger" | "success" | "info" | "warning";
@@ -14,14 +14,14 @@ export type ToastPosition =
 export type ToastSpawnDirection = "top" | "bottom";
 
 export interface ToastStyleSlots {
-  root?: StyleValue;
-  iconWrap?: StyleValue;
-  icon?: StyleValue;
-  content?: StyleValue;
-  title?: StyleValue;
-  description?: StyleValue;
-  close?: StyleValue;
-  closeIcon?: StyleValue;
+  root?: Style;
+  iconWrap?: Style;
+  icon?: Style;
+  content?: Style;
+  title?: Style;
+  description?: Style;
+  close?: Style;
+  closeIcon?: Style;
 }
 
 export type ToastStylesProp = StylesProp<ToastStyleSlots>;

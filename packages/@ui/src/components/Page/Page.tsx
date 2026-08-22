@@ -25,16 +25,13 @@ const resolveStyles = createStylesResolver(slots);
 type ResolvedStyles = ReturnType<typeof resolveStyles>;
 const StylesContext = React.createContext<ResolvedStyles>(resolveStyles(undefined));
 
-const paddingMap: Record<PagePadding, string> = {
-  none: css["padding-none"],
-  sm: css["padding-sm"],
-  md: css["padding-md"],
-  lg: css["padding-lg"],
-  xl: css["padding-xl"],
-};
-
 function toSize(value: string | number) {
   return typeof value === "number" ? `${value}px` : value;
+}
+
+function paddingMultiplier(padding: PagePadding): number {
+  if (padding === "none") return 0;
+  return { sm: 2, md: 4, lg: 6, xl: 8 }[padding];
 }
 
 function gapMultiplier(gap: PageGap): number {
@@ -60,7 +57,6 @@ const PageRoot = React.forwardRef<HTMLDivElement, PageProps>(
     },
     ref,
   ) => {
-    const paddingClass = paddingMap[padding];
     const resolved = React.useMemo(() => resolveStyles(stylesProp), [stylesProp]);
 
     return (
@@ -74,7 +70,7 @@ const PageRoot = React.forwardRef<HTMLDivElement, PageProps>(
         )}
         <div
           ref={ref}
-          className={cn(css.page, paddingClass, className, resolved.root)}
+          className={cn(css.page, className, resolved.root)}
           data-centered={centered}
           data-fullscreen={fullscreen}
           data-gap={gap}
@@ -82,6 +78,7 @@ const PageRoot = React.forwardRef<HTMLDivElement, PageProps>(
             {
               ...style,
               "--max-width": fullscreen ? undefined : toSize(maxWidth),
+              "--page-padding": `calc(var(--spacing, 0.25rem) * ${paddingMultiplier(padding)})`,
               "--gap": `calc(var(--spacing, 0.25rem) * ${gapMultiplier(gap)})`,
             } as React.CSSProperties
           }

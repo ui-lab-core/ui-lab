@@ -1,7 +1,7 @@
 import React from "react";
 
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { GroupContext } from "../Group/Group.Context";
 import css from "./Divider.module.css";
@@ -75,7 +75,7 @@ const dividerVariants = cva("shrink-0", {
 });
 
 export interface DividerStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 export type DividerStylesProp = StylesProp<DividerStyleSlots>;

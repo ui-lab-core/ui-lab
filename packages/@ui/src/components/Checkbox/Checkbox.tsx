@@ -3,7 +3,7 @@
 import React, { forwardRef, useId, useState } from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -11,18 +11,18 @@ import { useDragToggle } from "@/hooks/useDragToggle";
 import css from "./Checkbox.module.css";
 
 interface CheckboxIconStyles {
-  checkmark?: StyleValue;
-  indeterminate?: StyleValue;
+  checkmark?: Style;
+  indeterminate?: Style;
 }
 
 export interface CheckboxStyleSlots {
-  root?: StyleValue;
-  checkbox?: StyleValue;
-  "icon-checkmark"?: StyleValue;
-  "icon-indeterminate"?: StyleValue;
-  icon?: StyleValue | CheckboxIconStyles;
-  label?: StyleValue;
-  "helper-text"?: StyleValue;
+  root?: Style;
+  checkbox?: Style;
+  "icon-checkmark"?: Style;
+  "icon-indeterminate"?: Style;
+  icon?: Style | CheckboxIconStyles;
+  label?: Style;
+  "helper-text"?: Style;
 }
 
 export type CheckboxStylesProp = StylesProp<CheckboxStyleSlots>;
@@ -40,8 +40,8 @@ function resolveCheckboxStyles(styles: CheckboxStylesProp | undefined) {
   if (!styles) return resolveCheckboxBaseStyles(styles);
   const { root, checkbox, icon, label } = styles;
 
-  let iconCheckmark: StyleValue | undefined = styles["icon-checkmark"];
-  let iconIndeterminate: StyleValue | undefined = styles["icon-indeterminate"];
+  let iconCheckmark: Style | undefined = styles["icon-checkmark"];
+  let iconIndeterminate: Style | undefined = styles["icon-indeterminate"];
 
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {

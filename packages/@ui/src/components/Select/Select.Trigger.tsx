@@ -1,5 +1,8 @@
+"use client";
+
 import * as React from "react";
-import { cn, type StyleValue } from "@/lib/utils";
+import { mergeProps } from "@react-aria/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Input, type InputProps } from "../Input";
@@ -13,16 +16,21 @@ import { infer } from "@/lib/infer";
 
 const SelectTriggerContext = React.createContext<boolean>(false);
 
+/** Side-specific trigger icon styles. */
 interface SelectTriggerIconStyles {
-  left?: StyleValue;
-  right?: StyleValue;
+  left?: Style;
+  right?: Style;
 }
 
 export interface SelectTriggerStyleSlots {
-  root?: StyleValue;
-  valueSection?: StyleValue;
-  icon?: StyleValue | SelectTriggerIconStyles; // Compound slot
-  iconSection?: StyleValue;
+  /** Styles the trigger button. */
+  root?: Style;
+  /** Styles the trigger value section. */
+  value?: Style;
+  /** Styles both icon wrappers, or individual left and right icon wrappers. */
+  icon?: Style | SelectTriggerIconStyles; // Compound slot
+  /** Styles the chevron section. */
+  iconSection?: Style;
 }
 
 export type SelectTriggerStylesProp = StylesProp<SelectTriggerStyleSlots>;
@@ -31,33 +39,39 @@ export interface SelectTriggerProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "disabled" | "type"
 > {
-  /** Additional CSS class names */
+  /** Adds classes to the trigger button.
+   * @category Styling */
   className?: string;
-  /** Custom chevron icon displayed on the right side of the trigger; defaults to ChevronDown */
+  /** Replaces the default ChevronDown icon in the right trigger section.
+   * @category Content */
   chevron?: React.ReactNode;
-  /** Icon slot object for prefix and chevron overrides */
+  /** Supplies a prefix icon and/or takes precedence over chevron with a custom right icon.
+   * @category Content */
   icon?: { prefix?: React.ReactNode; chevron?: React.ReactNode };
-  /** Visual style variant; "ghost" removes the default button background */
+  /** Applies the ghost trigger treatment, which removes the default button background.
+   * @category Styling */
   variant?: "ghost";
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles trigger anatomy: root, value, icon.left, icon.right, and iconSection.
+   * @category Styling
+   * @typeDoc SelectTriggerStyleSlots */
   styles?: SelectTriggerStylesProp;
 }
 
 /** Button that opens and closes the Select dropdown */
 const resolveSelectTriggerBaseStyles = createStylesResolver([
   "root",
-  "valueSection",
-  "iconLeft",
-  "iconRight",
+  "value",
+  "icon.left",
+  "icon.right",
   "iconSection",
 ] as const);
 
 function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined) {
   if (!styles) return resolveSelectTriggerBaseStyles(styles);
 
-  const { root, valueSection, icon, iconSection } = styles;
-  let iconLeft: StyleValue | undefined;
-  let iconRight: StyleValue | undefined;
+  const { root, value, icon, iconSection } = styles;
+  let iconLeft: Style | undefined;
+  let iconRight: Style | undefined;
 
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {
@@ -71,9 +85,9 @@ function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined)
 
   return resolveSelectTriggerBaseStyles({
     root,
-    valueSection,
-    iconLeft,
-    iconRight,
+    value,
+    "icon.left": iconLeft,
+    "icon.right": iconRight,
     iconSection,
   });
 }
@@ -112,6 +126,7 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
         <ChevronDown size={14} />
       );
     const resolved = resolveSelectTriggerStyles(stylesProp);
+    const mergedTriggerProps = mergeProps(domProps, triggerProps);
     const content = infer("text", children) ? (
       <span className={styles.text}>{children}</span>
     ) : (
@@ -140,12 +155,11 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
           data-disabled={isDisabled ? "true" : undefined}
-          {...domProps}
-          {...triggerProps}
+          {...mergedTriggerProps}
         >
-          <div className={cn(styles["value-section"], resolved.valueSection)}>
+          <div className={cn(styles["value-section"], resolved.value)} data-slot="value">
             {icon?.prefix && (
-              <span className={cn(styles["icon-prefix"], resolved.iconLeft)}>{icon.prefix}</span>
+              <span className={cn(styles["icon-prefix"], resolved["icon.left"])} data-slot="icon.left">{icon.prefix}</span>
             )}
             {mode === "multiple" && children === undefined ? (
               <span className={cn("placeholder", styles.placeholder)}>
@@ -158,8 +172,8 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
             )}
           </div>
           {resolvedChevron !== null && (
-            <div className={cn(styles["icon-section"], resolved.iconSection)}>
-              <div className={cn(styles.icon, resolved.iconRight)}>{resolvedChevron}</div>
+            <div className={cn(styles["icon-section"], resolved.iconSection)} data-slot="iconSection">
+              <div className={cn(styles.icon, resolved["icon.right"])} data-slot="icon.right">{resolvedChevron}</div>
             </div>
           )}
         </button>
@@ -167,20 +181,22 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
     );
   },
 );
-SelectTrigger.displayName = "SelectTrigger";
+SelectTrigger.displayName = "Select.Trigger";
 
 export interface SearchableTriggerStyleSlots {
-  root?: StyleValue;
-  valueSection?: StyleValue;
-  input?: StyleValue;
-  iconSection?: StyleValue;
-  icon?: StyleValue;
+  root?: Style;
+  valueSection?: Style;
+  input?: Style;
+  iconSection?: Style;
+  icon?: Style;
 }
 
 export type SearchableTriggerStylesProp = StylesProp<SearchableTriggerStyleSlots>;
 
 export interface SearchableTriggerProps extends Omit<InputProps, "value" | "onChange" | "styles"> {
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles searchable trigger anatomy: root, valueSection, input, iconSection, and icon.
+   * @category Styling
+   * @typeDoc SearchableTriggerStyleSlots */
   styles?: SearchableTriggerStylesProp;
 }
 
@@ -348,6 +364,6 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
     );
   },
 );
-SearchableTrigger.displayName = "SearchableTrigger";
+SearchableTrigger.displayName = "Select.SearchableTrigger";
 
 export { SelectTrigger, SearchableTrigger };

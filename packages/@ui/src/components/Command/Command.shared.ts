@@ -1,31 +1,31 @@
 import * as React from "react";
 
 import type { Key } from "react-aria";
-import { type StyleValue } from "@/lib/utils";
+import { type Style } from "@/lib/utils";
 import { createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 
 /** Styles for the stable elements rendered by each command item. */
 export interface CommandItemStyles {
   /** Styles applied to the item option element. */
-  root?: StyleValue;
+  root?: Style;
   /** Styles applied to the wrapper containing the icon and item label. */
-  content?: StyleValue;
+  content?: Style;
   /** Styles applied to the item icon container. */
-  icon?: StyleValue;
-  hint?: StyleValue;
+  icon?: Style;
+  hint?: Style;
 }
 
 type CommandRootStyles = {
-  root?: StyleValue;
+  root?: Style;
 };
 
 type CommandListStyles = CommandRootStyles & {
-  empty?: StyleValue;
+  empty?: Style;
 };
 
 type CommandGroupsStyles = CommandRootStyles & {
-  group?: StyleValue;
+  group?: Style;
 };
 
 /** Style overrides for the command surface and its named compound parts. */

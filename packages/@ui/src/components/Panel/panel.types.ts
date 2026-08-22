@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleValue } from "../../lib/utils";
+import { Style } from "../../lib/utils";
 import { StylesProp } from "../../lib/styles";
 
 export type PanelSpacing = "none" | "sm" | "md" | "lg";
@@ -8,7 +8,7 @@ export type PanelSide = "left" | "right";
 export type PanelOrientation = "horizontal" | "vertical";
 
 export interface PanelStyleSlots {
-  root?: StyleValue;
+  root?: Style;
 }
 
 export type PanelStylesProp = StylesProp<PanelStyleSlots>;

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { createStylePropsResolver, createStylesResolver, type StylesProp } from "../styles";
-import type { StyleValue } from "../utils";
+import type { Style } from "../utils";
 
 interface StyleSlots {
-  root?: StyleValue;
-  icon?: StyleValue;
+  root?: Style;
+  icon?: Style;
 }
 
 type TestStyles = StylesProp<StyleSlots>;

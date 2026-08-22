@@ -8,36 +8,27 @@ import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
 import { offset } from "../../hooks/useFloat/core/middleware/offset";
 import { shift } from "../../hooks/useFloat/core/middleware/shift";
+import { arrow } from "../../hooks/useFloat/core/middleware/arrow";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import { cn } from "@/lib/utils";
-import { type StyleValue } from "@/lib/utils";
+import { type Style } from "@/lib/utils";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Frame } from "../Frame";
 import css from "./Popover.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
+import { getArrowShapeOffset, getFrameSideFromPlacement } from "@/utils/arrow-positioning";
 
-const ARROW_PATH = "M 0 0 L 6 -12 L 12 0";
+const ARROW_PATH = "M 0 0 Q 2.5 -1 4 -5.5 Q 6 -9 8 -5.5 Q 9.5 -1 12 0";
 const ARROW_WIDTH = 12;
+const ARROW_HEIGHT = 8;
+const ARROW_PADDING = 8;
 const POPOVER_GAP = 2;
 const ARROW_POSITIONING_SIZE = 6;
 
 type PopoverPosition = "top" | "right" | "bottom" | "left";
 type PopoverAlign = "start" | "center" | "end";
-
-const getFrameSide = (position: PopoverPosition): "top" | "right" | "bottom" | "left" => {
-  switch (position) {
-    case "top":
-      return "bottom";
-    case "bottom":
-      return "top";
-    case "left":
-      return "right";
-    case "right":
-      return "left";
-  }
-};
 
 /**
  * Maps placement to initial transform for directional entrance animation.
@@ -60,10 +51,10 @@ const getInitialTransform = (placement: string): string => {
 };
 
 interface PopoverStyleSlots {
-  root?: StyleValue;
-  content?: StyleValue;
-  trigger?: StyleValue;
-  frame?: StyleValue;
+  root?: Style;
+  content?: Style;
+  trigger?: Style;
+  frame?: Style;
 }
 
 type PopoverStylesProp = StylesProp<PopoverStyleSlots>;
@@ -126,6 +117,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
 
     const triggerRef = React.useRef<HTMLDivElement>(null);
     const popoverContentRef = React.useRef<HTMLDivElement>(null);
+    const [arrowElement, setArrowElement] = React.useState<HTMLDivElement | null>(null);
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [isExiting, setIsExiting] = React.useState(false);
 
@@ -155,13 +147,26 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     const requestedPlacement =
       align === "center" ? placementMap[position] : (`${placementMap[position]}-${align}` as const);
 
-    const { refs, floatingStyles, placement, isPositioned } = useFloating({
+    const { refs, floatingStyles, placement, middlewareData, isPositioned } = useFloating({
       placement: requestedPlacement,
       strategy: "fixed",
       transform: false,
       whileElementsMounted: autoUpdate,
-      middleware: [offset(POPOVER_GAP + ARROW_POSITIONING_SIZE), flip(), shift({ padding: 8 })],
+      middleware: [
+        offset(POPOVER_GAP + ARROW_POSITIONING_SIZE),
+        flip(),
+        shift({ padding: 8 }),
+        showArrow ? arrow({ element: arrowElement, padding: ARROW_PADDING }) : null,
+      ],
     });
+
+    const frameSide = getFrameSideFromPlacement(placement);
+    const shapeOffset = showArrow
+      ? getArrowShapeOffset(placement, middlewareData.arrow, {
+          width: ARROW_WIDTH,
+          height: ARROW_HEIGHT,
+        })
+      : undefined;
 
     // Trigger animation when popover is opened and positioned
     React.useEffect(() => {
@@ -268,7 +273,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     return (
       <>
         {triggerElement}
-        {(state.isOpen || isExiting) &&
+        {(state.isOpen || isAnimating || isExiting) &&
           createPortal(
             <div
               ref={mergedContentRef}
@@ -291,13 +296,27 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
               >
                 <Frame
                   role="dialog"
-                  side={showArrow ? getFrameSide(position) : position}
+                  side={showArrow ? (frameSide ?? position) : position}
                   shapeMode={showArrow ? "extend" : undefined}
                   path={showArrow ? ARROW_PATH : undefined}
                   pathWidth={showArrow ? ARROW_WIDTH : undefined}
+                  {...(showArrow && shapeOffset !== undefined ? { shapeOffset } : {})}
                 >
                   <div className={cn("frame", css.frame, resolved.frame)}>{content}</div>
                 </Frame>
+                {showArrow && (
+                  <div
+                    ref={setArrowElement}
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      width: ARROW_WIDTH,
+                      height: ARROW_HEIGHT,
+                      visibility: "hidden",
+                      pointerEvents: "none",
+                    }}
+                  />
+                )}
               </div>
             </div>,
             document.body,

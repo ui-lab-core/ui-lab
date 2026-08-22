@@ -9,7 +9,7 @@ import { mergeProps } from "@react-aria/utils";
 import { useToggleState, type ToggleState } from "react-stately";
 import { ChevronDown } from "lucide-react";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Divider, type DividerProps } from "@/components/Divider";
 import { useFocus } from "@/hooks/useFocus";
@@ -22,18 +22,18 @@ type ExpandDirection = "below" | "above" | "left" | "right";
 export type ExpandLayout = "standalone" | "contained";
 
 interface ExpandIconStyles {
-  collapsed?: StyleValue;
-  expanded?: StyleValue;
+  collapsed?: Style;
+  expanded?: Style;
 }
 
 export interface ExpandStyleSlots {
-  root?: StyleValue;
-  trigger?: StyleValue;
-  icon?: StyleValue | ExpandIconStyles;
-  title?: StyleValue;
-  content?: StyleValue;
-  contentInner?: StyleValue;
-  divider?: StyleValue;
+  root?: Style;
+  trigger?: Style;
+  icon?: Style | ExpandIconStyles;
+  title?: Style;
+  content?: Style;
+  contentInner?: Style;
+  divider?: Style;
 }
 
 export type ExpandStylesProp = StylesProp<ExpandStyleSlots>;
@@ -60,9 +60,9 @@ function resolveExpandStyles(stylesProp: ExpandStylesProp | undefined) {
 
   const { root, trigger, icon, title, content, contentInner, divider } = stylesProp;
 
-  let iconClassName: StyleValue | undefined;
-  let iconCollapsed: StyleValue | undefined;
-  let iconExpanded: StyleValue | undefined;
+  let iconClassName: Style | undefined;
+  let iconCollapsed: Style | undefined;
+  let iconExpanded: Style | undefined;
 
   if (icon) {
     if (typeof icon === "string" || Array.isArray(icon)) {

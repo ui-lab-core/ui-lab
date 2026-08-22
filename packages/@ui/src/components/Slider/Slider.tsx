@@ -6,7 +6,7 @@ import { useFocusRing } from "@react-aria/focus";
 import { useHover } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
 
-import { cn, type StyleValue } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
@@ -18,10 +18,10 @@ import css from "./Slider.module.css";
 type SliderOrientation = "horizontal" | "vertical";
 
 interface SliderStyleSlots {
-  root?: StyleValue;
-  track?: StyleValue;
-  range?: StyleValue;
-  thumb?: StyleValue;
+  root?: Style;
+  track?: Style;
+  range?: Style;
+  thumb?: Style;
 }
 
 type SliderStylesProp = StylesProp<SliderStyleSlots>;

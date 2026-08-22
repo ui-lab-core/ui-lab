@@ -52,7 +52,7 @@ export type { CardProps, CardHeaderProps, CardBodyProps, CardFooterProps } from 
 export { Checkbox } from "./components/Checkbox";
 export type { CheckboxProps, CheckboxState } from "./components/Checkbox";
 
-export { Select, Searchable, Multi, useSelectContext } from "./components/Select";
+export { Select, Searchable, Multi } from "./components/Select";
 export type {
   SelectProps,
   SelectState,
@@ -347,5 +347,5 @@ export type {
   UseRegionResult,
 } from "./hooks/useRegionCoordinator";
 
-export type { StyleValue } from "./lib/utils";
+export type { Style } from "./lib/utils";
 export { infer } from "./lib/infer";

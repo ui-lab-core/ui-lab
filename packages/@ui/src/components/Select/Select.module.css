@@ -298,7 +298,7 @@
   }
 
   .search-content-input {
-    @apply border-none rounded-none bg-transparent;
+    @apply rounded-none bg-transparent;
   }
 
   .search-icon-section {
