@@ -209,7 +209,7 @@ export function TokensSection() {
               frame: skew it as one plane and oversize it from the top edge, so the
               screen stays slotted under the frame's top while the mask trims the
               sheared corners at the sides and bottom. */}
-              <div className="absolute inset-0 origin-[60%_100%] scale-95">
+              <div className="absolute inset-0 origin-[-10%_80%] -skew-x-6 skew-y-2 scale-95">
                 <div
                   className="absolute left-0 top-0 origin-top-left select-none"
                   style={{

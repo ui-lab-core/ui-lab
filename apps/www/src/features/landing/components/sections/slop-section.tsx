@@ -339,23 +339,16 @@ export function SlopSection() {
                                 }}
                               >
                                 <Expand.Trigger className="group flex w-full items-center gap-2.5 px-4 py-3.5">
-                                  <domain.Icon
-                                    className={`size-4 shrink-0 ${
-                                      expanded
-                                        ? "text-foreground-100"
-                                        : "text-background-500 group-hover:text-foreground-300"
-                                    }`}
-                                  />
                                   <span className="text-sm font-medium text-foreground-100">
                                     {domain.name}
                                   </span>
                                   <span className="text-background-600">/</span>
-                                  <span className="truncate text-xs text-background-500">
+                                  <span className="truncate text-xs text-foreground-400">
                                     {domain.scope}
                                   </span>
                                   <Expand.Icon
                                     className="ml-auto px-0 py-0"
-                                    color="text-background-500"
+                                    color="text-foreground-400"
                                   />
                                 </Expand.Trigger>
                               </Expand>

@@ -100,6 +100,14 @@ export async function ComponentPage({
       : []),
   ];
   const styleItems = [
+    ...(componentId === "select"
+      ? [
+          { id: "style-quick-start", title: "How to style Select", level: 2 },
+          ...(styles?.styleableGroups?.length
+            ? [{ id: "style-anatomy", title: "Anatomy", level: 2 }]
+            : []),
+        ]
+      : []),
     ...(styles?.cssVariables?.length
       ? [{ id: "css-variables", title: "CSS Variables", level: 2 }]
       : []),

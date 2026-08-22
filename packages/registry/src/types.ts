@@ -100,7 +100,31 @@ export interface StyleClass {
   description?: string;
 }
 
-export type ComponentStyles = string;
+export interface StyleSlotDefinition {
+  name: string;
+  description?: string;
+  type?: string;
+}
+
+export interface StyleableGroup {
+  name: string;
+  slots: StyleSlotDefinition[];
+}
+
+export interface StyleVariableDefinition {
+  name: string;
+  value: string;
+  defaultValue?: string;
+  referencedVars: string[];
+  variant?: string | null;
+}
+
+export interface ComponentStyles {
+  rawCss: string;
+  styleableParts: Array<{ name: string }>;
+  styleableGroups: StyleableGroup[];
+  cssVariables: StyleVariableDefinition[];
+}
 
 export interface ComponentExample {
   id?: string;

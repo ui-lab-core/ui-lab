@@ -95,6 +95,11 @@ function generateDataFile(
   reactAriaUrls: Record<string, string>,
   packageMetadata: { version: string },
 ): void {
+  for (const [component, styles] of Object.entries(stylesData)) {
+    if (/(?:@slot\b|(?:^|[^\w-])slot\s*\()/m.test(styles.rawCss)) {
+      throw new Error(`Unresolved slot syntax in generated ${component} CSS`);
+    }
+  }
   const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata } from './types';
 
 export const generatedAPI: Record<string, ComponentAPI> = ${JSON.stringify(apiData, null, 2)};
@@ -120,6 +125,13 @@ function generateArtifactFile(): void {
   const artifacts = Object.fromEntries(
     publicArtifactDefinitions.map((definition) => [definition.id, generatePublicArtifact(definition)]),
   );
+  for (const artifact of Object.values(artifacts)) {
+    for (const file of artifact.files) {
+      if (file.language === "css" && /(?:@slot\b|(?:^|[^\w-])slot\s*\()/m.test(file.content)) {
+        throw new Error(`Unresolved slot syntax in generated ${artifact.id} artifact: ${file.outputPath}`);
+      }
+    }
+  }
   const content = `import type { SourceArtifact } from "./types.js";\n\nexport const generatedPublicArtifacts: Record<string, SourceArtifact> = ${JSON.stringify(artifacts, null, 2)};\n\nexport const generatedPremiumArtifacts: Record<string, SourceArtifact> = {};\n`;
   fs.writeFileSync(GENERATED_ARTIFACTS_PATH, content, "utf8");
 }
@@ -135,7 +147,7 @@ async function main() {
   console.log(`Extracted API for ${Object.keys(apiData).length} components\n`);
 
   console.log("Extracting styles data...");
-  const stylesData = extractAllComponentStyles(componentIds);
+  const stylesData = await extractAllComponentStyles(componentIds);
   console.log(`Extracted styles for ${Object.keys(stylesData).length} components\n`);
 
   console.log("Generating explicitly public copyable artifacts...");

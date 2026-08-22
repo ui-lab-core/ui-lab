@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import postcss from "postcss";
+import slotPlugin from "../../../postcss/slot.mjs";
 import type { SourceArtifact, SourceArtifactFile } from "../src/types.js";
 import type { PublicArtifactDefinition } from "./public-artifacts.config.js";
 
@@ -93,7 +95,10 @@ export function generatePublicArtifact(definition: PublicArtifactDefinition): So
     if (outputPath.startsWith("../") || path.isAbsolute(outputPath)) {
       throw new Error(`Artifact output path escapes target: ${outputPath}`);
     }
-    const content = fs.readFileSync(sourcePath, "utf8");
+    const source = fs.readFileSync(sourcePath, "utf8");
+    const content = path.extname(sourcePath) === ".css"
+      ? postcss([slotPlugin()]).process(source, { from: sourcePath }).css
+      : source;
     return { outputPath, language: languageFor(sourcePath), kind: kindFor(sourcePath), integrity: sha256(content), content };
   });
   return {

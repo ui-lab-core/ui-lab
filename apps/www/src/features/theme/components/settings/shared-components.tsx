@@ -1,9 +1,9 @@
 "use client";
 
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useEffect, useState, type CSSProperties } from "react";
 import { FaChevronDown, FaCheck, FaSun } from "@/shared/icons/fa6";
-import { type OklchColor, type HueRange, oklchToCss } from "../../lib/color-utils";
-import { Slider, Divider, Label, Badge, Color } from "ui-lab-components";
+import { type OklchColor, type HueRange, cssToOklch, oklchToCss } from "../../lib/color-utils";
+import { Slider, Divider, Label, Badge, Color, Input } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 import {
   colorFromHue,
@@ -143,41 +143,86 @@ const getPreviewColor = (
 export const ColorRow = memo(
   ({ type, color, isExpanded, onToggle, onChange, hueRange }: ColorRowProps) => {
     const { currentThemeMode } = useApp();
-    const previewStyle = useMemo(
-      () => ({
-        backgroundColor: oklchToCss(getPreviewColor(type, color, currentThemeMode)),
-      }),
-      [type, color, currentThemeMode],
-    );
+    const formattedColor = oklchToCss(color);
+    const [colorValue, setColorValue] = useState(formattedColor);
+    const [isEditingColor, setIsEditingColor] = useState(false);
+    const previewStyle = useMemo(() => {
+      const previewColor = oklchToCss(getPreviewColor(type, color, currentThemeMode));
+
+      return {
+        backgroundColor: previewColor,
+        "--tw-ring-color": previewColor,
+      } as CSSProperties;
+    }, [type, color, currentThemeMode]);
+
+    useEffect(() => {
+      if (!isEditingColor) setColorValue(formattedColor);
+    }, [formattedColor, isEditingColor]);
+
+    const commitColorValue = () => {
+      const nextColor = cssToOklch(colorValue);
+      if (nextColor) {
+        onChange(nextColor);
+        setColorValue(oklchToCss(nextColor));
+      } else {
+        setColorValue(formattedColor);
+      }
+      setIsEditingColor(false);
+    };
 
     return (
       <div>
         <div
           className={`mx-[6px] rounded-[7px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700 active:bg-background-950/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
         >
-          <button
-            onClick={onToggle}
-            className="cursor-pointer w-full flex items-center gap-3 py-[10px] px-[10px] text-left outline-none"
-          >
-            <div className="relative">
-              <div
-                className="w-6 -ring-2 ring-[previewStyle] h-6 rounded-full"
-                style={previewStyle}
-              />
-            </div>
-
-            <div className="flex-1 min-w-0 flex flex-col justify-center">
-              <div className="text-sm font-semibold text-foreground-100 capitalize leading-tight group-hover:text-foreground-100 transition-colors">
-                {type}
+          <div className="flex items-center gap-3 py-[10px] px-[10px]">
+            <button
+              type="button"
+              onClick={onToggle}
+              className="cursor-pointer flex min-w-0 flex-1 items-center gap-4 text-left outline-none"
+              aria-expanded={isExpanded}
+            >
+              <div className="relative">
+                <div
+                  className="w-3 h-3 ring-offset-background-900 ring-offset-2 ring-2 rounded-full"
+                  style={previewStyle}
+                />
               </div>
-            </div>
 
-            <div
+              <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="text-sm font-semibold text-foreground-100 capitalize leading-tight group-hover:text-foreground-100 transition-colors">
+                  {type}
+                </div>
+              </div>
+            </button>
+
+            <Input
+              aria-label={`${type} OKLCH color`}
+              value={colorValue}
+              onFocus={() => setIsEditingColor(true)}
+              onChange={(event) => setColorValue(event.target.value)}
+              variant="ghost"
+              onBlur={commitColorValue}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") event.currentTarget.blur();
+                if (event.key === "Escape") {
+                  setColorValue(formattedColor);
+                  event.currentTarget.blur();
+                }
+              }}
+              className="h-8 w-[230px]"
+              styles={{ input: "text-foreground-400 font-mono text-xs" }}
+            />
+
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label={`${isExpanded ? "Collapse" : "Expand"} ${type} color controls`}
               className={`mr-3 text-foreground-400 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
             >
               <FaChevronDown size={13} />
-            </div>
-          </button>
+            </button>
+          </div>
 
           <div
             className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"}`}

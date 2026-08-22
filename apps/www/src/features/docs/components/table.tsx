@@ -156,89 +156,86 @@ export function Table<T extends object>({
         styles={{
           container: "border-background-800 rounded-sm",
           table: "min-w-full text-xs",
-          header: "bg-background-900",
+          header: "bg-background-1000",
           headerCell: "px-4 py-3 text-left font-semibold text-foreground-200",
-          cell: "px-4 py-3 text-foreground-300",
+          cell: "bg-background-1000 px-4 py-3 text-foreground-300",
           emptyState: "px-4 py-8 text-center text-foreground-400",
         }}
       >
         <UITable.Header>
           <tr className="border-b border-background-800 bg-background-900">
-              {columns.map((col) => (
-                <UITable.HeaderCell
-                  key={String(col.key)}
-                  style={{ width: col.width }}
-                >
-                  {col.label}
-                </UITable.HeaderCell>
-              ))}
-              {expandRender && <UITable.HeaderCell className="w-10" />}
+            {columns.map((col) => (
+              <UITable.HeaderCell key={String(col.key)} style={{ width: col.width }}>
+                {col.label}
+              </UITable.HeaderCell>
+            ))}
+            {expandRender && <UITable.HeaderCell className="w-10" />}
           </tr>
         </UITable.Header>
         <UITable.Body rows={filteredData}>
-            {filteredData.length > 0 ? (
-              filteredData.map((row, rowIndex) => {
-                const rowKey = resolveRowKey(row);
-                const isExpanded = expandedRows.has(rowKey);
-                return (
-                  <Fragment key={rowKey}>
-                    <UITable.Row
-                      row={row}
-                      rowIndex={rowIndex}
-                      onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
-                      className={cn(
-                        "border-b border-background-800",
-                        expandRender || onRowClick
-                          ? "cursor-pointer hover:bg-background-900 transition-colors"
-                          : "",
-                      )}
-                    >
-                      {tableColumns.map((col, columnIndex) => (
-                        <UITable.Cell
-                          key={String(col.key)}
-                          row={row}
-                          rowIndex={rowIndex}
-                          column={col}
-                          columnIndex={columnIndex}
-                          style={{ width: col.width }}
-                        />
-                      ))}
-                      {expandRender && (
-                        <UITable.Cell className="px-4 py-3 text-right">
-                          <Expand expanded={isExpanded} onExpandedChange={() => toggleRow(rowKey)}>
-                            <Expand.Trigger
-                              aria-label={`Toggle details for row ${String(rowKey)}`}
-                              onClick={(event) => event.stopPropagation()}
-                              className="ml-auto w-auto justify-end bg-transparent p-0"
-                            >
-                              <Expand.Icon color="text-background-500" className="px-0 py-0" />
-                            </Expand.Trigger>
-                          </Expand>
-                        </UITable.Cell>
-                      )}
-                    </UITable.Row>
-                    {expandRender && isExpanded && (
-                      <UITable.Row className="border-b border-background-800 last:border-b-0 bg-background-950">
-                        <UITable.Cell colSpan={columns.length + 1} className="px-4 py-3">
-                          <Expand expanded={isExpanded}>
-                            <Expand.Content>{expandRender(row)}</Expand.Content>
-                          </Expand>
-                        </UITable.Cell>
-                      </UITable.Row>
+          {filteredData.length > 0 ? (
+            filteredData.map((row, rowIndex) => {
+              const rowKey = resolveRowKey(row);
+              const isExpanded = expandedRows.has(rowKey);
+              return (
+                <Fragment key={rowKey}>
+                  <UITable.Row
+                    row={row}
+                    rowIndex={rowIndex}
+                    onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
+                    className={cn(
+                      "border-b border-background-800",
+                      expandRender || onRowClick
+                        ? "cursor-pointer hover:bg-background-900 transition-colors"
+                        : "",
                     )}
-                  </Fragment>
-                );
-              })
-            ) : (
-              <UITable.Row>
-                <UITable.Cell
-                  colSpan={columns.length + (expandRender ? 1 : 0)}
-                  className="px-4 py-8 text-center text-foreground-400"
-                >
-                  No data available
-                </UITable.Cell>
-              </UITable.Row>
-            )}
+                  >
+                    {tableColumns.map((col, columnIndex) => (
+                      <UITable.Cell
+                        key={String(col.key)}
+                        row={row}
+                        rowIndex={rowIndex}
+                        column={col}
+                        columnIndex={columnIndex}
+                        style={{ width: col.width }}
+                      />
+                    ))}
+                    {expandRender && (
+                      <UITable.Cell className="px-4 py-3 text-right">
+                        <Expand expanded={isExpanded} onExpandedChange={() => toggleRow(rowKey)}>
+                          <Expand.Trigger
+                            aria-label={`Toggle details for row ${String(rowKey)}`}
+                            onClick={(event) => event.stopPropagation()}
+                            className="ml-auto w-auto justify-end bg-transparent p-0"
+                          >
+                            <Expand.Icon color="text-background-500" className="px-0 py-0" />
+                          </Expand.Trigger>
+                        </Expand>
+                      </UITable.Cell>
+                    )}
+                  </UITable.Row>
+                  {expandRender && isExpanded && (
+                    <UITable.Row className="border-b border-background-800 last:border-b-0 bg-background-950">
+                      <UITable.Cell colSpan={columns.length + 1} className="px-4 py-3">
+                        <Expand expanded={isExpanded}>
+                          <Expand.Content>{expandRender(row)}</Expand.Content>
+                        </Expand>
+                      </UITable.Cell>
+                    </UITable.Row>
+                  )}
+                </Fragment>
+              );
+            })
+          ) : (
+            <UITable.Row>
+              <UITable.Cell
+                colSpan={columns.length + (expandRender ? 1 : 0)}
+                className="px-4 py-8 text-center text-foreground-400"
+              >
+                No data available
+              </UITable.Cell>
+            </UITable.Row>
+          )}
         </UITable.Body>
       </UITable>
     </div>

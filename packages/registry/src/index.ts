@@ -4,12 +4,12 @@ export { componentRegistry, componentMetadata } from "./registry.js";
 // Generated data (auto-populated by scripts)
 export {
   generatedAPI,
+  generatedStyles,
   reactAriaUrls,
   generatedComponentDependencies,
   generatedCoreNpmDependencies,
   packageMetadata,
 } from "./generated-data.js";
-export { generatedStyles } from "./generated-styles.js";
 export { generatedPublicArtifacts, generatedPremiumArtifacts } from "./generated-artifacts.js";
 export {
   getArtifactById,

@@ -35,25 +35,92 @@ const parser = withCustomConfig(path.resolve(__dirname, "../../@ui/tsconfig.json
 
 const TYPE_LINKS: Record<string, string> = {
   boolean: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+  Date: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
   number: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+  object: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
   string: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+  ReactNode: "https://react.dev/reference/react/Children",
+  "React.ReactNode": "https://react.dev/reference/react/Children",
+  ReactElement: "https://react.dev/reference/react/createElement#returns",
+  "React.ReactElement": "https://react.dev/reference/react/createElement#returns",
+  CSSProperties: "https://react.dev/reference/react-dom/components/common#style",
+  "React.CSSProperties": "https://react.dev/reference/react-dom/components/common#style",
+  Key: "https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key",
+  Ref: "https://react.dev/reference/react/useRef",
+  RefObject: "https://react.dev/reference/react/useRef",
+  MutableRefObject: "https://react.dev/reference/react/useRef",
+  "React.Ref": "https://react.dev/reference/react/useRef",
+  "React.RefObject": "https://react.dev/reference/react/useRef",
+  "React.MutableRefObject": "https://react.dev/reference/react/useRef",
 };
 
-function tokenizeType(type: string, customTypes: string[] = []): APITypeToken[] {
-  const escapedCustomTypes = [...customTypes]
-    .sort((a, b) => b.length - a.length)
-    .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-  const parts = escapedCustomTypes.length
-    ? type.split(new RegExp(`(\\b(?:${escapedCustomTypes.join("|")})\\b)`, "g"))
-    : type.split(/(\s*\|\s*)/);
+const TYPESCRIPT_UTILITY_TYPES = new Set([
+  "Awaited", "Partial", "Required", "Readonly", "Record", "Pick", "Omit", "Exclude",
+  "Extract", "NonNullable", "Parameters", "ConstructorParameters", "ReturnType",
+  "InstanceType", "NoInfer", "ThisParameterType", "OmitThisParameter", "ThisType",
+]);
 
-  return parts.filter(Boolean).map((text) => {
-    const symbol = text.trim();
-    if (!symbol || symbol === "|") return { text };
-    const customType = customTypes.find((name) => symbol === name);
-    if (customType) return { text, customType };
-    return { text, href: TYPE_LINKS[symbol] };
-  });
+function getTypeLink(symbol: string): string | undefined {
+  if (TYPE_LINKS[symbol]) return TYPE_LINKS[symbol];
+  if (TYPESCRIPT_UTILITY_TYPES.has(symbol)) {
+    return "https://www.typescriptlang.org/docs/handbook/utility-types.html";
+  }
+
+  const reactType = symbol.replace(/^React\./, "");
+  if (/^(?:Animation|Clipboard|Composition|Drag|Focus|Form|Input|Keyboard|Mouse|Pointer|Touch|Transition|UI|Wheel)?Event(?:Handler)?$/.test(reactType)) {
+    const anchor = reactType.replace(/Handler$/, "").toLowerCase();
+    return `https://react.dev/reference/react-dom/components/common#${anchor}-handler-function`;
+  }
+  if (/^(?:ComponentType|ElementType|JSXElementConstructor)$/.test(reactType)) {
+    return "https://react.dev/reference/react/createElement#parameters";
+  }
+  if (/^(?:Dispatch|SetStateAction)$/.test(reactType)) {
+    return "https://react.dev/reference/react/useState";
+  }
+  if (symbol.startsWith("React.")) return "https://react.dev/reference/react";
+
+  if (/^(?:Array|BigInt|Error|Function|Map|Object|Promise|RegExp|Set|Symbol|WeakMap|WeakSet)$/.test(symbol)) {
+    return `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/${symbol}`;
+  }
+  if (/^(?:Element|Node|EventTarget|HTMLElement|SVGElement|HTML[A-Za-z]+Element|SVG[A-Za-z]+Element)$/.test(symbol)) {
+    return `https://developer.mozilla.org/en-US/docs/Web/API/${symbol}`;
+  }
+}
+
+function tokenizeType(type: string, customTypes: string[] = []): APITypeToken[] {
+  return type
+    .split(/(React\.[A-Za-z_$][\w$]*|[A-Za-z_$][\w$]*)/g)
+    .filter(Boolean)
+    .map((text) =>
+      customTypes.includes(text)
+        ? { text, customType: text }
+        : { text, href: getTypeLink(text) },
+    );
+}
+
+function enrichTypeTokens(api: ComponentAPI): ComponentAPI {
+  const customTypeNames = Object.keys(api.customTypes ?? {});
+  const enrichProps = (props: PropDefinition[]) =>
+    props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type, customTypeNames) }));
+  const customTypes = api.customTypes
+    ? Object.fromEntries(Object.entries(api.customTypes).map(([name, type]) => [name, {
+        ...type,
+        typeTokens: tokenizeType(type.type, customTypeNames),
+        members: type.members ? enrichProps(type.members) : undefined,
+      }]))
+    : undefined;
+
+  return {
+    ...api,
+    props: enrichProps(api.props),
+    subComponents: api.subComponents
+      ? Object.fromEntries(Object.entries(api.subComponents).map(([name, component]) => [
+          name,
+          { ...component, props: enrichProps(component.props) },
+        ]))
+      : undefined,
+    customTypes,
+  };
 }
 
 function toKebabCase(pascalCase: string): string {
@@ -577,6 +644,7 @@ export function extractAllComponentAPIs(componentDirNames: string[]): Record<str
     if (dirName === "Select" && result[kebabId]) {
       result[kebabId] = enrichSelectAPI(result[kebabId]);
     }
+    if (result[kebabId]) result[kebabId] = enrichTypeTokens(result[kebabId]);
 
     // Add examples from registry metadata
     const metadata = componentRegistry[kebabId];

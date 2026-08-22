@@ -6,7 +6,7 @@ import {
   type Column,
   type TableExpandedDetail,
 } from "@/features/docs/components/table";
-import { Popover } from "ui-lab-components";
+import { Banner, Popover } from "ui-lab-components";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import type {
@@ -17,7 +17,16 @@ import type {
   PropDefinition,
 } from "ui-lab-registry";
 
-type CssVariable = { name: string; value: string; variant?: string | null };
+type CssVariable = {
+  name: string;
+  value: string;
+  defaultValue?: string | null;
+  referencedVars?: string[];
+  variant?: string | null;
+};
+
+type StyleSlot = { name: string; description?: string; type?: string };
+type StyleableGroup = { name: string; slots: StyleSlot[] };
 
 function CustomTypeDefinition({
   customType,
@@ -55,6 +64,7 @@ export type StyleInfo = {
   rawCss: string;
   cssVariables: CssVariable[];
   styleableParts: Array<{ name: string }>;
+  styleableGroups?: StyleableGroup[];
 };
 
 const colorPattern = /(oklch|rgb|rgba|hsl|hsla|#|var|color-mix|transparent)\b/i;
@@ -426,6 +436,145 @@ export function API({ api }: { api: ComponentAPI | null }) {
   );
 }
 
+const selectStyleOrder = [
+  "SelectStyleSlots",
+  "SelectTriggerStyleSlots",
+  "SearchableTriggerStyleSlots",
+  "SelectValueStyleSlots",
+  "SelectContentStyleSlots",
+  "SelectListStyleSlots",
+  "SelectItemStyleSlots",
+  "SelectGroupStyleSlots",
+  "SelectSeparatorStyleSlots",
+  "SelectSubTriggerStyleSlots",
+  "SelectSubContentStyleSlots",
+];
+
+const selectStyleNames: Record<string, string> = {
+  SelectStyleSlots: "Select",
+  SelectTriggerStyleSlots: "Select.Trigger",
+  SearchableTriggerStyleSlots: "Select.SearchableTrigger",
+  SelectValueStyleSlots: "Select.Value",
+  SelectContentStyleSlots: "Select.Content",
+  SelectListStyleSlots: "Select.List",
+  SelectItemStyleSlots: "Select.Item",
+  SelectGroupStyleSlots: "Select.Group",
+  SelectSeparatorStyleSlots: "Select.Separator",
+  SelectSubTriggerStyleSlots: "Select.SubTrigger",
+  SelectSubContentStyleSlots: "Select.SubContent",
+};
+
+const selectRecipes = [
+  {
+    title: "Size the trigger",
+    description: "Use className when the outer element is all you need to change.",
+    code: '<Select className="w-72">...</Select>',
+  },
+  {
+    title: "Style trigger anatomy",
+    description: "Use styles when a change belongs to a named element inside a subcomponent.",
+    code: `<Select.Trigger
+  styles={{
+    root: "shadow-sm",
+    value: "px-4 py-2.5",
+    icon: { right: "text-accent-500" },
+  }}
+/>`,
+  },
+  {
+    title: "Style option states",
+    description: "State attributes keep hover, focus, and selection styling close to the item.",
+    code: `<Select.Item
+  value="design"
+  styles={{
+    root: "data-[highlighted=true]:bg-accent-900 data-[selected=true]:text-accent-400",
+  }}
+>
+  Design
+</Select.Item>`,
+  },
+];
+
+function styleGroupLabel(name: string) {
+  return selectStyleNames[name] ?? name.replace(/StyleSlots$/, "");
+}
+
+function variableGroup(variable: CssVariable) {
+  const selector = variable.variant ?? "";
+  if (/hover|highlighted|selected|disabled|open|pressed/.test(selector)) return "States";
+  if (/item|sub-trigger/.test(selector)) return "Options";
+  if (/content|search|empty|list/.test(selector)) return "Panel";
+  return "Trigger";
+}
+
+function variableScope(variable: CssVariable) {
+  const selector = variable.variant ?? "";
+  if (/sub-content/.test(selector)) return "Submenu panel";
+  if (/sub-trigger/.test(selector)) return "Submenu option";
+  if (/item/.test(selector)) return "Option";
+  if (/content/.test(selector)) return "Panel";
+  if (/trigger/.test(selector)) return "Trigger";
+  if (/select/.test(selector)) return "Select root";
+  return "Component";
+}
+
+function SelectAnatomy({ groups }: { groups: StyleableGroup[] }) {
+  const ordered = [...groups].sort(
+    (a, b) => selectStyleOrder.indexOf(a.name) - selectStyleOrder.indexOf(b.name),
+  );
+  const [selected, setSelected] = useState(ordered[0]?.name);
+  const current = ordered.find((group) => group.name === selected) ?? ordered[0];
+
+  if (!current) return null;
+
+  return (
+    <section id="style-anatomy" className="scroll-mt-20">
+      <h3 className="mb-2 text-lg font-semibold text-foreground-50">Anatomy</h3>
+      <p className="mb-6 max-w-2xl text-foreground-400">
+        Choose a subcomponent to see the stable slots exposed by its styles prop.
+      </p>
+      <div className="grid overflow-hidden rounded-sm border border-background-700 lg:grid-cols-[15rem_minmax(0,1fr)]">
+        <div className="border-b border-background-700 bg-background-900/40 p-2 lg:border-r lg:border-b-0">
+          <div className="flex flex-col gap-1">
+            {ordered.map((group) => (
+              <button
+                key={group.name}
+                type="button"
+                onClick={() => setSelected(group.name)}
+                className={`rounded-sm px-3 py-2 text-left font-mono text-xs transition-colors cursor-pointer ${
+                  selected === group.name
+                    ? "bg-accent-900 text-accent-300"
+                    : "text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
+                }`}
+              >
+                {styleGroupLabel(group.name)}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="min-w-0 p-4 sm:p-6">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+            <InlineCodeHighlight code={styleGroupLabel(current.name)} language="tsx" />
+            <span className="text-xs text-foreground-400">
+              {current.slots.length} {current.slots.length === 1 ? "slot" : "slots"}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            {current.slots.map((slot) => (
+              <div key={slot.name} className="rounded-sm border border-background-700 p-3">
+                <InlineCodeHighlight code={slot.name} language="typescript" />
+                <p className="mt-2 text-sm text-foreground-400">
+                  {slot.description || `Styles the ${slot.name} element.`}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Styles({ componentId, styles }: { componentId: string; styles: StyleInfo | null }) {
   if (!styles || (!styles.cssVariables?.length && !styles.rawCss)) {
     return (
@@ -435,10 +584,7 @@ export function Styles({ componentId, styles }: { componentId: string; styles: S
     );
   }
 
-  const groups = Object.groupBy(
-    styles.cssVariables ?? [],
-    (variable) => variable.variant || "Base",
-  );
+  const variableGroups = Object.groupBy(styles.cssVariables ?? [], variableGroup);
   const columns: Column<CssVariable>[] = [
     {
       key: "name",
@@ -447,19 +593,70 @@ export function Styles({ componentId, styles }: { componentId: string; styles: S
     },
     {
       key: "value",
-      label: "Value",
-      render: (value) => (
+      label: "Default",
+      render: (value, variable) => (
         <span className="flex items-center gap-2">
           <ColorSwatch color={String(value)} />
-          <InlineCodeHighlight code={String(value)} language="css" />
+          <span className="flex flex-col items-start gap-1">
+            <InlineCodeHighlight code={String(value)} language="css" />
+            {variable.defaultValue && variable.defaultValue !== value ? (
+              <span className="text-xs text-foreground-400">
+                Fallback: {variable.defaultValue}
+              </span>
+            ) : null}
+          </span>
         </span>
+      ),
+    },
+    {
+      key: "variant",
+      label: "Applies to",
+      render: (_value, variable) => (
+        <span className="text-sm text-foreground-400">{variableScope(variable)}</span>
       ),
     },
   ];
 
   return (
     <div className="space-y-12">
-      {Object.keys(groups).length ? (
+      {componentId === "select" ? (
+        <section id="style-quick-start" className="scroll-mt-20">
+          <h3 className="mb-2 text-lg font-semibold text-foreground-50">How to style Select</h3>
+          <p className="mb-6 max-w-2xl text-foreground-400">
+            Start with className for an outer element, use styles for named anatomy, and override
+            CSS variables when one visual decision should flow through the component.
+          </p>
+          <div className="overflow-hidden rounded-sm border border-background-700">
+            {selectRecipes.map((recipe) => (
+              <article
+                key={recipe.title}
+                className="grid min-w-0 gap-4 border-b border-background-700 bg-background-900/30 p-4 last:border-b-0 lg:grid-cols-[13rem_minmax(0,1fr)]"
+              >
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-foreground-100">{recipe.title}</h4>
+                  <p className="mt-1 text-sm text-foreground-400">{recipe.description}</p>
+                </div>
+                <div className="min-w-0 overflow-hidden">
+                  <Code language="tsx" maxHeightLines={null}>
+                    {recipe.code}
+                  </Code>
+                </div>
+              </article>
+            ))}
+          </div>
+          <Banner variant="info" className="mt-4 rounded-sm">
+            <Banner.Body className="text-sm text-foreground-300">
+              Select.Content is portalled. Inline styles supplied to Select&apos;s root style slot are
+              copied to the floating overlay; a class on the Select root is not an ancestor of that
+              overlay.
+            </Banner.Body>
+          </Banner>
+        </section>
+      ) : null}
+      {componentId === "select" && styles.styleableGroups?.length ? (
+        <SelectAnatomy groups={styles.styleableGroups} />
+      ) : null}
+      {Object.keys(variableGroups).length ? (
         <section id="css-variables" className="scroll-mt-20">
           <h3 className="mb-4 text-lg font-semibold text-foreground-50">CSS Variables</h3>
           <p className="mb-6 text-foreground-400">
@@ -467,9 +664,9 @@ export function Styles({ componentId, styles }: { componentId: string; styles: S
             appearance.
           </p>
           <div className="space-y-8">
-            {Object.entries(groups).map(([variant, variables]) => (
-              <div key={variant}>
-                <h4 className="mb-3 text-sm text-foreground-400">{variant}</h4>
+            {Object.entries(variableGroups).map(([group, variables]) => (
+              <div key={group}>
+                <h4 className="mb-3 text-sm font-medium text-foreground-300">{group}</h4>
                 <Table data={variables ?? []} columns={columns} />
               </div>
             ))}
@@ -478,10 +675,17 @@ export function Styles({ componentId, styles }: { componentId: string; styles: S
       ) : null}
       {styles.rawCss ? (
         <section id="styles-css-module" className="scroll-mt-20">
-          <h3 className="mb-4 text-lg font-semibold text-foreground-50">Full Stylesheet</h3>
-          <Code showLineNumbers language="css" heading={`${componentId}.module.css`}>
-            {styles.rawCss}
-          </Code>
+          <details className="group rounded-sm border border-background-700">
+            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-lg font-semibold text-foreground-50">
+              Full stylesheet
+              <ChevronRight size={18} className="transition-transform group-open:rotate-90" />
+            </summary>
+            <div className="border-t border-background-700 p-3">
+              <Code showLineNumbers language="css" heading={`${componentId}.module.css`}>
+                {styles.rawCss}
+              </Code>
+            </div>
+          </details>
         </section>
       ) : null}
     </div>
