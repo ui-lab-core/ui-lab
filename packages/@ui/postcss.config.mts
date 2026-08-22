@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/postcss";
+import slotPlugin from "../../postcss/slot.mjs";
 
 const MIX_FUNCTION = "mix(";
 const MIX_FUNCTION_PATTERN = /(^|[^A-Za-z0-9_-])mix\(/g;
@@ -37,7 +38,7 @@ export function demoteTailwindUtilityLayer() {
 }
 
 export function createPostcssPlugins() {
-  return [mixFunction(), tailwindcss(), demoteTailwindUtilityLayer()];
+  return [slotPlugin(), mixFunction(), tailwindcss(), demoteTailwindUtilityLayer()];
 }
 
 export default {

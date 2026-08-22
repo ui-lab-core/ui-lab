@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "([ -d ../../../private ] && pnpm --dir ../../../private --filter @ui-lab-core/library build || true) && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build && npm run prepare:icons",
+    "prebuild": "([ -d ../../../private ] && pnpm --dir ../../../private --filter @ui-lab-core/library build || true) && pnpm --filter ui-lab-theme-onyx build && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build && npm run prepare:icons",
+    "predev": "pnpm --filter ui-lab-theme-onyx build",
     "dev": "npm run prepare:icons && npm run generate:docs && next dev",
     "build": "npm run generate:docs && next build --webpack && npm run verify:component-css",
     "start": "next start",

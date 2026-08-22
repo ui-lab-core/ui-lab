@@ -16,6 +16,12 @@ async function filesIn(directory) {
 }
 
 const files = await filesIn(dist);
+for (const file of files.filter((candidate) => candidate.endsWith(".css"))) {
+  const css = await readFile(file, "utf8");
+  if (/(?:@slot\b|(?:^|[^\w-])slot\s*\()/m.test(css)) {
+    throw new Error(`Unresolved slot syntax in ${path.relative(dist, file)}`);
+  }
+}
 const javascript = files.filter((file) => file.endsWith(".js"));
 const imported = new Set();
 

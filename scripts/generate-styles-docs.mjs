@@ -77,6 +77,7 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
     collectTypes(sourceFile);
 
     const styleableParts = [];
+    const styleableGroups = [];
 
     if (styleSlotsNodes.length > 0) {
       const results = new Set();
@@ -111,7 +112,15 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
         return [];
       }
 
-      function walk(prefix, node) {
+      function getDescription(prop) {
+        const docs = ts.getJSDocCommentsAndTags(prop);
+        return docs
+          .map((doc) => (typeof doc.comment === "string" ? doc.comment : ""))
+          .filter(Boolean)
+          .join(" ");
+      }
+
+      function walk(prefix, node, slots) {
         const props = getProperties(node);
         if (props.length === 0) {
           if (prefix) results.add(prefix);
@@ -125,15 +134,25 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
           const subProps = getProperties(propType);
 
           if (subProps.length > 0) {
-            walk(fullPath, propType);
+            walk(fullPath, propType, slots);
           } else {
             results.add(fullPath);
+            slots.push({
+              name: fullPath,
+              description: getDescription(prop),
+              type: prop.type?.getText() ?? "Style",
+            });
           }
         }
       }
 
       for (const styleSlotsNode of styleSlotsNodes) {
-        walk("", styleSlotsNode);
+        const slots = [];
+        walk("", styleSlotsNode, slots);
+        styleableGroups.push({
+          name: styleSlotsNode.name.text,
+          slots,
+        });
       }
       styleableParts.push(...Array.from(results));
     }
@@ -172,10 +191,13 @@ async function extractStyleablePartsFromTsx(tsxFilePath) {
       ts.forEachChild(sourceFile, visit);
     }
 
-    return Array.from(new Set(styleableParts));
+    return {
+      parts: Array.from(new Set(styleableParts)),
+      groups: styleableGroups,
+    };
   } catch (error) {
     console.warn(`Failed to extract styleable parts from ${tsxFilePath}: ${error.message}`);
-    return [];
+    return { parts: [], groups: [] };
   }
 }
 
@@ -193,10 +215,12 @@ async function main() {
     // Construct the corresponding .tsx file path(s)
     const tsxFilePaths = await glob(`${componentDir}/*.tsx`);
     const extractedStyleableParts = [];
+    const extractedStyleableGroups = [];
 
     for (const tsxFilePath of tsxFilePaths) {
-      const parts = await extractStyleablePartsFromTsx(tsxFilePath);
+      const { parts, groups } = await extractStyleablePartsFromTsx(tsxFilePath);
       extractedStyleableParts.push(...parts);
+      extractedStyleableGroups.push(...groups);
     }
 
     const uniqueStyleableParts = Array.from(new Set(extractedStyleableParts));
@@ -225,12 +249,13 @@ async function main() {
       // Use lowercased component name for the key
       rawCss,
       styleableParts: uniqueStyleableParts.map((name) => ({ name })), // Map to { name: string } objects
+      styleableGroups: extractedStyleableGroups,
       cssVariables,
     };
   }
 
   const fileContent = `// This file is auto-generated. Do not edit.
-export const generatedStyles: Record<string, { rawCss: string; styleableParts: Array<{ name: string }>; cssVariables: Array<{ name: string; value: string; defaultValue?: string; referencedVars: string[]; variant?: string | null }> }> = ${JSON.stringify(generatedStyles, null, 2)};
+export const generatedStyles: Record<string, { rawCss: string; styleableParts: Array<{ name: string }>; styleableGroups: Array<{ name: string; slots: Array<{ name: string; description: string; type: string }> }>; cssVariables: Array<{ name: string; value: string; defaultValue?: string; referencedVars: string[]; variant?: string | null }> }> = ${JSON.stringify(generatedStyles, null, 2)};
 `;
 
   const jsonFileContent = JSON.stringify(generatedStyles, null, 2);

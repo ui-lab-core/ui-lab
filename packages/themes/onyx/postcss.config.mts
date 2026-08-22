@@ -1,3 +1,4 @@
+import slotPlugin from "../../../postcss/slot.mjs";
 import tailwindcss from "@tailwindcss/postcss";
 
 const MIX_FUNCTION = "mix(";
@@ -21,6 +22,10 @@ function mixFunction() {
   };
 }
 
+export function createPostcssPlugins() {
+  return [slotPlugin(), mixFunction(), tailwindcss()];
+}
+
 export default {
-  plugins: [mixFunction()],
+  plugins: createPostcssPlugins(),
 };
