@@ -9,6 +9,7 @@ import { List } from "../";
 import { hoverElement } from "@/tests/utils";
 import styles from "../List.module.css";
 import { act } from "react";
+import * as React from "react";
 import userEvent from "@testing-library/user-event";
 
 describe("List.core", () => {
@@ -67,7 +68,7 @@ describe("List.core", () => {
     expect(list).toHaveAttribute("data-variant", "feed");
     expect(list).toHaveAttribute("data-gap", "lg");
     expect(list).toHaveAttribute("data-spacing", "sm");
-    expect(list).toHaveStyle({ "--list-gap-step": "6" });
+    expect(list?.style.gap).toBe("calc(var(--spacing, 0.25rem) * 6)");
   });
 
   it("does not set an inline gap override when gap is omitted", () => {
@@ -76,7 +77,7 @@ describe("List.core", () => {
 
     expect(list).toBeInTheDocument();
     expect(list).not.toHaveAttribute("data-gap");
-    expect(list?.style.getPropertyValue("--list-gap-step")).toBe("");
+    expect(list?.style.gap).toBe("");
   });
 
   it("applies custom styles to the list root", () => {
@@ -107,14 +108,16 @@ describe("List.core", () => {
         styles: {
           root: "root-slot",
           header: "header-slot",
-          item: "item-slot",
-          media: "media-slot",
-          title: "title-slot",
-          desc: "desc-slot",
-          control: "control-slot",
-          checkbox: "checkbox-slot",
-          actions: "actions-slot",
-          action: "action-slot",
+          item: {
+            root: "item-slot",
+            media: "media-slot",
+            title: "title-slot",
+            desc: "desc-slot",
+            control: "control-slot",
+            checkbox: "checkbox-slot",
+            actions: "actions-slot",
+            action: "action-slot",
+          },
           footer: "footer-slot",
         },
       },
@@ -197,6 +200,39 @@ describe("List.core", () => {
     );
     const item = container.querySelector('[role="option"]');
     expect(item).toHaveClass("custom-item-class");
+  });
+
+  it("applies direct item styles to its owned anatomy", () => {
+    const container = renderList(
+      <List.Item
+        value="1"
+        styles={{ title: "local-title", desc: "local-desc", actions: "local-actions" }}
+        actions={[{ icon: <span>Action</span>, title: "Action" }]}
+      >
+        <List.Title>Title</List.Title>
+        <List.Desc>Description</List.Desc>
+      </List.Item>,
+    );
+
+    expect(container.querySelector('[data-slot="item.title"]')).toHaveClass("local-title");
+    expect(container.querySelector('[data-slot="item.desc"]')).toHaveClass("local-desc");
+    expect(container.querySelector('[data-slot="item.actions"]')).toHaveClass("local-actions");
+  });
+
+  it("exposes direct owned rows through the list and item global classes", () => {
+    const container = renderList(
+      <List.Item value="1">Item 1</List.Item>,
+    );
+
+    expect(container.querySelector(".list > .item")).toHaveAttribute("role", "option");
+  });
+
+  it("forwards the List ref to the listbox element with navigation methods", () => {
+    const ref = React.createRef<import("../").ListRef>();
+    renderList(<List.Item value="1">Item 1</List.Item>, { ref });
+
+    expect(ref.current?.getAttribute("role")).toBe("listbox");
+    expect(ref.current?.focusNext).toBeTypeOf("function");
   });
 
   it("renders divider correctly", () => {

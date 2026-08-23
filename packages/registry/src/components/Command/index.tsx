@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Command, Button, type Command as CommandType } from "ui-lab-components";
+import { Command, Button } from "ui-lab-components";
 import { ControlDef, ComponentDetail } from "@/types";
 
 const commandBasicCode = `import { Command, Button, Badge } from "ui-lab-components";

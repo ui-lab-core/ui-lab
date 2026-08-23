@@ -14,7 +14,7 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { cn } from "@/lib/utils";
 
-import styles from "./Select.module.css";
+import css from "./Select.module.css";
 import {
   clearSelectRegistry,
   closeOtherSelects,
@@ -28,30 +28,54 @@ import {
   useListNavigation,
 } from "./Select.shared";
 
-/** Registered option data used by Select.Value render functions and data-driven navigation. */
+/**
+ * Registered option data supplied to Select.Value render functions and used for data-driven
+ * navigation, filtering, and selected-text resolution.
+ * @typeDoc SelectItemData
+ */
 export type SelectItemData = ItemData;
 
-/** Selects whether the trigger opens from a press or pointer hover. */
+/**
+ * Chooses whether the trigger opens from a press or from pointer hover.
+ * @typeDoc SelectTriggerMode
+ */
 export type SelectTriggerMode = "click" | "hover";
 
-/** Selects one item or independently toggles multiple items. */
+/**
+ * Chooses whether selecting an option replaces one key or toggles it in a set.
+ * @typeDoc SelectMode
+ */
 export type SelectMode = "single" | "multiple";
 
-/** Controlled state accepted by the Select root. */
+/**
+ * Controlled selection and open state accepted by the Select root. Values supplied here take
+ * precedence over the equivalent standalone controlled props.
+ * @typeDoc SelectState
+ */
 export interface SelectState {
-  /** Selected key in single mode, or selected keys in multiple mode. */
+  /** Selected key in single mode, or the selected keys in multiple mode. */
   value?: Key | Key[];
 
   /** Whether the option panel is open. */
   open?: boolean;
 }
 
-/** Named style overrides for the Select root. */
+/**
+ * Named style slot for the Select root.
+ * @typeDoc SelectStyleSlots
+ */
 export interface SelectStyleSlots {
-  /** Styles the root wrapper and is inherited as inline style by the floating content overlay. */
+  /**
+   * Styles the root wrapper. Its inline style is also copied onto the portalled content overlay so
+   * variable overrides reach the floating panel; its class is not.
+   */
   root?: SlotStyle;
 }
 
+/**
+ * Style override for the Select root, accepting classes, inline CSS properties, or both.
+ * @typeDoc SelectStylesProp
+ */
 export type SelectStylesProp = SelectStyleSlots;
 
 type ContentPlacement = "top" | "bottom";
@@ -131,92 +155,143 @@ function useSelectContext() {
 }
 
 export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElement> {
-  /** Controls the selection and/or open state. Its supplied values take precedence over the corresponding standalone controlled props.
+  /**
+   * Supplies controlled selection and open state in one object. Its values take precedence over the
+   * matching standalone controlled props.
    * @category Core
-   * @typeDoc SelectState */
+   * @typeDoc SelectState
+   */
   state?: SelectState;
 
-  /** Controls the selected key in single mode or selected keys in multiple mode. In single mode it takes precedence over selectedKey.
-   * @category Core */
+  /**
+   * Controls the selected key in single mode or the selected keys in multiple mode. It takes
+   * precedence over selectedKey and selectedKeys, and state.value takes precedence over it.
+   * @category Core
+   */
   value?: Key | Key[];
 
-  /** Controls whether the option panel is open.
-   * @category Core */
+  /**
+   * Controls whether the option panel is open. state.open takes precedence over it.
+   * @category Core
+   */
   open?: boolean;
 
-  /** Chooses whether selecting an item replaces one key or toggles it in a set.
+  /**
+   * Chooses whether selecting an option replaces one key or toggles it in a set. Multiple mode
+   * renders a checkbox in each option and marks the panel aria-multiselectable.
    * @category Core
    * @default "single"
-   * @typeDoc SelectMode */
+   * @typeDoc SelectMode
+   */
   mode?: SelectMode;
 
-  /** Supplies external item data for navigation and filtering; JSX Select.Item children still provide rendered options.
-   * @category Content */
+  /**
+   * Supplies external item data for keyboard navigation and filtering. Select.Item children still
+   * render the visible options.
+   * @category Items
+   */
   items?: Array<T>;
 
-  /** Controls the selected key when mode is single and value/state.value do not supply one.
-   * @category Core */
+  /**
+   * Controls the selected key in single mode when neither value nor state.value supplies one.
+   * @category Core
+   */
   selectedKey?: Key | null;
 
-  /** Sets the initial selected key for uncontrolled single-select usage.
+  /**
+   * Sets the initial selected key for uncontrolled single-select usage.
    * @category Core
-   * @default null */
+   * @default null
+   */
   defaultSelectedKey?: Key | null;
 
-  /** Controls selected keys in multiple mode when value/state.value do not supply an array.
-   * @category Core */
+  /**
+   * Controls the selected keys in multiple mode when neither value nor state.value supplies an
+   * array.
+   * @category Core
+   */
   selectedKeys?: Key[];
 
-  /** Sets the initial selected keys for uncontrolled multiple-select usage.
+  /**
+   * Sets the initial selected keys for uncontrolled multiple-select usage.
    * @category Core
-   * @default [] */
+   * @default []
+   */
   defaultSelectedKeys?: Key[];
 
-  /** Provides fallback trigger text when the selected item has not registered or no item is selected.
-   * @category Content */
+  /**
+   * Provides fallback trigger text when the selected option has not registered yet and no option is
+   * selected.
+   * @category Content
+   */
   defaultValue?: string;
 
-  /** Provides selected trigger text before items register, avoiding an SSR/SSG placeholder flash. Pair it with selectedKey or defaultSelectedKey.
-   * @category Content */
+  /**
+   * Provides the selected trigger text before options register, which avoids a server-rendered
+   * placeholder flash. Pair it with selectedKey or defaultSelectedKey.
+   * @category Content
+   */
   label?: string;
 
-  /** Runs after a selection changes with a key in single mode or the complete key array in multiple mode.
-   * @category Events */
+  /**
+   * Runs after a selection changes, receiving the selected key in single mode or the complete key
+   * array in multiple mode. It does not run while the Select is disabled.
+   * @category Events
+   */
   onSelectionChange?: (value: any) => void;
 
-  /** Prevents opening, selection, hover opening, and trigger focus interaction.
+  /**
+   * Prevents opening, selection, hover opening, and trigger press interaction, and publishes
+   * data-disabled on the root and trigger.
    * @category Core
-   * @default false */
+   * @default false
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled
+   */
   disabled?: boolean;
 
-  /** Focuses the registered trigger after mount.
+  /**
+   * Focuses the registered trigger after mount.
    * @category Accessibility
    * @default false
-   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autofocus */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus
+   */
   autoFocus?: boolean;
 
-  /** Limits visible option rows before the floating panel becomes scrollable.
-   * @category Content
-   * @default 6 */
+  /**
+   * Limits how many option rows are visible before the floating panel becomes scrollable.
+   * @category Items
+   * @default 6
+   */
   maxItems?: number;
 
-  /** Adds classes to the root wrapper.
-   * @category Styling */
+  /**
+   * Adds classes to the root wrapper before the resolved css.root class.
+   * @category Styling
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
   className?: string;
 
-  /** Chooses press or hover opening. Hover mode closes shortly after the pointer leaves both trigger and panel.
+  /**
+   * Chooses press or hover opening. Hover mode opens on pointer entry and closes shortly after the
+   * pointer leaves both the trigger and the panel.
    * @category Core
    * @default "click"
-   * @typeDoc SelectTriggerMode */
+   * @typeDoc SelectTriggerMode
+   */
   trigger?: SelectTriggerMode;
 
-  /** Filters registered or external items for searchable Select content. It receives item data with label mapped from textValue.
-   * @category Content */
+  /**
+   * Filters registered or external items for searchable content. Each item is passed with label
+   * mapped from its textValue.
+   * @category Items
+   */
   filter?: (item: T) => boolean;
 
-  /** Styles the named Select anatomy. className remains the conventional root class API.
+  /**
+   * Styles the Select root slot. className remains the conventional root class API.
    * @category Styling
-   * @typeDoc SelectStyleSlots */
+   * @typeDoc SelectStyleSlots
+   */
   styles?: SelectStylesProp;
 }
 
@@ -258,6 +333,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       trigger: triggerMode = "click",
       filter,
       styles: stylesProp,
+      style,
       ...domProps
     },
     ref,
@@ -730,6 +806,14 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     const triggerType: TriggerType =
       getChildDisplayName(trigger) === "Select.SearchableTrigger" ? "input" : "button";
 
+    // Select.Trigger's visual treatment is a whole-surface decision: the root paints the
+    // background and border, so the variant has to reach the root class and attribute.
+    const triggerVariant =
+      getChildDisplayName(trigger) === "Select.Trigger" &&
+      React.isValidElement<{ variant?: string }>(trigger)
+        ? trigger.props.variant
+        : undefined;
+
     // Styling and focus indicator
 
     const resolvedStyles = resolveSelectStyles(stylesProp);
@@ -812,14 +896,16 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
           ref={mergedRootRef}
           className={cn(
             "select",
-            styles.select,
-            hasExternalValue && styles["select-split"],
+            triggerVariant,
+            css.select,
+            hasExternalValue && css["select-split"],
             className,
             resolvedStyles.root.className,
           )}
-          style={rootStyle}
+          style={{ ...rootStyle, ...style }}
           data-slot="root"
           data-mode={mode}
+          data-variant={triggerVariant}
           data-disabled={isDisabled ? "true" : undefined}
           data-select-focus-surface="true"
           data-focused={isFocused ? "true" : "false"}

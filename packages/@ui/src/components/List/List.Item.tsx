@@ -4,20 +4,20 @@ import React from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import { cn } from "@/lib/utils";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useListContext, ListItemContext } from "./list.context";
 import { ListItemProps } from "./list.types";
-import styles from "./List.module.css";
-import { createStylesResolver } from "@/lib/styles";
+import css from "./List.module.css";
 import { focusAdjacentTabStop } from "@/utils/list-navigation";
 import { getListItemSlot } from "./list.item-layout";
 import { Actions } from "./List.Actions";
-
-const resolveListItemStyles = createStylesResolver(["root"] as const);
+import { resolveListItemStyles } from "./list.styles";
 
 type ListItemDOMProps = React.HTMLAttributes<HTMLDivElement> & {
   "data-disabled"?: boolean | "true" | "false";
   "data-focused"?: string;
   "data-focus-visible"?: string;
+  "data-highlighted"?: string;
 };
 
 const NESTED_INTERACTIVE_SELECTOR = [
@@ -156,10 +156,9 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       focusBoundaryItem,
     } = useListContext();
     const itemRef = React.useRef<HTMLDivElement>(null);
+    const mergedItemRef = useMergeRefs(itemRef, ref);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const isHighlighted = isFocusMode && focusedItem === itemRef.current;
-
-    React.useImperativeHandle(ref, () => itemRef.current as HTMLDivElement);
 
     const resolvedStyles = resolveListItemStyles(stylesProp);
     const domProps = props as ListItemDOMProps;
@@ -172,6 +171,7 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
     } = domProps;
     const dataFocused = domProps["data-focused"];
     const dataFocusVisible = domProps["data-focus-visible"];
+    const dataHighlighted = domProps["data-highlighted"];
     const isDisabled =
       domProps["aria-disabled"] === true ||
       domProps["aria-disabled"] === "true" ||
@@ -350,24 +350,34 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       },
     });
 
-    const itemContextValue = React.useMemo(() => ({ actions }), [actions]);
+    const itemContextValue = React.useMemo(
+      () => ({ actions, styles: resolvedStyles }),
+      [actions, resolvedStyles],
+    );
 
     return (
       <ListItemContext.Provider value={itemContextValue}>
         <div
-          ref={itemRef}
+          ref={mergedItemRef}
+          {...itemProps}
           role="option"
           aria-selected={selected ? "true" : "false"}
           tabIndex={tabIndex}
-          className={cn(styles.item, listStyles.item, className, resolvedStyles.root)}
+          className={cn(
+            "item",
+            css.item,
+            listStyles.item.root,
+            className,
+            resolvedStyles.root,
+          )}
+          data-slot="item"
           data-list-focus-owner="true"
           data-focused={dataFocused ?? (isFocused ? "true" : "false")}
           data-focus-visible={dataFocusVisible ?? (isFocusVisible ? "true" : "false")}
-          data-highlighted={isHighlighted ? "true" : "false"}
+          data-highlighted={dataHighlighted ?? (isHighlighted ? "true" : "false")}
           data-value={value}
           data-interactive={interactive ? "true" : undefined}
           data-selected={selected ? "true" : undefined}
-          {...itemProps}
           data-list-layout={hasStructuralSlots ? "columns" : undefined}
           style={{
             ...itemProps.style,

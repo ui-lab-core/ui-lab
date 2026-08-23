@@ -4,40 +4,51 @@ import * as React from "react";
 import { type Key } from "@react-types/shared";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import styles from "./Select.module.css";
+import css from "./Select.module.css";
 import { useSelectContext, type SelectItemData } from "./Select";
 import { List } from "../List";
 
+/**
+ * Named style slots for the Select.Group anatomy.
+ * @typeDoc SelectGroupStyleSlots
+ */
 export interface SelectGroupStyleSlots {
   /** Styles the group wrapper. */
   root?: Style;
-  /** Styles the optional visible title. */
+
+  /** Styles the optional visible title above the grouped options. */
   title?: Style;
 }
 
+/**
+ * Class-based style overrides for Select.Group's root and named anatomy slots.
+ * @typeDoc SelectGroupStylesProp
+ */
 export type SelectGroupStylesProp = StylesProp<SelectGroupStyleSlots>;
 
 export interface SelectGroupProps extends React.HTMLAttributes<HTMLDivElement> {
-  key?: string;
-  /** Renders a visible title above the grouped options.
-   * @category Content */
+  /**
+   * Renders a visible title above the grouped options.
+   * @category Content
+   */
   title?: string;
-  /** Adds classes to the group wrapper.
-   * @category Styling */
-  className?: string;
-  /** Styles group anatomy: root and title.
+
+  /**
+   * Adds classes to the group wrapper before the resolved css.root class.
    * @category Styling
-   * @typeDoc SelectGroupStyleSlots */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
+  className?: string;
+
+  /**
+   * Styles group anatomy: root and title.
+   * @category Styling
+   * @typeDoc SelectGroupStyleSlots
+   */
   styles?: SelectGroupStylesProp;
 }
 
-const resolveSelectGroupBaseStyles = createStylesResolver(["root", "title"] as const);
-
-function resolveSelectGroupStyles(styles: SelectGroupStylesProp | undefined) {
-  if (!styles) return resolveSelectGroupBaseStyles(styles);
-  const { root, title } = styles;
-  return resolveSelectGroupBaseStyles({ root, title });
-}
+const resolveSelectGroupStyles = createStylesResolver(["root", "title"] as const);
 
 /** Named grouping of related items with an optional visible title label */
 const SelectGroup = React.forwardRef<HTMLDivElement, SelectGroupProps>(
@@ -46,7 +57,7 @@ const SelectGroup = React.forwardRef<HTMLDivElement, SelectGroupProps>(
     return (
       <div ref={ref} className={cn(className, resolved.root)} data-slot="root" {...domProps}>
         {title && (
-          <div className={cn("px-2 py-1 text-sm font-medium text-foreground-400", resolved.title)}>
+          <div className={cn(css["option-group-title"], resolved.title)} data-slot="title">
             {title}
           </div>
         )}
@@ -57,44 +68,73 @@ const SelectGroup = React.forwardRef<HTMLDivElement, SelectGroupProps>(
 );
 SelectGroup.displayName = "Select.Group";
 
+/**
+ * Named style slots for the Select.Value anatomy.
+ * @typeDoc SelectValueStyleSlots
+ */
 export interface SelectValueStyleSlots {
   /** Styles the value wrapper. */
   root?: Style;
-  /** Styles the value icon wrapper. */
+
+  /** Styles the icon wrapper rendered before the value text. */
   icon?: Style;
+
   /** Styles the rendered value text. */
   text?: Style;
 }
 
+/**
+ * Class-based style overrides for Select.Value's root and named anatomy slots.
+ * @typeDoc SelectValueStylesProp
+ */
 export type SelectValueStylesProp = StylesProp<SelectValueStyleSlots>;
 
+/**
+ * Renders the value content, optionally from the currently selected registered item.
+ * @typeDoc SelectValueChildren
+ */
+export type SelectValueChildren =
+  | ((selectedItem: SelectItemData | null) => React.ReactNode)
+  | React.ReactNode;
+
 export interface SelectValueProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  /** Text rendered when no selected item or fallback root label is available.
+  /**
+   * Text rendered when neither a selected item nor a root label supplies value text.
    * @category Content
-   * @default "Select an option" */
+   * @default "Select an option"
+   */
   placeholder?: string;
-  /** Adds classes to the value wrapper.
-   * @category Styling */
-  className?: string;
-  /** Renders icon content before the selected value text.
-   * @category Content */
-  icon?: React.ReactNode;
-  /** Renders static value content or receives the selected registered item; it takes precedence over the default text.
-   * @category Content */
-  children?: ((selectedItem: SelectItemData | null) => React.ReactNode) | React.ReactNode;
-  /** Styles value anatomy: root, icon, and text.
+
+  /**
+   * Adds classes to the value wrapper before the resolved css.root class.
    * @category Styling
-   * @typeDoc SelectValueStyleSlots */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
+  className?: string;
+
+  /**
+   * Renders icon content before the value text.
+   * @category Content
+   */
+  icon?: React.ReactNode;
+
+  /**
+   * Renders static value content, or receives the selected registered item and returns content.
+   * Either form takes precedence over the default selected text.
+   * @category Content
+   * @typeDoc SelectValueChildren
+   */
+  children?: SelectValueChildren;
+
+  /**
+   * Styles value anatomy: root, icon, and text.
+   * @category Styling
+   * @typeDoc SelectValueStyleSlots
+   */
   styles?: SelectValueStylesProp;
 }
 
-const resolveSelectValueBaseStyles = createStylesResolver(["root", "icon", "text"] as const);
-
-function resolveSelectValueStyles(styles: SelectValueStylesProp | undefined) {
-  if (!styles) return resolveSelectValueBaseStyles(styles);
-  const { root, icon, text } = styles;
-  return resolveSelectValueBaseStyles({ root, icon, text });
-}
+const resolveSelectValueStyles = createStylesResolver(["root", "icon", "text"] as const);
 
 /** Renders the selected item's label inside the trigger */
 const SelectValue = React.forwardRef<HTMLDivElement, SelectValueProps>(
@@ -128,74 +168,107 @@ const SelectValue = React.forwardRef<HTMLDivElement, SelectValueProps>(
     return (
       <div
         ref={ref}
-        className={cn("value", styles.value, className, resolved.root)}
+        className={cn("value", css.value, className, resolved.root)}
         data-slot="root"
         data-external={hasExternalValue ? "true" : undefined}
         data-disabled={isDisabled ? "true" : undefined}
         {...domProps}
       >
-        {icon && <span className={cn(styles["value-icon"], resolved.icon)} data-slot="icon">{icon}</span>}
-        <span className={cn(styles["value-text"], resolved.text)} data-slot="text">{renderText()}</span>
+        {icon && (
+          <span className={cn(css["value-icon"], resolved.icon)} data-slot="icon">
+            {icon}
+          </span>
+        )}
+        <span className={cn(css["value-text"], resolved.text)} data-slot="text">
+          {renderText()}
+        </span>
       </div>
     );
   },
 );
 SelectValue.displayName = "Select.Value";
 
+/**
+ * Named style slots for the Select.Item anatomy.
+ * @typeDoc SelectItemStyleSlots
+ */
 export interface SelectItemStyleSlots {
-  /** Styles the option element. */
+  /** Styles the option row. */
   root?: Style;
-  /** Styles the optional leading icon. */
+
+  /** Styles the leading icon wrapper. */
   icon?: Style;
-  /** Styles the wrapper used when a description is present. */
+
+  /** Styles the wrapper that stacks the label above a description. */
   content?: Style;
+
   /** Styles the primary option text. */
   text?: Style;
-  /** Styles secondary descriptive content. */
+
+  /** Styles the secondary description text. */
   description?: Style;
 }
 
+/**
+ * Class-based style overrides for Select.Item's root and named anatomy slots.
+ * @typeDoc SelectItemStylesProp
+ */
 export type SelectItemStylesProp = StylesProp<SelectItemStyleSlots>;
 
 export interface SelectItemProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "value"> {
-  /** Stable option key used for selection, keyboard focus, and registered item lookup.
-   * @category Core */
-  value: Key;
-  /** Supplies searchable and selected text when children cannot be converted to a useful string.
-   * @category Accessibility */
-  textValue?: string;
-  /** Prevents pointer selection and keyboard focus for this option.
+  /**
+   * Stable option key used for selection, keyboard focus, and registered item lookup.
    * @category Core
-   * @default false */
+   */
+  value: Key;
+
+  /**
+   * Supplies searchable and selected text when children cannot be converted to a useful string.
+   * @category Accessibility
+   */
+  textValue?: string;
+
+  /**
+   * Prevents pointer selection and keyboard focus for this option.
+   * @category Core
+   * @default false
+   */
   disabled?: boolean;
-  /** Adds classes to the option element.
-   * @category Styling */
-  className?: string;
-  /** Renders icon content before the item label.
-   * @category Content */
-  icon?: React.ReactNode;
-  /** Renders secondary content below the item label and enables the item.content anatomy slot.
-   * @category Content */
-  description?: React.ReactNode;
-  /** Styles item anatomy: root, icon, content, text, and description.
+
+  /**
+   * Adds classes to the option row before the resolved css.root class.
    * @category Styling
-   * @typeDoc SelectItemStyleSlots */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
+  className?: string;
+
+  /**
+   * Renders icon content before the option label.
+   * @category Content
+   */
+  icon?: React.ReactNode;
+
+  /**
+   * Renders secondary content below the option label and adds the content anatomy wrapper.
+   * @category Content
+   */
+  description?: React.ReactNode;
+
+  /**
+   * Styles item anatomy: root, icon, content, text, and description.
+   * @category Styling
+   * @typeDoc SelectItemStyleSlots
+   */
   styles?: SelectItemStylesProp;
 }
 
-const resolveSelectItemBaseStyles = createStylesResolver([
+const resolveSelectItemStyles = createStylesResolver([
   "root",
   "icon",
   "content",
   "text",
   "description",
 ] as const);
-
-function resolveSelectItemStyles(styles: SelectItemStylesProp | undefined) {
-  if (!styles) return resolveSelectItemBaseStyles(styles);
-  const { root, icon, content, text, description } = styles;
-  return resolveSelectItemBaseStyles({ root, icon, content, text, description });
-}
 
 /** A single selectable option in the dropdown list */
 const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
@@ -230,7 +303,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     const finalTextValue = textValue || String(children);
     const hasDescription = !!description;
     const isHighlighted = focusedKey === value;
-    const isSelected = mode === "multiple" ? selectedKeys?.has(value) : selectedKey === value;
+    const isSelected = mode === "multiple" ? !!selectedKeys?.has(value) : selectedKey === value;
     const [isRegistered, setIsRegistered] = React.useState(false);
     // Items hide themselves instead of unmounting so they stay registered in useListNavigation.
     // Unmounting via .filter() caused unregisterItem → items lost → backspace couldn't restore them.
@@ -261,12 +334,11 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         focusable={false}
         tabIndex={-1}
         value={String(value)}
-        role="option"
-        aria-selected={isSelected}
+        selected={isSelected}
         className={cn(
           "item",
-          styles.item,
-          hasDescription && styles["item-with-description"],
+          css.item,
+          hasDescription && css["item-with-description"],
           className,
           resolved.root,
         )}
@@ -290,9 +362,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
           mouseMoveDetectedRef.current = true;
           setFocusedKey(value);
         }}
-        data-disabled={isDisabled || undefined}
-        data-selected={isSelected ? "true" : "false"}
-        data-slot="item"
+        data-disabled={isDisabled ? "true" : undefined}
         aria-disabled={isDisabled || undefined}
         data-highlighted={isHighlighted ? "true" : "false"}
         data-focused={isHighlighted ? "true" : "false"}
@@ -302,6 +372,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         {mode === "multiple" && (
           <List.Checkbox
             checked={isSelected}
+            placement="start"
             tabIndex={-1}
             aria-label={`${isSelected ? "Deselect" : "Select"} ${finalTextValue}`}
             onChange={handleClick}
@@ -310,23 +381,31 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         {icon && (
           <span
             className={cn(
-              styles["item-icon"],
-              hasDescription && styles["item-icon-with-description"],
+              css["item-icon"],
+              hasDescription && css["item-icon-with-description"],
               resolved.icon,
             )}
+            data-slot="icon"
           >
             {icon}
           </span>
         )}
         {hasDescription ? (
-          <div className={cn(styles["item-content"], resolved.content)} data-slot="content">
-            <span className={cn(styles["item-text"], resolved.text)}>{children}</span>
-            <span className={cn(styles["item-description"], resolved.description)}>
+          <div className={cn(css["item-content"], resolved.content)} data-slot="content">
+            <span className={cn(css["item-text"], resolved.text)} data-slot="text">
+              {children}
+            </span>
+            <span
+              className={cn(css["item-description"], resolved.description)}
+              data-slot="description"
+            >
               {description}
             </span>
           </div>
         ) : (
-          <span className={cn(styles["item-text"], resolved.text)}>{children}</span>
+          <span className={cn(css["item-text"], resolved.text)} data-slot="text">
+            {children}
+          </span>
         )}
       </List.Item>
     );
@@ -334,40 +413,50 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
 );
 SelectItem.displayName = "Select.Item";
 
+/**
+ * Named style slots for the Select.List anatomy.
+ * @typeDoc SelectListStyleSlots
+ */
 export interface SelectListStyleSlots {
   /** Styles the list wrapper. */
   root?: Style;
 }
 
+/**
+ * Class-based style override for Select.List's root slot.
+ * @typeDoc SelectListStylesProp
+ */
 export type SelectListStylesProp = StylesProp<SelectListStyleSlots>;
 
 export interface SelectListProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Adds classes to the list wrapper.
-   * @category Styling */
-  className?: string;
-  /** Reserved list-level filter callback. Filtering is currently controlled by the Select root.
-   * @category Advanced */
-  filter?: (item: any) => boolean;
-  /** Styles the list root.
+  /**
+   * Adds classes to the list wrapper before the resolved css.root class.
    * @category Styling
-   * @typeDoc SelectListStyleSlots */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
+  className?: string;
+
+  /**
+   * Styles the list root.
+   * @category Styling
+   * @typeDoc SelectListStyleSlots
+   */
   styles?: SelectListStylesProp;
 }
 
-const resolveSelectListBaseStyles = createStylesResolver(["root"] as const);
-
-function resolveSelectListStyles(styles: SelectListStylesProp | undefined) {
-  if (!styles) return resolveSelectListBaseStyles(styles);
-  const { root } = styles;
-  return resolveSelectListBaseStyles({ root });
-}
+const resolveSelectListStyles = createStylesResolver(["root"] as const);
 
 /** Wrapper for a collection of SelectItem components */
 const SelectList = React.forwardRef<HTMLDivElement, SelectListProps>(
-  ({ children, className, filter, styles: stylesProp, ...domProps }, ref) => {
+  ({ children, className, styles: stylesProp, ...domProps }, ref) => {
     const resolved = resolveSelectListStyles(stylesProp);
     return (
-      <div ref={ref} className={cn("list", styles.list, className, resolved.root)} data-slot="root" {...domProps}>
+      <div
+        ref={ref}
+        className={cn("list", css.list, className, resolved.root)}
+        data-slot="root"
+        {...domProps}
+      >
         {children}
       </div>
     );

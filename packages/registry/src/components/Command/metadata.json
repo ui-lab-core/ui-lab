@@ -6,7 +6,7 @@
   "experimental": true,
   "source": {
     "packageName": "ui-lab-components",
-    "exportName": "CommandPalette",
+    "exportName": "Command",
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": ["modal", "input"],

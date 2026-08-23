@@ -7,7 +7,9 @@ import { SelectSub, SelectSubTrigger, SelectSubContent } from "./Select.Sub";
 
 const Select = Object.assign(SelectRoot, {
   Trigger: SelectTrigger,
+  SearchableTrigger,
   Content: SelectContent,
+  SearchableContent,
   List: SelectList,
   Item: SelectItem,
   Group: SelectGroup,
@@ -18,11 +20,19 @@ const Select = Object.assign(SelectRoot, {
   SubContent: SelectSubContent,
 });
 
-const Searchable = Object.assign(() => null, {
+/**
+ * Searchable Select composition. Its parts are aliases of Select.SearchableTrigger and
+ * Select.SearchableContent.
+ */
+const Searchable = {
   Input: SearchableTrigger,
   Content: SearchableContent,
-});
+};
 
+/**
+ * Multi-select composition. Its parts are aliases of the equivalent Select parts; set
+ * mode="multiple" on the Select root to enable multiple selection.
+ */
 const Multi = Object.assign(SelectRoot, {
   Trigger: SelectTrigger,
   Content: SelectContent,
@@ -30,19 +40,32 @@ const Multi = Object.assign(SelectRoot, {
   Item: SelectItem,
 });
 
-export type { SelectItemData, SelectMode, SelectProps, SelectState, SelectStyleSlots, SelectStylesProp, SelectTriggerMode } from "./Select";
+export type {
+  SelectItemData,
+  SelectMode,
+  SelectProps,
+  SelectState,
+  SelectStyleSlots,
+  SelectStylesProp,
+  SelectTriggerMode,
+} from "./Select";
 export type {
   SelectContentListStyles,
   SelectContentProps,
   SelectContentSearchStyles,
   SelectContentStyleSlots,
   SelectContentStylesProp,
+  SearchableContentProps,
 } from "./Select.Content";
 export type {
   SelectTriggerProps,
+  SelectTriggerIconSlots,
+  SelectTriggerIconStyles,
   SelectTriggerStyleSlots,
   SelectTriggerStylesProp,
+  SelectTriggerVariant,
   SearchableTriggerProps,
+  SearchableTriggerIconStyles,
   SearchableTriggerStyleSlots,
   SearchableTriggerStylesProp,
 } from "./Select.Trigger";
@@ -56,6 +79,7 @@ export type {
   SelectSubTriggerProps,
   SelectSubContentProps,
   SelectSubContentListStyles,
+  SelectSubTriggerIconStyles,
   SelectSubTriggerStyleSlots,
   SelectSubTriggerStylesProp,
   SelectSubContentStyleSlots,
@@ -64,6 +88,7 @@ export type {
 export type {
   SelectGroupProps,
   SelectValueProps,
+  SelectValueChildren,
   SelectItemProps,
   SelectListProps,
   SelectGroupStyleSlots,

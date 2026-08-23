@@ -6,8 +6,8 @@ import { useFocusRing } from "@react-aria/focus";
 import { useHover } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
 
-import { cn, type Style } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { cn } from "@/lib/utils";
+import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
@@ -15,66 +15,109 @@ import { useControlledState } from "@/hooks/useControlledState";
 
 import css from "./Slider.module.css";
 
-type SliderOrientation = "horizontal" | "vertical";
+/** Direction in which the slider values increase.
+ * @typeDoc SliderOrientation
+ */
+export type SliderOrientation = "horizontal" | "vertical";
 
-interface SliderStyleSlots {
-  root?: Style;
-  track?: Style;
-  range?: Style;
-  thumb?: Style;
+/** Named style overrides for the Slider anatomy.
+ * @typeDoc SliderStyleSlots
+ */
+export interface SliderStyleSlots {
+  /** Styles the root slider interaction surface. */
+  root?: SlotStyle;
+  /** Styles the track that contains the range and thumbs. */
+  track?: SlotStyle;
+  /** Styles the filled portion of the track. */
+  range?: SlotStyle;
+  /** Styles every slider thumb. */
+  thumb?: SlotStyle;
 }
 
-type SliderStylesProp = StylesProp<SliderStyleSlots>;
+/** Style overrides accepted by Slider.
+ * @typeDoc SliderStylesProp
+ */
+export type SliderStylesProp = SliderStyleSlots;
+
+/** Controlled values supplied through Slider's state object.
+ * @typeDoc SliderState
+ */
 export interface SliderState {
+  /** Current value for a single thumb or ordered values for multiple thumbs. */
   value?: number | number[];
 }
 
-const resolveSliderBaseStyles = createStylesResolver(["root", "track", "range", "thumb"] as const);
-
-function resolveSliderStyles(styles: SliderStylesProp | undefined) {
-  if (!styles) {
-    return resolveSliderBaseStyles(styles);
-  }
-
-  const { root, track, range, thumb } = styles;
-
-  return resolveSliderBaseStyles({
-    root,
-    track,
-    range,
-    thumb,
-  });
-}
+const sliderStyleSlotKeys = ["root", "track", "range", "thumb"] as const;
+const resolveSliderStyles = createStylePropsResolver(sliderStyleSlotKeys);
 
 export interface SliderProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "defaultValue" | "value" | "onChange"
 > {
-  /** Whether the slider is disabled. */
+  /** Disables pointer and keyboard interaction and removes thumbs from the tab sequence.
+   * @category Core
+   * @default false
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-disabled
+   */
   disabled?: boolean;
-  /** Minimum value of the slider range. */
+  /** Sets the lowest permitted thumb value.
+   * @category Core
+   * @default 0
+   */
   min?: number;
-  /** Maximum value of the slider range. */
+  /** Sets the highest permitted thumb value.
+   * @category Core
+   * @default 100
+   */
   max?: number;
-  /** Step increment between values. */
+  /** Snaps pointer and keyboard changes to this increment.
+   * @category Core
+   * @default 1
+   */
   step?: number;
-  /** Initial value or values. For controlled usage, pass `state={{ value }}`. */
+  /** Controls slider values through a state object. It takes precedence over value when both are provided.
+   * @category Core
+   * @typeDoc SliderState
+   */
   state?: SliderState;
-  /** @deprecated Use `value`. */
+  /** Sets the initial value when neither state.value nor value controls the slider.
+   * @category Core
+   * @default [min]
+   */
   defaultValue?: number | number[];
-  /** Controlled value or values for the slider thumbs. */
+  /** Controls one thumb with a number or multiple thumbs with an ordered number array.
+   * @category Core
+   */
   value?: number | number[];
-  /** Called when the slider value changes. */
+  /** Called with the next thumb values after pointer or keyboard interaction changes a value. Disabled sliders do not call it.
+   * @category Events
+   * @see https://react-spectrum.adobe.com/react-aria/useSlider.html
+   */
   onValueChange?: (value: number[]) => void;
-  /** Orientation of the slider track. */
+  /** Chooses a horizontal or vertical track.
+   * @category Core
+   * @default "horizontal"
+   * @typeDoc SliderOrientation
+   */
   orientation?: SliderOrientation;
-  /** Accessible label for the slider. */
+  /** Labels every thumb when no visible label is associated with the slider.
+   * @category Accessibility
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label
+   */
   "aria-label"?: string;
-  /** ID of an element that labels the slider. */
+  /** References visible text that labels every thumb.
+   * @category Accessibility
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby
+   */
   "aria-labelledby"?: string;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles the root and stable slider anatomy. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc SliderStyleSlots
+   */
   styles?: SliderStylesProp;
-  /** Inline styles applied to the slider track. */
+  /** Inline styles applied to the track after styles.track inline styles.
+   * @category Styling
+   */
   trackStyle?: React.CSSProperties;
 }
 
@@ -92,6 +135,7 @@ interface SliderThumbProps {
   "aria-label"?: string;
   "aria-labelledby"?: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -198,6 +242,7 @@ function SliderThumb({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   className,
+  style,
 }: SliderThumbProps) {
   const thumbRef = React.useRef<HTMLDivElement>(null);
   const [isPressed, setIsPressed] = React.useState(false);
@@ -281,7 +326,8 @@ function SliderThumb({
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       className={cn("thumb", css.thumb, className)}
-      style={positionStyle}
+      style={{ ...positionStyle, ...style }}
+      data-slot="thumb"
       data-slider-thumb="true"
       data-slider-thumb-index={index}
       data-disabled={disabled ? "true" : undefined}
@@ -516,8 +562,9 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         ref={mergedRef}
         data-disabled={disabled ? "true" : undefined}
         data-orientation={orientation}
-        style={style}
-        className={cn("slider", css.slider, className, resolved.root)}
+        style={{ ...resolved.root.style, ...style }}
+        className={cn("slider", css.slider, className, resolved.root.className)}
+        data-slot="root"
         onPointerDown={handleRootPointerDown}
         onPointerMove={handleRootPointerMove}
         onPointerUp={handleRootPointerEnd}
@@ -527,18 +574,20 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       >
         <div
           ref={trackRef}
-          className={cn("track", css.track, resolved.track)}
+          className={cn("track", css.track, resolved.track.className)}
           data-slider-track="true"
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
-          style={trackStyle}
+          style={{ ...resolved.track.style, ...trackStyle }}
+          data-slot="track"
         >
           <div {...indicatorProps} data-focus-indicator="track" />
           <div
-            className={cn("range", css.range, resolved.range)}
+            className={cn("range", css.range, resolved.range.className)}
             data-slider-range="true"
             data-disabled={disabled ? "true" : undefined}
-            style={rangeStyle}
+            style={{ ...rangeStyle, ...resolved.range.style }}
+            data-slot="range"
           />
           {values.map((sliderValue, index) => (
             <SliderThumb
@@ -555,7 +604,8 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
               isDragging={draggingThumbIndex === index}
               aria-label={ariaLabel}
               aria-labelledby={ariaLabelledBy}
-              className={resolved.thumb}
+              className={resolved.thumb.className}
+              style={resolved.thumb.style}
             />
           ))}
         </div>

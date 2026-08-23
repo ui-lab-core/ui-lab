@@ -12,6 +12,10 @@
   "tags": ["feedback", "status", "progress"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["ARIA progressbar role", "aria-valuenow", "aria-valuemin", "aria-valuemax"]
+    "notes": [
+      "ARIA progressbar role",
+      "aria-valuenow, aria-valuemin, and aria-valuemax",
+      "A visible label supplies the default accessible name unless aria-label or aria-labelledby is provided"
+    ]
   }
 }

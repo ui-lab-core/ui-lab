@@ -13,14 +13,16 @@ import {
   ListInputProps,
   ListSelectProps,
 } from "./list.types";
-import styles from "./List.module.css";
+import css from "./List.module.css";
 import { useListContext } from "./list.context";
+import { useListItemContext } from "./list.context";
 import { markListItemSlot } from "./list.item-layout";
 
 /** Interactive checkbox inside a list item */
 const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheckboxProps>(
   ({ checked, className, onChange, onCheckedChange, placement = "end", ...props }, ref) => {
     const { styles: listStyles } = useListContext();
+    const { styles: itemStyles } = useListItemContext();
     const handleChange = React.useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange?.(event);
@@ -31,7 +33,8 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof UICheckbox>, ListCheck
 
     return (
       <div
-        className={cn(styles.control, listStyles.control, className)}
+        className={cn(css.control, listStyles.item.control, itemStyles.control, className)}
+        data-slot="item.control"
         data-placement={placement}
         data-list-primary-action="true"
       >
@@ -52,13 +55,15 @@ markListItemSlot(Checkbox, (props) => (props.placement === "start" ? "leading" :
 const CheckboxIndicator = React.forwardRef<HTMLDivElement, ListCheckboxIndicatorProps>(
   ({ checked, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
+    const { styles: itemStyles } = useListItemContext();
 
     return (
       <div
         ref={ref}
-        className={cn(styles.checkbox, listStyles.checkbox, className)}
-        data-checked={checked ? "true" : "false"}
+        className={cn(css.checkbox, listStyles.item.checkbox, itemStyles.checkbox, className)}
         {...props}
+        data-slot="item.checkbox"
+        data-checked={checked ? "true" : "false"}
       >
         <UICheckbox state={{ checked: Boolean(checked) }} readOnly tabIndex={-1} />
       </div>
@@ -72,10 +77,12 @@ markListItemSlot(CheckboxIndicator, () => "leading");
 const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchProps>(
   ({ isSelected, disabled, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
+    const { styles: itemStyles } = useListItemContext();
 
     return (
       <div
-        className={cn(styles.control, listStyles.control, className)}
+        className={cn(css.control, listStyles.item.control, itemStyles.control, className)}
+        data-slot="item.control"
         data-list-primary-action="true"
       >
         <UISwitch ref={ref} isSelected={isSelected} disabled={disabled} {...props} />
@@ -90,9 +97,14 @@ markListItemSlot(Switch, () => "trailing");
 const Input = React.forwardRef<React.ElementRef<typeof UIInput>, ListInputProps>(
   ({ className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
+    const { styles: itemStyles } = useListItemContext();
 
     return (
-      <div className={cn(styles.control, listStyles.control)} data-control="input">
+      <div
+        className={cn(css.control, listStyles.item.control, itemStyles.control)}
+        data-slot="item.control"
+        data-control="input"
+      >
         <UIInput ref={ref} className={className} {...props} />
       </div>
     );
@@ -105,10 +117,12 @@ markListItemSlot(Input, () => "trailing");
 const Select = React.forwardRef<React.ElementRef<typeof UISelect>, ListSelectProps>(
   ({ disabled, children, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
+    const { styles: itemStyles } = useListItemContext();
 
     return (
       <div
-        className={cn(styles.control, listStyles.control, className)}
+        className={cn(css.control, listStyles.item.control, itemStyles.control, className)}
+        data-slot="item.control"
         data-list-primary-action="true"
       >
         <UISelect ref={ref} disabled={disabled} {...props}>

@@ -7,91 +7,115 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Input, type InputProps } from "../Input";
 import { ChevronDown } from "lucide-react";
-import styles from "./Select.module.css";
+import css from "./Select.module.css";
 import { useSelectContext } from "./Select";
 import { GroupContext } from "../Group/Group.Context";
-import groupStyles from "../Group/Group.module.css";
+import groupCss from "../Group/Group.module.css";
 import { handleListKeyDown } from "./Select.shared";
 import { infer } from "@/lib/infer";
 
-const SelectTriggerContext = React.createContext<boolean>(false);
+/**
+ * Visual treatment applied to the Select surface by its trigger.
+ * @typeDoc SelectTriggerVariant
+ */
+export type SelectTriggerVariant = "ghost" | (string & {});
 
-/** Side-specific trigger icon styles. */
-interface SelectTriggerIconStyles {
-  left?: Style;
-  right?: Style;
+/**
+ * Icon content rendered at either edge of the trigger.
+ * @typeDoc SelectTriggerIconSlots
+ */
+export interface SelectTriggerIconSlots {
+  /** Content rendered before the trigger value, in the icon.left slot. */
+  prefix?: React.ReactNode;
+
+  /** Content replacing the default chevron, in the icon.right slot. */
+  chevron?: React.ReactNode;
 }
 
+/**
+ * Styles for the individual trigger icon parts.
+ * @typeDoc SelectTriggerIconStyles
+ */
+export interface SelectTriggerIconStyles {
+  /** Styles the prefix icon wrapper rendered before the trigger value. */
+  left?: Style;
+
+  /** Styles the chevron wrapper rendered inside the icon section. */
+  right?: Style;
+
+  /** Styles the section that holds the trailing chevron. */
+  section?: Style;
+}
+
+/**
+ * Named style slots for the Select.Trigger anatomy.
+ * @typeDoc SelectTriggerStyleSlots
+ */
 export interface SelectTriggerStyleSlots {
   /** Styles the trigger button. */
   root?: Style;
+
   /** Styles the trigger value section. */
   value?: Style;
-  /** Styles both icon wrappers, or individual left and right icon wrappers. */
-  icon?: Style | SelectTriggerIconStyles; // Compound slot
-  /** Styles the chevron section. */
-  iconSection?: Style;
+
+  /** Styles every icon part, or individually styles icon.left, icon.right, and icon.section. */
+  icon?: Style | SelectTriggerIconStyles;
 }
 
+/**
+ * Class-based style overrides for Select.Trigger's root and named anatomy slots.
+ * @typeDoc SelectTriggerStylesProp
+ */
 export type SelectTriggerStylesProp = StylesProp<SelectTriggerStyleSlots>;
 
-export interface SelectTriggerProps extends Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  "disabled" | "type"
-> {
-  /** Adds classes to the trigger button.
-   * @category Styling */
-  className?: string;
-  /** Replaces the default ChevronDown icon in the right trigger section.
-   * @category Content */
-  chevron?: React.ReactNode;
-  /** Supplies a prefix icon and/or takes precedence over chevron with a custom right icon.
-   * @category Content */
-  icon?: { prefix?: React.ReactNode; chevron?: React.ReactNode };
-  /** Applies the ghost trigger treatment, which removes the default button background.
-   * @category Styling */
-  variant?: "ghost";
-  /** Styles trigger anatomy: root, value, icon.left, icon.right, and iconSection.
+export interface SelectTriggerProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "type"> {
+  /**
+   * Adds classes to the trigger button before the resolved css.root class.
    * @category Styling
-   * @typeDoc SelectTriggerStyleSlots */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
+  className?: string;
+
+  /**
+   * Replaces the default chevron rendered in the icon.right slot. Passing null removes the whole
+   * icon section. icon.chevron takes precedence over this prop.
+   * @category Content
+   */
+  chevron?: React.ReactNode;
+
+  /**
+   * Supplies the prefix icon and an optional chevron replacement.
+   * @category Content
+   * @typeDoc SelectTriggerIconSlots
+   */
+  icon?: SelectTriggerIconSlots;
+
+  /**
+   * Publishes a visual treatment on the Select root as both a global class and data-variant, so
+   * themes can restyle the whole surface. "ghost" removes the default Select background.
+   * @category Core
+   * @typeDoc SelectTriggerVariant
+   */
+  variant?: SelectTriggerVariant;
+
+  /**
+   * Styles trigger anatomy: root, value, icon.left, icon.right, and icon.section.
+   * @category Styling
+   * @typeDoc SelectTriggerStyleSlots
+   */
   styles?: SelectTriggerStylesProp;
 }
 
-/** Button that opens and closes the Select dropdown */
-const resolveSelectTriggerBaseStyles = createStylesResolver([
+const resolveSelectTriggerStyles = createStylesResolver([
   "root",
   "value",
   "icon.left",
   "icon.right",
-  "iconSection",
+  "icon.section",
 ] as const);
 
-function resolveSelectTriggerStyles(styles: SelectTriggerStylesProp | undefined) {
-  if (!styles) return resolveSelectTriggerBaseStyles(styles);
-
-  const { root, value, icon, iconSection } = styles;
-  let iconLeft: Style | undefined;
-  let iconRight: Style | undefined;
-
-  if (icon) {
-    if (typeof icon === "string" || Array.isArray(icon)) {
-      iconLeft = icon;
-      iconRight = icon;
-    } else {
-      iconLeft = icon.left;
-      iconRight = icon.right;
-    }
-  }
-
-  return resolveSelectTriggerBaseStyles({
-    root,
-    value,
-    "icon.left": iconLeft,
-    "icon.right": iconRight,
-    iconSection,
-  });
-}
-
+/** Button that opens and closes the Select dropdown */
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
   ({ children, className, chevron, icon, variant, styles: stylesProp, ...domProps }, ref) => {
     const groupContext = React.useContext(GroupContext);
@@ -128,91 +152,118 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
     const resolved = resolveSelectTriggerStyles(stylesProp);
     const mergedTriggerProps = mergeProps(domProps, triggerProps);
     const content = infer("text", children) ? (
-      <span className={styles.text}>{children}</span>
+      <span className={css.text}>{children}</span>
     ) : (
       children
     );
 
     return (
-      <SelectTriggerContext.Provider value={true}>
-        <button
-          ref={mergedRef}
-          role="button"
-          className={cn(
-            "select",
-            "trigger",
-            styles.trigger,
-            isSplitTrigger && styles["trigger-compact"],
-            groupContext ? (groupStyles as Record<string, string>).trigger : undefined,
-            className,
-            resolved.root,
+      <button
+        ref={mergedRef}
+        className={cn(
+          "select",
+          "trigger",
+          css.trigger,
+          isSplitTrigger && css["trigger-compact"],
+          groupContext ? (groupCss as Record<string, string>).trigger : undefined,
+          className,
+          resolved.root,
+        )}
+        type="button"
+        data-slot="root"
+        data-open={isOpen ? "true" : "false"}
+        data-pressed={isPressed ? "true" : "false"}
+        data-hovered={isHovered ? "true" : "false"}
+        data-focused={isFocused ? "true" : "false"}
+        data-focus-visible={isFocusVisible ? "true" : "false"}
+        data-disabled={isDisabled ? "true" : undefined}
+        {...mergedTriggerProps}
+      >
+        <div className={cn(css["value-section"], resolved.value)} data-slot="value">
+          {icon?.prefix && (
+            <span className={cn(css["icon-prefix"], resolved["icon.left"])} data-slot="icon.left">
+              {icon.prefix}
+            </span>
           )}
-          type="button"
-          data-variant={variant}
-          data-open={isOpen ? "true" : "false"}
-          data-pressed={isPressed ? "true" : "false"}
-          data-hovered={isHovered ? "true" : "false"}
-          data-focused={isFocused ? "true" : "false"}
-          data-focus-visible={isFocusVisible ? "true" : "false"}
-          data-disabled={isDisabled ? "true" : undefined}
-          {...mergedTriggerProps}
-        >
-          <div className={cn(styles["value-section"], resolved.value)} data-slot="value">
-            {icon?.prefix && (
-              <span className={cn(styles["icon-prefix"], resolved["icon.left"])} data-slot="icon.left">{icon.prefix}</span>
-            )}
-            {mode === "multiple" && children === undefined ? (
-              <span className={cn("placeholder", styles.placeholder)}>
-                {selectedKeys && selectedKeys.size > 0
-                  ? `${selectedKeys.size} selected`
-                  : "Select items..."}
-              </span>
-            ) : (
-              content
-            )}
-          </div>
-          {resolvedChevron !== null && (
-            <div className={cn(styles["icon-section"], resolved.iconSection)} data-slot="iconSection">
-              <div className={cn(styles.icon, resolved["icon.right"])} data-slot="icon.right">{resolvedChevron}</div>
+          {mode === "multiple" && children === undefined ? (
+            <span className={cn("placeholder", css.placeholder)}>
+              {selectedKeys && selectedKeys.size > 0
+                ? `${selectedKeys.size} selected`
+                : "Select items..."}
+            </span>
+          ) : (
+            content
+          )}
+        </div>
+        {resolvedChevron !== null && (
+          <div
+            className={cn(css["icon-section"], resolved["icon.section"])}
+            data-slot="icon.section"
+            aria-hidden="true"
+          >
+            <div className={cn(css.icon, resolved["icon.right"])} data-slot="icon.right">
+              {resolvedChevron}
             </div>
-          )}
-        </button>
-      </SelectTriggerContext.Provider>
+          </div>
+        )}
+      </button>
     );
   },
 );
 SelectTrigger.displayName = "Select.Trigger";
 
-export interface SearchableTriggerStyleSlots {
-  root?: Style;
-  valueSection?: Style;
-  input?: Style;
-  iconSection?: Style;
-  icon?: Style;
+/**
+ * Styles for the individual searchable trigger icon parts.
+ * @typeDoc SearchableTriggerIconStyles
+ */
+export interface SearchableTriggerIconStyles {
+  /** Styles the chevron wrapper. */
+  right?: Style;
+
+  /** Styles the section that holds the chevron. */
+  section?: Style;
 }
 
+/**
+ * Named style slots for the Select.SearchableTrigger anatomy.
+ * @typeDoc SearchableTriggerStyleSlots
+ */
+export interface SearchableTriggerStyleSlots {
+  /** Styles the searchable trigger wrapper. */
+  root?: Style;
+
+  /** Styles the section that holds the search input. */
+  value?: Style;
+
+  /** Styles the search input surface. */
+  input?: Style;
+
+  /** Styles every icon part, or individually styles icon.right and icon.section. */
+  icon?: Style | SearchableTriggerIconStyles;
+}
+
+/**
+ * Class-based style overrides for Select.SearchableTrigger's root and named anatomy slots.
+ * @typeDoc SearchableTriggerStylesProp
+ */
 export type SearchableTriggerStylesProp = StylesProp<SearchableTriggerStyleSlots>;
 
 export interface SearchableTriggerProps extends Omit<InputProps, "value" | "onChange" | "styles"> {
-  /** Styles searchable trigger anatomy: root, valueSection, input, iconSection, and icon.
+  /**
+   * Styles searchable trigger anatomy: root, value, input, icon.right, and icon.section.
    * @category Styling
-   * @typeDoc SearchableTriggerStyleSlots */
+   * @typeDoc SearchableTriggerStyleSlots
+   */
   styles?: SearchableTriggerStylesProp;
 }
 
-const resolveSearchableTriggerBaseStyles = createStylesResolver([
+const resolveSearchableTriggerStyles = createStylesResolver([
   "root",
-  "valueSection",
+  "value",
   "input",
-  "iconSection",
-  "icon",
+  "icon.right",
+  "icon.section",
 ] as const);
-
-function resolveSearchableTriggerStyles(styles: SearchableTriggerStylesProp | undefined) {
-  if (!styles) return resolveSearchableTriggerBaseStyles(styles);
-  const { root, valueSection, input, iconSection, icon } = styles;
-  return resolveSearchableTriggerBaseStyles({ root, valueSection, input, iconSection, icon });
-}
 
 /** Combobox-style input that opens the dropdown on focus and filters items as you type */
 const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerProps>(
@@ -309,14 +360,14 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
       <div
         className={cn(
           "search-trigger",
-          styles.trigger,
-          styles["search-trigger"],
+          css.trigger,
+          css["search-trigger"],
           className,
           resolved.root,
         )}
-        data-slot="trigger"
-        data-open={isOpen ? "true" : undefined}
-        data-disabled={isDisabled || undefined}
+        data-slot="root"
+        data-open={isOpen ? "true" : "false"}
+        data-disabled={isDisabled ? "true" : undefined}
         data-placement={contentPlacement}
         onMouseDown={(e) => {
           if (e.target !== inputRef.current) {
@@ -329,11 +380,8 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
         }}
       >
         <div
-          className={cn(
-            styles["value-section"],
-            styles["search-value-section"],
-            resolved.valueSection,
-          )}
+          className={cn(css["value-section"], css["search-value-section"], resolved.value)}
+          data-slot="value"
         >
           <Input
             ref={mergedRef}
@@ -359,12 +407,16 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
             placeholder={placeholder}
             disabled={isDisabled}
             variant="ghost"
-            className={cn("input", styles["input"], resolved.input)}
+            className={cn("input", css["input"], resolved.input)}
             {...props}
           />
         </div>
-        <div className={cn(styles["search-icon-section"], resolved.iconSection)}>
-          <div className={cn(styles.icon, resolved.icon)}>
+        <div
+          className={cn(css["search-icon-section"], resolved["icon.section"])}
+          data-slot="icon.section"
+          aria-hidden="true"
+        >
+          <div className={cn(css.icon, resolved["icon.right"])} data-slot="icon.right">
             <ChevronDown size={14} />
           </div>
         </div>

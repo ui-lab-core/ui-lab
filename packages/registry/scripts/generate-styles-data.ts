@@ -1,15 +1,16 @@
 import * as path from "path";
 import * as fs from "fs";
 import { fileURLToPath } from "url";
+import { pathToFileURL } from "url";
 import postcss from "postcss";
 import ts from "typescript";
-import slotPlugin from "../../../postcss/slot.mjs";
 import type { ComponentStyles, StyleableGroup } from "../src/types";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
+const ONYX_THEME_CSS = path.resolve(__dirname, "../../themes/onyx/styles.css");
 
 function toKebabCase(pascalCase: string): string {
   return pascalCase.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
@@ -25,30 +26,169 @@ function getCssFile(componentDirName: string): string | null {
 
 function extractVarDetails(value: string) {
   const referencedVars = new Set<string>();
-  const pattern = /var\((--[\w-]+)(?:\s*,\s*([^)]+))?\)/g;
-  let defaultValue: string | undefined;
-  let match: RegExpExecArray | null;
-
-  while ((match = pattern.exec(value)) !== null) {
-    referencedVars.add(match[1]);
-    if (match[2] && defaultValue === undefined) defaultValue = match[2].trim();
+  for (const usage of extractVarUsages(value)) {
+    referencedVars.add(usage.name);
   }
 
-  return { referencedVars: [...referencedVars], defaultValue };
+  return { referencedVars: [...referencedVars] };
+}
+
+function extractVarUsages(value: string) {
+  const usages: Array<{ name: string; referencedVars: string[] }> = [];
+  let cursor = 0;
+
+  while (cursor < value.length) {
+    const start = value.indexOf("var(", cursor);
+    if (start === -1) break;
+
+    let depth = 1;
+    let end = start + 4;
+    let comma = -1;
+    for (; end < value.length && depth > 0; end += 1) {
+      const character = value[end];
+      if (character === "(") depth += 1;
+      if (character === ")") depth -= 1;
+      if (character === "," && depth === 1 && comma === -1) comma = end;
+    }
+
+    const close = depth === 0 ? end - 1 : value.length;
+    const nameEnd = comma === -1 ? close : comma;
+    const name = value.slice(start + 4, nameEnd).trim();
+    if (name.startsWith("--")) {
+      const fallback = comma === -1 ? "" : value.slice(comma + 1, close);
+      usages.push({
+        name,
+        referencedVars: extractVarDetails(fallback).referencedVars,
+      });
+    }
+    cursor = start + 4;
+  }
+
+  return usages;
+}
+
+function extractSlotUsages(value: string) {
+  const usages: Array<{ slot: string; name: string; referencedVars: string[] }> = [];
+  let cursor = 0;
+
+  while (cursor < value.length) {
+    const start = value.indexOf("slot(", cursor);
+    if (start === -1) break;
+
+    let depth = 1;
+    let end = start + 5;
+    for (; end < value.length && depth > 0; end += 1) {
+      if (value[end] === "(") depth += 1;
+      if (value[end] === ")") depth -= 1;
+    }
+    if (depth !== 0) break;
+
+    const [slot, property, fallback] = postcss.list
+      .comma(value.slice(start + 5, end - 1))
+      .map((argument) => argument.trim());
+    if (slot && property) {
+      usages.push({
+        slot,
+        name: `--${property}`,
+        referencedVars: fallback ? extractVarDetails(fallback).referencedVars : [],
+      });
+    }
+    cursor = start + 5;
+  }
+
+  return usages;
 }
 
 function resolveSelector(rule: postcss.Rule): string {
   let selector = rule.selector;
-  if (rule.parent?.type === "rule") {
-    const parent = resolveSelector(rule.parent);
-    selector = selector.includes("&") ? selector.replace(/&/g, parent) : `${parent} ${selector}`;
+  let parent = rule.parent;
+
+  while (parent) {
+    if (parent.type === "rule") {
+      selector = selector.includes("&")
+        ? selector.replace(/&/g, parent.selector)
+        : `${parent.selector} ${selector}`;
+    }
+    parent = parent.parent;
   }
+
   return selector;
+}
+
+function extractAtRules(rule: postcss.Rule): string[] {
+  const atRules: string[] = [];
+  let parent = rule.parent;
+  while (parent) {
+    if (parent.type === "atrule" && parent.name !== "layer") {
+      atRules.unshift(`@${parent.name}${parent.params ? ` ${parent.params}` : ""}`);
+    }
+    parent = parent.parent;
+  }
+  return atRules;
+}
+
+function matchesComponentRootSelector(selector: string, componentClass: string): boolean {
+  const escapedClass = componentClass.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^\\.${escapedClass}(?=$|[^a-zA-Z0-9_-])`).test(selector.trim());
+}
+
+async function extractThemeStyles(componentDirName: string): Promise<{
+  rawCss?: string;
+}> {
+  if (!fs.existsSync(ONYX_THEME_CSS)) return {};
+
+  const componentClass = toKebabCase(componentDirName);
+  const source = fs.readFileSync(ONYX_THEME_CSS, "utf8");
+  const root = postcss.parse(source);
+  const themeRoot = postcss.root();
+  const atRuleContainers = new Map<string, postcss.Container>([["", themeRoot]]);
+
+  root.walkRules((rule) => {
+    const selectors = postcss.list
+      .comma(resolveSelector(rule))
+      .map((selector) => selector.trim())
+      .filter((selector) => matchesComponentRootSelector(selector, componentClass));
+    if (selectors.length === 0) return;
+
+    let container: postcss.Container = themeRoot;
+    const ancestors: postcss.AtRule[] = [];
+    let parent = rule.parent;
+    while (parent) {
+      if (parent.type === "atrule") ancestors.unshift(parent);
+      parent = parent.parent;
+    }
+    let atRulePath = "";
+    for (const ancestor of ancestors) {
+      atRulePath = `${atRulePath}\n@${ancestor.name} ${ancestor.params}`;
+      const existingContainer = atRuleContainers.get(atRulePath);
+      if (existingContainer) {
+        container = existingContainer;
+        continue;
+      }
+
+      const wrapper = ancestor.clone({ nodes: [] });
+      container.append(wrapper);
+      atRuleContainers.set(atRulePath, wrapper);
+      container = wrapper;
+    }
+    container.append(rule.clone({ selector: selectors.join(",\n") }));
+
+  });
+
+  return { rawCss: themeRoot.nodes?.length ? themeRoot.toString() : undefined };
 }
 
 function extractStyleableGroups(componentDirName: string): StyleableGroup[] {
   const componentDir = path.join(COMPONENTS_DIR, componentDirName);
-  const files = fs.readdirSync(componentDir).filter((file) => file.endsWith(".tsx"));
+  const files = fs
+    .readdirSync(componentDir)
+    .filter(
+      (file) =>
+        /\.(?:ts|tsx)$/.test(file) &&
+        !file.endsWith(".d.ts") &&
+        !file.endsWith(".test.ts") &&
+        !file.endsWith(".test.tsx"),
+    );
   const groups: StyleableGroup[] = [];
 
   for (const file of files) {
@@ -126,19 +266,89 @@ async function extractComponentStyles(componentDirName: string): Promise<Compone
 
   try {
     const source = fs.readFileSync(cssFile, "utf-8");
-    const rawCss = (await postcss([slotPlugin()]).process(source, { from: cssFile })).css;
-    const root = postcss.parse(rawCss);
+    const rawCss = source;
+    const root = postcss.parse(source);
+    const themeStyles = await extractThemeStyles(componentDirName);
     const cssVariables: ComponentStyles["cssVariables"] = [];
+    const variablesByScope = new Map<string, ComponentStyles["cssVariables"][number]>();
+
+    function variableKey(name: string, selector: string, atRules: string[], slot?: string) {
+      return `${atRules.join("\n")}\n${selector}\n${slot ?? ""}\n${name}`;
+    }
+
+    function addConsumedVariable(
+      name: string,
+      selector: string,
+      atRules: string[],
+      referencedVars: string[],
+      slot?: string,
+    ) {
+      const key = variableKey(name, selector, atRules, slot);
+      const existing = variablesByScope.get(key);
+      if (existing) {
+        if (existing.value === "unset") {
+          existing.referencedVars = [...new Set([...existing.referencedVars, ...referencedVars])];
+        }
+        return;
+      }
+
+      const variable = { name, value: "unset", selector, atRules, referencedVars, slot };
+      variablesByScope.set(key, variable);
+      cssVariables.push(variable);
+    }
+
+    function addDeclaredVariable(
+      name: string,
+      value: string,
+      selector: string,
+      atRules: string[],
+      slot?: string,
+    ) {
+      const variable = {
+        name,
+        value,
+        selector,
+        atRules,
+        slot,
+        ...extractVarDetails(value),
+      };
+      const key = variableKey(name, selector, atRules, slot);
+      const existing = variablesByScope.get(key);
+      if (existing) {
+        Object.assign(existing, variable);
+        return;
+      }
+
+      variablesByScope.set(key, variable);
+      cssVariables.push(variable);
+    }
 
     root.walkDecls((declaration) => {
-      if (!declaration.prop.startsWith("--") || declaration.parent?.type !== "rule") return;
-      const details = extractVarDetails(declaration.value);
-      cssVariables.push({
-        name: declaration.prop,
-        value: declaration.value,
-        variant: resolveSelector(declaration.parent),
-        ...details,
-      });
+      let parent = declaration.parent;
+      let rule: postcss.Rule | undefined;
+      let slot: string | undefined;
+      while (parent) {
+        if (parent.type === "rule") {
+          rule = parent;
+          break;
+        }
+        if (parent.type === "atrule" && parent.name === "slot") slot = parent.params.trim();
+        parent = parent.parent;
+      }
+      if (!rule) return;
+      const selector = resolveSelector(rule);
+      const atRules = extractAtRules(rule);
+
+      if (declaration.prop.startsWith("--")) {
+        addDeclaredVariable(declaration.prop, declaration.value, selector, atRules, slot);
+      }
+
+      for (const usage of extractVarUsages(declaration.value)) {
+        addConsumedVariable(usage.name, selector, atRules, usage.referencedVars);
+      }
+      for (const usage of extractSlotUsages(declaration.value)) {
+        addConsumedVariable(usage.name, selector, atRules, usage.referencedVars, usage.slot);
+      }
     });
 
     const styleableGroups = extractStyleableGroups(componentDirName);
@@ -146,7 +356,22 @@ async function extractComponentStyles(componentDirName: string): Promise<Compone
       ...new Set(styleableGroups.flatMap((group) => group.slots.map((slot) => slot.name))),
     ].map((name) => ({ name }));
 
-    return { rawCss, cssVariables, styleableParts, styleableGroups };
+    const documentationPath = path.resolve(
+      __dirname,
+      `../src/components/${componentDirName}/documentation.ts`,
+    );
+    const documentation = fs.existsSync(documentationPath)
+      ? (await import(pathToFileURL(documentationPath).href)).styleDocumentation
+      : undefined;
+
+    return {
+      rawCss,
+      onyxThemeCss: themeStyles.rawCss,
+      cssVariables,
+      styleableParts,
+      styleableGroups,
+      documentation,
+    };
   } catch (e) {
     console.warn(`Failed to read CSS for ${componentDirName}:`, e);
     return null;

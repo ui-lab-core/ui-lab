@@ -1,7 +1,7 @@
 {
   "id": "checkbox",
   "name": "Checkbox",
-  "description": "Input for selecting one or multiple options.",
+  "description": "Native checkbox input for a boolean form choice.",
   "category": "input",
   "source": {
     "packageName": "ui-lab-components",

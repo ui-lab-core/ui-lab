@@ -86,6 +86,8 @@ export type {
   StyleVariable,
   StyleClass,
   ComponentStyles,
+  ComponentStyleDocumentation,
+  ComponentStyleRecipe,
   ComponentSourceCode,
   SourceArtifact,
   SourceArtifactAccess,

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Command.module.css";
 import {
   CommandContext,
@@ -58,6 +59,8 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
       onOpenChange,
       closeOnSelect = false,
       children,
+      onKeyDown,
+      onPointerDownCapture,
       ...props
     },
     ref,
@@ -81,11 +84,13 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
       searchValue,
       setSearchValue,
     } = engine;
-    React.useImperativeHandle(ref, () => surfaceRef.current as HTMLDivElement);
+    const mergedRef = useMergeRefs(surfaceRef, ref);
     const close = React.useCallback(() => {
       if (closeOnSelect) onOpenChange?.(false);
     }, [closeOnSelect, onOpenChange]);
-    const handleKeyDown = (event: React.KeyboardEvent) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      onKeyDown?.(event);
+      if (event.defaultPrevented) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         moveFocus(event.key === "ArrowDown" ? "down" : "up");
@@ -101,10 +106,12 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
     };
     return (
       <div
-        ref={surfaceRef}
+        ref={mergedRef}
         {...props}
         onKeyDown={handleKeyDown}
-        onPointerDownCapture={() => {
+        onPointerDownCapture={(event) => {
+          onPointerDownCapture?.(event);
+          if (event.defaultPrevented) return;
           pointerRef.current = true;
           window.setTimeout(() => {
             pointerRef.current = false;

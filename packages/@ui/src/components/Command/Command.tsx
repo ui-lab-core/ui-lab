@@ -71,7 +71,10 @@ export interface CommandProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
 }
 
-/** Imperative open state and trigger registration shared by Command and Command.Trigger. */
+/**
+ * Imperative open state and trigger registration shared by Command and Command.Trigger.
+ * @typeDoc CommandState
+ */
 export interface CommandState {
   /** Whether the command palette is currently open. */
   isOpen: boolean;
@@ -89,7 +92,10 @@ export interface CommandState {
   triggerRef: React.MutableRefObject<HTMLElement | null>;
 }
 
-/** Options for creating controlled or uncontrolled command palette state. */
+/**
+ * Options for creating controlled or uncontrolled command palette state.
+ * @typeDoc UseCommandStateProps
+ */
 export interface UseCommandStateProps {
   /** Controlled open state.
    * @category Core
@@ -157,6 +163,8 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       items = EMPTY_COMMAND_ITEMS,
       filter,
       children,
+      onKeyDown,
+      onPointerDownCapture,
       ...props
     },
     ref,
@@ -169,7 +177,6 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       onOpenChange: commandState.setOpen,
     });
     const modalRef = React.useRef<HTMLDivElement>(null);
-    const paletteRef = React.useRef<HTMLDivElement>(null);
     const searchInputRef = React.useRef<HTMLInputElement>(null);
     const scrollableRef = React.useRef<HTMLDivElement>(null);
     const pointerRef = React.useRef(false);
@@ -195,8 +202,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       trigger: `${searchValue}\u0000${filteredItems.map((item) => item.id).join("\u0000")}`,
     });
-    const surfaceRef = useMergeRefs(modalRef, animatedHeightRef);
-    React.useImperativeHandle(ref, () => paletteRef.current as HTMLDivElement);
+    const surfaceRef = useMergeRefs(modalRef, animatedHeightRef, ref);
     React.useEffect(() => {
       setMounted(true);
     }, []);
@@ -219,7 +225,9 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     React.useEffect(() => {
       if (!overlayState.isOpen && !present) setSearchValue("");
     }, [overlayState.isOpen, present, setSearchValue]);
-    const handleKeyDown = (event: React.KeyboardEvent) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      onKeyDown?.(event);
+      if (event.defaultPrevented) return;
       if (!overlayState.isOpen) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
@@ -252,7 +260,9 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         ref={surfaceRef}
         {...props}
         onKeyDown={handleKeyDown}
-        onPointerDownCapture={() => {
+        onPointerDownCapture={(event) => {
+          onPointerDownCapture?.(event);
+          if (event.defaultPrevented) return;
           pointerRef.current = true;
           window.setTimeout(() => {
             pointerRef.current = false;

@@ -155,9 +155,36 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ) => {
     const resolved = resolveBadgeStyles(styles);
     const resolvedIcon = resolveBadgeIcon(icon);
+    const rootRef = React.useRef<HTMLSpanElement | null>(null);
+    const setRootRef = React.useCallback(
+      (node: HTMLSpanElement | null) => {
+        rootRef.current = node;
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref],
+    );
+
+    React.useLayoutEffect(() => {
+      const root = rootRef.current;
+      if (!dismissible || !root) return;
+
+      const updateControlSize = () => {
+        root.style.setProperty("--control-size", `${root.clientHeight}px`);
+      };
+      const observer = new ResizeObserver(updateControlSize);
+
+      updateControlSize();
+      observer.observe(root);
+      return () => observer.disconnect();
+    }, [dismissible]);
+
     return (
       <span
-        ref={ref}
+        ref={setRootRef}
         className={cn(
           "badge",
           variant,
@@ -172,23 +199,25 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         data-dismissible={dismissible || undefined}
         {...props}
       >
-        {resolvedIcon?.left && (
-          <span
-            className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconLeft)}
-            aria-hidden="true"
-          >
-            {resolvedIcon.left}
-          </span>
-        )}
-        {count !== undefined ? count : children}
-        {resolvedIcon?.right && (
-          <span
-            className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconRight)}
-            aria-hidden="true"
-          >
-            {resolvedIcon.right}
-          </span>
-        )}
+        <span className={css.content}>
+          {resolvedIcon?.left && (
+            <span
+              className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconLeft)}
+              aria-hidden="true"
+            >
+              {resolvedIcon.left}
+            </span>
+          )}
+          {count !== undefined ? count : children}
+          {resolvedIcon?.right && (
+            <span
+              className={cn("badge", variant, "icon", css.icon, resolved.icon, resolved.iconRight)}
+              aria-hidden="true"
+            >
+              {resolvedIcon.right}
+            </span>
+          )}
+        </span>
         {dismissible && (
           <DismissButton onDismiss={onDismiss} variant={variant} className={resolved.dismiss} />
         )}

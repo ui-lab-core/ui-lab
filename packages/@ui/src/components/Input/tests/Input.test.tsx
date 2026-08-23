@@ -44,7 +44,7 @@ describe("Input actions", () => {
     const { container } = render(<Input aria-label="Search" hint="Ctrl+K" />);
 
     expect(screen.getByText("Ctrl+K")).toBeInTheDocument();
-    expect(container.querySelector("[data-end-adornments] [data-hint]")).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="adornments.end"] [data-slot="hint"]')).toBeInTheDocument();
   });
 
   it("renders shorthand icon as the prefix icon", () => {
@@ -52,7 +52,7 @@ describe("Input actions", () => {
 
     expect(screen.getByTestId("copy-icon")).toBeInTheDocument();
     expect(
-      container.querySelector('[data-start-adornments] [data-testid="copy-icon"]'),
+      container.querySelector('[data-slot="adornments.start"] [data-testid="copy-icon"]'),
     ).toBeInTheDocument();
   });
 
@@ -61,14 +61,14 @@ describe("Input actions", () => {
 
     expect(screen.getByTestId("copy-icon")).toBeInTheDocument();
     expect(
-      container.querySelector('[data-end-adornments] [data-testid="copy-icon"]'),
+      container.querySelector('[data-slot="adornments.end"] [data-testid="copy-icon"]'),
     ).toBeInTheDocument();
   });
 
   it("renders no actions container when actions is not provided", () => {
     const { container } = render(<Input aria-label="Search" />);
 
-    expect(container.querySelector("[data-actions]")).not.toBeInTheDocument();
+    expect(container.querySelector('[data-slot^="actions."]')).not.toBeInTheDocument();
   });
 
   it("renders action defs on the right side of the input", () => {
@@ -76,7 +76,7 @@ describe("Input actions", () => {
       <Input aria-label="Search" actions={[{ icon: <CopyIcon />, title: "Copy" }]} />,
     );
 
-    expect(container.querySelector('[data-actions-position="right"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="actions.right"]')).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Copy" })).toHaveClass("ghost", "icon");
     expect(screen.getByRole("button", { name: "Copy" })).not.toHaveClass("md");
     expect(screen.getByTestId("copy-icon")).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe("Input actions", () => {
       <Input aria-label="Search" actions={{ left: [{ icon: <CopyIcon />, title: "Copy" }] }} />,
     );
 
-    expect(container.querySelector('[data-actions-position="left"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="actions.left"]')).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Copy" })).toHaveClass("ghost");
   });
 
@@ -100,6 +100,36 @@ describe("Input actions", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Copy" }));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("disables declarative actions with the input", () => {
+    const onClick = vi.fn();
+
+    render(
+      <Input
+        aria-label="Search"
+        disabled
+        actions={[{ icon: <CopyIcon />, title: "Copy", onClick }]}
+      />,
+    );
+
+    const action = screen.getByRole("button", { name: "Copy" });
+    expect(action).toBeDisabled();
+    fireEvent.click(action);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("uses dotted data slots and styles for nested anatomy", () => {
+    const { container } = render(
+      <Input
+        aria-label="Search"
+        icon={<CopyIcon />}
+        styles={{ adornments: { start: "input-adornment" }, icon: { left: "input-icon" } }}
+      />,
+    );
+
+    expect(container.querySelector('[data-slot="adornments.start"]')).toHaveClass("input-adornment");
+    expect(container.querySelector('[data-slot="icon.left"]')).toHaveClass("input-icon");
   });
 
   it("renders custom action nodes", () => {

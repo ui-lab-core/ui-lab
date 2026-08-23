@@ -94,6 +94,7 @@ describe("Select.multiple", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, { mode: "multiple" });
 
+      await openSelect(getSelectTrigger(container));
       await selectItem(container, items[0].label);
       await selectItem(container, items[1].label);
 
@@ -171,6 +172,7 @@ describe("Select.multiple", () => {
         onSelectionChange,
       });
 
+      await openSelect(getSelectTrigger(container));
       await selectItem(container, items[0].label);
 
       expect(onSelectionChange).toHaveBeenCalled();
@@ -188,6 +190,7 @@ describe("Select.multiple", () => {
       let selectedItems = getSelectedItems(container);
       expect(selectedItems).toHaveLength(3);
 
+      await openSelect(getSelectTrigger(container));
       await toggleItem(container, items[0].label);
 
       selectedItems = getSelectedItems(container);

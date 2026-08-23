@@ -2,60 +2,73 @@ import * as React from "react";
 
 import type { Key } from "react-aria";
 import { type Style } from "@/lib/utils";
-import { createStylesResolver } from "@/lib/styles";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 
-/** Styles for the stable elements rendered by each command item. */
-export interface CommandItemStyles {
+/**
+ * Styles for the stable anatomy rendered by Command.Item.
+ * @typeDoc CommandItemStyleSlots
+ */
+export interface CommandItemStyleSlots {
   /** Styles applied to the item option element. */
   root?: Style;
   /** Styles applied to the wrapper containing the icon and item label. */
   content?: Style;
   /** Styles applied to the item icon container. */
   icon?: Style;
+  /** Styles applied to the item hint badge. */
   hint?: Style;
+  /** Styles applied to Command.Label within the item. */
+  label?: Style;
+  /** Styles applied to Command.Description within the item. */
+  description?: Style;
 }
 
-type CommandRootStyles = {
+/**
+ * Styles for the stable anatomy rendered by Command.Groups.
+ * @typeDoc CommandGroupsStyleSlots
+ */
+export interface CommandGroupsStyleSlots {
+  /** Styles applied to the Command.Groups container. */
   root?: Style;
-};
-
-type CommandListStyles = CommandRootStyles & {
-  empty?: Style;
-};
-
-type CommandGroupsStyles = CommandRootStyles & {
+  /** Styles applied to each category group rendered by Command.Groups. */
   group?: Style;
-};
+}
 
-/** Style overrides for the command surface and its named compound parts. */
+/**
+ * Style overrides for the command surface and its named compound parts.
+ * @typeDoc CommandStyleSlots
+ */
 export interface CommandStyleSlots {
   /** Styles applied to the command surface. */
-  root?: CommandRootStyles;
+  root?: Style;
   /** Styles applied to the modal backdrop in floating mode. */
-  overlay?: CommandRootStyles;
+  overlay?: Style;
   /** Styles applied to the search input wrapper. */
-  search?: CommandRootStyles;
+  search?: Style;
   /** Styles applied to the search input root. */
-  input?: CommandRootStyles;
+  input?: Style;
   /** Styles applied to the framed list container. */
-  inner?: CommandRootStyles;
+  inner?: Style;
   /** Styles applied to the scrollable command list. */
-  list?: CommandListStyles;
+  list?: Style;
   /** Styles applied to the empty-state message. */
-  empty?: CommandRootStyles;
+  empty?: Style;
   /** Shared item styles or separate styles for the item anatomy. */
-  item?: CommandItemStyles;
+  item?: CommandItemStyleSlots;
   /** Styles applied to category headers. */
-  category?: CommandRootStyles;
+  category?: Style;
   /** Styles applied to the command footer. */
-  footer?: CommandRootStyles;
+  footer?: Style;
   /** Styles applied to the container rendered by Command.Groups. */
-  groups?: CommandGroupsStyles;
+  groups?: CommandGroupsStyleSlots;
 }
 
-/** Keyed styles for the command surface and its stable compound parts. */
-export type CommandStylesProp = CommandStyleSlots;
+/**
+ * Keyed styles for the command surface and its stable compound parts.
+ * @typeDoc CommandStylesProp
+ */
+export type CommandStylesProp = StylesProp<CommandStyleSlots>;
 
 const resolveCommandBaseStyles = createStylesResolver([
   "root.root",
@@ -69,6 +82,8 @@ const resolveCommandBaseStyles = createStylesResolver([
   "item.content",
   "item.icon",
   "item.hint",
+  "item.label",
+  "item.description",
   "category.root",
   "footer.root",
   "groups.root",
@@ -78,19 +93,21 @@ const resolveCommandBaseStyles = createStylesResolver([
 export function resolveCommandStyles(styles: CommandStylesProp | undefined) {
   if (!styles) return resolveCommandBaseStyles(styles);
   return resolveCommandBaseStyles({
-    "root.root": styles.root?.root,
-    "overlay.root": styles.overlay?.root,
-    "search.root": styles.search?.root,
-    "input.root": styles.input?.root,
-    "inner.root": styles.inner?.root,
-    "list.root": styles.list?.root,
-    "empty.root": styles.empty?.root,
+    "root.root": styles.root,
+    "overlay.root": styles.overlay,
+    "search.root": styles.search,
+    "input.root": styles.input,
+    "inner.root": styles.inner,
+    "list.root": styles.list,
+    "empty.root": styles.empty,
     "item.root": styles.item?.root,
     "item.content": styles.item?.content,
     "item.icon": styles.item?.icon,
     "item.hint": styles.item?.hint,
-    "category.root": styles.category?.root,
-    "footer.root": styles.footer?.root,
+    "item.label": styles.item?.label,
+    "item.description": styles.item?.description,
+    "category.root": styles.category,
+    "footer.root": styles.footer,
     "groups.root": styles.groups?.root,
     "groups.group": styles.groups?.group,
   });
@@ -98,7 +115,10 @@ export function resolveCommandStyles(styles: CommandStylesProp | undefined) {
 
 type ResolvedCommandStyles = ReturnType<typeof resolveCommandStyles>;
 
-/** Declarative command data consumed by filtering and Command.Groups. */
+/**
+ * Declarative command data consumed by filtering and Command.Groups.
+ * @typeDoc CommandItem
+ */
 export interface CommandItem {
   /** Stable identifier used for rendering, focus tracking, and action lookup. */
   id: string;
@@ -120,7 +140,10 @@ export interface CommandItem {
   hint?: string;
 }
 
-/** A category and its filtered commands as supplied to Command.Groups. */
+/**
+ * A category and its filtered commands as supplied to Command.Groups.
+ * @typeDoc CommandGroupedItems
+ */
 export interface CommandGroupedItems {
   /** Category name, or undefined for uncategorized commands. */
   category: string | undefined;

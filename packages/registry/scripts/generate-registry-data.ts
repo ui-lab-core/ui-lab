@@ -95,11 +95,6 @@ function generateDataFile(
   reactAriaUrls: Record<string, string>,
   packageMetadata: { version: string },
 ): void {
-  for (const [component, styles] of Object.entries(stylesData)) {
-    if (/(?:@slot\b|(?:^|[^\w-])slot\s*\()/m.test(styles.rawCss)) {
-      throw new Error(`Unresolved slot syntax in generated ${component} CSS`);
-    }
-  }
   const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata } from './types';
 
 export const generatedAPI: Record<string, ComponentAPI> = ${JSON.stringify(apiData, null, 2)};

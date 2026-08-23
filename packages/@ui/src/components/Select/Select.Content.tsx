@@ -10,7 +10,7 @@ import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import { cn } from "@/lib/utils";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import styles from "./Select.module.css";
+import css from "./Select.module.css";
 import { useSelectContext } from "./Select";
 import { GroupContext } from "../Group/Group.Context";
 import { Scroll } from "../Scroll";
@@ -19,77 +19,112 @@ import { List } from "../List";
 import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
+/**
+ * Styles for the search anatomy rendered inside searchable content.
+ * @typeDoc SelectContentSearchStyles
+ */
 export interface SelectContentSearchStyles {
-  /** Styles the search input wrapper. */
+  /** Styles the wrapper around the panel search input. */
   wrapper?: SlotStyle;
-  /** Styles the search input. */
+
+  /** Styles the panel search input surface. */
   input?: SlotStyle;
 }
 
+/**
+ * Styles for the option-list anatomy rendered inside the panel.
+ * @typeDoc SelectContentListStyles
+ */
 export interface SelectContentListStyles {
-  /** Styles the list padding wrapper. */
+  /** Styles the element that groups the rendered options. */
+  root?: SlotStyle;
+
+  /** Styles the padding wrapper around the option list. */
   padding?: SlotStyle;
 }
 
+/**
+ * Named style slots for the Select.Content anatomy.
+ * @typeDoc SelectContentStyleSlots
+ */
 export interface SelectContentStyleSlots {
   /** Styles the listbox panel. */
   root?: SlotStyle;
+
   /** Styles the positioned floating overlay. */
   overlay?: SlotStyle;
-  /** Styles nested search.wrapper and search.input anatomy. */
+
+  /** Styles the search.wrapper and search.input anatomy. */
   search?: SelectContentSearchStyles;
+
   /** Styles the live empty-results message. */
   empty?: SlotStyle;
-  /** Styles nested list.padding anatomy. */
+
+  /** Styles the list.root and list.padding anatomy. */
   list?: SelectContentListStyles;
 }
 
+/**
+ * Style overrides for Select.Content's root and named anatomy slots.
+ * @typeDoc SelectContentStylesProp
+ */
 export type SelectContentStylesProp = SelectContentStyleSlots;
 
 export interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Adds classes to the portalled listbox panel.
-   * @category Styling */
-  className?: string;
-  /** Renders a focused search input inside the panel and shows emptyContent when no registered items match.
-   * @category Content
-   * @default false */
-  searchable?: boolean;
-  /** Sets the built-in search input placeholder when searchable is enabled.
-   * @category Content
-   * @default "Search items..." */
-  searchPlaceholder?: string;
-  /** Runs after the built-in search input changes, with the current query.
-   * @category Events */
-  onSearch?: (value: string) => void;
-  /** Replaces the polite empty-results message shown by searchable content.
-   * @category Content
-   * @default "No results found." */
-  emptyContent?: React.ReactNode;
-  /** Styles panel anatomy: root, overlay, search.wrapper, search.input, empty, and list.padding.
+  /**
+   * Adds classes to the portalled listbox panel before the resolved css.root class.
    * @category Styling
-   * @typeDoc SelectContentStyleSlots */
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/API/Element/className
+   */
+  className?: string;
+
+  /**
+   * Renders an auto-focused search input inside the panel and shows emptyContent when no
+   * registered item matches the query.
+   * @category Content
+   * @default false
+   */
+  searchable?: boolean;
+
+  /**
+   * Sets the built-in search input placeholder when searchable is enabled.
+   * @category Content
+   * @default "Search items..."
+   */
+  searchPlaceholder?: string;
+
+  /**
+   * Runs after the built-in search input changes, with the current query. Filtering still happens
+   * inside Select; this callback only observes it.
+   * @category Events
+   */
+  onSearch?: (value: string) => void;
+
+  /**
+   * Replaces the polite empty-results message announced by searchable content.
+   * @category Content
+   * @default "No results found."
+   */
+  emptyContent?: React.ReactNode;
+
+  /**
+   * Styles panel anatomy: root, overlay, search.wrapper, search.input, empty, list.root, and
+   * list.padding.
+   * @category Styling
+   * @typeDoc SelectContentStyleSlots
+   */
   styles?: SelectContentStylesProp;
 }
 
-const resolveSelectContentBaseStyles = createStylePropsResolver([
+const resolveSelectContentStyles = createStylePropsResolver([
   "root",
   "overlay",
   "search.wrapper",
   "search.input",
   "empty",
+  "list.root",
   "list.padding",
 ] as const);
-
-function resolveSelectContentStyles(styles: SelectContentStylesProp | undefined) {
-  return resolveSelectContentBaseStyles({
-    root: styles?.root,
-    overlay: styles?.overlay,
-    "search.wrapper": styles?.search?.wrapper,
-    "search.input": styles?.search?.input,
-    empty: styles?.empty,
-    "list.padding": styles?.list?.padding,
-  });
-}
 
 /** Floating panel that renders the list of selectable options */
 const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
@@ -111,6 +146,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       setIsOpen,
       setContentPlacement,
       triggerType,
+      mode,
       wrapperRef,
       contentRef,
       triggerRef,
@@ -411,15 +447,21 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
     const listContent = (
       <div
-        className={cn(resolved["list.padding"].className)}
+        className={cn(css["list-padding"], resolved["list.padding"].className)}
         style={{
-          ...resolved["list.padding"].style,
-          padding: "0.25rem",
           display: shouldShowEmptyState ? "none" : undefined,
+          ...resolved["list.padding"].style,
         }}
+        data-slot="list.padding"
         aria-hidden={shouldShowEmptyState || undefined}
       >
-        <List items={filteredItems} gap="xs">
+        {/* The panel is already the listbox; the inner collection must not nest a second one. */}
+        <List
+          role="presentation"
+          gap="xs"
+          className={resolved["list.root"].className}
+          style={resolved["list.root"].style}
+        >
           {children}
         </List>
       </div>
@@ -449,8 +491,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         key="search"
         className={cn(
           "search-content-input",
-          styles["search-wrapper"],
-          styles["search-content-input"],
+          css["search-wrapper"],
+          css["search-content-input"],
           resolved["search.wrapper"].className,
         )}
         style={resolved["search.wrapper"].style}
@@ -471,7 +513,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           onKeyDown={handleInputKeyDown}
           placeholder={searchPlaceholder}
           variant="ghost"
-          className={resolved["search.input"].className}
+          className={cn("search-input", resolved["search.input"].className)}
           style={resolved["search.input"].style}
         />
       </div>
@@ -480,7 +522,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const emptyStateContent = shouldShowEmptyState ? (
       <div
         key="empty-state"
-        className={cn("empty-state", styles["empty-state"], resolved.empty.className)}
+        className={cn("empty-state", css["empty-state"], resolved.empty.className)}
         style={resolved.empty.style}
         data-slot="empty"
         role="status"
@@ -498,7 +540,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       <>
         <div
           ref={mergedFloatingRef}
-          className={cn("select", styles["content-root"], resolved.overlay.className)}
+          className={cn("select", css["content-root"], resolved.overlay.className)}
           data-slot="overlay"
           style={{
             ...rootStyle,
@@ -513,7 +555,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             ref={mergedContentRef}
             id={contentId}
             role="listbox"
-            className={cn("content", styles.content, className, resolved.root.className)}
+            aria-multiselectable={mode === "multiple" ? true : undefined}
+            className={cn("content", css.content, className, resolved.root.className)}
             data-slot="root"
             data-state={showContent ? "open" : "closed"}
             data-placement={placement.split("-")[0]}
@@ -525,7 +568,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             }}
             style={{
               ...resolved.root.style,
-              outline: "none",
+              ...domProps.style,
               ...animationStyles,
             }}
           >
@@ -539,7 +582,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 );
 SelectContent.displayName = "Select.Content";
 
-type SearchableContentProps = Omit<SelectContentProps, "searchable">;
+export type SearchableContentProps = Omit<SelectContentProps, "searchable">;
 
 /** Dropdown panel with a built-in search input for filtering the option list */
 const SearchableContent = React.forwardRef<HTMLDivElement, SearchableContentProps>((props, ref) => (

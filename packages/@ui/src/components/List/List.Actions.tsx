@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/Tooltip";
 import { useListContext, useListItemContext } from "./list.context";
 import { ListActionsProps, ListActionDef } from "./list.types";
-import styles from "./List.module.css";
+import css from "./List.module.css";
 import { markListItemSlot } from "./list.item-layout";
 
 /**
@@ -17,7 +17,7 @@ import { markListItemSlot } from "./list.item-layout";
 const Actions = React.forwardRef<HTMLDivElement, ListActionsProps>(
   ({ actions: actionsProp, children, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
-    const { actions: contextActions } = useListItemContext();
+    const { actions: contextActions, styles: itemStyles } = useListItemContext();
     const actions = actionsProp ?? contextActions;
 
     if (children == null && (!actions || actions.length === 0)) {
@@ -27,9 +27,10 @@ const Actions = React.forwardRef<HTMLDivElement, ListActionsProps>(
     return (
       <div
         ref={ref}
-        className={cn(styles.actions, listStyles.actions, className)}
-        data-actions
+        className={cn(css.actions, listStyles.item.actions, itemStyles.actions, className)}
         {...props}
+        data-slot="item.actions"
+        data-actions
       >
         {children ??
           actions?.map((action, i) => {
@@ -40,7 +41,8 @@ const Actions = React.forwardRef<HTMLDivElement, ListActionsProps>(
               <Tooltip key={key} content={(action as ListActionDef).title} position="top">
                 <button
                   type="button"
-                  className={cn(styles.action, listStyles.action)}
+                  className={cn(css.action, listStyles.item.action, itemStyles.action)}
+                  data-slot="item.action"
                   aria-label={(action as ListActionDef).title}
                   onClick={(action as ListActionDef).onClick}
                 >

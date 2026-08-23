@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Checkbox } from "../Checkbox";
-import { testRefForwarding, testStyling, auditA11y } from "@/tests/utils";
+import { testRefForwarding, auditA11y } from "@/tests/utils";
 import React from "react";
 
 describe("Checkbox - Accessibility", () => {
@@ -110,7 +110,7 @@ describe("Checkbox - Focus", () => {
     await user.click(checkbox);
     expect(checkbox).toHaveFocus();
     expect(checkbox).toHaveAttribute("data-focused", "true");
-    expect(checkbox).not.toHaveAttribute("data-focus-visible");
+    expect(checkbox).toHaveAttribute("data-focus-visible", "false");
   });
 
   it("supports indeterminate state", () => {
@@ -156,15 +156,23 @@ describe("Checkbox - Ref Forwarding", () => {
   testRefForwarding({
     component: Checkbox,
     defaultProps: { "aria-label": "Checkbox" },
-    expectedElement: HTMLDivElement,
+    expectedElement: HTMLInputElement,
   });
 });
 
 describe("Checkbox - Styling", () => {
-  testStyling({
-    component: Checkbox,
-    defaultProps: { "aria-label": "Checkbox" },
-    role: "checkbox",
+  it("applies className to the root row", () => {
+    render(<Checkbox className="custom-class" aria-label="Checkbox" />);
+
+    expect(screen.getByRole("checkbox").closest('[data-slot="root"]')).toHaveClass("custom-class");
+  });
+
+  it("applies native style to the root row", () => {
+    render(<Checkbox style={{ marginTop: "10px" }} aria-label="Checkbox" />);
+
+    expect(screen.getByRole("checkbox").closest('[data-slot="root"]')).toHaveStyle({
+      marginTop: "10px",
+    });
   });
 });
 
@@ -255,15 +263,15 @@ describe("Checkbox - Component Specific", () => {
     expect(checkedFormData.get("feature")).toBe("on");
   });
 
-  it("provides inputRef while keeping forwarded ref on the wrapper", () => {
-    const rootRef = React.createRef<HTMLDivElement>();
+  it("provides inputRef and forwards the primary native input", () => {
+    const rootRef = React.createRef<HTMLInputElement>();
     const inputRef = React.createRef<HTMLInputElement>();
 
     render(<Checkbox ref={rootRef} inputRef={inputRef} aria-label="Refs" />);
 
-    expect(rootRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(rootRef.current).toBeInstanceOf(HTMLInputElement);
     expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
-    expect(rootRef.current?.querySelector("input")).toBe(inputRef.current);
+    expect(rootRef.current).toBe(inputRef.current);
   });
 
   it("applies data attributes for styling", async () => {
@@ -287,11 +295,11 @@ describe("Checkbox - Component Specific", () => {
     expect(checkbox).toHaveAttribute("data-selected", "true");
   });
 
-  it("forwards ref to wrapper", () => {
-    const ref = React.createRef<HTMLDivElement>();
+  it("forwards ref to the native input", () => {
+    const ref = React.createRef<HTMLInputElement>();
     render(<Checkbox ref={ref} aria-label="Ref Test" />);
-    expect(ref.current).toBeInstanceOf(HTMLDivElement);
-    expect(ref.current?.querySelector('input[type="checkbox"]')).toBeInTheDocument();
+    expect(ref.current).toBeInstanceOf(HTMLInputElement);
+    expect(ref.current).toHaveAttribute("type", "checkbox");
   });
 
   it("applies style slots to the correct elements", () => {
@@ -302,17 +310,21 @@ describe("Checkbox - Component Specific", () => {
         checked
         styles={{
           root: "custom-root",
+          control: "custom-control",
           checkbox: "custom-checkbox",
-          "icon-checkmark": "custom-checkmark",
-          "icon-indeterminate": "custom-indeterminate",
+          icon: {
+            checkmark: "custom-checkmark",
+            indeterminate: "custom-indeterminate",
+          },
           label: "custom-label",
-          "helper-text": "custom-helper",
+          helperText: "custom-helper",
         }}
       />,
     );
 
     const checkbox = screen.getByRole("checkbox", { name: /styled slots/i });
     expect(checkbox.parentElement?.parentElement).toHaveClass("custom-root");
+    expect(checkbox.parentElement).toHaveClass("custom-control");
     expect(checkbox).toHaveClass("custom-checkbox");
     expect(document.querySelector(".custom-checkmark")).toBeInTheDocument();
     expect(screen.getByText("Styled slots")).toHaveClass("custom-label");
@@ -324,7 +336,7 @@ describe("Checkbox - Component Specific", () => {
       <Checkbox
         aria-label="Styled indeterminate"
         indeterminate
-        styles={{ "icon-indeterminate": "custom-indeterminate" }}
+        styles={{ icon: { indeterminate: "custom-indeterminate" } }}
       />,
     );
 

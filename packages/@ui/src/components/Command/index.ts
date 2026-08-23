@@ -31,7 +31,8 @@ export type { CommandRootProps } from "./Command.Root";
 export type {
   CommandItem,
   CommandGroupedItems,
-  CommandItemStyles,
+  CommandItemStyleSlots,
+  CommandGroupsStyleSlots,
   CommandStyleSlots,
   CommandStylesProp,
 } from "./Command.shared";
@@ -40,6 +41,8 @@ export type { CommandInputProps } from "./Command.Input";
 export type {
   CommandListProps,
   CommandItemProps,
+  CommandLabelProps,
+  CommandDescriptionProps,
   CommandCategoryProps,
   CommandFooterProps,
   CommandGroupsProps,
@@ -50,6 +53,7 @@ export {
   CommandRoot,
   CommandInput,
   CommandList,
+  CommandItem,
   CommandLabel,
   CommandDescription,
   CommandCategory,

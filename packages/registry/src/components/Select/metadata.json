@@ -1,7 +1,7 @@
 {
   "id": "select",
   "name": "Select",
-  "description": "Dropdown select component for choosing from multiple options.",
+  "description": "Dropdown select with single or multiple selection, searchable content, grouping, and nested submenus.",
   "category": "input",
   "experimental": true,
   "source": {
@@ -9,10 +9,17 @@
     "exportName": "Select",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["input", "label", "form", "group"],
-  "tags": ["form", "dropdown", "selection"],
+  "relatedComponents": ["input", "list", "label", "form", "group"],
+  "tags": ["form", "dropdown", "selection", "combobox", "listbox"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Keyboard accessible", "Screen reader friendly", "ARIA roles included"]
+    "notes": [
+      "The trigger is a native button with aria-haspopup=\"listbox\", aria-expanded, and aria-controls pointing at the floating panel.",
+      "The floating panel is the single listbox; the inner collection is presentational so options are owned directly by it. Multiple mode adds aria-multiselectable.",
+      "Options expose role=\"option\" with aria-selected, and disabled options expose aria-disabled and are skipped by keyboard navigation.",
+      "Arrow keys, Home, End, Enter, Space, Tab, and Escape follow the listbox pattern; Escape and selection restore focus to the trigger or its owning list row.",
+      "Searchable content announces its empty-results message through a polite live region.",
+      "Icon-only triggers need an accessible name through aria-label on Select.Trigger; the chevron sections are hidden from assistive technology."
+    ]
   }
 }

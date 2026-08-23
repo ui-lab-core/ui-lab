@@ -5,7 +5,7 @@ import { ComponentDetail } from "@/types";
 const switchBasicCode = `import { Switch } from "ui-lab-components";
 
 export function Example() {
-  return <Switch />;
+  return <Switch aria-label="Notifications" />;
 }`;
 
 export const switchDetail: ComponentDetail = {
@@ -34,14 +34,14 @@ export const switchDetail: ComponentDetail = {
       name: "Default",
       description: "Standard switch in the off state.",
       code: switchBasicCode,
-      preview: <Switch />,
+      preview: <Switch aria-label="Notifications" />,
     },
     {
       id: "selected",
       name: "Selected",
       description: "Switch in the on/checked state.",
-      code: `<Switch defaultSelected={true} />`,
-      preview: <Switch defaultSelected={true} />,
+      code: `<Switch defaultChecked aria-label="Notifications" />`,
+      preview: <Switch defaultChecked aria-label="Notifications" />,
     },
   ],
 };

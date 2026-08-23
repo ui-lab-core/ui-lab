@@ -15,23 +15,25 @@
     @apply relative inline-flex shrink-0 cursor-pointer items-center;
     user-select: none;
     border-radius: var(--radius);
-    width: var(--width);
-    height: var(--height);
+    inline-size: var(--width);
+    block-size: var(--height);
   }
 
   .switch-track {
     @apply absolute inset-0;
     transition:
-      background-color var(--transition-duration) var(--transition-easing),
-      border-color var(--transition-duration) var(--transition-easing),
-      transform var(--transition-duration) var(--transition-easing);
-    background-color: var(--background);
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      transform var(--press-duration, 120ms) var(--press-ease, var(--ease-snappy-pop, ease-out));
+    background-color: var(--background, transparent);
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
     border-radius: var(--radius);
   }
 
-  .switch:active:not([data-disabled]) .switch-track {
+  .switch:active:not([data-disabled="true"]) .switch-track {
     transform: scale(0.98);
   }
 
@@ -41,23 +43,25 @@
 
   .switch-thumb {
     @apply absolute top-0 bottom-0 my-auto;
-    left: var(--thumb-offset);
-    width: var(--thumb-size);
-    height: var(--thumb-size);
+    inset-inline-start: var(--thumb-offset);
+    inline-size: var(--thumb-size);
+    block-size: var(--thumb-size);
     transition:
-      left var(--transition-duration) var(--transition-easing),
-      background-color var(--transition-duration) var(--transition-easing);
-    background-color: var(--foreground);
+      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    background-color: var(--foreground, currentColor);
     border-radius: var(--inner-radius);
     z-index: 1;
     pointer-events: none;
   }
 
-  .switch[data-selected] .switch-thumb {
-    left: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));
+  .switch[data-selected="true"] .switch-thumb {
+    inset-inline-start: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));
   }
 
-  .switch[data-disabled] {
+  .switch[data-disabled="true"] {
     opacity: var(--disabled-opacity);
     cursor: not-allowed;
   }

@@ -27,16 +27,20 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(
   ({ children, emptyMessage = "No items found.", className, maxHeight, ...props }, ref) => {
     const { scrollableRef, focusedKey, styles } = useCommandContext();
     return (
-      <Frame {...props} edges="top" strokeAlign="outside" className={cn("options", css.inner, styles["inner.root"], className)} data-slot="inner">
+        <Frame {...props} edges="top" strokeAlign="outside" className={cn("options", css.inner, styles["inner.root"], className)} data-slot="inner">
         <Scroll
           ref={ref}
           viewportRef={scrollableRef}
-          className={cn(css.list, styles["list.root"])}
+          className={css.list}
           maxHeight={maxHeight}
           fade-y
-          data-slot="list"
         >
-          <List className="options" aria-label="Commands" highlighted={focusedKey as string | number | null}>
+          <List
+            className={cn("options", styles["list.root"])}
+            aria-label="Commands"
+            data-slot="list"
+            highlighted={focusedKey as string | number | null}
+          >
             {!children ? <div className={cn("empty", css.empty, styles["empty.root"])} data-slot="empty">{emptyMessage}</div> : children}
           </List>
         </Scroll>
@@ -100,14 +104,14 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
           close();
         }}
         className={cn("item", css.item, className, styles["item.root"])}
-        data-slot="item"
+        data-slot="item.root"
       >
-        <div className={cn("item-content", css["item-content"], styles["item.content"])} data-slot="item-content">
-          {icon && <List.Media className={cn("item-icon", css["item-icon"], styles["item.icon"])} data-slot="item-icon">{icon}</List.Media>}
+        <div className={cn("content", css["item-content"], styles["item.content"])} data-slot="item.content">
+          {icon && <List.Media className={cn("icon", css["item-icon"], styles["item.icon"])} data-slot="item.icon">{icon}</List.Media>}
           {children}
         </div>
         {hint && (
-          <Badge variant="secondary" className={cn("hint", css["hint-wrapper"], styles["item.hint"])} data-slot="hint">
+          <Badge variant="secondary" className={cn("hint", css["hint-wrapper"], styles["item.hint"])} data-slot="item.hint">
             {hint}
           </Badge>
         )}
@@ -117,23 +121,35 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
 );
 CommandItem.displayName = "Command.Item";
 
+/** Props forwarded to the primary text element within a command item. */
+export interface CommandLabelProps extends React.HTMLAttributes<HTMLDivElement> {}
+
 /** Primary text rendered within a command item. */
-export const CommandLabel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ children, className, ...props }, ref) => (
-    <div ref={ref} {...props} className={cn("label", css.label, className)}>
-      {children}
-    </div>
-  ),
+export const CommandLabel = React.forwardRef<HTMLDivElement, CommandLabelProps>(
+  ({ children, className, ...props }, ref) => {
+    const { styles } = useCommandContext();
+    return (
+      <div ref={ref} {...props} className={cn("label", css.label, className, styles["item.label"])} data-slot="item.label">
+        {children}
+      </div>
+    );
+  },
 );
 CommandLabel.displayName = "Command.Label";
 
+/** Props forwarded to the supplemental text element within a command item. */
+export interface CommandDescriptionProps extends React.HTMLAttributes<HTMLDivElement> {}
+
 /** Supplemental text rendered within a command item. */
-export const CommandDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ children, className, ...props }, ref) => (
-    <div ref={ref} {...props} className={cn("description", css.description, className)}>
-      {children}
-    </div>
-  ),
+export const CommandDescription = React.forwardRef<HTMLDivElement, CommandDescriptionProps>(
+  ({ children, className, ...props }, ref) => {
+    const { styles } = useCommandContext();
+    return (
+      <div ref={ref} {...props} className={cn("description", css.description, className, styles["item.description"])} data-slot="item.description">
+        {children}
+      </div>
+    );
+  },
 );
 CommandDescription.displayName = "Command.Description";
 
@@ -183,9 +199,9 @@ export const CommandGroups = React.forwardRef<HTMLDivElement, CommandGroupsProps
   ({ renderCategory, renderItem, className, ...props }, ref) => {
     const { groupedItems, styles } = useCommandContext();
     return (
-      <div ref={ref} {...props} className={cn("groups", className, styles["groups.root"])} data-slot="groups">
+      <div ref={ref} {...props} className={cn("groups", className, styles["groups.root"])} data-slot="groups.root">
         {groupedItems.map(({ category, items }) => (
-          <div key={category || "uncategorized"} className={cn("group", "options", styles["groups.group"])} data-slot="group">
+          <div key={category || "uncategorized"} className={cn("group", "options", styles["groups.group"])} data-slot="groups.group">
             {renderCategory?.(category)}
             {items.map((command) => (
               <React.Fragment key={command.id}>{renderItem(command, command.hint)}</React.Fragment>

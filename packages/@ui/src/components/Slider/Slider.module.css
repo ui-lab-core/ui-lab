@@ -5,7 +5,7 @@
     --disabled-opacity: 0.6;
     @apply relative flex w-full items-center;
     min-inline-size: var(--inline-size, 3.5rem);
-    min-height: var(--hit-size, var(--slider-hit-size, 1.5rem));
+    min-block-size: var(--hit-size, var(--slider-hit-size, 1.5rem));
     touch-action: none;
     user-select: none;
   }

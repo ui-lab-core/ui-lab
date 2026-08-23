@@ -1,14 +1,21 @@
 "use client";
 
 import React from "react";
-import type { ListActionDef, ListOrientation, ListStyleSlot } from "./list.types";
+import type {
+  ListActionDef,
+  ListItemStyleSlot,
+  ListOrientation,
+  ListStyleSlot,
+} from "./list.types";
 
 interface SetFocusedItemOptions {
   enterFocusMode?: boolean;
   scroll?: boolean;
 }
 
-type ResolvedListStyles = Record<ListStyleSlot, string>;
+type ResolvedListStyles = Omit<Record<ListStyleSlot, string>, "item"> & {
+  item: Record<ListItemStyleSlot, string>;
+};
 
 interface ListContextValue {
   focusedItem: HTMLElement | null;
@@ -39,8 +46,12 @@ export const useListContext = () => {
 interface ListItemContextValue {
   /** Action definitions supplied via the List.Item `actions` prop */
   actions?: Array<ListActionDef | React.ReactNode>;
+  /** Resolved styles supplied directly to the owning List.Item. */
+  styles: Record<ListItemStyleSlot, string>;
 }
 
-export const ListItemContext = React.createContext<ListItemContextValue>({});
+export const ListItemContext = React.createContext<ListItemContextValue>({
+  styles: {} as Record<ListItemStyleSlot, string>,
+});
 
 export const useListItemContext = () => React.useContext(ListItemContext);

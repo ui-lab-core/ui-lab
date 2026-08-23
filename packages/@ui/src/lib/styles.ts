@@ -27,9 +27,41 @@ type ResolvedSlotStyle = {
 };
 type ResolvedSlotStyles<K extends string> = Record<K, ResolvedSlotStyle>;
 
+function getSlotStyleAtPath(styles: unknown, path: string): SlotStyle | undefined {
+  let value = styles;
+
+  for (const segment of path.split(".")) {
+    if (!isPlainObject(value)) {
+      return undefined;
+    }
+
+    value = value[segment];
+  }
+
+  return value as SlotStyle | undefined;
+}
+
+function getStyleAtPath(styles: unknown, path: string): Style | undefined {
+  let value = styles;
+
+  for (const segment of path.split(".")) {
+    if (typeof value === "string" || Array.isArray(value)) {
+      return value;
+    }
+
+    if (!isPlainObject(value)) {
+      return undefined;
+    }
+
+    value = value[segment];
+  }
+
+  return typeof value === "string" || Array.isArray(value) ? value : undefined;
+}
+
 function resolveStyles<K extends string>(
   slotKeys: readonly K[],
-  styles: Partial<Record<K, Style>> | undefined,
+  styles: unknown,
 ): Record<K, string> {
   const result = {} as Record<K, string>;
 
@@ -39,14 +71,13 @@ function resolveStyles<K extends string>(
   }
 
   for (const key of slotKeys) {
-    result[key] = cn(styles[key]);
+    result[key] = cn(getStyleAtPath(styles, key));
   }
   return result;
 }
 
 export function createStylesResolver<K extends string>(slotKeys: readonly K[]) {
-  return (styles: Partial<Record<K, Style>> | undefined): Record<K, string> =>
-    resolveStyles(slotKeys, styles);
+  return <S>(styles: S | undefined): Record<K, string> => resolveStyles(slotKeys, styles);
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -75,7 +106,7 @@ function normalizeSlotStyle(value: SlotStyle | undefined): ResolvedSlotStyle {
 }
 
 export function createStylePropsResolver<K extends string>(slotKeys: readonly K[]) {
-  return (styles: Partial<Record<K, SlotStyle>> | undefined): ResolvedSlotStyles<K> => {
+  return (styles: unknown): ResolvedSlotStyles<K> => {
     const result = {} as ResolvedSlotStyles<K>;
     for (const key of slotKeys) {
       result[key] = { className: "" };
@@ -86,7 +117,7 @@ export function createStylePropsResolver<K extends string>(slotKeys: readonly K[
     }
 
     for (const key of slotKeys) {
-      result[key] = normalizeSlotStyle(styles[key]);
+      result[key] = normalizeSlotStyle(getSlotStyleAtPath(styles, key));
     }
 
     return result;

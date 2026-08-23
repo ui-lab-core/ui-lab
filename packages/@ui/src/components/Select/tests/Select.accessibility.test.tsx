@@ -4,12 +4,14 @@ import { createMockSelectItems, getAllElementsByRole, pressArrowDown } from "@/t
 
 describe("Select.accessibility", () => {
   describe("ARIA attributes", () => {
-    it('trigger has role="button" and aria-haspopup="listbox"', async () => {
+    it('trigger renders a native button with aria-haspopup="listbox"', async () => {
       const items = createMockSelectItems(3);
       const container = renderSelectWithItems(items);
       const trigger = getSelectTrigger(container);
 
-      expect(trigger).toHaveAttribute("role", "button");
+      // The trigger relies on the implicit button role instead of a redundant role attribute.
+      expect(trigger.tagName).toBe("BUTTON");
+      expect(trigger).not.toHaveAttribute("role");
       expect(trigger).toHaveAttribute("aria-haspopup", "listbox");
     });
 

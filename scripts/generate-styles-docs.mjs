@@ -10,6 +10,7 @@ const REGISTRY_PATH = path.join(ROOT, "packages/registry/src");
 const OUTPUT_FILE = path.join(REGISTRY_PATH, "generated-styles.ts");
 const REGISTRY_DIST_PATH = path.join(ROOT, "packages/registry/dist");
 const OUTPUT_JSON_FILE = path.join(REGISTRY_DIST_PATH, "generated-styles.json");
+const ONYX_THEME_CSS = path.join(ROOT, "packages/themes/onyx/styles.css");
 
 // Helper to extract referenced variables and default values from a CSS value string
 function extractVarDetails(value) {
@@ -41,6 +42,31 @@ function resolveSelector(rule) {
     }
   }
   return selector;
+}
+
+async function extractThemeVariables(componentName) {
+  if (!(await fs.pathExists(ONYX_THEME_CSS))) return [];
+
+  const selector = `.${componentName.toLowerCase()}`;
+  const root = postcss.parse(await fs.readFile(ONYX_THEME_CSS, "utf-8"));
+  const variables = [];
+
+  root.walkRules((rule) => {
+    if (rule.selector.trim() !== selector) return;
+    rule.each((node) => {
+      if (node.type !== "decl" || !node.prop.startsWith("--")) return;
+      const { referencedVars, defaultValue } = extractVarDetails(node.value);
+      variables.push({
+        name: node.prop,
+        value: node.value,
+        defaultValue,
+        referencedVars,
+        variant: selector,
+      });
+    });
+  });
+
+  return variables;
 }
 
 // New function to extract styleable parts from a .tsx file using TypeScript AST
@@ -213,7 +239,9 @@ async function main() {
     const componentLowerName = componentName.toLowerCase();
 
     // Construct the corresponding .tsx file path(s)
-    const tsxFilePaths = await glob(`${componentDir}/*.tsx`);
+    const tsxFilePaths = await glob(`${componentDir}/*.{ts,tsx}`, {
+      ignore: [`${componentDir}/*.d.ts`, `${componentDir}/*.test.ts`, `${componentDir}/*.test.tsx`],
+    });
     const extractedStyleableParts = [];
     const extractedStyleableGroups = [];
 
@@ -226,7 +254,7 @@ async function main() {
     const uniqueStyleableParts = Array.from(new Set(extractedStyleableParts));
 
     const rawCss = await fs.readFile(cssModulePath, "utf-8");
-    const cssVariables = []; // New array to store CSS variables
+    const cssVariables = await extractThemeVariables(componentName);
 
     const root = postcss.parse(rawCss);
 

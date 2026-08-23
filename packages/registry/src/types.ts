@@ -114,16 +114,59 @@ export interface StyleableGroup {
 export interface StyleVariableDefinition {
   name: string;
   value: string;
-  defaultValue?: string;
   referencedVars: string[];
-  variant?: string | null;
+  selector: string;
+  atRules?: string[];
+  slot?: string;
+}
+
+export interface ComponentStyleRecipe {
+  title: string;
+  description: string;
+  code: string;
+}
+
+export interface ComponentStyleVariable {
+  name: string;
+  selector?: string;
+  slot?: string;
+  description: string;
+}
+
+export interface ComponentStyleVariableGroup {
+  title: string;
+  description: string;
+  variables: ComponentStyleVariable[];
+  code?: string;
+}
+
+export interface ComponentStyleDocumentation {
+  quickStart?: {
+    title: string;
+    description: string;
+    recipes: ComponentStyleRecipe[];
+    notice?: string;
+  };
+  anatomy?: {
+    title?: string;
+    description?: string;
+    groupOrder?: string[];
+    groupLabels?: Record<string, string>;
+  };
+  customization?: {
+    title: string;
+    description: string;
+    groups: ComponentStyleVariableGroup[];
+  };
 }
 
 export interface ComponentStyles {
   rawCss: string;
+  onyxThemeCss?: string;
   styleableParts: Array<{ name: string }>;
   styleableGroups: StyleableGroup[];
   cssVariables: StyleVariableDefinition[];
+  documentation?: ComponentStyleDocumentation;
 }
 
 export interface ComponentExample {

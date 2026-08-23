@@ -12,17 +12,16 @@ export const checkboxDetail: ComponentDetail = {
   id: "checkbox",
   name: "Checkbox",
   description:
-    "A flexible checkbox component supporting single and grouped selections with multiple states including checked, unchecked, disabled, and error.",
+    "A native checkbox input with labels, helper text, validation styling, and partial-selection state.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The Checkbox component is a versatile form control for capturing boolean choices or
-        selections. It supports individual checkboxes as well as checkbox groups for multiple
-        selections.
+        The Checkbox component is a native form control for capturing a boolean choice. It
+        supports checked, unchecked, indeterminate, disabled, and invalid states.
       </p>
       <p>
-        With built-in support for labels, helper text, and various visual states (checked,
-        unchecked, disabled, and error), the Checkbox component handles all common use cases.
+        Labels and helper text remain associated with the native input, while named styling slots
+        target the control, state icons, label, and helper text.
       </p>
     </div>
   ),

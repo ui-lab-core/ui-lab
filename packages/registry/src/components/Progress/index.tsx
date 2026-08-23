@@ -12,7 +12,7 @@ export const progressDetail: ComponentDetail = {
   id: "progress",
   name: "Progress",
   description:
-    "A horizontal progress bar with configurable value and variants. Supports determinate and indeterminate states.",
+    "A horizontal progress bar with configurable values, styling variants, and determinate or indeterminate states.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
@@ -21,8 +21,8 @@ export const progressDetail: ComponentDetail = {
         metrics.
       </p>
       <p>
-        Progress bars support semantic color variants and an indeterminate mode for unknown
-        durations. Labels and percentage values can be displayed for additional context.
+        Progress bars expose variant hooks and an indeterminate mode for unknown durations. Labels
+        and percentage values can be displayed for additional context.
       </p>
     </div>
   ),

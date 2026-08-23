@@ -14,7 +14,7 @@
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Uses list role for semantic structure",
+      "Uses listbox and option roles for composite list navigation",
       "Supports interactive items with keyboard navigation",
       "Proper ARIA labels for selection states"
     ]

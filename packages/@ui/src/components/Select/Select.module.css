@@ -1,18 +1,18 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
-  .scope {
-    @apply flex w-full;
-    position: relative;
-    overflow: visible;
-  }
-
   .select {
     --disabled-opacity: 0.5;
-    --trigger-padding-inline: calc(var(--spacing) * 2);
-    --trigger-padding-block: calc(var(--spacing) * 1.5);
     --background-radius: var(--radius-sm, 0.375rem);
-    --background-inner-radius: calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)));
+    --background-inner-radius: calc(
+      var(--background-radius) - slot(border, width, var(--border-width-base, 1px))
+    );
+
+    @slot trigger {
+      --padding-inline: calc(var(--spacing) * 2);
+      --padding-block: calc(var(--spacing) * 1.5);
+    };
+
     font-family: var(--font-body, inherit);
     font-size: var(--size, var(--text-sm, 0.875rem));
     font-weight: var(--font-weight-body-medium, 500);
@@ -65,8 +65,7 @@
       &:not([data-disabled]):hover .icon-section,
       &:not([data-disabled]):hover .value-section:not(:empty) {
         --hover-duration: var(--hover-enter-duration, 0ms);
-        --background: var(--trigger-background-hover, transparent);
-        background-color: var(--background);
+        background-color: slot(trigger, background-hover, transparent);
       }
     }
 
@@ -84,7 +83,8 @@
      treatment as a normal trigger value while keeping one focus target. */
   .select.select-split > .value[data-external="true"] {
     align-items: center;
-    padding: var(--trigger-padding-block) var(--trigger-padding-inline);
+    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
+      slot(trigger, padding-inline, calc(var(--spacing) * 2));
     border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
     background-color: var(--background, transparent);
     transition-property: background-color;
@@ -94,8 +94,7 @@
     @media (hover: hover) {
       &:not([data-disabled]):hover {
         --hover-duration: var(--hover-enter-duration, 0ms);
-        --background: var(--trigger-background-hover, transparent);
-        background-color: var(--background);
+        background-color: slot(trigger, background-hover, transparent);
       }
     }
   }
@@ -111,7 +110,8 @@
     transition-property: background-color;
     transition-duration: var(--hover-duration, var(--hover-leave-duration));
     transition-timing-function: var(--hover-transition-timing-function);
-    padding: var(--trigger-padding-block) var(--trigger-padding-inline);
+    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
+      slot(trigger, padding-inline, calc(var(--spacing) * 2));
     border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
     font-size: var(--size, var(--text-sm, 0.875rem));
     &:only-child {
@@ -131,7 +131,8 @@
     transition-property: background-color;
     transition-duration: var(--hover-duration, var(--hover-leave-duration));
     transition-timing-function: var(--hover-transition-timing-function);
-    padding: var(--trigger-padding-block) var(--trigger-padding-inline);
+    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
+      slot(trigger, padding-inline, calc(var(--spacing) * 2));
     border-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
   }
 
@@ -166,9 +167,12 @@
   .sub-content {
     --content-padding: calc(var(--spacing) * 2);
     --content-radius: var(--radius-sm, 0.375rem);
-    --content-inner-radius: calc(var(--content-radius) - slot(border, width, var(--border-width-base, 1px)));
+    --content-inner-radius: calc(
+      var(--content-radius) - slot(border, width, var(--border-width-base, 1px))
+    );
     --disabled-opacity: 0.5;
     @apply overflow-hidden;
+    outline: none;
     background-color: var(--background);
     border:
       slot(border, width, var(--border-width-base, 1px))
@@ -188,6 +192,10 @@
 
   .list {
     @apply space-y-1;
+  }
+
+  .list-padding {
+    padding: var(--spacing, 0.25rem);
   }
 
   .item,
@@ -234,25 +242,26 @@
     @apply min-w-0 whitespace-normal break-words;
   }
 
-  .item-icon,
-  .item-indicator {
-    @apply flex items-center justify-center shrink-0 w-4 h-4;
-  }
-
   .item-icon {
+    @apply flex items-center justify-center shrink-0 w-4 h-4;
     color: var(--icon-foreground);
-  }
-  .item-indicator {
-    color: var(--indicator-foreground);
-    margin-left: auto;
   }
 
   .item-with-description {
     @apply items-start py-2;
   }
-  .item-icon-with-description,
-  .item-indicator-with-description {
+  .item-icon-with-description {
     @apply mt-0.5;
+  }
+
+  .option-group-title {
+    @apply px-2 py-1;
+    font-family: var(--font-body, inherit);
+    font-size: var(--size, var(--text-sm, 0.875rem));
+    font-weight: var(--font-weight-body-medium, 500);
+    letter-spacing: normal;
+    line-height: var(--leading-sm, 1.25rem);
+    color: var(--foreground-muted, var(--foreground-400));
   }
 
   .separator {
@@ -294,7 +303,7 @@
   }
 
   .input {
-    padding-right: calc(var(--trigger-padding-inline) * 2 + 1rem);
+    padding-right: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) * 2 + 1rem);
     @apply border-transparent rounded-none shadow-none bg-transparent;
 
     &[data-focused],
@@ -309,7 +318,7 @@
 
   .search-icon-section {
     @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;
-    padding-inline: var(--trigger-padding-inline);
+    padding-inline: slot(trigger, padding-inline, calc(var(--spacing) * 2));
   }
 
   .search-wrapper {

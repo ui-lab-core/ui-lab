@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useState } from "react";
-import { Command, useCommandState } from "../Command";
+import { Command, useCommandState } from "..";
 import { Modal } from "../../Modal";
 import * as ListNavigation from "@/utils/list-navigation";
 import styles from "../Command.module.css";
@@ -421,6 +421,26 @@ describe("Command", () => {
     expect(dialog).toHaveClass("slot-root");
     expect(overlay).toHaveClass(styles.overlay);
     expect(overlay).toHaveClass("slot-overlay");
+  });
+
+  it("applies the list slot to the Command.List List primitive", () => {
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    try {
+      render(
+        <Command open embedded styles={{ list: "command-list-slot" }}>
+          <Command.List>
+            <Command.Item value="docs" textValue="Docs" action={() => {}}>
+              Docs
+            </Command.Item>
+          </Command.List>
+        </Command>,
+      );
+
+      expect(screen.getByRole("listbox")).toHaveClass("command-list-slot");
+      expect(screen.getByRole("listbox")).toHaveAttribute("data-slot", "list");
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("renders an item icon in the styled list media slot", () => {

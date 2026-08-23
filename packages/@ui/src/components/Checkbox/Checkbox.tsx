@@ -10,100 +10,143 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useDragToggle } from "@/hooks/useDragToggle";
 import css from "./Checkbox.module.css";
 
-interface CheckboxIconStyles {
+/**
+ * Class-based styling targets for Checkbox icons.
+ * @typeDoc CheckboxIconStyles
+ */
+export interface CheckboxIconStyles {
+  /** Styles the checkmark shown when the checkbox is checked. */
   checkmark?: Style;
+  /** Styles the horizontal mark shown when the checkbox is indeterminate. */
   indeterminate?: Style;
 }
 
+/**
+ * Named class-based styling targets for the Checkbox anatomy.
+ * @typeDoc CheckboxStyleSlots
+ */
 export interface CheckboxStyleSlots {
+  /** Styles the outer checkbox row. */
   root?: Style;
+  /** Styles the control wrapper containing the input and state icon. */
+  control?: Style;
+  /** Styles the native checkbox input. */
   checkbox?: Style;
-  "icon-checkmark"?: Style;
-  "icon-indeterminate"?: Style;
+  /** Styles both icons or targets them independently with CheckboxIconStyles. */
   icon?: Style | CheckboxIconStyles;
+  /** Styles the visible label associated with the native input. */
   label?: Style;
-  "helper-text"?: Style;
+  /** Styles the helper or validation message below the label. */
+  helperText?: Style;
 }
 
+/**
+ * Class-based style overrides accepted by Checkbox.
+ * @typeDoc CheckboxStylesProp
+ */
 export type CheckboxStylesProp = StylesProp<CheckboxStyleSlots>;
 
 const resolveCheckboxBaseStyles = createStylesResolver([
   "root",
+  "control",
   "checkbox",
-  "icon-checkmark",
-  "icon-indeterminate",
+  "icon.checkmark",
+  "icon.indeterminate",
   "label",
-  "helper-text",
+  "helperText",
 ] as const);
 
-function resolveCheckboxStyles(styles: CheckboxStylesProp | undefined) {
-  if (!styles) return resolveCheckboxBaseStyles(styles);
-  const { root, checkbox, icon, label } = styles;
-
-  let iconCheckmark: Style | undefined = styles["icon-checkmark"];
-  let iconIndeterminate: Style | undefined = styles["icon-indeterminate"];
-
-  if (icon) {
-    if (typeof icon === "string" || Array.isArray(icon)) {
-      iconCheckmark = cn(icon, iconCheckmark);
-      iconIndeterminate = cn(icon, iconIndeterminate);
-    } else {
-      iconCheckmark = cn(icon.checkmark, iconCheckmark);
-      iconIndeterminate = cn(icon.indeterminate, iconIndeterminate);
-    }
-  }
-
-  return resolveCheckboxBaseStyles({
-    root,
-    checkbox,
-    "icon-checkmark": iconCheckmark,
-    "icon-indeterminate": iconIndeterminate,
-    label,
-    "helper-text": styles["helper-text"],
-  });
-}
-
+/**
+ * Controlled state supplied to Checkbox.
+ * @typeDoc CheckboxState
+ */
 export interface CheckboxState {
-  /** Controlled checked value. The caller owns the state and updates it via `onChange`. */
+  /** Controlled checked value. The caller updates it in response to onChange. */
   checked?: boolean;
-  /** Controlled indeterminate (partial selection) value. */
+  /** Controlled partial-selection state displayed with the indeterminate mark. */
   indeterminate?: boolean;
 }
 
 export interface CheckboxProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "checked"
+  "size" | "type" | "checked"
 > {
-  /** Initial checked value (uncontrolled). For controlled usage, pass `state={{ checked }}`. */
+  /**
+   * Initial checked value for this component's legacy uncontrolled state. Use state.checked for controlled usage.
+   * @category Core
+   * @default false
+   */
   checked?: boolean;
-  /** Controlled state. Keys that are present are controlled; absent keys stay self-managed. */
+  /**
+   * Controlled checkbox state. Each supplied key takes precedence over its uncontrolled equivalent.
+   * @category Core
+   * @typeDoc CheckboxState
+   */
   state?: CheckboxState;
-  /** Label text or element displayed next to the checkbox */
+  /**
+   * Visible label rendered next to and associated with the native input.
+   * @category Content
+   */
   label?: React.ReactNode;
-  /** Helper text shown below the checkbox. Prefer `helper`; `helperText` is kept as a compatibility alias. */
+  /**
+   * Helper or validation text rendered below the label. This takes precedence over helperText.
+   * @category Content
+   */
   helper?: React.ReactNode;
-  /** Compatibility alias for `helper`. */
+  /**
+   * Legacy alias for helper.
+   * @category Advanced
+   * @deprecated Use helper.
+   */
   helperText?: React.ReactNode;
-  /** Whether to style the helper text as an error and mark the checkbox invalid. */
+  /**
+   * Marks the helper text and native input invalid.
+   * @category Forms
+   * @default false
+   */
   helperTextError?: boolean;
-  /** Whether the checkbox is invalid. Prefer `error`; `isInvalid` is an alias for form libraries. */
+  /**
+   * Marks the checkbox invalid for styling and accessibility.
+   * @category Forms
+   * @default false
+   */
   error?: boolean;
-  /** Alias for `error`. */
+  /**
+   * Form-library alias for error.
+   * @category Advanced
+   * @deprecated Use error.
+   */
   isInvalid?: boolean;
-  /** Whether to show an indeterminate (partial selection) state. Prefer `indeterminate`; `isIndeterminate` is kept as an alias. */
+  /**
+   * Legacy alias for indeterminate.
+   * @category Advanced
+   * @deprecated Use indeterminate.
+   */
   isIndeterminate?: boolean;
-  /** Whether to show an indeterminate (partial selection) state. */
+  /**
+   * Displays a partial-selection mark and sets aria-checked to mixed.
+   * @category Core
+   * @default false
+   */
   indeterminate?: boolean;
-  /** Ref for the underlying input. The forwarded ref remains attached to the wrapper element. */
+  /**
+   * Receives the underlying native checkbox input. The forwarded ref targets this same element.
+   * @category Advanced
+   */
   inputRef?: React.Ref<HTMLInputElement>;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /**
+   * Applies class-based overrides to the root and named Checkbox anatomy slots. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc CheckboxStylesProp
+   */
   styles?: CheckboxStylesProp;
 }
 
-export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
       className,
+      style,
       label,
       helper,
       helperText,
@@ -190,26 +233,40 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
         .filter(Boolean)
         .join(" ") || undefined;
 
-    const resolved = resolveCheckboxStyles(styles);
-    const mergedRootRef = useMergeRefs(rootRef, ref);
-    const mergedInputRef = useMergeRefs(inputRef, forwardedInputRef);
+    const resolved = resolveCheckboxBaseStyles(styles);
+    const mergedInputRef = useMergeRefs(inputRef, forwardedInputRef, ref);
     const dragToggleProps = useDragToggle("checkbox", rootRef, inputRef);
 
     return (
       <div
         {...dragToggleProps}
-        ref={mergedRootRef}
-        className={cn("checkbox", scopeProps.className, css.checkbox, resolved.root)}
+        ref={rootRef}
+        className={cn(
+          "checkbox",
+          displayChecked && "selected",
+          disabled && "disabled",
+          resolvedInvalid && "invalid",
+          resolvedIndeterminate && "indeterminate",
+          scopeProps.className,
+          css.checkbox,
+          className,
+          resolved.root,
+        )}
+        style={style}
+        data-slot="root"
         data-disabled={disabled ? "true" : undefined}
         data-invalid={resolvedInvalid ? "true" : undefined}
         data-indeterminate={resolvedIndeterminate ? "true" : undefined}
         data-selected={displayChecked ? "true" : undefined}
+        data-pressed={!disabled && isPressed ? "true" : "false"}
+        data-focused={isFocused ? "true" : "false"}
+        data-focus-visible={isFocusVisible ? "true" : "false"}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
         <div {...indicatorProps} data-focus-indicator="local" />
-        <div className={cn(css.container)}>
+        <div className={cn("checkbox-control", css.container, resolved.control)} data-slot="control">
           <input
             {...inputProps}
             ref={mergedInputRef}
@@ -217,7 +274,8 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             id={inputId}
             disabled={disabled}
             {...(isControlled ? { checked: displayChecked } : { defaultChecked: internalChecked })}
-            className={cn(css.box, className, resolved.checkbox)}
+            className={cn("checkbox-input", css.box, resolved.checkbox)}
+            data-slot="checkbox"
             data-selected={displayChecked ? "true" : undefined}
             data-disabled={disabled ? "true" : undefined}
             data-invalid={resolvedInvalid ? "true" : undefined}
@@ -233,7 +291,9 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
           />
           {displayChecked && !resolvedIndeterminate && (
             <svg
-              className={cn("checkmark", css.checkmark, resolved["icon-checkmark"])}
+              className={cn("checkmark", css.checkmark, resolved["icon.checkmark"])}
+              data-slot="icon.checkmark"
+              aria-hidden="true"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -246,7 +306,9 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
           )}
           {resolvedIndeterminate && (
             <svg
-              className={cn("indeterminate", css.indeterminate, resolved["icon-indeterminate"])}
+              className={cn("indeterminate", css.indeterminate, resolved["icon.indeterminate"])}
+              data-slot="icon.indeterminate"
+              aria-hidden="true"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
@@ -265,7 +327,8 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className={cn(css.label, css["label-md"], resolved.label)}
+            className={cn("checkbox-label", css.label, css["label-md"], resolved.label)}
+            data-slot="label"
             data-disabled={disabled ? "true" : undefined}
           >
             {label}
@@ -274,7 +337,8 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
         {resolvedHelper && (
           <p
             id={helperId}
-            className={cn(css["helper-text"], resolved["helper-text"])}
+            className={cn("checkbox-helper-text", css["helper-text"], resolved.helperText)}
+            data-slot="helperText"
             data-error={resolvedInvalid ? "true" : undefined}
           >
             {resolvedHelper}

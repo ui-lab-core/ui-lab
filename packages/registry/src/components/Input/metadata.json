@@ -1,7 +1,7 @@
 {
   "id": "input",
   "name": "Input",
-  "description": "Text input field for capturing user data.",
+  "description": "Text and number input field with adornments, inline actions, hints, and error states.",
   "category": "input",
   "source": {
     "packageName": "ui-lab-components",
@@ -9,9 +9,9 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": ["label", "form", "group"],
-  "tags": ["form", "text", "user-input"],
+  "tags": ["form", "text", "number", "user-input"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Works with label elements", "Supports placeholder text", "Keyboard accessible"]
+    "notes": ["Works with label elements", "Supports placeholder text", "Supports native input keyboard interaction"]
   }
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 import type { CommandState } from "./Command";
 
 /** Props for the element that opens a command palette. */
-export interface CommandTriggerProps {
+export interface CommandTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   /** Command state controller opened by the trigger and used to restore focus.
    * @category Core
    * @typeDoc CommandState
@@ -24,7 +24,7 @@ export interface CommandTriggerProps {
  * disclosure attributes. Must share its state instance with Command.
  */
 export const CommandTrigger = React.forwardRef<HTMLElement, CommandTriggerProps>(
-  ({ state, asChild = false, children }, forwardedRef) => {
+  ({ state, asChild = false, children, onClick, onKeyDown, ...props }, forwardedRef) => {
     const child = React.Children.only(children) as React.ReactElement<Record<string, unknown>>;
     const isNativeButton = typeof child.type === "string" && child.type === "button";
     const childProps = child.props as {
@@ -36,10 +36,12 @@ export const CommandTrigger = React.forwardRef<HTMLElement, CommandTriggerProps>
       "aria-expanded": state.isOpen,
       onClick: (event: React.MouseEvent<HTMLElement>) => {
         childProps.onClick?.(event);
+        onClick?.(event as React.MouseEvent<HTMLButtonElement>);
         if (!event.defaultPrevented) state.open();
       },
       onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
         childProps.onKeyDown?.(event);
+        onKeyDown?.(event as React.KeyboardEvent<HTMLButtonElement>);
         if (
           !event.defaultPrevented &&
           !isNativeButton &&
@@ -57,12 +59,13 @@ export const CommandTrigger = React.forwardRef<HTMLElement, CommandTriggerProps>
     };
     if (asChild)
       return React.cloneElement(child, {
+        ...props,
         ...triggerProps,
         ...(isNativeButton ? {} : { role: "button", tabIndex: 0 }),
         ref: setRef,
       });
     return (
-      <button ref={setRef as React.Ref<HTMLButtonElement>} type="button" {...triggerProps}>
+      <button ref={setRef as React.Ref<HTMLButtonElement>} type="button" {...props} {...triggerProps}>
         {children}
       </button>
     );

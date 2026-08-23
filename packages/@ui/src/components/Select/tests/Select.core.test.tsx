@@ -21,7 +21,8 @@ describe("Select.core", () => {
 
       await openSelect(trigger);
 
-      const list = document.querySelector('[role="listbox"][data-gap="xs"]');
+      // The panel itself is the listbox; the inner collection is presentational.
+      const list = document.querySelector('[role="presentation"][data-gap="xs"]');
       expect(list).toBeInTheDocument();
     });
 
@@ -74,6 +75,7 @@ describe("Select.core", () => {
       renderSelectWithItems(items, { onSelectionChange: callback });
       const trigger = getSelectTrigger(screen.getByRole("button").parentElement!);
 
+      await openSelect(trigger);
       await selectItem(trigger.parentElement!, items[0].label);
 
       expect(calls.length).toBeGreaterThan(0);
@@ -142,6 +144,7 @@ describe("Select.core", () => {
         onSelectionChange: callback,
       });
 
+      await openSelect(getSelectTrigger(container));
       await selectItem(container, items[0].label);
 
       expect(calls.length).toBeGreaterThan(0);
@@ -153,6 +156,7 @@ describe("Select.core", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, { mode: "multiple" });
 
+      await openSelect(getSelectTrigger(container));
       await selectItem(container, items[0].label);
       await selectItem(container, items[1].label);
 
@@ -175,6 +179,7 @@ describe("Select.core", () => {
       const onSelectionChange = vi.fn();
 
       const container = renderSelectWithItems(items, { onSelectionChange });
+      await openSelect(getSelectTrigger(container));
       await selectItem(container, items[0].label);
 
       expect(onSelectionChange).toHaveBeenCalled();

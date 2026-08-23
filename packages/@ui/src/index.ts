@@ -152,7 +152,12 @@ export { Switch } from "./components/Switch";
 export type { SwitchProps, SwitchState } from "./components/Switch";
 
 export { Progress } from "./components/Progress";
-export type { ProgressProps } from "./components/Progress";
+export type {
+  ProgressLabelStyleSlots,
+  ProgressProps,
+  ProgressStyleSlots,
+  ProgressStylesProp,
+} from "./components/Progress";
 
 export {
   Skeleton,

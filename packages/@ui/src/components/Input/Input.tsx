@@ -16,10 +16,16 @@ import { useControlledState } from "@/hooks/useControlledState";
 import { GroupContext } from "@/components/Group/Group.Context";
 import css from "./Input.module.css";
 
-/** Visual treatment applied to the input surface. */
+/**
+ * Visual treatment applied to the input surface.
+ * @typeDoc InputVariant
+ */
 export type InputVariant = "default" | "ghost" | (string & {});
 
-/** Styles for icons rendered at either edge of the input. */
+/**
+ * Styles for icons rendered at either edge of the input.
+ * @typeDoc InputIconStyles
+ */
 export interface InputIconStyles {
   /** Styles the icon before the input value. */
   left?: Style;
@@ -27,12 +33,21 @@ export interface InputIconStyles {
   right?: Style;
 }
 
+/**
+ * Styles for adornment wrappers at either edge of the input.
+ * @typeDoc InputAdornmentStyles
+ */
 export interface InputAdornmentStyles {
+  /** Styles the wrapper containing leading icons and actions. */
   start?: Style;
+  /** Styles the wrapper containing trailing icons, actions, hints, and controls. */
   end?: Style;
 }
 
-/** Styles for the number-input stepper buttons. */
+/**
+ * Styles for the number-input stepper buttons.
+ * @typeDoc InputStepperStyles
+ */
 export interface InputStepperStyles {
   /** Styles the increment button. */
   up?: Style;
@@ -40,12 +55,16 @@ export interface InputStepperStyles {
   down?: Style;
 }
 
-/** Named style slots for the Input anatomy. */
+/**
+ * Named style slots for the Input anatomy.
+ * @typeDoc InputStyleSlots
+ */
 export interface InputStyleSlots {
   /** Styles the visual input surface. */
   root?: Style;
   /** Styles the native input or custom input content surface. */
   input?: Style;
+  /** Styles the adornment wrappers through adornments.start and adornments.end. */
   adornments?: InputAdornmentStyles;
   /** Styles one or both icon wrappers. */
   icon?: Style | InputIconStyles;
@@ -59,7 +78,10 @@ export interface InputStyleSlots {
   stepper?: Style | InputStepperStyles;
 }
 
-/** Styles for action groups at either edge of the input. */
+/**
+ * Styles for action groups at either edge of the input.
+ * @typeDoc InputActionStyles
+ */
 export interface InputActionStyles {
   /** Styles the actions before the input value. */
   left?: Style;
@@ -67,16 +89,29 @@ export interface InputActionStyles {
   right?: Style;
 }
 
+/**
+ * Class-based style overrides for Input's root and named anatomy slots.
+ * @typeDoc InputStylesProp
+ */
 export type InputStylesProp = StylesProp<InputStyleSlots>;
-/** Controlled values accepted through the Input state abstraction. */
+/**
+ * Controlled values accepted through the Input state abstraction.
+ * @typeDoc InputState
+ */
 export interface InputState {
   /** Current input value. Takes precedence over the native value prop. */
   value?: string;
 }
 
-/** An inline action definition or custom action node. */
+/**
+ * An inline action definition or custom action node.
+ * @typeDoc InputAction
+ */
 export type InputAction = InputActionDef | React.ReactNode;
-/** Icon content positioned before and/or after the input value. */
+/**
+ * Icon content positioned before and/or after the input value.
+ * @typeDoc InputIconSlots
+ */
 export interface InputIconSlots {
   /** Content rendered before the input value. */
   prefix?: React.ReactNode;
@@ -84,7 +119,10 @@ export interface InputIconSlots {
   suffix?: React.ReactNode;
 }
 
-/** Declarative inline action rendered as an icon button. */
+/**
+ * Declarative inline action rendered as an icon button.
+ * @typeDoc InputActionDef
+ */
 export interface InputActionDef {
   /** Icon content for the action button. */
   icon: React.ReactNode;
@@ -94,7 +132,10 @@ export interface InputActionDef {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-/** Inline actions positioned at either edge of the input. */
+/**
+ * Inline actions positioned at either edge of the input.
+ * @typeDoc InputActionSlots
+ */
 export interface InputActionSlots {
   /** Actions rendered before the input value. */
   left?: InputAction[];
@@ -117,113 +158,60 @@ const resolveInputBaseStyles = createStylesResolver([
   "stepper.down",
 ] as const);
 
-function resolveInputStyles(styles: InputStylesProp | undefined) {
-  if (!styles) return resolveInputBaseStyles(styles);
-  const { root, input, adornments, icon, actions, hint, controls, stepper } = styles;
-
-  let iconLeft: Style | undefined;
-  let iconRight: Style | undefined;
-  let actionsLeft: Style | undefined;
-  let actionsRight: Style | undefined;
-  let stepperUp: Style | undefined;
-  let stepperDown: Style | undefined;
-
-  if (icon) {
-    if (typeof icon === "string" || Array.isArray(icon)) {
-      iconLeft = icon;
-      iconRight = icon;
-    } else {
-      iconLeft = icon.left;
-      iconRight = icon.right;
-    }
-  }
-
-  if (actions) {
-    if (typeof actions === "string" || Array.isArray(actions)) {
-      actionsLeft = actions;
-      actionsRight = actions;
-    } else {
-      actionsLeft = actions.left;
-      actionsRight = actions.right;
-    }
-  }
-
-  if (stepper) {
-    if (typeof stepper === "string" || Array.isArray(stepper)) {
-      stepperUp = stepper;
-      stepperDown = stepper;
-    } else {
-      stepperUp = stepper.up;
-      stepperDown = stepper.down;
-    }
-  }
-
-  return resolveInputBaseStyles({
-    root,
-    input,
-    "adornments.start": adornments?.start,
-    "adornments.end": adornments?.end,
-    "icon.left": iconLeft,
-    "icon.right": iconRight,
-    "actions.left": actionsLeft,
-    "actions.right": actionsRight,
-    hint,
-    controls,
-    "stepper.up": stepperUp,
-    "stepper.down": stepperDown,
-  });
-}
-
 export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "size"> {
-  /** Controlled state. Takes precedence over the native value prop.
+  /**
+   * Controlled state whose value takes precedence over the native value prop.
    * @category Core
    * @typeDoc InputState
    */
   state?: InputState;
-  /** Controls the visual treatment of the input surface.
+  /**
+   * Controls the visual treatment of the input surface.
    * @category Core
    * @default "default"
    * @typeDoc InputVariant
-   */
+  */
   variant?: InputVariant;
-  /** Applies error styling to the input surface.
+  /**
+   * Applies error styling to the input surface without changing native validity.
    * @category Core
    * @default false
-   */
+  */
   error?: boolean;
-  /** Icon displayed before the input value by default, or in named prefix/suffix slots.
+  /**
+   * Renders an icon before the value, or positions icons explicitly with prefix and suffix slots.
    * @category Content
    * @typeDoc InputIconSlots
-   */
+  */
   icon?: React.ReactNode | InputIconSlots;
-  /** Inline actions rendered on the left or right side of the input. An array renders on the right.
+  /**
+   * Renders inline actions. An array renders at the end; use left and right to position actions on both sides. Declarative actions are disabled with the input.
    * @category Content
    * @typeDoc InputActionSlots
-   */
+  */
   actions?: InputAction[] | InputActionSlots;
-  /** Hint content rendered on the right side of the input, commonly used for keyboard shortcuts.
+  /**
+   * Renders hint content at the end of the input, commonly for keyboard shortcuts.
    * @category Content
-   */
+  */
   hint?: React.ReactNode;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes.
+  /**
+   * Applies class-based overrides to the root and named anatomy slots. Use className for the conventional root hook.
    * @category Styling
    * @typeDoc InputStyleSlots
-   */
+  */
   styles?: InputStylesProp;
-  /** Hides the spinner controls for number inputs.
+  /**
+   * Hides the increment and decrement controls rendered for number inputs.
    * @category Core
    * @default false
    */
   "hide-controls"?: boolean;
   /**
-   * Custom content rendered in place of the native `<input>`, keeping the
-   * surrounding shell (focus surface, icons, actions, hint) intact. Used by
-   * composite fields such as Date.Input that own several focusable segments
-   * instead of one text input.
+   * Renders custom content in place of the native input while keeping the surrounding shell intact. Use this for composite fields with their own focusable segments.
    *
-   * In this mode the input-specific props (`type`, `value`, `placeholder`, the
-   * forwarded ref, …) have no element to apply to and are ignored — the content
-   * owns its own values. `disabled`, `error` and `variant` still style the shell.
+   * Native input props, including type, value, placeholder, and the forwarded ref, are ignored in this mode. Disabled, error, and variant continue to style the shell.
+   * @category Advanced
    */
   children?: React.ReactNode;
 }
@@ -367,7 +355,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       input.dispatchEvent(event);
     };
 
-    const resolved = resolveInputStyles(stylesProp);
+    const resolved = resolveInputBaseStyles(stylesProp);
     const showControls = isNumberType && !hideControls;
     const hasEndAdornment = hasSuffix || hasRightActions || hasHint || showControls;
     const adornmentPadding = "var(--adornment-offset)";
@@ -391,6 +379,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-label={(action as InputActionDef).title}
             onClick={(action as InputActionDef).onClick}
             icon={(action as InputActionDef).icon}
+            disabled={disabled}
           />
         </Tooltip>
       );
@@ -401,22 +390,32 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         ref={containerRef}
         className={cn("input", variant, css.container, className, resolved.root)}
         style={style}
+        data-slot="root"
         data-input-focus-surface="true"
         data-focused={isFocused ? "true" : undefined}
         data-focus-visible={isFocusVisible ? "true" : undefined}
-        data-disabled={disabled || undefined}
+        data-disabled={disabled ? "true" : undefined}
         data-error={error ? "true" : undefined}
         data-variant={variant}
       >
         {hasStartAdornment && (
-          <div className={cn("prefix", css.prefix, resolved["adornments.start"])}>
+          <div
+            className={cn("prefix", css.prefix, resolved["adornments.start"])}
+            data-slot="adornments.start"
+          >
             {hasPrefix && (
-              <div className={cn("icon", "left", css["icon-wrapper"], resolved["icon.left"])}>
+              <div
+                className={cn("icon", "left", css["icon-wrapper"], resolved["icon.left"])}
+                data-slot="icon.left"
+              >
                 <span className={css.icon}>{resolvedIcon?.prefix}</span>
               </div>
             )}
             {hasLeftActions && (
-              <div className={cn("actions", "left", css.actions, resolved["actions.left"])}>
+              <div
+                className={cn("actions", "left", css.actions, resolved["actions.left"])}
+                data-slot="actions.left"
+              >
                 {leftActions.map(renderAction)}
               </div>
             )}
@@ -426,9 +425,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <div
             className={cn(css.input, css.content, resolved.input)}
             style={inputPaddingStyle}
+            data-slot="input"
             data-focus-visible={isFocusVisible ? "true" : undefined}
             data-focused={isFocused ? "true" : undefined}
-            data-disabled={disabled || undefined}
+            data-disabled={disabled ? "true" : undefined}
             data-error={error ? "true" : undefined}
             data-variant={variant}
             {...mergeProps(focusProps, {
@@ -449,9 +449,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={mergedRef}
             type={type}
             disabled={disabled}
+            data-slot="input"
             data-focus-visible={isFocusVisible ? "true" : undefined}
             data-focused={isFocused ? "true" : undefined}
-            data-disabled={disabled || undefined}
+            data-disabled={disabled ? "true" : undefined}
             data-error={error ? "true" : undefined}
             data-variant={variant}
             className={cn(css.input, resolved.input)}
@@ -469,27 +470,41 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         )}
         {hasEndAdornment && (
-          <div className={cn("suffix", css.suffix, resolved["adornments.end"])}>
+          <div
+            className={cn("suffix", css.suffix, resolved["adornments.end"])}
+            data-slot="adornments.end"
+          >
             {hasSuffix && (
-              <div className={cn("icon", "right", css["icon-wrapper"], resolved["icon.right"])}>
+              <div
+                className={cn("icon", "right", css["icon-wrapper"], resolved["icon.right"])}
+                data-slot="icon.right"
+              >
                 <span className={css.icon}>{resolvedIcon?.suffix}</span>
               </div>
             )}
             {hasRightActions && (
-              <div className={cn("actions", "right", css.actions, resolved["actions.right"])}>
+              <div
+                className={cn("actions", "right", css.actions, resolved["actions.right"])}
+                data-slot="actions.right"
+              >
                 {rightActions.map(renderAction)}
               </div>
             )}
             {hasHint && (
-              <span className={cn("hint", css.hint, resolved.hint)}>
+              <span className={cn("hint", css.hint, resolved.hint)} data-slot="hint">
                 {hint}
               </span>
             )}
             {showControls && (
-              <div className={cn("controls", css.controls, resolved.controls)} data-disabled={disabled || undefined}>
+              <div
+                className={cn("controls", css.controls, resolved.controls)}
+                data-slot="controls"
+                data-disabled={disabled ? "true" : undefined}
+              >
                 <button
                   type="button"
                   className={cn("stepper", "up", css.stepper, resolved["stepper.up"])}
+                  data-slot="stepper.up"
                   onClick={() => handleSpinClick("up")}
                   disabled={disabled}
                   tabIndex={-1}
@@ -500,6 +515,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 <button
                   type="button"
                   className={cn("stepper", "down", css.stepper, resolved["stepper.down"])}
+                  data-slot="stepper.down"
                   onClick={() => handleSpinClick("down")}
                   disabled={disabled}
                   tabIndex={-1}

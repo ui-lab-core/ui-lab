@@ -214,7 +214,7 @@ describe("Select.focus", () => {
         </>,
       );
       const trigger = getSelectTrigger(container) as HTMLInputElement;
-      const triggerWrapper = trigger.closest('[data-slot="trigger"]') as HTMLElement;
+      const triggerWrapper = trigger.closest(".search-trigger") as HTMLElement;
       const user = userEvent.setup();
 
       await user.click(triggerWrapper);

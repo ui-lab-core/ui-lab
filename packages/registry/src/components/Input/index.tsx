@@ -12,17 +12,17 @@ export const inputDetail: ComponentDetail = {
   id: "input",
   name: "Input",
   description:
-    "A flexible text input component with multiple variants and icon support for capturing user input.",
+    "A flexible text and number input component with adornments, inline actions, hints, and visual error states.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
         The Input component is an essential form control for capturing user data. It supports
-        multiple input types (text, email, password, number) and provides various states including
-        disabled and error states.
+        native input types including text, email, password, and number, along with disabled and
+        visual error states.
       </p>
       <p>
-        With built-in support for prefix and suffix icons, you can enhance the visual feedback and
-        provide contextual information to users.
+        Prefix and suffix icons, inline actions, hints, and number steppers provide contextual
+        controls without replacing native input semantics.
       </p>
     </div>
   ),

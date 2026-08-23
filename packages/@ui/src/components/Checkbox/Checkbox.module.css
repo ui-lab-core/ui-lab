@@ -14,7 +14,7 @@
   .box {
     @apply relative h-5 w-5 cursor-pointer appearance-none;
 
-    background-color: var(--background);
+    background-color: var(--background, transparent);
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
     border-radius: var(--radius-xs, 0.25rem);
@@ -50,7 +50,7 @@
     width: 65%;
     height: 65%;
     transform: translate(-50%, -50%);
-    color: var(--foreground);
+    color: var(--foreground, currentColor);
     pointer-events: none;
   }
 

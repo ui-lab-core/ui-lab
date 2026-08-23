@@ -1,40 +1,53 @@
 "use client";
 
 import * as React from "react";
-import { cn, type Style } from "@/lib/utils";
-import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { cn } from "@/lib/utils";
+import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import css from "./Progress.module.css";
 
-export interface ProgressStyleSlots {
-  root?: Style;
-  labelRow?: Style;
-  label?: Style;
-  value?: Style;
-  track?: Style;
-  range?: Style;
-  thumb?: Style;
+/** Named style overrides for the Progress label anatomy.
+ * @typeDoc ProgressLabelStyleSlots
+ */
+export interface ProgressLabelStyleSlots {
+  /** Styles the row that contains the visible label and percentage. */
+  row?: SlotStyle;
+  /** Styles the visible progress label. */
+  label?: SlotStyle;
+  /** Styles the displayed percentage value. */
+  value?: SlotStyle;
 }
 
-export type ProgressStylesProp = StylesProp<ProgressStyleSlots>;
+/** Named style overrides for the Progress root and stable anatomy.
+ * @typeDoc ProgressStyleSlots
+ */
+export interface ProgressStyleSlots {
+  /** Styles the root progress container. */
+  root?: SlotStyle;
+  /** Styles the visible label anatomy. */
+  label?: ProgressLabelStyleSlots;
+  /** Styles the progress track. */
+  track?: SlotStyle;
+  /** Styles the filled progress range. */
+  range?: SlotStyle;
+  /** Styles the optional draggable thumb. */
+  thumb?: SlotStyle;
+}
 
-const resolveProgressBaseStyles = createStylesResolver([
+/** Style overrides accepted by Progress.
+ * @typeDoc ProgressStylesProp
+ */
+export type ProgressStylesProp = ProgressStyleSlots;
+
+const progressStyleSlotKeys = [
   "root",
-  "labelRow",
-  "label",
-  "value",
+  "label.row",
+  "label.label",
+  "label.value",
   "track",
   "range",
   "thumb",
-] as const);
-
-function resolveProgressStyles(styles: ProgressStylesProp | undefined) {
-  if (!styles) {
-    return resolveProgressBaseStyles(styles);
-  }
-  const { root, labelRow, label, value, track, range, thumb } = styles;
-  return resolveProgressBaseStyles({ root, labelRow, label, value, track, range, thumb });
-}
+] as const;
+const resolveProgressStyles = createStylePropsResolver(progressStyleSlotKeys);
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -80,34 +93,76 @@ function getValueFromPointer(
   return snapToStep(percent * (max - min) + min, min, max, step);
 }
 
-export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Current progress value */
+export interface ProgressProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "aria-disabled" | "aria-valuemax" | "aria-valuemin" | "aria-valuenow" | "children" | "role"
+> {
+  /** Controls the current progress value.
+   * @category Core
+   */
   value?: number;
-  /** Initial value for uncontrolled interactive usage */
+  /** Sets the initial value when Progress is uncontrolled.
+   * @category Core
+   */
   defaultValue?: number;
-  /** Minimum value */
+  /** Sets the lowest value represented by the progress bar.
+   * @category Core
+   * @default 0
+   */
   min?: number;
-  /** Maximum value that represents 100% */
+  /** Sets the value represented by 100% completion.
+   * @category Core
+   * @default 100
+   */
   max?: number;
-  /** Step increment when dragging */
+  /** Snaps pointer-controlled values to this increment.
+   * @category Core
+   * @default 1
+   */
   step?: number;
-  /** Called when the value changes via controls */
+  /** Runs with the next value after pointer controls change progress. Disabled Progress instances do not call it.
+   * @category Events
+   */
   onValueChange?: (value: number) => void;
-  /** Visual color variant indicating progress state */
+  /** Adds a conventional variant class and data attribute to the root.
+   * @category Core
+   * @default "default"
+   */
   variant?: string;
-  /** Whether to show an infinite loading animation instead of a fixed value */
+  /** Shows an animated range when completion is unknown and omits aria-valuenow.
+   * @category Core
+   * @default false
+   */
   indeterminate?: boolean;
-  /** Accessible label describing what is progressing */
+  /** Displays a visible label and uses it as the default accessible name when aria-label is not supplied.
+   * @category Content
+   */
   label?: string;
-  /** Whether to display the percentage value next to the label */
+  /** Displays the rounded completion percentage next to the label for determinate progress.
+   * @category Content
+   * @default false
+   */
   showValue?: boolean;
-  /** Whether to show a shimmer animation on the progress fill */
+  /** Animates the determinate range with a pulse.
+   * @category Core
+   * @default false
+   */
   animated?: boolean;
-  /** Whether to show a draggable thumb on hover, allowing value adjustment */
+  /** Enables pointer dragging and shows the thumb on hover.
+   * @category Core
+   * @default false
+   */
   "show-controls"?: boolean;
-  /** Whether the progress is disabled */
+  /** Disables pointer controls and applies disabled styling.
+   * @category Core
+   * @default false
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-disabled
+   */
   disabled?: boolean;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Styles the root and stable Progress anatomy. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc ProgressStyleSlots
+   */
   styles?: ProgressStylesProp;
 }
 
@@ -115,6 +170,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
   (
     {
       className,
+      style,
       value: controlledValue,
       defaultValue,
       min = 0,
@@ -129,6 +185,8 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
       "show-controls": showControls = false,
       disabled = false,
       styles: stylesProp,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
       onPointerDown,
       onPointerMove,
       onPointerUp,
@@ -152,7 +210,6 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     const hasLabelContent = label || showValue;
 
     const resolved = resolveProgressStyles(stylesProp);
-    const mergedRef = useMergeRefs(ref, trackRef);
 
     const updateValue = React.useCallback(
       (clientX: number) => {
@@ -236,49 +293,77 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
 
     return (
       <div
-        className={cn("progress", css.progress, resolved.root)}
+        ref={ref}
+        {...props}
+        role="progressbar"
+        aria-valuenow={indeterminate ? undefined : clampedValue}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-label={ariaLabel ?? label}
+        aria-labelledby={ariaLabelledBy}
+        aria-disabled={disabled || undefined}
+        className={cn("progress", variant, css.progress, className, resolved.root.className)}
+        style={{ ...resolved.root.style, ...style }}
+        data-slot="root"
+        data-variant={variant}
+        data-indeterminate={indeterminate ? "true" : "false"}
         data-has-label={hasLabelContent ? "true" : "false"}
         data-show-controls={showControls ? "true" : undefined}
         data-disabled={disabled ? "true" : undefined}
         data-dragging={isDragging ? "true" : undefined}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        onLostPointerCapture={handleLostPointerCapture}
       >
         {hasLabelContent && (
-          <div className={cn("label-row", css["label-row"], resolved.labelRow)}>
-            {label && <span className={cn(css.label, resolved.label)}>{label}</span>}
+          <div
+            className={cn("label-row", css["label-row"], resolved["label.row"].className)}
+            style={resolved["label.row"].style}
+            data-slot="label.row"
+          >
+            {label && (
+              <span
+                className={cn("label", css.label, resolved["label.label"].className)}
+                style={resolved["label.label"].style}
+                data-slot="label.label"
+              >
+                {label}
+              </span>
+            )}
             {showValue && !indeterminate && (
-              <span className={cn(css.value, resolved.value)}>{Math.round(percentage)}%</span>
+              <span
+                className={cn("value", css.value, resolved["label.value"].className)}
+                style={resolved["label.value"].style}
+                data-slot="label.value"
+              >
+                {Math.round(percentage)}%
+              </span>
             )}
           </div>
         )}
         <div
-          ref={mergedRef}
-          role="progressbar"
-          aria-valuenow={indeterminate ? undefined : clampedValue}
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-label={label}
-          aria-disabled={disabled || undefined}
-          className={cn("track", css.track, className, resolved.track)}
-          data-indeterminate={indeterminate ? "true" : "false"}
+          className={cn("track", css.track, resolved.track.className)}
+          style={resolved.track.style}
+          data-slot="track"
           data-disabled={disabled ? "true" : undefined}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerCancel}
-          onLostPointerCapture={handleLostPointerCapture}
-          {...props}
         >
           <div
-            className={cn("range", css.range, resolved.range)}
-            data-variant={variant}
+            className={cn("range", css.range, resolved.range.className)}
+            data-slot="range"
             data-animated={animated || indeterminate ? "true" : "false"}
             data-indeterminate={indeterminate ? "true" : "false"}
-            style={indeterminate ? undefined : { width: `${percentage}%` }}
+            style={{
+              ...(indeterminate ? undefined : { width: `${percentage}%` }),
+              ...resolved.range.style,
+            }}
           />
           {showControls && !indeterminate && (
             <div
-              className={cn("thumb", css.thumb, resolved.thumb)}
-              style={{ left: `${percentage}%` }}
+              className={cn("thumb", css.thumb, resolved.thumb.className)}
+              style={{ left: `${percentage}%`, ...resolved.thumb.style }}
+              data-slot="thumb"
               data-disabled={disabled ? "true" : undefined}
             />
           )}

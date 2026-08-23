@@ -55,7 +55,7 @@ export function renderListWithItems(
       item.label,
     ),
   );
-  return renderList(children, { items, ...props } as any);
+  return renderList(children, props as any);
 }
 
 /**

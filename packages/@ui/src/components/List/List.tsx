@@ -2,41 +2,30 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { createStylesResolver } from "@/lib/styles";
-import { resolveGapStep, type GapSize } from "@/lib/gap";
+import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { resolveGapStep } from "@/lib/gap";
 import { Divider as FoldDivider } from "@/components/Divider";
-import styles from "./List.module.css";
+import css from "./List.module.css";
 import { ListContext, useListContext } from "./list.context";
 import {
-  ListStyleSlot,
-  ListContainerProps,
+  ListProps,
   ListHeaderProps,
   ListRef,
-  ActionGroupComponentProps,
-  FooterComponentProps,
+  ListActionGroupProps,
+  ListDividerProps,
+  ListFooterProps,
 } from "./list.types";
-import { DividerProps } from "@/components/Divider";
 import { scrollItemIntoView } from "@/utils/list-navigation";
+import { resolveListItemStyles, resolveListStyles } from "./list.styles";
 
-const resolveListBaseStyles = createStylesResolver([
-  "root",
-  "header",
-  "item",
-  "checkbox",
-  "control",
-  "media",
-  "title",
-  "desc",
-  "actions",
-  "action",
-  "footer",
-] as const);
+function resolveListGap(gap: NonNullable<ListProps["gap"]>) {
+  return `calc(var(--spacing, 0.25rem) * ${resolveGapStep(gap)})`;
+}
 
 // Ref container for keyboard navigation
-const Container = React.forwardRef<ListRef, ListContainerProps>(
+const Container = React.forwardRef<ListRef, ListProps>(
   (
     {
-      items: _items = [],
       variant = "default",
       orientation = "vertical",
       gap,
@@ -55,7 +44,15 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
     const [focusedItem, setFocusedItemState] = React.useState<HTMLElement | null>(null);
     const [isFocusMode, setIsFocusMode] = React.useState(false);
     const shouldScrollFocusedItemRef = React.useRef(false);
-    const resolvedStyles = resolveListBaseStyles(stylesProp) as Record<ListStyleSlot, string>;
+    const mergedRootRef = useMergeRefs<HTMLDivElement>(
+      rootRef,
+      ref as React.ForwardedRef<HTMLDivElement>,
+    );
+    const { item: itemStylesProp, ...baseStylesProp } = stylesProp ?? {};
+    const resolvedStyles = {
+      ...resolveListStyles(baseStylesProp),
+      item: resolveListItemStyles(itemStylesProp),
+    };
 
     const getFocusableItems = React.useCallback(() => {
       if (!rootRef.current) return [];
@@ -144,10 +141,11 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
       [focusItemAtIndex, getFocusableItems],
     );
 
-    // Expose ref methods for keyboard navigation
+    // The semantic listbox element also exposes the documented navigation methods.
     React.useImperativeHandle(
       ref,
-      () => ({
+      () =>
+        Object.assign(rootRef.current!, {
         focusNext: () => {
           focusAdjacentItem(focusedItem, 1);
           onNavigate?.down?.();
@@ -171,7 +169,7 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
           setFocusedItem(null, { enterFocusMode: false });
         },
         getHighlightedIndex: () => getFocusedIndex(),
-      }),
+        }),
       [
         focusAdjacentItem,
         focusBoundaryItem,
@@ -228,22 +226,23 @@ const Container = React.forwardRef<ListRef, ListContainerProps>(
     return (
       <ListContext.Provider value={contextValue}>
         <div
-          ref={rootRef}
+          ref={mergedRootRef}
           role="listbox"
-          className={cn("list", styles.container, className, resolvedStyles.root)}
+          className={cn("list", css.root, className, resolvedStyles.root)}
           style={
             {
               ...style,
-              ...(gap ? { "--list-gap-step": resolveGapStep(gap as GapSize) } : null),
+              ...(gap ? { gap: resolveListGap(gap) } : null),
             } as React.CSSProperties
           }
+          {...(props as React.HTMLAttributes<HTMLDivElement>)}
           data-variant={variant}
+          data-slot="root"
           data-orientation={orientation}
           data-gap={gap}
           data-spacing={spacing}
           data-focus-mode={isFocusMode ? "row" : undefined}
           data-keyboard-mode={isFocusMode ? "true" : undefined}
-          {...(props as React.HTMLAttributes<HTMLDivElement>)}
         >
           {children}
         </div>
@@ -259,7 +258,12 @@ const Header = React.forwardRef<HTMLElement, ListHeaderProps>(
     const { styles: listStyles } = useListContext();
 
     return (
-      <header ref={ref} className={cn(listStyles.header, className)} {...props}>
+      <header
+        ref={ref}
+        {...props}
+        className={cn(css.header, listStyles.header, className)}
+        data-slot="header"
+      >
         {children}
       </header>
     );
@@ -268,49 +272,57 @@ const Header = React.forwardRef<HTMLElement, ListHeaderProps>(
 Header.displayName = "List.Header";
 
 /** Row of action buttons aligned to the right of a list item */
-const ActionGroup = React.forwardRef<HTMLDivElement, ActionGroupComponentProps>(
-  ({ justify = "start", children, className, ...props }, ref) => (
-    <div ref={ref} className={cn(styles.actionGroup, className)} data-justify={justify} {...props}>
-      {children}
-    </div>
-  ),
+const ActionGroup = React.forwardRef<HTMLDivElement, ListActionGroupProps>(
+  ({ justify = "start", children, className, ...props }, ref) => {
+    const { styles: listStyles } = useListContext();
+
+    return (
+      <div
+        ref={ref}
+        {...props}
+        className={cn(css["action-group"], listStyles.actionGroup, className)}
+        data-slot="actionGroup"
+        data-justify={justify}
+      >
+        {children}
+      </div>
+    );
+  },
 );
 ActionGroup.displayName = "List.ActionGroup";
 
 /** Horizontal separator between list sections */
-const Divider = React.forwardRef<HTMLDivElement, DividerProps>(({ className, ...props }, ref) => (
-  <FoldDivider ref={ref} className={className} {...props} />
-));
+const Divider = React.forwardRef<HTMLDivElement, ListDividerProps>(({ className, ...props }, ref) => {
+  const { styles: listStyles } = useListContext();
+
+  return (
+    <FoldDivider
+      ref={ref}
+      {...props}
+      className={cn(css.divider, listStyles.divider, className)}
+      data-slot="divider"
+    />
+  );
+});
 Divider.displayName = "List.Divider";
 
 /** Semantic footer region for list content */
-const Footer = React.forwardRef<HTMLElement, FooterComponentProps>(
+const Footer = React.forwardRef<HTMLElement, ListFooterProps>(
   ({ children, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
 
     return (
-      <footer ref={ref} className={cn(listStyles.footer, className)} {...props}>
+      <footer
+        ref={ref}
+        {...props}
+        className={cn(css.footer, listStyles.footer, className)}
+        data-slot="footer"
+      >
         {children}
       </footer>
     );
   },
 );
 Footer.displayName = "List.Footer";
-
-// Compound component
-const List = Object.assign(Container, {
-  Header,
-  Item: null as any, // Set in index.ts
-  Checkbox: null as any,
-  CheckboxIndicator: null as any,
-  Switch: null as any,
-  Input: null as any,
-  Select: null as any,
-  Media: null as any,
-  Desc: null as any,
-  ActionGroup,
-  Divider,
-  Footer,
-});
 
 export { Container, Header, ActionGroup, Divider, Footer };

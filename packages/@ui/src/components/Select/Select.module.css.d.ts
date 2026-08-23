@@ -1,5 +1,4 @@
 declare const styles: {
-  scope: string;
   select: string;
   "select-split": string;
   trigger: string;
@@ -18,22 +17,19 @@ declare const styles: {
   value: string;
   "value-icon": string;
   "value-text": string;
-  "value-chevron": string;
   "content-root": string;
   content: string;
-  viewport: string;
   list: string;
+  "list-padding": string;
   item: string;
   "item-icon": string;
-  "item-indicator": string;
   "item-text": string;
   "item-content": string;
   "item-description": string;
   "item-with-description": string;
   "item-icon-with-description": string;
-  "item-indicator-with-description": string;
+  "option-group-title": string;
   separator: string;
-  "scroll-button": string;
   placeholder: string;
   "icon-prefix": string;
   "sub-trigger": string;
