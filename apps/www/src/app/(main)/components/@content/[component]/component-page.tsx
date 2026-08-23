@@ -4,8 +4,7 @@ import {
   type ElementSourceEntry,
 } from "@ui-lab-core/library/server";
 import type { ComponentAPI, ComponentMetadata } from "ui-lab-registry";
-import { CopyComponentPage } from "@/features/docs/page-actions/copy-component-page";
-import { OpenPage } from "@/features/docs/page-actions/open-page-button";
+import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
 import { highlightCode } from "@/features/docs/lib/shiki-server";
 import { Code } from "@/features/docs/components/code-display/code";
 import { ExampleCode, Playground, Preview } from "./preview";
@@ -14,7 +13,7 @@ import { ExampleReference } from "./example-reference";
 import type { StyleInfo } from "./documentation";
 import { Content } from "./content";
 import { Toc } from "./toc";
-import { Group } from "ui-lab-components/group";
+import { Divider, Group } from "ui-lab-components";
 import { Button } from "ui-lab-components/button";
 import css from "./component-page.module.css";
 import { FaFlask, FaGithub } from "@/shared/icons/fa6";
@@ -100,12 +99,16 @@ export async function ComponentPage({
       : []),
   ];
   const styleItems = [
-    ...(componentId === "select"
+    ...(styles?.documentation?.quickStart
+      ? [{ id: "style-quick-start", title: styles.documentation.quickStart.title, level: 2 }]
+      : []),
+    ...(styles?.documentation?.anatomy && styles.styleableGroups?.length
       ? [
-          { id: "style-quick-start", title: "How to style Select", level: 2 },
-          ...(styles?.styleableGroups?.length
-            ? [{ id: "style-anatomy", title: "Anatomy", level: 2 }]
-            : []),
+          {
+            id: "style-anatomy",
+            title: styles.documentation.anatomy.title ?? "Anatomy",
+            level: 2,
+          },
         ]
       : []),
     ...(styles?.cssVariables?.length
@@ -230,6 +233,7 @@ export async function ComponentPage({
             className="w-full [--background-border:var(--background-700)]"
           >
             <OpenPage componentId={componentId} sourceUrl={sourceUrl} />
+            <Divider />
             <CopyComponentPage
               componentId={componentId}
               name={component.name}

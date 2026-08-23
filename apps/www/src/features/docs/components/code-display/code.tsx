@@ -224,6 +224,14 @@ export function Code({
   const shouldShowExpandButton =
     !fillHeight && maxHeightLines !== null && totalCodeLines > maxHeightLines;
   const hasHeader = showHeader && Boolean(filename || heading);
+  const collapsedMaxHeight =
+    maxHeightLines !== null
+      ? `calc(${maxHeightLines} * 1.5em + 2rem)`
+      : undefined;
+  const expandedMaxHeight =
+    maxHeightLines !== null
+      ? `calc(${MAX_EXPANDED_HEIGHT_LINES} * 1.5em + 2rem)`
+      : undefined;
 
   return (
     <div
@@ -325,27 +333,34 @@ export function Code({
           >
             <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
           </Scroll>
-        ) : (
+        ) : expanded ? (
           <Scroll
             direction="vertical"
-            maxHeight={
-              maxHeightLines !== null
-                ? `calc(${expanded ? MAX_EXPANDED_HEIGHT_LINES : maxHeightLines} * 1.5em + 2rem)`
-                : undefined
-            }
+            maxHeight={expandedMaxHeight}
             maxWidth="100%"
-            hide={!expanded}
+            hide={false}
             styles={{
               track: "bg-transparent",
               thumb: "bg-background-700 hover:bg-background-600",
               content: "!overflow-x-auto",
             }}
             className="relative min-h-0 min-w-0 flex-1"
+          >
+            <CodeContent
+              html={displayHtml}
+              hasResolvedSyntax={hasResolvedSyntax}
+              faded={false}
+            />
+          </Scroll>
+        ) : (
+          <div
+            className="relative min-h-0 min-w-0 flex-1 overflow-hidden"
             style={{
-              maskImage: !expanded && shouldShowExpandButton
+              maxHeight: collapsedMaxHeight,
+              maskImage: shouldShowExpandButton
                 ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
                 : "none",
-              WebkitMaskImage: !expanded && shouldShowExpandButton
+              WebkitMaskImage: shouldShowExpandButton
                 ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
                 : "none",
             }}
@@ -355,7 +370,7 @@ export function Code({
               hasResolvedSyntax={hasResolvedSyntax}
               faded={false}
             />
-          </Scroll>
+          </div>
         )}
 
         {shouldShowExpandButton && !expanded && (

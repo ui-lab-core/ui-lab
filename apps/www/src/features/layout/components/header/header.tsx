@@ -122,7 +122,7 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
       <header className="fixed left-0 -mr-2 top-0 z-50 h-(--header-height) w-full border-b border-background-700 bg-background-950">
         <div
           className={cn(
-            "relative h-full flex items-center justify-between px-3 w-full overflow-hidden transition-[margin] duration-300",
+            "relative h-full flex items-center justify-between pr-3 pl-8 w-full overflow-hidden transition-[margin] duration-300",
             "max-w-(--page-width)",
             "mx-auto",
           )}

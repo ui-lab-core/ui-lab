@@ -248,7 +248,7 @@ export function Sidebar({
                                 "transition-colors duration-300 ease-out",
                                 "hover:duration-0  hover:bg-background-800/50",
                                 active
-                                  ? 'text-foreground-100 font-medium after:content-[""] after:absolute after:-left-2.5 after:top-0 after:bg-foreground-300 after:w-0.5 after:h-full'
+                                  ? 'text-foreground-100 font-medium after:content-[""] after:absolute after:-left-2.5 after:top-1/2 after:-translate-y-1/2 after:bg-foreground-300 after:w-0.5 after:h-[60%]'
                                   : cn("text-foreground-300", "hover:text-foreground-200"),
                               )}
                             >

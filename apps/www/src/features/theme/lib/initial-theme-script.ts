@@ -1,4 +1,8 @@
-import { COLOR_CSS_VARIABLE_PREFIXES, THEME_CACHE_KEY } from "./theme-cache";
+import {
+  COLOR_CSS_VARIABLE_PREFIXES,
+  THEME_CACHE_KEY,
+  THEME_CACHE_VERSION,
+} from "./theme-cache";
 
 const REQUIRED_CACHE_VARS = ["--background-500"];
 
@@ -11,6 +15,7 @@ const REQUIRED_CACHE_VARS = ["--background-500"];
 export function getInitialThemeScript(): string {
   const payload = {
     cacheKey: THEME_CACHE_KEY,
+    cacheVersion: THEME_CACHE_VERSION,
     requiredCacheVars: REQUIRED_CACHE_VARS,
     colorPrefixes: COLOR_CSS_VARIABLE_PREFIXES,
   };
@@ -35,6 +40,7 @@ export function getInitialThemeScript(): string {
     if (!cache || typeof cache !== "object" || (cache.themeMode !== "light" && cache.themeMode !== "dark")) {
       throw new Error("Invalid cache format");
     }
+    if (cache.version !== payload.cacheVersion) throw new Error("Invalid cache format");
     var vars = cache.cssVariables;
     if (!vars || typeof vars !== "object") throw new Error("Missing cssVariables");
     for (var index = 0; index < payload.requiredCacheVars.length; index += 1) {

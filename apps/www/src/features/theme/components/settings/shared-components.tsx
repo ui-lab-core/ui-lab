@@ -151,7 +151,6 @@ export const ColorRow = memo(
 
       return {
         backgroundColor: previewColor,
-        "--tw-ring-color": previewColor,
       } as CSSProperties;
     }, [type, color, currentThemeMode]);
 
@@ -182,13 +181,6 @@ export const ColorRow = memo(
               className="cursor-pointer flex min-w-0 flex-1 items-center gap-4 text-left outline-none"
               aria-expanded={isExpanded}
             >
-              <div className="relative">
-                <div
-                  className="w-3 h-3 ring-offset-background-900 ring-offset-2 ring-2 rounded-full"
-                  style={previewStyle}
-                />
-              </div>
-
               <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <div className="text-sm font-semibold text-foreground-100 capitalize leading-tight group-hover:text-foreground-100 transition-colors">
                   {type}
@@ -196,23 +188,26 @@ export const ColorRow = memo(
               </div>
             </button>
 
-            <Input
-              aria-label={`${type} OKLCH color`}
-              value={colorValue}
-              onFocus={() => setIsEditingColor(true)}
-              onChange={(event) => setColorValue(event.target.value)}
-              variant="ghost"
-              onBlur={commitColorValue}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") event.currentTarget.blur();
-                if (event.key === "Escape") {
-                  setColorValue(formattedColor);
-                  event.currentTarget.blur();
-                }
-              }}
-              className="h-8 w-[230px]"
-              styles={{ input: "text-foreground-400 font-mono text-xs" }}
-            />
+            <div className="flex items-center gap-3 relative">
+              <div className="w-4 h-4 rounded-full" style={previewStyle} />
+              <Input
+                aria-label={`${type} OKLCH color`}
+                value={colorValue}
+                onFocus={() => setIsEditingColor(true)}
+                onChange={(event) => setColorValue(event.target.value)}
+                variant="ghost"
+                onBlur={commitColorValue}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.currentTarget.blur();
+                  if (event.key === "Escape") {
+                    setColorValue(formattedColor);
+                    event.currentTarget.blur();
+                  }
+                }}
+                className="h-8 w-fit"
+                styles={{ input: "text-foreground-400 font-mono text-xs" }}
+              />
+            </div>
 
             <button
               type="button"

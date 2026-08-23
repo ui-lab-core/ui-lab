@@ -7,6 +7,7 @@ import {
   cacheCompleteTheme,
   applyThemeCacheToDOM,
   getSourceConfig,
+  THEME_CACHE_VERSION,
   type ThemeSourceConfig,
 } from "../lib/theme-cache";
 import { type TypographyConfig } from "../lib/typography-config";
@@ -48,7 +49,7 @@ function computeAndCache(config: ThemeConfig): void {
     themeMode: config.mode,
     sourceConfig: config,
     timestamp: Date.now(),
-    version: 1,
+    version: THEME_CACHE_VERSION,
   });
 }
 

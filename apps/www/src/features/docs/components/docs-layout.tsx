@@ -2,7 +2,7 @@ import { Sidebar } from "@/features/layout/components/sidebar";
 import { TableOfContents, type TableOfContentsItem } from "./table-of-contents";
 import { CopyPage, OpenPage } from "../page-actions";
 import "@styles/docs.css";
-import { Group } from "ui-lab-components";
+import { Divider, Group } from "ui-lab-components";
 
 interface DocsLayoutProps {
   children: React.ReactNode;
@@ -43,10 +43,12 @@ export function DocsLayout({ children, tocItems = EMPTY_TOC_ITEMS, banner }: Doc
             <Group
               orientation="vertical"
               spacing="none"
-              styles={{ expand: "h-auto w-full" }}
-              className="w-full bg-background-1000 [--background-border:var(--background-700)]"
+              variant="ghost"
+              styles={{ expand: " h-auto w-full" }}
+              className="w-full [--background-border:var(--background-700)]"
             >
               <OpenPage />
+              <Divider />
               <CopyPage />
             </Group>
           </div>

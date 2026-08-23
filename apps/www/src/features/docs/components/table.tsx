@@ -27,6 +27,7 @@ export interface Column<T> {
 interface TableProps<T> {
   data: T[];
   columns: Column<T>[];
+  unframed?: boolean;
   showFilters?: boolean;
   onRowClick?: (row: T) => void;
   onFilterChange?: (filters: Record<string, string>) => void;
@@ -62,6 +63,7 @@ export function TableExpandedDetails({ details, className }: TableExpandedDetail
 export function Table<T extends object>({
   data,
   columns,
+  unframed = false,
   showFilters = false,
   onRowClick,
   onFilterChange,
@@ -154,7 +156,9 @@ export function Table<T extends object>({
         scroll="auto"
         aria-label="Documentation data"
         styles={{
-          container: "border-background-800 rounded-sm",
+          container: unframed
+            ? "border-0 rounded-none"
+            : "border-background-800 rounded-sm",
           table: "min-w-full text-xs",
           header: "bg-background-1000",
           headerCell: "px-4 py-3 text-left font-semibold text-foreground-200",
@@ -185,6 +189,7 @@ export function Table<T extends object>({
                     onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
                     className={cn(
                       "border-b border-background-800",
+                      unframed && "last:border-b-0",
                       expandRender || onRowClick
                         ? "cursor-pointer hover:bg-background-900 transition-colors"
                         : "",

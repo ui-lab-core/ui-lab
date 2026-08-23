@@ -7,6 +7,7 @@
   --hover-transition-timing-function: var(--ease-snappy-pop, ease-out);
   --ring-background: #0f74c5;
   @slot border {
+    --background: var(--background-700);
     --background-focus: var(--background-600);
     --width: var(--border-width-base, 1px);
   }
@@ -30,9 +31,6 @@
 
   .button {
     --background: var(--background-800);
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-visible: var(--accent-400);
     --icon-foreground: var(--foreground-400);
   }
@@ -76,9 +74,6 @@
 
   .gallery > .item {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-visible: var(--accent-400);
   }
 
@@ -122,9 +117,6 @@
 
   .card {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-200);
   }
@@ -135,51 +127,25 @@
 
   .list {
     --foreground: var(--foreground-50);
-  }
 
-  .list > .header > .title {
-    --foreground: var(--foreground-50);
-  }
+    @slot item {
+      --background: transparent;
+      --foreground: var(--foreground-50);
+      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);
+      --background-selected: color-mix(in srgb, var(--background-500) 10%, transparent);
+      --background-selected-hover: color-mix(in srgb, var(--background-500) 14%, transparent);
+    }
 
-  .list > .header > .subtitle,
-  .list > .description {
-    --foreground: var(--foreground-400);
-  }
-
-  .list > [role="option"] {
-    --background: transparent;
-    --foreground: var(--foreground-50);
-  }
-
-  .list > [role="option"]:hover:not([data-disabled]),
-  .list > [role="option"][data-highlighted="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-500) 6%, transparent);
-  }
-
-  .list > [role="option"][data-selected="true"] {
-    --background: color-mix(in srgb, var(--background-500) 10%, transparent);
-  }
-
-  .list > [role="option"][data-selected="true"]:hover:not([data-disabled]),
-  .list > [role="option"][data-selected="true"][data-highlighted="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-500) 14%, transparent);
-  }
-
-  .list > [role="option"] > .actions > .button {
-    --background: transparent;
-    --foreground: var(--foreground-400);
-  }
-
-  .list > [role="option"] > .actions > .button[data-hovered="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-500) 6%, transparent);
-    --foreground: var(--foreground-50);
+    @slot action {
+      --background: transparent;
+      --foreground: var(--foreground-400);
+      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);
+      --foreground-hover: var(--foreground-50);
+    }
   }
 
   .group {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --backdrop: color-mix(in srgb, var(--background-800) 35%, var(--background-950));
   }
 
@@ -221,10 +187,6 @@
     --background: var(--background-900);
     /* Command passes this legacy token to Frame's decorative SVG stroke. */
     --border: var(--background-700);
-    @slot border {
-      --background: var(--background-700);
-      --background-focus: transparent
-    }
     --height: min(35rem, 60dvh);
     --width: 30rem;
     --origin: 50% 10%;
@@ -233,6 +195,9 @@
     --shadow: 0 20px 25px -5px rgb(0 0 0 / 35%);
     --leading: var(--leading-sm);
 
+    @slot border {
+      --background-focus: transparent
+    }
   }
 
   .command :where(.options, .group) > .item {
@@ -319,9 +284,6 @@
 
   .table {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-ring: var(--accent-400);
     --foreground: var(--foreground-300);
   }
@@ -352,9 +314,6 @@
 
   .checkbox {
     --background: var(--background-700);
-    @slot border {
-      --background: var(--background-600);
-    }
     --helper-error-foreground: var(--danger-600);
     --helper-foreground: var(--foreground-400);
   }
@@ -379,9 +338,6 @@
 
   .color {
     --background: color-mix(in srgb, var(--background-800) 30%, transparent);
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-visible: var(--accent-400);
   }
 
@@ -427,9 +383,6 @@
 
   .input {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --disabled-background: var(--background-900);
     --disabled-foreground: var(--foreground-400);
     --foreground: var(--foreground-300);
@@ -537,16 +490,17 @@
 
   .select {
     --background: color-mix(in srgb, var(--background-800) 30%, transparent);
-    @slot border {
-      --background: var(--background-700);
-      --background-focus: var(--background-600);
-    }
     --focus-visible: var(--accent-400);
     --focus-visible-background: var(--background-950);
     --foreground: var(--foreground-300);
     --size: var(--text-sm);
     --icon-foreground: var(--foreground-400);
-    --trigger-background-hover: var(--background-800);
+    @slot border {
+      --background-focus: var(--background-600);
+    };
+    @slot trigger {
+      --background-hover: var(--background-800);
+    }
   }
 
   .select[data-pressed="true"]:not([data-disabled]) {
@@ -569,7 +523,9 @@
     @slot border {
       --background: transparent;
     }
-    --trigger-background-hover: var(--background-800);
+    @slot trigger {
+      --background-hover: var(--background-800);
+    }
   }
 
   .select.ghost[data-pressed="true"]:not([data-disabled]),
@@ -636,28 +592,25 @@
 
   .switch {
     --background: var(--background-700);
-    @slot border {
-      --background: var(--background-600);
-    }
     --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
     --foreground: color-mix(in srgb, var(--background-500) 60%, transparent);
     --transition-duration: 120ms;
     --transition-easing: linear;
+    @slot border {
+      --background: var(--background-600);
+    }
   }
 
   .switch[data-selected="true"] {
     --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+    --foreground: oklch(from var(--background-950) calc(0.80 + l * 0.20) 0 h);
     @slot border {
       --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
     }
-    --foreground: oklch(from var(--background-950) calc(0.80 + l * 0.20) 0 h);
   }
 
   .textarea {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --disabled-opacity: 0.6;
     --foreground: var(--foreground-300);
     --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
@@ -702,10 +655,10 @@
 
   .badge {
     --background: var(--background-800);
+    --foreground: var(--foreground-200);
     @slot border {
       --background: var(--background-600);
     }
-    --foreground: var(--foreground-200);
   }
 
   .badge.sm {
@@ -747,10 +700,10 @@
 
   .progress > .track {
     --background: var(--background-700);
+    --radius: calc(var(--spacing) * 0.8);
     @slot border {
       --background: var(--background-600);
     }
-    --radius: calc(var(--spacing) * 0.8);
   }
 
   .progress > .track > .range {
@@ -763,17 +716,17 @@
     --radius: calc(var(--spacing) * 0.6);
   }
 
-  .progress > .label {
+  .progress > .label-row > .label {
     --foreground: var(--foreground-400);
   }
 
   .toast {
     --background: var(--background-900);
+    --background-shadow: 0 10px 25px -5px rgb(0 0 0 / 10%);
+    --foreground: var(--foreground-200);
     @slot border {
       --background: var(--background-600);
     }
-    --background-shadow: 0 10px 25px -5px rgb(0 0 0 / 10%);
-    --foreground: var(--foreground-200);
   }
 
   .toast > .icon > .glyph {
@@ -796,13 +749,13 @@
 
   .menu > :where(.content, .sub-content) {
     --background: var(--background-800);
-    @slot border {
-      --background: var(--background-600);
-    }
     --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
     --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
+    @slot border {
+      --background: var(--background-600);
+    }
   }
 
   .menu > .trigger {
@@ -916,9 +869,6 @@
 
   .modal {
     --background: var(--background-950);
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-300);
   }
@@ -998,11 +948,11 @@
 @layer utilities {
   .button.primary {
     --background: var(--accent-600);
+    --foreground: var(--accent-50);
+    --icon-foreground: var(--accent-50);
     @slot border {
       --background: var(--accent-600);
     }
-    --foreground: var(--accent-50);
-    --icon-foreground: var(--accent-50);
   }
 
   .button.primary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
@@ -1022,10 +972,10 @@
 
   .button.secondary {
     --background: var(--background-800);
+    --foreground: var(--foreground-300);
     @slot border {
       --background: var(--background-800);
     }
-    --foreground: var(--foreground-300);
   }
 
   .button.secondary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
@@ -1087,9 +1037,6 @@
 
   .badge.default {
     --background: color-mix(in srgb, var(--background-600) 10%, var(--background-900));
-    @slot border {
-      --background: var(--background-700);
-    }
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-200);
   }
@@ -1108,12 +1055,12 @@
 
   .badge.danger {
     --background: color-mix(in srgb, var(--danger-500) 15%, transparent);
-    @slot border {
-      --background: transparent;
-    }
     --focus-visible: var(--danger-400);
     --foreground: var(--danger-600);
     --icon-foreground: var(--danger-700);
+    @slot border {
+      --background: transparent;
+    }
   }
 
   .badge.danger[data-hovered="true"]:not([data-disabled]),
@@ -1127,12 +1074,12 @@
 
   .badge.success {
     --background: color-mix(in srgb, var(--success-500) 10%, var(--background-900));
-    @slot border {
-      --background: color-mix(in srgb, var(--success-500) 20%, var(--background-900));
-    }
     --focus-visible: var(--success-400);
     --foreground: var(--success-500);
     --icon-foreground: var(--success-700);
+    @slot border {
+      --background: color-mix(in srgb, var(--success-500) 20%, var(--background-900));
+    }
   }
 
   .badge.success[data-hovered="true"]:not([data-disabled]),
@@ -1145,12 +1092,12 @@
 
   .badge.warning {
     --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));
-    @slot border {
-      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));
-    }
     --focus-visible: var(--warning-400);
     --foreground: var(--warning-600);
     --icon-foreground: var(--warning-700);
+    @slot border {
+      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));
+    }
   }
 
   .badge.warning[data-hovered="true"]:not([data-disabled]),
@@ -1163,12 +1110,12 @@
 
   .badge.info {
     --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));
-    @slot border {
-      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));
-    }
     --focus-visible: var(--info-400);
     --foreground: var(--info-600);
     --icon-foreground: var(--info-700);
+    @slot border {
+      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));
+    }
   }
 
   .badge.info[data-hovered="true"]:not([data-disabled]),
@@ -1181,79 +1128,79 @@
 
   .banner.note {
     --background: var(--background-900);
+    --foreground: var(--foreground-200);
+    --icon-color: currentColor;
     @slot border {
       --background: var(--background-600);
     }
-    --foreground: var(--foreground-200);
-    --icon-color: currentColor;
   }
 
   .banner.info {
     --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));
+    --foreground: var(--foreground-200);
+    --icon-color: var(--info-600);
     @slot border {
       --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));
     }
-    --foreground: var(--foreground-200);
-    --icon-color: var(--info-600);
   }
 
   .banner.success {
     --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));
+    --foreground: var(--foreground-200);
+    --icon-color: var(--success-600);
     @slot border {
       --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));
     }
-    --foreground: var(--foreground-200);
-    --icon-color: var(--success-600);
   }
 
   .banner.warning {
     --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));
+    --foreground: var(--foreground-200);
+    --icon-color: var(--warning-600);
     @slot border {
       --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));
     }
-    --foreground: var(--foreground-200);
-    --icon-color: var(--warning-600);
   }
 
   .banner.danger {
     --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));
+    --foreground: var(--foreground-200);
+    --icon-color: var(--danger-600);
     @slot border {
       --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));
     }
-    --foreground: var(--foreground-200);
-    --icon-color: var(--danger-600);
   }
 
   .toast.danger {
     --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));
+    --icon-foreground: var(--danger-600);
     @slot border {
       --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));
     }
-    --icon-foreground: var(--danger-600);
   }
 
   .toast.success {
     --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));
+    --icon-foreground: var(--success-600);
     @slot border {
       --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));
     }
-    --icon-foreground: var(--success-600);
   }
 
   .toast.info {
     --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));
+    --icon-foreground: var(--info-600);
     @slot border {
       --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));
     }
-    --icon-foreground: var(--info-600);
   }
 
   .toast.warning {
     --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));
+    --icon-foreground: var(--warning-600);
     @slot border {
       --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));
     }
-    --icon-foreground: var(--warning-600);
   }
 
   .confirm .danger[data-hovered="true"]:not([data-disabled]),

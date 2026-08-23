@@ -6,7 +6,7 @@ import {
   type Column,
   type TableExpandedDetail,
 } from "@/features/docs/components/table";
-import { Banner, Popover } from "ui-lab-components";
+import { Banner, List, Popover, Scroll } from "ui-lab-components";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import type {
@@ -14,15 +14,17 @@ import type {
   APITypeToken,
   APICustomType,
   ComponentAPI,
+  ComponentStyleDocumentation,
   PropDefinition,
 } from "ui-lab-registry";
 
 type CssVariable = {
   name: string;
   value: string;
-  defaultValue?: string | null;
   referencedVars?: string[];
-  variant?: string | null;
+  selector: string;
+  atRules?: string[];
+  slot?: string;
 };
 
 type StyleSlot = { name: string; description?: string; type?: string };
@@ -62,22 +64,12 @@ function CustomTypeDefinition({
 
 export type StyleInfo = {
   rawCss: string;
+  onyxThemeCss?: string;
   cssVariables: CssVariable[];
   styleableParts: Array<{ name: string }>;
   styleableGroups?: StyleableGroup[];
+  documentation?: ComponentStyleDocumentation;
 };
-
-const colorPattern = /(oklch|rgb|rgba|hsl|hsla|#|var|color-mix|transparent)\b/i;
-
-function ColorSwatch({ color }: { color: string }) {
-  if (!colorPattern.test(color)) return null;
-  return (
-    <span
-      className="h-6 w-6 rounded-xs border border-background-700"
-      style={{ backgroundColor: color }}
-    />
-  );
-}
 
 function CustomTypeInspector({ initialType, api }: { initialType: string; api: ComponentAPI }) {
   const [path, setPath] = useState([initialType]);
@@ -93,7 +85,7 @@ function CustomTypeInspector({ initialType, api }: { initialType: string; api: C
       onClick={(event) => event.stopPropagation()}
     >
       <div>
-        <p className="flex flex-wrap items-center gap-1 font-mono font-semibold text-foreground-50">
+        <p className="flex flex-wrap items-center gap-1 font-mono text-foreground-300">
           {path.map((name, index) => (
             <span key={`${name}-${index}`} className="flex items-center gap-1">
               {index ? (
@@ -288,7 +280,7 @@ export function API({ api }: { api: ComponentAPI | null }) {
       key: "name",
       label: "Name",
       render: (value, row) => (
-        <span className="font-mono text-xs text-foreground-50">
+        <span className="font-mono text-xs text-foreground-300">
           {String(value)}
           {row.required ? <span className="ml-1 text-foreground-400">?</span> : null}
         </span>
@@ -362,7 +354,7 @@ export function API({ api }: { api: ComponentAPI | null }) {
       key: "name",
       label: "Attribute",
       render: (value) => (
-        <span className="font-mono text-xs text-foreground-50">{String(value)}</span>
+        <span className="font-mono text-xs text-foreground-300">{String(value)}</span>
       ),
     },
     {
@@ -380,14 +372,14 @@ export function API({ api }: { api: ComponentAPI | null }) {
         <section id="api-props" className="mb-18 space-y-8 scroll-mt-20">
           {groupedProps.map((group) => (
             <section key={group.name} className="space-y-3">
-              <h3 className="text-base font-semibold text-foreground-100">{group.name}</h3>
+              <h3 className="text-base text-foreground-100">{group.name}</h3>
               <Table data={group.props} columns={columns} expandRender={expanded} />
             </section>
           ))}
           {uncategorizedProps.length ? (
             <section className="space-y-3">
               {groupedProps.length ? (
-                <h3 className="text-base font-semibold text-foreground-100">Other</h3>
+                <h3 className="text-base text-foreground-100">Other</h3>
               ) : null}
               <Table data={uncategorizedProps} columns={columns} expandRender={expanded} />
             </section>
@@ -397,14 +389,14 @@ export function API({ api }: { api: ComponentAPI | null }) {
 
       {api.stateAttributes?.length ? (
         <section id="api-state-attributes" className="mb-18 space-y-3 scroll-mt-20">
-          <h3 className="text-base font-semibold text-foreground-100">State attributes</h3>
+          <h3 className="text-base text-foreground-100">State attributes</h3>
           <Table data={api.stateAttributes} columns={stateColumns} />
         </section>
       ) : null}
 
       {api.subComponents && Object.keys(api.subComponents).length ? (
         <section id="api-subcomponents" className="scroll-mt-20">
-          <h3 className="mt-12 text-lg font-semibold text-foreground-50">Sub-Components</h3>
+          <h3 className="mt-12 text-md text-foreground-300">Sub-Components</h3>
           <div className="space-y-6">
             {Object.entries(api.subComponents).map(([name, component]) => (
               <section
@@ -413,7 +405,7 @@ export function API({ api }: { api: ComponentAPI | null }) {
                 className="mt-20 space-y-3 scroll-mt-20 first:mt-8"
               >
                 <div className="space-y-2 pb-4 pl-2">
-                  <h4 className="font-semibold text-foreground-100">
+                  <h4 className="text-foreground-100">
                     <InlineCodeHighlight code={name} language="typescript" />
                   </h4>
                   {component.description ? (
@@ -436,92 +428,22 @@ export function API({ api }: { api: ComponentAPI | null }) {
   );
 }
 
-const selectStyleOrder = [
-  "SelectStyleSlots",
-  "SelectTriggerStyleSlots",
-  "SearchableTriggerStyleSlots",
-  "SelectValueStyleSlots",
-  "SelectContentStyleSlots",
-  "SelectListStyleSlots",
-  "SelectItemStyleSlots",
-  "SelectGroupStyleSlots",
-  "SelectSeparatorStyleSlots",
-  "SelectSubTriggerStyleSlots",
-  "SelectSubContentStyleSlots",
-];
-
-const selectStyleNames: Record<string, string> = {
-  SelectStyleSlots: "Select",
-  SelectTriggerStyleSlots: "Select.Trigger",
-  SearchableTriggerStyleSlots: "Select.SearchableTrigger",
-  SelectValueStyleSlots: "Select.Value",
-  SelectContentStyleSlots: "Select.Content",
-  SelectListStyleSlots: "Select.List",
-  SelectItemStyleSlots: "Select.Item",
-  SelectGroupStyleSlots: "Select.Group",
-  SelectSeparatorStyleSlots: "Select.Separator",
-  SelectSubTriggerStyleSlots: "Select.SubTrigger",
-  SelectSubContentStyleSlots: "Select.SubContent",
-};
-
-const selectRecipes = [
-  {
-    title: "Size the trigger",
-    description: "Use className when the outer element is all you need to change.",
-    code: '<Select className="w-72">...</Select>',
-  },
-  {
-    title: "Style trigger anatomy",
-    description: "Use styles when a change belongs to a named element inside a subcomponent.",
-    code: `<Select.Trigger
-  styles={{
-    root: "shadow-sm",
-    value: "px-4 py-2.5",
-    icon: { right: "text-accent-500" },
-  }}
-/>`,
-  },
-  {
-    title: "Style option states",
-    description: "State attributes keep hover, focus, and selection styling close to the item.",
-    code: `<Select.Item
-  value="design"
-  styles={{
-    root: "data-[highlighted=true]:bg-accent-900 data-[selected=true]:text-accent-400",
-  }}
->
-  Design
-</Select.Item>`,
-  },
-];
-
-function styleGroupLabel(name: string) {
-  return selectStyleNames[name] ?? name.replace(/StyleSlots$/, "");
-}
-
-function variableGroup(variable: CssVariable) {
-  const selector = variable.variant ?? "";
-  if (/hover|highlighted|selected|disabled|open|pressed/.test(selector)) return "States";
-  if (/item|sub-trigger/.test(selector)) return "Options";
-  if (/content|search|empty|list/.test(selector)) return "Panel";
-  return "Trigger";
-}
-
-function variableScope(variable: CssVariable) {
-  const selector = variable.variant ?? "";
-  if (/sub-content/.test(selector)) return "Submenu panel";
-  if (/sub-trigger/.test(selector)) return "Submenu option";
-  if (/item/.test(selector)) return "Option";
-  if (/content/.test(selector)) return "Panel";
-  if (/trigger/.test(selector)) return "Trigger";
-  if (/select/.test(selector)) return "Select root";
-  return "Component";
-}
-
-function SelectAnatomy({ groups }: { groups: StyleableGroup[] }) {
-  const ordered = [...groups].sort(
-    (a, b) => selectStyleOrder.indexOf(a.name) - selectStyleOrder.indexOf(b.name),
-  );
+function StyleAnatomy({
+  groups,
+  documentation,
+}: {
+  groups: StyleableGroup[];
+  documentation: NonNullable<ComponentStyleDocumentation["anatomy"]>;
+}) {
+  const order = documentation.groupOrder ?? [];
+  const ordered = [...groups].sort((a, b) => {
+    const aIndex = order.indexOf(a.name);
+    const bIndex = order.indexOf(b.name);
+    return (
+      (aIndex < 0 ? Number.MAX_SAFE_INTEGER : aIndex) -
+      (bIndex < 0 ? Number.MAX_SAFE_INTEGER : bIndex)
+    );
+  });
   const [selected, setSelected] = useState(ordered[0]?.name);
   const current = ordered.find((group) => group.name === selected) ?? ordered[0];
 
@@ -529,47 +451,141 @@ function SelectAnatomy({ groups }: { groups: StyleableGroup[] }) {
 
   return (
     <section id="style-anatomy" className="scroll-mt-20">
-      <h3 className="mb-2 text-lg font-semibold text-foreground-50">Anatomy</h3>
+      <h3 className="mb-2 text-base text-foreground-300">{documentation.title ?? "Anatomy"}</h3>
       <p className="mb-6 max-w-2xl text-foreground-400">
-        Choose a subcomponent to see the stable slots exposed by its styles prop.
+        {documentation.description ??
+          "Choose a subcomponent to see the stable slots exposed by its styles prop."}
       </p>
       <div className="grid overflow-hidden rounded-sm border border-background-700 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <div className="border-b border-background-700 bg-background-900/40 p-2 lg:border-r lg:border-b-0">
-          <div className="flex flex-col gap-1">
+          <List items={ordered} spacing="sm" aria-label="Anatomy subcomponents">
             {ordered.map((group) => (
-              <button
+              <List.Item
                 key={group.name}
-                type="button"
+                value={group.name}
+                selected={selected === group.name}
+                interactive
                 onClick={() => setSelected(group.name)}
-                className={`rounded-sm px-3 py-2 text-left font-mono text-xs transition-colors cursor-pointer ${
-                  selected === group.name
-                    ? "bg-accent-900 text-accent-300"
-                    : "text-foreground-300 hover:bg-background-800 hover:text-foreground-100"
-                }`}
+                className="px-3 py-2 font-mono text-xs text-foreground-400 data-[selected=true]:text-foreground-100"
               >
-                {styleGroupLabel(group.name)}
-              </button>
+                {documentation.groupLabels?.[group.name] ?? group.name.replace(/StyleSlots$/, "")}
+              </List.Item>
             ))}
-          </div>
+          </List>
         </div>
-        <div className="min-w-0 p-4 sm:p-6">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
-            <InlineCodeHighlight code={styleGroupLabel(current.name)} language="tsx" />
+        <div className="min-w-0">
+          <div className="mb-5 px-4 pt-12 flex flex-wrap items-center justify-between gap-2">
+            <InlineCodeHighlight
+              code={
+                documentation.groupLabels?.[current.name] ?? current.name.replace(/StyleSlots$/, "")
+              }
+              language="tsx"
+            />
             <span className="text-xs text-foreground-400">
               {current.slots.length} {current.slots.length === 1 ? "slot" : "slots"}
             </span>
           </div>
-          <div className="grid gap-2">
+          <List
+            items={current.slots}
+            spacing="sm"
+            aria-label={`${documentation.groupLabels?.[current.name] ?? current.name.replace(/StyleSlots$/, "")} style slots`}
+            className="gap-0 divide-y divide-background-700"
+          >
             {current.slots.map((slot) => (
-              <div key={slot.name} className="rounded-sm border border-background-700 p-3">
-                <InlineCodeHighlight code={slot.name} language="typescript" />
-                <p className="mt-2 text-sm text-foreground-400">
-                  {slot.description || `Styles the ${slot.name} element.`}
-                </p>
-              </div>
+              <List.Item
+                key={slot.name}
+                value={slot.name}
+                focusable={false}
+                className="cursor-default rounded-none p-3"
+              >
+                <div>
+                  <List.Title>
+                    <InlineCodeHighlight code={slot.name} language="typescript" />
+                  </List.Title>
+                  <List.Desc className="mt-2 text-sm text-foreground-400">
+                    {slot.description || `Styles the ${slot.name} element.`}
+                  </List.Desc>
+                </div>
+              </List.Item>
             ))}
-          </div>
+          </List>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function StyleCustomization({
+  customization,
+  variables,
+}: {
+  customization: NonNullable<ComponentStyleDocumentation["customization"]>;
+  variables: CssVariable[];
+}) {
+  return (
+    <section id="style-customization" className="scroll-mt-20">
+      <h3 className="mb-2 text-md text-foreground-300">{customization.title}</h3>
+      <p className="mb-6 max-w-2xl text-foreground-400">{customization.description}</p>
+      <div className="space-y-6">
+        {customization.groups.map((group) => (
+          <article
+            key={group.title}
+            className="overflow-hidden rounded-sm border border-background-700 bg-background-900/30"
+          >
+            <div className="px-5 py-4">
+              <h4 className="text-foreground-300">{group.title}</h4>
+              <p className="mt-1 text-sm text-foreground-400">{group.description}</p>
+            </div>
+            <div className="border-y border-background-700">
+              {group.variables.map((entry) => {
+                const variable = variables.find(
+                  (candidate) =>
+                    candidate.name === entry.name &&
+                    (!entry.selector || candidate.selector === entry.selector) &&
+                    (!entry.slot || candidate.slot === entry.slot),
+                );
+                const defaultValue =
+                  variable && variable.value !== "unset" ? variable.value : "Set by theme";
+
+                return (
+                  <div
+                    key={`${entry.name}-${entry.selector ?? ""}`}
+                    className="grid gap-3 border-b border-background-700 px-5 py-4 last:border-b-0 md:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)]"
+                  >
+                    <div>
+                      <InlineCodeHighlight code={entry.name} language="css" />
+                      <div className="mt-2 text-xs text-foreground-400">
+                        <span className="mr-1">Default:</span>
+                        {defaultValue === "Set by theme" ? (
+                          <span>Set by theme</span>
+                        ) : (
+                          <InlineCodeHighlight code={defaultValue} language="css" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm text-foreground-300">{entry.description}</p>
+                      {variable ? (
+                        <div className="mt-2 min-w-0 text-xs text-foreground-400">
+                          <span className="mr-1">Used by:</span>
+                          <InlineCodeHighlight code={variable.selector} language="css" />
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {group.code ? (
+              <div className="bg-background-950/40 p-3">
+                <p className="mb-2 text-xs text-foreground-400">Example</p>
+                <Code className="border-0 rounded-none!" language="css" maxHeightLines={null}>
+                  {group.code}
+                </Code>
+              </div>
+            ) : null}
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -584,105 +600,217 @@ export function Styles({ componentId, styles }: { componentId: string; styles: S
     );
   }
 
-  const variableGroups = Object.groupBy(styles.cssVariables ?? [], variableGroup);
   const columns: Column<CssVariable>[] = [
     {
       key: "name",
       label: "Variable",
-      render: (value) => <InlineCodeHighlight code={String(value)} language="css" />,
-    },
-    {
-      key: "value",
-      label: "Default",
-      render: (value, variable) => (
-        <span className="flex items-center gap-2">
-          <ColorSwatch color={String(value)} />
-          <span className="flex flex-col items-start gap-1">
-            <InlineCodeHighlight code={String(value)} language="css" />
-            {variable.defaultValue && variable.defaultValue !== value ? (
-              <span className="text-xs text-foreground-400">
-                Fallback: {variable.defaultValue}
-              </span>
-            ) : null}
-          </span>
+      width: "15rem",
+      minWidth: "15rem",
+      render: (value) => (
+        <span className="whitespace-nowrap">
+          <InlineCodeHighlight code={String(value)} language="css" />
         </span>
       ),
     },
     {
-      key: "variant",
-      label: "Applies to",
-      render: (_value, variable) => (
-        <span className="text-sm text-foreground-400">{variableScope(variable)}</span>
-      ),
+      key: "value",
+      label: "Default",
+      render: (value) => <InlineCodeHighlight code={String(value)} language="css" />,
     },
   ];
 
+  const variableScopes = Object.values(
+    (styles.cssVariables ?? []).reduce<
+      Record<string, { selector: string; atRules: string[]; slot?: string; variables: CssVariable[] }>
+    >((scopes, variable) => {
+      const atRules = variable.atRules ?? [];
+      const key = `${atRules.join("\n")}\n${variable.selector}\n${variable.slot ?? ""}`;
+      scopes[key] ??= { selector: variable.selector, atRules, slot: variable.slot, variables: [] };
+      scopes[key].variables.push(variable);
+      return scopes;
+    }, {}),
+  );
+
   return (
     <div className="space-y-12">
-      {componentId === "select" ? (
+      {styles.documentation?.quickStart ? (
         <section id="style-quick-start" className="scroll-mt-20">
-          <h3 className="mb-2 text-lg font-semibold text-foreground-50">How to style Select</h3>
+          <h3 className="mb-2 text-md text-foreground-300">
+            {styles.documentation.quickStart.title}
+          </h3>
           <p className="mb-6 max-w-2xl text-foreground-400">
-            Start with className for an outer element, use styles for named anatomy, and override
-            CSS variables when one visual decision should flow through the component.
+            {styles.documentation.quickStart.description}
           </p>
           <div className="overflow-hidden rounded-sm border border-background-700">
-            {selectRecipes.map((recipe) => (
+            {styles.documentation.quickStart.recipes.map((recipe) => (
               <article
                 key={recipe.title}
-                className="grid min-w-0 gap-4 border-b border-background-700 bg-background-900/30 p-4 last:border-b-0 lg:grid-cols-[13rem_minmax(0,1fr)]"
+                className="grid min-w-0 gap-4 border-b border-background-700 bg-background-900/30 last:border-b-0 lg:grid-cols-[13rem_minmax(0,1fr)]"
               >
-                <div className="min-w-0">
-                  <h4 className="font-semibold text-foreground-100">{recipe.title}</h4>
+                <div className="min-w-0 p-4">
+                  <h4 className="text-foreground-300">{recipe.title}</h4>
                   <p className="mt-1 text-sm text-foreground-400">{recipe.description}</p>
                 </div>
                 <div className="min-w-0 overflow-hidden">
-                  <Code language="tsx" maxHeightLines={null}>
+                  <Code
+                    className="border-l-1 border-0 rounded-none! h-full"
+                    language="tsx"
+                    maxHeightLines={null}
+                  >
                     {recipe.code}
                   </Code>
                 </div>
               </article>
             ))}
           </div>
-          <Banner variant="info" className="mt-4 rounded-sm">
-            <Banner.Body className="text-sm text-foreground-300">
-              Select.Content is portalled. Inline styles supplied to Select&apos;s root style slot are
-              copied to the floating overlay; a class on the Select root is not an ancestor of that
-              overlay.
-            </Banner.Body>
-          </Banner>
+          {styles.documentation.quickStart.notice ? (
+            <Banner className="mt-4 rounded-sm">
+              <Banner.Body className="text-sm text-foreground-300">
+                {styles.documentation.quickStart.notice}
+              </Banner.Body>
+            </Banner>
+          ) : null}
         </section>
       ) : null}
-      {componentId === "select" && styles.styleableGroups?.length ? (
-        <SelectAnatomy groups={styles.styleableGroups} />
+      {styles.documentation?.anatomy && styles.styleableGroups?.length ? (
+        <StyleAnatomy
+          groups={styles.styleableGroups}
+          documentation={styles.documentation.anatomy}
+        />
       ) : null}
-      {Object.keys(variableGroups).length ? (
+      {styles.documentation?.customization ? (
+        <StyleCustomization
+          customization={styles.documentation.customization}
+          variables={styles.cssVariables ?? []}
+        />
+      ) : null}
+      {styles.cssVariables?.length ? (
         <section id="css-variables" className="scroll-mt-20">
-          <h3 className="mb-4 text-lg font-semibold text-foreground-50">CSS Variables</h3>
-          <p className="mb-6 text-foreground-400">
-            These CSS custom properties can be overridden to customize the component&apos;s
-            appearance.
-          </p>
-          <div className="space-y-8">
-            {Object.entries(variableGroups).map(([group, variables]) => (
-              <div key={group}>
-                <h4 className="mb-3 text-sm font-medium text-foreground-300">{group}</h4>
-                <Table data={variables ?? []} columns={columns} />
+          {styles.documentation?.customization ? (
+            <details className="group rounded-sm border border-background-700">
+              <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-md text-foreground-300">
+                Complete CSS variable reference
+                <ChevronRight size={18} className="transition-transform group-open:rotate-90" />
+              </summary>
+              <div className="border-t border-background-700 p-4">
+                <p className="mb-6 text-foreground-400">
+                  Every CSS variable consumed by this component, including internal dependencies and
+                  selector-specific states.
+                </p>
+                <div className="space-y-6">
+                  {variableScopes.map((scope) => (
+                    <section
+                      key={`${scope.atRules.join("-")}-${scope.selector}-${scope.slot ?? ""}`}
+                      className="overflow-hidden rounded-sm border border-background-700"
+                    >
+                      <div className="border-b border-background-700 bg-background-900/40 px-4 pt-3">
+                        {scope.atRules.map((atRule) => (
+                          <p key={atRule} className="mb-1 text-xs text-foreground-400">
+                            <InlineCodeHighlight code={atRule} language="css" />
+                          </p>
+                        ))}
+                        {scope.slot ? (
+                          <p className="mb-1 text-xs text-foreground-400">
+                            <InlineCodeHighlight code={`@slot ${scope.slot}`} language="css" />
+                          </p>
+                        ) : null}
+                        <Scroll
+                          inline
+                          direction="horizontal"
+                          maxWidth="100%"
+                          hide={false}
+                          className="min-w-0"
+                          styles={{
+                            root: "h-10",
+                            track: "bg-transparent ",
+                            thumb: "bg-background-700 hover:bg-background-600",
+                          }}
+                        >
+                          <div className="w-max min-w-full whitespace-nowrap">
+                            <InlineCodeHighlight code={scope.selector} language="css" />
+                          </div>
+                        </Scroll>
+                      </div>
+                      <Table unframed data={scope.variables} columns={columns} />
+                    </section>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+            </details>
+          ) : (
+            <>
+              <h3 className="mb-4 text-md text-foreground-300">CSS Variables</h3>
+              <p className="mb-6 text-foreground-400">
+                These CSS custom properties can be overridden to customize the component&apos;s
+                appearance.
+              </p>
+              <div className="space-y-6">
+                {variableScopes.map((scope) => (
+                  <section
+                    key={`${scope.atRules.join("-")}-${scope.selector}-${scope.slot ?? ""}`}
+                    className="overflow-hidden rounded-sm border border-background-700"
+                  >
+                    <div className="border-b border-background-700 bg-background-900/40 px-4 pt-3">
+                      {scope.atRules.map((atRule) => (
+                        <p key={atRule} className="mb-1 text-xs text-foreground-400">
+                          <InlineCodeHighlight code={atRule} language="css" />
+                        </p>
+                      ))}
+                      {scope.slot ? (
+                        <p className="mb-1 text-xs text-foreground-400">
+                          <InlineCodeHighlight code={`@slot ${scope.slot}`} language="css" />
+                        </p>
+                      ) : null}
+                      <Scroll
+                        inline
+                        direction="horizontal"
+                        maxWidth="100%"
+                        hide={false}
+                        className="min-w-0"
+                        styles={{
+                          root: "h-10",
+                          track: "bg-transparent ",
+                          thumb: "bg-background-700 hover:bg-background-600",
+                        }}
+                      >
+                        <div className="w-max min-w-full whitespace-nowrap">
+                          <InlineCodeHighlight code={scope.selector} language="css" />
+                        </div>
+                      </Scroll>
+                    </div>
+                    <Table unframed data={scope.variables} columns={columns} />
+                  </section>
+                ))}
+              </div>
+            </>
+          )}
         </section>
       ) : null}
       {styles.rawCss ? (
         <section id="styles-css-module" className="scroll-mt-20">
           <details className="group rounded-sm border border-background-700">
-            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-lg font-semibold text-foreground-50">
+            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-md text-foreground-300">
               Full stylesheet
               <ChevronRight size={18} className="transition-transform group-open:rotate-90" />
             </summary>
             <div className="border-t border-background-700 p-3">
               <Code showLineNumbers language="css" heading={`${componentId}.module.css`}>
                 {styles.rawCss}
+              </Code>
+            </div>
+          </details>
+        </section>
+      ) : null}
+      {styles.onyxThemeCss ? (
+        <section id="styles-onyx-theme" className="scroll-mt-20">
+          <details className="group rounded-sm border border-background-700">
+            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-md text-foreground-300">
+              Onyx theme
+              <ChevronRight size={18} className="transition-transform group-open:rotate-90" />
+            </summary>
+            <div className="border-t border-background-700 p-3">
+              <Code showLineNumbers language="css" heading="onyx/styles.css">
+                {styles.onyxThemeCss}
               </Code>
             </div>
           </details>

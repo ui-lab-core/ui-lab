@@ -19,7 +19,7 @@ interface CompleteThemeCache {
   themeMode: "light" | "dark";
   sourceConfig: ThemeSourceConfig;
   timestamp: number;
-  version: 1;
+  version: 2;
 }
 
 type PartialTypographyConfig = Partial<ThemeSourceConfig["typography"]> & {
@@ -37,6 +37,7 @@ type PartialTypographyConfig = Partial<ThemeSourceConfig["typography"]> & {
 };
 
 export const THEME_CACHE_KEY = "uilab_theme_complete";
+export const THEME_CACHE_VERSION = 2;
 const REQUIRED_COLOR_VARS = [
   "--background-500",
   "--foreground-100",
@@ -61,6 +62,7 @@ function getDevicePreferredTheme(): "light" | "dark" {
 export function validateThemeCache(data: unknown): CompleteThemeCache | null {
   if (!data || typeof data !== "object") return null;
   const d = data as Record<string, unknown>;
+  if (d.version !== THEME_CACHE_VERSION) return null;
   if (d.themeMode !== "light" && d.themeMode !== "dark") return null;
   if (!d.cssVariables || typeof d.cssVariables !== "object") return null;
   const vars = d.cssVariables as Record<string, unknown>;
@@ -138,7 +140,7 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
         }
       : defaultSourceConfig,
     timestamp: typeof d.timestamp === "number" ? d.timestamp : Date.now(),
-    version: 1,
+    version: THEME_CACHE_VERSION,
   };
 }
 
@@ -174,7 +176,7 @@ export function cacheCompleteTheme(
       themeMode: sourceConfig.mode,
       sourceConfig,
       timestamp: Date.now(),
-      version: 1,
+      version: THEME_CACHE_VERSION,
     };
     localStorage.setItem(THEME_CACHE_KEY, JSON.stringify(toCache));
   } catch (error) {
