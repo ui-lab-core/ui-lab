@@ -23,14 +23,14 @@ import { paletteToCssVars } from "../../../../../apps/www/src/features/theme/lib
 import { generateThemeSetupFiles } from "../../../../../apps/www/src/features/theme/config/theme/generator";
 
 const lightTokens: ThemeTokenBatch = {
-  "background-500": "oklch(60% 0 0)",
+  "background-500": "oklch(82% 0 0)",
   "background-950": "oklch(98% 0 0)",
   "foreground-50": "oklch(12% 0 0)",
   "accent-500": "oklch(32% 0.02 250)",
 };
 
 const darkTokens: ThemeTokenBatch = {
-  "background-500": "oklch(50% 0 0)",
+  "background-500": "oklch(38% 0 0)",
   "background-950": "oklch(18% 0 0)",
   "foreground-50": "oklch(98% 0 0)",
   "accent-500": "oklch(72% 0.02 250)",
@@ -184,7 +184,7 @@ describe("theme-contract", () => {
     applyThemeTokens(lightTokens);
 
     expect(document.documentElement.style.getPropertyValue("--background-500")).toBe(
-      "oklch(60% 0 0)",
+      "oklch(82% 0 0)",
     );
     expect(document.documentElement.style.getPropertyValue("--accent-500")).toBe(
       "oklch(32% 0.02 250)",

@@ -25,16 +25,11 @@
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--press-duration, 120ms) var(--press-ease, var(--ease-snappy-pop, ease-out));
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     background-color: var(--background, transparent);
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
     border-radius: var(--radius);
-  }
-
-  .switch:active:not([data-disabled="true"]) .switch-track {
-    transform: scale(0.98);
   }
 
   .input {

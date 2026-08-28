@@ -64,6 +64,37 @@ function injectCssImports(): Plugin {
   };
 }
 
+function cleanStaleBuildAssets(): Plugin {
+  let previousAssets = new Set<string>();
+  const preservedAssets = new Set(["styles.css", "typography.css", "postcss-ui-lab.mjs"]);
+
+  return {
+    name: "ui-lab-clean-stale-build-assets",
+    apply: "build",
+    buildStart() {
+      const dist = path.resolve(__dirname, "dist");
+      if (!fs.existsSync(dist)) return;
+
+      previousAssets = new Set(
+        fs
+          .readdirSync(dist, { recursive: true, withFileTypes: true })
+          .filter((entry) => entry.isFile())
+          .map((entry) => path.relative(dist, path.join(entry.parentPath, entry.name)))
+          .filter((file) => file.endsWith(".js") || file.endsWith(".css")),
+      );
+    },
+    writeBundle(_options, bundle) {
+      const dist = path.resolve(__dirname, "dist");
+      const currentAssets = new Set(Object.keys(bundle));
+
+      for (const file of previousAssets) {
+        if (preservedAssets.has(file) || currentAssets.has(file)) continue;
+        fs.rmSync(path.join(dist, file), { force: true });
+      }
+    },
+  };
+}
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -78,6 +109,7 @@ export default defineConfig({
   plugins: [
     react(),
     injectCssImports(),
+    cleanStaleBuildAssets(),
     dts({
       insertTypesEntry: true,
       exclude: ["**/*.test.ts", "**/*.test.tsx", "src/tests/**", "**/tests/**"],
@@ -85,7 +117,10 @@ export default defineConfig({
   ],
   build: {
     sourcemap: false,
-    emptyOutDir: true,
+    // Keep the published aggregate stylesheet resolvable while a rebuild is in
+    // progress. Stale Vite assets are removed after the replacement output has
+    // been written.
+    emptyOutDir: false,
     cssCodeSplit: true,
     lib: {
       entry: {
@@ -93,6 +128,7 @@ export default defineConfig({
         providers: path.resolve(__dirname, "src/providers/index.ts"),
         "theme-script": path.resolve(__dirname, "src/providers/themeScript.ts"),
         "theme-server": path.resolve(__dirname, "src/theme-server.ts"),
+        "theme-contract": path.resolve(__dirname, "src/theme-contract.ts"),
         scripts: path.resolve(__dirname, "src/scripts.ts"),
         ...componentEntries,
       },
@@ -123,7 +159,7 @@ export default defineConfig({
         // Component/provider entries are client components; the pure script entries are not.
         banner: (chunk) => {
           if (!chunk.isEntry) return "";
-          const serverSafe = new Set(["theme-script", "theme-server", "scripts"]);
+          const serverSafe = new Set(["theme-script", "theme-server", "theme-contract", "scripts"]);
           return serverSafe.has(chunk.name) ? "" : '"use client";';
         },
       },

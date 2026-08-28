@@ -295,6 +295,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
           xmlns="http://www.w3.org/2000/svg"
+          overflow="visible"
         >
           <defs>
             {/* The frame's silhouette: its body with the shape subtracted
@@ -349,6 +350,7 @@ const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"
           xmlns="http://www.w3.org/2000/svg"
+          overflow="visible"
         >
           <defs>
             {/* Runs the outline past its endpoints along the path's own

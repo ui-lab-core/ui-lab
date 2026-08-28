@@ -253,7 +253,9 @@ describe("Group.Input focus ring target", () => {
     const valueButton = screen.getByRole("button", { name: "Merge" });
     const trigger = screen.getByRole("button", { name: "Choose merge strategy" });
 
-    expect(externalValue).toBe(valueButton.parentElement);
+    // Group owns the direct-child relationship; Select owns whatever wrapper it
+    // renders inside its own value slot.
+    expect(externalValue).toContainElement(valueButton);
     expect(valueButton).toHaveClass("button");
     expect(groupedSelect.querySelector(`:scope > button.${selectCss.trigger}`)).toBe(trigger);
     expect(trigger).toHaveClass(selectCss["trigger-compact"]);

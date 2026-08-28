@@ -3,6 +3,7 @@ export interface Styles {
   pill: string;
   dismissible: string;
   icon: string;
+  content: string;
   dismiss: string;
 }
 

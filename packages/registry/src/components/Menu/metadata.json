@@ -1,7 +1,7 @@
 {
   "id": "menu",
   "name": "Menu",
-  "description": "Context menu for right-click actions.",
+  "description": "Context menu or pop-over menu with items, checkbox and radio items, groups, and nested submenus.",
   "category": "action",
   "experimental": true,
   "source": {
@@ -9,10 +9,17 @@
     "exportName": "Menu",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["popover"],
-  "tags": ["menu", "right-click", "actions"],
+  "relatedComponents": ["popover", "select", "list", "button"],
+  "tags": ["menu", "context-menu", "right-click", "dropdown", "actions", "submenu"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Keyboard accessible", "Menu role", "Focus management"]
+    "notes": [
+      "The trigger publishes aria-haspopup=\"menu\" and aria-expanded. Pop-over menus render a Button by default; the span branch adds role=\"button\" and a tab stop so Enter and Space open the panel.",
+      "The floating panel is the single element with role=\"menu\"; the inner collection is presentational so items are owned directly by it.",
+      "Items expose role=\"menuitem\", or role=\"menuitemradio\" and role=\"menuitemcheckbox\" with aria-checked when selection or a checkbox or radio item is used. Disabled items expose aria-disabled and are skipped by keyboard navigation.",
+      "Arrow keys, Home, End, typeahead, Enter, and Escape follow the menu pattern. ArrowRight opens a submenu from its trigger and ArrowLeft closes it, returning focus to that trigger.",
+      "Menu.Separator uses role=\"separator\", Menu.Group and Menu.RadioGroup use role=\"group\", and selection indicators and the submenu chevron are hidden from assistive technology.",
+      "Icon-only triggers need an accessible name through aria-label on Menu.Trigger."
+    ]
   }
 }

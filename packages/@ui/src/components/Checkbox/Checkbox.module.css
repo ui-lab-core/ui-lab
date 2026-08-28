@@ -19,9 +19,6 @@
       slot(border, background, transparent);
     border-radius: var(--radius-xs, 0.25rem);
     outline: none;
-    transition-property: transform;
-    transition-duration: var(--press-duration, 120ms);
-    transition-timing-function: var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
 
     &[data-invalid="true"] {
       border-color: slot(border, background-error, var(--danger-600));
@@ -38,9 +35,6 @@
       pointer-events: none;
     }
 
-    &[data-pressed="true"]:not([data-disabled="true"]) {
-      transform: var(--press-transform, scale(0.96));
-    }
   }
 
   .checkmark,

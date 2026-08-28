@@ -304,14 +304,14 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     const hasDescription = !!description;
     const isHighlighted = focusedKey === value;
     const isSelected = mode === "multiple" ? !!selectedKeys?.has(value) : selectedKey === value;
-    const [isRegistered, setIsRegistered] = React.useState(false);
     // Items hide themselves instead of unmounting so they stay registered in useListNavigation.
     // Unmounting via .filter() caused unregisterItem → items lost → backspace couldn't restore them.
-    const isVisible = !isRegistered || visibleKeys.has(value);
+    const isVisible = visibleKeys.has(value);
 
-    React.useEffect(() => {
+    // useLayoutEffect (not useEffect) so registration lands before paint — otherwise the first
+    // frame renders with no items registered yet, and visibleKeys can't reflect the active filter.
+    React.useLayoutEffect(() => {
       registerItem(value, finalTextValue, isDisabled);
-      setIsRegistered(true);
       return () => unregisterItem(value);
     }, [value, finalTextValue, isDisabled, registerItem, unregisterItem]);
 

@@ -12,10 +12,12 @@
   }
 
   .content {
-    --fill: var(--background);
+    --fill: slot(content, background, var(--background));
     /* Frame's SVG stroke remains a documented decorative API. */
-    --stroke-color: var(--background-border);
+    --stroke-color: slot(content, background-border, var(--background-border));
+    color: slot(content, foreground, var(--foreground));
     opacity: 0;
+    transform: translate(0, 0);
     transition:
       opacity 0.15s ease-out,
       transform 0.15s ease-out;
@@ -31,8 +33,9 @@
   }
 
   .frame {
-    @apply flex items-center gap-1.5 px-2 py-1 whitespace-nowrap;
-    color: var(--foreground);
+    @apply flex max-w-120 items-center gap-1.5 px-2 py-1 whitespace-normal wrap-break-word;
+    font-size: slot(content, font-size, var(--text-xs, 0.75rem));
+    font-weight: slot(content, font-weight, var(--font-weight-body-medium, 500));
   }
 
   .frame[data-hint="true"] {
@@ -40,6 +43,6 @@
   }
 
   .hint {
-    @apply flex-shrink-0 gap-1;
+    @apply shrink-0 gap-1;
   }
 }

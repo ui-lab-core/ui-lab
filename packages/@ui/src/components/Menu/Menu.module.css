@@ -1,144 +1,134 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
-  .trigger-root:global(.menu) {
-    display: inline-flex;
-    align-items: stretch;
-    min-width: 0;
-  }
-
-  .trigger-root:global(.menu) > .trigger {
-    flex: 1 1 auto;
-  }
-
-  .content-root:global(.menu),
-  .sub-content-root:global(.menu) {
+  .overlay {
     display: block;
     position: absolute;
   }
 
-  :global(.menu) {
-    display: contents;
+  .trigger {
+    @apply inline-flex items-center justify-center;
+    min-inline-size: 0;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
 
-    .content,
-    .sub-content {
-      --content-padding: calc(var(--spacing) * 2);
-      --content-radius: var(--radius-sm, 0.375rem);
-      --content-inner-radius: calc(var(--content-radius) - slot(border, width, var(--border-width-base, 1px)));
-      --disabled-opacity: 0.5;
+    &[data-disabled="true"] {
+      opacity: var(--disabled-opacity, 0.5);
+      pointer-events: none;
+    }
+  }
 
-      @apply min-w-40 max-w-80 overflow-hidden;
-      background-color: var(--background);
-      border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
-        slot(border, background, transparent);
-      border-radius: var(--content-radius);
-      outline: none;
-      transition:
-        opacity 180ms var(--ease-snappy-pop, ease-out),
-        transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  .panel {
+    --padding: calc(var(--spacing, 0.25rem) * 2);
+    --radius: var(--radius-sm, 0.375rem);
+    --inner-radius: calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)));
+
+    @apply min-w-40 max-w-80 overflow-hidden;
+    box-sizing: border-box;
+    background-color: var(--background);
+    color: var(--foreground);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, transparent);
+    border-radius: var(--radius);
+    outline: none;
+    transition:
+      opacity 180ms var(--ease-snappy-pop, ease-out),
+      transform 180ms var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
+
+    .viewport {
+      padding: calc(var(--padding) / 2);
     }
 
-    .trigger {
-      @apply flex items-center justify-center;
-      cursor: pointer;
-      outline: none;
-      user-select: none;
-
-      &[data-disabled="true"] {
-        opacity: 0.5;
-        pointer-events: none;
-      }
+    .group {
+      display: contents;
     }
 
     .item {
       @apply flex min-w-0 items-center gap-2;
-      padding: calc(var(--content-padding) / 1.5) var(--content-padding);
-      border-radius: var(--content-inner-radius);
+      padding-block: calc(var(--padding) / 1.5);
+      padding-inline: var(--padding);
+      border-radius: slot(item, radius, var(--inner-radius));
       cursor: pointer;
       user-select: none;
       outline: none;
-      color: var(--foreground);
-      background-color: var(--background);
       font-family: var(--font-body, inherit);
       font-size: var(--text-sm, 0.875rem);
       font-weight: var(--font-weight-body-medium, 500);
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
+    }
 
-      &[data-disabled="true"] {
-        opacity: var(--disabled-opacity);
-        pointer-events: none;
-        color: var(--foreground-400);
-      }
+    .item[data-disabled="true"] {
+      opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.5));
+      pointer-events: none;
     }
 
     .item[data-inset="true"] {
-      padding-left: calc(var(--content-padding) * 2.67);
+      padding-inline-start: calc(var(--padding) * 2.67);
     }
 
-    .item-indicator {
-      @apply flex h-4 w-4 shrink-0 items-center justify-center;
-      margin-left: auto;
-      color: var(--foreground);
+    .indicator {
+      @apply flex shrink-0 items-center justify-center;
+      block-size: 1rem;
+      inline-size: 1rem;
+      color: slot(indicator, foreground, var(--indicator-foreground, var(--foreground)));
+    }
+
+    .indicator-check {
+      block-size: 0.75rem;
+      inline-size: 0.75rem;
+    }
+
+    .indicator-dot {
+      block-size: 0.5rem;
+      inline-size: 0.5rem;
+      fill: currentColor;
     }
 
     .sub-trigger {
-      @apply flex min-w-0 w-full items-center gap-2;
-      padding: calc(var(--content-padding) / 1.5) var(--content-padding);
-      border-radius: var(--content-inner-radius);
-      cursor: pointer;
-      user-select: none;
-      outline: none;
+      inline-size: 100%;
       color: var(--foreground);
-      background-color: var(--background);
-      font-family: var(--font-body, inherit);
-      font-size: var(--text-sm, 0.875rem);
-      font-weight: var(--font-weight-body-medium, 500);
-      letter-spacing: normal;
-      line-height: var(--leading-sm, 1.25rem);
-
-      &[data-disabled="true"] {
-        opacity: var(--disabled-opacity);
-        pointer-events: none;
-        color: var(--foreground-400);
-      }
+      background-color: slot(item, background, var(--background, transparent));
     }
 
-    .sub-trigger[data-inset="true"] {
-      padding-left: calc(var(--content-padding) * 2.67);
+    .sub-trigger[data-disabled="true"] {
+      color: var(--foreground-muted, var(--foreground-400));
     }
 
-    .sub-trigger-chevron {
-      @apply h-4 w-4 shrink-0;
-      margin-left: auto;
-      color: var(--foreground-400);
+    .chevron {
+      @apply shrink-0;
+      block-size: 1rem;
+      inline-size: 1rem;
+      margin-inline-start: auto;
+      color: var(--foreground-muted, var(--foreground-400));
     }
 
     .label {
-      padding: calc(var(--content-padding) / 2) var(--content-padding);
-      color: var(--foreground-400);
+      padding-block: calc(var(--padding) / 2);
+      padding-inline: var(--padding);
+      color: var(--foreground-muted, var(--foreground-400));
       font-family: var(--font-body, inherit);
       font-size: var(--text-sm, 0.875rem);
       font-weight: var(--font-weight-body-medium, 500);
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
+    }
 
-      &[data-inset="true"] {
-        padding-left: calc(var(--content-padding) * 2.67);
-      }
+    .label[data-inset="true"] {
+      padding-inline-start: calc(var(--padding) * 2.67);
     }
 
     .separator {
       @apply my-1;
-      margin-left: calc(var(--content-padding) / -2);
-      margin-right: calc(var(--content-padding) / -2);
-      height: 1px;
+      margin-inline: calc(var(--padding) / -2);
+      block-size: 1px;
       background-color: slot(border, background, transparent);
     }
 
     .shortcut {
-      margin-left: auto;
-      color: var(--foreground-400);
+      margin-inline-start: auto;
+      color: var(--foreground-muted, var(--foreground-400));
       font-family: var(--font-mono, ui-monospace, monospace);
       font-size: var(--text-code-size, var(--text-sm, 0.875rem));
       font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));

@@ -45,7 +45,7 @@ export const styleDocumentation = {
         code: `<Command
   styles={{
     item: {
-      root: "data-[highlighted=true]:bg-accent-900",
+      root: "data-[highlighted=true]:bg-background-900",
     },
   }}
 >

@@ -344,6 +344,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           </div>
         )}
         <div
+          ref={trackRef}
           className={cn("track", css.track, resolved.track.className)}
           style={resolved.track.style}
           data-slot="track"

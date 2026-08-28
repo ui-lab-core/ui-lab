@@ -172,6 +172,7 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
     const dataFocused = domProps["data-focused"];
     const dataFocusVisible = domProps["data-focus-visible"];
     const dataHighlighted = domProps["data-highlighted"];
+    const role = domProps.role ?? "option";
     const isDisabled =
       domProps["aria-disabled"] === true ||
       domProps["aria-disabled"] === "true" ||
@@ -360,8 +361,8 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         <div
           ref={mergedItemRef}
           {...itemProps}
-          role="option"
-          aria-selected={selected ? "true" : "false"}
+          role={role}
+          aria-selected={role === "option" ? (selected ? "true" : "false") : undefined}
           tabIndex={tabIndex}
           className={cn(
             "item",

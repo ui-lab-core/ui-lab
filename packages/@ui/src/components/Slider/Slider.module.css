@@ -5,43 +5,37 @@
     --disabled-opacity: 0.6;
     @apply relative flex w-full items-center;
     min-inline-size: var(--inline-size, 3.5rem);
-    min-block-size: var(--hit-size, var(--slider-hit-size, 1.5rem));
+    min-block-size: var(--hit-size, 1.5rem);
     touch-action: none;
     user-select: none;
   }
 
   .track {
-    --thickness: var(--size, var(--slider-track-size, calc(var(--spacing-md) * 0.8)));
+    --thickness: var(--size, calc(var(--spacing-md) * 0.8));
     --length: calc(var(--thickness) * var(--ratio, 0.5));
     @apply relative flex grow items-center;
     flex-grow: 1;
     height: var(--thickness);
     overflow: visible;
-    border-radius: var(--radius, var(--slider-track-radius, calc(var(--spacing-sm) * 0.35)));
+    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
-    background: var(--track-background, var(--slider-track-background, var(--background)));
+    background: slot(track, background, var(--background));
   }
 
   .range {
     @apply absolute;
-    display: var(--range-display, var(--slider-range-display, block));
+    display: block;
     border-radius: inherit;
     pointer-events: none;
-    background: var(--range-background, var(--slider-range-background, var(--background)));
+    background: slot(range, background, var(--background));
     transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
       var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .thumb {
-    --thumb-inline-size: var(
-      --thumb-width,
-      var(--thumb-size, var(--slider-thumb-size, var(--width, var(--length))))
-    );
-    --thumb-block-size: var(
-      --thumb-height,
-      var(--thumb-size, var(--slider-thumb-size, var(--height, 100%)))
-    );
+    --thumb-inline-size: slot(thumb, width, var(--length));
+    --thumb-block-size: slot(thumb, height, 100%);
 
     @apply absolute block;
     top: var(--top, 0);
@@ -49,11 +43,11 @@
     width: var(--thumb-inline-size);
     height: var(--thumb-block-size);
     transform: var(--transform, translateX(-50%));
-    border-radius: var(--thumb-radius, var(--radius, calc(var(--spacing-xs) * 0.25)));
+    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));
     outline: none;
-    background: var(--thumb-background, var(--slider-thumb-background, var(--background)));
-    border: var(--thumb-border, var(--slider-thumb-border, none));
-    box-shadow: var(--thumb-shadow, var(--slider-thumb-shadow, none));
+    background: slot(thumb, background, var(--background));
+    border: slot(thumb, border, none);
+    box-shadow: slot(thumb, shadow, none);
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
@@ -109,18 +103,12 @@
   }
 
   .slider[data-disabled="true"] .range {
-    background: var(
-      --disabled-background,
-      var(--range-background, var(--slider-range-background, var(--background)))
-    );
+    background: slot(range, background-disabled, slot(range, background, var(--background)));
   }
 
   .thumb[data-disabled="true"] {
     cursor: not-allowed;
-    background: var(
-      --disabled-background,
-      var(--thumb-background, var(--slider-thumb-background, var(--background)))
-    );
+    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));
   }
 
   .thumb[data-pressed="true"] {

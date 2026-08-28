@@ -3,7 +3,14 @@
 @layer components.defaults {
   .shape {
     display: block;
-    background: var(--skeleton-color, var(--background, var(--background-950)));
+    /* A placeholder is composed onto whatever surface holds it — the page, a
+       card, a badge, a filled button — so the fill is derived from the text
+       colour of that surface rather than from a fixed background token. Any
+       single token is invisible on at least one of those surfaces. */
+    background: var(
+      --skeleton-color,
+      var(--background, color-mix(in srgb, currentColor 15%, transparent))
+    );
     border-radius: var(--radius, var(--radius-sm, 0.375rem));
   }
 

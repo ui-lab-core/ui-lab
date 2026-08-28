@@ -13,6 +13,7 @@
     padding-inline: var(--padding-inline);
     padding-inline-end: var(--padding-inline-end);
     background-color: var(--background);
+    background-origin: border-box;
     color: var(--foreground);
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);
     border-radius: var(--radius-sm, 0.375rem);
@@ -54,8 +55,14 @@
 
     & > span > svg,
     & > svg {
-      color: var(--icon-foreground, currentColor);
+      color: slot(icon, foreground, var(--icon-foreground, currentColor));
     }
+  }
+
+  .button:not(.icon) {
+    min-height: calc(
+      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2
+    );
   }
 
   .button:focus-visible {

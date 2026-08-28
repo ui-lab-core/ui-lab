@@ -2,7 +2,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { fileURLToPath } from "url";
 import { withCustomConfig, type ComponentDoc, type PropItem } from "react-docgen-typescript";
-import type { APITypeToken, PropDefinition, ComponentAPI } from "../src/types";
+import type { APITypeToken, APIEnumValue, PropDefinition, ComponentAPI } from "../src/types";
 import { componentRegistry } from "../src/registry.js";
 import {
   loadApiCache,
@@ -206,7 +206,11 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
     ButtonStyleSlots: {
       name: "ButtonStyleSlots",
       summary: "Style overrides for the button root and named content slots.",
-      type: "{ root?: SlotStyle; icon?: SlotStyle | ButtonIconStyles; hint?: SlotStyle }",
+      type: `{
+  root?: SlotStyle;
+  icon?: SlotStyle | ButtonIconStyleSlots;
+  hint?: SlotStyle;
+}`,
       kind: "interface",
       members: [
         {
@@ -217,7 +221,7 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
         },
         {
           name: "icon",
-          type: "SlotStyle | ButtonIconStyles",
+          type: "SlotStyle | ButtonIconStyleSlots",
           required: false,
           description: "Shared or side-specific icon styles.",
         },
@@ -226,6 +230,29 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
           type: "SlotStyle",
           required: false,
           description: "Styles applied to the hint badge.",
+        },
+      ],
+    },
+    ButtonIconStyleSlots: {
+      name: "ButtonIconStyleSlots",
+      summary: "Side-specific styles used when the icon slot is configured as an object.",
+      type: `{
+  left?: SlotStyle;
+  right?: SlotStyle;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "left",
+          type: "SlotStyle",
+          required: false,
+          description: "Styles applied to the leading icon.",
+        },
+        {
+          name: "right",
+          type: "SlotStyle",
+          required: false,
+          description: "Styles applied to the trailing icon.",
         },
       ],
     },
@@ -239,12 +266,118 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
     },
   };
 
+  const inheritedProps: PropDefinition[] = [
+    {
+      name: "children",
+      type: "React.ReactNode",
+      required: false,
+      category: "Content",
+      description: "Button label and content. Text content determines the accessible name and, together with icon, whether Button infers icon-only sizing.",
+    },
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      category: "Styling",
+      description: "Adds conventional classes to the root button or anchor after its default classes and before styles.root.",
+    },
+    {
+      name: "style",
+      type: "React.CSSProperties",
+      required: false,
+      category: "Styling",
+      description: "Applies inline styles to the root element after styles.root inline styles.",
+    },
+    {
+      name: "onClick",
+      type: "React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>",
+      required: false,
+      category: "Events",
+      description: "Native click handler composed with onPress. Disabled buttons do not invoke it.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event" },
+    },
+    {
+      name: "type",
+      type: '"button" | "submit" | "reset"',
+      required: false,
+      category: "Forms",
+      description: "Native submission behavior for the button-element branch. Has no effect when Button renders as an anchor.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#type" },
+    },
+    {
+      name: "name",
+      type: "string",
+      required: false,
+      category: "Forms",
+      description: "Form field name submitted with value when Button renders as a native button inside a form.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#name" },
+    },
+    {
+      name: "value",
+      type: "string",
+      required: false,
+      category: "Forms",
+      description: "Form value submitted with name when Button renders as a native button inside a form.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#value" },
+    },
+    {
+      name: "rel",
+      type: "string",
+      required: false,
+      category: "Link behavior",
+      description: "Relationship applied to the anchor variant. Defaults to noopener noreferrer when target is _blank and rel is not supplied.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#rel" },
+    },
+    {
+      name: "aria-label",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "Accessible name for the button, required when it renders icon-only content.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" },
+    },
+    {
+      name: "aria-labelledby",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "References element IDs that provide the button's accessible name.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby" },
+    },
+    {
+      name: "aria-describedby",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "References element IDs that describe the button.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby" },
+    },
+    {
+      name: "autoFocus",
+      type: "boolean",
+      required: false,
+      category: "Accessibility",
+      description: "Requests focus for the root element when it mounts.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus" },
+    },
+  ];
+  const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
+  const enrichProps = (props: PropDefinition[]) =>
+    props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type, Object.keys(customTypes)) }));
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps(customType.members);
+  }
+
   return {
     ...api,
-    props: api.props.map((prop) => ({
-      ...prop,
-      typeTokens: tokenizeType(prop.type, Object.keys(customTypes)),
-    })),
+    props: enrichProps([
+      ...api.props.filter((prop) => !inheritedNames.has(prop.name)),
+      ...inheritedProps,
+    ]),
+    // resolveButtonIcon is a plain exported helper, not a compound component; docgen's
+    // component heuristic misidentifies it because it takes one object-shaped argument.
+    subComponents: undefined,
     propGroups: [
       { name: "Core" },
       { name: "Content" },
@@ -256,6 +389,7 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
       { name: "Advanced" },
     ],
     stateAttributes: [
+      { name: "data-slot", description: "Stable anatomy identity on the root, icon.left, icon.right, and hint elements.", values: ["root", "icon.left", "icon.right", "hint"] },
       { name: "data-hovered", description: "The pointer is over the button, or the visual hover state is forced.", values: ["true", "false"] },
       { name: "data-pressed", description: "The button is currently pressed.", values: ["true", "false"] },
       { name: "data-focused", description: "The button is focused.", values: ["true", "false"] },
@@ -413,14 +547,9 @@ function enrichSliderAPI(api: ComponentAPI): ComponentAPI {
       summary: "Direction in which slider values increase.",
       type: '"horizontal" | "vertical"',
       kind: "alias",
-    },
-    SliderState: {
-      name: "SliderState",
-      summary: "Controlled values supplied through Slider's state object.",
-      type: "{ value?: number | number[] }",
-      kind: "interface",
-      members: [
-        { name: "value", type: "number | number[]", required: false, description: "Current value for a single thumb or ordered values for multiple thumbs." },
+      values: [
+        { value: "horizontal", description: "The track runs left to right and values increase toward the right." },
+        { value: "vertical", description: "The track runs bottom to top and values increase upward." },
       ],
     },
     SliderStyleSlots: {
@@ -442,14 +571,22 @@ function enrichSliderAPI(api: ComponentAPI): ComponentAPI {
       kind: "alias",
     },
   };
+  const inheritedProps: PropDefinition[] = [
+    { name: "className", type: "string", required: false, category: "Styling", description: "Adds conventional classes to the root slider surface." },
+    { name: "style", type: "React.CSSProperties", required: false, category: "Styling", description: "Applies inline styles to the root slider surface after styles.root inline styles." },
+  ];
   const enrichProps = (props: PropDefinition[]) => props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type, Object.keys(customTypes)) }));
   for (const customType of Object.values(customTypes)) {
     customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
     if (customType.members) customType.members = enrichProps(customType.members);
   }
+  const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
   return {
     ...api,
-    props: enrichProps(api.props),
+    props: enrichProps([
+      ...api.props.filter((prop) => !inheritedNames.has(prop.name)),
+      ...inheritedProps,
+    ]),
     propGroups: [
       { name: "Core" },
       { name: "Events" },
@@ -470,7 +607,7 @@ function enrichSliderAPI(api: ComponentAPI): ComponentAPI {
       { name: "data-dragging", description: "A thumb is the active pointer-drag target. It is omitted otherwise.", values: ["true"] },
       { name: "data-slider-thumb-index", description: "Zero-based index of a thumb in the supplied value array." },
       { name: "data-slider-focus-surface", description: "Marks a thumb as the focus surface used by Slider's shared focus indicator.", values: ["true"] },
-      { name: "data-focus-indicator", description: "Marks the track's local focus indicator.", values: ["track"] },
+      { name: "data-focus-indicator", description: "Marks the track's local focus indicator, matching the shared focus contract.", values: ["local"] },
     ],
     customTypes,
   };
@@ -850,6 +987,1498 @@ function enrichCheckboxAPI(api: ComponentAPI): ComponentAPI {
   };
 }
 
+function enrichGroupAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    GroupOrientation: {
+      name: "GroupOrientation",
+      summary: "Axis that Group arranges its owned items along.",
+      type: '"horizontal" | "vertical"',
+      kind: "alias",
+      values: [
+        { value: "horizontal", description: "Items sit side by side, the group takes a fixed control height, and Left and Right arrows move focus between items." },
+        { value: "vertical", description: "Items stack in a column, the group grows to fit them, and Up and Down arrows move focus between items." },
+      ],
+      notes: ["A nested Divider that does not set its own orientation adopts the perpendicular axis so it separates the items."],
+    },
+    GroupSpacing: {
+      name: "GroupSpacing",
+      summary: "Named gap step applied between Group's owned items.",
+      type: '"none" | "xs" | "sm"',
+      kind: "alias",
+      values: [
+        { value: "none", description: "Removes the gap and the group padding so the items read as one connected surface; only the outer corners of the first and last item are rounded." },
+        { value: "xs", description: "Separates the items by a narrow gap and rounds every item individually." },
+        { value: "sm", description: "Separates the items by a wider gap and rounds every item individually." },
+      ],
+    },
+    GroupItemStyleSlots: {
+      name: "GroupItemStyleSlots",
+      summary: "Style overrides for the wrapper Group renders around each owned child.",
+      type: `{
+  root?: Style;
+  first?: Style;
+  last?: Style;
+  divider?: Style;
+  grow?: Style;
+}`,
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles every item wrapper Group renders around a child." },
+        { name: "first", type: "Style", required: false, description: "Styles the first item wrapper in the group." },
+        { name: "last", type: "Style", required: false, description: "Styles the last item wrapper in the group." },
+        { name: "divider", type: "Style", required: false, description: "Styles an item wrapper whose child is a separator." },
+        { name: "grow", type: "Style", required: false, description: "Styles an item wrapper that stretches because its child requests w-full or flex-1." },
+      ],
+      notes: [
+        "Every slot targets the same kind of element. The positional and role slots apply only to the wrappers that currently match, and they compose with root.",
+      ],
+    },
+    GroupItemStyleValue: {
+      name: "GroupItemStyleValue",
+      summary: "Shared or keyed styles for Group item wrappers.",
+      type: "Style | GroupItemStyleSlots",
+      kind: "alias",
+      examples: ['item: "rounded-none"', 'item: { first: "pl-2", last: "pr-2" }'],
+      notes: [
+        "A shared Style value normalizes to item.root, so it reaches every wrapper exactly once. Use the keyed form to address one positional or role slot.",
+      ],
+    },
+    GroupStyleSlots: {
+      name: "GroupStyleSlots",
+      summary: "Class-based slots for the Group root and its stable compound anatomy.",
+      type: `{
+  root?: Style;
+  item?: GroupItemStyleValue;
+  button?: Style;
+  input?: Style;
+  select?: Style;
+  expand?: Style;
+}`,
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: 'Styles the role="group" root element, after className.' },
+        { name: "item", type: "GroupItemStyleValue", required: false, description: "Styles every item wrapper and its keyed positional and role anatomy." },
+        { name: "button", type: "Style", required: false, description: "Styles every Group.Button surface." },
+        { name: "input", type: "Style", required: false, description: "Styles every Group.Input surface that wraps the nested Input." },
+        { name: "select", type: "Style", required: false, description: "Styles every Group.Select surface." },
+        { name: "expand", type: "Style", required: false, description: "Styles every Group.Expand surface that wraps the nested Expand." },
+      ],
+    },
+    GroupStylesProp: {
+      name: "GroupStylesProp",
+      summary: "Keyed class names for Group anatomy.",
+      type: "GroupStyleSlots",
+      kind: "alias",
+    },
+  };
+
+  const rootInheritedProps: PropDefinition[] = [
+    {
+      name: "children",
+      type: "React.ReactNode",
+      required: false,
+      category: "Content",
+      description: "Controls to group. Group wraps each element child in its own item element; nested fragments are flattened first so every real element becomes its own item.",
+    },
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      category: "Styling",
+      description: "Adds classes to the group root after its default classes and before styles.root. The w-full and flex-1 utilities are also forwarded to the focus scope wrapper so root sizing takes effect.",
+      links: [{ label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/API/Element/className" }],
+    },
+    {
+      name: "style",
+      type: "React.CSSProperties",
+      required: false,
+      category: "Styling",
+      description: "Applies inline CSS properties to the group root, including any CSS variables the stylesheet consumes.",
+      links: [{ label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style" }],
+    },
+    {
+      name: "onKeyDown",
+      type: "React.KeyboardEventHandler<HTMLDivElement>",
+      required: false,
+      category: "Events",
+      description: "Runs alongside Group's arrow-key navigation rather than replacing it. Group only claims the arrow keys that match its orientation.",
+      links: [{ label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event" }],
+    },
+    {
+      name: "aria-label",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: 'Provides the accessible name for the role="group" root when no visible label identifies it.',
+      links: [{ label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" }],
+    },
+    {
+      name: "aria-labelledby",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "References element IDs that provide the group's accessible name.",
+      links: [{ label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby" }],
+    },
+    {
+      name: "aria-describedby",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "References element IDs that describe the group.",
+      links: [{ label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby" }],
+    },
+  ];
+
+  const normalizeGroupPropType = (componentName: string, prop: PropDefinition) => {
+    if (componentName === "Group") {
+      if (prop.name === "orientation") return { ...prop, type: "GroupOrientation" };
+      if (prop.name === "spacing") return { ...prop, type: "GroupSpacing" };
+      if (prop.name === "styles") return { ...prop, type: "GroupStylesProp" };
+    }
+    return prop;
+  };
+
+  const mergeInheritedProps = (props: PropDefinition[], inheritedProps: PropDefinition[]) => {
+    const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
+    return [...props.filter((prop) => !inheritedNames.has(prop.name)), ...inheritedProps];
+  };
+
+  const enrichProps = (componentName: string, props: PropDefinition[]) =>
+    props.map((prop) => {
+      const normalized = normalizeGroupPropType(componentName, prop);
+      return { ...normalized, typeTokens: tokenizeType(normalized.type, Object.keys(customTypes)) };
+    });
+
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps("customType", customType.members);
+  }
+
+  return {
+    ...api,
+    props: enrichProps("Group", mergeInheritedProps(api.props, rootInheritedProps)),
+    subComponents: api.subComponents
+      ? Object.fromEntries(
+          Object.entries(api.subComponents).map(([name, component]) => [
+            name,
+            { ...component, props: enrichProps(name, component.props) },
+          ]),
+        )
+      : undefined,
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Accessibility" },
+      { name: "Advanced" },
+    ],
+    stateAttributes: [
+      { name: "data-slot", description: "Stable Group anatomy identity on the elements Group itself renders. Group.Button and Group.Select roots are owned by Button and Select, so they keep those components' own slot identities and are targeted through the button and select classes instead.", values: ["root", "item", "input", "expand"] },
+      { name: "data-orientation", description: "The configured layout and arrow-key axis, always present on the root.", values: ["horizontal", "vertical"] },
+      { name: "data-spacing", description: "The configured spacing step, always present on the root.", values: ["none", "xs", "sm"] },
+      { name: "data-variant", description: "The configured variant name on the root; omitted when no variant is supplied." },
+      { name: "data-disabled", description: "The root emits true while the group is disabled and omits the attribute otherwise. The root also sets aria-disabled in that state.", values: ["true"] },
+      { name: "data-item", description: "Marks each wrapper Group renders around an owned child. Group.Button uses it to detect an adjacent Group.Input.", values: ["true"] },
+      { name: "data-divider", description: "An item wrapper emits true when its child is a separator and omits the attribute otherwise.", values: ["true"] },
+      { name: "data-grow", description: "An item wrapper emits true when its child requests w-full or flex-1 and omits the attribute otherwise.", values: ["true"] },
+      { name: "data-focus-surface", description: "Marks Group.Button, Group.Input, Group.Select, and Group.Expand as the surfaces the shared group focus ring tracks.", values: ["true"] },
+      { name: "data-selected", description: "Group.Button persistently emits its selected state, resolved from the Group value when the button declares one and from active otherwise.", values: ["true", "false"] },
+      { name: "data-input", description: "Marks the Group.Input surface so adjacent Group.Buttons can hand pointer activation to the input.", values: ["true"] },
+    ],
+    customTypes,
+  };
+}
+
+function enrichMenuAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    Style: {
+      name: "Style",
+      summary: "Class names accepted by Menu style slots.",
+      type: "string | (string | false | null | undefined)[]",
+      kind: "alias",
+      notes: [
+        "Array entries support conditional classes; false, null, and undefined entries are ignored.",
+      ],
+    },
+    Key: {
+      name: "Key",
+      summary: "Stable identity used by Menu for focus, typeahead, and selection tracking.",
+      type: "string | number",
+      kind: "alias",
+      notes: [
+        "An item without an explicit id falls back to a generated React id, which is stable for the lifetime of that element but not meaningful to persist.",
+      ],
+    },
+    MenuType: {
+      name: "MenuType",
+      summary: "How the Menu is opened and where its panel is anchored.",
+      type: '"context-menu" | "pop-over"',
+      kind: "alias",
+      values: [
+        {
+          value: "context-menu",
+          description:
+            "The trigger opens the panel on right-click and anchors it to the pointer position.",
+        },
+        {
+          value: "pop-over",
+          description:
+            "The trigger opens the panel on click or Enter/Space and anchors it to the trigger using side, align, and offset.",
+        },
+      ],
+    },
+    MenuSelectionMode: {
+      name: "MenuSelectionMode",
+      summary: "How many Menu.Item elements may be selected at once.",
+      type: '"none" | "single" | "multiple"',
+      kind: "alias",
+      values: [
+        {
+          value: "none",
+          description:
+            "Items are plain commands with role menuitem and no indicator; onSelectionChange is never called.",
+        },
+        {
+          value: "single",
+          description:
+            "Items render as role menuitemradio with a dot indicator, and activating one replaces the selected key set.",
+        },
+        {
+          value: "multiple",
+          description:
+            "Items render as role menuitemcheckbox with a check indicator, activating one toggles its key, and the panel stays open.",
+        },
+      ],
+    },
+    MenuTriggerAs: {
+      name: "MenuTriggerAs",
+      summary: "Element rendered by Menu.Trigger.",
+      type: '"button" | "span" | "child"',
+      kind: "alias",
+      values: [
+        {
+          value: "button",
+          description:
+            "Renders a UI Lab Button, so variant, size, icon, hint, href, and target apply.",
+        },
+        {
+          value: "span",
+          description:
+            "Renders a span. Pop-over menus add role button and a tab stop; Button-only props are not forwarded.",
+        },
+        {
+          value: "child",
+          description:
+            "Clones the single React element child and merges the trigger props, classes, and ref into it.",
+        },
+      ],
+    },
+    ButtonVariant: {
+      name: "ButtonVariant",
+      summary: "Variant class applied when Menu.Trigger renders a Button.",
+      type: "DefaultButtonVariant | keyof ButtonVariantOverrides | (string & {})",
+      kind: "alias",
+      notes: ["Themes supply the known variant names without preventing custom variant classes."],
+    },
+    ButtonSize: {
+      name: "ButtonSize",
+      summary: "An open string type used to select a button size class.",
+      type: "string & {}",
+      kind: "alias",
+      notes: ["Known stylesheet sizes are accepted without preventing custom size names."],
+    },
+    ButtonIconSlots: {
+      name: "ButtonIconSlots",
+      summary: "Icon content rendered on either side of the Button trigger label.",
+      type: "{ left?: React.ReactNode; right?: React.ReactNode }",
+      kind: "interface",
+      members: [
+        {
+          name: "left",
+          type: "React.ReactNode",
+          required: false,
+          description: "Content rendered before the trigger label.",
+        },
+        {
+          name: "right",
+          type: "React.ReactNode",
+          required: false,
+          description: "Content rendered after the trigger label.",
+        },
+      ],
+    },
+    HintValue: {
+      name: "HintValue",
+      summary: "Content displayed as a compact hint or keyboard shortcut on a Button trigger.",
+      type: "React.ReactNode | React.ReactNode[]",
+      kind: "alias",
+      examples: ['hint="Esc"', 'hint={["Ctrl", "K"]}'],
+      notes: ["Arrays render as shortcut segments joined by a plus divider."],
+    },
+    MenuTriggerStyleSlots: {
+      name: "MenuTriggerStyleSlots",
+      summary: "Class-based slots for the Menu.Trigger anatomy.",
+      type: `{
+  root?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the rendered trigger element.",
+        },
+      ],
+    },
+    MenuContentListStyles: {
+      name: "MenuContentListStyles",
+      summary: "Class-based slots for the option-list anatomy rendered inside Menu.Content.",
+      type: `{
+  root?: Style;
+  padding?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the List element that groups the rendered menu items.",
+        },
+        {
+          name: "padding",
+          type: "Style",
+          required: false,
+          description: "Styles the padding wrapper between the panel and the item list.",
+        },
+      ],
+    },
+    MenuContentStyleSlots: {
+      name: "MenuContentStyleSlots",
+      summary: "Class-based slots for the Menu.Content anatomy.",
+      type: `{
+  root?: Style;
+  overlay?: Style;
+  list?: Style | MenuContentListStyles;
+}`,
+      kind: "interface",
+      notes: [
+        "A shared Style on list applies to both list.root and list.padding; use the object form to address one of them.",
+      ],
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the menu panel that carries role menu.",
+        },
+        {
+          name: "overlay",
+          type: "Style",
+          required: false,
+          description: "Styles the portalled, positioned overlay that holds the panel.",
+        },
+        {
+          name: "list",
+          type: "Style | MenuContentListStyles",
+          required: false,
+          description: "Styles every list part, or individually styles list.root and list.padding.",
+        },
+      ],
+    },
+    MenuGroupStyleSlots: {
+      name: "MenuGroupStyleSlots",
+      summary: "Class-based slots for the Menu.Group anatomy.",
+      type: `{
+  root?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the role group container.",
+        },
+      ],
+    },
+    MenuItemStyleSlots: {
+      name: "MenuItemStyleSlots",
+      summary: "Class-based slots for the Menu.Item anatomy.",
+      type: `{
+  root?: Style;
+  indicator?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the item row.",
+        },
+        {
+          name: "indicator",
+          type: "Style",
+          required: false,
+          description:
+            "Styles the leading selection indicator, which only renders while selectionMode is single or multiple.",
+        },
+      ],
+    },
+    MenuCheckboxItemStyleSlots: {
+      name: "MenuCheckboxItemStyleSlots",
+      summary: "Class-based slots for the Menu.CheckboxItem anatomy.",
+      type: `{
+  root?: Style;
+  indicator?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the item row.",
+        },
+        {
+          name: "indicator",
+          type: "Style",
+          required: false,
+          description: "Styles the leading checkmark indicator wrapper.",
+        },
+      ],
+    },
+    MenuRadioGroupStyleSlots: {
+      name: "MenuRadioGroupStyleSlots",
+      summary: "Class-based slots for the Menu.RadioGroup anatomy.",
+      type: `{
+  root?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the role group container that scopes the radio value.",
+        },
+      ],
+    },
+    MenuRadioItemStyleSlots: {
+      name: "MenuRadioItemStyleSlots",
+      summary: "Class-based slots for the Menu.RadioItem anatomy.",
+      type: `{
+  root?: Style;
+  indicator?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the item row.",
+        },
+        {
+          name: "indicator",
+          type: "Style",
+          required: false,
+          description: "Styles the leading radio indicator wrapper.",
+        },
+      ],
+    },
+    MenuLabelStyleSlots: {
+      name: "MenuLabelStyleSlots",
+      summary: "Class-based slots for the Menu.Label anatomy.",
+      type: `{
+  root?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the section label.",
+        },
+      ],
+    },
+    MenuSeparatorStyleSlots: {
+      name: "MenuSeparatorStyleSlots",
+      summary: "Class-based slots for the Menu.Separator anatomy.",
+      type: `{
+  root?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the role separator rule.",
+        },
+      ],
+    },
+    MenuShortcutStyleSlots: {
+      name: "MenuShortcutStyleSlots",
+      summary: "Class-based slots for the Menu.Shortcut anatomy.",
+      type: `{
+  root?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the trailing shortcut hint.",
+        },
+      ],
+    },
+    MenuSubTriggerStyleSlots: {
+      name: "MenuSubTriggerStyleSlots",
+      summary: "Class-based slots for the Menu.SubTrigger anatomy.",
+      type: `{
+  root?: Style;
+  chevron?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the submenu trigger row.",
+        },
+        {
+          name: "chevron",
+          type: "Style",
+          required: false,
+          description: "Styles the trailing chevron that indicates the submenu.",
+        },
+      ],
+    },
+    MenuSubContentListStyles: {
+      name: "MenuSubContentListStyles",
+      summary: "Class-based slots for the option-list anatomy rendered inside Menu.SubContent.",
+      type: `{
+  root?: Style;
+  padding?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the List element that groups the rendered submenu items.",
+        },
+        {
+          name: "padding",
+          type: "Style",
+          required: false,
+          description: "Styles the padding wrapper between the submenu panel and the item list.",
+        },
+      ],
+    },
+    MenuSubContentStyleSlots: {
+      name: "MenuSubContentStyleSlots",
+      summary: "Class-based slots for the Menu.SubContent anatomy.",
+      type: `{
+  root?: Style;
+  overlay?: Style;
+  list?: Style | MenuSubContentListStyles;
+}`,
+      kind: "interface",
+      notes: [
+        "A shared Style on list applies to both list.root and list.padding; use the object form to address one of them.",
+      ],
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the submenu panel that carries role menu.",
+        },
+        {
+          name: "overlay",
+          type: "Style",
+          required: false,
+          description: "Styles the portalled, positioned overlay that holds the submenu panel.",
+        },
+        {
+          name: "list",
+          type: "Style | MenuSubContentListStyles",
+          required: false,
+          description: "Styles every list part, or individually styles list.root and list.padding.",
+        },
+      ],
+    },
+  };
+
+  const CLASS_NAME_MDN = "https://developer.mozilla.org/en-US/docs/Web/API/Element/className";
+  const STYLE_MDN = "https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style";
+  const ARIA_LABEL_MDN =
+    "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label";
+
+  const childrenProp = (description: string): PropDefinition => ({
+    name: "children",
+    type: "React.ReactNode",
+    required: false,
+    category: "Content",
+    description,
+  });
+  const styleProp = (description: string): PropDefinition => ({
+    name: "style",
+    type: "React.CSSProperties",
+    required: false,
+    category: "Styling",
+    description,
+    links: [{ label: "MDN", url: STYLE_MDN }],
+  });
+  const classNameProp = (description: string): PropDefinition => ({
+    name: "className",
+    type: "string",
+    required: false,
+    category: "Styling",
+    description,
+    links: [{ label: "MDN", url: CLASS_NAME_MDN }],
+  });
+
+  const inheritedByComponent: Record<string, PropDefinition[]> = {
+    Menu: [childrenProp("Menu.Trigger, Menu.Content, and any Menu.Portal wrapper that scopes them.")],
+    "Menu.Portal": [
+      childrenProp("Menu.Content and Menu.SubContent elements that should render into container."),
+    ],
+    "Menu.Trigger": [
+      childrenProp(
+        "Trigger content. With as=\"child\" this must be exactly one non-Fragment element, which receives the merged trigger props.",
+      ),
+      styleProp("Applies inline CSS properties to the rendered trigger element."),
+      {
+        name: "onClick",
+        type: "React.MouseEventHandler<HTMLElement>",
+        required: false,
+        category: "Events",
+        description:
+          "Runs alongside the trigger's own capture-phase toggle handler. It does not suppress opening the Menu.",
+        links: [
+          {
+            label: "MDN",
+            url: "https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event",
+          },
+        ],
+      },
+      {
+        name: "rel",
+        type: "string",
+        required: false,
+        category: "Link behavior",
+        description:
+          "Relationship applied when the Button branch renders an anchor. Ignored by the span branch.",
+        links: [
+          { label: "MDN", url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#rel" },
+        ],
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        required: false,
+        category: "Accessibility",
+        description:
+          "Accessible name for the trigger, required when it renders icon-only content. The trigger already publishes aria-haspopup and aria-expanded.",
+        links: [{ label: "MDN", url: ARIA_LABEL_MDN }],
+      },
+    ],
+    "Menu.Content": [
+      childrenProp("Menu items, groups, labels, separators, and submenus rendered in the panel."),
+      styleProp(
+        "Applies inline CSS properties to the panel. Menu appends its own entrance opacity and transform values after them.",
+      ),
+      {
+        name: "onKeyDown",
+        type: "React.KeyboardEventHandler<HTMLDivElement>",
+        required: false,
+        category: "Events",
+        description:
+          "Runs before the panel's navigation, activation, and dismissal handling. Prevent the event's default behavior to keep Menu from handling the key.",
+        links: [
+          {
+            label: "MDN",
+            url: "https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event",
+          },
+        ],
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        required: false,
+        category: "Accessibility",
+        description:
+          "Accessible name for the panel, useful when no visible label describes the menu.",
+        links: [{ label: "MDN", url: ARIA_LABEL_MDN }],
+      },
+    ],
+    "Menu.Group": [
+      childrenProp("Related menu items and an optional Menu.Label."),
+      classNameProp(
+        "Adds classes to the group container after its module class and before the resolved styles.root class.",
+      ),
+    ],
+    "Menu.RadioGroup": [
+      childrenProp("Menu.RadioItem elements that share this group's value."),
+      classNameProp(
+        "Adds classes to the group container after its module class and before the resolved styles.root class.",
+      ),
+    ],
+    "Menu.Item": [
+      childrenProp("Item content, such as a label, leading icon, and Menu.Shortcut."),
+      styleProp("Applies inline CSS properties to the item row."),
+      {
+        name: "onClick",
+        type: "React.MouseEventHandler<HTMLDivElement>",
+        required: false,
+        category: "Events",
+        description:
+          "Runs before the item activates. Prevent the event's default behavior to stop selection, onSelect, and the Menu closing.",
+        links: [
+          {
+            label: "MDN",
+            url: "https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event",
+          },
+        ],
+      },
+    ],
+    "Menu.CheckboxItem": [
+      childrenProp("Item content rendered after the checkmark indicator."),
+      styleProp("Applies inline CSS properties to the item row."),
+    ],
+    "Menu.RadioItem": [
+      childrenProp("Item content rendered after the radio indicator."),
+      styleProp("Applies inline CSS properties to the item row."),
+    ],
+    "Menu.Label": [childrenProp("Section label text.")],
+    "Menu.Shortcut": [childrenProp("Shortcut hint text, such as a key combination.")],
+    "Menu.SubTrigger": [
+      childrenProp("Row content rendered before the submenu chevron."),
+      styleProp("Applies inline CSS properties to the submenu trigger row."),
+    ],
+    "Menu.SubContent": [
+      childrenProp("Submenu items, groups, labels, separators, and nested submenus."),
+      styleProp(
+        "Applies inline CSS properties to the submenu panel. Menu appends its own entrance opacity and transform values after them.",
+      ),
+    ],
+  };
+
+  const normalizeMenuPropType = (componentName: string, prop: PropDefinition): PropDefinition => {
+    if (componentName === "Menu") {
+      if (prop.name === "type") return { ...prop, type: "MenuType" };
+      if (prop.name === "selectionMode") return { ...prop, type: "MenuSelectionMode" };
+    }
+    if (componentName === "Menu.Trigger") {
+      if (prop.name === "as") return { ...prop, type: "MenuTriggerAs" };
+      const buttonOnly: Record<string, string> = {
+        variant:
+          "Variant class applied when the trigger renders a Button. The span branch does not forward it.",
+        size: "Size class applied when the trigger renders a Button. The span branch does not forward it.",
+        icon: "Icon content rendered beside the label when the trigger renders a Button. The span branch does not forward it.",
+        hint: "Keyboard hint rendered after the label when the trigger renders a Button. The span branch does not forward it.",
+        onPress:
+          "React Aria press handler available when the trigger renders a Button. It runs alongside the Menu's own toggle handling.",
+        href: "Renders the Button trigger branch as an anchor. The span branch does not forward it.",
+        target:
+          "Browsing context used when the Button trigger branch renders an anchor. The span branch does not forward it.",
+      };
+      if (buttonOnly[prop.name]) {
+        return { ...prop, description: buttonOnly[prop.name] };
+      }
+    }
+    if (componentName === "Menu.Content" && prop.name === "side") {
+      return {
+        ...prop,
+        enumValueDetails: [
+          { value: "top", description: "Places the panel above the trigger." },
+          { value: "bottom", description: "Places the panel below the trigger." },
+          { value: "left", description: "Places the panel before the trigger in the inline axis." },
+          { value: "right", description: "Places the panel after the trigger in the inline axis." },
+        ],
+      };
+    }
+    if (componentName === "Menu.Content" && prop.name === "align") {
+      return {
+        ...prop,
+        enumValueDetails: [
+          { value: "start", description: "Aligns the panel's leading edge with the trigger." },
+          { value: "center", description: "Centers the panel against the trigger." },
+          { value: "end", description: "Aligns the panel's trailing edge with the trigger." },
+        ],
+      };
+    }
+    if (componentName === "Menu.Trigger" && prop.name === "data-hovered") {
+      return {
+        ...prop,
+        enumValueDetails: [
+          {
+            value: "true",
+            description: "Forces the Button branch to paint its hover treatment.",
+          },
+          {
+            value: "false",
+            description: "Suppresses the Button branch's own hover treatment.",
+          },
+        ],
+      };
+    }
+    return prop;
+  };
+
+  const mergeInherited = (componentName: string, props: PropDefinition[]) => {
+    const inherited = inheritedByComponent[componentName] ?? [];
+    const inheritedNames = new Set(inherited.map((prop) => prop.name));
+    return [...props.filter((prop) => !inheritedNames.has(prop.name)), ...inherited];
+  };
+
+  const enrichProps = (componentName: string, props: PropDefinition[]) =>
+    props.map((prop) => {
+      const normalized = normalizeMenuPropType(componentName, prop);
+      return {
+        ...normalized,
+        typeTokens: tokenizeType(normalized.type, Object.keys(customTypes)),
+      };
+    });
+
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps("customType", customType.members);
+  }
+
+  const subComponents = api.subComponents
+    ? Object.fromEntries(
+        Object.entries(api.subComponents)
+          // Contexts and hooks exported from the same files are not public compound parts.
+          .filter(([name]) => name.startsWith("Menu."))
+          .map(([name, component]) => [
+            name,
+            { ...component, props: enrichProps(name, mergeInherited(name, component.props)) },
+          ]),
+      )
+    : undefined;
+
+  return {
+    ...api,
+    props: enrichProps("Menu", mergeInherited("Menu", api.props)),
+    subComponents,
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Selection" },
+      { name: "Overlay" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Accessibility" },
+      { name: "Link behavior" },
+      { name: "Advanced" },
+    ],
+    stateAttributes: [
+      {
+        name: "data-slot",
+        description:
+          "Stable Menu anatomy identity on the matching rendered element. Menu.Item, Menu.CheckboxItem, and Menu.RadioItem rows carry List's item identity instead.",
+        values: ["root", "overlay", "list.padding", "indicator", "chevron", "item"],
+      },
+      {
+        name: "data-type",
+        description: "The trigger publishes the Menu's configured interaction type.",
+        values: ["context-menu", "pop-over"],
+      },
+      {
+        name: "data-open",
+        description: "The trigger persistently publishes whether the Menu panel is open.",
+        values: ["true", "false"],
+      },
+      {
+        name: "data-state",
+        description:
+          "A panel publishes open while it is visible and closed while it is mounted but hidden. Menu.SubTrigger publishes its submenu's state, and Menu.CheckboxItem and Menu.RadioItem publish their checked state instead.",
+        values: ["open", "closed", "checked", "unchecked"],
+      },
+      {
+        name: "data-placement",
+        description: "A panel publishes the resolved floating side after positioning.",
+        values: ["top", "bottom", "left", "right"],
+      },
+      {
+        name: "data-highlighted",
+        description:
+          "An item row or submenu trigger persistently publishes whether it is the current keyboard or pointer navigation target.",
+        values: ["true", "false"],
+      },
+      {
+        name: "data-focused",
+        description:
+          "An item row or submenu trigger persistently publishes the same navigation target state as data-highlighted; the trigger publishes its own focus state.",
+        values: ["true", "false"],
+      },
+      {
+        name: "data-focus-visible",
+        description:
+          "The span and child trigger branches publish keyboard-visible focus; the Button branch publishes its own.",
+        values: ["true", "false"],
+      },
+      {
+        name: "data-hovered",
+        description:
+          "The trigger publishes true while the pointer is over it or the Menu is open, and Menu.SubTrigger publishes pointer hover. The Button branch receives true only while the Menu is open and otherwise tracks its own hover.",
+        values: ["true", "false"],
+      },
+      {
+        name: "data-pressed",
+        description: "The Button trigger branch publishes its own press state.",
+        values: ["true", "false"],
+      },
+      {
+        name: "data-selected",
+        description:
+          "A Menu.Item row emits true while selectionMode is single or multiple and its key is selected; it is omitted otherwise.",
+        values: ["true"],
+      },
+      {
+        name: "data-disabled",
+        description:
+          "A disabled trigger, item row, or submenu trigger emits true; it is omitted when enabled.",
+        values: ["true"],
+      },
+      {
+        name: "data-inset",
+        description:
+          "Menu.Item, Menu.Label, and Menu.SubTrigger emit true when inset is set; the attribute is omitted otherwise.",
+        values: ["true"],
+      },
+      {
+        name: "data-value",
+        description: "An item row publishes its resolved key through List's option value attribute.",
+      },
+    ],
+    customTypes,
+  };
+}
+
+function enrichAnchorAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    AnchorPreviewStyleSlots: {
+      name: "AnchorPreviewStyleSlots",
+      summary: "Class-based slots for the Anchor preview overlay.",
+      type: "{ root?: Style; content?: Style }",
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles the portaled overlay element that positions the preview." },
+        { name: "content", type: "Style", required: false, description: "Styles the preview surface rendered inside the overlay." },
+      ],
+    },
+    AnchorPreviewStyleValue: {
+      name: "AnchorPreviewStyleValue",
+      summary:
+        "Shared or keyed styles for the Anchor preview overlay. A shared class applies to every preview slot; the keyed form addresses one slot.",
+      type: "Style | AnchorPreviewStyleSlots",
+      kind: "alias",
+      examples: ['styles={{ preview: "shadow-lg" }}', 'styles={{ preview: { content: "max-w-xs" } }}'],
+    },
+    AnchorPreviewStylesProp: {
+      name: "AnchorPreviewStylesProp",
+      summary: "Keyed class names for Anchor preview anatomy.",
+      type: "AnchorPreviewStyleSlots",
+      kind: "alias",
+    },
+    AnchorStyleSlots: {
+      name: "AnchorStyleSlots",
+      summary: "Class-based slots for the Anchor root and stable compound anatomy.",
+      type: "{ root?: Style; underline?: Style; preview?: AnchorPreviewStyleValue }",
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles the rendered anchor or span root element." },
+        { name: "underline", type: "Style", required: false, description: "Styles the underline drawn beneath the label, including a consumer-supplied Anchor.Underline." },
+        { name: "preview", type: "AnchorPreviewStyleValue", required: false, description: "Shared or keyed anatomy for the hover preview overlay." },
+      ],
+      notes: [
+        "The preview overlay renders in a portal, so preview slots are the only way to reach it from Anchor.",
+      ],
+    },
+    AnchorStylesProp: {
+      name: "AnchorStylesProp",
+      summary: "Keyed class names for Anchor anatomy.",
+      type: "AnchorStyleSlots",
+      kind: "alias",
+    },
+  };
+
+  const rootInheritedProps: PropDefinition[] = [
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      category: "Styling",
+      description: "Adds conventional classes to the root element after its default classes and before styles.root.",
+    },
+    {
+      name: "style",
+      type: "React.CSSProperties",
+      required: false,
+      category: "Styling",
+      description: "Applies inline styles to the rendered anchor or span root element.",
+    },
+    {
+      name: "onClick",
+      type: "React.MouseEventHandler<HTMLAnchorElement>",
+      required: false,
+      category: "Events",
+      description: "Native click handler on the root element, composed with Anchor's own hover and focus handlers.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event" },
+    },
+    {
+      name: "download",
+      type: "string | boolean",
+      required: false,
+      category: "Link behavior",
+      description: "Downloads the destination instead of navigating to it. Only applies when href is supplied.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#download" },
+    },
+    {
+      name: "referrerPolicy",
+      type: "React.HTMLAttributeReferrerPolicy",
+      required: false,
+      category: "Link behavior",
+      description: "Referrer information sent when following the link. Only applies when href is supplied.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy" },
+    },
+    {
+      name: "aria-label",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "Accessible name for the link, required when the label text does not describe the destination on its own.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" },
+    },
+    {
+      name: "aria-describedby",
+      type: "string",
+      required: false,
+      category: "Accessibility",
+      description: "References element IDs that describe the link.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby" },
+    },
+  ];
+
+  const underlineInheritedProps: PropDefinition[] = [
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      category: "Styling",
+      description: "Adds classes to the underline element after its default classes and before styles.underline.",
+    },
+    {
+      name: "style",
+      type: "React.CSSProperties",
+      required: false,
+      category: "Styling",
+      description: "Applies inline styles to the underline element after the variant's generated mask styles.",
+    },
+  ];
+
+  const withInherited = (props: PropDefinition[], inheritedProps: PropDefinition[]) => {
+    const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
+    return [...props.filter((prop) => !inheritedNames.has(prop.name)), ...inheritedProps];
+  };
+  const optionsByProp: Record<string, APIEnumValue[]> = {
+    variant: [
+      { value: "solid", description: "Draws a continuous underline." },
+      { value: "dashed", description: "Draws an underline of evenly spaced dashes." },
+      { value: "dotted", description: "Draws an underline of evenly spaced dots." },
+    ],
+  };
+  const enrichProps = (props: PropDefinition[]) =>
+    props.map((prop) => ({
+      ...prop,
+      ...(optionsByProp[prop.name] ? { enumValueDetails: optionsByProp[prop.name] } : {}),
+      typeTokens: tokenizeType(prop.type, Object.keys(customTypes)),
+    }));
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps(customType.members);
+  }
+
+  // docgen resolves a dotted displayName only for forwardRef parts, so the
+  // marker component still arrives under its declaration name. Enrichment runs
+  // twice per component, so the renamed key must map to itself.
+  const subComponentNames: Record<string, string> = {
+    AnchorPreview: "Anchor.Preview",
+    "Anchor.Preview": "Anchor.Preview",
+    "Anchor.Underline": "Anchor.Underline",
+  };
+  const inheritedBySubComponent: Record<string, PropDefinition[]> = {
+    "Anchor.Underline": underlineInheritedProps,
+    "Anchor.Preview": [],
+  };
+
+  const subComponents = api.subComponents
+    ? Object.fromEntries(
+        Object.entries(api.subComponents)
+          .filter(([name]) => name in subComponentNames)
+          .map(([name, component]) => {
+            const publicName = subComponentNames[name];
+            return [
+              publicName,
+              {
+                ...component,
+                props: enrichProps(
+                  withInherited(component.props, inheritedBySubComponent[publicName]),
+                ),
+              },
+            ];
+          }),
+      )
+    : undefined;
+
+  return {
+    ...api,
+    props: enrichProps(withInherited(api.props, rootInheritedProps)),
+    subComponents: subComponents && Object.keys(subComponents).length > 0 ? subComponents : undefined,
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Link behavior" },
+      { name: "Accessibility" },
+    ],
+    stateAttributes: [
+      { name: "data-slot", description: "Stable anatomy identity on the root element and on the underline element.", values: ["root", "underline"] },
+      { name: "data-variant", description: "The resolved line treatment. Set on the root element and on each underline element, which may differ when Anchor.Underline overrides the root variant.", values: ["solid", "dashed", "dotted"] },
+      { name: "data-hovered", description: "The pointer is over the Anchor root. Always present on the root element.", values: ["true", "false"] },
+      { name: "data-focused", description: "The Anchor root is focused. Always present on the root element.", values: ["true", "false"] },
+      { name: "data-focus-visible", description: "The Anchor root has keyboard-visible focus. Always present on the root element.", values: ["true", "false"] },
+      { name: "data-anchor-focus-surface", description: "Marks the Anchor root as the focus surface tracked by its local focus indicator.", values: ["true"] },
+      { name: "data-focus-indicator", description: "Marks Anchor's local focus indicator element.", values: ["local"] },
+    ],
+    customTypes,
+  };
+}
+
+function enrichPathAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    PathStyleSlots: {
+      name: "PathStyleSlots",
+      summary: "Style overrides for the Path root and named component parts.",
+      type: "{ root?: Style; list?: Style; separator?: Style }",
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles the root nav element." },
+        { name: "list", type: "Style", required: false, description: "Styles the ordered list element." },
+        { name: "separator", type: "Style", required: false, description: "Styles each separator rendered between items." },
+      ],
+    },
+    PathStylesProp: {
+      name: "PathStylesProp",
+      summary: "Style overrides accepted by Path.",
+      type: "PathStyleSlots",
+      kind: "alias",
+    },
+    PathItemStyleSlots: {
+      name: "PathItemStyleSlots",
+      summary: "Style overrides for the Path.Item root.",
+      type: "{ root?: Style }",
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles the rendered anchor, button, or span element." },
+      ],
+    },
+    PathItemStylesProp: {
+      name: "PathItemStylesProp",
+      summary: "Style overrides accepted by Path.Item.",
+      type: "PathItemStyleSlots",
+      kind: "alias",
+    },
+  };
+
+  const rootInheritedProps: PropDefinition[] = [
+    { name: "style", type: "React.CSSProperties", required: false, category: "Styling", description: "Applies inline styles to the root nav element." },
+    { name: "aria-label", type: "string", required: false, category: "Accessibility", description: "Accessible name applied to the root nav landmark.", defaultValue: '"Path"', tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" } },
+  ];
+  const itemInheritedProps: PropDefinition[] = [
+    { name: "style", type: "React.CSSProperties", required: false, category: "Styling", description: "Applies inline styles to the rendered anchor, button, or span element." },
+    { name: "aria-label", type: "string", required: false, category: "Accessibility", description: "Accessible name for the item's rendered element. Required when the item's content does not provide a discernible text alternative.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" } },
+  ];
+
+  const withInherited = (props: PropDefinition[], inheritedProps: PropDefinition[]) => {
+    const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
+    return [...props.filter((prop) => !inheritedNames.has(prop.name)), ...inheritedProps];
+  };
+  const enrichProps = (props: PropDefinition[]) =>
+    props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type, Object.keys(customTypes)) }));
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps(customType.members);
+  }
+
+  const subComponents = api.subComponents
+    ? Object.fromEntries(
+        Object.entries(api.subComponents)
+          .filter(([name]) => name === "Path.Item")
+          .map(([name, component]) => [
+            name,
+            { ...component, props: enrichProps(withInherited(component.props, itemInheritedProps)) },
+          ]),
+      )
+    : undefined;
+
+  return {
+    ...api,
+    props: enrichProps(withInherited(api.props, rootInheritedProps)),
+    subComponents,
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Link behavior" },
+      { name: "Accessibility" },
+    ],
+    stateAttributes: [
+      { name: "data-selected", description: "Path.Item's rendered element emits true on the current item (the last child) and omits the attribute otherwise.", values: ["true"] },
+      { name: "data-disabled", description: "Path.Item's rendered element emits true when disabled and omits the attribute when enabled.", values: ["true"] },
+      { name: "data-focused", description: "Path.Item's rendered element is focused; omitted otherwise.", values: ["true"] },
+      { name: "data-focus-visible", description: "Path.Item's rendered element has keyboard-visible focus; omitted otherwise.", values: ["true"] },
+      { name: "data-hovered", description: "The pointer is over an interactive, enabled Path.Item; omitted otherwise.", values: ["true"] },
+      { name: "data-pressed", description: "An interactive Path.Item is currently pressed; omitted otherwise.", values: ["true"] },
+      { name: "data-path-item-focus-surface", description: "Marks every Path.Item's rendered element as a focus surface tracked by Path's shared local focus indicator.", values: ["true"] },
+      { name: "data-path-list", description: "Marks the ordered list element that arrow-key navigation and the focus indicator scope to.", values: ["true"] },
+      { name: "data-separator", description: "Set on the ordered list element when a custom separator is supplied; omitted when using the default spacing.", values: ["custom"] },
+      { name: "data-focus-indicator", description: "Marks Path's local shared focus indicator.", values: ["local"] },
+    ],
+    customTypes,
+  };
+}
+
+function enrichDividerAPI(api: ComponentAPI): ComponentAPI {
+  const optionsByProp: Record<string, APIEnumValue[]> = {
+    variant: [
+      { value: "solid", description: "Renders a continuous line." },
+      { value: "dashed", description: "Renders a line of evenly spaced dashes." },
+      { value: "dotted", description: "Renders a line of evenly spaced dots." },
+    ],
+    orientation: [
+      { value: "horizontal", description: "Spans the full width and separates stacked content." },
+      { value: "vertical", description: "Stretches to the cross-axis height and separates inline content." },
+    ],
+    size: [
+      { value: "sm", description: "The thinnest divider thickness." },
+      { value: "md", description: "The default divider thickness." },
+      { value: "lg", description: "The thickest divider thickness." },
+      { value: "auto", description: "Uses the theme's base border width instead of a fixed thickness." },
+    ],
+    spacing: [
+      { value: "none", description: "No margin around the divider." },
+      { value: "sm", description: "A small margin around the divider." },
+      { value: "md", description: "A medium margin around the divider." },
+      { value: "lg", description: "A large margin around the divider." },
+    ],
+  };
+
+  return {
+    ...api,
+    props: api.props.map((prop) =>
+      optionsByProp[prop.name] ? { ...prop, enumValueDetails: optionsByProp[prop.name] } : prop,
+    ),
+  };
+}
+
+function enrichExpandAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    Style: {
+      name: "Style",
+      summary: "Class names accepted by Expand class-based style slots.",
+      type: "string | (string | false | null | undefined)[]",
+      kind: "alias",
+      notes: ["Array entries support conditional classes; false, null, and undefined entries are ignored."],
+    },
+    ExpandDirection: {
+      name: "ExpandDirection",
+      summary: "Direction the content panel reveals from relative to the trigger.",
+      type: '"below" | "above" | "left" | "right"',
+      kind: "alias",
+      notes: ["Below is the default and is treated as the implicit direction; the root layout and icon rotation update to match."],
+      values: [
+        { value: "below", description: "The content panel opens downward beneath the trigger. This is the implicit default." },
+        { value: "above", description: "The content panel opens upward above the trigger." },
+        { value: "left", description: "The content panel opens to the left of the trigger." },
+        { value: "right", description: "The content panel opens to the right of the trigger." },
+      ],
+    },
+    ExpandLayout: {
+      name: "ExpandLayout",
+      summary: "Controls whether Expand supplies its own corner radius or sits flush inside a bordered container.",
+      type: '"standalone" | "contained"',
+      kind: "alias",
+      notes: ["contained removes the trigger's corner radius so Expand can sit flush inside an enclosing bordered surface."],
+      values: [
+        { value: "standalone", description: "Expand supplies its own corner radius, suitable as a freestanding surface." },
+        { value: "contained", description: "Removes the trigger's corner radius so Expand can sit flush inside an enclosing bordered surface." },
+      ],
+    },
+    ExpandState: {
+      name: "ExpandState",
+      summary: "Controlled expanded state supplied to Expand.",
+      type: "{ expanded?: boolean }",
+      kind: "interface",
+      members: [
+        { name: "expanded", type: "boolean", required: false, description: "Controlled expanded value." },
+      ],
+    },
+    ExpandIconStyleSlots: {
+      name: "ExpandIconStyleSlots",
+      summary: "Class-based styling targets for the Expand icon, addressed by collapsed/expanded state.",
+      type: "{ collapsed?: Style; expanded?: Style }",
+      kind: "interface",
+      members: [
+        { name: "collapsed", type: "Style", required: false, description: "Styles the icon while the panel is collapsed." },
+        { name: "expanded", type: "Style", required: false, description: "Styles the icon while the panel is expanded." },
+      ],
+    },
+    ExpandContentStyleSlots: {
+      name: "ExpandContentStyleSlots",
+      summary: "Class-based styling targets for the Expand content panel and its padded inner region.",
+      type: "{ root?: Style; inner?: Style }",
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles the collapsing outer content panel." },
+        { name: "inner", type: "Style", required: false, description: "Styles the padded region wrapping the panel's children." },
+      ],
+    },
+    ExpandStyleSlots: {
+      name: "ExpandStyleSlots",
+      summary: "Named style overrides for the Expand root and stable compound anatomy.",
+      type: `{
+  root?: Style;
+  trigger?: Style;
+  icon?: Style | ExpandIconStyleSlots;
+  title?: Style;
+  content?: Style | ExpandContentStyleSlots;
+  divider?: Style;
+}`,
+      kind: "interface",
+      members: [
+        { name: "root", type: "Style", required: false, description: "Styles the root expand container." },
+        { name: "trigger", type: "Style", required: false, description: "Styles the trigger button." },
+        { name: "icon", type: "Style | ExpandIconStyleSlots", required: false, description: "Shared or state-specific styles for the disclosure icon." },
+        { name: "title", type: "Style", required: false, description: "Styles the trigger's title/label text." },
+        { name: "content", type: "Style | ExpandContentStyleSlots", required: false, description: "Shared or keyed styles for the content panel and its inner region." },
+        { name: "divider", type: "Style", required: false, description: "Styles the divider rendered between the trigger and content." },
+      ],
+    },
+    ExpandStylesProp: {
+      name: "ExpandStylesProp",
+      summary: "Style overrides accepted by Expand.",
+      type: "ExpandStyleSlots",
+      kind: "alias",
+    },
+  };
+
+  const rootInheritedProps: PropDefinition[] = [
+    { name: "className", type: "string", required: false, category: "Styling", description: "Adds conventional classes to the root expand container after its default classes and before styles.root." },
+    { name: "style", type: "React.CSSProperties", required: false, category: "Styling", description: "Applies inline styles to the root expand container." },
+    { name: "aria-label", type: "string", required: false, category: "Accessibility", description: "Accessible name applied to the root container. Does not replace the trigger's own accessible name.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" } },
+    { name: "aria-labelledby", type: "string", required: false, category: "Accessibility", description: "References element IDs that label the root container.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby" } },
+    { name: "aria-describedby", type: "string", required: false, category: "Accessibility", description: "References element IDs that describe the root container.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby" } },
+  ];
+  const triggerInheritedProps: PropDefinition[] = [
+    { name: "className", type: "string", required: false, category: "Styling", description: "Adds classes to the trigger button after its default classes and before the root styles.trigger value." },
+    { name: "onClick", type: "React.MouseEventHandler<HTMLButtonElement>", required: false, category: "Events", description: "Native click handler composed with the internal toggle press handler. Disabled triggers do not invoke it.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event" } },
+    { name: "autoFocus", type: "boolean", required: false, category: "Accessibility", description: "Requests focus for the trigger button when it mounts.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus" } },
+  ];
+  const contentInheritedProps: PropDefinition[] = [
+    { name: "className", type: "string", required: false, category: "Styling", description: "Adds classes to the collapsing content panel after its default classes and before the root styles.content value." },
+  ];
+  const iconInheritedProps: PropDefinition[] = [
+    { name: "className", type: "string", required: false, category: "Styling", description: "Adds classes to the icon wrapper after its default classes and before the root styles.icon value." },
+  ];
+
+  const withInherited = (props: PropDefinition[], inheritedProps: PropDefinition[]) => {
+    const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
+    return [...props.filter((prop) => !inheritedNames.has(prop.name)), ...inheritedProps];
+  };
+  const normalizeExpandPropType = (componentName: string, prop: PropDefinition) => {
+    if (componentName === "Expand" && prop.name === "layout") return { ...prop, type: "ExpandLayout" };
+    if (componentName === "Expand.Content" && prop.name === "from") return { ...prop, type: "ExpandDirection" };
+    return prop;
+  };
+  const enrichProps = (componentName: string, props: PropDefinition[]) =>
+    props.map((prop) => {
+      const normalized = normalizeExpandPropType(componentName, prop);
+      return { ...normalized, typeTokens: tokenizeType(normalized.type, Object.keys(customTypes)) };
+    });
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, Object.keys(customTypes));
+    if (customType.members) customType.members = enrichProps("customType", customType.members);
+  }
+
+  const subComponents = api.subComponents
+    ? Object.fromEntries(
+        Object.entries(api.subComponents)
+          // useExpandContext, the divider/content type guards, and moveDividersIntoContent
+          // are internal helpers, not public subcomponents.
+          .filter(([name]) => name.startsWith("Expand."))
+          .map(([name, component]) => [
+            name,
+            {
+              ...component,
+              props: enrichProps(
+                name,
+                name === "Expand.Trigger"
+                  ? withInherited(component.props, triggerInheritedProps)
+                  : name === "Expand.Content"
+                    ? withInherited(component.props, contentInheritedProps)
+                    : name === "Expand.Icon"
+                      ? withInherited(component.props, iconInheritedProps)
+                      : component.props,
+              ),
+            },
+          ]),
+      )
+    : undefined;
+
+  return {
+    ...api,
+    props: enrichProps("Expand", withInherited(api.props, rootInheritedProps)),
+    subComponents,
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Accessibility" },
+    ],
+    stateAttributes: [
+      { name: "data-selected", description: "The root, trigger, icon, and content panel emit true while expanded and omit the attribute while collapsed.", values: ["true"] },
+      { name: "data-expanded", description: "The root, trigger, icon, and content panel emit true while expanded and omit the attribute while collapsed.", values: ["true"] },
+      { name: "data-disabled", description: "The root and trigger emit true when disabled and omit the attribute when enabled.", values: ["true"] },
+      { name: "data-layout", description: "The configured layout on the root.", values: ["standalone", "contained"] },
+      { name: "data-from", description: "The content panel's configured reveal direction. Omitted for the default below direction.", values: ["above", "left", "right"] },
+      { name: "data-focused", description: "The trigger is focused; omitted otherwise.", values: ["true"] },
+      { name: "data-focus-visible", description: "The trigger has keyboard-visible focus; omitted otherwise.", values: ["true"] },
+      { name: "data-pressed", description: "The trigger is currently pressed; omitted otherwise.", values: ["true"] },
+      { name: "data-hovered", description: "The pointer is over the enabled trigger; omitted otherwise.", values: ["true"] },
+      { name: "data-expand-focus-surface", description: "Marks the trigger as the focus surface used by Expand's shared local focus indicator.", values: ["true"] },
+      { name: "data-focus-indicator", description: "Marks Expand's local shared focus indicator.", values: ["local"] },
+    ],
+    customTypes,
+  };
+}
+
 function enrichListAPI(api: ComponentAPI): ComponentAPI {
   const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
     Style: {
@@ -864,12 +2493,23 @@ function enrichListAPI(api: ComponentAPI): ComponentAPI {
       summary: "Axis used by List layout and keyboard navigation.",
       type: '"vertical" | "horizontal"',
       kind: "alias",
+      values: [
+        { value: "vertical", description: "Items stack top to bottom and Up/Down arrow keys move focus between them." },
+        { value: "horizontal", description: "Items lay out left to right and Left/Right arrow keys move focus between them." },
+      ],
     },
     ListGap: {
       name: "ListGap",
       summary: "Named gap step between direct List.Item children.",
       type: '"xs" | "sm" | "md" | "lg" | "xl"',
       kind: "alias",
+      values: [
+        { value: "xs", description: "Extra-small gap between items." },
+        { value: "sm", description: "Small gap between items." },
+        { value: "md", description: "Medium gap between items." },
+        { value: "lg", description: "Large gap between items." },
+        { value: "xl", description: "Extra-large gap between items." },
+      ],
     },
     ListNavigateCallbacks: {
       name: "ListNavigateCallbacks",
@@ -1492,6 +3132,215 @@ function enrichInputAPI(api: ComponentAPI): ComponentAPI {
   };
 }
 
+function enrichTextAreaAPI(api: ComponentAPI): ComponentAPI {
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    Style: {
+      name: "Style",
+      summary: "Class names accepted by class-based style slots.",
+      type: "string | (string | false | null | undefined)[]",
+      kind: "alias",
+      notes: ["Array entries support conditional classes; false, null, and undefined entries are ignored."],
+    },
+    TextAreaSize: {
+      name: "TextAreaSize",
+      summary: "Height preset and text density applied to the field.",
+      type: '"sm" | "md" | "lg"',
+      kind: "alias",
+      values: [
+        { value: "sm", description: "A compact field with tighter padding and a smaller minimum height." },
+        { value: "md", description: "The default field padding and minimum height." },
+        { value: "lg", description: "A roomier field with larger padding, body text size, and minimum height." },
+      ],
+      notes: ["The size is published on the root and the field as data-size, and as a conventional class on the root."],
+    },
+    TextAreaResize: {
+      name: "TextAreaResize",
+      summary: "Axis the field can be dragged along with the custom resize handle.",
+      type: '"none" | "x" | "y" | "both"',
+      kind: "alias",
+      values: [
+        { value: "none", description: "Renders no handle and leaves the field at its preset size." },
+        { value: "x", description: "Renders a handle on the trailing edge that changes width only." },
+        { value: "y", description: "Renders a handle on the bottom edge that changes height only." },
+        { value: "both", description: "Renders a corner handle that changes width and height together." },
+      ],
+      notes: [
+        "Native textarea resizing is always disabled; the handle is a pointer-driven affordance.",
+        "A disabled TextArea resolves to none, so no handle renders and data-resize reports none.",
+      ],
+    },
+    TextAreaState: {
+      name: "TextAreaState",
+      summary: "Controlled values accepted through the TextArea state abstraction.",
+      type: `{
+  value?: string;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "value",
+          type: "string",
+          required: false,
+          description: "Current field value. Takes precedence over the native value prop.",
+        },
+      ],
+    },
+    TextAreaResizeHandleStyles: {
+      name: "TextAreaResizeHandleStyles",
+      summary: "Axis-specific styles for the drag-to-resize handle.",
+      type: `{
+  both?: Style;
+  x?: Style;
+  y?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "both",
+          type: "Style",
+          required: false,
+          description: 'Styles the corner handle rendered while resize is "both".',
+        },
+        {
+          name: "x",
+          type: "Style",
+          required: false,
+          description: 'Styles the trailing-edge handle rendered while resize is "x".',
+        },
+        {
+          name: "y",
+          type: "Style",
+          required: false,
+          description: 'Styles the bottom-edge handle rendered while resize is "y".',
+        },
+      ],
+    },
+    TextAreaStyleSlots: {
+      name: "TextAreaStyleSlots",
+      summary: "Named style slots for the TextArea anatomy.",
+      type: `{
+  root?: Style;
+  surface?: Style;
+  scroll?: Style;
+  field?: Style;
+  resizeHandle?: Style | TextAreaResizeHandleStyles;
+  characterCount?: Style;
+}`,
+      kind: "interface",
+      members: [
+        {
+          name: "root",
+          type: "Style",
+          required: false,
+          description: "Styles the outer wrapper that carries the conventional textarea class.",
+        },
+        {
+          name: "surface",
+          type: "Style",
+          required: false,
+          description: "Styles the positioned surface holding the field and the resize handle.",
+        },
+        {
+          name: "scroll",
+          type: "Style",
+          required: false,
+          description: "Styles the bordered scroll wrapper rendered in place of the field border when maxHeight is set.",
+        },
+        {
+          name: "field",
+          type: "Style",
+          required: false,
+          description: "Styles the native textarea element.",
+        },
+        {
+          name: "resizeHandle",
+          type: "Style | TextAreaResizeHandleStyles",
+          required: false,
+          description: "Styles every resize handle, or one axis through resizeHandle.both, resizeHandle.x, and resizeHandle.y.",
+        },
+        {
+          name: "characterCount",
+          type: "Style",
+          required: false,
+          description: "Styles the character count rendered below the field.",
+        },
+      ],
+    },
+    TextAreaStylesProp: {
+      name: "TextAreaStylesProp",
+      summary: "Class-based style overrides for TextArea's root and named anatomy slots.",
+      type: "StylesProp<TextAreaStyleSlots>",
+      kind: "alias",
+      notes: [
+        "The resizeHandle slot accepts one shared value applied to whichever axis renders, or an object addressing resizeHandle.both, resizeHandle.x, and resizeHandle.y.",
+      ],
+    },
+  };
+
+  const optionsByProp: Record<string, APIEnumValue[]> = {
+    size: customTypes.TextAreaSize.values ?? [],
+    resize: customTypes.TextAreaResize.values ?? [],
+  };
+
+  const inheritedProps: PropDefinition[] = [
+    { name: "value", type: "string | number | readonly string[]", required: false, category: "Core", description: "Sets the field value when state.value is not supplied. Numbers are converted to strings.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea" } },
+    { name: "defaultValue", type: "string | number | readonly string[]", required: false, category: "Core", description: "Sets the initial uncontrolled value used when neither state.value nor value is supplied.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea" } },
+    { name: "disabled", type: "boolean", required: false, category: "Core", description: "Disables the native textarea, removes the resize handle, and applies disabled styling.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled" } },
+    { name: "readOnly", type: "boolean", required: false, category: "Core", description: "Blocks editing while the field stays focusable and selectable.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#readonly" } },
+    { name: "rows", type: "number", required: false, category: "Core", description: "Sets the native visible row count. The size preset still supplies a minimum height, so rows only grows the field beyond that minimum.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows" } },
+    { name: "placeholder", type: "string", required: false, category: "Content", description: "Displays placeholder text while the field is empty.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/placeholder" } },
+    { name: "onChange", type: "React.ChangeEventHandler<HTMLTextAreaElement>", required: false, category: "Events", description: "Runs after the value changes. When maxCharacters truncates the input, the event is forwarded carrying the truncated value.", tags: { mdn: "https://react.dev/reference/react-dom/components/textarea#onchange" } },
+    { name: "onFocus", type: "React.FocusEventHandler<HTMLTextAreaElement>", required: false, category: "Events", description: "Runs when the native textarea receives focus, alongside the internal focus-state tracking.", tags: { mdn: "https://react.dev/reference/react-dom/components/common#onfocus" } },
+    { name: "onBlur", type: "React.FocusEventHandler<HTMLTextAreaElement>", required: false, category: "Events", description: "Runs when the native textarea loses focus, alongside the internal focus-state tracking.", tags: { mdn: "https://react.dev/reference/react-dom/components/common#onblur" } },
+    { name: "className", type: "string", required: false, category: "Styling", description: "Adds conventional classes to the root wrapper, after the component and size classes and before the resolved styles.root class.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Element/className" } },
+    { name: "style", type: "React.CSSProperties", required: false, category: "Styling", description: "Applies native inline styles to the root wrapper. Use styles.field for inline-free class overrides on the textarea itself.", tags: { mdn: "https://react.dev/reference/react-dom/components/common#style" } },
+    { name: "name", type: "string", required: false, category: "Forms", description: "Names the native textarea for form submission.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/name" } },
+    { name: "required", type: "boolean", required: false, category: "Forms", description: "Requires a value before a containing form can submit.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/required" } },
+    { name: "maxLength", type: "number", required: false, category: "Forms", description: "Applies the native length limit. Use maxCharacters instead when the character count should render and truncation should reach onChange.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#maxlength" } },
+    { name: "autoComplete", type: "string", required: false, category: "Forms", description: "Supplies the browser autocomplete hint for the native textarea.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete" } },
+    { name: "aria-label", type: "string", required: false, category: "Accessibility", description: "Provides an accessible name when no associated label supplies one.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label" } },
+    { name: "aria-labelledby", type: "string", required: false, category: "Accessibility", description: "References elements that label the native textarea.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby" } },
+    { name: "aria-describedby", type: "string", required: false, category: "Accessibility", description: "References elements that describe the native textarea, such as a hint or the character count.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-describedby" } },
+    { name: "autoFocus", type: "boolean", required: false, category: "Accessibility", description: "Requests focus for the native textarea after it mounts.", tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus" } },
+  ];
+
+  const inheritedNames = new Set(inheritedProps.map((prop) => prop.name));
+  const props = [...api.props.filter((prop) => !inheritedNames.has(prop.name)), ...inheritedProps];
+
+  return {
+    ...api,
+    props: props.map((prop) => ({
+      ...prop,
+      typeTokens: tokenizeType(prop.type, Object.keys(customTypes)),
+      ...(optionsByProp[prop.name]?.length ? { enumValueDetails: optionsByProp[prop.name] } : {}),
+    })),
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Forms" },
+      { name: "Accessibility" },
+    ],
+    stateAttributes: [
+      { name: "data-slot", description: "Stable anatomy identity on the root, surface, scroll wrapper, field, resize handle, and character count.", values: ["root", "surface", "scroll", "field", "resizeHandle.both", "resizeHandle.x", "resizeHandle.y", "characterCount"] },
+      { name: "data-size", description: "The resolved size preset, published on the root and the field.", values: ["sm", "md", "lg"] },
+      { name: "data-resize", description: "The resolved resize axis, published on the root, the surface, and the field. A disabled TextArea always reports none.", values: ["none", "x", "y", "both"] },
+      { name: "data-scroll", description: "The field is wrapped in the capped scroll surface because maxHeight is set; the attribute is omitted otherwise.", values: ["true"] },
+      { name: "data-disabled", description: "The TextArea is disabled; the attribute is omitted otherwise.", values: ["true"] },
+      { name: "data-error", description: "The error prop is set or the value exceeds maxCharacters; the attribute is omitted otherwise.", values: ["true"] },
+      { name: "data-focused", description: "The field has focus; the attribute is omitted otherwise.", values: ["true"] },
+      { name: "data-focus-visible", description: "The field has keyboard-visible focus; the attribute is omitted otherwise.", values: ["true"] },
+      { name: "data-over-limit", description: "Set on the character count while the value exceeds maxCharacters; the attribute is omitted otherwise.", values: ["true"] },
+      { name: "data-textarea-focus-surface", description: "Marks the element the shared focus indicator measures: the scroll wrapper when maxHeight is set, otherwise the field.", values: ["true"] },
+      { name: "data-focus-indicator", description: "Marks TextArea's local shared focus indicator element.", values: ["local"] },
+      { name: "data-ring", description: "Marks the local focus indicator element.", values: ["true"] },
+      { name: "data-visible", description: "The local focus indicator is visible for keyboard focus; the attribute is omitted while hidden.", values: ["true"] },
+    ],
+    customTypes,
+  };
+}
+
 function enrichSelectAPI(api: ComponentAPI): ComponentAPI {
   const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
     Style: {
@@ -1543,6 +3392,10 @@ function enrichSelectAPI(api: ComponentAPI): ComponentAPI {
       type: '"single" | "multiple"',
       kind: "alias",
       notes: ["Multiple mode renders a checkbox in every option and marks the panel aria-multiselectable."],
+      values: [
+        { value: "single", description: "Selecting an option replaces the current value and the panel closes." },
+        { value: "multiple", description: "Selecting an option toggles it in the current value set and the panel stays open." },
+      ],
     },
     SelectTriggerMode: {
       name: "SelectTriggerMode",
@@ -1550,6 +3403,10 @@ function enrichSelectAPI(api: ComponentAPI): ComponentAPI {
       type: '"click" | "hover"',
       kind: "alias",
       notes: ["Hover mode opens on pointer entry and closes shortly after the pointer leaves the trigger and panel."],
+      values: [
+        { value: "click", description: "The panel opens when the trigger is clicked or activated by keyboard." },
+        { value: "hover", description: "The panel opens on pointer entry and closes shortly after the pointer leaves the trigger and panel." },
+      ],
     },
     SelectState: {
       name: "SelectState",
@@ -1988,6 +3845,7 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   };
 
   if (componentDirName === "Button") return enrichButtonAPI(api);
+  if (componentDirName === "Expand") return enrichExpandAPI(api);
   if (componentDirName === "Command") return enrichCommandAPI(api);
   if (componentDirName === "List") return enrichListAPI(api);
   if (componentDirName === "Input") return enrichInputAPI(api);
@@ -1996,6 +3854,12 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   if (componentDirName === "Slider") return enrichSliderAPI(api);
   if (componentDirName === "Switch") return enrichSwitchAPI(api);
   if (componentDirName === "Checkbox") return enrichCheckboxAPI(api);
+  if (componentDirName === "Divider") return enrichDividerAPI(api);
+  if (componentDirName === "Group") return enrichGroupAPI(api);
+  if (componentDirName === "Path") return enrichPathAPI(api);
+  if (componentDirName === "Anchor") return enrichAnchorAPI(api);
+  if (componentDirName === "Menu") return enrichMenuAPI(api);
+  if (componentDirName === "Textarea") return enrichTextAreaAPI(api);
   return api;
 }
 
@@ -2035,6 +3899,9 @@ export function extractAllComponentAPIs(componentDirNames: string[]): Record<str
     if (dirName === "Button" && result[kebabId]) {
       result[kebabId] = enrichButtonAPI(result[kebabId]);
     }
+    if (dirName === "Expand" && result[kebabId]) {
+      result[kebabId] = enrichExpandAPI(result[kebabId]);
+    }
     if (dirName === "Command" && result[kebabId]) {
       result[kebabId] = enrichCommandAPI(result[kebabId]);
     }
@@ -2058,6 +3925,21 @@ export function extractAllComponentAPIs(componentDirNames: string[]): Record<str
     }
     if (dirName === "Checkbox" && result[kebabId]) {
       result[kebabId] = enrichCheckboxAPI(result[kebabId]);
+    }
+    if (dirName === "Divider" && result[kebabId]) {
+      result[kebabId] = enrichDividerAPI(result[kebabId]);
+    }
+    if (dirName === "Group" && result[kebabId]) {
+      result[kebabId] = enrichGroupAPI(result[kebabId]);
+    }
+    if (dirName === "Path" && result[kebabId]) {
+      result[kebabId] = enrichPathAPI(result[kebabId]);
+    }
+    if (dirName === "Anchor" && result[kebabId]) {
+      result[kebabId] = enrichAnchorAPI(result[kebabId]);
+    }
+    if (dirName === "Textarea" && result[kebabId]) {
+      result[kebabId] = enrichTextAreaAPI(result[kebabId]);
     }
     if (result[kebabId]) result[kebabId] = enrichTypeTokens(result[kebabId]);
 

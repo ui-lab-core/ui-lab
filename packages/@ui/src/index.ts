@@ -1,8 +1,32 @@
 export { Button } from "./components/Button";
-export type { ButtonProps, ButtonStyleSlots, ButtonStylesProp } from "./components/Button";
+export type {
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
+  ButtonIconSlots,
+  ButtonIconStyleSlots,
+  ButtonStyleSlots,
+  ButtonStylesProp,
+} from "./components/Button";
+export type { ButtonVariantOverrides } from "./theme-contract";
 
 export { Group } from "./components/Group";
-export type { GroupProps } from "./components/Group";
+export type {
+  GroupProps,
+  GroupOrientation,
+  GroupSpacing,
+  GroupStyleSlots,
+  GroupStyleSlot,
+  GroupStylesProp,
+  GroupItemStyleSlots,
+  GroupItemStyleSlot,
+  GroupItemStylesProp,
+  GroupItemStyleValue,
+  GroupButtonProps,
+  GroupInputProps,
+  GroupSelectProps,
+  GroupExpandProps,
+} from "./components/Group";
 
 export { Flex } from "./components/Flex";
 export type { FlexProps } from "./components/Flex";
@@ -90,7 +114,15 @@ export { Label } from "./components/Label";
 export type { LabelProps } from "./components/Label";
 
 export { TextArea } from "./components/Textarea";
-export type { TextAreaProps, TextareaState } from "./components/Textarea";
+export type {
+  TextAreaProps,
+  TextAreaResize,
+  TextAreaResizeHandleStyles,
+  TextAreaSize,
+  TextAreaState,
+  TextAreaStyleSlots,
+  TextAreaStylesProp,
+} from "./components/Textarea";
 
 export { Radio } from "./components/Radio";
 export type {
@@ -130,22 +162,50 @@ export type {
 
 export { Menu } from "./components/Menu";
 export type {
-  MenuProps,
-  MenuTriggerProps,
+  MenuType,
+  MenuSelectionMode,
   MenuTriggerAs,
+  MenuProps,
   MenuPortalProps,
+  MenuTriggerProps,
+  MenuTriggerStyleSlots,
+  MenuTriggerStylesProp,
   MenuContentProps,
+  MenuContentListStyles,
+  MenuContentStyleSlots,
+  MenuContentStylesProp,
   MenuGroupProps,
+  MenuGroupStyleSlots,
+  MenuGroupStylesProp,
   MenuItemProps,
+  MenuItemStyleSlots,
+  MenuItemStylesProp,
   MenuCheckboxItemProps,
+  MenuCheckboxItemStyleSlots,
+  MenuCheckboxItemStylesProp,
   MenuRadioGroupProps,
+  MenuRadioGroupStyleSlots,
+  MenuRadioGroupStylesProp,
   MenuRadioItemProps,
+  MenuRadioItemStyleSlots,
+  MenuRadioItemStylesProp,
   MenuLabelProps,
+  MenuLabelStyleSlots,
+  MenuLabelStylesProp,
   MenuSeparatorProps,
+  MenuSeparatorStyleSlots,
+  MenuSeparatorStylesProp,
   MenuShortcutProps,
+  MenuShortcutStyleSlots,
+  MenuShortcutStylesProp,
   MenuSubProps,
   MenuSubTriggerProps,
+  MenuSubTriggerStyleSlots,
+  MenuSubTriggerStylesProp,
   MenuSubContentProps,
+  MenuSubContentListStyles,
+  MenuSubContentStyleSlots,
+  MenuSubContentStylesProp,
 } from "./components/Menu";
 
 export { Switch } from "./components/Switch";
@@ -178,7 +238,12 @@ export type {
 } from "./components/Skeleton";
 
 export { Slider } from "./components/Slider";
-export type { SliderProps, SliderState } from "./components/Slider";
+export type {
+  SliderOrientation,
+  SliderProps,
+  SliderStyleSlots,
+  SliderStylesProp,
+} from "./components/Slider";
 
 export { Divider, dividerVariants } from "./components/Divider";
 export type { DividerProps } from "./components/Divider";
@@ -208,8 +273,20 @@ export const Path = PathBase;
 export const PathItem = PathItemBase;
 export type { PathComponent, PathProps, PathItemProps } from "./components/Path";
 
-export { Anchor, AnchorPreview } from "./components/Anchor";
-export type { AnchorProps, AnchorPreviewProps } from "./components/Anchor";
+export { Anchor, AnchorPreview, AnchorUnderline } from "./components/Anchor";
+export type {
+  AnchorProps,
+  AnchorPreviewProps,
+  AnchorUnderlineProps,
+  AnchorVariant,
+  AnchorStyleSlots,
+  AnchorStyleSlot,
+  AnchorStylesProp,
+  AnchorPreviewStyleSlots,
+  AnchorPreviewStyleSlot,
+  AnchorPreviewStylesProp,
+  AnchorPreviewStyleValue,
+} from "./components/Anchor";
 
 export { Gallery, GalleryItem, GalleryView, GalleryBody } from "./components/Gallery";
 export type {

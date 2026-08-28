@@ -1,17 +1,16 @@
 declare const styles: {
-  scope: string;
-  textarea: string;
+  root: string;
+  surface: string;
+  field: string;
   "size-sm": string;
   "size-md": string;
   "size-lg": string;
-  container: string;
-  surface: string;
-  "character-count": string;
-  "scroll-wrapper": string;
+  scroll: string;
   "resize-handle": string;
   "resize-handle-both": string;
   "resize-handle-x": string;
   "resize-handle-y": string;
+  "character-count": string;
 };
 
 export default styles;

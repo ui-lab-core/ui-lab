@@ -1,43 +1,32 @@
+"use client";
+
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { mergeProps } from "react-aria";
+import { useHover } from "@react-aria/interactions";
+import { useFocusRing } from "@react-aria/focus";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import * as positioning from "../../utils/submenu-positioning";
 import { cn } from "@/lib/utils";
-import { createStylesResolver } from "@/lib/styles";
 import css from "./Menu.module.css";
-import { useMenuContext } from "./Menu";
+import { useMenuContext, useMenuPortalContainer } from "./Menu";
 import type { MenuTriggerProps, MenuContentProps } from "./menu.types";
+import { resolveMenuTriggerStyles, resolveMenuContentStyles } from "./menu.styles";
 import {
   handleListKeyDown,
   useListPointerModality,
   useListScrollIntoView,
 } from "../../utils/list-navigation";
-import { useMergeRefs as useMergedRef } from "../../hooks/useMergeRefs";
+import { useMergeRefs } from "../../hooks/useMergeRefs";
 import { List } from "../List";
 import { Button } from "../Button";
 import { useScrollLock } from "../../hooks/useScrollLock";
 
-const resolveMenuTriggerBaseStyles = createStylesResolver(["root"] as const);
-const resolveMenuContentBaseStyles = createStylesResolver(["root", "list"] as const);
-
-function resolveMenuTriggerStyles(styles: MenuTriggerProps["styles"]) {
-  if (!styles) return resolveMenuTriggerBaseStyles(styles);
-  const { root } = styles;
-  return resolveMenuTriggerBaseStyles({ root });
-}
-
-function resolveMenuContentStyles(styles: MenuContentProps["styles"]) {
-  if (!styles) return resolveMenuContentBaseStyles(styles);
-  const { root, list } = styles;
-  return resolveMenuContentBaseStyles({ root, list });
-}
-
-/** Wrapper element that opens the context menu on right-click */
+/** Element that opens the menu on right-click or, for pop-over menus, on click and Enter/Space */
 const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
-  ({ children, disabled = false, className, styles, as, ...props }, ref) => {
+  ({ children, disabled = false, className, styles: stylesProp, as, ...props }, ref) => {
     const {
       isOpen,
       setIsOpen,
@@ -45,8 +34,9 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
       clickPositionRef,
       triggerRef: contextTriggerRef,
     } = useMenuContext();
-    const resolved = resolveMenuTriggerStyles(styles);
-    const [isHovered, setIsHovered] = React.useState(false);
+    const resolved = resolveMenuTriggerStyles(stylesProp);
+    const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
+    const { focusProps, isFocused, isFocusVisible } = useFocusRing();
 
     const handleContextMenu = React.useCallback(
       (e: React.MouseEvent) => {
@@ -58,14 +48,11 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
       [disabled, type, setIsOpen, clickPositionRef],
     );
 
-    const handleClick = React.useCallback(
-      (e: React.MouseEvent) => {
-        if (disabled || type !== "pop-over") return;
-        clickPositionRef.current = { x: 0, y: 0 };
-        setIsOpen((prev) => !prev);
-      },
-      [disabled, type, setIsOpen, clickPositionRef],
-    );
+    const handleClick = React.useCallback(() => {
+      if (disabled || type !== "pop-over") return;
+      clickPositionRef.current = { x: 0, y: 0 };
+      setIsOpen((prev) => !prev);
+    }, [disabled, type, setIsOpen, clickPositionRef]);
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent) => {
@@ -77,17 +64,19 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
       [disabled, type, setIsOpen, clickPositionRef],
     );
 
-    const positionerRef = contextTriggerRef;
+    const setTriggerRef = React.useCallback(
+      (element: HTMLElement | null) => {
+        contextTriggerRef.current = element;
+      },
+      [contextTriggerRef],
+    );
 
     const triggerProps = {
       onContextMenu: handleContextMenu,
       onClickCapture: handleClick,
-      onMouseEnter: () => setIsHovered(true),
-      onMouseLeave: () => setIsHovered(false),
-      className: cn("trigger", css.trigger, className, resolved.root),
+      className: cn("menu", "trigger", css.trigger, className, resolved.root),
+      "data-slot": "root",
       "data-open": isOpen ? "true" : "false",
-      "data-state": isOpen ? "open" : "closed",
-      "data-hovered": isOpen || isHovered ? "true" : "false",
       "data-type": type,
       "data-disabled": disabled ? "true" : undefined,
     };
@@ -98,13 +87,23 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
       React.isValidElement(child) && child.type !== React.Fragment
         ? (child as React.ReactElement<any>)
         : null;
-    const isLegacyInteractiveChild =
+    const isInteractiveChild =
       !!childElement &&
       (childElement.type === Button || childElement.type === "button" || childElement.type === "a");
     const renderAs =
-      as ?? (isLegacyInteractiveChild ? "child" : type === "pop-over" ? "button" : "span");
-    const childRef = useMergedRef<HTMLElement>(ref, childElement?.props.ref);
-    let trigger: React.ReactElement;
+      as ?? (isInteractiveChild ? "child" : type === "pop-over" ? "button" : "span");
+
+    const mergedRef = useMergeRefs<HTMLElement>(setTriggerRef, ref);
+    const childRef = useMergeRefs<HTMLElement>(mergedRef, childElement?.props.ref);
+
+    // The panel keeps a highlighted trigger while it is open. Button accepts data-hovered as the
+    // documented forced-visual-state input, so it is only forced while open and otherwise left to
+    // Button's own hover tracking.
+    const surfaceStateProps = {
+      "data-hovered": isOpen || isHovered ? "true" : "false",
+      "data-focused": isFocused ? "true" : "false",
+      "data-focus-visible": isFocusVisible ? "true" : "false",
+    };
 
     if (renderAs === "child") {
       if (!childElement) {
@@ -112,51 +111,85 @@ const MenuTrigger = React.forwardRef<HTMLElement, MenuTriggerProps>(
           'Menu.Trigger with as="child" expects exactly one non-Fragment React element child.',
         );
       }
-      trigger = React.cloneElement(childElement, {
-        ...mergeProps(triggerProps, props as any, childElement.props),
+      return React.cloneElement(childElement, {
+        ...mergeProps(
+          triggerProps,
+          surfaceStateProps,
+          hoverProps,
+          focusProps,
+          { onKeyDown: handleKeyDown },
+          props as any,
+          childElement.props,
+        ),
         className: cn(childElement.props.className, triggerProps.className),
         ref: childRef,
       } as any);
-    } else if (renderAs === "span") {
-      const spanProps =
+    }
+
+    if (renderAs === "span") {
+      const {
+        variant: _variant,
+        size: _size,
+        icon: _icon,
+        hint: _hint,
+        href: _href,
+        target: _target,
+        rel: _rel,
+        onPress: _onPress,
+        ...domProps
+      } = props as Record<string, unknown>;
+      const interactiveProps =
         type === "pop-over" ? { role: "button", tabIndex: disabled ? undefined : 0 } : {};
-      trigger = (
+      return (
         <span
-          {...mergeProps(triggerProps, { onKeyDown: handleKeyDown }, props as any)}
-          {...spanProps}
-          ref={ref as React.Ref<HTMLSpanElement>}
+          {...mergeProps(
+            triggerProps,
+            surfaceStateProps,
+            hoverProps,
+            focusProps,
+            { onKeyDown: handleKeyDown },
+            domProps as any,
+          )}
+          {...interactiveProps}
+          aria-haspopup="menu"
+          aria-expanded={type === "pop-over" ? isOpen : undefined}
+          aria-disabled={disabled || undefined}
+          ref={mergedRef as React.Ref<HTMLSpanElement>}
         >
           {children}
         </span>
       );
-    } else {
-      trigger = (
-        <Button
-          {...mergeProps(triggerProps, props as any)}
-          disabled={disabled}
-          ref={ref as React.Ref<HTMLButtonElement>}
-        >
-          {children}
-        </Button>
-      );
     }
 
     return (
-      <div
-        ref={positionerRef as React.Ref<HTMLDivElement>}
-        className={cn("menu", css["trigger-root"])}
+      <Button
+        {...mergeProps(triggerProps, props as any)}
+        data-hovered={isOpen ? "true" : undefined}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        disabled={disabled}
+        ref={mergedRef as React.Ref<HTMLButtonElement>}
       >
-        {trigger}
-      </div>
+        {children}
+      </Button>
     );
   },
 );
-MenuTrigger.displayName = "MenuTrigger";
+MenuTrigger.displayName = "Menu.Trigger";
 
-/** Floating panel that contains the menu items, positioned relative to the click location */
+/** Floating panel that contains the menu items, positioned at the click point or the trigger */
 const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
   (
-    { children, className, onEscapeKeyDown, side = "bottom", align = "start", offset = 0, styles },
+    {
+      children,
+      className,
+      onEscapeKeyDown,
+      side = "bottom",
+      align = "start",
+      offset = 6,
+      styles: stylesProp,
+      ...domProps
+    },
     ref,
   ) => {
     const {
@@ -174,6 +207,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       clickPositionRef,
       triggerRef,
     } = useMenuContext();
+    const portalContainer = useMenuPortalContainer();
     useScrollLock(isOpen);
     const [mounted, setMounted] = React.useState(false);
     const [floatingElement, setFloatingElement] = React.useState<HTMLDivElement | null>(null);
@@ -188,7 +222,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       // The floating wrapper stays mounted while closed; only its children are
       // conditional. Gate tracking on the open state.
       open: isOpen,
-      middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: offset }),
+      middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: 0 }),
     });
 
     const isPositioned = x !== null && y !== null;
@@ -239,7 +273,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       itemSelector: '[data-focused="true"], [data-highlighted="true"]',
     });
 
-    const mergedRef = useMergedRef<HTMLDivElement>(setFloatingElement, ref);
+    const mergedRef = useMergeRefs<HTMLDivElement>(setFloatingElement, ref);
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent) => {
@@ -287,9 +321,9 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
     });
 
     const showContent = isOpen && isPositioned;
-    const resolved = resolveMenuContentStyles(styles);
+    const resolved = resolveMenuContentStyles(stylesProp);
 
-    if (!mounted) return null;
+    if (!mounted || !portalContainer) return null;
 
     return createPortal(
       <>
@@ -299,7 +333,8 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
         {isOpen && (
           <div
             ref={refs.setFloating}
-            className={cn("menu", css["content-root"])}
+            className={cn("menu", css.overlay, resolved.overlay)}
+            data-slot="overlay"
             style={{
               ...floatingStyles,
               zIndex: 50000,
@@ -307,17 +342,26 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
             }}
           >
             <div
-              ref={mergedRef}
               role="menu"
               tabIndex={-1}
-              className={cn("content", css.content, className, resolved.root)}
+              {...domProps}
+              ref={mergedRef}
+              className={cn("content", css.panel, className, resolved.root)}
+              data-slot="root"
               data-state={showContent ? "open" : "closed"}
               data-placement={placement.split("-")[0]}
-              onKeyDown={handleKeyDown}
-              style={{ outline: "none", ...animationStyles }}
+              onKeyDown={(event) => {
+                domProps.onKeyDown?.(event);
+                if (!event.defaultPrevented) handleKeyDown(event);
+              }}
+              style={{ ...domProps.style, ...animationStyles }}
             >
-              <div className={cn("viewport", resolved.list)} style={{ padding: "0.25rem" }}>
-                <List items={items} gap="xs">
+              <div
+                className={cn("viewport", css.viewport, resolved["list.padding"])}
+                data-slot="list.padding"
+              >
+                {/* The panel is already the menu; the inner collection must not nest a listbox. */}
+                <List role="presentation" gap="xs" className={resolved["list.root"]}>
                   {children}
                 </List>
               </div>
@@ -325,10 +369,10 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
           </div>
         )}
       </>,
-      document.body,
+      portalContainer,
     );
   },
 );
-MenuContent.displayName = "MenuContent";
+MenuContent.displayName = "Menu.Content";
 
 export { MenuTrigger, MenuContent };

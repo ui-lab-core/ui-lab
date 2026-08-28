@@ -8,21 +8,26 @@
   }
 
   .expand {
-    --expand-disabled-opacity: 0.6;
-    --expand-trigger-padding-x: 0.75rem;
-    --expand-trigger-padding-y: 0.5rem;
-    --expand-trigger-radius: var(--radius-sm, 0.375rem);
+    --disabled-opacity: 0.6;
+
+    @slot trigger {
+      --padding-inline: 0.75rem;
+      --padding-block: 0.5rem;
+      --radius: var(--radius-sm, 0.375rem);
+    }
 
     @apply flex w-full flex-col;
   }
 
   .expand[data-layout="contained"] {
-    --expand-trigger-radius: 0;
+    @slot trigger {
+      --radius: 0;
+    }
   }
 
   .expand[data-disabled="true"] {
     cursor: not-allowed;
-    opacity: var(--expand-disabled-opacity);
+    opacity: var(--disabled-opacity);
   }
 
   .trigger {
@@ -32,7 +37,7 @@
     color: var(--foreground);
     background-color: var(--background);
     cursor: pointer;
-    border-radius: var(--expand-trigger-radius);
+    border-radius: slot(trigger, radius, 0.375rem);
     font-family: var(--font-body, inherit);
     font-size: var(--text-sm, 0.875rem);
     font-weight: var(--font-weight-body-medium, 500);
@@ -55,15 +60,17 @@
 
   .trigger[data-disabled="true"] {
     cursor: not-allowed;
-    opacity: var(--expand-disabled-opacity);
+    opacity: var(--disabled-opacity);
   }
 
   .title {
     @apply flex min-w-0 flex-1 items-center overflow-hidden;
 
-    padding: var(--expand-trigger-padding-y) 0 var(--expand-trigger-padding-y)
-      var(--expand-trigger-padding-x);
-    border-radius: var(--expand-trigger-radius) 0 0 var(--expand-trigger-radius);
+    padding-block: slot(trigger, padding-block, 0.5rem);
+    padding-inline-start: slot(trigger, padding-inline, 0.75rem);
+    padding-inline-end: 0;
+    border-start-start-radius: slot(trigger, radius, 0.375rem);
+    border-end-start-radius: slot(trigger, radius, 0.375rem);
     color: inherit;
     background-color: transparent;
   }
@@ -71,10 +78,12 @@
   .icon {
     @apply flex shrink-0 items-center justify-center;
 
-    padding: var(--expand-trigger-padding-y) var(--expand-trigger-padding-x);
-    color: inherit;
+    padding-block: slot(trigger, padding-block, 0.5rem);
+    padding-inline: slot(trigger, padding-inline, 0.75rem);
+    color: slot(icon, foreground, inherit);
     background-color: transparent;
-    border-radius: 0 var(--expand-trigger-radius) var(--expand-trigger-radius) 0;
+    border-start-end-radius: slot(trigger, radius, 0.375rem);
+    border-end-end-radius: slot(trigger, radius, 0.375rem);
   }
 
   @media (hover: hover) {
@@ -83,12 +92,17 @@
     }
 
     .trigger:not([data-disabled="true"]) .icon:hover {
-      border-radius: var(--expand-trigger-radius);
+      border-radius: slot(trigger, radius, 0.375rem);
     }
   }
 
   .icon > * {
     transition: transform 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+
+  .icon > svg {
+    width: slot(icon, size, 16px);
+    height: slot(icon, size, 16px);
   }
 
   .icon[data-selected="true"] > * {

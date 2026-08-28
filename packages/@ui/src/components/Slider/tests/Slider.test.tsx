@@ -125,6 +125,22 @@ describe("Slider", () => {
     expect(thumb).toHaveAttribute("aria-disabled", "true");
     expect(thumb).toHaveAttribute("tabindex", "-1");
   });
+
+  it("reflects external updates to a controlled value after the initial render", () => {
+    const { rerender } = render(<Slider aria-label="Volume" value={20} />);
+
+    expect(screen.getByRole("slider", { name: "Volume" })).toHaveAttribute(
+      "aria-valuenow",
+      "20",
+    );
+
+    rerender(<Slider aria-label="Volume" value={60} />);
+
+    expect(screen.getByRole("slider", { name: "Volume" })).toHaveAttribute(
+      "aria-valuenow",
+      "60",
+    );
+  });
 });
 
 describe("Slider range marker", () => {

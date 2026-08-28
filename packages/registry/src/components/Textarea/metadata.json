@@ -1,6 +1,6 @@
 {
   "id": "textarea",
-  "name": "Textarea",
+  "name": "TextArea",
   "description": "Multi-line text input field for longer user input.",
   "category": "input",
   "source": {
@@ -12,6 +12,11 @@
   "tags": ["form", "text", "multi-line"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Works with label elements", "Resizable option available"]
+    "notes": [
+      "Renders a native textarea, so labels, aria-label, aria-labelledby, aria-describedby, and form validation behave natively",
+      "Disabled uses the native disabled attribute and also publishes data-disabled for styling",
+      "Keyboard focus is indicated by the shared focus indicator, which tracks the field or the scroll surface when maxHeight is set",
+      "The drag-to-resize handle is decorative, aria-hidden, and pointer-only; keyboard users are never required to use it"
+    ]
   }
 }

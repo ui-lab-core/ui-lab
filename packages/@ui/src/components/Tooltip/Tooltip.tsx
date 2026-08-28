@@ -28,7 +28,7 @@ const ARROW_WIDTH = 12;
 const ARROW_HEIGHT = 9;
 const ARROW_PADDING = 8;
 const TOOLTIP_GAP = 4;
-const ARROW_POSITIONING_SIZE = 6;
+const ARROW_POSITIONING_SIZE = ARROW_HEIGHT;
 const DEFAULT_SHOW_DELAY_MS = 600;
 const SWAP_WINDOW_MS = 150;
 const EXIT_ANIMATION_MS = 160;
@@ -59,15 +59,15 @@ type TooltipPosition = "top" | "right" | "bottom" | "left";
 const getInitialTransform = (placement: string): string => {
   switch (placement) {
     case "top":
-      return "translateY(3px) scale(0.95)";
+      return "translateY(3px)";
     case "bottom":
-      return "translateY(-3px) scale(0.95)";
+      return "translateY(-3px)";
     case "left":
-      return "translateX(3px) scale(0.95)";
+      return "translateX(3px)";
     case "right":
-      return "translateX(-3px) scale(0.95)";
+      return "translateX(-3px)";
     default:
-      return "scale(0.95)";
+      return "translate(0, 0)";
   }
 };
 
@@ -116,7 +116,7 @@ export interface TooltipProps {
   /** Called when the tooltip opens or closes */
   onOpenChange?: (isOpen: boolean) => void;
   /** Whether to render a directional arrow pointing at the trigger */
-  showArrow?: boolean;
+  "show-arrow"?: boolean;
   /** Keyboard shortcut or hint rendered as a Badge at the end of the tooltip. An array renders its segments joined by a `+` divider. */
   hint?: HintValue;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
@@ -139,7 +139,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       state: controlledState,
       isOpen: legacyIsOpen,
       onOpenChange,
-      showArrow = false,
+      "show-arrow": showArrow = false,
       hint,
       styles,
     },
@@ -377,7 +377,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                 data-instant={isInstant || !isTriggerVisible ? "true" : undefined}
                 style={{
                   transform:
-                    isVisible && isTriggerVisible ? "scale(1)" : getInitialTransform(placement),
+                    isVisible && isTriggerVisible
+                      ? "translate(0, 0)"
+                      : getInitialTransform(placement),
                 }}
               >
                 <Frame

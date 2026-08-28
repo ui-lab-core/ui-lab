@@ -1,7 +1,11 @@
+"use client";
+
 import * as React from "react";
+
 import { useFocusRing } from "@react-aria/focus";
 import { useHover } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
+
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
@@ -9,82 +13,84 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Tooltip } from "@/components/Tooltip";
 import css from "./Anchor.module.css";
 
-type Orientation = "horizontal" | "vertical";
-type UnderlineWeight = "sm" | "md" | "lg";
-type AnchorVariant = "solid" | "dashed" | "dotted";
+/** Line treatment drawn beneath the Anchor label. */
+export type AnchorVariant = "solid" | "dashed" | "dotted";
 
-interface AnchorStyleSlots {
+/** Class-based slots for the Anchor preview overlay. */
+export interface AnchorPreviewStyleSlots {
+  /** The portaled overlay element that positions the preview. */
   root?: Style;
+  /** The preview surface rendered inside the overlay. */
+  content?: Style;
+}
+
+/** Keyed class names for Anchor preview anatomy. */
+export type AnchorPreviewStylesProp = StylesProp<AnchorPreviewStyleSlots>;
+/** Names of stable Anchor preview style slots. */
+export type AnchorPreviewStyleSlot = keyof AnchorPreviewStyleSlots;
+
+/**
+ * Shared or keyed styles for the Anchor preview overlay. A shared class applies
+ * to every preview slot; use the keyed form to address one slot.
+ */
+export type AnchorPreviewStyleValue = Style | AnchorPreviewStyleSlots;
+
+/** Class-based slots for the Anchor root and stable compound anatomy. */
+export interface AnchorStyleSlots {
+  /** The rendered anchor or span root element. */
+  root?: Style;
+  /** The underline drawn beneath the label. */
   underline?: Style;
-  preview?: Style;
+  /** Shared or keyed anatomy for the hover preview overlay. */
+  preview?: AnchorPreviewStyleValue;
 }
 
-type AnchorStylesProp = StylesProp<AnchorStyleSlots>;
+/** Keyed class names for Anchor anatomy. */
+export type AnchorStylesProp = StylesProp<AnchorStyleSlots>;
+/** Names of stable Anchor root and compound style slots. */
+export type AnchorStyleSlot = keyof AnchorStyleSlots;
 
-const resolveAnchorBaseStyles = createStylesResolver(["root", "underline", "preview"] as const);
+const ANCHOR_STYLE_SLOTS = ["root", "underline", "preview.root", "preview.content"] as const;
 
-function resolveAnchorStyles(styles: AnchorStylesProp | undefined) {
-  return resolveAnchorBaseStyles(styles);
-}
-const ANCHOR_PREVIEW_DISPLAY_NAME = "Anchor.Preview";
-const ANCHOR_UNDERLINE_DISPLAY_NAME = "Anchor.Underline";
+const resolveAnchorStyles = createStylesResolver(ANCHOR_STYLE_SLOTS);
 
-const DASHED_DIMENSIONS = {
-  sm: { thickness: 1, dashLength: 8, gapLength: 4 },
-  md: { thickness: 2, dashLength: 8, gapLength: 4 },
-  lg: { thickness: 4, dashLength: 10, gapLength: 6 },
-} as const;
+// The underline is a 1px horizontal rule, so a single mask tile per variant
+// covers every rendered case. Tiles repeat along the inline axis.
+const UNDERLINE_MASK_TILES: Record<Exclude<AnchorVariant, "solid">, string> = {
+  dashed:
+    "%3Csvg width='12' height='1' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='8' height='1' fill='%23ffffff'/%3E%3C/svg%3E",
+  dotted:
+    "%3Csvg width='3' height='1' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='0.5' cy='0.5' r='0.5' fill='%23ffffff'/%3E%3C/svg%3E",
+};
 
-const DOTTED_DIMENSIONS = {
-  sm: { thickness: 1, radius: 0.5, spacing: 3 },
-  md: { thickness: 2, radius: 1, spacing: 6 },
-  lg: { thickness: 4, radius: 2, spacing: 12 },
-} as const;
+function getUnderlineMaskStyle(variant: AnchorVariant): React.CSSProperties {
+  if (variant === "solid") return {};
 
-function getDashedMaskSvg(orientation: Orientation, weight: UnderlineWeight): string {
-  const { thickness, dashLength, gapLength } = DASHED_DIMENSIONS[weight];
-  const totalLength = dashLength + gapLength;
+  const maskImage = `url("data:image/svg+xml,${UNDERLINE_MASK_TILES[variant]}")`;
 
-  if (orientation === "horizontal") {
-    return `%3Csvg width='${totalLength}' height='${thickness}' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='${dashLength}' height='${thickness}' fill='%23ffffff'/%3E%3C/svg%3E`;
-  }
-  return `%3Csvg width='${thickness}' height='${totalLength}' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='${thickness}' height='${dashLength}' fill='%23ffffff'/%3E%3C/svg%3E`;
-}
-
-function getDottedMaskSvg(orientation: Orientation, weight: UnderlineWeight): string {
-  const { thickness, radius, spacing } = DOTTED_DIMENSIONS[weight];
-
-  if (orientation === "horizontal") {
-    return `%3Csvg width='${spacing}' height='${thickness}' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='${radius}' cy='${radius}' r='${radius}' fill='%23ffffff'/%3E%3C/svg%3E`;
-  }
-  return `%3Csvg width='${thickness}' height='${spacing}' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='${radius}' cy='${radius}' r='${radius}' fill='%23ffffff'/%3E%3C/svg%3E`;
+  return {
+    WebkitMaskImage: maskImage,
+    maskImage,
+    WebkitMaskRepeat: "repeat-x",
+    maskRepeat: "repeat-x",
+  };
 }
 
 type CompoundComponentType = {
   displayName?: string;
   name?: string;
-  render?: {
-    displayName?: string;
-    name?: string;
-  };
+  render?: { displayName?: string; name?: string };
 };
 
+// Compound parts survive re-exports and HMR wrappers that break identity
+// checks, so fall back to the dotted display name the part declares.
 function matchesCompoundComponent(
   childType: React.JSXElementConstructor<any> | string | undefined,
   component: React.JSXElementConstructor<any>,
-  displayName: string,
+  displayName: string | undefined,
 ): boolean {
-  if (!childType) {
-    return false;
-  }
-
-  if (childType === component) {
-    return true;
-  }
-
-  if (typeof childType === "string") {
-    return false;
-  }
+  if (!childType || typeof childType === "string" || !displayName) return false;
+  if (childType === component) return true;
 
   const componentType = childType as CompoundComponentType;
 
@@ -96,73 +102,84 @@ function matchesCompoundComponent(
   );
 }
 
-// --- Sub-components ---
-
-export interface AnchorPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
+/** Declares the hover preview content for an Anchor. Renders nothing itself. */
+export interface AnchorPreviewProps {
+  /** Content shown in the preview overlay when the Anchor is hovered or focused.
+   * @category Content
+   */
   children: React.ReactNode;
 }
 
-export function AnchorPreview({ children }: AnchorPreviewProps) {
+/**
+ * Declarative marker for Anchor preview content. Anchor reads its children and
+ * renders them in the preview overlay; the element itself renders nothing.
+ */
+export function AnchorPreview(_props: AnchorPreviewProps) {
   return null;
 }
-AnchorPreview.displayName = ANCHOR_PREVIEW_DISPLAY_NAME;
+AnchorPreview.displayName = "Anchor.Preview";
 
-interface AnchorUnderlineProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Controls the line style of the underline */
+export interface AnchorUnderlineProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Line treatment drawn for this underline, overriding the Anchor root variant.
+   * @category Core
+   * @default solid
+   */
   variant?: AnchorVariant;
 }
 
-const AnchorUnderline = React.forwardRef<HTMLDivElement, AnchorUnderlineProps>(
-  ({ className, variant = "solid", style, ...props }, ref) => {
-    const getMaskStyles = (): React.CSSProperties => {
-      if (variant === "solid") return {};
-
-      const orientation = "horizontal";
-      const weight = "sm";
-
-      const svgDataUri =
-        variant === "dashed"
-          ? getDashedMaskSvg(orientation, weight)
-          : getDottedMaskSvg(orientation, weight);
-      const maskRepeat = "repeat-x";
-      const encodedSvg = `url("data:image/svg+xml,${svgDataUri}")`;
-
-      return {
-        WebkitMaskImage: encodedSvg,
-        maskImage: encodedSvg,
-        WebkitMaskRepeat: maskRepeat,
-        maskRepeat: maskRepeat,
-      } as React.CSSProperties;
-    };
-
-    return (
-      <span
-        ref={ref}
-        className={cn(css.underline, className)}
-        data-anchor-underline="true"
-        style={{ ...getMaskStyles(), ...style }}
-        {...props}
-      />
-    );
-  },
+/**
+ * The underline drawn beneath an Anchor label. Anchor renders one automatically;
+ * supply this part explicitly to override its variant or props.
+ */
+const AnchorUnderline = React.forwardRef<HTMLSpanElement, AnchorUnderlineProps>(
+  ({ className, variant = "solid", style, ...props }, ref) => (
+    <span
+      {...props}
+      ref={ref}
+      className={cn(css.underline, className)}
+      data-slot="underline"
+      data-variant={variant}
+      aria-hidden="true"
+      style={{ ...getUnderlineMaskStyle(variant), ...style }}
+    />
+  ),
 );
-AnchorUnderline.displayName = ANCHOR_UNDERLINE_DISPLAY_NAME;
+AnchorUnderline.displayName = "Anchor.Underline";
 
-// --- Main Anchor Component ---
-
-export interface AnchorProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
+export interface AnchorProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Anchor label content. Supply Anchor.Preview or Anchor.Underline to configure those parts.
+   * @category Content
+   */
   children?: React.ReactNode;
-  /** Additional CSS class for the anchor element */
-  className?: string;
-  /** URL the anchor navigates to */
+  /** Destination URL. Anchor renders a span instead of a link when omitted.
+   * @category Link behavior
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href
+   */
   href?: string;
-  /** Browsing context for the link (e.g. "_blank") */
-  target?: string;
-  /** Controls the underline treatment. */
+  /** Browsing context the link opens in.
+   * @category Link behavior
+   * @default _blank
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
+   */
+  target?: React.HTMLAttributeAnchorTarget;
+  /** Relationship between the current document and the destination. Defaults to noopener noreferrer when target is _blank.
+   * @category Link behavior
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#rel
+   */
+  rel?: string;
+  /** Line treatment drawn beneath the label. Applies to the generated underline; an explicit Anchor.Underline keeps its own variant.
+   * @category Core
+   * @default solid
+   */
   variant?: AnchorVariant;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Keyed styles for the root and named component parts. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc AnchorStyleSlots
+   */
   styles?: AnchorStylesProp;
-  /** Preview content to show in a tooltip on hover. Use this in server components instead of <Anchor.Preview>. */
+  /** Preview content shown in an overlay on hover or keyboard focus. Prefer this over Anchor.Preview in server components.
+   * @category Content
+   */
   preview?: React.ReactNode;
 }
 
@@ -173,6 +190,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
       children,
       href,
       target = "_blank",
+      rel,
       variant = "solid",
       styles,
       preview: previewProp,
@@ -181,6 +199,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
     ref,
   ) => {
     const rootRef = React.useRef<HTMLAnchorElement | HTMLSpanElement>(null);
+    const mergedRef = useMergeRefs(rootRef, ref);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const { hoverProps, isHovered } = useHover({});
     const { scopeProps, indicatorProps } = useFocus({
@@ -190,121 +209,109 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
       radiusSource: "surface",
       mode: "self",
     });
-    const mergedRef = useMergeRefs(rootRef, ref);
+
+    const resolved = resolveAnchorStyles(styles);
 
     let previewContent: React.ReactNode = previewProp ?? null;
     let hasUnderline = false;
+    const content: React.ReactNode[] = [];
 
-    const childrenArray = React.Children.toArray(children);
-    const resolved = resolveAnchorStyles(styles);
-    const rootClassName = cn(
-      "anchor",
-      variant,
-      css.root,
-      className,
-      resolved.root,
-      scopeProps.className,
-    );
-
-    let filteredChildren: React.ReactNode[] = [];
-
-    // Extract preview content and filter it out from rendered children
-    React.Children.forEach(childrenArray, (child) => {
-      if (React.isValidElement(child)) {
-        if (matchesCompoundComponent(child.type, AnchorPreview, ANCHOR_PREVIEW_DISPLAY_NAME)) {
-          if (!previewProp) previewContent = (child.props as any).children;
-          // Don't add to filteredChildren
-        } else if (
-          matchesCompoundComponent(child.type, AnchorUnderline, ANCHOR_UNDERLINE_DISPLAY_NAME)
-        ) {
-          hasUnderline = true;
-          // Clone AnchorUnderline to inject resolved.underline
-          const underlineChild = child as React.ReactElement<AnchorUnderlineProps>;
-          filteredChildren.push(
-            React.cloneElement(underlineChild, {
-              className: cn(underlineChild.props.className, resolved.underline),
-            }),
-          );
-        } else {
-          filteredChildren.push(child);
-        }
-      } else {
-        filteredChildren.push(child);
+    // Anchor.Preview is a declarative marker: read its children and drop it from
+    // the rendered output. Anchor.Underline is rendered, with the resolved slot
+    // class injected so styles.underline reaches a consumer-supplied part too.
+    React.Children.forEach(React.Children.toArray(children), (child) => {
+      if (!React.isValidElement(child)) {
+        content.push(child);
+        return;
       }
+
+      if (matchesCompoundComponent(child.type, AnchorPreview, AnchorPreview.displayName)) {
+        if (!previewProp) previewContent = (child.props as AnchorPreviewProps).children;
+        return;
+      }
+
+      if (matchesCompoundComponent(child.type, AnchorUnderline, AnchorUnderline.displayName)) {
+        hasUnderline = true;
+        const underline = child as React.ReactElement<AnchorUnderlineProps>;
+        content.push(
+          React.cloneElement(underline, {
+            className: cn(underline.props.className, resolved.underline),
+          }),
+        );
+        return;
+      }
+
+      content.push(child);
     });
 
-    // Inject default underline if none provided
     if (!hasUnderline) {
-      filteredChildren.push(
-        <AnchorUnderline
-          key="__default_underline"
-          className={resolved.underline}
-          variant={variant}
-        />,
+      content.push(
+        <AnchorUnderline key="underline" className={resolved.underline} variant={variant} />,
       );
     }
 
-    const { onChange, onChangeCapture, ...otherProps } = props as any;
-    const mergedFocusProps = mergeProps(focusProps, hoverProps) as any;
-    const { onChange: _, onChangeCapture: __, ...safeFocusProps } = mergedFocusProps;
+    const rootClassName = cn(
+      "anchor",
+      variant,
+      css.anchor,
+      scopeProps.className,
+      className,
+      resolved.root,
+    );
+    const rootProps = {
+      className: rootClassName,
+      "data-slot": "root",
+      "data-anchor-focus-surface": "true",
+      "data-variant": variant,
+      "data-hovered": isHovered ? "true" : "false",
+      "data-focused": isFocused ? "true" : "false",
+      "data-focus-visible": isFocusVisible ? "true" : "false",
+    } as const;
+    const interactionProps = mergeProps(props, focusProps, hoverProps);
+    const indicator = <span {...indicatorProps} data-focus-indicator="local" />;
 
-    const triggerElement = href ? (
+    const trigger = href ? (
       <a
+        {...(interactionProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        {...rootProps}
         ref={mergedRef as React.Ref<HTMLAnchorElement>}
         href={href}
         target={target}
-        rel={target === "_blank" ? "noopener noreferrer" : undefined}
-        className={rootClassName}
-        data-anchor-focus-surface="true"
-        data-focused={isFocused ? "true" : undefined}
-        data-focus-visible={isFocusVisible ? "true" : undefined}
-        data-hovered={isHovered ? "true" : undefined}
-        {...(otherProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-        {...(safeFocusProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
       >
-        <span {...indicatorProps} data-focus-indicator="local" aria-hidden="true" />
-        {filteredChildren}
+        {indicator}
+        {content}
       </a>
     ) : (
       <span
+        {...(interactionProps as React.HTMLAttributes<HTMLSpanElement>)}
+        {...rootProps}
         ref={mergedRef as React.Ref<HTMLSpanElement>}
-        className={rootClassName}
-        data-anchor-focus-surface="true"
-        data-focused={isFocused ? "true" : undefined}
-        data-focus-visible={isFocusVisible ? "true" : undefined}
-        data-hovered={isHovered ? "true" : undefined}
-        {...(otherProps as React.HTMLAttributes<HTMLSpanElement>)}
-        {...(safeFocusProps as React.HTMLAttributes<HTMLSpanElement>)}
       >
-        <span {...indicatorProps} data-focus-indicator="local" aria-hidden="true" />
-        {filteredChildren}
+        {indicator}
+        {content}
       </span>
     );
 
-    // If no preview content, render trigger directly without a tooltip wrapper.
-    if (!previewContent) {
-      return triggerElement;
-    }
+    if (!previewContent) return trigger;
 
     return (
       <Tooltip
         content={previewContent}
-        showArrow
+        show-arrow
         position="top"
-        className={cn("preview", css.preview)}
-        styles={{ content: resolved.preview }}
+        styles={{ root: resolved["preview.root"], content: resolved["preview.content"] }}
       >
-        {triggerElement}
+        {trigger}
       </Tooltip>
     );
   },
 );
 AnchorRoot.displayName = "Anchor";
 
-// Compound component with attached sub-components
 const Anchor = Object.assign(AnchorRoot, {
   Preview: AnchorPreview,
   Underline: AnchorUnderline,
 });
 
-export { Anchor };
+export { Anchor, AnchorUnderline };

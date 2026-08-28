@@ -9,14 +9,16 @@
     "exportName": "Group",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["button", "input", "select", "expand"],
-  "tags": ["composition", "grouped", "compound", "form"],
+  "relatedComponents": ["button", "input", "select", "expand", "divider"],
+  "tags": ["composition", "grouped", "compound", "form", "toolbar"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Uses role=\"group\" for semantic grouping",
-      "Propagates disabled state to children",
-      "Maintains keyboard navigation for all child components"
+      "Renders role=\"group\" and accepts aria-label or aria-labelledby to name the collection",
+      "Marks a disabled group with aria-disabled and disables every child that does not set its own disabled value",
+      "Moves focus between grouped controls with the arrow keys matching the orientation, wrapping at both ends, while leaving other keys to the focused control",
+      "Composes with a consumer onKeyDown handler instead of replacing it",
+      "Renders one shared focus ring that tracks the focused grouped surface"
     ]
   }
 }

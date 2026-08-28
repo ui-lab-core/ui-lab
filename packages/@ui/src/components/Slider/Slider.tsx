@@ -39,14 +39,6 @@ export interface SliderStyleSlots {
  */
 export type SliderStylesProp = SliderStyleSlots;
 
-/** Controlled values supplied through Slider's state object.
- * @typeDoc SliderState
- */
-export interface SliderState {
-  /** Current value for a single thumb or ordered values for multiple thumbs. */
-  value?: number | number[];
-}
-
 const sliderStyleSlotKeys = ["root", "track", "range", "thumb"] as const;
 const resolveSliderStyles = createStylePropsResolver(sliderStyleSlotKeys);
 
@@ -75,12 +67,7 @@ export interface SliderProps extends Omit<
    * @default 1
    */
   step?: number;
-  /** Controls slider values through a state object. It takes precedence over value when both are provided.
-   * @category Core
-   * @typeDoc SliderState
-   */
-  state?: SliderState;
-  /** Sets the initial value when neither state.value nor value controls the slider.
+  /** Sets the initial value when Slider is uncontrolled.
    * @category Core
    * @default [min]
    */
@@ -115,10 +102,6 @@ export interface SliderProps extends Omit<
    * @typeDoc SliderStyleSlots
    */
   styles?: SliderStylesProp;
-  /** Inline styles applied to the track after styles.track inline styles.
-   * @category Styling
-   */
-  trackStyle?: React.CSSProperties;
 }
 
 interface SliderThumbProps {
@@ -353,13 +336,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       style,
       defaultValue,
       value: controlledValue,
-      state: controlledState,
       onValueChange,
       min = 0,
       max = 100,
       step = 1,
       orientation = "horizontal",
-      trackStyle,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       onPointerDown,
@@ -377,9 +358,18 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const activeDragRef = React.useRef<{ pointerId: number; thumbIndex: number } | null>(null);
     const [draggingThumbIndex, setDraggingThumbIndex] = React.useState<number | null>(null);
 
+    const normalizedControlledValueKey = Array.isArray(controlledValue)
+      ? controlledValue.join(",")
+      : controlledValue;
+    const normalizedControlledValue = React.useMemo(
+      () => normalizeValue(controlledValue),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [normalizedControlledValueKey],
+    );
+
     const [normalizedValues, setInternalValues] = useControlledState(
-      normalizeValue(controlledState?.value),
-      normalizeValue(controlledValue),
+      normalizedControlledValue,
+      undefined,
       normalizeValue(defaultValue) ?? [min],
     );
     const values = normalizedValues.length > 0 ? normalizedValues : [min];
@@ -578,10 +568,10 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-slider-track="true"
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
-          style={{ ...resolved.track.style, ...trackStyle }}
+          style={resolved.track.style}
           data-slot="track"
         >
-          <div {...indicatorProps} data-focus-indicator="track" />
+          <div {...indicatorProps} data-focus-indicator="local" />
           <div
             className={cn("range", css.range, resolved.range.className)}
             data-slider-range="true"

@@ -211,4 +211,11 @@ const Skeleton = Object.assign(SkeletonRoot, {
   Image: SkeletonImage,
 });
 
+export function isSkeletonElement(value: React.ReactNode): boolean {
+  return (
+    React.isValidElement(value) &&
+    (value.type === SkeletonRoot || value.type === SkeletonText || value.type === SkeletonImage)
+  );
+}
+
 export { Skeleton, SkeletonText, SkeletonImage };

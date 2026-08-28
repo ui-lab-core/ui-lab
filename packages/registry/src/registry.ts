@@ -4,16 +4,16 @@ export const componentRegistry: ComponentRegistry = {
   anchor: {
     id: "anchor",
     name: "Anchor",
-    description: "Link with animated underline and popover preview.",
+    description: "Link with an animated underline and an optional hover preview.",
     category: "navigation",
     source: {
   "packageName": "ui-lab-components",
   "exportName": "Anchor",
   "packagePath": "dist/index.d.ts"
 },
-    relatedComponents: ["popover","breadcrumbs"],
+    relatedComponents: ["tooltip","path","button"],
     tags: ["navigation","interactive","link"],
-    accessibility: {"hasAriaSupport":true,"notes":["Keyboard accessible with focus visible states","Built on Popover for accessible overlay handling","Screen reader friendly"]},
+    accessibility: {"hasAriaSupport":true,"notes":["Renders a native anchor element when href is supplied, and a span otherwise","Adds rel=\"noopener noreferrer\" automatically when target is _blank","Keyboard focusable with a keyboard-visible focus indicator","The underline is decorative and hidden from assistive technology","Hover previews are rendered by Tooltip, which handles accessible overlay behavior"]},
     usage: undefined,
     examples: [],
   },
@@ -420,17 +420,17 @@ export const componentRegistry: ComponentRegistry = {
   menu: {
     id: "menu",
     name: "Menu",
-    description: "Context menu for right-click actions.",
-    category: "navigation",
+    description: "Context menu or pop-over menu with items, checkbox and radio items, groups, and nested submenus.",
+    category: "action",
     experimental: true,
     source: {
   "packageName": "ui-lab-components",
   "exportName": "Menu",
   "packagePath": "dist/index.d.ts"
 },
-    relatedComponents: ["popover"],
-    tags: ["menu","right-click","actions"],
-    accessibility: {"hasAriaSupport":true,"notes":["Keyboard accessible","Menu role","Focus management"]},
+    relatedComponents: ["popover","select","list","button"],
+    tags: ["menu","context-menu","right-click","dropdown","actions","submenu"],
+    accessibility: {"hasAriaSupport":true,"notes":["The trigger publishes aria-haspopup=\"menu\" and aria-expanded. Pop-over menus render a Button by default; the span branch adds role=\"button\" and a tab stop so Enter and Space open the panel.","The floating panel is the single element with role=\"menu\"; the inner collection is presentational so items are owned directly by it.","Items expose role=\"menuitem\", or role=\"menuitemradio\" and role=\"menuitemcheckbox\" with aria-checked when selection or a checkbox or radio item is used. Disabled items expose aria-disabled and are skipped by keyboard navigation.","Arrow keys, Home, End, typeahead, Enter, and Escape follow the menu pattern. ArrowRight opens a submenu from its trigger and ArrowLeft closes it, returning focus to that trigger.","Menu.Separator uses role=\"separator\", Menu.Group and Menu.RadioGroup use role=\"group\", and selection indicators and the submenu chevron are hidden from assistive technology.","Icon-only triggers need an accessible name through aria-label on Menu.Trigger."]},
     usage: undefined,
     examples: [],
   },
@@ -677,7 +677,7 @@ export const componentRegistry: ComponentRegistry = {
 
   textarea: {
     id: "textarea",
-    name: "Textarea",
+    name: "TextArea",
     description: "Multi-line text input field for longer user input.",
     category: "input",
     source: {
@@ -687,7 +687,7 @@ export const componentRegistry: ComponentRegistry = {
 },
     relatedComponents: ["input","label","form"],
     tags: ["form","text","multi-line"],
-    accessibility: {"hasAriaSupport":true,"notes":["Works with label elements","Resizable option available"]},
+    accessibility: {"hasAriaSupport":true,"notes":["Renders a native textarea, so labels, aria-label, aria-labelledby, aria-describedby, and form validation behave natively","Disabled uses the native disabled attribute and also publishes data-disabled for styling","Keyboard focus is indicated by the shared focus indicator, which tracks the field or the scroll surface when maxHeight is set","The drag-to-resize handle is decorative, aria-hidden, and pointer-only; keyboard users are never required to use it"]},
     usage: undefined,
     examples: [],
   },

@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { pathToFileURL } from "url";
 import postcss from "postcss";
 import ts from "typescript";
+import variantPlugin from "../../../postcss/variant.mjs";
 import type { ComponentStyles, StyleableGroup } from "../src/types";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -132,6 +133,18 @@ function matchesComponentRootSelector(selector: string, componentClass: string):
   return new RegExp(`^\\.${escapedClass}(?=$|[^a-zA-Z0-9_-])`).test(selector.trim());
 }
 
+function extractThemeVariants(componentClass: string): string[] {
+  if (!fs.existsSync(ONYX_THEME_CSS)) return [];
+  const variants = new Set<string>();
+  const root = postcss.parse(fs.readFileSync(ONYX_THEME_CSS, "utf8"));
+  root.walkAtRules("variant", (rule) => {
+    const [target, value, ...rest] = postcss.list.space(rule.params);
+    if (target !== componentClass) return;
+    if (value && rest.length === 0 && rule.nodes) variants.add(value);
+  });
+  return [...variants];
+}
+
 async function extractThemeStyles(componentDirName: string): Promise<{
   rawCss?: string;
 }> {
@@ -139,7 +152,7 @@ async function extractThemeStyles(componentDirName: string): Promise<{
 
   const componentClass = toKebabCase(componentDirName);
   const source = fs.readFileSync(ONYX_THEME_CSS, "utf8");
-  const root = postcss.parse(source);
+  const root = postcss([variantPlugin()]).process(source, { from: undefined }).root;
   const themeRoot = postcss.root();
   const atRuleContainers = new Map<string, postcss.Container>([["", themeRoot]]);
 
@@ -367,6 +380,7 @@ async function extractComponentStyles(componentDirName: string): Promise<Compone
     return {
       rawCss,
       onyxThemeCss: themeStyles.rawCss,
+      variants: extractThemeVariants(toKebabCase(componentDirName)),
       cssVariables,
       styleableParts,
       styleableGroups,

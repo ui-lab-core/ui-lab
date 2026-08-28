@@ -23,12 +23,14 @@ export function getFrameSideFromPlacement(placement: string): ArrowSide | undefi
 
   if (!side) return undefined;
 
-  return {
+  const oppositeSides: Record<ArrowSide, ArrowSide> = {
     top: "bottom",
     right: "left",
     bottom: "top",
     left: "right",
-  }[side];
+  };
+
+  return oppositeSides[side];
 }
 
 /**

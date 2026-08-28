@@ -28,13 +28,13 @@
 
     &.horizontal {
       @apply flex-row items-stretch;
-      height: var(--control-height);
+      block-size: var(--control-height);
 
       .item.divider {
         margin-block: calc(var(--padding-size) * -1);
       }
       .item [role="separator"][aria-orientation="vertical"] {
-        height: 100%;
+        block-size: 100%;
       }
     }
 
@@ -45,7 +45,7 @@
         margin-inline: calc(var(--padding-size) * -1);
       }
       .item [role="separator"][aria-orientation="horizontal"] {
-        width: 100%;
+        inline-size: 100%;
       }
     }
 
@@ -70,8 +70,8 @@
     position: relative;
     isolation: isolate;
     box-sizing: border-box;
-    min-width: 0;
-    border-radius: var(--group-item-radius, 0);
+    min-inline-size: 0;
+    border-radius: slot(item, radius, 0);
     overflow: visible;
 
     &.grow {
@@ -88,9 +88,9 @@
   }
 
   :is(.button, .input, .select, .expand) {
-    height: 100%;
-    min-height: var(--item-height);
-    min-width: 0;
+    block-size: 100%;
+    min-block-size: var(--item-height);
+    min-inline-size: 0;
     box-sizing: border-box;
     position: relative;
     isolation: isolate;
@@ -105,8 +105,8 @@
        which can still subtly alter text rendering on a composited layer.
        Standalone Buttons retain their scale effect. */
     --press-transform: none;
-    width: auto;
-    border-radius: var(--group-item-radius, var(--background-inner-radius));
+    inline-size: auto;
+    border-radius: slot(item, radius, var(--background-inner-radius));
   }
 
   /* Button resolves icon-only state itself. Put the square sizing contract on
@@ -121,22 +121,22 @@
     .item:has(.button[data-icon-only="true"]):not(:has([role="separator"]))
     .button[data-icon-only="true"] {
     flex: 1 1 auto;
-    width: 100%;
-    height: 100%;
+    inline-size: 100%;
+    block-size: 100%;
     aspect-ratio: auto;
   }
 
   .vertical .item .button[data-icon-only="true"],
   .horizontal .item:has([role="separator"]) .button[data-icon-only="true"] {
     flex: 0 0 auto;
-    width: auto;
-    height: 100%;
+    inline-size: auto;
+    block-size: 100%;
     aspect-ratio: 1;
   }
 
   .input {
     @apply flex flex-1 items-stretch overflow-visible;
-    border-radius: var(--group-item-radius, var(--background-inner-radius));
+    border-radius: slot(item, radius, var(--background-inner-radius));
 
     > [data-ring="true"] {
       border-radius: inherit;
@@ -145,7 +145,7 @@
 
   .select {
     @apply flex items-stretch min-w-0 p-0 bg-transparent border-none;
-    border-radius: var(--group-item-radius, var(--background-inner-radius));
+    border-radius: slot(item, radius, var(--background-inner-radius));
   }
 
   .select > :global(.value) {
@@ -168,7 +168,7 @@
 
   .expand {
     @apply flex items-stretch;
-    border-radius: var(--group-item-radius, var(--background-inner-radius));
+    border-radius: slot(item, radius, var(--background-inner-radius));
   }
 
   .expand :global(.expand-scope),
@@ -184,9 +184,6 @@
   .expand :global(.trigger) {
     @apply min-h-0;
     border-radius: inherit;
-  }
-
-  .trigger {
   }
 
   .group {
@@ -207,7 +204,7 @@
         overflow: hidden;
       }
 
-      :is(.button, .trigger, .select) {
+      :is(.button, .select) {
         border-radius: 0;
         --background-radius: 0;
         --background-inner-radius: 0;
@@ -218,61 +215,68 @@
       }
 
       .item:first-child {
-        --group-item-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+        @slot item {
+          --radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+        }
       }
 
       .item:last-child {
-        --group-item-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
+        @slot item {
+          --radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
+        }
       }
 
       .item:only-child {
-        --group-item-radius: var(--background-inner-radius);
+        @slot item {
+          --radius: var(--background-inner-radius);
+        }
       }
 
       &.horizontal {
-        .item:first-child :is(.button, .trigger, .input > *, .select) {
-          border-top-left-radius: var(--background-inner-radius);
-          border-bottom-left-radius: var(--background-inner-radius);
+        .item:first-child :is(.button, .input > *, .select) {
+          border-start-start-radius: var(--background-inner-radius);
+          border-end-start-radius: var(--background-inner-radius);
         }
 
-        .item:last-child :is(.button, .trigger, .input > *, .select) {
-          border-top-right-radius: var(--background-inner-radius);
-          border-bottom-right-radius: var(--background-inner-radius);
-        }
-
-        .item:last-child .trigger .icon-section {
-          border-top-right-radius: var(--background-inner-radius);
-          border-bottom-right-radius: var(--background-inner-radius);
+        .item:last-child :is(.button, .input > *, .select) {
+          border-start-end-radius: var(--background-inner-radius);
+          border-end-end-radius: var(--background-inner-radius);
         }
       }
 
       &.vertical {
         .item:first-child {
-          --group-item-radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;
+          @slot item {
+            --radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;
+          }
         }
 
         .item:last-child {
-          --group-item-radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);
+          @slot item {
+            --radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);
+          }
         }
 
-        .item:first-child :is(.button, .trigger, .input > *, .select) {
-          border-top-left-radius: var(--background-inner-radius);
-          border-top-right-radius: var(--background-inner-radius);
+        .item:first-child :is(.button, .input > *, .select) {
+          border-start-start-radius: var(--background-inner-radius);
+          border-start-end-radius: var(--background-inner-radius);
         }
 
-        .item:last-child :is(.button, .trigger, .input > *, .select) {
-          border-bottom-left-radius: var(--background-inner-radius);
-          border-bottom-right-radius: var(--background-inner-radius);
+        .item:last-child :is(.button, .input > *, .select) {
+          border-end-start-radius: var(--background-inner-radius);
+          border-end-end-radius: var(--background-inner-radius);
         }
       }
     }
 
     &:is(.xs, .sm) {
       .item {
-        --group-item-radius: var(--background-inner-radius);
+        @slot item {
+          --radius: var(--background-inner-radius);
+        }
       }
 
-      :is(.button, .trigger, .select) {
+      :is(.button, .select) {
         border-radius: var(--background-inner-radius);
       }
 
@@ -300,7 +304,7 @@
     display: none;
   }
 
-  :is(.button[data-focus-visible="true"], .trigger[data-focus-visible="true"]) {
+  .button[data-focus-visible="true"] {
     @apply outline-none;
     box-shadow: none;
   }

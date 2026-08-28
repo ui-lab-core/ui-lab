@@ -15,29 +15,73 @@ import { Divider, type DividerProps } from "@/components/Divider";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
-import styles from "./Expand.module.css";
+import css from "./Expand.module.css";
 
-type ExpandDirection = "below" | "above" | "left" | "right";
+/**
+ * Direction the content panel reveals from relative to the trigger.
+ * @typeDoc ExpandDirection
+ */
+export type ExpandDirection = "below" | "above" | "left" | "right";
 
+/**
+ * Controls whether Expand supplies its own corner radius or sits flush inside a bordered container.
+ * @typeDoc ExpandLayout
+ */
 export type ExpandLayout = "standalone" | "contained";
 
-interface ExpandIconStyles {
+/**
+ * Class-based styling targets for the Expand icon, addressed by collapsed/expanded state.
+ * @typeDoc ExpandIconStyleSlots
+ */
+export interface ExpandIconStyleSlots {
+  /** Styles the icon while the panel is collapsed. */
   collapsed?: Style;
+  /** Styles the icon while the panel is expanded. */
   expanded?: Style;
 }
 
-export interface ExpandStyleSlots {
+/**
+ * Class-based styling targets for the Expand content panel and its padded inner region.
+ * @typeDoc ExpandContentStyleSlots
+ */
+export interface ExpandContentStyleSlots {
+  /** Styles the collapsing outer content panel. */
   root?: Style;
+  /** Styles the padded region wrapping the panel's children. */
+  inner?: Style;
+}
+
+/**
+ * Named style overrides for the Expand root and stable compound anatomy.
+ * @typeDoc ExpandStyleSlots
+ */
+export interface ExpandStyleSlots {
+  /** Styles the root expand container. */
+  root?: Style;
+  /** Styles the trigger button. */
   trigger?: Style;
-  icon?: Style | ExpandIconStyles;
+  /** Shared or state-specific styles for the disclosure icon. */
+  icon?: Style | ExpandIconStyleSlots;
+  /** Styles the trigger's title/label text. */
   title?: Style;
-  content?: Style;
-  contentInner?: Style;
+  /** Shared or keyed styles for the content panel and its inner region. */
+  content?: Style | ExpandContentStyleSlots;
+  /** Styles the divider rendered between the trigger and content. */
   divider?: Style;
 }
 
+/**
+ * Style overrides accepted by Expand.
+ * @typeDoc ExpandStylesProp
+ */
 export type ExpandStylesProp = StylesProp<ExpandStyleSlots>;
+
+/**
+ * Controlled expanded state supplied to Expand.
+ * @typeDoc ExpandState
+ */
 export interface ExpandState {
+  /** Controlled expanded value. */
   expanded?: boolean;
 }
 
@@ -58,7 +102,7 @@ function resolveExpandStyles(stylesProp: ExpandStylesProp | undefined) {
     return resolveExpandBaseStyles(stylesProp);
   }
 
-  const { root, trigger, icon, title, content, contentInner, divider } = stylesProp;
+  const { root, trigger, icon, title, content, divider } = stylesProp;
 
   let iconClassName: Style | undefined;
   let iconCollapsed: Style | undefined;
@@ -75,6 +119,19 @@ function resolveExpandStyles(stylesProp: ExpandStylesProp | undefined) {
     }
   }
 
+  let contentClassName: Style | undefined;
+  let contentInner: Style | undefined;
+
+  if (content) {
+    if (typeof content === "string" || Array.isArray(content)) {
+      contentClassName = content;
+      contentInner = content;
+    } else {
+      contentClassName = content.root;
+      contentInner = content.inner;
+    }
+  }
+
   return resolveExpandBaseStyles({
     root,
     trigger,
@@ -82,7 +139,7 @@ function resolveExpandStyles(stylesProp: ExpandStylesProp | undefined) {
     iconCollapsed,
     iconExpanded,
     title,
-    content,
+    content: contentClassName,
     contentInner,
     divider,
   });
@@ -106,9 +163,15 @@ function useExpandContext() {
 }
 
 export interface ExpandIconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Custom icon element rendered inside the icon wrapper */
+  /**
+   * Custom icon element rendered inside the icon wrapper. Defaults to a chevron.
+   * @category Content
+   */
   children?: React.ReactNode;
-  /** Tailwind color utility applied to the icon wrapper (e.g. "bg-background-500") */
+  /**
+   * Tailwind color utility applied to the icon wrapper (e.g. "bg-background-500").
+   * @category Styling
+   */
   color?: string;
 }
 
@@ -121,11 +184,11 @@ const ExpandIcon = React.forwardRef<HTMLSpanElement, ExpandIconProps>(
         ref={ref}
         className={cn(
           "icon",
-          styles.icon,
-          resolvedStyles.icon,
-          state.isSelected ? resolvedStyles.iconExpanded : resolvedStyles.iconCollapsed,
+          css.icon,
           color,
           className,
+          resolvedStyles.icon,
+          state.isSelected ? resolvedStyles.iconExpanded : resolvedStyles.iconCollapsed,
         )}
         data-selected={state.isSelected ? "true" : undefined}
         data-expanded={state.isSelected ? "true" : undefined}
@@ -139,10 +202,17 @@ const ExpandIcon = React.forwardRef<HTMLSpanElement, ExpandIconProps>(
 );
 ExpandIcon.displayName = "Expand.Icon";
 
-interface ExpandTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "title"> {
-  /** Label or content rendered inside the trigger */
+export interface ExpandTriggerProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "title"> {
+  /**
+   * Label or content rendered inside the trigger. Ignored when title is supplied.
+   * @category Content
+   */
   children?: React.ReactNode;
-  /** Optional title element rendered in the trigger's text slot */
+  /**
+   * Title content rendered in the trigger's text slot, followed by the disclosure icon.
+   * @category Content
+   */
   title?: React.ReactNode;
 }
 
@@ -171,7 +241,7 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
       <button
         ref={mergedRef}
         {...mergeProps(buttonProps, focusProps, hoverProps, props)}
-        className={cn("trigger", styles.trigger, resolvedStyles.trigger, className)}
+        className={cn("trigger", css.trigger, className, resolvedStyles.trigger)}
         type="button"
         aria-expanded={state.isSelected}
         data-selected={state.isSelected ? "true" : undefined}
@@ -185,7 +255,7 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
       >
         {shouldRenderCompositeLabel ? (
           <>
-            <span className={cn("title", styles.title, resolvedStyles.title)}>
+            <span className={cn("title", css.title, resolvedStyles.title)}>
               {title ?? children}
             </span>
             <ExpandIcon />
@@ -200,9 +270,17 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
 ExpandTrigger.displayName = "Expand.Trigger";
 
 export interface ExpandContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Content shown when the expand is open */
+  /**
+   * Content shown when the expand is open.
+   * @category Content
+   */
   children: React.ReactNode;
-  /** Direction the content reveals from the trigger */
+  /**
+   * Direction the content reveals from relative to the trigger.
+   * @category Core
+   * @default "below"
+   * @typeDoc ExpandDirection
+   */
   from?: ExpandDirection;
 }
 
@@ -213,14 +291,14 @@ const ExpandContent = React.forwardRef<HTMLDivElement, ExpandContentProps>(
     return (
       <div
         ref={ref}
-        className={cn("content", styles.content, resolvedStyles.content, className)}
+        className={cn("content", css.content, className, resolvedStyles.content)}
         data-selected={state.isSelected ? "true" : undefined}
         data-expanded={state.isSelected ? "true" : undefined}
         data-from={from && from !== "below" ? from : undefined}
         aria-hidden={!state.isSelected}
         {...props}
       >
-        <div className={cn("content-inner", styles["content-inner"], resolvedStyles.contentInner)}>
+        <div className={cn("content-inner", css["content-inner"], resolvedStyles.contentInner)}>
           {children}
         </div>
       </div>
@@ -238,7 +316,7 @@ const ExpandDivider = React.forwardRef<HTMLDivElement, DividerProps>(
         ref={ref}
         spacing={spacing}
         styles={dividerStyles}
-        className={cn("divider", styles.divider, resolvedStyles.divider, className)}
+        className={cn("divider", css.divider, className, resolvedStyles.divider)}
         {...props}
       />
     );
@@ -291,27 +369,66 @@ export interface ExpandProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "title" | "onChange"
 > {
-  /** Header content rendered in preset mode */
+  /**
+   * Header content rendered in preset mode, wrapping children in a generated trigger and content panel.
+   * @category Content
+   */
   title?: React.ReactNode;
-  /** Controls whether the expand supplies its own radius or sits flush inside a bordered container. */
+  /**
+   * Controls whether the trigger supplies its own corner radius or sits flush inside a bordered container.
+   * @category Core
+   * @default "standalone"
+   * @typeDoc ExpandLayout
+   */
   layout?: ExpandLayout;
-  /** Initial expanded state. For controlled usage, pass `state={{ expanded }}`. */
+  /**
+   * Initial expanded state for uncontrolled usage. For controlled usage, pass `state={{ expanded }}`.
+   * @category Core
+   * @default false
+   */
   expanded?: boolean;
-  /** Controlled state. */
+  /**
+   * Controlled expanded state. Takes precedence over expanded and defaultExpanded.
+   * @category Core
+   * @typeDoc ExpandState
+   */
   state?: ExpandState;
-  /** @deprecated Use `expanded`. */
+  /**
+   * @deprecated Use `expanded`.
+   * @category Core
+   */
   isExpanded?: boolean;
-  /** @deprecated Use `expanded`. */
+  /**
+   * @deprecated Use `expanded`.
+   * @category Core
+   */
   defaultExpanded?: boolean;
-  /** Called when the expanded state changes */
+  /**
+   * Called when the trigger toggles the expanded state.
+   * @category Events
+   */
   onExpandedChange?: (isExpanded: boolean) => void;
-  /** Alias for onExpandedChange */
+  /**
+   * Alias for onExpandedChange.
+   * @category Events
+   */
   onChange?: (isExpanded: boolean) => void;
-  /** Whether the expand is disabled */
+  /**
+   * Disables the trigger and applies disabled styling.
+   * @category Core
+   * @default false
+   */
   disabled?: boolean;
-  /** Compound sub-components or content nodes */
+  /**
+   * Compound sub-components (Expand.Trigger, Expand.Content, Expand.Divider) or content nodes normalized into the content panel.
+   * @category Content
+   */
   children?: React.ReactNode;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /**
+   * Keyed styles for the root and named component parts. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc ExpandStylesProp
+   */
   styles?: ExpandStylesProp;
 }
 
@@ -373,11 +490,11 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
 
     return (
       <ExpandContext.Provider value={contextValue}>
-        <div ref={scopeRef} className={cn("expand-scope", scopeProps.className, styles.scope)}>
+        <div ref={scopeRef} className={cn("expand-scope", scopeProps.className, css.scope)}>
           <div {...indicatorProps} data-focus-indicator="local" />
           <div
             ref={mergedRootRef}
-            className={cn("expand", styles.expand, className, resolvedStyles.root)}
+            className={cn("expand", css.expand, className, resolvedStyles.root)}
             data-selected={state.isSelected ? "true" : undefined}
             data-expanded={state.isSelected ? "true" : undefined}
             data-disabled={disabled ? "true" : undefined}
@@ -412,4 +529,4 @@ const Expand = Object.assign(ExpandRoot, {
 
 Expand.displayName = "Expand";
 
-export { Expand };
+export { Expand, ExpandTrigger, ExpandContent, ExpandDivider, ExpandIcon };

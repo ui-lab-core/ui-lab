@@ -38,15 +38,15 @@ type PopoverAlign = "start" | "center" | "end";
 const getInitialTransform = (placement: string): string => {
   switch (placement) {
     case "top":
-      return "translateY(3px) scale(0.95)";
+      return "translateY(3px)";
     case "bottom":
-      return "translateY(-3px) scale(0.95)";
+      return "translateY(-3px)";
     case "left":
-      return "translateX(3px) scale(0.95)";
+      return "translateX(3px)";
     case "right":
-      return "translateX(-3px) scale(0.95)";
+      return "translateX(-3px)";
     default:
-      return "scale(0.95)";
+      return "translate(0, 0)";
   }
 };
 
@@ -68,7 +68,7 @@ export interface PopoverProps {
   position?: PopoverPosition;
   /** Cross-axis alignment relative to the trigger. "start" and "end" follow reading direction along the trigger's edge; "center" (default) centers the panel over the trigger. */
   align?: PopoverAlign;
-  /** Renders and closes the panel with no opacity/scale transition. */
+  /** Renders and closes the panel with no opacity/translation transition. */
   "disable-animations"?: boolean;
   /** Keyed styles for named component parts. The frame slot controls panel layout such as padding. */
   styles?: PopoverStylesProp;
@@ -82,7 +82,7 @@ export interface PopoverProps {
   /** Called when the popover opens or closes */
   onOpenChange?: (isOpen: boolean) => void;
   /** Whether to render a directional arrow pointing at the trigger */
-  showArrow?: boolean;
+  "show-arrow"?: boolean;
 }
 export interface PopoverState {
   open?: boolean;
@@ -102,7 +102,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       state: controlledState,
       isOpen: legacyIsOpen,
       onOpenChange,
-      showArrow = false,
+      "show-arrow": showArrow = false,
     },
     ref,
   ) => {
@@ -289,7 +289,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                 style={{
                   opacity: isAnimating ? 1 : 0,
                   transform: isAnimating
-                    ? "scale(1)"
+                    ? "translate(0, 0)"
                     : getInitialTransform(placement.split("-")[0]),
                   pointerEvents: isAnimating ? "auto" : "none",
                 }}

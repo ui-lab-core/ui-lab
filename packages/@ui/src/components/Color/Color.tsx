@@ -711,7 +711,6 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
         disabled={resolvedDisabled}
         data-size={resolvedSize}
         style={sliderStyle}
-        trackStyle={trackStyle}
         className={cn(
           type === "opacity"
             ? "opacity-slider"
@@ -726,15 +725,22 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
           resolvedClassName,
         )}
         styles={{
-          track: cn(
-            type === "opacity" ? "opacity-track" : type === "chroma" ? "chroma-track" : "hue-track",
-            type === "opacity"
-              ? styles["opacity-track"]
-              : type === "chroma"
-                ? styles["chroma-track"]
-                : styles["hue-track"],
-            resolvedTrackClassName,
-          ),
+          track: {
+            className: cn(
+              type === "opacity"
+                ? "opacity-track"
+                : type === "chroma"
+                  ? "chroma-track"
+                  : "hue-track",
+              type === "opacity"
+                ? styles["opacity-track"]
+                : type === "chroma"
+                  ? styles["chroma-track"]
+                  : styles["hue-track"],
+              resolvedTrackClassName,
+            ),
+            style: trackStyle,
+          },
           range: cn(
             type === "opacity" ? "opacity-range" : type === "chroma" ? "chroma-range" : "hue-range",
             type === "opacity"
@@ -989,7 +995,7 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
           ...popoverStyles,
           frame: popoverStyles?.frame ?? "p-0",
         }}
-        showArrow={showArrow}
+        show-arrow={showArrow}
       >
         {trigger}
       </Popover>

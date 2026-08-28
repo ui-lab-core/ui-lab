@@ -4,23 +4,31 @@
   "license": "MIT",
   "style": "./dist/styles.css",
   "files": [
-    "dist/styles.css"
+    "dist"
   ],
   "type": "module",
   "main": "./dist/styles.css",
   "exports": {
     ".": {
+      "types": "./dist/theme-contract.d.ts",
       "style": "./dist/styles.css",
       "default": "./dist/styles.css"
     },
     "./styles.css": {
+      "types": "./dist/theme-contract.d.ts",
       "style": "./dist/styles.css",
       "default": "./dist/styles.css"
+    },
+    "./theme-contract.json": {
+      "default": "./dist/theme-contract.json"
     }
   },
   "scripts": {
     "build": "node --import tsx scripts/build.mts --out dist/styles.css",
     "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "ui-lab-components": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",

@@ -57,7 +57,7 @@ export const buttonDetail: ComponentDetail = {
       <p>
         The Button component is a fundamental building block for any user interface. It supports
         multiple variants for different use cases, multiple sizes for different contexts, and
-        various states including disabled and loading states.
+        interaction states including hover, pressed, focus, and disabled.
       </p>
       <p>
         Buttons use a clear visual hierarchy with the accent color for primary actions, ensuring

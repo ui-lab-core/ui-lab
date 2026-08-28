@@ -21,8 +21,13 @@ test("Progress CSS variables include consumed component stylesheet variables", a
     variables.find((candidate) => candidate.name === "--background" && candidate.slot === "border")?.value,
     "unset",
   );
-  assert.match(styles.progress.onyxThemeCss ?? "", /\.progress > \.track > \.range/);
+  assert.match(styles.progress.onyxThemeCss ?? "", /\.progress \{/);
   assert.match(styles.progress.onyxThemeCss ?? "", /@slot border \{/);
+  assert.match(styles.progress.onyxThemeCss ?? "", /@slot track \{/);
+  assert.match(styles.progress.onyxThemeCss ?? "", /@slot range \{/);
+  assert.match(styles.progress.onyxThemeCss ?? "", /@slot thumb \{/);
+  // Part variables are configured on the root via @slot, never structural descendant chains.
+  assert.doesNotMatch(styles.progress.onyxThemeCss ?? "", /\.progress > \.track/);
 });
 
 test("Command preserves commas within functional selectors in the Onyx stylesheet", async () => {

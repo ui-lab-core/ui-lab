@@ -280,7 +280,7 @@ const ActionGroup = React.forwardRef<HTMLDivElement, ListActionGroupProps>(
       <div
         ref={ref}
         {...props}
-        className={cn(css["action-group"], listStyles.actionGroup, className)}
+        className={cn(css.actionGroup, listStyles.actionGroup, className)}
         data-slot="actionGroup"
         data-justify={justify}
       >

@@ -78,6 +78,7 @@ export type {
   APIDocLink,
   APITypeToken,
   APICustomType,
+  APIEnumValue,
   APIStateAttribute,
   APIPropGroup,
   ComponentAPI,

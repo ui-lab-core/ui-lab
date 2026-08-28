@@ -15,6 +15,9 @@ import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { type HintValue, hasHint, renderHint } from "@/lib/hint";
 import { Badge } from "../Badge";
+import { isSkeletonElement } from "../Skeleton";
+import type { ButtonVariantOverrides } from "../../theme-contract";
+import type { DefaultButtonVariant } from "../../generated-theme-contract";
 import css from "./Button.module.css";
 
 // React Aria otherwise reads retargeted document-level events as coming from the
@@ -22,10 +25,16 @@ import css from "./Button.module.css";
 enableShadowDOM();
 
 /** An open string type used to select a button size class. */
-type ButtonSize = string & {};
+export type ButtonSize = string & {};
+
+/** A variant supplied by an installed theme, while preserving custom theme hooks. */
+export type ButtonVariant =
+  | DefaultButtonVariant
+  | keyof ButtonVariantOverrides
+  | (string & {});
 
 /** Icon content rendered on either side of the button label. */
-type ButtonIconSlots = {
+export type ButtonIconSlots = {
   /** Content rendered before the button label. */
   left?: React.ReactNode;
   /** Content rendered after the button label. */
@@ -33,7 +42,7 @@ type ButtonIconSlots = {
 };
 
 /** Side-specific styles used when the icon slot is configured as an object. */
-interface ButtonIconStyles {
+export interface ButtonIconStyleSlots {
   /** Styles applied to the leading icon. */
   left?: SlotStyle;
   /** Styles applied to the trailing icon. */
@@ -45,7 +54,7 @@ export interface ButtonStyleSlots {
   /** Styles applied to the root element. */
   root?: SlotStyle;
   /** Shared icon styles or separate leading and trailing icon styles. */
-  icon?: SlotStyle | ButtonIconStyles;
+  icon?: SlotStyle | ButtonIconStyleSlots;
   /** Styles applied to the hint badge. */
   hint?: SlotStyle;
 }
@@ -59,7 +68,7 @@ const resolveButtonBaseStyles = createStylePropsResolver([
   "hint",
 ] as const);
 
-function isButtonIconStyles(icon: ButtonStyleSlots["icon"]): icon is ButtonIconStyles {
+function isButtonIconStyles(icon: ButtonStyleSlots["icon"]): icon is ButtonIconStyleSlots {
   return typeof icon === "object" && icon !== null && ("left" in icon || "right" in icon);
 }
 
@@ -94,7 +103,7 @@ export interface ButtonProps extends Omit<
    * @category Core
    * @default primary
    */
-  variant?: string;
+  variant?: ButtonVariant;
   /** Size class appended to the root element. Accepts any string.
    * @category Core
    * @typeDoc ButtonSize
@@ -112,7 +121,7 @@ export interface ButtonProps extends Omit<
    * @see https://react-spectrum.adobe.com/react-aria/interactions.html#usepress
    */
   onPress?: (e: PressEvent) => void;
-  /** Icon slots rendered before (left) or after (right) the button label.
+  /** Icon content rendered before the label by default. Use icon={{ left: <Icon /> }} or icon={{ right: <Icon /> }} to choose a side; both slots may be provided together.
    * @category Content
    * @typeDoc ButtonIconSlots
    */
@@ -164,14 +173,6 @@ export function resolveButtonIcon(icon: ButtonProps["icon"]) {
   return { left: icon };
 }
 
-function resolveButtonIconSizeClass(size: ButtonSize | undefined) {
-  if (!size) {
-    return undefined;
-  }
-
-  return (css as unknown as Record<string, string | undefined>)[`icon-${size}`];
-}
-
 function hasRenderableContent(value: React.ReactNode): boolean {
   if (Array.isArray(value)) {
     return value.some(hasRenderableContent);
@@ -184,8 +185,33 @@ function hasRenderableContent(value: React.ReactNode): boolean {
   return typeof value === "string" ? value.trim().length > 0 : true;
 }
 
+function isScreenReaderOnlyElement(value: React.ReactNode): boolean {
+  if (!React.isValidElement<{ className?: string }>(value)) {
+    return false;
+  }
+
+  return value.props.className?.split(/\s+/).includes("sr-only") ?? false;
+}
+
+function hasVisuallyRenderableContent(value: React.ReactNode): boolean {
+  if (Array.isArray(value)) {
+    return value.some(hasVisuallyRenderableContent);
+  }
+
+  if (isScreenReaderOnlyElement(value)) {
+    return false;
+  }
+
+  if (React.isValidElement<{ children?: React.ReactNode }>(value) && value.type === React.Fragment) {
+    return hasVisuallyRenderableContent(value.props.children);
+  }
+
+  return hasRenderableContent(value);
+}
+
 // Text (strings/numbers), including text nested in an element, makes a button
-// label-bearing. Elements without textual children are treated as icons.
+// label-bearing unless its containing element is explicitly screen-reader-only.
+// Elements without visible textual children are treated as icons.
 function hasTextContent(value: React.ReactNode): boolean {
   if (Array.isArray(value)) {
     return value.some(hasTextContent);
@@ -196,6 +222,14 @@ function hasTextContent(value: React.ReactNode): boolean {
   }
 
   if (typeof value === "number") {
+    return true;
+  }
+
+  if (isScreenReaderOnlyElement(value)) {
+    return false;
+  }
+
+  if (isSkeletonElement(value)) {
     return true;
   }
 
@@ -215,7 +249,7 @@ export function isIconOnlyContent(
 ): boolean {
   return (
     !hasTextContent(children) &&
-    (hasRenderableContent(children) ||
+    (hasVisuallyRenderableContent(children) ||
       hasRenderableContent(icon?.left) ||
       hasRenderableContent(icon?.right))
   );
@@ -308,11 +342,10 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const actualSize = size ?? (isIconOnly ? "icon" : "md");
     const isIconButton = isIconOnly || size === "icon";
 
-    const iconSizeClassName = resolveButtonIconSizeClass(actualSize);
     const iconSlotClassName = isIconOnly ? "icon" : undefined;
     // An icon passed through `children` (rather than the `icon` prop) still
     // needs the `.icon` slot wrapper so slot-scoped styling applies to it.
-    const wrapChildrenAsIcon = isIconOnly && hasRenderableContent(children);
+    const wrapChildrenAsIcon = isIconOnly && hasVisuallyRenderableContent(children);
 
     const buttonClassName = cn(
       "button",
@@ -329,16 +362,18 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       <>
         {resolvedIcon?.left && (
           <span
-            className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)}
+            className={cn(iconSlotClassName, resolved.iconLeft.className)}
             style={resolved.iconLeft.style}
+            data-slot="icon.left"
           >
             {resolvedIcon.left}
           </span>
         )}
         {wrapChildrenAsIcon ? (
           <span
-            className={cn(iconSlotClassName, iconSizeClassName, resolved.iconLeft.className)}
+            className={cn(iconSlotClassName, resolved.iconLeft.className)}
             style={resolved.iconLeft.style}
+            data-slot="icon.left"
           >
             {children}
           </span>
@@ -347,8 +382,9 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         )}
         {resolvedIcon?.right && (
           <span
-            className={cn(iconSlotClassName, iconSizeClassName, resolved.iconRight.className)}
+            className={cn(iconSlotClassName, resolved.iconRight.className)}
             style={resolved.iconRight.style}
+            data-slot="icon.right"
           >
             {resolvedIcon.right}
           </span>
@@ -358,6 +394,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
             variant="secondary"
             className={cn("hint", css.hint, resolved.hint.className)}
             style={resolved.hint.style}
+            data-slot="hint"
           >
             {renderHint(hint)}
           </Badge>
@@ -377,10 +414,14 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           })}
           {...targetProps}
           ref={mergedRef as unknown as React.RefObject<HTMLAnchorElement>}
+          // useButton assigns role="button" for any non-<button> elementType, but an
+          // anchor with an href is a navigational link and must keep its implicit role.
+          role={undefined}
           href={href}
           target={target}
           rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
           className={buttonClassName}
+          data-slot="root"
           data-disabled={isButtonDisabled ? "true" : undefined}
           data-pressed={isVisualPressed ? "true" : "false"}
           data-hovered={isVisualHovered ? "true" : "false"}
@@ -408,6 +449,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         disabled={isButtonDisabled}
         ref={mergedRef as unknown as React.RefObject<HTMLButtonElement>}
         className={buttonClassName}
+        data-slot="root"
         data-disabled={isButtonDisabled ? "true" : undefined}
         data-pressed={isVisualPressed ? "true" : "false"}
         data-hovered={isVisualHovered ? "true" : "false"}

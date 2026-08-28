@@ -8,16 +8,16 @@
   .root {
     @apply fixed;
     pointer-events: none;
-    z-index: 50;
+    z-index: 50000;
   }
 
   .content {
-    --fill: var(--background);
+    --fill: slot(content, background, var(--background));
     /* Frame's SVG stroke remains a documented decorative API. */
-    --stroke-color: var(--background-border);
+    --stroke-color: slot(content, background-border, var(--background-border));
     --frame-radius: 8px;
     opacity: 0;
-    transform: scale(0.95);
+    transform: translate(0, 0);
     transition:
       opacity 0.2s ease-out,
       transform 0.2s ease-out;
@@ -28,7 +28,7 @@
 
   .content[data-visible="true"] {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(0, 0);
     pointer-events: auto;
   }
 
@@ -38,10 +38,10 @@
 
   .frame {
     @apply flex items-center gap-1.5 p-2.5;
-    color: var(--foreground);
-    font-family: var(--font-body, inherit);
-    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
-    font-weight: var(--font-weight-body-normal, 400);
+    color: slot(content, foreground, var(--foreground));
+    font-family: slot(content, font-family, var(--font-body, inherit));
+    font-size: slot(content, font-size, var(--text-body-size, var(--text-base, 0.9375rem)));
+    font-weight: slot(content, font-weight, var(--font-weight-body-normal, 400));
     letter-spacing: normal;
     line-height: var(--leading-body, 1.5);
   }

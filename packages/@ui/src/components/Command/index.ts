@@ -29,7 +29,7 @@ export type { CommandProps, CommandState, UseCommandStateProps } from "./Command
 export { useCommandState } from "./Command";
 export type { CommandRootProps } from "./Command.Root";
 export type {
-  CommandItem,
+  CommandItem as CommandItemData,
   CommandGroupedItems,
   CommandItemStyleSlots,
   CommandGroupsStyleSlots,

@@ -208,19 +208,11 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    color: var(--foreground);
-    background-color: var(--background);
+    /* Rows are List items; List paints their background and foreground. */
     &[data-disabled] {
       opacity: var(--disabled-opacity);
       cursor: not-allowed;
       pointer-events: none;
-      color: var(--foreground-400);
-    }
-  }
-
-  .item {
-    &[data-selected="true"] {
-      color: var(--foreground);
     }
   }
 

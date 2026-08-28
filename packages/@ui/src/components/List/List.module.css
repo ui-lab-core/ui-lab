@@ -48,12 +48,14 @@
     --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
-  .root[data-keyboard-mode="true"] .item[data-highlighted="true"] {
+  /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted
+     themselves, so the highlight cannot be gated on the root's own keyboard mode. */
+  .item[data-highlighted="true"] {
     --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
   .item:hover:not([data-disabled="true"]),
-  .root[data-keyboard-mode="true"] .item[data-highlighted="true"]:not([data-disabled="true"]) {
+  .item[data-highlighted="true"]:not([data-disabled="true"]) {
     background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));
     color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));
   }
@@ -64,7 +66,7 @@
   }
 
   .item[data-selected="true"]:hover:not([data-disabled="true"]),
-  .root[data-keyboard-mode="true"] .item[data-selected="true"][data-highlighted="true"]:not([data-disabled="true"]) {
+  .item[data-selected="true"][data-highlighted="true"]:not([data-disabled="true"]) {
     background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));
     color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));
   }

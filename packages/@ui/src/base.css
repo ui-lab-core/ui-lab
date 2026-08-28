@@ -53,7 +53,7 @@
     outline: none;
   }
 
-  [data-ring="true"][data-focus-visible="true"] {
+  [data-ring="true"][data-focus-visible="true"]:not([data-focus-indicator="target"]) {
     position: relative;
     z-index: var(--ring-z, auto);
     outline: none;
@@ -65,8 +65,19 @@
   }
 
   [data-ring="true"][data-focus-visible="true"][data-focus-indicator="target"] {
+    position: relative;
+    z-index: var(--ring-z, auto);
     outline: slot(ring, width, 0px) slot(ring-border, style, solid)
       slot(ring-border, background-visible, slot(ring-border, background, transparent));
     outline-offset: calc(slot(ring, width, 0px) * -1);
+  }
+
+  [data-ring="true"][data-focus-visible="true"][data-focus-indicator="target"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: slot(ring, shadow, none);
   }
 }

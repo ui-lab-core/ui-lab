@@ -1,7 +1,18 @@
 @reference "tailwindcss";
 
 @layer components.defaults {
-  .textarea {
+  .root {
+    @apply relative block w-full;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  .surface {
+    min-width: 0;
+    @apply relative w-full;
+  }
+
+  .field {
     --padding-inline: 0.75rem;
     --padding-block: 0.5rem;
 
@@ -40,13 +51,13 @@
       border-color: slot(border, background-error, slot(border, background, transparent));
     }
 
-    &[data-resize-axis="x"],
-    &[data-resize-axis="both"] {
+    &[data-resize="x"],
+    &[data-resize="both"] {
       padding-inline-end: calc(var(--padding-inline) + 1rem);
     }
 
-    &[data-resize-axis="y"],
-    &[data-resize-axis="both"] {
+    &[data-resize="y"],
+    &[data-resize="both"] {
       padding-block-end: calc(var(--padding-block) + 1rem);
     }
 
@@ -92,22 +103,7 @@
     @apply px-4 py-3;
   }
 
-  .container {
-    min-width: 0;
-    @apply w-full;
-  }
-
-  .scope {
-    @apply relative flex w-full;
-    overflow: visible;
-  }
-
-  .surface {
-    min-width: 0;
-    @apply relative w-full;
-  }
-
-  .scroll-wrapper {
+  .scroll {
     @apply w-full overflow-hidden;
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
@@ -139,7 +135,7 @@
       content: "";
       position: absolute;
       border-radius: var(--radius-full);
-      background-color: var(--background);
+      background-color: slot(handle, background, var(--foreground, currentColor));
       transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     }
@@ -147,48 +143,53 @@
     &:hover::before,
     &:hover::after {
       --hover-duration: var(--hover-enter-duration, 0ms);
+      background-color: slot(
+        handle,
+        background-hover,
+        slot(handle, background, var(--foreground, currentColor))
+      );
     }
   }
 
   .resize-handle-both {
-    right: 3px;
-    bottom: 3px;
-    width: 1.5rem;
-    height: 1.5rem;
+    inset-inline-end: 3px;
+    inset-block-end: 3px;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
     cursor: nwse-resize;
 
     &::before {
-      right: 0.15rem;
-      bottom: 0.35rem;
-      width: 0.5rem;
-      height: 0.125rem;
+      inset-inline-end: 0.15rem;
+      inset-block-end: 0.35rem;
+      inline-size: 0.5rem;
+      block-size: 0.125rem;
       transform: rotate(-45deg);
       transform-origin: center;
     }
 
     &::after {
-      right: 0.2rem;
-      bottom: 0.6rem;
-      width: 1rem;
-      height: 0.125rem;
+      inset-inline-end: 0.2rem;
+      inset-block-end: 0.6rem;
+      inline-size: 1rem;
+      block-size: 0.125rem;
       transform: rotate(-45deg);
       transform-origin: center;
     }
   }
 
   .resize-handle-x {
-    top: 50%;
-    right: 0;
-    width: 0.75rem;
-    height: 2rem;
+    inset-block-start: 50%;
+    inset-inline-end: 0;
+    inline-size: 0.75rem;
+    block-size: 2rem;
     cursor: ew-resize;
     transform: translateY(-50%);
 
     &::before {
-      top: 50%;
-      left: 50%;
-      width: 0.125rem;
-      height: 1.5rem;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      inline-size: 0.125rem;
+      block-size: 1.5rem;
       transform: translate(-50%, -50%);
     }
 
@@ -198,18 +199,18 @@
   }
 
   .resize-handle-y {
-    left: 50%;
-    bottom: 0;
-    width: 2rem;
-    height: 0.75rem;
+    inset-inline-start: 50%;
+    inset-block-end: 0;
+    inline-size: 2rem;
+    block-size: 0.75rem;
     cursor: ns-resize;
     transform: translateX(-50%);
 
     &::before {
-      top: 50%;
-      left: 50%;
-      width: 1.5rem;
-      height: 0.125rem;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      inline-size: 1.5rem;
+      block-size: 0.125rem;
       transform: translate(-50%, -50%);
     }
 
@@ -220,16 +221,17 @@
 
   .character-count {
     @apply mt-1;
-    color: var(--foreground);
+    color: slot(count, foreground, var(--foreground, inherit));
     font-family: var(--font-body, inherit);
     font-size: var(--text-xs, 0.75rem);
     font-weight: var(--font-weight-body-normal, 400);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition: color 0.15s var(--ease-snappy-pop, ease-out);
+    transition: color var(--hover-duration, var(--hover-leave-duration, 300ms))
+      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
   }
 
   .character-count[data-over-limit="true"] {
-    color: var(--foreground-error);
+    color: slot(count, foreground-error, var(--foreground-error, inherit));
   }
 }

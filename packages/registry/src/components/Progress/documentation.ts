@@ -30,13 +30,13 @@ export const styleDocumentation = {
       },
       {
         title: "Cascade component variables",
-        description: "Set variables on the root when track and thumb geometry should inherit one decision.",
+        description: "Set variables on the root when the track and range geometry should inherit one decision.",
         code: `<Progress
   value={60}
   show-controls
   style={{
     "--size": "0.5rem",
-    "--progress-thumb-size": "0.75rem",
+    "--radius": "9999px",
   } as React.CSSProperties}
 />`,
       },
@@ -60,5 +60,111 @@ export const styleDocumentation = {
       ProgressLabelStyleSlots: "Progress label",
       ProgressStyleSlots: "Progress",
     },
+  },
+  customization: {
+    title: "Customize Progress",
+    description:
+      "Start with these variables for common Progress changes. Set them on the Progress root; part-specific values use @slot to target the track, range, or thumb without replacing Progress's structural CSS.",
+    groups: [
+      {
+        title: "Track and range color",
+        description: "Control the base track fill and the filled range independently.",
+        variables: [
+          {
+            name: "--background",
+            selector: ".progress",
+            slot: "track",
+            description: "Sets the track's fill color.",
+          },
+          {
+            name: "--background",
+            selector: ".progress",
+            slot: "range",
+            description: "Sets the filled range color.",
+          },
+        ],
+        code: `.progress {
+  @slot track {
+    --background: var(--background-700);
+  }
+  @slot range {
+    --background: var(--accent-500);
+  }
+}`,
+      },
+      {
+        title: "Thumb",
+        description:
+          "Adjust the draggable thumb shown with show-controls, independently of the track.",
+        variables: [
+          {
+            name: "--background",
+            selector: ".progress",
+            slot: "thumb",
+            description: "Sets the thumb fill color.",
+          },
+          {
+            name: "--width",
+            selector: ".progress",
+            slot: "thumb",
+            description: "Sets the thumb's inline size. Falls back to the value's aspect ratio.",
+          },
+          {
+            name: "--height",
+            selector: ".progress",
+            slot: "thumb",
+            description: "Sets the thumb's block size. Falls back to the full track thickness.",
+          },
+          {
+            name: "--border",
+            selector: ".progress",
+            slot: "thumb",
+            description: "Sets the thumb's border shorthand.",
+          },
+        ],
+        code: `.progress {
+  @slot thumb {
+    --background: var(--background-50);
+    --width: 1rem;
+    --height: 1rem;
+    --border: 1px solid var(--background-300);
+  }
+}`,
+      },
+      {
+        title: "Shape",
+        description: "Adjust the track thickness and the shared corner radius used by the track, range, and thumb.",
+        variables: [
+          {
+            name: "--size",
+            selector: ".progress",
+            description: "Sets the track thickness.",
+          },
+          {
+            name: "--radius",
+            selector: ".progress",
+            description: "Sets the shared corner radius the track, range, and thumb fall back to.",
+          },
+        ],
+        code: `.progress {
+  --size: 0.5rem;
+  --radius: 9999px;
+}`,
+      },
+      {
+        title: "Disabled state",
+        description: "Adjust the dimming applied while Progress is disabled.",
+        variables: [
+          {
+            name: "--disabled-opacity",
+            selector: ".progress",
+            description: "Sets the root opacity used while Progress is disabled.",
+          },
+        ],
+        code: `.progress {
+  --disabled-opacity: 0.4;
+}`,
+      },
+    ],
   },
 } satisfies ComponentStyleDocumentation;

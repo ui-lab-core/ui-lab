@@ -41,7 +41,7 @@ const REACT_ARIA_PLACEHOLDERS: Record<string, string> = {
   tabs: "https://react-spectrum.adobe.com/react-aria/useTabs.html",
   menu: "https://react-spectrum.adobe.com/react-aria/useMenu.html",
   input: "https://react-spectrum.adobe.com/react-aria/useTextField.html",
-  textarea: "https://react-spectrum.adobe.com/react-aria/useTextField.html",
+  textarea: "https://react-spectrum.adobe.com/react-aria/useFocusRing.html",
   label: "https://react-spectrum.adobe.com/react-aria/useLabel.html",
   progress: "https://react-spectrum.adobe.com/react-aria/useProgressBar.html",
   path: "https://react-spectrum.adobe.com/react-aria/useBreadcrumbs.html",

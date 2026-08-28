@@ -1,14 +1,15 @@
 declare const styles: {
-  "trigger-root": string;
+  overlay: string;
   trigger: string;
-  content: string;
-  "content-root": string;
-  "sub-content-root": string;
+  panel: string;
+  viewport: string;
+  group: string;
   item: string;
-  "item-indicator": string;
+  indicator: string;
+  "indicator-check": string;
+  "indicator-dot": string;
   "sub-trigger": string;
-  "sub-trigger-chevron": string;
-  "sub-content": string;
+  chevron: string;
   label: string;
   separator: string;
   shortcut: string;

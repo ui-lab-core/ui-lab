@@ -5,7 +5,19 @@
   --hover-leave-duration: 300ms;
   --hover-duration: var(--hover-leave-duration);
   --hover-transition-timing-function: var(--ease-snappy-pop, ease-out);
+
+  --control-track: var(--background-900);
+  --control-border: var(--background-700);
+  --control-size: calc(var(--spacing-md) * 0.95);
+  --control-fill: var(--background-500);
+  --control-thumb: color-mix(in srgb, oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h) 82%, var(--background-500));
+  --control-thumb-border: 3px solid var(--background-500);
+  --control-disabled: var(--background-600);
+  --control-thumb-disabled: var(--background-500);
+  --control-thumb-radius: calc(var(--spacing) * 0.6);
+
   --ring-background: #0f74c5;
+
   @slot border {
     --background: var(--background-700);
     --background-focus: var(--background-600);
@@ -32,7 +44,10 @@
   .button {
     --background: var(--background-800);
     --focus-visible: var(--accent-400);
-    --icon-foreground: var(--foreground-400);
+    @slot icon {
+      --foreground: var(--foreground-400);
+      --size: 1.15em;
+    }
   }
 
   .button:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
@@ -313,9 +328,12 @@
   }
 
   .checkbox {
-    --background: var(--background-700);
+    --background: var(--control-track);
     --helper-error-foreground: var(--danger-600);
     --helper-foreground: var(--foreground-400);
+    @slot border {
+      --background: var(--control-border)
+    }
   }
 
   .checkbox > [data-ring="true"] {
@@ -325,15 +343,15 @@
   }
 
   .checkbox:where([data-selected="true"], [data-indeterminate="true"]) {
-    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
-    --foreground: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
+    --background: var(--control-fill);
+    --foreground: var(--control-thumb);
     @slot border {
-      --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+      --background: var(--control-fill);
     }
   }
 
   .checkbox > :where(.checkmark, .indeterminate) {
-    --foreground: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
+    --foreground: var(--control-thumb);
   }
 
   .color {
@@ -382,11 +400,14 @@
   }
 
   .input {
-    --background: var(--background-950);
+    --background: var(--background-900);
     --disabled-background: var(--background-900);
     --disabled-foreground: var(--foreground-400);
     --foreground: var(--foreground-300);
     --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
+    @slot border {
+      --background: var(--background-700);
+    }
   }
 
   .input[data-error] {
@@ -444,9 +465,9 @@
   }
 
   .radio {
-    --background: var(--background-700);
+    --background: var(--control-track);
     @slot border {
-      --background: var(--background-600);
+      --background: var(--control-border);
     }
     --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
   }
@@ -456,9 +477,9 @@
   }
 
   .radio[data-selected="true"] {
-    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+    --background: var(--control-fill);
     @slot border {
-      --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+      --background: var(--control-fill);
     }
   }
 
@@ -469,7 +490,7 @@
   }
 
   .radio > .dot {
-    --background: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
+    --background: var(--control-thumb);
   }
 
   .radio > .label {
@@ -535,6 +556,10 @@
 
   .select > :where(.content, .sub-content) {
     --background: var(--background-800);
+    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
+    --foreground: var(--foreground-300);
+    --foreground-muted: var(--foreground-400);
+    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
     @slot border {
       --background: var(--background-600);
     }
@@ -555,57 +580,81 @@
     }
   }
 
-  .select > :where(.content, .sub-content) .list > [role="option"]:where(.item, .trigger) {
+  .select > :where(.content, .sub-content) [role="option"]:where(.item, .trigger) {
     --background: transparent;
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
     --icon-foreground: var(--foreground-300);
     --indicator-foreground: var(--accent-300);
 
-    &:is([data-highlighted="true"], [data-open="true"]) {
-      --background: color-mix(in srgb, var(--background-500) 15%, transparent);
+    /* List paints Select options through its item slot; submenu triggers read the
+       same row tokens directly. */
+    @slot item {
+      --background: var(--background);
+      --background-hover: var(--background);
+      --background-selected: var(--background);
+      --background-selected-hover: var(--background);
+      --foreground: var(--foreground);
+      --foreground-hover: var(--foreground);
+      --foreground-selected: var(--foreground);
+      --foreground-selected-hover: var(--foreground);
     }
+
+    &:is([data-highlighted="true"], [data-focused="true"], [data-state="open"]) {
+      --background: var(--background-600);
+      --foreground: var(--foreground-100);
+    }
+  }
+
+  .select > :where(.content, .sub-content) [role="option"].item[data-disabled] {
+    --foreground: var(--foreground-400);
+    opacity: 0.5;
+  }
+
+  .select > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {
+    --foreground: var(--foreground-400);
   }
 
   .select > .placeholder {
     --foreground-muted: var(--foreground-400);
   }
 
-  .slider > .track {
-    --background: var(--background-700);
+  .slider {
+    --size: var(--control-size);
     @slot border {
-      --background: var(--background-600);
+      --background: var(--control-border);
+    }
+    @slot track {
+      --background: var(--control-track);
+    }
+    @slot thumb {
+      --background: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));
+      --background-disabled: var(--control-thumb-disabled);
+      --border: var(--control-thumb-border);
+      --radius: var(--control-thumb-radius);
+    }
+    @slot range {
+      --background: var(--control-fill);
+      --background-disabled: var(--control-disabled);
     }
   }
 
-  .slider > .track > .thumb {
-    --background: oklch(from var(--background-950) calc(0.88 + l * 0.12) 0 h);
-    --disabled-background: var(--background-500);
-    --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
-    --radius: calc(var(--spacing) * 0.6);
-  }
-
-  .slider > .track > .range {
-    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
-    --disabled-background: var(--background-600);
-  }
-
   .switch {
-    --background: var(--background-700);
+    --background: var(--control-track);
     --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);
-    --foreground: color-mix(in srgb, var(--background-500) 60%, transparent);
+    --foreground: var(--control-thumb);
     --transition-duration: 120ms;
     --transition-easing: linear;
     @slot border {
-      --background: var(--background-600);
+      --background: var(--control-border);
     }
   }
 
   .switch[data-selected="true"] {
-    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
-    --foreground: oklch(from var(--background-950) calc(0.80 + l * 0.20) 0 h);
+    --background: var(--control-fill);
+    --foreground: var(--control-thumb);
     @slot border {
-      --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
+      --background: var(--control-fill);
     }
   }
 
@@ -614,9 +663,19 @@
     --disabled-opacity: 0.6;
     --foreground: var(--foreground-300);
     --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
+
+    @slot handle {
+      --background: color-mix(in srgb, var(--foreground-400) 72%, transparent);
+      --background-hover: color-mix(in srgb, var(--foreground-200) 90%, transparent);
+    }
+
+    @slot count {
+      --foreground: var(--foreground-400);
+      --foreground-error: var(--danger-600);
+    }
   }
 
-  .textarea[data-disabled] {
+  .textarea[data-disabled="true"] {
     --background: var(--background-900);
     --foreground: var(--foreground-400);
   }
@@ -625,24 +684,6 @@
     @slot border {
       --background-error: var(--danger-600);
     }
-  }
-
-  .textarea > .scope > .surface > .scroll {
-    --background: var(--background-950);
-    --disabled-opacity: 0.6;
-  }
-
-  .textarea > .scope > .surface > .handle {
-    --background: color-mix(in srgb, var(--foreground-400) 72%, transparent);
-  }
-
-  .textarea > .scope > .surface > .handle:is(:hover, [data-hovered="true"]) {
-    --background: color-mix(in srgb, var(--foreground-200) 90%, transparent);
-  }
-
-  .textarea > .scope > .count {
-    --foreground: var(--foreground-400);
-    --foreground-error: var(--danger-600);
   }
 
   .banner {
@@ -686,38 +727,43 @@
     --background: var(--background-700);
   }
 
-  .popover > .content,
-  .tooltip > .content {
-    --background: var(--background-900);
-    /* Popover and Tooltip pass this legacy token to Frame's decorative SVG stroke. */
-    --background-border: var(--background-700);
-    --foreground: var(--foreground-200);
-  }
-
-  .tooltip > .content {
-    font-size: var(--text-xs);
-  }
-
-  .progress > .track {
-    --background: var(--background-700);
-    --radius: calc(var(--spacing) * 0.8);
-    @slot border {
-      --background: var(--background-600);
+  .popover {
+    @slot content {
+      --background: var(--background-900);
+      --background-border: var(--background-700);
+      --foreground: var(--foreground-200);
     }
   }
 
-  .progress > .track > .range {
-    --background: color-mix(in srgb, var(--accent-300) 60%, var(--background-700));
-    --radius: calc(var(--spacing) * 0.8);
+  .tooltip {
+    @slot content {
+      --background: var(--background-900);
+      --background-border: var(--background-700);
+      --foreground: var(--foreground-200);
+      --font-size: var(--text-xs);
+      --font-weight: var(--font-weight-body-medium);
+    }
   }
 
-  .progress > .track > .thumb {
-    --background: var(--foreground-300);
-    --radius: calc(var(--spacing) * 0.6);
-  }
-
-  .progress > .label-row > .label {
+  .progress {
+    --size: var(--control-size);
     --foreground: var(--foreground-400);
+    @slot border {
+      --background: var(--control-border);
+    }
+    @slot track {
+      --background: var(--control-track);
+      --radius: calc(var(--spacing) * 0.8);
+    }
+    @slot range {
+      --background: var(--control-fill);
+      --radius: calc(var(--spacing) * 0.8);
+    }
+    @slot thumb {
+      --background: var(--control-thumb);
+      --border: var(--control-thumb-border);
+      --radius: var(--control-thumb-radius);
+    }
   }
 
   .toast {
@@ -758,29 +804,43 @@
     }
   }
 
-  .menu > .trigger {
+  .menu.trigger {
     --background: transparent;
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-300);
   }
 
-  .menu > .trigger[data-hovered="true"]:not([data-disabled]) {
-    --background: var(--background-800);
-  }
-
-  .menu > .trigger[data-pressed="true"]:not([data-disabled]) {
+  .menu.trigger[data-hovered="true"]:not([data-disabled]) {
     --background: var(--background-700);
   }
 
-  .menu > :where(.content, .sub-content) .viewport > [role^="menuitem"]:where(.item, .trigger) {
+  .menu.trigger[data-pressed="true"]:not([data-disabled]) {
+    --background: var(--background-700);
+  }
+
+  .menu > :where(.content, .sub-content) [role^="menuitem"].item {
     --background: transparent;
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
     --icon-foreground: var(--foreground-300);
     --indicator-foreground: var(--accent-300);
 
+    /* List paints Menu items through its item slot; submenu triggers read the
+       same row tokens directly. */
+    @slot item {
+      --background: var(--background);
+      --background-hover: var(--background);
+      --background-selected: var(--background);
+      --background-selected-hover: var(--background);
+      --foreground: var(--foreground);
+      --foreground-hover: var(--foreground);
+      --foreground-selected: var(--foreground);
+      --foreground-selected-hover: var(--foreground);
+    }
+
     &:is([data-highlighted="true"], [data-focused="true"], [data-state="open"]) {
-      --background: color-mix(in srgb, var(--background-500) 15%, transparent);
+      --background: var(--background-600);
+      --foreground: var(--foreground-100);
     }
   }
 
@@ -793,29 +853,22 @@
     --foreground: var(--foreground-400);
   }
 
-  .path > .link {
-    --background: transparent;
-    --disabled-opacity: 0.6;
+  .path > .list > .item > .link {
     --focus-visible: var(--accent-400);
-    --foreground: var(--foreground-300);
   }
 
-  .path > .link[data-hovered="true"]:not([data-disabled]):not([data-selected="true"]) {
-    --background: color-mix(in srgb, var(--background-700) 50%, transparent);
-    --foreground: var(--foreground-200);
-  }
-
-  .path > .link[data-pressed="true"]:not([data-disabled]):not([data-selected="true"]) {
-    --background: color-mix(in srgb, var(--background-700) 70%, transparent);
-  }
-
-  .path > .link[data-selected="true"] {
-    --foreground: var(--foreground-100);
-  }
-
-  .path > .separator,
-  .path > .item {
+  .path {
     --foreground: var(--foreground-400);
+
+    @slot item {
+      --background: transparent;
+      --foreground: var(--foreground-300);
+      --disabled-opacity: 0.6;
+      --background-hover: color-mix(in srgb, var(--background-700) 50%, transparent);
+      --foreground-hover: var(--foreground-200);
+      --background-pressed: color-mix(in srgb, var(--background-700) 70%, transparent);
+      --foreground-selected: var(--foreground-100);
+    }
   }
 
   .tabs > .indicator,
@@ -858,13 +911,17 @@
 
   .anchor {
     @apply py-1.5;
-    --focus-ring: var(--background-600);
     --foreground: var(--foreground-200);
-    --underline-background: var(--background-600);
+
+    @slot underline {
+      --background: var(--background-600);
+    }
   }
 
-  .anchor[data-hovered="true"]:not([data-disabled]) {
-    --underline-background: var(--background-500);
+  .anchor[data-hovered="true"] {
+    @slot underline {
+      --background-hover: var(--background-500);
+    }
   }
 
   .modal {
@@ -899,9 +956,12 @@
   }
 
   .skeleton {
-    --background: var(--background-900);
+    /* Surface-relative. A fixed token disappears on whichever surface happens
+       to match it — background-900 vanished on background-900 cards. Mixing the
+       surface's own text colour holds the same contrast step on the page, on
+       cards, inside badges and inside filled buttons, in light and dark. */
+    --background: color-mix(in srgb, currentColor 15%, transparent);
     --radius: var(--radius-sm, 0.375rem);
-    opacity: 80%;
   }
 
   .skeleton-text {
@@ -946,54 +1006,120 @@
 }
 
 @layer utilities {
-  .button.primary {
-    --background: var(--accent-600);
-    --foreground: var(--accent-50);
-    --icon-foreground: var(--accent-50);
-    @slot border {
-      --background: var(--accent-600);
-    }
-  }
+  @variant button primary {
+    --background: var(--foreground-100);
+    --foreground: var(--background-950);
 
-  .button.primary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-    --background: color-mix(in srgb, contrast-color(var(--background-900)) 5%, var(--accent-500));
-    @slot border {
-      --background-hover: color-mix(in srgb, contrast-color(var(--background-900)) 5%, var(--accent-500));
-      --background-selected: color-mix(in srgb, contrast-color(var(--background-900)) 5%, var(--accent-500));
-    }
-  }
+    border-color: transparent;
 
-  .button.primary[data-pressed="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, contrast-color(var(--background-900)) 15%, var(--accent-600));
-    @slot border {
-      --background-pressed: color-mix(in srgb, contrast-color(var(--background-900)) 15%, var(--accent-600));
-    }
-  }
+    background-image: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 34%) 0%,
+      rgb(255 255 255 / 8%) 36%,
+      transparent 56%,
+      rgb(0 0 0 / 18%) 100%
+    );
 
-  .button.secondary {
-    --background: var(--background-800);
-    --foreground: var(--foreground-300);
-    @slot border {
-      --background: var(--background-800);
-    }
-  }
+    box-shadow:
+      0 0 0 1px var(--foreground-300) inset,
+      0 1px 2px rgb(0 0 0 / 20%),
+      0 4px 10px rgb(0 0 0 / 14%);
 
-  .button.secondary:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));
+    @slot icon {
+      --foreground: currentColor;
+    }
+
     @slot border {
+      --background: transparent;
       --background-hover: transparent;
       --background-selected: transparent;
-    }
-  }
-
-  .button.secondary[data-pressed="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));
-    @slot border {
       --background-pressed: transparent;
     }
   }
 
-  .button.ghost {
+  @variant button primary {
+    &:is( [data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
+      --background: color-mix(
+        in srgb,
+        var(--foreground-100) 72%,
+        var(--foreground-300)
+      );
+
+      box-shadow:
+        0 0 0 1px
+          color-mix(
+            in srgb,
+            var(--background) 68%,
+            var(--foreground-300)
+          )
+          inset,
+        0 1px 2px rgb(0 0 0 / 24%),
+        0 5px 12px rgb(0 0 0 / 18%);
+    }
+  }
+
+  @variant button primary {
+    &[data-pressed="true"]:not([data-disabled]) {
+      --background: color-mix(
+        in srgb,
+        var(--foreground-100) 58%,
+        var(--foreground-300)
+      );
+
+      background-image: linear-gradient(
+        to bottom,
+        rgb(0 0 0 / 14%),
+        transparent 60%,
+        rgb(255 255 255 / 8%)
+      );
+
+      box-shadow:
+        0 0 0 1px
+          color-mix(
+            in srgb,
+            var(--background) 62%,
+            var(--foreground-300)
+          )
+          inset,
+        0 2px 4px rgb(0 0 0 / 24%) inset,
+        0 1px 2px rgb(0 0 0 / 16%);
+    }
+  }
+
+  @variant button secondary {
+    --background: var(--background-800);
+    background-image: radial-gradient(
+      130% 95% at 50% 0%,
+      color-mix(in srgb, var(--foreground-50) 5%, transparent),
+      transparent 58%,
+      color-mix(in srgb, var(--background-950) 28%, transparent)
+    );
+    --foreground: var(--foreground-300);
+    @slot border {
+      --background: var(--background-700);
+    }
+  }
+
+  @variant button secondary {
+    &:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
+      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));
+      @slot border {
+        --background-hover: transparent;
+        --background-selected: transparent;
+      }
+    }
+  }
+
+  @variant button secondary {
+    &[data-pressed="true"]:not([data-disabled]) {
+      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));
+      @slot border {
+        --background-pressed: transparent;
+      }
+    }
+  }
+
+  @variant button ghost {
     --background: transparent;
     @slot border {
       --background: transparent;
@@ -1002,13 +1128,39 @@
     --foreground: var(--foreground-300);
   }
 
-  .button.ghost:is([data-hovered="true"], [data-pressed="true"], [data-selected="true"]):not([data-disabled]) {
-    --background: var(--background-800);
+  @variant button ghost {
+    &:is([data-hovered="true"], [data-pressed="true"], [data-selected="true"]):not([data-disabled]) {
+      --background: var(--background-800);
+      @slot border {
+        --background-hover: var(--background-700);
+      }
+    }
+  }
+
+  @variant button danger {
+    --foreground: var(--danger-500);
+    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);
+    background-image: radial-gradient(
+      130% 95% at 50% 0%,
+      color-mix(in srgb, var(--danger-50) 5%, transparent),
+      transparent 58%,
+      color-mix(in srgb, var(--danger-500) 10%, transparent)
+    );
+    --icon-foreground: var(--danger-500);
+    @slot border {
+      --background: transparent
+    }
   }
 
   .danger {
     --foreground: var(--danger-500);
-    --background: color-mix(in srgb, var(--danger-500) 20%, transparent);
+    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);
+    background-image: radial-gradient(
+      130% 95% at 50% 0%,
+      color-mix(in srgb, var(--danger-50) 5%, transparent),
+      transparent 58%,
+      color-mix(in srgb, var(--danger-500) 10%, transparent)
+    );
     --icon-foreground: var(--danger-500);
     @slot border {
       --background: transparent
@@ -1026,8 +1178,6 @@
     --foreground: var(--warning-500);
     --icon-foreground: var(--warning-500);
   }
-
-
 
   .info {
     --background: color-mix(in srgb, var(--info-500) 20%, transparent);

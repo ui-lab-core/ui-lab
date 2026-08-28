@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import type { Key } from "react-aria";
 import { useListNavigation } from "../../utils/list-navigation";
@@ -10,6 +12,8 @@ import type {
   MenuItemExtras,
 } from "./menu.types";
 import { useControlledState } from "@/hooks/useControlledState";
+
+const EMPTY_KEYS: Set<Key> = new Set();
 
 const MenuContext = React.createContext<MenuContextValue | null>(null);
 
@@ -33,10 +37,21 @@ export function useRadioGroupContext() {
   return React.useContext(RadioGroupContext);
 }
 
-const MenuPortal = ({ children }: MenuPortalProps) => {
-  return <>{children}</>;
+const MenuPortalContext = React.createContext<HTMLElement | null>(null);
+
+/** Returns the container every panel below this provider portals into, or null on the server. */
+export function useMenuPortalContainer(): HTMLElement | null {
+  const container = React.useContext(MenuPortalContext);
+  if (container) return container;
+  return typeof document === "undefined" ? null : document.body;
+}
+
+/** Redirects the portalled Menu panels below it into a specific container element */
+const MenuPortal = ({ children, container }: MenuPortalProps) => {
+  return <MenuPortalContext.Provider value={container ?? null}>{children}</MenuPortalContext.Provider>;
 };
-MenuPortal.displayName = "MenuPortal";
+MenuPortal.displayName = "Menu.Portal";
+
 const Menu = ({
   children,
   type = "context-menu",
@@ -44,26 +59,36 @@ const Menu = ({
   selectedKeys: controlledSelectedKeys,
   defaultSelectedKeys,
   onSelectionChange,
-  state: controlledState,
+  onOpenChange,
   open,
+  defaultOpen,
 }: MenuProps) => {
-  const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false);
-  const [uncontrolledSelectedKeys, setUncontrolledSelectedKeys] = useControlledState(
-    controlledState?.selected,
-    controlledState?.selected ??
-      (controlledSelectedKeys ? new Set(controlledSelectedKeys) : undefined),
-    defaultSelectedKeys ?? new Set(),
+  const [isOpen, setOpenState] = useControlledState(open, defaultOpen, false);
+  const [selectedKeys, setSelectedKeys] = useControlledState(
+    controlledSelectedKeys,
+    defaultSelectedKeys,
+    EMPTY_KEYS,
   );
   const [radioGroups, setRadioGroups] = React.useState<Map<string, Key | null>>(new Map());
-  const [activeSubmenuKey, setActiveSubmenuKey] = React.useState<Key | null>(null);
-
-  const selectedKeys = uncontrolledSelectedKeys;
 
   const nav = useListNavigation({ isOpen });
   const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map());
   const mouseMoveDetectedRef = React.useRef(true);
   const clickPositionRef = React.useRef({ x: 0, y: 0 });
   const triggerRef = React.useRef<HTMLElement | null>(null);
+
+  const isOpenRef = React.useRef(isOpen);
+  isOpenRef.current = isOpen;
+
+  const setIsOpen = React.useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+    (value) => {
+      const next = typeof value === "function" ? value(isOpenRef.current) : value;
+      if (next === isOpenRef.current) return;
+      setOpenState(next);
+      onOpenChange?.(next);
+    },
+    [onOpenChange, setOpenState],
+  );
 
   const registerItem = React.useCallback(
     (
@@ -89,24 +114,23 @@ const Menu = ({
 
   const handleSelectionChange = React.useCallback(
     (keys: Set<Key>) => {
-      setUncontrolledSelectedKeys(keys);
+      setSelectedKeys(keys);
       onSelectionChange?.(keys);
     },
-    [onSelectionChange, setUncontrolledSelectedKeys],
+    [onSelectionChange, setSelectedKeys],
   );
 
   const toggleSelection = React.useCallback(
     (key: Key) => {
+      if (selectionMode === "none") return;
       const newKeys = new Set(selectedKeys);
       if (selectionMode === "single") {
         newKeys.clear();
         newKeys.add(key);
-      } else if (selectionMode === "multiple") {
-        if (newKeys.has(key)) {
-          newKeys.delete(key);
-        } else {
-          newKeys.add(key);
-        }
+      } else if (newKeys.has(key)) {
+        newKeys.delete(key);
+      } else {
+        newKeys.add(key);
       }
       handleSelectionChange(newKeys);
     },
@@ -116,7 +140,7 @@ const Menu = ({
   const close = React.useCallback(() => {
     setIsOpen(false);
     nav.setFocusedKey(null);
-  }, [nav.setFocusedKey]);
+  }, [setIsOpen, nav.setFocusedKey]);
 
   const selectFocusedItem = React.useCallback(() => {
     if (nav.focusedKey === null) return;
@@ -156,7 +180,6 @@ const Menu = ({
         close,
         selectionMode,
         selectedKeys,
-        onSelectionChange: handleSelectionChange,
         toggleSelection,
         items: nav.items,
         registerItem,
@@ -173,8 +196,6 @@ const Menu = ({
         triggerRef,
         mouseMoveDetectedRef,
         clickPositionRef,
-        activeSubmenuKey,
-        setActiveSubmenuKey,
       }) satisfies MenuContextValue,
     [
       isOpen,
@@ -197,8 +218,6 @@ const Menu = ({
       radioGroups,
       setRadioGroupValue,
       getRadioGroupValue,
-      activeSubmenuKey,
-      setActiveSubmenuKey,
     ],
   );
 
@@ -207,21 +226,3 @@ const Menu = ({
 Menu.displayName = "Menu";
 
 export { Menu, MenuPortal };
-export type {
-  MenuProps,
-  MenuTriggerProps,
-  MenuTriggerAs,
-  MenuPortalProps,
-  MenuContentProps,
-  MenuGroupProps,
-  MenuItemProps,
-  MenuCheckboxItemProps,
-  MenuRadioGroupProps,
-  MenuRadioItemProps,
-  MenuLabelProps,
-  MenuSeparatorProps,
-  MenuShortcutProps,
-  MenuSubProps,
-  MenuSubTriggerProps,
-  MenuSubContentProps,
-} from "./menu.types";

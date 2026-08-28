@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { createPortal } from "react-dom";
 
@@ -7,47 +9,28 @@ import { autoUpdate } from "@/hooks/useFloat/dom/autoUpdate";
 import { useHover } from "@react-aria/interactions";
 import { ChevronRight } from "lucide-react";
 
-import { useMenuContext, useMenuSubmenuContext, MenuSubmenuContext } from "./Menu";
-import type {
-  MenuSubProps,
-  MenuSubTriggerProps,
-  MenuSubContentProps,
-  MenuSubTriggerStyleSlots,
-  MenuSubContentStyleSlots,
-} from "./menu.types";
+import {
+  useMenuContext,
+  useMenuSubmenuContext,
+  useMenuPortalContainer,
+  MenuSubmenuContext,
+} from "./Menu";
+import type { MenuSubProps, MenuSubTriggerProps, MenuSubContentProps } from "./menu.types";
 
 import type { Key } from "react-aria";
 
 import css from "./Menu.module.css";
 
 import { cn } from "@/lib/utils";
-import { createStylesResolver } from "@/lib/styles";
+import { resolveMenuSubTriggerStyles, resolveMenuSubContentStyles } from "./menu.styles";
 import { asElementProps } from "@/lib/react-aria";
+import { mergeProps } from "@react-aria/utils";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import {
-  useListNavigation,
-  handleListKeyDown,
-  scrollItemIntoView,
-} from "../../utils/list-navigation";
+import { useListNavigation, handleListKeyDown } from "../../utils/list-navigation";
 import * as positioning from "../../utils/submenu-positioning";
 
 import type { MenuItemExtras } from "./menu.types";
 import { List } from "../List";
-
-const resolveMenuSubTriggerBaseStyles = createStylesResolver(["root", "chevron"] as const);
-const resolveMenuSubContentBaseStyles = createStylesResolver(["root", "list"] as const);
-
-function resolveMenuSubTriggerStyles(styles: MenuSubTriggerProps["styles"]) {
-  if (!styles) return resolveMenuSubTriggerBaseStyles(styles);
-  const { root, chevron } = styles;
-  return resolveMenuSubTriggerBaseStyles({ root, chevron });
-}
-
-function resolveMenuSubContentStyles(styles: MenuSubContentProps["styles"]) {
-  if (!styles) return resolveMenuSubContentBaseStyles(styles);
-  const { root, list } = styles;
-  return resolveMenuSubContentBaseStyles({ root, list });
-}
 
 /** Context provider that scopes a nested flyout submenu within the menu */
 const MenuSub = ({
@@ -112,7 +95,6 @@ const MenuSub = ({
   }, [nav.focusedKey, nav.items]);
 
   const triggerRef = React.useRef<HTMLDivElement>(null);
-  const parentMenuRef = React.useRef<HTMLDivElement>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
   const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const parentSubmenuCtx = useMenuSubmenuContext();
@@ -129,7 +111,6 @@ const MenuSub = ({
       isOpen,
       setIsOpen: setIsOpen as React.Dispatch<React.SetStateAction<boolean>>,
       triggerRef,
-      parentMenuRef,
       submenuLevel,
       items: nav.items,
       focusedKey: nav.focusedKey,
@@ -167,11 +148,24 @@ const MenuSub = ({
 
   return <MenuSubmenuContext.Provider value={contextValue}>{children}</MenuSubmenuContext.Provider>;
 };
-MenuSub.displayName = "MenuSub";
+MenuSub.displayName = "Menu.Sub";
 
 /** Menu item that opens a nested submenu on hover or keyboard right-arrow */
 const MenuSubTrigger = React.forwardRef<HTMLDivElement, MenuSubTriggerProps>(
-  ({ children, disabled = false, inset, textValue, className, styles: stylesProp }, ref) => {
+  (
+    {
+      children,
+      id,
+      disabled = false,
+      inset,
+      textValue,
+      className,
+      styles: stylesProp,
+      onClick,
+      ...domProps
+    },
+    ref,
+  ) => {
     const rootContext = useMenuContext();
     const submenuContext = useMenuSubmenuContext();
     // Register with parent submenu if nested, root menu if top-level
@@ -181,11 +175,9 @@ const MenuSubTrigger = React.forwardRef<HTMLDivElement, MenuSubTriggerProps>(
     const triggerRef = React.useRef<HTMLDivElement>(null);
     const hoverTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-    const key = React.useMemo(
-      () => textValue ?? String(children) ?? `subtrigger-${React.useId()}`,
-      [textValue, children],
-    );
-    const finalTextValue = textValue ?? String(children);
+    const autoId = React.useId();
+    const key = id ?? autoId;
+    const finalTextValue = textValue ?? "";
     const setSubmenuOpen = submenuContext?.setIsOpen;
     const isHighlighted = focusedKey === key;
 
@@ -244,35 +236,44 @@ const MenuSubTrigger = React.forwardRef<HTMLDivElement, MenuSubTriggerProps>(
 
     return (
       <div
+        {...mergeProps(asElementProps<"div">(hoverProps), domProps)}
         ref={mergedRef}
         role="menuitem"
         aria-haspopup="menu"
-        aria-expanded={submenuContext?.isOpen}
+        aria-expanded={submenuContext?.isOpen ?? false}
         tabIndex={-1}
         aria-disabled={disabled || undefined}
-        className={cn("trigger", css.item, css["sub-trigger"], className, resolved.root)}
+        className={cn("item", "sub-trigger", css.item, css["sub-trigger"], className, resolved.root)}
+        data-slot="root"
         data-highlighted={isHighlighted || isHovered ? "true" : "false"}
         data-focused={isHighlighted || isHovered ? "true" : "false"}
         data-hovered={isHovered ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         data-inset={inset ? "true" : undefined}
         data-state={submenuContext?.isOpen ? "open" : "closed"}
-        onClick={() => handleSelectRef.current?.()}
-        {...asElementProps<"div">(hoverProps)}
+        onClick={(event) => {
+          onClick?.(event);
+          if (!event.defaultPrevented) handleSelectRef.current?.();
+        }}
       >
         {children}
-        <ChevronRight className={cn(css["sub-trigger-chevron"], resolved.chevron)} />
+        <ChevronRight
+          className={cn(css.chevron, resolved.chevron)}
+          data-slot="chevron"
+          aria-hidden="true"
+        />
       </div>
     );
   },
 );
-MenuSubTrigger.displayName = "MenuSubTrigger";
+MenuSubTrigger.displayName = "Menu.SubTrigger";
 
 /** Floating panel containing the items of a nested submenu */
 const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
-  ({ children, className, offset = 8, styles: stylesProp }, ref) => {
+  ({ children, className, offset = 8, styles: stylesProp, ...domProps }, ref) => {
     const submenuContext = useMenuSubmenuContext();
     const parentContext = useMenuContext();
+    const portalContainer = useMenuPortalContainer();
     const contentRef = React.useRef<HTMLDivElement>(null);
     const [mounted, setMounted] = React.useState(false);
     const [floatingElement, setFloatingElement] = React.useState<HTMLDivElement | null>(null);
@@ -285,7 +286,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
       open: submenuContext?.isOpen ?? false,
       middleware: positioning.getMiddleware({
         mainAxis: offset,
-        crossAxis: offset,
+        crossAxis: 0,
         fallbackPlacements: ["left-start"],
       }),
     });
@@ -427,7 +428,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
       skipExitAnimation: !parentContext.isOpen,
     });
 
-    if (!mounted || !submenuContext) return null;
+    if (!mounted || !submenuContext || !portalContainer) return null;
 
     const showContent = effectiveOpen && isPositioned;
     const resolved = resolveMenuSubContentStyles(stylesProp);
@@ -437,7 +438,8 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
         {(showContent || isExiting) && (
           <div
             ref={refs.setFloating}
-            className={cn("menu", css["sub-content-root"])}
+            className={cn("menu", css.overlay, resolved.overlay)}
+            data-slot="overlay"
             style={{
               ...floatingStyles,
               zIndex: 50001 + (submenuContext.submenuLevel ?? 0),
@@ -445,18 +447,26 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
             }}
           >
             <div
-              ref={mergedRef}
               role="menu"
               tabIndex={-1}
-              className={cn("sub-content", css["sub-content"], className, resolved.root)}
+              {...mergeProps(asElementProps<"div">(hoverProps), domProps)}
+              ref={mergedRef}
+              className={cn("sub-content", css.panel, className, resolved.root)}
+              data-slot="root"
               data-state={showContent ? "open" : "closed"}
               data-placement={placement.split("-")[0]}
-              onKeyDown={handleKeyDown}
-              style={{ outline: "none", ...animationStyles }}
-              {...asElementProps<"div">(hoverProps)}
+              onKeyDown={(event) => {
+                domProps.onKeyDown?.(event);
+                if (!event.defaultPrevented) handleKeyDown(event);
+              }}
+              style={{ ...domProps.style, ...animationStyles }}
             >
-              <div className={cn("viewport", resolved.list)} style={{ padding: "0.25rem" }}>
-                <List items={submenuContext.items} gap="xs">
+              <div
+                className={cn("viewport", css.viewport, resolved["list.padding"])}
+                data-slot="list.padding"
+              >
+                {/* The panel is already the menu; the inner collection must not nest a listbox. */}
+                <List role="presentation" gap="xs" className={resolved["list.root"]}>
                   {children}
                 </List>
               </div>
@@ -464,10 +474,10 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
           </div>
         )}
       </>,
-      document.body,
+      portalContainer,
     );
   },
 );
-MenuSubContent.displayName = "MenuSubContent";
+MenuSubContent.displayName = "Menu.SubContent";
 
 export { MenuSub, MenuSubTrigger, MenuSubContent };

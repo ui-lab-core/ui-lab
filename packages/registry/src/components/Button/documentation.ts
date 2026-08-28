@@ -41,8 +41,9 @@ export const styleDocumentation = {
   anatomy: {
     title: "Anatomy",
     description: "Choose a named Button slot to style the corresponding region of the component.",
-    groupOrder: ["ButtonStyleSlots"],
+    groupOrder: ["ButtonIconStyleSlots", "ButtonStyleSlots"],
     groupLabels: {
+      ButtonIconStyleSlots: "Button icon",
       ButtonStyleSlots: "Button",
     },
   },
@@ -53,7 +54,7 @@ export const styleDocumentation = {
     groups: [
       {
         title: "Colors",
-        description: "Control the button fill, label, and icon color together or independently.",
+        description: "Control the button fill and label color.",
         variables: [
           {
             name: "--background",
@@ -65,15 +66,35 @@ export const styleDocumentation = {
             selector: ".button",
             description: "Sets the label color.",
           },
-          {
-            name: "--icon-foreground",
-            description: "Sets the color inherited by button icons.",
-          },
         ],
         code: `.button {
   --background: var(--accent-600);
   --foreground: var(--accent-50);
-  --icon-foreground: var(--accent-50);
+}`,
+      },
+      {
+        title: "Icon",
+        description:
+          "Adjust the icon glyph's color and size independently of the button's own dimensions. Falls back to --icon-foreground, then currentColor, when unset.",
+        variables: [
+          {
+            name: "--foreground",
+            selector: ".button",
+            slot: "icon",
+            description: "Sets the icon color.",
+          },
+          {
+            name: "--size",
+            selector: ".button",
+            slot: "icon",
+            description: "Sets the icon glyph's width and height.",
+          },
+        ],
+        code: `.button {
+  @slot icon {
+    --foreground: var(--accent-500);
+    --size: 1.25rem;
+  }
 }`,
       },
       {
@@ -115,7 +136,7 @@ export const styleDocumentation = {
 }`,
       },
       {
-        title: "Spacing and icon size",
+        title: "Spacing and icon-only sizing",
         description: "Change the Button's internal padding or make an icon-only Button larger.",
         variables: [
           {
@@ -136,7 +157,7 @@ export const styleDocumentation = {
           {
             name: "--size",
             selector: ".button.icon",
-            description: "Sets the width and height of an icon-only Button.",
+            description: "Sets the width and height of the icon-only Button root, distinct from the icon glyph's own --size.",
           },
         ],
         code: `.button {

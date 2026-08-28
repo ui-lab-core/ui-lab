@@ -1,7 +1,8 @@
 import { createContext, type RefObject } from "react";
+import type { GroupResolvedStyles } from "./group.styles";
+import type { GroupOrientation, GroupSpacing } from "./group.types";
 
-export type GroupOrientation = "horizontal" | "vertical";
-export type GroupSpacing = "none" | "xs" | "sm";
+export type { GroupOrientation, GroupSpacing };
 
 export interface GroupContextValue {
   isInGroup: boolean;
@@ -11,7 +12,7 @@ export interface GroupContextValue {
   groupValue?: string;
   groupOnChange?: (value: string) => void;
   groupVariant?: string;
-  groupStyles: Record<string, string>;
+  groupStyles: GroupResolvedStyles;
   registerInput?: (
     containerRef: RefObject<HTMLDivElement | null>,
     inputRef: RefObject<HTMLInputElement | null>,

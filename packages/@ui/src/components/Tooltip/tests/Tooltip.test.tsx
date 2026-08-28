@@ -70,7 +70,7 @@ describe("Tooltip", () => {
 
   it("uses the resolved placement and arrow position for the Frame path", async () => {
     render(
-      <Tooltip content="Under Construction" position="top" open showArrow>
+      <Tooltip content="Under Construction" position="top" open show-arrow>
         <button type="button">Articles</button>
       </Tooltip>,
     );

@@ -1,1 +1,1 @@
-export { TextArea, type TextAreaProps, type TextareaState } from "./Textarea";
+export * from "./Textarea";

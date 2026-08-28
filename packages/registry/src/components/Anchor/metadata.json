@@ -1,21 +1,23 @@
 {
   "id": "anchor",
   "name": "Anchor",
-  "description": "Link with animated underline and popover preview.",
+  "description": "Link with an animated underline and an optional hover preview.",
   "category": "navigation",
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Anchor",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["popover", "breadcrumbs"],
+  "relatedComponents": ["tooltip", "path", "button"],
   "tags": ["navigation", "interactive", "link"],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Keyboard accessible with focus visible states",
-      "Built on Popover for accessible overlay handling",
-      "Screen reader friendly"
+      "Renders a native anchor element when href is supplied, and a span otherwise",
+      "Adds rel=\"noopener noreferrer\" automatically when target is _blank",
+      "Keyboard focusable with a keyboard-visible focus indicator",
+      "The underline is decorative and hidden from assistive technology",
+      "Hover previews are rendered by Tooltip, which handles accessible overlay behavior"
     ]
   }
 }

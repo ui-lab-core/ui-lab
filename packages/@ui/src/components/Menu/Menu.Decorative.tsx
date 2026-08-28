@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { useMenuContext, RadioGroupContext } from "./Menu";
 import type {
@@ -6,57 +8,43 @@ import type {
   MenuLabelProps,
   MenuSeparatorProps,
   MenuShortcutProps,
-} from "./Menu";
+} from "./menu.types";
 import type { Key } from "@react-types/shared";
-import styles from "./Menu.module.css";
+import css from "./Menu.module.css";
 import { cn } from "@/lib/utils";
-import { createStylesResolver } from "@/lib/styles";
-
-const resolveMenuLabelBaseStyles = createStylesResolver(["root"] as const);
-const resolveMenuSeparatorBaseStyles = createStylesResolver(["root"] as const);
-const resolveMenuShortcutBaseStyles = createStylesResolver(["root"] as const);
-
-function resolveMenuLabelStyles(styles: MenuLabelProps["styles"]) {
-  if (!styles) return resolveMenuLabelBaseStyles(styles);
-  const { root } = styles;
-  return resolveMenuLabelBaseStyles({ root });
-}
-
-function resolveMenuSeparatorStyles(styles: MenuSeparatorProps["styles"]) {
-  if (!styles) return resolveMenuSeparatorBaseStyles(styles);
-  const { root } = styles;
-  return resolveMenuSeparatorBaseStyles({ root });
-}
-
-function resolveMenuShortcutStyles(styles: MenuShortcutProps["styles"]) {
-  if (!styles) return resolveMenuShortcutBaseStyles(styles);
-  const { root } = styles;
-  return resolveMenuShortcutBaseStyles({ root });
-}
-
-// ============================================================================
-// Group Component
-// ============================================================================
+import {
+  resolveMenuGroupStyles,
+  resolveMenuRadioGroupStyles,
+  resolveMenuLabelStyles,
+  resolveMenuSeparatorStyles,
+  resolveMenuShortcutStyles,
+} from "./menu.styles";
 
 /** Logical grouping container for related menu items */
 const MenuGroup = React.forwardRef<HTMLDivElement, MenuGroupProps>(
-  ({ children, ...props }, ref) => (
-    <div ref={ref} role="group" {...props}>
-      {children}
-    </div>
-  ),
+  ({ children, className, styles: stylesProp, ...domProps }, ref) => {
+    const resolved = resolveMenuGroupStyles(stylesProp);
+    return (
+      <div
+        {...domProps}
+        ref={ref}
+        role="group"
+        className={cn(css.group, className, resolved.root)}
+        data-slot="root"
+      >
+        {children}
+      </div>
+    );
+  },
 );
-MenuGroup.displayName = "MenuGroup";
-
-// ============================================================================
-// Radio Group Component
-// ============================================================================
+MenuGroup.displayName = "Menu.Group";
 
 /** Group of mutually exclusive radio items sharing a single selected value */
 const MenuRadioGroup = React.forwardRef<HTMLDivElement, MenuRadioGroupProps>(
-  ({ children, value, onValueChange }, ref) => {
+  ({ children, value, onValueChange, className, styles: stylesProp, ...domProps }, ref) => {
     const groupName = React.useId();
     const { setRadioGroupValue, getRadioGroupValue } = useMenuContext();
+    const resolved = resolveMenuRadioGroupStyles(stylesProp);
 
     const currentValue = value !== undefined ? value : getRadioGroupValue(groupName);
 
@@ -68,31 +56,38 @@ const MenuRadioGroup = React.forwardRef<HTMLDivElement, MenuRadioGroupProps>(
       [groupName, setRadioGroupValue, onValueChange],
     );
 
+    const contextValue = React.useMemo(
+      () => ({ name: groupName, value: currentValue, onValueChange: handleValueChange }),
+      [groupName, currentValue, handleValueChange],
+    );
+
     return (
-      <RadioGroupContext.Provider
-        value={{ name: groupName, value: currentValue, onValueChange: handleValueChange }}
-      >
-        <div ref={ref} role="group">
+      <RadioGroupContext.Provider value={contextValue}>
+        <div
+          {...domProps}
+          ref={ref}
+          role="group"
+          className={cn("radio-group", css.group, className, resolved.root)}
+          data-slot="root"
+        >
           {children}
         </div>
       </RadioGroupContext.Provider>
     );
   },
 );
-MenuRadioGroup.displayName = "MenuRadioGroup";
-
-// ============================================================================
-// Label Component
-// ============================================================================
+MenuRadioGroup.displayName = "Menu.RadioGroup";
 
 /** Non-interactive label for a section of menu items */
 const MenuLabel = React.forwardRef<HTMLDivElement, MenuLabelProps>(
-  ({ children, inset, className, styles: stylesProp }, ref) => {
+  ({ children, inset, className, styles: stylesProp, ...domProps }, ref) => {
     const resolved = resolveMenuLabelStyles(stylesProp);
     return (
       <div
+        {...domProps}
         ref={ref}
-        className={cn("label", styles.label, className, resolved.root)}
+        className={cn("label", css.label, className, resolved.root)}
+        data-slot="root"
         data-inset={inset ? "true" : undefined}
       >
         {children}
@@ -100,36 +95,40 @@ const MenuLabel = React.forwardRef<HTMLDivElement, MenuLabelProps>(
     );
   },
 );
-MenuLabel.displayName = "MenuLabel";
-
-// ============================================================================
-// Separator Component
-// ============================================================================
+MenuLabel.displayName = "Menu.Label";
 
 /** Horizontal rule that visually divides sections of the menu */
 const MenuSeparator = React.forwardRef<HTMLDivElement, MenuSeparatorProps>(
-  ({ className, styles: stylesProp }, ref) => {
+  ({ className, styles: stylesProp, ...domProps }, ref) => {
     const resolved = resolveMenuSeparatorStyles(stylesProp);
     return (
       <div
+        {...domProps}
         ref={ref}
         role="separator"
-        className={cn("separator", styles.separator, className, resolved.root)}
+        aria-orientation="horizontal"
+        className={cn("separator", css.separator, className, resolved.root)}
+        data-slot="root"
       />
     );
   },
 );
-MenuSeparator.displayName = "MenuSeparator";
+MenuSeparator.displayName = "Menu.Separator";
 
-// ============================================================================
-// Shortcut Component
-// ============================================================================
-
-/** Keyboard shortcut hint aligned to the right side of a menu item */
-const MenuShortcut = ({ className, styles: stylesProp, ...props }: MenuShortcutProps) => {
-  const resolved = resolveMenuShortcutStyles(stylesProp);
-  return <span className={cn("shortcut", styles.shortcut, className, resolved.root)} {...props} />;
-};
-MenuShortcut.displayName = "MenuShortcut";
+/** Keyboard shortcut hint aligned to the end of a menu item */
+const MenuShortcut = React.forwardRef<HTMLSpanElement, MenuShortcutProps>(
+  ({ className, styles: stylesProp, ...domProps }, ref) => {
+    const resolved = resolveMenuShortcutStyles(stylesProp);
+    return (
+      <span
+        {...domProps}
+        ref={ref}
+        className={cn("shortcut", css.shortcut, className, resolved.root)}
+        data-slot="root"
+      />
+    );
+  },
+);
+MenuShortcut.displayName = "Menu.Shortcut";
 
 export { MenuGroup, MenuRadioGroup, MenuLabel, MenuSeparator, MenuShortcut };

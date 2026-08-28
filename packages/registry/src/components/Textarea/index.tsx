@@ -1,17 +1,5 @@
 import React from "react";
-import { TextArea } from "ui-lab-components";
 import { ComponentDetail } from "@/types";
-
-const textareaBasicCode = `import { TextArea } from "ui-lab-components";
-
-export function Example() {
-  return (
-    <TextArea
-      placeholder="Enter your text here..."
-      rows={4}
-    />
-  );
-}`;
 
 export const textareaDetail: ComponentDetail = {
   id: "textarea",
@@ -20,13 +8,15 @@ export const textareaDetail: ComponentDetail = {
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
-        The TextArea component provides a multi-line text input field, perfect for collecting longer
-        text input such as comments, descriptions, or messages. It's more flexible than a
-        single-line input and can be sized to fit your layout needs.
+        TextArea renders a native multi-line text field inside a wrapper that owns the resize
+        handle, the optional capped scroll surface, and the optional character count. It suits
+        comments, descriptions, and messages where a single-line Input is not enough.
       </p>
       <p>
-        TextArea supports customizable row heights, placeholder text, and disabled states, making it
-        suitable for various form scenarios.
+        Size presets set the minimum height and text density, <code>resize</code> selects the axis
+        of the custom drag handle, <code>maxHeight</code> caps the visible height and grows the
+        field with its content, and <code>maxCharacters</code> truncates input while
+        <code>showCharacterCount</code> reports progress against the limit.
       </p>
     </div>
   ),

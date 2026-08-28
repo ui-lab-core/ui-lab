@@ -13,12 +13,21 @@ function enrichComponentApi(id: string, api: ComponentMetadata["api"]) {
     generatedStyles[id as keyof typeof generatedStyles]?.styleableParts?.map((part) => part.name) ??
     [];
   const hasStylesProp = api.props.some((prop) => prop.name === "styles");
+  const variants =
+    generatedStyles[id as keyof typeof generatedStyles]?.variants ?? [];
 
   const props = api.props
     .filter(
       (prop) => !(hasStylesProp && prop.name !== "className" && /.+ClassName$/.test(prop.name)),
     )
     .map((prop) => {
+      if (prop.name === "variant" && variants.length > 0) {
+        return {
+          ...prop,
+          enumValues: variants,
+          description: `${prop.description ?? "Selects the visual treatment."} Available variants in the active theme: ${variants.map((variant) => `"${variant}"`).join(", ")}.`,
+        };
+      }
       if (prop.name !== "styles" || styleableParts.length === 0) return prop;
 
       const slots = `Available slots: ${styleableParts.map((part) => `"${part}"`).join(", ")}.`;

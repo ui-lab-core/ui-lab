@@ -64,7 +64,7 @@ describe("Popover", () => {
 
   it("uses the resolved aligned placement and arrow position for the Frame path", () => {
     render(
-      <Popover content={<div>Popover content</div>} position="left" align="end" isOpen showArrow>
+      <Popover content={<div>Popover content</div>} position="left" align="end" isOpen show-arrow>
         <button type="button">Open popover</button>
       </Popover>,
     );

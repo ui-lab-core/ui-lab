@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import userEvent from "@testing-library/user-event";
 import { Button } from "../Button";
+import { Skeleton } from "../../Skeleton";
 import css from "../Button.module.css";
 import {
   testRefForwarding,
@@ -111,6 +112,25 @@ describe("Button - Styling", () => {
     expect(button).toHaveClass("base", "active");
     expect(button).not.toHaveAttribute("styles");
   });
+
+  it("exposes stable data-slot identities for root, icon, and hint anatomy", () => {
+    render(
+      <Button icon={{ left: <svg data-testid="left-icon" />, right: <svg data-testid="right-icon" /> }} hint="⌘K">
+        Render
+      </Button>,
+    );
+
+    expect(screen.getByRole("button")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("left-icon").closest("[data-slot]")).toHaveAttribute(
+      "data-slot",
+      "icon.left",
+    );
+    expect(screen.getByTestId("right-icon").closest("[data-slot]")).toHaveAttribute(
+      "data-slot",
+      "icon.right",
+    );
+    expect(screen.getByText("⌘K").closest("[data-slot]")).toHaveAttribute("data-slot", "hint");
+  });
 });
 
 describe("Button - Component Specific", () => {
@@ -161,6 +181,17 @@ describe("Button - Component Specific", () => {
 
     expect(screen.getByRole("button", { name: "Brush ⌘B" })).toHaveClass("md");
     expect(screen.getByRole("button", { name: "Brush ⌘B" })).not.toHaveClass("icon", css.icon);
+  });
+
+  it("does not infer icon-only sizing for a skeleton label", () => {
+    render(
+      <Button aria-label="Loading">
+        <Skeleton.Text lines={1} w={96} />
+      </Button>,
+    );
+
+    expect(screen.getByRole("button", { name: "Loading" })).toHaveClass("md");
+    expect(screen.getByRole("button", { name: "Loading" })).not.toHaveClass("icon", css.icon);
   });
 
   it("renders a hint as a secondary Badge", () => {

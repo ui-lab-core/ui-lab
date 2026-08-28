@@ -70,7 +70,7 @@ describe("Expand", () => {
         isExpanded
         styles={{
           icon: { collapsed: "icon-collapsed", expanded: "icon-expanded" },
-          contentInner: "slot-content-inner",
+          content: { inner: "slot-content-inner" },
         }}
       >
         <p>Preset content</p>

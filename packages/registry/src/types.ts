@@ -23,10 +23,16 @@ export interface PropDefinition {
   defaultValue?: string;
   description?: string;
   enumValues?: string[];
+  enumValueDetails?: APIEnumValue[];
   category?: string;
   tags?: Record<string, string>;
   links?: APIDocLink[];
   typeTokens?: APITypeToken[];
+}
+
+export interface APIEnumValue {
+  value: string;
+  description: string;
 }
 
 export interface APIDocLink {
@@ -47,6 +53,7 @@ export interface APICustomType {
   typeTokens?: APITypeToken[];
   kind?: "alias" | "interface";
   members?: PropDefinition[];
+  values?: APIEnumValue[];
   examples?: string[];
   notes?: string[];
 }
@@ -163,6 +170,7 @@ export interface ComponentStyleDocumentation {
 export interface ComponentStyles {
   rawCss: string;
   onyxThemeCss?: string;
+  variants?: string[];
   styleableParts: Array<{ name: string }>;
   styleableGroups: StyleableGroup[];
   cssVariables: StyleVariableDefinition[];

@@ -12,6 +12,10 @@
   "tags": ["cta", "interactive", "primary-action"],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Supports keyboard navigation", "Screen reader friendly"]
+    "notes": [
+      "Renders a native button element, or an anchor with role preserved when href is set.",
+      "Disabled buttons are unfocusable and excluded from the tab order.",
+      "Icon-only buttons require an accessible name via aria-label or aria-labelledby."
+    ]
   }
 }

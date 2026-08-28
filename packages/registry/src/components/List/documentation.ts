@@ -41,7 +41,7 @@ export const styleDocumentation = {
         code: `<List
   styles={{
     item: {
-      root: "data-[highlighted=true]:bg-accent-900 data-[selected=true]:text-accent-400",
+      root: "data-[highlighted=true]:bg-background-900 data-[selected=true]:text-accent-400",
     },
   }}
 >

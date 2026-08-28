@@ -45,7 +45,7 @@ export const styleDocumentation = {
         code: `<Select.Item
   value="design"
   styles={{
-    root: "data-[highlighted=true]:bg-accent-900 data-[selected=true]:text-accent-400 data-[disabled=true]:italic",
+    root: "data-[highlighted=true]:bg-background-900 data-[selected=true]:text-accent-400 data-[disabled=true]:italic",
   }}
 >
   Design
