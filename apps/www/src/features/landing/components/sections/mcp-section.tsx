@@ -558,7 +558,7 @@ export function McpSection() {
                     state={{ expanded: current }}
                     onExpandedChange={() => select(index)}
                     className={current ? "bg-background-950" : undefined}
-                    styles={{ trigger: "bg-transparent", contentInner: "bg-transparent" }}
+                    styles={{ trigger: "bg-transparent", content: { inner: "bg-transparent" } }}
                   >
                     <Expand.Trigger className="group flex items-center justify-start gap-3 px-4 py-3.5">
                       <span

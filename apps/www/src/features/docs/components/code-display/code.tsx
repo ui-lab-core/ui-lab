@@ -3,15 +3,13 @@
 import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
 import { type OklchColor } from "@/features/theme/lib/color-utils";
 import { useApp } from "@/features/theme/lib/app-context";
-import { CopyButton } from "./copy-button";
-import { LuChevronsDownUp } from "@/shared/icons/lu";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "ui-lab-components/button";
 import { Scroll } from "ui-lab-components/scroll";
 import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 import { type SimpleThemeColors } from "@/features/theme/constants/themes";
-import { FileCode2 } from "lucide-react";
+import { Check, Copy, FileCode2 } from "lucide-react";
 import { SiCss3, SiReact } from "@/shared/icons/si";
 
 const escapeHtml = (s: string) =>
@@ -58,8 +56,12 @@ interface CodeProps {
   showLineNumbers?: boolean;
   filename?: string;
   heading?: string;
+  /** Render a single filename header when file navigation is supplied externally. */
+  hideFileTabs?: boolean;
   /** Extra controls rendered at the right edge of the single-file (filename) header. */
   headerActions?: ReactNode;
+  /** Content rendered immediately before the filename in a non-tab header. */
+  headerPrefix?: ReactNode;
   /** Maximum visible source lines. Set to null to show the entire file. */
   maxHeightLines?: number | null;
   /** Fit the code viewport to its parent and scroll its contents internally. */
@@ -128,7 +130,9 @@ export function Code({
   showLineNumbers = false,
   filename,
   heading,
+  hideFileTabs = false,
   headerActions,
+  headerPrefix,
   preHighlightedLight,
   preHighlightedDark,
   maxHeightLines = MAX_HEIGHT_LINES,
@@ -225,13 +229,9 @@ export function Code({
     !fillHeight && maxHeightLines !== null && totalCodeLines > maxHeightLines;
   const hasHeader = showHeader && Boolean(filename || heading);
   const collapsedMaxHeight =
-    maxHeightLines !== null
-      ? `calc(${maxHeightLines} * 1.5em + 2rem)`
-      : undefined;
+    maxHeightLines !== null ? `calc(${maxHeightLines} * 1.5em + 2rem)` : undefined;
   const expandedMaxHeight =
-    maxHeightLines !== null
-      ? `calc(${MAX_EXPANDED_HEIGHT_LINES} * 1.5em + 2rem)`
-      : undefined;
+    maxHeightLines !== null ? `calc(${MAX_EXPANDED_HEIGHT_LINES} * 1.5em + 2rem)` : undefined;
 
   return (
     <div
@@ -249,8 +249,8 @@ export function Code({
       )}
     >
       {hasHeader && (
-        <div className="flex flex-none items-stretch justify-between p-2 text-xs text-foreground-400">
-          {heading ? (
+        <div className="flex border-b border-background-700 flex-none items-stretch justify-between p-2 text-xs text-foreground-400">
+          {heading && !hideFileTabs ? (
             <div className="flex items-stretch gap-1">
               {(codeFiles ?? [{ name: heading, code: children }]).map((file, index) => (
                 <button
@@ -275,29 +275,16 @@ export function Code({
             </div>
           ) : (
             <div className="flex flex-1 items-center justify-between px-3">
-              <span>{filename}</span>
+              <div className="flex min-w-0 items-center gap-2">
+                {headerPrefix}
+                <span className="truncate">{heading || filename}</span>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-foreground-400">{language}</span>
                 {headerActions}
               </div>
             </div>
           )}
-          {heading ? (
-            <div className="flex items-center gap-1 px-1.5" aria-label="Code actions">
-              {shouldShowExpandButton ? (
-                <Button
-                  type="button"
-                  onClick={() => setIsExpanded((current) => !current)}
-                  aria-label={expanded ? "Collapse code" : "Expand code"}
-                  variant="ghost"
-                  size="icon"
-                  icon={<HiOutlineChevronUpDown size={16} />}
-                  className="h-7 w-7"
-                />
-              ) : null}
-              <CopyButton code={activeCode} className="h-7 w-7" />
-            </div>
-          ) : null}
         </div>
       )}
 
@@ -307,18 +294,12 @@ export function Code({
           fillHeight ? "h-full overflow-hidden" : "flex-1",
         )}
       >
-        {!heading && expanded && shouldShowExpandButton && (
-          <Button
-            type="button"
-            onClick={() => setIsExpanded(false)}
-            aria-label="Collapse code"
-            variant="ghost"
-            size="icon"
-            icon={<LuChevronsDownUp size={14} />}
-            className="absolute top-2 right-11 z-10"
-          ></Button>
-        )}
-        {!heading ? <CopyButton code={children} /> : null}
+        <Actions
+          code={activeCode}
+          expanded={expanded}
+          onToggleExpanded={() => setIsExpanded((current) => !current)}
+          showExpand={shouldShowExpandButton}
+        />
         {fillHeight ? (
           <Scroll
             direction="vertical"
@@ -346,11 +327,7 @@ export function Code({
             }}
             className="relative min-h-0 min-w-0 flex-1"
           >
-            <CodeContent
-              html={displayHtml}
-              hasResolvedSyntax={hasResolvedSyntax}
-              faded={false}
-            />
+            <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
           </Scroll>
         ) : (
           <div
@@ -365,11 +342,7 @@ export function Code({
                 : "none",
             }}
           >
-            <CodeContent
-              html={displayHtml}
-              hasResolvedSyntax={hasResolvedSyntax}
-              faded={false}
-            />
+            <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
           </div>
         )}
 
@@ -383,6 +356,45 @@ export function Code({
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+function Actions({
+  code,
+  expanded,
+  onToggleExpanded,
+  showExpand,
+}: {
+  code: string;
+  expanded: boolean;
+  onToggleExpanded: () => void;
+  showExpand: boolean;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  return (
+    <div className="absolute top-2 right-2 z-10" aria-label="Code actions">
+      {showExpand ? (
+        <Button
+          variant="ghost"
+          onClick={onToggleExpanded}
+          aria-label={expanded ? "Collapse code" : "Expand code"}
+          icon={<HiOutlineChevronUpDown size={22} />}
+        />
+      ) : null}
+      <Button
+        variant="ghost"
+        onClick={handleCopy}
+        aria-label={copied ? "Code copied" : "Copy code"}
+        icon={copied ? <Check size={12} /> : <Copy size={12} />}
+      />
     </div>
   );
 }

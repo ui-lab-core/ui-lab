@@ -6,7 +6,15 @@ import { SettingsPanel } from "@/features/landing/components/settings-panel";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { useApp } from "@/features/theme/lib/app-context";
-import { FaBars, FaEllipsis, FaMoon, FaPaintRoller, FaSun, FaTags } from "@/shared/icons/fa6";
+import {
+  FaBars,
+  FaEllipsis,
+  FaEnvelope,
+  FaMoon,
+  FaPaintRoller,
+  FaSun,
+  FaTags,
+} from "@/shared/icons/fa6";
 import { Menu } from "ui-lab-components/menu";
 
 export function HeaderMenu() {
@@ -64,17 +72,11 @@ export function HeaderMenu() {
           offset={8}
           className="min-w-52 bg-background-900 shadow-lg shadow-background-950/30"
         >
-          <Menu.Item onSelect={() => router.push("/changelog")} textValue="Changelog">
-            <FaTags size={14} className="shrink-0 text-foreground-400" />
-            <span className="flex-1">Changelog</span>
-          </Menu.Item>
           <Menu.Item onSelect={() => setIsSettingsPanelOpen(true)} textValue="Theme settings">
             <FaPaintRoller size={14} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Theme settings</span>
             <Menu.Shortcut>T</Menu.Shortcut>
           </Menu.Item>
-
-          <Menu.Separator />
           <Menu.Label className="flex items-center justify-between">
             <span>Theme</span>
           </Menu.Label>
@@ -89,6 +91,15 @@ export function HeaderMenu() {
               <span className="flex-1">Dark</span>
             </Menu.RadioItem>
           </Menu.RadioGroup>
+          <Menu.Separator />
+          <Menu.Item onSelect={() => router.push("/changelog")} textValue="Changelog">
+            <FaTags size={14} className="shrink-0 text-foreground-400" />
+            <span className="flex-1">Changelog</span>
+          </Menu.Item>
+          <Menu.Item onSelect={() => router.push("/contact")} textValue="Contact">
+            <FaEnvelope size={14} className="shrink-0 text-foreground-400" />
+            <span className="flex-1">Contact</span>
+          </Menu.Item>
         </Menu.Content>
       </Menu>
       <SettingsPanel showTrigger={false} triggerRef={triggerRef} />

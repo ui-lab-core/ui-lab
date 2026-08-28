@@ -8,19 +8,11 @@ import React from "react";
  * just the shape of what the package contains.
  */
 
-function Preview({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
-  return (
-    <div className={`flex w-full flex-col justify-center gap-3 p-4 ${className}`}>{children}</div>
-  );
+function Preview({ children, className = "" }: React.PropsWithChildren<{ className?: string }>) {
+  return <div className={`flex flex-col w-full h-full gap-3 ${className}`}>{children}</div>;
 }
 
-function Card({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
+function Card({ children, className = "" }: React.PropsWithChildren<{ className?: string }>) {
   return (
     <div
       className={`rounded-[10px] border-[2px] border-background-500/20 bg-background-950 ${className}`}

@@ -217,7 +217,7 @@ export const SettingsDialog = ({
           opacity: isReady ? 1 : 0,
           pointerEvents: isReady ? "auto" : "none",
         }}
-        className="fixed z-[9999] rounded-[6px] border border-background-600 bg-background-950 backdrop-blur-md flex flex-col overflow-hidden"
+        className="fixed z-[9999] rounded-[14px] border border-background-600 bg-background-950 backdrop-blur-md flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if (e.key === "Escape") onOpenChange(false);

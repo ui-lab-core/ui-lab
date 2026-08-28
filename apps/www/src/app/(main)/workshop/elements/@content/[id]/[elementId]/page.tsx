@@ -40,6 +40,6 @@ export default async function PackageElementDetailPage({
 }: {
   params: Promise<{ id: string; elementId: string }>;
 }) {
-  const { elementId } = await params;
-  return <ElementDetailClient elementId={elementId} />;
+  const { id: packageId, elementId } = await params;
+  return <ElementDetailClient elementId={elementId} packageId={packageId} />;
 }

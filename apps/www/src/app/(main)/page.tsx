@@ -86,10 +86,10 @@ export default function Home() {
               <SlopSection />
             </Nodes>
             <Nodes>
-              <DesignSystemSection />
+              <WorkshopSection />
             </Nodes>
             <Nodes>
-              <WorkshopSection />
+              <DesignSystemSection />
             </Nodes>
             <Nodes>
               <TokensSection />

@@ -4,6 +4,7 @@ import type { PatternMetadata } from "@ui-lab-core/library/catalog";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 import { WorkshopPreview } from "@/features/workshop";
 import { PatternLivePreview } from "@/features/patterns/components/pattern-live-preview";
+import { getCardPreviewComponent } from "@/features/patterns/lib/get-pattern-preview";
 
 interface PatternDetailClientProps {
   patternId: string;
@@ -14,6 +15,8 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
   if (!pattern) {
     return <DetailPageShell name="" description="" notFoundLabel="Pattern not found." />;
   }
+
+  const CardPreview = getCardPreviewComponent(patternId);
 
   const entries = [
     ...(pattern.code
@@ -39,6 +42,7 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
       name={pattern.name}
       description={pattern.description}
       tags={[pattern.category, pattern.complexity]}
+      preview={CardPreview ? <CardPreview /> : undefined}
     >
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {entries.map((entry, index) => (

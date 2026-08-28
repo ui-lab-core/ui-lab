@@ -92,10 +92,10 @@ SliderControl.displayName = "SliderControl";
 const GlobalSlider = memo(
   ({ label, value, min, max, step, formatValue, onChange }: GlobalSliderProps) => {
     return (
-      <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-x-3 gap-y-1.5 group">
-        <Badge className="col-start-2 justify-self-end">{formatValue(value)}</Badge>
+      <div className="grid grid-cols-[1fr_240px] items-center gap-x-3 gap-y-1.5 group">
         <span className="text-xs font-medium text-foreground-400">{label}</span>
-        <div className="min-w-0">
+        <div className="flex min-w-0">
+          <span className="w-20 text-foreground-400 font-medium">{formatValue(value)}</span>
           <Slider.Root
             value={[value]}
             onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
@@ -172,51 +172,34 @@ export const ColorRow = memo(
     return (
       <div>
         <div
-          className={`mx-[6px] rounded-[7px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700 active:bg-background-950/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
+          className={`mx-[6px] rounded-[7px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700"} mb-[8px] transition-all duration-300 overflow-hidden group`}
         >
-          <div className="flex items-center gap-3 py-[10px] px-[10px]">
-            <button
-              type="button"
-              onClick={onToggle}
-              className="cursor-pointer flex min-w-0 flex-1 items-center gap-4 text-left outline-none"
+          <div
+            onClick={onToggle}
+            className="cursor-pointer flex items-center gap-3 py-[10px] px-[10px]"
+          >
+            <div
+              className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none"
               aria-expanded={isExpanded}
             >
+              <div className="w-4.5 h-4.5 rounded-[5px]" style={previewStyle} />
               <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="text-sm font-semibold text-foreground-100 capitalize leading-tight group-hover:text-foreground-100 transition-colors">
+                <div className="text-base font-medium text-foreground-200 capitalize leading-tight group-hover:text-foreground-100 transition-colors">
                   {type}
                 </div>
               </div>
-            </button>
-
-            <div className="flex items-center gap-3 relative">
-              <div className="w-4 h-4 rounded-full" style={previewStyle} />
-              <Input
-                aria-label={`${type} OKLCH color`}
-                value={colorValue}
-                onFocus={() => setIsEditingColor(true)}
-                onChange={(event) => setColorValue(event.target.value)}
-                variant="ghost"
-                onBlur={commitColorValue}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") event.currentTarget.blur();
-                  if (event.key === "Escape") {
-                    setColorValue(formattedColor);
-                    event.currentTarget.blur();
-                  }
-                }}
-                className="h-8 w-fit"
-                styles={{ input: "text-foreground-400 font-mono text-xs" }}
-              />
             </div>
 
-            <button
-              type="button"
-              onClick={onToggle}
+            <span className="w-47 text-foreground-400 text-xs flex items-center gap-3 relative">
+              {colorValue}
+            </span>
+
+            <div
               aria-label={`${isExpanded ? "Collapse" : "Expand"} ${type} color controls`}
-              className={`mr-3 text-foreground-400 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+              className={`mr-2 text-foreground-400 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
             >
-              <FaChevronDown size={13} />
-            </button>
+              <FaChevronDown size={11} />
+            </div>
           </div>
 
           <div
@@ -404,7 +387,7 @@ export const GlobalAdjustmentsPanel = memo(
     const formatChroma = useCallback((v: number) => `×${v.toFixed(2)}`, []);
 
     return (
-      <div className="mx-[6px] mb-2 p-3 bg-background-900 rounded-[7px] border border-background-700">
+      <div className="mx-[6px] mb-2 p-3">
         <div className="space-y-3">
           <GlobalSlider
             label="Lightness"

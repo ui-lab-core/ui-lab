@@ -33,7 +33,10 @@ const footerColumns: { title: string; links: FooterLink[] }[] = [
   },
   {
     title: "Connect",
-    links: [{ label: "GitHub", href: GITHUB_URL, external: true }],
+    links: [
+      { label: "Contact", href: "/contact" },
+      { label: "GitHub", href: GITHUB_URL, external: true },
+    ],
   },
 ];
 

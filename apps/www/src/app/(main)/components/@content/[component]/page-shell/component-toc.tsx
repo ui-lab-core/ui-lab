@@ -6,7 +6,7 @@ import {
   type TableOfContentsItem,
 } from "@/features/docs/components/table-of-contents";
 
-export function Toc({ items }: { items: Record<string, TableOfContentsItem[]> }) {
+export function ComponentToc({ items }: { items: Record<string, TableOfContentsItem[]> }) {
   const [tab, setTab] = useState("examples");
 
   useEffect(() => {

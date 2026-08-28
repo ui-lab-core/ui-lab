@@ -9,7 +9,7 @@ import {
   reactAriaUrls,
   sourceUrls,
 } from "ui-lab-registry";
-import { ComponentPage } from "./component-page";
+import { ComponentPage } from "./page-shell/component-page";
 
 export function generateStaticParams() {
   return Object.keys(componentRegistry).map((component) => ({ component }));

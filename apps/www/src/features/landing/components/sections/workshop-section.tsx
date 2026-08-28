@@ -3,12 +3,23 @@
 import { useEffect, useRef } from "react";
 import type React from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Blocks,
+  BookOpen,
+  Boxes,
+  ChevronLeft,
+  ChevronRight,
+  PanelsTopLeft,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "ui-lab-components/button";
 import { Card } from "ui-lab-components/card";
 import { Scroll } from "ui-lab-components/scroll";
 import { Skeleton } from "ui-lab-components/skeleton";
-import { elementPreviews } from "@/gallery/element-previews";
+import { elementPackages } from "@ui-lab-core/library/catalog";
+import { elementPreviews, elementPreviewShapes } from "@/gallery/element-previews";
+import type { ElementPreviewShape } from "@/gallery/element-previews";
 import { patternPreviews } from "@/gallery/pattern-previews";
 import { sectionPreviews } from "@/gallery/section-previews";
 import { getPreviewComponent as getStarterPreview } from "@/features/starters";
@@ -17,26 +28,118 @@ import { Section } from "./section";
 /**
  * How each plate is drawn. `bare` floats the preview alone on the plate; `card`
  * dresses every preview as a miniature Workshop card — an inset media well over a
- * `Card.Body` whose title and description are stood in for by Skeletons.
+ * `Card.Body` whose title and description are stood in for by Skeletons. `package`
+ * makes every plate one Element package: a bento of that package's own previews
+ * over a footer of its icon and a stand-in title, so the well reads as a shelf of
+ * packages rather than as loose elements.
  */
-type PlateVariant = "bare" | "card";
+type PlateVariant = "bare" | "card" | "package";
+
+/** One Element package as a `package` plate draws it. */
+type PackageCard = {
+  name: string;
+  icon: LucideIcon;
+  /** The package's own element previews, split by the frame each is drawn in. */
+  previews: Record<ElementPreviewShape, React.ComponentType<object>[]>;
+};
+
+/**
+ * One cell of a package's bento: where it sits, and which preview frame it is
+ * cut to. A `wide` cell is two columns by two rows and a `tall` cell one column
+ * by three, which are the proportions the two frames are authored at — so the
+ * preview fills its cell and the inset left around it comes out the same in
+ * every cell of every plate.
+ */
+type BentoSlot = {
+  at: string;
+  shape: ElementPreviewShape;
+};
 
 type Kind = {
   title: string;
   href: string;
   desc: string;
   /** Where the plane sits in the well. Sized so every kind's plates come out alike. */
-  plane: string;
-  /** The plane the plates sit on: columns and rows of the drawn arrangement. */
-  grid: string;
-  /** Plate placements, listed front to back — the first one is nearest the viewer. */
-  plates: string[];
+  plane?: string;
+  /** The grid the plates sit on: its columns, rows and gap. */
+  grid?: string;
+  /** Plate placements, front to back. */
+  plates?: string[];
   plateClass?: string;
-  /** How the preview is sized and scaled inside its plate. */
+  /** How the preview is sized and scaled inside its plate. `bare` and `card` plates only. */
   previewClass?: string;
   /** The plate treatment for this domain. Defaults to `bare`. */
   plateVariant?: PlateVariant;
-  previews: React.ComponentType<object>[];
+  /** `package` plates only: the bento layouts the plates alternate between. */
+  bento?: BentoSlot[][];
+  /** `package` plates only: the packages the plates cycle through. */
+  packages?: PackageCard[];
+  previews?: React.ComponentType<object>[];
+};
+
+/** No package carries an icon of its own, so each is given the one that fits it. */
+const packageIcons: Record<string, LucideIcon> = {
+  foundation: PanelsTopLeft,
+  documentation: BookOpen,
+  ai: Sparkles,
+  extras: Boxes,
+};
+
+/**
+ * The Element packages, each carrying the gallery previews of its own elements.
+ * Packages the gallery has no preview for at all are dropped rather than drawn
+ * as an empty bento.
+ */
+const elementPackageCards: PackageCard[] = Object.values(elementPackages)
+  .map((pkg) => {
+    const drawn = pkg.elements.filter((elementId) => elementPreviews[elementId]);
+
+    return {
+      name: pkg.name,
+      icon: packageIcons[pkg.id] ?? Blocks,
+      previews: {
+        wide: drawn
+          .filter((elementId) => elementPreviewShapes[elementId] === "wide")
+          .map((elementId) => elementPreviews[elementId]),
+        tall: drawn
+          .filter((elementId) => elementPreviewShapes[elementId] === "tall")
+          .map((elementId) => elementPreviews[elementId]),
+      },
+    };
+  })
+  .filter((pkg) => pkg.previews.wide.length + pkg.previews.tall.length > 0);
+
+/**
+ * The two bento layouts, mirrored: three wide cells stacked against a column of
+ * two tall ones, with the tall column on the right in one and on the left in the
+ * other. Alternating them across the plates is what keeps the well from reading
+ * as the same card printed six times, without any cell losing its proportions.
+ */
+const packageBentos: BentoSlot[][] = [
+  [
+    { at: "col-start-1 col-span-2 row-start-1 row-span-2", shape: "wide" },
+    { at: "col-start-1 col-span-2 row-start-3 row-span-2", shape: "wide" },
+    { at: "col-start-1 col-span-2 row-start-5 row-span-2", shape: "wide" },
+    { at: "col-start-3 row-start-1 row-span-3", shape: "tall" },
+    { at: "col-start-3 row-start-4 row-span-3", shape: "tall" },
+  ],
+  [
+    { at: "col-start-2 col-span-2 row-start-1 row-span-2", shape: "wide" },
+    { at: "col-start-2 col-span-2 row-start-3 row-span-2", shape: "wide" },
+    { at: "col-start-2 col-span-2 row-start-5 row-span-2", shape: "wide" },
+    { at: "col-start-1 row-start-1 row-span-3", shape: "tall" },
+    { at: "col-start-1 row-start-4 row-span-3", shape: "tall" },
+  ],
+];
+
+/**
+ * How far each frame is scaled to sit in its cell. Both land the frame a few
+ * pixels inside the cell on every side, so the inset reads as one padding
+ * across the bento however differently shaped the cells are.
+ */
+const bentoScale: Record<ElementPreviewShape, string> = {
+  wide: "scale-[0.46]",
+  tall: "scale-[0.32]",
 };
 
 const kinds: Kind[] = [
@@ -45,7 +148,7 @@ const kinds: Kind[] = [
     href: "/workshop/patterns",
     desc: "Small compositions that recur everywhere — stat tiles, empty states, media objects.",
     plane: "left-[6%] right-[-2%] top-[2%] h-[94%]",
-    grid: "grid-cols-4 grid-rows-3",
+    grid: "grid-cols-4 grid-rows-3 gap-2",
     /** Rendered at a fixed width and scaled down, so the preview keeps its own proportions. */
     previewClass: "w-[200px] [&>*]:scale-[0.42]",
     plateVariant: "card",
@@ -82,29 +185,28 @@ const kinds: Kind[] = [
     title: "Elements",
     href: "/workshop/elements",
     desc: "Larger assemblies: data tables, command palettes, settings panels, wired and accessible.",
-    plane: "left-[8%] right-[-4%] top-[11%] h-[88%]",
-    grid: "grid-cols-6 grid-rows-2",
+    plateVariant: "package",
+    /** Two rows of packages, bleeding off the top and both sides so the shelf runs past the well. */
+    plane: "left-[14%] right-[-22%] top-[-9%] h-[104%]",
+    grid: "grid-cols-3 grid-rows-2 gap-3.5",
+    /** The lower row is nudged left, so the two rows stagger rather than line up. */
     plates: [
-      "col-start-2 col-span-2 row-start-1",
-      "col-start-4 col-span-2 row-start-1",
-      "col-start-1 col-span-2 row-start-2",
-      "col-start-3 col-span-2 row-start-2",
-      "col-start-5 col-span-2 row-start-2",
+      "col-start-1 row-start-1",
+      "col-start-2 row-start-1",
+      "col-start-3 row-start-1",
+      "col-start-1 row-start-2 -translate-x-7",
+      "col-start-2 row-start-2 -translate-x-7",
+      "col-start-3 row-start-2 -translate-x-7",
     ],
-    previews: [
-      elementPreviews.header,
-      elementPreviews.page,
-      elementPreviews.sidebar,
-      elementPreviews.carousel,
-      elementPreviews.timeline,
-    ],
+    bento: packageBentos,
+    packages: elementPackageCards,
   },
   {
     title: "Sections",
     href: "/workshop/sections",
     desc: "Whole page sections, composed and ready to drop into a route.",
     plane: "left-[22%] right-[10%] top-[11%] h-[88%]",
-    grid: "grid-cols-2 grid-rows-3",
+    grid: "grid-cols-2 grid-rows-3 gap-2",
     plates: [
       "col-start-1 row-start-1",
       "col-start-2 row-start-1",
@@ -127,7 +229,7 @@ const kinds: Kind[] = [
     href: "/workshop/starters",
     desc: "Project shells already wired to the system, with routing and layout in place.",
     plane: "left-[16%] right-[4%] top-[11%] h-[88%]",
-    grid: "grid-cols-1 grid-rows-2",
+    grid: "grid-cols-1 grid-rows-2 gap-2",
     plates: ["col-start-1 row-start-1", "col-start-1 row-start-2"],
     previews: [getStarterPreview("nextjs-basic")!, getStarterPreview("vite-react")!],
   },
@@ -139,6 +241,9 @@ const kinds: Kind[] = [
  */
 const wellFade =
   "linear-gradient(180deg, #000 0%, #000 58%, rgb(0 0 0 / 0.42) 82%, transparent 100%)";
+
+/** The grid every package plate's bento is laid on; its cells are placed by `BentoSlot`. */
+const bentoGrid = "grid-cols-3 grid-rows-6";
 
 /** Past this many pixels a mouse press becomes a drag rather than a card click. */
 const DRAG_THRESHOLD = 5;
@@ -156,10 +261,20 @@ function PreviewPlates({
   plateClass,
   previewClass,
   plateVariant = "bare",
+  bento,
+  packages,
   previews,
 }: Pick<
   Kind,
-  "plane" | "grid" | "plates" | "plateClass" | "previewClass" | "plateVariant" | "previews"
+  | "plane"
+  | "grid"
+  | "plates"
+  | "plateClass"
+  | "previewClass"
+  | "plateVariant"
+  | "bento"
+  | "packages"
+  | "previews"
 >) {
   return (
     <div className="relative h-96 overflow-hidden bg-background-1000 md:h-104">
@@ -169,9 +284,74 @@ function PreviewPlates({
         style={{ maskImage: wellFade, WebkitMaskImage: wellFade }}
       >
         <div className={`absolute ${plane}`}>
-          <div className={`absolute inset-0 grid origin-bottom-left gap-2 ${grid}`}>
-            {plates.map((placement, index) => {
-              const Preview = previews[index];
+          <div className={`absolute inset-0 grid origin-bottom-left ${grid ?? ""}`}>
+            {(plates ?? []).map((placement, index) => {
+              const zIndex = (plates?.length ?? 0) - index;
+
+              // A `package` plate is one Element package: its own previews laid
+              // into a bento cut to their shapes, capped by the package's icon
+              // and a stand-in title.
+              if (plateVariant === "package") {
+                if (!packages?.length || !bento?.length) return null;
+                const pkg = packages[index % packages.length];
+                const Icon = pkg.icon;
+                // How many times this package has already appeared in an earlier
+                // plate. Once plates outnumber packages, a package comes back
+                // around — offsetting by that lap, below, is what surfaces the
+                // rest of its previews instead of replaying the same first few.
+                const lap = Math.floor(index / packages.length);
+                // The layouts alternate by plate, offset by lap so a package's
+                // second lap doesn't land on the same layout as its first.
+                const slots = bento[(index + lap) % bento.length];
+                // A package need not have an element of both shapes; where it
+                // doesn't, the other shape's previews fill the cell rather than
+                // leaving a hole — cropped by the cell, but never stretched.
+                const taken: Record<ElementPreviewShape, number> = {
+                  wide: lap * slots.filter((slot) => slot.shape === "wide").length,
+                  tall: lap * slots.filter((slot) => slot.shape === "tall").length,
+                };
+
+                return (
+                  <Card
+                    key={placement}
+                    className={`flex min-h-0 flex-col overflow-hidden rounded-sm border-background-700 bg-background-1000 ${placement}`}
+                    style={{ zIndex }}
+                  >
+                    {/* The hairlines between cells are the grid's own background showing through. */}
+                    <div className={`grid min-h-0 flex-1 gap-px bg-background-700 ${bentoGrid}`}>
+                      {slots.map((slot) => {
+                        const pool = pkg.previews[slot.shape].length
+                          ? pkg.previews[slot.shape]
+                          : pkg.previews[slot.shape === "wide" ? "tall" : "wide"];
+                        if (!pool.length) return null;
+                        const Preview = pool[taken[slot.shape]++ % pool.length];
+
+                        return (
+                          <div
+                            key={slot.at}
+                            className={`relative min-h-0 overflow-hidden bg-background-1000 ${slot.at}`}
+                          >
+                            <div
+                              className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${bentoScale[slot.shape]}`}
+                            >
+                              <Preview />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2 border-t border-background-700 bg-background-950 px-2 py-1.5">
+                      <div className="grid size-6 shrink-0 place-items-center rounded-[6px] bg-background-800 text-foreground-400">
+                        <Icon size={12} strokeWidth={2} aria-hidden />
+                      </div>
+                      <Skeleton h={4} w="62%" color="background-600" className="rounded-full" />
+                    </div>
+                  </Card>
+                );
+              }
+
+              const Preview = previews?.[index];
+              if (!Preview) return null;
 
               const preview = (
                 <div className="relative size-full overflow-hidden">
@@ -188,7 +368,7 @@ function PreviewPlates({
                   <Card
                     key={placement}
                     className={`flex min-h-0 flex-col rounded-sm border-background-700 bg-background-1000 ${placement}`}
-                    style={{ zIndex: plates.length - index }}
+                    style={{ zIndex }}
                   >
                     <div className="relative min-h-0 flex-1 overflow-hidden">{preview}</div>
                     <Card.Body className="flex bg-background-950 shrink-0 flex-col gap-1 border-t border-background-700 !px-2.5 !py-1.5">
@@ -209,7 +389,7 @@ function PreviewPlates({
                 <div
                   key={placement}
                   className={`min-h-0 overflow-hidden rounded-sm border border-background-700 bg-background-950 ${plateClass ?? ""} ${placement}`}
-                  style={{ zIndex: plates.length - index }}
+                  style={{ zIndex }}
                 >
                   {preview}
                 </div>
@@ -503,6 +683,8 @@ export function WorkshopSection() {
                 plateClass,
                 previewClass,
                 plateVariant,
+                bento,
+                packages,
                 previews,
               },
               index,
@@ -523,6 +705,8 @@ export function WorkshopSection() {
                     plateClass={plateClass}
                     previewClass={previewClass}
                     plateVariant={plateVariant}
+                    bento={bento}
+                    packages={packages}
                     previews={previews}
                   />
                 </div>

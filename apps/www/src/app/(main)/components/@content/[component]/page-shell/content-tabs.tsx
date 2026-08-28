@@ -4,14 +4,14 @@ import { lazy, Suspense, useCallback, useState } from "react";
 import { Flex } from "ui-lab-components/flex";
 import { Tabs } from "ui-lab-components/tabs";
 
-const loadAPI = () => import("./api-panel");
-const loadStyles = () => import("./styles-panel");
+const loadAPI = () => import("../api/api-panel");
+const loadStyles = () => import("../styles/styles-panel");
 const API = lazy(loadAPI);
 const Styles = lazy(loadStyles);
 
 type Tab = "examples" | "api" | "styles";
 
-export function Content({
+export function ContentTabs({
   examples,
   componentId,
   actions,

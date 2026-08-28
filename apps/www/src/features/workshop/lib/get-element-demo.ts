@@ -9,15 +9,15 @@ type DemoComponent = React.ComponentType<object>;
 const demoPathLookup = new Map<string, { packageId: string; elementId: string }>();
 
 for (const element of Object.values(elementRegistry)) {
-  const packageId = getPackageForElement(element.id);
-  if (!packageId) continue;
-
   for (const variant of element.variants) {
     if (!variant.demoPath) continue;
 
+    const packageId = getPackageForElement(variant.demoPath);
+    if (!packageId) continue;
+
     demoPathLookup.set(variant.demoPath, {
       packageId,
-      elementId: element.id,
+      elementId: variant.demoPath,
     });
   }
 }

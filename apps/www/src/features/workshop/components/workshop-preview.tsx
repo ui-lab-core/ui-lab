@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useId, useMemo, useState, type ReactNode } from "react";
-import type { ElementFile } from "@ui-lab-core/library/catalog";
+import { Suspense, useId, useMemo, useState, type ReactNode } from "react";
+import { ChevronRight, FileCode2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { getElementPreview } from "@ui-lab-core/library";
+import { getPatternById, type ElementFile } from "@ui-lab-core/library/catalog";
 import { Code } from "@/features/docs/components/code-display/code";
 import { cn } from "@/shared/lib/utils";
 import { Modal, Panel } from "ui-lab-components";
-import { Eye, EyeOff, FileCode2, Folder } from "lucide-react";
 
 interface WorkshopFullscreenTarget {
   categoryId: string;
@@ -30,6 +31,8 @@ interface WorkshopPreviewProps {
   /** Maximum visible source lines before the code display expands. */
   codeMaxHeightLines?: number | null;
   previewHeight?: number;
+  /** Let the inline preview grow to the height of its rendered content. */
+  dynamicPreviewHeight?: boolean;
   previewLayout?: "center" | "start";
   /** Reserved for callers that still pass isolation targets. */
   fullscreen?: WorkshopFullscreenTarget;
@@ -43,6 +46,10 @@ interface WorkshopPreviewProps {
   modalTitle?: string;
   /** Internal marker for the expanded modal content. */
   isModalDetail?: boolean;
+  /** Pattern ids declared by the entry's generated variation metadata. */
+  patterns?: string[];
+  /** Optional file-tree trigger rendered before the source filename. */
+  fileTreeTrigger?: ReactNode;
 }
 
 const DEFAULT_PREVIEW_HEIGHT = 320;
@@ -64,13 +71,23 @@ export function WorkshopPreview({
   showCodeHeader = true,
   codeMaxHeightLines,
   previewHeight = DEFAULT_PREVIEW_HEIGHT,
+  dynamicPreviewHeight = false,
   previewLayout = "center",
   hidePreview = false,
   fillHeight = false,
   disclosure = "inline",
   modalTitle,
   isModalDetail = false,
+  patterns,
+  fileTreeTrigger,
 }: WorkshopPreviewProps) {
+  const usedPatterns = useMemo(
+    () =>
+      (patterns ?? [])
+        .map(getPatternById)
+        .filter((pattern): pattern is NonNullable<typeof pattern> => pattern !== undefined),
+    [patterns],
+  );
   const uniqueFiles = useMemo(() => {
     const source: ElementFile[] = files?.length
       ? files
@@ -79,28 +96,32 @@ export function WorkshopPreview({
         : [];
     return Array.from(new Map(source.map((file) => [file.filename, file])).values());
   }, [files, code, language, codeFilename]);
-  const hasFileTree = uniqueFiles.length > 1;
-  const [treeVisible, setTreeVisible] = useState(hasFileTree);
-  const [activeFilename, setActiveFilename] = useState<string | null>(null);
+  const hasMultipleFiles = uniqueFiles.length > 1;
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isFileTreeOpen, setIsFileTreeOpen] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [selectedPatternId, setSelectedPatternId] = useState<string | null>(null);
+  const selectedPattern = selectedPatternId ? getPatternById(selectedPatternId) : undefined;
+  const SelectedPatternPreview = selectedPattern
+    ? getElementPreview("patterns", selectedPattern.id)
+    : null;
   const splitId = useId().replace(/:/g, "");
   const codePaneId = `${splitId}-code`;
   const previewPaneId = `${splitId}-preview`;
 
-  useEffect(() => {
-    setTreeVisible(hasFileTree);
-  }, [hasFileTree]);
-
-  const activeFile = useMemo(() => {
+  const primaryFile = useMemo(() => {
     if (!uniqueFiles.length) return null;
-    return (
-      uniqueFiles.find((file) => file.filename === activeFilename) ??
-      uniqueFiles.find((file) => file.isEntryPoint) ??
-      uniqueFiles[0]
-    );
-  }, [uniqueFiles, activeFilename]);
-
-  const showTree = hasFileTree && treeVisible;
+    return uniqueFiles.find((file) => file.isEntryPoint) ?? uniqueFiles[0];
+  }, [uniqueFiles]);
+  const secondaryFiles = useMemo(
+    () => uniqueFiles.filter((file) => file.filename !== primaryFile?.filename),
+    [uniqueFiles, primaryFile],
+  );
+  const activeFileName = selectedFileName ?? primaryFile?.filename;
+  const activeFileIndex = Math.max(
+    0,
+    uniqueFiles.findIndex((file) => file.filename === activeFileName),
+  );
   const isPreviewOnly = disclosure === "modal";
   const openDetail = () => setIsDetailOpen(true);
 
@@ -117,8 +138,8 @@ export function WorkshopPreview({
         className={cn(
           "scroll-mt-24",
           fillHeight && !isModalDetail && "flex h-full min-h-0 flex-col",
-          isModalDetail && "h-full min-h-0",
-          isPreviewOnly && "cursor-pointer",
+          isModalDetail && "h-full min-h-0 min-w-0 flex-1",
+          isPreviewOnly && "group cursor-pointer",
         )}
         id={headingId}
         role={isPreviewOnly ? "button" : undefined}
@@ -143,7 +164,8 @@ export function WorkshopPreview({
               id={isModalDetail ? previewPaneId : undefined}
               className={cn(
                 "min-w-0 overflow-hidden rounded-sm",
-                isPreviewOnly && "border border-background-700",
+                isPreviewOnly &&
+                  "border border-background-700 transition-colors group-hover:border-background-600 group-hover:bg-background-950",
                 !isPreviewOnly && "rounded-b-none",
                 (fillHeight || isModalDetail) && "flex min-h-0 flex-1 flex-col",
                 isModalDetail && "order-3 h-full rounded-none lg:min-w-[25%] lg:max-w-[75%]",
@@ -154,31 +176,38 @@ export function WorkshopPreview({
                   "relative min-h-0 min-w-0",
                   (fillHeight || isModalDetail) && "h-full",
                 )}
-                style={fillHeight || isModalDetail ? undefined : { height: previewHeight }}
+                style={
+                  fillHeight || isModalDetail || dynamicPreviewHeight
+                    ? undefined
+                    : { height: previewHeight }
+                }
               >
-                <div className="h-full min-h-0 w-full overflow-auto p-2">
-                  {isPreviewOnly ? (
-                    <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
-                  ) : (
-                    <div
-                      className={cn(
-                        "flex h-full min-h-0 w-full",
-                        previewLayout === "start"
-                          ? "items-start justify-center"
-                          : "items-center justify-center",
-                      )}
-                    >
-                      <div className="min-w-0">
-                        <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
-                      </div>
-                    </div>
+                <div
+                  className={cn(
+                    "flex min-h-0 w-full",
+                    dynamicPreviewHeight && !isModalDetail
+                      ? "overflow-visible"
+                      : "h-full overflow-auto",
                   )}
+                >
+                  <div
+                    className={cn(
+                      "flex w-full min-w-[min(100%,16rem)] max-w-full items-center *:w-full",
+                      previewLayout === "start" ? "mx-auto" : "max-w-2xl",
+                      // Preview-only cards are a single click target that opens the
+                      // modal; the live demo is shown purely as a thumbnail, so its
+                      // controls are made inert. Only the modal detail is interactable.
+                      isPreviewOnly && "pointer-events-none",
+                    )}
+                  >
+                    <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {!isPreviewOnly && activeFile ? (
+          {!isPreviewOnly && primaryFile ? (
             <div
               id={isModalDetail ? codePaneId : undefined}
               className={cn(
@@ -194,48 +223,43 @@ export function WorkshopPreview({
                 className={cn(
                   "grid min-w-0 grid-cols-1",
                   isModalDetail && "h-full min-h-0 grid-rows-[minmax(0,1fr)]",
-                  showTree && "xl:grid-cols-[minmax(0,1fr)_18rem]",
                 )}
               >
                 <Code
-                  className={cn("rounded-none! border-0", isModalDetail && "h-full border-t!")}
+                  className={cn("rounded-none! border-0", isModalDetail && "h-full")}
                   fillHeight={isModalDetail}
-                  language={activeFile.language}
-                  filename={activeFile.filename}
-                  showHeader={showCodeHeader}
+                  language={primaryFile.language}
+                  filename={selectedPattern ? undefined : primaryFile.filename}
+                  heading={
+                    selectedPattern
+                      ? undefined
+                      : hasMultipleFiles
+                        ? primaryFile.filename
+                        : undefined
+                  }
+                  hideFileTabs={hasMultipleFiles}
+                  files={secondaryFiles.map((file) => ({
+                    name: file.filename,
+                    code: file.code ?? "",
+                    language: file.language,
+                  }))}
+                  showHeader={showCodeHeader || hasMultipleFiles || Boolean(fileTreeTrigger)}
+                  headerPrefix={fileTreeTrigger}
                   showLineNumbers
                   maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
-                  headerActions={
-                    hasFileTree ? (
-                      <button
-                        type="button"
-                        onClick={() => setTreeVisible((current) => !current)}
-                        className="inline-flex h-5 w-5 items-center justify-center rounded-xs text-foreground-400 transition-colors hover:bg-background-800 hover:text-foreground-200 focus:outline-none focus:ring-2 focus:ring-accent-500"
-                        aria-label={showTree ? "Hide file tree" : "Show file tree"}
-                      >
-                        {showTree ? (
-                          <EyeOff className="h-3.5 w-3.5" />
-                        ) : (
-                          <Eye className="h-3.5 w-3.5" />
-                        )}
-                      </button>
-                    ) : undefined
-                  }
+                  activeFile={activeFileIndex}
+                  onActiveFileChange={(index) => {
+                    setSelectedPatternId(null);
+                    setSelectedFileName(uniqueFiles[index]?.filename ?? null);
+                  }}
                 >
-                  {activeFile.code ?? ""}
+                  {primaryFile.code ?? ""}
                 </Code>
-                {showTree ? (
-                  <SourceFilesPanel
-                    files={uniqueFiles}
-                    activeFilename={activeFile.filename}
-                    onSelect={setActiveFilename}
-                  />
-                ) : null}
               </div>
             </div>
           ) : null}
 
-          {isModalDetail && !hidePreview && activeFile ? (
+          {isModalDetail && !hidePreview && primaryFile ? (
             <Panel.Resize
               aria-controls={`${codePaneId} ${previewPaneId}`}
               aria-label="Resize code and preview panes"
@@ -247,25 +271,71 @@ export function WorkshopPreview({
       {isPreviewOnly ? (
         <Modal
           open={isDetailOpen}
-          onOpenChange={setIsDetailOpen}
+          onOpenChange={(open) => {
+            setIsDetailOpen(open);
+            if (!open) setSelectedPatternId(null);
+          }}
           className="h-[94%] max-h-none w-[min(94vw,112rem)] max-w-none"
         >
-          <Modal.Body scrollable={false} className="min-h-0 p-0">
+          <Modal.Body scrollable={false} className="flex min-h-0 p-0">
+            {hasMultipleFiles || usedPatterns.length > 0 ? (
+              <WorkshopFileTree
+                files={uniqueFiles}
+                patterns={usedPatterns}
+                activeFileName={selectedPattern ? null : activeFileName}
+                activePatternId={selectedPattern?.id ?? null}
+                isOpen={isFileTreeOpen}
+                onSelectFile={(filename) => {
+                  setSelectedPatternId(null);
+                  setSelectedFileName(filename);
+                }}
+                onSelectPattern={(id) => setSelectedPatternId(id)}
+              />
+            ) : null}
             <WorkshopPreview
               headingId={headingId}
-              files={files}
-              code={code}
+              files={
+                selectedPattern
+                  ? undefined
+                  : selectedFileName
+                    ? uniqueFiles.map((file) => ({
+                        ...file,
+                        isEntryPoint: file.filename === selectedFileName,
+                      }))
+                    : files
+              }
+              code={selectedPattern ? selectedPattern.code : code}
               language={language}
-              codeFilename={codeFilename}
+              codeFilename={selectedPattern ? `${selectedPattern.id}.tsx` : codeFilename}
               showCodeHeader={false}
               codeMaxHeightLines={null}
               previewHeight={previewHeight}
+              dynamicPreviewHeight={dynamicPreviewHeight}
               previewLayout={previewLayout}
               hidePreview={hidePreview}
               fillHeight={fillHeight}
               isModalDetail
+              fileTreeTrigger={
+                hasMultipleFiles || usedPatterns.length > 0 ? (
+                  <button
+                    type="button"
+                    className="flex size-6 shrink-0 items-center justify-center rounded-sm text-foreground-300 transition-colors hover:bg-background-900 hover:text-foreground-100"
+                    onClick={() => setIsFileTreeOpen((open) => !open)}
+                    aria-expanded={isFileTreeOpen}
+                    aria-label={isFileTreeOpen ? "Hide file tree" : "Show file tree"}
+                  >
+                    {isFileTreeOpen ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
+                  </button>
+                ) : undefined
+              }
             >
-              {children}
+              {selectedPattern ? (
+                SelectedPatternPreview ? (
+                  <SelectedPatternPreview />
+                ) : null
+              ) : (
+                children
+              )}
             </WorkshopPreview>
           </Modal.Body>
           {(modalTitle ?? title ?? description) ? (
@@ -275,10 +345,22 @@ export function WorkshopPreview({
                   id={headingId ? `${headingId}-title` : undefined}
                   className="text-foreground-50"
                 >
-                  {modalTitle ?? title}
+                  {selectedPattern ? (
+                    <span className="flex flex-wrap items-center gap-1">
+                      <span>{modalTitle ?? title}</span>
+                      <ChevronRight size={14} aria-hidden className="text-foreground-400" />
+                      <span>{selectedPattern.name}</span>
+                    </span>
+                  ) : (
+                    (modalTitle ?? title)
+                  )}
                 </h3>
               ) : null}
-              {description ? <p className="text-sm text-foreground-400">{description}</p> : null}
+              {(selectedPattern?.description ?? description) ? (
+                <p className="text-sm text-foreground-400">
+                  {selectedPattern?.description ?? description}
+                </p>
+              ) : null}
             </Modal.Footer>
           ) : null}
         </Modal>
@@ -303,6 +385,81 @@ function WorkshopDetailLayout({
   );
 }
 
+function WorkshopFileTree({
+  files,
+  patterns,
+  activeFileName,
+  activePatternId,
+  isOpen,
+  onSelectFile,
+  onSelectPattern,
+}: {
+  files: ElementFile[];
+  patterns: Array<{ id: string; name: string }>;
+  activeFileName: string | null;
+  activePatternId: string | null;
+  isOpen: boolean;
+  onSelectFile: (filename: string) => void;
+  onSelectPattern: (id: string) => void;
+}) {
+  return (
+    <aside
+      className={cn(
+        "h-full shrink-0 overflow-hidden border-r border-background-700 bg-background-1000 transition-[width] duration-200",
+        isOpen ? "w-60" : "w-0 border-r-0",
+      )}
+      aria-label="Source files and patterns"
+    >
+      {isOpen ? (
+        <div className="p-2 text-sm">
+          <div className="space-y-0.5">
+            <p className="mb-1 mt-4 px-2 py-1.5 text-xs text-foreground-400">Files</p>
+            {files.map((file) => (
+              <button
+                key={file.filename}
+                type="button"
+                onClick={() => onSelectFile(file.filename)}
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-xs transition-colors hover:bg-background-900",
+                  activeFileName === file.filename
+                    ? "bg-background-900 text-foreground-100"
+                    : "text-foreground-400",
+                )}
+              >
+                <FileCode2 size={14} className="shrink-0 text-foreground-300" />
+                <span className="truncate">{file.filename}</span>
+              </button>
+            ))}
+          </div>
+          {patterns.length > 0 ? (
+            <>
+              <p className="mb-1 mt-4 px-2 py-1.5 text-xs text-foreground-400">Patterns</p>
+              <div className="space-y-0.5">
+                {patterns.map((pattern) => (
+                  <button
+                    key={pattern.id}
+                    type="button"
+                    onClick={() => onSelectPattern(pattern.id)}
+                    className={cn(
+                      "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-xs transition-colors hover:bg-background-900",
+                      activePatternId === pattern.id
+                        ? "bg-background-900 text-foreground-100"
+                        : "text-foreground-400",
+                    )}
+                  >
+                    <FileCode2 size={14} className="shrink-0 text-foreground-300" />
+                    <span className="truncate">{pattern.name}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+    </aside>
+  );
+}
+
 function PreviewLoadingOverlay() {
   return (
     <div
@@ -318,170 +475,4 @@ function PreviewLoadingOverlay() {
       <span className="sr-only">Loading interactive preview</span>
     </div>
   );
-}
-
-type SourceFileTreeNode = {
-  name: string;
-  path: string;
-  children: SourceFileTreeNode[];
-  file?: ElementFile;
-};
-
-function SourceFilesPanel({
-  files,
-  activeFilename,
-  onSelect,
-}: {
-  files: ElementFile[];
-  activeFilename: string;
-  onSelect: (filename: string) => void;
-}) {
-  const nodes = useMemo(() => buildSourceFileTree(files), [files]);
-
-  return (
-    <aside className="border-t border-background-700 bg-background-950/60 xl:border-l xl:border-t-0">
-      <div className="border-b border-background-700 px-3 py-1.5 text-xs font-medium text-foreground-400">
-        Files
-      </div>
-      <div className="max-h-72 overflow-auto p-2">
-        <SourceFileTree nodes={nodes} activeFilename={activeFilename} onSelect={onSelect} />
-      </div>
-    </aside>
-  );
-}
-
-function SourceFileTree({
-  nodes,
-  activeFilename,
-  onSelect,
-}: {
-  nodes: SourceFileTreeNode[];
-  activeFilename: string;
-  onSelect: (filename: string) => void;
-}) {
-  return (
-    <ul className="space-y-0.5">
-      {nodes.map((node) => (
-        <SourceFileTreeNodeView
-          key={node.path}
-          node={node}
-          activeFilename={activeFilename}
-          onSelect={onSelect}
-        />
-      ))}
-    </ul>
-  );
-}
-
-function SourceFileTreeNodeView({
-  node,
-  activeFilename,
-  onSelect,
-}: {
-  node: SourceFileTreeNode;
-  activeFilename: string;
-  onSelect: (filename: string) => void;
-}) {
-  const isDirectory = node.children.length > 0 && !node.file;
-
-  if (isDirectory) {
-    return (
-      <li>
-        <div className="flex items-start gap-2 rounded-xs px-2 py-1 text-xs text-foreground-400">
-          <Folder className="mt-0.5 h-3.5 w-3.5 flex-none text-foreground-500" />
-          <span className="min-w-0 break-words font-mono leading-snug">{node.name}</span>
-        </div>
-        <div className="ml-3 border-l border-background-700 pl-2">
-          <SourceFileTree
-            nodes={node.children}
-            activeFilename={activeFilename}
-            onSelect={onSelect}
-          />
-        </div>
-      </li>
-    );
-  }
-
-  const isActive = node.file?.filename === activeFilename;
-
-  return (
-    <li>
-      <button
-        type="button"
-        onClick={() => node.file && onSelect(node.file.filename)}
-        className={cn(
-          "flex w-full items-start gap-2 rounded-xs px-2 py-1 text-left text-xs transition-colors",
-          isActive
-            ? "bg-background-800 text-foreground-100"
-            : "text-foreground-300 hover:bg-background-800/60 hover:text-foreground-100",
-        )}
-      >
-        <FileCode2
-          className={cn(
-            "mt-0.5 h-3.5 w-3.5 flex-none",
-            isActive ? "text-accent-500" : "text-foreground-500",
-          )}
-        />
-        <span className="min-w-0 break-words font-mono leading-snug">{node.name}</span>
-      </button>
-    </li>
-  );
-}
-
-function buildSourceFileTree(files: ElementFile[]): SourceFileTreeNode[] {
-  const relativePaths = stripSharedPrefix(files.map((file) => file.filename));
-  const root: SourceFileTreeNode = { name: "", path: "", children: [] };
-
-  files.forEach((file, index) => {
-    const segments = relativePaths[index].split("/").filter(Boolean);
-    let current = root;
-    let currentPath = "";
-
-    segments.forEach((segment, segmentIndex) => {
-      currentPath = currentPath ? `${currentPath}/${segment}` : segment;
-      const isLeaf = segmentIndex === segments.length - 1;
-      let child = current.children.find((node) => node.name === segment);
-      if (!child) {
-        child = { name: segment, path: currentPath, children: [] };
-        current.children.push(child);
-      }
-      if (isLeaf) child.file = file;
-      current = child;
-    });
-  });
-
-  sortNodes(root.children);
-  return root.children;
-}
-
-/** Drops the directory prefix shared by every file so the tree stays compact. */
-function stripSharedPrefix(paths: string[]): string[] {
-  if (paths.length <= 1) return paths;
-  const directories = paths.map((path) => path.split("/").slice(0, -1));
-  let shared = directories[0] ?? [];
-  for (const segments of directories.slice(1)) {
-    let length = 0;
-    while (
-      length < shared.length &&
-      length < segments.length &&
-      shared[length] === segments[length]
-    ) {
-      length += 1;
-    }
-    shared = shared.slice(0, length);
-    if (shared.length === 0) break;
-  }
-  if (shared.length === 0) return paths;
-  const prefix = `${shared.join("/")}/`;
-  return paths.map((path) => (path.startsWith(prefix) ? path.slice(prefix.length) : path));
-}
-
-function sortNodes(nodes: SourceFileTreeNode[]) {
-  nodes.sort((a, b) => {
-    const aDir = a.children.length > 0 && !a.file;
-    const bDir = b.children.length > 0 && !b.file;
-    if (aDir !== bDir) return aDir ? -1 : 1;
-    return a.name.localeCompare(b.name);
-  });
-  nodes.forEach((node) => sortNodes(node.children));
 }

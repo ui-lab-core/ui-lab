@@ -209,29 +209,16 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
 
           <div className="flex items-center gap-1 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              {/*
-                <Button
-                variant="ghost"
-                aria-label="GitHub repository"
-                target="_blank"
-                href="https://github.com/ui-lab-core/ui-lab"
-                className="hover:text-foreground-300 transition-colors text-foreground-300 p-2"
-                size="sm"
-                >
-                <FaCodeBranch className="mr-1" size={16} />
-                Source
-                </Button>
-              */}
               <Button
                 href="/config"
-                variant="scondary"
+                variant="secondary"
                 className="rounded-full"
-                icon={<FaPlus size={13} />}
+                icon={<FaPlus strokeWidth={2.5} size={15} />}
               >
                 New Project
               </Button>
               {featureFlags.commandPalette ? (
-                <Tooltip showArrow content="Open Command Palette" position="bottom" hint="ctrl-k">
+                <Tooltip show-arrow content="Open Command Palette" position="bottom" hint="ctrl-k">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -261,7 +248,7 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
             </div>
 
             <Tooltip
-              showArrow
+              show-arrow
               content={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
               position="bottom"
             >

@@ -1,9 +1,9 @@
-import React from "react";
 import type { Metadata } from "next";
 import { getPackageById, getElementsInPackage, getAllPackages } from "@ui-lab-core/library/catalog";
 import { ContentHeader } from "@/features/navigation/components/content-header";
 import PackageElementsClientWrapper from "./wrapper";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
+import PackagePreview from "./package-preview";
 
 export function generateStaticParams() {
   const packages = getAllPackages();
@@ -44,15 +44,12 @@ async function PackageContent({ packageId }: { packageId: string }) {
         description={pkg.description}
         pricing={pkg.pricing}
         purchaseUrl={pkg.pricing?.purchaseUrl}
-      >
-        <div className="w-full h-48 bg-background-800 rounded border border-background-700 flex items-center justify-center overflow-hidden">
-          {(() => {
-            const Preview = pkg.getPreview?.() as (() => React.ReactNode) | undefined;
-
-            return Preview ? <Preview /> : <div className="text-foreground-400">Preview</div>;
-          })()}
-        </div>
-      </ContentHeader>
+        preview={
+          <div className="w-full h-40 flex items-center justify-center overflow-hidden">
+            <PackagePreview packageId={packageId} />
+          </div>
+        }
+      />
       <PackageElementsClientWrapper
         packageId={packageId}
         elementIds={elementIds}

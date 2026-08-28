@@ -10,18 +10,12 @@ import React from "react";
  * generic rows.
  */
 
-function Preview({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
-  return <div className={`flex w-full flex-col justify-center p-4 ${className}`}>{children}</div>;
+function Preview({ children, className = "" }: React.PropsWithChildren<{ className?: string }>) {
+  return <div className={`flex flex-col w-full h-full gap-3 ${className}`}>{children}</div>;
 }
 
 /** The section itself: one band, one outline. */
-function Section({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
+function Section({ children, className = "" }: React.PropsWithChildren<{ className?: string }>) {
   return (
     <div
       className={`overflow-hidden rounded-[10px] border-[2px] border-background-500/20 bg-background-950 ${className}`}
@@ -227,7 +221,10 @@ export const sectionPreviews: Record<string, React.ComponentType<object>> = {
         <Heading />
         <div className="grid grid-cols-3 gap-2">
           {[0, 1, 2].map((feature) => (
-            <div key={feature} className="flex flex-col gap-2 rounded-[8px] bg-background-500/10 p-2">
+            <div
+              key={feature}
+              className="flex flex-col gap-2 rounded-[8px] bg-background-500/10 p-2"
+            >
               <div className="size-5 rounded-[6px] bg-background-500/30" />
               <div className="h-1.5 w-4/5 rounded-full bg-background-500/40" />
               <div className="h-1 w-full rounded-full bg-background-500/20" />

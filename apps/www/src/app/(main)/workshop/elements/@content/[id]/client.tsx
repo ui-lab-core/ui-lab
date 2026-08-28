@@ -134,7 +134,7 @@ export default function PackageElementsClient({
 
   return (
     <div className="space-y-6">
-      <Divider className="mt-16 mb-12" />
+      <Divider className="mt-8 mb-8" />
       <div className="hidden grid grid-cols-[400px_1fr] items-center pb-3 pt-2">
         <Toolbar
           searchQuery={searchQuery}

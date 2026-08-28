@@ -1,31 +1,34 @@
 import { ReactNode } from "react";
+import type { PricingInfo } from "@ui-lab-core/library/catalog";
+import { ContentHeader } from "@/features/navigation/components/content-header";
+import { Divider } from "ui-lab-components";
 
 interface DetailPageShellProps {
   name: string;
   description: string;
   tags?: string[];
   dependencies?: string[];
-  /** Header content aligned to the right of the title (resource links, CTAs). */
+  preview?: ReactNode;
   actions?: ReactNode;
-  /** Extra header content rendered below the tags (e.g. metadata chips). */
-  meta?: ReactNode;
+  pricing?: PricingInfo;
+  purchaseUrl?: string;
   children?: ReactNode;
   notFoundLabel?: string;
 }
 
 /**
- * Shared shell for workshop detail pages (elements, sections, patterns,
- * starters). Mirrors the component documentation layout — same header sizing,
- * spacing and entry rhythm — but spans the full content width because workshop
- * entries drop the right-hand table of contents in favour of horizontal room.
+ * Shared content shell for workshop detail pages. The entry header is delegated
+ * to ContentHeader so every workshop domain uses the same presentation.
  */
 export function DetailPageShell({
   name,
   description,
   tags,
   dependencies,
+  preview,
   actions,
-  meta,
+  pricing,
+  purchaseUrl,
   children,
   notFoundLabel,
 }: DetailPageShellProps) {
@@ -42,31 +45,18 @@ export function DetailPageShell({
   return (
     <div className="w-full px-4 md:px-6">
       <div className="mx-auto w-full min-w-0 max-w-6xl">
-        <header className="min-h-32 space-y-6 pb-12 pt-12">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <h1 className="text-xl font-medium text-foreground-50">{name}</h1>
-              <p className="max-w-[66ch] text-md text-foreground-400">{description}</p>
-            </div>
-            {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
-          </div>
-
-          {tags && tags.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-block rounded border border-background-700 bg-background-900 px-2.5 py-1 text-sm text-foreground-400"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          ) : null}
-
-          {meta}
+        <header>
+          <ContentHeader
+            title={name}
+            description={description}
+            preview={preview}
+            tags={tags}
+            actions={actions}
+            pricing={pricing}
+            purchaseUrl={purchaseUrl}
+          />
         </header>
-
+        <Divider className="mt-8 mb-8" />
         <div className="space-y-16">{children}</div>
 
         {dependencies && dependencies.length > 0 ? (

@@ -7,12 +7,12 @@ import type { ComponentAPI, ComponentMetadata } from "ui-lab-registry";
 import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
 import { highlightCode } from "@/features/docs/lib/shiki-server";
 import { Code } from "@/features/docs/components/code-display/code";
-import { ExampleCode, Playground, Preview } from "./preview";
-import { isInteractivePreview } from "./preview-utils";
-import { ExampleReference } from "./example-reference";
-import type { StyleInfo } from "./documentation";
-import { Content } from "./content";
-import { Toc } from "./toc";
+import { ExampleCode, Playground, Preview } from "../examples/component-preview";
+import { isInteractivePreview } from "../examples/preview-utils";
+import { ExampleReference } from "../examples/example-reference";
+import type { StyleInfo } from "../styles/documentation";
+import { ContentTabs } from "./content-tabs";
+import { ComponentToc } from "./component-toc";
 import { Divider, Group } from "ui-lab-components";
 import { Button } from "ui-lab-components/button";
 import css from "./component-page.module.css";
@@ -183,7 +183,7 @@ export async function ComponentPage({
                   </section>
                 ) : null}
 
-                <Content
+                <ContentTabs
                   actions={
                     <nav aria-label="Component resources" className="flex items-center gap-1">
                       {sourceUrl ? (
@@ -223,7 +223,7 @@ export async function ComponentPage({
 
       <aside className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] min-h-0 flex-col overflow-hidden min-[750px]:flex">
         <div className="min-h-0 flex-1 overflow-hidden px-4">
-          <Toc items={{ examples: tocItems, api: apiItems, styles: styleItems }} />
+          <ComponentToc items={{ examples: tocItems, api: apiItems, styles: styleItems }} />
         </div>
         <div className="shrink-0 px-4 pb-4 [&>.group-scope]:w-full">
           <Group

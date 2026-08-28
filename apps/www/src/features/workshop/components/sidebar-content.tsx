@@ -25,7 +25,7 @@ interface ElementsSidebarContentProps {
 }
 
 const NAV_LINK_BASE =
-  "block px-3 py-1.5 text-xs font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0";
+  "block px-3 py-1.5 text-foreground-400 text-sm font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0";
 const LINK_ACTIVE = "text-foreground-50 bg-background-800 font-medium";
 const LINK_INACTIVE = "text-foreground-200 hover:text-foreground-200 hover:bg-background-800/50";
 
@@ -56,25 +56,28 @@ function ExpandGroup({
   name,
   isExpanded,
   onToggle,
-  triggerBold,
   children,
 }: {
   name: string;
   isExpanded: boolean;
   onToggle: (expanded: boolean) => void;
-  triggerBold?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Expand expanded={isExpanded} onExpandedChange={onToggle} className="rounded-sm">
-      <Expand.Trigger
-        className="text-xs text-foreground-300"
-        title={<span className={triggerBold ? "font-medium" : undefined}>{name}</span>}
-      />
+      <Expand.Trigger className="text-sm font-medium text-foreground-200" title={name} />
       <Expand.Content className="pl-3">
         <div className="space-y-0.5 mt-1">{children}</div>
       </Expand.Content>
     </Expand>
+  );
+}
+
+function EmptyState({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-full items-center justify-center px-6 text-center">
+      <p className="text-sm text-foreground-400">{children}</p>
+    </div>
   );
 }
 
@@ -179,21 +182,15 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
                 name={pkg.name}
                 isExpanded={effectiveExpandedItems.has(pkg.id)}
                 onToggle={toggleItem(pkg.id)}
-                triggerBold
               >
                 {pkgElements.map((element) => (
-                  <SidebarItemLink
+                  <NavLink
                     key={element.id}
                     href={`/workshop/elements/${pkg.id}/${element.id}`}
-                    className={cn(
-                      "block last:mb-6 px-2 py-2 font-medium text-xs rounded-sm cursor-pointer transition-colors",
-                      currentElementId === element.id
-                        ? "text-foreground-300 bg-background-800 font-medium"
-                        : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
-                    )}
+                    isActive={currentPackageId === pkg.id && currentElementId === element.id}
                   >
                     {element.name}
-                  </SidebarItemLink>
+                  </NavLink>
                 ))}
               </ExpandGroup>
             </div>
@@ -205,11 +202,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
 
   if (activeNav === "packages" && isOnPackageRoute) {
     if (packageElements.length === 0) {
-      return (
-        <div className="flex items-center justify-center h-full px-6 text-center">
-          <p className="text-foreground-400 text-xs">No elements in this package yet.</p>
-        </div>
-      );
+      return <EmptyState>No elements in this package yet.</EmptyState>;
     }
 
     return (
@@ -237,18 +230,13 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
                 const variantId = variant.demoPath || variant.name;
                 const isVariantActive = isActive && currentVariant === variantId;
                 return (
-                  <SidebarItemLink
+                  <NavLink
                     key={`${element.id}-${variantId}`}
                     href={`${href}?variant=${variantId}`}
-                    className={cn(
-                      "block py-2 text-xs rounded-sm cursor-pointer transition-colors",
-                      isVariantActive
-                        ? "text-foreground-300 bg-background-800 font-medium"
-                        : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
-                    )}
+                    isActive={isVariantActive}
                   >
                     {variant.name}
-                  </SidebarItemLink>
+                  </NavLink>
                 );
               })}
             </ExpandGroup>
@@ -260,11 +248,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
 
   if (activeNav === "starters") {
     if (sortedStarters.length === 0) {
-      return (
-        <div className="flex items-center justify-center h-full px-6 text-center">
-          <p className="text-foreground-400 text-xs">No starters available yet.</p>
-        </div>
-      );
+      return <EmptyState>No starters available yet.</EmptyState>;
     }
 
     return (
@@ -291,7 +275,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
           const patterns = getPatternsByCategory(category);
           return (
             <div key={category} className="not-first:mt-8">
-              <p className="mb-1 text-md font-semibold text-foreground-50 capitalize">{category}</p>
+              <p className="mb-1 font-medium text-foreground-200 capitalize">{category}</p>
               <div className="space-y-0.5">
                 {patterns.map((pattern) => {
                   const href = `/workshop/patterns/${pattern.id}`;
@@ -312,13 +296,13 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
                       onToggle={toggleItem(pattern.id)}
                     >
                       {(pattern.variations ?? []).map((variation) => (
-                        <SidebarItemLink
+                        <NavLink
                           key={`${pattern.id}-${variation.name}`}
                           href={href}
-                          className="block last:mb-6 px-2 py-2 text-xs rounded-sm cursor-pointer transition-colors text-foreground-300 hover:text-foreground-400 hover:bg-background-800/50"
+                          isActive={currentItemId === pattern.id}
                         >
                           {variation.name}
-                        </SidebarItemLink>
+                        </NavLink>
                       ))}
                     </ExpandGroup>
                   );
@@ -333,11 +317,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
 
   if (activeNav === "sections") {
     if (sortedSections.length === 0) {
-      return (
-        <div className="flex items-center justify-center h-full px-6 text-center">
-          <p className="text-foreground-400 text-xs">No sections in this category yet.</p>
-        </div>
-      );
+      return <EmptyState>No sections in this category yet.</EmptyState>;
     }
 
     return (
@@ -361,13 +341,13 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
               onToggle={toggleItem(section.id)}
             >
               {section.variants.map((variant) => (
-                <SidebarItemLink
+                <NavLink
                   key={`${section.id}-${variant.demoPath ?? variant.name}`}
                   href={href}
-                  className="block last:mb-6 px-2 py-2 text-xs rounded-sm cursor-pointer transition-colors text-foreground-200 hover:text-foreground-300 hover:bg-background-800/50"
+                  isActive={currentItemId === section.id}
                 >
                   {variant.name}
-                </SidebarItemLink>
+                </NavLink>
               ))}
             </ExpandGroup>
           );

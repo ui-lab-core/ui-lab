@@ -6,6 +6,7 @@ import { WorkshopPreview } from "@/features/workshop";
 import { WaitlistModalClient, useWaitlistModal } from "@/features/workshop";
 import { Button } from "ui-lab-components";
 import { Mail } from "lucide-react";
+import { getPreviewComponent } from "@/features/starters";
 
 interface StarterDetailClientProps {
   starterId: string;
@@ -20,12 +21,15 @@ function StarterDetailContent({ starterId }: StarterDetailClientProps) {
   }
 
   const isPremium = starter.pricing && starter.pricing.price !== null;
+  const CardPreview = getPreviewComponent(starterId);
 
   return (
     <DetailPageShell
       name={starter.name}
       description={starter.description}
       tags={starter.tags}
+      pricing={starter.pricing}
+      preview={CardPreview ? <CardPreview /> : undefined}
       actions={
         isPremium ? (
           <Button

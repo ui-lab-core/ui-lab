@@ -37,7 +37,7 @@ export const SettingsPanel = ({ showTrigger = true, triggerRef }: SettingsPanelP
   return (
     <>
       {showTrigger ? (
-        <Tooltip showArrow content="Open Theme Settings" position="bottom" hint="t">
+        <Tooltip show-arrow content="Open Theme Settings" position="bottom" hint="t">
           <Button
             ref={buttonRef}
             variant="ghost"

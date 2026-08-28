@@ -4,19 +4,11 @@ import React from "react";
 
 const previewRows = [0, 1] as const;
 
-function Preview({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
-  return (
-    <div className={`flex w-full flex-col justify-center gap-3 p-4 ${className}`}>{children}</div>
-  );
+function Preview({ children, className = "" }: React.PropsWithChildren<{ className?: string }>) {
+  return <div className={`flex flex-col w-full h-full gap-3 ${className}`}>{children}</div>;
 }
 
-function Card({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
+function Card({ children, className = "" }: React.PropsWithChildren<{ className?: string }>) {
   return (
     <div
       className={`rounded-[10px] border-[2px] border-background-500/20 bg-background-950 ${className}`}
@@ -187,7 +179,9 @@ export const patternPreviews: Record<string, React.ComponentType<object>> = {
         </div>
         {[0, 1, 2].map((n) => (
           <div key={n} className="flex items-center gap-4 px-3 py-2.5">
-            <div className={`h-2 rounded-full bg-background-500/50 ${n === 1 ? "w-1/4" : "w-1/3"}`} />
+            <div
+              className={`h-2 rounded-full bg-background-500/50 ${n === 1 ? "w-1/4" : "w-1/3"}`}
+            />
             <div className="h-2 w-14 rounded-full bg-background-500/30" />
             <div className="ml-auto h-5 w-10 rounded-md bg-background-500/20" />
           </div>

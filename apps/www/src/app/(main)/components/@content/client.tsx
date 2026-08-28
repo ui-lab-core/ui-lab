@@ -76,7 +76,7 @@ export default function ComponentsPageClient() {
                               onClick={() => router.push(href)}
                             >
                               {component.experimental && (
-                                <Tooltip content="Experimental" position="top" showArrow>
+                                <Tooltip content="Experimental" position="top" show-arrow>
                                   <span className="z-10 top-2 right-2 absolute ml-auto inline-block px-2 py-1 text-sm font-semibold bg-accent-400/20 text-accent-500 rounded-xs">
                                     <Icon IconComponent={Icons.Flask} size={14} />
                                   </span>
