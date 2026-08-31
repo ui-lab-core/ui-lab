@@ -398,12 +398,21 @@ margin: var(--space-6) var(--space-4) var(--space-3);
 
 ## Border Radius Variables
 
+The radius scale uses diminishing increments. Given a configured radius `r`, `xs`, `sm`, and
+`base` advance in steps of `0.25r`. Starting with `md`, each new increment is 60% of the
+previous increment. The resulting multipliers are `0.25`, `0.5`, `0.75`, `0.9`, `0.99`,
+`1.044`, and `1.0764`. This keeps the larger utilities close together instead of increasing
+exponentially.
+
 ```css
---radius-sm    /* 2px */
---radius-md    /* 4px */
---radius-lg    /* 8px */
---radius-xl    /* 12px */
---radius-2xl   /* 16px */
+/* Example generated from r = 1rem */
+--radius-xs    /* 0.250rem */
+--radius-sm    /* 0.500rem */
+--radius-base  /* 0.750rem */
+--radius-md    /* 0.900rem */
+--radius-lg    /* 0.990rem */
+--radius-xl    /* 1.044rem */
+--radius-2xl   /* 1.076rem */
 --radius-full  /* 9999px */
 ```
 

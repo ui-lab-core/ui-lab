@@ -11,41 +11,34 @@ import { WorkingAgreements } from "./elements/07-working-agreements";
 
 export function PreviewCanvas() {
   return (
-    <div className="w-full space-y-4 p-4">
-      <Grid
-        rows="minmax(0, 1fr)"
-        columns={{ sm: 1, md: 2, lg: 3 }}
-        gap="md"
-        h="500px"
-        alignContent="stretch"
-        className="w-full"
-      >
-        <Profile />
-        <FocusSpace />
-        <WorkingAgreements />
-      </Grid>
-
-      <Grid
-        rows="masonry"
-        columns={{ sm: 1, lg: 2 }}
-        gap="md"
-        className="w-full"
-        masonryColumnFill="balance"
-      >
+    <Grid
+      columns={{ sm: 1, md: 2 }}
+      rows="auto"
+      gap="md"
+      autoFlow="row-dense"
+      className="w-full p-4"
+    >
+      <div className="min-w-0 md:col-span-2">
         <Activity />
+      </div>
+      <div className="min-w-0 md:col-span-2">
         <StudioRhythm />
-      </Grid>
-
-      <Grid
-        rows="masonry"
-        columns={{ sm: 1, lg: 2 }}
-        gap="md"
-        className="w-full"
-        masonryColumnFill="balance"
-      >
+      </div>
+      <div className="min-w-0">
         <ProjectSpace />
+      </div>
+      <div className="min-w-0">
+        <Profile />
+      </div>
+      <div className="min-w-0 md:col-span-2">
         <PracticeLibrary />
-      </Grid>
-    </div>
+      </div>
+      <div className="min-w-0">
+        <FocusSpace />
+      </div>
+      <div className="min-w-0">
+        <WorkingAgreements />
+      </div>
+    </Grid>
   );
 }

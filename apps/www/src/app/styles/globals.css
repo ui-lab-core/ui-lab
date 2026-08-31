@@ -127,11 +127,11 @@
 
   --radius-xs: 0.425rem;
   --radius-sm: 0.65rem;
-  --radius-base: 1.1rem;
-  --radius-md: 1.55rem;
-  --radius-lg: 2.45rem;
-  --radius-xl: 3.575rem;
-  --radius-2xl: 4.7rem;
+  --radius-base: 0.875rem;
+  --radius-md: 1.01rem;
+  --radius-lg: 1.091rem;
+  --radius-xl: 1.14rem;
+  --radius-2xl: 1.169rem;
   --radius-full: 9999px;
   --radius-ratio: 2.25;
 

@@ -195,13 +195,22 @@ function SpacingSection() {
         </pre>
       </div>
 
-      <p className="text-foreground-300">Border radius follows the same consistent scale:</p>
+      <p className="text-foreground-300">
+        Border radius uses diminishing increments. xs, sm, and base each add 0.25 times the
+        configured radius; after base, every increment is 60% of the previous increment. This
+        keeps large radius utilities distinct without making them disproportionately round.
+      </p>
       <div className="bg-background-900 rounded border border-background-700 p-4 overflow-x-auto mb-6">
         <pre className="text-sm text-foreground-300">
           <code>{`@theme {
-  --radius-sm: 0.375rem;    /* 6px */
-  --radius-md: 0.5rem;      /* 8px */
-  --radius-lg: 0.75rem;     /* 12px */
+  /* Generated from a configured radius of 1.4rem */
+  --radius-xs: 0.350rem;
+  --radius-sm: 0.700rem;
+  --radius-base: 1.050rem;
+  --radius-md: 1.260rem;
+  --radius-lg: 1.386rem;
+  --radius-xl: 1.462rem;
+  --radius-2xl: 1.507rem;
   --radius-full: 9999px;
 }`}</code>
         </pre>

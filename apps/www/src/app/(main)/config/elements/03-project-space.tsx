@@ -13,7 +13,7 @@ const collaborators = [
 
 function Avatar({ initials }: { initials: string }) {
   return (
-    <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background-100 bg-background-800 text-[10px] font-medium text-foreground-300">
+    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-background-800 font-medium text-foreground-300">
       {initials}
     </div>
   );

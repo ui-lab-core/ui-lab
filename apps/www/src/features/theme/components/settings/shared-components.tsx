@@ -18,6 +18,7 @@ const BACKGROUND_CHROMA_PREVIEW_MULTIPLIER = 10;
 
 interface SliderControlProps {
   label: string;
+  description?: string;
   value: number;
   min: number;
   max: number;
@@ -60,7 +61,7 @@ interface SemanticColorPickerProps {
 }
 
 export const SliderControl = memo(
-  ({ label, value, min, max, step, unit, onChange }: SliderControlProps) => {
+  ({ label, description, value, min, max, step, unit, onChange }: SliderControlProps) => {
     const safeValue = value ?? min + (max - min) / 2;
     return (
       <div className="space-y-2 group">
@@ -82,6 +83,7 @@ export const SliderControl = memo(
           max={max}
           step={step}
         />
+        {description ? <p className="text-xs text-foreground-400">{description}</p> : null}
       </div>
     );
   },

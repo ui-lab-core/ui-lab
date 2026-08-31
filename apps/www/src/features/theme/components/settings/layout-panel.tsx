@@ -25,6 +25,7 @@ export const LayoutPanel = memo(
       <div className="p-4 space-y-6">
         <SliderControl
           label="Corner Radius"
+          description="xs, sm, and base increase evenly; each later increment is 60% of the previous one so larger radii converge."
           value={radius}
           min={0}
           max={1.5}

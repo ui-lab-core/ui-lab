@@ -76,7 +76,7 @@ export const packagePreviews: Record<string, React.ComponentType<object>> = {
   ),
 
   // Conversation: alternating bubbles above a composer.
-  ai: () => (
+  agents: () => (
     <Preview>
       <div className="flex flex-col gap-2">
         <div className="h-7 w-2/3 rounded-[10px] rounded-bl-[3px] bg-background-500/20" />

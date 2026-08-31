@@ -34,10 +34,12 @@ export function getSpacingCssVariables(spacingScale: number): Record<string, str
 
 export function getRadiusCssVariables(radius: number): Record<string, string> {
   const vars: Record<string, string> = {};
-  const radiusScaleFactor = radius / 0.2;
 
-  baseRadiusScale.forEach(({ name, value }) => {
-    const scaledValue = value * radiusScaleFactor;
+  // xs, sm, and base advance by 0.25 × radius. After base, each new
+  // increment is 60% of the previous one so the scale converges instead of
+  // producing disproportionately round lg, xl, and 2xl corners.
+  baseRadiusScale.forEach(({ name, multiplier }) => {
+    const scaledValue = radius * multiplier;
     vars[`--radius-${name}`] = scaledValue > 100 ? "9999px" : `${scaledValue.toFixed(3)}rem`;
   });
 
