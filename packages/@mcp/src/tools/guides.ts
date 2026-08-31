@@ -1,32 +1,30 @@
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
+import { envelopeSchema, limitProperty, REF_HELP } from "./shared.js";
 
 export const searchGuidesTool: Tool = {
   name: "search_guides",
   description:
-    'Search UI Lab’s durable design and implementation guidance. Consult the "foundation" guide when designing or reviewing UI; use other guides for setup, theming, migration, and integration. Summary mode returns small ranked results. Full mode returns one exact or best-matching guide.',
+    "Read UI Lab's durable design and implementation guidance. " +
+    'Call `search_guides { query: "foundation", detail: "full" }` before designing or reviewing any UI: it carries the composition, token, responsive, interaction, and accessibility rules the library expects. ' +
+    "Other guides cover setup, theming, and migrating existing UI. Omit `query` to list every guide. " +
+    REF_HELP,
   inputSchema: {
     type: "object" as const,
     properties: {
       query: {
         type: "string",
         description:
-          'A guide ID or knowledge topic such as "foundation", "setup", "theme switching", "tokens", or "accessibility".',
+          'A guide ref ("guide:foundation" or "foundation") or a topic such as "theme switching", "tokens", or "accessibility". Omit to list every guide.',
       },
       detail: {
         type: "string",
         enum: ["summary", "full"],
         description:
-          "Summary returns ranked guide metadata. Full returns the complete exact or best-matching guide.",
+          "Applies only when `query` resolves to exactly one guide. full returns its complete steps and validation checklist.",
         default: "summary",
       },
-      limit: {
-        type: "number",
-        minimum: 1,
-        maximum: 10,
-        description: "Maximum summary matches to return. Defaults to 5.",
-        default: 5,
-      },
+      limit: limitProperty,
     },
-    required: ["query"],
   },
+  outputSchema: envelopeSchema,
 };

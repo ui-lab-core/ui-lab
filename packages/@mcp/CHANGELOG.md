@@ -4,8 +4,19 @@
 
 - Reduced the MCP surface from 17 category-specific tools to `get_component`, `search_guides`, and `search_workshop`.
 - Added progressive disclosure for component, guide, and workshop context.
-- Unified examples, patterns, elements, sections, and starters behind the workshop index.
 - Removed duplicated MCP resources, hardcoded semantic color recommendations, theme setup output, and injected design guidance.
+- Unified every tool on one reference grammar (`component:`, `example:`, `artifact:`, `guide:`) that every response emits and every tool accepts back.
+- Unified every tool on one response envelope with an explicit `status` of `exact`, `matches`, `list`, or `not_found`, plus `nextSteps` follow-up calls.
+- Misses now return `not_found` with ranked suggestions instead of throwing an MCP error, so a real registry failure is no longer indistinguishable from "no match".
+- Added enumeration: omitting `query` on any tool returns the full index.
+- Added MCP `instructions` describing the intended call order, and `structuredContent` plus an `outputSchema` on every tool.
+- Replaced `search_workshop`'s unimplemented `example`/`pattern`/`element`/`section`/`starter` kinds with the two the registry can produce, `component` and `artifact`, and removed its unimplemented `variation` parameter.
+- Replaced workshop AND-substring matching with token scoring, so natural-language queries rank instead of returning nothing.
+- Component summaries now disclose `experimental`, and a `detail` level that could not be applied is reported in `note` instead of being dropped silently.
+- Added a `limit` parameter to `get_component`; server version is now read from `package.json`; the workshop index is built once.
+- Removed the unreachable installed-artifact lockfile reader, which parsed a `ui-lab.lock` format the CLI never writes.
+- Component responses now carry the real import specifier. `importPath` was surfacing the registry's `packagePath` (`dist/index.d.ts`), so agents fell back to the `ui-lab-components` barrel; every component now returns an `import` object with the subpath statement (`import { Button } from 'ui-lab-components/button';`) at every detail level, including the default summary.
+- The setup and theme-switching guides now teach subpath imports instead of barrel imports.
 
 ## 0.4.3
 

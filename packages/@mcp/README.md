@@ -3,29 +3,109 @@
 A focused, read-only Model Context Protocol server that gives coding agents UI
 Lab design knowledge, component APIs, and implementation examples.
 
-## Tools
+## Reference grammar
 
-The server intentionally exposes three flexible tools.
+Every ID the server accepts or emits uses one grammar:
+
+- `component:<componentId>`
+- `example:<componentId>/<exampleId>`
+- `pattern:<patternId>`
+- `element:<packageId>/<elementId>`
+- `section:<sectionId>`
+- `starter:<starterId>`
+- `artifact:<artifactId>`
+- `guide:<guideId>`
+
+Every response emits the `ref` of everything it returns. Passing a ref back
+verbatim resolves that item exactly, so an agent never has to reconstruct an ID.
+
+## Response envelope
+
+All three tools return the same envelope, so a client needs one parse path.
+`status` decides which keys are present:
+
+| `status` | Meaning | Keys |
+| --- | --- | --- |
+| `exact` | The requested item | `ref`, `data` |
+| `matches` | Ranked candidates | `query`, `total`, `matches`, optional `note` |
+| `list` | The full index (returned when `query` is omitted) | `total`, `items` |
+| `not_found` | No match | `query`, `message`, `suggestions` |
+
+Every non-`exact` response carries `nextSteps`: concrete follow-up calls.
+
+A miss is a result, not a protocol error. MCP errors are reserved for the server
+actually failing, so an agent can distinguish "this does not exist" from "the
+registry failed to load" instead of hand-rolling a component that already
+exists.
+
+Results are returned as both `structuredContent` and a YAML text rendering.
+
+## Tools
 
 ### `get_component`
 
-Find a component or retrieve authoritative component context.
+Component identity, props, usage rules, and example source.
 
-- Natural-language queries return concise ranked matches.
-- Exact component IDs support `summary`, `api`, `usage`, `examples`, and `full` detail.
-- Component/example references return that exact public example source.
+- Omit `query` to list every component id.
+- A `component:` ref returns that component at the requested `detail`:
+  `summary`, `api`, `usage`, `examples`, or `full`.
+- An `example:` ref returns that example's source.
+- Free text returns ranked matches. `detail` applies only to an exact ref; when
+  it is dropped, the response says so in `note`.
+
+Every component result carries an `import` object with the exact statement to
+write. Components are imported from their own subpath
+(`ui-lab-components/<componentId>`), not from the package barrel, and the
+statement is present at every detail level including the default `summary`.
 
 ### `search_guides`
 
-Search durable UI Lab guidance.
+Durable UI Lab guidance.
 
-- Use `foundation` for the core design, composition, token, responsive, interaction, and accessibility rules.
-- Summary detail returns ranked guide metadata.
-- Full detail returns one exact or best-matching guide.
+- Omit `query` to list every guide.
+- `foundation` carries the core design, composition, token, responsive,
+  interaction, and accessibility rules. Read it before designing or reviewing UI.
+- `detail: "full"` applies only to an exact guide ref.
 
 ### `search_workshop`
 
-Search public artifact metadata. Full detail returns source only for artifacts the public registry explicitly marks copyable. Package and premium items return a structured install intent.
+How an item is obtained, not what its API is.
+
+- `kind: "component"` — ships in the `ui-lab-components` package.
+- `kind: "pattern" | "element" | "section" | "starter"` — authored Workshop content.
+- `kind: "artifact"` — legacy source artifacts copied by the UI Lab CLI.
+
+Free exact results at `detail: "full"` add `code`, `files`, `dependencies`, and
+`installIntent` when the content model supplies them. Public premium results are
+locked summaries only: they may contain `productId` or `bundleId`, but never
+code, files, dependencies, or preview imports.
+
+Component example results use `get_component` and return `{ ref, component,
+kind: "component-example", id, name, description, access, locked, code }`.
+Pattern, element, section, and starter results use `search_workshop` and return
+the common summary `{ ref, kind, id, name, description, category, visibility,
+access, locked, installIntent? }`; free full results add the source fields above.
+
+## Local offline use
+
+Install `ui-lab` once, then configure the MCP client to run the local binary
+without `npx` network resolution. From a project with the package installed,
+the command is `pnpm exec ui-lab-mcp`. A path-stable configuration can instead
+run `node /absolute/path/to/node_modules/ui-lab/dist/index.js`. All public/free
+catalog metadata and source payloads are bundled in the installed
+`ui-lab-registry` dependency, so requests make no network calls.
+
+## Future premium offline cache
+
+Premium delivery belongs behind the CLI's server-authenticated
+`EntitlementClient`, never an MCP argument. A future `ui-lab sync` can perform a
+device login, ask the entitlement service for the caller's user/organization
+grants, download only authorized versioned bundles, verify the signed manifest
+and file integrity hashes, and write them to an owner-only user cache. A server
+resolver can layer that cache over `createPublicWorkshopContentResolver` using
+`WorkshopContentResolver.resolve(ref, context)`. Locally delivered source is
+copyable source; this design does not claim DRM or continued secrecy after
+delivery.
 
 ## Responsibilities
 
@@ -33,17 +113,14 @@ Search public artifact metadata. Full detail returns source only for artifacts t
   examples with progressive disclosure.
 - Validate design and implementation choices against authoritative UI Lab
   guidance.
-- Tell an agent when an item requires installation, local availability, or
-  premium access, using structured next-action data when that contract is
-  introduced.
-- Read an already installed premium artifact from the active project only after
-  the CLI has obtained it. Project-root package resolution is required; a global
-  MCP install must not be treated as the project's dependency graph.
+- Tell an agent when an item requires installation or premium access, using
+  structured next-action data.
 
 ## Non-responsibilities
 
-- Installing packages, writing project files, selecting a package manager,
-  authenticating users, storing tokens, or downloading premium artifacts.
+- Installing packages, writing project files, reading the consuming project,
+  selecting a package manager, authenticating users, storing tokens, or
+  downloading premium artifacts.
 - Returning premium source merely because an item is discoverable. Discovery
   metadata and source authorization are separate.
 
@@ -54,22 +131,10 @@ lives in `ui-lab-registry`; the private library is an authoring and restricted
 artifact input and is not imported by this package. Premium source is never
 returned; the MCP only provides concise install intents.
 
-Responses use progressive disclosure. Search calls default to five summaries, while complete APIs, guides, and implementation source require an explicit detail request. Tool failures use MCP errors instead of success flags and instructional response messages.
+Search scores tokens and ranks rather than requiring every token to match, so a
+natural-language query fails gracefully instead of failing on its weakest word.
 
-The server exposes tools only. Registry resources are not separately advertised because they duplicate the same content without progressive disclosure.
-
-## Development
-
-Install dependencies with `pnpm install`, compile with `pnpm build`, and start the stdio server with `pnpm start`.
-
-The package entry point is `dist/index.js` and requires Node.js 18 or newer.
-
-## Command name
-
-This package now owns `ui-lab-mcp`. The former `ui-lab` MCP command is replaced
-by `ui-lab-mcp`; `ui-lab` belongs to `@ui-lab/cli`. Configure clients with
-`npx --package ui-lab ui-lab-mcp` or an installed `ui-lab-mcp` binary.
-
-Installed-artifact inspection is anchored to an explicit project root (or the
-MCP process working directory) using project-root resolution. It reads only
-CLI-recorded entries in `ui-lab.lock`, never the globally installed MCP tree.
+The server exposes tools only, plus MCP `instructions` describing the intended
+call order. Registry resources are not separately advertised because they
+duplicate the same content without progressive disclosure; enumeration is
+available on each tool by omitting `query`.
