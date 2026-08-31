@@ -37,10 +37,7 @@
   }
 
   .item[data-focus-visible="true"] {
-    box-shadow:
-      inset 0 0 0 1px
-        slot(item, focus-visible-background, var(--focus-visible-background, var(--accent-400))),
-      0 0 0 2px slot(item, focus-visible, var(--focus-visible, var(--accent-400)));
+    background-color: slot(item, background-focus, var(--background-700));
     outline: none;
   }
 

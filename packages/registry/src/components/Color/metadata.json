@@ -1,7 +1,7 @@
 {
   "id": "color",
   "name": "Color",
-  "description": "Color picker with hue slider and format selection.",
+  "description": "Color picker with a saturation/brightness canvas, channel sliders, format selection, and compound popover composition.",
   "category": "input",
   "experimental": true,
   "source": {
@@ -14,10 +14,10 @@
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Keyboard accessible sliders",
-      "ARIA labels for color components",
-      "Visual focus indicators",
-      "Screen reader announcements for color values"
+      "Hue, opacity, and chroma controls use keyboard-operable slider semantics",
+      "The saturation and brightness canvas exposes a slider role and value text",
+      "Trigger, input, selector, recent colors, and preview surfaces have accessible names",
+      "Canvas and slider controls expose visible keyboard focus state"
     ]
   }
 }

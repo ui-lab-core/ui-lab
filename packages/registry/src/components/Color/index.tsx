@@ -6,7 +6,7 @@ export const colorDetail: ComponentDetail = {
   id: "color",
   name: "Color",
   description:
-    "A custom color component with 2D saturation/lightness canvas, hue slider, optional opacity slider, and color input with format selection.",
+    "A custom color component with a 2D saturation/brightness canvas, hue slider, optional opacity slider, and color input with format selection.",
   overview: (
     <div className="space-y-4 text-foreground-300">
       <p>
@@ -14,7 +14,7 @@ export const colorDetail: ComponentDetail = {
         interaction methods:
       </p>
       <ul className="ml-2 list-inside list-disc space-y-2">
-        <li>2D canvas for saturation and lightness adjustment</li>
+        <li>2D canvas for saturation and brightness adjustment</li>
         <li>Horizontal hue slider for hue selection (0-360°)</li>
         <li>Optional opacity slider for alpha channel control</li>
         <li>Recent colors display for quick access</li>

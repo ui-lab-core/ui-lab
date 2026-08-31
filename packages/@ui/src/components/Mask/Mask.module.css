@@ -16,6 +16,14 @@
   clip-path: var(--mask-clip-path);
 }
 
+.mask[data-mask-cutout-except~="first"]:first-child {
+  --mask-cutout-except-first: linear-gradient(black, black);
+}
+
+.mask[data-mask-cutout-except~="last"]:last-child {
+  --mask-cutout-except-last: linear-gradient(black, black);
+}
+
 .mask-gradient {
   background: var(--mask-gradient);
   -webkit-background-clip: text;

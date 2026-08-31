@@ -149,7 +149,7 @@ export { Modal, ModalHeader, ModalBody, ModalFooter } from "./components/Modal";
 export type { ModalProps, ModalBodyProps, ModalState } from "./components/Modal";
 
 export { Mask } from "./components/Mask";
-export type { MaskProps } from "./components/Mask";
+export type { MaskAs, MaskProps } from "./components/Mask";
 
 export { Tabs } from "./components/Tabs";
 export type {

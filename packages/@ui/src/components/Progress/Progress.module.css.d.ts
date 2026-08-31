@@ -4,6 +4,7 @@ declare const styles: {
   readonly label: string;
   readonly value: string;
   readonly track: string;
+  readonly surface: string;
   readonly "range-clip": string;
   readonly range: string;
   readonly thumb: string;

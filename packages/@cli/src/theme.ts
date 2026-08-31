@@ -222,11 +222,11 @@ export const onyxTheme: ThemeDefinition = {
 @theme {
   --radius-xs: 0.350rem;
   --radius-sm: 0.700rem;
-  --radius-base: 1.400rem;
-  --radius-md: 2.100rem;
-  --radius-lg: 3.500rem;
-  --radius-xl: 5.250rem;
-  --radius-2xl: 7.000rem;
+  --radius-base: 1.050rem;
+  --radius-md: 1.260rem;
+  --radius-lg: 1.386rem;
+  --radius-xl: 1.462rem;
+  --radius-2xl: 1.507rem;
   --radius-full: 9999px;
   --radius-ratio: 3.4999999999999996;
   --border-width-none: 0.0px;

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef, useReducer } from "rea
 import { useControlledState } from "@/hooks/useControlledState";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import styles from "./Color.module.css";
+import css from "./Color.module.css";
 import {
   rgbToHsv,
   hsvToRgb,
@@ -20,185 +20,192 @@ import { ColorInput } from "./Color.Input";
 import { Popover, type PopoverProps } from "../Popover";
 import { Slider } from "../Slider";
 
-type ColorCanvasGradientStyles = {
+/** Class-based styles for the three layers that compose the Color.Canvas gradient.
+ * @typeDoc ColorCanvasGradientStyleSlots
+ */
+export interface ColorCanvasGradientStyleSlots {
+  /** The hue-tinted base layer. */
   hue?: Style;
+  /** The horizontal white-to-transparent saturation layer. */
   saturation?: Style;
+  /** The vertical transparent-to-black brightness layer. */
   brightness?: Style;
-};
+}
 
-type ColorSliderStyles = {
-  hue?: Style;
-  opacity?: Style;
-  chroma?: Style;
-};
-
-export interface ColorStyleSlots {
-  provider?: Style;
+/** Class-based styles for Color.Canvas anatomy.
+ * @typeDoc ColorCanvasStyleSlots
+ */
+export interface ColorCanvasStyleSlots {
+  /** The focusable canvas interaction surface. */
   root?: Style;
-  trigger?: Style;
-  triggerSwatch?: Style;
-  triggerValue?: Style;
-  controls?: Style;
-  canvas?: Style;
-  canvasInner?: Style;
-  canvasGradient?: Style | ColorCanvasGradientStyles;
-  canvasPointer?: Style;
-  slider?: Style | ColorSliderStyles;
-  sliderTrack?: Style | ColorSliderStyles;
-  sliderThumb?: Style | ColorSliderStyles;
-  recentColors?: Style;
-  recentColorSwatch?: Style;
-  inputGroup?: Style;
+  /** The clipped gradient container. */
+  inner?: Style;
+  /** Shared or layer-specific gradient styles. */
+  gradient?: Style | ColorCanvasGradientStyleSlots;
+  /** The current-color pointer. */
+  pointer?: Style;
+}
+
+/** Class-based styles for one Color.Slider channel.
+ * @typeDoc ColorSliderChannelStyleSlots
+ */
+export interface ColorSliderChannelStyleSlots {
+  /** The slider interaction surface. */
+  root?: Style;
+  /** The channel gradient track. */
+  track?: Style;
+  /** The draggable slider thumb. */
+  thumb?: Style;
+}
+
+/** Class-based styles for each supported Color.Slider channel.
+ * @typeDoc ColorSliderStyleSlots
+ */
+export interface ColorSliderStyleSlots {
+  /** Shared or keyed styles for the hue slider. */
+  hue?: Style | ColorSliderChannelStyleSlots;
+  /** Shared or keyed styles for the opacity slider. */
+  opacity?: Style | ColorSliderChannelStyleSlots;
+  /** Shared or keyed styles for the chroma slider. */
+  chroma?: Style | ColorSliderChannelStyleSlots;
+}
+
+/** Class-based styles for Color.Trigger anatomy.
+ * @typeDoc ColorTriggerStyleSlots
+ */
+export interface ColorTriggerStyleSlots {
+  /** The trigger button. */
+  root?: Style;
+  /** The default trigger color swatch. */
+  swatch?: Style;
+  /** The default trigger color value. */
+  value?: Style;
+}
+
+/** Class-based styles for the recent-color collection.
+ * @typeDoc ColorRecentColorsStyleSlots
+ */
+export interface ColorRecentColorsStyleSlots {
+  /** The recent-colors group. */
+  root?: Style;
+  /** Every recent-color button. */
+  swatch?: Style;
+}
+
+/** Class-based styles for the color input controls.
+ * @typeDoc ColorInputStyleSlots
+ */
+export interface ColorInputStyleSlots {
+  /** The grouped input, format selector, and optional preview. */
+  group?: Style;
+  /** The editable color text field. */
   input?: Style;
+  /** The color-format selector. */
   format?: Style;
+  /** The optional color preview swatch. */
   previewSwatch?: Style;
 }
 
+/** Class-based styles for the Color root and compound anatomy.
+ * @typeDoc ColorStyleSlots
+ */
+export interface ColorStyleSlots {
+  /** The compound-component provider rendered when custom children are supplied. */
+  provider?: Style;
+  /** The Color.Area picker surface. */
+  root?: Style;
+  /** Shared or keyed Color.Trigger styles. */
+  trigger?: Style | ColorTriggerStyleSlots;
+  /** The picker controls below the canvas. */
+  controls?: Style;
+  /** Shared or keyed Color.Canvas styles. */
+  canvas?: Style | ColorCanvasStyleSlots;
+  /** Channel-specific Color.Slider styles. */
+  slider?: ColorSliderStyleSlots;
+  /** Shared or keyed recent-color styles. */
+  recentColors?: Style | ColorRecentColorsStyleSlots;
+  /** Color input and preview styles. */
+  input?: ColorInputStyleSlots;
+}
+
+/** Keyed class names for Color anatomy.
+ * @typeDoc ColorStylesProp
+ */
 export type ColorStylesProp = StylesProp<ColorStyleSlots>;
 
-const resolveColorBaseStyles = createStylesResolver([
+const colorStyleSlotKeys = [
   "provider",
   "root",
-  "trigger",
-  "triggerSwatch",
-  "triggerValue",
+  "trigger.root",
+  "trigger.swatch",
+  "trigger.value",
   "controls",
-  "canvas",
-  "canvasInner",
-  "canvasGradientHue",
-  "canvasGradientSaturation",
-  "canvasGradientBrightness",
-  "canvasPointer",
-  "sliderHue",
-  "sliderOpacity",
-  "sliderChroma",
-  "sliderTrackHue",
-  "sliderTrackOpacity",
-  "sliderTrackChroma",
-  "sliderThumbHue",
-  "sliderThumbOpacity",
-  "sliderThumbChroma",
-  "recentColors",
-  "recentColorSwatch",
-  "inputGroup",
-  "input",
-  "format",
-  "previewSwatch",
-] as const);
+  "canvas.root",
+  "canvas.inner",
+  "canvas.gradient.hue",
+  "canvas.gradient.saturation",
+  "canvas.gradient.brightness",
+  "canvas.pointer",
+  "slider.hue.root",
+  "slider.hue.track",
+  "slider.hue.thumb",
+  "slider.opacity.root",
+  "slider.opacity.track",
+  "slider.opacity.thumb",
+  "slider.chroma.root",
+  "slider.chroma.track",
+  "slider.chroma.thumb",
+  "recentColors.root",
+  "recentColors.swatch",
+  "input.group",
+  "input.input",
+  "input.format",
+  "input.previewSwatch",
+] as const;
+
+const resolveColorBaseStyles = createStylesResolver([
+  ...colorStyleSlotKeys,
+]);
+
+function isSharedStyle(value: unknown): value is Style {
+  return typeof value === "string" || Array.isArray(value);
+}
+
+function normalizeNestedStyle(value: unknown, keys: readonly string[]): unknown {
+  if (!isSharedStyle(value)) return value;
+  return Object.fromEntries(keys.map((key) => [key, value]));
+}
 
 function resolveColorStyles(styles: ColorStylesProp | undefined) {
   if (!styles) return resolveColorBaseStyles(styles);
-  const {
-    provider,
-    root,
-    trigger,
-    triggerSwatch,
-    triggerValue,
-    controls,
-    canvas,
-    canvasInner,
-    canvasGradient,
-    canvasPointer,
-    slider,
-    sliderTrack,
-    sliderThumb,
-    recentColors,
-    recentColorSwatch,
-    inputGroup,
-    input,
-    format,
-    previewSwatch,
-  } = styles;
 
-  let canvasGradientHue: Style | undefined;
-  let canvasGradientSaturation: Style | undefined;
-  let canvasGradientBrightness: Style | undefined;
-  let sliderHue: Style | undefined;
-  let sliderOpacity: Style | undefined;
-  let sliderChroma: Style | undefined;
-  let sliderTrackHue: Style | undefined;
-  let sliderTrackOpacity: Style | undefined;
-  let sliderTrackChroma: Style | undefined;
-  let sliderThumbHue: Style | undefined;
-  let sliderThumbOpacity: Style | undefined;
-  let sliderThumbChroma: Style | undefined;
-
-  if (canvasGradient) {
-    if (typeof canvasGradient === "string" || Array.isArray(canvasGradient)) {
-      canvasGradientHue = canvasGradient;
-      canvasGradientSaturation = canvasGradient;
-      canvasGradientBrightness = canvasGradient;
-    } else {
-      canvasGradientHue = canvasGradient.hue;
-      canvasGradientSaturation = canvasGradient.saturation;
-      canvasGradientBrightness = canvasGradient.brightness;
-    }
-  }
-
-  if (slider) {
-    if (typeof slider === "string" || Array.isArray(slider)) {
-      sliderHue = slider;
-      sliderOpacity = slider;
-      sliderChroma = slider;
-    } else {
-      sliderHue = slider.hue;
-      sliderOpacity = slider.opacity;
-      sliderChroma = slider.chroma;
-    }
-  }
-
-  if (sliderTrack) {
-    if (typeof sliderTrack === "string" || Array.isArray(sliderTrack)) {
-      sliderTrackHue = sliderTrack;
-      sliderTrackOpacity = sliderTrack;
-      sliderTrackChroma = sliderTrack;
-    } else {
-      sliderTrackHue = sliderTrack.hue;
-      sliderTrackOpacity = sliderTrack.opacity;
-      sliderTrackChroma = sliderTrack.chroma;
-    }
-  }
-
-  if (sliderThumb) {
-    if (typeof sliderThumb === "string" || Array.isArray(sliderThumb)) {
-      sliderThumbHue = sliderThumb;
-      sliderThumbOpacity = sliderThumb;
-      sliderThumbChroma = sliderThumb;
-    } else {
-      sliderThumbHue = sliderThumb.hue;
-      sliderThumbOpacity = sliderThumb.opacity;
-      sliderThumbChroma = sliderThumb.chroma;
-    }
-  }
+  const canvas = normalizeNestedStyle(styles.canvas, ["root", "inner", "gradient", "pointer"]);
+  const normalizedCanvas = isSharedStyle(canvas)
+    ? canvas
+    : canvas && typeof canvas === "object"
+      ? {
+          ...canvas,
+          gradient: normalizeNestedStyle((canvas as ColorCanvasStyleSlots).gradient, [
+            "hue",
+            "saturation",
+            "brightness",
+          ]),
+        }
+      : canvas;
+  const normalizeChannel = (value: unknown) => normalizeNestedStyle(value, ["root", "track", "thumb"]);
 
   return resolveColorBaseStyles({
-    provider,
-    root,
-    trigger,
-    triggerSwatch,
-    triggerValue,
-    controls,
-    canvas,
-    canvasInner,
-    canvasGradientHue,
-    canvasGradientSaturation,
-    canvasGradientBrightness,
-    canvasPointer,
-    sliderHue,
-    sliderOpacity,
-    sliderChroma,
-    sliderTrackHue,
-    sliderTrackOpacity,
-    sliderTrackChroma,
-    sliderThumbHue,
-    sliderThumbOpacity,
-    sliderThumbChroma,
-    recentColors,
-    recentColorSwatch,
-    inputGroup,
-    input,
-    format,
-    previewSwatch,
+    ...styles,
+    trigger: normalizeNestedStyle(styles.trigger, ["root", "swatch", "value"]),
+    canvas: normalizedCanvas,
+    slider: styles.slider
+      ? {
+          hue: normalizeChannel(styles.slider.hue),
+          opacity: normalizeChannel(styles.slider.opacity),
+          chroma: normalizeChannel(styles.slider.chroma),
+        }
+      : undefined,
+    recentColors: normalizeNestedStyle(styles.recentColors, ["root", "swatch"]),
   });
 }
 
@@ -222,22 +229,100 @@ function canvasReducer(state: CanvasState, action: CanvasAction): CanvasState {
   }
 }
 
-export interface ColorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
-  state?: ColorState;
-  value?: string;
-  defaultValue?: string;
-  onChange?: (color: string) => void;
-  onChangeComplete?: (color: string) => void;
-  showOpacity?: boolean;
-  showPreview?: boolean;
-  format?: "hex" | "rgb";
-  disabled?: boolean;
-  size?: "sm" | "md" | "lg";
-  className?: string;
-  styles?: ColorStylesProp;
-}
+/** Supported serialized color formats.
+ * @typeDoc ColorFormat
+ */
+export type ColorFormat = "hex" | "rgb";
+
+/** Named Color sizing presets.
+ * @typeDoc ColorSize
+ */
+export type ColorSize = "sm" | "md" | "lg";
+
+/** Visual treatments for the picker area.
+ * @typeDoc ColorAreaVariant
+ */
+export type ColorAreaVariant = "standalone" | "popover";
+
+/** Channels supported by Color.Slider.
+ * @typeDoc ColorSliderType
+ */
+export type ColorSliderType = "hue" | "opacity" | "chroma";
+
+/** Popover placement accepted by Color.Trigger.
+ * @typeDoc ColorTriggerPosition
+ */
+export type ColorTriggerPosition = PopoverProps["position"];
+
+/** Popover anatomy styles forwarded by Color.Trigger.
+ * @typeDoc ColorPopoverStyles
+ */
+export type ColorPopoverStyles = PopoverProps["styles"];
+
+/** Controlled Color value state.
+ * @typeDoc ColorState
+ */
 export interface ColorState {
+  /** The controlled serialized color value. */
   value?: string;
+}
+
+/** Props for the Color value provider and default picker surface. */
+export interface ColorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** Supplies controlled state; state.value takes precedence over value.
+   * @category Core
+   * @typeDoc ColorState
+   */
+  state?: ColorState;
+  /** Controls the serialized color when state.value is not supplied.
+   * @category Core
+   */
+  value?: string;
+  /** Sets the initial serialized color for uncontrolled usage.
+   * @category Core
+   * @default "#000000"
+   */
+  defaultValue?: string;
+  /** Called whenever canvas, slider, input, or recent-color interaction changes the color.
+   * @category Events
+   */
+  onChange?: (color: string) => void;
+  /** Called after a valid text or recent-color selection is committed.
+   * @category Events
+   */
+  onChangeComplete?: (color: string) => void;
+  /** Renders the opacity slider in the default Color.Area.
+   * @category Content
+   * @default false
+   */
+  showOpacity?: boolean;
+  /** Renders the preview swatch beside the color input.
+   * @category Content
+   * @default false
+   */
+  showPreview?: boolean;
+  /** Sets the initial displayed color format. The format selector can change it locally.
+   * @category Core
+   * @default "hex"
+   * @typeDoc ColorFormat
+   */
+  format?: ColorFormat;
+  /** Disables picker interaction and publishes disabled styling hooks.
+   * @category Core
+   * @default false
+   */
+  disabled?: boolean;
+  /** Selects a named size for the picker and compound controls.
+   * @category Core
+   * @default "md"
+   * @typeDoc ColorSize
+   */
+  size?: ColorSize;
+  /** Applies class-based styles to the root and stable Color anatomy.
+   * @category Styling
+   * @typeDoc ColorStylesProp
+   */
+  styles?: ColorStylesProp;
 }
 
 type ResolvedColorStyles = ReturnType<typeof resolveColorStyles>;
@@ -280,6 +365,7 @@ function useOptionalColorContext() {
   return React.useContext(ColorContext);
 }
 
+/** Provides color state and renders the default picker or custom compound children. */
 const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
   (
     {
@@ -523,10 +609,11 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
       <ColorContext.Provider value={contextValue}>
         <div
           ref={ref}
-          className={cn("color-provider", styles["color-provider"], resolved.provider, className)}
+          {...props}
+          className={cn("color-provider", css["color-provider"], className, resolved.provider)}
+          data-slot="provider"
           data-size={size}
           data-disabled={disabled || undefined}
-          {...props}
         >
           {children}
         </div>
@@ -537,45 +624,79 @@ const ColorRoot = React.forwardRef<HTMLDivElement, ColorProps>(
 
 ColorRoot.displayName = "Color";
 
-export interface ColorAreaProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Visual treatment for the picker area. Popover mode removes the standalone shell. */
-  variant?: "standalone" | "popover";
+export interface ColorAreaProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Selects the picker shell treatment. Popover mode removes the standalone background and border.
+   * @category Core
+   * @default "standalone"
+   * @typeDoc ColorAreaVariant
+   */
+  variant?: ColorAreaVariant;
 }
 
 export interface ColorSliderProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "defaultValue" | "value" | "onChange"
+  "children" | "defaultValue" | "value" | "onChange"
 > {
-  /** Which color channel this slider controls. */
-  type?: "hue" | "opacity" | "chroma";
-  /** Current slider value. Hue uses 0-360; opacity and OKLCH chroma use their native unit ranges. */
+  /** Selects the controlled color channel and its default range, step, label, and visual treatment.
+   * @category Core
+   * @default "hue"
+   * @typeDoc ColorSliderType
+   */
+  type?: ColorSliderType;
+  /** Controls the slider value. Hue uses degrees; opacity and chroma use decimal units.
+   * @category Core
+   */
   value?: number;
-  /** Initial slider value for uncontrolled usage. */
+  /** Sets the initial value for standalone uncontrolled usage.
+   * @category Core
+   */
   defaultValue?: number;
-  /** Called when the slider value changes. */
+  /** Called after pointer or keyboard interaction changes the channel value.
+   * @category Events
+   */
   onChange?: (value: number) => void;
   /**
    * Base CSS color used to render opacity and chroma gradients. For chroma,
    * supply an OKLCH color so the track can preserve its lightness and hue.
+   * @category Styling
    */
   color?: string;
-  /** Overrides the channel's default minimum value. */
+  /** Overrides the channel's default minimum value.
+   * @category Core
+   */
   min?: number;
-  /** Overrides the channel's default maximum value. */
+  /** Overrides the channel's default maximum value.
+   * @category Core
+   */
   max?: number;
   /**
    * Maximum chroma used only for the track preview. This does not change the
    * slider's interactive range.
+   * @category Styling
    */
   previewMax?: number;
-  /** Overrides the channel's default keyboard and pointer increment. */
+  /** Overrides the channel's default keyboard and pointer increment.
+   * @category Core
+   */
   step?: number;
-  /** Disables slider interaction. */
+  /** Disables pointer and keyboard interaction.
+   * @category Core
+   * @default false
+   */
   disabled?: boolean;
-  /** Size of the slider. */
-  size?: "sm" | "md" | "lg";
-  className?: string;
+  /** Selects a named slider size.
+   * @category Core
+   * @default "md"
+   * @typeDoc ColorSize
+   */
+  size?: ColorSize;
+  /** Adds classes to the channel track after its defaults and context styles.
+   * @category Styling
+   */
   trackClassName?: string;
+  /** Adds classes to the channel thumb after its defaults and context styles.
+   * @category Styling
+   */
   thumbClassName?: string;
 }
 
@@ -594,6 +715,7 @@ function getChromaTrackBackground(color: string, maxChroma: number): string {
   return `linear-gradient(to right, oklch(from ${color} l 0 h), oklch(from ${color} l ${maxChroma} h))`;
 }
 
+/** Controls one hue, opacity, or chroma channel using the shared Slider behavior. */
 const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
   (
     {
@@ -639,26 +761,23 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
     const resolvedPreviewMax = previewMax ?? resolvedMax;
     const resolvedStep = step ?? (type === "hue" ? 1 : type === "opacity" ? 0.01 : 0.001);
     const resolvedClassName =
-      className ??
-      (type === "opacity"
-        ? context?.resolved.sliderOpacity
+      type === "opacity"
+        ? context?.resolved["slider.opacity.root"]
         : type === "chroma"
-          ? context?.resolved.sliderChroma
-          : context?.resolved.sliderHue);
+          ? context?.resolved["slider.chroma.root"]
+          : context?.resolved["slider.hue.root"];
     const resolvedTrackClassName =
-      trackClassName ??
-      (type === "opacity"
-        ? context?.resolved.sliderTrackOpacity
+      type === "opacity"
+        ? context?.resolved["slider.opacity.track"]
         : type === "chroma"
-          ? context?.resolved.sliderTrackChroma
-          : context?.resolved.sliderTrackHue);
+          ? context?.resolved["slider.chroma.track"]
+          : context?.resolved["slider.hue.track"];
     const resolvedThumbClassName =
-      thumbClassName ??
-      (type === "opacity"
-        ? context?.resolved.sliderThumbOpacity
+      type === "opacity"
+        ? context?.resolved["slider.opacity.thumb"]
         : type === "chroma"
-          ? context?.resolved.sliderThumbChroma
-          : context?.resolved.sliderThumbHue);
+          ? context?.resolved["slider.chroma.thumb"]
+          : context?.resolved["slider.hue.thumb"];
     const contextOnChange =
       type === "opacity"
         ? context?.handleOpacityChange
@@ -682,7 +801,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
         ...(style as React.CSSProperties | undefined),
         ...(type === "opacity"
           ? {
-              "--color-slider-opacity-color": resolvedTrackColor,
+              "--color": resolvedTrackColor,
             }
           : undefined),
       }),
@@ -699,6 +818,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
     return (
       <Slider
         ref={ref}
+        {...props}
         min={resolvedMin}
         max={resolvedMax}
         step={resolvedStep}
@@ -710,6 +830,7 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
         onValueChange={handleValueChange}
         disabled={resolvedDisabled}
         data-size={resolvedSize}
+        data-slot={`slider.${type}.root`}
         style={sliderStyle}
         className={cn(
           type === "opacity"
@@ -718,10 +839,11 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
               ? "chroma-slider"
               : "hue-slider",
           type === "opacity"
-            ? styles["opacity-slider"]
+            ? css["opacity-slider"]
             : type === "chroma"
-              ? styles["chroma-slider"]
-              : styles["hue-slider"],
+              ? css["chroma-slider"]
+              : css["hue-slider"],
+          className,
           resolvedClassName,
         )}
         styles={{
@@ -733,10 +855,11 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
                   ? "chroma-track"
                   : "hue-track",
               type === "opacity"
-                ? styles["opacity-track"]
+                ? css["opacity-track"]
                 : type === "chroma"
-                  ? styles["chroma-track"]
-                  : styles["hue-track"],
+                  ? css["chroma-track"]
+                  : css["hue-track"],
+              trackClassName,
               resolvedTrackClassName,
             ),
             style: trackStyle,
@@ -744,22 +867,22 @@ const ColorSlider = React.forwardRef<HTMLDivElement, ColorSliderProps>(
           range: cn(
             type === "opacity" ? "opacity-range" : type === "chroma" ? "chroma-range" : "hue-range",
             type === "opacity"
-              ? styles["opacity-range"]
+              ? css["opacity-range"]
               : type === "chroma"
-                ? styles["chroma-range"]
-                : styles["hue-range"],
+                ? css["chroma-range"]
+                : css["hue-range"],
           ),
           thumb: cn(
             type === "opacity" ? "opacity-thumb" : type === "chroma" ? "chroma-thumb" : "hue-thumb",
             type === "opacity"
-              ? styles["opacity-thumb"]
+              ? css["opacity-thumb"]
               : type === "chroma"
-                ? styles["chroma-thumb"]
-                : styles["hue-thumb"],
+                ? css["chroma-thumb"]
+                : css["hue-thumb"],
+            thumbClassName,
             resolvedThumbClassName,
           ),
         }}
-        {...props}
       />
     );
   },
@@ -768,20 +891,38 @@ ColorSlider.displayName = "Color.Slider";
 
 export interface ColorCanvasFieldProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange"
+  "children" | "onChange"
 > {
-  /** Current hue (0-360). Defaults to the value from context. */
+  /** Controls the canvas hue in degrees and defaults to the nearest Color context value.
+   * @category Core
+   */
   hue?: number;
-  /** Current saturation (0-100). Defaults to the value from context. */
+  /** Controls the horizontal saturation percentage and defaults to Color context.
+   * @category Core
+   */
   saturation?: number;
-  /** Current brightness (0-100). Defaults to the value from context. */
+  /** Controls the vertical brightness percentage and defaults to Color context.
+   * @category Core
+   */
   brightness?: number;
-  /** Called when the user drags the canvas pointer with updated saturation and brightness values. */
+  /** Called while pointer interaction changes saturation or brightness.
+   * @category Events
+   */
   onChange?: (saturation: number, brightness: number) => void;
+  /** Disables pointer interaction and removes the canvas from the tab sequence.
+   * @category Core
+   * @default false
+   */
   disabled?: boolean;
-  size?: "sm" | "md" | "lg";
+  /** Selects a named canvas size.
+   * @category Core
+   * @default "md"
+   * @typeDoc ColorSize
+   */
+  size?: ColorSize;
 }
 
+/** Selects saturation and brightness on a two-dimensional color field. */
 const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>(
   ({ hue, saturation, brightness, onChange, disabled, size, className, ...props }, ref) => {
     const context = useOptionalColorContext();
@@ -814,12 +955,12 @@ const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>
         onChange={handleChange}
         disabled={resolvedDisabled}
         size={resolvedSize}
-        className={className ?? context?.resolved.canvas}
-        innerClassName={context?.resolved.canvasInner}
-        gradientHueClassName={context?.resolved.canvasGradientHue}
-        gradientSaturationClassName={context?.resolved.canvasGradientSaturation}
-        gradientBrightnessClassName={context?.resolved.canvasGradientBrightness}
-        pointerClassName={context?.resolved.canvasPointer}
+        className={cn(className, context?.resolved["canvas.root"])}
+        innerClassName={context?.resolved["canvas.inner"]}
+        gradientHueClassName={context?.resolved["canvas.gradient.hue"]}
+        gradientSaturationClassName={context?.resolved["canvas.gradient.saturation"]}
+        gradientBrightnessClassName={context?.resolved["canvas.gradient.brightness"]}
+        pointerClassName={context?.resolved["canvas.pointer"]}
         {...props}
       />
     );
@@ -827,6 +968,7 @@ const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>
 );
 ColorCanvasField.displayName = "Color.Canvas";
 
+/** Renders the picker canvas, channel controls, recent colors, and color input. */
 const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
   ({ className, variant = "standalone", ...props }, ref) => {
     const {
@@ -854,32 +996,33 @@ const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
     return (
       <div
         ref={ref}
-        className={cn("color", styles.color, resolved.root, className)}
+        {...props}
+        className={cn("color", css.color, className, resolved.root)}
+        data-slot="root"
         data-size={size}
         data-disabled={disabled || undefined}
         data-variant={variant !== "standalone" ? variant : undefined}
-        {...props}
       >
         <ColorRecentColors
           onSelect={handleRecentColorSelect}
           disabled={disabled}
           size={size}
-          className={resolved.recentColors}
-          swatchClassName={resolved.recentColorSwatch}
+          className={resolved["recentColors.root"]}
+          swatchClassName={resolved["recentColors.swatch"]}
         />
 
         <ColorCanvasField />
 
-        <div className={cn("controls", styles["controls"], resolved.controls)}>
+        <div className={cn("controls", css.controls, resolved.controls)} data-slot="controls">
           <ColorSlider
             type="hue"
             value={hue}
             onChange={handleHueChange}
             disabled={disabled}
             size={size}
-            className={resolved.sliderHue}
-            trackClassName={resolved.sliderTrackHue}
-            thumbClassName={resolved.sliderThumbHue}
+            className={resolved["slider.hue.root"]}
+            trackClassName={resolved["slider.hue.track"]}
+            thumbClassName={resolved["slider.hue.thumb"]}
           />
 
           {showOpacity && (
@@ -890,9 +1033,9 @@ const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
               onChange={handleOpacityChange}
               disabled={disabled}
               size={size}
-              className={resolved.sliderOpacity}
-              trackClassName={resolved.sliderTrackOpacity}
-              thumbClassName={resolved.sliderThumbOpacity}
+              className={resolved["slider.opacity.root"]}
+              trackClassName={resolved["slider.opacity.track"]}
+              thumbClassName={resolved["slider.opacity.thumb"]}
             />
           )}
 
@@ -904,10 +1047,10 @@ const ColorArea = React.forwardRef<HTMLDivElement, ColorAreaProps>(
             disabled={disabled}
             size={size}
             showPreview={showPreview}
-            groupClassName={resolved.inputGroup}
-            inputClassName={resolved.input}
-            formatClassName={resolved.format}
-            previewClassName={resolved.previewSwatch}
+            groupClassName={resolved["input.group"]}
+            inputClassName={resolved["input.input"]}
+            formatClassName={resolved["input.format"]}
+            previewClassName={resolved["input.previewSwatch"]}
             previewColor={previewColor}
           />
         </div>
@@ -921,16 +1064,29 @@ export interface ColorTriggerProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "color"
 > {
-  /** Preferred side where the picker area appears. */
-  position?: PopoverProps["position"];
-  /** Picker content shown in the popover. Defaults to Color.Area. */
+  /** Selects the preferred side for the picker popover.
+   * @category Core
+   * @default "bottom"
+   * @typeDoc ColorTriggerPosition
+   */
+  position?: ColorTriggerPosition;
+  /** Replaces the default Color.Area rendered in the popover.
+   * @category Content
+   */
   area?: React.ReactNode;
-  /** Classes applied to the popover primitive slots. The frame slot controls the picker shell padding. */
-  popoverStyles?: PopoverProps["styles"];
-  /** Whether to render a directional popover arrow. */
+  /** Applies Popover slot styles; the frame slot controls the picker shell padding.
+   * @category Styling
+   * @typeDoc ColorPopoverStyles
+   */
+  popoverStyles?: ColorPopoverStyles;
+  /** Renders a directional arrow on the picker popover.
+   * @category Content
+   * @default false
+   */
   showArrow?: boolean;
 }
 
+/** Opens a popover containing Color.Area from a native button. */
 const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
   (
     {
@@ -951,30 +1107,33 @@ const ColorTrigger = React.forwardRef<HTMLButtonElement, ColorTriggerProps>(
     const trigger = (
       <button
         ref={ref}
+        {...props}
         type="button"
         disabled={isDisabled}
-        className={cn("color-trigger", styles["color-trigger"], resolved.trigger, className)}
+        className={cn("color-trigger", css["color-trigger"], className, resolved["trigger.root"])}
+        data-slot="trigger.root"
         data-size={size}
         data-disabled={isDisabled || undefined}
-        {...props}
       >
         {children ?? (
           <>
             <span
               className={cn(
                 "color-trigger-swatch",
-                styles["color-trigger-swatch"],
-                resolved.triggerSwatch,
+                css["color-trigger-swatch"],
+                resolved["trigger.swatch"],
               )}
+              data-slot="trigger.swatch"
               style={{ "--preview-color": previewColor } as React.CSSProperties}
               aria-hidden="true"
             />
             <span
               className={cn(
                 "color-trigger-value",
-                styles["color-trigger-value"],
-                resolved.triggerValue,
+                css["color-trigger-value"],
+                resolved["trigger.value"],
               )}
+              data-slot="trigger.value"
             >
               {displayValue}
             </span>

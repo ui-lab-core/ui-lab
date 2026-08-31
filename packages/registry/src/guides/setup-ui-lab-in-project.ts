@@ -96,8 +96,11 @@ import App from "./App";`,
       instructions: [
         "Use a simple component with visible structure such as Card, Input, or Button.",
         "Prefer an existing route or page that already renders during development so verification is fast.",
+        "Import each component from its own subpath, ui-lab-components/<component>, rather than from the package barrel.",
       ],
-      code: `import { Button, Card, Input } from 'ui-lab-components';
+      code: `import { Button } from 'ui-lab-components/button';
+import { Card } from 'ui-lab-components/card';
+import { Input } from 'ui-lab-components/input';
 
 export default function Home() {
   return (

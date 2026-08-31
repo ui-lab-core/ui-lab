@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { pathToFileURL } from "url";
 import postcss from "postcss";
 import ts from "typescript";
-import variantPlugin from "../../../postcss/variant.mjs";
+import variantPlugin, { parseVariant } from "../../../postcss/variant.mjs";
 import type { ComponentStyles, StyleableGroup } from "../src/types";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -138,9 +138,8 @@ function extractThemeVariants(componentClass: string): string[] {
   const variants = new Set<string>();
   const root = postcss.parse(fs.readFileSync(ONYX_THEME_CSS, "utf8"));
   root.walkAtRules("variant", (rule) => {
-    const [target, value, ...rest] = postcss.list.space(rule.params);
-    if (target !== componentClass) return;
-    if (value && rest.length === 0 && rule.nodes) variants.add(value);
+    const { component, variant } = parseVariant(rule);
+    if (component === componentClass) variants.add(variant);
   });
   return [...variants];
 }

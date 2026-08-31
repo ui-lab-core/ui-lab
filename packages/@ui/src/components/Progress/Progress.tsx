@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
+import { getThumbPosition, getThumbTrackPercent, useThumbTrack } from "@/hooks/useThumbTrack";
 import css from "./Progress.module.css";
 
 /** Named style overrides for the Progress label anatomy.
@@ -87,9 +88,9 @@ function getValueFromPointer(
   max: number,
   step: number,
 ): number {
-  const rect = track.getBoundingClientRect();
-  if (rect.width <= 0) return min;
-  const percent = clamp((clientX - rect.left) / rect.width, 0, 1);
+  const percent = getThumbTrackPercent(clientX, 0, track);
+  if (percent === 0) return min;
+  if (percent === 1) return max;
   return snapToStep(percent * (max - min) + min, min, max, step);
 }
 
@@ -196,7 +197,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     },
     ref,
   ) => {
-    const trackRef = React.useRef<HTMLDivElement>(null);
+    const { travelRef, setThumbRef, trackStyle, travelProps } = useThumbTrack();
     const activeDragRef = React.useRef<number | null>(null);
     const [isDragging, setIsDragging] = React.useState(false);
 
@@ -213,13 +214,13 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
 
     const updateValue = React.useCallback(
       (clientX: number) => {
-        const track = trackRef.current;
+        const track = travelRef.current;
         if (!track) return;
         const newValue = getValueFromPointer(clientX, track, min, max, step);
         if (!isControlled) setInternalValue(newValue);
         onValueChange?.(newValue);
       },
-      [isControlled, min, max, step, onValueChange],
+      [isControlled, min, max, step, onValueChange, travelRef],
     );
 
     const handlePointerDown = React.useCallback(
@@ -344,30 +345,35 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           </div>
         )}
         <div
-          ref={trackRef}
           className={cn("track", css.track, resolved.track.className)}
-          style={resolved.track.style}
+          style={{ ...trackStyle, ...resolved.track.style }}
           data-slot="track"
           data-disabled={disabled ? "true" : undefined}
         >
-          <div
-            className={cn("range", css.range, resolved.range.className)}
-            data-slot="range"
-            data-animated={animated || indeterminate ? "true" : "false"}
-            data-indeterminate={indeterminate ? "true" : "false"}
-            style={{
-              ...(indeterminate ? undefined : { width: `${percentage}%` }),
-              ...resolved.range.style,
-            }}
-          />
-          {showControls && !indeterminate && (
+          <div {...travelProps} />
+          <div className={css.surface}>
             <div
-              className={cn("thumb", css.thumb, resolved.thumb.className)}
-              style={{ left: `${percentage}%`, ...resolved.thumb.style }}
-              data-slot="thumb"
-              data-disabled={disabled ? "true" : undefined}
+              className={cn("range", css.range, resolved.range.className)}
+              data-slot="range"
+              data-animated={animated || indeterminate ? "true" : "false"}
+              data-indeterminate={indeterminate ? "true" : "false"}
+              style={{
+                ...(indeterminate
+                  ? undefined
+                : { width: showControls ? getThumbPosition(percentage, "end") : `${percentage}%` }),
+                ...resolved.range.style,
+              }}
             />
-          )}
+            {showControls && !indeterminate && (
+              <div
+                ref={setThumbRef}
+                className={cn("thumb", css.thumb, resolved.thumb.className)}
+                style={{ left: getThumbPosition(percentage), ...resolved.thumb.style }}
+                data-slot="thumb"
+                data-disabled={disabled ? "true" : undefined}
+              />
+            )}
+          </div>
         </div>
       </div>
     );

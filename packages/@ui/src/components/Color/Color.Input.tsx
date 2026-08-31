@@ -4,7 +4,7 @@ import React from "react";
 import { Group } from "../Group";
 import { Select } from "../Select";
 import { cn } from "@/lib/utils";
-import styles from "./Color.module.css";
+import css from "./Color.module.css";
 import { isValidColor } from "./color-utils";
 import { Divider } from "../Divider";
 
@@ -60,7 +60,8 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
         ref={ref}
         disabled={disabled}
         data-size={size}
-        className={cn("input-group", "w-full", styles["input-group"], groupClassName)}
+        data-slot="input.group"
+        className={cn("input-group", "w-full", css["input-group"], groupClassName)}
       >
         <Group.Input
           value={inputValue}
@@ -68,7 +69,8 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
           disabled={disabled}
           placeholder={format === "hex" ? "#000000" : "rgb(0, 0, 0)"}
           aria-label="Color input"
-          className={cn("input", styles["input"], inputClassName)}
+          className={cn("input", css.input, inputClassName)}
+          data-slot="input.input"
         />
         <Divider />
         <Group.Select
@@ -80,7 +82,8 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
             }
           }}
           disabled={disabled}
-          className={cn("format", styles["format"], formatClassName)}
+          className={cn("format", css.format, formatClassName)}
+          data-slot="input.format"
         >
           <Select.Trigger aria-label="Color format">
             <Select.Value placeholder="Format" />
@@ -98,7 +101,8 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
         </Group.Select>
         {showPreview && (
           <div
-            className={cn("swatch", styles["preview-swatch"], previewClassName)}
+            className={cn("swatch", css["preview-swatch"], previewClassName)}
+            data-slot="input.previewSwatch"
             data-size={size}
             data-disabled={disabled || undefined}
             style={
@@ -114,4 +118,4 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
   },
 );
 
-ColorInput.displayName = "ColorInput";
+ColorInput.displayName = "Color.Input";

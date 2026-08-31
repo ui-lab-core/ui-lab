@@ -2,7 +2,7 @@
 
 import React from "react";
 import { createPortal } from "react-dom";
-import { useOverlayTrigger, useDialog, mergeProps } from "react-aria";
+import { useOverlayTrigger, useOverlay, useDialog, mergeProps } from "react-aria";
 import { useOverlayTriggerState } from "react-stately";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
@@ -134,7 +134,21 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
       },
     });
 
-    const { triggerProps, overlayProps } = useOverlayTrigger({ type: "dialog" }, state, triggerRef);
+    const { triggerProps, overlayProps: triggerOverlayProps } = useOverlayTrigger(
+      { type: "dialog" },
+      state,
+      triggerRef,
+    );
+    const { overlayProps: dismissOverlayProps } = useOverlay(
+      {
+        isOpen: state.isOpen,
+        onClose: state.close,
+        isDismissable: true,
+        shouldCloseOnBlur: true,
+        shouldCloseOnInteractOutside: (element) => !triggerRef.current?.contains(element),
+      },
+      popoverContentRef,
+    );
     const { dialogProps } = useDialog({}, popoverContentRef);
 
     const placementMap: Record<PopoverPosition, "top" | "bottom" | "left" | "right"> = {
@@ -191,32 +205,6 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     React.useLayoutEffect(() => {
       refs.setReference(triggerRef.current);
     }, [refs]);
-
-    React.useEffect(() => {
-      if (!state.isOpen) return;
-      const handleClickOutside = (e: MouseEvent) => {
-        const target = e.target as Node;
-        if (
-          triggerRef.current &&
-          !triggerRef.current.contains(target) &&
-          popoverContentRef.current &&
-          !popoverContentRef.current.contains(target)
-        ) {
-          state.close();
-        }
-      };
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
-    }, [state.isOpen, state]);
-
-    React.useEffect(() => {
-      if (!state.isOpen) return;
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "Escape") state.close();
-      };
-      document.addEventListener("keydown", handleKeyDown);
-      return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [state.isOpen, state]);
 
     const mergedRef = useMergeRefs(triggerRef, refs.setReference, ref);
 
@@ -277,7 +265,9 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
           createPortal(
             <div
               ref={mergedContentRef}
-              {...asElementProps<"div">(mergeProps(overlayProps, dialogProps))}
+              {...asElementProps<"div">(
+                mergeProps(triggerOverlayProps, dismissOverlayProps, dialogProps)
+              )}
               className={cn("popover", css.root, resolved.root)}
               style={{
                 ...floatingStyles,

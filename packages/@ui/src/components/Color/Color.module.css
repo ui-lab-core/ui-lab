@@ -29,17 +29,23 @@
   }
 
   .color-provider {
+    @slot trigger {
+      --background: color-mix(in srgb, var(--background-800) 35%, transparent);
+      --background-hover: color-mix(in srgb, var(--background-700) 45%, transparent);
+      --foreground: var(--foreground-200);
+    }
+
+    @slot swatch {
+      --background: var(--background-700);
+      --foreground: var(--background-800);
+    }
+
     display: inline-flex;
     width: fit-content;
   }
 
   .color-provider .color-trigger {
-    --trigger-background: color-mix(in srgb, var(--background-800) 35%, transparent);
-    --trigger-background-hover: color-mix(in srgb, var(--background-700) 45%, transparent);
-    --trigger-text: var(--foreground-200);
     --focus-visible: var(--accent-500);
-    --checkerboard-dark: var(--background-700);
-    --checkerboard-light: var(--background-800);
 
     display: inline-flex;
     align-items: center;
@@ -50,8 +56,8 @@
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, var(--background-700));
     border-radius: var(--radius-sm, 0.375rem);
-    background: var(--trigger-background);
-    color: var(--trigger-text);
+    background: slot(trigger, background, var(--background, transparent));
+    color: slot(trigger, foreground, var(--foreground, currentColor));
     cursor: pointer;
     font-family: var(--font-body, inherit);
     font-size: var(--text-sm, 0.875rem);
@@ -67,7 +73,11 @@
 
   .color-provider .color-trigger:hover {
     --hover-duration: var(--hover-enter-duration, 0ms);
-    background: var(--trigger-background-hover);
+    background: slot(
+      trigger,
+      background-hover,
+      slot(trigger, background, var(--background, transparent))
+    );
   }
 
   .color-provider .color-trigger:focus-visible {
@@ -111,10 +121,10 @@
     inset: 0;
     background-image: repeating-linear-gradient(
       45deg,
-      var(--checkerboard-dark),
-      var(--checkerboard-dark) 4px,
-      var(--checkerboard-light) 4px,
-      var(--checkerboard-light) 8px
+      slot(swatch, background, var(--background-700)),
+      slot(swatch, background, var(--background-700)) 4px,
+      slot(swatch, foreground, var(--background-800)) 4px,
+      slot(swatch, foreground, var(--background-800)) 8px
     );
   }
 
@@ -158,10 +168,13 @@
   }
 
   .canvas {
+    --canvas-radius: var(--radius-xs, 5px);
+    --canvas-border-width: slot(border, width, var(--border-width-base, 1px));
     position: relative;
     width: 240px;
     height: 160px;
-    @apply mx-auto mt-2 rounded-sm;
+    @apply mx-auto mt-2;
+    border-radius: var(--canvas-radius);
     cursor: crosshair;
     touch-action: none;
     display: flex;
@@ -188,7 +201,23 @@
     width: 100%;
     flex: 1;
     overflow: hidden;
-    @apply rounded-sm;
+    border-radius: inherit;
+    isolation: isolate;
+    clip-path: inset(
+      var(--canvas-border-width)
+      round max(0px, calc(var(--canvas-radius) - var(--canvas-border-width)))
+    );
+  }
+
+  .canvas::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border-radius: inherit;
+    border: var(--canvas-border-width) slot(border, style, solid)
+      slot(border, background, var(--background-700));
+    pointer-events: none;
   }
 
   .canvas .canvas-gradient-hue {
@@ -210,27 +239,25 @@
   }
 
   .canvas .canvas-pointer {
-    --pointer-border: color-mix(in srgb, var(--foreground-200) 50%, transparent);
-
     position: absolute;
+    box-sizing: border-box;
     width: 12px;
     height: 12px;
-    border-radius: var(--radius-full);
-    border: 2px solid var(--pointer-border);
-    box-shadow:
-      0 0 0 1px rgb(0 0 0 / 0.3),
-      0 2px 4px rgb(0 0 0 / 0.3);
+    border-radius: var(--radius-xs, 3px);
+    border: 2px solid white;
+    box-shadow: none;
     pointer-events: none;
-    transform: translate(-50%, -50%);
     z-index: 10;
   }
 
   .hue-slider {
-    --track-height: calc(var(--spacing, 0.25rem) * 5);
+    --size: calc(var(--spacing, 0.25rem) * 4);
+    --track-height: var(--size);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
     --side-padding: var(--inline-padding, 2px);
-    --thumb-width: calc(var(--track-height) - (var(--padding-block) * 2));
-    --thumb-height: var(--thumb-width);
+    --padding-inline: var(--inline-padding, 0px);
+    --thumb-width: calc(var(--spacing, 0.25rem) * 2);
+    --thumb-height: calc(100% - (var(--side-padding) * 2));
     --gradient-inset: 0;
     --track-background: linear-gradient(
       to right,
@@ -245,9 +272,9 @@
     --range-background: transparent;
     --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
-    --thumb-background: transparent;
+    --thumb-background: slot(thumb, background, transparent);
     --thumb-border: 2px solid white;
-    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);
+    --thumb-shadow: none;
     --top: 50%;
     --transform: translate(-50%, -50%);
 
@@ -255,25 +282,20 @@
     box-sizing: border-box;
     min-height: var(--hit-size);
     padding-block: var(--padding-block);
+    padding-inline: var(--padding-inline);
   }
 
   .hue-slider .hue-track {
     position: relative;
     width: 100%;
     height: var(--track-height);
-    overflow: hidden;
-    @apply rounded-full;
-    background: transparent;
+    overflow: visible;
+    border-radius: 4px;
+    background: var(--track-background);
   }
 
   .hue-slider .hue-track::before {
-    content: "";
-    position: absolute;
-    inset-block: 0;
-    inset-inline: var(--gradient-inset);
-    @apply rounded-full;
-    background: var(--track-background);
-    pointer-events: none;
+    content: none;
   }
 
   .hue-slider .hue-range {
@@ -281,19 +303,18 @@
   }
 
   .hue-slider .hue-thumb {
-    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);
-    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);
+    --thumb-shadow-hover: none;
+    --thumb-shadow-active: none;
 
     position: absolute;
-    left: clamp(var(--thumb-inset, 0px), var(--position, 0%), calc(100% - var(--thumb-inset, 0px)));
     top: var(--top);
     box-sizing: border-box;
     width: var(--thumb-width);
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    @apply rounded-full;
-    background: var(--thumb-background);
+    border-radius: 2px;
+    background: transparent;
     box-shadow: var(--thumb-shadow);
   }
 
@@ -301,27 +322,25 @@
     --size: calc(var(--spacing, 0.25rem) * 4);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
     --range-background: transparent;
-    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));
-    --padding-inline: var(--inline-padding, var(--padding-block));
+    --thumb-width: calc(var(--spacing, 0.25rem) * 2);
+    --padding-inline: var(--inline-padding, 0px);
     --hit-size: calc(var(--size) + (var(--padding-block) * 2));
-    --thumb-height: var(--thumb-width);
+    --thumb-height: calc(100% - (var(--side-padding) * 2));
     --side-padding: 2px;
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
-    --thumb-background: transparent;
+    --thumb-background: slot(thumb, background, transparent);
     --thumb-border: 2px solid white;
-    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);
+    --thumb-shadow: none;
     --top: 50%;
     --transform: translate(-50%, -50%);
-    --checkerboard-dark: var(--background-800);
-    --checkerboard-light: var(--background-700);
     --track-background:
-      linear-gradient(to right, transparent, var(--color-slider-opacity-color, rgb(0, 0, 0))),
+      linear-gradient(to right, transparent, var(--color, rgb(0, 0, 0))),
       repeating-linear-gradient(
         45deg,
-        var(--checkerboard-dark),
-        var(--checkerboard-dark) 10px,
-        var(--checkerboard-light) 10px,
-        var(--checkerboard-light) 20px
+        slot(track, background, var(--background-800)),
+        slot(track, background, var(--background-800)) 10px,
+        slot(track, foreground, var(--background-700)) 10px,
+        slot(track, foreground, var(--background-700)) 20px
       );
 
     width: 100%;
@@ -329,15 +348,15 @@
     min-height: var(--hit-size);
     padding-block: var(--padding-block);
     padding-inline: var(--padding-inline);
-    @apply rounded-full;
+    border-radius: 2px;
   }
 
   .opacity-slider .opacity-track {
     position: relative;
     width: 100%;
     height: var(--size);
-    overflow: hidden;
-    @apply rounded-full;
+    overflow: visible;
+    border-radius: 4px;
     background: var(--track-background);
   }
 
@@ -346,8 +365,8 @@
   }
 
   .opacity-slider .opacity-thumb {
-    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);
-    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);
+    --thumb-shadow-hover: none;
+    --thumb-shadow-active: none;
 
     position: absolute;
     top: var(--top);
@@ -356,8 +375,8 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    @apply rounded-full;
-    background: var(--thumb-background);
+    border-radius: 2px;
+    background: transparent;
     box-shadow: var(--thumb-shadow);
   }
 
@@ -393,15 +412,15 @@
     --size: calc(var(--spacing, 0.25rem) * 4);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
     --range-background: transparent;
-    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));
-    --padding-inline: var(--inline-padding, var(--padding-block));
+    --thumb-width: calc(var(--spacing, 0.25rem) * 2);
+    --padding-inline: var(--inline-padding, 0px);
     --hit-size: calc(var(--size) + (var(--padding-block) * 2));
-    --thumb-height: var(--thumb-width);
+    --thumb-height: calc(100% - (var(--side-padding) * 2));
     --side-padding: 2px;
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
-    --thumb-background: transparent;
+    --thumb-background: slot(thumb, background, transparent);
     --thumb-border: 2px solid white;
-    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);
+    --thumb-shadow: none;
     --top: 50%;
     --transform: translate(-50%, -50%);
     width: 100%;
@@ -409,24 +428,39 @@
     min-height: var(--hit-size);
     padding-block: var(--padding-block);
     padding-inline: var(--padding-inline);
-    @apply rounded-full;
+    border-radius: 2px;
   }
 
   .chroma-slider .chroma-track {
     position: relative;
     width: 100%;
     height: var(--size);
-    overflow: hidden;
-    @apply rounded-full;
+    overflow: visible;
+    border-radius: 4px;
   }
 
   .chroma-slider .chroma-range {
     background: transparent;
   }
 
+  .hue-slider .hue-track,
+  .opacity-slider .opacity-track,
+  .chroma-slider .chroma-track {
+    box-sizing: border-box;
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
+      slot(border, background, var(--background-700));
+    background-clip: padding-box;
+  }
+
+  .hue-slider .hue-track::after,
+  .opacity-slider .opacity-track::after,
+  .chroma-slider .chroma-track::after {
+    content: none;
+  }
+
   .chroma-slider .chroma-thumb {
-    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);
-    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);
+    --thumb-shadow-hover: none;
+    --thumb-shadow-active: none;
 
     position: absolute;
     top: var(--top);
@@ -435,8 +469,8 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    @apply rounded-full;
-    background: var(--thumb-background);
+    border-radius: 2px;
+    background: transparent;
     box-shadow: var(--thumb-shadow);
   }
 
@@ -465,7 +499,7 @@
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: var(--radius-sm);
+    border-radius: slot(swatch, radius, var(--radius-sm));
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, var(--background-700));
     cursor: pointer;
@@ -495,13 +529,10 @@
   }
 
   .preview-swatch {
-    --checkerboard-dark: var(--background-700);
-    --checkerboard-light: var(--background-800);
-
     position: relative;
     width: 36px;
     height: 36px;
-    border-radius: var(--radius-sm);
+    border-radius: slot(preview-swatch, radius, var(--radius-sm));
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, var(--background-700));
     box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
@@ -515,12 +546,12 @@
     inset: 0;
     background-image: repeating-linear-gradient(
       45deg,
-      var(--checkerboard-dark),
-      var(--checkerboard-dark) 6px,
-      var(--checkerboard-light) 6px,
-      var(--checkerboard-light) 12px
+      slot(preview-swatch, background, var(--background-700)),
+      slot(preview-swatch, background, var(--background-700)) 6px,
+      slot(preview-swatch, foreground, var(--background-800)) 6px,
+      slot(preview-swatch, foreground, var(--background-800)) 12px
     );
-    border-radius: var(--radius-sm);
+    border-radius: slot(preview-swatch, radius, var(--radius-sm));
     pointer-events: none;
     z-index: 1;
   }
@@ -535,33 +566,4 @@
     z-index: 2;
   }
 
-  .preview {
-    --checkerboard-dark: var(--background-700);
-    --checkerboard-light: var(--background-800);
-
-    position: relative;
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-sm);
-    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
-      slot(border, background, var(--background-700));
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-    overflow: hidden;
-  }
-
-  .preview::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-      45deg,
-      var(--checkerboard-dark),
-      var(--checkerboard-dark) 10px,
-      var(--checkerboard-light) 10px,
-      var(--checkerboard-light) 20px
-    );
-    border-radius: var(--radius-sm);
-    pointer-events: none;
-    z-index: 1;
-  }
 }

@@ -4381,9 +4381,16 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "state",
         "type": "ColorState",
         "required": false,
+        "description": "Supplies controlled state; state.value takes precedence over value.",
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "typeDoc": "ColorState"
+        },
         "typeTokens": [
           {
-            "text": "ColorState"
+            "text": "ColorState",
+            "customType": "ColorState"
           }
         ]
       },
@@ -4391,6 +4398,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "value",
         "type": "string",
         "required": false,
+        "description": "Controls the serialized color when state.value is not supplied.",
+        "category": "Core",
+        "tags": {
+          "category": "Core"
+        },
         "typeTokens": [
           {
             "text": "string",
@@ -4403,6 +4415,12 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "string",
         "required": false,
         "defaultValue": "#000000",
+        "description": "Sets the initial serialized color for uncontrolled usage.",
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "default": "\"#000000\""
+        },
         "typeTokens": [
           {
             "text": "string",
@@ -4414,6 +4432,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "onChange",
         "type": "((color: string) => void)",
         "required": false,
+        "description": "Called whenever canvas, slider, input, or recent-color interaction changes the color.",
+        "category": "Events",
+        "tags": {
+          "category": "Events"
+        },
         "typeTokens": [
           {
             "text": "(("
@@ -4443,6 +4466,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "onChangeComplete",
         "type": "((color: string) => void)",
         "required": false,
+        "description": "Called after a valid text or recent-color selection is committed.",
+        "category": "Events",
+        "tags": {
+          "category": "Events"
+        },
         "typeTokens": [
           {
             "text": "(("
@@ -4473,6 +4501,12 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "boolean",
         "required": false,
         "defaultValue": "false",
+        "description": "Renders the opacity slider in the default Color.Area.",
+        "category": "Content",
+        "tags": {
+          "category": "Content",
+          "default": "false"
+        },
         "typeTokens": [
           {
             "text": "boolean",
@@ -4485,6 +4519,12 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "boolean",
         "required": false,
         "defaultValue": "false",
+        "description": "Renders the preview swatch beside the color input.",
+        "category": "Content",
+        "tags": {
+          "category": "Content",
+          "default": "false"
+        },
         "typeTokens": [
           {
             "text": "boolean",
@@ -4494,22 +4534,24 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       },
       {
         "name": "format",
-        "type": "hex | rgb",
+        "type": "ColorFormat",
         "required": false,
         "defaultValue": "hex",
+        "description": "Sets the initial displayed color format. The format selector can change it locally.",
         "enumValues": [
           "hex",
           "rgb"
         ],
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "default": "\"hex\"",
+          "typeDoc": "ColorFormat"
+        },
         "typeTokens": [
           {
-            "text": "hex"
-          },
-          {
-            "text": " | "
-          },
-          {
-            "text": "rgb"
+            "text": "ColorFormat",
+            "customType": "ColorFormat"
           }
         ]
       },
@@ -4518,6 +4560,12 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "boolean",
         "required": false,
         "defaultValue": "false",
+        "description": "Disables picker interaction and publishes disabled styling hooks.",
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "default": "false"
+        },
         "typeTokens": [
           {
             "text": "boolean",
@@ -4527,29 +4575,55 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       },
       {
         "name": "size",
-        "type": "sm | md | lg",
+        "type": "ColorSize",
         "required": false,
         "defaultValue": "md",
+        "description": "Selects a named size for the picker and compound controls.",
         "enumValues": [
           "sm",
           "md",
           "lg"
         ],
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "default": "\"md\"",
+          "typeDoc": "ColorSize"
+        },
         "typeTokens": [
           {
-            "text": "sm"
-          },
+            "text": "ColorSize",
+            "customType": "ColorSize"
+          }
+        ]
+      },
+      {
+        "name": "styles",
+        "type": "ColorStylesProp",
+        "required": false,
+        "description": "Applies class-based styles to the root and stable Color anatomy.",
+        "category": "Styling",
+        "tags": {
+          "category": "Styling",
+          "typeDoc": "ColorStylesProp"
+        },
+        "typeTokens": [
           {
-            "text": " | "
-          },
+            "text": "ColorStylesProp",
+            "customType": "ColorStylesProp"
+          }
+        ]
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "description": "Renders custom compound children; when omitted, Color renders Color.Area.",
+        "category": "Content",
+        "typeTokens": [
           {
-            "text": "md"
-          },
-          {
-            "text": " | "
-          },
-          {
-            "text": "lg"
+            "text": "React.ReactNode",
+            "href": "https://react.dev/reference/react/Children"
           }
         ]
       },
@@ -4557,6 +4631,8 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "className",
         "type": "string",
         "required": false,
+        "description": "Adds classes to the Color.Area root or to the compound provider when custom children are supplied.",
+        "category": "Styling",
         "typeTokens": [
           {
             "text": "string",
@@ -4565,50 +4641,112 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       },
       {
-        "name": "styles",
-        "type": "ColorStyleSlots",
+        "name": "style",
+        "type": "React.CSSProperties",
         "required": false,
+        "description": "Applies inline styles to the Color.Area root or compound provider.",
+        "category": "Styling",
         "typeTokens": [
           {
-            "text": "ColorStyleSlots"
+            "text": "React.CSSProperties",
+            "href": "https://react.dev/reference/react-dom/components/common#style"
+          }
+        ]
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Provides an accessible label for the root region when one is needed.",
+        "category": "Accessibility",
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          }
+        ]
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "References element IDs that label the root region.",
+        "category": "Accessibility",
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
           }
         ]
       }
     ],
     "subComponents": {
       "Color.Area": {
+        "description": "Renders the picker canvas, channel controls, recent colors, and color input.",
         "props": [
           {
             "name": "variant",
-            "type": "popover | standalone",
+            "type": "ColorAreaVariant",
             "required": false,
             "defaultValue": "standalone",
-            "description": "Visual treatment for the picker area. Popover mode removes the standalone shell.",
+            "description": "Selects the picker shell treatment. Popover mode removes the standalone background and border.",
             "enumValues": [
               "popover",
               "standalone"
             ],
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "\"standalone\"",
+              "typeDoc": "ColorAreaVariant"
+            },
             "typeTokens": [
               {
-                "text": "popover"
-              },
+                "text": "ColorAreaVariant",
+                "customType": "ColorAreaVariant"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": "Adds classes to the picker surface after Color styles.root.",
+            "category": "Styling",
+            "typeTokens": [
               {
-                "text": " | "
-              },
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "description": "Applies inline styles to the picker surface.",
+            "category": "Styling",
+            "typeTokens": [
               {
-                "text": "standalone"
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
               }
             ]
           }
         ]
       },
       "Color.Canvas": {
+        "description": "Selects saturation and brightness on a two-dimensional color field.",
         "props": [
           {
             "name": "hue",
             "type": "number",
             "required": false,
-            "description": "Current hue (0-360). Defaults to the value from context.",
+            "description": "Controls the canvas hue in degrees and defaults to the nearest Color context value.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4620,7 +4758,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "saturation",
             "type": "number",
             "required": false,
-            "description": "Current saturation (0-100). Defaults to the value from context.",
+            "description": "Controls the horizontal saturation percentage and defaults to Color context.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4632,7 +4774,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "brightness",
             "type": "number",
             "required": false,
-            "description": "Current brightness (0-100). Defaults to the value from context.",
+            "description": "Controls the vertical brightness percentage and defaults to Color context.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4644,7 +4790,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "onChange",
             "type": "((saturation: number, brightness: number) => void)",
             "required": false,
-            "description": "Called when the user drags the canvas pointer with updated saturation and brightness values.",
+            "description": "Called while pointer interaction changes saturation or brightness.",
+            "category": "Events",
+            "tags": {
+              "category": "Events"
+            },
             "typeTokens": [
               {
                 "text": "(("
@@ -4688,6 +4838,12 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "boolean",
             "required": false,
             "defaultValue": "false",
+            "description": "Disables pointer interaction and removes the canvas from the tab sequence.",
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "false"
+            },
             "typeTokens": [
               {
                 "text": "boolean",
@@ -4697,62 +4853,106 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           },
           {
             "name": "size",
-            "type": "sm | md | lg",
+            "type": "ColorSize",
             "required": false,
             "defaultValue": "md",
+            "description": "Selects a named canvas size.",
             "enumValues": [
               "sm",
               "md",
               "lg"
             ],
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "\"md\"",
+              "typeDoc": "ColorSize"
+            },
             "typeTokens": [
               {
-                "text": "sm"
-              },
+                "text": "ColorSize",
+                "customType": "ColorSize"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": "Adds classes to the canvas interaction surface after context styles.",
+            "category": "Styling",
+            "typeTokens": [
               {
-                "text": " | "
-              },
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "description": "Applies inline styles to the canvas interaction surface.",
+            "category": "Styling",
+            "typeTokens": [
               {
-                "text": "md"
-              },
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "description": "Overrides the default accessible name for the saturation and brightness slider.",
+            "category": "Accessibility",
+            "typeTokens": [
               {
-                "text": " | "
-              },
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "aria-valuetext",
+            "type": "string",
+            "required": false,
+            "description": "Overrides the announced saturation and brightness value text.",
+            "category": "Accessibility",
+            "typeTokens": [
               {
-                "text": "lg"
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
               }
             ]
           }
         ]
       },
       "Color.Slider": {
+        "description": "Controls one hue, opacity, or chroma channel using the shared Slider behavior.",
         "props": [
           {
             "name": "type",
-            "type": "hue | opacity | chroma",
+            "type": "ColorSliderType",
             "required": false,
             "defaultValue": "hue",
-            "description": "Which color channel this slider controls.",
+            "description": "Selects the controlled color channel and its default range, step, label, and visual treatment.",
             "enumValues": [
               "hue",
               "opacity",
               "chroma"
             ],
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "\"hue\"",
+              "typeDoc": "ColorSliderType"
+            },
             "typeTokens": [
               {
-                "text": "hue"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "opacity"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "chroma"
+                "text": "ColorSliderType",
+                "customType": "ColorSliderType"
               }
             ]
           },
@@ -4760,7 +4960,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "value",
             "type": "number",
             "required": false,
-            "description": "Current slider value. Hue uses 0-360; opacity and OKLCH chroma use their native unit ranges.",
+            "description": "Controls the slider value. Hue uses degrees; opacity and chroma use decimal units.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4773,7 +4977,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "number",
             "required": false,
             "defaultValue": "#000000",
-            "description": "Initial slider value for uncontrolled usage.",
+            "description": "Sets the initial value for standalone uncontrolled usage.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4785,7 +4993,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "onChange",
             "type": "((value: number) => void)",
             "required": false,
-            "description": "Called when the slider value changes.",
+            "description": "Called after pointer or keyboard interaction changes the channel value.",
+            "category": "Events",
+            "tags": {
+              "category": "Events"
+            },
             "typeTokens": [
               {
                 "text": "(("
@@ -4816,6 +5028,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "string",
             "required": false,
             "description": "Base CSS color used to render opacity and chroma gradients. For chroma,\nsupply an OKLCH color so the track can preserve its lightness and hue.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling"
+            },
             "typeTokens": [
               {
                 "text": "string",
@@ -4828,6 +5044,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "number",
             "required": false,
             "description": "Overrides the channel's default minimum value.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4840,6 +5060,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "number",
             "required": false,
             "description": "Overrides the channel's default maximum value.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4852,6 +5076,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "number",
             "required": false,
             "description": "Maximum chroma used only for the track preview. This does not change the\nslider's interactive range.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4864,6 +5092,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "number",
             "required": false,
             "description": "Overrides the channel's default keyboard and pointer increment.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
             "typeTokens": [
               {
                 "text": "number",
@@ -4876,7 +5108,12 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "boolean",
             "required": false,
             "defaultValue": "false",
-            "description": "Disables slider interaction.",
+            "description": "Disables pointer and keyboard interaction.",
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "false"
+            },
             "typeTokens": [
               {
                 "text": "boolean",
@@ -4886,41 +5123,25 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           },
           {
             "name": "size",
-            "type": "sm | md | lg",
+            "type": "ColorSize",
             "required": false,
             "defaultValue": "md",
-            "description": "Size of the slider.",
+            "description": "Selects a named slider size.",
             "enumValues": [
               "sm",
               "md",
               "lg"
             ],
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "\"md\"",
+              "typeDoc": "ColorSize"
+            },
             "typeTokens": [
               {
-                "text": "sm"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "md"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "lg"
-              }
-            ]
-          },
-          {
-            "name": "className",
-            "type": "string",
-            "required": false,
-            "typeTokens": [
-              {
-                "text": "string",
-                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+                "text": "ColorSize",
+                "customType": "ColorSize"
               }
             ]
           },
@@ -4928,6 +5149,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "trackClassName",
             "type": "string",
             "required": false,
+            "description": "Adds classes to the channel track after its defaults and context styles.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling"
+            },
             "typeTokens": [
               {
                 "text": "string",
@@ -4939,6 +5165,63 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "thumbClassName",
             "type": "string",
             "required": false,
+            "description": "Adds classes to the channel thumb after its defaults and context styles.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": "Adds classes to the channel slider root after its defaults and context style.",
+            "category": "Styling",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "description": "Applies inline styles to the channel slider root; opacity also supplies the generic --color variable.",
+            "category": "Styling",
+            "typeTokens": [
+              {
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "description": "Overrides the channel-derived accessible name for the slider thumb.",
+            "category": "Accessibility",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "aria-labelledby",
+            "type": "string",
+            "required": false,
+            "description": "References element IDs that label the slider thumb.",
+            "category": "Accessibility",
             "typeTokens": [
               {
                 "text": "string",
@@ -4949,40 +5232,30 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       },
       "Color.Trigger": {
+        "description": "Opens a popover containing Color.Area from a native button.",
         "props": [
           {
             "name": "position",
-            "type": "top | right | bottom | left",
+            "type": "ColorTriggerPosition",
             "required": false,
             "defaultValue": "bottom",
-            "description": "Preferred side where the picker area appears.",
+            "description": "Selects the preferred side for the picker popover.",
             "enumValues": [
               "top",
               "right",
               "bottom",
               "left"
             ],
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "\"bottom\"",
+              "typeDoc": "ColorTriggerPosition"
+            },
             "typeTokens": [
               {
-                "text": "top"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "right"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "bottom"
-              },
-              {
-                "text": " | "
-              },
-              {
-                "text": "left"
+                "text": "ColorTriggerPosition",
+                "customType": "ColorTriggerPosition"
               }
             ]
           },
@@ -4990,7 +5263,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "area",
             "type": "ReactNode",
             "required": false,
-            "description": "Picker content shown in the popover. Defaults to Color.Area.",
+            "description": "Replaces the default Color.Area rendered in the popover.",
+            "category": "Content",
+            "tags": {
+              "category": "Content"
+            },
             "typeTokens": [
               {
                 "text": "ReactNode",
@@ -5000,12 +5277,18 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           },
           {
             "name": "popoverStyles",
-            "type": "PopoverStyleSlots",
+            "type": "ColorPopoverStyles",
             "required": false,
-            "description": "Classes applied to the popover primitive slots. The frame slot controls the picker shell padding.",
+            "description": "Applies Popover slot styles; the frame slot controls the picker shell padding.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling",
+              "typeDoc": "ColorPopoverStyles"
+            },
             "typeTokens": [
               {
-                "text": "PopoverStyleSlots"
+                "text": "ColorPopoverStyles",
+                "customType": "ColorPopoverStyles"
               }
             ]
           },
@@ -5014,17 +5297,124 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "boolean",
             "required": false,
             "defaultValue": "false",
-            "description": "Whether to render a directional popover arrow.",
+            "description": "Renders a directional arrow on the picker popover.",
+            "category": "Content",
+            "tags": {
+              "category": "Content",
+              "default": "false"
+            },
             "typeTokens": [
               {
                 "text": "boolean",
                 "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
               }
             ]
+          },
+          {
+            "name": "children",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": "Replaces the default swatch and serialized value inside the trigger.",
+            "category": "Content",
+            "typeTokens": [
+              {
+                "text": "React.ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": "Adds classes to the trigger button after Color trigger styles.",
+            "category": "Styling",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "description": "Applies inline styles to the trigger button.",
+            "category": "Styling",
+            "typeTokens": [
+              {
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": "Disables the trigger in addition to any disabled state inherited from Color.",
+            "category": "Core",
+            "defaultValue": "false",
+            "typeTokens": [
+              {
+                "text": "boolean",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+              }
+            ]
+          },
+          {
+            "name": "onClick",
+            "type": "React.MouseEventHandler<HTMLButtonElement>",
+            "required": false,
+            "description": "Runs for native click activation while the trigger is enabled.",
+            "category": "Events",
+            "typeTokens": [
+              {
+                "text": "React.MouseEventHandler",
+                "href": "https://react.dev/reference/react-dom/components/common#mouseevent-handler-function"
+              },
+              {
+                "text": "<"
+              },
+              {
+                "text": "HTMLButtonElement",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "description": "Provides the trigger's accessible name when its content is not sufficient.",
+            "category": "Accessibility",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "aria-labelledby",
+            "type": "string",
+            "required": false,
+            "description": "References element IDs that label the trigger button.",
+            "category": "Accessibility",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
           }
         ]
       },
-      "ColorCanvas": {
+      "Color.CanvasPrimitive": {
         "description": "2D saturation/lightness gradient canvas for picking color values",
         "props": [
           {
@@ -5216,7 +5606,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           }
         ]
       },
-      "ColorInput": {
+      "Color.Input": {
         "props": [
           {
             "name": "value",
@@ -5420,7 +5810,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           }
         ]
       },
-      "ColorRecentColors": {
+      "Color.RecentColors": {
         "description": "Palette of recently used colors for quick re-selection",
         "props": [
           {
@@ -5516,6 +5906,1563 @@ export const generatedAPI: Record<string, ComponentAPI> = {
                 "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
               }
             ]
+          }
+        ]
+      }
+    },
+    "propGroups": [
+      {
+        "name": "Core"
+      },
+      {
+        "name": "Content"
+      },
+      {
+        "name": "Events"
+      },
+      {
+        "name": "Styling"
+      },
+      {
+        "name": "Accessibility"
+      },
+      {
+        "name": "Advanced"
+      }
+    ],
+    "stateAttributes": [
+      {
+        "name": "data-slot",
+        "description": "Stable anatomy identity emitted by Color and its composed Slider parts.",
+        "values": [
+          "provider",
+          "root",
+          "trigger.root",
+          "trigger.swatch",
+          "trigger.value",
+          "controls",
+          "canvas.root",
+          "canvas.inner",
+          "canvas.gradient.hue",
+          "canvas.gradient.saturation",
+          "canvas.gradient.brightness",
+          "canvas.pointer",
+          "slider.hue.root",
+          "slider.opacity.root",
+          "slider.chroma.root",
+          "recentColors.root",
+          "recentColors.swatch",
+          "input.group",
+          "input.input",
+          "input.format",
+          "input.previewSwatch",
+          "track",
+          "range",
+          "thumb"
+        ]
+      },
+      {
+        "name": "data-size",
+        "description": "The resolved Color size on roots and size-aware parts.",
+        "values": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      {
+        "name": "data-disabled",
+        "description": "Emitted as true on disabled roots and interactive parts; omitted when enabled.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-variant",
+        "description": "Emitted on Color.Area only for the popover treatment; omitted for standalone.",
+        "values": [
+          "popover"
+        ]
+      },
+      {
+        "name": "data-focused",
+        "description": "Emitted as true while Color.Canvas or a slider thumb is focused; omitted otherwise.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-focus-visible",
+        "description": "Emitted as true for keyboard-visible canvas or slider-thumb focus; omitted otherwise.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-hovered",
+        "description": "Emitted as true while a slider thumb is hovered; omitted otherwise.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-pressed",
+        "description": "Emitted as true while a slider thumb is pressed or dragged; omitted otherwise.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-dragging",
+        "description": "Emitted as true while a slider thumb is being dragged; omitted otherwise.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-orientation",
+        "description": "The underlying Color.Slider orientation.",
+        "values": [
+          "horizontal"
+        ]
+      },
+      {
+        "name": "data-slider-track",
+        "description": "Emitted as true on each Color.Slider track.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-slider-range",
+        "description": "Emitted as true on each Color.Slider range.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-slider-thumb",
+        "description": "Emitted as true on each Color.Slider thumb.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-slider-thumb-index",
+        "description": "Zero-based index of a Color.Slider thumb."
+      }
+    ],
+    "customTypes": {
+      "Style": {
+        "name": "Style",
+        "summary": "A class name or conditional class-name array.",
+        "type": "string | (string | false | null | undefined)[]",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": " | ("
+          },
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "false"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "null"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "undefined"
+          },
+          {
+            "text": ")[]"
+          }
+        ]
+      },
+      "StylesProp": {
+        "name": "StylesProp",
+        "summary": "Preserves a component-specific class-based style-slot table.",
+        "type": "StylesProp<S extends { root?: Style }> = S",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "StylesProp",
+            "customType": "StylesProp"
+          },
+          {
+            "text": "<"
+          },
+          {
+            "text": "S"
+          },
+          {
+            "text": " "
+          },
+          {
+            "text": "extends"
+          },
+          {
+            "text": " { "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }> = "
+          },
+          {
+            "text": "S"
+          }
+        ]
+      },
+      "ColorFormat": {
+        "name": "ColorFormat",
+        "summary": "A serialized color format supported by the picker input.",
+        "type": "\"hex\" | \"rgb\"",
+        "kind": "alias",
+        "values": [
+          {
+            "value": "\"hex\"",
+            "description": "Displays and emits hexadecimal color strings."
+          },
+          {
+            "value": "\"rgb\"",
+            "description": "Displays and emits rgb() or rgba() color strings."
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "\""
+          },
+          {
+            "text": "hex"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "rgb"
+          },
+          {
+            "text": "\""
+          }
+        ]
+      },
+      "ColorSize": {
+        "name": "ColorSize",
+        "summary": "A named sizing preset shared by Color anatomy.",
+        "type": "\"sm\" | \"md\" | \"lg\"",
+        "kind": "alias",
+        "values": [
+          {
+            "value": "\"sm\"",
+            "description": "Uses the compact picker dimensions."
+          },
+          {
+            "value": "\"md\"",
+            "description": "Uses the default picker dimensions."
+          },
+          {
+            "value": "\"lg\"",
+            "description": "Uses the large picker dimensions."
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "\""
+          },
+          {
+            "text": "sm"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "md"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "lg"
+          },
+          {
+            "text": "\""
+          }
+        ]
+      },
+      "ColorAreaVariant": {
+        "name": "ColorAreaVariant",
+        "summary": "The visual shell used by Color.Area.",
+        "type": "\"standalone\" | \"popover\"",
+        "kind": "alias",
+        "values": [
+          {
+            "value": "\"standalone\"",
+            "description": "Renders the normal picker background and border."
+          },
+          {
+            "value": "\"popover\"",
+            "description": "Removes the shell so Popover supplies the outer surface."
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "\""
+          },
+          {
+            "text": "standalone"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "popover"
+          },
+          {
+            "text": "\""
+          }
+        ]
+      },
+      "ColorSliderType": {
+        "name": "ColorSliderType",
+        "summary": "The channel controlled by Color.Slider.",
+        "type": "\"hue\" | \"opacity\" | \"chroma\"",
+        "kind": "alias",
+        "values": [
+          {
+            "value": "\"hue\"",
+            "description": "Controls hue in degrees from 0 to 360 by default."
+          },
+          {
+            "value": "\"opacity\"",
+            "description": "Controls alpha from 0 to 1 by default."
+          },
+          {
+            "value": "\"chroma\"",
+            "description": "Controls OKLCH chroma from 0 to 0.4 by default."
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "\""
+          },
+          {
+            "text": "hue"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "opacity"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "chroma"
+          },
+          {
+            "text": "\""
+          }
+        ]
+      },
+      "ColorTriggerPosition": {
+        "name": "ColorTriggerPosition",
+        "summary": "The preferred side for the Color.Trigger popover.",
+        "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+        "kind": "alias",
+        "values": [
+          {
+            "value": "\"top\"",
+            "description": "Places the picker above the trigger when space permits."
+          },
+          {
+            "value": "\"right\"",
+            "description": "Places the picker to the right of the trigger when space permits."
+          },
+          {
+            "value": "\"bottom\"",
+            "description": "Places the picker below the trigger when space permits."
+          },
+          {
+            "value": "\"left\"",
+            "description": "Places the picker to the left of the trigger when space permits."
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "\""
+          },
+          {
+            "text": "top"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "right"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "bottom"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "left"
+          },
+          {
+            "text": "\""
+          }
+        ]
+      },
+      "ColorState": {
+        "name": "ColorState",
+        "summary": "Controlled Color value state.",
+        "type": "{\n  value?: string;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": false,
+            "description": "The controlled serialized color value.",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "value"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorCanvasGradientStyleSlots": {
+        "name": "ColorCanvasGradientStyleSlots",
+        "summary": "Layer-specific classes for the Color.Canvas gradient.",
+        "type": "{\n  hue?: Style;\n  saturation?: Style;\n  brightness?: Style;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "hue",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the hue-tinted base layer.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "saturation",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the horizontal saturation layer.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "brightness",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the vertical brightness layer.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "hue"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "saturation"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "brightness"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorCanvasStyleSlots": {
+        "name": "ColorCanvasStyleSlots",
+        "summary": "Classes for Color.Canvas anatomy.",
+        "type": "{\n  root?: Style;\n  inner?: Style;\n  gradient?: Style | ColorCanvasGradientStyleSlots;\n  pointer?: Style;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the focusable canvas interaction surface.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "inner",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the clipped gradient container.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "gradient",
+            "type": "Style | ColorCanvasGradientStyleSlots",
+            "required": false,
+            "description": "Styles every gradient layer or selected layers.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorCanvasGradientStyleSlots",
+                "customType": "ColorCanvasGradientStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "pointer",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the current-color pointer.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "inner"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "gradient"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorCanvasGradientStyleSlots",
+            "customType": "ColorCanvasGradientStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "pointer"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorSliderChannelStyleSlots": {
+        "name": "ColorSliderChannelStyleSlots",
+        "summary": "Classes for one Color.Slider channel.",
+        "type": "{\n  root?: Style;\n  track?: Style;\n  thumb?: Style;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the slider interaction surface.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "track",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the channel gradient track.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "thumb",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the draggable slider thumb.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "track"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "thumb"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorSliderStyleSlots": {
+        "name": "ColorSliderStyleSlots",
+        "summary": "Channel-specific classes for Color.Slider anatomy.",
+        "type": "{\n  hue?: Style | ColorSliderChannelStyleSlots;\n  opacity?: Style | ColorSliderChannelStyleSlots;\n  chroma?: Style | ColorSliderChannelStyleSlots;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "hue",
+            "type": "Style | ColorSliderChannelStyleSlots",
+            "required": false,
+            "description": "Styles all hue anatomy or selected hue parts.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorSliderChannelStyleSlots",
+                "customType": "ColorSliderChannelStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "opacity",
+            "type": "Style | ColorSliderChannelStyleSlots",
+            "required": false,
+            "description": "Styles all opacity anatomy or selected opacity parts.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorSliderChannelStyleSlots",
+                "customType": "ColorSliderChannelStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "chroma",
+            "type": "Style | ColorSliderChannelStyleSlots",
+            "required": false,
+            "description": "Styles all chroma anatomy or selected chroma parts.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorSliderChannelStyleSlots",
+                "customType": "ColorSliderChannelStyleSlots"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "hue"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorSliderChannelStyleSlots",
+            "customType": "ColorSliderChannelStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "opacity"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorSliderChannelStyleSlots",
+            "customType": "ColorSliderChannelStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "chroma"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorSliderChannelStyleSlots",
+            "customType": "ColorSliderChannelStyleSlots"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorTriggerStyleSlots": {
+        "name": "ColorTriggerStyleSlots",
+        "summary": "Classes for Color.Trigger anatomy.",
+        "type": "{\n  root?: Style;\n  swatch?: Style;\n  value?: Style;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the trigger button.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "swatch",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the default trigger swatch.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "value",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the default trigger value.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "swatch"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "value"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorRecentColorsStyleSlots": {
+        "name": "ColorRecentColorsStyleSlots",
+        "summary": "Classes for the recent-color collection.",
+        "type": "{\n  root?: Style;\n  swatch?: Style;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the recent-colors group.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "swatch",
+            "type": "Style",
+            "required": false,
+            "description": "Styles every recent-color button.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "swatch"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorInputStyleSlots": {
+        "name": "ColorInputStyleSlots",
+        "summary": "Classes for the color input controls.",
+        "type": "{\n  group?: Style;\n  input?: Style;\n  format?: Style;\n  previewSwatch?: Style;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "group",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the grouped input controls.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "input",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the editable color field.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "format",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the format selector.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "previewSwatch",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the optional preview swatch.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "group"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "input"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "format"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "previewSwatch"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorStyleSlots": {
+        "name": "ColorStyleSlots",
+        "summary": "Classes for the Color root and complete compound anatomy.",
+        "type": "{\n  provider?: Style;\n  root?: Style;\n  trigger?: Style | ColorTriggerStyleSlots;\n  controls?: Style;\n  canvas?: Style | ColorCanvasStyleSlots;\n  slider?: ColorSliderStyleSlots;\n  recentColors?: Style | ColorRecentColorsStyleSlots;\n  input?: ColorInputStyleSlots;\n}",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "provider",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the compound-component provider root.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the Color.Area picker surface.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "trigger",
+            "type": "Style | ColorTriggerStyleSlots",
+            "required": false,
+            "description": "Styles all trigger anatomy or selected trigger parts.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorTriggerStyleSlots",
+                "customType": "ColorTriggerStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "controls",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the controls below the canvas.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "canvas",
+            "type": "Style | ColorCanvasStyleSlots",
+            "required": false,
+            "description": "Styles all canvas anatomy or selected canvas parts.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorCanvasStyleSlots",
+                "customType": "ColorCanvasStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "slider",
+            "type": "ColorSliderStyleSlots",
+            "required": false,
+            "description": "Styles channel-specific slider anatomy.",
+            "typeTokens": [
+              {
+                "text": "ColorSliderStyleSlots",
+                "customType": "ColorSliderStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "recentColors",
+            "type": "Style | ColorRecentColorsStyleSlots",
+            "required": false,
+            "description": "Styles the recent-color group or its swatches.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "ColorRecentColorsStyleSlots",
+                "customType": "ColorRecentColorsStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "input",
+            "type": "ColorInputStyleSlots",
+            "required": false,
+            "description": "Styles color input anatomy.",
+            "typeTokens": [
+              {
+                "text": "ColorInputStyleSlots",
+                "customType": "ColorInputStyleSlots"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{\n  "
+          },
+          {
+            "text": "provider"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "trigger"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorTriggerStyleSlots",
+            "customType": "ColorTriggerStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "controls"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "canvas"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorCanvasStyleSlots",
+            "customType": "ColorCanvasStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "slider"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "ColorSliderStyleSlots",
+            "customType": "ColorSliderStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "recentColors"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "ColorRecentColorsStyleSlots",
+            "customType": "ColorRecentColorsStyleSlots"
+          },
+          {
+            "text": ";\n  "
+          },
+          {
+            "text": "input"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "ColorInputStyleSlots",
+            "customType": "ColorInputStyleSlots"
+          },
+          {
+            "text": ";\n}"
+          }
+        ]
+      },
+      "ColorStylesProp": {
+        "name": "ColorStylesProp",
+        "summary": "The keyed class-based styling contract for Color anatomy.",
+        "type": "StylesProp<ColorStyleSlots>",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "StylesProp",
+            "customType": "StylesProp"
+          },
+          {
+            "text": "<"
+          },
+          {
+            "text": "ColorStyleSlots",
+            "customType": "ColorStyleSlots"
+          },
+          {
+            "text": ">"
+          }
+        ]
+      },
+      "ColorPopoverStyles": {
+        "name": "ColorPopoverStyles",
+        "summary": "Popover anatomy classes forwarded by Color.Trigger.",
+        "type": "{ root?: Style; content?: Style; trigger?: Style; frame?: Style }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the Popover root.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "content",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the positioned Popover content.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "trigger",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the Popover trigger wrapper.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "frame",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the Popover frame around Color.Area.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "content"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "trigger"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "frame"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }"
           }
         ]
       }
@@ -18102,14 +20049,24 @@ export const generatedAPI: Record<string, ComponentAPI> = {
   "mask": {
     "props": [
       {
-        "name": "asChild",
-        "type": "boolean",
+        "name": "as",
+        "type": "div | child",
         "required": false,
-        "defaultValue": "false",
+        "defaultValue": "div",
+        "description": "Element rendered by Mask. Use child to apply the mask directly to its only content child.",
+        "enumValues": [
+          "div",
+          "child"
+        ],
         "typeTokens": [
           {
-            "text": "boolean",
-            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+            "text": "div"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "child"
           }
         ]
       },
@@ -29917,11 +31874,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "isSelected",
         "type": "boolean",
         "required": false,
-        "description": "Legacy alias for `checked` when `state.checked` is absent.",
+        "description": "Legacy controlled value used when both `state.checked` and `checked` are absent. Prefer `checked`.",
         "category": "Advanced",
         "tags": {
-          "category": "Advanced",
-          "deprecated": "Use `checked`."
+          "category": "Advanced"
         },
         "typeTokens": [
           {
@@ -29934,7 +31890,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "onChange",
         "type": "((isSelected: boolean) => void)",
         "required": false,
-        "description": "Receives the next checked value after keyboard, pointer, or drag-toggle interaction.",
+        "description": "Receives the next checked value after keyboard, pointer, or drag-toggle interaction. Disabled and read-only switches do not call it.",
         "category": "Events",
         "tags": {
           "category": "Events",
@@ -29975,11 +31931,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "defaultSelected",
         "type": "boolean",
         "required": false,
-        "description": "Legacy initial checked value used when neither controlled value is supplied.",
+        "description": "Legacy initial checked value used when all controlled values and `defaultChecked` are absent. Prefer `defaultChecked`.",
         "category": "Advanced",
         "tags": {
-          "category": "Advanced",
-          "deprecated": "Use `defaultChecked`."
+          "category": "Advanced"
         },
         "typeTokens": [
           {
@@ -30043,13 +31998,23 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           {
             "text": "sm"
           }
+        ],
+        "enumValueDetails": [
+          {
+            "value": "default",
+            "description": "Uses the standard switch geometry."
+          },
+          {
+            "value": "sm",
+            "description": "Uses a smaller track and thumb."
+          }
         ]
       },
       {
         "name": "styles",
         "type": "SwitchStyleSlots",
         "required": false,
-        "description": "Applies class-based overrides to the root, track, and thumb. Use `className` for conventional root classes.",
+        "description": "Applies class-based overrides to root, track, thumb, input, and focusIndicator. Root slot classes follow `className`; native `style` applies inline to the outer surface.",
         "category": "Styling",
         "tags": {
           "category": "Styling",
@@ -30063,11 +32028,134 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       },
       {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "category": "Core",
+        "description": "Prevents keyboard, pointer, and drag-toggle changes while keeping the switch focusable.",
+        "tags": {
+          "see": "https://react-spectrum.adobe.com/react-aria/useSwitch.html"
+        },
+        "typeTokens": [
+          {
+            "text": "boolean",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+          }
+        ]
+      },
+      {
+        "name": "value",
+        "type": "string | number | readonly string[]",
+        "required": false,
+        "category": "Forms",
+        "description": "Native input value submitted under name when the switch is checked.",
+        "tags": {
+          "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/checkbox#value"
+        },
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "number",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "readonly"
+          },
+          {
+            "text": " "
+          },
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": "[]"
+          }
+        ]
+      },
+      {
+        "name": "form",
+        "type": "string",
+        "required": false,
+        "category": "Forms",
+        "description": "Associates the native input with a form by its ID.",
+        "tags": {
+          "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#form"
+        },
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          }
+        ]
+      },
+      {
+        "name": "onFocus",
+        "type": "React.FocusEventHandler<HTMLInputElement>",
+        "required": false,
+        "category": "Events",
+        "description": "Receives the native input's focus event alongside the shared focus behavior.",
+        "tags": {
+          "mdn": "https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event"
+        },
+        "typeTokens": [
+          {
+            "text": "React.FocusEventHandler",
+            "href": "https://react.dev/reference/react-dom/components/common#focusevent-handler-function"
+          },
+          {
+            "text": "<"
+          },
+          {
+            "text": "HTMLInputElement",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement"
+          },
+          {
+            "text": ">"
+          }
+        ]
+      },
+      {
+        "name": "onBlur",
+        "type": "React.FocusEventHandler<HTMLInputElement>",
+        "required": false,
+        "category": "Events",
+        "description": "Receives the native input's blur event alongside the shared focus behavior.",
+        "tags": {
+          "mdn": "https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event"
+        },
+        "typeTokens": [
+          {
+            "text": "React.FocusEventHandler",
+            "href": "https://react.dev/reference/react-dom/components/common#focusevent-handler-function"
+          },
+          {
+            "text": "<"
+          },
+          {
+            "text": "HTMLInputElement",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement"
+          },
+          {
+            "text": ">"
+          }
+        ]
+      },
+      {
         "name": "defaultChecked",
         "type": "boolean",
         "required": false,
         "category": "Core",
-        "description": "Initial checked value for uncontrolled usage when neither controlled value is supplied.",
+        "description": "Initial checked value when state.checked, checked, and isSelected are absent; takes precedence over defaultSelected.",
         "tags": {
           "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/checkbox#checked"
         },
@@ -30083,7 +32171,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "string",
         "required": false,
         "category": "Styling",
-        "description": "Classes applied to the outer switch surface after its default classes.",
+        "description": "Classes applied to the outer .switch surface after default classes and before styles.root.",
+        "tags": {
+          "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/class"
+        },
         "typeTokens": [
           {
             "text": "string",
@@ -30096,7 +32187,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "React.CSSProperties",
         "required": false,
         "category": "Styling",
-        "description": "Inline CSS properties applied to the outer switch surface.",
+        "description": "Inline CSS properties applied to the outer switch surface; named slots accept classes only.",
+        "tags": {
+          "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/style"
+        },
         "typeTokens": [
           {
             "text": "React.CSSProperties",
@@ -30141,7 +32235,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "string",
         "required": false,
         "category": "Accessibility",
-        "description": "ID for the native input. Checkbox uses it to associate a rendered label and helper text.",
+        "description": "ID for the native switch input, allowing an external label to target it with htmlFor.",
         "tags": {
           "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/id"
         },
@@ -30157,7 +32251,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "boolean",
         "required": false,
         "category": "Accessibility",
-        "description": "Requests focus for the native checkbox when it mounts.",
+        "description": "Requests focus for the native switch input when it mounts.",
         "tags": {
           "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus"
         },
@@ -30221,7 +32315,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\"",
         "required": false,
         "category": "Accessibility",
-        "description": "Marks the native input invalid. A value of true also activates Checkbox invalid styling.",
+        "description": "Marks the native switch input invalid for assistive technology; does not add invalid styling.",
         "tags": {
           "mdn": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid"
         },
@@ -30304,7 +32398,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       },
       {
         "name": "data-focused",
-        "description": "The native switch input is focused.",
+        "description": "Root and input emit true when the input is focused, false otherwise.",
         "values": [
           "true",
           "false"
@@ -30312,7 +32406,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       },
       {
         "name": "data-focus-visible",
-        "description": "The switch input has keyboard-visible focus.",
+        "description": "Root and input emit true for keyboard-visible focus, false otherwise.",
         "values": [
           "true",
           "false"
@@ -30328,16 +32422,46 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       },
       {
         "name": "data-slot",
-        "description": "Stable styling identity emitted as root, track, or thumb on the matching anatomy element.",
+        "description": "Stable styling identity on each matching anatomy element; track and thumb also retain switch-track and switch-thumb class hooks.",
         "values": [
           "root",
           "track",
-          "thumb"
+          "thumb",
+          "input",
+          "focusIndicator"
         ]
       },
       {
         "name": "data-switch-focus-surface",
         "description": "Marks the root as the visual focus surface for the native switch input.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-ring",
+        "description": "Marks the local focus indicator as a shared focus ring.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-self-target",
+        "description": "The indicator belongs to this switch's own focus surface.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-visible",
+        "description": "The focus indicator is visible; omitted when hidden.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-transition-radius",
+        "description": "The focus indicator animates a radius change on the same surface; omitted otherwise.",
         "values": [
           "true"
         ]
@@ -30435,7 +32559,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       "SwitchStyleSlots": {
         "name": "SwitchStyleSlots",
         "summary": "Named class-based styling targets for the Switch anatomy.",
-        "type": "{ root?: Style; track?: Style; thumb?: Style }",
+        "type": "{ root?: Style; track?: Style; thumb?: Style; input?: Style; focusIndicator?: Style }",
         "kind": "interface",
         "members": [
           {
@@ -30467,6 +32591,30 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "type": "Style",
             "required": false,
             "description": "Styles the movable thumb.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "input",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the native input that receives focus and pointer interaction.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "focusIndicator",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the local focus indicator without replacing its measured geometry.",
             "typeTokens": [
               {
                 "text": "Style",
@@ -30507,6 +32655,32 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           },
           {
             "text": "thumb"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "input"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "focusIndicator"
           },
           {
             "text": "?: "
@@ -33562,8 +35736,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "button": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .button {\n    @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;\n    --padding-block: 0;\n    --padding-inline: 0;\n    --padding-inline-end: var(--padding-inline);\n    position: relative;\n    min-width: 0;\n    box-sizing: border-box;\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    padding-inline-end: var(--padding-inline-end);\n    background-color: var(--background);\n    background-origin: border-box;\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition-property: background-color, border-color, color, opacity, transform;\n    transition-duration:\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)), var(--press-duration, 120ms);\n    transition-timing-function:\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--background);\n      border-color: slot(border, background-hover, slot(border, background, transparent));\n      color: var(--foreground);\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled=\"true\"]) {\n      background-color: var(--background);\n      border-color: slot(border, background-pressed, slot(border, background, transparent));\n      color: var(--foreground);\n      transform: var(--press-transform, scale(0.96));\n    }\n\n    &[data-selected=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-selected, slot(border, background, transparent));\n    }\n\n    & > span > svg,\n    & > svg {\n      color: slot(icon, foreground, var(--icon-foreground, currentColor));\n    }\n  }\n\n  .button:not(.icon) {\n    min-height: calc(\n      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2\n    );\n  }\n\n  .button:focus-visible {\n    outline: none;\n  }\n\n  .button:disabled,\n  .button[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n    filter: grayscale(0.5);\n  }\n\n  .button.icon {\n    aspect-ratio: 1;\n    width: var(--size, 2.25rem);\n    height: var(--size, 2.25rem);\n    --padding-block: 0.25rem;\n    --padding-inline: 0.25rem;\n  }\n\n  .hint {\n    @apply shrink-0 gap-1;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .button {\n    --background: var(--background-800);\n    --focus-visible: var(--accent-400);\n    @slot icon {\n      --foreground: var(--foreground-400);\n      --size: 1.15em;\n    }\n  }\n\n  .button:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-selected: var(--background-600);\n    }\n  }\n\n  .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));\n    @slot border {\n      --background-pressed: var(--background-600);\n    }\n  }\n\n  .button.sm {\n    --padding-inline: calc(var(--spacing) * 2.5);\n    --padding-block: calc(var(--spacing) * 1);\n  }\n  .button.md {\n    --padding-inline: calc(var(--spacing) * 4);\n    --padding-block: calc(var(--spacing) * 1.5);\n  }\n  .button.lg {\n    --padding-inline: calc(var(--spacing) * 3.5);\n    --padding-block: calc(var(--spacing) * 2.5);\n  }\n\n  .button.icon {\n    --padding-inline: calc(var(--spacing) * 0.35);\n    --padding-block: calc(var(--spacing) * 0.35);\n  }\n\n  .button[data-hint=\"true\"] {\n    --padding-inline-end: calc(var(--spacing) * 1);\n  }\n}\n\n@layer utilities {\n  .button[data-variant=\"primary\"] {\n    --background: var(--foreground-100);\n    --foreground: var(--background-950);\n\n    border-color: transparent;\n\n    background-image: linear-gradient(\n      to bottom,\n      rgb(255 255 255 / 34%) 0%,\n      rgb(255 255 255 / 8%) 36%,\n      transparent 56%,\n      rgb(0 0 0 / 18%) 100%\n    );\n\n    box-shadow:\n      0 0 0 1px var(--foreground-300) inset,\n      0 1px 2px rgb(0 0 0 / 20%),\n      0 4px 10px rgb(0 0 0 / 14%);\n\n    @slot icon {\n      --foreground: currentColor;\n    }\n\n    @slot border {\n      --background: transparent;\n      --background-hover: transparent;\n      --background-selected: transparent;\n      --background-pressed: transparent;\n    }\n  }\n\n  .button[data-variant=\"primary\"] {\n    &:is( [data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 72%,\n        var(--foreground-300)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 68%,\n            var(--foreground-300)\n          )\n          inset,\n        0 1px 2px rgb(0 0 0 / 24%),\n        0 5px 12px rgb(0 0 0 / 18%);\n    }\n  }\n    .button[data-variant=\"primary\"]:is( [data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 72%,\n        var(--foreground-300)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 68%,\n            var(--foreground-300)\n          )\n          inset,\n        0 1px 2px rgb(0 0 0 / 24%),\n        0 5px 12px rgb(0 0 0 / 18%);\n    }\n\n  .button[data-variant=\"primary\"] {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 58%,\n        var(--foreground-300)\n      );\n\n      background-image: linear-gradient(\n        to bottom,\n        rgb(0 0 0 / 14%),\n        transparent 60%,\n        rgb(255 255 255 / 8%)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 62%,\n            var(--foreground-300)\n          )\n          inset,\n        0 2px 4px rgb(0 0 0 / 24%) inset,\n        0 1px 2px rgb(0 0 0 / 16%);\n    }\n  }\n    .button[data-variant=\"primary\"][data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 58%,\n        var(--foreground-300)\n      );\n\n      background-image: linear-gradient(\n        to bottom,\n        rgb(0 0 0 / 14%),\n        transparent 60%,\n        rgb(255 255 255 / 8%)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 62%,\n            var(--foreground-300)\n          )\n          inset,\n        0 2px 4px rgb(0 0 0 / 24%) inset,\n        0 1px 2px rgb(0 0 0 / 16%);\n    }\n\n  .button[data-variant=\"secondary\"] {\n    --background: var(--background-800);\n    background-image: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--foreground-50) 5%, transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--background-950) 28%, transparent)\n    );\n    --foreground: var(--foreground-300);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .button[data-variant=\"secondary\"] {\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"]:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n\n  .button[data-variant=\"secondary\"] {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"][data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n\n  .button[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    --backdrop: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .button[data-variant=\"ghost\"] {\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: var(--background-700);\n      }\n    }\n  }\n    .button[data-variant=\"ghost\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: var(--background-700);\n      }\n    }\n\n  .button[data-variant=\"danger\"] {\n    --foreground: var(--danger-500);\n    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);\n    background-image: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--danger-50) 5%, transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--danger-500) 10%, transparent)\n    );\n    --icon-foreground: var(--danger-500);\n    @slot border {\n      --background: transparent\n    }\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .button {\n    @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;\n    --padding-block: 0;\n    --padding-inline: 0;\n    --padding-inline-end: var(--padding-inline);\n    position: relative;\n    min-width: 0;\n    max-width: 100%;\n    box-sizing: border-box;\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    padding-inline-end: var(--padding-inline-end);\n    background-color: var(--background);\n    background-origin: border-box;\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition-property: background-color, border-color, color, opacity, transform;\n    transition-duration:\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)), var(--press-duration, 120ms);\n    transition-timing-function:\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--background);\n      border-color: slot(border, background-hover, slot(border, background, transparent));\n      color: var(--foreground);\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled=\"true\"]) {\n      background-color: var(--background);\n      border-color: slot(border, background-pressed, slot(border, background, transparent));\n      color: var(--foreground);\n      transform: var(--press-transform, scale(0.96));\n    }\n\n    &[data-selected=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-selected, slot(border, background, transparent));\n    }\n\n    & > span > svg,\n    & > svg {\n      color: slot(icon, foreground, var(--icon-foreground, currentColor));\n      width: slot(icon, size, 1em);\n      height: slot(icon, size, 1em);\n      flex-shrink: 0;\n    }\n  }\n\n  .button:not(.icon) {\n    min-height: calc(\n      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2\n    );\n  }\n\n  .button:focus-visible {\n    outline: none;\n  }\n\n  .button:disabled,\n  .button[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n    filter: grayscale(0.5);\n  }\n\n  .button.icon {\n    aspect-ratio: 1;\n    width: var(--size, 2.25rem);\n    height: var(--size, 2.25rem);\n    max-width: none;\n    --padding-block: 0.25rem;\n    --padding-inline: 0.25rem;\n  }\n\n  .hint {\n    @apply shrink-0 gap-1;\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .button {\n    --background: var(--background-800);\n    --focus-visible: var(--accent-400);\n    @slot icon {\n      --foreground: var(--foreground-400);\n      --size: 1.15em;\n    }\n  }\n\n  .button:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-selected: var(--background-600);\n    }\n  }\n\n  .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));\n    @slot border {\n      --background-pressed: var(--background-600);\n    }\n  }\n\n  .button.sm {\n    --padding-inline: calc(var(--spacing) * 2.5);\n    --padding-block: calc(var(--spacing) * 1);\n  }\n  .button.md {\n    --padding-inline: calc(var(--spacing) * 4);\n    --padding-block: calc(var(--spacing) * 1.5);\n  }\n  .button.lg {\n    --padding-inline: calc(var(--spacing) * 3.5);\n    --padding-block: calc(var(--spacing) * 2.5);\n  }\n\n  .button.icon {\n    --size: calc(var(--spacing) * 9);\n    --padding-inline: calc(var(--spacing) * 0.35);\n    --padding-block: calc(var(--spacing) * 0.35);\n  }\n\n  .button[data-hint=\"true\"] {\n    --padding-inline-end: calc(var(--spacing) * 1);\n  }\n}\n\n@layer utilities {\n  .button[data-variant=\"primary\"] {\n    --background: var(--foreground-100);\n    --foreground: var(--background-950);\n\n    border-color: transparent;\n\n    background-image: linear-gradient(\n      to bottom,\n      rgb(255 255 255 / 34%) 0%,\n      rgb(255 255 255 / 8%) 36%,\n      transparent 56%,\n      rgb(0 0 0 / 18%) 100%\n    );\n\n    box-shadow:\n      0 0 0 1px var(--foreground-300) inset,\n      0 1px 2px rgb(0 0 0 / 20%),\n      0 4px 10px rgb(0 0 0 / 14%);\n\n    @slot icon {\n      --foreground: currentColor;\n    }\n\n    @slot border {\n      --background: transparent;\n      --background-hover: transparent;\n      --background-selected: transparent;\n      --background-pressed: transparent;\n    }\n  }\n\n  .button[data-variant=\"primary\"] {\n    &:is( [data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 72%,\n        var(--foreground-300)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 68%,\n            var(--foreground-300)\n          )\n          inset,\n        0 1px 2px rgb(0 0 0 / 24%),\n        0 5px 12px rgb(0 0 0 / 18%);\n    }\n  }\n    .button[data-variant=\"primary\"]:is( [data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 72%,\n        var(--foreground-300)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 68%,\n            var(--foreground-300)\n          )\n          inset,\n        0 1px 2px rgb(0 0 0 / 24%),\n        0 5px 12px rgb(0 0 0 / 18%);\n    }\n\n  .button[data-variant=\"primary\"] {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 58%,\n        var(--foreground-300)\n      );\n\n      background-image: linear-gradient(\n        to bottom,\n        rgb(0 0 0 / 14%),\n        transparent 60%,\n        rgb(255 255 255 / 8%)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 62%,\n            var(--foreground-300)\n          )\n          inset,\n        0 2px 4px rgb(0 0 0 / 24%) inset,\n        0 1px 2px rgb(0 0 0 / 16%);\n    }\n  }\n    .button[data-variant=\"primary\"][data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 58%,\n        var(--foreground-300)\n      );\n\n      background-image: linear-gradient(\n        to bottom,\n        rgb(0 0 0 / 14%),\n        transparent 60%,\n        rgb(255 255 255 / 8%)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 62%,\n            var(--foreground-300)\n          )\n          inset,\n        0 2px 4px rgb(0 0 0 / 24%) inset,\n        0 1px 2px rgb(0 0 0 / 16%);\n    }\n\n  .button[data-variant=\"secondary\"] {\n    --background: var(--background-800);\n    background-image: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--foreground-50) 5%, transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--background-950) 28%, transparent)\n    );\n    --foreground: var(--foreground-300);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .button[data-variant=\"secondary\"] {\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"]:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n\n  .button[data-variant=\"secondary\"] {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"][data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n\n  .button[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    --backdrop: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .button[data-variant=\"ghost\"] {\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"ghost\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n\n  .button[data-variant=\"danger\"] {\n    --foreground: var(--danger-500);\n    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);\n    background-image: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--danger-50) 5%, transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--danger-500) 10%, transparent)\n    );\n    --icon-foreground: var(--danger-500);\n    @slot border {\n      --background: transparent\n    }\n  }\n}",
     "variants": [
       "primary",
       "secondary",
@@ -33836,6 +36010,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": [
           "--icon-foreground"
         ],
+        "slot": "icon"
+      },
+      {
+        "name": "--size",
+        "value": "unset",
+        "selector": ".button > span > svg,\n    .button > svg",
+        "atRules": [],
+        "referencedVars": [],
         "slot": "icon"
       },
       {
@@ -35467,7 +37649,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "checkbox": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .checkbox {\n    @apply inline-grid gap-x-3;\n    grid-template-columns: auto 1fr;\n    grid-template-rows: auto auto;\n  }\n\n  .container {\n    @apply relative inline-flex items-center justify-center;\n  }\n\n  .box {\n    @apply relative h-5 w-5 cursor-pointer appearance-none;\n\n    background-color: var(--background, transparent);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-xs, 0.25rem);\n    outline: none;\n\n    &[data-invalid=\"true\"] {\n      border-color: slot(border, background-error, var(--danger-600));\n    }\n\n    &[data-invalid=\"true\"][data-selected=\"true\"],\n    &[data-invalid=\"true\"][data-indeterminate=\"true\"] {\n      border-color: slot(border, background, transparent);\n    }\n\n    &[data-disabled=\"true\"] {\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity, 0.6);\n      pointer-events: none;\n    }\n\n  }\n\n  .checkmark,\n  .indeterminate {\n    @apply absolute;\n    inset: 50%;\n    width: 65%;\n    height: 65%;\n    transform: translate(-50%, -50%);\n    color: var(--foreground, currentColor);\n    pointer-events: none;\n  }\n\n  .label {\n    @apply cursor-pointer select-none;\n\n    &[data-disabled=\"true\"] {\n      @apply opacity-60 cursor-not-allowed;\n    }\n  }\n\n  .label-md {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .helper-text {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    grid-column: 2;\n    color: var(--helper-foreground);\n\n    &[data-error=\"true\"] {\n      color: var(--helper-error-foreground, var(--foreground-error, var(--danger-600)));\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .checkbox {\n    --background: var(--control-track);\n    --helper-error-foreground: var(--danger-600);\n    --helper-foreground: var(--foreground-400);\n    @slot border {\n      --background: var(--control-border)\n    }\n  }\n\n  .checkbox > [data-ring=\"true\"] {\n    @slot ring {\n      --background: color-mix(in srgb, var(--background-500) 40%, transparent);\n    }\n  }\n\n  .checkbox:where([data-selected=\"true\"], [data-indeterminate=\"true\"]) {\n    --background: var(--control-fill);\n    --foreground: var(--control-thumb);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n\n  .checkbox > :where(.checkmark, .indeterminate) {\n    --foreground: var(--control-thumb);\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .checkbox {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .checkbox {\n    --background: var(--control-track);\n    --helper-error-foreground: var(--danger-600);\n    --helper-foreground: var(--foreground-400);\n    @slot border {\n      --background: var(--control-border);\n    }\n  }\n\n  .checkbox .checkbox-input {\n    border-radius: var(--control-radius);\n  }\n\n  .checkbox:where([data-selected=\"true\"], [data-indeterminate=\"true\"]) {\n    --background: var(--control-fill);\n    --foreground: var(--control-thumb);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n\n  .checkbox .checkbox-control > :where(.checkmark, .indeterminate) {\n    --foreground: var(--control-thumb);\n  }\n\n  .checkbox[data-disabled=\"true\"] {\n    --control-fill: var(--control-disabled);\n    --control-thumb: var(--control-thumb-disabled);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -36296,8 +38478,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "color": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-500);\n\n    display: flex;\n    flex-direction: column;\n    gap: 1rem;\n    background-color: var(--background);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    width: 260px;\n  }\n\n  .color[data-disabled=\"true\"] {\n    opacity: 0.5;\n    pointer-events: none;\n  }\n\n  .color[data-variant=\"popover\"] {\n    background: transparent;\n    border-color: transparent;\n    border-radius: 0;\n  }\n\n  .color-provider {\n    display: inline-flex;\n    width: fit-content;\n  }\n\n  .color-provider .color-trigger {\n    --trigger-background: color-mix(in srgb, var(--background-800) 35%, transparent);\n    --trigger-background-hover: color-mix(in srgb, var(--background-700) 45%, transparent);\n    --trigger-text: var(--foreground-200);\n    --focus-visible: var(--accent-500);\n    --checkerboard-dark: var(--background-700);\n    --checkerboard-light: var(--background-800);\n\n    display: inline-flex;\n    align-items: center;\n    gap: 0.625rem;\n    min-width: 170px;\n    height: 40px;\n    padding: 0 0.75rem;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    border-radius: var(--radius-sm, 0.375rem);\n    background: var(--trigger-background);\n    color: var(--trigger-text);\n    cursor: pointer;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .color-provider .color-trigger:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background: var(--trigger-background-hover);\n  }\n\n  .color-provider .color-trigger:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .color-provider .color-trigger[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .color-provider .color-trigger[data-size=\"sm\"] {\n    min-width: 150px;\n    height: 34px;\n    padding: 0 0.625rem;\n    font-size: var(--text-xs, 0.75rem);\n  }\n\n  .color-provider .color-trigger[data-size=\"lg\"] {\n    min-width: 190px;\n    height: 46px;\n    padding: 0 0.875rem;\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n  }\n\n  .color-provider .color-trigger-swatch {\n    position: relative;\n    width: 20px;\n    height: 20px;\n    flex: 0 0 auto;\n    border-radius: var(--radius-xs, 0.25rem);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    overflow: hidden;\n  }\n\n  .color-provider .color-trigger-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      var(--checkerboard-dark),\n      var(--checkerboard-dark) 4px,\n      var(--checkerboard-light) 4px,\n      var(--checkerboard-light) 8px\n    );\n  }\n\n  .color-provider .color-trigger-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n  }\n\n  .color-provider .color-trigger-value {\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n\n  .color .controls {\n    @apply pb-3 px-3 space-y-3;\n  }\n\n  .input-group {\n    width: 100%;\n  }\n\n  .input-group > div:first-child {\n    flex: 1;\n  }\n\n  .input-group .input {\n    width: 100%;\n  }\n\n  .input-group .format {\n    flex-shrink: 0;\n    width: 85px;\n  }\n\n  .color[data-size=\"sm\"] .format {\n    width: 75px;\n  }\n\n  .canvas {\n    position: relative;\n    width: 240px;\n    height: 160px;\n    @apply mx-auto mt-2 rounded-sm;\n    cursor: crosshair;\n    touch-action: none;\n    display: flex;\n    flex-direction: column;\n  }\n\n  .canvas[data-size=\"sm\"] {\n    width: 200px;\n    height: 130px;\n  }\n\n  .canvas[data-size=\"lg\"] {\n    width: 280px;\n    height: 190px;\n  }\n\n  .canvas[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .canvas .canvas-inner {\n    position: relative;\n    width: 100%;\n    flex: 1;\n    overflow: hidden;\n    @apply rounded-sm;\n  }\n\n  .canvas .canvas-gradient-hue {\n    position: absolute;\n    inset: 0;\n    overflow: hidden;\n  }\n\n  .canvas .canvas-gradient-saturation {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to right, rgb(255, 255, 255), transparent);\n  }\n\n  .canvas .canvas-gradient-brightness {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to top, rgb(0, 0, 0), transparent);\n  }\n\n  .canvas .canvas-pointer {\n    --pointer-border: color-mix(in srgb, var(--foreground-200) 50%, transparent);\n\n    position: absolute;\n    width: 12px;\n    height: 12px;\n    border-radius: var(--radius-full);\n    border: 2px solid var(--pointer-border);\n    box-shadow:\n      0 0 0 1px rgb(0 0 0 / 0.3),\n      0 2px 4px rgb(0 0 0 / 0.3);\n    pointer-events: none;\n    transform: translate(-50%, -50%);\n    z-index: 10;\n  }\n\n  .hue-slider {\n    --track-height: calc(var(--spacing, 0.25rem) * 5);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --side-padding: var(--inline-padding, 2px);\n    --thumb-width: calc(var(--track-height) - (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --gradient-inset: 0;\n    --track-background: linear-gradient(\n      to right,\n      hsl(0, 100%, 50%),\n      hsl(60, 100%, 50%),\n      hsl(120, 100%, 50%),\n      hsl(180, 100%, 50%),\n      hsl(240, 100%, 50%),\n      hsl(300, 100%, 50%),\n      hsl(360, 100%, 50%)\n    );\n    --range-background: transparent;\n    --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: transparent;\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n  }\n\n  .hue-slider .hue-track {\n    position: relative;\n    width: 100%;\n    height: var(--track-height);\n    overflow: hidden;\n    @apply rounded-full;\n    background: transparent;\n  }\n\n  .hue-slider .hue-track::before {\n    content: \"\";\n    position: absolute;\n    inset-block: 0;\n    inset-inline: var(--gradient-inset);\n    @apply rounded-full;\n    background: var(--track-background);\n    pointer-events: none;\n  }\n\n  .hue-slider .hue-range {\n    background: transparent;\n  }\n\n  .hue-slider .hue-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    left: clamp(var(--thumb-inset, 0px), var(--position, 0%), calc(100% - var(--thumb-inset, 0px)));\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .opacity-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));\n    --padding-inline: var(--inline-padding, var(--padding-block));\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: transparent;\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    --checkerboard-dark: var(--background-800);\n    --checkerboard-light: var(--background-700);\n    --track-background:\n      linear-gradient(to right, transparent, var(--color-slider-opacity-color, rgb(0, 0, 0))),\n      repeating-linear-gradient(\n        45deg,\n        var(--checkerboard-dark),\n        var(--checkerboard-dark) 10px,\n        var(--checkerboard-light) 10px,\n        var(--checkerboard-light) 20px\n      );\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    @apply rounded-full;\n  }\n\n  .opacity-slider .opacity-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: hidden;\n    @apply rounded-full;\n    background: var(--track-background);\n  }\n\n  .opacity-slider .opacity-range {\n    background: transparent;\n  }\n\n  .opacity-slider .opacity-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .hue-slider .hue-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .hue-slider .hue-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover, var(--thumb-shadow));\n  }\n\n  .hue-slider .hue-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active, var(--thumb-shadow));\n  }\n\n  .opacity-slider .opacity-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .opacity-slider .opacity-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .opacity-slider .opacity-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .chroma-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));\n    --padding-inline: var(--inline-padding, var(--padding-block));\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: transparent;\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    @apply rounded-full;\n  }\n\n  .chroma-slider .chroma-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: hidden;\n    @apply rounded-full;\n  }\n\n  .chroma-slider .chroma-range {\n    background: transparent;\n  }\n\n  .chroma-slider .chroma-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .chroma-slider .chroma-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .chroma-slider .chroma-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .chroma-slider .chroma-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .recent-colors {\n    display: flex;\n    gap: 0.5rem;\n    overflow-x: auto;\n    padding-bottom: 0.25rem;\n  }\n\n  .recent-colors .recent-color-swatch {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: var(--radius-sm);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    cursor: pointer;\n    background: none;\n    padding: 0;\n    outline: none;\n    transition:\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .recent-colors .recent-color-swatch:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    transform: scale(1.1);\n    box-shadow: 0 0 0 2px var(--focus-visible);\n  }\n\n  .recent-colors .recent-color-swatch:active {\n    transform: scale(0.95);\n  }\n\n  .recent-colors .recent-color-swatch:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .preview-swatch {\n    --checkerboard-dark: var(--background-700);\n    --checkerboard-light: var(--background-800);\n\n    position: relative;\n    width: 36px;\n    height: 36px;\n    border-radius: var(--radius-sm);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);\n    overflow: hidden;\n    flex-shrink: 0;\n  }\n\n  .preview-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      var(--checkerboard-dark),\n      var(--checkerboard-dark) 6px,\n      var(--checkerboard-light) 6px,\n      var(--checkerboard-light) 12px\n    );\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 1;\n  }\n\n  .preview-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 2;\n  }\n\n  .preview {\n    --checkerboard-dark: var(--background-700);\n    --checkerboard-light: var(--background-800);\n\n    position: relative;\n    width: 64px;\n    height: 64px;\n    border-radius: var(--radius-sm);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);\n    overflow: hidden;\n  }\n\n  .preview::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      var(--checkerboard-dark),\n      var(--checkerboard-dark) 10px,\n      var(--checkerboard-light) 10px,\n      var(--checkerboard-light) 20px\n    );\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 1;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-400);\n  }\n\n  .color > .canvas {\n    .pointer {\n      --pointer-border: color-mix(in srgb, var(--foreground-200) 50%, transparent);\n    }\n  }\n    .color > .canvas .pointer {\n      --pointer-border: color-mix(in srgb, var(--foreground-200) 50%, transparent);\n    }\n\n  .color > .controls {\n    :where(.hue, .opacity) .thumb {\n      --background: white;\n    }\n\n    .opacity .track {\n      --checkerboard-dark: var(--background-800);\n      --checkerboard-light: var(--background-700);\n    }\n\n    .group :where(.swatch, .preview) {\n      --checkerboard-dark: var(--background-700);\n      --checkerboard-light: var(--background-800);\n    }\n  }\n    .color > .controls :where(.hue, .opacity) .thumb {\n      --background: white;\n    }\n\n    .color > .controls .opacity .track {\n      --checkerboard-dark: var(--background-800);\n      --checkerboard-light: var(--background-700);\n    }\n\n    .color > .controls .group :where(.swatch, .preview) {\n      --checkerboard-dark: var(--background-700);\n      --checkerboard-light: var(--background-800);\n    }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-500);\n\n    display: flex;\n    flex-direction: column;\n    gap: 1rem;\n    background-color: var(--background);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    width: 260px;\n  }\n\n  .color[data-disabled=\"true\"] {\n    opacity: 0.5;\n    pointer-events: none;\n  }\n\n  .color[data-variant=\"popover\"] {\n    background: transparent;\n    border-color: transparent;\n    border-radius: 0;\n  }\n\n  .color-provider {\n    @slot trigger {\n      --background: color-mix(in srgb, var(--background-800) 35%, transparent);\n      --background-hover: color-mix(in srgb, var(--background-700) 45%, transparent);\n      --foreground: var(--foreground-200);\n    }\n\n    @slot swatch {\n      --background: var(--background-700);\n      --foreground: var(--background-800);\n    }\n\n    display: inline-flex;\n    width: fit-content;\n  }\n\n  .color-provider .color-trigger {\n    --focus-visible: var(--accent-500);\n\n    display: inline-flex;\n    align-items: center;\n    gap: 0.625rem;\n    min-width: 170px;\n    height: 40px;\n    padding: 0 0.75rem;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    border-radius: var(--radius-sm, 0.375rem);\n    background: slot(trigger, background, var(--background, transparent));\n    color: slot(trigger, foreground, var(--foreground, currentColor));\n    cursor: pointer;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .color-provider .color-trigger:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background: slot(\n      trigger,\n      background-hover,\n      slot(trigger, background, var(--background, transparent))\n    );\n  }\n\n  .color-provider .color-trigger:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .color-provider .color-trigger[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .color-provider .color-trigger[data-size=\"sm\"] {\n    min-width: 150px;\n    height: 34px;\n    padding: 0 0.625rem;\n    font-size: var(--text-xs, 0.75rem);\n  }\n\n  .color-provider .color-trigger[data-size=\"lg\"] {\n    min-width: 190px;\n    height: 46px;\n    padding: 0 0.875rem;\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n  }\n\n  .color-provider .color-trigger-swatch {\n    position: relative;\n    width: 20px;\n    height: 20px;\n    flex: 0 0 auto;\n    border-radius: var(--radius-xs, 0.25rem);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    overflow: hidden;\n  }\n\n  .color-provider .color-trigger-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      slot(swatch, background, var(--background-700)),\n      slot(swatch, background, var(--background-700)) 4px,\n      slot(swatch, foreground, var(--background-800)) 4px,\n      slot(swatch, foreground, var(--background-800)) 8px\n    );\n  }\n\n  .color-provider .color-trigger-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n  }\n\n  .color-provider .color-trigger-value {\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n\n  .color .controls {\n    @apply pb-3 px-3 space-y-3;\n  }\n\n  .input-group {\n    width: 100%;\n  }\n\n  .input-group > div:first-child {\n    flex: 1;\n  }\n\n  .input-group .input {\n    width: 100%;\n  }\n\n  .input-group .format {\n    flex-shrink: 0;\n    width: 85px;\n  }\n\n  .color[data-size=\"sm\"] .format {\n    width: 75px;\n  }\n\n  .canvas {\n    position: relative;\n    width: 240px;\n    height: 160px;\n    @apply mx-auto mt-2 rounded-sm;\n    cursor: crosshair;\n    touch-action: none;\n    display: flex;\n    flex-direction: column;\n  }\n\n  .canvas[data-size=\"sm\"] {\n    width: 200px;\n    height: 130px;\n  }\n\n  .canvas[data-size=\"lg\"] {\n    width: 280px;\n    height: 190px;\n  }\n\n  .canvas[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .canvas .canvas-inner {\n    position: relative;\n    width: 100%;\n    flex: 1;\n    overflow: hidden;\n    @apply rounded-sm;\n  }\n\n  .canvas .canvas-gradient-hue {\n    position: absolute;\n    inset: 0;\n    overflow: hidden;\n  }\n\n  .canvas .canvas-gradient-saturation {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to right, rgb(255, 255, 255), transparent);\n  }\n\n  .canvas .canvas-gradient-brightness {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to top, rgb(0, 0, 0), transparent);\n  }\n\n  .canvas .canvas-pointer {\n    position: absolute;\n    width: 12px;\n    height: 12px;\n    border-radius: var(--radius-full);\n    border: 2px solid\n      slot(pointer, background, color-mix(in srgb, var(--foreground-200) 50%, transparent));\n    box-shadow:\n      0 0 0 1px rgb(0 0 0 / 0.3),\n      0 2px 4px rgb(0 0 0 / 0.3);\n    pointer-events: none;\n    transform: translate(-50%, -50%);\n    z-index: 10;\n  }\n\n  .hue-slider {\n    --track-height: calc(var(--spacing, 0.25rem) * 5);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --side-padding: var(--inline-padding, 2px);\n    --thumb-width: calc(var(--track-height) - (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --gradient-inset: 0;\n    --track-background: linear-gradient(\n      to right,\n      hsl(0, 100%, 50%),\n      hsl(60, 100%, 50%),\n      hsl(120, 100%, 50%),\n      hsl(180, 100%, 50%),\n      hsl(240, 100%, 50%),\n      hsl(300, 100%, 50%),\n      hsl(360, 100%, 50%)\n    );\n    --range-background: transparent;\n    --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n  }\n\n  .hue-slider .hue-track {\n    position: relative;\n    width: 100%;\n    height: var(--track-height);\n    overflow: visible;\n    @apply rounded-full;\n    background: transparent;\n  }\n\n  .hue-slider .hue-track::before {\n    content: \"\";\n    position: absolute;\n    inset-block: 0;\n    inset-inline: var(--gradient-inset);\n    @apply rounded-full;\n    background: var(--track-background);\n    pointer-events: none;\n  }\n\n  .hue-slider .hue-range {\n    background: transparent;\n  }\n\n  .hue-slider .hue-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .opacity-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));\n    --padding-inline: var(--inline-padding, var(--padding-block));\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    --track-background:\n      linear-gradient(to right, transparent, var(--color, rgb(0, 0, 0))),\n      repeating-linear-gradient(\n        45deg,\n        slot(track, background, var(--background-800)),\n        slot(track, background, var(--background-800)) 10px,\n        slot(track, foreground, var(--background-700)) 10px,\n        slot(track, foreground, var(--background-700)) 20px\n      );\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    @apply rounded-full;\n  }\n\n  .opacity-slider .opacity-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: visible;\n    @apply rounded-full;\n    background: var(--track-background);\n  }\n\n  .opacity-slider .opacity-range {\n    background: transparent;\n  }\n\n  .opacity-slider .opacity-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .hue-slider .hue-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .hue-slider .hue-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover, var(--thumb-shadow));\n  }\n\n  .hue-slider .hue-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active, var(--thumb-shadow));\n  }\n\n  .opacity-slider .opacity-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .opacity-slider .opacity-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .opacity-slider .opacity-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .chroma-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));\n    --padding-inline: var(--inline-padding, var(--padding-block));\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    @apply rounded-full;\n  }\n\n  .chroma-slider .chroma-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: visible;\n    @apply rounded-full;\n  }\n\n  .chroma-slider .chroma-range {\n    background: transparent;\n  }\n\n  .chroma-slider .chroma-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .chroma-slider .chroma-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .chroma-slider .chroma-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .chroma-slider .chroma-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .recent-colors {\n    display: flex;\n    gap: 0.5rem;\n    overflow-x: auto;\n    padding-bottom: 0.25rem;\n  }\n\n  .recent-colors .recent-color-swatch {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: slot(swatch, radius, var(--radius-sm));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    cursor: pointer;\n    background: none;\n    padding: 0;\n    outline: none;\n    transition:\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .recent-colors .recent-color-swatch:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    transform: scale(1.1);\n    box-shadow: 0 0 0 2px var(--focus-visible);\n  }\n\n  .recent-colors .recent-color-swatch:active {\n    transform: scale(0.95);\n  }\n\n  .recent-colors .recent-color-swatch:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .preview-swatch {\n    position: relative;\n    width: 36px;\n    height: 36px;\n    border-radius: slot(preview-swatch, radius, var(--radius-sm));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);\n    overflow: hidden;\n    flex-shrink: 0;\n  }\n\n  .preview-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      slot(preview-swatch, background, var(--background-700)),\n      slot(preview-swatch, background, var(--background-700)) 6px,\n      slot(preview-swatch, foreground, var(--background-800)) 6px,\n      slot(preview-swatch, foreground, var(--background-800)) 12px\n    );\n    border-radius: slot(preview-swatch, radius, var(--radius-sm));\n    pointer-events: none;\n    z-index: 1;\n  }\n\n  .preview-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 2;\n  }\n\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-400);\n\n    @slot pointer {\n      --background: color-mix(in srgb, var(--foreground-200) 50%, transparent);\n    }\n\n    @slot thumb {\n      --background: white;\n    }\n\n    @slot track {\n      --background: var(--background-800);\n      --foreground: var(--background-700);\n    }\n\n    @slot preview-swatch {\n      --background: var(--background-700);\n      --foreground: var(--background-800);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -36373,10 +38555,11 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--trigger-background",
+        "name": "--background",
         "value": "color-mix(in srgb, var(--background-800) 35%, transparent)",
-        "selector": ".color-provider .color-trigger",
+        "selector": ".color-provider",
         "atRules": [],
+        "slot": "trigger",
         "referencedVars": [
           "--background-800"
         ]
@@ -36384,15 +38567,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--background-800",
         "value": "unset",
-        "selector": ".color-provider .color-trigger",
+        "selector": ".color-provider",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--trigger-background-hover",
+        "name": "--background-hover",
         "value": "color-mix(in srgb, var(--background-700) 45%, transparent)",
-        "selector": ".color-provider .color-trigger",
+        "selector": ".color-provider",
         "atRules": [],
+        "slot": "trigger",
         "referencedVars": [
           "--background-700"
         ]
@@ -36400,15 +38584,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--background-700",
         "value": "unset",
-        "selector": ".color-provider .color-trigger",
+        "selector": ".color-provider",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--trigger-text",
+        "name": "--foreground",
         "value": "var(--foreground-200)",
-        "selector": ".color-provider .color-trigger",
+        "selector": ".color-provider",
         "atRules": [],
+        "slot": "trigger",
         "referencedVars": [
           "--foreground-200"
         ]
@@ -36416,9 +38601,29 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--foreground-200",
         "value": "unset",
-        "selector": ".color-provider .color-trigger",
+        "selector": ".color-provider",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "var(--background-700)",
+        "selector": ".color-provider",
+        "atRules": [],
+        "slot": "swatch",
+        "referencedVars": [
+          "--background-700"
+        ]
+      },
+      {
+        "name": "--foreground",
+        "value": "var(--background-800)",
+        "selector": ".color-provider",
+        "atRules": [],
+        "slot": "swatch",
+        "referencedVars": [
+          "--background-800"
+        ]
       },
       {
         "name": "--focus-visible",
@@ -36437,25 +38642,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--checkerboard-dark",
-        "value": "var(--background-700)",
-        "selector": ".color-provider .color-trigger",
-        "atRules": [],
-        "referencedVars": [
-          "--background-700"
-        ]
-      },
-      {
-        "name": "--checkerboard-light",
-        "value": "var(--background-800)",
-        "selector": ".color-provider .color-trigger",
-        "atRules": [],
-        "referencedVars": [
-          "--background-800"
-        ]
-      },
-      {
         "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-700",
         "value": "unset",
         "selector": ".color-provider .color-trigger",
         "atRules": [],
@@ -36495,6 +38689,40 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".color-provider .color-trigger",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
       },
       {
         "name": "--font-body",
@@ -36573,11 +38801,31 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--trigger-background-hover",
+        "name": "--background",
         "value": "unset",
         "selector": ".color-provider .color-trigger:hover",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background-hover",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger:hover",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger:hover",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
       },
       {
         "name": "--focus-visible",
@@ -36659,18 +38907,38 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "border"
       },
       {
-        "name": "--checkerboard-dark",
+        "name": "--background-700",
         "value": "unset",
         "selector": ".color-provider .color-trigger-swatch::before",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--checkerboard-light",
+        "name": "--background-800",
         "value": "unset",
         "selector": ".color-provider .color-trigger-swatch::before",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger-swatch::before",
+        "atRules": [],
+        "referencedVars": [
+          "--background-700"
+        ],
+        "slot": "swatch"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".color-provider .color-trigger-swatch::before",
+        "atRules": [],
+        "referencedVars": [
+          "--background-800"
+        ],
+        "slot": "swatch"
       },
       {
         "name": "--preview-color",
@@ -36687,13 +38955,11 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--pointer-border",
-        "value": "color-mix(in srgb, var(--foreground-200) 50%, transparent)",
+        "name": "--radius-full",
+        "value": "unset",
         "selector": ".canvas .canvas-pointer",
         "atRules": [],
-        "referencedVars": [
-          "--foreground-200"
-        ]
+        "referencedVars": []
       },
       {
         "name": "--foreground-200",
@@ -36703,11 +38969,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--radius-full",
+        "name": "--background",
         "value": "unset",
         "selector": ".canvas .canvas-pointer",
         "atRules": [],
-        "referencedVars": []
+        "referencedVars": [
+          "--foreground-200"
+        ],
+        "slot": "pointer"
       },
       {
         "name": "--track-height",
@@ -36822,10 +39091,18 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-background",
-        "value": "transparent",
+        "value": "slot(thumb, background, transparent)",
         "selector": ".hue-slider",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".hue-slider",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
       },
       {
         "name": "--thumb-border",
@@ -36886,20 +39163,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--thumb-shadow-active",
         "value": "0 0 0 1px rgb(0 0 0 / 0.24)",
-        "selector": ".hue-slider .hue-thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--thumb-inset",
-        "value": "unset",
-        "selector": ".hue-slider .hue-thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--position",
-        "value": "unset",
         "selector": ".hue-slider .hue-thumb",
         "atRules": [],
         "referencedVars": []
@@ -37062,10 +39325,18 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-background",
-        "value": "transparent",
+        "value": "slot(thumb, background, transparent)",
         "selector": ".opacity-slider",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".opacity-slider",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
       },
       {
         "name": "--thumb-border",
@@ -37096,13 +39367,22 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--checkerboard-dark",
-        "value": "var(--background-800)",
+        "name": "--track-background",
+        "value": "linear-gradient(to right, transparent, var(--color, rgb(0, 0, 0))),\n      repeating-linear-gradient(\n        45deg,\n        slot(track, background, var(--background-800)),\n        slot(track, background, var(--background-800)) 10px,\n        slot(track, foreground, var(--background-700)) 10px,\n        slot(track, foreground, var(--background-700)) 20px\n      )",
         "selector": ".opacity-slider",
         "atRules": [],
         "referencedVars": [
-          "--background-800"
+          "--color",
+          "--background-800",
+          "--background-700"
         ]
+      },
+      {
+        "name": "--color",
+        "value": "unset",
+        "selector": ".opacity-slider",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--background-800",
@@ -37112,15 +39392,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--checkerboard-light",
-        "value": "var(--background-700)",
-        "selector": ".opacity-slider",
-        "atRules": [],
-        "referencedVars": [
-          "--background-700"
-        ]
-      },
-      {
         "name": "--background-700",
         "value": "unset",
         "selector": ".opacity-slider",
@@ -37128,22 +39399,24 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--track-background",
-        "value": "linear-gradient(to right, transparent, var(--color-slider-opacity-color, rgb(0, 0, 0))),\n      repeating-linear-gradient(\n        45deg,\n        var(--checkerboard-dark),\n        var(--checkerboard-dark) 10px,\n        var(--checkerboard-light) 10px,\n        var(--checkerboard-light) 20px\n      )",
-        "selector": ".opacity-slider",
-        "atRules": [],
-        "referencedVars": [
-          "--color-slider-opacity-color",
-          "--checkerboard-dark",
-          "--checkerboard-light"
-        ]
-      },
-      {
-        "name": "--color-slider-opacity-color",
+        "name": "--background",
         "value": "unset",
         "selector": ".opacity-slider",
         "atRules": [],
-        "referencedVars": []
+        "referencedVars": [
+          "--background-800"
+        ],
+        "slot": "track"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".opacity-slider",
+        "atRules": [],
+        "referencedVars": [
+          "--background-700"
+        ],
+        "slot": "track"
       },
       {
         "name": "--size",
@@ -37423,10 +39696,18 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-background",
-        "value": "transparent",
+        "value": "slot(thumb, background, transparent)",
         "selector": ".chroma-slider",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".chroma-slider",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
       },
       {
         "name": "--thumb-border",
@@ -37571,6 +39852,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--radius",
+        "value": "unset",
+        "selector": ".recent-colors .recent-color-swatch",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-sm"
+        ],
+        "slot": "swatch"
+      },
+      {
         "name": "--border-width-base",
         "value": "unset",
         "selector": ".recent-colors .recent-color-swatch",
@@ -37675,38 +39966,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--checkerboard-dark",
-        "value": "var(--background-700)",
-        "selector": ".preview-swatch",
-        "atRules": [],
-        "referencedVars": [
-          "--background-700"
-        ]
-      },
-      {
-        "name": "--background-700",
-        "value": "unset",
-        "selector": ".preview-swatch",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--checkerboard-light",
-        "value": "var(--background-800)",
-        "selector": ".preview-swatch",
-        "atRules": [],
-        "referencedVars": [
-          "--background-800"
-        ]
-      },
-      {
-        "name": "--background-800",
-        "value": "unset",
-        "selector": ".preview-swatch",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
         "name": "--radius-sm",
         "value": "unset",
         "selector": ".preview-swatch",
@@ -37714,7 +39973,24 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--radius",
+        "value": "unset",
+        "selector": ".preview-swatch",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-sm"
+        ],
+        "slot": "preview-swatch"
+      },
+      {
         "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".preview-swatch",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-700",
         "value": "unset",
         "selector": ".preview-swatch",
         "atRules": [],
@@ -37749,18 +40025,38 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "border"
       },
       {
-        "name": "--checkerboard-dark",
+        "name": "--background-700",
         "value": "unset",
         "selector": ".preview-swatch::before",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--checkerboard-light",
+        "name": "--background-800",
         "value": "unset",
         "selector": ".preview-swatch::before",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".preview-swatch::before",
+        "atRules": [],
+        "referencedVars": [
+          "--background-700"
+        ],
+        "slot": "preview-swatch"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".preview-swatch::before",
+        "atRules": [],
+        "referencedVars": [
+          "--background-800"
+        ],
+        "slot": "preview-swatch"
       },
       {
         "name": "--radius-sm",
@@ -37768,6 +40064,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".preview-swatch::before",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--radius",
+        "value": "unset",
+        "selector": ".preview-swatch::before",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-sm"
+        ],
+        "slot": "preview-swatch"
       },
       {
         "name": "--preview-color",
@@ -37782,175 +40088,77 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".preview-swatch::after",
         "atRules": [],
         "referencedVars": []
-      },
-      {
-        "name": "--checkerboard-dark",
-        "value": "var(--background-700)",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": [
-          "--background-700"
-        ]
-      },
-      {
-        "name": "--background-700",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--checkerboard-light",
-        "value": "var(--background-800)",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": [
-          "--background-800"
-        ]
-      },
-      {
-        "name": "--background-800",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--radius-sm",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--border-width-base",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": [
-          "--border-width-base"
-        ],
-        "slot": "border"
-      },
-      {
-        "name": "--style",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "border"
-      },
-      {
-        "name": "--background",
-        "value": "unset",
-        "selector": ".preview",
-        "atRules": [],
-        "referencedVars": [
-          "--background-700"
-        ],
-        "slot": "border"
-      },
-      {
-        "name": "--checkerboard-dark",
-        "value": "unset",
-        "selector": ".preview::before",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--checkerboard-light",
-        "value": "unset",
-        "selector": ".preview::before",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--radius-sm",
-        "value": "unset",
-        "selector": ".preview::before",
-        "atRules": [],
-        "referencedVars": []
       }
     ],
     "styleableParts": [
       {
-        "name": "provider"
+        "name": "hue"
+      },
+      {
+        "name": "saturation"
+      },
+      {
+        "name": "brightness"
       },
       {
         "name": "root"
       },
       {
-        "name": "trigger"
+        "name": "inner"
       },
       {
-        "name": "triggerSwatch"
+        "name": "gradient.hue"
       },
       {
-        "name": "triggerValue"
+        "name": "gradient.saturation"
       },
       {
-        "name": "controls"
+        "name": "gradient.brightness"
       },
       {
-        "name": "canvas"
+        "name": "pointer"
       },
       {
-        "name": "canvasInner"
+        "name": "track"
       },
       {
-        "name": "canvasGradient.hue"
+        "name": "thumb"
       },
       {
-        "name": "canvasGradient.saturation"
+        "name": "hue.root"
       },
       {
-        "name": "canvasGradient.brightness"
+        "name": "hue.track"
       },
       {
-        "name": "canvasPointer"
+        "name": "hue.thumb"
       },
       {
-        "name": "slider.hue"
+        "name": "opacity.root"
       },
       {
-        "name": "slider.opacity"
+        "name": "opacity.track"
       },
       {
-        "name": "slider.chroma"
+        "name": "opacity.thumb"
       },
       {
-        "name": "sliderTrack.hue"
+        "name": "chroma.root"
       },
       {
-        "name": "sliderTrack.opacity"
+        "name": "chroma.track"
       },
       {
-        "name": "sliderTrack.chroma"
+        "name": "chroma.thumb"
       },
       {
-        "name": "sliderThumb.hue"
+        "name": "swatch"
       },
       {
-        "name": "sliderThumb.opacity"
+        "name": "value"
       },
       {
-        "name": "sliderThumb.chroma"
-      },
-      {
-        "name": "recentColors"
-      },
-      {
-        "name": "recentColorSwatch"
-      },
-      {
-        "name": "inputGroup"
+        "name": "group"
       },
       {
         "name": "input"
@@ -37960,150 +40168,575 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "previewSwatch"
+      },
+      {
+        "name": "provider"
+      },
+      {
+        "name": "trigger.root"
+      },
+      {
+        "name": "trigger.swatch"
+      },
+      {
+        "name": "trigger.value"
+      },
+      {
+        "name": "controls"
+      },
+      {
+        "name": "canvas.root"
+      },
+      {
+        "name": "canvas.inner"
+      },
+      {
+        "name": "canvas.gradient.hue"
+      },
+      {
+        "name": "canvas.gradient.saturation"
+      },
+      {
+        "name": "canvas.gradient.brightness"
+      },
+      {
+        "name": "canvas.pointer"
+      },
+      {
+        "name": "slider.hue.root"
+      },
+      {
+        "name": "slider.hue.track"
+      },
+      {
+        "name": "slider.hue.thumb"
+      },
+      {
+        "name": "slider.opacity.root"
+      },
+      {
+        "name": "slider.opacity.track"
+      },
+      {
+        "name": "slider.opacity.thumb"
+      },
+      {
+        "name": "slider.chroma.root"
+      },
+      {
+        "name": "slider.chroma.track"
+      },
+      {
+        "name": "slider.chroma.thumb"
+      },
+      {
+        "name": "recentColors.root"
+      },
+      {
+        "name": "recentColors.swatch"
+      },
+      {
+        "name": "input.group"
+      },
+      {
+        "name": "input.input"
+      },
+      {
+        "name": "input.format"
+      },
+      {
+        "name": "input.previewSwatch"
       }
     ],
     "styleableGroups": [
+      {
+        "name": "ColorCanvasGradientStyleSlots",
+        "slots": [
+          {
+            "name": "hue",
+            "description": "The hue-tinted base layer.",
+            "type": "Style"
+          },
+          {
+            "name": "saturation",
+            "description": "The horizontal white-to-transparent saturation layer.",
+            "type": "Style"
+          },
+          {
+            "name": "brightness",
+            "description": "The vertical transparent-to-black brightness layer.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "ColorCanvasStyleSlots",
+        "slots": [
+          {
+            "name": "root",
+            "description": "The focusable canvas interaction surface.",
+            "type": "Style"
+          },
+          {
+            "name": "inner",
+            "description": "The clipped gradient container.",
+            "type": "Style"
+          },
+          {
+            "name": "gradient.hue",
+            "description": "The hue-tinted base layer.",
+            "type": "Style"
+          },
+          {
+            "name": "gradient.saturation",
+            "description": "The horizontal white-to-transparent saturation layer.",
+            "type": "Style"
+          },
+          {
+            "name": "gradient.brightness",
+            "description": "The vertical transparent-to-black brightness layer.",
+            "type": "Style"
+          },
+          {
+            "name": "pointer",
+            "description": "The current-color pointer.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "ColorSliderChannelStyleSlots",
+        "slots": [
+          {
+            "name": "root",
+            "description": "The slider interaction surface.",
+            "type": "Style"
+          },
+          {
+            "name": "track",
+            "description": "The channel gradient track.",
+            "type": "Style"
+          },
+          {
+            "name": "thumb",
+            "description": "The draggable slider thumb.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "ColorSliderStyleSlots",
+        "slots": [
+          {
+            "name": "hue.root",
+            "description": "The slider interaction surface.",
+            "type": "Style"
+          },
+          {
+            "name": "hue.track",
+            "description": "The channel gradient track.",
+            "type": "Style"
+          },
+          {
+            "name": "hue.thumb",
+            "description": "The draggable slider thumb.",
+            "type": "Style"
+          },
+          {
+            "name": "opacity.root",
+            "description": "The slider interaction surface.",
+            "type": "Style"
+          },
+          {
+            "name": "opacity.track",
+            "description": "The channel gradient track.",
+            "type": "Style"
+          },
+          {
+            "name": "opacity.thumb",
+            "description": "The draggable slider thumb.",
+            "type": "Style"
+          },
+          {
+            "name": "chroma.root",
+            "description": "The slider interaction surface.",
+            "type": "Style"
+          },
+          {
+            "name": "chroma.track",
+            "description": "The channel gradient track.",
+            "type": "Style"
+          },
+          {
+            "name": "chroma.thumb",
+            "description": "The draggable slider thumb.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "ColorTriggerStyleSlots",
+        "slots": [
+          {
+            "name": "root",
+            "description": "The trigger button.",
+            "type": "Style"
+          },
+          {
+            "name": "swatch",
+            "description": "The default trigger color swatch.",
+            "type": "Style"
+          },
+          {
+            "name": "value",
+            "description": "The default trigger color value.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "ColorRecentColorsStyleSlots",
+        "slots": [
+          {
+            "name": "root",
+            "description": "The recent-colors group.",
+            "type": "Style"
+          },
+          {
+            "name": "swatch",
+            "description": "Every recent-color button.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "ColorInputStyleSlots",
+        "slots": [
+          {
+            "name": "group",
+            "description": "The grouped input, format selector, and optional preview.",
+            "type": "Style"
+          },
+          {
+            "name": "input",
+            "description": "The editable color text field.",
+            "type": "Style"
+          },
+          {
+            "name": "format",
+            "description": "The color-format selector.",
+            "type": "Style"
+          },
+          {
+            "name": "previewSwatch",
+            "description": "The optional color preview swatch.",
+            "type": "Style"
+          }
+        ]
+      },
       {
         "name": "ColorStyleSlots",
         "slots": [
           {
             "name": "provider",
-            "description": "",
+            "description": "The compound-component provider rendered when custom children are supplied.",
             "type": "Style"
           },
           {
             "name": "root",
-            "description": "",
+            "description": "The Color.Area picker surface.",
             "type": "Style"
           },
           {
-            "name": "trigger",
-            "description": "",
+            "name": "trigger.root",
+            "description": "The trigger button.",
             "type": "Style"
           },
           {
-            "name": "triggerSwatch",
-            "description": "",
+            "name": "trigger.swatch",
+            "description": "The default trigger color swatch.",
             "type": "Style"
           },
           {
-            "name": "triggerValue",
-            "description": "",
+            "name": "trigger.value",
+            "description": "The default trigger color value.",
             "type": "Style"
           },
           {
             "name": "controls",
-            "description": "",
+            "description": "The picker controls below the canvas.",
             "type": "Style"
           },
           {
-            "name": "canvas",
-            "description": "",
+            "name": "canvas.root",
+            "description": "The focusable canvas interaction surface.",
             "type": "Style"
           },
           {
-            "name": "canvasInner",
-            "description": "",
+            "name": "canvas.inner",
+            "description": "The clipped gradient container.",
             "type": "Style"
           },
           {
-            "name": "canvasGradient.hue",
-            "description": "",
+            "name": "canvas.gradient.hue",
+            "description": "The hue-tinted base layer.",
             "type": "Style"
           },
           {
-            "name": "canvasGradient.saturation",
-            "description": "",
+            "name": "canvas.gradient.saturation",
+            "description": "The horizontal white-to-transparent saturation layer.",
             "type": "Style"
           },
           {
-            "name": "canvasGradient.brightness",
-            "description": "",
+            "name": "canvas.gradient.brightness",
+            "description": "The vertical transparent-to-black brightness layer.",
             "type": "Style"
           },
           {
-            "name": "canvasPointer",
-            "description": "",
+            "name": "canvas.pointer",
+            "description": "The current-color pointer.",
             "type": "Style"
           },
           {
-            "name": "slider.hue",
-            "description": "",
+            "name": "slider.hue.root",
+            "description": "The slider interaction surface.",
             "type": "Style"
           },
           {
-            "name": "slider.opacity",
-            "description": "",
+            "name": "slider.hue.track",
+            "description": "The channel gradient track.",
             "type": "Style"
           },
           {
-            "name": "slider.chroma",
-            "description": "",
+            "name": "slider.hue.thumb",
+            "description": "The draggable slider thumb.",
             "type": "Style"
           },
           {
-            "name": "sliderTrack.hue",
-            "description": "",
+            "name": "slider.opacity.root",
+            "description": "The slider interaction surface.",
             "type": "Style"
           },
           {
-            "name": "sliderTrack.opacity",
-            "description": "",
+            "name": "slider.opacity.track",
+            "description": "The channel gradient track.",
             "type": "Style"
           },
           {
-            "name": "sliderTrack.chroma",
-            "description": "",
+            "name": "slider.opacity.thumb",
+            "description": "The draggable slider thumb.",
             "type": "Style"
           },
           {
-            "name": "sliderThumb.hue",
-            "description": "",
+            "name": "slider.chroma.root",
+            "description": "The slider interaction surface.",
             "type": "Style"
           },
           {
-            "name": "sliderThumb.opacity",
-            "description": "",
+            "name": "slider.chroma.track",
+            "description": "The channel gradient track.",
             "type": "Style"
           },
           {
-            "name": "sliderThumb.chroma",
-            "description": "",
+            "name": "slider.chroma.thumb",
+            "description": "The draggable slider thumb.",
             "type": "Style"
           },
           {
-            "name": "recentColors",
-            "description": "",
+            "name": "recentColors.root",
+            "description": "The recent-colors group.",
             "type": "Style"
           },
           {
-            "name": "recentColorSwatch",
-            "description": "",
+            "name": "recentColors.swatch",
+            "description": "Every recent-color button.",
             "type": "Style"
           },
           {
-            "name": "inputGroup",
-            "description": "",
+            "name": "input.group",
+            "description": "The grouped input, format selector, and optional preview.",
             "type": "Style"
           },
           {
-            "name": "input",
-            "description": "",
+            "name": "input.input",
+            "description": "The editable color text field.",
             "type": "Style"
           },
           {
-            "name": "format",
-            "description": "",
+            "name": "input.format",
+            "description": "The color-format selector.",
             "type": "Style"
           },
           {
-            "name": "previewSwatch",
-            "description": "",
+            "name": "input.previewSwatch",
+            "description": "The optional color preview swatch.",
             "type": "Style"
           }
         ]
       }
-    ]
+    ],
+    "documentation": {
+      "quickStart": {
+        "title": "How to style Color",
+        "description": "Use className for the picker surface, styles for named Color anatomy, CSS variables for cascading defaults, and data attributes for interaction states.",
+        "recipes": [
+          {
+            "title": "Size the picker surface",
+            "description": "Use className when the Color.Area root is the only target.",
+            "code": "<Color className=\"w-80\" />"
+          },
+          {
+            "title": "Style canvas and slider anatomy",
+            "description": "Use nested styles keys to address stable compound parts.",
+            "code": "<Color\n  styles={{\n    canvas: {\n      root: \"ring-1 ring-accent-500\",\n      pointer: \"size-4\",\n    },\n    slider: {\n      hue: { track: \"h-5\", thumb: \"ring-2 ring-white\" },\n    },\n  }}\n/>"
+          },
+          {
+            "title": "Customize cascading colors",
+            "description": "Set generic variables and anatomy slot variables on the public Color root.",
+            "code": ".color {\n  --background: var(--background-900);\n\n  @slot pointer {\n    --background: var(--accent-200);\n  }\n}"
+          },
+          {
+            "title": "Style focus state",
+            "description": "Target stable state attributes from the corresponding styles slot.",
+            "code": "<Color\n  styles={{\n    canvas: {\n      root: \"data-[focus-visible=true]:ring-2 data-[focus-visible=true]:ring-accent-500\",\n    },\n  }}\n/>"
+          }
+        ],
+        "notice": "Color.Trigger renders Color.Area in a portalled Popover. Classes on the compound provider are not ancestors of the picker panel; use Color styles slots, picker variables, or popoverStyles for detached content."
+      },
+      "anatomy": {
+        "title": "Anatomy",
+        "description": "Each dotted name maps to a stable Color styles key and rendered target.",
+        "groupOrder": [
+          "ColorStyleSlots",
+          "ColorTriggerStyleSlots",
+          "ColorCanvasStyleSlots",
+          "ColorCanvasGradientStyleSlots",
+          "ColorSliderStyleSlots",
+          "ColorSliderChannelStyleSlots",
+          "ColorRecentColorsStyleSlots",
+          "ColorInputStyleSlots"
+        ],
+        "groupLabels": {
+          "ColorStyleSlots": "Color",
+          "ColorTriggerStyleSlots": "Color.Trigger",
+          "ColorCanvasStyleSlots": "Color.Canvas",
+          "ColorCanvasGradientStyleSlots": "Color.Canvas gradient",
+          "ColorSliderStyleSlots": "Color.Slider channels",
+          "ColorSliderChannelStyleSlots": "Color.Slider channel",
+          "ColorRecentColorsStyleSlots": "Recent colors",
+          "ColorInputStyleSlots": "Color input"
+        }
+      },
+      "customization": {
+        "title": "Customize Color",
+        "description": "Set generic variables on the public Color roots and use @slot for values owned by canvas, slider, trigger, and swatch anatomy.",
+        "groups": [
+          {
+            "title": "Picker surface",
+            "description": "Control the picker fill, focus ring, border, and corner shape.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".color",
+                "description": "Sets the Color.Area surface fill."
+              },
+              {
+                "name": "--focus-visible",
+                "selector": ".color",
+                "description": "Sets the canvas and slider focus-ring color."
+              },
+              {
+                "name": "--background",
+                "selector": ".color",
+                "slot": "border",
+                "description": "Sets the picker border color."
+              },
+              {
+                "name": "--radius-sm",
+                "selector": ".color",
+                "description": "Sets the picker and compact anatomy corner radius in this scope."
+              }
+            ],
+            "code": ".color {\n  --background: var(--background-900);\n  --focus-visible: var(--accent-400);\n  --radius-sm: 0.5rem;\n\n  @slot border {\n    --background: var(--background-600);\n  }\n}"
+          },
+          {
+            "title": "Canvas pointer",
+            "description": "Change the pointer border independently of the canvas surface.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".color",
+                "slot": "pointer",
+                "description": "Sets the canvas pointer border color."
+              }
+            ],
+            "code": ".color {\n  @slot pointer {\n    --background: var(--accent-100);\n  }\n}"
+          },
+          {
+            "title": "Slider tracks and thumbs",
+            "description": "Configure shared channel-track checkerboard colors and thumb fill.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".color",
+                "slot": "track",
+                "description": "Sets the dark opacity-track checkerboard color."
+              },
+              {
+                "name": "--foreground",
+                "selector": ".color",
+                "slot": "track",
+                "description": "Sets the light opacity-track checkerboard color."
+              },
+              {
+                "name": "--background",
+                "selector": ".color",
+                "slot": "thumb",
+                "description": "Sets the shared channel thumb fill."
+              }
+            ],
+            "code": ".color {\n  @slot track {\n    --background: var(--background-800);\n    --foreground: var(--background-600);\n  }\n\n  @slot thumb {\n    --background: white;\n  }\n}"
+          },
+          {
+            "title": "Trigger and preview swatches",
+            "description": "Customize detached trigger colors and picker preview checkerboards at their owning roots.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".color-provider",
+                "slot": "trigger",
+                "description": "Sets the trigger button fill."
+              },
+              {
+                "name": "--background-hover",
+                "selector": ".color-provider",
+                "slot": "trigger",
+                "description": "Sets the trigger button fill while hovered."
+              },
+              {
+                "name": "--foreground",
+                "selector": ".color-provider",
+                "slot": "trigger",
+                "description": "Sets the trigger value color."
+              },
+              {
+                "name": "--background",
+                "selector": ".color",
+                "slot": "preview-swatch",
+                "description": "Sets the dark preview checkerboard color."
+              },
+              {
+                "name": "--foreground",
+                "selector": ".color",
+                "slot": "preview-swatch",
+                "description": "Sets the light preview checkerboard color."
+              }
+            ],
+            "code": ".color-provider {\n  @slot trigger {\n    --background: var(--background-800);\n    --background-hover: var(--background-700);\n    --foreground: var(--foreground-100);\n  }\n}\n\n.color {\n  @slot preview-swatch {\n    --background: var(--background-700);\n    --foreground: var(--background-900);\n  }\n}"
+          }
+        ]
+      }
+    }
   },
   "command": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    min-width: 0;\n  }\n\n  .content {\n    display: grid;\n    grid-template-rows: auto minmax(0, 1fr) auto;\n    min-height: 0;\n    /* Single source of truth for the palette height: the search row and footer\n       keep their intrinsic size and the list absorbs whatever is left, so\n       raising --height grows the scroll region instead of doing nothing. */\n    --content-max-height: var(--height, min(32rem, 60dvh));\n    max-height: var(--content-max-height);\n  }\n\n  /* Overlay Container */\n  .overlay {\n    @apply fixed inset-0;\n    z-index: 999;\n    /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */\n    background-color: var(--overlay);\n    backdrop-filter: var(--overlay-backdrop);\n    opacity: 0;\n    pointer-events: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      backdrop-filter 180ms var(--ease-snappy-pop, ease-out);\n  }\n\n  .overlay[data-state=\"entered\"] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  /* Content */\n  .overlay .content {\n    @apply absolute;\n    /* Anchor the palette's top center at a viewport-relative position. Keeping\n       the anchor on the top edge prevents filtering from moving the palette\n       when its animated height changes. */\n    offset-path: ray(0deg at var(--origin, 50% 20%));\n    offset-distance: 0;\n    offset-anchor: center top;\n    offset-rotate: 0deg;\n    width: min(var(--width, 28rem), calc(100% - 2rem));\n    /* Alignment positioning keeps the palette on screen at any origin, so the\n       cap only has to leave the viewport gutter. */\n    max-height: min(var(--content-max-height), calc(100% - 2rem));\n    /* Keep opening motion anchored to the same stable top edge. */\n    transform-origin: center top;\n    border-radius: var(--radius-sm);\n    background: var(--background);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    box-shadow: var(--background-shadow);\n    opacity: 0;\n    transform: scale(0.98);\n    pointer-events: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms var(--ease-snappy-pop, ease-out);\n  }\n\n  .overlay[data-state=\"entered\"] .content {\n    opacity: 1;\n    transform: scale(1);\n    pointer-events: auto;\n  }\n\n  .embedded {\n    @apply relative;\n    width: min(var(--width, 100%), 100%);\n    transform-origin: top center;\n    border-radius: var(--radius-sm);\n    background: var(--background);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    box-shadow: var(--background-shadow);\n  }\n\n  .inner {\n    @apply pt-1.5;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n    /* Frame's SVG stroke is a documented decorative API, outside the border slot contract. */\n    --stroke-color: var(--border);\n    --fill: var(--background);\n    --frame-radius: var(--radius-sm);\n  }\n\n  /* Frame wraps its children in a div; it has to shrink with the Frame so the\n     scroll region resolves its height against the palette, not its content. */\n  .inner > div {\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n    min-height: 0;\n    overflow: hidden;\n  }\n\n  /* Search Section */\n  .search {\n    @apply flex p-1.5;\n    --input-active-box-shadow: none;\n  }\n\n  .search :global(.input-scope) {\n    flex: 1;\n    min-width: 0;\n  }\n\n  .input {\n    background: transparent;\n    box-shadow: none;\n    font-weight: var(--font-weight-body-medium, 500);\n  }\n\n  .search :global([data-focus-indicator=\"local\"]) {\n    display: none;\n  }\n\n  .input-empty :global([data-actions-position=\"right\"]) {\n    visibility: hidden;\n  }\n\n  /* List Section */\n  .list {\n    @apply py-0.5 px-2 space-y-2;\n    border-radius: var(--frame-radius) var(--frame-radius) 0 0;\n  }\n\n  .list :global([role=\"listbox\"]) {\n    @apply flex w-full flex-col;\n  }\n\n  .item {\n    @apply flex items-center justify-between rounded-sm px-2 py-0.5 cursor-pointer;\n    border-radius: 0.375rem;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: var(--background);\n    color: var(--foreground);\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item-content {\n    @apply flex min-w-0 flex-1 items-center gap-2.5;\n    flex: 1;\n  }\n\n  .item-icon {\n    @apply h-8 w-8 self-start rounded-sm;\n    background-color: var(--background-800);\n    color: var(--foreground-400);\n  }\n\n  .item-labels {\n    flex: 1;\n    @apply min-w-0;\n  }\n\n  .item .label {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-sm, 1.25rem));\n    color: var(--foreground);\n    @apply overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item .description {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-body, 1.5));\n    @apply overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .hint-wrapper {\n    @apply flex items-center;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .category-header {\n    @apply px-2 py-1.5 mt-2 first:mt-0;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  /* Empty State */\n  .empty {\n    padding: 1.5rem 1rem;\n    text-align: center;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-body, 1.5));\n    color: var(--foreground);\n  }\n\n  /* Footer */\n  .footer {\n    @apply flex w-full items-center gap-2 px-1.5 py-2;\n    background-color: var(--background);\n    border-top: slot(border, width, 1px) slot(border, style, solid)\n      slot(border, background, transparent);\n    justify-content: flex-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .overlay,\n    .content {\n      transition: none;\n    }\n  }\n}\n",
@@ -42382,7 +45015,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "group": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .group {\n    --radius-size: calc(var(--spacing) * 1.5);\n    --padding-size: var(--radius-size);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)));\n    --text-height: calc(0.8em * var(--leading-tight, 1.25));\n    --vertical-spacing: calc(var(--spacing) * 4);\n    --border-height: calc(slot(border, width, var(--border-width-base, 1px)) * 2);\n    --padding-height: calc(var(--padding-size) * 2);\n    --control-height: calc(var(--text-height) + var(--vertical-spacing) + var(--border-height));\n    --item-height: max(\n      calc(var(--control-height) - var(--padding-height) - var(--border-height)),\n      0px\n    );\n\n    @apply flex overflow-hidden shrink-0 box-border;\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n    padding: var(--padding-size);\n\n    &.horizontal {\n      @apply flex-row items-stretch;\n      block-size: var(--control-height);\n\n      .item.divider {\n        margin-block: calc(var(--padding-size) * -1);\n      }\n      .item [role=\"separator\"][aria-orientation=\"vertical\"] {\n        block-size: 100%;\n      }\n    }\n\n    &.vertical {\n      @apply flex-col;\n\n      .item.divider {\n        margin-inline: calc(var(--padding-size) * -1);\n      }\n      .item [role=\"separator\"][aria-orientation=\"horizontal\"] {\n        inline-size: 100%;\n      }\n    }\n\n    &.none {\n      --padding-size: 0px;\n      @apply gap-0;\n    }\n\n    &.xs {\n      --radius-size: calc(var(--spacing) * 0.875);\n      @apply space-x-0.5;\n    }\n\n    &.sm {\n      --radius-size: calc(var(--spacing) * 1.25);\n      @apply space-x-1;\n    }\n  }\n\n  .item {\n    @apply flex items-stretch;\n    position: relative;\n    isolation: isolate;\n    box-sizing: border-box;\n    min-inline-size: 0;\n    border-radius: slot(item, radius, 0);\n    overflow: visible;\n\n    &.grow {\n      flex: 1;\n    }\n\n    &.divider {\n      @apply p-0 shrink-0 flex-none;\n\n      > [role=\"separator\"] {\n        flex: 0 0 auto;\n      }\n    }\n  }\n\n  :is(.button, .input, .select, .expand) {\n    block-size: 100%;\n    min-block-size: var(--item-height);\n    min-inline-size: 0;\n    box-sizing: border-box;\n    position: relative;\n    isolation: isolate;\n    overflow: visible;\n  }\n\n  .button {\n    @apply flex box-border;\n    /* Keep connected controls geometrically stable while pressed. The theme's\n       pressed colors provide feedback without pulling the button away from its\n       neighboring group items. Use no transform at all rather than scale(1),\n       which can still subtly alter text rendering on a composited layer.\n       Standalone Buttons retain their scale effect. */\n    --press-transform: none;\n    inline-size: auto;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n  }\n\n  /* Button resolves icon-only state itself. Put the square sizing contract on\n     the flex item so its intrinsic inline contribution matches its rendered\n     width after the Group's block size is resolved. */\n  .horizontal .item:has(.button[data-icon-only=\"true\"]):not(:has([role=\"separator\"])) {\n    flex: 0 0 auto;\n    aspect-ratio: 1;\n  }\n\n  .horizontal\n    .item:has(.button[data-icon-only=\"true\"]):not(:has([role=\"separator\"]))\n    .button[data-icon-only=\"true\"] {\n    flex: 1 1 auto;\n    inline-size: 100%;\n    block-size: 100%;\n    aspect-ratio: auto;\n  }\n\n  .vertical .item .button[data-icon-only=\"true\"],\n  .horizontal .item:has([role=\"separator\"]) .button[data-icon-only=\"true\"] {\n    flex: 0 0 auto;\n    inline-size: auto;\n    block-size: 100%;\n    aspect-ratio: 1;\n  }\n\n  .input {\n    @apply flex flex-1 items-stretch overflow-visible;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n\n    > [data-ring=\"true\"] {\n      border-radius: inherit;\n    }\n  }\n\n  .select {\n    @apply flex items-stretch min-w-0 p-0 bg-transparent border-none;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n  }\n\n  .select > :global(.value) {\n    @apply flex flex-1 items-stretch min-w-0 h-full p-0;\n    border-radius: inherit;\n  }\n\n  .select\n    > :global(.value):has(> :global(.button[data-hovered=\"true\"]:not([data-disabled=\"true\"]))) {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: var(--background, transparent);\n  }\n\n  .select > :global(.value) > :global(.button) {\n    @apply w-full h-full min-h-0;\n    background-color: transparent;\n    border: none;\n    border-radius: inherit;\n  }\n\n  .expand {\n    @apply flex items-stretch;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n  }\n\n  .expand :global(.expand-scope),\n  .expand :global(.expand) {\n    @apply flex w-full h-full;\n  }\n\n  .expand :global(.expand) {\n    @apply flex-col;\n    border-radius: inherit;\n  }\n\n  .expand :global(.trigger) {\n    @apply min-h-0;\n    border-radius: inherit;\n  }\n\n  .group {\n    .item :is(.button, .select) {\n      border: none;\n    }\n\n    .input > [data-input-focus-surface=\"true\"] {\n      border: none;\n    }\n\n    .item [role=\"separator\"] {\n      --background: slot(border, background, transparent);\n    }\n\n    &.none {\n      .item:not(.divider) {\n        overflow: hidden;\n      }\n\n      :is(.button, .select) {\n        border-radius: 0;\n        --background-radius: 0;\n        --background-inner-radius: 0;\n      }\n\n      .input {\n        --radius-sm: 0;\n      }\n\n      .item:first-child {\n        @slot item {\n          --radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n        }\n      }\n\n      .item:last-child {\n        @slot item {\n          --radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n        }\n      }\n\n      .item:only-child {\n        @slot item {\n          --radius: var(--background-inner-radius);\n        }\n      }\n\n      &.horizontal {\n        .item:first-child :is(.button, .input > *, .select) {\n          border-start-start-radius: var(--background-inner-radius);\n          border-end-start-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(.button, .input > *, .select) {\n          border-start-end-radius: var(--background-inner-radius);\n          border-end-end-radius: var(--background-inner-radius);\n        }\n      }\n\n      &.vertical {\n        .item:first-child {\n          @slot item {\n            --radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;\n          }\n        }\n\n        .item:last-child {\n          @slot item {\n            --radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);\n          }\n        }\n\n        .item:first-child :is(.button, .input > *, .select) {\n          border-start-start-radius: var(--background-inner-radius);\n          border-start-end-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(.button, .input > *, .select) {\n          border-end-start-radius: var(--background-inner-radius);\n          border-end-end-radius: var(--background-inner-radius);\n        }\n      }\n    }\n\n    &:is(.xs, .sm) {\n      .item {\n        @slot item {\n          --radius: var(--background-inner-radius);\n        }\n      }\n\n      :is(.button, .select) {\n        border-radius: var(--background-inner-radius);\n      }\n\n      .input {\n        --radius-sm: var(--background-inner-radius);\n      }\n    }\n  }\n\n  .group [data-ring=\"true\"] {\n    @slot ring {\n      --shadow: none;\n    }\n    @slot ring-border {\n      --background: transparent;\n      --background-visible: transparent;\n    }\n  }\n\n  .group :global(.focus-indicator) {\n    display: none;\n  }\n\n  .group [data-focus-indicator=\"local\"] {\n    display: none;\n  }\n\n  .button[data-focus-visible=\"true\"] {\n    @apply outline-none;\n    box-shadow: none;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .group {\n    --radius-size: calc(var(--spacing) * 1.5);\n    --padding-size: var(--radius-size);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)));\n    --text-height: calc(0.8em * var(--leading-tight, 1.25));\n    --vertical-spacing: calc(var(--spacing) * 4);\n    --border-height: calc(slot(border, width, var(--border-width-base, 1px)) * 2);\n    --padding-height: calc(var(--padding-size) * 2);\n    --control-height: calc(var(--text-height) + var(--vertical-spacing) + var(--border-height));\n    --item-height: max(\n      calc(var(--control-height) - var(--padding-height) - var(--border-height)),\n      0px\n    );\n\n    @apply flex overflow-hidden min-w-0 max-w-full box-border;\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n    padding: var(--padding-size);\n\n    &.horizontal {\n      @apply flex-row items-stretch;\n      /* The control-height token is the compact baseline, not a ceiling. Theme\n         button sizes can have a larger intrinsic line-height and block padding. */\n      min-block-size: var(--control-height);\n\n      .item.divider {\n        margin-block: calc(var(--padding-size) * -1);\n      }\n      .item [role=\"separator\"][aria-orientation=\"vertical\"] {\n        block-size: 100%;\n      }\n    }\n\n    &.vertical {\n      @apply flex-col;\n\n      .item.divider {\n        margin-inline: calc(var(--padding-size) * -1);\n      }\n      .item [role=\"separator\"][aria-orientation=\"horizontal\"] {\n        inline-size: 100%;\n      }\n    }\n\n    &.none {\n      --padding-size: 0px;\n      @apply gap-0;\n    }\n\n    &.xs {\n      --radius-size: calc(var(--spacing) * 0.875);\n      @apply space-x-0.5;\n    }\n\n    &.sm {\n      --radius-size: calc(var(--spacing) * 1.25);\n      @apply space-x-1;\n    }\n  }\n\n  .item {\n    @apply flex items-stretch;\n    position: relative;\n    isolation: isolate;\n    box-sizing: border-box;\n    min-inline-size: 0;\n    border-radius: slot(item, radius, 0);\n    overflow: visible;\n\n    &.grow {\n      flex: 1;\n    }\n\n    &.divider {\n      @apply p-0 shrink-0 flex-none;\n\n      > [role=\"separator\"] {\n        flex: 0 0 auto;\n      }\n    }\n  }\n\n  :is(.button, .input, .select, .expand) {\n    block-size: 100%;\n    min-inline-size: 0;\n    box-sizing: border-box;\n    position: relative;\n    isolation: isolate;\n    overflow: visible;\n  }\n\n  .button {\n    @apply flex box-border;\n    /* Keep connected controls geometrically stable while pressed. The theme's\n       pressed colors provide feedback without pulling the button away from its\n       neighboring group items. Use no transform at all rather than scale(1),\n       which can still subtly alter text rendering on a composited layer.\n       Standalone Buttons retain their scale effect. */\n    --press-transform: none;\n    inline-size: auto;\n    max-inline-size: 100%;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n  }\n\n  /* An explicitly sized Group owns the available block size. Override Button's\n     standalone intrinsic minimum so the button box cannot escape that size. */\n  .group .item .button {\n    min-block-size: 0;\n  }\n\n  /* Button resolves icon-only state itself. Preserve its definite --size square\n     so an auto-height Group has an intrinsic size to resolve from. Percentage\n     dimensions here create a circular dependency between the item and Group. */\n  .horizontal .item:has(.button[data-icon-only=\"true\"]):not(:has([role=\"separator\"])) {\n    flex: 0 0 auto;\n  }\n\n  .item .button[data-icon-only=\"true\"] {\n    flex: 0 0 auto;\n    inline-size: var(--size, 2.25rem);\n    block-size: var(--size, 2.25rem);\n    aspect-ratio: 1;\n  }\n\n  .input {\n    @apply flex flex-1 items-stretch overflow-visible;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n\n    > [data-ring=\"true\"] {\n      border-radius: inherit;\n    }\n  }\n\n  .select {\n    @apply flex items-stretch min-w-0 p-0 bg-transparent border-none;\n    /* Select paints its trigger sections from its own radius tokens. Resolve\n       both to the Group item's shape so middle items remain square. */\n    --background-radius: slot(item, radius, 0);\n    --background-inner-radius: slot(item, radius, 0);\n    border-radius: var(--background-inner-radius);\n  }\n\n  .select > :global(.value) {\n    @apply flex flex-1 items-stretch min-w-0 h-full p-0;\n    border-radius: inherit;\n  }\n\n  .select\n    > :global(.value):has(> :global(.button[data-hovered=\"true\"]:not([data-disabled=\"true\"]))) {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: var(--background, transparent);\n  }\n\n  .select > :global(.value) > :global(.button) {\n    @apply w-full h-full min-h-0;\n    background-color: transparent;\n    border: none;\n    border-radius: inherit;\n  }\n\n  .expand {\n    @apply flex items-stretch;\n    border-radius: slot(item, radius, var(--background-inner-radius));\n  }\n\n  .expand :global(.expand-scope),\n  .expand :global(.expand) {\n    @apply flex w-full h-full;\n  }\n\n  .expand :global(.expand) {\n    @apply flex-col;\n    border-radius: inherit;\n  }\n\n  .expand :global(.trigger) {\n    @apply min-h-0;\n    border-radius: inherit;\n  }\n\n  .group {\n    .item :is(.button, .select) {\n      border: none;\n    }\n\n    .input > [data-input-focus-surface=\"true\"] {\n      border: none;\n    }\n\n    .item [role=\"separator\"] {\n      --background: slot(border, background, transparent);\n    }\n\n    &.none {\n      .item:not(.divider) {\n        overflow: hidden;\n      }\n\n      :is(.button, .select) {\n        border-radius: 0;\n      }\n\n      .input {\n        --radius-sm: 0;\n      }\n\n      .item:first-child {\n        @slot item {\n          --radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n        }\n      }\n\n      .item:last-child {\n        @slot item {\n          --radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n        }\n      }\n\n      .item:only-child {\n        @slot item {\n          --radius: var(--background-inner-radius);\n        }\n      }\n\n      &.horizontal {\n        .item:first-child :is(.button, .input > *, .select) {\n          border-start-start-radius: var(--background-inner-radius);\n          border-end-start-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(.button, .input > *, .select) {\n          border-start-end-radius: var(--background-inner-radius);\n          border-end-end-radius: var(--background-inner-radius);\n        }\n      }\n\n      &.vertical {\n        .item:first-child {\n          @slot item {\n            --radius: var(--background-inner-radius) var(--background-inner-radius) 0 0;\n          }\n        }\n\n        .item:last-child {\n          @slot item {\n            --radius: 0 0 var(--background-inner-radius) var(--background-inner-radius);\n          }\n        }\n\n        .item:first-child :is(.button, .input > *, .select) {\n          border-start-start-radius: var(--background-inner-radius);\n          border-start-end-radius: var(--background-inner-radius);\n        }\n\n        .item:last-child :is(.button, .input > *, .select) {\n          border-end-start-radius: var(--background-inner-radius);\n          border-end-end-radius: var(--background-inner-radius);\n        }\n      }\n    }\n\n    &:is(.xs, .sm) {\n      .item {\n        @slot item {\n          --radius: var(--background-inner-radius);\n        }\n      }\n\n      :is(.button, .select) {\n        border-radius: var(--background-inner-radius);\n      }\n\n      .input {\n        --radius-sm: var(--background-inner-radius);\n      }\n    }\n  }\n\n  .group [data-ring=\"true\"]:not(.button) {\n    @slot ring {\n      --shadow: none;\n    }\n    @slot ring-border {\n      --background: transparent;\n      --background-visible: transparent;\n    }\n  }\n\n  .group :global(.focus-indicator) {\n    display: none;\n  }\n\n  .group [data-focus-indicator=\"local\"] {\n    display: none;\n  }\n\n  .button[data-focus-visible=\"true\"] {\n    @apply outline-none;\n    box-shadow: none;\n  }\n\n  .group.none .item .button {\n    border-radius: slot(item, radius, 0);\n  }\n\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .group {\n    --background: var(--background-950);\n    --backdrop: color-mix(in srgb, var(--background-800) 35%, var(--background-950));\n  }\n\n  .group > .input,\n.group > .item > .input {\n    --background: var(--background-950);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .group > .divider {\n    --background: slot(border, background, transparent);\n  }\n\n  .group.outline > .input,\n.group.outline > .item > .input {\n    --background: transparent;\n  }\n\n  .group > .button[data-selected=\"true\"],\n.group > .item > .button[data-selected=\"true\"] {\n    --foreground: var(--foreground-100);\n  }\n\n  .group > .select > .value:has(> .button[data-hovered=\"true\"]:not([data-disabled])),\n.group > .item > .select > .value:has(> .button[data-hovered=\"true\"]:not([data-disabled])) {\n    --background: color-mix(in srgb, var(--background-800) 50%, transparent);\n  }\n\n  .group > .select > .value > .button,\n.group > .item > .select > .value > .button {\n    height: 100%;\n    --padding-inline: calc(var(--spacing) * 3);\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -42618,13 +45251,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "item"
       },
       {
-        "name": "--item-height",
-        "value": "unset",
-        "selector": ":is(.button, .input, .select, .expand)",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
         "name": "--press-transform",
         "value": "none",
         "selector": ".button",
@@ -42649,6 +45275,13 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "item"
       },
       {
+        "name": "--size",
+        "value": "unset",
+        "selector": ".item .button[data-icon-only=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
         "name": "--background-inner-radius",
         "value": "unset",
         "selector": ".input",
@@ -42666,8 +45299,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "item"
       },
       {
-        "name": "--background-inner-radius",
-        "value": "unset",
+        "name": "--background-radius",
+        "value": "slot(item, radius, 0)",
         "selector": ".select",
         "atRules": [],
         "referencedVars": []
@@ -42677,10 +45310,15 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "value": "unset",
         "selector": ".select",
         "atRules": [],
-        "referencedVars": [
-          "--background-inner-radius"
-        ],
+        "referencedVars": [],
         "slot": "item"
+      },
+      {
+        "name": "--background-inner-radius",
+        "value": "slot(item, radius, 0)",
+        "selector": ".select",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--hover-duration",
@@ -42736,20 +45374,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "atRules": [],
         "referencedVars": [],
         "slot": "border"
-      },
-      {
-        "name": "--background-radius",
-        "value": "0",
-        "selector": ".group.none :is(.button, .select)",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--background-inner-radius",
-        "value": "0",
-        "selector": ".group.none :is(.button, .select)",
-        "atRules": [],
-        "referencedVars": []
       },
       {
         "name": "--radius-sm",
@@ -42914,7 +45538,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--shadow",
         "value": "none",
-        "selector": ".group [data-ring=\"true\"]",
+        "selector": ".group [data-ring=\"true\"]:not(.button)",
         "atRules": [],
         "slot": "ring",
         "referencedVars": []
@@ -42922,7 +45546,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--background",
         "value": "transparent",
-        "selector": ".group [data-ring=\"true\"]",
+        "selector": ".group [data-ring=\"true\"]:not(.button)",
         "atRules": [],
         "slot": "ring-border",
         "referencedVars": []
@@ -42930,10 +45554,18 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--background-visible",
         "value": "transparent",
-        "selector": ".group [data-ring=\"true\"]",
+        "selector": ".group [data-ring=\"true\"]:not(.button)",
         "atRules": [],
         "slot": "ring-border",
         "referencedVars": []
+      },
+      {
+        "name": "--radius",
+        "value": "unset",
+        "selector": ".group.none .item .button",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "item"
       }
     ],
     "styleableParts": [
@@ -44166,7 +46798,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "list": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .root {\n    color: var(--foreground, var(--foreground-100, currentColor));\n    @apply flex flex-col;\n    gap: var(--gap, calc(var(--spacing, 0.25rem) * 0.5));\n  }\n\n  .root[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .item {\n    inline-size: 100%;\n    min-inline-size: 0;\n    box-sizing: border-box;\n    border-radius: slot(item, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    @apply flex items-center gap-3 px-3 py-1 cursor-pointer;\n    background-color: slot(item, background, var(--background, transparent));\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-list-layout=\"columns\"] {\n    display: grid;\n  }\n\n  .item[data-list-layout=\"columns\"] > * {\n    min-width: 0;\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    box-shadow:\n      inset 0 0 0 1px\n        slot(item, focus-visible-background, var(--focus-visible-background, var(--accent-400))),\n      0 0 0 2px slot(item, focus-visible, var(--focus-visible, var(--accent-400)));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted\n     themselves, so the highlight cannot be gated on the root's own keyboard mode. */\n  .item[data-highlighted=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item:hover:not([data-disabled=\"true\"]),\n  .item[data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"] {\n    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"]:hover:not([data-disabled=\"true\"]),\n  .item[data-selected=\"true\"][data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));\n    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.6));\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-inline-start: auto;\n  }\n\n  .item[data-list-layout=\"columns\"] .control,\n  .item[data-list-layout=\"columns\"] .actions {\n    margin-inline-start: 0;\n    justify-self: end;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-inline-start: 0;\n  }\n\n  .item[data-list-layout=\"columns\"] .control[data-placement=\"start\"],\n  .item[data-list-layout=\"columns\"] .checkbox,\n  .item[data-list-layout=\"columns\"] .media {\n    justify-self: start;\n  }\n\n  .media {\n    block-size: 2rem;\n    inline-size: 2rem;\n  }\n\n  .title {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n  }\n\n  .desc {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));\n  }\n\n  .action-group {\n    @apply flex items-center;\n    padding-inline: 0.25rem;\n  }\n\n  .action-group[data-justify=\"between\"] {\n    justify-content: space-between;\n  }\n  .action-group[data-justify=\"start\"] {\n    justify-content: flex-start;\n  }\n  .action-group[data-justify=\"end\"] {\n    justify-content: flex-end;\n  }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-inline-start: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity;\n  }\n\n  .item:hover .actions,\n  .item:focus-within .actions {\n    opacity: 1;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: slot(action, background, var(--background, transparent));\n    color: slot(action, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    @apply p-2;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: slot(action, background-hover, slot(action, background, var(--background, transparent)));\n    color: slot(action, foreground-hover, slot(action, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .header,\n  .footer,\n  .divider {\n    min-inline-size: 0;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .root {\n    color: var(--foreground, var(--foreground-100, currentColor));\n    @apply flex flex-col;\n    gap: var(--gap, calc(var(--spacing, 0.25rem) * 0.5));\n  }\n\n  .root[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .item {\n    inline-size: 100%;\n    min-inline-size: 0;\n    box-sizing: border-box;\n    border-radius: slot(item, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    @apply flex items-center gap-3 px-3 py-1 cursor-pointer;\n    background-color: slot(item, background, var(--background, transparent));\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-list-layout=\"columns\"] {\n    display: grid;\n  }\n\n  .item[data-list-layout=\"columns\"] > * {\n    min-width: 0;\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    background-color: slot(item, background-focus, var(--background-700));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted\n     themselves, so the highlight cannot be gated on the root's own keyboard mode. */\n  .item[data-highlighted=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item:hover:not([data-disabled=\"true\"]),\n  .item[data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"] {\n    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"]:hover:not([data-disabled=\"true\"]),\n  .item[data-selected=\"true\"][data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));\n    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.6));\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-inline-start: auto;\n  }\n\n  .item[data-list-layout=\"columns\"] .control,\n  .item[data-list-layout=\"columns\"] .actions {\n    margin-inline-start: 0;\n    justify-self: end;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-inline-start: 0;\n  }\n\n  .item[data-list-layout=\"columns\"] .control[data-placement=\"start\"],\n  .item[data-list-layout=\"columns\"] .checkbox,\n  .item[data-list-layout=\"columns\"] .media {\n    justify-self: start;\n  }\n\n  .media {\n    block-size: 2rem;\n    inline-size: 2rem;\n  }\n\n  .title {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n  }\n\n  .desc {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));\n  }\n\n  .action-group {\n    @apply flex items-center;\n    padding-inline: 0.25rem;\n  }\n\n  .action-group[data-justify=\"between\"] {\n    justify-content: space-between;\n  }\n  .action-group[data-justify=\"start\"] {\n    justify-content: flex-start;\n  }\n  .action-group[data-justify=\"end\"] {\n    justify-content: flex-end;\n  }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-inline-start: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity;\n  }\n\n  .item:hover .actions,\n  .item:focus-within .actions {\n    opacity: 1;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: slot(action, background, var(--background, transparent));\n    color: slot(action, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    @apply p-2;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: slot(action, background-hover, slot(action, background, var(--background, transparent)));\n    color: slot(action, foreground-hover, slot(action, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .header,\n  .footer,\n  .divider {\n    min-inline-size: 0;\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .list {\n    --foreground: var(--foreground-50);\n\n    @slot item {\n      --background: transparent;\n      --foreground: var(--foreground-50);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --background-selected: color-mix(in srgb, var(--background-500) 10%, transparent);\n      --background-selected-hover: color-mix(in srgb, var(--background-500) 14%, transparent);\n    }\n\n    @slot action {\n      --background: transparent;\n      --foreground: var(--foreground-400);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --foreground-hover: var(--foreground-50);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -44306,49 +46938,19 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--focus-visible-background",
-        "value": "unset",
-        "selector": ".item[data-focus-visible=\"true\"]",
-        "atRules": [],
-        "referencedVars": [
-          "--accent-400"
-        ]
-      },
-      {
-        "name": "--accent-400",
+        "name": "--background-700",
         "value": "unset",
         "selector": ".item[data-focus-visible=\"true\"]",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--focus-visible",
+        "name": "--background-focus",
         "value": "unset",
         "selector": ".item[data-focus-visible=\"true\"]",
         "atRules": [],
         "referencedVars": [
-          "--accent-400"
-        ]
-      },
-      {
-        "name": "--focus-visible-background",
-        "value": "unset",
-        "selector": ".item[data-focus-visible=\"true\"]",
-        "atRules": [],
-        "referencedVars": [
-          "--focus-visible-background",
-          "--accent-400"
-        ],
-        "slot": "item"
-      },
-      {
-        "name": "--focus-visible",
-        "value": "unset",
-        "selector": ".item[data-focus-visible=\"true\"]",
-        "atRules": [],
-        "referencedVars": [
-          "--focus-visible",
-          "--accent-400"
+          "--background-700"
         ],
         "slot": "item"
       },
@@ -45224,13 +47826,27 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     }
   },
   "mask": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .mask {\n    @apply relative h-full w-full;\n  }\n}\n\n.mask[style*=\"mask-image\"],\n.mask[style*=\"-webkit-mask-image\"] {\n  -webkit-mask-size: 100% 100%;\n  mask-size: 100% 100%;\n}\n\n.mask[style*=\"--mask-clip-path\"] {\n  clip-path: var(--mask-clip-path);\n}\n\n.mask-gradient {\n  background: var(--mask-gradient);\n  -webkit-background-clip: text;\n  background-clip: text;\n  -webkit-text-fill-color: transparent;\n  color: transparent;\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .mask {\n    @apply relative h-full w-full;\n  }\n}\n\n.mask[style*=\"mask-image\"],\n.mask[style*=\"-webkit-mask-image\"] {\n  -webkit-mask-size: 100% 100%;\n  mask-size: 100% 100%;\n}\n\n.mask[style*=\"--mask-clip-path\"] {\n  clip-path: var(--mask-clip-path);\n}\n\n.mask[data-mask-cutout-except~=\"first\"]:first-child {\n  --mask-cutout-except-first: linear-gradient(black, black);\n}\n\n.mask[data-mask-cutout-except~=\"last\"]:last-child {\n  --mask-cutout-except-last: linear-gradient(black, black);\n}\n\n.mask-gradient {\n  background: var(--mask-gradient);\n  -webkit-background-clip: text;\n  background-clip: text;\n  -webkit-text-fill-color: transparent;\n  color: transparent;\n}\n",
     "variants": [],
     "cssVariables": [
       {
         "name": "--mask-clip-path",
         "value": "unset",
         "selector": ".mask[style*=\"--mask-clip-path\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--mask-cutout-except-first",
+        "value": "linear-gradient(black, black)",
+        "selector": ".mask[data-mask-cutout-except~=\"first\"]:first-child",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--mask-cutout-except-last",
+        "value": "linear-gradient(black, black)",
+        "selector": ".mask[data-mask-cutout-except~=\"last\"]:last-child",
         "atRules": [],
         "referencedVars": []
       },
@@ -47334,8 +49950,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "progress": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .progress {\n    --disabled-opacity: 0.6;\n    @apply w-full;\n  }\n\n  .progress[data-has-label=\"true\"] {\n    @apply space-y-1;\n  }\n\n  .progress[data-show-controls=\"true\"] {\n    touch-action: none;\n    user-select: none;\n    cursor: pointer;\n  }\n\n  .progress[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity, 0.6);\n    cursor: not-allowed;\n    pointer-events: none;\n  }\n\n  .label-row {\n    @apply flex items-center justify-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .label {\n    user-select: none;\n  }\n\n  .value {\n    font-variant-numeric: tabular-nums;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    position: relative;\n    inline-size: 100%;\n    block-size: var(--thickness);\n    border-radius: slot(track, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    background-color: slot(track, background, var(--background));\n    overflow: visible;\n  }\n\n  .range {\n    position: absolute;\n    inset-block-start: 0;\n    inset-inline-start: 0;\n    block-size: 100%;\n    border-radius: slot(range, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(range, background, var(--background));\n    transition: none;\n    overflow: hidden;\n  }\n\n  .range[data-animated=\"true\"] {\n    animation: pulse 2s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .range[data-indeterminate=\"true\"] {\n    width: 33.333%;\n    animation: progress-indeterminate 1.5s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--width, auto));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    position: absolute;\n    inset-block-start: var(--top, 0);\n    box-sizing: border-box;\n    inline-size: var(--thumb-inline-size);\n    block-size: var(--thumb-block-size);\n    aspect-ratio: slot(thumb, ratio, var(--ratio, 0.666667));\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background: slot(thumb, background, var(--background));\n    border: slot(thumb, border, none);\n    opacity: 0;\n    pointer-events: none;\n    transition: none;\n  }\n\n  .progress[data-show-controls=\"true\"]:hover .thumb,\n  .progress[data-show-controls=\"true\"][data-dragging=\"true\"] .thumb {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  @keyframes pulse {\n    0%,\n    100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.5;\n    }\n  }\n\n  @keyframes progress-indeterminate {\n    0% {\n      transform: translateX(-100%);\n    }\n    100% {\n      transform: translateX(400%);\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .progress {\n    --size: var(--control-size);\n    --foreground: var(--foreground-400);\n    @slot border {\n      --background: var(--control-border);\n    }\n    @slot track {\n      --background: var(--control-track);\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot range {\n      --background: var(--control-fill);\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --border: var(--control-thumb-border);\n      --radius: var(--control-thumb-radius);\n    }\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .progress {\n    --disabled-opacity: 0.6;\n    @apply w-full;\n  }\n\n  .progress[data-has-label=\"true\"] {\n    @apply space-y-1;\n  }\n\n  .progress[data-show-controls=\"true\"] {\n    touch-action: none;\n    user-select: none;\n    cursor: pointer;\n  }\n\n  .progress[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity, 0.6);\n    cursor: not-allowed;\n    pointer-events: none;\n  }\n\n  .label-row {\n    @apply flex items-center justify-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .label {\n    user-select: none;\n  }\n\n  .value {\n    font-variant-numeric: tabular-nums;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.4));\n    position: relative;\n    inline-size: 100%;\n    block-size: var(--thickness);\n    border-radius: slot(track, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(track, background, var(--background));\n    overflow: visible;\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: 0;\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    position: absolute;\n    z-index: 1;\n    inset-block-start: 0;\n    inset-inline-start: 0;\n    block-size: 100%;\n    border-radius: slot(range, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(range, background, var(--background));\n    transition: none;\n    overflow: hidden;\n  }\n\n  .range[data-animated=\"true\"] {\n    animation: pulse 2s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .range[data-indeterminate=\"true\"] {\n    width: 33.333%;\n    animation: progress-indeterminate 1.5s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--width, auto));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    position: absolute;\n    inset-block-start: var(--top, 0);\n    z-index: 2;\n    box-sizing: border-box;\n    inline-size: var(--thumb-inline-size);\n    block-size: var(--thumb-block-size);\n    aspect-ratio: slot(thumb, ratio, var(--ratio, 0.666667));\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    opacity: 0;\n    pointer-events: none;\n    transition: none;\n  }\n\n  .progress[data-show-controls=\"true\"]:hover .thumb,\n  .progress[data-show-controls=\"true\"][data-dragging=\"true\"] .thumb {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  @keyframes pulse {\n    0%,\n    100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.5;\n    }\n  }\n\n  @keyframes progress-indeterminate {\n    0% {\n      transform: translateX(-100%);\n    }\n    100% {\n      transform: translateX(400%);\n    }\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .progress {\n    --size: calc(var(--control-size) * 0.5);\n    --foreground: var(--foreground-400);\n    @slot border {\n      --background: var(--control-border);\n    }\n    @slot track {\n      --background: var(--control-track);\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot range {\n      --background: var(--control-fill);\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --border: var(--control-thumb-border);\n      --radius: var(--control-thumb-radius);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -47389,7 +50005,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thickness",
-        "value": "var(--size, calc(var(--spacing-md) * 0.8))",
+        "value": "var(--size, calc(var(--spacing-md) * 0.4))",
         "selector": ".track",
         "atRules": [],
         "referencedVars": [
@@ -47441,39 +50057,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "track"
       },
       {
-        "name": "--border-width-base",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": [
-          "--border-width-base"
-        ],
-        "slot": "border"
-      },
-      {
-        "name": "--style",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "border"
-      },
-      {
-        "name": "--background",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "border"
-      },
-      {
         "name": "--background",
         "value": "unset",
         "selector": ".track",
@@ -47489,6 +50072,39 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           "--background"
         ],
         "slot": "track"
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--style",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "border"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "border"
       },
       {
         "name": "--radius",
@@ -47895,7 +50511,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "radio": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .radio-items {\n    @apply flex flex-col gap-3;\n  }\n\n  .radio-item {\n    @apply flex items-start gap-3 cursor-pointer select-none;\n    position: relative;\n    overflow: visible;\n  }\n\n  .radio-surface {\n    @apply inline-flex shrink-0;\n    border-radius: 9999px;\n  }\n\n  .radio-input {\n    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;\n  }\n\n  .radio {\n    --disabled-opacity: 0.6;\n    @apply relative flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: 9999px;\n    background-color: var(--background);\n    color: var(--foreground);\n\n    &[data-focus-visible=\"true\"] {\n      outline: none;\n    }\n\n\n    &[data-error=\"true\"]:not([data-selected=\"true\"]) {\n      border-color: slot(border, background-error, slot(border, background, transparent));\n    }\n  }\n\n  .dot {\n    border-radius: 9999px;\n    background-color: var(--background);\n    transform: scale(0);\n  }\n\n  .radio[data-selected=\"true\"] .dot {\n    transform: scale(1);\n  }\n\n  @media (hover: hover) {\n    .radio-item:not([data-disabled=\"true\"]):hover .radio {\n      opacity: 0.9;\n    }\n  }\n\n  .radio-item[data-disabled=\"true\"] .radio {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .radio-label {\n    @apply cursor-pointer;\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    user-select: none;\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n  }\n\n  .radio-description {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    margin-top: 0.125rem;\n  }\n\n  .helper-text {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    margin-top: 0.5rem;\n    margin-left: 2rem;\n  }\n\n  .radio.sm {\n    @apply h-4 w-4;\n  }\n\n  .radio.sm .dot {\n    width: 0.375rem;\n    height: 0.375rem;\n  }\n\n  .radio.md {\n    @apply h-5 w-5;\n  }\n\n  .radio.md .dot {\n    width: 0.5rem;\n    height: 0.5rem;\n  }\n\n  .radio.lg {\n    @apply h-6 w-6;\n  }\n\n  .radio.lg .dot {\n    width: 0.625rem;\n    height: 0.625rem;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .radio {\n    --background: var(--control-track);\n    @slot border {\n      --background: var(--control-border);\n    }\n    --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);\n  }\n\n  .radio.outline {\n    --background: transparent;\n  }\n\n  .radio[data-selected=\"true\"] {\n    --background: var(--control-fill);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n\n  .radio[data-error=\"true\"]:not([data-selected=\"true\"]) {\n    @slot border {\n      --background-error: var(--danger-600);\n    }\n  }\n\n  .radio > .dot {\n    --background: var(--control-thumb);\n  }\n\n  .radio > .label {\n    --foreground: var(--foreground-300);\n\n    &[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n  }\n\n    .radio > .label[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n\n  .radio > :where(.description, .helper) {\n    --foreground: var(--foreground-400);\n\n    &[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n  }\n\n    .radio > :where(.description, .helper)[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .radio {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .radio[data-disabled=\"true\"] {\n    --control-fill: var(--control-disabled);\n    --control-thumb: var(--control-thumb-disabled);\n  }\n\n  .radio {\n    --background: var(--control-track);\n    @slot border {\n      --background: var(--control-border);\n    }\n    --focus-visible: var(--ring-background);\n  }\n\n  .radio.outline {\n    --background: transparent;\n  }\n\n  .radio[data-selected=\"true\"] {\n    --background: var(--control-fill);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n\n  .radio[data-error=\"true\"]:not([data-selected=\"true\"]) {\n    @slot border {\n      --background-error: var(--danger-600);\n    }\n  }\n\n  .radio > .dot {\n    --background: var(--control-thumb);\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    background-clip: padding-box;\n    border: var(--control-thumb-border);\n    border-radius: var(--control-thumb-radius);\n  }\n\n  .radio > .label {\n    --foreground: var(--foreground-300);\n\n    &[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n  }\n\n    .radio > .label[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n\n  .radio > :where(.description, .helper) {\n    --foreground: var(--foreground-400);\n\n    &[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n  }\n\n    .radio > :where(.description, .helper)[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -50009,8 +52625,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     "styleableGroups": []
   },
   "slider": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .slider {\n    --disabled-opacity: 0.6;\n    @apply relative flex w-full items-center;\n    min-inline-size: var(--inline-size, 3.5rem);\n    min-block-size: var(--hit-size, 1.5rem);\n    touch-action: none;\n    user-select: none;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    --length: calc(var(--thickness) * var(--ratio, 0.5));\n    @apply relative flex grow items-center;\n    flex-grow: 1;\n    height: var(--thickness);\n    overflow: visible;\n    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    background: slot(track, background, var(--background));\n  }\n\n  .range {\n    @apply absolute;\n    display: block;\n    border-radius: inherit;\n    pointer-events: none;\n    background: slot(range, background, var(--background));\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--length));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    @apply absolute block;\n    top: var(--top, 0);\n    box-sizing: border-box;\n    width: var(--thumb-inline-size);\n    height: var(--thumb-block-size);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));\n    outline: none;\n    background: slot(thumb, background, var(--background));\n    border: slot(thumb, border, none);\n    box-shadow: slot(thumb, shadow, none);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .slider[data-orientation=\"horizontal\"] .range {\n    top: 0;\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"horizontal\"] .thumb {\n    left: clamp(var(--thumb-inset, 0px), var(--position, 0%), calc(100% - var(--thumb-inset, 0px)));\n  }\n\n  .slider[data-orientation=\"vertical\"] {\n    justify-content: center;\n    min-inline-size: auto;\n    width: fit-content;\n  }\n\n  .slider[data-orientation=\"vertical\"] .track {\n    width: var(--thickness);\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .range {\n    left: 0;\n    width: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb {\n    left: 50%;\n    top: auto;\n    bottom: clamp(\n      var(--thumb-inset, 0px),\n      var(--position, 0%),\n      calc(100% - var(--thumb-inset, 0px))\n    );\n    width: var(--thumb-block-size);\n    height: var(--thumb-inline-size);\n    transform: translate(-50%, 50%);\n  }\n\n  .slider[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .slider[data-disabled=\"true\"] .range {\n    background: slot(range, background-disabled, slot(range, background, var(--background)));\n  }\n\n  .thumb[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));\n  }\n\n  .thumb[data-pressed=\"true\"] {\n    transform: var(--transform, translateX(-50%));\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb[data-pressed=\"true\"] {\n    transform: translate(-50%, 50%);\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .slider {\n    --size: var(--control-size);\n    @slot border {\n      --background: var(--control-border);\n    }\n    @slot track {\n      --background: var(--control-track);\n    }\n    @slot thumb {\n      --background: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n      --background-disabled: var(--control-thumb-disabled);\n      --border: var(--control-thumb-border);\n      --radius: var(--control-thumb-radius);\n    }\n    @slot range {\n      --background: var(--control-fill);\n      --background-disabled: var(--control-disabled);\n    }\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .slider {\n    --disabled-opacity: 0.6;\n    @apply relative flex w-full items-center;\n    min-inline-size: var(--inline-size, 3.5rem);\n    min-block-size: var(--hit-size, 1.5rem);\n    touch-action: none;\n    user-select: none;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    --length: calc(var(--thickness) * var(--ratio, 0.5));\n    @apply relative flex grow items-center;\n    flex-grow: 1;\n    height: var(--thickness);\n    overflow: visible;\n    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));\n    background: slot(track, background, var(--background));\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: 0;\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    @apply absolute;\n    z-index: 1;\n    display: block;\n    border-radius: inherit;\n    pointer-events: none;\n    background: slot(range, background, var(--background));\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--length));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    @apply absolute block;\n    z-index: 2;\n    top: var(--top, 0);\n    box-sizing: border-box;\n    width: var(--thumb-inline-size);\n    height: var(--thumb-block-size);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));\n    outline: none;\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    box-shadow: slot(thumb, shadow, none);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .slider[data-orientation=\"horizontal\"] .range {\n    top: 0;\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"horizontal\"] .thumb {\n    left: var(--position, 0%);\n  }\n\n  .slider[data-orientation=\"vertical\"] {\n    justify-content: center;\n    min-inline-size: auto;\n    width: fit-content;\n  }\n\n  .slider[data-orientation=\"vertical\"] .track {\n    width: var(--thickness);\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .range {\n    left: 0;\n    width: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb {\n    left: 50%;\n    top: auto;\n    bottom: var(--position, 0%);\n    width: var(--thumb-block-size);\n    height: var(--thumb-inline-size);\n    transform: translate(-50%, 50%);\n  }\n\n  .slider[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .slider[data-disabled=\"true\"] .range {\n    background: slot(range, background-disabled, slot(range, background, var(--background)));\n  }\n\n  .thumb[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));\n    background-clip: padding-box;\n  }\n\n  .thumb[data-pressed=\"true\"] {\n    transform: var(--transform, translateX(-50%));\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb[data-pressed=\"true\"] {\n    transform: translate(-50%, 50%);\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .slider {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .slider {\n    --size: var(--control-size);\n    @slot border {\n      --background: var(--control-border);\n    }\n    @slot track {\n      --background: var(--control-track);\n      --radius: var(--control-radius);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --background-disabled: var(--control-thumb-disabled);\n      --border: var(--control-thumb-border);\n      --radius: var(--control-thumb-radius);\n    }\n    @slot range {\n      --background: var(--control-fill);\n      --background-disabled: var(--control-disabled);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -50105,39 +52721,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "track"
       },
       {
-        "name": "--border-width-base",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": [
-          "--border-width-base"
-        ],
-        "slot": "border"
-      },
-      {
-        "name": "--style",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "border"
-      },
-      {
-        "name": "--background",
-        "value": "unset",
-        "selector": ".track",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "border"
-      },
-      {
         "name": "--background",
         "value": "unset",
         "selector": ".track",
@@ -50153,6 +52736,39 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           "--background"
         ],
         "slot": "track"
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--style",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "border"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".track::after",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "border"
       },
       {
         "name": "--background",
@@ -50351,13 +52967,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--thumb-inset",
-        "value": "unset",
-        "selector": ".slider[data-orientation=\"horizontal\"] .thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
         "name": "--position",
         "value": "unset",
         "selector": ".slider[data-orientation=\"horizontal\"] .thumb",
@@ -50368,13 +52977,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "name": "--thickness",
         "value": "unset",
         "selector": ".slider[data-orientation=\"vertical\"] .track",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--thumb-inset",
-        "value": "unset",
-        "selector": ".slider[data-orientation=\"vertical\"] .thumb",
         "atRules": [],
         "referencedVars": []
       },
@@ -50647,8 +53249,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     }
   },
   "switch": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .switch {\n    --radius: 9999px;\n    --inner-radius: calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)));\n\n    --width: 2.4rem;\n    --height: 1.35rem;\n    --thumb-size: 1.05rem;\n    --thumb-offset: 0.15rem;\n\n    --disabled-opacity: 0.6;\n\n    @apply relative inline-flex shrink-0 cursor-pointer items-center;\n    user-select: none;\n    border-radius: var(--radius);\n    inline-size: var(--width);\n    block-size: var(--height);\n  }\n\n  .switch-track {\n    @apply absolute inset-0;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: var(--background, transparent);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius);\n  }\n\n  .input {\n    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;\n  }\n\n  .switch-thumb {\n    @apply absolute top-0 bottom-0 my-auto;\n    inset-inline-start: var(--thumb-offset);\n    inline-size: var(--thumb-size);\n    block-size: var(--thumb-size);\n    transition:\n      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: var(--foreground, currentColor);\n    border-radius: var(--inner-radius);\n    z-index: 1;\n    pointer-events: none;\n  }\n\n  .switch[data-selected=\"true\"] .switch-thumb {\n    inset-inline-start: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));\n  }\n\n  .switch[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .switch-sm {\n    --width: 2rem;\n    --height: 1.125rem;\n    --thumb-size: 0.875rem;\n    --thumb-offset: 0.125rem;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .switch {\n    --background: var(--control-track);\n    --focus-visible: color-mix(in srgb, var(--background-500) 40%, transparent);\n    --foreground: var(--control-thumb);\n    --transition-duration: 120ms;\n    --transition-easing: linear;\n    @slot border {\n      --background: var(--control-border);\n    }\n  }\n\n  .switch[data-selected=\"true\"] {\n    --background: var(--control-fill);\n    --foreground: var(--control-thumb);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .switch {\n    --radius: 9999px;\n\n    --width: 2.4rem;\n    --height: 1.35rem;\n    @slot thumb {\n      --size: 1.05rem;\n      --offset: 0.15rem;\n    }\n\n    --disabled-opacity: 0.6;\n\n    @apply relative inline-flex shrink-0 cursor-pointer items-center;\n    user-select: none;\n    border-radius: var(--radius);\n    inline-size: var(--width);\n    block-size: var(--height);\n  }\n\n  .switch > .switch-track {\n    @apply absolute inset-0;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(track, background, var(--background, transparent));\n    border: slot(track, width, var(--border-width-base, 1px)) slot(track, style, solid)\n      slot(track, background-border, var(--background-border, transparent));\n    border-radius: slot(track, radius, var(--radius));\n  }\n\n  .switch > .input {\n    @apply absolute inset-0 h-full w-full opacity-0;\n    cursor: inherit;\n  }\n\n  .switch > .switch-thumb {\n    @apply absolute top-0 bottom-0 my-auto;\n    inset-inline-start: slot(thumb, offset, 0.15rem);\n    inline-size: slot(thumb, size, 1.05rem);\n    block-size: slot(thumb, height, slot(thumb, size, 1.05rem));\n    transition:\n      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(thumb, background, var(--foreground, currentColor));\n    border-radius: slot(thumb, radius, calc(var(--radius) - slot(track, width, var(--border-width-base, 1px))));\n    border: slot(thumb, border, none);\n    background-clip: padding-box;\n    box-sizing: border-box;\n    z-index: 1;\n    pointer-events: none;\n  }\n\n  .switch[data-selected=\"true\"] > .switch-track {\n    background-color: slot(track, background-selected, slot(track, background, var(--background, transparent)));\n    border-color: slot(track, background-border-selected, slot(track, background-border, var(--background-border, transparent)));\n  }\n\n  .switch[data-selected=\"true\"] > .switch-thumb {\n    background-color: slot(thumb, background-selected, slot(thumb, background, var(--foreground, currentColor)));\n    inset-inline-start: calc(var(--width) - slot(thumb, size, 1.05rem) - slot(thumb, offset, 0.15rem));\n  }\n\n  .switch[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .switch.switch-sm {\n    --width: 2rem;\n    --height: 1.125rem;\n    @slot thumb {\n      --size: 0.875rem;\n      --offset: 0.125rem;\n    }\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .switch {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .switch {\n    --focus-visible: var(--ring-background);\n    --width: 2.0rem;\n    --radius: var(--control-radius);\n    --thumb-border-width: 4px;\n    --thumb-inner-radius: 3px;\n    @slot track {\n      --background: var(--control-track);\n      --background-selected: var(--control-fill);\n      --background-border: var(--control-border);\n      --background-border-selected: var(--control-fill);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --size: calc(var(--height) * 0.75);\n      --height: var(--height);\n      --offset: 0px;\n      --border: var(--thumb-border-width) solid transparent;\n      /* The padding-box background loses the transparent border's width from its radius. */\n      --radius: calc(\n        var(--thumb-inner-radius) + var(--thumb-border-width)\n      );\n    }\n  }\n\n  .switch[data-size=\"sm\"] {\n    --width: 1.75rem;\n  }\n\n  .switch[data-disabled=\"true\"] {\n    --control-fill: var(--control-disabled);\n    --control-thumb: var(--control-thumb-disabled);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -50657,33 +53259,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".switch",
         "atRules": [],
         "referencedVars": []
-      },
-      {
-        "name": "--inner-radius",
-        "value": "calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)))",
-        "selector": ".switch",
-        "atRules": [],
-        "referencedVars": [
-          "--radius",
-          "--border-width-base"
-        ]
-      },
-      {
-        "name": "--border-width-base",
-        "value": "unset",
-        "selector": ".switch",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".switch",
-        "atRules": [],
-        "referencedVars": [
-          "--border-width-base"
-        ],
-        "slot": "border"
       },
       {
         "name": "--width",
@@ -50700,17 +53275,19 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--thumb-size",
+        "name": "--size",
         "value": "1.05rem",
         "selector": ".switch",
         "atRules": [],
+        "slot": "thumb",
         "referencedVars": []
       },
       {
-        "name": "--thumb-offset",
+        "name": "--offset",
         "value": "0.15rem",
         "selector": ".switch",
         "atRules": [],
+        "slot": "thumb",
         "referencedVars": []
       },
       {
@@ -50723,7 +53300,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--hover-duration",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": [
           "--hover-leave-duration"
@@ -50732,14 +53309,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--hover-leave-duration",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--hover-transition-timing-function",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": [
           "--ease-snappy-pop"
@@ -50748,75 +53325,114 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--ease-snappy-pop",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--background",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".switch > .switch-track",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "track"
+      },
+      {
         "name": "--border-width-base",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-border",
+        "value": "unset",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--width",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": [
           "--border-width-base"
         ],
-        "slot": "border"
+        "slot": "track"
       },
       {
         "name": "--style",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": [],
-        "slot": "border"
+        "slot": "track"
       },
       {
-        "name": "--background",
+        "name": "--background-border",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
-        "referencedVars": [],
-        "slot": "border"
+        "referencedVars": [
+          "--background-border"
+        ],
+        "slot": "track"
       },
       {
         "name": "--radius",
         "value": "unset",
-        "selector": ".switch-track",
+        "selector": ".switch > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--thumb-offset",
+        "name": "--radius",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-track",
         "atRules": [],
-        "referencedVars": []
+        "referencedVars": [
+          "--radius"
+        ],
+        "slot": "track"
       },
       {
-        "name": "--thumb-size",
+        "name": "--offset",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
-        "referencedVars": []
+        "referencedVars": [],
+        "slot": "thumb"
+      },
+      {
+        "name": "--size",
+        "value": "unset",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
+      },
+      {
+        "name": "--height",
+        "value": "unset",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
       },
       {
         "name": "--hover-duration",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": [
           "--hover-leave-duration"
@@ -50825,14 +53441,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--hover-leave-duration",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--hover-transition-timing-function",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": [
           "--ease-snappy-pop"
@@ -50841,44 +53457,173 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--ease-snappy-pop",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--foreground",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--inner-radius",
+        "name": "--background",
         "value": "unset",
-        "selector": ".switch-thumb",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "thumb"
+      },
+      {
+        "name": "--radius",
+        "value": "unset",
+        "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--radius",
+        "value": "unset",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [
+          "--radius",
+          "--border-width-base"
+        ],
+        "slot": "thumb"
       },
       {
         "name": "--width",
         "value": "unset",
-        "selector": ".switch[data-selected=\"true\"] .switch-thumb",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "track"
+      },
+      {
+        "name": "--border",
+        "value": "unset",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--thumb-size",
+        "name": "--background-selected",
         "value": "unset",
-        "selector": ".switch[data-selected=\"true\"] .switch-thumb",
+        "selector": ".switch[data-selected=\"true\"] > .switch-track",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "track"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-track",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "track"
+      },
+      {
+        "name": "--background-border",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-track",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--thumb-offset",
+        "name": "--background-border-selected",
         "value": "unset",
-        "selector": ".switch[data-selected=\"true\"] .switch-thumb",
+        "selector": ".switch[data-selected=\"true\"] > .switch-track",
+        "atRules": [],
+        "referencedVars": [
+          "--background-border"
+        ],
+        "slot": "track"
+      },
+      {
+        "name": "--background-border",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-track",
+        "atRules": [],
+        "referencedVars": [
+          "--background-border"
+        ],
+        "slot": "track"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-thumb",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background-selected",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "thumb"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "thumb"
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-thumb",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--size",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
+      },
+      {
+        "name": "--offset",
+        "value": "unset",
+        "selector": ".switch[data-selected=\"true\"] > .switch-thumb",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
       },
       {
         "name": "--disabled-opacity",
@@ -50890,29 +53635,31 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       {
         "name": "--width",
         "value": "2rem",
-        "selector": ".switch-sm",
+        "selector": ".switch.switch-sm",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--height",
         "value": "1.125rem",
-        "selector": ".switch-sm",
+        "selector": ".switch.switch-sm",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--thumb-size",
+        "name": "--size",
         "value": "0.875rem",
-        "selector": ".switch-sm",
+        "selector": ".switch.switch-sm",
         "atRules": [],
+        "slot": "thumb",
         "referencedVars": []
       },
       {
-        "name": "--thumb-offset",
+        "name": "--offset",
         "value": "0.125rem",
-        "selector": ".switch-sm",
+        "selector": ".switch.switch-sm",
         "atRules": [],
+        "slot": "thumb",
         "referencedVars": []
       }
     ],
@@ -50925,6 +53672,12 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "thumb"
+      },
+      {
+        "name": "input"
+      },
+      {
+        "name": "focusIndicator"
       }
     ],
     "styleableGroups": [
@@ -50945,6 +53698,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
             "name": "thumb",
             "description": "Styles the movable thumb.",
             "type": "Style"
+          },
+          {
+            "name": "input",
+            "description": "Styles the native input that receives focus and pointer interaction.",
+            "type": "Style"
+          },
+          {
+            "name": "focusIndicator",
+            "description": "Styles the local focus indicator without replacing its measured geometry.",
+            "type": "Style"
           }
         ]
       }
@@ -50952,39 +53715,187 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     "documentation": {
       "quickStart": {
         "title": "How to style Switch",
-        "description": "Use className for root layout, styles for the track and thumb, CSS variables for switch geometry, and data attributes for checked or disabled states.",
+        "description": "Use className for root layout, styles for concrete anatomy classes, and root variables with @slot blocks for cascading defaults. All parts remain inside the root.",
         "recipes": [
           {
             "title": "Resize the root",
-            "description": "Use className to set root variables when only the switch width needs to change.",
+            "description": "Set the root width without changing the thumb's size or travel calculation.",
             "code": "<Switch className=\"[--width:3rem]\" aria-label=\"Notifications\" />"
           },
           {
-            "title": "Style the track and thumb",
-            "description": "Use named anatomy slots when the visual change belongs to one switch part.",
-            "code": "<Switch\n  aria-label=\"Notifications\"\n  styles={{\n    track: \"bg-foreground-800\",\n    thumb: \"bg-accent-400\",\n  }}\n/>"
+            "title": "Style named parts",
+            "description": "Each class value applies only to its matching element. The input and local focus indicator are also public slots.",
+            "code": "<Switch\n  aria-label=\"Notifications\"\n  styles={{ track: \"bg-background-800\", thumb: \"bg-accent-400\" }}\n/>"
           },
           {
-            "title": "Adjust switch geometry",
-            "description": "Set root variables when track and thumb measurements should stay coordinated.",
-            "code": "<Switch\n  aria-label=\"Notifications\"\n  style={{\n    \"--width\": \"3rem\",\n    \"--height\": \"1.5rem\",\n    \"--thumb-size\": \"1.2rem\",\n  } as React.CSSProperties}\n/>"
+            "title": "Coordinate geometry",
+            "description": "Author variables on the global root and scope thumb measurements with @slot; process this CSS with UI Lab's PostCSS plugin.",
+            "code": ".switch {\n  --width: 3rem;\n  --height: 1.5rem;\n  @slot thumb {\n    --size: 1.2rem;\n    --height: 1.2rem;\n    --offset: 0.15rem;\n  }\n}"
           },
           {
             "title": "Style checked state",
-            "description": "Target the root's stable selected attribute for state-driven styling.",
-            "code": "<Switch\n  aria-label=\"Notifications\"\n  styles={{ root: \"data-[selected=true]:[--background:var(--accent-600)]\" }}\n/>"
+            "description": "The root emits data-selected only when checked. Persistent focus attributes use true and false values.",
+            "code": "<Switch\n  aria-label=\"Notifications\"\n  styles={{ root: \"data-[selected=true]:ring-2 data-[disabled=true]:opacity-40\" }}\n/>"
           }
         ]
       },
       "anatomy": {
         "title": "Anatomy",
-        "description": "Choose a named Switch slot to style the corresponding stable element.",
+        "description": "Switch exposes root, track, thumb, input, and focusIndicator. Root classes and inline style apply to the outer .switch surface; native props and the forwarded ref target the input. Slots accept classes only. The track and thumb also retain the switch-track and switch-thumb hooks.",
         "groupOrder": [
           "SwitchStyleSlots"
         ],
         "groupLabels": {
           "SwitchStyleSlots": "Switch"
         }
+      },
+      "customization": {
+        "title": "Customize Switch",
+        "description": "Set generic variables on .switch and configure individual parts with @slot track or @slot thumb. Variables define cascading defaults; styles supplies concrete class overrides for each rendered part.",
+        "groups": [
+          {
+            "title": "Root geometry",
+            "description": "Coordinate the outer dimensions and corner shape with the moving thumb.",
+            "variables": [
+              {
+                "name": "--width",
+                "selector": ".switch",
+                "description": "Sets the track width and the thumb's selected travel distance."
+              },
+              {
+                "name": "--height",
+                "selector": ".switch",
+                "description": "Sets the outer height."
+              },
+              {
+                "name": "--radius",
+                "selector": ".switch",
+                "description": "Sets the root radius and the fallback radius for the track and thumb."
+              }
+            ],
+            "code": ".switch {\n  --width: 2.75rem;\n  --height: 1.5rem;\n  --radius: 9999px;\n}"
+          },
+          {
+            "title": "Track colors and border",
+            "description": "Set base and selected colors in one track scope. Unset state values inherit the track's base values; base colors fall back to root --background and --background-border.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Sets the track fill."
+              },
+              {
+                "name": "--background-selected",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Sets the checked track fill."
+              },
+              {
+                "name": "--background-border",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Sets the track border color."
+              },
+              {
+                "name": "--background-border-selected",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Sets the checked track border color."
+              },
+              {
+                "name": "--width",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Sets border thickness, independently of the root width."
+              },
+              {
+                "name": "--style",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Sets the border line style."
+              },
+              {
+                "name": "--radius",
+                "selector": ".switch",
+                "slot": "track",
+                "description": "Overrides the track's corner radius."
+              }
+            ],
+            "code": ".switch {\n  @slot track {\n    --background: var(--background-800);\n    --background-selected: var(--accent-600);\n    --background-border: var(--background-600);\n    --background-border-selected: var(--accent-500);\n    --width: 1px;\n    --style: solid;\n    --radius: var(--radius);\n  }\n}"
+          },
+          {
+            "title": "Thumb appearance and position",
+            "description": "Configure the movable thumb independently. Its fill falls back to root --foreground, and its selected fill falls back to its base fill.",
+            "variables": [
+              {
+                "name": "--size",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Sets thumb width and fallback height; also determines selected travel."
+              },
+              {
+                "name": "--height",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Overrides thumb height without changing its width."
+              },
+              {
+                "name": "--offset",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Sets the logical inset at either end of the track."
+              },
+              {
+                "name": "--background",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Sets the thumb fill."
+              },
+              {
+                "name": "--background-selected",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Overrides the checked thumb fill."
+              },
+              {
+                "name": "--radius",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Overrides the thumb corner radius."
+              },
+              {
+                "name": "--border",
+                "selector": ".switch",
+                "slot": "thumb",
+                "description": "Sets the thumb border shorthand."
+              }
+            ],
+            "code": ".switch {\n  @slot thumb {\n    --size: 1.1rem;\n    --height: 1.1rem;\n    --offset: 0.15rem;\n    --background: var(--foreground-100);\n    --background-selected: var(--accent-50);\n    --radius: 9999px;\n    --border: 1px solid transparent;\n  }\n}"
+          },
+          {
+            "title": "Disabled state and motion",
+            "description": "Adjust the whole switch's disabled opacity and shared track/thumb transitions.",
+            "variables": [
+              {
+                "name": "--disabled-opacity",
+                "selector": ".switch",
+                "description": "Sets root opacity while disabled."
+              },
+              {
+                "name": "--hover-duration",
+                "selector": ".switch",
+                "description": "Sets track color and thumb movement transition duration."
+              },
+              {
+                "name": "--hover-transition-timing-function",
+                "selector": ".switch",
+                "description": "Sets easing for track color and thumb movement."
+              }
+            ],
+            "code": ".switch {\n  --disabled-opacity: 0.45;\n  --hover-duration: 180ms;\n  --hover-transition-timing-function: ease-out;\n}"
+          }
+        ]
       }
     }
   },

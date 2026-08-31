@@ -6,12 +6,26 @@
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Switch",
-    "packagePath": "dist/index.d.ts"
+    "packagePath": "dist/switch.d.ts"
   },
-  "relatedComponents": ["checkbox", "radio", "label"],
-  "tags": ["form", "boolean", "toggle"],
+  "relatedComponents": [
+    "checkbox",
+    "radio",
+    "label"
+  ],
+  "tags": [
+    "form",
+    "boolean",
+    "toggle"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Keyboard accessible", "ARIA switch role", "Visual state indication"]
+    "notes": [
+      "Native checkbox input exposes the switch role and checked state.",
+      "Provide aria-label, aria-labelledby, or an external label associated with the input ID.",
+      "Space toggles a focused switch; disabled switches cannot receive focus.",
+      "Read-only switches remain focusable and suppress changes.",
+      "The local focus indicator follows keyboard-visible focus."
+    ]
   }
 }

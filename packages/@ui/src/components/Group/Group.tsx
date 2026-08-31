@@ -152,6 +152,10 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
 
     const handleGroupKeyDown = React.useCallback(
       (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.defaultPrevented || indicatorProps["data-visible"] !== "true") {
+          return;
+        }
+
         if (
           e.key !== "ArrowRight" &&
           e.key !== "ArrowLeft" &&
@@ -162,7 +166,18 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
         }
 
         const focusedElement = document.activeElement;
-        if (!focusedElement || !groupRef.current?.contains(focusedElement as Node)) {
+        if (
+          !(focusedElement instanceof HTMLElement) ||
+          !groupRef.current?.contains(focusedElement)
+        ) {
+          return;
+        }
+
+        // Editable controls own their arrow keys even when their focus ring is visible.
+        if (
+          focusedElement.matches("input, textarea, select") ||
+          focusedElement.isContentEditable
+        ) {
           return;
         }
 
@@ -212,7 +227,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
           }
         }
       },
-      [orientation],
+      [orientation, indicatorProps["data-visible"]],
     );
 
     const contextValue: GroupContextValue = {
@@ -248,7 +263,6 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
             rootClassName.includes("flex-1") && "flex-1",
           )}
         >
-          <div {...indicatorProps} />
           <div
             role="group"
             data-slot="root"
@@ -306,6 +320,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
               );
             })}
           </div>
+          <div {...indicatorProps} />
         </div>
       </GroupContext.Provider>
     );

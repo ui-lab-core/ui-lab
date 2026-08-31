@@ -99,9 +99,8 @@ export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "href" | "target"
 > {
-  /** Variant class appended to the root element. Accepts any string.
+  /** Variant class appended to the root element. When omitted, the active theme supplies the default. Accepts any string.
    * @category Core
-   * @default primary
    */
   variant?: ButtonVariant;
   /** Size class appended to the root element. Accepts any string.
@@ -260,7 +259,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     {
       className,
       styles,
-      variant = "primary",
+      variant,
       size,
       children,
       onClick,

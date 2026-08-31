@@ -12,6 +12,22 @@ export {
 } from "./generated-data.js";
 export { generatedPublicArtifacts, generatedPremiumArtifacts } from "./generated-artifacts.js";
 export {
+  publicWorkshopCatalog,
+  createPublicWorkshopContentResolver,
+} from "./workshop-content.js";
+export type {
+  WorkshopContentKind,
+  WorkshopVisibility,
+  WorkshopAccess,
+  WorkshopContentFile,
+  WorkshopInstallIntent,
+  WorkshopCatalogSummary,
+  WorkshopCatalogSource,
+  WorkshopCatalogEntry,
+  ContentEntitlementContext,
+  WorkshopContentResolver,
+} from "./workshop-content.js";
+export {
   getArtifactById,
   getPublicArtifactById,
   getArtifactInstallIntent,

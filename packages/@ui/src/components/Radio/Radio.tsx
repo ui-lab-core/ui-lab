@@ -237,6 +237,7 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
 
     const inputRef = React.useRef<HTMLInputElement>(null);
     const rootRef = React.useRef<HTMLDivElement>(null);
+    const surfaceRef = React.useRef<HTMLDivElement>(null);
     const mergedRef = useMergeRefs(ref, inputRef);
 
     const ariaLabelFromProps = props["aria-label"];
@@ -261,10 +262,11 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
     const { hoverProps, isHovered } = useHover({ isDisabled: disabled });
     const [isPressed, setIsPressed] = React.useState(false);
     const { scopeProps, indicatorProps } = useFocus({
-      scopeRef: rootRef,
-      containerRef: rootRef,
+      scopeRef: surfaceRef,
+      containerRef: surfaceRef,
       surfaceSelector: '[data-radio-focus-surface="true"]',
       radiusSource: "surface",
+      mode: "self",
     });
     const resolved = resolveRadioStyles(stylesProp);
 
@@ -291,20 +293,21 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
     return (
       <div
         ref={rootRef}
-        className={cn("w-full", css["radio-item"], scopeProps.className, resolved.item)}
+        className={cn("w-full", css["radio-item"], resolved.item)}
         data-disabled={disabled ? "true" : undefined}
         onClick={handleRowSelect}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
-        <div {...indicatorProps} data-focus-indicator="local" />
         <div
-          className={cn("relative", css["radio-surface"])}
+          ref={surfaceRef}
+          className={cn("relative", css["radio-surface"], scopeProps.className)}
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
           data-radio-focus-surface="true"
         >
+          <div {...indicatorProps} data-focus-indicator="local" />
           <div
             className={cn("radio", css.radio, css[size], className, resolved.root)}
             data-selected={isSelected ? "true" : "false"}
@@ -430,12 +433,14 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
     const radioId = id || `radio-${generatedId}`;
     const inputRef = React.useRef<HTMLInputElement>(null);
     const rootRef = React.useRef<HTMLDivElement>(null);
+    const surfaceRef = React.useRef<HTMLDivElement>(null);
     const mergedRef = useMergeRefs(ref, inputRef);
     const { scopeProps, indicatorProps } = useFocus({
-      scopeRef: rootRef,
-      containerRef: rootRef,
+      scopeRef: surfaceRef,
+      containerRef: surfaceRef,
       surfaceSelector: '[data-radio-focus-surface="true"]',
       radiusSource: "surface",
+      mode: "self",
     });
     const resolved = resolveRadioStyles(stylesProp);
 
@@ -462,20 +467,21 @@ const RadioBase = React.forwardRef<HTMLInputElement, RadioProps>(
     return (
       <div
         ref={rootRef}
-        className={cn(css["radio-item"], scopeProps.className, resolved.item)}
+        className={cn(css["radio-item"], resolved.item)}
         data-disabled={disabled ? "true" : undefined}
         onClick={handleRowSelect}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
-        <div {...indicatorProps} data-focus-indicator="local" />
         <div
-          className={cn("relative", css["radio-surface"])}
+          ref={surfaceRef}
+          className={cn("relative", css["radio-surface"], scopeProps.className)}
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
           data-radio-focus-surface="true"
         >
+          <div {...indicatorProps} data-focus-indicator="local" />
           <div
             className={cn("radio", css.radio, css[size], className, resolved.root)}
             data-selected={checked ? "true" : "false"}

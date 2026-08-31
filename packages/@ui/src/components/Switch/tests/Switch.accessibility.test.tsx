@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Switch } from "../Switch";
+import { createRef } from "react";
+import { Switch, type SwitchStylesProp } from "../index";
 
 describe("Switch.accessibility", () => {
   afterEach(() => {
@@ -54,5 +55,55 @@ describe("Switch.accessibility", () => {
 
     await user.click(input);
     expect(root).not.toHaveAttribute("data-selected");
+  });
+
+  it("applies each public slot only to its own element and forwards the input ref", () => {
+    const ref = createRef<HTMLInputElement>();
+    const styles: SwitchStylesProp = {
+      root: "custom-root",
+      track: ["custom-track", false],
+      thumb: "custom-thumb",
+      input: "custom-input",
+      focusIndicator: "custom-focus",
+    };
+    const { container } = render(<Switch ref={ref} aria-label="Notifications" styles={styles} />);
+
+    expect(ref.current).toBe(screen.getByRole("switch"));
+    for (const [slot, value] of Object.entries(styles)) {
+      const className = Array.isArray(value) ? value[0] : value;
+      expect(container.querySelector(`[data-slot="${slot}"]`)).toHaveClass(className as string);
+      expect(container.querySelectorAll(`.${className}`)).toHaveLength(1);
+    }
+    expect(container.querySelector('[data-slot="track"]')).toHaveClass("track", "switch-track");
+    expect(container.querySelector('[data-slot="thumb"]')).toHaveClass("thumb", "switch-thumb");
+  });
+
+  it.each([{ disabled: true }, { readOnly: true }])("prevents changes for %j", async (props) => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<Switch aria-label="Notifications" {...props} onChange={onChange} />);
+    const input = screen.getByRole("switch");
+    await user.click(input);
+    if (!props.disabled) {
+      input.focus();
+      await user.keyboard(" ");
+    }
+    expect(input).not.toBeChecked();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps state.checked authoritative over checked and composes focus handlers", async () => {
+    const user = userEvent.setup();
+    const onFocus = vi.fn();
+    const onChange = vi.fn();
+    render(<Switch aria-label="Notifications" checked={false} state={{ checked: true }} onFocus={onFocus} onChange={onChange} />);
+    const input = screen.getByRole("switch");
+    await user.tab();
+    expect(onFocus).toHaveBeenCalledOnce();
+    expect(input).toHaveAttribute("data-focused", "true");
+    expect(input).toHaveAttribute("data-focus-visible", "true");
+    await user.keyboard(" ");
+    expect(onChange).toHaveBeenCalledWith(false);
+    expect(input).toBeChecked();
   });
 });

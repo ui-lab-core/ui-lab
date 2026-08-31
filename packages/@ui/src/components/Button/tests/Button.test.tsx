@@ -315,9 +315,12 @@ describe("Button - Component Specific", () => {
     expect(screen.getByRole("button", { name: "Custom" })).toHaveClass("my-custom-variant");
   });
 
-  it("defaults to the primary variant when omitted", () => {
+  it("leaves the variant unset for the theme to supply", () => {
     render(<Button>Click</Button>);
-    expect(screen.getByRole("button", { name: "Click" })).toHaveClass("primary");
+    const button = screen.getByRole("button", { name: "Click" });
+    expect(button).not.toHaveAttribute("data-variant");
+    expect(button).not.toHaveClass("primary");
+    expect(button).not.toHaveClass("secondary");
   });
 
   it.each(["primary", "secondary", "ghost", "danger"])(

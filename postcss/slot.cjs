@@ -78,6 +78,7 @@ function slotPlugin() {
 
         const transformNodes = (nodes) => {
           for (const node of nodes) {
+            if (node.type === "comment") continue;
             if (node.type === "atrule" && node.name === "supports" && node.nodes) {
               transformNodes(node.nodes);
               continue;

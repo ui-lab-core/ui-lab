@@ -1,7 +1,6 @@
 import * as React from "react";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { useMergeRefs } from "@/hooks/useMergeRefs";
 import styles from "./Mask.module.css";
 
 interface MaskStyleSlots {
@@ -11,8 +10,11 @@ interface MaskStyleSlots {
 
 type MaskStylesProp = StylesProp<MaskStyleSlots>;
 
-export interface MaskProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
+export type MaskAs = "div" | "child";
+
+export interface MaskProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "as"> {
+  /** Element rendered by Mask. Use child to apply the mask directly to its only content child. */
+  as?: MaskAs;
   children: React.ReactNode;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: MaskStylesProp;
@@ -28,14 +30,19 @@ type MaskFilter =
   | {
       kind: "scroll-fade";
       axis: "vertical" | "horizontal";
+    }
+  | {
+      kind: "cutout";
+      props: MaskCutoutProps;
     };
 
 const resolveMaskBaseStyles = createStylesResolver(["root", "gradient"] as const);
 
 const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
-  ({ asChild = false, className, children, style, styles: stylesProp, ...props }, ref) => {
+  ({ as = "div", className, children, style, styles: stylesProp, ...props }, ref) => {
     const childArray = React.Children.toArray(children);
     const maskFilters: MaskFilter[] = [];
+    const cutoutExceptions = new Set<NonNullable<MaskCutoutProps["except"]>>();
     let clipPath: string | undefined;
     let hasFixedFade = false;
     const contentChildren: React.ReactNode[] = [];
@@ -60,6 +67,10 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
         } else if (child.type === MaskClip) {
           const clipChild = child as React.ReactElement<MaskClipProps>;
           clipPath = clipChild.props.shape;
+        } else if (child.type === MaskCutout) {
+          const cutoutChild = child as React.ReactElement<MaskCutoutProps>;
+          maskFilters.push({ kind: "cutout", props: cutoutChild.props });
+          if (cutoutChild.props.except) cutoutExceptions.add(cutoutChild.props.except);
         } else {
           contentChildren.push(child);
         }
@@ -84,7 +95,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
         : {}),
     } as React.CSSProperties;
 
-    const asChildTarget =
+    const childTarget =
       contentChildren.length === 1 && React.isValidElement(contentChildren[0])
         ? (contentChildren[0] as React.ReactElement<{
             className?: string;
@@ -92,23 +103,21 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
             ref?: React.Ref<HTMLDivElement>;
           }>)
         : null;
+    const childRef = mergeRefs(ref, childTarget?.props.ref);
+    const cutoutExcept = Array.from(cutoutExceptions).join(" ") || undefined;
 
-    // Resolved unconditionally. `asChild` is an ordinary prop that a consumer can
-    // flip between renders, so merging the child ref inside the `asChild` branch
-    // would change this component's hook order when it does.
-    const asChildRef = useMergeRefs(ref, asChildTarget?.props.ref);
-
-    if (asChild) {
-      if (!asChildTarget) {
-        throw new Error("Mask with asChild expects exactly one valid React element child.");
+    if (as === "child") {
+      if (!childTarget) {
+        throw new Error('Mask with as="child" expects exactly one valid React element child.');
       }
 
-      return React.cloneElement(asChildTarget, {
+      return React.cloneElement(childTarget, {
         ...props,
-        ref: asChildRef,
-        className: cn("mask", styles.mask, resolved.root, className, asChildTarget.props.className),
+        ref: childRef,
+        "data-mask-cutout-except": cutoutExcept,
+        className: cn("mask", styles.mask, resolved.root, className, childTarget.props.className),
         style: {
-          ...asChildTarget.props.style,
+          ...childTarget.props.style,
           ...maskStyles,
         },
       });
@@ -118,6 +127,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
       <div
         {...props}
         ref={ref}
+        data-mask-cutout-except={cutoutExcept}
         className={cn("mask", styles.mask, resolved.root, className)}
         style={maskStyles}
       >
@@ -190,6 +200,13 @@ function hasScrollFadeVariables(style: React.CSSProperties | undefined): boolean
 }
 
 function generateMaskFilter(maskFilter: MaskFilter): string {
+  if (maskFilter.kind === "cutout") {
+    const filter = generateCutoutMask(maskFilter.props);
+    return maskFilter.props.except
+      ? `var(--mask-cutout-except-${maskFilter.props.except}, ${filter})`
+      : filter;
+  }
+
   if (maskFilter.kind === "scroll-fade") {
     if (maskFilter.axis === "horizontal") {
       return "linear-gradient(to right, transparent 0%, black var(--mask-left-fade, 0%), black calc(100% - var(--mask-right-fade, 0%)), transparent 100%)";
@@ -198,6 +215,56 @@ function generateMaskFilter(maskFilter: MaskFilter): string {
   }
 
   return generateFadeMask(maskFilter.direction, maskFilter.intensity, maskFilter.fixed);
+}
+
+type MaskLength = number | string;
+type MaskSide = "top" | "bottom" | "left" | "right";
+
+interface MaskCutoutProps {
+  /** Shape removed from the mask. */
+  shape: "circle";
+  /** Diameter of the overlapping shape. Numbers are interpreted as pixels. */
+  size: MaskLength;
+  /** Extra transparent space around the overlapping shape. */
+  clearance?: MaskLength;
+  /** Edge crossed by the overlapping shape. */
+  side: MaskSide;
+  /** Amount of the overlapping shape that sits inside this mask. */
+  overlap: MaskLength;
+  /** Omits this cutout when the Mask is the first or last sibling. */
+  except?: "first" | "last";
+}
+
+const MaskCutout: React.FC<MaskCutoutProps> = () => null;
+MaskCutout.displayName = "MaskCutout";
+
+function generateCutoutMask({ size, clearance = 0, side, overlap }: MaskCutoutProps): string {
+  const diameter = toCssLength(size);
+  const gap = toCssLength(clearance);
+  const overlapLength = toCssLength(overlap);
+  const radius = `calc(${diameter} / 2 + ${gap})`;
+  const edgeCenter = `calc(${diameter} / 2 - ${overlapLength})`;
+  const position = {
+    top: `50% calc(0% - ${edgeCenter})`,
+    right: `calc(100% + ${edgeCenter}) 50%`,
+    bottom: `50% calc(100% + ${edgeCenter})`,
+    left: `calc(0% - ${edgeCenter}) 50%`,
+  }[side];
+
+  return `radial-gradient(circle at ${position}, transparent ${radius}, black calc(${radius} + 0.5px))`;
+}
+
+function toCssLength(value: MaskLength): string {
+  return typeof value === "number" ? `${value}px` : value;
+}
+
+function mergeRefs<T>(...refs: Array<React.Ref<T> | undefined>): React.RefCallback<T> {
+  return (value) => {
+    refs.forEach((ref) => {
+      if (typeof ref === "function") ref(value);
+      else if (ref) ref.current = value;
+    });
+  };
 }
 
 function generateFadeMask(
@@ -229,6 +296,7 @@ const Mask = Object.assign(MaskRoot, {
   Gradient: MaskGradient,
   Fade: MaskFade,
   Clip: MaskClip,
+  Cutout: MaskCutout,
 });
 
 export { Mask };

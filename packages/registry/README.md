@@ -37,6 +37,16 @@ files. Standard components remain package installs from `ui-lab-components`.
 installation. Premium entries may expose metadata and install intent only;
 premium source and file manifests are never published by this package.
 
+Workshop content uses a separate generated public snapshot. The private library
+generator writes only entries whose visibility is `public`: free entries carry
+their authored delivery payload, while premium entries carry teaser metadata
+and a locked install intent with no source-derived fields. The public runtime
+exports `publicWorkshopCatalog` and `createPublicWorkshopContentResolver`; it
+does not import the private authoring registry. Server integrations can
+implement `WorkshopContentResolver` and supply authenticated user or
+organization grants through `ContentEntitlementContext` without changing MCP
+response shapes.
+
 ## Installation
 
 ```bash

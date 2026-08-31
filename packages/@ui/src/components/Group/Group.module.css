@@ -18,7 +18,7 @@
       0px
     );
 
-    @apply flex overflow-hidden shrink-0 box-border;
+    @apply flex overflow-hidden min-w-0 max-w-full box-border;
     color: var(--foreground, currentColor);
     background-color: var(--background, transparent);
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
@@ -28,7 +28,9 @@
 
     &.horizontal {
       @apply flex-row items-stretch;
-      block-size: var(--control-height);
+      /* The control-height token is the compact baseline, not a ceiling. Theme
+         button sizes can have a larger intrinsic line-height and block padding. */
+      min-block-size: var(--control-height);
 
       .item.divider {
         margin-block: calc(var(--padding-size) * -1);
@@ -89,7 +91,6 @@
 
   :is(.button, .input, .select, .expand) {
     block-size: 100%;
-    min-block-size: var(--item-height);
     min-inline-size: 0;
     box-sizing: border-box;
     position: relative;
@@ -106,31 +107,27 @@
        Standalone Buttons retain their scale effect. */
     --press-transform: none;
     inline-size: auto;
+    max-inline-size: 100%;
     border-radius: slot(item, radius, var(--background-inner-radius));
   }
 
-  /* Button resolves icon-only state itself. Put the square sizing contract on
-     the flex item so its intrinsic inline contribution matches its rendered
-     width after the Group's block size is resolved. */
+  /* An explicitly sized Group owns the available block size. Override Button's
+     standalone intrinsic minimum so the button box cannot escape that size. */
+  .group .item .button {
+    min-block-size: 0;
+  }
+
+  /* Button resolves icon-only state itself. Preserve its definite --size square
+     so an auto-height Group has an intrinsic size to resolve from. Percentage
+     dimensions here create a circular dependency between the item and Group. */
   .horizontal .item:has(.button[data-icon-only="true"]):not(:has([role="separator"])) {
     flex: 0 0 auto;
-    aspect-ratio: 1;
   }
 
-  .horizontal
-    .item:has(.button[data-icon-only="true"]):not(:has([role="separator"]))
-    .button[data-icon-only="true"] {
-    flex: 1 1 auto;
-    inline-size: 100%;
-    block-size: 100%;
-    aspect-ratio: auto;
-  }
-
-  .vertical .item .button[data-icon-only="true"],
-  .horizontal .item:has([role="separator"]) .button[data-icon-only="true"] {
+  .item .button[data-icon-only="true"] {
     flex: 0 0 auto;
-    inline-size: auto;
-    block-size: 100%;
+    inline-size: var(--size, 2.25rem);
+    block-size: var(--size, 2.25rem);
     aspect-ratio: 1;
   }
 
@@ -145,7 +142,11 @@
 
   .select {
     @apply flex items-stretch min-w-0 p-0 bg-transparent border-none;
-    border-radius: slot(item, radius, var(--background-inner-radius));
+    /* Select paints its trigger sections from its own radius tokens. Resolve
+       both to the Group item's shape so middle items remain square. */
+    --background-radius: slot(item, radius, 0);
+    --background-inner-radius: slot(item, radius, 0);
+    border-radius: var(--background-inner-radius);
   }
 
   .select > :global(.value) {
@@ -206,8 +207,6 @@
 
       :is(.button, .select) {
         border-radius: 0;
-        --background-radius: 0;
-        --background-inner-radius: 0;
       }
 
       .input {
@@ -286,7 +285,7 @@
     }
   }
 
-  .group [data-ring="true"] {
+  .group [data-ring="true"]:not(.button) {
     @slot ring {
       --shadow: none;
     }
@@ -308,4 +307,9 @@
     @apply outline-none;
     box-shadow: none;
   }
+
+  .group.none .item .button {
+    border-radius: slot(item, radius, 0);
+  }
+
 }

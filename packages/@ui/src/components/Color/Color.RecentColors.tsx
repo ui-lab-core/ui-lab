@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { getRecentColors } from "./color-utils";
-import styles from "./Color.module.css";
+import css from "./Color.module.css";
 
 interface ColorRecentColorsProps {
   /** Called when the user clicks a recent color swatch */
@@ -34,15 +34,18 @@ export const ColorRecentColors = React.forwardRef<HTMLDivElement, ColorRecentCol
     return (
       <div
         ref={ref}
-        className={cn("recent-colors", styles["recent-colors"], className)}
+        className={cn("recent-colors", css["recent-colors"], className)}
+        data-slot="recentColors.root"
         data-size={size}
         role="group"
         aria-label="Recent colors"
       >
         {recentColors.map((color, index) => (
           <button
+            type="button"
             key={`${color}-${index}`}
-            className={cn("recent-color-swatch", styles["recent-color-swatch"], swatchClassName)}
+            className={cn("item", "recent-color-swatch", css["recent-color-swatch"], swatchClassName)}
+            data-slot="recentColors.swatch"
             style={{ backgroundColor: color }}
             onClick={() => onSelect?.(color)}
             disabled={disabled}
@@ -56,4 +59,4 @@ export const ColorRecentColors = React.forwardRef<HTMLDivElement, ColorRecentCol
   },
 );
 
-ColorRecentColors.displayName = "ColorRecentColors";
+ColorRecentColors.displayName = "Color.RecentColors";

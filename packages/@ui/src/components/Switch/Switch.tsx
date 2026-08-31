@@ -29,6 +29,10 @@ export interface SwitchStyleSlots {
   track?: Style;
   /** Styles the movable thumb. */
   thumb?: Style;
+  /** Styles the native input that receives focus and pointer interaction. */
+  input?: Style;
+  /** Styles the local focus indicator without replacing its measured geometry. */
+  focusIndicator?: Style;
 }
 
 /**
@@ -37,9 +41,9 @@ export interface SwitchStyleSlots {
  */
 export type SwitchStylesProp = StylesProp<SwitchStyleSlots>;
 
-const resolveSwitchBaseStyles = createStylesResolver(["root", "track", "thumb"] as const) as (
-  stylesProp?: SwitchStylesProp,
-) => SwitchStyleSlots;
+const resolveSwitchStyles = createStylesResolver([
+  "root", "track", "thumb", "input", "focusIndicator",
+] as const);
 
 /**
  * Controlled state supplied to Switch.
@@ -50,6 +54,7 @@ export interface SwitchState {
   checked?: boolean;
 }
 
+/** Native input props and controlled state accepted by Switch; root styling targets the outer surface. */
 export interface SwitchProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "type" | "size" | "onChange" | "checked"
@@ -66,21 +71,19 @@ export interface SwitchProps extends Omit<
    */
   state?: SwitchState;
   /**
-   * Legacy alias for `checked` when `state.checked` is absent.
+   * Legacy controlled value used when both `state.checked` and `checked` are absent. Prefer `checked`.
    * @category Advanced
-   * @deprecated Use `checked`.
    */
   isSelected?: boolean;
   /**
-   * Receives the next checked value after keyboard, pointer, or drag-toggle interaction.
+   * Receives the next checked value after keyboard, pointer, or drag-toggle interaction. Disabled and read-only switches do not call it.
    * @category Events
    * @see https://react-spectrum.adobe.com/react-aria/useSwitch.html
    */
   onChange?: (isSelected: boolean) => void;
   /**
-   * Legacy initial checked value used when neither controlled value is supplied.
+   * Legacy initial checked value used when all controlled values and `defaultChecked` are absent. Prefer `defaultChecked`.
    * @category Advanced
-   * @deprecated Use `defaultChecked`.
    */
   defaultSelected?: boolean;
 
@@ -99,7 +102,7 @@ export interface SwitchProps extends Omit<
    */
   size?: "default" | "sm";
   /**
-   * Applies class-based overrides to the root, track, and thumb. Use `className` for conventional root classes.
+   * Applies class-based overrides to root, track, thumb, input, and focusIndicator. Root slot classes follow `className`; native `style` applies inline to the outer surface.
    * @category Styling
    * @typeDoc SwitchStylesProp
    */
@@ -113,6 +116,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       style,
       styles: stylesProp,
       disabled = false,
+      readOnly,
       checked,
       state: controlledState,
       isSelected: legacySelected,
@@ -131,7 +135,10 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     );
     const toggleState = useToggleState({
       isSelected: selected,
+      isDisabled: disabled,
+      isReadOnly: readOnly,
       onChange: (next) => {
+        if (disabled || readOnly) return;
         setSelected(next);
         onChange?.(next);
       },
@@ -153,6 +160,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     const { inputProps, isSelected } = useSwitch(
       {
         isDisabled: disabled,
+        isReadOnly: readOnly,
         ...(resolvedAriaLabel && { "aria-label": resolvedAriaLabel }),
         ...(ariaLabelledby && { "aria-labelledby": ariaLabelledby }),
       },
@@ -170,7 +178,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       mode: "self",
     });
 
-    const resolved = resolveSwitchBaseStyles(stylesProp);
+    const resolved = resolveSwitchStyles(stylesProp);
     const mergedInputRef = useMergeRefs(inputRef, ref);
     const dragToggleProps = useDragToggle("switch", rootRef, inputRef, toggleState.setSelected);
 
@@ -198,21 +206,29 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         data-focus-visible={isFocusVisible ? "true" : "false"}
         data-hovered={isHovered ? "true" : undefined}
       >
-        <div {...indicatorProps} data-focus-indicator="local" />
         <div
-          className={cn("switch-track", css["switch-track"], resolved.track)}
+          {...indicatorProps}
+          className={cn("focus-indicator", indicatorProps.className, resolved.focusIndicator)}
+          data-focus-indicator="local"
+          data-slot="focusIndicator"
+        />
+        <div
+          className={cn("track", "switch-track", css["switch-track"], resolved.track)}
           data-slot="track"
         />
         <div
-          className={cn("switch-thumb", css["switch-thumb"], resolved.thumb)}
+          className={cn("thumb", "switch-thumb", css["switch-thumb"], resolved.thumb)}
           data-slot="thumb"
         />
         <input
           ref={mergedInputRef}
           type="checkbox"
-          className={css.input}
           aria-checked={isSelected}
           {...mergeProps(inputProps, focusProps, hoverProps, otherProps)}
+          className={cn("input", css.input, resolved.input)}
+          data-slot="input"
+          data-focused={isFocused ? "true" : "false"}
+          data-focus-visible={isFocusVisible ? "true" : "false"}
         />
       </div>
     );

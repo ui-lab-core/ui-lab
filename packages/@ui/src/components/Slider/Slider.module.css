@@ -13,18 +13,38 @@
   .track {
     --thickness: var(--size, calc(var(--spacing-md) * 0.8));
     --length: calc(var(--thickness) * var(--ratio, 0.5));
+    --travel-inset: slot(track, padding, var(--padding, 0px));
     @apply relative flex grow items-center;
     flex-grow: 1;
     height: var(--thickness);
     overflow: visible;
     border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));
+    background: slot(track, background, var(--background));
+  }
+
+  .track::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border-radius: inherit;
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
-    background: slot(track, background, var(--background));
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .surface {
+    position: absolute;
+    inset: var(--travel-inset);
+    border-radius: inherit;
+    overflow: hidden;
+    z-index: 1;
   }
 
   .range {
     @apply absolute;
+    z-index: 1;
     display: block;
     border-radius: inherit;
     pointer-events: none;
@@ -38,6 +58,7 @@
     --thumb-block-size: slot(thumb, height, 100%);
 
     @apply absolute block;
+    z-index: 2;
     top: var(--top, 0);
     box-sizing: border-box;
     width: var(--thumb-inline-size);
@@ -46,6 +67,7 @@
     border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));
     outline: none;
     background: slot(thumb, background, var(--background));
+    background-clip: padding-box;
     border: slot(thumb, border, none);
     box-shadow: slot(thumb, shadow, none);
     transition:
@@ -65,7 +87,7 @@
   }
 
   .slider[data-orientation="horizontal"] .thumb {
-    left: clamp(var(--thumb-inset, 0px), var(--position, 0%), calc(100% - var(--thumb-inset, 0px)));
+    left: var(--position, 0%);
   }
 
   .slider[data-orientation="vertical"] {
@@ -87,11 +109,7 @@
   .slider[data-orientation="vertical"] .thumb {
     left: 50%;
     top: auto;
-    bottom: clamp(
-      var(--thumb-inset, 0px),
-      var(--position, 0%),
-      calc(100% - var(--thumb-inset, 0px))
-    );
+    bottom: var(--position, 0%);
     width: var(--thumb-block-size);
     height: var(--thumb-inline-size);
     transform: translate(-50%, 50%);
@@ -109,6 +127,7 @@
   .thumb[data-disabled="true"] {
     cursor: not-allowed;
     background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));
+    background-clip: padding-box;
   }
 
   .thumb[data-pressed="true"] {

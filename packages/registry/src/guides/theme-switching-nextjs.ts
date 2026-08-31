@@ -262,7 +262,8 @@ export default async function RootLayout({
       ],
       code: `"use client";
 
-import { Button, useColorMode } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
+import { useColorMode } from "ui-lab-components/providers";
 
 export function ThemeToggle() {
   const { themeMode, toggleThemeMode } = useColorMode();

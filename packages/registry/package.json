@@ -67,7 +67,7 @@
     "type-check": "tsc --noEmit",
     "generate": "node --import tsx scripts/generate-registry-data.ts",
     "validate": "node --import tsx scripts/validate-registry.ts",
-    "test": "node --import tsx --test src/artifacts.test.ts scripts/generate-public-artifacts.test.ts scripts/generate-styles-data.test.ts"
+    "test": "node --import tsx --test src/artifacts.test.ts src/workshop-content.test.ts scripts/generate-public-artifacts.test.ts scripts/generate-styles-data.test.ts"
   },
   "dependencies": {
     "react-icons": "^5.5.0",

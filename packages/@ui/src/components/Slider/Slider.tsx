@@ -12,6 +12,7 @@ import { asElementProps } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
+import { getThumbPosition, getThumbTrackPercent, useThumbTrack } from "@/hooks/useThumbTrack";
 
 import css from "./Slider.module.css";
 
@@ -197,16 +198,9 @@ function getValueFromPointer(
   max: number,
   step: number,
 ) {
-  const rect = track.getBoundingClientRect();
-  const size = orientation === "vertical" ? rect.height : rect.width;
-
-  if (size <= 0) return min;
-
-  const percent =
-    orientation === "vertical"
-      ? clamp((rect.bottom - clientY) / rect.height, 0, 1)
-      : clamp((clientX - rect.left) / rect.width, 0, 1);
-
+  const percent = getThumbTrackPercent(clientX, clientY, track, orientation);
+  if (percent === 0) return min;
+  if (percent === 1) return max;
   const rawValue = percent * (max - min) + min;
   return snapToStep(rawValue, min, max, step);
 }
@@ -293,7 +287,7 @@ function SliderThumb({
   }, []);
 
   const positionStyle = {
-    "--position": `${percent}%`,
+    "--position": getThumbPosition(percent),
   } as React.CSSProperties;
 
   return (
@@ -355,6 +349,8 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const rootRef = React.useRef<HTMLDivElement>(null);
     const trackRef = React.useRef<HTMLDivElement>(null);
     const thumbRefs = React.useRef<Array<HTMLDivElement | null>>([]);
+    const { travelRef, setThumbRef: measureThumb, trackStyle, travelProps, halfSize } =
+      useThumbTrack(orientation);
     const activeDragRef = React.useRef<{ pointerId: number; thumbIndex: number } | null>(null);
     const [draggingThumbIndex, setDraggingThumbIndex] = React.useState<number | null>(null);
 
@@ -382,12 +378,13 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       surfaceSelector: '[data-slider-focus-surface="true"]',
       radiusSource: "surface",
       mode: "self",
-      dependencies: [values, orientation, disabled],
+      dependencies: [values, orientation, disabled, halfSize],
     });
 
     const setThumbRef = React.useCallback((index: number, element: HTMLDivElement | null) => {
       thumbRefs.current[index] = element;
-    }, []);
+      if (index === 0) measureThumb(element);
+    }, [measureThumb]);
 
     const handleValueChange = React.useCallback(
       (index: number, newValue: number) => {
@@ -405,7 +402,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
     const updateValueFromPointer = React.useCallback(
       (thumbIndex: number, clientX: number, clientY: number) => {
-        const track = trackRef.current;
+        const track = travelRef.current;
         if (!track) return undefined;
 
         const newValue = getValueFromPointer(clientX, clientY, track, orientation, min, max, step);
@@ -413,7 +410,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         handleValueChange(thumbIndex, newValue);
         return newValue;
       },
-      [handleValueChange, max, min, orientation, step],
+      [handleValueChange, max, min, orientation, step, travelRef],
     );
 
     const stopPointerDrag = React.useCallback((pointerId: number, releaseCapture = true) => {
@@ -439,7 +436,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       (event: React.PointerEvent<HTMLDivElement>, requestedThumbIndex?: number) => {
         if (disabled || event.button !== 0 || event.isPrimary === false) return;
 
-        const track = trackRef.current;
+        const track = travelRef.current;
         const root = rootRef.current ?? event.currentTarget;
         if (!track || !root) return;
 
@@ -475,7 +472,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         thumbRefs.current[thumbIndex]?.focus({ preventScroll: true });
         handleValueChange(thumbIndex, nextValue);
       },
-      [disabled, handleValueChange, max, min, orientation, step, values],
+      [disabled, handleValueChange, max, min, orientation, step, values, travelRef],
     );
 
     const handleRootPointerDown = React.useCallback(
@@ -535,16 +532,20 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
     const rangeStartPercent = values.length > 1 ? getValuePercent(values[0], min, max) : 0;
     const rangeEndPercent = getValuePercent(values[values.length - 1], min, max);
+    const isRange = values.length > 1;
+    const rangeStart = isRange ? getThumbPosition(rangeStartPercent, "start") : "0px";
+    const rangeEnd = getThumbPosition(rangeEndPercent, "end");
+    const rangeSize = `max(0px, calc(${rangeEnd} - ${rangeStart}))`;
 
     const rangeStyle =
       orientation === "vertical"
         ? {
-            bottom: `${rangeStartPercent}%`,
-            height: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
+            bottom: rangeStart,
+            height: rangeSize,
           }
         : {
-            left: `${rangeStartPercent}%`,
-            width: `${Math.max(rangeEndPercent - rangeStartPercent, 0)}%`,
+            left: rangeStart,
+            width: rangeSize,
           };
 
     return (
@@ -568,36 +569,39 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-slider-track="true"
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
-          style={resolved.track.style}
+          style={{ ...trackStyle, ...resolved.track.style }}
           data-slot="track"
         >
+          <div {...travelProps} />
           <div {...indicatorProps} data-focus-indicator="local" />
-          <div
-            className={cn("range", css.range, resolved.range.className)}
-            data-slider-range="true"
-            data-disabled={disabled ? "true" : undefined}
-            style={{ ...rangeStyle, ...resolved.range.style }}
-            data-slot="range"
-          />
-          {values.map((sliderValue, index) => (
-            <SliderThumb
-              key={index}
-              index={index}
-              value={sliderValue}
-              min={min}
-              max={max}
-              step={step}
-              disabled={disabled}
-              orientation={orientation}
-              onValueChange={handleValueChange}
-              onThumbRef={setThumbRef}
-              isDragging={draggingThumbIndex === index}
-              aria-label={ariaLabel}
-              aria-labelledby={ariaLabelledBy}
-              className={resolved.thumb.className}
-              style={resolved.thumb.style}
+          <div className={css.surface}>
+            <div
+              className={cn("range", css.range, resolved.range.className)}
+              data-slider-range="true"
+              data-disabled={disabled ? "true" : undefined}
+              style={{ ...rangeStyle, ...resolved.range.style }}
+              data-slot="range"
             />
-          ))}
+            {values.map((sliderValue, index) => (
+              <SliderThumb
+                key={index}
+                index={index}
+                value={sliderValue}
+                min={min}
+                max={max}
+                step={step}
+                disabled={disabled}
+                orientation={orientation}
+                onValueChange={handleValueChange}
+                onThumbRef={setThumbRef}
+                isDragging={draggingThumbIndex === index}
+                aria-label={ariaLabel}
+                aria-labelledby={ariaLabelledBy}
+                className={resolved.thumb.className}
+                style={resolved.thumb.style}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );

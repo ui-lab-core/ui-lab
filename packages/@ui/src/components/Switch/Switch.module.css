@@ -3,12 +3,13 @@
 @layer components.defaults {
   .switch {
     --radius: 9999px;
-    --inner-radius: calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)));
 
     --width: 2.4rem;
     --height: 1.35rem;
-    --thumb-size: 1.05rem;
-    --thumb-offset: 0.15rem;
+    @slot thumb {
+      --size: 1.05rem;
+      --offset: 0.15rem;
+    }
 
     --disabled-opacity: 0.6;
 
@@ -19,41 +20,51 @@
     block-size: var(--height);
   }
 
-  .switch-track {
+  .switch > .switch-track {
     @apply absolute inset-0;
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-    background-color: var(--background, transparent);
-    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
-      slot(border, background, transparent);
-    border-radius: var(--radius);
+    background-color: slot(track, background, var(--background, transparent));
+    border: slot(track, width, var(--border-width-base, 1px)) slot(track, style, solid)
+      slot(track, background-border, var(--background-border, transparent));
+    border-radius: slot(track, radius, var(--radius));
   }
 
-  .input {
-    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;
+  .switch > .input {
+    @apply absolute inset-0 h-full w-full opacity-0;
+    cursor: inherit;
   }
 
-  .switch-thumb {
+  .switch > .switch-thumb {
     @apply absolute top-0 bottom-0 my-auto;
-    inset-inline-start: var(--thumb-offset);
-    inline-size: var(--thumb-size);
-    block-size: var(--thumb-size);
+    inset-inline-start: slot(thumb, offset, 0.15rem);
+    inline-size: slot(thumb, size, 1.05rem);
+    block-size: slot(thumb, height, slot(thumb, size, 1.05rem));
     transition:
       inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-    background-color: var(--foreground, currentColor);
-    border-radius: var(--inner-radius);
+    background-color: slot(thumb, background, var(--foreground, currentColor));
+    border-radius: slot(thumb, radius, calc(var(--radius) - slot(track, width, var(--border-width-base, 1px))));
+    border: slot(thumb, border, none);
+    background-clip: padding-box;
+    box-sizing: border-box;
     z-index: 1;
     pointer-events: none;
   }
 
-  .switch[data-selected="true"] .switch-thumb {
-    inset-inline-start: calc(var(--width) - var(--thumb-size) - var(--thumb-offset));
+  .switch[data-selected="true"] > .switch-track {
+    background-color: slot(track, background-selected, slot(track, background, var(--background, transparent)));
+    border-color: slot(track, background-border-selected, slot(track, background-border, var(--background-border, transparent)));
+  }
+
+  .switch[data-selected="true"] > .switch-thumb {
+    background-color: slot(thumb, background-selected, slot(thumb, background, var(--foreground, currentColor)));
+    inset-inline-start: calc(var(--width) - slot(thumb, size, 1.05rem) - slot(thumb, offset, 0.15rem));
   }
 
   .switch[data-disabled="true"] {
@@ -61,10 +72,12 @@
     cursor: not-allowed;
   }
 
-  .switch-sm {
+  .switch.switch-sm {
     --width: 2rem;
     --height: 1.125rem;
-    --thumb-size: 0.875rem;
-    --thumb-offset: 0.125rem;
+    @slot thumb {
+      --size: 0.875rem;
+      --offset: 0.125rem;
+    }
   }
 }

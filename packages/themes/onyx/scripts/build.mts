@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import postcss from "postcss";
+import { parseVariant } from "../../../../postcss/variant.mjs";
 import { createPostcssPlugins } from "../postcss.config.mts";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -8,11 +9,16 @@ const uiContractPath = path.resolve(root, "../../@ui/src/generated-theme-contrac
 const source = await readFile(path.join(root, "styles.css"), "utf8");
 const sourceRoot = postcss.parse(source);
 const variants: Record<string, string[]> = {};
+const defaults: Record<string, string> = {};
 
 sourceRoot.walkAtRules("variant", (rule) => {
-  const [component, variant, ...rest] = postcss.list.space(rule.params);
-  if (!component || !variant || rest.length > 0 || !rule.nodes) {
-    throw rule.error("Expected @variant <component> <value> { ... }");
+  const { component, variant, isDefault } = parseVariant(rule);
+  if (isDefault) {
+    const existing = defaults[component];
+    if (existing && existing !== variant) {
+      throw rule.error(`@variant defines more than one default for ${component}`);
+    }
+    defaults[component] = variant;
   }
   variants[component] = [...new Set([...(variants[component] ?? []), variant])];
 });
@@ -49,7 +55,7 @@ if (outputIndex !== -1) {
   await writeFile(output, css);
   await writeFile(
     path.join(path.dirname(output), "theme-contract.json"),
-    `${JSON.stringify({ variants }, null, 2)}\n`,
+    `${JSON.stringify({ variants, defaults }, null, 2)}\n`,
   );
   const augmentations = Object.entries(variants)
     .map(([component, values]) => {

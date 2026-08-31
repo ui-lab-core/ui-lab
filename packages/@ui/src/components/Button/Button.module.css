@@ -8,6 +8,7 @@
     --padding-inline-end: var(--padding-inline);
     position: relative;
     min-width: 0;
+    max-width: 100%;
     box-sizing: border-box;
     padding-block: var(--padding-block);
     padding-inline: var(--padding-inline);
@@ -56,6 +57,9 @@
     & > span > svg,
     & > svg {
       color: slot(icon, foreground, var(--icon-foreground, currentColor));
+      width: slot(icon, size, 1em);
+      height: slot(icon, size, 1em);
+      flex-shrink: 0;
     }
   }
 
@@ -80,6 +84,7 @@
     aspect-ratio: 1;
     width: var(--size, 2.25rem);
     height: var(--size, 2.25rem);
+    max-width: none;
     --padding-block: 0.25rem;
     --padding-inline: 0.25rem;
   }

@@ -404,6 +404,329 @@ function enrichButtonAPI(api: ComponentAPI): ComponentAPI {
   };
 }
 
+function enrichColorAPI(api: ComponentAPI): ComponentAPI {
+  const member = (name: string, type: string, description: string): PropDefinition => ({
+    name,
+    type,
+    required: false,
+    description,
+  });
+  const styleInterface = (
+    name: string,
+    summary: string,
+    members: Array<[string, string, string]>,
+  ): NonNullable<ComponentAPI["customTypes"]>[string] => ({
+    name,
+    summary,
+    type: `{\n${members.map(([key, type]) => `  ${key}?: ${type};`).join("\n")}\n}`,
+    kind: "interface",
+    members: members.map(([key, type, description]) => member(key, type, description)),
+  });
+
+  const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
+    Style: {
+      name: "Style",
+      summary: "A class name or conditional class-name array.",
+      type: "string | (string | false | null | undefined)[]",
+      kind: "alias",
+    },
+    StylesProp: {
+      name: "StylesProp",
+      summary: "Preserves a component-specific class-based style-slot table.",
+      type: "StylesProp<S extends { root?: Style }> = S",
+      kind: "alias",
+    },
+    ColorFormat: {
+      name: "ColorFormat",
+      summary: "A serialized color format supported by the picker input.",
+      type: '"hex" | "rgb"',
+      kind: "alias",
+      values: [
+        { value: '"hex"', description: "Displays and emits hexadecimal color strings." },
+        { value: '"rgb"', description: "Displays and emits rgb() or rgba() color strings." },
+      ],
+    },
+    ColorSize: {
+      name: "ColorSize",
+      summary: "A named sizing preset shared by Color anatomy.",
+      type: '"sm" | "md" | "lg"',
+      kind: "alias",
+      values: [
+        { value: '"sm"', description: "Uses the compact picker dimensions." },
+        { value: '"md"', description: "Uses the default picker dimensions." },
+        { value: '"lg"', description: "Uses the large picker dimensions." },
+      ],
+    },
+    ColorAreaVariant: {
+      name: "ColorAreaVariant",
+      summary: "The visual shell used by Color.Area.",
+      type: '"standalone" | "popover"',
+      kind: "alias",
+      values: [
+        { value: '"standalone"', description: "Renders the normal picker background and border." },
+        { value: '"popover"', description: "Removes the shell so Popover supplies the outer surface." },
+      ],
+    },
+    ColorSliderType: {
+      name: "ColorSliderType",
+      summary: "The channel controlled by Color.Slider.",
+      type: '"hue" | "opacity" | "chroma"',
+      kind: "alias",
+      values: [
+        { value: '"hue"', description: "Controls hue in degrees from 0 to 360 by default." },
+        { value: '"opacity"', description: "Controls alpha from 0 to 1 by default." },
+        { value: '"chroma"', description: "Controls OKLCH chroma from 0 to 0.4 by default." },
+      ],
+    },
+    ColorTriggerPosition: {
+      name: "ColorTriggerPosition",
+      summary: "The preferred side for the Color.Trigger popover.",
+      type: '"top" | "right" | "bottom" | "left"',
+      kind: "alias",
+      values: [
+        { value: '"top"', description: "Places the picker above the trigger when space permits." },
+        { value: '"right"', description: "Places the picker to the right of the trigger when space permits." },
+        { value: '"bottom"', description: "Places the picker below the trigger when space permits." },
+        { value: '"left"', description: "Places the picker to the left of the trigger when space permits." },
+      ],
+    },
+    ColorState: styleInterface("ColorState", "Controlled Color value state.", [
+      ["value", "string", "The controlled serialized color value."],
+    ]),
+    ColorCanvasGradientStyleSlots: styleInterface(
+      "ColorCanvasGradientStyleSlots",
+      "Layer-specific classes for the Color.Canvas gradient.",
+      [
+        ["hue", "Style", "Styles the hue-tinted base layer."],
+        ["saturation", "Style", "Styles the horizontal saturation layer."],
+        ["brightness", "Style", "Styles the vertical brightness layer."],
+      ],
+    ),
+    ColorCanvasStyleSlots: styleInterface(
+      "ColorCanvasStyleSlots",
+      "Classes for Color.Canvas anatomy.",
+      [
+        ["root", "Style", "Styles the focusable canvas interaction surface."],
+        ["inner", "Style", "Styles the clipped gradient container."],
+        ["gradient", "Style | ColorCanvasGradientStyleSlots", "Styles every gradient layer or selected layers."],
+        ["pointer", "Style", "Styles the current-color pointer."],
+      ],
+    ),
+    ColorSliderChannelStyleSlots: styleInterface(
+      "ColorSliderChannelStyleSlots",
+      "Classes for one Color.Slider channel.",
+      [
+        ["root", "Style", "Styles the slider interaction surface."],
+        ["track", "Style", "Styles the channel gradient track."],
+        ["thumb", "Style", "Styles the draggable slider thumb."],
+      ],
+    ),
+    ColorSliderStyleSlots: styleInterface(
+      "ColorSliderStyleSlots",
+      "Channel-specific classes for Color.Slider anatomy.",
+      [
+        ["hue", "Style | ColorSliderChannelStyleSlots", "Styles all hue anatomy or selected hue parts."],
+        ["opacity", "Style | ColorSliderChannelStyleSlots", "Styles all opacity anatomy or selected opacity parts."],
+        ["chroma", "Style | ColorSliderChannelStyleSlots", "Styles all chroma anatomy or selected chroma parts."],
+      ],
+    ),
+    ColorTriggerStyleSlots: styleInterface(
+      "ColorTriggerStyleSlots",
+      "Classes for Color.Trigger anatomy.",
+      [
+        ["root", "Style", "Styles the trigger button."],
+        ["swatch", "Style", "Styles the default trigger swatch."],
+        ["value", "Style", "Styles the default trigger value."],
+      ],
+    ),
+    ColorRecentColorsStyleSlots: styleInterface(
+      "ColorRecentColorsStyleSlots",
+      "Classes for the recent-color collection.",
+      [
+        ["root", "Style", "Styles the recent-colors group."],
+        ["swatch", "Style", "Styles every recent-color button."],
+      ],
+    ),
+    ColorInputStyleSlots: styleInterface(
+      "ColorInputStyleSlots",
+      "Classes for the color input controls.",
+      [
+        ["group", "Style", "Styles the grouped input controls."],
+        ["input", "Style", "Styles the editable color field."],
+        ["format", "Style", "Styles the format selector."],
+        ["previewSwatch", "Style", "Styles the optional preview swatch."],
+      ],
+    ),
+    ColorStyleSlots: styleInterface(
+      "ColorStyleSlots",
+      "Classes for the Color root and complete compound anatomy.",
+      [
+        ["provider", "Style", "Styles the compound-component provider root."],
+        ["root", "Style", "Styles the Color.Area picker surface."],
+        ["trigger", "Style | ColorTriggerStyleSlots", "Styles all trigger anatomy or selected trigger parts."],
+        ["controls", "Style", "Styles the controls below the canvas."],
+        ["canvas", "Style | ColorCanvasStyleSlots", "Styles all canvas anatomy or selected canvas parts."],
+        ["slider", "ColorSliderStyleSlots", "Styles channel-specific slider anatomy."],
+        ["recentColors", "Style | ColorRecentColorsStyleSlots", "Styles the recent-color group or its swatches."],
+        ["input", "ColorInputStyleSlots", "Styles color input anatomy."],
+      ],
+    ),
+    ColorStylesProp: {
+      name: "ColorStylesProp",
+      summary: "The keyed class-based styling contract for Color anatomy.",
+      type: "StylesProp<ColorStyleSlots>",
+      kind: "alias",
+    },
+    ColorPopoverStyles: {
+      name: "ColorPopoverStyles",
+      summary: "Popover anatomy classes forwarded by Color.Trigger.",
+      type: "{ root?: Style; content?: Style; trigger?: Style; frame?: Style }",
+      kind: "interface",
+      members: [
+        member("root", "Style", "Styles the Popover root."),
+        member("content", "Style", "Styles the positioned Popover content."),
+        member("trigger", "Style", "Styles the Popover trigger wrapper."),
+        member("frame", "Style", "Styles the Popover frame around Color.Area."),
+      ],
+    },
+  };
+
+  const inheritedRoot: PropDefinition[] = [
+    member("children", "React.ReactNode", "Renders custom compound children; when omitted, Color renders Color.Area."),
+    member("className", "string", "Adds classes to the Color.Area root or to the compound provider when custom children are supplied."),
+    member("style", "React.CSSProperties", "Applies inline styles to the Color.Area root or compound provider."),
+    member("aria-label", "string", "Provides an accessible label for the root region when one is needed."),
+    member("aria-labelledby", "string", "References element IDs that label the root region."),
+  ];
+  inheritedRoot[0].category = "Content";
+  inheritedRoot[1].category = inheritedRoot[2].category = "Styling";
+  inheritedRoot[3].category = inheritedRoot[4].category = "Accessibility";
+
+  const inheritedByPart: Record<string, PropDefinition[]> = {
+    "Color.Area": [
+      { ...member("className", "string", "Adds classes to the picker surface after Color styles.root."), category: "Styling" },
+      { ...member("style", "React.CSSProperties", "Applies inline styles to the picker surface."), category: "Styling" },
+    ],
+    "Color.Canvas": [
+      { ...member("className", "string", "Adds classes to the canvas interaction surface after context styles."), category: "Styling" },
+      { ...member("style", "React.CSSProperties", "Applies inline styles to the canvas interaction surface."), category: "Styling" },
+      { ...member("aria-label", "string", "Overrides the default accessible name for the saturation and brightness slider."), category: "Accessibility" },
+      { ...member("aria-valuetext", "string", "Overrides the announced saturation and brightness value text."), category: "Accessibility" },
+    ],
+    "Color.Slider": [
+      { ...member("className", "string", "Adds classes to the channel slider root after its defaults and context style."), category: "Styling" },
+      { ...member("style", "React.CSSProperties", "Applies inline styles to the channel slider root; opacity also supplies the generic --color variable."), category: "Styling" },
+      { ...member("aria-label", "string", "Overrides the channel-derived accessible name for the slider thumb."), category: "Accessibility" },
+      { ...member("aria-labelledby", "string", "References element IDs that label the slider thumb."), category: "Accessibility" },
+    ],
+    "Color.Trigger": [
+      { ...member("children", "React.ReactNode", "Replaces the default swatch and serialized value inside the trigger."), category: "Content" },
+      { ...member("className", "string", "Adds classes to the trigger button after Color trigger styles."), category: "Styling" },
+      { ...member("style", "React.CSSProperties", "Applies inline styles to the trigger button."), category: "Styling" },
+      { ...member("disabled", "boolean", "Disables the trigger in addition to any disabled state inherited from Color."), category: "Core", defaultValue: "false" },
+      { ...member("onClick", "React.MouseEventHandler<HTMLButtonElement>", "Runs for native click activation while the trigger is enabled."), category: "Events" },
+      { ...member("aria-label", "string", "Provides the trigger's accessible name when its content is not sufficient."), category: "Accessibility" },
+      { ...member("aria-labelledby", "string", "References element IDs that label the trigger button."), category: "Accessibility" },
+    ],
+  };
+
+  const customTypeNames = Object.keys(customTypes);
+  const replaceTypes = (componentName: string, props: PropDefinition[]) => {
+    const replacements: Record<string, string> = componentName === "Color"
+      ? { state: "ColorState", format: "ColorFormat", size: "ColorSize", styles: "ColorStylesProp" }
+      : componentName === "Color.Area"
+        ? { variant: "ColorAreaVariant" }
+        : componentName === "Color.Canvas"
+          ? { size: "ColorSize" }
+          : componentName === "Color.Slider"
+            ? { type: "ColorSliderType", size: "ColorSize" }
+            : componentName === "Color.Trigger"
+              ? { position: "ColorTriggerPosition", popoverStyles: "ColorPopoverStyles" }
+              : {};
+    const inherited = componentName === "Color" ? inheritedRoot : inheritedByPart[componentName] ?? [];
+    const inheritedNames = new Set(inherited.map((prop) => prop.name));
+    return [...props.filter((prop) => !inheritedNames.has(prop.name)), ...inherited].map((prop) => {
+      const normalized = replacements[prop.name] ? { ...prop, type: replacements[prop.name] } : prop;
+      return { ...normalized, typeTokens: tokenizeType(normalized.type, customTypeNames) };
+    });
+  };
+
+  for (const customType of Object.values(customTypes)) {
+    customType.typeTokens = tokenizeType(customType.type, customTypeNames);
+    if (customType.members) {
+      customType.members = customType.members.map((entry) => ({
+        ...entry,
+        typeTokens: tokenizeType(entry.type, customTypeNames),
+      }));
+    }
+  }
+
+  return {
+    ...api,
+    props: replaceTypes("Color", api.props),
+    subComponents: api.subComponents
+      ? Object.fromEntries(Object.entries(api.subComponents).map(([name, component]) => [
+          name,
+          { ...component, props: replaceTypes(name, component.props) },
+        ]))
+      : undefined,
+    propGroups: [
+      { name: "Core" },
+      { name: "Content" },
+      { name: "Events" },
+      { name: "Styling" },
+      { name: "Accessibility" },
+      { name: "Advanced" },
+    ],
+    stateAttributes: [
+      {
+        name: "data-slot",
+        description: "Stable anatomy identity emitted by Color and its composed Slider parts.",
+        values: [
+          "provider",
+          "root",
+          "trigger.root",
+          "trigger.swatch",
+          "trigger.value",
+          "controls",
+          "canvas.root",
+          "canvas.inner",
+          "canvas.gradient.hue",
+          "canvas.gradient.saturation",
+          "canvas.gradient.brightness",
+          "canvas.pointer",
+          "slider.hue.root",
+          "slider.opacity.root",
+          "slider.chroma.root",
+          "recentColors.root",
+          "recentColors.swatch",
+          "input.group",
+          "input.input",
+          "input.format",
+          "input.previewSwatch",
+          "track",
+          "range",
+          "thumb",
+        ],
+      },
+      { name: "data-size", description: "The resolved Color size on roots and size-aware parts.", values: ["sm", "md", "lg"] },
+      { name: "data-disabled", description: "Emitted as true on disabled roots and interactive parts; omitted when enabled.", values: ["true"] },
+      { name: "data-variant", description: "Emitted on Color.Area only for the popover treatment; omitted for standalone.", values: ["popover"] },
+      { name: "data-focused", description: "Emitted as true while Color.Canvas or a slider thumb is focused; omitted otherwise.", values: ["true"] },
+      { name: "data-focus-visible", description: "Emitted as true for keyboard-visible canvas or slider-thumb focus; omitted otherwise.", values: ["true"] },
+      { name: "data-hovered", description: "Emitted as true while a slider thumb is hovered; omitted otherwise.", values: ["true"] },
+      { name: "data-pressed", description: "Emitted as true while a slider thumb is pressed or dragged; omitted otherwise.", values: ["true"] },
+      { name: "data-dragging", description: "Emitted as true while a slider thumb is being dragged; omitted otherwise.", values: ["true"] },
+      { name: "data-orientation", description: "The underlying Color.Slider orientation.", values: ["horizontal"] },
+      { name: "data-slider-track", description: "Emitted as true on each Color.Slider track.", values: ["true"] },
+      { name: "data-slider-range", description: "Emitted as true on each Color.Slider range.", values: ["true"] },
+      { name: "data-slider-thumb", description: "Emitted as true on each Color.Slider thumb.", values: ["true"] },
+      { name: "data-slider-thumb-index", description: "Zero-based index of a Color.Slider thumb." },
+    ],
+    customTypes,
+  };
+}
+
 function enrichProgressAPI(api: ComponentAPI): ComponentAPI {
   const customTypes: NonNullable<ComponentAPI["customTypes"]> = {
     Style: {
@@ -639,7 +962,7 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
     SwitchStyleSlots: {
       name: "SwitchStyleSlots",
       summary: "Named class-based styling targets for the Switch anatomy.",
-      type: "{ root?: Style; track?: Style; thumb?: Style }",
+      type: "{ root?: Style; track?: Style; thumb?: Style; input?: Style; focusIndicator?: Style }",
       kind: "interface",
       members: [
         {
@@ -660,6 +983,18 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
           required: false,
           description: "Styles the movable thumb.",
         },
+        {
+          name: "input",
+          type: "Style",
+          required: false,
+          description: "Styles the native input that receives focus and pointer interaction.",
+        },
+        {
+          name: "focusIndicator",
+          type: "Style",
+          required: false,
+          description: "Styles the local focus indicator without replacing its measured geometry.",
+        },
       ],
     },
     SwitchStylesProp: {
@@ -673,11 +1008,44 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
 
   const inheritedProps: PropDefinition[] = [
     {
+      name: "readOnly",
+      type: "boolean",
+      required: false,
+      category: "Core",
+      description: "Prevents keyboard, pointer, and drag-toggle changes while keeping the switch focusable.",
+      tags: { see: "https://react-spectrum.adobe.com/react-aria/useSwitch.html" },
+    },
+    {
+      name: "value",
+      type: "string | number | readonly string[]",
+      required: false,
+      category: "Forms",
+      description: "Native input value submitted under name when the switch is checked.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/checkbox#value" },
+    },
+    {
+      name: "form",
+      type: "string",
+      required: false,
+      category: "Forms",
+      description: "Associates the native input with a form by its ID.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#form" },
+    },
+    ...["onFocus", "onBlur"].map((name): PropDefinition => ({
+      name,
+      type: "React.FocusEventHandler<HTMLInputElement>",
+      required: false,
+      category: "Events",
+      description: `Receives the native input's ${name === "onFocus" ? "focus" : "blur"} event alongside the shared focus behavior.`,
+      tags: { mdn: `https://developer.mozilla.org/en-US/docs/Web/API/Element/${name === "onFocus" ? "focus" : "blur"}_event` },
+    })),
+
+    {
       name: "defaultChecked",
       type: "boolean",
       required: false,
       category: "Core",
-      description: "Initial checked value for uncontrolled usage when neither controlled value is supplied.",
+      description: "Initial checked value when state.checked, checked, and isSelected are absent; takes precedence over defaultSelected.",
       tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/checkbox#checked" },
     },
     {
@@ -685,14 +1053,16 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
       type: "string",
       required: false,
       category: "Styling",
-      description: "Classes applied to the outer switch surface after its default classes.",
+      description: "Classes applied to the outer .switch surface after default classes and before styles.root.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/class" },
     },
     {
       name: "style",
       type: "React.CSSProperties",
       required: false,
       category: "Styling",
-      description: "Inline CSS properties applied to the outer switch surface.",
+      description: "Inline CSS properties applied to the outer switch surface; named slots accept classes only.",
+      tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/style" },
     },
     {
       name: "name",
@@ -715,7 +1085,7 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
       type: "string",
       required: false,
       category: "Accessibility",
-      description: "ID for the native input. Checkbox uses it to associate a rendered label and helper text.",
+      description: "ID for the native switch input, allowing an external label to target it with htmlFor.",
       tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/id" },
     },
     {
@@ -723,7 +1093,7 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
       type: "boolean",
       required: false,
       category: "Accessibility",
-      description: "Requests focus for the native checkbox when it mounts.",
+      description: "Requests focus for the native switch input when it mounts.",
       tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus" },
     },
     {
@@ -755,11 +1125,16 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
       type: "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\"",
       required: false,
       category: "Accessibility",
-      description: "Marks the native input invalid. A value of true also activates Checkbox invalid styling.",
+      description: "Marks the native switch input invalid for assistive technology; does not add invalid styling.",
       tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid" },
     },
   ];
   const props = [...api.props.filter((prop) => !inheritedProps.some((inherited) => inherited.name === prop.name)), ...inheritedProps];
+  const sizeProp = props.find((prop) => prop.name === "size");
+  if (sizeProp) sizeProp.enumValueDetails = [
+    { value: "default", description: "Uses the standard switch geometry." },
+    { value: "sm", description: "Uses a smaller track and thumb." },
+  ];
   const enrichProps = (definitions: PropDefinition[]) =>
     definitions.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type, Object.keys(customTypes)) }));
 
@@ -783,11 +1158,15 @@ function enrichSwitchAPI(api: ComponentAPI): ComponentAPI {
       { name: "data-selected", description: "The switch is checked; omitted when unchecked.", values: ["true"] },
       { name: "data-disabled", description: "The switch is disabled; omitted when enabled.", values: ["true"] },
       { name: "data-hovered", description: "The pointer is over the enabled switch; omitted otherwise.", values: ["true"] },
-      { name: "data-focused", description: "The native switch input is focused.", values: ["true", "false"] },
-      { name: "data-focus-visible", description: "The switch input has keyboard-visible focus.", values: ["true", "false"] },
+      { name: "data-focused", description: "Root and input emit true when the input is focused, false otherwise.", values: ["true", "false"] },
+      { name: "data-focus-visible", description: "Root and input emit true for keyboard-visible focus, false otherwise.", values: ["true", "false"] },
       { name: "data-size", description: "The configured switch size.", values: ["default", "sm"] },
-      { name: "data-slot", description: "Stable styling identity emitted as root, track, or thumb on the matching anatomy element.", values: ["root", "track", "thumb"] },
+      { name: "data-slot", description: "Stable styling identity on each matching anatomy element; track and thumb also retain switch-track and switch-thumb class hooks.", values: ["root", "track", "thumb", "input", "focusIndicator"] },
       { name: "data-switch-focus-surface", description: "Marks the root as the visual focus surface for the native switch input.", values: ["true"] },
+      { name: "data-ring", description: "Marks the local focus indicator as a shared focus ring.", values: ["true"] },
+      { name: "data-self-target", description: "The indicator belongs to this switch's own focus surface.", values: ["true"] },
+      { name: "data-visible", description: "The focus indicator is visible; omitted when hidden.", values: ["true"] },
+      { name: "data-transition-radius", description: "The focus indicator animates a radius change on the same surface; omitted otherwise.", values: ["true"] },
       { name: "data-focus-indicator", description: "Marks the root's local shared focus indicator.", values: ["local"] },
     ],
     customTypes,
@@ -3845,6 +4224,7 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   };
 
   if (componentDirName === "Button") return enrichButtonAPI(api);
+  if (componentDirName === "Color") return enrichColorAPI(api);
   if (componentDirName === "Expand") return enrichExpandAPI(api);
   if (componentDirName === "Command") return enrichCommandAPI(api);
   if (componentDirName === "List") return enrichListAPI(api);
@@ -3898,6 +4278,9 @@ export function extractAllComponentAPIs(componentDirNames: string[]): Record<str
 
     if (dirName === "Button" && result[kebabId]) {
       result[kebabId] = enrichButtonAPI(result[kebabId]);
+    }
+    if (dirName === "Color" && result[kebabId]) {
+      result[kebabId] = enrichColorAPI(result[kebabId]);
     }
     if (dirName === "Expand" && result[kebabId]) {
       result[kebabId] = enrichExpandAPI(result[kebabId]);

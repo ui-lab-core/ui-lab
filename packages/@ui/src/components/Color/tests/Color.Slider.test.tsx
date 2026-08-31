@@ -32,9 +32,10 @@ describe("Color.Slider", () => {
 
     const root = container.querySelector(".hue-slider") as HTMLElement;
     const track = container.querySelector(".hue-track") as HTMLElement;
+    const travel = track.firstElementChild as HTMLElement;
     const thumb = screen.getByRole("slider", { name: "Accent hue" });
 
-    mockElementRect(track, { left: 10, top: 0, width: 200, height: 16 });
+    mockElementRect(travel, { left: 10, top: 0, width: 200, height: 16 });
 
     fireEvent.pointerDown(root, {
       pointerId: 1,
@@ -65,9 +66,10 @@ describe("Color.Slider", () => {
 
     const root = container.querySelector(".opacity-slider") as HTMLElement;
     const track = container.querySelector(".opacity-track") as HTMLElement;
+    const travel = track.firstElementChild as HTMLElement;
     const thumb = screen.getByRole("slider", { name: "Accent opacity" });
 
-    mockElementRect(track, { left: 10, top: 0, width: 200, height: 12 });
+    mockElementRect(travel, { left: 10, top: 0, width: 200, height: 12 });
 
     fireEvent.pointerDown(root, {
       pointerId: 1,
@@ -77,7 +79,7 @@ describe("Color.Slider", () => {
       clientY: 6,
     });
 
-    expect(root.style.getPropertyValue("--color-slider-opacity-color")).toBe("rgb(10, 20, 30)");
+    expect(root.style.getPropertyValue("--color")).toBe("rgb(10, 20, 30)");
     expect(track).toHaveAttribute("data-slider-track", "true");
     expect(thumb).toHaveAttribute("aria-valuemin", "0");
     expect(thumb).toHaveAttribute("aria-valuemax", "1");
@@ -88,9 +90,13 @@ describe("Color.Slider", () => {
     const { container } = render(
       <Color
         styles={{
-          slider: { chroma: "chroma-root-scope" },
-          sliderTrack: { chroma: "chroma-track-scope" },
-          sliderThumb: { chroma: "chroma-thumb-scope" },
+          slider: {
+            chroma: {
+              root: "chroma-root-scope",
+              track: "chroma-track-scope",
+              thumb: "chroma-thumb-scope",
+            },
+          },
         }}
       >
         <Color.Slider
@@ -108,6 +114,7 @@ describe("Color.Slider", () => {
     const thumb = screen.getByRole("slider", { name: "Accent chroma" });
 
     expect(root).toHaveClass("chroma-slider", "chroma-root-scope");
+    expect(root).toHaveAttribute("data-slot", "slider.chroma.root");
     expect(track).toHaveClass("chroma-track", "chroma-track-scope");
     expect(thumb).toHaveClass("chroma-thumb", "chroma-thumb-scope");
     expect(track.style.backgroundImage).toBe(
