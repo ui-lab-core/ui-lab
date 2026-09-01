@@ -11,7 +11,7 @@ import {
   type SectionGridFilters,
   type SectionGridItem,
 } from "@/features/sections/lib/section-grid-data";
-import { Toolbar, WaitlistModalClient, useWaitlistModal } from "@/features/workshop";
+import { Toolbar } from "@/features/workshop";
 import { getCardPreviewComponent as getSectionCardPreviewComponent } from "@/features/sections/lib/get-section-preview";
 
 interface SectionsPageProps {
@@ -27,14 +27,13 @@ function buildLayoutConfigs(sections: SectionGridItem[]): Record<string, LayoutC
   );
 }
 
-function SectionsPageContent({
+export default function SectionsPage({
   allSections,
   initialSections,
   initialFilters,
   initialLayoutConfigs,
 }: SectionsPageProps) {
   const router = useRouter();
-  const modalContext = useWaitlistModal();
   const [searchQuery, setSearchQuery] = useState(initialFilters.searchQuery);
   const [sortBy, setSortBy] = useState(initialFilters.sortBy);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
@@ -166,23 +165,7 @@ function SectionsPageContent({
         layoutConfigs={layoutConfigs}
         previews={previews}
         previewKind="section"
-        onItemClick={(section) => {
-          if (section.status === "coming-soon") {
-            modalContext.openModal();
-            return true;
-          }
-
-          return false;
-        }}
       />
     </ContentIndex>
-  );
-}
-
-export default function SectionsPage(props: SectionsPageProps) {
-  return (
-    <WaitlistModalClient>
-      <SectionsPageContent {...props} />
-    </WaitlistModalClient>
   );
 }

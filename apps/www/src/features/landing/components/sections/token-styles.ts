@@ -11,7 +11,7 @@ import {
 
 export type { ThemeMode };
 
-export type StyleKey = "notion" | "obsidian" | "spotify" | "reddit";
+export type StyleKey = "notion" | "obsidian" | "spotify" | "reddit" | "raycast";
 
 export interface StylePreset {
   key: StyleKey;
@@ -26,7 +26,7 @@ export interface StylePreset {
 }
 
 /**
- * Four familiar products, described the only way the generator accepts: a hue
+ * Five familiar products, described the only way the generator accepts: a hue
  * and a chroma per role plus a mode. Lightness comes from the shared scale, so
  * these stay recognisable without leaving the system's contrast ramp.
  */
@@ -60,6 +60,16 @@ export const styles: StylePreset[] = [
     accent: { l: 0.72, c: 0.2, h: 150 },
     accentChromaLimit: 0.28,
     globalAdjustments: { lightnessShift: -0.007, chromaBoost: 1.3 },
+  },
+  {
+    key: "raycast",
+    label: "Raycast",
+    mode: "dark",
+    background: { l: 0.14, c: 0.003, h: 25 },
+    foreground: { l: 0.76, c: 0.006, h: 25 },
+    accent: { l: 0.68, c: 0.19, h: 25 },
+    accentChromaLimit: 0.26,
+    globalAdjustments: { lightnessShift: -0.012, chromaBoost: 1.1 },
   },
   {
     key: "reddit",

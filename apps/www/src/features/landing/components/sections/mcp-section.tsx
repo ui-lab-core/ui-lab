@@ -538,7 +538,7 @@ export function McpSection() {
       <style>{keyframes}</style>
       <div className="grid h-190 items-start lg:grid-cols-[minmax(0,42rem)_minmax(0,1fr)]">
         <div className="flex flex-col h-full gap-10">
-          <div className="pt-8 pl-12">
+          <div className="pt-8">
             <SectionHeading title="Conventions, served over MCP, so your agent searches your workshop, reads each contract, and audits against your system." />
           </div>
 
@@ -560,7 +560,7 @@ export function McpSection() {
                     className={current ? "bg-background-950" : undefined}
                     styles={{ trigger: "bg-transparent", content: { inner: "bg-transparent" } }}
                   >
-                    <Expand.Trigger className="group flex items-center justify-start gap-3 px-4 py-3.5">
+                    <Expand.Trigger className="group flex items-center justify-start gap-3 px-4 pt-3.5 pb-2">
                       <span
                         className={`text-base font-medium transition-colors duration-200 motion-reduce:transition-none ${
                           current
@@ -577,7 +577,7 @@ export function McpSection() {
                         <p className="text-sm leading-relaxed text-foreground-400">
                           {session.desc}
                         </p>
-                        <p className="font-mono text-foreground-200">
+                        <p className="text-foreground-200">
                           <span className="text-background-500">{session.scope} / </span>
                           {session.name}
                         </p>

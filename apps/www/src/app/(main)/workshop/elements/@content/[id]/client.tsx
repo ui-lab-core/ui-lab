@@ -30,11 +30,9 @@ function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetad
 }
 
 export default function PackageElementsClient({
-  isPremium = false,
   packageId,
   elementIds,
 }: {
-  isPremium?: boolean;
   packageId: string;
   elementIds: string[];
 }) {
@@ -149,7 +147,7 @@ export default function PackageElementsClient({
           onClearAll={handleClearAll}
         />
       </div>
-      <ElementsGridClient elements={filteredElements} packageId={packageId} isPremium={isPremium} />
+      <ElementsGridClient elements={filteredElements} packageId={packageId} />
     </div>
   );
 }

@@ -280,9 +280,8 @@ export function IndistinguishableSection() {
   const argument = (
     <div className="flex flex-col justify-between gap-12">
       <div>
-        <h2 className="max-w-[27ch] leading-relaxed font-medium text-foreground-400 text-2xl">
-          Give your agents the tools they need to{" "}
-          <span className="text-foreground-100">build great interfaces</span>.
+        <h2 className="font-serif max-w-[22ch] font-medium text-foreground-200 text-3xl">
+          Give your agents the tools they need to <span>build great interfaces</span>.
         </h2>
       </div>
       <div className="grid grid-cols-[1px_minmax(0,1fr)] gap-x-5">
@@ -336,7 +335,7 @@ export function IndistinguishableSection() {
                   </span>
                   <span
                     className={`text-sm leading-relaxed transition-colors duration-200 motion-reduce:transition-none ${
-                      current ? "text-foreground-400" : "text-foreground-400/70"
+                      current ? "text-foreground-300" : "text-foreground-400/70"
                     }`}
                   >
                     {step.desc}

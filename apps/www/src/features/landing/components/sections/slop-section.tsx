@@ -255,16 +255,16 @@ export function SlopSection() {
         <div className="grid items-stretch lg:grid-cols-[minmax(0,47fr)_minmax(0,53fr)]">
           {/* the plate: fixed height, so the list visibly runs past its own frame */}
           <div className="flex flex-col justify-between gap-10">
-            <div className="pl-12 pr-6 pt-16">
+            <div className="pr-6 pt-16">
               <SectionHeading title="Slop, named and filed, from every domain of interface design to the tells a model reaches for without a pattern to follow." />
             </div>
 
             {/* the legend is the control: a card and its group row share one open state */}
-            <div className="flex flex-col m-4 gap-3">
+            <div className="flex flex-col gap-3">
               <p className="ml-auto mr-2 text-xs text-background-500">
                 Four domains, {total} entries
               </p>
-              <Lattice className="grid-cols-1 sm:grid-cols-2">
+              <Lattice className="border-t! border-0 rounded-none! grid-cols-1 sm:grid-cols-2">
                 {domains.map(({ id, name, Icon, blurb, count }) => {
                   const active = open.includes(id);
 
@@ -274,24 +274,21 @@ export function SlopSection() {
                       type="button"
                       aria-pressed={active}
                       onClick={() => toggle(id)}
-                      className={`flex flex-col gap-2 p-4 text-left ${
-                        active ? "bg-background-950" : "bg-background-1000 hover:bg-background-900"
+                      className={`relative flex flex-col py-6 px-4 text-left ${
+                        active ? "bg-background-950" : "bg-background-1000 hover:bg-background-950"
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        <Icon
-                          className={`size-4 shrink-0 ${active ? "text-foreground-100" : "text-background-500"}`}
-                        />
+                      <span className="flex items-center">
                         <span
                           className={`text-base font-medium ${active ? "text-foreground-100" : "text-foreground-300"}`}
                         >
                           {name}
                         </span>
-                        <span className="ml-auto font-mono text-xs text-background-500">
-                          {count}
-                        </span>
                       </span>
-                      <span className="text-xs leading-relaxed text-foreground-400">{blurb}</span>
+                      <span className="text-md leading-relaxed text-foreground-400">{blurb}</span>
+                      <span className="absolute top-3 right-5 font-mono text-sm font-black text-foreground-400">
+                        {count}
+                      </span>
                     </button>
                   );
                 })}

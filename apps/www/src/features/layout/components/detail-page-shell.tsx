@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import type { PricingInfo } from "@ui-lab-core/library/catalog";
 import { ContentHeader } from "@/features/navigation/components/content-header";
 import { Divider } from "ui-lab-components";
 
@@ -10,8 +9,6 @@ interface DetailPageShellProps {
   dependencies?: string[];
   preview?: ReactNode;
   actions?: ReactNode;
-  pricing?: PricingInfo;
-  purchaseUrl?: string;
   children?: ReactNode;
   notFoundLabel?: string;
 }
@@ -27,8 +24,6 @@ export function DetailPageShell({
   dependencies,
   preview,
   actions,
-  pricing,
-  purchaseUrl,
   children,
   notFoundLabel,
 }: DetailPageShellProps) {
@@ -52,8 +47,6 @@ export function DetailPageShell({
             preview={preview}
             tags={tags}
             actions={actions}
-            pricing={pricing}
-            purchaseUrl={purchaseUrl}
           />
         </header>
         <Divider className="mt-8 mb-8" />

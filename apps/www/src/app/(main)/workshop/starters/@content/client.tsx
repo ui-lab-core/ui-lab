@@ -7,11 +7,9 @@ import {
   getLayoutConfig as getStarterLayoutConfig,
   getPreviewComponent as getStarterPreview,
 } from "@/features/starters";
-import { WaitlistModalClient, useWaitlistModal } from "@/features/workshop";
 
-function StartersPageContent() {
+export default function StartersPage() {
   const allStarters = getAllStarters();
-  const modalContext = useWaitlistModal();
   const previews: Record<string, React.ReactNode> = {};
   const layoutConfigs: Record<string, import("@ui-lab-core/library/catalog").LayoutConfig> = {};
   for (const starter of allStarters) {
@@ -28,23 +26,7 @@ function StartersPageContent() {
         layoutConfigs={layoutConfigs}
         previews={previews}
         previewKind="starter"
-        onItemClick={(starter) => {
-          if (starter.status === "coming-soon") {
-            modalContext.openModal();
-            return true;
-          }
-
-          return false;
-        }}
       />
     </ContentIndex>
-  );
-}
-
-export default function StartersPage() {
-  return (
-    <WaitlistModalClient>
-      <StartersPageContent />
-    </WaitlistModalClient>
   );
 }

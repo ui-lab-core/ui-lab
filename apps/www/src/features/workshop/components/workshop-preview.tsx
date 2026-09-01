@@ -1,12 +1,13 @@
 "use client";
 
-import { Suspense, useId, useMemo, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronRight, FileCode2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { getElementPreview } from "@ui-lab-core/library";
 import { getPatternById, type ElementFile } from "@ui-lab-core/library/catalog";
 import { Code } from "@/features/docs/components/code-display/code";
 import { cn } from "@/shared/lib/utils";
-import { Modal, Panel } from "ui-lab-components";
+import { Mask, Modal, Panel } from "ui-lab-components";
+import { LockedCta } from "./locked-teaser";
 
 interface WorkshopFullscreenTarget {
   categoryId: string;
@@ -50,9 +51,17 @@ interface WorkshopPreviewProps {
   patterns?: string[];
   /** Optional file-tree trigger rendered before the source filename. */
   fileTreeTrigger?: ReactNode;
+  /** Supporter entry: the preview stays live, the source becomes a masked teaser. */
+  locked?: boolean;
 }
 
 const DEFAULT_PREVIEW_HEIGHT = 320;
+
+/** Lines of a locked entry's source that are shown before the fade. */
+const LOCKED_CODE_LINES = 14;
+
+/** Used before the code block has rendered a measurable line height. */
+const FALLBACK_CODE_LINE_HEIGHT = 21;
 
 /**
  * Renders a single workshop entry with the source code directly below the
@@ -80,6 +89,7 @@ export function WorkshopPreview({
   isModalDetail = false,
   patterns,
   fileTreeTrigger,
+  locked = false,
 }: WorkshopPreviewProps) {
   const usedPatterns = useMemo(
     () =>
@@ -219,43 +229,47 @@ export function WorkshopPreview({
                     : "rounded-sm rounded-t-none border-t-0",
               )}
             >
-              <div
-                className={cn(
-                  "grid min-w-0 grid-cols-1",
-                  isModalDetail && "h-full min-h-0 grid-rows-[minmax(0,1fr)]",
-                )}
-              >
-                <Code
-                  className={cn("rounded-none! border-0", isModalDetail && "h-full")}
-                  fillHeight={isModalDetail}
-                  language={primaryFile.language}
-                  filename={selectedPattern ? undefined : primaryFile.filename}
-                  heading={
-                    selectedPattern
-                      ? undefined
-                      : hasMultipleFiles
-                        ? primaryFile.filename
-                        : undefined
-                  }
-                  hideFileTabs={hasMultipleFiles}
-                  files={secondaryFiles.map((file) => ({
-                    name: file.filename,
-                    code: file.code ?? "",
-                    language: file.language,
-                  }))}
-                  showHeader={showCodeHeader || hasMultipleFiles || Boolean(fileTreeTrigger)}
-                  headerPrefix={fileTreeTrigger}
-                  showLineNumbers
-                  maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
-                  activeFile={activeFileIndex}
-                  onActiveFileChange={(index) => {
-                    setSelectedPatternId(null);
-                    setSelectedFileName(uniqueFiles[index]?.filename ?? null);
-                  }}
+              {locked ? (
+                <LockedSource file={primaryFile} fillHeight={isModalDetail} />
+              ) : (
+                <div
+                  className={cn(
+                    "grid min-w-0 grid-cols-1",
+                    isModalDetail && "h-full min-h-0 grid-rows-[minmax(0,1fr)]",
+                  )}
                 >
-                  {primaryFile.code ?? ""}
-                </Code>
-              </div>
+                  <Code
+                    className={cn("rounded-none! border-0", isModalDetail && "h-full")}
+                    fillHeight={isModalDetail}
+                    language={primaryFile.language}
+                    filename={selectedPattern ? undefined : primaryFile.filename}
+                    heading={
+                      selectedPattern
+                        ? undefined
+                        : hasMultipleFiles
+                          ? primaryFile.filename
+                          : undefined
+                    }
+                    hideFileTabs={hasMultipleFiles}
+                    files={secondaryFiles.map((file) => ({
+                      name: file.filename,
+                      code: file.code ?? "",
+                      language: file.language,
+                    }))}
+                    showHeader={showCodeHeader || hasMultipleFiles || Boolean(fileTreeTrigger)}
+                    headerPrefix={fileTreeTrigger}
+                    showLineNumbers
+                    maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
+                    activeFile={activeFileIndex}
+                    onActiveFileChange={(index) => {
+                      setSelectedPatternId(null);
+                      setSelectedFileName(uniqueFiles[index]?.filename ?? null);
+                    }}
+                  >
+                    {primaryFile.code ?? ""}
+                  </Code>
+                </div>
+              )}
             </div>
           ) : null}
 
@@ -314,6 +328,7 @@ export function WorkshopPreview({
               previewLayout={previewLayout}
               hidePreview={hidePreview}
               fillHeight={fillHeight}
+              locked={locked}
               isModalDetail
               fileTreeTrigger={
                 hasMultipleFiles || usedPatterns.length > 0 ? (
@@ -366,6 +381,76 @@ export function WorkshopPreview({
         </Modal>
       ) : null}
     </>
+  );
+}
+
+/**
+ * A locked entry's source. It is a teaser, not a viewport: the code is
+ * truncated before it reaches the DOM and the container never scrolls, so the
+ * fade is the end of what is on offer rather than the top of a scroll area.
+ * When it fills a pane the teaser grows to exactly the lines that fit, so the
+ * code reaches the bottom of the container instead of ending in dead space.
+ * The Supporter card floats in the middle of the faded block.
+ */
+function LockedSource({ file, fillHeight = false }: { file: ElementFile; fillHeight?: boolean }) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [visibleLines, setVisibleLines] = useState(LOCKED_CODE_LINES);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!fillHeight || !root) {
+      setVisibleLines(LOCKED_CODE_LINES);
+      return;
+    }
+
+    const measure = () => {
+      const line = root.querySelector("code");
+      const lineHeight = line
+        ? Number.parseFloat(getComputedStyle(line).lineHeight) || FALLBACK_CODE_LINE_HEIGHT
+        : FALLBACK_CODE_LINE_HEIGHT;
+      setVisibleLines(Math.max(LOCKED_CODE_LINES, Math.ceil(root.clientHeight / lineHeight)));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [fillHeight]);
+
+  const teaser = useMemo(
+    () => (file.code ?? "").split("\n").slice(0, visibleLines).join("\n"),
+    [file.code, visibleLines],
+  );
+
+  return (
+    <div
+      ref={rootRef}
+      className={cn("relative min-w-0", fillHeight && "flex h-full min-h-0 flex-col")}
+    >
+      <Mask className={cn("overflow-hidden", fillHeight && "flex min-h-0 flex-1 flex-col")}>
+        <Mask.Fade direction="bottom" intensity={8} />
+        <div
+          className={cn(
+            "pointer-events-none select-none",
+            fillHeight && "flex min-h-0 flex-1 flex-col",
+          )}
+        >
+          <Code
+            className={cn("rounded-none! border-0", fillHeight && "h-full")}
+            language={file.language}
+            filename={file.filename}
+            showHeader
+            showLineNumbers
+            maxHeightLines={null}
+          >
+            {teaser}
+          </Code>
+        </div>
+      </Mask>
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background-1000/80 p-4 backdrop-blur-xs">
+        <LockedCta />
+      </div>
+    </div>
   );
 }
 

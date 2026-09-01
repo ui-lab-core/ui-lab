@@ -4,30 +4,35 @@ import { useRouter } from "next/navigation";
 import { Gallery, Frame, Badge } from "ui-lab-components";
 import { Blocks, LayoutPanelTop, Puzzle, Rocket, Sparkles } from "lucide-react";
 import { PreviewContainer } from "@/features/preview/components/preview-container";
-import type { LayoutConfig, PricingInfo } from "@ui-lab-core/library/catalog";
+import type { ContentAccess, ContentStatus, LayoutConfig } from "@ui-lab-core/library/catalog";
 import { FaWandMagicSparkles } from "@/shared/icons/fa6";
 
 interface ContentItem {
   id: string;
   name: string;
   description: string;
-  pricing?: PricingInfo;
+  /** `premium` means "included with the Supporter package", never sold alone. */
+  access?: ContentAccess;
+  status?: ContentStatus;
+  /** Packages only: how many of the package's public elements are Supporter-only. */
+  premiumElementCount?: number;
 }
 
 /**
- * The theme's premium accent for paid/one-time-purchase content. Everything
- * else derives from it through color-mix so the tint stays coherent in light
- * and dark.
+ * The theme's premium accent for Supporter content. Everything else derives
+ * from it through color-mix so the tint stays coherent in light and dark.
  */
-const PREMIUM_HUE = "var(--accent-500)";
+const PREMIUM_HUE = "var(--accent-600)";
 
 /**
- * True for any content behind the one-time purchase. Price is no longer shown,
- * but it still decides: the catalog gives free content a `pricing` block with a
- * null price, so the block's presence alone does not make an item paid.
+ * True for any content behind the one-time Supporter purchase.
+ *
+ * A package can be free itself while the Supporter content sits on the elements
+ * inside it, so a package that holds any locked element reads as locked too —
+ * that is what the card on the workshop listing stands for.
  */
 function isPremiumItem(item: ContentItem): boolean {
-  return item.pricing?.price != null;
+  return item.access === "premium" || (item.premiumElementCount ?? 0) > 0;
 }
 
 /**
@@ -39,7 +44,7 @@ function isPremiumItem(item: ContentItem): boolean {
  * own corner *on the border line* so the step hands the frame back a corner of
  * the same shape.
  */
-const NOTCH = { ease: 45, depth: 35, span: 85, radius: 10 };
+const NOTCH = { ease: 30, depth: 35, span: 80, radius: 10 };
 
 const NOTCH_WIDTH = NOTCH.ease + NOTCH.span;
 
@@ -82,7 +87,7 @@ function PremiumFrame({ active, children }: { active: boolean; children: React.R
       shapeMode="indent"
       path={PREMIUM_NOTCH_PATH}
       pathWidth={NOTCH_WIDTH}
-      className="h-full [&_rect]:transition-[fill] [&_rect]:duration-300 [&_rect]:ease-out"
+      className="h-full rounded-md border-background-700 [&_rect]:transition-[fill] [&_rect]:duration-300 [&_rect]:ease-out"
       style={
         {
           // The stroke sits *outside* the frame's bounds so it lands in the
@@ -122,7 +127,7 @@ function PremiumFrame({ active, children }: { active: boolean; children: React.R
 function PremiumLabel({ active }: { active: boolean }) {
   return (
     <div
-      className="pointer-events-none absolute right-2.5 top-0 z-20 flex items-center justify-center gap-1.5 text-md font-medium"
+      className="pointer-events-none absolute right-1.5 top-0 z-20 flex items-center justify-center gap-1.5 text-md font-medium"
       style={{
         width: NOTCH.span,
         height: NOTCH.depth,
@@ -130,7 +135,7 @@ function PremiumLabel({ active }: { active: boolean }) {
         color: active ? `color-mix(in oklch, ${PREMIUM_HUE} 20%, white)` : "var(--foreground-300)",
       }}
     >
-      Premium
+      Pro
     </div>
   );
 }
@@ -151,12 +156,11 @@ function PremiumGalleryItem({
   return (
     <Gallery.Item
       {...itemProps}
-      className="relative overflow-visible"
+      className="relative border border-background-700 overflow-visible"
       // The item's border is handed to the Frame. The stable notch background
       // stays monochrome until interaction reveals the premium hue.
       style={{
-        backgroundColor: active ? PREMIUM_HUE : "var(--background-border)",
-        borderColor: "transparent",
+        backgroundColor: active ? PREMIUM_HUE : "var(--color-background-950)",
         transition: "background-color 300ms ease-out",
       }}
       data-premium="true"
@@ -178,12 +182,17 @@ interface GenericContentGridProps<T extends ContentItem> {
   basePath: string;
   layoutConfigs: Record<string, LayoutConfig>;
   previews: Record<string, React.ReactNode>;
-  onItemClick?: (item: T) => boolean | void;
   getCategory?: (item: T) => string;
   categoryLabels?: Record<string, string>;
   fullWidth?: boolean;
   hideGroupHeaders?: boolean;
   previewKind?: PreviewKind;
+  /**
+   * Whether paid items are drawn with the premium frame. The mark belongs to
+   * the workshop's top-level listings, where a card stands for a whole paid
+   * package; inside a package every card would carry it, which says nothing.
+   */
+  premiumFrame?: boolean;
 }
 
 const previewIcons = {
@@ -211,18 +220,19 @@ export function GenericContentGrid<T extends ContentItem>({
   basePath,
   layoutConfigs,
   previews,
-  onItemClick,
   getCategory,
   categoryLabels,
   fullWidth = false,
   hideGroupHeaders = false,
   previewKind = "element",
+  premiumFrame = true,
 }: GenericContentGridProps<T>) {
   const router = useRouter();
 
-  // Premium content is not surfaced in the grids; it stays reachable only by
-  // its own detail route.
-  const items = allItems.filter((item) => !isPremiumItem(item));
+  // Listings show the full scope of a package, locked entries included: the
+  // gate belongs to an entry's own detail route, not to the catalogue of what
+  // exists. Supporter cards are marked by their frame, not withheld.
+  const items = allItems;
 
   if (items.length === 0) {
     return (
@@ -237,18 +247,16 @@ export function GenericContentGrid<T extends ContentItem>({
     const preview = previews[item.id] ?? <FallbackPreview kind={previewKind} />;
     const href = `${basePath}/${item.id}`;
 
+    // Announced-but-unreleased entries have no route to open yet, so the card
+    // renders inert rather than navigating into a missing page.
+    const isComingSoon = item.status === "coming-soon";
+
     const handlePress = (passedHref?: string) => {
-      if (onItemClick) {
-        const handled = onItemClick(item);
-        if (handled !== false) {
-          return;
-        }
-      }
       router.push(passedHref || href);
     };
 
     const columnSpan = fullWidth ? 1 : Math.min(layoutConfig.columnSpan || 1, 3);
-    const premium = isPremiumItem(item);
+    const premium = premiumFrame && isPremiumItem(item);
 
     const content = (
       <>
@@ -269,8 +277,8 @@ export function GenericContentGrid<T extends ContentItem>({
     );
 
     const itemProps = {
-      href: onItemClick ? undefined : href,
-      onPress: handlePress,
+      href: isComingSoon ? undefined : href,
+      onPress: isComingSoon ? undefined : handlePress,
       columnSpan,
       rowSpan: layoutConfig.rowSpan,
     };

@@ -16,6 +16,7 @@
     "verify:component-css": "node scripts/verify-component-css.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/work-sans": "^5.2.8",
     "@shikijs/transformers": "^3.20.0",

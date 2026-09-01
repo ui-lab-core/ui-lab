@@ -42,19 +42,13 @@ async function PackageContent({ packageId }: { packageId: string }) {
       <ContentHeader
         title={pkg.name}
         description={pkg.description}
-        pricing={pkg.pricing}
-        purchaseUrl={pkg.pricing?.purchaseUrl}
         preview={
           <div className="w-full h-40 flex items-center justify-center overflow-hidden">
             <PackagePreview packageId={packageId} />
           </div>
         }
       />
-      <PackageElementsClientWrapper
-        packageId={packageId}
-        elementIds={elementIds}
-        isPremium={pkg.pricing?.price != null}
-      />
+      <PackageElementsClientWrapper packageId={packageId} elementIds={elementIds} />
     </>
   );
 }

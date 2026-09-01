@@ -3,24 +3,24 @@
 import { useState } from "react";
 import { Button, Divider, Group, List, Menu, Progress, Scroll, Slider } from "ui-lab-components";
 import {
-  SkipBack,
-  MoreHorizontal,
-  SkipForward,
-  Headphones,
-  HeartCrack,
-  ListMusic,
-  Pause,
-  Play,
-  Plus,
-  Repeat,
-  Share2,
-  Shuffle,
-  Volume2,
-  Volume1,
-  VolumeX,
-  Volume,
-  Maximize2,
-} from "lucide-react";
+  FaBackwardStep,
+  FaEllipsis,
+  FaExpand,
+  FaForwardStep,
+  FaHeadphones,
+  FaHeartCrack,
+  FaListUl,
+  FaPause,
+  FaPlay,
+  FaPlus,
+  FaRepeat,
+  FaShareNodes,
+  FaShuffle,
+  FaVolumeHigh,
+  FaVolumeLow,
+  FaVolumeOff,
+  FaVolumeXmark,
+} from "@/shared/icons/fa6";
 import type { ShowcasePanelProps } from "../types";
 
 const tracks = [
@@ -117,13 +117,13 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
   const [current, setCurrent] = useState(0);
 
   const volumeIcon = muted ? (
-    <VolumeX size={15} />
+    <FaVolumeXmark size={15} />
   ) : volume === 0 ? (
-    <Volume size={15} />
+    <FaVolumeOff size={15} />
   ) : volume < 50 ? (
-    <Volume1 size={15} />
+    <FaVolumeLow size={15} />
   ) : (
-    <Volume2 size={15} />
+    <FaVolumeHigh size={15} />
   );
 
   return (
@@ -150,8 +150,8 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
                     onClick={() => setCurrent(i)}
                     className="group rounded-sm px-2.5 py-1.5 [&_[data-actions]]:opacity-0 [&_[data-actions]]:transition-opacity hover:[&_[data-actions]]:opacity-100 focus-within:[&_[data-actions]]:opacity-100"
                     actions={[
-                      { icon: <ListMusic size={13} />, title: "Add to playlist" },
-                      { icon: <HeartCrack size={13} />, title: "Remove from queue" },
+                      { icon: <FaListUl size={13} />, title: "Add to playlist" },
+                      { icon: <FaHeartCrack size={13} />, title: "Remove from queue" },
                     ]}
                   >
                     <List.Media>
@@ -206,30 +206,30 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               onPress={() => setLiked(!liked)}
               variant="ghost"
               size="sm"
-              icon={<Plus size={14} />}
+              icon={<FaPlus size={14} />}
             />
             <Menu type="pop-over">
               <Menu.Trigger
                 variant="ghost"
-                icon={{ left: <MoreHorizontal size={14} /> }}
+                icon={{ left: <FaEllipsis size={14} /> }}
                 aria-label="Track options"
               />
               <Menu.Content side="bottom" align="end" offset={6}>
                 <Menu.Item>
-                  <Headphones size={14} className="mr-2 opacity-60" />
+                  <FaHeadphones size={14} className="mr-2 opacity-60" />
                   Go to artist
                 </Menu.Item>
                 <Menu.Item>
-                  <ListMusic size={14} className="mr-2 opacity-60" />
+                  <FaListUl size={14} className="mr-2 opacity-60" />
                   Add to playlist
                 </Menu.Item>
                 <Menu.Item>
-                  <Share2 size={14} className="mr-2 opacity-60" />
+                  <FaShareNodes size={14} className="mr-2 opacity-60" />
                   Share track
                 </Menu.Item>
                 <Menu.Separator />
                 <Menu.Item>
-                  <HeartCrack size={14} className="mr-2 opacity-60" />
+                  <FaHeartCrack size={14} className="mr-2 opacity-60" />
                   Remove from queue
                 </Menu.Item>
               </Menu.Content>
@@ -275,13 +275,13 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               size="sm"
               variant="ghost"
               aria-label="Shuffle"
-              icon={{ left: <Shuffle size={14} /> }}
+              icon={{ left: <FaShuffle size={14} /> }}
               styles={{ root: shuffle ? "text-foreground-400" : "opacity-30" }}
               onPress={() => setShuffle(!shuffle)}
             />
             <Group variant="ghost" orientation="horizontal" spacing="xs">
               <Group.Button size="icon" aria-label="Previous">
-                <SkipBack size={16} />
+                <FaBackwardStep size={16} />
               </Group.Button>
               <Divider orientation="vertical" />
               <Group.Button
@@ -289,18 +289,18 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
                 aria-label={playing ? "Pause" : "Play"}
                 onPress={() => setPlaying(!playing)}
               >
-                {playing ? <Pause size={16} /> : <Play size={16} />}
+                {playing ? <FaPause size={16} /> : <FaPlay size={16} />}
               </Group.Button>
               <Divider orientation="vertical" />
               <Group.Button size="icon" aria-label="Next">
-                <SkipForward size={16} />
+                <FaForwardStep size={16} />
               </Group.Button>
             </Group>
             <Button
               size="sm"
               variant="ghost"
               aria-label="Repeat"
-              icon={{ left: <Repeat size={14} /> }}
+              icon={{ left: <FaRepeat size={14} /> }}
               styles={{ root: repeat ? "text-foreground-400" : "opacity-30" }}
               onPress={() => setRepeat(!repeat)}
             />
@@ -310,7 +310,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               size="sm"
               variant="ghost"
               aria-label="Queue"
-              icon={{ left: <ListMusic size={14} /> }}
+              icon={{ left: <FaListUl size={14} /> }}
               styles={{ root: queue ? "text-foreground-400" : "opacity-30" }}
               onPress={() => setQueue(!queue)}
             />
@@ -318,7 +318,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               size="sm"
               variant="ghost"
               aria-label="Expand"
-              icon={{ left: <Maximize2 size={14} /> }}
+              icon={{ left: <FaExpand size={14} /> }}
               styles={{ root: "opacity-30" }}
             />
           </div>

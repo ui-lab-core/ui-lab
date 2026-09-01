@@ -184,11 +184,11 @@ export const ColorRow = memo(
               className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none"
               aria-expanded={isExpanded}
             >
-              <div className="w-4.5 h-4.5 rounded-[5px]" style={previewStyle} />
+              <div className="w-5 h-5 rounded-[5px]" style={previewStyle} />
               <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="text-base font-medium text-foreground-200 capitalize leading-tight group-hover:text-foreground-100 transition-colors">
+                <span className="text-xs font-medium text-foreground-200 capitalize group-hover:text-foreground-100 transition-colors">
                   {type}
-                </div>
+                </span>
               </div>
             </div>
 
