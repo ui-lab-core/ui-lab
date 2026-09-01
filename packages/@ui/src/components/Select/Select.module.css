@@ -4,9 +4,8 @@
   .select {
     --disabled-opacity: 0.5;
     --background-radius: var(--radius-sm, 0.375rem);
-    --background-inner-radius: calc(
-      var(--background-radius) - slot(border, width, var(--border-width-base, 1px))
-    );
+    /* Trigger sections inset themselves from this radius via --inset-radius. */
+    --radius: var(--background-radius);
 
     @slot trigger {
       --padding-inline: calc(var(--spacing) * 2);
@@ -85,7 +84,8 @@
     align-items: center;
     padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
       slot(trigger, padding-inline, calc(var(--spacing) * 2));
-    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
+    border-radius: var(--inset-radius) 0 0 var(--inset-radius);
     background-color: var(--background, transparent);
     transition-property: background-color;
     transition-duration: var(--hover-duration, var(--hover-leave-duration));
@@ -112,10 +112,11 @@
     transition-timing-function: var(--hover-transition-timing-function);
     padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
       slot(trigger, padding-inline, calc(var(--spacing) * 2));
-    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
+    border-radius: var(--inset-radius) 0 0 var(--inset-radius);
     font-size: var(--size, var(--text-sm, 0.875rem));
     &:only-child {
-      border-radius: var(--background-inner-radius);
+      border-radius: var(--inset-radius);
       justify-content: center;
     }
     &:empty {
@@ -133,7 +134,8 @@
     transition-timing-function: var(--hover-transition-timing-function);
     padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
       slot(trigger, padding-inline, calc(var(--spacing) * 2));
-    border-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
+    border-radius: 0 var(--inset-radius) var(--inset-radius) 0;
   }
 
   .icon {
@@ -167,9 +169,8 @@
   .sub-content {
     --content-padding: calc(var(--spacing) * 2);
     --content-radius: var(--radius-sm, 0.375rem);
-    --content-inner-radius: calc(
-      var(--content-radius) - slot(border, width, var(--border-width-base, 1px))
-    );
+    /* Rows inset themselves from this radius via --inset-radius. */
+    --radius: var(--content-radius);
     --disabled-opacity: 0.5;
     @apply overflow-hidden;
     outline: none;
@@ -196,13 +197,19 @@
 
   .list-padding {
     padding: var(--spacing, 0.25rem);
+    /* Rows below sit inside the panel border. */
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
   }
 
   .item,
   .sub-trigger {
     @apply flex items-center gap-2 outline-none cursor-default select-none;
     padding: calc(var(--content-padding) / 1.5) var(--content-padding);
-    border-radius: var(--content-inner-radius);
+    /* Restate the panel radius and gap on the row itself: List also paints
+       these rows, so neither file may depend on stylesheet order. */
+    --radius: var(--content-radius);
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
+    border-radius: var(--inset-radius);
     font-family: var(--font-body, inherit);
     font-size: var(--size, var(--text-sm, 0.875rem));
     font-weight: var(--font-weight-body-medium, 500);
@@ -278,7 +285,8 @@
 
   .search-trigger {
     @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;
-    border-radius: var(--background-inner-radius);
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
+    border-radius: var(--inset-radius);
     &:focus-within {
       @apply outline-none;
       z-index: 1;
@@ -291,7 +299,8 @@
 
   .search-value-section {
     @apply p-0;
-    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);
+    --inset-gap: slot(border, width, var(--border-width-base, 1px));
+    border-radius: var(--inset-radius) 0 0 var(--inset-radius);
   }
 
   .input {

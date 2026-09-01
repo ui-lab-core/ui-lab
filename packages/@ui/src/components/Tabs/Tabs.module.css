@@ -20,39 +20,44 @@
       grid-auto-flow: row;
       grid-auto-columns: auto;
       grid-auto-rows: max-content;
-      width: fit-content;
-      min-width: 0;
-      height: auto;
+      inline-size: fit-content;
+      min-inline-size: 0;
+      block-size: auto;
       align-self: flex-start;
-    }
-
-    &:global(.underline) {
-      text-decoration: none !important;
     }
 
     &[data-variant="underline"] {
       background-color: transparent;
       border-radius: 0;
-      padding: 0 0 4px;
+      padding-block: 0 4px;
+      padding-inline: 0;
     }
 
     &[data-variant="underline"][data-orientation="vertical"] {
-      border-bottom: none;
       /* The vertical underline divider is outside the surface-border contract. */
-      border-left: var(--border-width-base) solid var(--border);
+      border-block-end: none;
+      border-inline-start: var(--border-width-base, 1px) solid
+        slot(list, border, var(--border, transparent));
       align-items: stretch;
-      padding: 0 0 0 4px;
+      padding-block: 0;
+      padding-inline: 4px 0;
     }
   }
 
   .indicator {
     @apply absolute;
-    background-color: var(--background);
+    background-color: slot(indicator, background, var(--background, transparent));
     box-sizing: border-box;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 0.375rem);
     z-index: 0;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
+    will-change: transform;
+    transition: all var(--hover-duration, var(--hover-leave-duration, 200ms))
+      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+
+    &[data-animate="false"] {
+      transition: none;
+    }
   }
 
   .indicator-fallback {
@@ -63,8 +68,8 @@
     display: none;
     position: absolute;
     inset: 0;
-    min-width: 0;
-    min-height: 0;
+    min-inline-size: 0;
+    min-block-size: 0;
     pointer-events: none;
     z-index: 0;
   }
@@ -80,11 +85,11 @@
   .trigger {
     @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;
     --ring-z: 1;
-    height: auto;
-    background-color: var(--background);
+    block-size: auto;
+    background-color: slot(trigger, background, var(--background, transparent));
     border: none;
-    border-radius: var(--radius-sm);
-    color: var(--foreground);
+    border-radius: var(--radius-sm, 0.375rem);
+    color: slot(trigger, foreground, var(--foreground, inherit));
     outline: none;
     box-shadow: none;
     transition:
@@ -95,74 +100,65 @@
 
     &[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
       --hover-duration: var(--hover-enter-duration, 0ms);
+      background-color: slot(
+        trigger,
+        background-hover,
+        slot(trigger, background, var(--background, transparent))
+      );
+      color: slot(trigger, foreground-hover, slot(trigger, foreground, var(--foreground, inherit)));
     }
 
+    &[data-pressed="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
+      background-color: slot(
+        trigger,
+        background-pressed,
+        slot(trigger, background, var(--background, transparent))
+      );
+      color: slot(
+        trigger,
+        foreground-pressed,
+        slot(trigger, foreground, var(--foreground, inherit))
+      );
+    }
+
+    /* The indicator paints the selected surface, so the trigger stays transparent
+       unless a theme opts into a selected background of its own. */
     &[data-selected="true"] {
-      cursor: pointer;
-
-      .list:not([data-variant="underline"]) & {
-        background-color: transparent;
-        transition-property: color;
-      }
-    }
-
-    &[data-selected="true"]:not([data-indicator-ready="true"]):not(
-        [data-indicator-fallback="true"]
-      ) {
-      .list.underline & {
-        border-bottom-color: var(--underline-border);
-      }
-
-      .list.underline[data-orientation="vertical"] & {
-        border-bottom-color: transparent;
-        border-left-color: var(--underline-border);
-      }
+      background-color: slot(trigger, background-selected, transparent);
+      color: slot(
+        trigger,
+        foreground-selected,
+        slot(trigger, foreground, var(--foreground, inherit))
+      );
+      transition-property: color;
     }
 
     &[data-disabled="true"] {
-      --disabled-opacity: 0.5;
-      opacity: var(--disabled-opacity);
+      opacity: slot(trigger, disabled-opacity, var(--disabled-opacity, 0.5));
       cursor: not-allowed;
       pointer-events: none;
-    }
-
-    .list.underline & {
-      background-color: var(--background);
-      background-clip: padding-box;
-      border-radius: var(--radius-sm, 0.375rem);
-      border-bottom: 2px solid transparent;
-    }
-
-    .list.underline[data-orientation="vertical"] & {
-      border-bottom: none;
-      border-left: 2px solid transparent;
-    }
-
-    .list.underline[data-orientation="vertical"]
-      &[data-selected="true"]:not([data-indicator-ready="true"]):not(
-        [data-indicator-fallback="true"]
-      ) {
-      border-left-color: var(--underline-border);
-      border-bottom: none;
     }
   }
 
   .icon {
-    @apply flex h-4 w-4 shrink-0 items-center justify-center;
+    @apply flex shrink-0 items-center justify-center;
+    color: slot(icon, foreground, var(--icon-foreground, currentColor));
+    inline-size: slot(icon, size, 1rem);
+    block-size: slot(icon, size, 1rem);
   }
 
   .content {
     @apply w-full p-0 outline-none;
     flex: 1;
-    padding-top: 1rem;
+    padding-block-start: 1rem;
 
     &[data-orientation="vertical"] {
       flex: 1;
-      width: 100%;
+      inline-size: 100%;
     }
 
     &:focus-visible {
-      outline: 2px solid var(--focus-visible);
+      outline: 2px solid slot(content, focus-visible, var(--focus-visible, transparent));
       outline-offset: 2px;
     }
   }
@@ -172,15 +168,13 @@
       padding: 0.125rem;
 
       &[data-variant="underline"] {
-        padding: 0 0 4px;
+        padding-block: 0 4px;
+        padding-inline: 0;
       }
     }
 
     .trigger {
       @apply px-1 py-1;
-      .list.underline & {
-        margin: 0.5rem 0.75rem;
-      }
     }
   }
 }

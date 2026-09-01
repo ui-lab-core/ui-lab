@@ -3,17 +3,98 @@
 import * as React from "react";
 import { mergeProps, useFocusRing, usePress } from "react-aria";
 import { useHover, useInteractionModality } from "@react-aria/interactions";
-import { cn } from "@/lib/utils";
-import { Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/utils";
 import { asElementProps } from "@/lib/react-aria";
-import { StylesProp, createStylesResolver } from "@/lib/styles";
+import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
 import css from "./Tabs.module.css";
 
-type TabsVariant = "underline";
-type TabsOrientation = "horizontal" | "vertical";
+/**
+ * Alternate visual treatment for the tab list and its selection indicator.
+ * The default treatment draws a filled indicator behind the selected tab,
+ * while `"underline"` draws a thin bar along the list's edge.
+ *
+ * @example "underline"
+ */
+export type TabsVariant = "underline";
+
+/**
+ * Layout direction of the tab list, published as `aria-orientation` and
+ * `data-orientation` and used to place the selection indicator.
+ *
+ * @example "vertical"
+ */
+export type TabsOrientation = "horizontal" | "vertical";
+
+/** Style overrides for the Tabs root and the tab list it owns. */
+export interface TabsStyleSlots {
+  /** Styles the root element that wraps the tab list and its panels. */
+  root?: Style;
+  /** Styles the `Tabs.List` element rendered inside this root. */
+  list?: Style;
+}
+
+/** Style overrides accepted by Tabs. */
+export type TabsStylesProp = StylesProp<TabsStyleSlots>;
+
+/** Style overrides for the two elements that render the selection indicator. */
+export interface TabsListIndicatorStyleSlots {
+  /** Styles the measured indicator that tracks the selected tab after layout. */
+  root?: Style;
+  /** Styles the placeholder indicator rendered during server rendering and before the first measurement. */
+  fallback?: Style;
+}
+
+/** Style overrides for the Tabs.List root and the parts it owns. */
+export interface TabsListStyleSlots {
+  /** Styles the element with `role="tablist"`. */
+  root?: Style;
+  /** Shared indicator styles, or separate styles for the measured and fallback indicators. */
+  indicator?: Style | TabsListIndicatorStyleSlots;
+  /** Styles every `Tabs.Trigger` rendered inside this list. */
+  trigger?: Style;
+}
+
+/** Style overrides accepted by Tabs.List. */
+export type TabsListStylesProp = StylesProp<TabsListStyleSlots>;
+
+/** Icon content rendered on either side of a tab label. */
+export interface TabsTriggerIconSlots {
+  /** Content rendered before the tab label. */
+  left?: React.ReactNode;
+  /** Content rendered after the tab label. */
+  right?: React.ReactNode;
+}
+
+/** Side-specific styles used when the trigger's icon slot is configured as an object. */
+export interface TabsTriggerIconStyleSlots {
+  /** Styles the leading icon wrapper. */
+  left?: Style;
+  /** Styles the trailing icon wrapper. */
+  right?: Style;
+}
+
+/** Style overrides for the Tabs.Trigger root and its icon slots. */
+export interface TabsTriggerStyleSlots {
+  /** Styles the tab button element. */
+  root?: Style;
+  /** Shared icon styles, or separate leading and trailing icon styles. */
+  icon?: Style | TabsTriggerIconStyleSlots;
+}
+
+/** Style overrides accepted by Tabs.Trigger. */
+export type TabsTriggerStylesProp = StylesProp<TabsTriggerStyleSlots>;
+
+/** Style overrides for the Tabs.Content root. */
+export interface TabsContentStyleSlots {
+  /** Styles the element with `role="tabpanel"`. */
+  root?: Style;
+}
+
+/** Style overrides accepted by Tabs.Content. */
+export type TabsContentStylesProp = StylesProp<TabsContentStyleSlots>;
 
 interface IndicatorPosition {
   left: number;
@@ -33,7 +114,6 @@ interface TabsContextValue {
   variant?: TabsVariant;
   orientation: TabsOrientation;
   listStyle: string;
-  isDisabledTab: (value: string) => boolean;
   indicatorReady: boolean;
   setIndicatorReady: (ready: boolean) => void;
   skipIndicatorAnimation: boolean;
@@ -49,51 +129,48 @@ const TABS_UNDERLINE_GUTTER = TABS_UNDERLINE_THICKNESS + TABS_UNDERLINE_OFFSET;
 function useTabsContext() {
   const context = React.useContext(TabsContext);
   if (!context) {
-    throw new Error("Tabs component must be used within Tabs root");
+    throw new Error("Tabs compound components must be used within a Tabs root");
   }
   return context;
 }
 
 function getTabsIndicatorClassName(indicator: string, variant?: TabsVariant) {
   return cn(
-    "tabs",
     "indicator",
-    variant === "underline" && "underline",
-    variant === "underline" && "indicator-underline",
     css.indicator,
-    {
-      [css["indicator-underline"]]: variant === "underline",
-    },
+    variant === "underline" && css["indicator-underline"],
     indicator,
   );
 }
 
-interface TabsStyleSlots {
-  root?: Style;
-  list?: Style;
-}
-
-interface TabsProps {
-  state?: TabsState;
-  /** Optional alternate visual style of the tab list indicator */
+export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Alternate visual treatment applied to the list and its selection indicator. When omitted, the indicator is drawn as a filled surface behind the selected tab.
+   * @category Core
+   */
   variant?: TabsVariant;
-  /** Direction of the tab list layout */
+  /** Direction the tab list is laid out in. The value is published as `aria-orientation` on the list and decides which edge the indicator is drawn on.
+   * @category Core
+   * @default "horizontal"
+   */
   orientation?: TabsOrientation;
-  /** Initially selected tab value for uncontrolled usage */
+  /** Value of the tab selected on first render while Tabs is uncontrolled. Ignored once `value` is supplied.
+   * @category Core
+   * @default ""
+   */
   default?: string;
-  /** Controlled state. */
-  /** Controlled selected tab value */
+  /** Value of the selected tab. Supplying it makes Tabs controlled, so selection only changes when the consumer passes a new value.
+   * @category Core
+   */
   value?: string;
-  /** Called when the selected tab changes */
+  /** Called with the value of the tab a press or keyboard navigation selected. It is not called for a disabled tab.
+   * @category Events
+   */
   onValueChange?: (value: string) => void;
-  /** Additional CSS class for the tabs root */
-  className?: string;
-  /** Custom styles for the component slots */
-  styles?: StylesProp<TabsStyleSlots>;
-  children?: React.ReactNode;
-}
-export interface TabsState {
-  value?: string;
+  /** Class or style overrides for the root element and the tab list it owns.
+   * @category Styling
+   * @typeDoc TabsStyleSlots
+   */
+  styles?: TabsStylesProp;
 }
 
 const resolveTabsBaseStyles = createStylesResolver(["root", "list"] as const);
@@ -103,84 +180,69 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
     {
       variant,
       orientation = "horizontal",
-      default: defaultTab,
+      default: defaultValue,
       value: controlledValue,
-      state: controlledState,
       onValueChange,
       className,
       styles: stylesProp,
       children,
+      ...rest
     },
     ref,
   ) => {
     const { root, list: listStyle } = resolveTabsBaseStyles(stylesProp);
 
-    const [uncontrolledValue, setUncontrolledValue] = useControlledState(
-      controlledState?.value ?? controlledValue,
+    const [selectedValue, setInternalValue] = useControlledState(
+      controlledValue,
       undefined,
-      defaultTab || "",
-    );
-    const [disabledTabs, setDisabledTabs] = React.useState<Set<string>>(new Set());
-
-    const selectedValue = uncontrolledValue;
-    const isDisabledTab = React.useCallback(
-      (value: string) => disabledTabs.has(value),
-      [disabledTabs],
+      defaultValue || "",
     );
 
     const setSelectedValue = React.useCallback(
       (newValue: string) => {
-        if (!isDisabledTab(newValue)) {
-          setUncontrolledValue(newValue);
-          onValueChange?.(newValue);
-        }
+        setInternalValue(newValue);
+        onValueChange?.(newValue);
       },
-      [isDisabledTab, onValueChange, setUncontrolledValue],
+      [onValueChange, setInternalValue],
     );
-
-    const registerDisabledTab = React.useCallback((value: string) => {
-      setDisabledTabs((prev) => new Set(prev).add(value));
-    }, []);
-
-    const unregisterDisabledTab = React.useCallback((value: string) => {
-      setDisabledTabs((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(value);
-        return newSet;
-      });
-    }, []);
 
     const [indicatorReady, setIndicatorReady] = React.useState(false);
     const [skipIndicatorAnimation, setSkipIndicatorAnimation] = React.useState(false);
 
+    const context = React.useMemo<TabsContextValue>(
+      () => ({
+        selectedValue,
+        setSelectedValue,
+        variant,
+        orientation,
+        listStyle,
+        indicatorReady,
+        setIndicatorReady,
+        skipIndicatorAnimation,
+        setSkipIndicatorAnimation,
+      }),
+      [
+        selectedValue,
+        setSelectedValue,
+        variant,
+        orientation,
+        listStyle,
+        indicatorReady,
+        skipIndicatorAnimation,
+      ],
+    );
+
     return (
-      <TabsContext.Provider
-        value={{
-          selectedValue,
-          setSelectedValue,
-          variant,
-          orientation,
-          listStyle,
-          isDisabledTab,
-          indicatorReady,
-          setIndicatorReady,
-          skipIndicatorAnimation,
-          setSkipIndicatorAnimation,
-        }}
-      >
+      <TabsContext.Provider value={context}>
         <div
+          {...rest}
           ref={ref}
-          className={cn("tabs", css.tabs, root, className)}
+          className={cn("tabs", css.tabs, className, root)}
+          data-slot="root"
           data-orientation={orientation}
+          data-variant={variant}
         >
-          {React.Children.map(children, (child) =>
-            React.isValidElement(child) && child.type === TabsTrigger
-              ? React.cloneElement(child, {
-                  _registerDisabled: registerDisabledTab,
-                  _unregisterDisabled: unregisterDisabledTab,
-                } as any)
-              : child,
-          )}
+          {children}
         </div>
       </TabsContext.Provider>
     );
@@ -188,26 +250,20 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
 );
 TabsRoot.displayName = "Tabs";
 
-interface TabsListStyleSlots {
-  root?: Style;
-  list?: Style;
-  indicator?: Style;
-  trigger?: Style;
+export interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Class or style overrides for the tab list and the parts it owns.
+   * @category Styling
+   * @typeDoc TabsListStyleSlots
+   */
+  styles?: TabsListStylesProp;
 }
 
-interface TabsListProps {
-  /** Additional CSS class names */
-  className?: string;
-  children?: React.ReactNode;
-  /** Accessible label for the tab list */
-  "aria-label"?: string;
-  /** Custom styles for the component slots */
-  styles?: StylesProp<TabsListStyleSlots>;
-}
-
-const resolveTabsListBaseStyles = createStylesResolver(
-  ["root", "list", "indicator", "trigger"] as const,
-);
+const resolveTabsListBaseStyles = createStylesResolver([
+  "root",
+  "indicator.root",
+  "indicator.fallback",
+  "trigger",
+] as const);
 
 interface TabsListContextValue {
   triggerStyle: string;
@@ -215,9 +271,9 @@ interface TabsListContextValue {
 
 const TabsListContext = React.createContext<TabsListContextValue | null>(null);
 
-/** Container for the row of tab trigger buttons */
+/** Container for the row of tab triggers and the selection indicator. */
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
-  ({ className, children, "aria-label": ariaLabel, styles: stylesProp }, ref) => {
+  ({ className, children, styles: stylesProp, ...rest }, ref) => {
     const {
       selectedValue,
       variant,
@@ -227,7 +283,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       setIndicatorReady,
       skipIndicatorAnimation,
     } = useTabsContext();
-    const { root, list, indicator, trigger: triggerStyle } = resolveTabsListBaseStyles(stylesProp);
+    const resolved = resolveTabsListBaseStyles(stylesProp);
+    const triggerStyle = resolved.trigger;
     const listRef = React.useRef<HTMLDivElement>(null);
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
@@ -241,8 +298,12 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     });
 
     const indicatorClassName = React.useMemo(
-      () => getTabsIndicatorClassName(indicator, variant),
-      [indicator, variant],
+      () => getTabsIndicatorClassName(resolved["indicator.root"], variant),
+      [resolved, variant],
+    );
+    const fallbackIndicatorClassName = React.useMemo(
+      () => getTabsIndicatorClassName(resolved["indicator.fallback"], variant),
+      [resolved, variant],
     );
     const measureTrigger = React.useCallback((element: HTMLElement | null) => {
       if (!element) return null;
@@ -330,8 +391,6 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const getIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = {
         position: "absolute",
-        transition: `all ${skipIndicatorAnimation ? "0ms" : "0.2s"} cubic-bezier(0.4, 0, 0.2, 1)`,
-        willChange: "transform",
         pointerEvents: "none",
         margin: 0,
         opacity: indicatorPosition.width === 0 && indicatorPosition.height === 0 ? 0 : 1,
@@ -379,129 +438,128 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         width: indicatorPosition.width,
         height: indicatorPosition.height,
       };
-    }, [indicatorPosition, listDimensions, variant, orientation, skipIndicatorAnimation]);
+    }, [indicatorPosition, listDimensions, variant, orientation]);
 
     const mergedRef = useMergeRefs(listRef, ref);
+    const listContext = React.useMemo(() => ({ triggerStyle }), [triggerStyle]);
 
     return (
-      <TabsListContext.Provider value={{ triggerStyle }}>
+      <TabsListContext.Provider value={listContext}>
         <div
+          {...rest}
           ref={mergedRef}
           role="tablist"
-          aria-label={ariaLabel}
           aria-orientation={orientation}
-          className={cn(
-            "tabs",
-            "list",
-            variant === "underline" && "underline",
-            css.list,
-            list,
-            listStyle,
-            root,
-            className,
-          )}
+          className={cn("list", css.list, listStyle, className, resolved.root)}
+          data-slot="list"
           data-orientation={orientation}
           data-variant={variant}
-          style={{ position: "relative" }}
         >
-        {React.Children.map(children, (child, index) => (
-          <React.Fragment key={React.isValidElement(child) ? child.key : index}>
-            {child}
-            {!indicatorReady && (
-              <span
-                aria-hidden="true"
-                className={cn("indicator-fallback-frame", css["indicator-fallback-frame"])}
-                data-indicator-fallback="true"
-                style={{
-                  gridColumn: `${orientation === "horizontal" ? index + 1 : 1} / span 1`,
-                  gridRow: `${orientation === "vertical" ? index + 1 : 1} / span 1`,
-                }}
-              >
+          {React.Children.map(children, (child, index) => (
+            <React.Fragment key={React.isValidElement(child) ? child.key : index}>
+              {child}
+              {!indicatorReady && (
                 <span
-                  className={cn(
-                    indicatorClassName,
-                    "indicator-fallback",
-                    css["indicator-fallback"],
-                  )}
+                  aria-hidden="true"
+                  className={cn("indicator-fallback-frame", css["indicator-fallback-frame"])}
+                  data-indicator-fallback="true"
                   style={{
-                    zIndex: 0,
-                    ...(orientation === "vertical"
-                      ? variant === "underline"
-                        ? {
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            width: TABS_UNDERLINE_THICKNESS,
-                            margin: 0,
-                          }
-                        : {
-                            top: 0,
-                            bottom: 0,
-                            left: TABS_INDICATOR_INSET,
-                            right: TABS_INDICATOR_INSET,
-                            margin: 0,
-                          }
-                      : variant === "underline"
-                        ? {
-                            left: 0,
-                            right: 0,
-                            top: `calc(100% + ${TABS_UNDERLINE_OFFSET}px)`,
-                            height: TABS_UNDERLINE_THICKNESS,
-                            margin: 0,
-                          }
-                        : { inset: 0, margin: 0 }),
+                    gridColumn: `${orientation === "horizontal" ? index + 1 : 1} / span 1`,
+                    gridRow: `${orientation === "vertical" ? index + 1 : 1} / span 1`,
                   }}
-                />
-              </span>
-            )}
-          </React.Fragment>
-        ))}
-        {indicatorPosition.width > 0 && (
-          <div aria-hidden="true" className={indicatorClassName} style={getIndicatorStyle} />
-        )}
+                >
+                  <span
+                    className={cn(
+                      fallbackIndicatorClassName,
+                      "indicator-fallback",
+                      css["indicator-fallback"],
+                    )}
+                    data-slot="indicator.fallback"
+                    style={{
+                      zIndex: 0,
+                      ...(orientation === "vertical"
+                        ? variant === "underline"
+                          ? {
+                              top: 0,
+                              bottom: 0,
+                              left: 0,
+                              width: TABS_UNDERLINE_THICKNESS,
+                              margin: 0,
+                            }
+                          : {
+                              top: 0,
+                              bottom: 0,
+                              left: TABS_INDICATOR_INSET,
+                              right: TABS_INDICATOR_INSET,
+                              margin: 0,
+                            }
+                        : variant === "underline"
+                          ? {
+                              left: 0,
+                              right: 0,
+                              top: `calc(100% + ${TABS_UNDERLINE_OFFSET}px)`,
+                              height: TABS_UNDERLINE_THICKNESS,
+                              margin: 0,
+                            }
+                          : { inset: 0, margin: 0 }),
+                    }}
+                  />
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+          {indicatorPosition.width > 0 && (
+            <div
+              aria-hidden="true"
+              className={indicatorClassName}
+              data-slot="indicator.root"
+              data-animate={skipIndicatorAnimation ? "false" : "true"}
+              style={getIndicatorStyle}
+            />
+          )}
         </div>
       </TabsListContext.Provider>
     );
   },
 );
-TabsList.displayName = "TabsList";
+TabsList.displayName = "Tabs.List";
 
-interface TabsTriggerIconStyles {
-  left?: Style;
-  right?: Style;
-}
-
-interface TabsTriggerIconSlots {
-  left?: React.ReactNode;
-  right?: React.ReactNode;
-}
-
-interface TabsTriggerStyleSlots {
-  root?: Style;
-  icon?: Style | TabsTriggerIconStyles;
-}
-
-interface TabsTriggerProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "children"> {
-  /** Unique identifier matching the associated TabsContent value */
+export interface TabsTriggerProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "value"
+> {
+  /** Identifier shared with the `Tabs.Content` panel this tab activates. It also seeds the trigger and panel element ids used by `aria-controls` and `aria-labelledby`.
+   * @category Core
+   */
   value: string;
-  /** Whether the tab trigger is disabled */
+  /** Native button type. It defaults to `"button"` so a tab inside a form never submits it.
+   * @category Advanced
+   * @default "button"
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type
+   */
+  type?: "button" | "submit" | "reset";
+  /** Disables the tab. A disabled tab cannot be pressed, is skipped by arrow-key navigation, and is removed from the tab order.
+   * @category Core
+   * @default false
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#disabled
+   */
   disabled?: boolean;
-  /** Icon element(s) rendered inside the trigger. Pass a node for left-only, or { left, right } for both sides. */
+  /** Icon content rendered beside the label. A single node renders before the label; an object places content on either side.
+   * @category Content
+   * @typeDoc TabsTriggerIconSlots
+   */
   icon?: React.ReactNode | TabsTriggerIconSlots;
-  /** Additional CSS class names */
-  className?: string;
-  /** Custom styles for the component slots */
-  styles?: StylesProp<TabsTriggerStyleSlots>;
-  children?: React.ReactNode;
-  _registerDisabled?: (value: string) => void;
-  _unregisterDisabled?: (value: string) => void;
+  /** Class or style overrides for the tab button and its icon slots.
+   * @category Styling
+   * @typeDoc TabsTriggerStyleSlots
+   */
+  styles?: TabsTriggerStylesProp;
 }
 
 const resolveTabsTriggerBaseStyles = createStylesResolver([
   "root",
-  "iconLeft",
-  "iconRight",
+  "icon.left",
+  "icon.right",
 ] as const);
 
 function isTabsTriggerIconSlots(icon: TabsTriggerProps["icon"]): icon is TabsTriggerIconSlots {
@@ -519,27 +577,7 @@ function resolveTabsTriggerIcon(icon: TabsTriggerProps["icon"]): TabsTriggerIcon
   return { left: icon };
 }
 
-function resolveTabsTriggerStyles(styles: StylesProp<TabsTriggerStyleSlots> | undefined) {
-  if (!styles) return resolveTabsTriggerBaseStyles(styles);
-  const { root, icon } = styles;
-
-  let iconLeft: Style | undefined;
-  let iconRight: Style | undefined;
-
-  if (icon) {
-    if (typeof icon === "string" || Array.isArray(icon)) {
-      iconLeft = icon;
-      iconRight = icon;
-    } else {
-      iconLeft = icon.left;
-      iconRight = icon.right;
-    }
-  }
-
-  return resolveTabsTriggerBaseStyles({ root, iconLeft, iconRight });
-}
-
-/** A tab button that activates its associated content panel */
+/** A tab button that selects its associated content panel. */
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   (
     {
@@ -549,20 +587,15 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       className,
       styles: stylesProp,
       children,
-      _registerDisabled,
-      _unregisterDisabled,
+      type = "button",
       ...rest
     },
     ref,
   ) => {
-    const {
-      selectedValue,
-      setSelectedValue,
-      indicatorReady,
-      setSkipIndicatorAnimation,
-    } = useTabsContext();
+    const { selectedValue, setSelectedValue, indicatorReady, setSkipIndicatorAnimation } =
+      useTabsContext();
     const tabsListContext = React.useContext(TabsListContext);
-    const resolved = resolveTabsTriggerStyles(stylesProp);
+    const resolved = resolveTabsTriggerBaseStyles(stylesProp);
     const resolvedIcon = resolveTabsTriggerIcon(icon);
     const buttonRef = React.useRef<HTMLButtonElement>(null);
     const isSelected = value === selectedValue;
@@ -571,14 +604,6 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
     const { targetProps } = useFocus({ mode: "target" });
     const interactionModality = useInteractionModality();
     const showFocusVisible = isFocused && interactionModality !== "pointer" && isFocusVisible;
-
-    React.useEffect(() => {
-      if (disabled) {
-        _registerDisabled?.(value);
-      } else {
-        _unregisterDisabled?.(value);
-      }
-    }, [disabled, value, _registerDisabled, _unregisterDisabled]);
 
     const handlePress = React.useCallback(() => {
       if (!disabled) {
@@ -594,12 +619,14 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         const listElement = buttonRef.current?.parentElement;
         if (!listElement) return;
 
+        // Disabled triggers are not focusable, so navigation skips them.
         const triggers = Array.from(
-          listElement.querySelectorAll("[data-tabs-value]"),
+          listElement.querySelectorAll("[data-tabs-value]:not([disabled])"),
         ) as HTMLButtonElement[];
         const currentIndex = triggers.findIndex(
           (el) => el.getAttribute("data-tabs-value") === value,
         );
+        if (currentIndex === -1 || triggers.length === 0) return;
 
         let nextValue: string | null = null;
         let isArrowNavigation = false;
@@ -667,6 +694,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         {...triggerProps}
         {...targetProps}
         ref={mergedRef}
+        type={type}
         id={`${value}-trigger`}
         role="tab"
         aria-selected={isSelected}
@@ -674,66 +702,71 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         tabIndex={isSelected ? 0 : -1}
         disabled={disabled}
         data-tabs-value={value}
-        data-focus-surface="true"
         className={cn(
-          "tabs",
           "trigger",
+          "item",
           css.trigger,
           tabsListContext?.triggerStyle,
-          resolved.root,
           className,
+          resolved.root,
         )}
+        data-slot="trigger"
         data-selected={isSelected ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         data-hovered={isHovered ? "true" : "false"}
         data-pressed={isPressed ? "true" : "false"}
+        data-focused={isFocused ? "true" : "false"}
         data-focus-visible={showFocusVisible ? "true" : "false"}
         data-indicator-ready={isSelected && indicatorReady ? "true" : undefined}
         data-indicator-fallback={isSelected && !indicatorReady ? "true" : undefined}
       >
         {resolvedIcon?.left && (
-          <span className={cn(css.icon, resolved.iconLeft)}>{resolvedIcon.left}</span>
+          <span className={cn("icon", css.icon, resolved["icon.left"])} data-slot="icon.left">
+            {resolvedIcon.left}
+          </span>
         )}
         {children}
         {resolvedIcon?.right && (
-          <span className={cn(css.icon, resolved.iconRight)}>{resolvedIcon.right}</span>
+          <span className={cn("icon", css.icon, resolved["icon.right"])} data-slot="icon.right">
+            {resolvedIcon.right}
+          </span>
         )}
       </button>
     );
   },
 );
-TabsTrigger.displayName = "Tab";
+TabsTrigger.displayName = "Tabs.Trigger";
 
-interface TabsContentStyleSlots {
-  root?: Style;
-}
-
-interface TabsContentProps {
-  /** Unique identifier matching the associated TabsTrigger value */
+export interface TabsContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Identifier shared with the `Tabs.Trigger` that selects this panel.
+   * @category Core
+   */
   value: string;
-  /** Additional CSS class names */
-  className?: string;
-  /** Custom styles for the component slots */
-  styles?: StylesProp<TabsContentStyleSlots>;
-  children?: React.ReactNode;
+  /** Class or style overrides for the panel element.
+   * @category Styling
+   * @typeDoc TabsContentStyleSlots
+   */
+  styles?: TabsContentStylesProp;
 }
 
 const resolveTabsContentBaseStyles = createStylesResolver(["root"] as const);
 
-/** Content panel shown when its corresponding tab is active */
+/** Content panel shown while its matching tab is selected. */
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
-  ({ value, className, children, styles: stylesProp }, ref) => {
+  ({ value, className, children, styles: stylesProp, ...rest }, ref) => {
     const { selectedValue, orientation } = useTabsContext();
     const { root } = resolveTabsContentBaseStyles(stylesProp);
     const isVisible = value === selectedValue;
 
     return (
       <div
+        {...rest}
         ref={ref}
         role="tabpanel"
         aria-labelledby={`${value}-trigger`}
         id={`${value}-content`}
-        className={cn("tabs", "content", css.content, root, className)}
+        className={cn("content", css.content, className, root)}
+        data-slot="content"
         data-orientation={orientation}
         hidden={!isVisible}
       >
@@ -742,7 +775,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
     );
   },
 );
-TabsContent.displayName = "TabsContent";
+TabsContent.displayName = "Tabs.Content";
 
 const Tabs = Object.assign(TabsRoot, {
   List: TabsList,
@@ -750,5 +783,4 @@ const Tabs = Object.assign(TabsRoot, {
   Content: TabsContent,
 });
 
-export { Tabs };
-export type { TabsProps, TabsListProps, TabsTriggerProps, TabsContentProps };
+export { Tabs, TabsList, TabsTrigger, TabsContent };

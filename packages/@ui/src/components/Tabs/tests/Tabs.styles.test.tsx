@@ -51,8 +51,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const indicatorSelectorClass =
-  "[&_.indicator]:top-[calc(100%-2px)]!";
+const indicatorSelectorClass = "[&_.indicator]:top-[calc(100%-2px)]!";
 
 function HeaderTabItem({ value, children }: { value: string; children: React.ReactNode }) {
   return <Tabs.Trigger value={value}>{children}</Tabs.Trigger>;
@@ -69,8 +68,12 @@ describe("Tabs.styles", () => {
 
     expect(root).toBeTruthy();
     expect(root?.querySelector(":scope > .list")).toBe(list);
-    expect(list).toHaveClass("tabs");
+    // Only the root carries the component class; parts carry anatomy classes.
+    expect(list).not.toHaveClass("tabs");
+    expect(list).toHaveAttribute("data-slot", "list");
     expect(list.querySelector(":scope > .trigger")).toBe(trigger);
+    expect(trigger).toHaveClass("item");
+    expect(trigger).toHaveAttribute("data-slot", "trigger");
     expect(root?.querySelector(":scope > .content")).toBe(content);
   });
 
@@ -161,9 +164,8 @@ describe("Tabs.styles", () => {
     document.body.appendChild(container);
     const themeStyles = document.createElement("style");
     themeStyles.textContent = `
-      .tabs > .indicator.underline,
-      .tabs > .indicator-fallback-frame > .indicator.underline {
-        --background: rgb(239, 68, 68);
+      .tabs[data-variant="underline"] {
+        --slot-indicator-background: rgb(239, 68, 68);
       }
     `;
     document.head.appendChild(themeStyles);
@@ -182,23 +184,18 @@ describe("Tabs.styles", () => {
     });
     expect(fallbackFrame?.getAttribute("style")).toContain("grid-column:1 / span 1");
     expect(fallbackFrame?.getAttribute("style")).toContain("grid-row:1 / span 1");
-    expect(fallback).toHaveClass(
-      "indicator",
-      "indicator-fallback",
-      "bg-red-500",
-      "rounded-sm",
-    );
+    expect(fallback).toHaveClass("indicator", "indicator-fallback", "bg-red-500", "rounded-sm");
     expect(fallback).toHaveStyle({ top: "calc(100% + 2px)", height: "2px", zIndex: "0" });
     expect(fallbackFrame.previousElementSibling).toHaveAttribute("data-selected", "true");
     expect(tabsStyles).toMatch(
       /data-selected=["']true["'][^}]*indicator-fallback-frame[^}]*\{[^}]*display:\s*block/s,
     );
-    expect(onyxStyles).toContain(
-      ".tabs > .indicator-fallback-frame > .indicator.underline",
+    expect(onyxStyles).toMatch(
+      /\.tabs\[data-variant="underline"\][\s\S]*?@slot indicator[\s\S]*?--background/,
     );
     expect(getComputedStyle(fallback).visibility).toBe("visible");
     expect(getComputedStyle(fallback).opacity).not.toBe("0");
-    expect(getComputedStyle(fallback).getPropertyValue("--background").trim()).toBe(
+    expect(getComputedStyle(fallback).getPropertyValue("--slot-indicator-background").trim()).toBe(
       "rgb(239, 68, 68)",
     );
     expect(getComputedStyle(fallback).left).toBe("0px");
@@ -416,7 +413,7 @@ describe("Tabs.styles", () => {
 });
 
 describe("Tabs underline variant markers", () => {
-  it("keeps .underline on the list, applies no text decoration, and renders an indicator", () => {
+  it("publishes the variant as data-variant and renders an indicator", () => {
     const { container } = render(
       <Tabs default="a" variant="underline">
         <Tabs.List aria-label="Sections">
@@ -428,10 +425,13 @@ describe("Tabs underline variant markers", () => {
       </Tabs>,
     );
 
+    const root = container.querySelector(":scope > .tabs") as HTMLElement;
     const list = container.querySelector('[role="tablist"]') as HTMLElement;
-    expect(list).toHaveClass("tabs");
+    expect(root).toHaveAttribute("data-variant", "underline");
     expect(list).toHaveClass("list");
-    expect(list).toHaveClass("underline");
+    expect(list).toHaveAttribute("data-variant", "underline");
+    // The Tailwind text-decoration utility name is no longer used as a variant hook.
+    expect(list).not.toHaveClass("underline");
     expect(getComputedStyle(list).textDecorationLine === "underline").toBe(false);
     expect(list.querySelector(".indicator")).toBeTruthy();
   });

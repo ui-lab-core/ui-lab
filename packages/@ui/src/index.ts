@@ -157,7 +157,19 @@ export type {
   TabsListProps,
   TabsTriggerProps,
   TabsContentProps,
-  TabsState,
+  TabsVariant,
+  TabsOrientation,
+  TabsStyleSlots,
+  TabsStylesProp,
+  TabsListStyleSlots,
+  TabsListStylesProp,
+  TabsListIndicatorStyleSlots,
+  TabsTriggerStyleSlots,
+  TabsTriggerStylesProp,
+  TabsTriggerIconSlots,
+  TabsTriggerIconStyleSlots,
+  TabsContentStyleSlots,
+  TabsContentStylesProp,
 } from "./components/Tabs";
 
 export { Menu } from "./components/Menu";

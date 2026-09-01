@@ -7,31 +7,49 @@ import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useButton } from "@react-aria/button";
 import { enableShadowDOM } from "@react-stately/flags";
+
+// React Aria otherwise reads retargeted document-level events as coming from the
+// shadow host, which cancels presses completed inside a ShadowRoot.
+enableShadowDOM();
+
 import type { FocusableElement, PressEvent } from "@react-types/shared";
 
 import { cn } from "@/lib/utils";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { type HintValue, hasHint, renderHint } from "@/lib/hint";
-import { Badge } from "../Badge";
+import { type HintValue, HintBadges, hasHint } from "@/lib/hint";
 import { isSkeletonElement } from "../Skeleton";
 import type { ButtonVariantOverrides } from "../../theme-contract";
 import type { DefaultButtonVariant } from "../../generated-theme-contract";
+import { tailwindPalette } from "../../generated-tailwind-palette";
 import css from "./Button.module.css";
-
-// React Aria otherwise reads retargeted document-level events as coming from the
-// shadow host, which cancels presses completed inside a ShadowRoot.
-enableShadowDOM();
 
 /** An open string type used to select a button size class. */
 export type ButtonSize = string & {};
 
 /** A variant supplied by an installed theme, while preserving custom theme hooks. */
-export type ButtonVariant =
-  | DefaultButtonVariant
-  | keyof ButtonVariantOverrides
-  | (string & {});
+export type ButtonVariant = DefaultButtonVariant | keyof ButtonVariantOverrides | (string & {});
+
+/** A fill colour for the button: a theme colour token, a custom property, or any CSS colour. */
+export type ButtonColor = string & {};
+
+const CUSTOM_PROPERTY = /^--[a-z0-9-]+$/i;
+const THEME_TOKEN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)+$/i;
+
+export function resolveButtonColor(color: ButtonColor | undefined): string | undefined {
+  if (!color) return undefined;
+  const value = color.trim();
+  if (!value) return undefined;
+  if (CUSTOM_PROPERTY.test(value)) return `var(${value})`;
+  if (THEME_TOKEN.test(value)) {
+    const fallback = tailwindPalette[value];
+    return fallback
+      ? `var(--${value}, var(--color-${value}, ${fallback}))`
+      : `var(--${value}, var(--color-${value}))`;
+  }
+  return value;
+}
 
 /** Icon content rendered on either side of the button label. */
 export type ButtonIconSlots = {
@@ -103,6 +121,11 @@ export interface ButtonProps extends Omit<
    * @category Core
    */
   variant?: ButtonVariant;
+  /** Fill colour for the button. Accepts a theme colour token (color="accent-500"), a Tailwind palette colour (color="purple-500"), a custom property (color="--brand"), or any CSS colour. The active theme paints the same treatment it gives its filled variant over that colour.
+   * @category Core
+   * @typeDoc ButtonColor
+   */
+  color?: ButtonColor;
   /** Size class appended to the root element. Accepts any string.
    * @category Core
    * @typeDoc ButtonSize
@@ -125,7 +148,7 @@ export interface ButtonProps extends Omit<
    * @typeDoc ButtonIconSlots
    */
   icon?: React.ReactNode | ButtonIconSlots;
-  /** Keyboard shortcut or hint rendered as a Badge at the end of the button. Arrays render as shortcut segments joined by a plus divider.
+  /** Keyboard shortcut or hint rendered as Badges at the end of the button. Arrays render each segment as its own badge.
    * @category Content
    * @typeDoc HintValue
    */
@@ -201,7 +224,10 @@ function hasVisuallyRenderableContent(value: React.ReactNode): boolean {
     return false;
   }
 
-  if (React.isValidElement<{ children?: React.ReactNode }>(value) && value.type === React.Fragment) {
+  if (
+    React.isValidElement<{ children?: React.ReactNode }>(value) &&
+    value.type === React.Fragment
+  ) {
     return hasVisuallyRenderableContent(value.props.children);
   }
 
@@ -260,6 +286,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       className,
       styles,
       variant,
+      color,
       size,
       children,
       onClick,
@@ -336,6 +363,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const isVisualPressed = !isButtonDisabled && isPressed;
 
     const resolved = resolveButtonStyles(styles);
+    const resolvedColor = resolveButtonColor(color);
     const resolvedIcon = resolveButtonIcon(icon);
     const isIconOnly = isIconOnlyContent(resolvedIcon, children);
     const actualSize = size ?? (isIconOnly ? "icon" : "md");
@@ -389,14 +417,12 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           </span>
         )}
         {hasHint(hint) && (
-          <Badge
-            variant="secondary"
-            className={cn("hint", css.hint, resolved.hint.className)}
+          <HintBadges
+            hint={hint}
+            className={cn(css.hint, resolved.hint.className)}
             style={resolved.hint.style}
             data-slot="hint"
-          >
-            {renderHint(hint)}
-          </Badge>
+          />
         )}
       </>
     );
@@ -429,8 +455,13 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           data-hint={hasHint(hint) ? "true" : undefined}
           data-icon-only={isIconButton ? "true" : undefined}
           data-variant={variant}
+          data-color={resolvedColor ? color : undefined}
           data-size={actualSize}
-          style={{ ...resolved.root.style, ...props.style }}
+          style={{
+            ...resolved.root.style,
+            ...(resolvedColor ? ({ "--color": resolvedColor } as React.CSSProperties) : null),
+            ...props.style,
+          }}
         >
           {content}
         </a>
@@ -457,8 +488,13 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         data-hint={hasHint(hint) ? "true" : undefined}
         data-icon-only={isIconButton ? "true" : undefined}
         data-variant={variant}
+        data-color={resolvedColor ? color : undefined}
         data-size={actualSize}
-        style={{ ...resolved.root.style, ...props.style }}
+        style={{
+          ...resolved.root.style,
+          ...(resolvedColor ? ({ "--color": resolvedColor } as React.CSSProperties) : null),
+          ...props.style,
+        }}
       >
         {content}
       </button>

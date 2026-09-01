@@ -324,6 +324,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastComponentProps>(function To
     <div
       ref={innerRef}
       className={cn("toast", css.root, variant, resolved.root)}
+      data-variant={variant}
       role="alert"
       onPointerDown={handlePointerDown}
     >

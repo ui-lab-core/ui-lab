@@ -22,7 +22,6 @@
   .panel {
     --padding: calc(var(--spacing, 0.25rem) * 2);
     --radius: var(--radius-sm, 0.375rem);
-    --inner-radius: calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)));
 
     @apply min-w-40 max-w-80 overflow-hidden;
     box-sizing: border-box;
@@ -48,7 +47,9 @@
       @apply flex min-w-0 items-center gap-2;
       padding-block: calc(var(--padding) / 1.5);
       padding-inline: var(--padding);
-      border-radius: slot(item, radius, var(--inner-radius));
+      /* Inside the panel border. */
+      --inset-gap: slot(border, width, var(--border-width-base, 1px));
+      border-radius: slot(item, radius, var(--inset-radius));
       cursor: pointer;
       user-select: none;
       outline: none;

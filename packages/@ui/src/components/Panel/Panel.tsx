@@ -137,6 +137,7 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
       className,
       id: providedId,
       style,
+      children,
       ...props
     },
     ref,
@@ -146,6 +147,8 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
     const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
     const sidebarOpen = open ?? internalOpen;
     const { registerSidebar, unregisterSidebar } = usePanelContext();
+    const sidebarRef = React.useRef<HTMLElement>(null);
+    const mergedRef = useMergeRefs(sidebarRef, ref);
 
     const setSidebarOpen = React.useCallback(
       (next: boolean) => {
@@ -161,6 +164,25 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
       return () => unregisterSidebar(id);
     }, [id, registerSidebar, setSidebarOpen, sidebarOpen, unregisterSidebar]);
 
+    // While the sidebar is open its rendered size is mirrored onto custom properties the
+    // content box is sized from. Collapsing then animates the sidebar without resizing the
+    // content, so the content keeps its layout and only fades out.
+    React.useEffect(() => {
+      const element = sidebarRef.current;
+      if (!element || !sidebarOpen) return;
+
+      const record = () => {
+        element.style.setProperty("--content-width", `${element.offsetWidth}px`);
+        element.style.setProperty("--content-height", `${element.offsetHeight}px`);
+      };
+      record();
+
+      if (typeof ResizeObserver === "undefined") return;
+      const observer = new ResizeObserver(record);
+      observer.observe(element);
+      return () => observer.disconnect();
+    }, [sidebarOpen]);
+
     const customStyle = {
       "--size": toSize(size),
       "--collapsed-size": toSize(collapsedSize),
@@ -169,7 +191,7 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
 
     return (
       <aside
-        ref={ref}
+        ref={mergedRef}
         id={id}
         className={cn(styles.sidebar, className)}
         data-open={sidebarOpen}
@@ -177,7 +199,9 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
         aria-hidden={!sidebarOpen}
         style={customStyle}
         {...props}
-      />
+      >
+        <div className={styles.content}>{children}</div>
+      </aside>
     );
   },
 );

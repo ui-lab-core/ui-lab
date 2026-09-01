@@ -33,7 +33,6 @@ export interface WorkshopSummary {
   locked: boolean;
   componentId?: string;
   packageId?: string;
-  productId?: string;
   bundleId?: string;
   installIntent?: ReturnType<typeof getArtifactInstallIntent> | WorkshopInstallIntent;
 }
@@ -89,7 +88,7 @@ function contentEntry(content: WorkshopCatalogEntry): IndexEntry | null {
     description: content.description, category: content.category, visibility: content.visibility, tags: [content.kind, content.access],
     access: content.access === "free" ? "public" : "premium", locked: content.locked,
     componentId: content.componentId, packageId: content.packageId,
-    productId: content.productId, bundleId: content.bundleId, installIntent: content.installIntent, content,
+    bundleId: content.bundleId, installIntent: content.installIntent, content,
   };
 }
 

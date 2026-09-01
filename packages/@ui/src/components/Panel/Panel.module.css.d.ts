@@ -1,6 +1,7 @@
 declare const styles: {
   readonly panel: string;
   readonly sidebar: string;
+  readonly content: string;
   readonly resize: string;
   readonly spacingNone: string;
   readonly spacingSm: string;

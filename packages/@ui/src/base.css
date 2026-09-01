@@ -49,6 +49,18 @@
 }
 
 @layer components.defaults {
+  /* Concentric corners. A part nested inside a rounded container must not
+     reuse its container's radius: it sits --inset-gap inside that container's
+     border box, so its own radius has to shrink by the same amount to stay
+     concentric (and clamps at 0 once the gap swallows the radius). Every
+     element recomputes this from the radius it inherits, so a nested part only
+     declares the gap it is inset by and reads --inset-radius. */
+  *,
+  ::before,
+  ::after {
+    --inset-radius: max(0px, calc(var(--radius, 0px) - var(--inset-gap, 0px)));
+  }
+
   [data-ring="true"] {
     outline: none;
   }

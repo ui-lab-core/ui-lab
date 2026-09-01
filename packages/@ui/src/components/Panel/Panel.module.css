@@ -20,21 +20,42 @@
   .panel > .sidebar {
     @apply min-h-0 shrink-0 overflow-hidden;
     flex: 0 0 var(--size);
-  }
-
-  .sidebar[data-open="true"] {
-    transition: flex-basis 0.2s ease;
+    transition:
+      flex-basis var(--panel-duration, 0.32s) var(--panel-ease, ease),
+      height var(--panel-duration, 0.32s) var(--panel-ease, ease);
   }
 
   .sidebar[data-open="false"] {
     flex-basis: var(--collapsed-size);
+  }
+
+  /* Sized from the last measured open size so collapsing never reflows the content. */
+  .sidebar > .content {
+    @apply flex min-h-0 min-w-0 flex-col;
+    width: var(--content-width, var(--size));
+    height: var(--content-height, 100%);
+    opacity: 1;
+    transition:
+      opacity var(--panel-duration, 0.32s) var(--panel-ease, ease),
+      visibility 0s;
+  }
+
+  .sidebar[data-open="false"] > .content {
+    opacity: 0;
     visibility: hidden;
+    transition:
+      opacity var(--panel-duration, 0.32s) var(--panel-ease, ease),
+      visibility 0s linear var(--panel-duration, 0.32s);
   }
 
   .panel[data-stacked="true"] > .sidebar {
     width: 100%;
     max-width: 100%;
     flex-basis: auto;
+  }
+
+  .panel[data-stacked="true"] > .sidebar > .content {
+    width: 100%;
   }
 
   .panel[data-stacked="true"] > .sidebar[data-open="false"] {
@@ -117,7 +138,9 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sidebar[data-open="true"] {
+    .panel > .sidebar,
+    .sidebar > .content,
+    .sidebar[data-open="false"] > .content {
       transition: none;
     }
   }

@@ -14,9 +14,8 @@ import { cn } from "@/lib/utils";
 import { useTooltipTriggerState } from "react-stately";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { type HintValue, hasHint, renderHint } from "@/lib/hint";
+import { type HintValue, HintBadges, hasHint } from "@/lib/hint";
 import { Frame } from "../Frame";
-import { Badge } from "../Badge";
 import css from "./Tooltip.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { type Style } from "@/lib/utils";
@@ -117,7 +116,7 @@ export interface TooltipProps {
   onOpenChange?: (isOpen: boolean) => void;
   /** Whether to render a directional arrow pointing at the trigger */
   "show-arrow"?: boolean;
-  /** Keyboard shortcut or hint rendered as a Badge at the end of the tooltip. An array renders its segments joined by a `+` divider. */
+  /** Keyboard shortcut or hint rendered as Badges at the end of the tooltip. An array renders each segment as its own badge. */
   hint?: HintValue;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TooltipStylesProp;
@@ -396,9 +395,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
                   >
                     {content}
                     {hasHint(hint) && (
-                      <Badge variant="secondary" className={cn(css.hint, resolved.hint)}>
-                        {renderHint(hint)}
-                      </Badge>
+                      <HintBadges hint={hint} className={cn(css.hint, resolved.hint)} />
                     )}
                   </div>
                 </Frame>
