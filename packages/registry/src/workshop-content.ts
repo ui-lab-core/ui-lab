@@ -30,7 +30,6 @@ export interface WorkshopCatalogSummary {
   packageId?: string;
   access: WorkshopAccess;
   locked: boolean;
-  productId?: string;
   bundleId?: string;
   installIntent?: WorkshopInstallIntent;
 }

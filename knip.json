@@ -13,6 +13,7 @@
       "entry": ["src/app/**/*.{ts,tsx}", "scripts/**/*.{js,mjs,ts,mts}"],
       "ignoreDependencies": [
         "@fontsource-variable/jetbrains-mono",
+        "@fontsource-variable/fraunces",
         "@fontsource-variable/work-sans",
         "@ui-lab-core/library",
         "ui-lab-theme-onyx"

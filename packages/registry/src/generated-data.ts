@@ -777,16 +777,30 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "variant",
         "type": "ButtonVariant",
         "required": false,
-        "defaultValue": "primary",
-        "description": "Variant class appended to the root element. Accepts any string.",
+        "description": "Variant class appended to the root element. When omitted, the active theme supplies the default. Accepts any string.",
         "category": "Core",
         "tags": {
-          "category": "Core",
-          "default": "primary"
+          "category": "Core"
         },
         "typeTokens": [
           {
             "text": "ButtonVariant"
+          }
+        ]
+      },
+      {
+        "name": "color",
+        "type": "ButtonColor",
+        "required": false,
+        "description": "Fill colour for the button. Accepts a theme colour token (color=\"accent-500\"), a Tailwind palette colour (color=\"purple-500\"), a custom property (color=\"--brand\"), or any CSS colour. The active theme paints the same treatment it gives its filled variant over that colour.",
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "typeDoc": "ButtonColor"
+        },
+        "typeTokens": [
+          {
+            "text": "ButtonColor"
           }
         ]
       },
@@ -905,7 +919,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "hint",
         "type": "HintValue",
         "required": false,
-        "description": "Keyboard shortcut or hint rendered as a Badge at the end of the button. Arrays render as shortcut segments joined by a plus divider.",
+        "description": "Keyboard shortcut or hint rendered as Badges at the end of the button. Arrays render each segment as its own badge.",
         "category": "Content",
         "tags": {
           "category": "Content",
@@ -13493,16 +13507,30 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "variant",
             "type": "ButtonVariant",
             "required": false,
-            "defaultValue": "primary",
-            "description": "Variant class appended to the root element. Accepts any string.",
+            "description": "Variant class appended to the root element. When omitted, the active theme supplies the default. Accepts any string.",
             "category": "Core",
             "tags": {
-              "category": "Core",
-              "default": "primary"
+              "category": "Core"
             },
             "typeTokens": [
               {
                 "text": "ButtonVariant"
+              }
+            ]
+          },
+          {
+            "name": "color",
+            "type": "ButtonColor",
+            "required": false,
+            "description": "Fill colour for the button. Accepts a theme colour token (color=\"accent-500\"), a Tailwind palette colour (color=\"purple-500\"), a custom property (color=\"--brand\"), or any CSS colour. The active theme paints the same treatment it gives its filled variant over that colour.",
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "typeDoc": "ButtonColor"
+            },
+            "typeTokens": [
+              {
+                "text": "ButtonColor"
               }
             ]
           },
@@ -13619,7 +13647,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "hint",
             "type": "HintValue",
             "required": false,
-            "description": "Keyboard shortcut or hint rendered as a Badge at the end of the button. Arrays render as shortcut segments joined by a plus divider.",
+            "description": "Keyboard shortcut or hint rendered as Badges at the end of the button. Arrays render each segment as its own badge.",
             "category": "Content",
             "tags": {
               "category": "Content",
@@ -32970,26 +32998,26 @@ export const generatedAPI: Record<string, ComponentAPI> = {
   "tabs": {
     "props": [
       {
-        "name": "state",
-        "type": "TabsState",
-        "required": false,
-        "typeTokens": [
-          {
-            "text": "TabsState"
-          }
-        ]
-      },
-      {
         "name": "variant",
         "type": "underline",
         "required": false,
-        "description": "Optional alternate visual style of the tab list indicator",
+        "description": "Alternate visual treatment applied to the list and its selection indicator. When omitted, the indicator is drawn as a filled surface behind the selected tab.",
         "enumValues": [
           "underline"
         ],
+        "category": "Core",
+        "tags": {
+          "category": "Core"
+        },
         "typeTokens": [
           {
             "text": "underline"
+          }
+        ],
+        "enumValueDetails": [
+          {
+            "value": "underline",
+            "description": "Draws the indicator as a thin bar along the list's block end, or its inline start when the orientation is vertical, and removes the list's filled surface."
           }
         ]
       },
@@ -32998,11 +33026,16 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "type": "horizontal | vertical",
         "required": false,
         "defaultValue": "horizontal",
-        "description": "Direction of the tab list layout",
+        "description": "Direction the tab list is laid out in. The value is published as `aria-orientation` on the list and decides which edge the indicator is drawn on.",
         "enumValues": [
           "horizontal",
           "vertical"
         ],
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "default": "\"horizontal\""
+        },
         "typeTokens": [
           {
             "text": "horizontal"
@@ -33013,13 +33046,29 @@ export const generatedAPI: Record<string, ComponentAPI> = {
           {
             "text": "vertical"
           }
+        ],
+        "enumValueDetails": [
+          {
+            "value": "horizontal",
+            "description": "Lays the triggers out in a row and draws the indicator along the list's block end."
+          },
+          {
+            "value": "vertical",
+            "description": "Lays the triggers out in a column beside the panel and draws the indicator along the list's inline start."
+          }
         ]
       },
       {
         "name": "default",
         "type": "string",
         "required": false,
-        "description": "Initially selected tab value for uncontrolled usage",
+        "defaultValue": "\"\"",
+        "description": "Value of the tab selected on first render while Tabs is uncontrolled. Ignored once `value` is supplied.",
+        "category": "Core",
+        "tags": {
+          "category": "Core",
+          "default": "\"\""
+        },
         "typeTokens": [
           {
             "text": "string",
@@ -33031,7 +33080,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "value",
         "type": "string",
         "required": false,
-        "description": "Controlled selected tab value",
+        "description": "Value of the selected tab. Supplying it makes Tabs controlled, so selection only changes when the consumer passes a new value.",
+        "category": "Core",
+        "tags": {
+          "category": "Core"
+        },
         "typeTokens": [
           {
             "text": "string",
@@ -33043,7 +33096,11 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "onValueChange",
         "type": "((value: string) => void)",
         "required": false,
-        "description": "Called when the selected tab changes",
+        "description": "Called with the value of the tab a press or keyboard navigation selected. It is not called for a disabled tab.",
+        "category": "Events",
+        "tags": {
+          "category": "Events"
+        },
         "typeTokens": [
           {
             "text": "(("
@@ -33070,10 +33127,41 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       },
       {
+        "name": "styles",
+        "type": "TabsStyleSlots",
+        "required": false,
+        "description": "Class or style overrides for the root element and the tab list it owns.",
+        "category": "Styling",
+        "tags": {
+          "category": "Styling",
+          "typeDoc": "TabsStyleSlots"
+        },
+        "typeTokens": [
+          {
+            "text": "TabsStyleSlots",
+            "customType": "TabsStyleSlots"
+          }
+        ]
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "category": "Core",
+        "description": "The Tabs.List and Tabs.Content elements this root owns.",
+        "typeTokens": [
+          {
+            "text": "React.ReactNode",
+            "href": "https://react.dev/reference/react/Children"
+          }
+        ]
+      },
+      {
         "name": "className",
         "type": "string",
         "required": false,
-        "description": "Additional CSS class for the tabs root",
+        "category": "Styling",
+        "description": "Classes appended to the root element after its component and module classes.",
         "typeTokens": [
           {
             "text": "string",
@@ -33082,17 +33170,1162 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       },
       {
-        "name": "styles",
-        "type": "TabsStyleSlots",
+        "name": "style",
+        "type": "React.CSSProperties",
         "required": false,
-        "description": "Custom styles for the component slots",
+        "category": "Styling",
+        "description": "Applies inline styles to the root element.",
         "typeTokens": [
           {
-            "text": "TabsStyleSlots"
+            "text": "React.CSSProperties",
+            "href": "https://react.dev/reference/react-dom/components/common#style"
           }
         ]
       }
     ],
+    "subComponents": {
+      "Tabs.List": {
+        "description": "Container for the row of tab triggers and the selection indicator.",
+        "props": [
+          {
+            "name": "styles",
+            "type": "TabsListStyleSlots",
+            "required": false,
+            "description": "Class or style overrides for the tab list and the parts it owns.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling",
+              "typeDoc": "TabsListStyleSlots"
+            },
+            "typeTokens": [
+              {
+                "text": "TabsListStyleSlots",
+                "customType": "TabsListStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "children",
+            "type": "React.ReactNode",
+            "required": false,
+            "category": "Core",
+            "description": "The Tabs.Trigger elements rendered in this list.",
+            "typeTokens": [
+              {
+                "text": "React.ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "category": "Styling",
+            "description": "Classes appended to the tab list after its anatomy and module classes.",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "category": "Styling",
+            "description": "Applies inline styles to the tab list element.",
+            "typeTokens": [
+              {
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "category": "Accessibility",
+            "description": "Accessible name for the tab list. Supply it, or aria-labelledby, so the list is announced with a name.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "aria-labelledby",
+            "type": "string",
+            "required": false,
+            "category": "Accessibility",
+            "description": "References the element that labels the tab list.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          }
+        ]
+      },
+      "Tabs.Trigger": {
+        "description": "A tab button that selects its associated content panel.",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Identifier shared with the `Tabs.Content` panel this tab activates. It also seeds the trigger and panel element ids used by `aria-controls` and `aria-labelledby`.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "type",
+            "type": "button | submit | reset",
+            "required": false,
+            "defaultValue": "button",
+            "description": "Native button type. It defaults to `\"button\"` so a tab inside a form never submits it.",
+            "enumValues": [
+              "button",
+              "submit",
+              "reset"
+            ],
+            "category": "Advanced",
+            "tags": {
+              "category": "Advanced",
+              "default": "\"button\"",
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type"
+            },
+            "links": [
+              {
+                "label": "MDN",
+                "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type"
+              }
+            ],
+            "typeTokens": [
+              {
+                "text": "button"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "submit"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "reset"
+              }
+            ],
+            "enumValueDetails": [
+              {
+                "value": "button",
+                "description": "Activates the tab without submitting a surrounding form."
+              },
+              {
+                "value": "submit",
+                "description": "Also submits the surrounding form when the tab is activated."
+              },
+              {
+                "value": "reset",
+                "description": "Also resets the surrounding form when the tab is activated."
+              }
+            ]
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": "false",
+            "description": "Disables the tab. A disabled tab cannot be pressed, is skipped by arrow-key navigation, and is removed from the tab order.",
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "false",
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#disabled"
+            },
+            "links": [
+              {
+                "label": "MDN",
+                "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#disabled"
+              }
+            ],
+            "typeTokens": [
+              {
+                "text": "boolean",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+              }
+            ]
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode | TabsTriggerIconSlots",
+            "required": false,
+            "description": "Icon content rendered beside the label. A single node renders before the label; an object places content on either side.",
+            "category": "Content",
+            "tags": {
+              "category": "Content",
+              "typeDoc": "TabsTriggerIconSlots"
+            },
+            "typeTokens": [
+              {
+                "text": "ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "TabsTriggerIconSlots",
+                "customType": "TabsTriggerIconSlots"
+              }
+            ]
+          },
+          {
+            "name": "styles",
+            "type": "TabsTriggerStyleSlots",
+            "required": false,
+            "description": "Class or style overrides for the tab button and its icon slots.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling",
+              "typeDoc": "TabsTriggerStyleSlots"
+            },
+            "typeTokens": [
+              {
+                "text": "TabsTriggerStyleSlots",
+                "customType": "TabsTriggerStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "children",
+            "type": "React.ReactNode",
+            "required": false,
+            "category": "Content",
+            "description": "The tab label rendered between the icon slots.",
+            "typeTokens": [
+              {
+                "text": "React.ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "category": "Styling",
+            "description": "Classes appended to the tab button after its anatomy and module classes.",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "category": "Styling",
+            "description": "Applies inline styles to the tab button element.",
+            "typeTokens": [
+              {
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "onClick",
+            "type": "React.MouseEventHandler<HTMLButtonElement>",
+            "required": false,
+            "category": "Events",
+            "description": "Native click handler. It is preserved alongside the press behavior that selects the tab, and does not fire while the tab is disabled.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event"
+            },
+            "typeTokens": [
+              {
+                "text": "React.MouseEventHandler",
+                "href": "https://react.dev/reference/react-dom/components/common#mouseevent-handler-function"
+              },
+              {
+                "text": "<"
+              },
+              {
+                "text": "HTMLButtonElement",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          },
+          {
+            "name": "onKeyDown",
+            "type": "React.KeyboardEventHandler<HTMLButtonElement>",
+            "required": false,
+            "category": "Events",
+            "description": "Native keydown handler. It runs alongside the arrow, Home, End, and Tab navigation the trigger installs.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event"
+            },
+            "typeTokens": [
+              {
+                "text": "React.KeyboardEventHandler",
+                "href": "https://react.dev/reference/react-dom/components/common#keyboardevent-handler-function"
+              },
+              {
+                "text": "<"
+              },
+              {
+                "text": "HTMLButtonElement",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "category": "Accessibility",
+            "description": "Accessible name for the tab. Required when the trigger renders an icon with no text label.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          }
+        ]
+      },
+      "Tabs.Content": {
+        "description": "Content panel shown while its matching tab is selected.",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Identifier shared with the `Tabs.Trigger` that selects this panel.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "styles",
+            "type": "TabsContentStyleSlots",
+            "required": false,
+            "description": "Class or style overrides for the panel element.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling",
+              "typeDoc": "TabsContentStyleSlots"
+            },
+            "typeTokens": [
+              {
+                "text": "TabsContentStyleSlots",
+                "customType": "TabsContentStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "children",
+            "type": "React.ReactNode",
+            "required": false,
+            "category": "Core",
+            "description": "Panel content. It is only rendered while the matching tab is selected.",
+            "typeTokens": [
+              {
+                "text": "React.ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "category": "Styling",
+            "description": "Classes appended to the panel after its anatomy and module classes.",
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "category": "Styling",
+            "description": "Applies inline styles to the panel element.",
+            "typeTokens": [
+              {
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "tabIndex",
+            "type": "number",
+            "required": false,
+            "category": "Accessibility",
+            "description": "Adds the panel to the tab order. Pass 0 when the panel holds no focusable content so keyboard users can reach it.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex"
+            },
+            "typeTokens": [
+              {
+                "text": "number",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "propGroups": [
+      {
+        "name": "Core"
+      },
+      {
+        "name": "Content"
+      },
+      {
+        "name": "Events"
+      },
+      {
+        "name": "Styling"
+      },
+      {
+        "name": "Accessibility"
+      },
+      {
+        "name": "Advanced"
+      }
+    ],
+    "stateAttributes": [
+      {
+        "name": "data-slot",
+        "description": "Stable anatomy identity for the root, the tab list, each trigger, both indicator elements, the trigger icons, and each panel.",
+        "values": [
+          "root",
+          "list",
+          "trigger",
+          "indicator.root",
+          "indicator.fallback",
+          "icon.left",
+          "icon.right",
+          "content"
+        ]
+      },
+      {
+        "name": "data-orientation",
+        "description": "The configured layout direction, published on the root, the tab list, and every panel.",
+        "values": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      {
+        "name": "data-variant",
+        "description": "The configured variant, published on the root and the tab list. It is omitted when no variant is set.",
+        "values": [
+          "underline"
+        ]
+      },
+      {
+        "name": "data-selected",
+        "description": "Set on every trigger: true on the selected tab and false on the others.",
+        "values": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "data-disabled",
+        "description": "The trigger is disabled; the attribute is omitted while it is enabled.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-hovered",
+        "description": "The pointer is over an enabled trigger.",
+        "values": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "data-pressed",
+        "description": "The trigger is currently pressed.",
+        "values": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "data-focused",
+        "description": "The trigger has focus.",
+        "values": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "data-focus-visible",
+        "description": "The trigger has keyboard-visible focus, which is what draws the shared focus ring.",
+        "values": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "data-tabs-value",
+        "description": "The trigger's value, used to pair it with its panel and to measure the indicator."
+      },
+      {
+        "name": "data-indicator-ready",
+        "description": "Set on the selected trigger once the indicator has been measured; the attribute is omitted otherwise.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-indicator-fallback",
+        "description": "Set on the selected trigger before the first measurement, and on every placeholder indicator frame rendered during server rendering.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-animate",
+        "description": "Set on the measured indicator: false while keyboard navigation moves it without a transition, true otherwise.",
+        "values": [
+          "true",
+          "false"
+        ]
+      },
+      {
+        "name": "data-ring",
+        "description": "Marks the trigger as the element the shared focus ring is drawn on.",
+        "values": [
+          "true"
+        ]
+      },
+      {
+        "name": "data-focus-indicator",
+        "description": "Marks the trigger as drawing the shared focus ring on the focused element itself.",
+        "values": [
+          "target"
+        ]
+      }
+    ],
+    "customTypes": {
+      "Style": {
+        "name": "Style",
+        "summary": "Class names accepted by class-based style slots.",
+        "type": "string | (string | false | null | undefined)[]",
+        "kind": "alias",
+        "notes": [
+          "Array entries support conditional classes; false, null, and undefined entries are ignored."
+        ],
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": " | ("
+          },
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "false"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "null"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "undefined"
+          },
+          {
+            "text": ")[]"
+          }
+        ]
+      },
+      "TabsStyleSlots": {
+        "name": "TabsStyleSlots",
+        "summary": "Style overrides for the Tabs root and the tab list it owns.",
+        "type": "{ root?: Style; list?: Style }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the root element that wraps the tab list and its panels.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "list",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the Tabs.List element rendered inside this root. It composes with Tabs.List's own className and styles.root.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "list"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsStylesProp": {
+        "name": "TabsStylesProp",
+        "summary": "Style overrides accepted by Tabs.",
+        "type": "TabsStyleSlots",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "TabsStyleSlots",
+            "customType": "TabsStyleSlots"
+          }
+        ]
+      },
+      "TabsListIndicatorStyleSlots": {
+        "name": "TabsListIndicatorStyleSlots",
+        "summary": "Style overrides for the two elements that render the selection indicator.",
+        "type": "{ root?: Style; fallback?: Style }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the measured indicator that tracks the selected tab after layout.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "fallback",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the placeholder indicator rendered during server rendering and before the first measurement.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "Passing a single Style value instead of this object applies it to both indicator elements."
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "fallback"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsListStyleSlots": {
+        "name": "TabsListStyleSlots",
+        "summary": "Style overrides for the Tabs.List root and the parts it owns.",
+        "type": "{ root?: Style; indicator?: Style | TabsListIndicatorStyleSlots; trigger?: Style }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the element with role=\"tablist\".",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "indicator",
+            "type": "Style | TabsListIndicatorStyleSlots",
+            "required": false,
+            "description": "Shared indicator styles, or separate styles for the measured and fallback indicators.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "TabsListIndicatorStyleSlots",
+                "customType": "TabsListIndicatorStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "trigger",
+            "type": "Style",
+            "required": false,
+            "description": "Styles every Tabs.Trigger rendered inside this list. It composes with each trigger's own className and styles.root.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "indicator"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "TabsListIndicatorStyleSlots",
+            "customType": "TabsListIndicatorStyleSlots"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "trigger"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsListStylesProp": {
+        "name": "TabsListStylesProp",
+        "summary": "Style overrides accepted by Tabs.List.",
+        "type": "TabsListStyleSlots",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "TabsListStyleSlots",
+            "customType": "TabsListStyleSlots"
+          }
+        ]
+      },
+      "TabsTriggerIconSlots": {
+        "name": "TabsTriggerIconSlots",
+        "summary": "Icon content rendered on either side of a tab label.",
+        "type": "{ left?: React.ReactNode; right?: React.ReactNode }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "left",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": "Content rendered before the tab label.",
+            "typeTokens": [
+              {
+                "text": "React.ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          },
+          {
+            "name": "right",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": "Content rendered after the tab label.",
+            "typeTokens": [
+              {
+                "text": "React.ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "Passing a single node instead of this object renders it before the label."
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "left"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "React.ReactNode",
+            "href": "https://react.dev/reference/react/Children"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "right"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "React.ReactNode",
+            "href": "https://react.dev/reference/react/Children"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsTriggerIconStyleSlots": {
+        "name": "TabsTriggerIconStyleSlots",
+        "summary": "Side-specific styles used when the trigger's icon slot is configured as an object.",
+        "type": "{ left?: Style; right?: Style }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "left",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the leading icon wrapper.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "right",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the trailing icon wrapper.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "left"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "right"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsTriggerStyleSlots": {
+        "name": "TabsTriggerStyleSlots",
+        "summary": "Style overrides for the Tabs.Trigger root and its icon slots.",
+        "type": "{ root?: Style; icon?: Style | TabsTriggerIconStyleSlots }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the tab button element.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          },
+          {
+            "name": "icon",
+            "type": "Style | TabsTriggerIconStyleSlots",
+            "required": false,
+            "description": "Shared icon styles, or separate leading and trailing icon styles.",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "TabsTriggerIconStyleSlots",
+                "customType": "TabsTriggerIconStyleSlots"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": "; "
+          },
+          {
+            "text": "icon"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " | "
+          },
+          {
+            "text": "TabsTriggerIconStyleSlots",
+            "customType": "TabsTriggerIconStyleSlots"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsTriggerStylesProp": {
+        "name": "TabsTriggerStylesProp",
+        "summary": "Style overrides accepted by Tabs.Trigger.",
+        "type": "TabsTriggerStyleSlots",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "TabsTriggerStyleSlots",
+            "customType": "TabsTriggerStyleSlots"
+          }
+        ]
+      },
+      "TabsContentStyleSlots": {
+        "name": "TabsContentStyleSlots",
+        "summary": "Style overrides for the Tabs.Content root.",
+        "type": "{ root?: Style }",
+        "kind": "interface",
+        "members": [
+          {
+            "name": "root",
+            "type": "Style",
+            "required": false,
+            "description": "Styles the element with role=\"tabpanel\".",
+            "typeTokens": [
+              {
+                "text": "Style",
+                "customType": "Style"
+              }
+            ]
+          }
+        ],
+        "typeTokens": [
+          {
+            "text": "{ "
+          },
+          {
+            "text": "root"
+          },
+          {
+            "text": "?: "
+          },
+          {
+            "text": "Style",
+            "customType": "Style"
+          },
+          {
+            "text": " }"
+          }
+        ]
+      },
+      "TabsContentStylesProp": {
+        "name": "TabsContentStylesProp",
+        "summary": "Style overrides accepted by Tabs.Content.",
+        "type": "TabsContentStyleSlots",
+        "kind": "alias",
+        "typeTokens": [
+          {
+            "text": "TabsContentStyleSlots",
+            "customType": "TabsContentStyleSlots"
+          }
+        ]
+      }
+    },
     "examples": []
   },
   "textarea": {
@@ -34625,7 +35858,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "hint",
         "type": "HintValue",
         "required": false,
-        "description": "Keyboard shortcut or hint rendered as a Badge at the end of the tooltip. An array renders its segments joined by a `+` divider.",
+        "description": "Keyboard shortcut or hint rendered as Badges at the end of the tooltip. An array renders each segment as its own badge.",
         "typeTokens": [
           {
             "text": "HintValue"
@@ -34935,8 +36168,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "badge": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .badge {\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(\n      var(--background-radius) - slot(border, width, var(--border-width-base, 1px))\n    );\n    @apply inline-flex items-stretch select-none whitespace-nowrap;\n    padding: 0;\n    height: fit-content;\n    width: max-content;\n    position: relative;\n    background-color: var(--background, var(--background-800));\n    color: var(--foreground, var(--foreground-200));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-600));\n    border-radius: var(--background-radius);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .badge.dismissible {\n    --control-size: 0.875rem;\n  }\n\n  .badge:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled=\"true\"]) {\n    border-color: slot(border, background-hover, slot(border, background, var(--background-600)));\n  }\n\n  .badge[data-pressed=\"true\"]:not([data-disabled=\"true\"]) {\n    border-color: slot(border, background-pressed, slot(border, background, var(--background-600)));\n  }\n\n  .pill {\n    --background-radius: 9999px;\n  }\n\n  .icon {\n    @apply flex items-center shrink-0;\n  }\n\n  .content {\n    @apply flex min-w-0 items-center justify-center gap-2 overflow-hidden px-1.5;\n  }\n\n  .dismissible .content {\n    padding-inline-end: calc(var(--control-size) + var(--spacing) * 1.5);\n  }\n\n  .dismiss {\n    @apply flex items-center justify-center p-0 cursor-pointer;\n    position: absolute;\n    inset-block: 0;\n    inset-inline-end: 0;\n    width: var(--control-size);\n    height: auto;\n    aspect-ratio: 1 / 1;\n    box-sizing: border-box;\n    line-height: 1; /* icon-only hit target */\n    border-radius: var(--background-inner-radius);\n    background-color: var(--background, transparent);\n    color: var(--foreground-400);\n    border: none;\n    transition:\n      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    outline: none;\n  }\n\n  .dismiss svg {\n    width: 0.875rem;\n    height: 0.875rem;\n    margin: auto;\n  }\n\n  .pill .dismiss {\n    border-radius: 9999px;\n  }\n\n  .dismiss[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: var(--background, transparent);\n  }\n\n  .dismiss[data-pressed=\"true\"] {\n    background-color: var(--background, transparent);\n    transform: scale(0.95);\n  }\n\n  .dismiss[data-focus-visible=\"true\"] {\n    box-shadow: 0 0 0 1.5px var(--focus-visible, var(--foreground));\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .badge {\n    --background: var(--background-800);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .badge.sm {\n    @apply px-1.5 py-0.5;\n  }\n\n  .badge.md {\n    @apply px-2 py-1.5;\n  }\n\n  .badge.lg {\n    @apply px-3 py-1.5;\n  }\n\n  .badge > .dismiss {\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-400);\n  }\n\n  .badge > .dismiss[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-700) 80%, var(--background-900));\n  }\n\n  .badge > .dismiss[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n}\n\n@layer utilities {\n\n  .badge.default {\n    --background: color-mix(in srgb, var(--background-600) 10%, var(--background-900));\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-200);\n  }\n\n  .badge.default:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-500) 20%, var(--background-900));\n  }\n\n  .badge.default[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-500) 30%, var(--background-900));\n  }\n\n  .badge:where(.danger, .success, .warning, .info) {\n    --focus-visible: var(--accent-400);\n  }\n\n  .badge.danger {\n    --background: color-mix(in srgb, var(--danger-500) 15%, transparent);\n    --focus-visible: var(--danger-400);\n    --foreground: var(--danger-600);\n    --icon-foreground: var(--danger-700);\n    @slot border {\n      --background: transparent;\n    }\n  }\n\n  .badge.danger[data-hovered=\"true\"]:not([data-disabled]),\n.badge.danger[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--danger-500) 20%, transparent);\n    @slot border {\n      --background-hover: transparent;\n      --background-pressed: transparent;\n    }\n  }\n\n  .badge.success {\n    --background: color-mix(in srgb, var(--success-500) 10%, var(--background-900));\n    --focus-visible: var(--success-400);\n    --foreground: var(--success-500);\n    --icon-foreground: var(--success-700);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-500) 20%, var(--background-900));\n    }\n  }\n\n  .badge.success[data-hovered=\"true\"]:not([data-disabled]),\n.badge.success[data-pressed=\"true\"]:not([data-disabled]) {\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-pressed: var(--background-600);\n    }\n  }\n\n  .badge.warning {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --focus-visible: var(--warning-400);\n    --foreground: var(--warning-600);\n    --icon-foreground: var(--warning-700);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n\n  .badge.warning[data-hovered=\"true\"]:not([data-disabled]),\n.badge.warning[data-pressed=\"true\"]:not([data-disabled]) {\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-pressed: var(--background-600);\n    }\n  }\n\n  .badge.info {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --focus-visible: var(--info-400);\n    --foreground: var(--info-600);\n    --icon-foreground: var(--info-700);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .badge.info[data-hovered=\"true\"]:not([data-disabled]),\n.badge.info[data-pressed=\"true\"]:not([data-disabled]) {\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-pressed: var(--background-600);\n    }\n  }\n}",
-    "variants": [],
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .badge {\n    --background: var(--background-800);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .badge.sm {\n    @apply px-1.5 py-0.5;\n  }\n\n  .badge.md {\n    @apply px-2 py-1.5;\n  }\n\n  .badge.lg {\n    @apply px-3 py-1.5;\n  }\n\n  .badge > .dismiss {\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-400);\n  }\n\n  .badge > .dismiss[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-700) 80%, var(--background-900));\n  }\n\n  .badge > .dismiss[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n}\n\n@layer utilities {\n  .badge[data-variant=\"default\"],\n.badge:not([data-variant]) {\n    --background: color-mix(in srgb, var(--background-600) 10%, var(--background-900));\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-200);\n\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-500) 20%, var(--background-900));\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-500) 30%, var(--background-900));\n    }\n  }\n\n    .badge[data-variant=\"default\"],\n.badge:not([data-variant]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-500) 20%, var(--background-900));\n    }\n\n    .badge[data-variant=\"default\"],\n.badge:not([data-variant])[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-500) 30%, var(--background-900));\n    }\n\n  .badge[data-variant=\"danger\"] {\n    --background: color-mix(in srgb, var(--danger-500) 15%, transparent);\n    --focus-visible: var(--danger-400);\n    --foreground: var(--danger-600);\n    --icon-foreground: var(--danger-700);\n    @slot border {\n      --background: transparent;\n    }\n\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--danger-500) 20%, transparent);\n      @slot border {\n        --background-hover: transparent;\n        --background-pressed: transparent;\n      }\n    }\n  }\n\n    .badge[data-variant=\"danger\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--danger-500) 20%, transparent);\n      @slot border {\n        --background-hover: transparent;\n        --background-pressed: transparent;\n      }\n    }\n\n  .badge[data-variant=\"success\"] {\n    --background: color-mix(in srgb, var(--success-500) 10%, var(--background-900));\n    --focus-visible: var(--success-400);\n    --foreground: var(--success-500);\n    --icon-foreground: var(--success-700);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-500) 20%, var(--background-900));\n    }\n\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      @slot border {\n        --background-hover: var(--background-600);\n        --background-pressed: var(--background-600);\n      }\n    }\n  }\n\n    .badge[data-variant=\"success\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      @slot border {\n        --background-hover: var(--background-600);\n        --background-pressed: var(--background-600);\n      }\n    }\n\n  .badge[data-variant=\"warning\"] {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --focus-visible: var(--warning-400);\n    --foreground: var(--warning-600);\n    --icon-foreground: var(--warning-700);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      @slot border {\n        --background-hover: var(--background-600);\n        --background-pressed: var(--background-600);\n      }\n    }\n  }\n\n    .badge[data-variant=\"warning\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      @slot border {\n        --background-hover: var(--background-600);\n        --background-pressed: var(--background-600);\n      }\n    }\n\n  .badge[data-variant=\"info\"] {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --focus-visible: var(--info-400);\n    --foreground: var(--info-600);\n    --icon-foreground: var(--info-700);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      @slot border {\n        --background-hover: var(--background-600);\n        --background-pressed: var(--background-600);\n      }\n    }\n  }\n\n    .badge[data-variant=\"info\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"]):not([data-disabled]) {\n      @slot border {\n        --background-hover: var(--background-600);\n        --background-pressed: var(--background-600);\n      }\n    }\n}",
+    "variants": [
+      "default",
+      "danger",
+      "success",
+      "warning",
+      "info"
+    ],
     "cssVariables": [
       {
         "name": "--background-radius",
@@ -35315,8 +36554,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "banner": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .banner {\n    @apply flex w-full items-start gap-3 px-4 py-3;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    background-color: var(--background, var(--background-900));\n    color: var(--foreground, var(--foreground-200));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    border-radius: var(--radius-sm, 0.375rem);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .banner:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: var(--background, var(--background-900));\n    border-color: slot(border, background-hover, slot(border, background, var(--background-700)));\n  }\n\n  .banner[data-pressed=\"true\"] {\n    background-color: var(--background, var(--background-900));\n    border-color: slot(border, background-pressed, slot(border, background, var(--background-700)));\n  }\n\n  .content {\n    @apply min-w-0 flex flex-col gap-1;\n  }\n\n  .iconContainer {\n    @apply flex shrink-0 items-start justify-center pt-0.5;\n  }\n\n  .icon {\n    @apply h-5 w-5;\n    color: var(--icon-color, currentColor);\n  }\n\n  .dismiss {\n    @apply flex h-8 w-8 shrink-0 items-center justify-center p-0 cursor-pointer;\n    background-color: transparent;\n    color: currentColor;\n    border: none;\n    border-radius: var(--radius-sm, 0.375rem);\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &:hover {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--background, transparent);\n    }\n\n    &[data-pressed=\"true\"] {\n      background-color: var(--background, transparent);\n    }\n\n    &:focus-visible {\n      outline: 2px solid currentColor;\n      outline-offset: 2px;\n    }\n  }\n\n  .title {\n    font-family: var(--font-heading, var(--font-body, inherit));\n    font-size: var(--header-text-lg, var(--text-lg, 1.125rem));\n    font-weight: var(--font-weight-header-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-heading, 1.25);\n    @apply my-0;\n  }\n\n  .body {\n    font: inherit;\n    @apply my-0;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .banner {\n    --background: var(--background-900);\n    @slot border {\n      --background: var(--info-600);\n    }\n    --foreground: var(--info-50);\n  }\n}\n\n@layer utilities {\n\n  .banner.note {\n    --background: var(--background-900);\n    --foreground: var(--foreground-200);\n    --icon-color: currentColor;\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .banner.info {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--info-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .banner.success {\n    --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--success-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));\n    }\n  }\n\n  .banner.warning {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--warning-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n\n  .banner.danger {\n    --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--danger-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));\n    }\n  }\n}",
-    "variants": [],
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .banner {\n    --background: var(--background-900);\n    @slot border {\n      --background: var(--info-600);\n    }\n    --foreground: var(--info-50);\n  }\n}\n\n@layer utilities {\n  .banner[data-variant=\"note\"],\n.banner:not([data-variant]) {\n    --background: var(--background-900);\n    --foreground: var(--foreground-200);\n    --icon-color: currentColor;\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .banner[data-variant=\"info\"] {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--info-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .banner[data-variant=\"success\"] {\n    --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--success-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));\n    }\n  }\n\n  .banner[data-variant=\"warning\"] {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--warning-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n\n  .banner[data-variant=\"danger\"] {\n    --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));\n    --foreground: var(--foreground-200);\n    --icon-color: var(--danger-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));\n    }\n  }\n}",
+    "variants": [
+      "note",
+      "info",
+      "success",
+      "warning",
+      "danger"
+    ],
     "cssVariables": [
       {
         "name": "--font-body",
@@ -35736,8 +36981,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "button": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .button {\n    @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;\n    --padding-block: 0;\n    --padding-inline: 0;\n    --padding-inline-end: var(--padding-inline);\n    position: relative;\n    min-width: 0;\n    max-width: 100%;\n    box-sizing: border-box;\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    padding-inline-end: var(--padding-inline-end);\n    background-color: var(--background);\n    background-origin: border-box;\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition-property: background-color, border-color, color, opacity, transform;\n    transition-duration:\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)), var(--press-duration, 120ms);\n    transition-timing-function:\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--background);\n      border-color: slot(border, background-hover, slot(border, background, transparent));\n      color: var(--foreground);\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled=\"true\"]) {\n      background-color: var(--background);\n      border-color: slot(border, background-pressed, slot(border, background, transparent));\n      color: var(--foreground);\n      transform: var(--press-transform, scale(0.96));\n    }\n\n    &[data-selected=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-selected, slot(border, background, transparent));\n    }\n\n    & > span > svg,\n    & > svg {\n      color: slot(icon, foreground, var(--icon-foreground, currentColor));\n      width: slot(icon, size, 1em);\n      height: slot(icon, size, 1em);\n      flex-shrink: 0;\n    }\n  }\n\n  .button:not(.icon) {\n    min-height: calc(\n      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2\n    );\n  }\n\n  .button:focus-visible {\n    outline: none;\n  }\n\n  .button:disabled,\n  .button[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n    filter: grayscale(0.5);\n  }\n\n  .button.icon {\n    aspect-ratio: 1;\n    width: var(--size, 2.25rem);\n    height: var(--size, 2.25rem);\n    max-width: none;\n    --padding-block: 0.25rem;\n    --padding-inline: 0.25rem;\n  }\n\n  .hint {\n    @apply shrink-0 gap-1;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .button {\n    --background: var(--background-800);\n    --focus-visible: var(--accent-400);\n    @slot icon {\n      --foreground: var(--foreground-400);\n      --size: 1.15em;\n    }\n  }\n\n  .button:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-selected: var(--background-600);\n    }\n  }\n\n  .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));\n    @slot border {\n      --background-pressed: var(--background-600);\n    }\n  }\n\n  .button.sm {\n    --padding-inline: calc(var(--spacing) * 2.5);\n    --padding-block: calc(var(--spacing) * 1);\n  }\n  .button.md {\n    --padding-inline: calc(var(--spacing) * 4);\n    --padding-block: calc(var(--spacing) * 1.5);\n  }\n  .button.lg {\n    --padding-inline: calc(var(--spacing) * 3.5);\n    --padding-block: calc(var(--spacing) * 2.5);\n  }\n\n  .button.icon {\n    --size: calc(var(--spacing) * 9);\n    --padding-inline: calc(var(--spacing) * 0.35);\n    --padding-block: calc(var(--spacing) * 0.35);\n  }\n\n  .button[data-hint=\"true\"] {\n    --padding-inline-end: calc(var(--spacing) * 1);\n  }\n}\n\n@layer utilities {\n  .button[data-variant=\"primary\"] {\n    --background: var(--foreground-100);\n    --foreground: var(--background-950);\n\n    border-color: transparent;\n\n    background-image: linear-gradient(\n      to bottom,\n      rgb(255 255 255 / 34%) 0%,\n      rgb(255 255 255 / 8%) 36%,\n      transparent 56%,\n      rgb(0 0 0 / 18%) 100%\n    );\n\n    box-shadow:\n      0 0 0 1px var(--foreground-300) inset,\n      0 1px 2px rgb(0 0 0 / 20%),\n      0 4px 10px rgb(0 0 0 / 14%);\n\n    @slot icon {\n      --foreground: currentColor;\n    }\n\n    @slot border {\n      --background: transparent;\n      --background-hover: transparent;\n      --background-selected: transparent;\n      --background-pressed: transparent;\n    }\n  }\n\n  .button[data-variant=\"primary\"] {\n    &:is( [data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 72%,\n        var(--foreground-300)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 68%,\n            var(--foreground-300)\n          )\n          inset,\n        0 1px 2px rgb(0 0 0 / 24%),\n        0 5px 12px rgb(0 0 0 / 18%);\n    }\n  }\n    .button[data-variant=\"primary\"]:is( [data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 72%,\n        var(--foreground-300)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 68%,\n            var(--foreground-300)\n          )\n          inset,\n        0 1px 2px rgb(0 0 0 / 24%),\n        0 5px 12px rgb(0 0 0 / 18%);\n    }\n\n  .button[data-variant=\"primary\"] {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 58%,\n        var(--foreground-300)\n      );\n\n      background-image: linear-gradient(\n        to bottom,\n        rgb(0 0 0 / 14%),\n        transparent 60%,\n        rgb(255 255 255 / 8%)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 62%,\n            var(--foreground-300)\n          )\n          inset,\n        0 2px 4px rgb(0 0 0 / 24%) inset,\n        0 1px 2px rgb(0 0 0 / 16%);\n    }\n  }\n    .button[data-variant=\"primary\"][data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(\n        in srgb,\n        var(--foreground-100) 58%,\n        var(--foreground-300)\n      );\n\n      background-image: linear-gradient(\n        to bottom,\n        rgb(0 0 0 / 14%),\n        transparent 60%,\n        rgb(255 255 255 / 8%)\n      );\n\n      box-shadow:\n        0 0 0 1px\n          color-mix(\n            in srgb,\n            var(--background) 62%,\n            var(--foreground-300)\n          )\n          inset,\n        0 2px 4px rgb(0 0 0 / 24%) inset,\n        0 1px 2px rgb(0 0 0 / 16%);\n    }\n\n  .button[data-variant=\"secondary\"] {\n    --background: var(--background-800);\n    background-image: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--foreground-50) 5%, transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--background-950) 28%, transparent)\n    );\n    --foreground: var(--foreground-300);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .button[data-variant=\"secondary\"] {\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"]:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n\n  .button[data-variant=\"secondary\"] {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"][data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n\n  .button[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    --backdrop: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .button[data-variant=\"ghost\"] {\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"ghost\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n\n  .button[data-variant=\"danger\"] {\n    --foreground: var(--danger-500);\n    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);\n    background-image: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--danger-50) 5%, transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--danger-500) 10%, transparent)\n    );\n    --icon-foreground: var(--danger-500);\n    @slot border {\n      --background: transparent\n    }\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .button {\n    @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;\n    --padding-block: 0;\n    --padding-inline: 0;\n    --padding-inline-end: var(--padding-inline);\n    /* Reset locally so an inherited --shadow/--background-image from an ancestor\n       surface (Command, Toast) never paints a button. */\n    --background-image: none;\n    --shadow: none;\n    position: relative;\n    min-width: 0;\n    max-width: 100%;\n    box-sizing: border-box;\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    padding-inline-end: var(--padding-inline-end);\n    background-color: var(--background);\n    background-image: var(--background-image);\n    background-origin: border-box;\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    box-shadow: var(--shadow);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition-property: background-color, border-color, color, opacity, transform;\n    transition-duration:\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)), var(--press-duration, 120ms);\n    transition-timing-function:\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--background);\n      border-color: slot(border, background-hover, slot(border, background, transparent));\n      color: var(--foreground);\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled=\"true\"]) {\n      background-color: var(--background);\n      border-color: slot(border, background-pressed, slot(border, background, transparent));\n      color: var(--foreground);\n      transform: var(--press-transform, scale(0.96));\n    }\n\n    &[data-selected=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-selected, slot(border, background, transparent));\n    }\n\n    & > span > svg,\n    & > svg {\n      color: slot(icon, foreground, var(--icon-foreground, currentColor));\n      width: slot(icon, size, 1em);\n      height: slot(icon, size, 1em);\n      flex-shrink: 0;\n    }\n  }\n\n  .button:not(.icon) {\n    min-height: calc(\n      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2\n    );\n  }\n\n  .button:focus-visible {\n    outline: none;\n  }\n\n  .button:disabled,\n  .button[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n    filter: grayscale(0.5);\n  }\n\n  .button.icon {\n    aspect-ratio: 1;\n    width: var(--size, 2.25rem);\n    height: var(--size, 2.25rem);\n    max-width: none;\n    --padding-block: 0.25rem;\n    --padding-inline: 0.25rem;\n  }\n\n  .hint {\n    @apply inline-flex shrink-0 items-center gap-1;\n  }\n\n  .hint :global(.badge) {\n    --background-radius: var(--radius-xs, 0.25rem);\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .button {\n    --background: var(--background-800);\n    --focus-visible: var(--accent-400);\n    @slot icon {\n      --foreground: var(--foreground-400);\n      --size: 1.0em;\n    }\n\n    /* Every filled button — primary or a custom `color` — derives its shade and\n       inset ring from the fill alone, one lightness step down at the fill's own\n       chroma and hue. One formula, so a custom colour is the primary treatment\n       with a different base colour rather than a second look. */\n    --raised-shade: oklch(from var(--color, var(--background)) calc(l - 0.11) c h);\n    --raised-ring-tint: var(--raised-shade);\n    --raised-ring: var(--raised-ring-tint);\n    --raised-gloss: linear-gradient(\n      to bottom,\n      rgb(255 255 255 / 34%) 0%,\n      rgb(255 255 255 / 8%) 36%,\n      transparent 56%,\n      rgb(0 0 0 / 18%) 100%\n    );\n    /* The ring is painted by the border, not an inset shadow: an inset shadow is\n       clipped to the padding box, leaving the button's own 1px border band\n       showing raw gloss outside it as a bright rim. */\n    --raised-shadow:\n      0 1px 2px rgb(0 0 0 / 20%),\n      0 4px 10px rgb(0 0 0 / 14%);\n\n    /* Sheen effect: the top-lit wash worn by the unfilled variants. A variant\n       recolours it through the four tokens below. Opt in with\n       --background-image: var(--sheen). */\n    --sheen-tint: var(--foreground-50);\n    --sheen-tint-alpha: 5%;\n    --sheen-shade: var(--background-950);\n    --sheen-shade-alpha: 28%;\n    --sheen: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--sheen-tint) var(--sheen-tint-alpha), transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--sheen-shade) var(--sheen-shade-alpha), transparent)\n    );\n  }\n\n  .button:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-selected: var(--background-600);\n    }\n\n    --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));\n    --raised-shadow:\n      0 1px 2px rgb(0 0 0 / 24%),\n      0 5px 12px rgb(0 0 0 / 18%);\n  }\n\n  .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));\n    @slot border {\n      --background-pressed: var(--background-600);\n    }\n\n    --raised-gloss: linear-gradient(\n      to bottom,\n      rgb(0 0 0 / 14%),\n      transparent 60%,\n      rgb(255 255 255 / 8%)\n    );\n\n    --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));\n    --raised-shadow:\n      0 2px 4px rgb(0 0 0 / 24%) inset,\n      0 1px 2px rgb(0 0 0 / 16%);\n  }\n\n  .button.sm {\n    --padding-inline: calc(var(--spacing) * 2.5);\n    --padding-block: calc(var(--spacing) * 1);\n  }\n  .button.md {\n    --padding-inline: calc(var(--spacing) * 4);\n    --padding-block: calc(var(--spacing) * 1.5);\n  }\n  .button.lg {\n    --padding-inline: calc(var(--spacing) * 3.5);\n    --padding-block: calc(var(--spacing) * 2.5);\n  }\n\n  .button.icon {\n    --size: calc(var(--spacing) * 8.5);\n    --padding-inline: calc(var(--spacing) * 0.30);\n    --padding-block: calc(var(--spacing) * 0.30);\n  }\n\n  .button[data-hint=\"true\"] {\n    --padding-inline-end: calc(var(--spacing) * 1);\n  }\n}\n\n@layer utilities {\n  .button[data-variant=\"primary\"] {\n    --color: var(--foreground-100);\n    --foreground: var(--background-950);\n  }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    --background: var(--background-800);\n    --background-image: var(--sheen);\n    --foreground: var(--foreground-300);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"],\n.button:not([data-variant]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"],\n.button:not([data-variant])[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n\n  .button[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    --backdrop: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .button[data-variant=\"ghost\"] {\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"ghost\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n\n  .button[data-variant=\"danger\"] {\n    --foreground: var(--danger-500);\n    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);\n    --background-image: var(--sheen);\n    --sheen-tint: var(--danger-50);\n    --sheen-shade: var(--danger-500);\n    --sheen-shade-alpha: 10%;\n    --icon-foreground: var(--danger-500);\n    @slot border {\n      --background: transparent\n    }\n  }\n  .button:is([data-variant=\"primary\"], [data-color]) {\n    --background: var(--color);\n    --background-image: var(--raised-gloss);\n    --shadow: var(--raised-shadow);\n\n    border-color: var(--raised-ring);\n\n    @slot icon {\n      --foreground: currentColor;\n    }\n\n    @slot border {\n      --background: var(--raised-ring);\n      --background-hover: var(--raised-ring);\n      --background-selected: var(--raised-ring);\n      --background-pressed: var(--raised-ring);\n    }\n  }\n\n  .button:is([data-variant=\"primary\"], [data-color]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--color) 72%, var(--raised-shade));\n  }\n\n  .button:is([data-variant=\"primary\"], [data-color])[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));\n  }\n  .button[data-color] {\n    --foreground: oklch(from var(--color) clamp(0, (0.62 - l) * 1000, 1) 0 h);\n  }\n}",
     "variants": [
       "primary",
       "secondary",
@@ -35767,6 +37012,20 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": [
           "--padding-inline"
         ]
+      },
+      {
+        "name": "--background-image",
+        "value": "none",
+        "selector": ".button",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--shadow",
+        "value": "none",
+        "selector": ".button",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--background",
@@ -36052,6 +37311,22 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "name": "--padding-inline",
         "value": "0.25rem",
         "selector": ".button.icon",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-radius",
+        "value": "var(--radius-xs, 0.25rem)",
+        "selector": ".hint :global(.badge)",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-xs"
+        ]
+      },
+      {
+        "name": "--radius-xs",
+        "value": "unset",
+        "selector": ".hint :global(.badge)",
         "atRules": [],
         "referencedVars": []
       }
@@ -37649,7 +38924,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "checkbox": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .checkbox {\n    @apply inline-grid gap-x-3;\n    grid-template-columns: auto 1fr;\n    grid-template-rows: auto auto;\n  }\n\n  .container {\n    @apply relative inline-flex items-center justify-center;\n  }\n\n  .box {\n    @apply relative h-5 w-5 cursor-pointer appearance-none;\n\n    background-color: var(--background, transparent);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-xs, 0.25rem);\n    outline: none;\n\n    &[data-invalid=\"true\"] {\n      border-color: slot(border, background-error, var(--danger-600));\n    }\n\n    &[data-invalid=\"true\"][data-selected=\"true\"],\n    &[data-invalid=\"true\"][data-indeterminate=\"true\"] {\n      border-color: slot(border, background, transparent);\n    }\n\n    &[data-disabled=\"true\"] {\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity, 0.6);\n      pointer-events: none;\n    }\n\n  }\n\n  .checkmark,\n  .indeterminate {\n    @apply absolute;\n    inset: 50%;\n    width: 65%;\n    height: 65%;\n    transform: translate(-50%, -50%);\n    color: var(--foreground, currentColor);\n    pointer-events: none;\n  }\n\n  .label {\n    @apply cursor-pointer select-none;\n\n    &[data-disabled=\"true\"] {\n      @apply opacity-60 cursor-not-allowed;\n    }\n  }\n\n  .label-md {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .helper-text {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    grid-column: 2;\n    color: var(--helper-foreground);\n\n    &[data-error=\"true\"] {\n      color: var(--helper-error-foreground, var(--foreground-error, var(--danger-600)));\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .checkbox {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .checkbox {\n    --background: var(--control-track);\n    --helper-error-foreground: var(--danger-600);\n    --helper-foreground: var(--foreground-400);\n    @slot border {\n      --background: var(--control-border);\n    }\n  }\n\n  .checkbox .checkbox-input {\n    border-radius: var(--control-radius);\n  }\n\n  .checkbox:where([data-selected=\"true\"], [data-indeterminate=\"true\"]) {\n    --background: var(--control-fill);\n    --foreground: var(--control-thumb);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n\n  .checkbox .checkbox-control > :where(.checkmark, .indeterminate) {\n    --foreground: var(--control-thumb);\n  }\n\n  .checkbox[data-disabled=\"true\"] {\n    --control-fill: var(--control-disabled);\n    --control-thumb: var(--control-thumb-disabled);\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .checkbox {\n    --background: var(--background-900);\n    --helper-error-foreground: var(--danger-600);\n    --helper-foreground: var(--foreground-400);\n  }\n\n  .checkbox .checkbox-input {\n    border-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .checkbox:where([data-selected=\"true\"], [data-indeterminate=\"true\"]) {\n    --background: var(--background-500);\n    --foreground: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    @slot border {\n      --background: var(--background-500);\n    }\n  }\n\n  .checkbox .checkbox-control > :where(.checkmark, .indeterminate) {\n    --foreground: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n  }\n\n  .checkbox[data-disabled=\"true\"]:where([data-selected=\"true\"], [data-indeterminate=\"true\"]) {\n    --background: var(--background-600);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .checkbox[data-disabled=\"true\"] .checkbox-control > :where(.checkmark, .indeterminate) {\n    --foreground: var(--background-500);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -38478,7 +39753,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "color": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-500);\n\n    display: flex;\n    flex-direction: column;\n    gap: 1rem;\n    background-color: var(--background);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    width: 260px;\n  }\n\n  .color[data-disabled=\"true\"] {\n    opacity: 0.5;\n    pointer-events: none;\n  }\n\n  .color[data-variant=\"popover\"] {\n    background: transparent;\n    border-color: transparent;\n    border-radius: 0;\n  }\n\n  .color-provider {\n    @slot trigger {\n      --background: color-mix(in srgb, var(--background-800) 35%, transparent);\n      --background-hover: color-mix(in srgb, var(--background-700) 45%, transparent);\n      --foreground: var(--foreground-200);\n    }\n\n    @slot swatch {\n      --background: var(--background-700);\n      --foreground: var(--background-800);\n    }\n\n    display: inline-flex;\n    width: fit-content;\n  }\n\n  .color-provider .color-trigger {\n    --focus-visible: var(--accent-500);\n\n    display: inline-flex;\n    align-items: center;\n    gap: 0.625rem;\n    min-width: 170px;\n    height: 40px;\n    padding: 0 0.75rem;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    border-radius: var(--radius-sm, 0.375rem);\n    background: slot(trigger, background, var(--background, transparent));\n    color: slot(trigger, foreground, var(--foreground, currentColor));\n    cursor: pointer;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .color-provider .color-trigger:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background: slot(\n      trigger,\n      background-hover,\n      slot(trigger, background, var(--background, transparent))\n    );\n  }\n\n  .color-provider .color-trigger:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .color-provider .color-trigger[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .color-provider .color-trigger[data-size=\"sm\"] {\n    min-width: 150px;\n    height: 34px;\n    padding: 0 0.625rem;\n    font-size: var(--text-xs, 0.75rem);\n  }\n\n  .color-provider .color-trigger[data-size=\"lg\"] {\n    min-width: 190px;\n    height: 46px;\n    padding: 0 0.875rem;\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n  }\n\n  .color-provider .color-trigger-swatch {\n    position: relative;\n    width: 20px;\n    height: 20px;\n    flex: 0 0 auto;\n    border-radius: var(--radius-xs, 0.25rem);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    overflow: hidden;\n  }\n\n  .color-provider .color-trigger-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      slot(swatch, background, var(--background-700)),\n      slot(swatch, background, var(--background-700)) 4px,\n      slot(swatch, foreground, var(--background-800)) 4px,\n      slot(swatch, foreground, var(--background-800)) 8px\n    );\n  }\n\n  .color-provider .color-trigger-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n  }\n\n  .color-provider .color-trigger-value {\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n\n  .color .controls {\n    @apply pb-3 px-3 space-y-3;\n  }\n\n  .input-group {\n    width: 100%;\n  }\n\n  .input-group > div:first-child {\n    flex: 1;\n  }\n\n  .input-group .input {\n    width: 100%;\n  }\n\n  .input-group .format {\n    flex-shrink: 0;\n    width: 85px;\n  }\n\n  .color[data-size=\"sm\"] .format {\n    width: 75px;\n  }\n\n  .canvas {\n    position: relative;\n    width: 240px;\n    height: 160px;\n    @apply mx-auto mt-2 rounded-sm;\n    cursor: crosshair;\n    touch-action: none;\n    display: flex;\n    flex-direction: column;\n  }\n\n  .canvas[data-size=\"sm\"] {\n    width: 200px;\n    height: 130px;\n  }\n\n  .canvas[data-size=\"lg\"] {\n    width: 280px;\n    height: 190px;\n  }\n\n  .canvas[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .canvas .canvas-inner {\n    position: relative;\n    width: 100%;\n    flex: 1;\n    overflow: hidden;\n    @apply rounded-sm;\n  }\n\n  .canvas .canvas-gradient-hue {\n    position: absolute;\n    inset: 0;\n    overflow: hidden;\n  }\n\n  .canvas .canvas-gradient-saturation {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to right, rgb(255, 255, 255), transparent);\n  }\n\n  .canvas .canvas-gradient-brightness {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to top, rgb(0, 0, 0), transparent);\n  }\n\n  .canvas .canvas-pointer {\n    position: absolute;\n    width: 12px;\n    height: 12px;\n    border-radius: var(--radius-full);\n    border: 2px solid\n      slot(pointer, background, color-mix(in srgb, var(--foreground-200) 50%, transparent));\n    box-shadow:\n      0 0 0 1px rgb(0 0 0 / 0.3),\n      0 2px 4px rgb(0 0 0 / 0.3);\n    pointer-events: none;\n    transform: translate(-50%, -50%);\n    z-index: 10;\n  }\n\n  .hue-slider {\n    --track-height: calc(var(--spacing, 0.25rem) * 5);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --side-padding: var(--inline-padding, 2px);\n    --thumb-width: calc(var(--track-height) - (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --gradient-inset: 0;\n    --track-background: linear-gradient(\n      to right,\n      hsl(0, 100%, 50%),\n      hsl(60, 100%, 50%),\n      hsl(120, 100%, 50%),\n      hsl(180, 100%, 50%),\n      hsl(240, 100%, 50%),\n      hsl(300, 100%, 50%),\n      hsl(360, 100%, 50%)\n    );\n    --range-background: transparent;\n    --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n  }\n\n  .hue-slider .hue-track {\n    position: relative;\n    width: 100%;\n    height: var(--track-height);\n    overflow: visible;\n    @apply rounded-full;\n    background: transparent;\n  }\n\n  .hue-slider .hue-track::before {\n    content: \"\";\n    position: absolute;\n    inset-block: 0;\n    inset-inline: var(--gradient-inset);\n    @apply rounded-full;\n    background: var(--track-background);\n    pointer-events: none;\n  }\n\n  .hue-slider .hue-range {\n    background: transparent;\n  }\n\n  .hue-slider .hue-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .opacity-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));\n    --padding-inline: var(--inline-padding, var(--padding-block));\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    --track-background:\n      linear-gradient(to right, transparent, var(--color, rgb(0, 0, 0))),\n      repeating-linear-gradient(\n        45deg,\n        slot(track, background, var(--background-800)),\n        slot(track, background, var(--background-800)) 10px,\n        slot(track, foreground, var(--background-700)) 10px,\n        slot(track, foreground, var(--background-700)) 20px\n      );\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    @apply rounded-full;\n  }\n\n  .opacity-slider .opacity-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: visible;\n    @apply rounded-full;\n    background: var(--track-background);\n  }\n\n  .opacity-slider .opacity-range {\n    background: transparent;\n  }\n\n  .opacity-slider .opacity-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .hue-slider .hue-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .hue-slider .hue-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover, var(--thumb-shadow));\n  }\n\n  .hue-slider .hue-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active, var(--thumb-shadow));\n  }\n\n  .opacity-slider .opacity-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .opacity-slider .opacity-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .opacity-slider .opacity-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .chroma-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--size) - (var(--padding-block) * 2));\n    --padding-inline: var(--inline-padding, var(--padding-block));\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: var(--thumb-width);\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: 0 0 0 1px rgb(0 0 0 / 0.28);\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    @apply rounded-full;\n  }\n\n  .chroma-slider .chroma-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: visible;\n    @apply rounded-full;\n  }\n\n  .chroma-slider .chroma-range {\n    background: transparent;\n  }\n\n  .chroma-slider .chroma-thumb {\n    --thumb-shadow-hover: 0 0 0 1px rgb(0 0 0 / 0.38);\n    --thumb-shadow-active: 0 0 0 1px rgb(0 0 0 / 0.24);\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    @apply rounded-full;\n    background: var(--thumb-background);\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .chroma-slider .chroma-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .chroma-slider .chroma-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .chroma-slider .chroma-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .recent-colors {\n    display: flex;\n    gap: 0.5rem;\n    overflow-x: auto;\n    padding-bottom: 0.25rem;\n  }\n\n  .recent-colors .recent-color-swatch {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: slot(swatch, radius, var(--radius-sm));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    cursor: pointer;\n    background: none;\n    padding: 0;\n    outline: none;\n    transition:\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .recent-colors .recent-color-swatch:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    transform: scale(1.1);\n    box-shadow: 0 0 0 2px var(--focus-visible);\n  }\n\n  .recent-colors .recent-color-swatch:active {\n    transform: scale(0.95);\n  }\n\n  .recent-colors .recent-color-swatch:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .preview-swatch {\n    position: relative;\n    width: 36px;\n    height: 36px;\n    border-radius: slot(preview-swatch, radius, var(--radius-sm));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);\n    overflow: hidden;\n    flex-shrink: 0;\n  }\n\n  .preview-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      slot(preview-swatch, background, var(--background-700)),\n      slot(preview-swatch, background, var(--background-700)) 6px,\n      slot(preview-swatch, foreground, var(--background-800)) 6px,\n      slot(preview-swatch, foreground, var(--background-800)) 12px\n    );\n    border-radius: slot(preview-swatch, radius, var(--radius-sm));\n    pointer-events: none;\n    z-index: 1;\n  }\n\n  .preview-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 2;\n  }\n\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-500);\n\n    display: flex;\n    flex-direction: column;\n    gap: 1rem;\n    background-color: var(--background);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    width: 260px;\n  }\n\n  .color[data-disabled=\"true\"] {\n    opacity: 0.5;\n    pointer-events: none;\n  }\n\n  .color[data-variant=\"popover\"] {\n    background: transparent;\n    border-color: transparent;\n    border-radius: 0;\n  }\n\n  .color-provider {\n    @slot trigger {\n      --background: color-mix(in srgb, var(--background-800) 35%, transparent);\n      --background-hover: color-mix(in srgb, var(--background-700) 45%, transparent);\n      --foreground: var(--foreground-200);\n    }\n\n    @slot swatch {\n      --background: var(--background-700);\n      --foreground: var(--background-800);\n    }\n\n    display: inline-flex;\n    width: fit-content;\n  }\n\n  .color-provider .color-trigger {\n    --focus-visible: var(--accent-500);\n\n    display: inline-flex;\n    align-items: center;\n    gap: 0.625rem;\n    min-width: 170px;\n    height: 40px;\n    padding: 0 0.75rem;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    border-radius: var(--radius-sm, 0.375rem);\n    background: slot(trigger, background, var(--background, transparent));\n    color: slot(trigger, foreground, var(--foreground, currentColor));\n    cursor: pointer;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .color-provider .color-trigger:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background: slot(\n      trigger,\n      background-hover,\n      slot(trigger, background, var(--background, transparent))\n    );\n  }\n\n  .color-provider .color-trigger:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .color-provider .color-trigger[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .color-provider .color-trigger[data-size=\"sm\"] {\n    min-width: 150px;\n    height: 34px;\n    padding: 0 0.625rem;\n    font-size: var(--text-xs, 0.75rem);\n  }\n\n  .color-provider .color-trigger[data-size=\"lg\"] {\n    min-width: 190px;\n    height: 46px;\n    padding: 0 0.875rem;\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n  }\n\n  .color-provider .color-trigger-swatch {\n    position: relative;\n    width: 20px;\n    height: 20px;\n    flex: 0 0 auto;\n    border-radius: var(--radius-xs, 0.25rem);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    overflow: hidden;\n  }\n\n  .color-provider .color-trigger-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      slot(swatch, background, var(--background-700)),\n      slot(swatch, background, var(--background-700)) 4px,\n      slot(swatch, foreground, var(--background-800)) 4px,\n      slot(swatch, foreground, var(--background-800)) 8px\n    );\n  }\n\n  .color-provider .color-trigger-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n  }\n\n  .color-provider .color-trigger-value {\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n\n  .color .controls {\n    @apply pb-3 px-3 space-y-3;\n  }\n\n  .input-group {\n    width: 100%;\n  }\n\n  .input-group > div:first-child {\n    flex: 1;\n  }\n\n  .input-group .input {\n    width: 100%;\n  }\n\n  .input-group .format {\n    flex-shrink: 0;\n    width: 85px;\n  }\n\n  .color[data-size=\"sm\"] .format {\n    width: 75px;\n  }\n\n  .canvas {\n    --canvas-radius: var(--radius-xs, 5px);\n    --canvas-border-width: slot(border, width, var(--border-width-base, 1px));\n    position: relative;\n    width: 240px;\n    height: 160px;\n    @apply mx-auto mt-2;\n    border-radius: var(--canvas-radius);\n    cursor: crosshair;\n    touch-action: none;\n    display: flex;\n    flex-direction: column;\n  }\n\n  .canvas[data-size=\"sm\"] {\n    width: 200px;\n    height: 130px;\n  }\n\n  .canvas[data-size=\"lg\"] {\n    width: 280px;\n    height: 190px;\n  }\n\n  .canvas[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .canvas .canvas-inner {\n    position: relative;\n    width: 100%;\n    flex: 1;\n    overflow: hidden;\n    border-radius: inherit;\n    isolation: isolate;\n    clip-path: inset(\n      var(--canvas-border-width)\n      round max(0px, calc(var(--canvas-radius) - var(--canvas-border-width)))\n    );\n  }\n\n  .canvas::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: var(--canvas-border-width) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    pointer-events: none;\n  }\n\n  .canvas .canvas-gradient-hue {\n    position: absolute;\n    inset: 0;\n    overflow: hidden;\n  }\n\n  .canvas .canvas-gradient-saturation {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to right, rgb(255, 255, 255), transparent);\n  }\n\n  .canvas .canvas-gradient-brightness {\n    position: absolute;\n    inset: 0;\n    background: linear-gradient(to top, rgb(0, 0, 0), transparent);\n  }\n\n  .canvas .canvas-pointer {\n    position: absolute;\n    box-sizing: border-box;\n    width: 12px;\n    height: 12px;\n    border-radius: var(--radius-xs, 3px);\n    border: 2px solid white;\n    box-shadow: none;\n    pointer-events: none;\n    z-index: 10;\n  }\n\n  .hue-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --track-height: var(--size);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --side-padding: var(--inline-padding, 2px);\n    --padding-inline: var(--inline-padding, 0px);\n    --thumb-width: calc(var(--spacing, 0.25rem) * 2);\n    --thumb-height: calc(100% - (var(--side-padding) * 2));\n    --gradient-inset: 0;\n    --track-background: linear-gradient(\n      to right,\n      hsl(0, 100%, 50%),\n      hsl(60, 100%, 50%),\n      hsl(120, 100%, 50%),\n      hsl(180, 100%, 50%),\n      hsl(240, 100%, 50%),\n      hsl(300, 100%, 50%),\n      hsl(360, 100%, 50%)\n    );\n    --range-background: transparent;\n    --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: none;\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n  }\n\n  .hue-slider .hue-track {\n    position: relative;\n    width: 100%;\n    height: var(--track-height);\n    overflow: visible;\n    border-radius: 4px;\n    background: var(--track-background);\n  }\n\n  .hue-slider .hue-track::before {\n    content: none;\n  }\n\n  .hue-slider .hue-range {\n    background: transparent;\n  }\n\n  .hue-slider .hue-thumb {\n    --thumb-shadow-hover: none;\n    --thumb-shadow-active: none;\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    border-radius: 2px;\n    background: transparent;\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .opacity-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--spacing, 0.25rem) * 2);\n    --padding-inline: var(--inline-padding, 0px);\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: calc(100% - (var(--side-padding) * 2));\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: none;\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    --track-background:\n      linear-gradient(to right, transparent, var(--color, rgb(0, 0, 0))),\n      repeating-linear-gradient(\n        45deg,\n        slot(track, background, var(--background-800)),\n        slot(track, background, var(--background-800)) 10px,\n        slot(track, foreground, var(--background-700)) 10px,\n        slot(track, foreground, var(--background-700)) 20px\n      );\n\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    border-radius: 2px;\n  }\n\n  .opacity-slider .opacity-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: visible;\n    border-radius: 4px;\n    background: var(--track-background);\n  }\n\n  .opacity-slider .opacity-range {\n    background: transparent;\n  }\n\n  .opacity-slider .opacity-thumb {\n    --thumb-shadow-hover: none;\n    --thumb-shadow-active: none;\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    border-radius: 2px;\n    background: transparent;\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .hue-slider .hue-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .hue-slider .hue-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover, var(--thumb-shadow));\n  }\n\n  .hue-slider .hue-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active, var(--thumb-shadow));\n  }\n\n  .opacity-slider .opacity-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .opacity-slider .opacity-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .opacity-slider .opacity-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .chroma-slider {\n    --size: calc(var(--spacing, 0.25rem) * 4);\n    --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));\n    --range-background: transparent;\n    --thumb-width: calc(var(--spacing, 0.25rem) * 2);\n    --padding-inline: var(--inline-padding, 0px);\n    --hit-size: calc(var(--size) + (var(--padding-block) * 2));\n    --thumb-height: calc(100% - (var(--side-padding) * 2));\n    --side-padding: 2px;\n    --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));\n    --thumb-background: slot(thumb, background, transparent);\n    --thumb-border: 2px solid white;\n    --thumb-shadow: none;\n    --top: 50%;\n    --transform: translate(-50%, -50%);\n    width: 100%;\n    box-sizing: border-box;\n    min-height: var(--hit-size);\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    border-radius: 2px;\n  }\n\n  .chroma-slider .chroma-track {\n    position: relative;\n    width: 100%;\n    height: var(--size);\n    overflow: visible;\n    border-radius: 4px;\n  }\n\n  .chroma-slider .chroma-range {\n    background: transparent;\n  }\n\n  .hue-slider .hue-track,\n  .opacity-slider .opacity-track,\n  .chroma-slider .chroma-track {\n    box-sizing: border-box;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    background-clip: padding-box;\n  }\n\n  .hue-slider .hue-track::after,\n  .opacity-slider .opacity-track::after,\n  .chroma-slider .chroma-track::after {\n    content: none;\n  }\n\n  .chroma-slider .chroma-thumb {\n    --thumb-shadow-hover: none;\n    --thumb-shadow-active: none;\n\n    position: absolute;\n    top: var(--top);\n    box-sizing: border-box;\n    width: var(--thumb-width);\n    height: var(--thumb-height);\n    transform: var(--transform);\n    border: var(--thumb-border);\n    border-radius: 2px;\n    background: transparent;\n    box-shadow: var(--thumb-shadow);\n  }\n\n  .chroma-slider .chroma-thumb[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .chroma-slider .chroma-thumb[data-hovered=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    box-shadow: var(--thumb-shadow-hover);\n  }\n\n  .chroma-slider .chroma-thumb[data-pressed=\"true\"] {\n    box-shadow: var(--thumb-shadow-active);\n  }\n\n  .recent-colors {\n    display: flex;\n    gap: 0.5rem;\n    overflow-x: auto;\n    padding-bottom: 0.25rem;\n  }\n\n  .recent-colors .recent-color-swatch {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: slot(swatch, radius, var(--radius-sm));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    cursor: pointer;\n    background: none;\n    padding: 0;\n    outline: none;\n    transition:\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .recent-colors .recent-color-swatch:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    transform: scale(1.1);\n    box-shadow: 0 0 0 2px var(--focus-visible);\n  }\n\n  .recent-colors .recent-color-swatch:active {\n    transform: scale(0.95);\n  }\n\n  .recent-colors .recent-color-swatch:focus-visible {\n    outline: 2px solid var(--focus-visible);\n    outline-offset: 2px;\n  }\n\n  .preview-swatch {\n    position: relative;\n    width: 36px;\n    height: 36px;\n    border-radius: slot(preview-swatch, radius, var(--radius-sm));\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, var(--background-700));\n    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);\n    overflow: hidden;\n    flex-shrink: 0;\n  }\n\n  .preview-swatch::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-image: repeating-linear-gradient(\n      45deg,\n      slot(preview-swatch, background, var(--background-700)),\n      slot(preview-swatch, background, var(--background-700)) 6px,\n      slot(preview-swatch, foreground, var(--background-800)) 6px,\n      slot(preview-swatch, foreground, var(--background-800)) 12px\n    );\n    border-radius: slot(preview-swatch, radius, var(--radius-sm));\n    pointer-events: none;\n    z-index: 1;\n  }\n\n  .preview-swatch::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background-color: var(--preview-color, transparent);\n    border-radius: var(--radius-sm);\n    pointer-events: none;\n    z-index: 2;\n  }\n\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .color {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-400);\n\n    @slot pointer {\n      --background: color-mix(in srgb, var(--foreground-200) 50%, transparent);\n    }\n\n    @slot thumb {\n      --background: white;\n    }\n\n    @slot track {\n      --background: var(--background-800);\n      --foreground: var(--background-700);\n    }\n\n    @slot preview-swatch {\n      --background: var(--background-700);\n      --foreground: var(--background-800);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -38948,6 +40223,48 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--canvas-radius",
+        "value": "var(--radius-xs, 5px)",
+        "selector": ".canvas",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-xs"
+        ]
+      },
+      {
+        "name": "--radius-xs",
+        "value": "unset",
+        "selector": ".canvas",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--canvas-border-width",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".canvas",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".canvas",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".canvas",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
         "name": "--focus-visible",
         "value": "unset",
         "selector": ".canvas[data-focus-visible=\"true\"]",
@@ -38955,32 +40272,61 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--radius-full",
+        "name": "--canvas-border-width",
         "value": "unset",
-        "selector": ".canvas .canvas-pointer",
+        "selector": ".canvas .canvas-inner",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--foreground-200",
+        "name": "--canvas-radius",
         "value": "unset",
-        "selector": ".canvas .canvas-pointer",
+        "selector": ".canvas .canvas-inner",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--canvas-border-width",
+        "value": "unset",
+        "selector": ".canvas::after",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-700",
+        "value": "unset",
+        "selector": ".canvas::after",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--style",
+        "value": "unset",
+        "selector": ".canvas::after",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "border"
       },
       {
         "name": "--background",
         "value": "unset",
-        "selector": ".canvas .canvas-pointer",
+        "selector": ".canvas::after",
         "atRules": [],
         "referencedVars": [
-          "--foreground-200"
+          "--background-700"
         ],
-        "slot": "pointer"
+        "slot": "border"
       },
       {
-        "name": "--track-height",
-        "value": "calc(var(--spacing, 0.25rem) * 5)",
+        "name": "--radius-xs",
+        "value": "unset",
+        "selector": ".canvas .canvas-pointer",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--size",
+        "value": "calc(var(--spacing, 0.25rem) * 4)",
         "selector": ".hue-slider",
         "atRules": [],
         "referencedVars": [
@@ -38993,6 +40339,15 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".hue-slider",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--track-height",
+        "value": "var(--size)",
+        "selector": ".hue-slider",
+        "atRules": [],
+        "referencedVars": [
+          "--size"
+        ]
       },
       {
         "name": "--padding-block",
@@ -39030,22 +40385,30 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--thumb-width",
-        "value": "calc(var(--track-height) - (var(--padding-block) * 2))",
+        "name": "--padding-inline",
+        "value": "var(--inline-padding, 0px)",
         "selector": ".hue-slider",
         "atRules": [],
         "referencedVars": [
-          "--track-height",
-          "--padding-block"
+          "--inline-padding"
+        ]
+      },
+      {
+        "name": "--thumb-width",
+        "value": "calc(var(--spacing, 0.25rem) * 2)",
+        "selector": ".hue-slider",
+        "atRules": [],
+        "referencedVars": [
+          "--spacing"
         ]
       },
       {
         "name": "--thumb-height",
-        "value": "var(--thumb-width)",
+        "value": "calc(100% - (var(--side-padding) * 2))",
         "selector": ".hue-slider",
         "atRules": [],
         "referencedVars": [
-          "--thumb-width"
+          "--side-padding"
         ]
       },
       {
@@ -39113,7 +40476,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-shadow",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.28)",
+        "value": "none",
         "selector": ".hue-slider",
         "atRules": [],
         "referencedVars": []
@@ -39140,29 +40503,22 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--gradient-inset",
-        "value": "unset",
-        "selector": ".hue-slider .hue-track::before",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
         "name": "--track-background",
         "value": "unset",
-        "selector": ".hue-slider .hue-track::before",
+        "selector": ".hue-slider .hue-track",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--thumb-shadow-hover",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.38)",
+        "value": "none",
         "selector": ".hue-slider .hue-thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--thumb-shadow-active",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.24)",
+        "value": "none",
         "selector": ".hue-slider .hue-thumb",
         "atRules": [],
         "referencedVars": []
@@ -39197,13 +40553,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-border",
-        "value": "unset",
-        "selector": ".hue-slider .hue-thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--thumb-background",
         "value": "unset",
         "selector": ".hue-slider .hue-thumb",
         "atRules": [],
@@ -39260,22 +40609,20 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-width",
-        "value": "calc(var(--size) - (var(--padding-block) * 2))",
+        "value": "calc(var(--spacing, 0.25rem) * 2)",
         "selector": ".opacity-slider",
         "atRules": [],
         "referencedVars": [
-          "--size",
-          "--padding-block"
+          "--spacing"
         ]
       },
       {
         "name": "--padding-inline",
-        "value": "var(--inline-padding, var(--padding-block))",
+        "value": "var(--inline-padding, 0px)",
         "selector": ".opacity-slider",
         "atRules": [],
         "referencedVars": [
-          "--inline-padding",
-          "--padding-block"
+          "--inline-padding"
         ]
       },
       {
@@ -39283,9 +40630,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "value": "unset",
         "selector": ".opacity-slider",
         "atRules": [],
-        "referencedVars": [
-          "--padding-block"
-        ]
+        "referencedVars": []
       },
       {
         "name": "--hit-size",
@@ -39299,11 +40644,11 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-height",
-        "value": "var(--thumb-width)",
+        "value": "calc(100% - (var(--side-padding) * 2))",
         "selector": ".opacity-slider",
         "atRules": [],
         "referencedVars": [
-          "--thumb-width"
+          "--side-padding"
         ]
       },
       {
@@ -39347,7 +40692,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-shadow",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.28)",
+        "value": "none",
         "selector": ".opacity-slider",
         "atRules": [],
         "referencedVars": []
@@ -39434,14 +40779,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-shadow-hover",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.38)",
+        "value": "none",
         "selector": ".opacity-slider .opacity-thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--thumb-shadow-active",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.24)",
+        "value": "none",
         "selector": ".opacity-slider .opacity-thumb",
         "atRules": [],
         "referencedVars": []
@@ -39476,13 +40821,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-border",
-        "value": "unset",
-        "selector": ".opacity-slider .opacity-thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--thumb-background",
         "value": "unset",
         "selector": ".opacity-slider .opacity-thumb",
         "atRules": [],
@@ -39631,22 +40969,20 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-width",
-        "value": "calc(var(--size) - (var(--padding-block) * 2))",
+        "value": "calc(var(--spacing, 0.25rem) * 2)",
         "selector": ".chroma-slider",
         "atRules": [],
         "referencedVars": [
-          "--size",
-          "--padding-block"
+          "--spacing"
         ]
       },
       {
         "name": "--padding-inline",
-        "value": "var(--inline-padding, var(--padding-block))",
+        "value": "var(--inline-padding, 0px)",
         "selector": ".chroma-slider",
         "atRules": [],
         "referencedVars": [
-          "--inline-padding",
-          "--padding-block"
+          "--inline-padding"
         ]
       },
       {
@@ -39654,9 +40990,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "value": "unset",
         "selector": ".chroma-slider",
         "atRules": [],
-        "referencedVars": [
-          "--padding-block"
-        ]
+        "referencedVars": []
       },
       {
         "name": "--hit-size",
@@ -39670,11 +41004,11 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-height",
-        "value": "var(--thumb-width)",
+        "value": "calc(100% - (var(--side-padding) * 2))",
         "selector": ".chroma-slider",
         "atRules": [],
         "referencedVars": [
-          "--thumb-width"
+          "--side-padding"
         ]
       },
       {
@@ -39718,7 +41052,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-shadow",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.28)",
+        "value": "none",
         "selector": ".chroma-slider",
         "atRules": [],
         "referencedVars": []
@@ -39745,15 +41079,57 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".hue-slider .hue-track,\n  .opacity-slider .opacity-track,\n  .chroma-slider .chroma-track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-700",
+        "value": "unset",
+        "selector": ".hue-slider .hue-track,\n  .opacity-slider .opacity-track,\n  .chroma-slider .chroma-track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".hue-slider .hue-track,\n  .opacity-slider .opacity-track,\n  .chroma-slider .chroma-track",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--style",
+        "value": "unset",
+        "selector": ".hue-slider .hue-track,\n  .opacity-slider .opacity-track,\n  .chroma-slider .chroma-track",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "border"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".hue-slider .hue-track,\n  .opacity-slider .opacity-track,\n  .chroma-slider .chroma-track",
+        "atRules": [],
+        "referencedVars": [
+          "--background-700"
+        ],
+        "slot": "border"
+      },
+      {
         "name": "--thumb-shadow-hover",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.38)",
+        "value": "none",
         "selector": ".chroma-slider .chroma-thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
         "name": "--thumb-shadow-active",
-        "value": "0 0 0 1px rgb(0 0 0 / 0.24)",
+        "value": "none",
         "selector": ".chroma-slider .chroma-thumb",
         "atRules": [],
         "referencedVars": []
@@ -39788,13 +41164,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--thumb-border",
-        "value": "unset",
-        "selector": ".chroma-slider .chroma-thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--thumb-background",
         "value": "unset",
         "selector": ".chroma-slider .chroma-thumb",
         "atRules": [],
@@ -45819,8 +47188,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     "styleableGroups": []
   },
   "input": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .scope {\n    @apply flex;\n    position: relative;\n    min-width: 0;\n    overflow: visible;\n  }\n\n  .input {\n    height: fit-content;\n    min-width: 0;\n    flex: 1;\n    @apply py-1.5 px-3;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground, currentColor);\n    background-color: transparent;\n    border: none;\n    outline: none;\n    box-sizing: border-box;\n\n    &::placeholder {\n      color: var(--placeholder, var(--foreground, currentColor));\n    }\n\n    &[data-disabled] {\n      color: var(--disabled-foreground, var(--foreground, currentColor));\n      cursor: not-allowed;\n    }\n\n    /* Hide default browser spinners for number inputs */\n    &[type=\"number\"] {\n      &::-webkit-outer-spin-button,\n      &::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n        display: none;\n      }\n\n      /* Firefox */\n      &[type=\"number\"] {\n        -moz-appearance: textfield;\n      }\n    }\n  }\n\n  /* Content wrapper used in place of the native input when children are\n     provided. Shares .input's box so composite fields line up with plain ones. */\n  .content {\n    @apply flex items-center;\n    cursor: text;\n  }\n\n  .icon-wrapper {\n    @apply z-10 flex items-center;\n    pointer-events: none;\n  }\n\n  .icon {\n    @apply flex items-center shrink-0;\n    color: var(--foreground, currentColor);\n  }\n\n  .container {\n    --adornment-offset: calc(var(--spacing, 0.25rem) * 1.5);\n    --action-inset: calc(var(--spacing, 0.25rem) * 0.5);\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)));\n\n    display: flex;\n    align-items: center;\n    min-width: 0;\n    flex: 1;\n    background-color: var(--background, transparent);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n    box-sizing: border-box;\n    overflow: hidden;\n    transition: border-color var(--focus-transition-duration, 150ms)\n      var(--focus-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-disabled] {\n      background-color: var(--disabled-background, var(--background, transparent));\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    &[data-variant=\"ghost\"] {\n      background-color: transparent;\n      border-color: transparent;\n    }\n\n    &[data-focused=\"true\"]:not([data-disabled]) {\n      border-color: slot(\n        border,\n        background-focus,\n        slot(border, background, transparent)\n      );\n    }\n  }\n\n  .prefix,\n  .suffix {\n    @apply flex items-center gap-1;\n    align-self: stretch;\n    flex-shrink: 0;\n    pointer-events: none;\n  }\n\n  .prefix {\n    @apply pl-2.5;\n  }\n\n  .suffix {\n    padding-right: var(--adornment-offset);\n\n    &:has(.actions) {\n      padding-right: var(--action-inset);\n    }\n\n    &:has(.controls) {\n      padding-right: 0;\n    }\n\n    &:has(.hint) {\n      padding-right: 0;\n    }\n  }\n\n  .actions {\n    @apply flex items-center gap-0.5;\n    padding-block: var(--action-inset);\n    pointer-events: auto;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    border-radius: var(--background-inner-radius);\n    background-color: var(--background, transparent);\n    color: var(--foreground, currentColor);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:global(.button):global(.icon) {\n    --size: calc(var(--spacing, 0.25rem) * 7);\n    --padding-block: calc(var(--spacing, 0.25rem) * 1.5);\n    --padding-inline: calc(var(--spacing, 0.25rem) * 1.5);\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .hint {\n    @apply inline-flex items-center justify-center whitespace-nowrap;\n    flex-shrink: 0;\n    margin-inline-start: calc(var(--spacing, 0.25rem) * 0.5);\n    margin-inline-end: var(--adornment-offset);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    line-height: 1; /* adornment is vertically centered by its fixed surface */\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    pointer-events: auto;\n  }\n\n  .controls {\n    @apply flex w-7.5 flex-col;\n    align-self: stretch;\n    min-height: 100%;\n    border-left:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: auto;\n  }\n\n  .controls[data-disabled] {\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .stepper {\n    @apply flex w-full flex-1 items-center justify-center p-0 cursor-pointer;\n    flex: 1;\n    background-color: transparent;\n    border: none;\n    color: var(--foreground, currentColor);\n    --active-background: var(--background-700);\n    --active-color: var(--foreground-100);\n    transition:\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    & + .stepper {\n      border-top:\n        slot(border, width, var(--border-width-base, 1px))\n        slot(border, style, solid)\n        slot(border, background, transparent);\n    }\n\n    &:hover:not(:disabled) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--hover-background, transparent);\n      color: var(--hover-color, var(--foreground, currentColor));\n    }\n\n    &:active:not(:disabled) {\n      background-color: var(--active-background, var(--hover-background, transparent));\n      color: var(--active-color, var(--foreground, currentColor));\n    }\n\n    &:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .input {\n    --background: var(--background-900);\n    --disabled-background: var(--background-900);\n    --disabled-foreground: var(--foreground-400);\n    --foreground: var(--foreground-300);\n    --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .input[data-error] {\n    @slot border {\n      --background-focus: var(--danger-600);\n    }\n  }\n\n  .input[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n  }\n\n  .input[data-variant=\"ghost\"][data-focus-visible] {\n    box-shadow: none;\n  }\n\n  .input > :where(.prefix, .suffix) > .icon {\n    --foreground: var(--foreground-400);\n  }\n\n  .input > :where(.prefix, .suffix) > .actions > .button {\n    --background: transparent;\n    --foreground: var(--foreground-400);\n  }\n\n  .input > :where(.prefix, .suffix) > .actions > .button[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: var(--background-800);\n    --foreground: var(--foreground-400);\n  }\n\n  .input > :where(.prefix, .suffix) > .actions > .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n    --foreground: var(--foreground-400);\n  }\n\n  .input > .suffix > .controls > .stepper {\n    --active-background: var(--background-700);\n    --active-color: var(--foreground-100);\n    --foreground: var(--foreground-400);\n    --hover-background: var(--background-800);\n    --hover-color: var(--foreground-200);\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .scope {\n    @apply flex;\n    position: relative;\n    min-width: 0;\n    overflow: visible;\n  }\n\n  .input {\n    height: fit-content;\n    min-width: 0;\n    flex: 1;\n    @apply py-1.5 px-3;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground, currentColor);\n    background-color: transparent;\n    border: none;\n    outline: none;\n    box-sizing: border-box;\n\n    &::placeholder {\n      color: var(--placeholder, var(--foreground, currentColor));\n    }\n\n    &[data-disabled] {\n      color: var(--disabled-foreground, var(--foreground, currentColor));\n      cursor: not-allowed;\n    }\n\n    /* Hide default browser spinners for number inputs */\n    &[type=\"number\"] {\n      &::-webkit-outer-spin-button,\n      &::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n        display: none;\n      }\n\n      /* Firefox */\n      &[type=\"number\"] {\n        -moz-appearance: textfield;\n      }\n    }\n  }\n\n  /* Content wrapper used in place of the native input when children are\n     provided. Shares .input's box so composite fields line up with plain ones. */\n  .content {\n    @apply flex items-center;\n    cursor: text;\n  }\n\n  .icon-wrapper {\n    @apply z-10 flex items-center;\n    pointer-events: none;\n  }\n\n  .icon {\n    @apply flex items-center shrink-0;\n    color: var(--foreground, currentColor);\n  }\n\n  .container {\n    --adornment-offset: calc(var(--spacing, 0.25rem) * 1.5);\n    --action-inset: calc(var(--spacing, 0.25rem) * 0.5);\n    --background-radius: var(--radius-sm, 0.375rem);\n    /* Nested parts inset themselves from this radius via --inset-radius. */\n    --radius: var(--background-radius);\n\n    display: flex;\n    align-items: center;\n    min-width: 0;\n    flex: 1;\n    background-color: var(--background, transparent);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n    box-sizing: border-box;\n    overflow: hidden;\n    transition: border-color var(--focus-transition-duration, 150ms)\n      var(--focus-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-disabled] {\n      background-color: var(--disabled-background, var(--background, transparent));\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    &[data-variant=\"ghost\"] {\n      background-color: transparent;\n      border-color: transparent;\n    }\n\n    &[data-focused=\"true\"]:not([data-disabled]) {\n      border-color: slot(\n        border,\n        background-focus,\n        slot(border, background, transparent)\n      );\n    }\n  }\n\n  .prefix,\n  .suffix {\n    @apply flex items-center gap-1;\n    align-self: stretch;\n    flex-shrink: 0;\n    pointer-events: none;\n  }\n\n  .prefix {\n    @apply pl-2.5;\n  }\n\n  .suffix {\n    padding-right: var(--adornment-offset);\n\n    &:has(.actions) {\n      padding-right: var(--action-inset);\n    }\n\n    &:has(.controls) {\n      padding-right: 0;\n    }\n\n    &:has(.hint) {\n      padding-right: 0;\n    }\n  }\n\n  .actions {\n    @apply flex items-center gap-0.5;\n    padding-block: var(--action-inset);\n    pointer-events: auto;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    /* Inset from the container edge by its border. */\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    background-color: var(--background, transparent);\n    color: var(--foreground, currentColor);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:global(.button):global(.icon) {\n    --size: calc(var(--spacing, 0.25rem) * 7);\n    --padding-block: calc(var(--spacing, 0.25rem) * 1.5);\n    --padding-inline: calc(var(--spacing, 0.25rem) * 1.5);\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .hint {\n    @apply inline-flex items-center justify-center whitespace-nowrap;\n    flex-shrink: 0;\n    margin-inline-start: calc(var(--spacing, 0.25rem) * 0.5);\n    margin-inline-end: var(--adornment-offset);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    line-height: 1; /* adornment is vertically centered by its fixed surface */\n    color: var(--foreground, currentColor);\n    background-color: var(--background, transparent);\n    pointer-events: auto;\n  }\n\n  .controls {\n    @apply flex w-7.5 flex-col;\n    align-self: stretch;\n    min-height: 100%;\n    border-left:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: auto;\n  }\n\n  .controls[data-disabled] {\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .stepper {\n    @apply flex w-full flex-1 items-center justify-center p-0 cursor-pointer;\n    flex: 1;\n    background-color: transparent;\n    border: none;\n    color: var(--foreground, currentColor);\n    --active-background: var(--background-700);\n    --active-color: var(--foreground-100);\n    transition:\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    & + .stepper {\n      border-top:\n        slot(border, width, var(--border-width-base, 1px))\n        slot(border, style, solid)\n        slot(border, background, transparent);\n    }\n\n    &:hover:not(:disabled) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--hover-background, transparent);\n      color: var(--hover-color, var(--foreground, currentColor));\n    }\n\n    &:active:not(:disabled) {\n      background-color: var(--active-background, var(--hover-background, transparent));\n      color: var(--active-color, var(--foreground, currentColor));\n    }\n\n    &:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .input {\n    --background: var(--background-950);\n    --disabled-background: var(--background-900);\n    --disabled-foreground: var(--foreground-400);\n    --foreground: var(--foreground-300);\n    --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .input[data-error] {\n    @slot border {\n      --background-focus: var(--danger-600);\n    }\n  }\n\n  .input[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n  }\n\n  .input[data-variant=\"ghost\"][data-focus-visible] {\n    box-shadow: none;\n  }\n\n  .input > :where(.prefix, .suffix) > .icon {\n    --foreground: var(--foreground-400);\n  }\n\n  .input > :where(.prefix, .suffix) > .actions > .button {\n    --background: transparent;\n    --foreground: var(--foreground-400);\n  }\n\n  .input > :where(.prefix, .suffix) > .actions > .button[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: var(--background-800);\n    --foreground: var(--foreground-400);\n  }\n\n  .input > :where(.prefix, .suffix) > .actions > .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n    --foreground: var(--foreground-400);\n  }\n\n  .input > .suffix > .controls > .stepper {\n    --active-background: var(--background-700);\n    --active-color: var(--foreground-100);\n    --foreground: var(--foreground-400);\n    --hover-background: var(--background-800);\n    --hover-color: var(--foreground-200);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -45939,14 +47308,20 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--background-inner-radius",
-        "value": "calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)))",
+        "name": "--radius",
+        "value": "var(--background-radius)",
         "selector": ".container",
         "atRules": [],
         "referencedVars": [
-          "--background-radius",
-          "--border-width-base"
+          "--background-radius"
         ]
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".container",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--border-width-base",
@@ -45964,13 +47339,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           "--border-width-base"
         ],
         "slot": "border"
-      },
-      {
-        "name": "--background",
-        "value": "unset",
-        "selector": ".container",
-        "atRules": [],
-        "referencedVars": []
       },
       {
         "name": "--style",
@@ -46065,7 +47433,33 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".action",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".action",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".action",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".action",
         "atRules": [],
@@ -46798,10 +48192,26 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "list": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .root {\n    color: var(--foreground, var(--foreground-100, currentColor));\n    @apply flex flex-col;\n    gap: var(--gap, calc(var(--spacing, 0.25rem) * 0.5));\n  }\n\n  .root[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .item {\n    inline-size: 100%;\n    min-inline-size: 0;\n    box-sizing: border-box;\n    border-radius: slot(item, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    @apply flex items-center gap-3 px-3 py-1 cursor-pointer;\n    background-color: slot(item, background, var(--background, transparent));\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-list-layout=\"columns\"] {\n    display: grid;\n  }\n\n  .item[data-list-layout=\"columns\"] > * {\n    min-width: 0;\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    background-color: slot(item, background-focus, var(--background-700));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted\n     themselves, so the highlight cannot be gated on the root's own keyboard mode. */\n  .item[data-highlighted=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item:hover:not([data-disabled=\"true\"]),\n  .item[data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"] {\n    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"]:hover:not([data-disabled=\"true\"]),\n  .item[data-selected=\"true\"][data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));\n    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.6));\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-inline-start: auto;\n  }\n\n  .item[data-list-layout=\"columns\"] .control,\n  .item[data-list-layout=\"columns\"] .actions {\n    margin-inline-start: 0;\n    justify-self: end;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-inline-start: 0;\n  }\n\n  .item[data-list-layout=\"columns\"] .control[data-placement=\"start\"],\n  .item[data-list-layout=\"columns\"] .checkbox,\n  .item[data-list-layout=\"columns\"] .media {\n    justify-self: start;\n  }\n\n  .media {\n    block-size: 2rem;\n    inline-size: 2rem;\n  }\n\n  .title {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n  }\n\n  .desc {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));\n  }\n\n  .action-group {\n    @apply flex items-center;\n    padding-inline: 0.25rem;\n  }\n\n  .action-group[data-justify=\"between\"] {\n    justify-content: space-between;\n  }\n  .action-group[data-justify=\"start\"] {\n    justify-content: flex-start;\n  }\n  .action-group[data-justify=\"end\"] {\n    justify-content: flex-end;\n  }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-inline-start: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity;\n  }\n\n  .item:hover .actions,\n  .item:focus-within .actions {\n    opacity: 1;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: slot(action, background, var(--background, transparent));\n    color: slot(action, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    @apply p-2;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: slot(action, background-hover, slot(action, background, var(--background, transparent)));\n    color: slot(action, foreground-hover, slot(action, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .header,\n  .footer,\n  .divider {\n    min-inline-size: 0;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .root {\n    --radius: var(--radius-sm, 0.375rem);\n\n    color: var(--foreground, var(--foreground-100, currentColor));\n    @apply flex flex-col;\n    gap: var(--gap, calc(var(--spacing, 0.25rem) * 0.5));\n  }\n\n  .root[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .item {\n    inline-size: 100%;\n    min-inline-size: 0;\n    box-sizing: border-box;\n    /* Concentric with the list box: any padded or bordered surface around the\n       rows sets --inset-gap, and the row shrinks its radius to match. */\n    border-radius: slot(item, radius, var(--inset-radius));\n    @apply flex items-center gap-3 px-3 py-1 cursor-pointer;\n    background-color: slot(item, background, var(--background, transparent));\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-list-layout=\"columns\"] {\n    display: grid;\n  }\n\n  .item[data-list-layout=\"columns\"] > * {\n    min-width: 0;\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    background-color: slot(item, background-focus, var(--background-700));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted\n     themselves, so the highlight cannot be gated on the root's own keyboard mode. */\n  .item[data-highlighted=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item:hover:not([data-disabled=\"true\"]),\n  .item[data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"] {\n    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"]:hover:not([data-disabled=\"true\"]),\n  .item[data-selected=\"true\"][data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));\n    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.6));\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-inline-start: auto;\n  }\n\n  .item[data-list-layout=\"columns\"] .control,\n  .item[data-list-layout=\"columns\"] .actions {\n    margin-inline-start: 0;\n    justify-self: end;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-inline-start: 0;\n  }\n\n  .item[data-list-layout=\"columns\"] .control[data-placement=\"start\"],\n  .item[data-list-layout=\"columns\"] .checkbox,\n  .item[data-list-layout=\"columns\"] .media {\n    justify-self: start;\n  }\n\n  .media {\n    block-size: 2rem;\n    inline-size: 2rem;\n  }\n\n  .title {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n  }\n\n  .desc {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));\n  }\n\n  .action-group {\n    @apply flex items-center;\n    padding-inline: 0.25rem;\n  }\n\n  .action-group[data-justify=\"between\"] {\n    justify-content: space-between;\n  }\n  .action-group[data-justify=\"start\"] {\n    justify-content: flex-start;\n  }\n  .action-group[data-justify=\"end\"] {\n    justify-content: flex-end;\n  }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-inline-start: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity;\n  }\n\n  .item:hover .actions,\n  .item:focus-within .actions {\n    opacity: 1;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: slot(action, background, var(--background, transparent));\n    color: slot(action, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    @apply p-2;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: slot(action, background-hover, slot(action, background, var(--background, transparent)));\n    color: slot(action, foreground-hover, slot(action, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .header,\n  .footer,\n  .divider {\n    min-inline-size: 0;\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .list {\n    --foreground: var(--foreground-50);\n\n    @slot item {\n      --background: transparent;\n      --foreground: var(--foreground-50);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --background-selected: color-mix(in srgb, var(--background-500) 10%, transparent);\n      --background-selected-hover: color-mix(in srgb, var(--background-500) 14%, transparent);\n    }\n\n    @slot action {\n      --background: transparent;\n      --foreground: var(--foreground-400);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --foreground-hover: var(--foreground-50);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
+      {
+        "name": "--radius",
+        "value": "var(--radius-sm, 0.375rem)",
+        "selector": ".root",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-sm"
+        ]
+      },
+      {
+        "name": "--radius-sm",
+        "value": "unset",
+        "selector": ".root",
+        "atRules": [],
+        "referencedVars": []
+      },
       {
         "name": "--foreground",
         "value": "unset",
@@ -46835,16 +48245,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--radius",
-        "value": "unset",
-        "selector": ".item",
-        "atRules": [],
-        "referencedVars": [
-          "--radius-sm"
-        ]
-      },
-      {
-        "name": "--radius-sm",
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".item",
         "atRules": [],
@@ -46856,8 +48257,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".item",
         "atRules": [],
         "referencedVars": [
-          "--radius",
-          "--radius-sm"
+          "--inset-radius"
         ],
         "slot": "item"
       },
@@ -47885,7 +49285,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "menu": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .overlay {\n    display: block;\n    position: absolute;\n  }\n\n  .trigger {\n    @apply inline-flex items-center justify-center;\n    min-inline-size: 0;\n    cursor: pointer;\n    outline: none;\n    user-select: none;\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity, 0.5);\n      pointer-events: none;\n    }\n  }\n\n  .panel {\n    --padding: calc(var(--spacing, 0.25rem) * 2);\n    --radius: var(--radius-sm, 0.375rem);\n    --inner-radius: calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)));\n\n    @apply min-w-40 max-w-80 overflow-hidden;\n    box-sizing: border-box;\n    background-color: var(--background);\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius);\n    outline: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    .viewport {\n      padding: calc(var(--padding) / 2);\n    }\n\n    .group {\n      display: contents;\n    }\n\n    .item {\n      @apply flex min-w-0 items-center gap-2;\n      padding-block: calc(var(--padding) / 1.5);\n      padding-inline: var(--padding);\n      border-radius: slot(item, radius, var(--inner-radius));\n      cursor: pointer;\n      user-select: none;\n      outline: none;\n      font-family: var(--font-body, inherit);\n      font-size: var(--text-sm, 0.875rem);\n      font-weight: var(--font-weight-body-medium, 500);\n      letter-spacing: normal;\n      line-height: var(--leading-sm, 1.25rem);\n    }\n\n    .item[data-disabled=\"true\"] {\n      opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.5));\n      pointer-events: none;\n    }\n\n    .item[data-inset=\"true\"] {\n      padding-inline-start: calc(var(--padding) * 2.67);\n    }\n\n    .indicator {\n      @apply flex shrink-0 items-center justify-center;\n      block-size: 1rem;\n      inline-size: 1rem;\n      color: slot(indicator, foreground, var(--indicator-foreground, var(--foreground)));\n    }\n\n    .indicator-check {\n      block-size: 0.75rem;\n      inline-size: 0.75rem;\n    }\n\n    .indicator-dot {\n      block-size: 0.5rem;\n      inline-size: 0.5rem;\n      fill: currentColor;\n    }\n\n    .sub-trigger {\n      inline-size: 100%;\n      color: var(--foreground);\n      background-color: slot(item, background, var(--background, transparent));\n    }\n\n    .sub-trigger[data-disabled=\"true\"] {\n      color: var(--foreground-muted, var(--foreground-400));\n    }\n\n    .chevron {\n      @apply shrink-0;\n      block-size: 1rem;\n      inline-size: 1rem;\n      margin-inline-start: auto;\n      color: var(--foreground-muted, var(--foreground-400));\n    }\n\n    .label {\n      padding-block: calc(var(--padding) / 2);\n      padding-inline: var(--padding);\n      color: var(--foreground-muted, var(--foreground-400));\n      font-family: var(--font-body, inherit);\n      font-size: var(--text-sm, 0.875rem);\n      font-weight: var(--font-weight-body-medium, 500);\n      letter-spacing: normal;\n      line-height: var(--leading-sm, 1.25rem);\n    }\n\n    .label[data-inset=\"true\"] {\n      padding-inline-start: calc(var(--padding) * 2.67);\n    }\n\n    .separator {\n      @apply my-1;\n      margin-inline: calc(var(--padding) / -2);\n      block-size: 1px;\n      background-color: slot(border, background, transparent);\n    }\n\n    .shortcut {\n      margin-inline-start: auto;\n      color: var(--foreground-muted, var(--foreground-400));\n      font-family: var(--font-mono, ui-monospace, monospace);\n      font-size: var(--text-code-size, var(--text-sm, 0.875rem));\n      font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));\n      letter-spacing: var(--letter-spacing-code, 0);\n      line-height: var(--leading-code, 1.5);\n    }\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .overlay {\n    display: block;\n    position: absolute;\n  }\n\n  .trigger {\n    @apply inline-flex items-center justify-center;\n    min-inline-size: 0;\n    cursor: pointer;\n    outline: none;\n    user-select: none;\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity, 0.5);\n      pointer-events: none;\n    }\n  }\n\n  .panel {\n    --padding: calc(var(--spacing, 0.25rem) * 2);\n    --radius: var(--radius-sm, 0.375rem);\n\n    @apply min-w-40 max-w-80 overflow-hidden;\n    box-sizing: border-box;\n    background-color: var(--background);\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius);\n    outline: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    .viewport {\n      padding: calc(var(--padding) / 2);\n    }\n\n    .group {\n      display: contents;\n    }\n\n    .item {\n      @apply flex min-w-0 items-center gap-2;\n      padding-block: calc(var(--padding) / 1.5);\n      padding-inline: var(--padding);\n      /* Inside the panel border. */\n      --inset-gap: slot(border, width, var(--border-width-base, 1px));\n      border-radius: slot(item, radius, var(--inset-radius));\n      cursor: pointer;\n      user-select: none;\n      outline: none;\n      font-family: var(--font-body, inherit);\n      font-size: var(--text-sm, 0.875rem);\n      font-weight: var(--font-weight-body-medium, 500);\n      letter-spacing: normal;\n      line-height: var(--leading-sm, 1.25rem);\n    }\n\n    .item[data-disabled=\"true\"] {\n      opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.5));\n      pointer-events: none;\n    }\n\n    .item[data-inset=\"true\"] {\n      padding-inline-start: calc(var(--padding) * 2.67);\n    }\n\n    .indicator {\n      @apply flex shrink-0 items-center justify-center;\n      block-size: 1rem;\n      inline-size: 1rem;\n      color: slot(indicator, foreground, var(--indicator-foreground, var(--foreground)));\n    }\n\n    .indicator-check {\n      block-size: 0.75rem;\n      inline-size: 0.75rem;\n    }\n\n    .indicator-dot {\n      block-size: 0.5rem;\n      inline-size: 0.5rem;\n      fill: currentColor;\n    }\n\n    .sub-trigger {\n      inline-size: 100%;\n      color: var(--foreground);\n      background-color: slot(item, background, var(--background, transparent));\n    }\n\n    .sub-trigger[data-disabled=\"true\"] {\n      color: var(--foreground-muted, var(--foreground-400));\n    }\n\n    .chevron {\n      @apply shrink-0;\n      block-size: 1rem;\n      inline-size: 1rem;\n      margin-inline-start: auto;\n      color: var(--foreground-muted, var(--foreground-400));\n    }\n\n    .label {\n      padding-block: calc(var(--padding) / 2);\n      padding-inline: var(--padding);\n      color: var(--foreground-muted, var(--foreground-400));\n      font-family: var(--font-body, inherit);\n      font-size: var(--text-sm, 0.875rem);\n      font-weight: var(--font-weight-body-medium, 500);\n      letter-spacing: normal;\n      line-height: var(--leading-sm, 1.25rem);\n    }\n\n    .label[data-inset=\"true\"] {\n      padding-inline-start: calc(var(--padding) * 2.67);\n    }\n\n    .separator {\n      @apply my-1;\n      margin-inline: calc(var(--padding) / -2);\n      block-size: 1px;\n      background-color: slot(border, background, transparent);\n    }\n\n    .shortcut {\n      margin-inline-start: auto;\n      color: var(--foreground-muted, var(--foreground-400));\n      font-family: var(--font-mono, ui-monospace, monospace);\n      font-size: var(--text-code-size, var(--text-sm, 0.875rem));\n      font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));\n      letter-spacing: var(--letter-spacing-code, 0);\n      line-height: var(--leading-code, 1.5);\n    }\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .menu > :where(.content, .sub-content) {\n    --background: var(--background-800);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .menu.trigger {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-300);\n  }\n\n  .menu.trigger[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n\n  .menu.trigger[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n\n  .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Menu items through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n\n  .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .menu > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -47929,14 +49329,18 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--inner-radius",
-        "value": "calc(var(--radius) - slot(border, width, var(--border-width-base, 1px)))",
+        "name": "--background",
+        "value": "unset",
         "selector": ".panel",
         "atRules": [],
-        "referencedVars": [
-          "--radius",
-          "--border-width-base"
-        ]
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".panel",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--border-width-base",
@@ -47954,20 +49358,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           "--border-width-base"
         ],
         "slot": "border"
-      },
-      {
-        "name": "--background",
-        "value": "unset",
-        "selector": ".panel",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--foreground",
-        "value": "unset",
-        "selector": ".panel",
-        "atRules": [],
-        "referencedVars": []
       },
       {
         "name": "--style",
@@ -48014,7 +49404,33 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--inner-radius",
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".panel .item",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".panel .item",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".panel .item",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".panel .item",
         "atRules": [],
@@ -48026,7 +49442,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".panel .item",
         "atRules": [],
         "referencedVars": [
-          "--inner-radius"
+          "--inset-radius"
         ],
         "slot": "item"
       },
@@ -49951,7 +51367,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "progress": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .progress {\n    --disabled-opacity: 0.6;\n    @apply w-full;\n  }\n\n  .progress[data-has-label=\"true\"] {\n    @apply space-y-1;\n  }\n\n  .progress[data-show-controls=\"true\"] {\n    touch-action: none;\n    user-select: none;\n    cursor: pointer;\n  }\n\n  .progress[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity, 0.6);\n    cursor: not-allowed;\n    pointer-events: none;\n  }\n\n  .label-row {\n    @apply flex items-center justify-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .label {\n    user-select: none;\n  }\n\n  .value {\n    font-variant-numeric: tabular-nums;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.4));\n    position: relative;\n    inline-size: 100%;\n    block-size: var(--thickness);\n    border-radius: slot(track, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(track, background, var(--background));\n    overflow: visible;\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: 0;\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    position: absolute;\n    z-index: 1;\n    inset-block-start: 0;\n    inset-inline-start: 0;\n    block-size: 100%;\n    border-radius: slot(range, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(range, background, var(--background));\n    transition: none;\n    overflow: hidden;\n  }\n\n  .range[data-animated=\"true\"] {\n    animation: pulse 2s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .range[data-indeterminate=\"true\"] {\n    width: 33.333%;\n    animation: progress-indeterminate 1.5s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--width, auto));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    position: absolute;\n    inset-block-start: var(--top, 0);\n    z-index: 2;\n    box-sizing: border-box;\n    inline-size: var(--thumb-inline-size);\n    block-size: var(--thumb-block-size);\n    aspect-ratio: slot(thumb, ratio, var(--ratio, 0.666667));\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    opacity: 0;\n    pointer-events: none;\n    transition: none;\n  }\n\n  .progress[data-show-controls=\"true\"]:hover .thumb,\n  .progress[data-show-controls=\"true\"][data-dragging=\"true\"] .thumb {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  @keyframes pulse {\n    0%,\n    100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.5;\n    }\n  }\n\n  @keyframes progress-indeterminate {\n    0% {\n      transform: translateX(-100%);\n    }\n    100% {\n      transform: translateX(400%);\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .progress {\n    --size: calc(var(--control-size) * 0.5);\n    --foreground: var(--foreground-400);\n    @slot border {\n      --background: var(--control-border);\n    }\n    @slot track {\n      --background: var(--control-track);\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot range {\n      --background: var(--control-fill);\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --border: var(--control-thumb-border);\n      --radius: var(--control-thumb-radius);\n    }\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .progress {\n    --size: calc(var(--spacing-md) * 0.475);\n    --foreground: var(--foreground-400);\n    @slot thumb {\n      /* Drag handle: transparent border insets the painted pill inside the hit area. */\n      --border: 4px solid transparent;\n      --radius: 999px;\n    }\n    @slot track {\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot range {\n      --radius: calc(var(--spacing) * 0.8);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -50511,7 +51927,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "radio": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .radio-items {\n    @apply flex flex-col gap-3;\n  }\n\n  .radio-item {\n    @apply flex items-start gap-3 cursor-pointer select-none;\n    position: relative;\n    overflow: visible;\n  }\n\n  .radio-surface {\n    @apply inline-flex shrink-0;\n    border-radius: 9999px;\n  }\n\n  .radio-input {\n    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;\n  }\n\n  .radio {\n    --disabled-opacity: 0.6;\n    @apply relative flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: 9999px;\n    background-color: var(--background);\n    color: var(--foreground);\n\n    &[data-focus-visible=\"true\"] {\n      outline: none;\n    }\n\n\n    &[data-error=\"true\"]:not([data-selected=\"true\"]) {\n      border-color: slot(border, background-error, slot(border, background, transparent));\n    }\n  }\n\n  .dot {\n    border-radius: 9999px;\n    background-color: var(--background);\n    transform: scale(0);\n  }\n\n  .radio[data-selected=\"true\"] .dot {\n    transform: scale(1);\n  }\n\n  @media (hover: hover) {\n    .radio-item:not([data-disabled=\"true\"]):hover .radio {\n      opacity: 0.9;\n    }\n  }\n\n  .radio-item[data-disabled=\"true\"] .radio {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .radio-label {\n    @apply cursor-pointer;\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    user-select: none;\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n  }\n\n  .radio-description {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    margin-top: 0.125rem;\n  }\n\n  .helper-text {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    margin-top: 0.5rem;\n    margin-left: 2rem;\n  }\n\n  .radio.sm {\n    @apply h-4 w-4;\n  }\n\n  .radio.sm .dot {\n    width: 0.375rem;\n    height: 0.375rem;\n  }\n\n  .radio.md {\n    @apply h-5 w-5;\n  }\n\n  .radio.md .dot {\n    width: 0.5rem;\n    height: 0.5rem;\n  }\n\n  .radio.lg {\n    @apply h-6 w-6;\n  }\n\n  .radio.lg .dot {\n    width: 0.625rem;\n    height: 0.625rem;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .radio {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .radio[data-disabled=\"true\"] {\n    --control-fill: var(--control-disabled);\n    --control-thumb: var(--control-thumb-disabled);\n  }\n\n  .radio {\n    --background: var(--control-track);\n    @slot border {\n      --background: var(--control-border);\n    }\n    --focus-visible: var(--ring-background);\n  }\n\n  .radio.outline {\n    --background: transparent;\n  }\n\n  .radio[data-selected=\"true\"] {\n    --background: var(--control-fill);\n    @slot border {\n      --background: var(--control-fill);\n    }\n  }\n\n  .radio[data-error=\"true\"]:not([data-selected=\"true\"]) {\n    @slot border {\n      --background-error: var(--danger-600);\n    }\n  }\n\n  .radio > .dot {\n    --background: var(--control-thumb);\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    background-clip: padding-box;\n    border: var(--control-thumb-border);\n    border-radius: var(--control-thumb-radius);\n  }\n\n  .radio > .label {\n    --foreground: var(--foreground-300);\n\n    &[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n  }\n\n    .radio > .label[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n\n  .radio > :where(.description, .helper) {\n    --foreground: var(--foreground-400);\n\n    &[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n  }\n\n    .radio > :where(.description, .helper)[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .radio {\n    --background: var(--background-900);\n    --focus-visible: var(--ring-background);\n  }\n\n  .radio.outline {\n    --background: transparent;\n  }\n\n  .radio[data-selected=\"true\"] {\n    --background: var(--background-500);\n    @slot border {\n      --background: var(--background-500);\n    }\n  }\n\n  .radio[data-error=\"true\"]:not([data-selected=\"true\"]) {\n    @slot border {\n      --background-error: var(--danger-600);\n    }\n  }\n\n  .radio[data-disabled=\"true\"][data-selected=\"true\"] {\n    --background: var(--background-600);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .radio > .dot {\n    --background: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    background-clip: padding-box;\n    border: 4px solid transparent;\n  }\n\n  .radio[data-disabled=\"true\"] > .dot {\n    --background: var(--background-500);\n  }\n\n  .radio > .label {\n    --foreground: var(--foreground-300);\n\n    &[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n  }\n\n    .radio > .label[data-disabled] {\n      --foreground: var(--foreground-400);\n    }\n\n  .radio > :where(.description, .helper) {\n    --foreground: var(--foreground-400);\n\n    &[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n  }\n\n    .radio > :where(.description, .helper)[data-error=\"true\"] {\n      --foreground: var(--danger-600);\n    }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -51074,8 +52490,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "select": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .select {\n    --disabled-opacity: 0.5;\n    --background-radius: var(--radius-sm, 0.375rem);\n    --background-inner-radius: calc(\n      var(--background-radius) - slot(border, width, var(--border-width-base, 1px))\n    );\n\n    @slot trigger {\n      --padding-inline: calc(var(--spacing) * 2);\n      --padding-block: calc(var(--spacing) * 1.5);\n    };\n\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    height: fit-content;\n    align-self: center;\n\n    @apply p-0 gap-0 w-fit min-w-0 flex-none flex-row items-center;\n    position: relative;\n    overflow: visible;\n\n    background-color: var(--background);\n    color: var(--foreground);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n\n    @apply select-none cursor-pointer;\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      background-color: var(--background);\n    }\n\n    &[data-open=\"true\"] {\n      background-color: var(--background);\n    }\n\n    &:global(.group) {\n      height: 100%;\n      align-self: stretch;\n    }\n  }\n\n  .trigger {\n    @apply flex items-stretch flex-1 gap-0 w-full min-w-0 h-full min-h-0;\n\n    background: transparent;\n\n    @apply border-none cursor-pointer select-none;\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover .icon-section,\n      &:not([data-disabled]):hover .value-section:not(:empty) {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n\n    &[data-focus-visible=\"true\"] {\n      @apply outline-none;\n    }\n  }\n\n  .trigger-compact {\n    @apply flex-none w-auto;\n  }\n\n  /* A Value placed beside the Trigger is the label segment of one Select,\n     not another interactive control. Give that segment the same visual\n     treatment as a normal trigger value while keeping one focus target. */\n  .select.select-split > .value[data-external=\"true\"] {\n    align-items: center;\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n  }\n\n  .select button.trigger {\n    @apply p-0;\n  }\n\n  .value-section {\n    @apply flex items-center flex-1 min-w-0 gap-0.5;\n\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    &:only-child {\n      border-radius: var(--background-inner-radius);\n      justify-content: center;\n    }\n    &:empty {\n      flex: 0;\n      padding: 0;\n      min-width: auto;\n    }\n  }\n\n  .icon-section {\n    @apply flex items-center justify-center shrink-0;\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    border-radius: 0 var(--background-inner-radius) var(--background-inner-radius) 0;\n  }\n\n  .icon {\n    @apply flex items-center justify-center w-4 h-4 opacity-70;\n  }\n\n  .text {\n    @apply block flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .value {\n    @apply flex items-center flex-1 min-w-0 gap-2 bg-transparent border-none;\n    cursor: inherit;\n  }\n\n  .value-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    align-self: center;\n    color: var(--icon-foreground, currentColor);\n\n    > svg {\n      display: block;\n    }\n  }\n\n  .value-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content,\n  .sub-content {\n    --content-padding: calc(var(--spacing) * 2);\n    --content-radius: var(--radius-sm, 0.375rem);\n    --content-inner-radius: calc(\n      var(--content-radius) - slot(border, width, var(--border-width-base, 1px))\n    );\n    --disabled-opacity: 0.5;\n    @apply overflow-hidden;\n    outline: none;\n    background-color: var(--background);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--content-radius);\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n  }\n\n  .content-root:global(.select),\n  .sub-content-root:global(.select) {\n    display: block;\n    position: absolute;\n  }\n\n  .list {\n    @apply space-y-1;\n  }\n\n  .list-padding {\n    padding: var(--spacing, 0.25rem);\n  }\n\n  .item,\n  .sub-trigger {\n    @apply flex items-center gap-2 outline-none cursor-default select-none;\n    padding: calc(var(--content-padding) / 1.5) var(--content-padding);\n    border-radius: var(--content-inner-radius);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    /* Rows are List items; List paints their background and foreground. */\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .item-content {\n    @apply flex flex-col flex-1 min-w-0;\n  }\n\n  .item-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item-description {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: var(--foreground-muted);\n    @apply min-w-0 whitespace-normal break-words;\n  }\n\n  .item-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    color: var(--icon-foreground);\n  }\n\n  .item-with-description {\n    @apply items-start py-2;\n  }\n  .item-icon-with-description {\n    @apply mt-0.5;\n  }\n\n  .option-group-title {\n    @apply px-2 py-1;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground-muted, var(--foreground-400));\n  }\n\n  .separator {\n    @apply my-1;\n    margin-left: calc(var(--content-padding) / -2);\n    margin-right: calc(var(--content-padding) / -2);\n    height: 1px;\n    background-color: slot(border, background, transparent);\n  }\n\n  .placeholder {\n    color: var(--foreground-muted);\n  }\n\n  .icon-prefix {\n    @apply inline-flex items-center shrink-0;\n  }\n\n  .select[data-mode=\"multiple\"] .item {\n    gap: 0.5rem;\n  }\n\n  .search-trigger {\n    @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;\n    border-radius: var(--background-inner-radius);\n    &:focus-within {\n      @apply outline-none;\n      z-index: 1;\n    }\n  }\n\n  .search-trigger :global(.focus-indicator) {\n    display: none;\n  }\n\n  .search-value-section {\n    @apply p-0;\n    border-radius: var(--background-inner-radius) 0 0 var(--background-inner-radius);\n  }\n\n  .input {\n    padding-right: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) * 2 + 1rem);\n    @apply border-transparent rounded-none shadow-none bg-transparent;\n\n    &[data-focused],\n    &[data-focus-visible] {\n      @apply border-transparent shadow-none;\n    }\n  }\n\n  .search-content-input {\n    @apply rounded-none bg-transparent;\n  }\n\n  .search-icon-section {\n    @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;\n    padding-inline: slot(trigger, padding-inline, calc(var(--spacing) * 2));\n  }\n\n  .search-wrapper {\n    @apply overflow-hidden;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .empty-state {\n    @apply px-3 py-2;\n    color: var(--foreground-muted);\n  }\n\n  .content[data-placement=\"top\"] .search-wrapper {\n    border-radius: 0;\n    border-bottom: none;\n    border-top: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .sub-trigger {\n    &[data-open=\"true\"]:not([data-highlighted=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n    }\n  }\n\n  .sub-trigger-chevron {\n    @apply shrink-0 w-4 h-4;\n    margin-left: auto;\n    color: var(--foreground-400);\n  }\n\n  .sub-content {\n    @apply min-w-40 max-w-80;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .select {\n    --background: color-mix(in srgb, var(--background-800) 30%, transparent);\n    --focus-visible: var(--accent-400);\n    --focus-visible-background: var(--background-950);\n    --foreground: var(--foreground-300);\n    --size: var(--text-sm);\n    --icon-foreground: var(--foreground-400);\n    @slot border {\n      --background-focus: var(--background-600);\n    };\n    @slot trigger {\n      --background-hover: var(--background-800);\n    }\n  }\n\n  .select[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, transparent);\n  }\n\n  .select[data-open=\"true\"] {\n    --background: var(--background-800);\n  }\n\n  .select > .search-trigger .input {\n    @slot border {\n      --background: transparent;\n      --background-focus: transparent;\n    }\n  }\n\n  .select.ghost {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    @slot trigger {\n      --background-hover: var(--background-800);\n    }\n  }\n\n  .select.ghost[data-pressed=\"true\"]:not([data-disabled]),\n.select.ghost[data-open=\"true\"] {\n    --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n  }\n\n  .select > :where(.content, .sub-content) {\n    --background: var(--background-800);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .select > .content .search-content-input {\n    .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n  }\n    .select > .content .search-content-input .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    .select > .content .search-content-input [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger) {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Select options through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger):is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .select > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n\n  .select > .placeholder {\n    --foreground-muted: var(--foreground-400);\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .select {\n    --disabled-opacity: 0.5;\n    --background-radius: var(--radius-sm, 0.375rem);\n    /* Trigger sections inset themselves from this radius via --inset-radius. */\n    --radius: var(--background-radius);\n\n    @slot trigger {\n      --padding-inline: calc(var(--spacing) * 2);\n      --padding-block: calc(var(--spacing) * 1.5);\n    };\n\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    height: fit-content;\n    align-self: center;\n\n    @apply p-0 gap-0 w-fit min-w-0 flex-none flex-row items-center;\n    position: relative;\n    overflow: visible;\n\n    background-color: var(--background);\n    color: var(--foreground);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n\n    @apply select-none cursor-pointer;\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      background-color: var(--background);\n    }\n\n    &[data-open=\"true\"] {\n      background-color: var(--background);\n    }\n\n    &:global(.group) {\n      height: 100%;\n      align-self: stretch;\n    }\n  }\n\n  .trigger {\n    @apply flex items-stretch flex-1 gap-0 w-full min-w-0 h-full min-h-0;\n\n    background: transparent;\n\n    @apply border-none cursor-pointer select-none;\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover .icon-section,\n      &:not([data-disabled]):hover .value-section:not(:empty) {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n\n    &[data-focus-visible=\"true\"] {\n      @apply outline-none;\n    }\n  }\n\n  .trigger-compact {\n    @apply flex-none w-auto;\n  }\n\n  /* A Value placed beside the Trigger is the label segment of one Select,\n     not another interactive control. Give that segment the same visual\n     treatment as a normal trigger value while keeping one focus target. */\n  .select.select-split > .value[data-external=\"true\"] {\n    align-items: center;\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n  }\n\n  .select button.trigger {\n    @apply p-0;\n  }\n\n  .value-section {\n    @apply flex items-center flex-1 min-w-0 gap-0.5;\n\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    &:only-child {\n      border-radius: var(--inset-radius);\n      justify-content: center;\n    }\n    &:empty {\n      flex: 0;\n      padding: 0;\n      min-width: auto;\n    }\n  }\n\n  .icon-section {\n    @apply flex items-center justify-center shrink-0;\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: 0 var(--inset-radius) var(--inset-radius) 0;\n  }\n\n  .icon {\n    @apply flex items-center justify-center w-4 h-4 opacity-70;\n  }\n\n  .text {\n    @apply block flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .value {\n    @apply flex items-center flex-1 min-w-0 gap-2 bg-transparent border-none;\n    cursor: inherit;\n  }\n\n  .value-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    align-self: center;\n    color: var(--icon-foreground, currentColor);\n\n    > svg {\n      display: block;\n    }\n  }\n\n  .value-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content,\n  .sub-content {\n    --content-padding: calc(var(--spacing) * 2);\n    --content-radius: var(--radius-sm, 0.375rem);\n    /* Rows inset themselves from this radius via --inset-radius. */\n    --radius: var(--content-radius);\n    --disabled-opacity: 0.5;\n    @apply overflow-hidden;\n    outline: none;\n    background-color: var(--background);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--content-radius);\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n  }\n\n  .content-root:global(.select),\n  .sub-content-root:global(.select) {\n    display: block;\n    position: absolute;\n  }\n\n  .list {\n    @apply space-y-1;\n  }\n\n  .list-padding {\n    padding: var(--spacing, 0.25rem);\n    /* Rows below sit inside the panel border. */\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n  }\n\n  .item,\n  .sub-trigger {\n    @apply flex items-center gap-2 outline-none cursor-default select-none;\n    padding: calc(var(--content-padding) / 1.5) var(--content-padding);\n    /* Restate the panel radius and gap on the row itself: List also paints\n       these rows, so neither file may depend on stylesheet order. */\n    --radius: var(--content-radius);\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    /* Rows are List items; List paints their background and foreground. */\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .item-content {\n    @apply flex flex-col flex-1 min-w-0;\n  }\n\n  .item-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item-description {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: var(--foreground-muted);\n    @apply min-w-0 whitespace-normal break-words;\n  }\n\n  .item-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    color: var(--icon-foreground);\n  }\n\n  .item-with-description {\n    @apply items-start py-2;\n  }\n  .item-icon-with-description {\n    @apply mt-0.5;\n  }\n\n  .option-group-title {\n    @apply px-2 py-1;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground-muted, var(--foreground-400));\n  }\n\n  .separator {\n    @apply my-1;\n    margin-left: calc(var(--content-padding) / -2);\n    margin-right: calc(var(--content-padding) / -2);\n    height: 1px;\n    background-color: slot(border, background, transparent);\n  }\n\n  .placeholder {\n    color: var(--foreground-muted);\n  }\n\n  .icon-prefix {\n    @apply inline-flex items-center shrink-0;\n  }\n\n  .select[data-mode=\"multiple\"] .item {\n    gap: 0.5rem;\n  }\n\n  .search-trigger {\n    @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    &:focus-within {\n      @apply outline-none;\n      z-index: 1;\n    }\n  }\n\n  .search-trigger :global(.focus-indicator) {\n    display: none;\n  }\n\n  .search-value-section {\n    @apply p-0;\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n  }\n\n  .input {\n    padding-right: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) * 2 + 1rem);\n    @apply border-transparent rounded-none shadow-none bg-transparent;\n\n    &[data-focused],\n    &[data-focus-visible] {\n      @apply border-transparent shadow-none;\n    }\n  }\n\n  .search-content-input {\n    @apply rounded-none bg-transparent;\n  }\n\n  .search-icon-section {\n    @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;\n    padding-inline: slot(trigger, padding-inline, calc(var(--spacing) * 2));\n  }\n\n  .search-wrapper {\n    @apply overflow-hidden;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .empty-state {\n    @apply px-3 py-2;\n    color: var(--foreground-muted);\n  }\n\n  .content[data-placement=\"top\"] .search-wrapper {\n    border-radius: 0;\n    border-bottom: none;\n    border-top: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .sub-trigger {\n    &[data-open=\"true\"]:not([data-highlighted=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n    }\n  }\n\n  .sub-trigger-chevron {\n    @apply shrink-0 w-4 h-4;\n    margin-left: auto;\n    color: var(--foreground-400);\n  }\n\n  .sub-content {\n    @apply min-w-40 max-w-80;\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .select {\n    --background: var(--background-950);\n    --focus-visible: var(--accent-400);\n    --focus-visible-background: var(--background-950);\n    --foreground: var(--foreground-300);\n    --size: var(--text-sm);\n    --icon-foreground: var(--foreground-400);\n    @slot border {\n      --background-focus: var(--background-700);\n    };\n    @slot trigger {\n      --background-hover: var(--background-900);\n    }\n  }\n\n  .select[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, transparent);\n  }\n\n  .select[data-open=\"true\"] {\n    --background: var(--background-900);\n  }\n\n  .select > .search-trigger .input {\n    @slot border {\n      --background: transparent;\n      --background-focus: transparent;\n    }\n  }\n\n  .select.ghost {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    @slot trigger {\n      --background-hover: var(--background-800);\n    }\n  }\n\n  .select.ghost[data-pressed=\"true\"]:not([data-disabled]),\n.select.ghost[data-open=\"true\"] {\n    --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n  }\n\n  .select > :where(.content, .sub-content) {\n    --background: var(--background-800);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .select > .content .search-content-input {\n    .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n  }\n    .select > .content .search-content-input .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    .select > .content .search-content-input [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger) {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Select options through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--hover-background);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger):is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--hover-background);\n      --foreground: var(--foreground-100);\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .select > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n\n  .select > .placeholder {\n    --foreground-muted: var(--foreground-400);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -51102,31 +52518,13 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--background-inner-radius",
-        "value": "calc(\n      var(--background-radius) - slot(border, width, var(--border-width-base, 1px))\n    )",
+        "name": "--radius",
+        "value": "var(--background-radius)",
         "selector": ".select",
         "atRules": [],
         "referencedVars": [
-          "--background-radius",
-          "--border-width-base"
+          "--background-radius"
         ]
-      },
-      {
-        "name": "--border-width-base",
-        "value": "unset",
-        "selector": ".select",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".select",
-        "atRules": [],
-        "referencedVars": [
-          "--border-width-base"
-        ],
-        "slot": "border"
       },
       {
         "name": "--padding-inline",
@@ -51205,6 +52603,23 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".select",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".select",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".select",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
       },
       {
         "name": "--style",
@@ -51301,7 +52716,33 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "trigger"
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".select.select-split > .value[data-external=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".select.select-split > .value[data-external=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".select.select-split > .value[data-external=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".select.select-split > .value[data-external=\"true\"]",
         "atRules": [],
@@ -51425,7 +52866,33 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "trigger"
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".value-section",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".value-section",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".value-section",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".value-section",
         "atRules": [],
@@ -51448,7 +52915,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".value-section:only-child",
         "atRules": [],
@@ -51512,7 +52979,33 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "trigger"
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".icon-section",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".icon-section",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".icon-section",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".icon-section",
         "atRules": [],
@@ -51558,14 +53051,27 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--content-inner-radius",
-        "value": "calc(\n      var(--content-radius) - slot(border, width, var(--border-width-base, 1px))\n    )",
+        "name": "--radius",
+        "value": "var(--content-radius)",
         "selector": ".content,\n  .sub-content",
         "atRules": [],
         "referencedVars": [
-          "--content-radius",
-          "--border-width-base"
+          "--content-radius"
         ]
+      },
+      {
+        "name": "--disabled-opacity",
+        "value": "0.5",
+        "selector": ".content,\n  .sub-content",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".content,\n  .sub-content",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--border-width-base",
@@ -51583,20 +53089,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           "--border-width-base"
         ],
         "slot": "border"
-      },
-      {
-        "name": "--disabled-opacity",
-        "value": "0.5",
-        "selector": ".content,\n  .sub-content",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--background",
-        "value": "unset",
-        "selector": ".content,\n  .sub-content",
-        "atRules": [],
-        "referencedVars": []
       },
       {
         "name": "--style",
@@ -51629,6 +53121,32 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".list-padding",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".list-padding",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".list-padding",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
         "name": "--content-padding",
         "value": "unset",
         "selector": ".item,\n  .sub-trigger",
@@ -51636,7 +53154,49 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--content-inner-radius",
+        "name": "--radius",
+        "value": "var(--content-radius)",
+        "selector": ".item,\n  .sub-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--content-radius"
+        ]
+      },
+      {
+        "name": "--content-radius",
+        "value": "unset",
+        "selector": ".item,\n  .sub-trigger",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".item,\n  .sub-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".item,\n  .sub-trigger",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".item,\n  .sub-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".item,\n  .sub-trigger",
         "atRules": [],
@@ -51823,14 +53383,66 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".search-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
         "value": "unset",
         "selector": ".search-trigger",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--background-inner-radius",
+        "name": "--width",
+        "value": "unset",
+        "selector": ".search-trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
+        "value": "unset",
+        "selector": ".search-trigger",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--inset-gap",
+        "value": "slot(border, width, var(--border-width-base, 1px))",
+        "selector": ".search-value-section",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ]
+      },
+      {
+        "name": "--border-width-base",
+        "value": "unset",
+        "selector": ".search-value-section",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".search-value-section",
+        "atRules": [],
+        "referencedVars": [
+          "--border-width-base"
+        ],
+        "slot": "border"
+      },
+      {
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".search-value-section",
         "atRules": [],
@@ -52625,8 +54237,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     "styleableGroups": []
   },
   "slider": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .slider {\n    --disabled-opacity: 0.6;\n    @apply relative flex w-full items-center;\n    min-inline-size: var(--inline-size, 3.5rem);\n    min-block-size: var(--hit-size, 1.5rem);\n    touch-action: none;\n    user-select: none;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    --length: calc(var(--thickness) * var(--ratio, 0.5));\n    @apply relative flex grow items-center;\n    flex-grow: 1;\n    height: var(--thickness);\n    overflow: visible;\n    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));\n    background: slot(track, background, var(--background));\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: 0;\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    @apply absolute;\n    z-index: 1;\n    display: block;\n    border-radius: inherit;\n    pointer-events: none;\n    background: slot(range, background, var(--background));\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--length));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    @apply absolute block;\n    z-index: 2;\n    top: var(--top, 0);\n    box-sizing: border-box;\n    width: var(--thumb-inline-size);\n    height: var(--thumb-block-size);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));\n    outline: none;\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    box-shadow: slot(thumb, shadow, none);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .slider[data-orientation=\"horizontal\"] .range {\n    top: 0;\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"horizontal\"] .thumb {\n    left: var(--position, 0%);\n  }\n\n  .slider[data-orientation=\"vertical\"] {\n    justify-content: center;\n    min-inline-size: auto;\n    width: fit-content;\n  }\n\n  .slider[data-orientation=\"vertical\"] .track {\n    width: var(--thickness);\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .range {\n    left: 0;\n    width: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb {\n    left: 50%;\n    top: auto;\n    bottom: var(--position, 0%);\n    width: var(--thumb-block-size);\n    height: var(--thumb-inline-size);\n    transform: translate(-50%, 50%);\n  }\n\n  .slider[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .slider[data-disabled=\"true\"] .range {\n    background: slot(range, background-disabled, slot(range, background, var(--background)));\n  }\n\n  .thumb[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));\n    background-clip: padding-box;\n  }\n\n  .thumb[data-pressed=\"true\"] {\n    transform: var(--transform, translateX(-50%));\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb[data-pressed=\"true\"] {\n    transform: translate(-50%, 50%);\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .slider {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .slider {\n    --size: var(--control-size);\n    @slot border {\n      --background: var(--control-border);\n    }\n    @slot track {\n      --background: var(--control-track);\n      --radius: var(--control-radius);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --background-disabled: var(--control-thumb-disabled);\n      --border: var(--control-thumb-border);\n      --radius: var(--control-thumb-radius);\n    }\n    @slot range {\n      --background: var(--control-fill);\n      --background-disabled: var(--control-disabled);\n    }\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .slider {\n    --disabled-opacity: 0.6;\n    @apply relative flex w-full items-center;\n    min-inline-size: var(--inline-size, 3.5rem);\n    min-block-size: var(--hit-size, 1.5rem);\n    touch-action: none;\n    user-select: none;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    --length: calc(var(--thickness) * var(--ratio, 0.5));\n    --travel-inset: slot(track, padding, var(--padding, 0px));\n    @apply relative flex grow items-center;\n    flex-grow: 1;\n    height: var(--thickness);\n    overflow: visible;\n    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));\n    background: slot(track, background, var(--background));\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: var(--travel-inset);\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    @apply absolute;\n    z-index: 1;\n    display: block;\n    border-radius: inherit;\n    pointer-events: none;\n    background: slot(range, background, var(--background));\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--length));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    @apply absolute block;\n    z-index: 2;\n    top: var(--top, 0);\n    box-sizing: border-box;\n    width: var(--thumb-inline-size);\n    height: var(--thumb-block-size);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));\n    outline: none;\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    box-shadow: slot(thumb, shadow, none);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .slider[data-orientation=\"horizontal\"] .range {\n    top: 0;\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"horizontal\"] .thumb {\n    left: var(--position, 0%);\n  }\n\n  .slider[data-orientation=\"vertical\"] {\n    justify-content: center;\n    min-inline-size: auto;\n    width: fit-content;\n  }\n\n  .slider[data-orientation=\"vertical\"] .track {\n    width: var(--thickness);\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .range {\n    left: 0;\n    width: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb {\n    left: 50%;\n    top: auto;\n    bottom: var(--position, 0%);\n    width: var(--thumb-block-size);\n    height: var(--thumb-inline-size);\n    transform: translate(-50%, 50%);\n  }\n\n  .slider[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .slider[data-disabled=\"true\"] .range {\n    background: slot(range, background-disabled, slot(range, background, var(--background)));\n  }\n\n  .thumb[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));\n    background-clip: padding-box;\n  }\n\n  .thumb[data-pressed=\"true\"] {\n    transform: var(--transform, translateX(-50%));\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb[data-pressed=\"true\"] {\n    transform: translate(-50%, 50%);\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .slider {\n    --size: calc(var(--spacing-md) * 0.95);\n    @slot thumb {\n      /* Drag handle: transparent border insets the painted pill inside the hit area. */\n      --border: 4px solid transparent;\n      --radius: 999px;\n    }\n    @slot track {\n      --padding: 2px;\n      --radius: calc(calc(var(--spacing-sm) * 0.35) - var(--border-width-base));\n    }\n    @slot range {\n      --background-disabled: var(--background-600);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -52692,6 +54304,32 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".track",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--travel-inset",
+        "value": "slot(track, padding, var(--padding, 0px))",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--padding"
+        ]
+      },
+      {
+        "name": "--padding",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--padding",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--padding"
+        ],
+        "slot": "track"
       },
       {
         "name": "--radius",
@@ -52769,6 +54407,13 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "atRules": [],
         "referencedVars": [],
         "slot": "border"
+      },
+      {
+        "name": "--travel-inset",
+        "value": "unset",
+        "selector": ".surface",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--background",
@@ -53249,8 +54894,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     }
   },
   "switch": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .switch {\n    --radius: 9999px;\n\n    --width: 2.4rem;\n    --height: 1.35rem;\n    @slot thumb {\n      --size: 1.05rem;\n      --offset: 0.15rem;\n    }\n\n    --disabled-opacity: 0.6;\n\n    @apply relative inline-flex shrink-0 cursor-pointer items-center;\n    user-select: none;\n    border-radius: var(--radius);\n    inline-size: var(--width);\n    block-size: var(--height);\n  }\n\n  .switch > .switch-track {\n    @apply absolute inset-0;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(track, background, var(--background, transparent));\n    border: slot(track, width, var(--border-width-base, 1px)) slot(track, style, solid)\n      slot(track, background-border, var(--background-border, transparent));\n    border-radius: slot(track, radius, var(--radius));\n  }\n\n  .switch > .input {\n    @apply absolute inset-0 h-full w-full opacity-0;\n    cursor: inherit;\n  }\n\n  .switch > .switch-thumb {\n    @apply absolute top-0 bottom-0 my-auto;\n    inset-inline-start: slot(thumb, offset, 0.15rem);\n    inline-size: slot(thumb, size, 1.05rem);\n    block-size: slot(thumb, height, slot(thumb, size, 1.05rem));\n    transition:\n      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(thumb, background, var(--foreground, currentColor));\n    border-radius: slot(thumb, radius, calc(var(--radius) - slot(track, width, var(--border-width-base, 1px))));\n    border: slot(thumb, border, none);\n    background-clip: padding-box;\n    box-sizing: border-box;\n    z-index: 1;\n    pointer-events: none;\n  }\n\n  .switch[data-selected=\"true\"] > .switch-track {\n    background-color: slot(track, background-selected, slot(track, background, var(--background, transparent)));\n    border-color: slot(track, background-border-selected, slot(track, background-border, var(--background-border, transparent)));\n  }\n\n  .switch[data-selected=\"true\"] > .switch-thumb {\n    background-color: slot(thumb, background-selected, slot(thumb, background, var(--foreground, currentColor)));\n    inset-inline-start: calc(var(--width) - slot(thumb, size, 1.05rem) - slot(thumb, offset, 0.15rem));\n  }\n\n  .switch[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .switch.switch-sm {\n    --width: 2rem;\n    --height: 1.125rem;\n    @slot thumb {\n      --size: 0.875rem;\n      --offset: 0.125rem;\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .switch {\n    --control-thumb: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));\n    --control-radius: calc(var(--spacing-sm) * 0.35);\n  }\n\n  .switch {\n    --focus-visible: var(--ring-background);\n    --width: 2.0rem;\n    --radius: var(--control-radius);\n    --thumb-border-width: 4px;\n    --thumb-inner-radius: 3px;\n    @slot track {\n      --background: var(--control-track);\n      --background-selected: var(--control-fill);\n      --background-border: var(--control-border);\n      --background-border-selected: var(--control-fill);\n    }\n    @slot thumb {\n      --background: var(--control-thumb);\n      --size: calc(var(--height) * 0.75);\n      --height: var(--height);\n      --offset: 0px;\n      --border: var(--thumb-border-width) solid transparent;\n      /* The padding-box background loses the transparent border's width from its radius. */\n      --radius: calc(\n        var(--thumb-inner-radius) + var(--thumb-border-width)\n      );\n    }\n  }\n\n  .switch[data-size=\"sm\"] {\n    --width: 1.75rem;\n  }\n\n  .switch[data-disabled=\"true\"] {\n    --control-fill: var(--control-disabled);\n    --control-thumb: var(--control-thumb-disabled);\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .switch {\n    --radius: 9999px;\n\n    --width: 2.4rem;\n    --height: 1.35rem;\n    @slot thumb {\n      --size: 1.05rem;\n      --offset: 0.15rem;\n    }\n\n    --disabled-opacity: 0.6;\n\n    @apply relative inline-flex shrink-0 cursor-pointer items-center;\n    user-select: none;\n    border-radius: var(--radius);\n    inline-size: var(--width);\n    block-size: var(--height);\n  }\n\n  .switch > .switch-track {\n    @apply absolute inset-0;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(track, background, var(--background, transparent));\n    border: slot(track, width, var(--border-width-base, 1px)) slot(track, style, solid)\n      slot(track, background-border, var(--background-border, transparent));\n    border-radius: slot(track, radius, var(--radius));\n  }\n\n  .switch > .input {\n    @apply absolute inset-0 h-full w-full opacity-0;\n    cursor: inherit;\n  }\n\n  .switch > .switch-thumb {\n    @apply absolute top-0 bottom-0 my-auto;\n    --inset-gap: slot(thumb, offset, 0.15rem);\n\n    inset-inline-start: var(--inset-gap);\n    inline-size: slot(thumb, size, 1.05rem);\n    block-size: slot(thumb, height, slot(thumb, size, 1.05rem));\n    transition:\n      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(thumb, background, var(--foreground, currentColor));\n    border-radius: slot(thumb, radius, var(--inset-radius));\n    border: slot(thumb, border, none);\n    background-clip: padding-box;\n    box-sizing: border-box;\n    z-index: 1;\n    pointer-events: none;\n  }\n\n  .switch[data-selected=\"true\"] > .switch-track {\n    background-color: slot(track, background-selected, slot(track, background, var(--background, transparent)));\n    border-color: slot(track, background-border-selected, slot(track, background-border, var(--background-border, transparent)));\n  }\n\n  .switch[data-selected=\"true\"] > .switch-thumb {\n    background-color: slot(thumb, background-selected, slot(thumb, background, var(--foreground, currentColor)));\n    inset-inline-start: calc(var(--width) - slot(thumb, size, 1.05rem) - slot(thumb, offset, 0.15rem));\n  }\n\n  .switch[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .switch.switch-sm {\n    --width: 2rem;\n    --height: 1.125rem;\n    @slot thumb {\n      --size: 0.875rem;\n      --offset: 0.125rem;\n    }\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .switch {\n    --focus-visible: var(--ring-background);\n    --width: 2rem;\n    --height: 1.2rem;\n    --radius: calc(var(--height) * 0.30);\n    --thumb-padding: 3px;\n    --thumb-height: calc(var(--height) - var(--thumb-padding) * 2);\n    --thumb-size: var(--thumb-height);\n    @slot track {\n      --background-border: var(--background-700);\n      --background-border-selected: var(--background-500);\n    }\n    @slot thumb {\n      --background: var(--background-500);\n      --background-selected: var(--foreground-300);\n      --size: var(--thumb-size);\n      --height: var(--thumb-height);\n      --offset: var(--thumb-padding);\n    }\n  }\n\n  .switch[data-size=\"sm\"] {\n    --width: 1.75rem;\n    --height: 1.05rem;\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -53406,6 +55051,13 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "track"
       },
       {
+        "name": "--inset-gap",
+        "value": "slot(thumb, offset, 0.15rem)",
+        "selector": ".switch > .switch-thumb",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
         "name": "--offset",
         "value": "unset",
         "selector": ".switch > .switch-thumb",
@@ -53479,14 +55131,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "thumb"
       },
       {
-        "name": "--radius",
-        "value": "unset",
-        "selector": ".switch > .switch-thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--border-width-base",
+        "name": "--inset-radius",
         "value": "unset",
         "selector": ".switch > .switch-thumb",
         "atRules": [],
@@ -53498,20 +55143,9 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".switch > .switch-thumb",
         "atRules": [],
         "referencedVars": [
-          "--radius",
-          "--border-width-base"
+          "--inset-radius"
         ],
         "slot": "thumb"
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".switch > .switch-thumb",
-        "atRules": [],
-        "referencedVars": [
-          "--border-width-base"
-        ],
-        "slot": "track"
       },
       {
         "name": "--border",
@@ -53900,7 +55534,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     }
   },
   "table": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    @apply w-full min-w-0 max-w-full;\n    /* Keep the public `.table` theme hook from matching Tailwind's display utility. */\n    display: block !important;\n  }\n\n  /*\n   * `clip` keeps the rounded corners without making the container a scroll\n   * container, so a sticky header resolves against whatever ancestor really\n   * scrolls. Only the measured overflow case swaps in a scroll port, since a\n   * box that scrolls horizontally scrolls on both axes and would capture the\n   * header itself.\n   */\n  .container {\n    @apply w-full min-w-0 max-w-full rounded-sm;\n    overflow: clip;\n    /* Keep the public `.container` theme hook from applying Tailwind's breakpoint max-widths. */\n    max-width: 100% !important;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    background-color: var(--container-background, var(--background));\n  }\n\n  /* The Scroll port inside handles the overflow in this mode. */\n  .container[data-scroll=\"horizontal\"] {\n    overflow: visible;\n  }\n\n  /* Rows scroll on their own, so the container just hands down its height. */\n  .container[data-scroll=\"rows\"] {\n    display: flex;\n    height: 100%;\n    min-height: 0;\n  }\n\n  .scroller {\n    @apply block w-full min-w-0 max-w-full;\n    border-radius: inherit;\n    overscroll-behavior-inline: contain;\n  }\n\n  .scroller :global(.mask) {\n    border-radius: inherit;\n  }\n\n  .scrollerTrack {\n    background-color: var(--background, transparent);\n  }\n\n  .scrollerThumb {\n    background-color: var(--background-500, var(--foreground));\n  }\n\n  .table {\n    @apply w-full;\n    display: table;\n    border-collapse: collapse;\n    min-width: max-content;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    font-family: var(--font-mono, ui-monospace, monospace);\n    font-size: var(--text-code-size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));\n    letter-spacing: var(--letter-spacing-code, 0);\n    line-height: var(--leading-code, 1.5);\n  }\n\n  .header {\n    display: table-header-group;\n    background-color: var(--background);\n  }\n\n  .body {\n    display: table-row-group;\n    background-color: var(--background);\n  }\n\n  .headerRow {\n    display: table-row;\n    background-color: var(--background);\n  }\n\n  .table .headerCell {\n    @apply px-3 py-2.5 text-left;\n    display: table-cell;\n    background-color: var(--background);\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    white-space: nowrap;\n    border: 0;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  /*\n   * `rows` layout: the header is a plain box above the scroll port instead of a\n   * sticky cell inside it, so it keeps ordinary borders, never shifts by a\n   * hairline, and the scrollbar runs beside the rows only. Header and body are\n   * separate boxes now, so every row lines up on one shared grid template.\n   */\n  .table.rowsLayout {\n    /* Grid, not flex: the row track hands the scroll port a definite height. */\n    display: grid;\n    grid-template-rows: auto minmax(0, 1fr);\n    height: 100%;\n    min-width: 0;\n    min-height: 0;\n  }\n\n  .table.rowsLayout .header {\n    display: block;\n  }\n\n  .bodyScroller {\n    @apply block w-full min-w-0;\n    min-height: 0;\n    overscroll-behavior-block: contain;\n  }\n\n  .table.rowsLayout .body {\n    display: block;\n  }\n\n  .table.rowsLayout .headerRow,\n  .table.rowsLayout .row,\n  .table.rowsLayout .emptyRow {\n    display: grid;\n    grid-template-columns: var(--table-columns, 1fr);\n    align-items: stretch;\n  }\n\n  /*\n   * Grid, not flex: a lone child still stretches to the cell's width, so\n   * `justify-end`, `w-full` children and truncation all behave like they did\n   * in a table cell, while `align-items` keeps the vertical centring.\n   */\n  .table.rowsLayout .headerCell,\n  .table.rowsLayout .cell {\n    display: grid;\n    align-items: center;\n    align-content: center;\n    min-width: 0;\n  }\n\n  .table.rowsLayout .emptyState {\n    display: block;\n    grid-column: 1 / -1;\n  }\n\n  .row {\n    display: table-row;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row[data-interactive=\"true\"] {\n    @apply cursor-pointer;\n  }\n\n  .row:hover:not([data-disabled=\"true\"]) .cell {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .row[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity, 0.5);\n  }\n\n  .row[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-ring);\n    outline-offset: -2px;\n  }\n\n  .interactive {\n    @apply cursor-pointer;\n  }\n\n  .table .cell {\n    @apply px-3 py-2.5 align-middle;\n    display: table-cell;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 0;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row:last-child .cell {\n    border-bottom: none;\n  }\n\n  .emptyRow {\n    border-bottom: none;\n  }\n\n  .emptyRow {\n    display: table-row;\n  }\n\n  .emptyState {\n    @apply px-4 py-8 text-center;\n    background-color: var(--background);\n    color: var(--foreground);\n  }\n\n  .emptyState {\n    display: table-cell;\n  }\n\n  .filterBar {\n    @apply mb-4 rounded-xs border p-4;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    background-color: var(--background);\n  }\n\n  .filterBar {\n    display: block;\n  }\n\n  .filterGrid {\n    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;\n    background-color: var(--background);\n  }\n\n  .filterGrid {\n    display: grid;\n  }\n\n  .filterField {\n    @apply min-w-0;\n  }\n\n  .filterLabel {\n    @apply mb-2 block;\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .filterLabel {\n    display: block;\n  }\n\n  .filterInput {\n    @apply w-full;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    @apply w-full min-w-0 max-w-full;\n    /* Keep the public `.table` theme hook from matching Tailwind's display utility. */\n    display: block !important;\n  }\n\n  /*\n   * `clip` keeps the rounded corners without making the container a scroll\n   * container, so a sticky header resolves against whatever ancestor really\n   * scrolls. Only the measured overflow case swaps in a scroll port, since a\n   * box that scrolls horizontally scrolls on both axes and would capture the\n   * header itself.\n   */\n  .container {\n    @apply w-full min-w-0 max-w-full rounded-sm;\n    overflow: clip;\n    /* Keep the public `.container` theme hook from applying Tailwind's breakpoint max-widths. */\n    max-width: 100% !important;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    background-color: var(--container-background, var(--background));\n  }\n\n  /* The Scroll port inside handles the overflow in this mode. */\n  .container[data-scroll=\"horizontal\"] {\n    overflow: visible;\n  }\n\n  /* Rows scroll on their own, so the container just hands down its height. */\n  .container[data-scroll=\"rows\"] {\n    display: flex;\n    height: 100%;\n    min-height: 0;\n  }\n\n  .scroller {\n    @apply block w-full min-w-0 max-w-full;\n    border-radius: inherit;\n    overscroll-behavior-inline: contain;\n  }\n\n  .scroller :global(.mask) {\n    border-radius: inherit;\n  }\n\n  .scrollerTrack {\n    background-color: var(--background, transparent);\n  }\n\n  .scrollerThumb {\n    background-color: var(--background-500, var(--foreground));\n  }\n\n  .table {\n    @apply w-full;\n    display: table;\n    border-collapse: collapse;\n    min-width: max-content;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    letter-spacing: var(--letter-spacing-code, 0);\n    line-height: var(--leading-code, 1.5);\n  }\n\n  .header {\n    display: table-header-group;\n    background-color: var(--background);\n  }\n\n  .body {\n    display: table-row-group;\n    background-color: var(--background);\n  }\n\n  .headerRow {\n    display: table-row;\n    background-color: var(--background);\n  }\n\n  .table .headerCell {\n    @apply px-3 py-2.5 text-left;\n    display: table-cell;\n    background-color: var(--background);\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    white-space: nowrap;\n    border: 0;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  /*\n   * `rows` layout: the header is a plain box above the scroll port instead of a\n   * sticky cell inside it, so it keeps ordinary borders, never shifts by a\n   * hairline, and the scrollbar runs beside the rows only. Header and body are\n   * separate boxes now, so every row lines up on one shared grid template.\n   */\n  .table.rowsLayout {\n    /* Grid, not flex: the row track hands the scroll port a definite height. */\n    display: grid;\n    grid-template-rows: auto minmax(0, 1fr);\n    height: 100%;\n    min-width: 0;\n    min-height: 0;\n  }\n\n  .table.rowsLayout .header {\n    display: block;\n  }\n\n  .bodyScroller {\n    @apply block w-full min-w-0;\n    min-height: 0;\n    overscroll-behavior-block: contain;\n  }\n\n  .table.rowsLayout .body {\n    display: block;\n  }\n\n  .table.rowsLayout .headerRow,\n  .table.rowsLayout .row,\n  .table.rowsLayout .emptyRow {\n    display: grid;\n    grid-template-columns: var(--table-columns, 1fr);\n    align-items: stretch;\n  }\n\n  /*\n   * Grid, not flex: a lone child still stretches to the cell's width, so\n   * `justify-end`, `w-full` children and truncation all behave like they did\n   * in a table cell, while `align-items` keeps the vertical centring.\n   */\n  .table.rowsLayout .headerCell,\n  .table.rowsLayout .cell {\n    display: grid;\n    align-items: center;\n    align-content: center;\n    min-width: 0;\n  }\n\n  .table.rowsLayout .emptyState {\n    display: block;\n    grid-column: 1 / -1;\n  }\n\n  .row {\n    display: table-row;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row[data-interactive=\"true\"] {\n    @apply cursor-pointer;\n  }\n\n  .row:hover:not([data-disabled=\"true\"]) .cell {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .row[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: var(--disabled-opacity, 0.5);\n  }\n\n  .row[data-focus-visible=\"true\"] {\n    outline: 2px solid var(--focus-ring);\n    outline-offset: -2px;\n  }\n\n  .interactive {\n    @apply cursor-pointer;\n  }\n\n  .table .cell {\n    @apply px-3 py-2.5 align-middle;\n    display: table-cell;\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 0;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .row:last-child .cell {\n    border-bottom: none;\n  }\n\n  .emptyRow {\n    border-bottom: none;\n  }\n\n  .emptyRow {\n    display: table-row;\n  }\n\n  .emptyState {\n    @apply px-4 py-8 text-center;\n    background-color: var(--background);\n    color: var(--foreground);\n  }\n\n  .emptyState {\n    display: table-cell;\n  }\n\n  .filterBar {\n    @apply mb-4 rounded-xs border p-4;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    background-color: var(--background);\n  }\n\n  .filterBar {\n    display: block;\n  }\n\n  .filterGrid {\n    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;\n    background-color: var(--background);\n  }\n\n  .filterGrid {\n    display: grid;\n  }\n\n  .filterField {\n    @apply min-w-0;\n  }\n\n  .filterLabel {\n    @apply mb-2 block;\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .filterLabel {\n    display: block;\n  }\n\n  .filterInput {\n    @apply w-full;\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .table {\n    --background: var(--background-950);\n    --focus-ring: var(--accent-400);\n    --foreground: var(--foreground-300);\n  }\n\n  .table > .container {\n    .header {\n      --background: var(--background-900);\n      --foreground: var(--foreground-400);\n    }\n\n    .body > .item {\n      --background: transparent;\n      --foreground: var(--foreground-300);\n\n      &:is(:hover, [data-selected=\"true\"]):not([data-disabled]) {\n        --background: var(--background-900);\n      }\n\n      .empty-state {\n        --foreground: var(--foreground-400);\n      }\n    }\n  }\n    .table > .container .header {\n      --background: var(--background-900);\n      --foreground: var(--foreground-400);\n    }\n\n    .table > .container .body > .item {\n      --background: transparent;\n      --foreground: var(--foreground-300);\n\n      &:is(:hover, [data-selected=\"true\"]):not([data-disabled]) {\n        --background: var(--background-900);\n      }\n\n      .empty-state {\n        --foreground: var(--foreground-400);\n      }\n    }\n\n      .table > .container .body > .item:is(:hover, [data-selected=\"true\"]):not([data-disabled]) {\n        --background: var(--background-900);\n      }\n\n      .table > .container .body > .item .empty-state {\n        --foreground: var(--foreground-400);\n      }\n\n  .table > .filter .label {\n    --foreground: var(--foreground-400);\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -53985,45 +55619,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--foreground",
-        "value": "unset",
-        "selector": ".table",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--font-mono",
-        "value": "unset",
-        "selector": ".table",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--text-code-size",
-        "value": "unset",
-        "selector": ".table",
-        "atRules": [],
-        "referencedVars": [
-          "--text-sm"
-        ]
-      },
-      {
-        "name": "--text-sm",
-        "value": "unset",
-        "selector": ".table",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--font-weight-code",
-        "value": "unset",
-        "selector": ".table",
-        "atRules": [],
-        "referencedVars": [
-          "--font-weight-body-normal"
-        ]
-      },
-      {
-        "name": "--font-weight-body-normal",
         "value": "unset",
         "selector": ".table",
         "atRules": [],
@@ -54555,8 +56150,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "tabs": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .tabs {\n    @apply flex w-full flex-col;\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: row;\n    }\n  }\n\n  .list {\n    @apply relative grid w-full items-center gap-3 py-1;\n    grid-auto-flow: column;\n    grid-auto-columns: max-content;\n    justify-content: start;\n    border-radius: var(--radius-sm, 0.375rem);\n\n    &[data-orientation=\"vertical\"] {\n      grid-auto-flow: row;\n      grid-auto-columns: auto;\n      grid-auto-rows: max-content;\n      width: fit-content;\n      min-width: 0;\n      height: auto;\n      align-self: flex-start;\n    }\n\n    &:global(.underline) {\n      text-decoration: none !important;\n    }\n\n    &[data-variant=\"underline\"] {\n      background-color: transparent;\n      border-radius: 0;\n      padding: 0 0 4px;\n    }\n\n    &[data-variant=\"underline\"][data-orientation=\"vertical\"] {\n      border-bottom: none;\n      /* The vertical underline divider is outside the surface-border contract. */\n      border-left: var(--border-width-base) solid var(--border);\n      align-items: stretch;\n      padding: 0 0 0 4px;\n    }\n  }\n\n  .indicator {\n    @apply absolute;\n    background-color: var(--background);\n    box-sizing: border-box;\n    border-radius: var(--radius-sm);\n    z-index: 0;\n    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);\n    pointer-events: none;\n  }\n\n  .indicator-fallback {\n    z-index: 0;\n  }\n\n  .indicator-fallback-frame {\n    display: none;\n    position: absolute;\n    inset: 0;\n    min-width: 0;\n    min-height: 0;\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .trigger[data-selected=\"true\"] + .indicator-fallback-frame {\n    display: block;\n  }\n\n  .indicator-underline {\n    border-radius: 0;\n  }\n\n  .trigger {\n    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;\n    --ring-z: 1;\n    height: auto;\n    background-color: var(--background);\n    border: none;\n    border-radius: var(--radius-sm);\n    color: var(--foreground);\n    outline: none;\n    box-shadow: none;\n    transition:\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n    }\n\n    &[data-selected=\"true\"] {\n      cursor: pointer;\n\n      .list:not([data-variant=\"underline\"]) & {\n        background-color: transparent;\n        transition-property: color;\n      }\n    }\n\n    &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not(\n        [data-indicator-fallback=\"true\"]\n      ) {\n      .list.underline & {\n        border-bottom-color: var(--underline-border);\n      }\n\n      .list.underline[data-orientation=\"vertical\"] & {\n        border-bottom-color: transparent;\n        border-left-color: var(--underline-border);\n      }\n    }\n\n    &[data-disabled=\"true\"] {\n      --disabled-opacity: 0.5;\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n\n    .list.underline & {\n      background-color: var(--background);\n      background-clip: padding-box;\n      border-radius: var(--radius-sm, 0.375rem);\n      border-bottom: 2px solid transparent;\n    }\n\n    .list.underline[data-orientation=\"vertical\"] & {\n      border-bottom: none;\n      border-left: 2px solid transparent;\n    }\n\n    .list.underline[data-orientation=\"vertical\"]\n      &[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not(\n        [data-indicator-fallback=\"true\"]\n      ) {\n      border-left-color: var(--underline-border);\n      border-bottom: none;\n    }\n  }\n\n  .icon {\n    @apply flex h-4 w-4 shrink-0 items-center justify-center;\n  }\n\n  .content {\n    @apply w-full p-0 outline-none;\n    flex: 1;\n    padding-top: 1rem;\n\n    &[data-orientation=\"vertical\"] {\n      flex: 1;\n      width: 100%;\n    }\n\n    &:focus-visible {\n      outline: 2px solid var(--focus-visible);\n      outline-offset: 2px;\n    }\n  }\n\n  @media (max-width: 640px) {\n    .list {\n      padding: 0.125rem;\n\n      &[data-variant=\"underline\"] {\n        padding: 0 0 4px;\n      }\n    }\n\n    .trigger {\n      @apply px-1 py-1;\n      .list.underline & {\n        margin: 0.5rem 0.75rem;\n      }\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .tabs > .indicator,\n.tabs > .indicator-fallback-frame > .indicator {\n    --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n  }\n\n  .tabs > .indicator.underline,\n.tabs > .indicator-fallback-frame > .indicator.underline {\n    --background: var(--accent-500);\n  }\n  .tabs > .list.underline[data-orientation=\"vertical\"] {\n    /* Tabs' vertical underline divider remains outside the surface-border contract. */\n    --border: var(--background-700);\n  }\n\n  .tabs > .trigger {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --underline-border: var(--accent-500);\n  }\n\n  .tabs > .trigger[data-hovered=\"true\"]:not([data-disabled]):not([data-selected=\"true\"]) {\n    --background: var(--background-900);\n    --foreground: var(--foreground-200);\n  }\n\n  .tabs > .trigger[data-pressed=\"true\"]:not([data-disabled]):not([data-selected=\"true\"]) {\n    --background: var(--background-800);\n    --foreground: var(--foreground-50);\n  }\n\n  .tabs > .trigger[data-selected=\"true\"] {\n    --foreground: var(--foreground-50);\n  }\n\n  .tabs > .content {\n    --focus-visible: var(--accent-400);\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .tabs {\n    @apply flex w-full flex-col;\n\n    &[data-orientation=\"vertical\"] {\n      flex-direction: row;\n    }\n  }\n\n  .list {\n    @apply relative grid w-full items-center gap-3 py-1;\n    grid-auto-flow: column;\n    grid-auto-columns: max-content;\n    justify-content: start;\n    border-radius: var(--radius-sm, 0.375rem);\n\n    &[data-orientation=\"vertical\"] {\n      grid-auto-flow: row;\n      grid-auto-columns: auto;\n      grid-auto-rows: max-content;\n      inline-size: fit-content;\n      min-inline-size: 0;\n      block-size: auto;\n      align-self: flex-start;\n    }\n\n    &[data-variant=\"underline\"] {\n      background-color: transparent;\n      border-radius: 0;\n      padding-block: 0 4px;\n      padding-inline: 0;\n    }\n\n    &[data-variant=\"underline\"][data-orientation=\"vertical\"] {\n      /* The vertical underline divider is outside the surface-border contract. */\n      border-block-end: none;\n      border-inline-start: var(--border-width-base, 1px) solid\n        slot(list, border, var(--border, transparent));\n      align-items: stretch;\n      padding-block: 0;\n      padding-inline: 4px 0;\n    }\n  }\n\n  .indicator {\n    @apply absolute;\n    background-color: slot(indicator, background, var(--background, transparent));\n    box-sizing: border-box;\n    border-radius: var(--radius-sm, 0.375rem);\n    z-index: 0;\n    pointer-events: none;\n    will-change: transform;\n    transition: all var(--hover-duration, var(--hover-leave-duration, 200ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-animate=\"false\"] {\n      transition: none;\n    }\n  }\n\n  .indicator-fallback {\n    z-index: 0;\n  }\n\n  .indicator-fallback-frame {\n    display: none;\n    position: absolute;\n    inset: 0;\n    min-inline-size: 0;\n    min-block-size: 0;\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .trigger[data-selected=\"true\"] + .indicator-fallback-frame {\n    display: block;\n  }\n\n  .indicator-underline {\n    border-radius: 0;\n  }\n\n  .trigger {\n    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;\n    --ring-z: 1;\n    block-size: auto;\n    background-color: slot(trigger, background, var(--background, transparent));\n    border: none;\n    border-radius: var(--radius-sm, 0.375rem);\n    color: slot(trigger, foreground, var(--foreground, inherit));\n    outline: none;\n    box-shadow: none;\n    transition:\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: slot(\n        trigger,\n        background-hover,\n        slot(trigger, background, var(--background, transparent))\n      );\n      color: slot(trigger, foreground-hover, slot(trigger, foreground, var(--foreground, inherit)));\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"]) {\n      background-color: slot(\n        trigger,\n        background-pressed,\n        slot(trigger, background, var(--background, transparent))\n      );\n      color: slot(\n        trigger,\n        foreground-pressed,\n        slot(trigger, foreground, var(--foreground, inherit))\n      );\n    }\n\n    /* The indicator paints the selected surface, so the trigger stays transparent\n       unless a theme opts into a selected background of its own. */\n    &[data-selected=\"true\"] {\n      background-color: slot(trigger, background-selected, transparent);\n      color: slot(\n        trigger,\n        foreground-selected,\n        slot(trigger, foreground, var(--foreground, inherit))\n      );\n      transition-property: color;\n    }\n\n    &[data-disabled=\"true\"] {\n      opacity: slot(trigger, disabled-opacity, var(--disabled-opacity, 0.5));\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .icon {\n    @apply flex shrink-0 items-center justify-center;\n    color: slot(icon, foreground, var(--icon-foreground, currentColor));\n    inline-size: slot(icon, size, 1rem);\n    block-size: slot(icon, size, 1rem);\n  }\n\n  .content {\n    @apply w-full p-0 outline-none;\n    flex: 1;\n    padding-block-start: 1rem;\n\n    &[data-orientation=\"vertical\"] {\n      flex: 1;\n      inline-size: 100%;\n    }\n\n    &:focus-visible {\n      outline: 2px solid slot(content, focus-visible, var(--focus-visible, transparent));\n      outline-offset: 2px;\n    }\n  }\n\n  @media (max-width: 640px) {\n    .list {\n      padding: 0.125rem;\n\n      &[data-variant=\"underline\"] {\n        padding-block: 0 4px;\n        padding-inline: 0;\n      }\n    }\n\n    .trigger {\n      @apply px-1 py-1;\n    }\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .tabs {\n    @slot indicator {\n      --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n    }\n\n    @slot trigger {\n      --background: transparent;\n      --foreground: var(--foreground-300);\n      --background-hover: var(--background-900);\n      --foreground-hover: var(--foreground-200);\n      --background-pressed: var(--background-800);\n      --foreground-pressed: var(--foreground-50);\n      --foreground-selected: var(--foreground-50);\n    }\n\n    @slot content {\n      --focus-visible: var(--accent-400);\n    }\n\n    @slot list {\n      /* Tabs' vertical underline divider remains outside the surface-border contract. */\n      --border: var(--background-700);\n    }\n  }\n\n  .tabs[data-variant=\"underline\"] {\n    @slot indicator {\n      --background: var(--accent-500);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -54581,6 +56176,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--border",
+        "value": "unset",
+        "selector": ".list[data-variant=\"underline\"][data-orientation=\"vertical\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--border"
+        ],
+        "slot": "list"
+      },
+      {
         "name": "--background",
         "value": "unset",
         "selector": ".indicator",
@@ -54588,7 +56193,49 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".indicator",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "indicator"
+      },
+      {
         "name": "--radius-sm",
+        "value": "unset",
+        "selector": ".indicator",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--hover-duration",
+        "value": "unset",
+        "selector": ".indicator",
+        "atRules": [],
+        "referencedVars": [
+          "--hover-leave-duration"
+        ]
+      },
+      {
+        "name": "--hover-leave-duration",
+        "value": "unset",
+        "selector": ".indicator",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--hover-transition-timing-function",
+        "value": "unset",
+        "selector": ".indicator",
+        "atRules": [],
+        "referencedVars": [
+          "--ease-snappy-pop"
+        ]
+      },
+      {
+        "name": "--ease-snappy-pop",
         "value": "unset",
         "selector": ".indicator",
         "atRules": [],
@@ -54609,6 +56256,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
         "name": "--radius-sm",
         "value": "unset",
         "selector": ".trigger",
@@ -54621,6 +56278,16 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".trigger",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
       },
       {
         "name": "--hover-duration",
@@ -54671,44 +56338,194 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--underline-border",
+        "name": "--background",
         "value": "unset",
-        "selector": ".list.underline .trigger[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not(\n        [data-indicator-fallback=\"true\"]\n      )",
+        "selector": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--underline-border",
+        "name": "--background-hover",
         "value": "unset",
-        "selector": ".list.underline[data-orientation=\"vertical\"] .trigger[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not(\n        [data-indicator-fallback=\"true\"]\n      )",
+        "selector": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--foreground-hover",
+        "value": "unset",
+        "selector": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".trigger[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-pressed",
+        "value": "unset",
+        "selector": ".trigger[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".trigger[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground-pressed",
+        "value": "unset",
+        "selector": ".trigger[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger[data-pressed=\"true\"]:not([data-disabled=\"true\"]):not([data-selected=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--background-selected",
+        "value": "unset",
+        "selector": ".trigger[data-selected=\"true\"]",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger[data-selected=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground-selected",
+        "value": "unset",
+        "selector": ".trigger[data-selected=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".trigger[data-selected=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground"
+        ],
+        "slot": "trigger"
       },
       {
         "name": "--disabled-opacity",
-        "value": "0.5",
+        "value": "unset",
         "selector": ".trigger[data-disabled=\"true\"]",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--background",
+        "name": "--disabled-opacity",
         "value": "unset",
-        "selector": ".list.underline .trigger",
+        "selector": ".trigger[data-disabled=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--disabled-opacity"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--icon-foreground",
+        "value": "unset",
+        "selector": ".icon",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--radius-sm",
+        "name": "--foreground",
         "value": "unset",
-        "selector": ".list.underline .trigger",
+        "selector": ".icon",
         "atRules": [],
-        "referencedVars": []
+        "referencedVars": [
+          "--icon-foreground"
+        ],
+        "slot": "icon"
       },
       {
-        "name": "--underline-border",
+        "name": "--size",
         "value": "unset",
-        "selector": ".list.underline[data-orientation=\"vertical\"]\n      .trigger[data-selected=\"true\"]:not([data-indicator-ready=\"true\"]):not(\n        [data-indicator-fallback=\"true\"]\n      )",
+        "selector": ".icon",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "icon"
+      },
+      {
+        "name": "--focus-visible",
+        "value": "unset",
+        "selector": ".content:focus-visible",
         "atRules": [],
         "referencedVars": []
       },
@@ -54717,7 +56534,10 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "value": "unset",
         "selector": ".content:focus-visible",
         "atRules": [],
-        "referencedVars": []
+        "referencedVars": [
+          "--focus-visible"
+        ],
+        "slot": "content"
       }
     ],
     "styleableParts": [
@@ -54728,10 +56548,22 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "name": "list"
       },
       {
-        "name": "indicator"
+        "name": "fallback"
+      },
+      {
+        "name": "indicator.root"
+      },
+      {
+        "name": "indicator.fallback"
       },
       {
         "name": "trigger"
+      },
+      {
+        "name": "left"
+      },
+      {
+        "name": "right"
       },
       {
         "name": "icon.left"
@@ -54746,12 +56578,27 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slots": [
           {
             "name": "root",
-            "description": "",
+            "description": "Styles the root element that wraps the tab list and its panels.",
             "type": "Style"
           },
           {
             "name": "list",
-            "description": "",
+            "description": "Styles the `Tabs.List` element rendered inside this root.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "TabsListIndicatorStyleSlots",
+        "slots": [
+          {
+            "name": "root",
+            "description": "Styles the measured indicator that tracks the selected tab after layout.",
+            "type": "Style"
+          },
+          {
+            "name": "fallback",
+            "description": "Styles the placeholder indicator rendered during server rendering and before the first measurement.",
             "type": "Style"
           }
         ]
@@ -54761,22 +56608,37 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slots": [
           {
             "name": "root",
-            "description": "",
+            "description": "Styles the element with `role=\"tablist\"`.",
             "type": "Style"
           },
           {
-            "name": "list",
-            "description": "",
+            "name": "indicator.root",
+            "description": "Styles the measured indicator that tracks the selected tab after layout.",
             "type": "Style"
           },
           {
-            "name": "indicator",
-            "description": "",
+            "name": "indicator.fallback",
+            "description": "Styles the placeholder indicator rendered during server rendering and before the first measurement.",
             "type": "Style"
           },
           {
             "name": "trigger",
-            "description": "",
+            "description": "Styles every `Tabs.Trigger` rendered inside this list.",
+            "type": "Style"
+          }
+        ]
+      },
+      {
+        "name": "TabsTriggerIconStyleSlots",
+        "slots": [
+          {
+            "name": "left",
+            "description": "Styles the leading icon wrapper.",
+            "type": "Style"
+          },
+          {
+            "name": "right",
+            "description": "Styles the trailing icon wrapper.",
             "type": "Style"
           }
         ]
@@ -54786,17 +56648,17 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slots": [
           {
             "name": "root",
-            "description": "",
+            "description": "Styles the tab button element.",
             "type": "Style"
           },
           {
             "name": "icon.left",
-            "description": "",
+            "description": "Styles the leading icon wrapper.",
             "type": "Style"
           },
           {
             "name": "icon.right",
-            "description": "",
+            "description": "Styles the trailing icon wrapper.",
             "type": "Style"
           }
         ]
@@ -54806,12 +56668,183 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slots": [
           {
             "name": "root",
-            "description": "",
+            "description": "Styles the element with `role=\"tabpanel\"`.",
             "type": "Style"
           }
         ]
       }
-    ]
+    ],
+    "documentation": {
+      "quickStart": {
+        "title": "How to style Tabs",
+        "description": "Start with className for the layout around the tabs, then use styles for named anatomy slots, CSS variables when one decision should cascade, and data attributes for state-specific styling.",
+        "recipes": [
+          {
+            "title": "Size and lay out the tabs",
+            "description": "Use className when the root element is all you need to change.",
+            "code": "<Tabs default=\"overview\" className=\"max-w-md gap-6\">\n  <Tabs.List aria-label=\"Sections\">\n    <Tabs.Trigger value=\"overview\">Overview</Tabs.Trigger>\n  </Tabs.List>\n</Tabs>"
+          },
+          {
+            "title": "Style the list, indicator, and triggers",
+            "description": "Use styles for changes that belong to a named part. Tabs.List styles every trigger it owns, and the indicator slot accepts one shared value or separate measured and fallback values.",
+            "code": "<Tabs.List\n  aria-label=\"Sections\"\n  styles={{\n    root: \"gap-1\",\n    indicator: { root: \"rounded-full\", fallback: \"rounded-full\" },\n    trigger: \"px-3\",\n  }}\n>\n  <Tabs.Trigger value=\"overview\" icon={{ left: <Home /> }} styles={{ icon: \"text-accent-500\" }}>\n    Overview\n  </Tabs.Trigger>\n</Tabs.List>"
+          },
+          {
+            "title": "Cascade a color to every tab",
+            "description": "Set the trigger and indicator variables once on the component root. Every trigger and both indicator elements read them.",
+            "code": ".tabs {\n  @slot trigger {\n    --foreground: var(--foreground-300);\n    --foreground-selected: var(--foreground-50);\n  }\n\n  @slot indicator {\n    --background: var(--accent-500);\n  }\n}"
+          },
+          {
+            "title": "Style a tab state",
+            "description": "Target the public state attributes from a style slot.",
+            "code": "<Tabs.List\n  aria-label=\"Sections\"\n  styles={{\n    trigger: \"data-[selected=true]:font-semibold data-[disabled=true]:line-through\",\n  }}\n>\n  <Tabs.Trigger value=\"overview\">Overview</Tabs.Trigger>\n</Tabs.List>"
+          }
+        ]
+      },
+      "anatomy": {
+        "title": "Anatomy",
+        "description": "Choose a named Tabs slot to style the corresponding region. Nested parts use dotted paths, so indicator.root and indicator.fallback address the two indicator elements and icon.left and icon.right address a trigger's icon sides.",
+        "groupOrder": [
+          "TabsStyleSlots",
+          "TabsListStyleSlots",
+          "TabsListIndicatorStyleSlots",
+          "TabsTriggerStyleSlots",
+          "TabsTriggerIconStyleSlots",
+          "TabsContentStyleSlots"
+        ],
+        "groupLabels": {
+          "TabsStyleSlots": "Tabs",
+          "TabsListStyleSlots": "Tabs.List",
+          "TabsListIndicatorStyleSlots": "Tabs.List indicator",
+          "TabsTriggerStyleSlots": "Tabs.Trigger",
+          "TabsTriggerIconStyleSlots": "Tabs.Trigger icon",
+          "TabsContentStyleSlots": "Tabs.Content"
+        }
+      },
+      "customization": {
+        "title": "Customize Tabs",
+        "description": "Start with these variables for common Tabs changes. Set them on the Tabs root; the component passes each one to the anatomy part and state that consumes it.",
+        "groups": [
+          {
+            "title": "Tab colors",
+            "description": "Control the trigger fill and label color, including the hover, pressed, and selected variants. Each state falls back to the trigger's base value when it is unset.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the tab fill color."
+              },
+              {
+                "name": "--foreground",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the tab label color."
+              },
+              {
+                "name": "--background-hover",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the fill color while an unselected tab is hovered."
+              },
+              {
+                "name": "--foreground-hover",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the label color while an unselected tab is hovered."
+              },
+              {
+                "name": "--background-pressed",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the fill color while an unselected tab is pressed."
+              },
+              {
+                "name": "--foreground-pressed",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the label color while an unselected tab is pressed."
+              },
+              {
+                "name": "--background-selected",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the fill color of the selected tab. It stays transparent by default so the indicator shows through."
+              },
+              {
+                "name": "--foreground-selected",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the label color of the selected tab."
+              }
+            ],
+            "code": ".tabs {\n  @slot trigger {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --background-hover: var(--background-900);\n    --foreground-hover: var(--foreground-200);\n    --foreground-selected: var(--foreground-50);\n  }\n}"
+          },
+          {
+            "title": "Selection indicator",
+            "description": "Recolor and reshape the indicator that tracks the selected tab. The same variable is read by the measured indicator and by the fallback rendered before the first measurement.",
+            "variables": [
+              {
+                "name": "--background",
+                "selector": ".tabs",
+                "slot": "indicator",
+                "description": "Sets the indicator color."
+              },
+              {
+                "name": "--radius-sm",
+                "selector": ".tabs",
+                "description": "Sets the corner radius shared by the indicator, the tab list, and each tab in this scope. The underline variant always squares the indicator off."
+              }
+            ],
+            "code": ".tabs {\n  --radius-sm: 0.5rem;\n\n  @slot indicator {\n    --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n  }\n}\n\n.tabs[data-variant=\"underline\"] {\n  @slot indicator {\n    --background: var(--accent-500);\n  }\n}"
+          },
+          {
+            "title": "Tab icons",
+            "description": "Adjust the glyph rendered by a trigger's icon slot independently of the tab's own text color. It falls back to --icon-foreground, then currentColor, when unset.",
+            "variables": [
+              {
+                "name": "--foreground",
+                "selector": ".tabs",
+                "slot": "icon",
+                "description": "Sets the icon color."
+              },
+              {
+                "name": "--size",
+                "selector": ".tabs",
+                "slot": "icon",
+                "description": "Sets the icon wrapper's width and height."
+              }
+            ],
+            "code": ".tabs {\n  @slot icon {\n    --foreground: var(--accent-500);\n    --size: 1.25rem;\n  }\n}"
+          },
+          {
+            "title": "Disabled, focus, and dividers",
+            "description": "Tune the remaining part-scoped values: the disabled tab's opacity, the panel's focus outline color, and the divider drawn beside a vertical underline list.",
+            "variables": [
+              {
+                "name": "--disabled-opacity",
+                "selector": ".tabs",
+                "slot": "trigger",
+                "description": "Sets the opacity of a disabled tab."
+              },
+              {
+                "name": "--focus-visible",
+                "selector": ".tabs",
+                "slot": "content",
+                "description": "Sets the outline color drawn when a panel that the consumer made focusable receives keyboard focus."
+              },
+              {
+                "name": "--border",
+                "selector": ".tabs",
+                "slot": "list",
+                "description": "Sets the divider color along the inline start of a vertical underline tab list."
+              }
+            ],
+            "code": ".tabs {\n  @slot trigger {\n    --disabled-opacity: 0.5;\n  }\n\n  @slot content {\n    --focus-visible: var(--accent-400);\n  }\n\n  @slot list {\n    --border: var(--background-700);\n  }\n}"
+          }
+        ]
+      }
+    }
   },
   "textarea": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    @apply relative block w-full;\n    min-width: 0;\n    overflow: visible;\n  }\n\n  .surface {\n    min-width: 0;\n    @apply relative w-full;\n  }\n\n  .field {\n    --padding-inline: 0.75rem;\n    --padding-block: 0.5rem;\n\n    @apply block w-full px-3 py-2;\n    box-sizing: border-box;\n    resize: none;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    background-color: var(--background);\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    outline: none;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &::placeholder {\n      color: var(--placeholder);\n    }\n\n    &[data-disabled=\"true\"] {\n      cursor: not-allowed;\n      opacity: var(--disabled-opacity);\n    }\n\n    &[data-error=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-error, slot(border, background, transparent));\n    }\n\n    &[data-resize=\"x\"],\n    &[data-resize=\"both\"] {\n      padding-inline-end: calc(var(--padding-inline) + 1rem);\n    }\n\n    &[data-resize=\"y\"],\n    &[data-resize=\"both\"] {\n      padding-block-end: calc(var(--padding-block) + 1rem);\n    }\n\n    &[data-scroll=\"true\"] {\n      border: none;\n      border-radius: 0;\n      background: transparent;\n      box-shadow: none;\n      overflow: hidden;\n\n      &[data-disabled=\"true\"] {\n        opacity: 1;\n      }\n    }\n  }\n\n  .size-sm {\n    /* Rows expressed in `lh` (the element's own resolved line-height) so the\n       preset keeps its intended row count no matter what line-height the\n       consumer applies (e.g. a `leading-*` override), instead of assuming\n       the `--leading-sm` default baked in at build time. Multiplier chosen\n       to match the previous fixed 5rem at the default line-height. */\n    min-height: calc(3.5 * 1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);\n    --padding-inline: 0.5rem;\n    --padding-block: 0.25rem;\n    font-size: var(--text-sm, 0.875rem);\n    @apply px-2 py-1;\n  }\n\n  .size-md {\n    min-height: calc(3.9 * 1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);\n    --padding-inline: 0.75rem;\n    --padding-block: 0.5rem;\n    font-size: var(--text-sm, 0.875rem);\n    @apply px-3 py-2;\n  }\n\n  .size-lg {\n    min-height: calc(5.1 * 1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);\n    --padding-inline: 1rem;\n    --padding-block: 0.75rem;\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    @apply px-4 py-3;\n  }\n\n  .scroll {\n    @apply w-full overflow-hidden;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    background-color: var(--background);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity);\n    }\n\n    &[data-error=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-error, slot(border, background, transparent));\n    }\n  }\n\n  .resize-handle {\n    position: absolute;\n    z-index: 1;\n    touch-action: none;\n    user-select: none;\n\n    &::before,\n    &::after {\n      content: \"\";\n      position: absolute;\n      border-radius: var(--radius-full);\n      background-color: slot(handle, background, var(--foreground, currentColor));\n      transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    }\n\n    &:hover::before,\n    &:hover::after {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: slot(\n        handle,\n        background-hover,\n        slot(handle, background, var(--foreground, currentColor))\n      );\n    }\n  }\n\n  .resize-handle-both {\n    inset-inline-end: 3px;\n    inset-block-end: 3px;\n    inline-size: 1.5rem;\n    block-size: 1.5rem;\n    cursor: nwse-resize;\n\n    &::before {\n      inset-inline-end: 0.15rem;\n      inset-block-end: 0.35rem;\n      inline-size: 0.5rem;\n      block-size: 0.125rem;\n      transform: rotate(-45deg);\n      transform-origin: center;\n    }\n\n    &::after {\n      inset-inline-end: 0.2rem;\n      inset-block-end: 0.6rem;\n      inline-size: 1rem;\n      block-size: 0.125rem;\n      transform: rotate(-45deg);\n      transform-origin: center;\n    }\n  }\n\n  .resize-handle-x {\n    inset-block-start: 50%;\n    inset-inline-end: 0;\n    inline-size: 0.75rem;\n    block-size: 2rem;\n    cursor: ew-resize;\n    transform: translateY(-50%);\n\n    &::before {\n      inset-block-start: 50%;\n      inset-inline-start: 50%;\n      inline-size: 0.125rem;\n      block-size: 1.5rem;\n      transform: translate(-50%, -50%);\n    }\n\n    &::after {\n      display: none;\n    }\n  }\n\n  .resize-handle-y {\n    inset-inline-start: 50%;\n    inset-block-end: 0;\n    inline-size: 2rem;\n    block-size: 0.75rem;\n    cursor: ns-resize;\n    transform: translateX(-50%);\n\n    &::before {\n      inset-block-start: 50%;\n      inset-inline-start: 50%;\n      inline-size: 1.5rem;\n      block-size: 0.125rem;\n      transform: translate(-50%, -50%);\n    }\n\n    &::after {\n      display: none;\n    }\n  }\n\n  .character-count {\n    @apply mt-1;\n    color: slot(count, foreground, var(--foreground, inherit));\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition: color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .character-count[data-over-limit=\"true\"] {\n    color: slot(count, foreground-error, var(--foreground-error, inherit));\n  }\n}\n",
@@ -55596,8 +57629,14 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "toast": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    @apply flex w-full max-w-[28rem] items-start gap-3 px-4 py-2.5 select-none;\n    background: var(--background);\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    box-shadow: var(--background-shadow);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    touch-action: pan-y;\n  }\n\n  .icon-wrap {\n    @apply mr-4 mt-2 h-5 w-5 shrink-0;\n  }\n\n  .icon {\n    @apply h-5 w-5;\n    color: var(--icon-foreground, var(--foreground));\n  }\n\n  .content {\n    @apply min-w-0 flex-1;\n  }\n\n  .title {\n    @apply m-0;\n    --foreground: inherit;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .description {\n    @apply mt-1 mb-0;\n    --foreground: inherit;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: var(--foreground);\n  }\n\n  .close {\n    @apply flex shrink-0 items-center justify-center p-2 cursor-pointer;\n    --foreground: currentColor;\n    background-color: var(--background, transparent);\n    border: none;\n    border-radius: var(--radius-sm, 0.375rem);\n    color: var(--foreground);\n    opacity: 0.6;\n    transition:\n      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-settle-in, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-settle-in, ease-out));\n\n    &[data-focus-visible=\"true\"] {\n      box-shadow: 0 0 0 var(--border-width-base, 1px) var(--focus-visible);\n      outline: none;\n    }\n\n    &[data-hovered=\"true\"] {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      opacity: 1;\n    }\n  }\n\n  .close-icon {\n    @apply h-4 w-4;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .toast {\n    --background: var(--background-900);\n    --background-shadow: 0 10px 25px -5px rgb(0 0 0 / 10%);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast > .icon > .glyph {\n    --foreground: currentColor;\n  }\n\n  .toast > .content > .title {\n    --foreground: var(--foreground-100);\n  }\n\n  .toast > .content > .description {\n    --foreground: var(--foreground-300);\n  }\n\n  .toast > .close {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: currentColor;\n  }\n}\n\n@layer utilities {\n\n  .toast.danger {\n    --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));\n    --icon-foreground: var(--danger-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast.success {\n    --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));\n    --icon-foreground: var(--success-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast.info {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --icon-foreground: var(--info-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast.warning {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --icon-foreground: var(--warning-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n}",
-    "variants": [],
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .toast {\n    --background: var(--background-900);\n    --background-shadow: 0 10px 25px -5px rgb(0 0 0 / 10%);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast > .icon > .glyph {\n    --foreground: currentColor;\n  }\n\n  .toast > .content > .title {\n    --foreground: var(--foreground-100);\n  }\n\n  .toast > .content > .description {\n    --foreground: var(--foreground-300);\n  }\n\n  .toast > .close {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: currentColor;\n  }\n}\n\n@layer utilities {\n  .toast[data-variant=\"default\"],\n.toast:not([data-variant]) {\n    --background: var(--background-900);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast[data-variant=\"danger\"] {\n    --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));\n    --icon-foreground: var(--danger-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"success\"] {\n    --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));\n    --icon-foreground: var(--success-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"info\"] {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --icon-foreground: var(--info-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"warning\"] {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --icon-foreground: var(--warning-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n}",
+    "variants": [
+      "default",
+      "danger",
+      "success",
+      "info",
+      "warning"
+    ],
     "cssVariables": [
       {
         "name": "--background",
@@ -55996,7 +58035,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "tooltip": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .trigger {\n    display: contents;\n  }\n\n  .root {\n    @apply absolute;\n    pointer-events: none;\n    z-index: 50;\n  }\n\n  .content {\n    --fill: slot(content, background, var(--background));\n    /* Frame's SVG stroke remains a documented decorative API. */\n    --stroke-color: slot(content, background-border, var(--background-border));\n    color: slot(content, foreground, var(--foreground));\n    opacity: 0;\n    transform: translate(0, 0);\n    transition:\n      opacity 0.15s ease-out,\n      transform 0.15s ease-out;\n  }\n\n  .content[data-open=\"true\"] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  .content[data-instant=\"true\"] {\n    transition: none;\n  }\n\n  .frame {\n    @apply flex max-w-120 items-center gap-1.5 px-2 py-1 whitespace-normal wrap-break-word;\n    font-size: slot(content, font-size, var(--text-xs, 0.75rem));\n    font-weight: slot(content, font-weight, var(--font-weight-body-medium, 500));\n  }\n\n  .frame[data-hint=\"true\"] {\n    @apply pr-1;\n  }\n\n  .hint {\n    @apply shrink-0 gap-1;\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .trigger {\n    display: contents;\n  }\n\n  .root {\n    @apply absolute;\n    pointer-events: none;\n    z-index: 50;\n  }\n\n  .content {\n    --fill: slot(content, background, var(--background));\n    /* Frame's SVG stroke remains a documented decorative API. */\n    --stroke-color: slot(content, background-border, var(--background-border));\n    color: slot(content, foreground, var(--foreground));\n    opacity: 0;\n    transform: translate(0, 0);\n    transition:\n      opacity 0.15s ease-out,\n      transform 0.15s ease-out;\n  }\n\n  .content[data-open=\"true\"] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  .content[data-instant=\"true\"] {\n    transition: none;\n  }\n\n  .frame {\n    @apply flex max-w-120 items-center gap-1.5 px-2 py-1 whitespace-normal wrap-break-word;\n    font-size: slot(content, font-size, var(--text-xs, 0.75rem));\n    font-weight: slot(content, font-weight, var(--font-weight-body-medium, 500));\n  }\n\n  .frame[data-hint=\"true\"] {\n    @apply pr-1;\n  }\n\n  .hint {\n    @apply inline-flex shrink-0 items-center gap-1;\n  }\n\n  .hint :global(.badge) {\n    --background-radius: var(--radius-xs, 0.25rem);\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .tooltip {\n    @slot content {\n      --background: var(--background-900);\n      --background-border: var(--background-700);\n      --foreground: var(--foreground-200);\n      --font-size: var(--text-xs);\n      --font-weight: var(--font-weight-body-medium);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -56102,6 +58141,22 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           "--font-weight-body-medium"
         ],
         "slot": "content"
+      },
+      {
+        "name": "--background-radius",
+        "value": "var(--radius-xs, 0.25rem)",
+        "selector": ".hint :global(.badge)",
+        "atRules": [],
+        "referencedVars": [
+          "--radius-xs"
+        ]
+      },
+      {
+        "name": "--radius-xs",
+        "value": "unset",
+        "selector": ".hint :global(.badge)",
+        "atRules": [],
+        "referencedVars": []
       }
     ],
     "styleableParts": [
