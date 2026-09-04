@@ -1,30 +1,14 @@
 import type { LayoutConfig } from "@ui-lab-core/library/catalog";
 
-interface RegistryItem {
-  layout?: Partial<LayoutConfig>;
-}
-
-interface Registry {
-  [key: string]: RegistryItem;
-}
-
-export function createLayoutConfigGetter<T extends Registry>(
-  registry: T,
-  defaultLayout: LayoutConfig,
-) {
-  return function getLayoutConfig(itemId: string): LayoutConfig {
-    const item = registry[itemId.toLowerCase()];
-
-    if (!item?.layout) {
-      return defaultLayout;
-    }
-
-    return {
-      layoutClass: item.layout.layoutClass ?? defaultLayout.layoutClass,
-      columnSpan: item.layout.columnSpan ?? defaultLayout.columnSpan,
-      rowSpan: item.layout.rowSpan ?? defaultLayout.rowSpan,
-      previewConfig: item.layout.previewConfig,
-    } as LayoutConfig;
+/**
+ * The per-category baseline. Catalog entries carry no `layout` of their own —
+ * the only override is the one an item passes through
+ * `createMetadataLayoutGetter` — so this needs no registry, which also keeps
+ * the source-bearing catalog out of the client bundle.
+ */
+export function createLayoutConfigGetter(defaultLayout: LayoutConfig) {
+  return function getLayoutConfig(_itemId: string): LayoutConfig {
+    return defaultLayout;
   };
 }
 

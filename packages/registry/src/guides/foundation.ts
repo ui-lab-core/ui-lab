@@ -41,7 +41,7 @@ const foundationGuide: GuideMetadata = {
       goal: "Let content, actions, and relationships determine the component tree.",
       instructions: [
         "Choose the narrowest UI Lab primitive that expresses the intended behavior and semantics.",
-        "Use compound component APIs as designed instead of recreating their internal structure with generic wrappers.",
+        "Use compound component APIs as designed instead of recreating their internal structure with generic wrappers, in a client component: their parts are undefined when reached from a server component.",
         "Prefer a clear reading and interaction order over decorative layout complexity.",
         "Use workshop examples as compositional references, then adapt them to the actual content and constraints.",
       ],
@@ -90,6 +90,7 @@ const foundationGuide: GuideMetadata = {
   validation: [
     "The component tree reflects content and behavior rather than decorative wrappers.",
     "UI Lab components, variants, and supported style slots are used before custom replacements.",
+    "Any file rendering compound parts is a client component.",
     "Colors use the UI Lab token families and valid shade ranges.",
     "Hierarchy remains clear without gradients, shadows, or excessive containers.",
     "Interactive states, accessible names, focus behavior, and keyboard order are accounted for.",

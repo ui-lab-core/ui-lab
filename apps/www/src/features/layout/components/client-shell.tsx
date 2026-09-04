@@ -10,17 +10,15 @@ import type { DocsNavigationData } from "@/features/navigation/lib/sidebar-regis
 export function ClientShell({
   children,
   docsNavigationData,
-  showNavigation = false,
 }: {
   children: React.ReactNode;
   docsNavigationData: DocsNavigationData;
-  showNavigation?: boolean;
 }) {
   return (
     <DocsNavigationProvider data={docsNavigationData}>
       <SidebarProvider>
         <LandingSidebarProvider>
-          <HeaderClient showNavigation={showNavigation} />
+          <HeaderClient />
           <main className="flex-1">{children}</main>
           <Footer />
         </LandingSidebarProvider>

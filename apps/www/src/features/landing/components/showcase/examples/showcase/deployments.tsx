@@ -92,7 +92,7 @@ export function DeploymentList({ height }: ShowcasePanelProps) {
         </Group>
       </div>
 
-      <List items={visible} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
+      <List spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {visible.map((d, i) => {
           const status = STATUS[d.status];
           return (

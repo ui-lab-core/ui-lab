@@ -1,5 +1,5 @@
-import type { LayoutConfig, SectionMetadata } from "@ui-lab-core/library/catalog";
 import { getSectionLayoutConfig } from "./section-layout-config";
 import { createMetadataLayoutGetter } from "@/shared/lib/layout-utils";
+import type { WorkshopEntrySummary } from "@/features/workshop/types/content";
 
-export const getLayoutConfig = createMetadataLayoutGetter<SectionMetadata>(getSectionLayoutConfig);
+export const getLayoutConfig = createMetadataLayoutGetter<WorkshopEntrySummary>(getSectionLayoutConfig);

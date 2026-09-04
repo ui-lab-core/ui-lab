@@ -3625,6 +3625,40 @@ function enrichPathAPI(api: ComponentAPI): ComponentAPI {
     },
   };
 
+  // Path's root is an Object.assign result, which docgen cannot resolve, so its
+  // own props are declared here rather than extracted.
+  const rootProps: PropDefinition[] = [
+    {
+      name: "children",
+      type: "React.ReactNode",
+      required: true,
+      category: "Core",
+      description: "Path.Item elements rendered inside the ordered list.",
+    },
+    {
+      name: "className",
+      type: "string",
+      required: false,
+      category: "Styling",
+      description: "Additional CSS class names applied to the root nav element.",
+    },
+    {
+      name: "separator",
+      type: "React.ReactNode",
+      required: false,
+      category: "Content",
+      description:
+        "Custom separator rendered between path items. Omit to rely on the default spacing with no visible divider.",
+    },
+    {
+      name: "styles",
+      type: "PathStylesProp",
+      required: false,
+      category: "Styling",
+      description:
+        "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+    },
+  ];
   const rootInheritedProps: PropDefinition[] = [
     {
       name: "style",
@@ -3696,7 +3730,7 @@ function enrichPathAPI(api: ComponentAPI): ComponentAPI {
 
   return {
     ...api,
-    props: enrichProps(withInherited(api.props, rootInheritedProps)),
+    props: enrichProps(withInherited(rootProps, rootInheritedProps)),
     subComponents,
     propGroups: [
       { name: "Core" },
@@ -7500,6 +7534,137 @@ function getComponentFiles(componentDirName: string): string[] {
     .map((f) => path.join(componentDir, f));
 }
 
+/**
+ * Banner's root is cast to BannerComponent, which leaves docgen with no doc for
+ * the module at all. Its API is declared on BannerProps and its two parts.
+ */
+function enrichBannerAPI(api: ComponentAPI): ComponentAPI {
+  const rootProps: PropDefinition[] = [
+    {
+      name: "variant",
+      type: "string",
+      required: false,
+      category: "Core",
+      description: "Variant class appended to the root element. Accepts any string.",
+    },
+    {
+      name: "dismissible",
+      type: "boolean",
+      required: false,
+      category: "Core",
+      description: "When true, renders a dismiss button that hides the banner on click.",
+    },
+    {
+      name: "onDismiss",
+      type: "() => void",
+      required: false,
+      category: "Events",
+      description: "Called when the dismiss button is clicked.",
+    },
+    {
+      name: "styles",
+      type: "BannerStylesProp",
+      required: false,
+      category: "Styling",
+      description:
+        "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+    },
+  ];
+
+  const enrichProps = (props: PropDefinition[]) =>
+    props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type) }));
+
+  return {
+    ...api,
+    props: enrichProps(rootProps),
+    subComponents: {
+      "Banner.Title": { description: "Heading text for the banner message", props: [] },
+      "Banner.Body": { description: "Body text content of the banner", props: [] },
+    },
+    propGroups: [{ name: "Core" }, { name: "Events" }, { name: "Styling" }],
+  };
+}
+
+/**
+ * Table's root is cast through `unknown` so its generic signature survives the
+ * forwardRef, which leaves docgen with no doc for it at all. Its props are
+ * declared on TableProps and would otherwise reach agents as an empty API.
+ */
+function enrichTableAPI(api: ComponentAPI): ComponentAPI {
+  const rootProps: PropDefinition[] = [
+    {
+      name: "data",
+      type: "T[]",
+      required: true,
+      category: "Core",
+      description: "Array of data rows to display.",
+    },
+    {
+      name: "columns",
+      type: "Column<T>[]",
+      required: true,
+      category: "Core",
+      description: "Column definitions including key, label, and optional render function.",
+    },
+    {
+      name: "showFilters",
+      type: "boolean",
+      required: false,
+      category: "Core",
+      description: "Whether to show filter inputs above the table.",
+    },
+    {
+      name: "scroll",
+      type: '"auto" | "rows" | "none"',
+      required: false,
+      defaultValue: '"auto"',
+      enumValues: ["auto", "rows", "none"],
+      category: "Core",
+      description:
+        "What scrolls when the table does not fit. auto flows with the page and only creates a horizontal scroll port when the columns are too wide; rows scrolls the rows alone and needs a bounded height plus column widths; none never creates a scroll port.",
+    },
+    {
+      name: "onRowClick",
+      type: "(row: T) => void",
+      required: false,
+      category: "Events",
+      description: "Called when a table row is clicked.",
+    },
+    {
+      name: "onFilterChange",
+      type: "(filters: Record<string, string>) => void",
+      required: false,
+      category: "Events",
+      description: "Called when any column filter value changes.",
+    },
+    {
+      name: "styles",
+      type: "TableStylesProp",
+      required: false,
+      category: "Styling",
+      description:
+        "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+    },
+    {
+      name: "children",
+      type: "React.ReactNode",
+      required: false,
+      category: "Content",
+      description:
+        "Optional composed table content. When omitted, the default header/body renderer is used.",
+    },
+  ];
+
+  const enrichProps = (props: PropDefinition[]) =>
+    props.map((prop) => ({ ...prop, typeTokens: tokenizeType(prop.type) }));
+
+  return {
+    ...api,
+    props: enrichProps(rootProps),
+    propGroups: [{ name: "Core" }, { name: "Content" }, { name: "Events" }, { name: "Styling" }],
+  };
+}
+
 function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   const files = getComponentFiles(componentDirName);
   if (files.length === 0) return null;
@@ -7514,15 +7679,30 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
     }
   }
 
-  if (allDocs.length === 0) return null;
+  // Banner is documented by hand: its root cast leaves docgen with nothing.
+  if (allDocs.length === 0) {
+    return componentDirName === "Banner" ? enrichBannerAPI({ props: [] }) : null;
+  }
 
-  // Prefer the doc whose displayName matches the component directory name (e.g. "Modal" for Modal dir)
-  const mainDoc = allDocs.find((d) => d.displayName === componentDirName) || allDocs[0];
-  const mainProps = normalizeExtractedProps(extractPropsFromDoc(mainDoc));
+  // Prefer the doc whose displayName matches the component directory name (e.g. "Modal" for Modal dir).
+  // A dotted displayName is a compound part; promoting one to the root, which happens when a cast
+  // hides the root from docgen, publishes the part's props as the component's own.
+  const partNames = new Set(
+    allDocs
+      .map((d) => d.displayName)
+      .filter((name) => name?.includes("."))
+      .map((name) => name.replace(/\./g, "")),
+  );
+  const mainDoc =
+    allDocs.find((d) => d.displayName === componentDirName) ??
+    allDocs.find(
+      (d) => d.displayName && !d.displayName.includes(".") && !partNames.has(d.displayName),
+    );
+  const mainProps = mainDoc ? normalizeExtractedProps(extractPropsFromDoc(mainDoc)) : [];
 
   const subComponents: Record<string, { description?: string; props: PropDefinition[] }> = {};
   for (const doc of allDocs) {
-    if (doc.displayName && doc.displayName !== mainDoc.displayName) {
+    if (doc.displayName && doc.displayName !== mainDoc?.displayName) {
       subComponents[doc.displayName] = {
         description: doc.description || undefined,
         props: normalizeExtractedProps(extractPropsFromDoc(doc)),
@@ -7553,6 +7733,8 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   if (componentDirName === "Menu") return enrichMenuAPI(api);
   if (componentDirName === "Textarea") return enrichTextAreaAPI(api);
   if (componentDirName === "Tabs") return enrichTabsAPI(api);
+  if (componentDirName === "Table") return enrichTableAPI(api);
+  if (componentDirName === "Banner") return enrichBannerAPI(api);
   return api;
 }
 

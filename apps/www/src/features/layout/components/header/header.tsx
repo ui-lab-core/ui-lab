@@ -15,24 +15,17 @@ import { FaBars, FaGithub, FaPlus } from "@/shared/icons/fa6";
 import { LuSearch } from "@/shared/icons/lu";
 import { HiX } from "@/shared/icons/hi";
 import { PanelRight } from "lucide-react";
-import {
-  getTabGroupForPathname,
-  getActiveTabForPathname,
-  shouldApplyRevealCollapse,
-  type TabConfig,
-} from "@/features/layout/lib/route-config";
 import { MobileMenu } from "./mobile-menu";
 import { HeaderMenu } from "./header-menu";
-import { navigationData } from "./data";
+import { headerTabs, getActiveHeaderTab, type HeaderTab } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
 import { useLandingSidebarToggle } from "@/features/layout/hooks/landing-sidebar-context";
-import { FaUser } from "react-icons/fa6";
+import { HeaderAccountLink } from "@/features/account/components/header-account-link";
 
-const TabItem = memo(({ tab }: { tab: TabConfig }) => {
+const TabItem = memo(({ tab }: { tab: HeaderTab }) => {
   return (
     <Tabs.Trigger
       value={tab.id}
-      disabled={tab.isPlaceholder}
       className="text-md leading-[20px] font-medium tracking-normal"
     >
       {tab.label}
@@ -44,10 +37,9 @@ TabItem.displayName = "TabItem";
 
 interface HeaderProps {
   pathname: string;
-  showNavigation?: boolean;
 }
 
-export default function Header({ pathname, showNavigation = false }: HeaderProps) {
+export default function Header({ pathname }: HeaderProps) {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
@@ -74,45 +66,15 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
     }
   };
 
-  const hasRevealCollapse = shouldApplyRevealCollapse(pathname);
-  const tabGroup = useMemo(() => getTabGroupForPathname(pathname), [pathname]);
-  const activeTabId = useMemo(() => getActiveTabForPathname(pathname), [pathname]);
-  const showPrimaryNavigation = isLandingPage || (showNavigation && !tabGroup);
+  const activeTabId = useMemo(() => getActiveHeaderTab(pathname), [pathname]);
 
-  const homeNavTabs = useMemo(
-    () =>
-      navigationData
-        .filter((item) => item.name !== "tools")
-        .map((item) => ({
-          id: item.name,
-          label: item.label,
-          icon: item.icon,
-          path:
-            item.name === "documentation"
-              ? "/docs"
-              : item.name === "workshop"
-                ? "/workshop/elements"
-                : "/components",
-          isPlaceholder: false,
-        })),
-    [],
-  );
-
-  const activeHomeTab =
-    pathname === "/docs"
-      ? "documentation"
-      : pathname === "/workshop/elements"
-        ? "workshop"
-        : pathname === "/components"
-          ? "components"
-          : undefined;
-  const handleTabsNavigation = (tabs: TabConfig[]) => (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleTabsNavigation = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement | null;
     const trigger = target?.closest("[data-tabs-value]");
     const value = trigger?.getAttribute("data-tabs-value");
-    const tab = tabs.find((item) => item.id === value);
+    const tab = headerTabs.find((item) => item.id === value);
 
-    if (tab && !tab.isPlaceholder) {
+    if (tab) {
       router.push(tab.path);
     }
   };
@@ -149,65 +111,35 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
             </button>
 
             <div className="h-full">
-              {showPrimaryNavigation && (
-                <Tabs
-                  className="hidden h-full ml-8 lg:flex [&_.indicator]:top-[calc(100%-2px)]!"
-                  value={activeHomeTab || ""}
-                  variant="underline"
-                >
-                  <div className="h-full" onClickCapture={handleTabsNavigation(homeNavTabs)}>
-                    <Tabs.List className="h-full p-0!">
-                      {homeNavTabs.map((tab) => (
-                        <TabItem key={tab.id} tab={tab} />
-                      ))}
-                    </Tabs.List>
-                    {homeNavTabs.map((tab) => (
-                      <div
-                        key={tab.id}
-                        id={`${tab.id}-content`}
-                        role="tabpanel"
-                        aria-labelledby={`${tab.id}-trigger`}
-                        hidden={tab.id !== activeHomeTab}
-                        className="sr-only"
-                      >
-                        {tab.label} page
-                      </div>
+              <Tabs
+                className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:top-[calc(100%-2px)]!"
+                value={activeTabId || ""}
+                variant="underline"
+              >
+                <div className="h-full" onClickCapture={handleTabsNavigation}>
+                  <Tabs.List className="h-full p-0!">
+                    {headerTabs.map((tab) => (
+                      <TabItem key={tab.id} tab={tab} />
                     ))}
-                  </div>
-                </Tabs>
-              )}
-
-              {hasRevealCollapse && tabGroup && (
-                <Tabs
-                  className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:top-[calc(100%-2px)]!"
-                  value={activeTabId || ""}
-                  variant="underline"
-                >
-                  <div className="h-full" onClickCapture={handleTabsNavigation(tabGroup.tabs)}>
-                    <Tabs.List className="h-full p-0!">
-                      {tabGroup.tabs.map((tab) => (
-                        <TabItem key={tab.id} tab={tab} />
-                      ))}
-                    </Tabs.List>
-                    {tabGroup.tabs.map((tab) => (
-                      <div
-                        key={tab.id}
-                        id={`${tab.id}-content`}
-                        role="tabpanel"
-                        aria-labelledby={`${tab.id}-trigger`}
-                        hidden={tab.id !== activeTabId}
-                        className="sr-only"
-                      >
-                        {tab.label} page
-                      </div>
-                    ))}
-                  </div>
-                </Tabs>
-              )}
+                  </Tabs.List>
+                  {headerTabs.map((tab) => (
+                    <div
+                      key={tab.id}
+                      id={`${tab.id}-content`}
+                      role="tabpanel"
+                      aria-labelledby={`${tab.id}-trigger`}
+                      hidden={tab.id !== activeTabId}
+                      className="sr-only"
+                    >
+                      {tab.label} page
+                    </div>
+                  ))}
+                </div>
+              </Tabs>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
               <Button
                 href="/config"
@@ -243,9 +175,11 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
               size="icon"
             ></Button>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block mr-3">
               <HeaderMenu />
             </div>
+
+            <HeaderAccountLink />
 
             <Tooltip
               show-arrow
@@ -270,7 +204,6 @@ export default function Header({ pathname, showNavigation = false }: HeaderProps
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         pathname={pathname}
-        showNavigation={showNavigation}
       />
     </>
   );

@@ -1,60 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/shared/lib/utils";
 import { FaChevronDown, FaCodeBranch, FaTags } from "@/shared/icons/fa6";
 import { Divider } from "ui-lab-components/divider";
 import { Button } from "ui-lab-components/button";
-import {
-  getTabGroupForPathname,
-  shouldApplyRevealCollapse,
-} from "@/features/layout/lib/route-config";
-import type { TabConfig } from "../../lib/route-config";
-import { navigationData, documentationItems, getDocumentationLink } from "./data";
+import { headerTabs, documentationItems, getDocumentationLink, type HeaderTab } from "./data";
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   pathname: string;
-  showNavigation?: boolean;
 }
 
-export function MobileMenu({ isOpen, onClose, pathname, showNavigation = false }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, pathname }: MobileMenuProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const isLandingPage = pathname === "/";
-  const hasRevealCollapse = shouldApplyRevealCollapse(pathname);
-  const tabGroup = useMemo(() => getTabGroupForPathname(pathname), [pathname]);
-
-  const homeNavTabs = useMemo(
-    () =>
-      navigationData
-        .filter((item) => item.name !== "tools")
-        .map(
-          (item) =>
-            ({
-              id: item.name,
-              label: item.label,
-              icon: item.icon,
-              path:
-                item.name === "documentation"
-                  ? "/docs"
-                  : item.name === "workshop"
-                    ? "/workshop/elements"
-                    : "/components",
-              isPlaceholder: false,
-            }) as TabConfig,
-        ),
-    [],
-  );
-
-  const visibleTabs: TabConfig[] = useMemo(() => {
-    if (isLandingPage || (showNavigation && !tabGroup)) {
-      return homeNavTabs;
-    }
-    return hasRevealCollapse && tabGroup ? tabGroup.tabs : [];
-  }, [isLandingPage, showNavigation, hasRevealCollapse, tabGroup, homeNavTabs]);
 
   const getDocumentationSubItems = () => {
     return documentationItems.map((i) => ({
@@ -63,7 +26,7 @@ export function MobileMenu({ isOpen, onClose, pathname, showNavigation = false }
     }));
   };
 
-  const renderTab = (tab: TabConfig) => {
+  const renderTab = (tab: HeaderTab) => {
     const shouldShowDropdown = tab.id === "documentation" && !isLandingPage;
 
     if (shouldShowDropdown) {
@@ -139,7 +102,7 @@ export function MobileMenu({ isOpen, onClose, pathname, showNavigation = false }
         )}
       >
         <div className="mx-auto flex w-full max-w-(--page-width) flex-col gap-1 px-4 py-4">
-          {visibleTabs.map((tab) => renderTab(tab))}
+          {headerTabs.map((tab) => renderTab(tab))}
 
           <Divider variant="dashed" className="my-3" />
 

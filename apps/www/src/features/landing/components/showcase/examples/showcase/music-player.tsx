@@ -138,7 +138,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
             <span className="text-sm text-foreground-500 tabular-nums">{tracks.length} tracks</span>
           </div>
           <Scroll className="min-h-0 flex-1 max-w-none" fade-y inline>
-            <List items={tracks} gap="sm" spacing="sm" className="max-w-none">
+            <List gap="sm" spacing="sm" className="max-w-none">
               {tracks.map((track, i) => {
                 const active = i === current;
                 return (

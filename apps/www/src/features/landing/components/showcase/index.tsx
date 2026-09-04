@@ -14,11 +14,18 @@ import {
 import { Grid, Mask } from "ui-lab-components";
 import { featureFlags } from "@/shared/config/feature-flags";
 import type { ShowcasePanelProps } from "./examples/types";
+import { AIComposer } from "./examples/showcase/ai-composer";
+import { ApiKeysPanel } from "./examples/showcase/api-keys";
+import { DeploymentList } from "./examples/showcase/deployments";
+import { IntegrationsPanel } from "./examples/showcase/integrations";
+import { FileBrowser } from "./examples/showcase/media-browser";
+import { MusicPlayer } from "./examples/showcase/music-player";
+import { SessionConfigPanel } from "./examples/showcase/session-config";
 import { Toaster } from "ui-lab-components/toast";
 import { ShowcaseToolbar } from "./toolbar";
 
 type PanelComponent = ComponentType<ShowcasePanelProps> & {
-  preload: () => Promise<ComponentType<ShowcasePanelProps>>;
+  preload?: () => Promise<ComponentType<ShowcasePanelProps>>;
 };
 
 /**
@@ -76,34 +83,6 @@ const panel = (load: () => Promise<ComponentType<ShowcasePanelProps>>): PanelCom
 
   return Panel;
 };
-
-const IntegrationsPanel = panel(() =>
-  import("./examples/showcase/integrations").then((module) => module.IntegrationsPanel),
-);
-
-const AIComposer = panel(() =>
-  import("./examples/showcase/ai-composer").then((module) => module.AIComposer),
-);
-
-const FileBrowser = panel(() =>
-  import("./examples/showcase/media-browser").then((module) => module.FileBrowser),
-);
-
-const DeploymentList = panel(() =>
-  import("./examples/showcase/deployments").then((module) => module.DeploymentList),
-);
-
-const ApiKeysPanel = panel(() =>
-  import("./examples/showcase/api-keys").then((module) => module.ApiKeysPanel),
-);
-
-const MusicPlayer = panel(() =>
-  import("./examples/showcase/music-player").then((module) => module.MusicPlayer),
-);
-
-const SessionConfigPanel = panel(() =>
-  import("./examples/showcase/session-config").then((module) => module.SessionConfigPanel),
-);
 
 const Buttons = panel(() =>
   import("./examples/primitives/primitives").then((module) => module.Buttons),
@@ -394,11 +373,11 @@ const preloadView = (view: string): Promise<unknown> => {
   const items = views[view];
 
   if (items) {
-    return Promise.all(items.map(({ Panel }) => Panel.preload()));
+    return Promise.all(items.map(({ Panel }) => Panel.preload?.()));
   }
 
   if (view === "dashboard") {
-    return Promise.all(dashboardItems.map(({ Panel }) => Panel.preload()));
+    return Promise.all(dashboardItems.map(({ Panel }) => Panel.preload?.()));
   }
 
   return Promise.resolve();

@@ -3,8 +3,8 @@
 import { usePathname } from "next/navigation";
 import Header from "./header";
 
-export function HeaderClient({ showNavigation = false }: { showNavigation?: boolean }) {
+export function HeaderClient() {
   const pathname = usePathname();
 
-  return <Header pathname={pathname} showNavigation={showNavigation} />;
+  return <Header pathname={pathname} />;
 }

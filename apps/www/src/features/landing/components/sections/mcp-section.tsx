@@ -539,6 +539,18 @@ export function McpSection() {
       <div className="grid h-190 items-start lg:grid-cols-[minmax(0,42rem)_minmax(0,1fr)]">
         <div className="flex flex-col h-full gap-10">
           <div className="pt-8">
+            <pre
+              aria-hidden="true"
+              className="p-6 mb-6 text-foreground-400 w-fit font-mono"
+              style={{ fontSize: "1.2em", letterSpacing: "-0.18em", lineHeight: 1.1 }}
+            >
+              {`⠀⠀⢀⣠⣴⣾⣷⣦⣄⡀⠀⠀
+⣴⣾⡿⠟⠋⠁⠉⠛⠿⣿⣷⣦
+⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿
+⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿
+⠻⢿⣿⣶⣤⣀⣀⠀⠀⠻⡿⠟
+⠀⠀⠈⠙⠻⢿⡿⠇⠀⠀⠀⠀`}
+            </pre>
             <SectionHeading title="Conventions, served over MCP, so your agent searches your workshop, reads each contract, and audits against your system." />
           </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { getElementPreview } from "@ui-lab-core/library";
+import { getElementPreview } from "@ui-lab-core/library/previews";
 import { getPreviewComponent as getPatternPreviewComponent } from "../lib/get-pattern-preview";
 
 type PatternLivePreviewProps = {

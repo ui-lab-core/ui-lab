@@ -5,7 +5,7 @@ import {
   Command,
   scoreCommandRelevance,
   useCommandContext,
-  type CommandItem,
+  type CommandItemData,
 } from "ui-lab-components/command";
 import { Badge } from "ui-lab-components/badge";
 import { Divider } from "ui-lab-components/divider";
@@ -13,13 +13,15 @@ import { useApp } from "@/features/theme/lib/app-context";
 import { useCommands, type ComponentResult } from "../hooks/use-commands";
 import css from "./command-palette.module.css";
 
-function matchesSearch(command: CommandItem, query: string): boolean {
+function matchesSearch(command: CommandItemData, query: string): boolean {
   if (!query) return true;
 
   const value = query.toLowerCase();
   if (scoreCommandRelevance(command.label, value) > 0) return true;
 
-  return Boolean(command.keywords?.some((keyword) => scoreCommandRelevance(keyword, value) > 0));
+  return Boolean(
+    command.keywords?.some((keyword: string) => scoreCommandRelevance(keyword, value) > 0),
+  );
 }
 
 function Content({ itemCount }: { itemCount: number }) {

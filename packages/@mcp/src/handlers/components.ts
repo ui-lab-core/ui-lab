@@ -75,18 +75,24 @@ function componentExamples(component: ComponentMetadata) {
 
 function componentImport(component: ComponentMetadata) {
   const { packageName, exportName } = component.source;
+  // Every dist entry is a client module, so a server component importing one
+  // receives client references whose static properties are undefined. The
+  // compound parts survive only inside a client component.
+  const compound = component.api?.subComponents
+    ? ` ${exportName}'s compound parts resolve only inside a client component; a server component that renders ${exportName}.* gets undefined.`
+    : "";
   return {
     packageName,
     importPath: importSpecifier(component),
     exportName,
     statement: importStatement(component),
-    note: `Import from the component's subpath. The ${packageName} barrel also resolves, but it pulls the whole library into the module graph.`,
+    note: `Import from the component's subpath. The ${packageName} barrel also resolves, but it pulls the whole library into the module graph.${compound}`,
   };
 }
 
-// Compound components are exported as a namespace (Select.Content), but the
-// registry keys their subComponents by the flat runtime export name
-// (SelectContent). Surface the namespaced accessor agents actually write in JSX.
+// Compound parts reach the registry either already namespaced (Select.Content)
+// or under their flat runtime export name (SelectContent). Surface the
+// namespaced accessor agents actually write in JSX.
 function componentApi(component: ComponentMetadata) {
   const api = component.api;
   if (!api?.subComponents) return api;
@@ -95,9 +101,9 @@ function componentApi(component: ComponentMetadata) {
   const subComponents = Object.fromEntries(
     Object.entries(api.subComponents).map(([key, value]) => {
       const accessor =
-        key.startsWith(exportName) && key.length > exportName.length
-          ? `${exportName}.${key.slice(exportName.length)}`
-          : key;
+        key.startsWith(`${exportName}.`) || !key.startsWith(exportName) || key === exportName
+          ? key
+          : `${exportName}.${key.slice(exportName.length)}`;
       return [accessor, value];
     }),
   );

@@ -119,7 +119,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
         </Group>
       </div>
 
-      <List items={visible} spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
+      <List spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {visible.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-foreground-500">
             No integrations match your search.

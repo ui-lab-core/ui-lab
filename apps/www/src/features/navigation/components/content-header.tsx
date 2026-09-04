@@ -10,15 +10,12 @@ interface ContentHeaderProps {
   actions?: ReactNode;
 }
 
-export function ContentHeader({
-  title,
-  description,
-  preview,
-  tags,
-  actions,
-}: ContentHeaderProps) {
+export function ContentHeader({ title, description, preview, tags, actions }: ContentHeaderProps) {
   return (
-    <div className="pt-8">
+    // A fixed height, not a content-derived one: the preview thumbnail and the
+    // entry's copy arrive at different moments, and the header holding its own
+    // height means neither arrival moves the page below it.
+    <div className="h-65 overflow-hidden pt-8">
       <div className="flex items-center gap-4 md:gap-6">
         {preview ? (
           <div className="w-fit shrink-0">

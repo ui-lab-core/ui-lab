@@ -177,7 +177,6 @@ export function TokensSection() {
 
               <div className="grid border border-background-700 rounded-sm h-90 grid-cols-[minmax(0,0.50fr)_minmax(0,1fr)] overflow-hidden">
                 <List
-                  items={resolved.families}
                   spacing="default"
                   aria-label="Token families"
                   className="max-w-none border-r gap-0 border-background-700"

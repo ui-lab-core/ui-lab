@@ -1,5 +1,4 @@
 import type { LayoutConfig } from "@ui-lab-core/library/catalog";
-import { starterRegistry } from "@ui-lab-core/library/catalog";
 import { createLayoutConfigGetter } from "@/shared/lib/layout-utils";
 
 const DEFAULT_LAYOUT: LayoutConfig = {
@@ -8,4 +7,4 @@ const DEFAULT_LAYOUT: LayoutConfig = {
   rowSpan: 8,
 };
 
-export const getStarterLayoutConfig = createLayoutConfigGetter(starterRegistry, DEFAULT_LAYOUT);
+export const getStarterLayoutConfig = createLayoutConfigGetter(DEFAULT_LAYOUT);

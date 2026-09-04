@@ -355,7 +355,7 @@ export function IndistinguishableSection() {
   );
 
   return (
-    <Section ground="1000" rhythm="tight">
+    <Section ground="1000" rhythm="none">
       {/* one tree, always mounted: the tall scroll region and the sticky box are
           media queries, so the pinned layout is whatever the viewport already
           says it is — nothing swaps, nothing remounts, nothing resizes after

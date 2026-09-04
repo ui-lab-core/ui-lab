@@ -21,17 +21,7 @@
  */
 
 import { Fragment, useState, type ComponentType } from "react";
-import {
-  Accessibility,
-  ArrowRight,
-  Check,
-  LayoutGrid,
-  MousePointer2,
-  Palette,
-  Type,
-  UserRound,
-  X,
-} from "lucide-react";
+import { Check, CornerDownRight, LayoutGrid, Palette, Type, UserRound, X } from "lucide-react";
 import { Button } from "ui-lab-components/button";
 import { Expand } from "ui-lab-components/expand";
 import { Table } from "ui-lab-components/table";
@@ -296,7 +286,7 @@ export function SlopSection() {
             </div>
           </div>
           <div className="relative self-start overflow-hidden">
-            <div className="border-l border-background-700 bg-background-1000">
+            <div className="border-l  border-background-700 bg-background-1000">
               <div className="h-170">
                 <Table
                   data={entries}
@@ -386,10 +376,13 @@ export function SlopSection() {
               </div>
 
               {/* the pill lands over this bar, so its copy stays left of centre */}
-              <div className="border-t border-background-800 px-4 py-3">
+              <div className="border-t flex items-center border-background-800 px-4 py-3">
                 <span className="text-xs text-background-500">
                   {total} entries · {domains.length} domains · versioned with the system
                 </span>
+                <Button icon={{ right: <CornerDownRight /> }} size="sm" className="w-44 ml-auto">
+                  See All
+                </Button>
               </div>
             </div>
           </div>

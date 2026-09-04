@@ -13,7 +13,7 @@ export interface TableExpandedDetail {
 }
 
 export interface Column<T> {
-  key: keyof T;
+  key: Extract<keyof T, string>;
   label: string;
   sortable?: boolean;
   filterable?: boolean;
@@ -160,10 +160,12 @@ export function Table<T extends object>({
             ? "border-0 rounded-none"
             : "border-background-800 rounded-sm",
           table: "min-w-full text-xs",
-          header: "bg-background-1000",
-          headerCell: "px-4 py-3 text-left font-semibold text-foreground-200",
+          header: {
+            root: "bg-background-1000",
+            cell: "px-4 py-3 text-left font-semibold text-foreground-200",
+          },
           cell: "bg-background-1000 px-4 py-3 text-foreground-300",
-          emptyState: "px-4 py-8 text-center text-foreground-400",
+          empty: { state: "px-4 py-8 text-center text-foreground-400" },
         }}
       >
         <UITable.Header>
@@ -198,9 +200,9 @@ export function Table<T extends object>({
                     {tableColumns.map((col, columnIndex) => (
                       <UITable.Cell
                         key={String(col.key)}
-                        row={row}
+                        row={row as Record<string, any>}
                         rowIndex={rowIndex}
-                        column={col}
+                        column={col as unknown as UITableColumn<Record<string, any>, string>}
                         columnIndex={columnIndex}
                         style={{ width: col.width }}
                       />

@@ -139,7 +139,6 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
 
       {/* Member list */}
       <List
-        items={filtered}
         spacing="default"
         className="min-h-0 flex-1 overflow-y-auto max-w-none"
       >

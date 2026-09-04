@@ -4,7 +4,7 @@ import { FaBook, FaWrench, FaGithub, FaMoon, FaPuzzlePiece, FaSun } from "@/shar
 import { useDocsNavigationData } from "@/features/navigation/lib/docs-navigation-context";
 import { getPagesForDomain } from "@/features/navigation/lib/sidebar-registry-resolver";
 import { toolsItems } from "@/features/layout/components/header/data";
-import type { CommandItem } from "ui-lab-components";
+import type { CommandItemData } from "ui-lab-components/command";
 
 interface UseCommandsParams {
   components: ComponentResult[];
@@ -28,7 +28,7 @@ export function useCommands({
   const docsNavigationData = useDocsNavigationData();
 
   return useMemo(() => {
-    const cmds: CommandItem[] = [];
+    const cmds: CommandItemData[] = [];
 
     (["docs", "design-system"] as const).forEach((domain) => {
       getPagesForDomain(docsNavigationData, domain).forEach((page) => {

@@ -23,6 +23,7 @@ import { Flex } from "ui-lab-components";
 import { Logo } from "@/features/layout/components/logo";
 import { FaTags } from "@/shared/icons/fa6";
 import { ElementsList } from "@/features/workshop/components/sidebar-content";
+import type { WorkshopNavigation } from "@/features/workshop/types/navigation";
 
 type ElementsNavType = "packages" | "sections" | "starters" | "patterns";
 
@@ -77,6 +78,7 @@ const SidebarItemLink = memo(function SidebarItemLink({
 export function Sidebar({
   activeDomain: activeDomainProp,
   activeElementsNav: activeElementsNavProp,
+  workshopNavigation,
 }: {
   activeDomain?:
     | "docs"
@@ -87,6 +89,8 @@ export function Sidebar({
     | "patterns"
     | "design-system";
   activeElementsNav?: ElementsNavType;
+  /** Source-free workshop nav index, projected by the server sidebar slot. */
+  workshopNavigation?: WorkshopNavigation;
 } = {}) {
   const { isOpen, closeSidebar } = useSidebarToggle();
   const docsNavigationData = useDocsNavigationData();
@@ -218,6 +222,7 @@ export function Sidebar({
                   activeNav={activeElementsNav}
                   pathname={pathname}
                   activeCategory={null}
+                  navigation={workshopNavigation}
                 />
               </div>
             ) : (

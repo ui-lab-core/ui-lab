@@ -57,7 +57,7 @@ function StyleAnatomy({
       </p>
       <div className="grid overflow-hidden rounded-sm border border-background-700 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <div className="border-b border-background-700 bg-background-900/40 p-2 lg:border-r lg:border-b-0">
-          <List items={ordered} spacing="sm" aria-label="Anatomy subcomponents">
+          <List spacing="sm" aria-label="Anatomy subcomponents">
             {ordered.map((group) => (
               <List.Item
                 key={group.name}
@@ -85,7 +85,6 @@ function StyleAnatomy({
             </span>
           </div>
           <List
-            items={current.slots}
             spacing="sm"
             aria-label={`${documentation.groupLabels?.[current.name] ?? current.name.replace(/StyleSlots$/, "")} style slots`}
             className="gap-0 divide-y divide-background-700"

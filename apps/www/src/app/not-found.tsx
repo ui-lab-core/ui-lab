@@ -30,7 +30,7 @@ const docsNavigationData: DocsNavigationData = {
 
 export default function NotFound() {
   return (
-    <ClientShell docsNavigationData={docsNavigationData} showNavigation>
+    <ClientShell docsNavigationData={docsNavigationData}>
       <article className="flex min-h-screen w-full items-center justify-center px-4 pt-16 text-foreground-50">
         <div className="flex items-center gap-4 text-center">
           <span className="flex items-center text-4xl font-bold text-foreground-300 opacity-40">

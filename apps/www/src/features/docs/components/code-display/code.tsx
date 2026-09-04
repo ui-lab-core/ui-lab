@@ -66,6 +66,8 @@ interface CodeProps {
   maxHeightLines?: number | null;
   /** Fit the code viewport to its parent and scroll its contents internally. */
   fillHeight?: boolean;
+  activeFile?: number;
+  onActiveFileChange?: (index: number) => void;
   backgroundColor?: OklchColor;
   foregroundColor?: OklchColor;
   accentColor?: OklchColor;
@@ -137,6 +139,8 @@ export function Code({
   preHighlightedDark,
   maxHeightLines = MAX_HEIGHT_LINES,
   fillHeight = false,
+  activeFile: controlledActiveFile,
+  onActiveFileChange,
 }: CodeProps) {
   const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
 
@@ -149,12 +153,16 @@ export function Code({
     status: "resolved" | "failed";
   } | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeFile, setActiveFile] = useState(0);
+  const [uncontrolledActiveFile, setUncontrolledActiveFile] = useState(0);
   const isNearViewport = useNearViewport(rootRef);
 
   const codeFiles = files?.length
     ? [{ name: heading || filename || "Example.tsx", code: children, language }, ...files]
     : null;
+  const activeFile = Math.min(
+    Math.max(controlledActiveFile ?? uncontrolledActiveFile, 0),
+    Math.max((codeFiles?.length ?? 1) - 1, 0),
+  );
   const selectedFile = codeFiles?.[activeFile];
   const activeCode = selectedFile?.code ?? children;
   const activeLanguage = selectedFile?.language ?? language;
@@ -256,7 +264,10 @@ export function Code({
                 <button
                   key={file.name}
                   type="button"
-                  onClick={() => setActiveFile(index)}
+                  onClick={() => {
+                    setUncontrolledActiveFile(index);
+                    onActiveFileChange?.(index);
+                  }}
                   className={cn(
                     "flex cursor-pointer items-center gap-2 rounded-sm px-2 py-2 transition-colors hover:bg-background-950 hover:text-foreground-100",
                     index === activeFile

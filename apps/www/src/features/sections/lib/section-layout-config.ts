@@ -1,5 +1,4 @@
 import type { LayoutConfig } from "@ui-lab-core/library/catalog";
-import { sectionRegistry } from "@ui-lab-core/library/catalog";
 import { createLayoutConfigGetter } from "@/shared/lib/layout-utils";
 
 const DEFAULT_LAYOUT: LayoutConfig = {
@@ -8,4 +7,4 @@ const DEFAULT_LAYOUT: LayoutConfig = {
   rowSpan: 6,
 };
 
-export const getSectionLayoutConfig = createLayoutConfigGetter(sectionRegistry, DEFAULT_LAYOUT);
+export const getSectionLayoutConfig = createLayoutConfigGetter(DEFAULT_LAYOUT);

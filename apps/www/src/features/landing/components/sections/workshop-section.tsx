@@ -17,7 +17,7 @@ import { Button } from "ui-lab-components/button";
 import { Card } from "ui-lab-components/card";
 import { Scroll } from "ui-lab-components/scroll";
 import { Skeleton } from "ui-lab-components/skeleton";
-import { elementPackages } from "@ui-lab-core/library/catalog";
+import { listPackagesByCategory } from "@ui-lab-core/library/metadata";
 import { elementPreviews, elementPreviewShapes } from "@/gallery/element-previews";
 import type { ElementPreviewShape } from "@/gallery/element-previews";
 import { patternPreviews } from "@/gallery/pattern-previews";
@@ -90,12 +90,12 @@ const packageIcons: Record<string, LucideIcon> = {
  * Packages the gallery has no preview for at all are dropped rather than drawn
  * as an empty bento.
  */
-const elementPackageCards: PackageCard[] = Object.values(elementPackages)
+const elementPackageCards: PackageCard[] = listPackagesByCategory("elements")
   .map((pkg) => {
     const drawn = pkg.elements.filter((elementId) => elementPreviews[elementId]);
 
     return {
-      name: pkg.name,
+      name: pkg.displayName,
       icon: packageIcons[pkg.id] ?? Blocks,
       previews: {
         wide: drawn
@@ -133,13 +133,15 @@ const packageBentos: BentoSlot[][] = [
 ];
 
 /**
- * How far each frame is scaled to sit in its cell. Both land the frame a few
- * pixels inside the cell on every side, so the inset reads as one padding
- * across the bento however differently shaped the cells are.
+ * How far each frame is scaled to sit in its cell. Each is sized to the axis its
+ * cell constrains — a `wide` frame by the cell's height, a `tall` frame by its
+ * width — and pulled a few pixels short of it, so every preview lands inset from
+ * its cell edges rather than filling or overflowing them, and the inset reads as
+ * one padding across the bento however differently shaped the cells are.
  */
 const bentoScale: Record<ElementPreviewShape, string> = {
-  wide: "scale-[0.46]",
-  tall: "scale-[0.32]",
+  wide: "scale-[0.32]",
+  tall: "scale-[0.3]",
 };
 
 const kinds: Kind[] = [

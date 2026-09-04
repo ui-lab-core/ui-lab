@@ -771,6 +771,85 @@ export const generatedAPI: Record<string, ComponentAPI> = {
     ],
     "examples": []
   },
+  "banner": {
+    "props": [
+      {
+        "name": "variant",
+        "type": "string",
+        "required": false,
+        "category": "Core",
+        "description": "Variant class appended to the root element. Accepts any string.",
+        "typeTokens": [
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          }
+        ]
+      },
+      {
+        "name": "dismissible",
+        "type": "boolean",
+        "required": false,
+        "category": "Core",
+        "description": "When true, renders a dismiss button that hides the banner on click.",
+        "typeTokens": [
+          {
+            "text": "boolean",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+          }
+        ]
+      },
+      {
+        "name": "onDismiss",
+        "type": "() => void",
+        "required": false,
+        "category": "Events",
+        "description": "Called when the dismiss button is clicked.",
+        "typeTokens": [
+          {
+            "text": "() => "
+          },
+          {
+            "text": "void"
+          }
+        ]
+      },
+      {
+        "name": "styles",
+        "type": "BannerStylesProp",
+        "required": false,
+        "category": "Styling",
+        "description": "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+        "typeTokens": [
+          {
+            "text": "BannerStylesProp"
+          }
+        ]
+      }
+    ],
+    "subComponents": {
+      "Banner.Title": {
+        "description": "Heading text for the banner message",
+        "props": []
+      },
+      "Banner.Body": {
+        "description": "Body text content of the banner",
+        "props": []
+      }
+    },
+    "propGroups": [
+      {
+        "name": "Core"
+      },
+      {
+        "name": "Events"
+      },
+      {
+        "name": "Styling"
+      }
+    ],
+    "examples": []
+  },
   "button": {
     "props": [
       {
@@ -17836,7 +17915,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "onChange",
             "type": "((isSelected: boolean) => void)",
             "required": false,
-            "description": "Receives the next checked value after keyboard, pointer, or drag-toggle interaction.",
+            "description": "Receives the next checked value after keyboard, pointer, or drag-toggle interaction. Disabled and read-only switches do not call it.",
             "category": "Events",
             "tags": {
               "category": "Events",
@@ -17893,7 +17972,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "styles",
             "type": "SwitchStyleSlots",
             "required": false,
-            "description": "Applies class-based overrides to the root, track, and thumb. Use `className` for conventional root classes.",
+            "description": "Applies class-based overrides to root, track, thumb, input, and focusIndicator. Root slot classes follow `className`; native `style` applies inline to the outer surface.",
             "category": "Styling",
             "tags": {
               "category": "Styling",
@@ -17909,11 +17988,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "isSelected",
             "type": "boolean",
             "required": false,
-            "description": "Legacy alias for `checked` when `state.checked` is absent.",
+            "description": "Legacy controlled value used when both `state.checked` and `checked` are absent. Prefer `checked`.",
             "category": "Advanced",
             "tags": {
-              "category": "Advanced",
-              "deprecated": "Use `checked`."
+              "category": "Advanced"
             },
             "typeTokens": [
               {
@@ -17926,11 +18004,10 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "defaultSelected",
             "type": "boolean",
             "required": false,
-            "description": "Legacy initial checked value used when neither controlled value is supplied.",
+            "description": "Legacy initial checked value used when all controlled values and `defaultChecked` are absent. Prefer `defaultChecked`.",
             "category": "Advanced",
             "tags": {
-              "category": "Advanced",
-              "deprecated": "Use `defaultChecked`."
+              "category": "Advanced"
             },
             "typeTokens": [
               {
@@ -20518,15 +20595,29 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             ]
           },
           {
-            "name": "variant",
-            "type": "ButtonVariant",
+            "name": "color",
+            "type": "ButtonColor",
             "required": false,
-            "defaultValue": "primary",
-            "description": "Variant class applied when the trigger renders a Button. The span branch does not forward it.",
+            "description": "Fill colour for the button. Accepts a theme colour token (color=\"accent-500\"), a Tailwind palette colour (color=\"purple-500\"), a custom property (color=\"--brand\"), or any CSS colour. The active theme paints the same treatment it gives its filled variant over that colour.",
             "category": "Core",
             "tags": {
               "category": "Core",
-              "default": "primary"
+              "typeDoc": "ButtonColor"
+            },
+            "typeTokens": [
+              {
+                "text": "ButtonColor"
+              }
+            ]
+          },
+          {
+            "name": "variant",
+            "type": "ButtonVariant",
+            "required": false,
+            "description": "Variant class applied when the trigger renders a Button. The span branch does not forward it.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
             },
             "typeTokens": [
               {
@@ -24083,97 +24174,14 @@ export const generatedAPI: Record<string, ComponentAPI> = {
     "props": [
       {
         "name": "children",
-        "type": "ReactNode",
+        "type": "React.ReactNode",
         "required": true,
-        "description": "Content rendered inside the path item.",
         "category": "Core",
-        "tags": {
-          "category": "Core"
-        },
+        "description": "Path.Item elements rendered inside the ordered list.",
         "typeTokens": [
           {
-            "text": "ReactNode",
+            "text": "React.ReactNode",
             "href": "https://react.dev/reference/react/Children"
-          }
-        ]
-      },
-      {
-        "name": "href",
-        "type": "string",
-        "required": false,
-        "description": "URL this path item navigates to. Renders the item as an anchor when the item is interactive; has no effect when disabled or current.",
-        "category": "Link behavior",
-        "tags": {
-          "category": "Link behavior",
-          "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href"
-        },
-        "links": [
-          {
-            "label": "MDN",
-            "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href"
-          }
-        ],
-        "typeTokens": [
-          {
-            "text": "string",
-            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
-          }
-        ]
-      },
-      {
-        "name": "onPress",
-        "type": "(() => void)",
-        "required": false,
-        "description": "Called when the item is activated by press, click, or keyboard selection. Takes precedence over native anchor navigation when href is also set.",
-        "category": "Events",
-        "tags": {
-          "category": "Events"
-        },
-        "typeTokens": [
-          {
-            "text": "(() => "
-          },
-          {
-            "text": "void"
-          },
-          {
-            "text": ")"
-          }
-        ]
-      },
-      {
-        "name": "isCurrent",
-        "type": "boolean",
-        "required": false,
-        "defaultValue": "false",
-        "description": "Marks this item as the current page. Path sets this automatically on the last child; setting it manually forces an item to render as non-interactive with `aria-current=\"page\"`.",
-        "category": "Core",
-        "tags": {
-          "category": "Core",
-          "default": "false"
-        },
-        "typeTokens": [
-          {
-            "text": "boolean",
-            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
-          }
-        ]
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "defaultValue": "false",
-        "description": "Disables interaction. Disabled items render as a non-interactive span and are excluded from arrow-key navigation.",
-        "category": "Core",
-        "tags": {
-          "category": "Core",
-          "default": "false"
-        },
-        "typeTokens": [
-          {
-            "text": "boolean",
-            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
           }
         ]
       },
@@ -24181,11 +24189,8 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         "name": "className",
         "type": "string",
         "required": false,
-        "description": "Additional CSS class names applied to the rendered anchor, button, or span element.",
         "category": "Styling",
-        "tags": {
-          "category": "Styling"
-        },
+        "description": "Additional CSS class names applied to the root nav element.",
         "typeTokens": [
           {
             "text": "string",
@@ -24194,19 +24199,28 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       },
       {
-        "name": "styles",
-        "type": "PathItemStyleSlots",
+        "name": "separator",
+        "type": "React.ReactNode",
         "required": false,
-        "description": "Keyed styles for the root and named component parts. Use className for conventional root classes.",
-        "category": "Styling",
-        "tags": {
-          "category": "Styling",
-          "typeDoc": "PathItemStyleSlots"
-        },
+        "category": "Content",
+        "description": "Custom separator rendered between path items. Omit to rely on the default spacing with no visible divider.",
         "typeTokens": [
           {
-            "text": "PathItemStyleSlots",
-            "customType": "PathItemStyleSlots"
+            "text": "React.ReactNode",
+            "href": "https://react.dev/reference/react/Children"
+          }
+        ]
+      },
+      {
+        "name": "styles",
+        "type": "PathStylesProp",
+        "required": false,
+        "category": "Styling",
+        "description": "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+        "typeTokens": [
+          {
+            "text": "PathStylesProp",
+            "customType": "PathStylesProp"
           }
         ]
       },
@@ -24241,6 +24255,170 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       }
     ],
+    "subComponents": {
+      "Path.Item": {
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "required": true,
+            "description": "Content rendered inside the path item.",
+            "category": "Core",
+            "tags": {
+              "category": "Core"
+            },
+            "typeTokens": [
+              {
+                "text": "ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          },
+          {
+            "name": "href",
+            "type": "string",
+            "required": false,
+            "description": "URL this path item navigates to. Renders the item as an anchor when the item is interactive; has no effect when disabled or current.",
+            "category": "Link behavior",
+            "tags": {
+              "category": "Link behavior",
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href"
+            },
+            "links": [
+              {
+                "label": "MDN",
+                "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href"
+              }
+            ],
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "onPress",
+            "type": "(() => void)",
+            "required": false,
+            "description": "Called when the item is activated by press, click, or keyboard selection. Takes precedence over native anchor navigation when href is also set.",
+            "category": "Events",
+            "tags": {
+              "category": "Events"
+            },
+            "typeTokens": [
+              {
+                "text": "(() => "
+              },
+              {
+                "text": "void"
+              },
+              {
+                "text": ")"
+              }
+            ]
+          },
+          {
+            "name": "isCurrent",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": "false",
+            "description": "Marks this item as the current page. Path sets this automatically on the last child; setting it manually forces an item to render as non-interactive with `aria-current=\"page\"`.",
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "false"
+            },
+            "typeTokens": [
+              {
+                "text": "boolean",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+              }
+            ]
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": "false",
+            "description": "Disables interaction. Disabled items render as a non-interactive span and are excluded from arrow-key navigation.",
+            "category": "Core",
+            "tags": {
+              "category": "Core",
+              "default": "false"
+            },
+            "typeTokens": [
+              {
+                "text": "boolean",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+              }
+            ]
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": "Additional CSS class names applied to the rendered anchor, button, or span element.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          },
+          {
+            "name": "styles",
+            "type": "PathItemStyleSlots",
+            "required": false,
+            "description": "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+            "category": "Styling",
+            "tags": {
+              "category": "Styling",
+              "typeDoc": "PathItemStyleSlots"
+            },
+            "typeTokens": [
+              {
+                "text": "PathItemStyleSlots",
+                "customType": "PathItemStyleSlots"
+              }
+            ]
+          },
+          {
+            "name": "style",
+            "type": "React.CSSProperties",
+            "required": false,
+            "category": "Styling",
+            "description": "Applies inline styles to the rendered anchor, button, or span element.",
+            "typeTokens": [
+              {
+                "text": "React.CSSProperties",
+                "href": "https://react.dev/reference/react-dom/components/common#style"
+              }
+            ]
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "category": "Accessibility",
+            "description": "Accessible name for the item's rendered element. Required when the item's content does not provide a discernible text alternative.",
+            "tags": {
+              "mdn": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label"
+            },
+            "typeTokens": [
+              {
+                "text": "string",
+                "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+              }
+            ]
+          }
+        ]
+      }
+    },
     "propGroups": [
       {
         "name": "Core"
@@ -26403,7 +26581,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "searchPlaceholder",
             "type": "string",
             "required": false,
-            "defaultValue": "Search items...",
+            "defaultValue": "\"Search items...\"",
             "description": "Sets the built-in search input placeholder when searchable is enabled.",
             "category": "Content",
             "tags": {
@@ -26470,6 +26648,40 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             ]
           },
           {
+            "name": "align",
+            "type": "overlay | top | bottom",
+            "required": false,
+            "defaultValue": "overlay",
+            "description": "Positions the panel over the trigger with the active option's text origin matched to the\ntrigger text, or against the trigger's top or bottom edge.",
+            "enumValues": [
+              "overlay",
+              "top",
+              "bottom"
+            ],
+            "category": "Layout",
+            "tags": {
+              "category": "Layout",
+              "default": "\"overlay\""
+            },
+            "typeTokens": [
+              {
+                "text": "overlay"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "top"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "bottom"
+              }
+            ]
+          },
+          {
             "name": "styles",
             "type": "SelectContentStyleSlots",
             "required": false,
@@ -26491,6 +26703,40 @@ export const generatedAPI: Record<string, ComponentAPI> = {
       "Select.SearchableContent": {
         "description": "Dropdown panel with a built-in search input for filtering the option list",
         "props": [
+          {
+            "name": "align",
+            "type": "overlay | top | bottom",
+            "required": false,
+            "defaultValue": "overlay",
+            "description": "Positions the panel over the trigger with the active option's text origin matched to the\ntrigger text, or against the trigger's top or bottom edge.",
+            "enumValues": [
+              "overlay",
+              "top",
+              "bottom"
+            ],
+            "category": "Layout",
+            "tags": {
+              "category": "Layout",
+              "default": "\"overlay\""
+            },
+            "typeTokens": [
+              {
+                "text": "overlay"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "top"
+              },
+              {
+                "text": " | "
+              },
+              {
+                "text": "bottom"
+              }
+            ]
+          },
           {
             "name": "className",
             "type": "string",
@@ -26518,7 +26764,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "searchPlaceholder",
             "type": "string",
             "required": false,
-            "defaultValue": "Search items...",
+            "defaultValue": "\"Search items...\"",
             "description": "Sets the built-in search input placeholder when searchable is enabled.",
             "category": "Content",
             "tags": {
@@ -26917,7 +27163,7 @@ export const generatedAPI: Record<string, ComponentAPI> = {
             "name": "styles",
             "type": "SelectItemStyleSlots",
             "required": false,
-            "description": "Styles item anatomy: root, icon, content, text, and description.",
+            "description": "Styles item anatomy: root, icon, content, text, description, and indicator.",
             "category": "Styling",
             "tags": {
               "category": "Styling",
@@ -32752,19 +32998,202 @@ export const generatedAPI: Record<string, ComponentAPI> = {
   "table": {
     "props": [
       {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Optional header content. When omitted, columns from Table context are rendered.",
+        "name": "data",
+        "type": "T[]",
+        "required": true,
+        "category": "Core",
+        "description": "Array of data rows to display.",
         "typeTokens": [
           {
-            "text": "ReactNode",
+            "text": "T"
+          },
+          {
+            "text": "[]"
+          }
+        ]
+      },
+      {
+        "name": "columns",
+        "type": "Column<T>[]",
+        "required": true,
+        "category": "Core",
+        "description": "Column definitions including key, label, and optional render function.",
+        "typeTokens": [
+          {
+            "text": "Column"
+          },
+          {
+            "text": "<"
+          },
+          {
+            "text": "T"
+          },
+          {
+            "text": ">[]"
+          }
+        ]
+      },
+      {
+        "name": "showFilters",
+        "type": "boolean",
+        "required": false,
+        "category": "Core",
+        "description": "Whether to show filter inputs above the table.",
+        "typeTokens": [
+          {
+            "text": "boolean",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean"
+          }
+        ]
+      },
+      {
+        "name": "scroll",
+        "type": "\"auto\" | \"rows\" | \"none\"",
+        "required": false,
+        "defaultValue": "\"auto\"",
+        "enumValues": [
+          "auto",
+          "rows",
+          "none"
+        ],
+        "category": "Core",
+        "description": "What scrolls when the table does not fit. auto flows with the page and only creates a horizontal scroll port when the columns are too wide; rows scrolls the rows alone and needs a bounded height plus column widths; none never creates a scroll port.",
+        "typeTokens": [
+          {
+            "text": "\""
+          },
+          {
+            "text": "auto"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "rows"
+          },
+          {
+            "text": "\" | \""
+          },
+          {
+            "text": "none"
+          },
+          {
+            "text": "\""
+          }
+        ]
+      },
+      {
+        "name": "onRowClick",
+        "type": "(row: T) => void",
+        "required": false,
+        "category": "Events",
+        "description": "Called when a table row is clicked.",
+        "typeTokens": [
+          {
+            "text": "("
+          },
+          {
+            "text": "row"
+          },
+          {
+            "text": ": "
+          },
+          {
+            "text": "T"
+          },
+          {
+            "text": ") => "
+          },
+          {
+            "text": "void"
+          }
+        ]
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filters: Record<string, string>) => void",
+        "required": false,
+        "category": "Events",
+        "description": "Called when any column filter value changes.",
+        "typeTokens": [
+          {
+            "text": "("
+          },
+          {
+            "text": "filters"
+          },
+          {
+            "text": ": "
+          },
+          {
+            "text": "Record",
+            "href": "https://www.typescriptlang.org/docs/handbook/utility-types.html"
+          },
+          {
+            "text": "<"
+          },
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "text": "string",
+            "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+          },
+          {
+            "text": ">) => "
+          },
+          {
+            "text": "void"
+          }
+        ]
+      },
+      {
+        "name": "styles",
+        "type": "TableStylesProp",
+        "required": false,
+        "category": "Styling",
+        "description": "Keyed styles for the root and named component parts. Use className for conventional root classes.",
+        "typeTokens": [
+          {
+            "text": "TableStylesProp"
+          }
+        ]
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "required": false,
+        "category": "Content",
+        "description": "Optional composed table content. When omitted, the default header/body renderer is used.",
+        "typeTokens": [
+          {
+            "text": "React.ReactNode",
             "href": "https://react.dev/reference/react/Children"
           }
         ]
       }
     ],
     "subComponents": {
+      "Table.Header": {
+        "props": [
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "required": false,
+            "description": "Optional header content. When omitted, columns from Table context are rendered.",
+            "typeTokens": [
+              {
+                "text": "ReactNode",
+                "href": "https://react.dev/reference/react/Children"
+              }
+            ]
+          }
+        ]
+      },
       "Table.HeaderCell": {
         "props": []
       },
@@ -32993,6 +33422,20 @@ export const generatedAPI: Record<string, ComponentAPI> = {
         ]
       }
     },
+    "propGroups": [
+      {
+        "name": "Core"
+      },
+      {
+        "name": "Content"
+      },
+      {
+        "name": "Events"
+      },
+      {
+        "name": "Styling"
+      }
+    ],
     "examples": []
   },
   "tabs": {
@@ -36982,7 +37425,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "button": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .button {\n    @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;\n    --padding-block: 0;\n    --padding-inline: 0;\n    --padding-inline-end: var(--padding-inline);\n    /* Reset locally so an inherited --shadow/--background-image from an ancestor\n       surface (Command, Toast) never paints a button. */\n    --background-image: none;\n    --shadow: none;\n    position: relative;\n    min-width: 0;\n    max-width: 100%;\n    box-sizing: border-box;\n    padding-block: var(--padding-block);\n    padding-inline: var(--padding-inline);\n    padding-inline-end: var(--padding-inline-end);\n    background-color: var(--background);\n    background-image: var(--background-image);\n    background-origin: border-box;\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    box-shadow: var(--shadow);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    transition-property: background-color, border-color, color, opacity, transform;\n    transition-duration:\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)),\n      var(--hover-duration, var(--hover-leave-duration, 150ms)), var(--press-duration, 120ms);\n    transition-timing-function:\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    &[data-hovered=\"true\"]:not([data-disabled=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      background-color: var(--background);\n      border-color: slot(border, background-hover, slot(border, background, transparent));\n      color: var(--foreground);\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled=\"true\"]) {\n      background-color: var(--background);\n      border-color: slot(border, background-pressed, slot(border, background, transparent));\n      color: var(--foreground);\n      transform: var(--press-transform, scale(0.96));\n    }\n\n    &[data-selected=\"true\"]:not([data-disabled=\"true\"]) {\n      border-color: slot(border, background-selected, slot(border, background, transparent));\n    }\n\n    & > span > svg,\n    & > svg {\n      color: slot(icon, foreground, var(--icon-foreground, currentColor));\n      width: slot(icon, size, 1em);\n      height: slot(icon, size, 1em);\n      flex-shrink: 0;\n    }\n  }\n\n  .button:not(.icon) {\n    min-height: calc(\n      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2\n    );\n  }\n\n  .button:focus-visible {\n    outline: none;\n  }\n\n  .button:disabled,\n  .button[data-disabled=\"true\"] {\n    opacity: 0.5;\n    cursor: not-allowed;\n    filter: grayscale(0.5);\n  }\n\n  .button.icon {\n    aspect-ratio: 1;\n    width: var(--size, 2.25rem);\n    height: var(--size, 2.25rem);\n    max-width: none;\n    --padding-block: 0.25rem;\n    --padding-inline: 0.25rem;\n  }\n\n  .hint {\n    @apply inline-flex shrink-0 items-center gap-1;\n  }\n\n  .hint :global(.badge) {\n    --background-radius: var(--radius-xs, 0.25rem);\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .button {\n    --background: var(--background-800);\n    --focus-visible: var(--accent-400);\n    @slot icon {\n      --foreground: var(--foreground-400);\n      --size: 1.0em;\n    }\n\n    /* Every filled button — primary or a custom `color` — derives its shade and\n       inset ring from the fill alone, one lightness step down at the fill's own\n       chroma and hue. One formula, so a custom colour is the primary treatment\n       with a different base colour rather than a second look. */\n    --raised-shade: oklch(from var(--color, var(--background)) calc(l - 0.11) c h);\n    --raised-ring-tint: var(--raised-shade);\n    --raised-ring: var(--raised-ring-tint);\n    --raised-gloss: linear-gradient(\n      to bottom,\n      rgb(255 255 255 / 34%) 0%,\n      rgb(255 255 255 / 8%) 36%,\n      transparent 56%,\n      rgb(0 0 0 / 18%) 100%\n    );\n    /* The ring is painted by the border, not an inset shadow: an inset shadow is\n       clipped to the padding box, leaving the button's own 1px border band\n       showing raw gloss outside it as a bright rim. */\n    --raised-shadow:\n      0 1px 2px rgb(0 0 0 / 20%),\n      0 4px 10px rgb(0 0 0 / 14%);\n\n    /* Sheen effect: the top-lit wash worn by the unfilled variants. A variant\n       recolours it through the four tokens below. Opt in with\n       --background-image: var(--sheen). */\n    --sheen-tint: var(--foreground-50);\n    --sheen-tint-alpha: 5%;\n    --sheen-shade: var(--background-950);\n    --sheen-shade-alpha: 28%;\n    --sheen: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--sheen-tint) var(--sheen-tint-alpha), transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--sheen-shade) var(--sheen-shade-alpha), transparent)\n    );\n  }\n\n  .button:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-selected: var(--background-600);\n    }\n\n    --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));\n    --raised-shadow:\n      0 1px 2px rgb(0 0 0 / 24%),\n      0 5px 12px rgb(0 0 0 / 18%);\n  }\n\n  .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));\n    @slot border {\n      --background-pressed: var(--background-600);\n    }\n\n    --raised-gloss: linear-gradient(\n      to bottom,\n      rgb(0 0 0 / 14%),\n      transparent 60%,\n      rgb(255 255 255 / 8%)\n    );\n\n    --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));\n    --raised-shadow:\n      0 2px 4px rgb(0 0 0 / 24%) inset,\n      0 1px 2px rgb(0 0 0 / 16%);\n  }\n\n  .button.sm {\n    --padding-inline: calc(var(--spacing) * 2.5);\n    --padding-block: calc(var(--spacing) * 1);\n  }\n  .button.md {\n    --padding-inline: calc(var(--spacing) * 4);\n    --padding-block: calc(var(--spacing) * 1.5);\n  }\n  .button.lg {\n    --padding-inline: calc(var(--spacing) * 3.5);\n    --padding-block: calc(var(--spacing) * 2.5);\n  }\n\n  .button.icon {\n    --size: calc(var(--spacing) * 8.5);\n    --padding-inline: calc(var(--spacing) * 0.30);\n    --padding-block: calc(var(--spacing) * 0.30);\n  }\n\n  .button[data-hint=\"true\"] {\n    --padding-inline-end: calc(var(--spacing) * 1);\n  }\n}\n\n@layer utilities {\n  .button[data-variant=\"primary\"] {\n    --color: var(--foreground-100);\n    --foreground: var(--background-950);\n  }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    --background: var(--background-800);\n    --background-image: var(--sheen);\n    --foreground: var(--foreground-300);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"],\n.button:not([data-variant]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"],\n.button:not([data-variant])[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n\n  .button[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    --backdrop: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .button[data-variant=\"ghost\"] {\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"ghost\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n\n  .button[data-variant=\"danger\"] {\n    --foreground: var(--danger-500);\n    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);\n    --background-image: var(--sheen);\n    --sheen-tint: var(--danger-50);\n    --sheen-shade: var(--danger-500);\n    --sheen-shade-alpha: 10%;\n    --icon-foreground: var(--danger-500);\n    @slot border {\n      --background: transparent\n    }\n  }\n  .button:is([data-variant=\"primary\"], [data-color]) {\n    --background: var(--color);\n    --background-image: var(--raised-gloss);\n    --shadow: var(--raised-shadow);\n\n    border-color: var(--raised-ring);\n\n    @slot icon {\n      --foreground: currentColor;\n    }\n\n    @slot border {\n      --background: var(--raised-ring);\n      --background-hover: var(--raised-ring);\n      --background-selected: var(--raised-ring);\n      --background-pressed: var(--raised-ring);\n    }\n  }\n\n  .button:is([data-variant=\"primary\"], [data-color]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--color) 72%, var(--raised-shade));\n  }\n\n  .button:is([data-variant=\"primary\"], [data-color])[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));\n  }\n  .button[data-color] {\n    --foreground: oklch(from var(--color) clamp(0, (0.62 - l) * 1000, 1) 0 h);\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .button {\n    --background: var(--background-800);\n    --focus-visible: var(--accent-400);\n    @slot icon {\n      --foreground: var(--foreground-400);\n      --size: 1.0em;\n    }\n\n    /* Every filled button — primary or a custom `color` — derives its shade and\n       inset ring from the fill alone, one lightness step away at the fill's own\n       chroma and hue. One formula, so a custom colour is the primary treatment\n       with a different base colour rather than a second look. The step is signed\n       off the fill's own lightness: a light fill darkens, a dark fill lightens,\n       so a dark `color` on a dark surface still shows a hover. */\n    /* No `var(--background)` fallback on the origin colour: --background is\n       derived from --raised-shade on hover and press, so a fallback here closes\n       a custom-property cycle. WebKit detects it and drops the whole chain,\n       leaving a transparent fill and a currentColor border. Only filled buttons\n       read --raised-shade, and those always set --color. */\n    --raised-shade: oklch(\n      from var(--color)\n      calc(l + 0.11 - 0.22 * clamp(0, (l - 0.5) * 1000, 1)) c h\n    );\n    --raised-ring-tint: var(--raised-shade);\n    --raised-ring: var(--raised-ring-tint);\n    --raised-gloss: linear-gradient(\n      to bottom,\n      rgb(255 255 255 / 34%) 0%,\n      rgb(255 255 255 / 8%) 36%,\n      transparent 56%,\n      rgb(0 0 0 / 18%) 100%\n    );\n    /* The ring is painted by the border, not an inset shadow: an inset shadow is\n       clipped to the padding box, leaving the button's own 1px border band\n       showing raw gloss outside it as a bright rim. */\n    --raised-shadow:\n      0 1px 2px rgb(0 0 0 / 20%),\n      0 4px 10px rgb(0 0 0 / 14%);\n\n    /* Sheen effect: the top-lit wash worn by the unfilled variants. A variant\n       recolours it through the four tokens below. Opt in with\n       --background-image: var(--sheen). */\n    --sheen-tint: var(--foreground-50);\n    --sheen-tint-alpha: 5%;\n    --sheen-shade: var(--background-950);\n    --sheen-shade-alpha: 28%;\n    --sheen: radial-gradient(\n      130% 95% at 50% 0%,\n      color-mix(in srgb, var(--sheen-tint) var(--sheen-tint-alpha), transparent),\n      transparent 58%,\n      color-mix(in srgb, var(--sheen-shade) var(--sheen-shade-alpha), transparent)\n    );\n  }\n\n  .button:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));\n    @slot border {\n      --background-hover: var(--background-600);\n      --background-selected: var(--background-600);\n    }\n\n    --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));\n    --raised-shadow:\n      0 1px 2px rgb(0 0 0 / 24%),\n      0 5px 12px rgb(0 0 0 / 18%);\n  }\n\n  .button[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));\n    @slot border {\n      --background-pressed: var(--background-600);\n    }\n\n    --raised-gloss: linear-gradient(\n      to bottom,\n      rgb(0 0 0 / 14%),\n      transparent 60%,\n      rgb(255 255 255 / 8%)\n    );\n\n    --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));\n    --raised-shadow:\n      0 2px 4px rgb(0 0 0 / 24%) inset,\n      0 1px 2px rgb(0 0 0 / 16%);\n  }\n\n  .button.sm {\n    --padding-inline: calc(var(--spacing) * 2.5);\n    --padding-block: calc(var(--spacing) * 1);\n  }\n  .button.md {\n    --padding-inline: calc(var(--spacing) * 4);\n    --padding-block: calc(var(--spacing) * 1.5);\n  }\n  .button.lg {\n    --padding-inline: calc(var(--spacing) * 3.5);\n    --padding-block: calc(var(--spacing) * 2.5);\n  }\n\n  .button.icon {\n    --size: calc(var(--spacing) * 8.5);\n    --padding-inline: calc(var(--spacing) * 0.30);\n    --padding-block: calc(var(--spacing) * 0.30);\n  }\n\n  .button[data-hint=\"true\"] {\n    --padding-inline-end: calc(var(--spacing) * 1);\n  }\n}\n\n@layer utilities {\n  .button[data-variant=\"primary\"] {\n    --color: var(--foreground-100);\n    --foreground: var(--background-950);\n  }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    --background: var(--background-800);\n    --background-image: var(--sheen);\n    --foreground: var(--foreground-300);\n    @slot border {\n      --background: var(--background-700);\n    }\n  }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    &:is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"],\n.button:not([data-variant]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));\n      @slot border {\n        --background-hover: transparent;\n        --background-selected: transparent;\n      }\n    }\n\n  .button[data-variant=\"secondary\"],\n.button:not([data-variant]) {\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"secondary\"],\n.button:not([data-variant])[data-pressed=\"true\"]:not([data-disabled]) {\n      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));\n      @slot border {\n        --background-pressed: transparent;\n      }\n    }\n\n  .button[data-variant=\"ghost\"] {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    --backdrop: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .button[data-variant=\"ghost\"] {\n    &:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n  }\n    .button[data-variant=\"ghost\"]:is([data-hovered=\"true\"], [data-pressed=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n      --background: var(--background-800);\n      @slot border {\n        --background-hover: transparent;\n      }\n    }\n\n  .button[data-variant=\"danger\"] {\n    --foreground: var(--danger-500);\n    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);\n    --background-image: var(--sheen);\n    --sheen-tint: var(--danger-50);\n    --sheen-shade: var(--danger-500);\n    --sheen-shade-alpha: 10%;\n    --icon-foreground: var(--danger-500);\n    @slot border {\n      --background: transparent\n    }\n  }\n  .button:is([data-variant=\"primary\"], [data-color]) {\n    --background: var(--color);\n    --background-image: var(--raised-gloss);\n    --shadow: var(--raised-shadow);\n\n    border-color: var(--raised-ring);\n\n    @slot icon {\n      --foreground: currentColor;\n    }\n\n    @slot border {\n      --background: var(--raised-ring);\n      --background-hover: var(--raised-ring);\n      --background-selected: var(--raised-ring);\n      --background-pressed: var(--raised-ring);\n    }\n  }\n\n  .button:is([data-variant=\"primary\"], [data-color]):is([data-hovered=\"true\"], [data-selected=\"true\"]):not([data-disabled]) {\n    --background: color-mix(in srgb, var(--color) 72%, var(--raised-shade));\n  }\n\n  .button:is([data-variant=\"primary\"], [data-color])[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));\n  }\n  .button[data-color] {\n    --foreground: oklch(from var(--color) clamp(0, (0.62 - l) * 1000, 1) 0 h);\n  }\n}",
     "variants": [
       "primary",
       "secondary",
@@ -42108,8 +42551,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     }
   },
   "command": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    min-width: 0;\n  }\n\n  .content {\n    display: grid;\n    grid-template-rows: auto minmax(0, 1fr) auto;\n    min-height: 0;\n    /* Single source of truth for the palette height: the search row and footer\n       keep their intrinsic size and the list absorbs whatever is left, so\n       raising --height grows the scroll region instead of doing nothing. */\n    --content-max-height: var(--height, min(32rem, 60dvh));\n    max-height: var(--content-max-height);\n  }\n\n  /* Overlay Container */\n  .overlay {\n    @apply fixed inset-0;\n    z-index: 999;\n    /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */\n    background-color: var(--overlay);\n    backdrop-filter: var(--overlay-backdrop);\n    opacity: 0;\n    pointer-events: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      backdrop-filter 180ms var(--ease-snappy-pop, ease-out);\n  }\n\n  .overlay[data-state=\"entered\"] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  /* Content */\n  .overlay .content {\n    @apply absolute;\n    /* Anchor the palette's top center at a viewport-relative position. Keeping\n       the anchor on the top edge prevents filtering from moving the palette\n       when its animated height changes. */\n    offset-path: ray(0deg at var(--origin, 50% 20%));\n    offset-distance: 0;\n    offset-anchor: center top;\n    offset-rotate: 0deg;\n    width: min(var(--width, 28rem), calc(100% - 2rem));\n    /* Alignment positioning keeps the palette on screen at any origin, so the\n       cap only has to leave the viewport gutter. */\n    max-height: min(var(--content-max-height), calc(100% - 2rem));\n    /* Keep opening motion anchored to the same stable top edge. */\n    transform-origin: center top;\n    border-radius: var(--radius-sm);\n    background: var(--background);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    box-shadow: var(--background-shadow);\n    opacity: 0;\n    transform: scale(0.98);\n    pointer-events: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms var(--ease-snappy-pop, ease-out);\n  }\n\n  .overlay[data-state=\"entered\"] .content {\n    opacity: 1;\n    transform: scale(1);\n    pointer-events: auto;\n  }\n\n  .embedded {\n    @apply relative;\n    width: min(var(--width, 100%), 100%);\n    transform-origin: top center;\n    border-radius: var(--radius-sm);\n    background: var(--background);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    box-shadow: var(--background-shadow);\n  }\n\n  .inner {\n    @apply pt-1.5;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n    /* Frame's SVG stroke is a documented decorative API, outside the border slot contract. */\n    --stroke-color: var(--border);\n    --fill: var(--background);\n    --frame-radius: var(--radius-sm);\n  }\n\n  /* Frame wraps its children in a div; it has to shrink with the Frame so the\n     scroll region resolves its height against the palette, not its content. */\n  .inner > div {\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n    min-height: 0;\n    overflow: hidden;\n  }\n\n  /* Search Section */\n  .search {\n    @apply flex p-1.5;\n    --input-active-box-shadow: none;\n  }\n\n  .search :global(.input-scope) {\n    flex: 1;\n    min-width: 0;\n  }\n\n  .input {\n    background: transparent;\n    box-shadow: none;\n    font-weight: var(--font-weight-body-medium, 500);\n  }\n\n  .search :global([data-focus-indicator=\"local\"]) {\n    display: none;\n  }\n\n  .input-empty :global([data-actions-position=\"right\"]) {\n    visibility: hidden;\n  }\n\n  /* List Section */\n  .list {\n    @apply py-0.5 px-2 space-y-2;\n    border-radius: var(--frame-radius) var(--frame-radius) 0 0;\n  }\n\n  .list :global([role=\"listbox\"]) {\n    @apply flex w-full flex-col;\n  }\n\n  .item {\n    @apply flex items-center justify-between rounded-sm px-2 py-0.5 cursor-pointer;\n    border-radius: 0.375rem;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: var(--background);\n    color: var(--foreground);\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item-content {\n    @apply flex min-w-0 flex-1 items-center gap-2.5;\n    flex: 1;\n  }\n\n  .item-icon {\n    @apply h-8 w-8 self-start rounded-sm;\n    background-color: var(--background-800);\n    color: var(--foreground-400);\n  }\n\n  .item-labels {\n    flex: 1;\n    @apply min-w-0;\n  }\n\n  .item .label {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-sm, 1.25rem));\n    color: var(--foreground);\n    @apply overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item .description {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-body, 1.5));\n    @apply overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .hint-wrapper {\n    @apply flex items-center;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .category-header {\n    @apply px-2 py-1.5 mt-2 first:mt-0;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  /* Empty State */\n  .empty {\n    padding: 1.5rem 1rem;\n    text-align: center;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-body, 1.5));\n    color: var(--foreground);\n  }\n\n  /* Footer */\n  .footer {\n    @apply flex w-full items-center gap-2 px-1.5 py-2;\n    background-color: var(--background);\n    border-top: slot(border, width, 1px) slot(border, style, solid)\n      slot(border, background, transparent);\n    justify-content: flex-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .overlay,\n    .content {\n      transition: none;\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .command {\n    --background: var(--background-900);\n    /* Command passes this legacy token to Frame's decorative SVG stroke. */\n    --border: var(--background-700);\n    --height: min(35rem, 60dvh);\n    --width: 30rem;\n    --origin: 50% 10%;\n    --overlay: rgb(0 0 0 / 20%);\n    --overlay-backdrop: blur(4px);\n    --shadow: 0 20px 25px -5px rgb(0 0 0 / 35%);\n    --leading: var(--leading-sm);\n\n    @slot border {\n      --background-focus: transparent\n    }\n  }\n\n  .command :where(.options, .group) > .item {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n\n    .label {\n      --foreground: var(--foreground-300);\n    }\n\n    .description {\n      --foreground: var(--foreground-400);\n    }\n  }\n\n    .command :where(.options, .group) > .item .label {\n      --foreground: var(--foreground-300);\n    }\n\n    .command :where(.options, .group) > .item .description {\n      --foreground: var(--foreground-400);\n    }\n\n  .command :where(.options, .group) > .item:hover:not([data-disabled]),\n.command :where(.options, .group) > .item[data-highlighted=\"true\"]:not([data-disabled]) {\n    --background: var(--background-800);\n  }\n\n  .command > .footer {\n    --background: var(--background-900);\n  }\n\n  .command > .options {\n    --background: var(--background-950);\n    --foreground: var(--foreground-300);\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    min-width: 0;\n  }\n\n  .content {\n    display: grid;\n    grid-template-rows: auto minmax(0, 1fr) auto;\n    min-height: 0;\n    /* Single source of truth for the palette height: the search row and footer\n       keep their intrinsic size and the list absorbs whatever is left, so\n       raising --height grows the scroll region instead of doing nothing. */\n    --content-max-height: var(--height, min(32rem, 60dvh));\n    max-height: var(--content-max-height);\n  }\n\n  /* Overlay Container */\n  .overlay {\n    @apply fixed inset-0;\n    z-index: 999;\n    /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */\n    background-color: var(--overlay);\n    backdrop-filter: var(--overlay-backdrop);\n    opacity: 0;\n    pointer-events: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      backdrop-filter 180ms var(--ease-snappy-pop, ease-out);\n  }\n\n  .overlay[data-state=\"entered\"] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  /* Content */\n  .overlay .content {\n    @apply absolute;\n    /* Anchor the palette's top center at a viewport-relative position. Keeping\n       the anchor on the top edge prevents filtering from moving the palette\n       when its animated height changes. */\n    offset-path: ray(0deg at var(--origin, 50% 20%));\n    offset-distance: 0;\n    offset-anchor: center top;\n    offset-rotate: 0deg;\n    width: min(var(--width, 28rem), calc(100% - 2rem));\n    /* Alignment positioning keeps the palette on screen at any origin, so the\n       cap only has to leave the viewport gutter. */\n    max-height: min(var(--content-max-height), calc(100% - 2rem));\n    /* Keep opening motion anchored to the same stable top edge. */\n    transform-origin: center top;\n    border-radius: var(--radius-sm);\n    background: var(--background);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    box-shadow: var(--background-shadow);\n    opacity: 0;\n    transform: scale(0.98);\n    pointer-events: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms var(--ease-snappy-pop, ease-out);\n  }\n\n  .overlay[data-state=\"entered\"] .content {\n    opacity: 1;\n    transform: scale(1);\n    pointer-events: auto;\n  }\n\n  .embedded {\n    @apply relative;\n    width: min(var(--width, 100%), 100%);\n    transform-origin: top center;\n    border-radius: var(--radius-sm);\n    background: var(--background);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    box-shadow: var(--background-shadow);\n  }\n\n  .inner {\n    @apply pt-1.5;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n    /* Frame's SVG stroke is a documented decorative API, outside the border slot contract. */\n    --stroke-color: var(--border);\n    --fill: var(--background);\n    --frame-radius: var(--radius-sm);\n  }\n\n  /* Frame wraps its children in a div; it has to shrink with the Frame so the\n     scroll region resolves its height against the palette, not its content. */\n  .inner > div {\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n    min-height: 0;\n    overflow: hidden;\n  }\n\n  /* Search Section */\n  .search {\n    @apply flex p-1.5;\n    --input-active-box-shadow: none;\n  }\n\n  .search :global(.input-scope) {\n    flex: 1;\n    min-width: 0;\n  }\n\n  .input {\n    background: transparent;\n    box-shadow: none;\n    font-weight: var(--font-weight-body-medium, 500);\n  }\n\n  .search :global([data-focus-indicator=\"local\"]) {\n    display: none;\n  }\n\n  .input-empty :global([data-actions-position=\"right\"]) {\n    visibility: hidden;\n  }\n\n  /* List Section */\n  .list {\n    @apply py-0.5 px-2 space-y-2;\n    border-radius: var(--frame-radius) var(--frame-radius) 0 0;\n  }\n\n  .list :global([role=\"listbox\"]) {\n    @apply flex w-full flex-col;\n  }\n\n  .item {\n    @apply flex items-center justify-between rounded-sm px-2 py-0.5 cursor-pointer;\n    border-radius: 0.375rem;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(item, background, var(--background, transparent));\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item:hover:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-highlighted=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));\n    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));\n  }\n\n  .item-content {\n    @apply flex min-w-0 flex-1 items-center gap-2.5;\n    flex: 1;\n  }\n\n  .item-icon {\n    @apply h-8 w-8 self-start rounded-sm;\n    background-color: var(--background-800);\n    color: var(--foreground-400);\n  }\n\n  .item-labels {\n    flex: 1;\n    @apply min-w-0;\n  }\n\n  .item .label {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-sm, 1.25rem));\n    color: inherit;\n    @apply overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item .description {\n    color: var(--foreground);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-body, 1.5));\n    @apply overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .hint-wrapper {\n    @apply flex items-center;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  .category-header {\n    @apply px-2 py-1.5 mt-2 first:mt-0;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  /* Empty State */\n  .empty {\n    padding: 1.5rem 1rem;\n    text-align: center;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading, var(--leading-body, 1.5));\n    color: var(--foreground);\n  }\n\n  /* Footer */\n  .footer {\n    @apply flex w-full items-center gap-2 px-1.5 py-2;\n    background-color: var(--background);\n    border-top: slot(border, width, 1px) slot(border, style, solid)\n      slot(border, background, transparent);\n    justify-content: flex-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-xs, 0.75rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .overlay,\n    .content {\n      transition: none;\n    }\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .command {\n    --background: color-mix(in srgb, var(--background-950) var(--floating-opacity), transparent);\n    /* Command passes this legacy token to Frame's decorative SVG stroke. */\n    --border: var(--background-700);\n    --height: min(35rem, 60dvh);\n    --width: 30rem;\n    --origin: 50% 10%;\n    --overlay: rgb(0 0 0 / 20%);\n    --overlay-backdrop: blur(4px);\n    --shadow: 0 20px 25px -5px rgb(0 0 0 / 35%);\n    --leading: var(--leading-sm);\n\n    @slot border {\n      --background-focus: transparent\n    }\n  }\n\n  .command.content {\n    backdrop-filter: var(--floating-blur);\n  }\n\n  .command :where(.options, .group) > .item {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n\n    .label {\n      --foreground: var(--foreground-300);\n    }\n\n    .description {\n      --foreground: var(--foreground-400);\n    }\n  }\n\n    .command :where(.options, .group) > .item .label {\n      --foreground: var(--foreground-300);\n    }\n\n    .command :where(.options, .group) > .item .description {\n      --foreground: var(--foreground-400);\n    }\n\n  .command :where(.options, .group) > .item:hover:not([data-disabled]),\n.command :where(.options, .group) > .item[data-highlighted=\"true\"]:not([data-disabled]) {\n    --background: var(--background-800);\n  }\n\n  .command > .footer {\n    --background: var(--background-900);\n    --foreground: var(--foreground-300);\n  }\n\n  .command > .options {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -42391,11 +42834,41 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
         "name": "--foreground",
         "value": "unset",
         "selector": ".item",
         "atRules": [],
+        "referencedVars": [
+          "--foreground-100"
+        ]
+      },
+      {
+        "name": "--foreground-100",
+        "value": "unset",
+        "selector": ".item",
+        "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
       },
       {
         "name": "--hover-duration",
@@ -42412,6 +42885,238 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".item:hover",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-hover",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground-100"
+        ]
+      },
+      {
+        "name": "--foreground-100",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground-hover",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--hover-duration",
+        "value": "var(--hover-enter-duration, 0ms)",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--hover-enter-duration"
+        ]
+      },
+      {
+        "name": "--hover-enter-duration",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-selected",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground-100"
+        ]
+      },
+      {
+        "name": "--foreground-100",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground-selected",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--background-selected-hover",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--background-selected",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--background",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--background"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground-100"
+        ]
+      },
+      {
+        "name": "--foreground-100",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--foreground-selected-hover",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground-selected",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
+      },
+      {
+        "name": "--foreground",
+        "value": "unset",
+        "selector": ".item[data-highlighted=\"true\"]:hover:not([data-disabled=\"true\"])",
+        "atRules": [],
+        "referencedVars": [
+          "--foreground",
+          "--foreground-100"
+        ],
+        "slot": "item"
       },
       {
         "name": "--background-800",
@@ -42468,13 +43173,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "--leading-sm",
-        "value": "unset",
-        "selector": ".item .label",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--foreground",
         "value": "unset",
         "selector": ".item .label",
         "atRules": [],
@@ -43755,7 +44453,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "date": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .calendar {\n    --disabled-opacity: 0.5;\n\n    @apply inline-grid gap-1;\n    grid-template-columns: repeat(7, 1fr);\n  }\n\n  .day-headers {\n    @apply grid gap-1 pb-1;\n    grid-template-columns: repeat(7, 1fr);\n    grid-column: 1 / -1;\n  }\n\n  .day-header {\n    @apply flex items-center justify-center;\n    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem)\n      var(--font-body, inherit);\n    letter-spacing: normal;\n    color: var(--foreground);\n  }\n\n  .header {\n    @apply flex items-center gap-2 pl-2 pr-1.5 py-1.5;\n    color: var(--foreground);\n    grid-column: 1 / -1;\n  }\n\n  .month-year {\n    @apply mr-auto;\n    font: var(--font-weight-header-medium, 500) var(--text-sm, 0.875rem) /\n      var(--leading-sm, 1.25rem) var(--font-body, inherit);\n    letter-spacing: normal;\n    text-align: left;\n  }\n\n  .nav-button {\n    @apply inline-flex min-h-8 min-w-8 items-center justify-center cursor-pointer;\n    border-radius: var(--radius-sm);\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: 1px solid transparent;\n    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem)\n      var(--font-body, inherit);\n    letter-spacing: normal;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .nav-button:focus-visible {\n    outline: none;\n  }\n\n  .nav-button:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .day-cell {\n    --day-cell-border-width: 2px;\n\n    @apply flex min-h-8 items-center justify-center px-2.5 py-2 cursor-pointer;\n    position: relative;\n    border-radius: var(--radius-sm);\n    background-color: var(--background, transparent);\n    color: var(--foreground);\n    border: var(--day-cell-border-width) solid transparent;\n    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem)\n      var(--font-body, inherit);\n    letter-spacing: normal;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .day-cell:focus-visible {\n    outline: none;\n  }\n\n  .week-header {\n    display: none;\n  }\n\n  .week-number {\n    display: none;\n  }\n}\n\n@layer components.defaults {\n.day-cell[data-selected=\"true\"] {\n  font-weight: var(--font-weight-body-medium, 500);\n}\n\n/*\n * .day-cell's background-color/border-color/color transition is tuned for\n * single-cell hover affordance (instant on enter, a 300ms fade on leave, via\n * --hover-duration). During range drag-preview, cells behind the cursor flip\n * their in-range state without being :hover themselves, so they'd inherit the\n * 300ms leave-fade and visibly trail the pointer. Range fill needs to track\n * the pointer exactly, so make those three instant in range mode only; opacity\n * (disabled/out-of-range dimming) keeps its normal duration. Positional\n * override of transition-duration against the base rule's\n * background-color/border-color/color/opacity transition-property order.\n */\n[data-mode=\"range\"] .day-cell {\n  transition-duration: 0s, 0s, 0s, var(--hover-duration, var(--hover-leave-duration, 300ms));\n}\n\n.day-cell[data-in-range=\"true\"] {\n  --background: var(--background-700);\n\n  background-color: var(--background, var(--background-700));\n  border-radius: 0;\n}\n\n.day-cell[data-in-range=\"true\"][data-connect-right=\"true\"] {\n  /* Extend the track through the grid gutter without changing the grid item's\n   * dimensions or participating in track sizing. The shifted shadow overlaps\n   * the cell itself, so it reads as one continuous fill rather than a separate\n   * per-gap bridge. */\n  box-shadow: var(--spacing, 0.25rem) 0 0 var(--background, var(--background-700));\n}\n\n.day-cell[data-in-range=\"true\"]:not([data-connect-left=\"true\"]) {\n  border-top-left-radius: var(--radius-sm);\n  border-bottom-left-radius: var(--radius-sm);\n}\n\n.day-cell[data-in-range=\"true\"]:not([data-connect-right=\"true\"]) {\n  border-top-right-radius: var(--radius-sm);\n  border-bottom-right-radius: var(--radius-sm);\n}\n\n.day-cell[data-range-start=\"true\"],\n.day-cell[data-range-end=\"true\"] {\n  --background: transparent;\n  --foreground: var(--accent-50);\n\n  background-color: transparent;\n  color: var(--foreground, var(--accent-50));\n  border-radius: var(--radius-sm);\n}\n\n/* The range track continues under the inside half of each endpoint. The\n * endpoint's selected circle is then painted above it, avoiding the empty\n * corner notches that occur when a rectangular track meets a rounded button.\n */\n.day-cell[data-range-start=\"true\"][data-connect-right=\"true\"]::before,\n.day-cell[data-range-end=\"true\"][data-connect-left=\"true\"]::before {\n  --background: var(--background-700);\n\n  content: \"\";\n  position: absolute;\n  top: calc(-1 * var(--day-cell-border-width));\n  height: calc(100% + 2 * var(--day-cell-border-width));\n  background-color: var(--background, var(--background-700));\n  pointer-events: none;\n  z-index: 0;\n}\n\n.day-cell[data-range-start=\"true\"][data-connect-right=\"true\"]::before {\n  left: 50%;\n  right: calc(-1 * (var(--spacing, 0.25rem) + var(--day-cell-border-width)));\n}\n\n.day-cell[data-range-end=\"true\"][data-connect-left=\"true\"]::before {\n  left: calc(-1 * (var(--spacing, 0.25rem) + var(--day-cell-border-width)));\n  right: 50%;\n}\n\n.day-cell[data-range-start=\"true\"]::after,\n.day-cell[data-range-end=\"true\"]::after {\n  --background: var(--accent-500);\n\n  content: \"\";\n  position: absolute;\n  inset: calc(-1 * var(--day-cell-border-width));\n  border-radius: inherit;\n  background-color: var(--background, var(--accent-500));\n  pointer-events: none;\n  z-index: 0;\n}\n\n.day-cell > span {\n  position: relative;\n  z-index: 1;\n}\n\n.day-cell[data-hovered=\"true\"]:not([data-disabled=\"true\"]):not([data-out-of-range=\"true\"]),\n.day-cell:hover:not([data-disabled=\"true\"]):not([data-out-of-range=\"true\"]) {\n  --hover-duration: var(--hover-enter-duration, 0ms);\n}\n\n.day-cell[data-today=\"true\"] {\n  border-color: transparent;\n}\n\n.day-cell[data-disabled=\"true\"],\n.day-cell[data-out-of-range=\"true\"] {\n  opacity: var(--disabled-opacity);\n}\n\n.day-cell[data-disabled=\"true\"] {\n  cursor: not-allowed;\n}\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .date > .row {\n    --background: var(--background-900);\n\n    .title {\n      --foreground: var(--foreground-300);\n    }\n\n    :where(.label, .button) {\n      --foreground: var(--foreground-400);\n    }\n\n    .button {\n      --background: transparent;\n\n      &[data-hovered=\"true\"]:not([data-disabled]) {\n        --background: var(--background-800);\n      }\n    }\n  }\n\n    .date > .row .title {\n      --foreground: var(--foreground-300);\n    }\n\n    .date > .row :where(.label, .button) {\n      --foreground: var(--foreground-400);\n    }\n\n    .date > .row .button {\n      --background: transparent;\n\n      &[data-hovered=\"true\"]:not([data-disabled]) {\n        --background: var(--background-800);\n      }\n    }\n\n      .date > .row .button[data-hovered=\"true\"]:not([data-disabled]) {\n        --background: var(--background-800);\n      }\n\n  .date > .day {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .date > .day:is([data-selected=\"true\"], [data-today=\"true\"]) {\n    --background: var(--background-800);\n    --foreground: var(--foreground-50);\n  }\n\n  .date > .day:where([data-in-range=\"true\"]) {\n    --background: var(--background-700);\n  }\n\n  .date > .day:where([data-range-start=\"true\"], [data-range-end=\"true\"]) {\n    --background: transparent;\n    --foreground: var(--accent-50);\n  }\n\n  .date > .day:where([data-range-start=\"true\"], [data-range-end=\"true\"])::before {\n    --background: var(--background-700);\n  }\n\n  .date > .day:where([data-range-start=\"true\"], [data-range-end=\"true\"])::after {\n    --background: var(--accent-500);\n  }\n\n  .date > .day:is([data-disabled], [data-out-of-range=\"true\"]) {\n    --foreground: var(--foreground-400);\n  }\n\n  .date > .day:is(:hover, [data-hovered=\"true\"]):not(:is([data-disabled], [data-out-of-range=\"true\"])) {\n    --background: var(--background-800);\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .date > .row {\n    --background: var(--background-900);\n\n    .title {\n      --foreground: var(--foreground-300);\n    }\n\n    :where(.label, .button) {\n      --foreground: var(--foreground-400);\n    }\n\n    .button {\n      --background: transparent;\n\n      &[data-hovered=\"true\"]:not([data-disabled]) {\n        --background: var(--background-800);\n      }\n    }\n  }\n\n    .date > .row .title {\n      --foreground: var(--foreground-300);\n    }\n\n    .date > .row :where(.label, .button) {\n      --foreground: var(--foreground-400);\n    }\n\n    .date > .row .button {\n      --background: transparent;\n\n      &[data-hovered=\"true\"]:not([data-disabled]) {\n        --background: var(--background-800);\n      }\n    }\n\n      .date > .row .button[data-hovered=\"true\"]:not([data-disabled]) {\n        --background: var(--background-800);\n      }\n\n  .date > .day {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n  }\n\n  .date > .day:is([data-selected=\"true\"], [data-today=\"true\"]) {\n    --background: var(--background-800);\n    --foreground: var(--foreground-200);\n  }\n\n  .date > .day:where([data-in-range=\"true\"]) {\n    --background: var(--background-700);\n  }\n\n  .date > .day:where([data-range-start=\"true\"], [data-range-end=\"true\"]) {\n    --background: transparent;\n    --foreground: var(--background-700);\n  }\n\n  .date > .day:where([data-range-start=\"true\"], [data-range-end=\"true\"])::before {\n    --background: var(--background-700);\n  }\n\n  .date > .day:where([data-range-start=\"true\"], [data-range-end=\"true\"])::after {\n    --background: var(--background-500);\n  }\n\n  .date > .day:is([data-disabled], [data-out-of-range=\"true\"]) {\n    --foreground: var(--foreground-400);\n  }\n\n  .date > .day:is(:hover, [data-hovered=\"true\"]):not(:is([data-disabled], [data-out-of-range=\"true\"])) {\n    --background: var(--background-600);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -48193,7 +48891,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "list": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer theme, base, components, utilities;\n\n@layer components.defaults {\n  .root {\n    --radius: var(--radius-sm, 0.375rem);\n\n    color: var(--foreground, var(--foreground-100, currentColor));\n    @apply flex flex-col;\n    gap: var(--gap, calc(var(--spacing, 0.25rem) * 0.5));\n  }\n\n  .root[data-orientation=\"horizontal\"] {\n    @apply flex-row flex-wrap;\n  }\n\n  .item {\n    inline-size: 100%;\n    min-inline-size: 0;\n    box-sizing: border-box;\n    /* Concentric with the list box: any padded or bordered surface around the\n       rows sets --inset-gap, and the row shrinks its radius to match. */\n    border-radius: slot(item, radius, var(--inset-radius));\n    @apply flex items-center gap-3 px-3 py-1 cursor-pointer;\n    background-color: slot(item, background, var(--background, transparent));\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .item[data-list-layout=\"columns\"] {\n    display: grid;\n  }\n\n  .item[data-list-layout=\"columns\"] > * {\n    min-width: 0;\n  }\n\n  .item[data-focus-visible=\"true\"] {\n    background-color: slot(item, background-focus, var(--background-700));\n    outline: none;\n  }\n\n  .item:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  /* Composed lists (Select, Menu) keep rows non-focusable and drive data-highlighted\n     themselves, so the highlight cannot be gated on the root's own keyboard mode. */\n  .item[data-highlighted=\"true\"] {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n  }\n\n  .item:hover:not([data-disabled=\"true\"]),\n  .item[data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"] {\n    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));\n    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .item[data-selected=\"true\"]:hover:not([data-disabled=\"true\"]),\n  .item[data-selected=\"true\"][data-highlighted=\"true\"]:not([data-disabled=\"true\"]) {\n    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));\n    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));\n  }\n\n  .item[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.6));\n    pointer-events: none;\n  }\n\n  .checkbox,\n  .control,\n  .media {\n    @apply flex items-center justify-center flex-shrink-0;\n  }\n\n  .control {\n    margin-inline-start: auto;\n  }\n\n  .item[data-list-layout=\"columns\"] .control,\n  .item[data-list-layout=\"columns\"] .actions {\n    margin-inline-start: 0;\n    justify-self: end;\n  }\n\n  .control[data-placement=\"start\"] {\n    margin-inline-start: 0;\n  }\n\n  .item[data-list-layout=\"columns\"] .control[data-placement=\"start\"],\n  .item[data-list-layout=\"columns\"] .checkbox,\n  .item[data-list-layout=\"columns\"] .media {\n    justify-self: start;\n  }\n\n  .media {\n    block-size: 2rem;\n    inline-size: 2rem;\n  }\n\n  .title {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));\n  }\n\n  .desc {\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));\n  }\n\n  .action-group {\n    @apply flex items-center;\n    padding-inline: 0.25rem;\n  }\n\n  .action-group[data-justify=\"between\"] {\n    justify-content: space-between;\n  }\n  .action-group[data-justify=\"start\"] {\n    justify-content: flex-start;\n  }\n  .action-group[data-justify=\"end\"] {\n    justify-content: flex-end;\n  }\n\n  .actions {\n    align-items: center;\n    gap: 0.25rem;\n    margin-inline-start: auto;\n    flex-shrink: 0;\n    @apply flex p-1.5 opacity-70 transition-opacity;\n  }\n\n  .item:hover .actions,\n  .item:focus-within .actions {\n    opacity: 1;\n  }\n\n  .action {\n    @apply flex items-center justify-center;\n    border-radius: 0.25rem;\n    background-color: slot(action, background, var(--background, transparent));\n    color: slot(action, foreground, var(--foreground, var(--foreground-100, currentColor)));\n    @apply p-2;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .action:hover {\n    --hover-duration: var(--hover-enter-duration, 0ms);\n    background-color: slot(action, background-hover, slot(action, background, var(--background, transparent)));\n    color: slot(action, foreground-hover, slot(action, foreground, var(--foreground, var(--foreground-100, currentColor))));\n  }\n\n  .header,\n  .footer,\n  .divider {\n    min-inline-size: 0;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .list {\n    --foreground: var(--foreground-50);\n\n    @slot item {\n      --background: transparent;\n      --foreground: var(--foreground-50);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --background-selected: color-mix(in srgb, var(--background-500) 10%, transparent);\n      --background-selected-hover: color-mix(in srgb, var(--background-500) 14%, transparent);\n    }\n\n    @slot action {\n      --background: transparent;\n      --foreground: var(--foreground-400);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --foreground-hover: var(--foreground-50);\n    }\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .list {\n    --foreground: var(--foreground-50);\n\n    @slot item {\n      --background: transparent;\n      --foreground: var(--foreground-50);\n      --background-hover: var(--hover-100);\n      --background-selected: color-mix(in srgb, var(--background-500) 25%, transparent);\n      --background-selected-hover: color-mix(in srgb, var(--background-500) 30%, transparent);\n    }\n\n    @slot action {\n      --background: transparent;\n      --foreground: var(--foreground-400);\n      --background-hover: color-mix(in srgb, var(--background-500) 6%, transparent);\n      --foreground-hover: var(--foreground-50);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -49286,7 +49984,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "menu": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .overlay {\n    display: block;\n    position: absolute;\n  }\n\n  .trigger {\n    @apply inline-flex items-center justify-center;\n    min-inline-size: 0;\n    cursor: pointer;\n    outline: none;\n    user-select: none;\n\n    &[data-disabled=\"true\"] {\n      opacity: var(--disabled-opacity, 0.5);\n      pointer-events: none;\n    }\n  }\n\n  .panel {\n    --padding: calc(var(--spacing, 0.25rem) * 2);\n    --radius: var(--radius-sm, 0.375rem);\n\n    @apply min-w-40 max-w-80 overflow-hidden;\n    box-sizing: border-box;\n    background-color: var(--background);\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius);\n    outline: none;\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));\n\n    .viewport {\n      padding: calc(var(--padding) / 2);\n    }\n\n    .group {\n      display: contents;\n    }\n\n    .item {\n      @apply flex min-w-0 items-center gap-2;\n      padding-block: calc(var(--padding) / 1.5);\n      padding-inline: var(--padding);\n      /* Inside the panel border. */\n      --inset-gap: slot(border, width, var(--border-width-base, 1px));\n      border-radius: slot(item, radius, var(--inset-radius));\n      cursor: pointer;\n      user-select: none;\n      outline: none;\n      font-family: var(--font-body, inherit);\n      font-size: var(--text-sm, 0.875rem);\n      font-weight: var(--font-weight-body-medium, 500);\n      letter-spacing: normal;\n      line-height: var(--leading-sm, 1.25rem);\n    }\n\n    .item[data-disabled=\"true\"] {\n      opacity: slot(item, disabled-opacity, var(--disabled-opacity, 0.5));\n      pointer-events: none;\n    }\n\n    .item[data-inset=\"true\"] {\n      padding-inline-start: calc(var(--padding) * 2.67);\n    }\n\n    .indicator {\n      @apply flex shrink-0 items-center justify-center;\n      block-size: 1rem;\n      inline-size: 1rem;\n      color: slot(indicator, foreground, var(--indicator-foreground, var(--foreground)));\n    }\n\n    .indicator-check {\n      block-size: 0.75rem;\n      inline-size: 0.75rem;\n    }\n\n    .indicator-dot {\n      block-size: 0.5rem;\n      inline-size: 0.5rem;\n      fill: currentColor;\n    }\n\n    .sub-trigger {\n      inline-size: 100%;\n      color: var(--foreground);\n      background-color: slot(item, background, var(--background, transparent));\n    }\n\n    .sub-trigger[data-disabled=\"true\"] {\n      color: var(--foreground-muted, var(--foreground-400));\n    }\n\n    .chevron {\n      @apply shrink-0;\n      block-size: 1rem;\n      inline-size: 1rem;\n      margin-inline-start: auto;\n      color: var(--foreground-muted, var(--foreground-400));\n    }\n\n    .label {\n      padding-block: calc(var(--padding) / 2);\n      padding-inline: var(--padding);\n      color: var(--foreground-muted, var(--foreground-400));\n      font-family: var(--font-body, inherit);\n      font-size: var(--text-sm, 0.875rem);\n      font-weight: var(--font-weight-body-medium, 500);\n      letter-spacing: normal;\n      line-height: var(--leading-sm, 1.25rem);\n    }\n\n    .label[data-inset=\"true\"] {\n      padding-inline-start: calc(var(--padding) * 2.67);\n    }\n\n    .separator {\n      @apply my-1;\n      margin-inline: calc(var(--padding) / -2);\n      block-size: 1px;\n      background-color: slot(border, background, transparent);\n    }\n\n    .shortcut {\n      margin-inline-start: auto;\n      color: var(--foreground-muted, var(--foreground-400));\n      font-family: var(--font-mono, ui-monospace, monospace);\n      font-size: var(--text-code-size, var(--text-sm, 0.875rem));\n      font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));\n      letter-spacing: var(--letter-spacing-code, 0);\n      line-height: var(--leading-code, 1.5);\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .menu > :where(.content, .sub-content) {\n    --background: var(--background-800);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .menu.trigger {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-300);\n  }\n\n  .menu.trigger[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n\n  .menu.trigger[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n\n  .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Menu items through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n\n  .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .menu > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .menu > :where(.content, .sub-content) {\n    --background: color-mix(in srgb, var(--background-800) var(--floating-opacity), transparent);\n    backdrop-filter: var(--floating-blur);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .menu.trigger {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: var(--foreground-300);\n  }\n\n  .menu.trigger[data-hovered=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n\n  .menu.trigger[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: var(--background-700);\n  }\n\n  .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Menu items through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--background-600);\n      --foreground: var(--foreground-100);\n    }\n\n  .menu > :where(.content, .sub-content) [role^=\"menuitem\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .menu > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -50598,7 +51296,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "panel": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .panel {\n    @apply flex h-full w-full min-h-0 min-w-0;\n    container-type: inline-size;\n    background: inherit;\n  }\n\n  .panel[data-orientation=\"vertical\"] {\n    flex-direction: column;\n  }\n\n  .panel > :not(.resize) {\n    min-width: 0;\n    min-height: 0;\n    flex: 1 1 0%;\n  }\n\n  .panel > .sidebar {\n    @apply min-h-0 shrink-0 overflow-hidden;\n    flex: 0 0 var(--size);\n  }\n\n  .sidebar[data-open=\"true\"] {\n    transition: flex-basis 0.2s ease;\n  }\n\n  .sidebar[data-open=\"false\"] {\n    flex-basis: var(--collapsed-size);\n    visibility: hidden;\n  }\n\n  .panel[data-stacked=\"true\"] > .sidebar {\n    width: 100%;\n    max-width: 100%;\n    flex-basis: auto;\n  }\n\n  .panel[data-stacked=\"true\"] > .sidebar[data-open=\"false\"] {\n    height: 0;\n    min-height: 0;\n    flex-basis: 0;\n  }\n\n  .resize {\n    @apply relative shrink-0;\n    width: 10px;\n    cursor: col-resize;\n    touch-action: none;\n    user-select: none;\n    background: transparent;\n  }\n\n  .resize::before {\n    content: \"\";\n    position: absolute;\n    inset-block: 0;\n    left: 50%;\n    width: 1px;\n    background: var(--divider-color, #374151);\n    transform: translateX(-50%);\n    transition: width var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);\n  }\n\n  .resize[data-orientation=\"vertical\"] {\n    width: auto;\n    height: 10px;\n    cursor: row-resize;\n  }\n\n  .resize[data-orientation=\"vertical\"]::before {\n    inset-block: auto;\n    inset-inline: 0;\n    top: 50%;\n    width: auto;\n    height: 1px;\n    transform: translateY(-50%);\n    transition: height var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);\n  }\n\n  .resize:hover::before,\n  .resize:focus-visible::before,\n  .resize[data-resizing=\"true\"]::before {\n    width: 2px;\n  }\n\n  .resize[data-orientation=\"vertical\"]:hover::before,\n  .resize[data-orientation=\"vertical\"]:focus-visible::before,\n  .resize[data-orientation=\"vertical\"][data-resizing=\"true\"]::before {\n    width: auto;\n    height: 2px;\n  }\n\n  .spacingNone,\n  .spacing-none {\n    gap: 0;\n  }\n\n  .spacingSm,\n  .spacing-sm {\n    gap: var(--spacing-sm, 0.5rem);\n  }\n\n  .spacingMd,\n  .spacing-md {\n    gap: var(--spacing-md, 1rem);\n  }\n\n  .spacingLg,\n  .spacing-lg {\n    gap: var(--spacing-lg, 1.5rem);\n  }\n\n  .compact {\n    gap: calc(var(--spacing-sm, 0.5rem) / 2);\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .sidebar[data-open=\"true\"] {\n      transition: none;\n    }\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .panel {\n    @apply flex h-full w-full min-h-0 min-w-0;\n    container-type: inline-size;\n    background: inherit;\n  }\n\n  .panel[data-orientation=\"vertical\"] {\n    flex-direction: column;\n  }\n\n  .panel > :not(.resize) {\n    min-width: 0;\n    min-height: 0;\n    flex: 1 1 0%;\n  }\n\n  .panel > .sidebar {\n    @apply min-h-0 shrink-0 overflow-hidden;\n    flex: 0 0 var(--size);\n    transition:\n      flex-basis var(--panel-duration, 0.32s) var(--panel-ease, ease),\n      height var(--panel-duration, 0.32s) var(--panel-ease, ease);\n  }\n\n  .sidebar[data-open=\"false\"] {\n    flex-basis: var(--collapsed-size);\n  }\n\n  /* Sized from the last measured open size so collapsing never reflows the content. */\n  .sidebar > .content {\n    @apply flex min-h-0 min-w-0 flex-col;\n    width: var(--content-width, var(--size));\n    height: var(--content-height, 100%);\n    opacity: 1;\n    transition:\n      opacity var(--panel-duration, 0.32s) var(--panel-ease, ease),\n      visibility 0s;\n  }\n\n  .sidebar[data-open=\"false\"] > .content {\n    opacity: 0;\n    visibility: hidden;\n    transition:\n      opacity var(--panel-duration, 0.32s) var(--panel-ease, ease),\n      visibility 0s linear var(--panel-duration, 0.32s);\n  }\n\n  .panel[data-stacked=\"true\"] > .sidebar {\n    width: 100%;\n    max-width: 100%;\n    flex-basis: auto;\n  }\n\n  .panel[data-stacked=\"true\"] > .sidebar > .content {\n    width: 100%;\n  }\n\n  .panel[data-stacked=\"true\"] > .sidebar[data-open=\"false\"] {\n    height: 0;\n    min-height: 0;\n    flex-basis: 0;\n  }\n\n  .resize {\n    @apply relative shrink-0;\n    width: 10px;\n    cursor: col-resize;\n    touch-action: none;\n    user-select: none;\n    background: transparent;\n  }\n\n  .resize::before {\n    content: \"\";\n    position: absolute;\n    inset-block: 0;\n    left: 50%;\n    width: 1px;\n    background: var(--divider-color, #374151);\n    transform: translateX(-50%);\n    transition: width var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);\n  }\n\n  .resize[data-orientation=\"vertical\"] {\n    width: auto;\n    height: 10px;\n    cursor: row-resize;\n  }\n\n  .resize[data-orientation=\"vertical\"]::before {\n    inset-block: auto;\n    inset-inline: 0;\n    top: 50%;\n    width: auto;\n    height: 1px;\n    transform: translateY(-50%);\n    transition: height var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);\n  }\n\n  .resize:hover::before,\n  .resize:focus-visible::before,\n  .resize[data-resizing=\"true\"]::before {\n    width: 2px;\n  }\n\n  .resize[data-orientation=\"vertical\"]:hover::before,\n  .resize[data-orientation=\"vertical\"]:focus-visible::before,\n  .resize[data-orientation=\"vertical\"][data-resizing=\"true\"]::before {\n    width: auto;\n    height: 2px;\n  }\n\n  .spacingNone,\n  .spacing-none {\n    gap: 0;\n  }\n\n  .spacingSm,\n  .spacing-sm {\n    gap: var(--spacing-sm, 0.5rem);\n  }\n\n  .spacingMd,\n  .spacing-md {\n    gap: var(--spacing-md, 1rem);\n  }\n\n  .spacingLg,\n  .spacing-lg {\n    gap: var(--spacing-lg, 1.5rem);\n  }\n\n  .compact {\n    gap: calc(var(--spacing-sm, 0.5rem) / 2);\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .panel > .sidebar,\n    .sidebar > .content,\n    .sidebar[data-open=\"false\"] > .content {\n      transition: none;\n    }\n  }\n}\n",
     "variants": [],
     "cssVariables": [
       {
@@ -50609,9 +51307,74 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--panel-duration",
+        "value": "unset",
+        "selector": ".panel > .sidebar",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--panel-ease",
+        "value": "unset",
+        "selector": ".panel > .sidebar",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
         "name": "--collapsed-size",
         "value": "unset",
         "selector": ".sidebar[data-open=\"false\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--content-width",
+        "value": "unset",
+        "selector": ".sidebar > .content",
+        "atRules": [],
+        "referencedVars": [
+          "--size"
+        ]
+      },
+      {
+        "name": "--size",
+        "value": "unset",
+        "selector": ".sidebar > .content",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--content-height",
+        "value": "unset",
+        "selector": ".sidebar > .content",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--panel-duration",
+        "value": "unset",
+        "selector": ".sidebar > .content",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--panel-ease",
+        "value": "unset",
+        "selector": ".sidebar > .content",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--panel-duration",
+        "value": "unset",
+        "selector": ".sidebar[data-open=\"false\"] > .content",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--panel-ease",
+        "value": "unset",
+        "selector": ".sidebar[data-open=\"false\"] > .content",
         "atRules": [],
         "referencedVars": []
       },
@@ -51175,7 +51938,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "popover": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .trigger {\n    @apply inline-block;\n  }\n\n  .root {\n    @apply fixed;\n    pointer-events: none;\n    z-index: 50000;\n  }\n\n  .content {\n    --fill: slot(content, background, var(--background));\n    /* Frame's SVG stroke remains a documented decorative API. */\n    --stroke-color: slot(content, background-border, var(--background-border));\n    --frame-radius: 8px;\n    opacity: 0;\n    transform: translate(0, 0);\n    transition:\n      opacity 0.2s ease-out,\n      transform 0.2s ease-out;\n    pointer-events: none;\n    min-width: 200px;\n    max-width: calc(100vw - 16px);\n  }\n\n  .content[data-visible=\"true\"] {\n    opacity: 1;\n    transform: translate(0, 0);\n    pointer-events: auto;\n  }\n\n  .content[data-instant] {\n    transition: none;\n  }\n\n  .frame {\n    @apply flex items-center gap-1.5 p-2.5;\n    color: slot(content, foreground, var(--foreground));\n    font-family: slot(content, font-family, var(--font-body, inherit));\n    font-size: slot(content, font-size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: slot(content, font-weight, var(--font-weight-body-normal, 400));\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .popover {\n    @slot content {\n      --background: var(--background-900);\n      --background-border: var(--background-700);\n      --foreground: var(--foreground-200);\n    }\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .popover {\n    @slot content {\n      --background: color-mix(in srgb, var(--background-900) var(--floating-opacity), transparent);\n      --background-border: var(--background-700);\n      --foreground: var(--foreground-200);\n    }\n  }\n\n  .popover > .content {\n    /* Frame paints the surface as an SVG fill, so the blur has to be clipped to\n       the same rounded box on the element behind it. */\n    border-radius: var(--frame-radius, 8px);\n    backdrop-filter: var(--floating-blur);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -51366,7 +52129,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "progress": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .progress {\n    --disabled-opacity: 0.6;\n    @apply w-full;\n  }\n\n  .progress[data-has-label=\"true\"] {\n    @apply space-y-1;\n  }\n\n  .progress[data-show-controls=\"true\"] {\n    touch-action: none;\n    user-select: none;\n    cursor: pointer;\n  }\n\n  .progress[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity, 0.6);\n    cursor: not-allowed;\n    pointer-events: none;\n  }\n\n  .label-row {\n    @apply flex items-center justify-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .label {\n    user-select: none;\n  }\n\n  .value {\n    font-variant-numeric: tabular-nums;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.4));\n    position: relative;\n    inline-size: 100%;\n    block-size: var(--thickness);\n    border-radius: slot(track, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(track, background, var(--background));\n    overflow: visible;\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: 0;\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    position: absolute;\n    z-index: 1;\n    inset-block-start: 0;\n    inset-inline-start: 0;\n    block-size: 100%;\n    border-radius: slot(range, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(range, background, var(--background));\n    transition: none;\n    overflow: hidden;\n  }\n\n  .range[data-animated=\"true\"] {\n    animation: pulse 2s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .range[data-indeterminate=\"true\"] {\n    width: 33.333%;\n    animation: progress-indeterminate 1.5s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--width, auto));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    position: absolute;\n    inset-block-start: var(--top, 0);\n    z-index: 2;\n    box-sizing: border-box;\n    inline-size: var(--thumb-inline-size);\n    block-size: var(--thumb-block-size);\n    aspect-ratio: slot(thumb, ratio, var(--ratio, 0.666667));\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    opacity: 0;\n    pointer-events: none;\n    transition: none;\n  }\n\n  .progress[data-show-controls=\"true\"]:hover .thumb,\n  .progress[data-show-controls=\"true\"][data-dragging=\"true\"] .thumb {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  @keyframes pulse {\n    0%,\n    100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.5;\n    }\n  }\n\n  @keyframes progress-indeterminate {\n    0% {\n      transform: translateX(-100%);\n    }\n    100% {\n      transform: translateX(400%);\n    }\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .progress {\n    --disabled-opacity: 0.6;\n    @apply w-full;\n  }\n\n  .progress[data-has-label=\"true\"] {\n    @apply space-y-1;\n  }\n\n  .progress[data-show-controls=\"true\"] {\n    touch-action: none;\n    user-select: none;\n    cursor: pointer;\n  }\n\n  .progress[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity, 0.6);\n    cursor: not-allowed;\n    pointer-events: none;\n  }\n\n  .label-row {\n    @apply flex items-center justify-between;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .label {\n    user-select: none;\n  }\n\n  .value {\n    font-variant-numeric: tabular-nums;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.4));\n    --thumb-ratio: slot(thumb, ratio, var(--ratio, 0.666667));\n    --thumb-inline-size: slot(\n      thumb,\n      width,\n      var(--width, calc(var(--thickness) * var(--thumb-ratio)))\n    );\n    --thumb-block-size: slot(thumb, height, 100%);\n    --thumb-half-size: calc(var(--thumb-inline-size) / 2);\n    position: relative;\n    inline-size: 100%;\n    block-size: var(--thickness);\n    border-radius: slot(track, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(track, background, var(--background));\n    overflow: visible;\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: 0;\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    position: absolute;\n    z-index: 1;\n    inset-block-start: 0;\n    inset-inline-start: 0;\n    block-size: 100%;\n    border-radius: slot(range, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background-color: slot(range, background, var(--background));\n    transition: none;\n    overflow: hidden;\n  }\n\n  .range[data-animated=\"true\"] {\n    animation: pulse 2s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .range[data-indeterminate=\"true\"] {\n    width: 33.333%;\n    animation: progress-indeterminate 1.5s var(--ease-gentle-ease, ease-in-out) infinite;\n  }\n\n  .thumb {\n    position: absolute;\n    inset-block-start: var(--top, 0);\n    z-index: 2;\n    box-sizing: border-box;\n    inline-size: var(--thumb-inline-size);\n    block-size: var(--thumb-block-size);\n    aspect-ratio: var(--thumb-ratio);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, var(--radius-sm, 0.375rem)));\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    opacity: 0;\n    pointer-events: none;\n    transition: none;\n  }\n\n  .progress[data-show-controls=\"true\"]:hover .thumb,\n  .progress[data-show-controls=\"true\"][data-dragging=\"true\"] .thumb {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  @keyframes pulse {\n    0%,\n    100% {\n      opacity: 1;\n    }\n    50% {\n      opacity: 0.5;\n    }\n  }\n\n  @keyframes progress-indeterminate {\n    0% {\n      transform: translateX(-100%);\n    }\n    100% {\n      transform: translateX(400%);\n    }\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .progress {\n    --size: calc(var(--spacing-md) * 0.475);\n    --foreground: var(--foreground-400);\n    @slot thumb {\n      /* Drag handle: transparent border insets the painted pill inside the hit area. */\n      --border: 4px solid transparent;\n      --radius: 999px;\n    }\n    @slot track {\n      --radius: calc(var(--spacing) * 0.8);\n    }\n    @slot range {\n      --radius: calc(var(--spacing) * 0.8);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -51444,6 +52207,89 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".track",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--thumb-ratio",
+        "value": "slot(thumb, ratio, var(--ratio, 0.666667))",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--ratio"
+        ]
+      },
+      {
+        "name": "--ratio",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--ratio",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--ratio"
+        ],
+        "slot": "thumb"
+      },
+      {
+        "name": "--thumb-inline-size",
+        "value": "slot(\n      thumb,\n      width,\n      var(--width, calc(var(--thickness) * var(--thumb-ratio)))\n    )",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--width",
+          "--thickness",
+          "--thumb-ratio"
+        ]
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--thickness",
+          "--thumb-ratio"
+        ]
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--width",
+          "--thickness",
+          "--thumb-ratio"
+        ],
+        "slot": "thumb"
+      },
+      {
+        "name": "--thumb-block-size",
+        "value": "slot(thumb, height, 100%)",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--height",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
+      },
+      {
+        "name": "--thumb-half-size",
+        "value": "calc(var(--thumb-inline-size) / 2)",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--thumb-inline-size"
+        ]
       },
       {
         "name": "--radius",
@@ -51581,47 +52427,6 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--thumb-inline-size",
-        "value": "slot(thumb, width, var(--width, auto))",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": [
-          "--width"
-        ]
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--width",
-        "value": "unset",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": [
-          "--width"
-        ],
-        "slot": "thumb"
-      },
-      {
-        "name": "--thumb-block-size",
-        "value": "slot(thumb, height, 100%)",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--height",
-        "value": "unset",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "thumb"
-      },
-      {
         "name": "--top",
         "value": "unset",
         "selector": ".thumb",
@@ -51629,21 +52434,25 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--ratio",
+        "name": "--thumb-inline-size",
         "value": "unset",
         "selector": ".thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--ratio",
+        "name": "--thumb-block-size",
         "value": "unset",
         "selector": ".thumb",
         "atRules": [],
-        "referencedVars": [
-          "--ratio"
-        ],
-        "slot": "thumb"
+        "referencedVars": []
+      },
+      {
+        "name": "--thumb-ratio",
+        "value": "unset",
+        "selector": ".thumb",
+        "atRules": [],
+        "referencedVars": []
       },
       {
         "name": "--transform",
@@ -52490,8 +53299,8 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     ]
   },
   "select": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .select {\n    --disabled-opacity: 0.5;\n    --background-radius: var(--radius-sm, 0.375rem);\n    /* Trigger sections inset themselves from this radius via --inset-radius. */\n    --radius: var(--background-radius);\n\n    @slot trigger {\n      --padding-inline: calc(var(--spacing) * 2);\n      --padding-block: calc(var(--spacing) * 1.5);\n    };\n\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    height: fit-content;\n    align-self: center;\n\n    @apply p-0 gap-0 w-fit min-w-0 flex-none flex-row items-center;\n    position: relative;\n    overflow: visible;\n\n    background-color: var(--background);\n    color: var(--foreground);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n\n    @apply select-none cursor-pointer;\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      background-color: var(--background);\n    }\n\n    &[data-open=\"true\"] {\n      background-color: var(--background);\n    }\n\n    &:global(.group) {\n      height: 100%;\n      align-self: stretch;\n    }\n  }\n\n  .trigger {\n    @apply flex items-stretch flex-1 gap-0 w-full min-w-0 h-full min-h-0;\n\n    background: transparent;\n\n    @apply border-none cursor-pointer select-none;\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover .icon-section,\n      &:not([data-disabled]):hover .value-section:not(:empty) {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n\n    &[data-focus-visible=\"true\"] {\n      @apply outline-none;\n    }\n  }\n\n  .trigger-compact {\n    @apply flex-none w-auto;\n  }\n\n  /* A Value placed beside the Trigger is the label segment of one Select,\n     not another interactive control. Give that segment the same visual\n     treatment as a normal trigger value while keeping one focus target. */\n  .select.select-split > .value[data-external=\"true\"] {\n    align-items: center;\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n  }\n\n  .select button.trigger {\n    @apply p-0;\n  }\n\n  .value-section {\n    @apply flex items-center flex-1 min-w-0 gap-0.5;\n\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    &:only-child {\n      border-radius: var(--inset-radius);\n      justify-content: center;\n    }\n    &:empty {\n      flex: 0;\n      padding: 0;\n      min-width: auto;\n    }\n  }\n\n  .icon-section {\n    @apply flex items-center justify-center shrink-0;\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: 0 var(--inset-radius) var(--inset-radius) 0;\n  }\n\n  .icon {\n    @apply flex items-center justify-center w-4 h-4 opacity-70;\n  }\n\n  .text {\n    @apply block flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .value {\n    @apply flex items-center flex-1 min-w-0 gap-2 bg-transparent border-none;\n    cursor: inherit;\n  }\n\n  .value-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    align-self: center;\n    color: var(--icon-foreground, currentColor);\n\n    > svg {\n      display: block;\n    }\n  }\n\n  .value-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content,\n  .sub-content {\n    --content-padding: calc(var(--spacing) * 2);\n    --content-radius: var(--radius-sm, 0.375rem);\n    /* Rows inset themselves from this radius via --inset-radius. */\n    --radius: var(--content-radius);\n    --disabled-opacity: 0.5;\n    @apply overflow-hidden;\n    outline: none;\n    background-color: var(--background);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--content-radius);\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n  }\n\n  .content-root:global(.select),\n  .sub-content-root:global(.select) {\n    display: block;\n    position: absolute;\n  }\n\n  .list {\n    @apply space-y-1;\n  }\n\n  .list-padding {\n    padding: var(--spacing, 0.25rem);\n    /* Rows below sit inside the panel border. */\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n  }\n\n  .item,\n  .sub-trigger {\n    @apply flex items-center gap-2 outline-none cursor-default select-none;\n    padding: calc(var(--content-padding) / 1.5) var(--content-padding);\n    /* Restate the panel radius and gap on the row itself: List also paints\n       these rows, so neither file may depend on stylesheet order. */\n    --radius: var(--content-radius);\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    /* Rows are List items; List paints their background and foreground. */\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .item-content {\n    @apply flex flex-col flex-1 min-w-0;\n  }\n\n  .item-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .item-description {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: var(--foreground-muted);\n    @apply min-w-0 whitespace-normal break-words;\n  }\n\n  .item-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    color: var(--icon-foreground);\n  }\n\n  .item-with-description {\n    @apply items-start py-2;\n  }\n  .item-icon-with-description {\n    @apply mt-0.5;\n  }\n\n  .option-group-title {\n    @apply px-2 py-1;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground-muted, var(--foreground-400));\n  }\n\n  .separator {\n    @apply my-1;\n    margin-left: calc(var(--content-padding) / -2);\n    margin-right: calc(var(--content-padding) / -2);\n    height: 1px;\n    background-color: slot(border, background, transparent);\n  }\n\n  .placeholder {\n    color: var(--foreground-muted);\n  }\n\n  .icon-prefix {\n    @apply inline-flex items-center shrink-0;\n  }\n\n  .select[data-mode=\"multiple\"] .item {\n    gap: 0.5rem;\n  }\n\n  .search-trigger {\n    @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    &:focus-within {\n      @apply outline-none;\n      z-index: 1;\n    }\n  }\n\n  .search-trigger :global(.focus-indicator) {\n    display: none;\n  }\n\n  .search-value-section {\n    @apply p-0;\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n  }\n\n  .input {\n    padding-right: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) * 2 + 1rem);\n    @apply border-transparent rounded-none shadow-none bg-transparent;\n\n    &[data-focused],\n    &[data-focus-visible] {\n      @apply border-transparent shadow-none;\n    }\n  }\n\n  .search-content-input {\n    @apply rounded-none bg-transparent;\n  }\n\n  .search-icon-section {\n    @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;\n    padding-inline: slot(trigger, padding-inline, calc(var(--spacing) * 2));\n  }\n\n  .search-wrapper {\n    @apply overflow-hidden;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .empty-state {\n    @apply px-3 py-2;\n    color: var(--foreground-muted);\n  }\n\n  .content[data-placement=\"top\"] .search-wrapper {\n    border-radius: 0;\n    border-bottom: none;\n    border-top: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .sub-trigger {\n    &[data-open=\"true\"]:not([data-highlighted=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n    }\n  }\n\n  .sub-trigger-chevron {\n    @apply shrink-0 w-4 h-4;\n    margin-left: auto;\n    color: var(--foreground-400);\n  }\n\n  .sub-content {\n    @apply min-w-40 max-w-80;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .select {\n    --background: var(--background-950);\n    --focus-visible: var(--accent-400);\n    --focus-visible-background: var(--background-950);\n    --foreground: var(--foreground-300);\n    --size: var(--text-sm);\n    --icon-foreground: var(--foreground-400);\n    @slot border {\n      --background-focus: var(--background-700);\n    };\n    @slot trigger {\n      --background-hover: var(--background-900);\n    }\n  }\n\n  .select[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, transparent);\n  }\n\n  .select[data-open=\"true\"] {\n    --background: var(--background-900);\n  }\n\n  .select > .search-trigger .input {\n    @slot border {\n      --background: transparent;\n      --background-focus: transparent;\n    }\n  }\n\n  .select.ghost {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    @slot trigger {\n      --background-hover: var(--background-800);\n    }\n  }\n\n  .select.ghost[data-pressed=\"true\"]:not([data-disabled]),\n.select.ghost[data-open=\"true\"] {\n    --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n  }\n\n  .select > :where(.content, .sub-content) {\n    --background: var(--background-800);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .select > .content .search-content-input {\n    .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n  }\n    .select > .content .search-content-input .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    .select > .content .search-content-input [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger) {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Select options through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--hover-background);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger):is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--hover-background);\n      --foreground: var(--foreground-100);\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .select > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n\n  .select > .placeholder {\n    --foreground-muted: var(--foreground-400);\n  }\n}",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .select {\n    --disabled-opacity: 0.5;\n    --background-radius: var(--radius-sm, 0.375rem);\n    /* Trigger sections inset themselves from this radius via --inset-radius. */\n    --radius: var(--background-radius);\n\n    @slot trigger {\n      --padding-inline: calc(var(--spacing) * 2);\n      --padding-block: calc(var(--spacing) * 1.5);\n    };\n\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    height: fit-content;\n    align-self: center;\n\n    @apply p-0 gap-0 w-fit min-w-0 flex-none flex-row items-center;\n    position: relative;\n    overflow: visible;\n\n    background-color: var(--background);\n    color: var(--foreground);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--background-radius);\n\n    @apply select-none cursor-pointer;\n\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n    }\n\n    &[data-pressed=\"true\"]:not([data-disabled]) {\n      background-color: var(--background);\n    }\n\n    &[data-open=\"true\"] {\n      background-color: var(--background);\n    }\n\n    &:global(.group) {\n      height: 100%;\n      align-self: stretch;\n    }\n  }\n\n  .trigger {\n    @apply flex items-stretch flex-1 gap-0 w-full min-w-0 h-full min-h-0;\n\n    background: transparent;\n\n    @apply border-none cursor-pointer select-none;\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover .icon-section,\n      &:not([data-disabled]):hover .value-section:not(:empty) {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n\n    &[data-focus-visible=\"true\"] {\n      @apply outline-none;\n    }\n  }\n\n  .trigger-compact {\n    @apply flex-none w-auto;\n  }\n\n  /* A Value placed beside the Trigger is the label segment of one Select,\n     not another interactive control. Give that segment the same visual\n     treatment as a normal trigger value while keeping one focus target. */\n  .select.select-split > .value[data-external=\"true\"] {\n    align-items: center;\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n\n    @media (hover: hover) {\n      &:not([data-disabled]):hover {\n        --hover-duration: var(--hover-enter-duration, 0ms);\n        background-color: slot(trigger, background-hover, transparent);\n      }\n    }\n  }\n\n  .select button.trigger {\n    @apply p-0;\n  }\n\n  .value-section {\n    @apply flex items-center flex-1 min-w-0 gap-0.5;\n\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    &:only-child {\n      border-radius: var(--inset-radius);\n      justify-content: center;\n    }\n    &:empty {\n      flex: 0;\n      padding: 0;\n      min-width: auto;\n    }\n  }\n\n  .icon-section {\n    @apply flex items-center justify-center shrink-0;\n    background-color: var(--background, transparent);\n    transition-property: background-color;\n    transition-duration: var(--hover-duration, var(--hover-leave-duration));\n    transition-timing-function: var(--hover-transition-timing-function);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: 0 var(--inset-radius) var(--inset-radius) 0;\n  }\n\n  .icon {\n    @apply flex items-center justify-center w-4 h-4 opacity-70;\n  }\n\n  .text {\n    @apply block flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .value {\n    @apply flex items-center flex-1 min-w-0 gap-2 bg-transparent border-none;\n    cursor: inherit;\n  }\n\n  .value-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    align-self: center;\n    color: var(--icon-foreground, currentColor);\n\n    > svg {\n      display: block;\n    }\n  }\n\n  .value-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content,\n  .sub-content {\n    --content-padding: calc(var(--spacing) * 2);\n    --content-radius: var(--radius-sm, 0.375rem);\n    /* Rows inset themselves from this radius via --inset-radius. */\n    --radius: var(--content-radius);\n    --disabled-opacity: 0.5;\n    @apply overflow-hidden;\n    outline: none;\n    background-color: var(--background);\n    border:\n      slot(border, width, var(--border-width-base, 1px))\n      slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--content-radius);\n    transition:\n      opacity 180ms var(--ease-snappy-pop, ease-out),\n      transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n  }\n\n  .content-root:global(.select),\n  .sub-content-root:global(.select) {\n    display: block;\n    position: absolute;\n    box-sizing: border-box;\n    height: auto;\n    padding: 0;\n    border: 0;\n    border-radius: 0;\n    background: transparent;\n    align-self: auto;\n  }\n\n  .content-root > .content {\n    box-sizing: border-box;\n  }\n\n  .list {\n    @apply space-y-1;\n  }\n\n  .list-padding {\n    padding: var(--spacing, 0.25rem);\n    /* Rows below sit inside the panel border. */\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n  }\n\n  .item,\n  .sub-trigger {\n    @apply flex items-center gap-2 outline-none cursor-default select-none;\n    padding: calc(var(--content-padding) / 1.5) var(--content-padding);\n    /* Restate the panel radius and gap on the row itself: List also paints\n       these rows, so neither file may depend on stylesheet order. */\n    --radius: var(--content-radius);\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    /* Rows are List items; List paints their background and foreground. */\n    &[data-disabled] {\n      opacity: var(--disabled-opacity);\n      cursor: not-allowed;\n      pointer-events: none;\n    }\n  }\n\n  .item-content {\n    @apply flex flex-col flex-1 min-w-0;\n  }\n\n  .item-text {\n    @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;\n  }\n\n  .content-root[data-align=\"overlay\"] .item-text {\n    font-family: var(--select-overlay-font-family);\n    font-size: var(--select-overlay-font-size);\n    font-weight: var(--select-overlay-font-weight);\n    letter-spacing: var(--select-overlay-letter-spacing);\n    line-height: var(--select-overlay-line-height);\n  }\n\n  .content-root[data-align=\"overlay\"] [data-select-content-search-input] {\n    font-family: var(--select-overlay-font-family);\n    font-size: var(--select-overlay-font-size);\n    font-weight: var(--select-overlay-font-weight);\n    letter-spacing: var(--select-overlay-letter-spacing);\n    line-height: var(--select-overlay-line-height);\n  }\n\n  .item-description {\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: var(--foreground-muted);\n    @apply min-w-0 whitespace-normal break-words;\n  }\n\n  .item-icon {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    color: var(--icon-foreground);\n  }\n\n  .item-indicator {\n    @apply flex items-center justify-center shrink-0 w-4 h-4;\n    margin-left: auto;\n    color: var(--icon-foreground, currentColor);\n\n    > svg {\n      @apply w-4 h-4;\n    }\n  }\n\n  .item-with-description {\n    @apply items-start py-2;\n  }\n  .item-icon-with-description {\n    @apply mt-0.5;\n  }\n\n  .option-group-title {\n    @apply px-2 py-1;\n    font-family: var(--font-body, inherit);\n    font-size: var(--size, var(--text-sm, 0.875rem));\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground-muted, var(--foreground-400));\n  }\n\n  .separator {\n    @apply my-1;\n    margin-left: calc(var(--content-padding) / -2);\n    margin-right: calc(var(--content-padding) / -2);\n    height: 1px;\n    background-color: slot(border, background, transparent);\n  }\n\n  .placeholder {\n    color: var(--foreground-muted);\n  }\n\n  .icon-prefix {\n    @apply inline-flex items-center shrink-0;\n  }\n\n  .select[data-mode=\"multiple\"] .item {\n    gap: 0.5rem;\n  }\n\n  .search-trigger {\n    @apply flex items-stretch relative bg-transparent cursor-text overflow-hidden;\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius);\n    &:focus-within {\n      @apply outline-none;\n      z-index: 1;\n    }\n  }\n\n  .search-trigger :global(.focus-indicator) {\n    display: none;\n  }\n\n  .search-value-section {\n    @apply p-0;\n    --inset-gap: slot(border, width, var(--border-width-base, 1px));\n    border-radius: var(--inset-radius) 0 0 var(--inset-radius);\n  }\n\n  .input {\n    padding-right: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) * 2 + 1rem);\n    @apply border-transparent rounded-none shadow-none bg-transparent;\n\n    &[data-focused],\n    &[data-focus-visible] {\n      @apply border-transparent shadow-none;\n    }\n  }\n\n  .search-content-input {\n    @apply rounded-none bg-transparent;\n  }\n\n  .search-icon-section {\n    @apply absolute right-0 top-0 bottom-0 flex items-center justify-center bg-transparent pointer-events-none;\n    padding-inline: slot(trigger, padding-inline, calc(var(--spacing) * 2));\n  }\n\n  .search-wrapper {\n    @apply overflow-hidden;\n    border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .search-wrapper[data-trigger-type=\"button\"] [data-select-content-search-input] {\n    padding-left: slot(trigger, padding-inline, calc(var(--spacing) * 2));\n  }\n\n  .search-wrapper[data-mirror-value=\"true\"] {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: calc(var(--spacing, 0.25rem) * 2);\n    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))\n      slot(trigger, padding-inline, calc(var(--spacing) * 2));\n  }\n\n  .search-mirrored-value {\n    display: contents;\n  }\n\n  .search-wrapper[data-mirror-value=\"true\"] .value {\n    flex: 0 1 auto;\n  }\n\n  .search-wrapper[data-mirror-value=\"true\"] :global(.input-scope) {\n    flex: 1 1 8rem;\n  }\n\n  .search-wrapper[data-mirror-value=\"true\"] [data-select-content-search-input] {\n    padding-block: 0;\n  }\n\n  .empty-state {\n    @apply px-3 py-2;\n    color: var(--foreground-muted);\n  }\n\n  .content[data-placement=\"top\"] .search-wrapper {\n    border-radius: 0;\n    border-bottom: none;\n    border-top: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n  }\n\n  .sub-trigger {\n    &[data-open=\"true\"]:not([data-highlighted=\"true\"]) {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n    }\n  }\n\n  .sub-trigger-chevron {\n    @apply shrink-0 w-4 h-4;\n    margin-left: auto;\n    color: var(--foreground-400);\n  }\n\n  .sub-content {\n    @apply min-w-40 max-w-80;\n  }\n}\n",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .select {\n    --background: var(--background-950);\n    --focus-visible: var(--accent-400);\n    --focus-visible-background: var(--background-950);\n    --foreground: var(--foreground-300);\n    --size: var(--text-sm);\n    --icon-foreground: var(--foreground-400);\n    @slot border {\n      --background-focus: var(--background-700);\n    };\n    @slot trigger {\n      --background-hover: var(--background-900);\n    }\n  }\n\n  .select[data-pressed=\"true\"]:not([data-disabled]) {\n    --background: color-mix(in srgb, var(--background-600) 50%, transparent);\n  }\n\n  .select[data-open=\"true\"] {\n    --background: var(--background-900);\n  }\n\n  .select > .search-trigger .input {\n    @slot border {\n      --background: transparent;\n      --background-focus: transparent;\n    }\n  }\n\n  .select.ghost {\n    --background: transparent;\n    @slot border {\n      --background: transparent;\n    }\n    @slot trigger {\n      --background-hover: var(--background-800);\n    }\n  }\n\n  .select.ghost[data-pressed=\"true\"]:not([data-disabled]),\n.select.ghost[data-open=\"true\"] {\n    --background: color-mix(in srgb, var(--background-700) 50%, transparent);\n  }\n\n  .select > :where(.content, .sub-content) {\n    --background: color-mix(in srgb, var(--background-800) var(--floating-opacity), transparent);\n    backdrop-filter: var(--floating-blur);\n    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .select > .content .search-content-input {\n    .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n  }\n    .select > .content .search-content-input .input {\n      @slot border {\n        --background: transparent;\n        --background-focus: transparent;\n      }\n    }\n\n    .select > .content .search-content-input [data-ring=\"true\"] {\n      @slot ring {\n        --background: transparent;\n      }\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger) {\n    --background: transparent;\n    --foreground: var(--foreground-300);\n    --foreground-muted: var(--foreground-400);\n    --icon-foreground: var(--foreground-300);\n    --indicator-foreground: var(--accent-300);\n\n    /* List paints Select options through its item slot; submenu triggers read the\n       same row tokens directly. */\n    @slot item {\n      --background: var(--background);\n      --background-hover: var(--background);\n      --background-selected: var(--background);\n      --background-selected-hover: var(--background);\n      --foreground: var(--foreground);\n      --foreground-hover: var(--foreground);\n      --foreground-selected: var(--foreground);\n      --foreground-selected-hover: var(--foreground);\n    }\n\n    &:is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--hover-100);\n      --foreground: var(--foreground-100);\n    }\n  }\n\n    .select > :where(.content, .sub-content) [role=\"option\"]:where(.item, .trigger):is([data-highlighted=\"true\"], [data-focused=\"true\"], [data-state=\"open\"]) {\n      --background: var(--hover-100);\n      --foreground: var(--foreground-100);\n    }\n\n  .select > :where(.content, .sub-content) [role=\"option\"].item[data-disabled] {\n    --foreground: var(--foreground-400);\n    opacity: 0.5;\n  }\n\n  .select > :where(.content, .sub-content) :where(.indicator, .label, .shortcut) {\n    --foreground: var(--foreground-400);\n  }\n\n  .select > .placeholder {\n    --foreground-muted: var(--foreground-400);\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -53247,6 +54056,76 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
+        "name": "--select-overlay-font-family",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] .item-text",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-font-size",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] .item-text",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-font-weight",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] .item-text",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-letter-spacing",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] .item-text",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-line-height",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] .item-text",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-font-family",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-font-size",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-font-weight",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-letter-spacing",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--select-overlay-line-height",
+        "value": "unset",
+        "selector": ".content-root[data-align=\"overlay\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
         "name": "--font-body",
         "value": "unset",
         "selector": ".item-description",
@@ -53304,6 +54183,13 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "name": "--icon-foreground",
         "value": "unset",
         "selector": ".item-icon",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--icon-foreground",
+        "value": "unset",
+        "selector": ".item-indicator",
         "atRules": [],
         "referencedVars": []
       },
@@ -53516,6 +54402,50 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "slot": "border"
       },
       {
+        "name": "--spacing",
+        "value": "unset",
+        "selector": ".search-wrapper[data-trigger-type=\"button\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--padding-inline",
+        "value": "unset",
+        "selector": ".search-wrapper[data-trigger-type=\"button\"] [data-select-content-search-input]",
+        "atRules": [],
+        "referencedVars": [
+          "--spacing"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--spacing",
+        "value": "unset",
+        "selector": ".search-wrapper[data-mirror-value=\"true\"]",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--padding-block",
+        "value": "unset",
+        "selector": ".search-wrapper[data-mirror-value=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--spacing"
+        ],
+        "slot": "trigger"
+      },
+      {
+        "name": "--padding-inline",
+        "value": "unset",
+        "selector": ".search-wrapper[data-mirror-value=\"true\"]",
+        "atRules": [],
+        "referencedVars": [
+          "--spacing"
+        ],
+        "slot": "trigger"
+      },
+      {
         "name": "--foreground-muted",
         "value": "unset",
         "selector": ".empty-state",
@@ -53615,6 +54545,9 @@ export const generatedStyles: Record<string, ComponentStyles> = {
       },
       {
         "name": "description"
+      },
+      {
+        "name": "indicator"
       },
       {
         "name": "icon.right"
@@ -53747,6 +54680,11 @@ export const generatedStyles: Record<string, ComponentStyles> = {
           {
             "name": "description",
             "description": "Styles the secondary description text.",
+            "type": "Style"
+          },
+          {
+            "name": "indicator",
+            "description": "Styles the trailing checkmark shown for the selected option.",
             "type": "Style"
           }
         ]
@@ -54237,7 +55175,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
     "styleableGroups": []
   },
   "slider": {
-    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .slider {\n    --disabled-opacity: 0.6;\n    @apply relative flex w-full items-center;\n    min-inline-size: var(--inline-size, 3.5rem);\n    min-block-size: var(--hit-size, 1.5rem);\n    touch-action: none;\n    user-select: none;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    --length: calc(var(--thickness) * var(--ratio, 0.5));\n    --travel-inset: slot(track, padding, var(--padding, 0px));\n    @apply relative flex grow items-center;\n    flex-grow: 1;\n    height: var(--thickness);\n    overflow: visible;\n    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));\n    background: slot(track, background, var(--background));\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: var(--travel-inset);\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    @apply absolute;\n    z-index: 1;\n    display: block;\n    border-radius: inherit;\n    pointer-events: none;\n    background: slot(range, background, var(--background));\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .thumb {\n    --thumb-inline-size: slot(thumb, width, var(--length));\n    --thumb-block-size: slot(thumb, height, 100%);\n\n    @apply absolute block;\n    z-index: 2;\n    top: var(--top, 0);\n    box-sizing: border-box;\n    width: var(--thumb-inline-size);\n    height: var(--thumb-block-size);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));\n    outline: none;\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    box-shadow: slot(thumb, shadow, none);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .slider[data-orientation=\"horizontal\"] .range {\n    top: 0;\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"horizontal\"] .thumb {\n    left: var(--position, 0%);\n  }\n\n  .slider[data-orientation=\"vertical\"] {\n    justify-content: center;\n    min-inline-size: auto;\n    width: fit-content;\n  }\n\n  .slider[data-orientation=\"vertical\"] .track {\n    width: var(--thickness);\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .range {\n    left: 0;\n    width: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb {\n    left: 50%;\n    top: auto;\n    bottom: var(--position, 0%);\n    width: var(--thumb-block-size);\n    height: var(--thumb-inline-size);\n    transform: translate(-50%, 50%);\n  }\n\n  .slider[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .slider[data-disabled=\"true\"] .range {\n    background: slot(range, background-disabled, slot(range, background, var(--background)));\n  }\n\n  .thumb[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));\n    background-clip: padding-box;\n  }\n\n  .thumb[data-pressed=\"true\"] {\n    transform: var(--transform, translateX(-50%));\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb[data-pressed=\"true\"] {\n    transform: translate(-50%, 50%);\n  }\n}\n",
+    "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .slider {\n    --disabled-opacity: 0.6;\n    @apply relative flex w-full items-center;\n    min-inline-size: var(--inline-size, 3.5rem);\n    min-block-size: var(--hit-size, 1.5rem);\n    touch-action: none;\n    user-select: none;\n  }\n\n  .track {\n    --thickness: var(--size, calc(var(--spacing-md) * 0.8));\n    --length: calc(var(--thickness) * var(--ratio, 0.5));\n    --thumb-inline-size: slot(thumb, width, var(--length));\n    --thumb-block-size: slot(thumb, height, 100%);\n    --thumb-half-size: calc(var(--thumb-inline-size) / 2);\n    --travel-inset: slot(track, padding, var(--padding, 0px));\n    @apply relative flex grow items-center;\n    flex-grow: 1;\n    height: var(--thickness);\n    overflow: visible;\n    border-radius: slot(track, radius, var(--radius, calc(var(--spacing-sm) * 0.35)));\n    background: slot(track, background, var(--background));\n  }\n\n  .track::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    box-sizing: border-box;\n    border-radius: inherit;\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    pointer-events: none;\n    z-index: 0;\n  }\n\n  .surface {\n    position: absolute;\n    inset: var(--travel-inset);\n    border-radius: inherit;\n    overflow: hidden;\n    z-index: 1;\n  }\n\n  .range {\n    @apply absolute;\n    z-index: 1;\n    display: block;\n    border-radius: inherit;\n    pointer-events: none;\n    background: slot(range, background, var(--background));\n    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .thumb {\n    @apply absolute block;\n    z-index: 2;\n    top: var(--top, 0);\n    box-sizing: border-box;\n    width: var(--thumb-inline-size);\n    height: var(--thumb-block-size);\n    transform: var(--transform, translateX(-50%));\n    border-radius: slot(thumb, radius, var(--radius, calc(var(--spacing-xs) * 0.25)));\n    outline: none;\n    background: slot(thumb, background, var(--background));\n    background-clip: padding-box;\n    border: slot(thumb, border, none);\n    box-shadow: slot(thumb, shadow, none);\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      transform var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n  }\n\n  .slider[data-orientation=\"horizontal\"] .range {\n    top: 0;\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"horizontal\"] .thumb {\n    left: var(--position, 0%);\n  }\n\n  .slider[data-orientation=\"vertical\"] {\n    justify-content: center;\n    min-inline-size: auto;\n    width: fit-content;\n  }\n\n  .slider[data-orientation=\"vertical\"] .track {\n    width: var(--thickness);\n    height: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .range {\n    left: 0;\n    width: 100%;\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb {\n    left: 50%;\n    top: auto;\n    bottom: var(--position, 0%);\n    width: var(--thumb-block-size);\n    height: var(--thumb-inline-size);\n    transform: translate(-50%, 50%);\n  }\n\n  .slider[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .slider[data-disabled=\"true\"] .range {\n    background: slot(range, background-disabled, slot(range, background, var(--background)));\n  }\n\n  .thumb[data-disabled=\"true\"] {\n    cursor: not-allowed;\n    background: slot(thumb, background-disabled, slot(thumb, background, var(--background)));\n    background-clip: padding-box;\n  }\n\n  .thumb[data-pressed=\"true\"] {\n    transform: var(--transform, translateX(-50%));\n  }\n\n  .slider[data-orientation=\"vertical\"] .thumb[data-pressed=\"true\"] {\n    transform: translate(-50%, 50%);\n  }\n}\n",
     "onyxThemeCss": "\n\n@layer components.theme {\n\n  .slider {\n    --size: calc(var(--spacing-md) * 0.95);\n    @slot thumb {\n      /* Drag handle: transparent border insets the painted pill inside the hit area. */\n      --border: 4px solid transparent;\n      --radius: 999px;\n    }\n    @slot track {\n      --padding: 2px;\n      --radius: calc(calc(var(--spacing-sm) * 0.35) - var(--border-width-base));\n    }\n    @slot range {\n      --background-disabled: var(--background-600);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
@@ -54304,6 +55242,49 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "selector": ".track",
         "atRules": [],
         "referencedVars": []
+      },
+      {
+        "name": "--thumb-inline-size",
+        "value": "slot(thumb, width, var(--length))",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--length"
+        ]
+      },
+      {
+        "name": "--width",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--length"
+        ],
+        "slot": "thumb"
+      },
+      {
+        "name": "--thumb-block-size",
+        "value": "slot(thumb, height, 100%)",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": []
+      },
+      {
+        "name": "--height",
+        "value": "unset",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [],
+        "slot": "thumb"
+      },
+      {
+        "name": "--thumb-half-size",
+        "value": "calc(var(--thumb-inline-size) / 2)",
+        "selector": ".track",
+        "atRules": [],
+        "referencedVars": [
+          "--thumb-inline-size"
+        ]
       },
       {
         "name": "--travel-inset",
@@ -54465,48 +55446,21 @@ export const generatedStyles: Record<string, ComponentStyles> = {
         "referencedVars": []
       },
       {
-        "name": "--thumb-inline-size",
-        "value": "slot(thumb, width, var(--length))",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": [
-          "--length"
-        ]
-      },
-      {
-        "name": "--length",
+        "name": "--top",
         "value": "unset",
         "selector": ".thumb",
         "atRules": [],
         "referencedVars": []
       },
       {
-        "name": "--width",
+        "name": "--thumb-inline-size",
         "value": "unset",
         "selector": ".thumb",
         "atRules": [],
-        "referencedVars": [
-          "--length"
-        ],
-        "slot": "thumb"
+        "referencedVars": []
       },
       {
         "name": "--thumb-block-size",
-        "value": "slot(thumb, height, 100%)",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": []
-      },
-      {
-        "name": "--height",
-        "value": "unset",
-        "selector": ".thumb",
-        "atRules": [],
-        "referencedVars": [],
-        "slot": "thumb"
-      },
-      {
-        "name": "--top",
         "value": "unset",
         "selector": ".thumb",
         "atRules": [],
@@ -54895,7 +55849,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "switch": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .switch {\n    --radius: 9999px;\n\n    --width: 2.4rem;\n    --height: 1.35rem;\n    @slot thumb {\n      --size: 1.05rem;\n      --offset: 0.15rem;\n    }\n\n    --disabled-opacity: 0.6;\n\n    @apply relative inline-flex shrink-0 cursor-pointer items-center;\n    user-select: none;\n    border-radius: var(--radius);\n    inline-size: var(--width);\n    block-size: var(--height);\n  }\n\n  .switch > .switch-track {\n    @apply absolute inset-0;\n    transition:\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(track, background, var(--background, transparent));\n    border: slot(track, width, var(--border-width-base, 1px)) slot(track, style, solid)\n      slot(track, background-border, var(--background-border, transparent));\n    border-radius: slot(track, radius, var(--radius));\n  }\n\n  .switch > .input {\n    @apply absolute inset-0 h-full w-full opacity-0;\n    cursor: inherit;\n  }\n\n  .switch > .switch-thumb {\n    @apply absolute top-0 bottom-0 my-auto;\n    --inset-gap: slot(thumb, offset, 0.15rem);\n\n    inset-inline-start: var(--inset-gap);\n    inline-size: slot(thumb, size, 1.05rem);\n    block-size: slot(thumb, height, slot(thumb, size, 1.05rem));\n    transition:\n      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));\n    background-color: slot(thumb, background, var(--foreground, currentColor));\n    border-radius: slot(thumb, radius, var(--inset-radius));\n    border: slot(thumb, border, none);\n    background-clip: padding-box;\n    box-sizing: border-box;\n    z-index: 1;\n    pointer-events: none;\n  }\n\n  .switch[data-selected=\"true\"] > .switch-track {\n    background-color: slot(track, background-selected, slot(track, background, var(--background, transparent)));\n    border-color: slot(track, background-border-selected, slot(track, background-border, var(--background-border, transparent)));\n  }\n\n  .switch[data-selected=\"true\"] > .switch-thumb {\n    background-color: slot(thumb, background-selected, slot(thumb, background, var(--foreground, currentColor)));\n    inset-inline-start: calc(var(--width) - slot(thumb, size, 1.05rem) - slot(thumb, offset, 0.15rem));\n  }\n\n  .switch[data-disabled=\"true\"] {\n    opacity: var(--disabled-opacity);\n    cursor: not-allowed;\n  }\n\n  .switch.switch-sm {\n    --width: 2rem;\n    --height: 1.125rem;\n    @slot thumb {\n      --size: 0.875rem;\n      --offset: 0.125rem;\n    }\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .switch {\n    --focus-visible: var(--ring-background);\n    --width: 2rem;\n    --height: 1.2rem;\n    --radius: calc(var(--height) * 0.30);\n    --thumb-padding: 3px;\n    --thumb-height: calc(var(--height) - var(--thumb-padding) * 2);\n    --thumb-size: var(--thumb-height);\n    @slot track {\n      --background-border: var(--background-700);\n      --background-border-selected: var(--background-500);\n    }\n    @slot thumb {\n      --background: var(--background-500);\n      --background-selected: var(--foreground-300);\n      --size: var(--thumb-size);\n      --height: var(--thumb-height);\n      --offset: var(--thumb-padding);\n    }\n  }\n\n  .switch[data-size=\"sm\"] {\n    --width: 1.75rem;\n    --height: 1.05rem;\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .switch {\n    --focus-visible: var(--ring-background);\n    --width: 2rem;\n    --height: 1.2rem;\n    --background-radius: 0.30;\n    --radius: calc(var(--height) * var(--background-radius));\n    @slot track {\n      --background-border: var(--background-700);\n      --background-border-selected: var(--background-500);\n    }\n    @slot thumb {\n      --background: var(--background-500);\n      --background-selected: var(--foreground-300);\n      --offset: 3px;\n      --height: calc(var(--height) - slot(thumb, offset) * 2);\n      --size: slot(thumb, height);\n      --radius: calc(slot(thumb, height) * var(--background-radius));\n    }\n  }\n\n  .switch[data-size=\"sm\"] {\n    --width: 1.75rem;\n    --height: 1.05rem;\n  }\n}",
     "variants": [],
     "cssVariables": [
       {
@@ -57629,7 +58583,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "toast": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .root {\n    @apply flex w-full max-w-[28rem] items-start gap-3 px-4 py-2.5 select-none;\n    background: var(--background);\n    color: var(--foreground);\n    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)\n      slot(border, background, transparent);\n    border-radius: var(--radius-sm, 0.375rem);\n    box-shadow: var(--background-shadow);\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    touch-action: pan-y;\n  }\n\n  .icon-wrap {\n    @apply mr-4 mt-2 h-5 w-5 shrink-0;\n  }\n\n  .icon {\n    @apply h-5 w-5;\n    color: var(--icon-foreground, var(--foreground));\n  }\n\n  .content {\n    @apply min-w-0 flex-1;\n  }\n\n  .title {\n    @apply m-0;\n    --foreground: inherit;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-sm, 0.875rem);\n    font-weight: var(--font-weight-body-medium, 500);\n    letter-spacing: normal;\n    line-height: var(--leading-sm, 1.25rem);\n    color: var(--foreground);\n  }\n\n  .description {\n    @apply mt-1 mb-0;\n    --foreground: inherit;\n    font-family: var(--font-body, inherit);\n    font-size: var(--text-body-size, var(--text-base, 0.9375rem));\n    font-weight: var(--font-weight-body-normal, 400);\n    letter-spacing: normal;\n    line-height: var(--leading-body, 1.5);\n    color: var(--foreground);\n  }\n\n  .close {\n    @apply flex shrink-0 items-center justify-center p-2 cursor-pointer;\n    --foreground: currentColor;\n    background-color: var(--background, transparent);\n    border: none;\n    border-radius: var(--radius-sm, 0.375rem);\n    color: var(--foreground);\n    opacity: 0.6;\n    transition:\n      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-settle-in, ease-out)),\n      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))\n        var(--hover-transition-timing-function, var(--ease-settle-in, ease-out));\n\n    &[data-focus-visible=\"true\"] {\n      box-shadow: 0 0 0 var(--border-width-base, 1px) var(--focus-visible);\n      outline: none;\n    }\n\n    &[data-hovered=\"true\"] {\n      --hover-duration: var(--hover-enter-duration, 0ms);\n      opacity: 1;\n    }\n  }\n\n  .close-icon {\n    @apply h-4 w-4;\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .toast {\n    --background: var(--background-900);\n    --background-shadow: 0 10px 25px -5px rgb(0 0 0 / 10%);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast > .icon > .glyph {\n    --foreground: currentColor;\n  }\n\n  .toast > .content > .title {\n    --foreground: var(--foreground-100);\n  }\n\n  .toast > .content > .description {\n    --foreground: var(--foreground-300);\n  }\n\n  .toast > .close {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: currentColor;\n  }\n}\n\n@layer utilities {\n  .toast[data-variant=\"default\"],\n.toast:not([data-variant]) {\n    --background: var(--background-900);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast[data-variant=\"danger\"] {\n    --background: color-mix(in srgb, var(--danger-600) 10%, var(--background-900));\n    --icon-foreground: var(--danger-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"success\"] {\n    --background: color-mix(in srgb, var(--success-600) 10%, var(--background-900));\n    --icon-foreground: var(--success-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"info\"] {\n    --background: color-mix(in srgb, var(--info-600) 10%, var(--background-900));\n    --icon-foreground: var(--info-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"warning\"] {\n    --background: color-mix(in srgb, var(--warning-600) 10%, var(--background-900));\n    --icon-foreground: var(--warning-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .toast {\n    --background: color-mix(in srgb, var(--background-900) var(--floating-opacity), transparent);\n    backdrop-filter: var(--floating-blur);\n    --background-shadow: 0 10px 25px -5px rgb(0 0 0 / 10%);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast > .icon > .glyph {\n    --foreground: currentColor;\n  }\n\n  .toast > .content > .title {\n    --foreground: var(--foreground-100);\n  }\n\n  .toast > .content > .description {\n    --foreground: var(--foreground-300);\n  }\n\n  .toast > .close {\n    --background: transparent;\n    --focus-visible: var(--accent-400);\n    --foreground: currentColor;\n  }\n}\n\n@layer utilities {\n  .toast[data-variant=\"default\"],\n.toast:not([data-variant]) {\n    --background: color-mix(in srgb, var(--background-900) var(--floating-opacity), transparent);\n    --foreground: var(--foreground-200);\n    @slot border {\n      --background: var(--background-600);\n    }\n  }\n\n  .toast[data-variant=\"danger\"] {\n    --background: color-mix(in srgb, color-mix(in srgb, var(--danger-600) 10%, var(--background-900)) var(--floating-opacity), transparent);\n    --icon-foreground: var(--danger-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"success\"] {\n    --background: color-mix(in srgb, color-mix(in srgb, var(--success-600) 10%, var(--background-900)) var(--floating-opacity), transparent);\n    --icon-foreground: var(--success-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--success-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"info\"] {\n    --background: color-mix(in srgb, color-mix(in srgb, var(--info-600) 10%, var(--background-900)) var(--floating-opacity), transparent);\n    --icon-foreground: var(--info-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--info-600) 20%, var(--background-900));\n    }\n  }\n\n  .toast[data-variant=\"warning\"] {\n    --background: color-mix(in srgb, color-mix(in srgb, var(--warning-600) 10%, var(--background-900)) var(--floating-opacity), transparent);\n    --icon-foreground: var(--warning-600);\n    @slot border {\n      --background: color-mix(in srgb, var(--warning-600) 20%, var(--background-900));\n    }\n  }\n}",
     "variants": [
       "default",
       "danger",
@@ -58036,7 +58990,7 @@ export const generatedStyles: Record<string, ComponentStyles> = {
   },
   "tooltip": {
     "rawCss": "@reference \"tailwindcss\";\n\n@layer components.defaults {\n  .trigger {\n    display: contents;\n  }\n\n  .root {\n    @apply absolute;\n    pointer-events: none;\n    z-index: 50;\n  }\n\n  .content {\n    --fill: slot(content, background, var(--background));\n    /* Frame's SVG stroke remains a documented decorative API. */\n    --stroke-color: slot(content, background-border, var(--background-border));\n    color: slot(content, foreground, var(--foreground));\n    opacity: 0;\n    transform: translate(0, 0);\n    transition:\n      opacity 0.15s ease-out,\n      transform 0.15s ease-out;\n  }\n\n  .content[data-open=\"true\"] {\n    opacity: 1;\n    pointer-events: auto;\n  }\n\n  .content[data-instant=\"true\"] {\n    transition: none;\n  }\n\n  .frame {\n    @apply flex max-w-120 items-center gap-1.5 px-2 py-1 whitespace-normal wrap-break-word;\n    font-size: slot(content, font-size, var(--text-xs, 0.75rem));\n    font-weight: slot(content, font-weight, var(--font-weight-body-medium, 500));\n  }\n\n  .frame[data-hint=\"true\"] {\n    @apply pr-1;\n  }\n\n  .hint {\n    @apply inline-flex shrink-0 items-center gap-1;\n  }\n\n  .hint :global(.badge) {\n    --background-radius: var(--radius-xs, 0.25rem);\n  }\n}\n",
-    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .tooltip {\n    @slot content {\n      --background: var(--background-900);\n      --background-border: var(--background-700);\n      --foreground: var(--foreground-200);\n      --font-size: var(--text-xs);\n      --font-weight: var(--font-weight-body-medium);\n    }\n  }\n}",
+    "onyxThemeCss": "\n\n@layer components.theme {\n\n  .tooltip > .content {\n    /* Frame paints the surface as an SVG fill, so the blur has to be clipped to\n       the same rounded box on the element behind it. */\n    border-radius: var(--frame-radius, 8px);\n    backdrop-filter: var(--floating-blur);\n  }\n\n  .tooltip {\n    @slot content {\n      --background: color-mix(in srgb, var(--background-900) var(--floating-opacity), transparent);\n      --background-border: var(--background-700);\n      --foreground: var(--foreground-200);\n      --font-size: var(--text-xs);\n      --font-weight: var(--font-weight-body-medium);\n    }\n  }\n}",
     "variants": [],
     "cssVariables": [
       {

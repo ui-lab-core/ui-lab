@@ -191,40 +191,6 @@ export const generatedWorkshopContent = [
     }
   },
   {
-    "ref": "element:documentation/copypage",
-    "kind": "element",
-    "id": "copypage",
-    "name": "Copy Page",
-    "description": "A documentation page with a header action that copies the full page as Markdown, confirming inline.",
-    "category": "elements",
-    "visibility": "public",
-    "packageId": "documentation",
-    "access": "premium",
-    "locked": true,
-    "bundleId": "documentation",
-    "installIntent": {
-      "mode": "locked",
-      "artifactId": "copypage"
-    }
-  },
-  {
-    "ref": "element:documentation/copypage-with-success",
-    "kind": "element",
-    "id": "copypage-with-success",
-    "name": "Copy Page with Toast",
-    "description": "Copying the page raises a success toast for clear, non-blocking confirmation, with an error toast on failure.",
-    "category": "elements",
-    "visibility": "public",
-    "packageId": "documentation",
-    "access": "premium",
-    "locked": true,
-    "bundleId": "documentation",
-    "installIntent": {
-      "mode": "locked",
-      "artifactId": "copypage-with-success"
-    }
-  },
-  {
     "ref": "element:documentation/feedback",
     "kind": "element",
     "id": "feedback",
@@ -273,6 +239,74 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "nextarticle-with-icon"
+    }
+  },
+  {
+    "ref": "element:documentation/pageactions",
+    "kind": "element",
+    "id": "pageactions",
+    "name": "Page Actions",
+    "description": "A documentation page header with its action row: copy the page as Markdown with inline confirmation, and open the raw Markdown source.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pageactions"
+    }
+  },
+  {
+    "ref": "element:documentation/pageactions-menu",
+    "kind": "element",
+    "id": "pageactions-menu",
+    "name": "Page Actions Menu",
+    "description": "A split action: copy the page directly, with a menu beside it holding the rest of the destinations — raw Markdown, a shareable link, and handoff to an AI assistant.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pageactions-menu"
+    }
+  },
+  {
+    "ref": "element:documentation/pageactions-toolbar",
+    "kind": "element",
+    "id": "pageactions-toolbar",
+    "name": "Page Actions Toolbar",
+    "description": "A compact icon-only toolbar for dense documentation headers: copy, share, edit on GitHub, and print, each labelled by a tooltip and an accessible name.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pageactions-toolbar"
+    }
+  },
+  {
+    "ref": "element:documentation/pageactions-with-toast",
+    "kind": "element",
+    "id": "pageactions-with-toast",
+    "name": "Page Actions with Toast",
+    "description": "The same page action row, confirming the copy with a success toast and reporting a blocked clipboard with a danger toast instead of a silent failure.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pageactions-with-toast"
     }
   },
   {
@@ -910,7 +944,7 @@ export const generatedWorkshopContent = [
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "<Group orientation=\"horizontal\" spacing=\"none\">\n  <Group.Button onPress={() => handleMerge(selected.value)}>\n    {selected.label}\n  </Group.Button>\n  <Divider orientation=\"vertical\" />\n  <Group.Select selectedKey={strategy} onSelectionChange={setStrategy}>\n    <Select.Trigger aria-label=\"Choose merge strategy\" icon={{ left: <FaChevronDown /> }} />\n    <Select.Content>\n      <Select.List>\n        {strategies.map((item) => (\n          <Select.Item key={item.value} value={item.value} description={item.description}>\n            {item.label}\n          </Select.Item>\n        ))}\n      </Select.List>\n    </Select.Content>\n  </Group.Select>\n</Group>"
+    "code": "<Group orientation=\"horizontal\" spacing=\"none\">\n  <Group.Button onPress={() => handleMerge(selected.value)}>\n    {selected.label}\n  </Group.Button>\n  <Divider orientation=\"vertical\" />\n  <Group.Select selectedKey={strategy} onSelectionChange={setStrategy}>\n    <Select.Trigger aria-label=\"Choose merge strategy\" icon={{ prefix: <FaChevronDown /> }} />\n    <Select.Content>\n      <Select.List>\n        {strategies.map((item) => (\n          <Select.Item key={item.value} value={item.value} description={item.description}>\n            {item.label}\n          </Select.Item>\n        ))}\n      </Select.List>\n    </Select.Content>\n  </Group.Select>\n</Group>"
   },
   {
     "ref": "example:button/styled-button",
@@ -1846,7 +1880,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List items={projects} aria-label=\"Recent projects\">\n  <List.Header>\n    <h2>Projects</h2>\n  </List.Header>\n  {projects.map((project) => (\n    <List.Item key={project.id} value={project.id} interactive>\n      <div className=\"h-6 w-6 flex-shrink-0 rounded bg-background-700/50\" />\n      <List.Title>{project.title}</List.Title>\n    </List.Item>\n  ))}\n</List>"
+    "code": "<List aria-label=\"Recent projects\">\n  <List.Header>\n    <h2>Projects</h2>\n  </List.Header>\n  {projects.map((project) => (\n    <List.Item key={project.id} value={project.id} interactive>\n      <div className=\"h-6 w-6 flex-shrink-0 rounded bg-background-700/50\" />\n      <List.Title>{project.title}</List.Title>\n    </List.Item>\n  ))}\n</List>"
   },
   {
     "ref": "example:list/02-review-queue",
@@ -1859,7 +1893,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List items={reviewItems} spacing=\"sm\">\n  {reviewItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Mark ${item.title} reviewed`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n    </List.Item>\n  ))}\n</List>\n\n<Button variant=\"primary\" size=\"sm\" icon={{ left: <FaCircleCheck /> }} disabled={!allChecked}>\n  Submit review\n</Button>"
+    "code": "<List spacing=\"sm\">\n  {reviewItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Mark ${item.title} reviewed`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n    </List.Item>\n  ))}\n</List>\n\n<Button variant=\"primary\" size=\"sm\" icon={{ left: <FaCircleCheck /> }} disabled={!allChecked}>\n  Submit review\n</Button>"
   },
   {
     "ref": "example:list/03-notification-rules",
@@ -1872,7 +1906,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List items={notificationItems} spacing=\"sm\">\n  {notificationItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Enable ${item.title.toLowerCase()} notifications`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Select\n        selectedKey={delivery[item.id]}\n        label={String(delivery[item.id] ?? \"\")}\n        disabled={!checked.has(item.id)}\n        className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n        onSelectionChange={(value) => setDeliveryMode(item.id, value)}\n      >\n        <Select.Trigger>\n          <Select.Value placeholder=\"Mode\" />\n        </Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"email\">Email</Select.Item>\n            <Select.Item value=\"digest\">Digest</Select.Item>\n            <Select.Item value=\"push\">Push</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  ))}\n</List>"
+    "code": "<List spacing=\"sm\">\n  {notificationItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Enable ${item.title.toLowerCase()} notifications`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Select\n        selectedKey={delivery[item.id]}\n        label={String(delivery[item.id] ?? \"\")}\n        disabled={!checked.has(item.id)}\n        className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n        onSelectionChange={(value) => setDeliveryMode(item.id, value)}\n      >\n        <Select.Trigger>\n          <Select.Value placeholder=\"Mode\" />\n        </Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"email\">Email</Select.Item>\n            <Select.Item value=\"digest\">Digest</Select.Item>\n            <Select.Item value=\"push\">Push</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  ))}\n</List>"
   },
   {
     "ref": "example:list/04-quota-editor",
@@ -1885,7 +1919,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List items={quotaItems} spacing=\"sm\">\n  {quotaItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Enable ${item.title.toLowerCase()} limit`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"flex min-w-0 flex-1 flex-col gap-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Input\n        aria-label={`${item.title} limit`}\n        type=\"number\"\n        value={limits[item.id]}\n        disabled={!checked.has(item.id)}\n        onChange={(event) => setLimit(item.id, event.currentTarget.value)}\n        className=\"w-28\"\n      />\n    </List.Item>\n  ))}\n</List>"
+    "code": "<List spacing=\"sm\">\n  {quotaItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Enable ${item.title.toLowerCase()} limit`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"flex min-w-0 flex-1 flex-col gap-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Input\n        aria-label={`${item.title} limit`}\n        type=\"number\"\n        value={limits[item.id]}\n        disabled={!checked.has(item.id)}\n        onChange={(event) => setLimit(item.id, event.currentTarget.value)}\n        className=\"w-28\"\n      />\n    </List.Item>\n  ))}\n</List>"
   },
   {
     "ref": "example:list/05-permissions-matrix",
@@ -1898,7 +1932,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List items={rows} spacing=\"sm\">\n  <List.Item value=\"all\" interactive onClick={() => setAll(!allChecked)}>\n    <List.Checkbox\n      aria-label=\"Toggle all permissions\"\n      placement=\"start\"\n      checked={allChecked}\n      isIndeterminate={isIndeterminate}\n      onCheckedChange={setAll}\n    />\n    <List.Title>All permissions</List.Title>\n  </List.Item>\n  <List.Divider />\n  {permissionItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => setItem(item.id, !checked.has(item.id))}\n    >\n      <div className=\"w-5 flex-shrink-0\" />\n      <List.Checkbox\n        aria-label={`Allow ${item.title.toLowerCase()}`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Select\n        selectedKey={level[item.id]}\n        label={String(level[item.id] ?? \"\")}\n        disabled={!checked.has(item.id)}\n        className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n        onSelectionChange={(value) => setPermissionLevel(item.id, value)}\n      >\n        <Select.Trigger>\n          <Select.Value placeholder=\"Access\" />\n        </Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"view\">View</Select.Item>\n            <Select.Item value=\"edit\">Edit</Select.Item>\n            <Select.Item value=\"admin\">Admin</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  ))}\n</List>"
+    "code": "<List spacing=\"sm\">\n  <List.Item value=\"all\" interactive onClick={() => setAll(!allChecked)}>\n    <List.Checkbox\n      aria-label=\"Toggle all permissions\"\n      placement=\"start\"\n      checked={allChecked}\n      isIndeterminate={isIndeterminate}\n      onCheckedChange={setAll}\n    />\n    <List.Title>All permissions</List.Title>\n  </List.Item>\n  <List.Divider />\n  {permissionItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => setItem(item.id, !checked.has(item.id))}\n    >\n      <div className=\"w-5 flex-shrink-0\" />\n      <List.Checkbox\n        aria-label={`Allow ${item.title.toLowerCase()}`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Select\n        selectedKey={level[item.id]}\n        label={String(level[item.id] ?? \"\")}\n        disabled={!checked.has(item.id)}\n        className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n        onSelectionChange={(value) => setPermissionLevel(item.id, value)}\n      >\n        <Select.Trigger>\n          <Select.Value placeholder=\"Access\" />\n        </Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"view\">View</Select.Item>\n            <Select.Item value=\"edit\">Edit</Select.Item>\n            <Select.Item value=\"admin\">Admin</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  ))}\n</List>"
   },
   {
     "ref": "example:mask/activity-feed",
@@ -2106,7 +2140,7 @@ export const generatedWorkshopContent = [
     "componentId": "popover",
     "access": "free",
     "locked": false,
-    "code": "<Popover\n  position=\"bottom\"\n  content={\n    <List items={toggleableItems} spacing=\"sm\">\n      {toggleableItems.map((item) => (\n        <List.Item\n          key={item.id}\n          value={item.id}\n          interactive\n          onClick={() => toggle(item.id)}\n        >\n          <div className=\"min-w-0 flex-1\">\n            <List.Title>{item.label}</List.Title>\n            <List.Desc>{item.desc}</List.Desc>\n          </div>\n          <List.Switch\n            isSelected={enabled.has(item.id)}\n            onChange={() => toggle(item.id)}\n            aria-label={item.label}\n          />\n        </List.Item>\n      ))}\n    </List>\n  }\n>\n  <Button>Options</Button>\n</Popover>"
+    "code": "<Popover\n  position=\"bottom\"\n  content={\n    <List spacing=\"sm\">\n      {toggleableItems.map((item) => (\n        <List.Item\n          key={item.id}\n          value={item.id}\n          interactive\n          onClick={() => toggle(item.id)}\n        >\n          <div className=\"min-w-0 flex-1\">\n            <List.Title>{item.label}</List.Title>\n            <List.Desc>{item.desc}</List.Desc>\n          </div>\n          <List.Switch\n            isSelected={enabled.has(item.id)}\n            onChange={() => toggle(item.id)}\n            aria-label={item.label}\n          />\n        </List.Item>\n      ))}\n    </List>\n  }\n>\n  <Button>Options</Button>\n</Popover>"
   },
   {
     "ref": "example:popover/03-table-row-actions",
@@ -2145,7 +2179,7 @@ export const generatedWorkshopContent = [
     "componentId": "popover",
     "access": "free",
     "locked": false,
-    "code": "<Flex align-center>\n  {([\"top\", \"bottom\", \"left\", \"right\"] as const).map((position) => (\n    <Popover\n      key={position}\n      position={position}\n      showArrow\n      content={<span className=\"text-sm capitalize\">{position}</span>}\n    >\n      <Button variant=\"ghost\">\n        <span className=\"capitalize\">{position}</span>\n      </Button>\n    </Popover>\n  ))}\n</Flex>"
+    "code": "<Flex align-center>\n  {([\"top\", \"bottom\", \"left\", \"right\"] as const).map((position) => (\n    <Popover\n      key={position}\n      position={position}\n      show-arrow\n      content={<span className=\"text-sm capitalize\">{position}</span>}\n    >\n      <Button variant=\"ghost\">\n        <span className=\"capitalize\">{position}</span>\n      </Button>\n    </Popover>\n  ))}\n</Flex>"
   },
   {
     "ref": "example:premium-gate/02-premium-gate-fixture",
@@ -2370,7 +2404,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    value={bio}\n    onChange={(e) => setBio(e.target.value)}\n    showCharacterCount\n    maxCharacters={160}\n    rows={3}\n    resizable={false}\n  />\n  <Flex justify-end gap=\"sm\">\n    <Button size=\"sm\" variant=\"ghost\" onClick={() => setBio(\"\")}>Clear</Button>\n    <Button size=\"sm\" variant=\"primary\">Save</Button>\n  </Flex>\n</Flex>"
+    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    value={bio}\n    onChange={(e) => setBio(e.target.value)}\n    showCharacterCount\n    maxCharacters={160}\n    rows={3}\n    resize=\"none\"\n  />\n  <Flex justify-end gap=\"sm\">\n    <Button size=\"sm\" variant=\"ghost\" onClick={() => setBio(\"\")}>Clear</Button>\n    <Button size=\"sm\" variant=\"primary\">Save</Button>\n  </Flex>\n</Flex>"
   },
   {
     "ref": "example:textarea/03-error-state",
@@ -2396,7 +2430,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"md\">\n  <TextArea\n    value=\"This field is disabled and cannot be edited.\"\n    disabled\n    rows={2}\n    resizable={false}\n  />\n  <TextArea\n    value=\"This is a read-only note visible to all team members.\"\n    readOnly\n    rows={2}\n    resizable={false}\n  />\n</Flex>"
+    "code": "<Flex direction=\"column\" gap=\"md\">\n  <TextArea\n    value=\"This field is disabled and cannot be edited.\"\n    disabled\n    rows={2}\n    resize=\"none\"\n  />\n  <TextArea\n    value=\"This is a read-only note visible to all team members.\"\n    readOnly\n    rows={2}\n    resize=\"none\"\n  />\n</Flex>"
   },
   {
     "ref": "example:textarea/05-scrolling",
@@ -2409,7 +2443,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    value={value}\n    onChange={(e) => setValue(e.target.value)}\n    maxHeight=\"120px\"\n    resizable={false}\n  />\n</Flex>"
+    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    value={value}\n    onChange={(e) => setValue(e.target.value)}\n    maxHeight=\"120px\"\n    resize=\"none\"\n  />\n</Flex>"
   },
   {
     "ref": "example:toast/01-basic-toast",
@@ -2486,13 +2520,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiChevronDown, FiLogOut, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <span className=\"flex flex-col\">\n            <span className=\"text-sm text-foreground-100\">Avery Reid</span>\n            <span className=\"text-xs text-foreground-400\">avery@example.com</span>\n          </span>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+    "code": "'use client';\n\nimport { FiChevronDown, FiLogOut, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <div className=\"flex flex-col gap-1.5\">\n            <Skeleton.Text lines={1} w={96} />\n            <Skeleton.Text lines={1} w={140} />\n          </div>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiChevronDown, FiLogOut, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <span className=\"flex flex-col\">\n            <span className=\"text-sm text-foreground-100\">Avery Reid</span>\n            <span className=\"text-xs text-foreground-400\">avery@example.com</span>\n          </span>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+        "content": "'use client';\n\nimport { FiChevronDown, FiLogOut, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <div className=\"flex flex-col gap-1.5\">\n            <Skeleton.Text lines={1} w={96} />\n            <Skeleton.Text lines={1} w={140} />\n          </div>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2502,7 +2536,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/button",
-        "ui-lab-components/menu"
+        "ui-lab-components/menu",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -2520,13 +2555,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { CalendarDays, Clock } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" className=\"uppercase tracking-wide\">Guides</Badge>\n      <h1 className=\"mt-4 text-3xl font-semibold tracking-tight text-foreground-50\">\n        Build your first project\n      </h1>\n      <p className=\"mt-3 text-lg leading-8 text-foreground-400\">\n        Learn the core concepts and compose a polished interface from a small set of reusable primitives.\n      </p>\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-foreground-500\">\n        <span className=\"inline-flex items-center gap-1.5\"><Clock size={14} /> 8 min read</span>\n        <span className=\"inline-flex items-center gap-1.5\"><CalendarDays size={14} /> Updated Aug 26, 2026</span>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
+    "code": "'use client';\n\nimport { CalendarDays, Clock } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" className=\"uppercase tracking-wide\">Guides</Badge>\n      <Skeleton.Text size=\"display\" lines={1} w=\"80%\" className=\"mt-4\" />\n      <Skeleton.Text lines={2} lastLineWidth=\"60%\" className=\"mt-3\" />\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-foreground-500\">\n        <div className=\"inline-flex items-center gap-1.5\"><Clock size={14} /><Skeleton.Text lines={1} w={72} /></div>\n        <div className=\"inline-flex items-center gap-1.5\"><CalendarDays size={14} /><Skeleton.Text lines={1} w={128} /></div>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { CalendarDays, Clock } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" className=\"uppercase tracking-wide\">Guides</Badge>\n      <h1 className=\"mt-4 text-3xl font-semibold tracking-tight text-foreground-50\">\n        Build your first project\n      </h1>\n      <p className=\"mt-3 text-lg leading-8 text-foreground-400\">\n        Learn the core concepts and compose a polished interface from a small set of reusable primitives.\n      </p>\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-foreground-500\">\n        <span className=\"inline-flex items-center gap-1.5\"><Clock size={14} /> 8 min read</span>\n        <span className=\"inline-flex items-center gap-1.5\"><CalendarDays size={14} /> Updated Aug 26, 2026</span>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
+        "content": "'use client';\n\nimport { CalendarDays, Clock } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" className=\"uppercase tracking-wide\">Guides</Badge>\n      <Skeleton.Text size=\"display\" lines={1} w=\"80%\" className=\"mt-4\" />\n      <Skeleton.Text lines={2} lastLineWidth=\"60%\" className=\"mt-3\" />\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-foreground-500\">\n        <div className=\"inline-flex items-center gap-1.5\"><Clock size={14} /><Skeleton.Text lines={1} w={72} /></div>\n        <div className=\"inline-flex items-center gap-1.5\"><CalendarDays size={14} /><Skeleton.Text lines={1} w={128} /></div>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2536,7 +2571,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/badge",
-        "ui-lab-components/divider"
+        "ui-lab-components/divider",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -2650,13 +2686,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "import { FiBox } from 'react-icons/fi';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <FiBox size={18} />\n      </span>\n      <span className=\"text-base font-semibold text-foreground-50\">Acme</span>\n    </a>\n  );\n}\n",
+    "code": "'use client';\n\nimport { FiBox } from 'react-icons/fi';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <FiBox size={18} />\n      </span>\n      <Skeleton.Text lines={1} w={64} />\n    </a>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "import { FiBox } from 'react-icons/fi';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <FiBox size={18} />\n      </span>\n      <span className=\"text-base font-semibold text-foreground-50\">Acme</span>\n    </a>\n  );\n}\n",
+        "content": "'use client';\n\nimport { FiBox } from 'react-icons/fi';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <FiBox size={18} />\n      </span>\n      <Skeleton.Text lines={1} w={64} />\n    </a>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2664,7 +2700,9 @@ export const generatedWorkshopContent = [
       "npm": [
         "react-icons"
       ],
-      "uiLab": []
+      "uiLab": [
+        "ui-lab-components/skeleton"
+      ]
     },
     "installIntent": {
       "mode": "copy",
@@ -2814,13 +2852,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { ArrowLeft, ArrowRight } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\n\nconst prev = { label: 'Installation', href: '#' };\nconst next = { label: 'Theming your app', href: '#' };\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href={prev.href} className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <ArrowLeft size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <span className=\"min-w-0\">\n              <span className=\"block text-xs text-foreground-500\">Previous</span>\n              <span className=\"block truncate text-sm font-medium text-foreground-100\">{prev.label}</span>\n            </span>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href={next.href} className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <span className=\"min-w-0\">\n              <span className=\"block text-xs text-foreground-500\">Next</span>\n              <span className=\"block truncate text-sm font-medium text-foreground-100\">{next.label}</span>\n            </span>\n            <ArrowRight size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
+    "code": "'use client';\n\nimport { ArrowLeft, ArrowRight } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <ArrowLeft size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <div className=\"flex min-w-0 flex-col gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Previous</span>\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <div className=\"flex min-w-0 flex-col items-end gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Next</span>\n              <Skeleton.Text lines={1} w={140} />\n            </div>\n            <ArrowRight size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { ArrowLeft, ArrowRight } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\n\nconst prev = { label: 'Installation', href: '#' };\nconst next = { label: 'Theming your app', href: '#' };\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href={prev.href} className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <ArrowLeft size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <span className=\"min-w-0\">\n              <span className=\"block text-xs text-foreground-500\">Previous</span>\n              <span className=\"block truncate text-sm font-medium text-foreground-100\">{prev.label}</span>\n            </span>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href={next.href} className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <span className=\"min-w-0\">\n              <span className=\"block text-xs text-foreground-500\">Next</span>\n              <span className=\"block truncate text-sm font-medium text-foreground-100\">{next.label}</span>\n            </span>\n            <ArrowRight size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
+        "content": "'use client';\n\nimport { ArrowLeft, ArrowRight } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <ArrowLeft size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <div className=\"flex min-w-0 flex-col gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Previous</span>\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <div className=\"flex min-w-0 flex-col items-end gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Next</span>\n              <Skeleton.Text lines={1} w={140} />\n            </div>\n            <ArrowRight size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2829,7 +2867,8 @@ export const generatedWorkshopContent = [
         "lucide-react"
       ],
       "uiLab": [
-        "ui-lab-components/card"
+        "ui-lab-components/card",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -2880,13 +2919,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { primary: 'api-deploy-prod', secondary: 'github-actions · main', status: 'active', timestamp: '2m ago' },\n  { primary: 'run-integration-tests', secondary: 'github-actions · staging', status: 'pending', timestamp: '14m ago' },\n  { primary: 'seed-db-migration', secondary: 'cli · development', status: 'failed', timestamp: '1h ago' },\n  { primary: 'build-docker-image', secondary: 'docker · registry', status: 'inactive', timestamp: '3h ago' },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;\n\nexport function DataTableRowDemo() {\n  return (\n    <List aria-label=\"Recent workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.primary}\n          value={row.primary}\n          interactive\n          actions={[<span key=\"meta\" className=\"flex items-center gap-2\"><time className=\"font-mono text-sm\">{row.timestamp}</time><Badge variant={statusVariant[row.status]}>{row.status}</Badge></span>]}\n        >\n          <div><List.Title>{row.primary}</List.Title><List.Desc>{row.secondary}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', primary: 168, secondary: 208 },\n  { key: 'row-2', status: 'pending', primary: 196, secondary: 176 },\n  { key: 'row-3', status: 'failed', primary: 152, secondary: 220 },\n  { key: 'row-4', status: 'inactive', primary: 184, secondary: 192 },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;\n\nexport function DataTableRowDemo() {\n  return (\n    <List aria-label=\"Recent workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.key}\n          value={row.key}\n          interactive\n          actions={[<div key=\"meta\" className=\"flex items-center gap-3\"><Skeleton.Text lines={1} w={52} /><Badge variant={statusVariant[row.status]}>{row.status}</Badge></div>]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={row.primary} /><Skeleton.Text lines={1} w={row.secondary} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { primary: 'api-deploy-prod', secondary: 'github-actions · main', status: 'active', timestamp: '2m ago' },\n  { primary: 'run-integration-tests', secondary: 'github-actions · staging', status: 'pending', timestamp: '14m ago' },\n  { primary: 'seed-db-migration', secondary: 'cli · development', status: 'failed', timestamp: '1h ago' },\n  { primary: 'build-docker-image', secondary: 'docker · registry', status: 'inactive', timestamp: '3h ago' },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;\n\nexport function DataTableRowDemo() {\n  return (\n    <List aria-label=\"Recent workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.primary}\n          value={row.primary}\n          interactive\n          actions={[<span key=\"meta\" className=\"flex items-center gap-2\"><time className=\"font-mono text-sm\">{row.timestamp}</time><Badge variant={statusVariant[row.status]}>{row.status}</Badge></span>]}\n        >\n          <div><List.Title>{row.primary}</List.Title><List.Desc>{row.secondary}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', primary: 168, secondary: 208 },\n  { key: 'row-2', status: 'pending', primary: 196, secondary: 176 },\n  { key: 'row-3', status: 'failed', primary: 152, secondary: 220 },\n  { key: 'row-4', status: 'inactive', primary: 184, secondary: 192 },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger', inactive: 'default' } as const;\n\nexport function DataTableRowDemo() {\n  return (\n    <List aria-label=\"Recent workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.key}\n          value={row.key}\n          interactive\n          actions={[<div key=\"meta\" className=\"flex items-center gap-3\"><Skeleton.Text lines={1} w={52} /><Badge variant={statusVariant[row.status]}>{row.status}</Badge></div>]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={row.primary} /><Skeleton.Text lines={1} w={row.secondary} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2894,7 +2933,8 @@ export const generatedWorkshopContent = [
       "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -2912,13 +2952,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { Expand } from 'ui-lab-components/expand';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { primary: 'api-deploy-prod', secondary: 'github-actions · main', status: 'active', timestamp: '2m ago', details: 'Deployed to us-east-1. 3 instances updated. Build time: 42s.' },\n  { primary: 'run-integration-tests', secondary: 'github-actions · staging', status: 'pending', timestamp: '14m ago', details: 'Waiting for runner. Queue position: 3.' },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning' } as const;\n\nexport function DataTableRowExpandableDemo() {\n  return (\n    <List aria-label=\"Workflow runs with details\">\n      {rows.map((row) => (\n        <List.Item key={row.primary} focusable={false} className=\"p-0\">\n          <Expand layout=\"contained\" className=\"w-full\">\n            <Expand.Trigger className=\"w-full\">\n              <span className=\"flex flex-1 min-w-0 items-center gap-4 text-left\">\n                <span className=\"flex-1 min-w-0\"><strong className=\"block truncate\">{row.primary}</strong><span className=\"block truncate text-foreground-400\">{row.secondary}</span></span>\n                <time className=\"text-sm text-foreground-400\">{row.timestamp}</time>\n                <Badge variant={statusVariant[row.status]}>{row.status}</Badge>\n              </span>\n              <Expand.Icon />\n            </Expand.Trigger>\n            <Expand.Divider />\n            <Expand.Content><p className=\"px-3 py-2 text-sm text-foreground-400\">{row.details}</p></Expand.Content>\n          </Expand>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { Expand } from 'ui-lab-components/expand';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', primary: 168, secondary: 208 },\n  { key: 'row-2', status: 'pending', primary: 196, secondary: 176 },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning' } as const;\n\nexport function DataTableRowExpandableDemo() {\n  return (\n    <List aria-label=\"Workflow runs with details\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} className=\"p-0\">\n          <Expand layout=\"contained\" className=\"w-full\">\n            <Expand.Trigger className=\"w-full\">\n              <div className=\"flex flex-1 min-w-0 items-center gap-4 text-left\">\n                <div className=\"flex-1 min-w-0 space-y-1.5\"><Skeleton.Text lines={1} w={row.primary} /><Skeleton.Text lines={1} w={row.secondary} /></div>\n                <Skeleton.Text lines={1} w={52} />\n                <Badge variant={statusVariant[row.status]}>{row.status}</Badge>\n              </div>\n              <Expand.Icon />\n            </Expand.Trigger>\n            <Expand.Divider />\n            <Expand.Content><div className=\"px-3 py-2\"><Skeleton.Text lines={2} lastLineWidth=\"60%\" /></div></Expand.Content>\n          </Expand>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { Expand } from 'ui-lab-components/expand';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { primary: 'api-deploy-prod', secondary: 'github-actions · main', status: 'active', timestamp: '2m ago', details: 'Deployed to us-east-1. 3 instances updated. Build time: 42s.' },\n  { primary: 'run-integration-tests', secondary: 'github-actions · staging', status: 'pending', timestamp: '14m ago', details: 'Waiting for runner. Queue position: 3.' },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning' } as const;\n\nexport function DataTableRowExpandableDemo() {\n  return (\n    <List aria-label=\"Workflow runs with details\">\n      {rows.map((row) => (\n        <List.Item key={row.primary} focusable={false} className=\"p-0\">\n          <Expand layout=\"contained\" className=\"w-full\">\n            <Expand.Trigger className=\"w-full\">\n              <span className=\"flex flex-1 min-w-0 items-center gap-4 text-left\">\n                <span className=\"flex-1 min-w-0\"><strong className=\"block truncate\">{row.primary}</strong><span className=\"block truncate text-foreground-400\">{row.secondary}</span></span>\n                <time className=\"text-sm text-foreground-400\">{row.timestamp}</time>\n                <Badge variant={statusVariant[row.status]}>{row.status}</Badge>\n              </span>\n              <Expand.Icon />\n            </Expand.Trigger>\n            <Expand.Divider />\n            <Expand.Content><p className=\"px-3 py-2 text-sm text-foreground-400\">{row.details}</p></Expand.Content>\n          </Expand>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { Expand } from 'ui-lab-components/expand';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', primary: 168, secondary: 208 },\n  { key: 'row-2', status: 'pending', primary: 196, secondary: 176 },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning' } as const;\n\nexport function DataTableRowExpandableDemo() {\n  return (\n    <List aria-label=\"Workflow runs with details\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} className=\"p-0\">\n          <Expand layout=\"contained\" className=\"w-full\">\n            <Expand.Trigger className=\"w-full\">\n              <div className=\"flex flex-1 min-w-0 items-center gap-4 text-left\">\n                <div className=\"flex-1 min-w-0 space-y-1.5\"><Skeleton.Text lines={1} w={row.primary} /><Skeleton.Text lines={1} w={row.secondary} /></div>\n                <Skeleton.Text lines={1} w={52} />\n                <Badge variant={statusVariant[row.status]}>{row.status}</Badge>\n              </div>\n              <Expand.Icon />\n            </Expand.Trigger>\n            <Expand.Divider />\n            <Expand.Content><div className=\"px-3 py-2\"><Skeleton.Text lines={2} lastLineWidth=\"60%\" /></div></Expand.Content>\n          </Expand>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2927,7 +2967,8 @@ export const generatedWorkshopContent = [
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/expand",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -2945,13 +2986,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { primary: 'api-deploy-prod', secondary: 'github-actions · main', status: 'active', timestamp: '2m ago' },\n  { primary: 'run-integration-tests', secondary: 'github-actions · staging', status: 'pending', timestamp: '14m ago' },\n  { primary: 'seed-db-migration', secondary: 'cli · development', status: 'failed', timestamp: '1h ago' },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger' } as const;\n\nexport function DataTableRowSelectableDemo() {\n  const [selected, setSelected] = useState(() => new Set(['api-deploy-prod']));\n\n  const toggle = (key: string, checked: boolean) => setSelected((current) => {\n    const next = new Set(current);\n    checked ? next.add(key) : next.delete(key);\n    return next;\n  });\n\n  return (\n    <List aria-label=\"Selectable workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.primary}\n          value={row.primary}\n          selected={selected.has(row.primary)}\n          actions={[<span key=\"meta\" className=\"flex items-center gap-2\"><time>{row.timestamp}</time><Badge variant={statusVariant[row.status]}>{row.status}</Badge></span>]}\n        >\n          <List.Checkbox placement=\"start\" checked={selected.has(row.primary)} onCheckedChange={(checked) => toggle(row.primary, checked)} aria-label={`Select ${row.primary}`} />\n          <div><List.Title>{row.primary}</List.Title><List.Desc>{row.secondary}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', primary: 168, secondary: 208 },\n  { key: 'row-2', status: 'pending', primary: 196, secondary: 176 },\n  { key: 'row-3', status: 'failed', primary: 152, secondary: 220 },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger' } as const;\n\nexport function DataTableRowSelectableDemo() {\n  const [selected, setSelected] = useState(() => new Set(['row-1']));\n\n  const toggle = (key: string, checked: boolean) => setSelected((current) => {\n    const next = new Set(current);\n    checked ? next.add(key) : next.delete(key);\n    return next;\n  });\n\n  return (\n    <List aria-label=\"Selectable workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.key}\n          value={row.key}\n          selected={selected.has(row.key)}\n          actions={[<div key=\"meta\" className=\"flex items-center gap-3\"><Skeleton.Text lines={1} w={52} /><Badge variant={statusVariant[row.status]}>{row.status}</Badge></div>]}\n        >\n          <List.Checkbox placement=\"start\" checked={selected.has(row.key)} onCheckedChange={(checked) => toggle(row.key, checked)} aria-label={`Select row ${row.key}`} />\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={row.primary} /><Skeleton.Text lines={1} w={row.secondary} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { primary: 'api-deploy-prod', secondary: 'github-actions · main', status: 'active', timestamp: '2m ago' },\n  { primary: 'run-integration-tests', secondary: 'github-actions · staging', status: 'pending', timestamp: '14m ago' },\n  { primary: 'seed-db-migration', secondary: 'cli · development', status: 'failed', timestamp: '1h ago' },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger' } as const;\n\nexport function DataTableRowSelectableDemo() {\n  const [selected, setSelected] = useState(() => new Set(['api-deploy-prod']));\n\n  const toggle = (key: string, checked: boolean) => setSelected((current) => {\n    const next = new Set(current);\n    checked ? next.add(key) : next.delete(key);\n    return next;\n  });\n\n  return (\n    <List aria-label=\"Selectable workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.primary}\n          value={row.primary}\n          selected={selected.has(row.primary)}\n          actions={[<span key=\"meta\" className=\"flex items-center gap-2\"><time>{row.timestamp}</time><Badge variant={statusVariant[row.status]}>{row.status}</Badge></span>]}\n        >\n          <List.Checkbox placement=\"start\" checked={selected.has(row.primary)} onCheckedChange={(checked) => toggle(row.primary, checked)} aria-label={`Select ${row.primary}`} />\n          <div><List.Title>{row.primary}</List.Title><List.Desc>{row.secondary}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', primary: 168, secondary: 208 },\n  { key: 'row-2', status: 'pending', primary: 196, secondary: 176 },\n  { key: 'row-3', status: 'failed', primary: 152, secondary: 220 },\n] as const;\n\nconst statusVariant = { active: 'success', pending: 'warning', failed: 'danger' } as const;\n\nexport function DataTableRowSelectableDemo() {\n  const [selected, setSelected] = useState(() => new Set(['row-1']));\n\n  const toggle = (key: string, checked: boolean) => setSelected((current) => {\n    const next = new Set(current);\n    checked ? next.add(key) : next.delete(key);\n    return next;\n  });\n\n  return (\n    <List aria-label=\"Selectable workflow runs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.key}\n          value={row.key}\n          selected={selected.has(row.key)}\n          actions={[<div key=\"meta\" className=\"flex items-center gap-3\"><Skeleton.Text lines={1} w={52} /><Badge variant={statusVariant[row.status]}>{row.status}</Badge></div>]}\n        >\n          <List.Checkbox placement=\"start\" checked={selected.has(row.key)} onCheckedChange={(checked) => toggle(row.key, checked)} aria-label={`Select row ${row.key}`} />\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={row.primary} /><Skeleton.Text lines={1} w={row.secondary} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2959,7 +3000,8 @@ export const generatedWorkshopContent = [
       "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -2977,13 +3019,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"max-w-xs\">\n          <h3 className=\"text-sm font-medium\">No projects yet</h3>\n          <p className=\"text-sm text-foreground-400\">Create your first project to get started with your team.</p>\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"max-w-xs\">\n          <h3 className=\"text-sm font-medium\">No projects yet</h3>\n          <p className=\"text-sm text-foreground-400\">Create your first project to get started with your team.</p>\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -2993,7 +3035,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/button",
-        "ui-lab-components/card"
+        "ui-lab-components/card",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3011,13 +3054,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FileText } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><FileText size={16} /></span>\n        <p className=\"max-w-xs text-sm text-foreground-400\">No activity to show yet.</p>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { FileText } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><FileText size={16} /></span>\n        <Skeleton.Text lines={1} w={180} />\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FileText } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><FileText size={16} /></span>\n        <p className=\"max-w-xs text-sm text-foreground-400\">No activity to show yet.</p>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { FileText } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><FileText size={16} /></span>\n        <Skeleton.Text lines={1} w={180} />\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3026,7 +3069,8 @@ export const generatedWorkshopContent = [
         "lucide-react"
       ],
       "uiLab": [
-        "ui-lab-components/card"
+        "ui-lab-components/card",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3044,13 +3088,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"max-w-xs\"><h3 className=\"text-sm font-medium\">No projects yet</h3><p className=\"text-sm text-foreground-400\">Create your first project to get started with your team.</p></div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"max-w-xs\"><h3 className=\"text-sm font-medium\">No projects yet</h3><p className=\"text-sm text-foreground-400\">Create your first project to get started with your team.</p></div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3060,7 +3104,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/button",
-        "ui-lab-components/card"
+        "ui-lab-components/card",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3390,13 +3435,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={14} />} />\n    </Group>\n  );\n}\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {['API Key — Production', 'API Key — Staging', 'API Key — Development'].map((label) => (\n        <List.Item key={label} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <List.Title>{label}</List.Title>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 176 },\n  { key: 'row-2', width: 148 },\n  { key: 'row-3', width: 196 },\n];\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={14} />} />\n    </Group>\n  );\n}\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {['API Key — Production', 'API Key — Staging', 'API Key — Development'].map((label) => (\n        <List.Item key={label} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <List.Title>{label}</List.Title>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 176 },\n  { key: 'row-2', width: 148 },\n  { key: 'row-3', width: 196 },\n];\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3406,7 +3451,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/group",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3424,13 +3470,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Copy size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={12} />} />\n    </Group>\n  );\n}\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {['api-deploy-prod', 'run-tests', 'seed-db'].map((label) => (\n        <List.Item key={label} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <List.Title className=\"font-mono\">{label}</List.Title>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Copy size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={12} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 132 },\n  { key: 'row-2', width: 104 },\n  { key: 'row-3', width: 120 },\n];\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Copy size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={12} />} />\n    </Group>\n  );\n}\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {['api-deploy-prod', 'run-tests', 'seed-db'].map((label) => (\n        <List.Item key={label} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <List.Title className=\"font-mono\">{label}</List.Title>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Copy size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={12} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 132 },\n  { key: 'row-2', width: 104 },\n  { key: 'row-3', width: 120 },\n];\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3440,7 +3486,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/group",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3458,13 +3505,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Ellipsis, Pencil } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Ellipsis size={14} />} />\n    </Group>\n  );\n}\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {['API Key — Production', 'API Key — Staging'].map((label) => (\n        <List.Item key={label} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <List.Title>{label}</List.Title>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Copy, Ellipsis, Pencil } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Ellipsis size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 196 },\n  { key: 'row-2', width: 164 },\n];\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Ellipsis, Pencil } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Ellipsis size={14} />} />\n    </Group>\n  );\n}\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {['API Key — Production', 'API Key — Staging'].map((label) => (\n        <List.Item key={label} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <List.Title>{label}</List.Title>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Copy, Ellipsis, Pencil } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Ellipsis size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 196 },\n  { key: 'row-2', width: 164 },\n];\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3474,7 +3521,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/group",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3492,20 +3540,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\n\nfunction InlineAlert({ title, message, variant = 'info' }: { title: string; message?: string; variant?: 'info' | 'warning' | 'danger' }) {\n  return (\n    <Banner variant={variant} role={variant === 'danger' ? 'alert' : 'status'}>\n      <Banner.Title>{title}</Banner.Title>\n      {message && <Banner.Body>{message}</Banner.Body>}\n    </Banner>\n  );\n}\n\nexport function InlineAlertDemo() {\n  return <InlineAlert variant=\"warning\" title=\"Trial ending soon\" message=\"Your trial expires in 3 days. Upgrade to keep access.\" />;\n}\n",
+    "code": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction InlineAlert({ variant = 'info', role }: { variant?: 'info' | 'warning' | 'danger'; role?: string }) {\n  return (\n    <Banner variant={variant} role={role ?? (variant === 'danger' ? 'alert' : 'status')}>\n      <Skeleton.Text lines={1} w={160} />\n      <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n    </Banner>\n  );\n}\n\nexport function InlineAlertDemo() {\n  return <InlineAlert variant=\"warning\" />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\n\nfunction InlineAlert({ title, message, variant = 'info' }: { title: string; message?: string; variant?: 'info' | 'warning' | 'danger' }) {\n  return (\n    <Banner variant={variant} role={variant === 'danger' ? 'alert' : 'status'}>\n      <Banner.Title>{title}</Banner.Title>\n      {message && <Banner.Body>{message}</Banner.Body>}\n    </Banner>\n  );\n}\n\nexport function InlineAlertDemo() {\n  return <InlineAlert variant=\"warning\" title=\"Trial ending soon\" message=\"Your trial expires in 3 days. Upgrade to keep access.\" />;\n}\n",
+        "content": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction InlineAlert({ variant = 'info', role }: { variant?: 'info' | 'warning' | 'danger'; role?: string }) {\n  return (\n    <Banner variant={variant} role={role ?? (variant === 'danger' ? 'alert' : 'status')}>\n      <Skeleton.Text lines={1} w={160} />\n      <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n    </Banner>\n  );\n}\n\nexport function InlineAlertDemo() {\n  return <InlineAlert variant=\"warning\" />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
-        "ui-lab-components/banner"
+        "ui-lab-components/banner",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3523,20 +3572,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\n\nexport function InlineAlertErrorDemo() {\n  return (\n    <Banner variant=\"danger\" role=\"alert\" aria-live=\"assertive\">\n      <Banner.Title>Payment failed</Banner.Title>\n      <Banner.Body>Your card was declined. Please update your billing details.</Banner.Body>\n    </Banner>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function InlineAlertErrorDemo() {\n  return (\n    <Banner variant=\"danger\" role=\"alert\" aria-live=\"assertive\">\n      <Skeleton.Text lines={1} w={140} />\n      <Skeleton.Text lines={2} lastLineWidth=\"65%\" />\n    </Banner>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\n\nexport function InlineAlertErrorDemo() {\n  return (\n    <Banner variant=\"danger\" role=\"alert\" aria-live=\"assertive\">\n      <Banner.Title>Payment failed</Banner.Title>\n      <Banner.Body>Your card was declined. Please update your billing details.</Banner.Body>\n    </Banner>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function InlineAlertErrorDemo() {\n  return (\n    <Banner variant=\"danger\" role=\"alert\" aria-live=\"assertive\">\n      <Skeleton.Text lines={1} w={140} />\n      <Skeleton.Text lines={2} lastLineWidth=\"65%\" />\n    </Banner>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
-        "ui-lab-components/banner"
+        "ui-lab-components/banner",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3554,20 +3604,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\n\nexport function InlineAlertInfoDemo() {\n  return (\n    <Banner variant=\"info\" role=\"status\">\n      <Banner.Title>New version available</Banner.Title>\n      <Banner.Body>Refresh the page to get the latest updates and improvements.</Banner.Body>\n    </Banner>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function InlineAlertInfoDemo() {\n  return (\n    <Banner variant=\"info\" role=\"status\">\n      <Skeleton.Text lines={1} w={170} />\n      <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n    </Banner>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\n\nexport function InlineAlertInfoDemo() {\n  return (\n    <Banner variant=\"info\" role=\"status\">\n      <Banner.Title>New version available</Banner.Title>\n      <Banner.Body>Refresh the page to get the latest updates and improvements.</Banner.Body>\n    </Banner>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Banner } from 'ui-lab-components/banner';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function InlineAlertInfoDemo() {\n  return (\n    <Banner variant=\"info\" role=\"status\">\n      <Skeleton.Text lines={1} w={170} />\n      <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n    </Banner>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
-        "ui-lab-components/banner"
+        "ui-lab-components/banner",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3681,13 +3732,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst items = [\n  { title: 'Push Notifications', description: 'Stay updated on new activity in your account.', icon: <Bell size={18} /> },\n  { title: 'Security Alerts', description: 'Get notified when unusual activity is detected.', icon: <ShieldCheck size={18} /> },\n  { title: 'Analytics Reports', description: 'Receive weekly performance summaries.', icon: <ChartNoAxesCombined size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.title} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div><List.Title>{item.title}</List.Title><List.Desc>{item.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 232, icon: <Bell size={18} /> },\n  { key: 'security', title: 128, description: 208, icon: <ShieldCheck size={18} /> },\n  { key: 'analytics', title: 160, description: 196, icon: <ChartNoAxesCombined size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst items = [\n  { title: 'Push Notifications', description: 'Stay updated on new activity in your account.', icon: <Bell size={18} /> },\n  { title: 'Security Alerts', description: 'Get notified when unusual activity is detected.', icon: <ShieldCheck size={18} /> },\n  { title: 'Analytics Reports', description: 'Receive weekly performance summaries.', icon: <ChartNoAxesCombined size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.title} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div><List.Title>{item.title}</List.Title><List.Desc>{item.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 232, icon: <Bell size={18} /> },\n  { key: 'security', title: 128, description: 208, icon: <ShieldCheck size={18} /> },\n  { key: 'analytics', title: 160, description: 196, icon: <ChartNoAxesCombined size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3696,7 +3747,8 @@ export const generatedWorkshopContent = [
         "lucide-react"
       ],
       "uiLab": [
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3714,13 +3766,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Bell, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst items = [\n  { title: 'Push Notifications', description: 'Stay updated on new activity in your account.', icon: <Bell size={22} /> },\n  { title: 'Security Alerts', description: 'Get notified when unusual activity is detected.', icon: <ShieldCheck size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.title} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div><List.Title className=\"text-base\">{item.title}</List.Title><List.Desc className=\"whitespace-normal\">{item.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Bell, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', icon: <Bell size={22} /> },\n  { key: 'security', icon: <ShieldCheck size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-2\"><Skeleton.Text size=\"heading\" w={160} /><Skeleton.Text lines={2} lastLineWidth=\"70%\" /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Bell, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst items = [\n  { title: 'Push Notifications', description: 'Stay updated on new activity in your account.', icon: <Bell size={22} /> },\n  { title: 'Security Alerts', description: 'Get notified when unusual activity is detected.', icon: <ShieldCheck size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.title} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div><List.Title className=\"text-base\">{item.title}</List.Title><List.Desc className=\"whitespace-normal\">{item.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Bell, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', icon: <Bell size={22} /> },\n  { key: 'security', icon: <ShieldCheck size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-2\"><Skeleton.Text size=\"heading\" w={160} /><Skeleton.Text lines={2} lastLineWidth=\"70%\" /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3729,7 +3781,8 @@ export const generatedWorkshopContent = [
         "lucide-react"
       ],
       "uiLab": [
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3747,13 +3800,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst items = [\n  { title: 'Push Notifications', description: 'Stay updated on new activity.', icon: <Bell size={14} /> },\n  { title: 'Security Alerts', description: 'Get notified of unusual activity.', icon: <ShieldCheck size={14} /> },\n  { title: 'Analytics Reports', description: 'Receive weekly summaries.', icon: <ChartNoAxesCombined size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.title} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div><List.Title>{item.title}</List.Title><List.Desc>{item.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 168, icon: <Bell size={14} /> },\n  { key: 'security', title: 128, description: 152, icon: <ShieldCheck size={14} /> },\n  { key: 'analytics', title: 160, description: 140, icon: <ChartNoAxesCombined size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst items = [\n  { title: 'Push Notifications', description: 'Stay updated on new activity.', icon: <Bell size={14} /> },\n  { title: 'Security Alerts', description: 'Get notified of unusual activity.', icon: <ShieldCheck size={14} /> },\n  { title: 'Analytics Reports', description: 'Receive weekly summaries.', icon: <ChartNoAxesCombined size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.title} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div><List.Title>{item.title}</List.Title><List.Desc>{item.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 168, icon: <Bell size={14} /> },\n  { key: 'security', title: 128, description: 152, icon: <ShieldCheck size={14} /> },\n  { key: 'analytics', title: 160, description: 140, icon: <ChartNoAxesCombined size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3762,7 +3815,8 @@ export const generatedWorkshopContent = [
         "lucide-react"
       ],
       "uiLab": [
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -3949,13 +4003,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "import { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-1\">\n        <h1 className=\"text-xl font-semibold text-foreground-50\">Projects</h1>\n        <p className=\"text-sm text-foreground-400\">Manage work across your organization.</p>\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
+    "code": "'use client';\n\nimport { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-2\">\n        <Skeleton.Text size=\"heading\" w={140} />\n        <Skeleton.Text lines={1} w={220} />\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "import { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-1\">\n        <h1 className=\"text-xl font-semibold text-foreground-50\">Projects</h1>\n        <p className=\"text-sm text-foreground-400\">Manage work across your organization.</p>\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
+        "content": "'use client';\n\nimport { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-2\">\n        <Skeleton.Text size=\"heading\" w={140} />\n        <Skeleton.Text lines={1} w={220} />\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -3964,7 +4018,8 @@ export const generatedWorkshopContent = [
         "react-icons"
       ],
       "uiLab": [
-        "ui-lab-components/button"
+        "ui-lab-components/button",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4276,13 +4331,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\n\nconst options = [\n  { id: 'system', label: 'System' },\n  { id: 'light', label: 'Light' },\n  { id: 'dark', label: 'Dark' },\n];\n\nfunction SelectRow({ id, label, description, defaultValue }: { id: string; label: string; description?: string; defaultValue?: string }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div>\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {description && <List.Desc id={`${id}-description`}>{description}</List.Desc>}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id} aria-describedby={description ? `${id}-description` : undefined}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {options.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowDemo() {\n  return (\n    <List aria-label=\"Display settings\">\n      <SelectRow id=\"theme\" label=\"Appearance\" description=\"Choose your preferred color scheme.\" defaultValue=\"system\" />\n      <SelectRow id=\"density\" label=\"Density\" description=\"Controls the spacing of the UI.\" defaultValue=\"light\" />\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst options = [\n  { id: 'system', label: 'System' },\n  { id: 'light', label: 'Light' },\n  { id: 'dark', label: 'Dark' },\n];\n\nfunction SelectRow({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {options.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowDemo() {\n  return (\n    <List aria-label=\"Display settings\">\n      <SelectRow id=\"theme\" label=\"Appearance\" defaultValue=\"system\" descriptionWidth={220} />\n      <SelectRow id=\"density\" label=\"Density\" defaultValue=\"light\" descriptionWidth={188} />\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\n\nconst options = [\n  { id: 'system', label: 'System' },\n  { id: 'light', label: 'Light' },\n  { id: 'dark', label: 'Dark' },\n];\n\nfunction SelectRow({ id, label, description, defaultValue }: { id: string; label: string; description?: string; defaultValue?: string }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div>\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {description && <List.Desc id={`${id}-description`}>{description}</List.Desc>}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id} aria-describedby={description ? `${id}-description` : undefined}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {options.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowDemo() {\n  return (\n    <List aria-label=\"Display settings\">\n      <SelectRow id=\"theme\" label=\"Appearance\" description=\"Choose your preferred color scheme.\" defaultValue=\"system\" />\n      <SelectRow id=\"density\" label=\"Density\" description=\"Controls the spacing of the UI.\" defaultValue=\"light\" />\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst options = [\n  { id: 'system', label: 'System' },\n  { id: 'light', label: 'Light' },\n  { id: 'dark', label: 'Dark' },\n];\n\nfunction SelectRow({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {options.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowDemo() {\n  return (\n    <List aria-label=\"Display settings\">\n      <SelectRow id=\"theme\" label=\"Appearance\" defaultValue=\"system\" descriptionWidth={220} />\n      <SelectRow id=\"density\" label=\"Density\" defaultValue=\"light\" descriptionWidth={188} />\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4291,7 +4346,8 @@ export const generatedWorkshopContent = [
       "uiLab": [
         "ui-lab-components/label",
         "ui-lab-components/list",
-        "ui-lab-components/select"
+        "ui-lab-components/select",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4342,13 +4398,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Languages } from 'lucide-react';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, description, defaultValue }: { id: string; label: string; description?: string; defaultValue?: string }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Languages size={18} /></List.Media>\n      <div>\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {description && <List.Desc id={`${id}-description`}>{description}</List.Desc>}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id} aria-describedby={description ? `${id}-description` : undefined}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" description=\"Sets the display language.\" defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Languages } from 'lucide-react';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Languages size={18} /></List.Media>\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" descriptionWidth={196} defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Languages } from 'lucide-react';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, description, defaultValue }: { id: string; label: string; description?: string; defaultValue?: string }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Languages size={18} /></List.Media>\n      <div>\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {description && <List.Desc id={`${id}-description`}>{description}</List.Desc>}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id} aria-describedby={description ? `${id}-description` : undefined}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" description=\"Sets the display language.\" defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Languages } from 'lucide-react';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Languages size={18} /></List.Media>\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" descriptionWidth={196} defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4359,7 +4415,8 @@ export const generatedWorkshopContent = [
       "uiLab": [
         "ui-lab-components/label",
         "ui-lab-components/list",
-        "ui-lab-components/select"
+        "ui-lab-components/select",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4377,13 +4434,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { title: 'Deploy production build', description: 'github-actions · main', timestamp: '2m ago', status: 'active' },\n  { title: 'Run integration tests', description: 'github-actions · staging', timestamp: '14m ago', status: 'pending' },\n  { title: 'Seed database migration', description: 'cli · development', timestamp: '1h ago', status: 'inactive' },\n];\n\nconst statusVariant = { active: 'success', pending: 'warning', inactive: 'default' } as const;\n\nexport function SplitRowDemo() {\n  return (\n    <List aria-label=\"Recent jobs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.title}\n          value={row.title}\n          interactive\n          actions={[<span key=\"meta\" className=\"flex items-center gap-3\"><time>{row.timestamp}</time><Badge variant={statusVariant[row.status as keyof typeof statusVariant]}>{row.status}</Badge></span>]}\n        >\n          <div><List.Title>{row.title}</List.Title><List.Desc>{row.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', title: 176, description: 208 },\n  { key: 'row-2', status: 'pending', title: 148, description: 188 },\n  { key: 'row-3', status: 'inactive', title: 192, description: 168 },\n];\n\nconst statusVariant = { active: 'success', pending: 'warning', inactive: 'default' } as const;\n\nexport function SplitRowDemo() {\n  return (\n    <List aria-label=\"Recent jobs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.key}\n          value={row.key}\n          interactive\n          actions={[<div key=\"meta\" className=\"flex items-center gap-3\"><Skeleton.Text lines={1} w={52} /><Badge variant={statusVariant[row.status as keyof typeof statusVariant]}>{row.status}</Badge></div>]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={row.title} /><Skeleton.Text lines={1} w={row.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nconst rows = [\n  { title: 'Deploy production build', description: 'github-actions · main', timestamp: '2m ago', status: 'active' },\n  { title: 'Run integration tests', description: 'github-actions · staging', timestamp: '14m ago', status: 'pending' },\n  { title: 'Seed database migration', description: 'cli · development', timestamp: '1h ago', status: 'inactive' },\n];\n\nconst statusVariant = { active: 'success', pending: 'warning', inactive: 'default' } as const;\n\nexport function SplitRowDemo() {\n  return (\n    <List aria-label=\"Recent jobs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.title}\n          value={row.title}\n          interactive\n          actions={[<span key=\"meta\" className=\"flex items-center gap-3\"><time>{row.timestamp}</time><Badge variant={statusVariant[row.status as keyof typeof statusVariant]}>{row.status}</Badge></span>]}\n        >\n          <div><List.Title>{row.title}</List.Title><List.Desc>{row.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst rows = [\n  { key: 'row-1', status: 'active', title: 176, description: 208 },\n  { key: 'row-2', status: 'pending', title: 148, description: 188 },\n  { key: 'row-3', status: 'inactive', title: 192, description: 168 },\n];\n\nconst statusVariant = { active: 'success', pending: 'warning', inactive: 'default' } as const;\n\nexport function SplitRowDemo() {\n  return (\n    <List aria-label=\"Recent jobs\">\n      {rows.map((row) => (\n        <List.Item\n          key={row.key}\n          value={row.key}\n          interactive\n          actions={[<div key=\"meta\" className=\"flex items-center gap-3\"><Skeleton.Text lines={1} w={52} /><Badge variant={statusVariant[row.status as keyof typeof statusVariant]}>{row.status}</Badge></div>]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={row.title} /><Skeleton.Text lines={1} w={row.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4391,7 +4448,8 @@ export const generatedWorkshopContent = [
       "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4409,13 +4467,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Pencil, Trash2 } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst keys = [\n  { title: 'API Key — Production', description: 'Last used 2 hours ago' },\n  { title: 'API Key — Staging', description: 'Last used 3 days ago' },\n  { title: 'API Key — Development', description: 'Last used 1 week ago' },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((key) => (\n        <List.Item\n          key={key.title}\n          value={key.title}\n          actions={[\n            { icon: <Pencil size={14} />, title: `Edit ${key.title}` },\n            { icon: <Trash2 size={14} />, title: `Delete ${key.title}` },\n          ]}\n        >\n          <div><List.Title>{key.title}</List.Title><List.Desc>{key.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Pencil, Trash2 } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst keys = [\n  { key: 'key-1', title: 196, description: 148 },\n  { key: 'key-2', title: 172, description: 132 },\n  { key: 'key-3', title: 208, description: 160 },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((item) => (\n        <List.Item\n          key={item.key}\n          value={item.key}\n          actions={[\n            { icon: <Pencil size={14} />, title: 'Edit' },\n            { icon: <Trash2 size={14} />, title: 'Delete' },\n          ]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Pencil, Trash2 } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\n\nconst keys = [\n  { title: 'API Key — Production', description: 'Last used 2 hours ago' },\n  { title: 'API Key — Staging', description: 'Last used 3 days ago' },\n  { title: 'API Key — Development', description: 'Last used 1 week ago' },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((key) => (\n        <List.Item\n          key={key.title}\n          value={key.title}\n          actions={[\n            { icon: <Pencil size={14} />, title: `Edit ${key.title}` },\n            { icon: <Trash2 size={14} />, title: `Delete ${key.title}` },\n          ]}\n        >\n          <div><List.Title>{key.title}</List.Title><List.Desc>{key.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Pencil, Trash2 } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst keys = [\n  { key: 'key-1', title: 196, description: 148 },\n  { key: 'key-2', title: 172, description: 132 },\n  { key: 'key-3', title: 208, description: 160 },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((item) => (\n        <List.Item\n          key={item.key}\n          value={item.key}\n          actions={[\n            { icon: <Pencil size={14} />, title: 'Edit' },\n            { icon: <Trash2 size={14} />, title: 'Delete' },\n          ]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4424,7 +4482,8 @@ export const generatedWorkshopContent = [
         "lucide-react"
       ],
       "uiLab": [
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4442,20 +4501,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { List } from 'ui-lab-components/list';\n\nconst files = [\n  { title: 'design-system.fig', description: 'Figma · Shared with team', size: '4.2 MB', date: 'Jan 12, 2025' },\n  { title: 'brand-assets.zip', description: 'S3 · us-east-1', size: '128 MB', date: 'Dec 3, 2024' },\n  { title: 'icon-set.svg', description: 'GitHub · public', size: '18 KB', date: 'Nov 28, 2024' },\n];\n\nexport function SplitRowMetaDemo() {\n  return (\n    <List aria-label=\"Files\">\n      {files.map((file) => (\n        <List.Item\n          key={file.title}\n          focusable={false}\n          actions={[<span key=\"meta\" className=\"flex flex-col items-end\"><strong className=\"text-sm\">{file.size}</strong><time className=\"text-sm text-foreground-500\">{file.date}</time></span>]}\n        >\n          <div><List.Title>{file.title}</List.Title><List.Desc>{file.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst files = [\n  { key: 'file-1', title: 168, description: 196, size: 56, date: 92 },\n  { key: 'file-2', title: 152, description: 132, size: 64, date: 88 },\n  { key: 'file-3', title: 120, description: 148, size: 48, date: 96 },\n];\n\nexport function SplitRowMetaDemo() {\n  return (\n    <List aria-label=\"Files\">\n      {files.map((file) => (\n        <List.Item\n          key={file.key}\n          focusable={false}\n          actions={[<div key=\"meta\" className=\"flex flex-col items-end gap-1.5\"><Skeleton.Text lines={1} w={file.size} /><Skeleton.Text lines={1} w={file.date} /></div>]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={file.title} /><Skeleton.Text lines={1} w={file.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { List } from 'ui-lab-components/list';\n\nconst files = [\n  { title: 'design-system.fig', description: 'Figma · Shared with team', size: '4.2 MB', date: 'Jan 12, 2025' },\n  { title: 'brand-assets.zip', description: 'S3 · us-east-1', size: '128 MB', date: 'Dec 3, 2024' },\n  { title: 'icon-set.svg', description: 'GitHub · public', size: '18 KB', date: 'Nov 28, 2024' },\n];\n\nexport function SplitRowMetaDemo() {\n  return (\n    <List aria-label=\"Files\">\n      {files.map((file) => (\n        <List.Item\n          key={file.title}\n          focusable={false}\n          actions={[<span key=\"meta\" className=\"flex flex-col items-end\"><strong className=\"text-sm\">{file.size}</strong><time className=\"text-sm text-foreground-500\">{file.date}</time></span>]}\n        >\n          <div><List.Title>{file.title}</List.Title><List.Desc>{file.description}</List.Desc></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst files = [\n  { key: 'file-1', title: 168, description: 196, size: 56, date: 92 },\n  { key: 'file-2', title: 152, description: 132, size: 64, date: 88 },\n  { key: 'file-3', title: 120, description: 148, size: 48, date: 96 },\n];\n\nexport function SplitRowMetaDemo() {\n  return (\n    <List aria-label=\"Files\">\n      {files.map((file) => (\n        <List.Item\n          key={file.key}\n          focusable={false}\n          actions={[<div key=\"meta\" className=\"flex flex-col items-end gap-1.5\"><Skeleton.Text lines={1} w={file.size} /><Skeleton.Text lines={1} w={file.date} /></div>]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={file.title} /><Skeleton.Text lines={1} w={file.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4473,13 +4533,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\n\nconst stats = [\n  { value: '12,430', label: 'Total users', trend: '+8.2% this month' },\n  { value: '$4,821', label: 'Monthly revenue', trend: '+12.4% vs last month' },\n  { value: '98.6%', label: 'Uptime' },\n];\n\nexport function StatBlockDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.label}>\n          <Card.Body className=\"p-4\">\n            <p className=\"text-3xl font-bold tabular-nums\">{stat.value}</p>\n            <p className=\"text-sm text-foreground-400\">{stat.label}</p>\n            {stat.trend && <p className=\"text-sm text-success-500\">{stat.trend}</p>}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true },\n  { key: 'revenue', trend: true },\n  { key: 'uptime', trend: false },\n];\n\nexport function StatBlockDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Body className=\"space-y-2 p-4\">\n            <Skeleton.Text size=\"display\" w={110} />\n            <Skeleton.Text lines={1} w={90} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\n\nconst stats = [\n  { value: '12,430', label: 'Total users', trend: '+8.2% this month' },\n  { value: '$4,821', label: 'Monthly revenue', trend: '+12.4% vs last month' },\n  { value: '98.6%', label: 'Uptime' },\n];\n\nexport function StatBlockDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.label}>\n          <Card.Body className=\"p-4\">\n            <p className=\"text-3xl font-bold tabular-nums\">{stat.value}</p>\n            <p className=\"text-sm text-foreground-400\">{stat.label}</p>\n            {stat.trend && <p className=\"text-sm text-success-500\">{stat.trend}</p>}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true },\n  { key: 'revenue', trend: true },\n  { key: 'uptime', trend: false },\n];\n\nexport function StatBlockDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Body className=\"space-y-2 p-4\">\n            <Skeleton.Text size=\"display\" w={110} />\n            <Skeleton.Text lines={1} w={90} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4487,7 +4547,8 @@ export const generatedWorkshopContent = [
       "npm": [],
       "uiLab": [
         "ui-lab-components/card",
-        "ui-lab-components/grid"
+        "ui-lab-components/grid",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4505,20 +4566,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Flex } from 'ui-lab-components/flex';\n\nconst stats = [\n  { value: '12,430', label: 'users' },\n  { value: '$4,821', label: 'revenue' },\n  { value: '98.6%', label: 'uptime' },\n  { value: '143ms', label: 'avg latency' },\n];\n\nexport function StatBlockCompactDemo() {\n  return (\n    <Flex layout=\"cluster\" gap=\"lg\">\n      {stats.map((stat) => (\n        <span key={stat.label} className=\"inline-flex items-baseline gap-2\">\n          <strong className=\"text-xl tabular-nums\">{stat.value}</strong>\n          <span className=\"text-sm text-foreground-400\">{stat.label}</span>\n        </span>\n      ))}\n    </Flex>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', value: 68, label: 48 },\n  { key: 'revenue', value: 64, label: 60 },\n  { key: 'uptime', value: 56, label: 52 },\n  { key: 'latency', value: 60, label: 76 },\n];\n\nexport function StatBlockCompactDemo() {\n  return (\n    <Flex layout=\"cluster\" gap=\"lg\">\n      {stats.map((stat) => (\n        <div key={stat.key} className=\"inline-flex items-baseline gap-2\">\n          <Skeleton.Text size=\"heading\" w={stat.value} />\n          <Skeleton.Text lines={1} w={stat.label} />\n        </div>\n      ))}\n    </Flex>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Flex } from 'ui-lab-components/flex';\n\nconst stats = [\n  { value: '12,430', label: 'users' },\n  { value: '$4,821', label: 'revenue' },\n  { value: '98.6%', label: 'uptime' },\n  { value: '143ms', label: 'avg latency' },\n];\n\nexport function StatBlockCompactDemo() {\n  return (\n    <Flex layout=\"cluster\" gap=\"lg\">\n      {stats.map((stat) => (\n        <span key={stat.label} className=\"inline-flex items-baseline gap-2\">\n          <strong className=\"text-xl tabular-nums\">{stat.value}</strong>\n          <span className=\"text-sm text-foreground-400\">{stat.label}</span>\n        </span>\n      ))}\n    </Flex>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', value: 68, label: 48 },\n  { key: 'revenue', value: 64, label: 60 },\n  { key: 'uptime', value: 56, label: 52 },\n  { key: 'latency', value: 60, label: 76 },\n];\n\nexport function StatBlockCompactDemo() {\n  return (\n    <Flex layout=\"cluster\" gap=\"lg\">\n      {stats.map((stat) => (\n        <div key={stat.key} className=\"inline-flex items-baseline gap-2\">\n          <Skeleton.Text size=\"heading\" w={stat.value} />\n          <Skeleton.Text lines={1} w={stat.label} />\n        </div>\n      ))}\n    </Flex>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
-        "ui-lab-components/flex"
+        "ui-lab-components/flex",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4536,13 +4598,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Activity, DollarSign, Users } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\n\nconst stats = [\n  { value: '12,430', label: 'Total users', trend: '+8.2% this month', icon: <Users size={18} /> },\n  { value: '$4,821', label: 'Monthly revenue', trend: '+12.4% vs last month', icon: <DollarSign size={18} /> },\n  { value: '98.6%', label: 'Uptime', icon: <Activity size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.label}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><span className=\"text-sm text-foreground-400\">{stat.label}</span></Card.Header>\n          <Card.Body>\n            <p className=\"text-2xl font-bold tabular-nums\">{stat.value}</p>\n            {stat.trend && <p className=\"text-sm text-success-500\">{stat.trend}</p>}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Activity, DollarSign, Users } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true, icon: <Users size={18} /> },\n  { key: 'revenue', trend: true, icon: <DollarSign size={18} /> },\n  { key: 'uptime', trend: false, icon: <Activity size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><Skeleton.Text lines={1} w={90} /></Card.Header>\n          <Card.Body className=\"space-y-2\">\n            <Skeleton.Text size=\"heading\" w={100} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Activity, DollarSign, Users } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\n\nconst stats = [\n  { value: '12,430', label: 'Total users', trend: '+8.2% this month', icon: <Users size={18} /> },\n  { value: '$4,821', label: 'Monthly revenue', trend: '+12.4% vs last month', icon: <DollarSign size={18} /> },\n  { value: '98.6%', label: 'Uptime', icon: <Activity size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.label}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><span className=\"text-sm text-foreground-400\">{stat.label}</span></Card.Header>\n          <Card.Body>\n            <p className=\"text-2xl font-bold tabular-nums\">{stat.value}</p>\n            {stat.trend && <p className=\"text-sm text-success-500\">{stat.trend}</p>}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Activity, DollarSign, Users } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true, icon: <Users size={18} /> },\n  { key: 'revenue', trend: true, icon: <DollarSign size={18} /> },\n  { key: 'uptime', trend: false, icon: <Activity size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><Skeleton.Text lines={1} w={90} /></Card.Header>\n          <Card.Body className=\"space-y-2\">\n            <Skeleton.Text size=\"heading\" w={100} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4552,7 +4614,8 @@ export const generatedWorkshopContent = [
       ],
       "uiLab": [
         "ui-lab-components/card",
-        "ui-lab-components/grid"
+        "ui-lab-components/grid",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4570,13 +4633,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nfunction TabContentHeader({ title, description, actionLabel }: { title: string; description?: string; actionLabel?: string }) {\n  return (\n    <Card.Header>\n      <Flex layout=\"bar\" align-start>\n        <div><h3 className=\"text-sm font-semibold\">{title}</h3>{description && <p className=\"text-sm text-foreground-400\">{description}</p>}</div>\n        {actionLabel && <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>{actionLabel}</Button>}\n      </Flex>\n    </Card.Header>\n  );\n}\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <TabContentHeader title=\"API Keys\" description=\"Manage your API keys for external integrations.\" actionLabel=\"Add key\" />\n      <Card.Body />\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <div className=\"space-y-1.5\"><Skeleton.Text size=\"heading\" w={110} /><Skeleton.Text lines={1} w={224} /></div>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nfunction TabContentHeader({ title, description, actionLabel }: { title: string; description?: string; actionLabel?: string }) {\n  return (\n    <Card.Header>\n      <Flex layout=\"bar\" align-start>\n        <div><h3 className=\"text-sm font-semibold\">{title}</h3>{description && <p className=\"text-sm text-foreground-400\">{description}</p>}</div>\n        {actionLabel && <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>{actionLabel}</Button>}\n      </Flex>\n    </Card.Header>\n  );\n}\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <TabContentHeader title=\"API Keys\" description=\"Manage your API keys for external integrations.\" actionLabel=\"Add key\" />\n      <Card.Body />\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <div className=\"space-y-1.5\"><Skeleton.Text size=\"heading\" w={110} /><Skeleton.Text lines={1} w={224} /></div>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4587,7 +4650,8 @@ export const generatedWorkshopContent = [
       "uiLab": [
         "ui-lab-components/button",
         "ui-lab-components/card",
-        "ui-lab-components/flex"
+        "ui-lab-components/flex",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4605,20 +4669,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\n\nexport function TabContentHeaderMinimalDemo() {\n  return (\n    <Card>\n      <Card.Header><h3 className=\"text-sm font-semibold\">API Keys</h3></Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderMinimalDemo() {\n  return (\n    <Card>\n      <Card.Header><Skeleton.Text size=\"heading\" w={110} /></Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\n\nexport function TabContentHeaderMinimalDemo() {\n  return (\n    <Card>\n      <Card.Header><h3 className=\"text-sm font-semibold\">API Keys</h3></Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderMinimalDemo() {\n  return (\n    <Card>\n      <Card.Header><Skeleton.Text size=\"heading\" w={110} /></Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
-        "ui-lab-components/card"
+        "ui-lab-components/card",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4636,13 +4701,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><h3 className=\"text-sm font-semibold\">API Keys</h3><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><Skeleton.Text size=\"heading\" w={110} /><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><h3 className=\"text-sm font-semibold\">API Keys</h3><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><Skeleton.Text size=\"heading\" w={110} /><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4654,7 +4719,8 @@ export const generatedWorkshopContent = [
         "ui-lab-components/badge",
         "ui-lab-components/button",
         "ui-lab-components/card",
-        "ui-lab-components/flex"
+        "ui-lab-components/flex",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4672,19 +4738,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\n\nconst items = [\n  { id: 'overview', title: 'Overview', level: 1 },\n  { id: 'installation', title: 'Installation', level: 1 },\n  { id: 'peer-deps', title: 'Peer dependencies', level: 2 },\n  { id: 'usage', title: 'Usage', level: 1 },\n  { id: 'theming', title: 'Theming', level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-1.5 pr-3 text-sm transition-colors ${\n                  isActive\n                    ? 'border-accent-500 font-medium text-foreground-50'\n                    : 'border-transparent text-foreground-400 hover:border-background-500 hover:text-foreground-200'\n                }`}\n              >\n                {item.title}\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { id: 'overview', width: 72, level: 1 },\n  { id: 'installation', width: 96, level: 1 },\n  { id: 'peer-deps', width: 120, level: 2 },\n  { id: 'usage', width: 60, level: 1 },\n  { id: 'theming', width: 80, level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-2 pr-3 transition-colors ${\n                  isActive\n                    ? 'border-accent-500'\n                    : 'border-transparent hover:border-background-500'\n                }`}\n              >\n                <Skeleton.Text lines={1} w={item.width} color={isActive ? 'foreground-200' : undefined} />\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\n\nconst items = [\n  { id: 'overview', title: 'Overview', level: 1 },\n  { id: 'installation', title: 'Installation', level: 1 },\n  { id: 'peer-deps', title: 'Peer dependencies', level: 2 },\n  { id: 'usage', title: 'Usage', level: 1 },\n  { id: 'theming', title: 'Theming', level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-1.5 pr-3 text-sm transition-colors ${\n                  isActive\n                    ? 'border-accent-500 font-medium text-foreground-50'\n                    : 'border-transparent text-foreground-400 hover:border-background-500 hover:text-foreground-200'\n                }`}\n              >\n                {item.title}\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { id: 'overview', width: 72, level: 1 },\n  { id: 'installation', width: 96, level: 1 },\n  { id: 'peer-deps', width: 120, level: 2 },\n  { id: 'usage', width: 60, level: 1 },\n  { id: 'theming', width: 80, level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-2 pr-3 transition-colors ${\n                  isActive\n                    ? 'border-accent-500'\n                    : 'border-transparent hover:border-background-500'\n                }`}\n              >\n                <Skeleton.Text lines={1} w={item.width} color={isActive ? 'foreground-200' : undefined} />\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
-      "uiLab": []
+      "uiLab": [
+        "ui-lab-components/skeleton"
+      ]
     },
     "installIntent": {
       "mode": "copy",
@@ -4701,13 +4769,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\n\ntype ToggleSettingRowProps = {\n  id: string;\n  label: string;\n  description?: string;\n  defaultSelected?: boolean;\n};\n\nfunction ToggleSettingRow({ id, label, description, defaultSelected = false }: ToggleSettingRowProps) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div>\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {description && <List.Desc id={`${id}-description`}>{description}</List.Desc>}\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} aria-describedby={description ? `${id}-description` : undefined} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDemo() {\n  return (\n    <List aria-label=\"Notification and security settings\">\n      <ToggleSettingRow id=\"notifs\" label=\"Email notifications\" description=\"Receive updates about your account activity.\" defaultSelected />\n      <ToggleSettingRow id=\"mktg\" label=\"Marketing emails\" description=\"Product news and feature announcements.\" />\n      <ToggleSettingRow id=\"2fa\" label=\"Two-factor authentication\" description=\"Add an extra layer of security to your account.\" defaultSelected />\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\ntype ToggleSettingRowProps = {\n  id: string;\n  label: string;\n  descriptionWidth?: number;\n  defaultSelected?: boolean;\n};\n\nfunction ToggleSettingRow({ id, label, descriptionWidth, defaultSelected = false }: ToggleSettingRowProps) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDemo() {\n  return (\n    <List aria-label=\"Notification and security settings\">\n      <ToggleSettingRow id=\"notifs\" label=\"Email notifications\" descriptionWidth={248} defaultSelected />\n      <ToggleSettingRow id=\"mktg\" label=\"Marketing emails\" descriptionWidth={210} />\n      <ToggleSettingRow id=\"2fa\" label=\"Two-factor authentication\" descriptionWidth={232} defaultSelected />\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\n\ntype ToggleSettingRowProps = {\n  id: string;\n  label: string;\n  description?: string;\n  defaultSelected?: boolean;\n};\n\nfunction ToggleSettingRow({ id, label, description, defaultSelected = false }: ToggleSettingRowProps) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div>\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {description && <List.Desc id={`${id}-description`}>{description}</List.Desc>}\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} aria-describedby={description ? `${id}-description` : undefined} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDemo() {\n  return (\n    <List aria-label=\"Notification and security settings\">\n      <ToggleSettingRow id=\"notifs\" label=\"Email notifications\" description=\"Receive updates about your account activity.\" defaultSelected />\n      <ToggleSettingRow id=\"mktg\" label=\"Marketing emails\" description=\"Product news and feature announcements.\" />\n      <ToggleSettingRow id=\"2fa\" label=\"Two-factor authentication\" description=\"Add an extra layer of security to your account.\" defaultSelected />\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\ntype ToggleSettingRowProps = {\n  id: string;\n  label: string;\n  descriptionWidth?: number;\n  defaultSelected?: boolean;\n};\n\nfunction ToggleSettingRow({ id, label, descriptionWidth, defaultSelected = false }: ToggleSettingRowProps) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDemo() {\n  return (\n    <List aria-label=\"Notification and security settings\">\n      <ToggleSettingRow id=\"notifs\" label=\"Email notifications\" descriptionWidth={248} defaultSelected />\n      <ToggleSettingRow id=\"mktg\" label=\"Marketing emails\" descriptionWidth={210} />\n      <ToggleSettingRow id=\"2fa\" label=\"Two-factor authentication\" descriptionWidth={232} defaultSelected />\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4715,7 +4783,8 @@ export const generatedWorkshopContent = [
       "npm": [],
       "uiLab": [
         "ui-lab-components/label",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4765,13 +4834,13 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\n\nfunction ToggleSettingRowDestructive({ id, label, description, defaultSelected = false }: { id: string; label: string; description: string; defaultSelected?: boolean }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div>\n        <List.Title><Label htmlFor={id} className=\"text-danger-500\">{label}</Label></List.Title>\n        <List.Desc id={`${id}-description`}>{description}</List.Desc>\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} aria-describedby={`${id}-description`} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDestructiveDemo() {\n  return (\n    <List aria-label=\"Data and privacy settings\">\n      <ToggleSettingRowDestructive id=\"del-acct\" label=\"Delete account data on cancellation\" description=\"All data will be permanently removed within 30 days.\" />\n      <ToggleSettingRowDestructive id=\"pub-data\" label=\"Share usage data with third parties\" description=\"Opt out to keep your data private.\" defaultSelected />\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction ToggleSettingRowDestructive({ id, label, descriptionWidth, defaultSelected = false }: { id: string; label: string; descriptionWidth: number; defaultSelected?: boolean }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id} className=\"text-danger-500\">{label}</Label></List.Title>\n        <Skeleton.Text lines={1} w={descriptionWidth} />\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDestructiveDemo() {\n  return (\n    <List aria-label=\"Data and privacy settings\">\n      <ToggleSettingRowDestructive id=\"del-acct\" label=\"Delete account data on cancellation\" descriptionWidth={252} />\n      <ToggleSettingRowDestructive id=\"pub-data\" label=\"Share usage data with third parties\" descriptionWidth={196} defaultSelected />\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\n\nfunction ToggleSettingRowDestructive({ id, label, description, defaultSelected = false }: { id: string; label: string; description: string; defaultSelected?: boolean }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div>\n        <List.Title><Label htmlFor={id} className=\"text-danger-500\">{label}</Label></List.Title>\n        <List.Desc id={`${id}-description`}>{description}</List.Desc>\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} aria-describedby={`${id}-description`} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDestructiveDemo() {\n  return (\n    <List aria-label=\"Data and privacy settings\">\n      <ToggleSettingRowDestructive id=\"del-acct\" label=\"Delete account data on cancellation\" description=\"All data will be permanently removed within 30 days.\" />\n      <ToggleSettingRowDestructive id=\"pub-data\" label=\"Share usage data with third parties\" description=\"Opt out to keep your data private.\" defaultSelected />\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction ToggleSettingRowDestructive({ id, label, descriptionWidth, defaultSelected = false }: { id: string; label: string; descriptionWidth: number; defaultSelected?: boolean }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id} className=\"text-danger-500\">{label}</Label></List.Title>\n        <Skeleton.Text lines={1} w={descriptionWidth} />\n      </div>\n      <List.Switch id={id} defaultSelected={defaultSelected} />\n    </List.Item>\n  );\n}\n\nexport function ToggleSettingRowDestructiveDemo() {\n  return (\n    <List aria-label=\"Data and privacy settings\">\n      <ToggleSettingRowDestructive id=\"del-acct\" label=\"Delete account data on cancellation\" descriptionWidth={252} />\n      <ToggleSettingRowDestructive id=\"pub-data\" label=\"Share usage data with third parties\" descriptionWidth={196} defaultSelected />\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
@@ -4779,7 +4848,8 @@ export const generatedWorkshopContent = [
       "npm": [],
       "uiLab": [
         "ui-lab-components/label",
-        "ui-lab-components/list"
+        "ui-lab-components/list",
+        "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
@@ -4797,19 +4867,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "export function UserIdentityDemo() {\n  return (\n    <div className=\"flex items-center gap-3 rounded-lg border border-background-800 bg-background-950 p-3\">\n      <span className=\"flex h-9 w-9 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n        AR\n      </span>\n      <div className=\"min-w-0\">\n        <p className=\"truncate text-sm font-medium text-foreground-100\">Avery Reid</p>\n        <p className=\"truncate text-xs text-foreground-400\">avery@example.com</p>\n      </div>\n    </div>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function UserIdentityDemo() {\n  return (\n    <div className=\"flex items-center gap-3 rounded-lg border border-background-800 bg-background-950 p-3\">\n      <span className=\"flex h-9 w-9 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n        AR\n      </span>\n      <div className=\"min-w-0 space-y-1.5\">\n        <Skeleton.Text lines={1} w={110} />\n        <Skeleton.Text lines={1} w={150} />\n      </div>\n    </div>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "export function UserIdentityDemo() {\n  return (\n    <div className=\"flex items-center gap-3 rounded-lg border border-background-800 bg-background-950 p-3\">\n      <span className=\"flex h-9 w-9 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n        AR\n      </span>\n      <div className=\"min-w-0\">\n        <p className=\"truncate text-sm font-medium text-foreground-100\">Avery Reid</p>\n        <p className=\"truncate text-xs text-foreground-400\">avery@example.com</p>\n      </div>\n    </div>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function UserIdentityDemo() {\n  return (\n    <div className=\"flex items-center gap-3 rounded-lg border border-background-800 bg-background-950 p-3\">\n      <span className=\"flex h-9 w-9 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n        AR\n      </span>\n      <div className=\"min-w-0 space-y-1.5\">\n        <Skeleton.Text lines={1} w={110} />\n        <Skeleton.Text lines={1} w={150} />\n      </div>\n    </div>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
-      "uiLab": []
+      "uiLab": [
+        "ui-lab-components/skeleton"
+      ]
     },
     "installIntent": {
       "mode": "copy",

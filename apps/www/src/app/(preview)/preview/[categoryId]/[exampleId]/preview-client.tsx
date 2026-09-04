@@ -2,9 +2,8 @@
 
 import type React from "react";
 import { Suspense } from "react";
-import { getElementPreview } from "@ui-lab-core/library";
-import { elementRegistry, getPackageForElement } from "@ui-lab-core/library/catalog";
-import { sectionRegistry } from "@ui-lab-core/library/catalog";
+import { getElementPreview } from "@ui-lab-core/library/previews";
+import { getPackageIdForDemoPath, getSectionIdForDemoPath } from "@/features/workshop/lib/demo-lookup";
 import { getPreviewComponent as getPatternPreviewComponent } from "@/features/patterns/lib/get-pattern-preview";
 
 interface PreviewRendererProps {
@@ -17,42 +16,21 @@ interface PreviewRendererProps {
 
 type DemoComponent = React.ComponentType<object>;
 
-const elementDemoPathLookup = new Map<string, { packageId: string; elementId: string }>();
-const sectionDemoPathLookup = new Map<string, string>();
-
-for (const element of Object.values(elementRegistry)) {
-  const packageId = getPackageForElement(element.id);
-  if (!packageId) continue;
-
-  for (const variant of element.variants) {
-    if (!variant.demoPath) continue;
-    elementDemoPathLookup.set(variant.demoPath, { packageId, elementId: element.id });
-  }
-}
-
-for (const section of Object.values(sectionRegistry)) {
-  sectionDemoPathLookup.set(section.id, section.id);
-  for (const variant of section.variants) {
-    if (!variant.demoPath) continue;
-    sectionDemoPathLookup.set(variant.demoPath, section.id);
-  }
-}
-
 function getPrivatePreview(
   type: PreviewRendererProps["type"],
   demoPath: string,
 ): DemoComponent | null {
   if (type === "element") {
-    const match = elementDemoPathLookup.get(demoPath);
-    if (!match) return null;
-    return getElementPreview(match.packageId, match.elementId) as DemoComponent | null;
+    const packageId = getPackageIdForDemoPath(demoPath);
+    if (!packageId) return null;
+    return getElementPreview(packageId, demoPath) as DemoComponent | null;
   }
 
   if (type === "pattern") {
     return getPatternPreviewComponent(demoPath) as DemoComponent | null;
   }
 
-  const sectionId = sectionDemoPathLookup.get(demoPath);
+  const sectionId = getSectionIdForDemoPath(demoPath);
   if (!sectionId) return null;
   return getElementPreview("sections", sectionId) as DemoComponent | null;
 }

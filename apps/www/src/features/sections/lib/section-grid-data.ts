@@ -1,6 +1,7 @@
-import type { SectionMetadata } from "@ui-lab-core/library/catalog";
+import type { WorkshopEntrySummary } from "@/features/workshop/types/content";
 
-export type SectionGridItem = SectionMetadata;
+/** Listing rows carry no variants, and therefore no source. */
+export type SectionGridItem = WorkshopEntrySummary;
 
 export type SectionGridFilters = {
   searchQuery: string;
