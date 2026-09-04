@@ -25,6 +25,11 @@ const nextRoot = usesLocalPrivateLibrary() ? workspaceRoot : appRoot;
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  images: {
+    // Clerk serves avatars from its own CDN, so the profile picture in the
+    // header and on /accounts needs it allowlisted.
+    remotePatterns: [{ protocol: "https", hostname: "img.clerk.com" }],
+  },
   transpilePackages: ["beautiful-mermaid", "@ui-lab-core/library", "ui-lab-components"],
   experimental: {
     externalDir: true,

@@ -1,0 +1,24 @@
+{
+  "name": "@ui-lab/backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./convex/_generated/api": "./convex/_generated/api.js",
+    "./convex/_generated/dataModel": "./convex/_generated/dataModel.js"
+  },
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clerk/backend": "^3.16.13",
+    "convex": "^1.45.0",
+    "stripe": "^22.6.0",
+    "svix": "^2.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
