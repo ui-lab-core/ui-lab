@@ -40,29 +40,6 @@ export function getThumbTrackPercent(
 
 export function useThumbTrack(orientation: Orientation = "horizontal") {
   const travelRef = React.useRef<HTMLDivElement>(null);
-  const [thumb, setThumbRef] = React.useState<HTMLDivElement | null>(null);
-  const [halfSize, setHalfSize] = React.useState(0);
-
-  React.useLayoutEffect(() => {
-    if (!thumb) {
-      setHalfSize(0);
-      return;
-    }
-
-    const measure = () => {
-      const style = getComputedStyle(thumb);
-      const size = Number.parseFloat(orientation === "vertical" ? style.height : style.width);
-      setHalfSize(Number.isFinite(size) ? size / 2 : 0);
-    };
-
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(thumb, { box: "border-box" });
-    return () => observer.disconnect();
-  }, [thumb, orientation]);
-
-  const trackStyle = { "--thumb-half-size": `${halfSize}px` } as React.CSSProperties;
   const travelProps = {
     ref: travelRef,
     "aria-hidden": true as const,
@@ -77,5 +54,5 @@ export function useThumbTrack(orientation: Orientation = "horizontal") {
     } as React.CSSProperties,
   };
 
-  return { travelRef, setThumbRef, trackStyle, travelProps, halfSize };
+  return { travelRef, travelProps };
 }

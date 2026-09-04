@@ -5,15 +5,10 @@
   --hover-leave-duration: 300ms;
   --hover-duration: var(--hover-leave-duration);
   --hover-transition-timing-function: var(--ease-snappy-pop, ease-out);
-  --hover-100: color-mix(in srgb, var(--background-600) 70%, transparent);
-  --hover-200: color-mix(in srgb, var(--background-600) 30%, transparent);
-
+  --hover-100: color-mix(in srgb, var(--background-600) 60%, transparent);
+  --hover-200: color-mix(in srgb, var(--background-600) 35%, transparent);
   --ring-background: #0f74c5;
-
-  /* Floating surfaces — popovers, tooltips, menus, select panels, the command
-     palette and toasts — sit slightly translucent over a small backdrop blur so
-     the page reads through them without losing contrast. */
-  --floating-opacity: 94%;
+  --floating-opacity: 92%;
   --floating-blur: blur(5px);
 }
 
@@ -66,7 +61,7 @@
     --focus-visible: var(--accent-400);
     @slot icon {
       --foreground: var(--foreground-400);
-      --size: 1.0em;
+      --size: 1.15em;
     }
 
     /* Every filled button — primary or a custom `color` — derives its shade and
@@ -230,8 +225,8 @@
       --background: transparent;
       --foreground: var(--foreground-50);
       --background-hover: var(--hover-200);
-      --background-selected: color-mix(in srgb, var(--background-500) 10%, transparent);
-      --background-selected-hover: color-mix(in srgb, var(--background-500) 14%, transparent);
+      --background-selected: color-mix(in srgb, var(--background-500) 25%, transparent);
+      --background-selected-hover: color-mix(in srgb, var(--background-500) 30%, transparent);
     }
 
     @slot action {
@@ -282,7 +277,7 @@
   }
 
   .command {
-    --background: color-mix(in srgb, var(--background-900) var(--floating-opacity), transparent);
+    --background: color-mix(in srgb, var(--background-950) var(--floating-opacity), transparent);
     /* Command passes this legacy token to Frame's decorative SVG stroke. */
     --border: var(--background-700);
     --height: min(35rem, 60dvh);
@@ -321,7 +316,8 @@
   }
 
   .command > .footer {
-    --background: transparent;
+    --background: var(--background-900);
+    --foreground: var(--foreground-300);
   }
 
   .command > .options {
@@ -356,7 +352,7 @@
 
   .date > .day:is([data-selected="true"], [data-today="true"]) {
     --background: var(--background-800);
-    --foreground: var(--foreground-50);
+    --foreground: var(--foreground-200);
   }
 
   .date > .day:where([data-in-range="true"]) {
@@ -365,7 +361,7 @@
 
   .date > .day:where([data-range-start="true"], [data-range-end="true"]) {
     --background: transparent;
-    --foreground: var(--accent-50);
+    --foreground: var(--background-700);
   }
 
   .date > .day:where([data-range-start="true"], [data-range-end="true"])::before {
@@ -373,7 +369,7 @@
   }
 
   .date > .day:where([data-range-start="true"], [data-range-end="true"])::after {
-    --background: var(--accent-500);
+    --background: var(--background-500);
   }
 
   .date > .day:is([data-disabled], [data-out-of-range="true"]) {
@@ -381,7 +377,7 @@
   }
 
   .date > .day:is(:hover, [data-hovered="true"]):not(:is([data-disabled], [data-out-of-range="true"])) {
-    --background: var(--background-800);
+    --background: var(--background-600);
   }
 
   .table {
@@ -742,10 +738,8 @@
     --focus-visible: var(--ring-background);
     --width: 2rem;
     --height: 1.2rem;
-    --radius: calc(var(--height) * 0.30);
-    --thumb-padding: 3px;
-    --thumb-height: calc(var(--height) - var(--thumb-padding) * 2);
-    --thumb-size: var(--thumb-height);
+    --background-radius: 0.30;
+    --radius: calc(var(--height) * var(--background-radius));
     @slot track {
       --background-border: var(--background-700);
       --background-border-selected: var(--background-500);
@@ -753,9 +747,10 @@
     @slot thumb {
       --background: var(--background-500);
       --background-selected: var(--foreground-300);
-      --size: var(--thumb-size);
-      --height: var(--thumb-height);
-      --offset: var(--thumb-padding);
+      --offset: 3px;
+      --height: calc(var(--height) - slot(thumb, offset) * 2);
+      --size: slot(thumb, height);
+      --radius: calc(slot(thumb, height) * var(--background-radius));
     }
   }
 

@@ -6,6 +6,7 @@ import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
 import { offset } from "../../hooks/useFloat/core/middleware/offset";
+import type { Middleware } from "../../hooks/useFloat/core/types";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
 import { cn } from "@/lib/utils";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
@@ -70,7 +71,13 @@ export interface SelectContentStyleSlots {
  */
 export type SelectContentStylesProp = SelectContentStyleSlots;
 
-export interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
+/** Side relationship between the option panel and its trigger. */
+export type SelectContentPosition = "overlay" | "top" | "bottom";
+
+/** Cross-axis alignment of the option panel relative to its trigger. */
+export type SelectContentAlign = "start" | "center" | "end";
+
+export interface SelectContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "align"> {
   /**
    * Adds classes to the portalled listbox panel before the resolved css.root class.
    * @category Styling
@@ -108,6 +115,22 @@ export interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement>
   emptyContent?: React.ReactNode;
 
   /**
+   * Positions the panel over the trigger with the active option vertically matched to the trigger
+   * text, or against the trigger's top or bottom edge.
+   * @category Layout
+   * @default "overlay"
+   */
+  position?: SelectContentPosition;
+
+  /**
+   * Aligns a top- or bottom-positioned panel against the trigger along its horizontal axis.
+   * Overlay panels instead align the selected item's text directly with the trigger text.
+   * @category Layout
+   * @default "start"
+   */
+  align?: SelectContentAlign;
+
+  /**
    * Styles panel anatomy: root, overlay, search.wrapper, search.input, empty, list.root, and
    * list.padding.
    * @category Styling
@@ -126,6 +149,114 @@ const resolveSelectContentStyles = createStylePropsResolver([
   "list.padding",
 ] as const);
 
+function getTextOrigin(element: HTMLElement) {
+  const rect = element.getBoundingClientRect();
+  if (element instanceof HTMLInputElement) {
+    const style = getComputedStyle(element);
+    return {
+      x:
+        rect.left +
+        (Number.parseFloat(style.borderLeftWidth) || 0) +
+        (Number.parseFloat(style.paddingLeft) || 0),
+      y:
+        rect.top +
+        (Number.parseFloat(style.borderTopWidth) || 0) +
+        (Number.parseFloat(style.paddingTop) || 0),
+    };
+  }
+
+  // Flex alignment can place two identical line boxes on opposite sides of a
+  // device-pixel boundary even when their element rectangles appear aligned.
+  // Measure the rendered text itself so the overlay matches the visible glyph
+  // origin rather than the surrounding span's box.
+  const nodeFilter = element.ownerDocument.defaultView?.NodeFilter;
+  if (nodeFilter) {
+    const walker = element.ownerDocument.createTreeWalker(element, nodeFilter.SHOW_TEXT);
+    let textNode = walker.nextNode();
+
+    while (textNode && !textNode.textContent?.trim()) {
+      textNode = walker.nextNode();
+    }
+
+    if (textNode) {
+      const range = element.ownerDocument.createRange();
+      range.selectNodeContents(textNode);
+      const textRect = range.getBoundingClientRect();
+
+      if (textRect.width || textRect.height) {
+        return { x: textRect.left, y: textRect.top };
+      }
+    }
+  }
+
+  return { x: rect.left, y: rect.top };
+}
+
+function getContentOrigin(element: HTMLElement) {
+  const rect = element.getBoundingClientRect();
+  const style = getComputedStyle(element);
+  return {
+    x:
+      rect.left +
+      (Number.parseFloat(style.borderLeftWidth) || 0) +
+      (Number.parseFloat(style.paddingLeft) || 0),
+    y:
+      rect.top +
+      (Number.parseFloat(style.borderTopWidth) || 0) +
+      (Number.parseFloat(style.paddingTop) || 0),
+  };
+}
+
+const alignOverlayTarget = (
+  target: "item" | "search" | "search-value" | "search-multiple",
+): Middleware => ({
+  name: "selectAlignOverlayTarget",
+  async fn({ elements }) {
+    const reference = elements.reference as HTMLElement;
+    const floating = elements.floating as HTMLElement;
+    const triggerText = reference.querySelector<HTMLElement>("[data-select-trigger-text]");
+    const triggerValue = reference.querySelector<HTMLElement>("[data-select-trigger-value]");
+    const selectedItem =
+      target === "item"
+        ? (floating.querySelector<HTMLElement>('[role="option"][aria-selected="true"]') ??
+          floating.querySelector<HTMLElement>('[role="option"]:not([aria-hidden="true"])'))
+        : null;
+    const overlayText =
+      target === "search" || target === "search-value"
+        ? floating.querySelector<HTMLElement>("[data-select-content-search-input]")
+        : selectedItem?.querySelector<HTMLElement>("[data-select-item-text]");
+
+    if (target === "search-multiple") {
+      const searchSlot = floating.querySelector<HTMLElement>("[data-select-content-search-anchor]");
+      if (!triggerValue || !searchSlot) return {};
+
+      const triggerRect = triggerValue.getBoundingClientRect();
+      const searchSlotRect = searchSlot.getBoundingClientRect();
+      const floatingRect = floating.getBoundingClientRect();
+      return {
+        x: triggerRect.left - (searchSlotRect.left - floatingRect.left),
+        y: triggerRect.top - (searchSlotRect.top - floatingRect.top),
+      };
+    }
+
+    if ((!triggerText && !triggerValue) || !overlayText) return {};
+
+    const triggerOrigin =
+      target === "search-value" && triggerValue
+        ? getContentOrigin(triggerValue)
+        : triggerText
+          ? getTextOrigin(triggerText)
+          : null;
+    if (!triggerOrigin) return {};
+    const overlayOrigin = getTextOrigin(overlayText);
+    const floatingRect = floating.getBoundingClientRect();
+    return {
+      x: triggerOrigin.x - (overlayOrigin.x - floatingRect.left),
+      y: triggerOrigin.y - (overlayOrigin.y - floatingRect.top),
+    };
+  },
+});
+
 /** Floating panel that renders the list of selectable options */
 const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
   (
@@ -133,9 +264,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       children,
       className,
       searchable = false,
-      searchPlaceholder = "Search items...",
+      searchPlaceholder,
       onSearch,
       emptyContent = "No results found.",
+      position = "overlay",
+      align = "start",
       styles: stylesProp,
       ...domProps
     },
@@ -146,7 +279,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       setIsOpen,
       setContentPlacement,
       triggerType,
+      triggerSearchPlaceholder,
+      triggerContent,
       mode,
+      selectedKeys,
+      onToggle,
       wrapperRef,
       contentRef,
       triggerRef,
@@ -175,39 +312,96 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     const inputRef = React.useRef<HTMLInputElement>(null);
     const focusFrameRef = React.useRef<number | null>(null);
     const justOpenedRef = React.useRef(false);
+    const hasContentSearch = searchable || triggerType === "input";
+    const resolvedSearchPlaceholder =
+      searchPlaceholder ?? triggerSearchPlaceholder ?? "Search items...";
+    const shouldMirrorTriggerValue =
+      position === "overlay" &&
+      hasContentSearch &&
+      mode === "multiple" &&
+      !!selectedKeys?.size &&
+      triggerContent !== undefined;
 
     const offsetValue = groupContext?.isInGroup ? 4 : 2;
 
-    const { refs, floatingStyles, x, y, placement } = useFloating({
-      placement: "bottom-start",
+    const side = position === "top" ? "top" : "bottom";
+    const requestedPlacement = align === "center" ? side : (`${side}-${align}` as const);
+    const { refs, floatingStyles, x, y, placement, update, isPositioned } = useFloating({
+      placement: requestedPlacement,
       // Keep the panel anchored to viewport-fixed/sticky triggers without scroll lag.
       strategy: "fixed",
       whileElementsMounted: autoUpdate,
       // The panel stays portalled and hidden while closed, so tracking has to
       // be gated on the open state rather than on the mount.
       open: isOpen,
-      middleware: [
-        offset({
-          mainAxis: offsetValue,
-          crossAxis: groupContext?.isInGroup ? -1 : 0,
-        }),
-        flip({
-          fallbackPlacements: ["top-start"],
-        }),
-      ],
+      middleware:
+        position === "overlay"
+          ? [
+              alignOverlayTarget(
+                shouldMirrorTriggerValue
+                  ? "search-multiple"
+                  : hasContentSearch
+                    ? triggerType === "input"
+                      ? "search"
+                      : "search-value"
+                    : "item",
+              ),
+            ]
+          : [
+              offset({
+                mainAxis: offsetValue,
+                crossAxis: groupContext?.isInGroup ? -1 : 0,
+              }),
+              flip({
+                fallbackPlacements: [
+                  align === "center"
+                    ? position === "top"
+                      ? "bottom"
+                      : "top"
+                    : `${position === "top" ? "bottom" : "top"}-${align}`,
+                ],
+              }),
+            ],
     });
 
     React.useLayoutEffect(() => {
       if (contentElement && isOpen && wrapperRef.current) {
-        const referenceWidth = wrapperRef.current.offsetWidth;
+        const floating = floatingRootRef.current;
+        if (!floating) return;
+        const referenceWidth = wrapperRef.current.getBoundingClientRect().width;
         const contentWidth = contentElement.scrollWidth;
         const width = Math.max(referenceWidth, contentWidth);
-        contentElement.style.width = `${width}px`;
-        contentElement.style.minWidth = `${referenceWidth}px`;
+        floating.style.width = `${width}px`;
+        floating.style.minWidth = `${referenceWidth}px`;
+        contentElement.style.width = "100%";
+        contentElement.style.minWidth = "100%";
+        update();
       }
-    }, [contentElement, isOpen, wrapperRef]);
+    }, [contentElement, isOpen, update, wrapperRef]);
 
-    const isPositioned = x !== null && y !== null;
+    React.useLayoutEffect(() => {
+      const floating = floatingRootRef.current;
+      const triggerText = wrapperRef.current?.querySelector<HTMLElement>(
+        "[data-select-trigger-text]",
+      );
+      if (position !== "overlay" || !isOpen || !floating || !triggerText) return;
+
+      const typography = getComputedStyle(triggerText);
+      floating.style.setProperty("--select-overlay-font-family", typography.fontFamily);
+      floating.style.setProperty("--select-overlay-font-size", typography.fontSize);
+      floating.style.setProperty("--select-overlay-font-weight", typography.fontWeight);
+      floating.style.setProperty("--select-overlay-letter-spacing", typography.letterSpacing);
+      floating.style.setProperty("--select-overlay-line-height", typography.lineHeight);
+      update();
+
+      return () => {
+        floating.style.removeProperty("--select-overlay-font-family");
+        floating.style.removeProperty("--select-overlay-font-size");
+        floating.style.removeProperty("--select-overlay-font-weight");
+        floating.style.removeProperty("--select-overlay-letter-spacing");
+        floating.style.removeProperty("--select-overlay-line-height");
+      };
+    }, [contentElement, isOpen, position, update, wrapperRef]);
 
     React.useLayoutEffect(() => {
       if (wrapperRef.current) {
@@ -224,7 +418,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     }, [placement, setContentPlacement]);
 
     React.useEffect(() => {
-      if (isOpen && searchable && inputRef.current) {
+      if (isOpen && hasContentSearch && inputRef.current) {
         focusFrameRef.current = requestAnimationFrame(() => {
           inputRef.current?.focus({ preventScroll: true });
         });
@@ -235,19 +429,19 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           focusFrameRef.current = null;
         }
       };
-    }, [isOpen, searchable]);
+    }, [hasContentSearch, isOpen]);
 
     React.useEffect(() => {
       const shouldKeepTriggerFocus =
         triggerType === "input" || triggerRef.current?.tagName === "INPUT";
 
-      if (isOpen && !searchable && shouldKeepTriggerFocus) {
+      if (isOpen && !hasContentSearch && shouldKeepTriggerFocus) {
         focusFrameRef.current = requestAnimationFrame(() => {
           triggerRef.current?.focus({ preventScroll: true });
         });
       }
 
-      if (isOpen && !searchable && contentElement && !shouldKeepTriggerFocus) {
+      if (isOpen && !hasContentSearch && contentElement && !shouldKeepTriggerFocus) {
         focusFrameRef.current = requestAnimationFrame(() => {
           contentElement?.focus({ preventScroll: true });
         });
@@ -258,7 +452,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           focusFrameRef.current = null;
         }
       };
-    }, [isOpen, searchable, contentElement, triggerRef, triggerType]);
+    }, [isOpen, hasContentSearch, contentElement, triggerRef, triggerType]);
 
     useListPointerModality({
       isOpen,
@@ -284,6 +478,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       if (justOpenedRef.current) {
         justOpenedRef.current = false;
         scrollItemIntoView(activeItem, "instant");
+        update();
         keyboardScrollIntentRef.current = false;
         return;
       }
@@ -292,7 +487,14 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
       scrollItemIntoView(activeItem);
       keyboardScrollIntentRef.current = false;
-    }, [contentElement, focusedKey, isOpen, keyboardScrollIntentRef, mouseMoveDetectedRef]);
+    }, [
+      contentElement,
+      focusedKey,
+      isOpen,
+      keyboardScrollIntentRef,
+      mouseMoveDetectedRef,
+      update,
+    ]);
 
     const setSharedContentRef = React.useCallback(
       (element: HTMLDivElement | null) => {
@@ -375,6 +577,21 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           return;
         }
 
+        if (
+          e.key === "Backspace" &&
+          !e.nativeEvent.isComposing &&
+          searchValue.length === 0 &&
+          mode === "multiple" &&
+          selectedKeys?.size
+        ) {
+          const lastSelectedKey = Array.from(selectedKeys).at(-1);
+          if (lastSelectedKey !== undefined) {
+            e.preventDefault();
+            onToggle?.(lastSelectedKey);
+            return;
+          }
+        }
+
         if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Home" || e.key === "End") {
           markKeyboardNavigation();
         }
@@ -397,8 +614,12 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         handleTabNavigation,
         keyboardScrollIntentRef,
         markKeyboardNavigation,
+        mode,
         navigateToNextItem,
         navigateToPrevItem,
+        onToggle,
+        searchValue,
+        selectedKeys,
         selectFocusedItem,
         setFocusedKey,
       ],
@@ -433,6 +654,10 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       placement,
       skipExitAnimation: true,
     });
+    const resolvedAnimationStyles =
+      position === "overlay"
+        ? ({ opacity: 1, transform: "none", transition: "none", pointerEvents: "auto" } as const)
+        : animationStyles;
 
     if (!mounted) return null;
 
@@ -442,8 +667,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       ? `calc(${maxItems} * 36px + 8px)`
       : undefined;
     const hasResults = filteredItems.length > 0;
-    const shouldShowEmptyState = searchable && !hasResults;
-    const shouldHideEmptySearchTriggerContent = triggerType === "input" && !hasResults;
+    const shouldShowEmptyState = hasContentSearch && !hasResults;
+    const shouldHideEmptySearchTriggerContent = triggerType === "input" && !hasContentSearch;
 
     const listContent = (
       <div
@@ -454,6 +679,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         }}
         data-slot="list.padding"
         aria-hidden={shouldShowEmptyState || undefined}
+        onMouseLeave={() => setFocusedKey(null)}
       >
         {/* The panel is already the listbox; the inner collection must not nest a second one. */}
         <List
@@ -474,7 +700,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             className="viewport"
             maxHeight={scrollMaxHeight}
             direction="vertical"
-            fade-y={!searchable}
+            fade-y={!hasContentSearch}
             inline
             hide={false}
           >
@@ -486,7 +712,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       </React.Fragment>
     );
 
-    const searchContent = searchable ? (
+    const searchContent = hasContentSearch ? (
       <div
         key="search"
         className={cn(
@@ -497,7 +723,14 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         )}
         style={resolved["search.wrapper"].style}
         data-slot="search.wrapper"
+        data-mode={mode}
+        data-trigger-type={triggerType}
+        data-mirror-value={shouldMirrorTriggerValue ? "true" : undefined}
+        data-select-content-search-anchor
       >
+        {shouldMirrorTriggerValue && (
+          <div className={css["search-mirrored-value"]}>{triggerContent}</div>
+        )}
         <Input
           ref={inputRef}
           type="text"
@@ -511,10 +744,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             onSearch?.(e.target.value);
           }}
           onKeyDown={handleInputKeyDown}
-          placeholder={searchPlaceholder}
+          placeholder={resolvedSearchPlaceholder}
           variant="ghost"
           className={cn("search-input", resolved["search.input"].className)}
           style={resolved["search.input"].style}
+          data-select-content-search-input
         />
       </div>
     ) : null;
@@ -542,10 +776,15 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           ref={mergedFloatingRef}
           className={cn("select", css["content-root"], resolved.overlay.className)}
           data-slot="overlay"
+          data-position={position}
+          data-align={align}
           style={{
             ...rootStyle,
             ...resolved.overlay.style,
             ...floatingStyles,
+            ...(position === "overlay"
+              ? { left: x ?? 0, top: y ?? 0, transform: "none" }
+              : undefined),
             zIndex: 50000,
             visibility: showContent ? "visible" : "hidden",
             display: isOpen && !shouldHideEmptySearchTriggerContent ? "block" : "none",
@@ -560,6 +799,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             data-slot="root"
             data-state={showContent ? "open" : "closed"}
             data-placement={placement.split("-")[0]}
+            data-position={position}
+            data-align={align}
             tabIndex={-1}
             {...domProps}
             onKeyDown={(event) => {
@@ -569,7 +810,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             style={{
               ...resolved.root.style,
               ...domProps.style,
-              ...animationStyles,
+              ...resolvedAnimationStyles,
             }}
           >
             {panelContent}

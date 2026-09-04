@@ -23,6 +23,7 @@ declare const styles: {
   "list-padding": string;
   item: string;
   "item-icon": string;
+  "item-indicator": string;
   "item-text": string;
   "item-content": string;
   "item-description": string;

@@ -151,12 +151,28 @@
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
       color var(--hover-duration, var(--hover-leave-duration, 300ms))
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: slot(item, background, var(--background, transparent));
+    color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));
   }
 
   .item:hover {
     --hover-duration: var(--hover-enter-duration, 0ms);
+  }
+
+  .item:hover:not([data-disabled="true"]) {
+    background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));
+    color: slot(item, foreground-hover, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));
+  }
+
+  .item[data-highlighted="true"] {
+    --hover-duration: var(--hover-enter-duration, 0ms);
+    background-color: slot(item, background-selected, slot(item, background, var(--background, transparent)));
+    color: slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor))));
+  }
+
+  .item[data-highlighted="true"]:hover:not([data-disabled="true"]) {
+    background-color: slot(item, background-selected-hover, slot(item, background-selected, slot(item, background, var(--background, transparent))));
+    color: slot(item, foreground-selected-hover, slot(item, foreground-selected, slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)))));
   }
 
   .item-content {
@@ -181,7 +197,7 @@
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading, var(--leading-sm, 1.25rem));
-    color: var(--foreground);
+    color: inherit;
     @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 

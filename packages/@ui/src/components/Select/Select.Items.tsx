@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { type Key } from "@react-types/shared";
+import { Check } from "lucide-react";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Select.module.css";
@@ -179,7 +180,11 @@ const SelectValue = React.forwardRef<HTMLDivElement, SelectValueProps>(
             {icon}
           </span>
         )}
-        <span className={cn(css["value-text"], resolved.text)} data-slot="text">
+        <span
+          className={cn(css["value-text"], resolved.text)}
+          data-slot="text"
+          data-select-trigger-text
+        >
           {renderText()}
         </span>
       </div>
@@ -207,6 +212,9 @@ export interface SelectItemStyleSlots {
 
   /** Styles the secondary description text. */
   description?: Style;
+
+  /** Styles the trailing checkmark shown for the selected option. */
+  indicator?: Style;
 }
 
 /**
@@ -255,7 +263,7 @@ export interface SelectItemProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   description?: React.ReactNode;
 
   /**
-   * Styles item anatomy: root, icon, content, text, and description.
+   * Styles item anatomy: root, icon, content, text, description, and indicator.
    * @category Styling
    * @typeDoc SelectItemStyleSlots
    */
@@ -268,6 +276,7 @@ const resolveSelectItemStyles = createStylesResolver([
   "content",
   "text",
   "description",
+  "indicator",
 ] as const);
 
 /** A single selectable option in the dropdown list */
@@ -298,6 +307,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
       setFocusedKey,
       mouseMoveDetectedRef,
       triggerMouseDownRef,
+      triggerPressOriginRef,
       visibleKeys,
     } = useSelectContext();
     const finalTextValue = textValue || String(children);
@@ -353,6 +363,14 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
           // dragged into the open list and committed by releasing over an item.
           if (!triggerMouseDownRef.current) return;
           triggerMouseDownRef.current = false;
+          const pressOrigin = triggerPressOriginRef.current;
+          triggerPressOriginRef.current = null;
+          if (
+            pressOrigin &&
+            Math.hypot(event.clientX - pressOrigin.x, event.clientY - pressOrigin.y) < 4
+          ) {
+            return;
+          }
           handleClick();
         }}
         onMouseEnter={(event) => {
@@ -392,7 +410,11 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         )}
         {hasDescription ? (
           <div className={cn(css["item-content"], resolved.content)} data-slot="content">
-            <span className={cn(css["item-text"], resolved.text)} data-slot="text">
+            <span
+              className={cn(css["item-text"], resolved.text)}
+              data-slot="text"
+              data-select-item-text
+            >
               {children}
             </span>
             <span
@@ -403,8 +425,21 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
             </span>
           </div>
         ) : (
-          <span className={cn(css["item-text"], resolved.text)} data-slot="text">
+          <span
+            className={cn(css["item-text"], resolved.text)}
+            data-slot="text"
+            data-select-item-text
+          >
             {children}
+          </span>
+        )}
+        {mode === "single" && (
+          <span
+            className={cn(css["item-indicator"], resolved.indicator)}
+            data-slot="indicator"
+            aria-hidden="true"
+          >
+            {isSelected && <Check />}
           </span>
         )}
       </List.Item>

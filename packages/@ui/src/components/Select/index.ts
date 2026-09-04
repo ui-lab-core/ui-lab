@@ -50,6 +50,8 @@ export type {
   SelectTriggerMode,
 } from "./Select";
 export type {
+  SelectContentAlign,
+  SelectContentPosition,
   SelectContentListStyles,
   SelectContentProps,
   SelectContentSearchStyles,

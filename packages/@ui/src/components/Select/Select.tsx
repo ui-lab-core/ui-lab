@@ -93,6 +93,8 @@ export interface SelectContextValue {
   contentPlacement: ContentPlacement;
   setContentPlacement: React.Dispatch<React.SetStateAction<ContentPlacement>>;
   triggerType: TriggerType;
+  triggerSearchPlaceholder?: string;
+  triggerContent?: React.ReactNode;
   mode: SelectMode;
   selectedKey: Key | null;
   selectedKeys?: Set<Key>;
@@ -132,6 +134,7 @@ export interface SelectContextValue {
   handleHoverIntent: (isHovering: boolean) => void;
   mouseMoveDetectedRef: React.MutableRefObject<boolean>;
   triggerMouseDownRef: React.MutableRefObject<boolean>;
+  triggerPressOriginRef: React.MutableRefObject<{ x: number; y: number } | null>;
   keyboardScrollIntentRef: React.MutableRefObject<boolean>;
   markKeyboardNavigation: () => void;
   moveFocusFromTrigger: (direction: 1 | -1) => boolean;
@@ -347,9 +350,11 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
     const itemExtrasRef = React.useRef<Map<Key, ItemExtras>>(new Map());
     const hoverTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const hasInitializedOpenFocusRef = React.useRef(false);
 
     const mouseMoveDetectedRef = React.useRef(true);
     const triggerMouseDownRef = React.useRef(false);
+    const triggerPressOriginRef = React.useRef<{ x: number; y: number } | null>(null);
     const openedOnMouseDownRef = React.useRef(false);
     const keyboardScrollIntentRef = React.useRef(false);
 
@@ -581,6 +586,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         if (isDisabled || event.button !== 0) return;
 
         triggerMouseDownRef.current = true;
+        triggerPressOriginRef.current = { x: event.clientX, y: event.clientY };
         openedOnMouseDownRef.current = !isOpen;
 
         if (!isOpen) {
@@ -714,6 +720,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     React.useEffect(() => {
       const handleMouseUp = () => {
         triggerMouseDownRef.current = false;
+        triggerPressOriginRef.current = null;
       };
 
       window.addEventListener("mouseup", handleMouseUp);
@@ -730,16 +737,25 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     }, [autoFocus]);
 
     React.useEffect(() => {
-      if (!isOpen) return;
+      if (!isOpen) {
+        hasInitializedOpenFocusRef.current = false;
+        nav.setFocusedKey(null);
+        return;
+      }
 
       // Keep the current keyboard focus when it is still visible and enabled.
       if (nav.focusedKey !== null && nav.visibleKeys.has(nav.focusedKey)) {
         const focusedItem = nav.filteredItems.find((item) => item.key === nav.focusedKey);
 
         if (focusedItem && !focusedItem.isDisabled) {
+          hasInitializedOpenFocusRef.current = true;
           return;
         }
       }
+
+      // Once the opening highlight has been established, an intentionally cleared
+      // pointer highlight should stay cleared until the user moves over an item again.
+      if (hasInitializedOpenFocusRef.current && nav.focusedKey === null) return;
 
       const initialFocusKey =
         mode === "multiple" && selectedKeys.size > 0
@@ -750,12 +766,17 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         const selectedItem = nav.filteredItems.find((item) => item.key === initialFocusKey);
 
         if (selectedItem && !selectedItem.isDisabled) {
+          hasInitializedOpenFocusRef.current = true;
           nav.setFocusedKey(initialFocusKey);
           return;
         }
       }
 
-      nav.setFocusedKey(nav.enabledFilteredItems[0]?.key ?? null);
+      const firstEnabledKey = nav.enabledFilteredItems[0]?.key ?? null;
+      if (firstEnabledKey !== null) {
+        hasInitializedOpenFocusRef.current = true;
+      }
+      nav.setFocusedKey(firstEnabledKey);
     }, [
       isOpen,
       mode,
@@ -805,6 +826,14 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
     const triggerType: TriggerType =
       getChildDisplayName(trigger) === "Select.SearchableTrigger" ? "input" : "button";
+    const triggerSearchPlaceholder =
+      triggerType === "input" && React.isValidElement<{ placeholder?: string }>(trigger)
+        ? trigger.props.placeholder
+        : undefined;
+    const triggerContent =
+      triggerType === "button" && React.isValidElement<{ children?: React.ReactNode }>(trigger)
+        ? trigger.props.children
+        : undefined;
 
     // Select.Trigger's visual treatment is a whole-surface decision: the root paints the
     // background and border, so the variant has to reach the root class and attribute.
@@ -838,6 +867,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       contentPlacement,
       setContentPlacement,
       triggerType,
+      triggerSearchPlaceholder,
+      triggerContent,
       mode,
 
       selectedKey,
@@ -878,6 +909,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
       mouseMoveDetectedRef,
       triggerMouseDownRef,
+      triggerPressOriginRef,
       keyboardScrollIntentRef,
       markKeyboardNavigation,
 

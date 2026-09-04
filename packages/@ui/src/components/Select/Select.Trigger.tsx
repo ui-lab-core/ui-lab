@@ -152,7 +152,9 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
     const resolved = resolveSelectTriggerStyles(stylesProp);
     const mergedTriggerProps = mergeProps(domProps, triggerProps);
     const content = infer("text", children) ? (
-      <span className={css.text}>{children}</span>
+      <span className={css.text} data-select-trigger-text>
+        {children}
+      </span>
     ) : (
       children
     );
@@ -179,7 +181,11 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
         data-disabled={isDisabled ? "true" : undefined}
         {...mergedTriggerProps}
       >
-        <div className={cn(css["value-section"], resolved.value)} data-slot="value">
+        <div
+          className={cn(css["value-section"], resolved.value)}
+          data-slot="value"
+          data-select-trigger-value
+        >
           {icon?.prefix && (
             <span className={cn(css["icon-prefix"], resolved["icon.left"])} data-slot="icon.left">
               {icon.prefix}
@@ -408,6 +414,7 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
             disabled={isDisabled}
             variant="ghost"
             className={cn("input", css["input"], resolved.input)}
+            data-select-trigger-text
             {...props}
           />
         </div>

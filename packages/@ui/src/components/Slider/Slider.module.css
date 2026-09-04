@@ -13,6 +13,9 @@
   .track {
     --thickness: var(--size, calc(var(--spacing-md) * 0.8));
     --length: calc(var(--thickness) * var(--ratio, 0.5));
+    --thumb-inline-size: slot(thumb, width, var(--length));
+    --thumb-block-size: slot(thumb, height, 100%);
+    --thumb-half-size: calc(var(--thumb-inline-size) / 2);
     --travel-inset: slot(track, padding, var(--padding, 0px));
     @apply relative flex grow items-center;
     flex-grow: 1;
@@ -54,9 +57,6 @@
   }
 
   .thumb {
-    --thumb-inline-size: slot(thumb, width, var(--length));
-    --thumb-block-size: slot(thumb, height, 100%);
-
     @apply absolute block;
     z-index: 2;
     top: var(--top, 0);

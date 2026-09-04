@@ -197,7 +197,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     },
     ref,
   ) => {
-    const { travelRef, setThumbRef, trackStyle, travelProps } = useThumbTrack();
+    const { travelRef, travelProps } = useThumbTrack();
     const activeDragRef = React.useRef<number | null>(null);
     const [isDragging, setIsDragging] = React.useState(false);
 
@@ -346,7 +346,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         )}
         <div
           className={cn("track", css.track, resolved.track.className)}
-          style={{ ...trackStyle, ...resolved.track.style }}
+          style={resolved.track.style}
           data-slot="track"
           data-disabled={disabled ? "true" : undefined}
         >
@@ -366,7 +366,6 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
             />
             {showControls && !indeterminate && (
               <div
-                ref={setThumbRef}
                 className={cn("thumb", css.thumb, resolved.thumb.className)}
                 style={{ left: getThumbPosition(percentage), ...resolved.thumb.style }}
                 data-slot="thumb"

@@ -189,6 +189,17 @@
   .sub-content-root:global(.select) {
     display: block;
     position: absolute;
+    box-sizing: border-box;
+    height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    align-self: auto;
+  }
+
+  .content-root > .content {
+    box-sizing: border-box;
   }
 
   .list {
@@ -231,6 +242,22 @@
     @apply min-w-0 overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
+  .content-root[data-position="overlay"] .item-text {
+    font-family: var(--select-overlay-font-family);
+    font-size: var(--select-overlay-font-size);
+    font-weight: var(--select-overlay-font-weight);
+    letter-spacing: var(--select-overlay-letter-spacing);
+    line-height: var(--select-overlay-line-height);
+  }
+
+  .content-root[data-position="overlay"] [data-select-content-search-input] {
+    font-family: var(--select-overlay-font-family);
+    font-size: var(--select-overlay-font-size);
+    font-weight: var(--select-overlay-font-weight);
+    letter-spacing: var(--select-overlay-letter-spacing);
+    line-height: var(--select-overlay-line-height);
+  }
+
   .item-description {
     font-family: var(--font-body, inherit);
     font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
@@ -244,6 +271,16 @@
   .item-icon {
     @apply flex items-center justify-center shrink-0 w-4 h-4;
     color: var(--icon-foreground);
+  }
+
+  .item-indicator {
+    @apply flex items-center justify-center shrink-0 w-4 h-4;
+    margin-left: auto;
+    color: var(--icon-foreground, currentColor);
+
+    > svg {
+      @apply w-4 h-4;
+    }
   }
 
   .item-with-description {
@@ -326,6 +363,35 @@
     @apply overflow-hidden;
     border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
+  }
+
+  .search-wrapper[data-trigger-type="button"] [data-select-content-search-input] {
+    padding-left: slot(trigger, padding-inline, calc(var(--spacing) * 2));
+  }
+
+  .search-wrapper[data-mirror-value="true"] {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: calc(var(--spacing, 0.25rem) * 2);
+    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
+      slot(trigger, padding-inline, calc(var(--spacing) * 2));
+  }
+
+  .search-mirrored-value {
+    display: contents;
+  }
+
+  .search-wrapper[data-mirror-value="true"] .value {
+    flex: 0 1 auto;
+  }
+
+  .search-wrapper[data-mirror-value="true"] :global(.input-scope) {
+    flex: 1 1 8rem;
+  }
+
+  .search-wrapper[data-mirror-value="true"] [data-select-content-search-input] {
+    padding-block: 0;
   }
 
   .empty-state {

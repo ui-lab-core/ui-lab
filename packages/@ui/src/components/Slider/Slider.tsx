@@ -349,8 +349,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const rootRef = React.useRef<HTMLDivElement>(null);
     const trackRef = React.useRef<HTMLDivElement>(null);
     const thumbRefs = React.useRef<Array<HTMLDivElement | null>>([]);
-    const { travelRef, setThumbRef: measureThumb, trackStyle, travelProps, halfSize } =
-      useThumbTrack(orientation);
+    const { travelRef, travelProps } = useThumbTrack(orientation);
     const activeDragRef = React.useRef<{ pointerId: number; thumbIndex: number } | null>(null);
     const [draggingThumbIndex, setDraggingThumbIndex] = React.useState<number | null>(null);
 
@@ -378,13 +377,12 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       surfaceSelector: '[data-slider-focus-surface="true"]',
       radiusSource: "surface",
       mode: "self",
-      dependencies: [values, orientation, disabled, halfSize],
+      dependencies: [values, orientation, disabled],
     });
 
     const setThumbRef = React.useCallback((index: number, element: HTMLDivElement | null) => {
       thumbRefs.current[index] = element;
-      if (index === 0) measureThumb(element);
-    }, [measureThumb]);
+    }, []);
 
     const handleValueChange = React.useCallback(
       (index: number, newValue: number) => {
@@ -569,7 +567,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           data-slider-track="true"
           data-disabled={disabled ? "true" : undefined}
           data-orientation={orientation}
-          style={{ ...trackStyle, ...resolved.track.style }}
+          style={resolved.track.style}
           data-slot="track"
         >
           <div {...travelProps} />
