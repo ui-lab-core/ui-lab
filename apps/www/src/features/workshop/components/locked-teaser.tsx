@@ -4,16 +4,12 @@ import type { ReactNode } from "react";
 import { Lock } from "lucide-react";
 import { Mask, Skeleton } from "ui-lab-components";
 import { Button } from "ui-lab-components/button";
-import { formatSupporterPrice, SUPPORTER_PLAN } from "@ui-lab-core/library/catalog";
+import { formatSupporterPrice, SUPPORTER_PLAN } from "@ui-lab-core/library/access";
 import { ROUTES } from "@/shared/lib/routes";
 import { cn } from "@/shared/lib/utils";
+import { LOCKED_TEASER_COUNT } from "@/features/workshop/types/content";
 
-/**
- * Entries of a paid package that render in full before the teaser fades out.
- * The teaser itself is one entry longer: the extra one is the entry the mask
- * cuts through, which is what reads as "there is more of this".
- */
-export const LOCKED_TEASER_COUNT = 2;
+export { LOCKED_TEASER_COUNT } from "@/features/workshop/types/content";
 
 /**
  * Where the call to action points. Locked content is never sold on its own, so
@@ -26,8 +22,9 @@ export const LOCKED_LINKS = {
 
 /**
  * Splits a locked list into the entries that render and the count that is
- * withheld. Nothing past the visible count is handed to the browser: the entry
- * the mask fades is `LockedPlaceholder`, a mock, not the next real entry.
+ * withheld. This is presentation of an already-truncated list: the server
+ * withholds the entries themselves, and the entry the mask fades is
+ * `LockedPlaceholder`, a mock, not the next real entry.
  */
 export function splitLockedItems<T>(
   items: T[],
@@ -156,19 +153,16 @@ export function LockedCta({ hiddenCount, layout = "card", className }: LockedCta
         </div>
 
         <div className="max-w-sm space-y-2">
-          <p className="text-base font-medium text-foreground-50">Unlock everything with Supporter</p>
+          <p className="text-base font-medium text-foreground-50">
+            Unlock everything with Supporter
+          </p>
 
           <p className="text-sm leading-relaxed text-foreground-400">{description}</p>
         </div>
       </div>
 
       <div className="space-y-2 border-t border-background-700 bg-background-900/30 p-4">
-        <Button
-          className="w-full"
-          size="lg"
-          variant="primary"
-          href={LOCKED_LINKS.purchase}
-        >
+        <Button className="w-full" size="lg" variant="primary" href={LOCKED_LINKS.purchase}>
           Get Supporter
         </Button>
 

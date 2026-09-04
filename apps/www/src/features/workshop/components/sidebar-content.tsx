@@ -6,27 +6,24 @@ import { useUrlSearchParams } from "@/shared/hooks/use-url-search-params";
 import { cn } from "@/shared/lib/utils";
 import { SidebarItemLink } from "@/features/navigation";
 import {
-  getAllSections,
-  getAllStarters,
-  getSectionsInCategory,
-  getAllPackages,
-  getElementsInPackage,
-  elementRegistry,
-  getAllPatternCategories,
-  getPatternsByCategory,
-  type ElementCategoryId,
-  type SectionCategoryId,
-} from "@ui-lab-core/library/catalog";
+  EMPTY_WORKSHOP_NAVIGATION,
+  type WorkshopNavigation,
+} from "@/features/workshop/types/navigation";
 
 interface ElementsSidebarContentProps {
   activeNav: "packages" | "sections" | "starters" | "patterns";
   pathname: string;
-  activeCategory?: ElementCategoryId | SectionCategoryId | null;
+  activeCategory?: string | null;
+  /**
+   * Ids and names only, projected on the server. The catalog itself carries
+   * every entry's source and is never imported from a client module.
+   */
+  navigation?: WorkshopNavigation;
 }
 
 const NAV_LINK_BASE =
-  "block px-3 py-1.5 text-foreground-400 text-sm font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0";
-const LINK_ACTIVE = "text-foreground-50 bg-background-800 font-medium";
+  "block px-3 py-1.5 text-foreground-300 text-sm font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0";
+const LINK_ACTIVE = "text-foreground-200 bg-background-800 font-medium";
 const LINK_INACTIVE = "text-foreground-200 hover:text-foreground-200 hover:bg-background-800/50";
 
 function getPathSegments(pathname: string) {
@@ -65,7 +62,7 @@ function ExpandGroup({
 }) {
   return (
     <Expand expanded={isExpanded} onExpandedChange={onToggle} className="rounded-sm">
-      <Expand.Trigger className="text-sm font-medium text-foreground-200" title={name} />
+      <Expand.Trigger className="text-sm font-medium text-foreground-300" title={name} />
       <Expand.Content className="pl-3">
         <div className="space-y-0.5 mt-1">{children}</div>
       </Expand.Content>
@@ -81,7 +78,12 @@ function EmptyState({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSidebarContentProps) {
+function ElementsListContent({
+  activeNav,
+  pathname,
+  activeCategory,
+  navigation = EMPTY_WORKSHOP_NAVIGATION,
+}: ElementsSidebarContentProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const searchParams = useUrlSearchParams();
   const currentVariant = searchParams.get("variant");
@@ -136,36 +138,29 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
     return next;
   }, [expandedItems, currentItemId, currentElementId, currentPackageId, activeNav]);
 
-  const sections = useMemo(() => getAllSections(), []);
-  const starters = useMemo(() => getAllStarters(), []);
-
   const sortedSections = useMemo(() => {
     const filtered = activeCategory
-      ? getSectionsInCategory(sections, activeCategory as SectionCategoryId)
-      : sections;
+      ? navigation.sections.filter((section) => section.category === activeCategory)
+      : navigation.sections;
     return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-  }, [sections, activeCategory]);
+  }, [navigation.sections, activeCategory]);
 
   const sortedStarters = useMemo(
-    () => [...starters].sort((a, b) => a.name.localeCompare(b.name)),
-    [starters],
+    () => [...navigation.starters].sort((a, b) => a.name.localeCompare(b.name)),
+    [navigation.starters],
   );
 
-  const packages = useMemo(() => getAllPackages(), []);
+  const packages = navigation.packages;
   const packageElements = useMemo(() => {
     if (!currentPackageId) return [];
-    return getElementsInPackage(currentPackageId)
-      .map((id) => elementRegistry[id])
-      .filter(Boolean);
-  }, [currentPackageId]);
+    return packages.find((pkg) => pkg.id === currentPackageId)?.elements ?? [];
+  }, [packages, currentPackageId]);
 
   if (activeNav === "packages" && !isOnPackageRoute) {
     return (
       <div className="space-y-1 pt-2">
         {packages.map((pkg) => {
-          const pkgElements = getElementsInPackage(pkg.id)
-            .map((id) => elementRegistry[id])
-            .filter(Boolean);
+          const pkgElements = pkg.elements;
           const href = `/workshop/elements/${pkg.id}`;
 
           if (pkgElements.length === 0) {
@@ -211,7 +206,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
           const isActive = currentElementId === element.id;
           const href = `/workshop/elements/${currentPackageId}/${element.id}`;
 
-          if (element.variants.length === 0) {
+          if (element.children.length === 0) {
             return (
               <NavLink key={element.id} href={href} isActive={isActive}>
                 {element.name}
@@ -226,13 +221,12 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
               isExpanded={effectiveExpandedItems.has(element.id)}
               onToggle={toggleItem(element.id)}
             >
-              {element.variants.map((variant) => {
-                const variantId = variant.demoPath || variant.name;
-                const isVariantActive = isActive && currentVariant === variantId;
+              {element.children.map((variant) => {
+                const isVariantActive = isActive && currentVariant === variant.id;
                 return (
                   <NavLink
-                    key={`${element.id}-${variantId}`}
-                    href={`${href}?variant=${variantId}`}
+                    key={`${element.id}-${variant.id}`}
+                    href={`${href}?variant=${variant.id}`}
                     isActive={isVariantActive}
                   >
                     {variant.name}
@@ -267,12 +261,9 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
   }
 
   if (activeNav === "patterns") {
-    const patternCategories = getAllPatternCategories();
-
     return (
       <div className="space-y-4 pt-2">
-        {patternCategories.map((category) => {
-          const patterns = getPatternsByCategory(category);
+        {navigation.patternCategories.map(({ category, patterns }) => {
           return (
             <div key={category} className="not-first:mt-8">
               <p className="mb-1 font-medium text-foreground-200 capitalize">{category}</p>
@@ -280,7 +271,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
                 {patterns.map((pattern) => {
                   const href = `/workshop/patterns/${pattern.id}`;
 
-                  if (!pattern.variations || pattern.variations.length === 0) {
+                  if (pattern.children.length === 0) {
                     return (
                       <NavLink key={pattern.id} href={href} isActive={currentItemId === pattern.id}>
                         {pattern.name}
@@ -295,9 +286,9 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
                       isExpanded={effectiveExpandedItems.has(pattern.id)}
                       onToggle={toggleItem(pattern.id)}
                     >
-                      {(pattern.variations ?? []).map((variation) => (
+                      {pattern.children.map((variation) => (
                         <NavLink
-                          key={`${pattern.id}-${variation.name}`}
+                          key={`${pattern.id}-${variation.id}`}
                           href={href}
                           isActive={currentItemId === pattern.id}
                         >
@@ -325,7 +316,7 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
         {sortedSections.map((section) => {
           const href = `/workshop/sections/${section.id}`;
 
-          if (section.variants.length === 0) {
+          if (section.children.length === 0) {
             return (
               <NavLink key={section.id} href={href} isActive={currentItemId === section.id}>
                 {section.name}
@@ -340,9 +331,9 @@ function ElementsListContent({ activeNav, pathname, activeCategory }: ElementsSi
               isExpanded={effectiveExpandedItems.has(section.id)}
               onToggle={toggleItem(section.id)}
             >
-              {section.variants.map((variant) => (
+              {section.children.map((variant) => (
                 <NavLink
-                  key={`${section.id}-${variant.demoPath ?? variant.name}`}
+                  key={`${section.id}-${variant.id}`}
                   href={href}
                   isActive={currentItemId === section.id}
                 >

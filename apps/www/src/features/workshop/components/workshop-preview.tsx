@@ -2,12 +2,22 @@
 
 import { Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronRight, FileCode2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { getElementPreview } from "@ui-lab-core/library";
-import { getPatternById, type ElementFile } from "@ui-lab-core/library/catalog";
+import { getElementPreview } from "@ui-lab-core/library/previews";
+import {
+  LOCKED_SOURCE_PREVIEW_LINES,
+  type WorkshopFile,
+  type WorkshopPatternRef,
+} from "@/features/workshop/types/content";
 import { Code } from "@/features/docs/components/code-display/code";
 import { cn } from "@/shared/lib/utils";
 import { Mask, Modal, Panel } from "ui-lab-components";
 import { LockedCta } from "./locked-teaser";
+import { PreviewSkeleton } from "./preview-skeleton";
+import {
+  ENTRY_HEADER_HEIGHT,
+  reservedPreviewHeight,
+  type WorkshopCategory,
+} from "../lib/preview-heights";
 
 interface WorkshopFullscreenTarget {
   categoryId: string;
@@ -22,7 +32,7 @@ interface WorkshopPreviewProps {
   /** The live preview to render inside the preview box. */
   children?: ReactNode;
   /** Source files shown below the preview (entry point is displayed first). */
-  files?: ElementFile[];
+  files?: WorkshopFile[];
   /** Single-file source fallback used when `files` is not provided. */
   code?: string;
   language?: string;
@@ -47,18 +57,29 @@ interface WorkshopPreviewProps {
   modalTitle?: string;
   /** Internal marker for the expanded modal content. */
   isModalDetail?: boolean;
-  /** Pattern ids declared by the entry's generated variation metadata. */
-  patterns?: string[];
+  /**
+   * Patterns declared by the entry's generated variation metadata, resolved on
+   * the server: the catalog they come from carries every entry's source.
+   */
+  patterns?: WorkshopPatternRef[];
   /** Optional file-tree trigger rendered before the source filename. */
   fileTreeTrigger?: ReactNode;
   /** Supporter entry: the preview stays live, the source becomes a masked teaser. */
   locked?: boolean;
+  /**
+   * The catalogue this entry belongs to. It sets the floor the preview box
+   * reserves and the skeleton drawn while the demo loads, so a route's layout
+   * is settled before anything inside the box renders.
+   */
+  category?: WorkshopCategory;
 }
 
 const DEFAULT_PREVIEW_HEIGHT = 320;
 
 /** Lines of a locked entry's source that are shown before the fade. */
-const LOCKED_CODE_LINES = 14;
+const LOCKED_CODE_LINES = LOCKED_SOURCE_PREVIEW_LINES;
+
+const EMPTY_PATTERNS: WorkshopPatternRef[] = [];
 
 /** Used before the code block has rendered a measurable line height. */
 const FALLBACK_CODE_LINE_HEIGHT = 21;
@@ -90,19 +111,18 @@ export function WorkshopPreview({
   patterns,
   fileTreeTrigger,
   locked = false,
+  category,
 }: WorkshopPreviewProps) {
-  const usedPatterns = useMemo(
-    () =>
-      (patterns ?? [])
-        .map(getPatternById)
-        .filter((pattern): pattern is NonNullable<typeof pattern> => pattern !== undefined),
-    [patterns],
-  );
+  // One number for the box, whether the demo is there yet or not: the entry's
+  // own declared height, floored by its domain. The skeleton the server paints
+  // reserves exactly this, so the demo lands in the box already on screen.
+  const reservedHeight = reservedPreviewHeight(category, previewHeight);
+  const usedPatterns = patterns ?? EMPTY_PATTERNS;
   const uniqueFiles = useMemo(() => {
-    const source: ElementFile[] = files?.length
+    const source: WorkshopFile[] = files?.length
       ? files
       : code
-        ? [{ filename: codeFilename, code, language, isEntryPoint: true } as ElementFile]
+        ? [{ filename: codeFilename, code, language, isEntryPoint: true } as WorkshopFile]
         : [];
     return Array.from(new Map(source.map((file) => [file.filename, file])).values());
   }, [files, code, language, codeFilename]);
@@ -111,7 +131,9 @@ export function WorkshopPreview({
   const [isFileTreeOpen, setIsFileTreeOpen] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [selectedPatternId, setSelectedPatternId] = useState<string | null>(null);
-  const selectedPattern = selectedPatternId ? getPatternById(selectedPatternId) : undefined;
+  const selectedPattern = selectedPatternId
+    ? usedPatterns.find((pattern) => pattern.id === selectedPatternId)
+    : undefined;
   const SelectedPatternPreview = selectedPattern
     ? getElementPreview("patterns", selectedPattern.id)
     : null;
@@ -158,13 +180,27 @@ export function WorkshopPreview({
         onKeyDown={isPreviewOnly ? handlePreviewKeyDown : undefined}
       >
         <WorkshopDetailLayout isModalDetail={isModalDetail}>
-          {title && !isPreviewOnly ? (
-            <div className="p-4 mb-5 flex items-start justify-between gap-4 border-b border-background-700 pb-5">
-              <h3 id={headingId ? `${headingId}-title` : undefined} className="text-foreground-50">
+          {/* Preview-only cards carry their title too: the entry's name is what
+              says which variant a box is, and leaving it to the modal meant the
+              page rendered a row of unlabelled boxes. */}
+          {title && !isModalDetail ? (
+            <div
+              className="p-4 mb-5 flex overflow-hidden items-start justify-between gap-4 border-b border-background-700 pb-5"
+              // A fixed row: one line of title against at most two lines of
+              // description, so the copy arriving cannot move the preview box
+              // below it and the skeleton can reserve the row exactly.
+              style={{ height: ENTRY_HEADER_HEIGHT }}
+            >
+              <h3
+                id={headingId ? `${headingId}-title` : undefined}
+                className="min-w-0 truncate text-foreground-50"
+              >
                 {title}
               </h3>
               {description ? (
-                <p className="max-w-[45ch] text-sm text-foreground-400">{description}</p>
+                <p className="line-clamp-2 max-w-[45ch] text-sm text-foreground-400">
+                  {description}
+                </p>
               ) : null}
             </div>
           ) : null}
@@ -175,7 +211,7 @@ export function WorkshopPreview({
               className={cn(
                 "min-w-0 overflow-hidden rounded-sm",
                 isPreviewOnly &&
-                  "border border-background-700 transition-colors group-hover:border-background-600 group-hover:bg-background-950",
+                  "border border-background-700 transition-colors group-hover:border-background-500",
                 !isPreviewOnly && "rounded-b-none",
                 (fillHeight || isModalDetail) && "flex min-h-0 flex-1 flex-col",
                 isModalDetail && "order-3 h-full rounded-none lg:min-w-[25%] lg:max-w-[75%]",
@@ -183,18 +219,22 @@ export function WorkshopPreview({
             >
               <div
                 className={cn(
-                  "relative min-h-0 min-w-0",
+                  "relative min-h-0 min-w-0 flex",
                   (fillHeight || isModalDetail) && "h-full",
                 )}
                 style={
-                  fillHeight || isModalDetail || dynamicPreviewHeight
+                  isModalDetail
                     ? undefined
-                    : { height: previewHeight }
+                    : fillHeight || dynamicPreviewHeight
+                      ? // A taller demo may still grow the box, but it can never
+                        // come in under the height the page already reserved.
+                        { minHeight: reservedHeight }
+                      : { height: reservedHeight ?? previewHeight }
                 }
               >
                 <div
                   className={cn(
-                    "flex min-h-0 w-full",
+                    "flex min-h-0 mx-auto w-full",
                     dynamicPreviewHeight && !isModalDetail
                       ? "overflow-visible"
                       : "h-full overflow-auto",
@@ -202,15 +242,15 @@ export function WorkshopPreview({
                 >
                   <div
                     className={cn(
-                      "flex w-full min-w-[min(100%,16rem)] max-w-full items-center *:w-full",
-                      previewLayout === "start" ? "mx-auto" : "max-w-2xl",
+                      "flex justify-center  w-full min-w-[min(100%,16rem)] max-w-full items-center",
+                      // previewLayout === "start" ? "mx-auto" : "max-w-2xl",
                       // Preview-only cards are a single click target that opens the
                       // modal; the live demo is shown purely as a thumbnail, so its
                       // controls are made inert. Only the modal detail is interactable.
                       isPreviewOnly && "pointer-events-none",
                     )}
                   >
-                    <Suspense fallback={<PreviewLoadingOverlay />}>{children}</Suspense>
+                    <Suspense fallback={<PreviewSkeleton />}>{children}</Suspense>
                   </div>
                 </div>
               </div>
@@ -261,7 +301,7 @@ export function WorkshopPreview({
                     showLineNumbers
                     maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
                     activeFile={activeFileIndex}
-                    onActiveFileChange={(index) => {
+                    onActiveFileChange={(index: number) => {
                       setSelectedPatternId(null);
                       setSelectedFileName(uniqueFiles[index]?.filename ?? null);
                     }}
@@ -296,7 +336,7 @@ export function WorkshopPreview({
               <WorkshopFileTree
                 files={uniqueFiles}
                 patterns={usedPatterns}
-                activeFileName={selectedPattern ? null : activeFileName}
+                activeFileName={selectedPattern ? null : (activeFileName ?? null)}
                 activePatternId={selectedPattern?.id ?? null}
                 isOpen={isFileTreeOpen}
                 onSelectFile={(filename) => {
@@ -329,6 +369,7 @@ export function WorkshopPreview({
               hidePreview={hidePreview}
               fillHeight={fillHeight}
               locked={locked}
+              category={category}
               isModalDetail
               fileTreeTrigger={
                 hasMultipleFiles || usedPatterns.length > 0 ? (
@@ -392,7 +433,7 @@ export function WorkshopPreview({
  * code reaches the bottom of the container instead of ending in dead space.
  * The Supporter card floats in the middle of the faded block.
  */
-function LockedSource({ file, fillHeight = false }: { file: ElementFile; fillHeight?: boolean }) {
+function LockedSource({ file, fillHeight = false }: { file: WorkshopFile; fillHeight?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [visibleLines, setVisibleLines] = useState(LOCKED_CODE_LINES);
 
@@ -479,7 +520,7 @@ function WorkshopFileTree({
   onSelectFile,
   onSelectPattern,
 }: {
-  files: ElementFile[];
+  files: WorkshopFile[];
   patterns: Array<{ id: string; name: string }>;
   activeFileName: string | null;
   activePatternId: string | null;
@@ -542,22 +583,5 @@ function WorkshopFileTree({
         </div>
       ) : null}
     </aside>
-  );
-}
-
-function PreviewLoadingOverlay() {
-  return (
-    <div
-      aria-atomic="true"
-      aria-live="polite"
-      role="status"
-      className="pointer-events-none absolute inset-0 flex items-center justify-center"
-    >
-      <span
-        aria-hidden="true"
-        className="size-5 animate-spin rounded-full border border-background-600 border-t-accent-500"
-      />
-      <span className="sr-only">Loading interactive preview</span>
-    </div>
   );
 }

@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Gallery, Frame, Badge } from "ui-lab-components";
-import { Blocks, LayoutPanelTop, Puzzle, Rocket, Sparkles } from "lucide-react";
+import { Gallery } from "ui-lab-components";
+import { Badge } from "ui-lab-components/badge";
+import { Blocks, LayoutPanelTop, Puzzle, Rocket, Sparkle, Sparkles } from "lucide-react";
 import { PreviewContainer } from "@/features/preview/components/preview-container";
 import type { ContentAccess, ContentStatus, LayoutConfig } from "@ui-lab-core/library/catalog";
-import { FaWandMagicSparkles } from "@/shared/icons/fa6";
+import { HiSparkles } from "react-icons/hi2";
 
 interface ContentItem {
   id: string;
@@ -22,7 +23,7 @@ interface ContentItem {
  * The theme's premium accent for Supporter content. Everything else derives
  * from it through color-mix so the tint stays coherent in light and dark.
  */
-const PREMIUM_HUE = "var(--accent-600)";
+const PREMIUM_HUE = "var(--accent-400)";
 
 /**
  * True for any content behind the one-time Supporter purchase.
@@ -35,114 +36,152 @@ function isPremiumItem(item: ContentItem): boolean {
   return item.access === "premium" || (item.premiumElementCount ?? 0) > 0;
 }
 
+// /**
+//  * The step cut out of a premium card's top edge, in pixels. `ease` is how far
+//  * the S-curve travels while it drops `depth`; the image this is drawn from runs
+//  * the two at roughly 1:1, which is what keeps the curve reading as a slope
+//  * rather than a ledge. `span` is the flat run from the bottom of the S to the
+//  * card's right edge, sized to hold the label, and `radius` matches the card's
+//  * own corner *on the border line* so the step hands the frame back a corner of
+//  * the same shape.
+//  */
+// const NOTCH = { ease: 30, depth: 35, span: 80, radius: 10 };
+//
+// const NOTCH_WIDTH = NOTCH.ease + NOTCH.span;
+//
+// /**
+//  * Control-point x's for the flat run of the step, held off the endpoints so the
+//  * notch floor stays level as it descends. Spaced off the reference shape.
+//  */
+// const NOTCH_C1 = NOTCH.ease + (NOTCH_WIDTH - NOTCH.radius - NOTCH.ease) * 0.26;
+// const NOTCH_C2 = NOTCH.ease + (NOTCH_WIDTH - NOTCH.radius - NOTCH.ease) * 0.7;
+//
+// /**
+//  * The premium frame's fixed top-edge step. Its geometry never changes on
+//  * interaction; hover only changes the surface treatment.
+//  */
+// function notchPath(): string {
+//   return [
+//     `M 0 0`,
+//     `C ${NOTCH.ease * 0.25} 0 ${NOTCH.ease * 0.75} ${-NOTCH.depth} ${NOTCH.ease} ${-NOTCH.depth}`,
+//     `C ${NOTCH_C1} ${-NOTCH.depth} ${NOTCH_C2} ${-NOTCH.depth} ${NOTCH_WIDTH - NOTCH.radius} ${-NOTCH.depth}`,
+//     `a ${NOTCH.radius} ${NOTCH.radius} 0 0 0 ${NOTCH.radius} ${-NOTCH.radius}`,
+//   ].join(" ");
+// }
+//
+// const PREMIUM_NOTCH_PATH = notchPath();
+//
+// /**
+//  * The premium surface itself, not an overlay on one: the step means the card's
+//  * outline is no longer the rectangle Gallery.Item paints, so the item hands its
+//  * fill, border and clipping to this Frame and the Frame carries the shape.
+//  * Children are clipped to that outline, so the label that sits *in* the cut-out
+//  * is a sibling of the Frame rather than a child of it.
+//  */
+// function PremiumFrame({ active, children }: { active: boolean; children: React.ReactNode }) {
+//   return (
+//     <Frame
+//       edges="all"
+//       strokeAlign="outside"
+//       side="top"
+//       shapeAlign="end"
+//       shapeMode="indent"
+//       path={PREMIUM_NOTCH_PATH}
+//       pathWidth={NOTCH_WIDTH}
+//       className="h-full rounded-md border-background-700 [&_rect]:transition-[fill] [&_rect]:duration-300 [&_rect]:ease-out"
+//       style={
+//         {
+//           // The stroke sits *outside* the frame's bounds so it lands in the
+//           // ring the item's own (now transparent) border still occupies, which
+//           // is where every other card draws its border. Bounds shrunk by that
+//           // ring, so a premium card's outer corner comes out the same size and
+//           // shape as its neighbours'.
+//           "--frame-radius": "calc(var(--radius-sm) - 1px)",
+//           "--fill": "var(--background)",
+//           "--stroke-color": active
+//             ? `color-mix(in oklch, ${PREMIUM_HUE} 70%, transparent)`
+//             : "var(--background-border)",
+//         } as React.CSSProperties
+//       }
+//     >
+//       <div className="relative flex h-full flex-col">
+//         <div
+//           aria-hidden
+//           className="pointer-events-none absolute inset-0 z-10"
+//           style={{
+//             opacity: active ? 1 : 0,
+//             transition: "opacity 300ms ease-out",
+//             background: `radial-gradient(90% 70% at 100% ${NOTCH.depth}px, color-mix(in oklch, ${PREMIUM_HUE} 16%, transparent), transparent 60%)`,
+//           }}
+//         />
+//         {children}
+//       </div>
+//     </Frame>
+//   );
+// }
+//
+// /**
+//  * The "Premium" mark, sat in the cut-out the frame leaves for it. It fades in
+//  * The mark remains in the fixed notch and uses the same monochrome-to-premium
+//  * color treatment as the frame.
+//  */
+// function PremiumLabel({ active }: { active: boolean }) {
+//   return (
+//     <div
+//       className="pointer-events-none absolute right-1.5 top-0 z-20 flex items-center justify-center gap-1.5 text-md font-medium"
+//       style={{
+//         width: NOTCH.span,
+//         height: NOTCH.depth,
+//         transition: "color 300ms ease-out",
+//         color: active ? `color-mix(in oklch, ${PREMIUM_HUE} 20%, white)` : "var(--foreground-300)",
+//       }}
+//     >
+//       Premium
+//     </div>
+//   );
+// }
+//
+// /**
+//  * A premium card with fixed geometry. Hover/focus changes its monochrome
+//  * surface to the premium hue and gradient without moving the frame.
+//  */
+// function PremiumGalleryItem({
+//   itemProps,
+//   children,
+// }: {
+//   itemProps: React.ComponentProps<typeof Gallery.Item>;
+//   children: React.ReactNode;
+// }) {
+//   const [active, setActive] = useState(false);
+//
+//   return (
+//     <Gallery.Item
+//       {...itemProps}
+//       className="relative border border-background-700 overflow-visible"
+//       // The item's border is handed to the Frame. The stable notch background
+//       // stays monochrome until interaction reveals the premium hue.
+//       style={{
+//         backgroundColor: active ? PREMIUM_HUE : "var(--color-background-950)",
+//         transition: "background-color 300ms ease-out",
+//       }}
+//       data-premium="true"
+//       onPointerEnter={() => setActive(true)}
+//       onPointerLeave={() => setActive(false)}
+//       onFocus={() => setActive(true)}
+//       onBlur={() => setActive(false)}
+//     >
+//       <PremiumFrame active={active}>{children}</PremiumFrame>
+//       <PremiumLabel active={active} />
+//     </Gallery.Item>
+//   );
+// }
+
 /**
- * The step cut out of a premium card's top edge, in pixels. `ease` is how far
- * the S-curve travels while it drops `depth`; the image this is drawn from runs
- * the two at roughly 1:1, which is what keeps the curve reading as a slope
- * rather than a ledge. `span` is the flat run from the bottom of the S to the
- * card's right edge, sized to hold the label, and `radius` matches the card's
- * own corner *on the border line* so the step hands the frame back a corner of
- * the same shape.
- */
-const NOTCH = { ease: 30, depth: 35, span: 80, radius: 10 };
-
-const NOTCH_WIDTH = NOTCH.ease + NOTCH.span;
-
-/**
- * Control-point x's for the flat run of the step, held off the endpoints so the
- * notch floor stays level as it descends. Spaced off the reference shape.
- */
-const NOTCH_C1 = NOTCH.ease + (NOTCH_WIDTH - NOTCH.radius - NOTCH.ease) * 0.26;
-const NOTCH_C2 = NOTCH.ease + (NOTCH_WIDTH - NOTCH.radius - NOTCH.ease) * 0.7;
-
-/**
- * The premium frame's fixed top-edge step. Its geometry never changes on
- * interaction; hover only changes the surface treatment.
- */
-function notchPath(): string {
-  return [
-    `M 0 0`,
-    `C ${NOTCH.ease * 0.25} 0 ${NOTCH.ease * 0.75} ${-NOTCH.depth} ${NOTCH.ease} ${-NOTCH.depth}`,
-    `C ${NOTCH_C1} ${-NOTCH.depth} ${NOTCH_C2} ${-NOTCH.depth} ${NOTCH_WIDTH - NOTCH.radius} ${-NOTCH.depth}`,
-    `a ${NOTCH.radius} ${NOTCH.radius} 0 0 0 ${NOTCH.radius} ${-NOTCH.radius}`,
-  ].join(" ");
-}
-
-const PREMIUM_NOTCH_PATH = notchPath();
-
-/**
- * The premium surface itself, not an overlay on one: the step means the card's
- * outline is no longer the rectangle Gallery.Item paints, so the item hands its
- * fill, border and clipping to this Frame and the Frame carries the shape.
- * Children are clipped to that outline, so the label that sits *in* the cut-out
- * is a sibling of the Frame rather than a child of it.
- */
-function PremiumFrame({ active, children }: { active: boolean; children: React.ReactNode }) {
-  return (
-    <Frame
-      edges="all"
-      strokeAlign="outside"
-      side="top"
-      shapeAlign="end"
-      shapeMode="indent"
-      path={PREMIUM_NOTCH_PATH}
-      pathWidth={NOTCH_WIDTH}
-      className="h-full rounded-md border-background-700 [&_rect]:transition-[fill] [&_rect]:duration-300 [&_rect]:ease-out"
-      style={
-        {
-          // The stroke sits *outside* the frame's bounds so it lands in the
-          // ring the item's own (now transparent) border still occupies, which
-          // is where every other card draws its border. Bounds shrunk by that
-          // ring, so a premium card's outer corner comes out the same size and
-          // shape as its neighbours'.
-          "--frame-radius": "calc(var(--radius-sm) - 1px)",
-          "--fill": "var(--background)",
-          "--stroke-color": active
-            ? `color-mix(in oklch, ${PREMIUM_HUE} 70%, transparent)`
-            : "var(--background-border)",
-        } as React.CSSProperties
-      }
-    >
-      <div className="relative flex h-full flex-col">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-10"
-          style={{
-            opacity: active ? 1 : 0,
-            transition: "opacity 300ms ease-out",
-            background: `radial-gradient(90% 70% at 100% ${NOTCH.depth}px, color-mix(in oklch, ${PREMIUM_HUE} 16%, transparent), transparent 60%)`,
-          }}
-        />
-        {children}
-      </div>
-    </Frame>
-  );
-}
-
-/**
- * The "Premium" mark, sat in the cut-out the frame leaves for it. It fades in
- * The mark remains in the fixed notch and uses the same monochrome-to-premium
- * color treatment as the frame.
- */
-function PremiumLabel({ active }: { active: boolean }) {
-  return (
-    <div
-      className="pointer-events-none absolute right-1.5 top-0 z-20 flex items-center justify-center gap-1.5 text-md font-medium"
-      style={{
-        width: NOTCH.span,
-        height: NOTCH.depth,
-        transition: "color 300ms ease-out",
-        color: active ? `color-mix(in oklch, ${PREMIUM_HUE} 20%, white)` : "var(--foreground-300)",
-      }}
-    >
-      Pro
-    </div>
-  );
-}
-
-/**
- * A premium card with fixed geometry. Hover/focus changes its monochrome
- * surface to the premium hue and gradient without moving the frame.
+ * A premium card: an ordinary card with a "Premium" badge sat in its top-right
+ * corner. The badge and the card's border carry the premium hue, and hover or
+ * focus brings up the same border tint and corner gradient the framed design
+ * used. The mark is decoration over the preview, so it never intercepts the
+ * card's own press target.
  */
 function PremiumGalleryItem({
   itemProps,
@@ -156,21 +195,26 @@ function PremiumGalleryItem({
   return (
     <Gallery.Item
       {...itemProps}
-      className="relative border border-background-700 overflow-visible"
-      // The item's border is handed to the Frame. The stable notch background
-      // stays monochrome until interaction reveals the premium hue.
-      style={{
-        backgroundColor: active ? PREMIUM_HUE : "var(--color-background-950)",
-        transition: "background-color 300ms ease-out",
-      }}
+      className="relative overflow-hidden"
       data-premium="true"
       onPointerEnter={() => setActive(true)}
       onPointerLeave={() => setActive(false)}
       onFocus={() => setActive(true)}
       onBlur={() => setActive(false)}
     >
-      <PremiumFrame active={active}>{children}</PremiumFrame>
-      <PremiumLabel active={active} />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-10"
+        style={{
+          opacity: active ? 1 : 0,
+          transition: "opacity 300ms ease-out",
+          // background: `radial-gradient(90% 70% at 100% 0%, color-mix(in oklch, ${PREMIUM_HUE} 16%, transparent), transparent 60%)`,
+        }}
+      />
+      {children}
+      <Badge className="bg-accent-400/20 py-1.5 text-accent-500 border-0 pointer-events-none rounded-xs absolute right-2 top-2 z-20">
+        <HiSparkles size={18} />
+      </Badge>
     </Gallery.Item>
   );
 }

@@ -3,14 +3,14 @@ import React from "react";
 import { GenericContentGrid } from "./content-grid";
 import { getLayoutConfig } from "../lib/layout-registry";
 import { getPreviewComponent } from "@/features/workshop/lib/get-element-preview";
-import type { ElementMetadata } from "@ui-lab-core/library/catalog";
+import type { WorkshopEntrySummary } from "@/features/workshop/types/content";
 
 interface ElementsGridClientProps {
-  elements: ElementMetadata[];
+  elements: WorkshopEntrySummary[];
   packageId?: string;
 }
 
-function buildPreviews(elements: ElementMetadata[], packageId?: string) {
+function buildPreviews(elements: WorkshopEntrySummary[], packageId?: string) {
   const result: Record<string, React.ReactNode> = {};
   for (const el of elements) {
     const C = getPreviewComponent(el.id, packageId);
@@ -19,7 +19,7 @@ function buildPreviews(elements: ElementMetadata[], packageId?: string) {
   return result;
 }
 
-function buildLayoutConfigs(elements: ElementMetadata[]) {
+function buildLayoutConfigs(elements: WorkshopEntrySummary[]) {
   const result: Record<string, ReturnType<typeof getLayoutConfig>> = {};
   for (const el of elements) {
     result[el.id] = getLayoutConfig(el);

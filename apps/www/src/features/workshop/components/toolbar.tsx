@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Badge, Button, Input, Popover, Select } from "ui-lab-components";
-import { getAllCategories, getAllTags } from "@ui-lab-core/library/catalog";
 import {
   FaArrowDownAZ,
   FaArrowUpZA,
@@ -24,8 +23,15 @@ const SORT_OPTIONS = [
 ];
 
 const EMPTY_TAGS: string[] = [];
+const EMPTY_FACETS: string[] = [];
 
 interface ToolbarProps {
+  /**
+   * Filter facets, resolved on the server. The catalog they come from carries
+   * every entry's source, so it is never imported from a client module.
+   */
+  categories?: string[];
+  tags?: string[];
   searchQuery?: string;
   searchPlaceholder?: string;
   sortBy?: string;
@@ -40,6 +46,8 @@ interface ToolbarProps {
 }
 
 export function Toolbar({
+  categories = EMPTY_FACETS,
+  tags = EMPTY_FACETS,
   searchQuery = "",
   searchPlaceholder = "Search elements...",
   sortBy = "default",
@@ -55,8 +63,6 @@ export function Toolbar({
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [searchValue, setSearchValue] = useState(searchQuery);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const categories = useMemo(() => getAllCategories(), []);
-  const tags = useMemo(() => getAllTags(), []);
   const activeFilterCount = (selectedCategory ? 1 : 0) + selectedTags.length;
   const selectedSort = SORT_OPTIONS.find((option) => option.value === sortBy);
 
