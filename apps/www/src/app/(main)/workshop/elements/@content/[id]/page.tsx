@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { getPackageById, getElementsInPackage, getAllPackages } from "@ui-lab-core/library/catalog";
+import { getAllPackages, getPackageById } from "@ui-lab-core/library/catalog";
+import {
+  getWorkshopElementFacets,
+  getWorkshopElementSummaries,
+} from "@/features/workshop/lib/workshop-content";
 import { ContentHeader } from "@/features/navigation/components/content-header";
 import PackageElementsClientWrapper from "./wrapper";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
@@ -27,7 +31,9 @@ export async function generateMetadata({
 
 async function PackageContent({ packageId }: { packageId: string }) {
   const pkg = getPackageById(packageId);
-  const elementIds = pkg ? getElementsInPackage(packageId) : [];
+  // Summaries only: the catalog stays on the server, so no listing route can
+  // serialize an entry's source.
+  const elements = pkg ? getWorkshopElementSummaries(packageId) : [];
 
   if (!pkg) {
     return (
@@ -48,7 +54,11 @@ async function PackageContent({ packageId }: { packageId: string }) {
           </div>
         }
       />
-      <PackageElementsClientWrapper packageId={packageId} elementIds={elementIds} />
+      <PackageElementsClientWrapper
+        packageId={packageId}
+        elements={elements}
+        facets={getWorkshopElementFacets()}
+      />
     </>
   );
 }

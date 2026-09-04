@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { getAllSections } from "@ui-lab-core/library/catalog";
 import type { LayoutConfig } from "@ui-lab-core/library/catalog";
+import {
+  getWorkshopSectionFacets,
+  getWorkshopSectionSummaries,
+} from "@/features/workshop/lib/workshop-content";
 import { getLayoutConfig as getSectionLayoutConfig } from "@/features/sections/lib/layout-registry";
 import {
   filterSections,
@@ -27,7 +30,8 @@ export default function Page() {
     selectedCategory: null,
     selectedTags: [],
   };
-  const allSections = getAllSections() as SectionGridItem[];
+  // Summaries only: a section variant's source never enters a listing payload.
+  const allSections = getWorkshopSectionSummaries();
   const initialSections = filterSections(allSections, initialFilters);
 
   return (
@@ -36,6 +40,7 @@ export default function Page() {
       initialSections={initialSections}
       initialFilters={initialFilters}
       initialLayoutConfigs={buildLayoutConfigs(initialSections)}
+      facets={getWorkshopSectionFacets()}
     />
   );
 }

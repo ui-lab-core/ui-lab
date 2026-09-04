@@ -1,5 +1,6 @@
 import PatternDetailClient from "./client";
 import { getAllPatterns, getPatternById } from "@ui-lab-core/library/catalog";
+import { getWorkshopPattern } from "@/features/workshop/lib/workshop-content";
 import { generateMetadata as generateSiteMetadata } from "@/shared/lib/metadata";
 
 export function generateStaticParams() {
@@ -22,7 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function PatternDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: patternId } = await params;
-  const pattern = getPatternById(patternId) ?? null;
+  // Patterns carry no access flag — every pattern is free — but the source is
+  // still resolved here so no client module imports the catalog.
+  const pattern = getWorkshopPattern(patternId);
 
   return <PatternDetailClient patternId={patternId} pattern={pattern} />;
 }

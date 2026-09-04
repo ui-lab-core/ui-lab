@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Clock, Copy, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Check, Clock, Copy, FileText, ThumbsDown, ThumbsUp } from "lucide-react";
 import { Mask } from "ui-lab-components";
 
 /**
@@ -25,7 +25,7 @@ export type ElementPreviewShape = "wide" | "tall";
  * a matching cell fills it rather than letterboxing inside it.
  */
 const FRAME: Record<ElementPreviewShape, string> = {
-  wide: "h-[140px] w-[244px] gap-2",
+  wide: "h-[112px] w-[244px] gap-2",
   tall: "h-[200px] w-[158px] gap-2",
 };
 
@@ -33,6 +33,14 @@ type PreviewEntry = {
   shape: ElementPreviewShape;
   /** Extra layout for the frame itself — `items-center` for centered compositions. */
   frameClass?: string;
+  /**
+   * Caps the frame's height, in px, below its shape's default. For previews that
+   * are one edge-to-edge block or spread over the full frame — where filling the
+   * whole height reads as an oversized solid mass rather than a shape — this pulls
+   * the block in so it centers with room around it, in the bento and the gallery
+   * alike, instead of dominating its cell.
+   */
+  maxHeight?: number;
   render: () => React.ReactNode;
 };
 
@@ -183,8 +191,9 @@ const previews: Record<string, PreviewEntry> = {
     ),
   },
 
-  // Copy action: a button with a duplicated-sheet glyph beside its label.
-  copypage: {
+  // Header action row: a title beside a copy button and a quieter secondary
+  // action, over the page body it acts on.
+  pageactions: {
     shape: "wide",
     render: () => (
       <>
@@ -193,10 +202,115 @@ const previews: Record<string, PreviewEntry> = {
             <div className="h-2 w-20 rounded-full bg-background-500/45" />
             <div className="h-1.5 w-14 rounded-full bg-background-500/20" />
           </div>
-          <div className="flex w-18 h-7 shrink-0 items-center gap-1.5 rounded-[8px] border border-background-700 bg-background-800 px-2.5">
+          <div className="flex shrink-0 items-center gap-1.5">
+            <div className="flex h-7 shrink-0 items-center gap-1.5 rounded-[8px] border border-background-700 bg-background-800 px-2.5">
+              <Copy className="size-3 shrink-0 text-foreground-400" strokeWidth={2.5} />
+              <div className="h-1.5 w-10 rounded-full bg-background-600" />
+            </div>
+            <div className="flex h-7 shrink-0 items-center gap-1.5 rounded-[8px] px-2">
+              <FileText className="size-3 shrink-0 text-background-500/40" strokeWidth={2.5} />
+              <div className="h-1.5 w-8 rounded-full bg-background-500/20" />
+            </div>
+          </div>
+        </div>
+        <div className="flex min-h-0 flex-1 flex-col justify-center gap-1.5">
+          <div className="h-1.5 w-full rounded-full bg-background-500/15" />
+          <div className="h-1.5 w-4/5 rounded-full bg-background-500/15" />
+          <div className="h-1.5 w-3/5 rounded-full bg-background-500/15" />
+        </div>
+      </>
+    ),
+  },
+
+  // The same row, with the confirmation it raises: a toast resting over the
+  // bottom of the body.
+  "pageactions-with-toast": {
+    shape: "wide",
+    render: () => (
+      <>
+        <div className="flex shrink-0 items-center justify-between gap-2">
+          <div className="h-2 w-20 rounded-full bg-background-500/45" />
+          <div className="flex h-7 shrink-0 items-center gap-1.5 rounded-[8px] border border-background-700 bg-background-800 px-2.5">
             <Copy className="size-3 shrink-0 text-foreground-400" strokeWidth={2.5} />
             <div className="h-1.5 w-10 rounded-full bg-background-600" />
           </div>
+        </div>
+        <div className="flex min-h-0 flex-1 flex-col justify-center gap-1.5">
+          <div className="h-1.5 w-full rounded-full bg-background-500/15" />
+          <div className="h-1.5 w-3/5 rounded-full bg-background-500/15" />
+        </div>
+        <Card className="flex h-9 shrink-0 items-center gap-2 self-end px-2.5">
+          <div className="flex size-4 shrink-0 items-center justify-center rounded-full bg-background-600">
+            <Check className="size-2.5 text-background-950" strokeWidth={3} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="h-1.5 w-16 rounded-full bg-background-500/45" />
+            <div className="h-1 w-24 rounded-full bg-background-500/20" />
+          </div>
+        </Card>
+      </>
+    ),
+  },
+
+  // Split action: the copy button with a chevron cap, its menu opened beneath
+  // in two labelled runs.
+  "pageactions-menu": {
+    shape: "tall",
+    render: () => (
+      <>
+        <div className="flex shrink-0 items-center justify-end">
+          <div className="flex h-7 items-center gap-1.5 rounded-l-[8px] border border-background-700 bg-background-800 px-2.5">
+            <Copy className="size-3 shrink-0 text-foreground-400" strokeWidth={2.5} />
+            <div className="h-1.5 w-8 rounded-full bg-background-600" />
+          </div>
+          <div className="flex h-7 items-center rounded-r-[8px] border border-l-0 border-background-700 bg-background-800 px-1.5">
+            <Chevron direction="down" />
+          </div>
+        </div>
+        <Card className="flex min-h-0 flex-1 flex-col justify-between p-2">
+          <div className="h-1 w-6 rounded-full bg-background-500/25" />
+          {[0, 1].map((item) => (
+            <div key={item} className="flex items-center gap-2">
+              <div className="size-3 shrink-0 rounded-[3px] bg-background-500/25" />
+              <div className="h-1.5 flex-1 rounded-full bg-background-500/35" />
+              <div className="h-1.5 w-4 rounded-full bg-background-500/15" />
+            </div>
+          ))}
+          <div className="border-t-[2px] border-background-500/10" />
+          <div className="h-1 w-6 rounded-full bg-background-500/25" />
+          {[0, 1].map((item) => (
+            <div key={item} className="flex items-center gap-2">
+              <div className="size-3 shrink-0 rounded-[3px] bg-background-500/25" />
+              <div className="h-1.5 flex-1 rounded-full bg-background-500/35" />
+              <div className="size-2 shrink-0 rounded-[2px] bg-background-500/15" />
+            </div>
+          ))}
+        </Card>
+      </>
+    ),
+  },
+
+  // Dense header: the same actions reduced to a run of icon squares, one of
+  // them carrying its tooltip.
+  "pageactions-toolbar": {
+    shape: "wide",
+    render: () => (
+      <>
+        <div className="flex shrink-0 items-center justify-between gap-2">
+          <div className="h-2 w-20 rounded-full bg-background-500/45" />
+          <div className="flex shrink-0 gap-1">
+            {[0, 1, 2, 3].map((action) => (
+              <div
+                key={action}
+                className={`flex size-6 items-center justify-center rounded-[6px] ${action === 0 ? "bg-background-500/25" : "bg-background-500/10"}`}
+              >
+                <div className="size-2.5 rounded-[2px] bg-background-500/40" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex shrink-0 justify-end">
+          <div className="h-4 w-16 rounded-[5px] bg-background-600" />
         </div>
         <div className="flex min-h-0 flex-1 flex-col justify-center gap-1.5">
           <div className="h-1.5 w-full rounded-full bg-background-500/15" />
@@ -211,8 +325,8 @@ const previews: Record<string, PreviewEntry> = {
     shape: "wide",
     frameClass: "items-center",
     render: () => (
-      <Card className="flex flex-1 flex-col items-center justify-center gap-2.5 p-2">
-        <div className="h-2 w-28 rounded-full bg-background-500/45" />
+      <Card className="w-full max-h-20 flex flex-1 flex-col items-center justify-center gap-2.5 p-2">
+        <div className="h-2 w-full rounded-full bg-background-500/45" />
         <div className="flex gap-1.5">
           <div className="flex size-6 items-center justify-center rounded-[6px] bg-background-600 text-background-950">
             <ThumbsUp className="size-3" strokeWidth={2.5} />
@@ -258,13 +372,11 @@ const previews: Record<string, PreviewEntry> = {
         <div className="my-0.5 shrink-0 border-t-[2px] border-background-500/10" />
         <Mask className="min-h-0 flex-1">
           <Mask.Fade direction="bottom" fixed />
-          <div className="space-y-0.5">
+          <div className="space-y-1">
             {[
               "w-full bg-background-500/30",
               "w-full bg-background-500/25",
               "w-4/5 bg-background-500/25",
-              "w-full bg-background-500/20",
-              "w-2/3 bg-background-500/20",
               "w-3/5 bg-background-500/15",
             ].map((line) => (
               <div key={line} className={`h-2 rounded-full ${line}`} />
@@ -393,6 +505,7 @@ const previews: Record<string, PreviewEntry> = {
   // arrows and peeks are chrome, so the slide itself keeps the width.
   carousel: {
     shape: "wide",
+    maxHeight: 108,
     render: () => (
       <>
         <div className="flex min-h-0 flex-1 items-center gap-1.5">
@@ -421,6 +534,7 @@ const previews: Record<string, PreviewEntry> = {
   // Comparison: one frame split by a divider with a handle on it.
   beforeafter: {
     shape: "wide",
+    maxHeight: 96,
     render: () => (
       <Card className="relative flex flex-1 overflow-hidden">
         <div className="w-[55%] bg-background-500/25" />
@@ -669,6 +783,7 @@ const previews: Record<string, PreviewEntry> = {
   // Events on a rail: markers on a spine, text and meta beside each.
   timeline: {
     shape: "tall",
+    maxHeight: 150,
     render: () => (
       <div className="relative flex min-h-0 flex-1 flex-col justify-between pl-5">
         <div className="absolute bottom-2 left-[5px] top-2 w-[2px] rounded-full bg-background-500/15" />
@@ -858,6 +973,7 @@ export const elementPreviews: Record<string, React.ComponentType<object>> = Obje
     id,
     () => (
       <div
+        style={entry.maxHeight ? { maxHeight: entry.maxHeight } : undefined}
         className={`flex max-h-full max-w-full min-h-0 flex-col justify-center overflow-hidden ${FRAME[entry.shape]} ${entry.frameClass ?? ""}`}
       >
         {entry.render()}

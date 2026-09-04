@@ -2,27 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useCallback, useMemo } from "react";
-import { elementRegistry, elementOrder } from "@ui-lab-core/library/catalog";
-import type { ElementMetadata } from "@ui-lab-core/library/catalog";
+import type { WorkshopEntrySummary } from "@/features/workshop/types/content";
 import { ElementsGridClient, ElementsLayoutToggle, Toolbar } from "@/features/workshop";
 import { Divider } from "ui-lab-components";
 
-function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetadata[] {
+function sortElements(
+  elements: WorkshopEntrySummary[],
+  sortBy: string,
+): WorkshopEntrySummary[] {
   const sorted = [...elements];
-  const getElementPosition = (elementId: string): number => {
-    for (const category in elementOrder) {
-      const index = elementOrder[category as keyof typeof elementOrder].indexOf(elementId);
-      if (index !== -1) return index;
-    }
-    return Infinity;
-  };
   switch (sortBy) {
     case "az":
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
     case "za":
       return sorted.sort((a, b) => b.name.localeCompare(a.name));
     case "default":
-      return sorted.sort((a, b) => getElementPosition(a.id) - getElementPosition(b.id));
+      return sorted.sort((a, b) => a.order - b.order);
     case "newest":
     default:
       return sorted.reverse();
@@ -31,10 +26,12 @@ function sortElements(elements: ElementMetadata[], sortBy: string): ElementMetad
 
 export default function PackageElementsClient({
   packageId,
-  elementIds,
+  elements,
+  facets,
 }: {
   packageId: string;
-  elementIds: string[];
+  elements: WorkshopEntrySummary[];
+  facets: { categories: string[]; tags: string[] };
 }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,15 +39,11 @@ export default function PackageElementsClient({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const packageElements = useMemo(() => {
-    return elementIds.map((id) => elementRegistry[id]).filter(Boolean);
-  }, [elementIds]);
-
   const filteredElements = useMemo(() => {
-    let elements = packageElements;
+    let filtered = elements;
     if (searchQuery.trim()) {
       const lowerQuery = searchQuery.toLowerCase();
-      elements = elements.filter(
+      filtered = filtered.filter(
         (el) =>
           el.name.toLowerCase().includes(lowerQuery) ||
           el.description.toLowerCase().includes(lowerQuery) ||
@@ -58,13 +51,13 @@ export default function PackageElementsClient({
       );
     }
     if (selectedCategory) {
-      elements = elements.filter((el) => el.category === selectedCategory);
+      filtered = filtered.filter((el) => el.category === selectedCategory);
     }
     if (selectedTags.length > 0) {
-      elements = elements.filter((el) => selectedTags.some((tag) => el.tags.includes(tag)));
+      filtered = filtered.filter((el) => selectedTags.some((tag) => el.tags.includes(tag)));
     }
-    return sortElements(elements, sortBy);
-  }, [packageElements, searchQuery, selectedCategory, selectedTags, sortBy]);
+    return sortElements(filtered, sortBy);
+  }, [elements, searchQuery, selectedCategory, selectedTags, sortBy]);
 
   const buildParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -135,6 +128,8 @@ export default function PackageElementsClient({
       <Divider className="mt-8 mb-8" />
       <div className="hidden grid grid-cols-[400px_1fr] items-center pb-3 pt-2">
         <Toolbar
+          categories={facets.categories}
+          tags={facets.tags}
           searchQuery={searchQuery}
           sortBy={sortBy}
           selectedCategory={selectedCategory}

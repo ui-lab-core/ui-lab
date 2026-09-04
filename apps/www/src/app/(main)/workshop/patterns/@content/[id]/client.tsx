@@ -1,6 +1,6 @@
 "use client";
 
-import type { PatternMetadata } from "@ui-lab-core/library/catalog";
+import type { WorkshopPatternEntry } from "@/features/workshop/types/content";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 import { WorkshopPreview } from "@/features/workshop";
 import { PatternLivePreview } from "@/features/patterns/components/pattern-live-preview";
@@ -8,7 +8,7 @@ import { getCardPreviewComponent } from "@/features/patterns/lib/get-pattern-pre
 
 interface PatternDetailClientProps {
   patternId: string;
-  pattern: PatternMetadata | null;
+  pattern: WorkshopPatternEntry | null;
 }
 
 export default function PatternDetailClient({ patternId, pattern }: PatternDetailClientProps) {
@@ -31,7 +31,7 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
           },
         ]
       : []),
-    ...(pattern.variations ?? []).map((variation) => ({
+    ...pattern.variations.map((variation) => ({
       ...variation,
       scope: "variation" as const,
     })),
@@ -53,6 +53,7 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
             description={entry.description}
             code={entry.code}
             previewHeight={Math.min(entry.previewHeight ?? 320, 240)}
+            category="pattern"
             previewLayout="start"
             fillHeight
             fullscreen={{ categoryId: "patterns", exampleId: entry.id }}

@@ -16,6 +16,11 @@ export {
 } from "./components/locked-teaser";
 export * from "./lib/get-element-demo";
 export * from "./lib/get-element-preview";
-export * from "./lib/get-element-source";
 export * from "./lib/element-layout-config";
 export * from "./lib/layout-registry";
+export { PreviewSkeleton } from "./components/preview-skeleton";
+export {
+  PREVIEW_MIN_HEIGHTS,
+  getPreviewMinHeight,
+  type WorkshopCategory,
+} from "./lib/preview-heights";

@@ -19,6 +19,7 @@ interface SectionsPageProps {
   initialSections: SectionGridItem[];
   initialFilters: SectionGridFilters;
   initialLayoutConfigs: Record<string, LayoutConfig>;
+  facets: { categories: string[]; tags: string[] };
 }
 
 function buildLayoutConfigs(sections: SectionGridItem[]): Record<string, LayoutConfig> {
@@ -32,6 +33,7 @@ export default function SectionsPage({
   initialSections,
   initialFilters,
   initialLayoutConfigs,
+  facets,
 }: SectionsPageProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(initialFilters.searchQuery);
@@ -146,6 +148,8 @@ export default function SectionsPage({
     <ContentIndex
       controls={
         <Toolbar
+          categories={facets.categories}
+          tags={facets.tags}
           searchQuery={searchQuery}
           searchPlaceholder="Search sections..."
           sortBy={sortBy}

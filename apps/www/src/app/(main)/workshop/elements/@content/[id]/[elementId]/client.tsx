@@ -1,30 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
-import { getElementById, getPackageById } from "@ui-lab-core/library/catalog";
+import { use, useMemo } from "react";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 import { WorkshopPreview } from "@/features/workshop";
 import { getDemoComponent, getPreviewComponent } from "@/features/workshop";
-import { LockedPlaceholder, LockedTeaser, splitLockedItems } from "@/features/workshop";
+import { LockedPlaceholder, LockedTeaser } from "@/features/workshop";
+import type { WorkshopElement } from "@/features/workshop/types/content";
 
 interface ElementDetailClientProps {
-  elementId: string;
+  /** Resolved on the server against the viewer's entitlement. */
+  elementPromise: Promise<WorkshopElement | null>;
   packageId: string;
 }
 
-export default function ElementDetailClient({ elementId, packageId }: ElementDetailClientProps) {
-  const element = useMemo(() => getElementById(elementId), [elementId]);
-  const pkg = useMemo(() => getPackageById(packageId), [packageId]);
+export default function ElementDetailClient({
+  elementPromise,
+  packageId,
+}: ElementDetailClientProps) {
+  const element = use(elementPromise);
+  const elementId = element?.id;
   const CardPreview = useMemo(
-    () => getPreviewComponent(elementId, packageId),
+    () => (elementId ? getPreviewComponent(elementId, packageId) : null),
     [elementId, packageId],
   );
 
-  // The lock is the element's, not the package's: `documentation` is a free
-  // package holding Supporter elements. Locked entries are teased rather than
-  // withheld — the variants still render, and the lock lives on the source and
-  // on everything past the teaser.
-  const isLocked = element?.access === "premium" || pkg?.access === "premium";
+  // Locked entries are teased rather than withheld: the variants still render
+  // live, and the source arrives already truncated to its teaser excerpt.
+  const isLocked = element?.locked ?? false;
 
   const variants = useMemo(() => {
     if (!element) return [];
@@ -40,8 +42,9 @@ export default function ElementDetailClient({ elementId, packageId }: ElementDet
           description={variant.description}
           files={variant.files}
           previewHeight={variant.previewHeight}
+          category="element"
           dynamicPreviewHeight
-          fullscreen={{ categoryId: "elements", exampleId: `${elementId}-${index}` }}
+          fullscreen={{ categoryId: "elements", exampleId: `${element.id}-${index}` }}
           disclosure="modal"
           patterns={variant.patterns}
           locked={isLocked}
@@ -50,13 +53,11 @@ export default function ElementDetailClient({ elementId, packageId }: ElementDet
         </WorkshopPreview>
       );
     });
-  }, [element, elementId, isLocked]);
+  }, [element, isLocked]);
 
   if (!element) {
     return <DetailPageShell name="" description="" notFoundLabel="Element not found." />;
   }
-
-  const { visible, hiddenCount } = splitLockedItems(variants);
 
   return (
     <DetailPageShell
@@ -67,9 +68,9 @@ export default function ElementDetailClient({ elementId, packageId }: ElementDet
       preview={CardPreview ? <CardPreview /> : undefined}
     >
       {isLocked ? (
-        <LockedTeaser hiddenCount={hiddenCount}>
+        <LockedTeaser hiddenCount={element.hiddenVariantCount}>
           <div className="space-y-16">
-            {visible}
+            {variants}
             <LockedPlaceholder />
           </div>
         </LockedTeaser>
