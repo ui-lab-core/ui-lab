@@ -28,8 +28,8 @@ test("Switch styles preserve public anatomy, scoped variables, and root-owned th
   }
 });
 
-test("Switch API documents every slot and emitted state without Checkbox claims", () => {
-  const { switch: api } = extractAllComponentAPIs(["Switch"]);
+test("Switch API documents every slot and emitted state without Checkbox claims", async () => {
+  const { switch: api } = await extractAllComponentAPIs(["Switch"]);
   assert.deepEqual(api.customTypes?.SwitchStyleSlots.members?.map(({ name }) => name), slots);
   assert.deepEqual(api.stateAttributes?.find(({ name }) => name === "data-slot")?.values, slots);
   assert.equal(new Set(api.props.map(({ name }) => name)).size, api.props.length);

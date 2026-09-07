@@ -8,7 +8,8 @@ const __dirname = path.dirname(__filename);
 
 const CACHE_DIR = path.resolve(__dirname, "../.cache");
 const CACHE_FILE = path.resolve(CACHE_DIR, "api-data.json");
-const CACHE_VERSION = "1.1.0";
+// 2.0.0 stores extracted docs only; enrichment is applied after every cache read.
+const CACHE_VERSION = "2.0.0";
 
 interface CacheEntry {
   mtime: number;

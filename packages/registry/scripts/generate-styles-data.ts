@@ -304,7 +304,7 @@ async function extractComponentStyles(componentDirName: string): Promise<Compone
         return;
       }
 
-      const variable = { name, value: "unset", selector, atRules, referencedVars, slot };
+      const variable = { name, value: "unset", declared: false, selector, atRules, referencedVars, slot };
       variablesByScope.set(key, variable);
       cssVariables.push(variable);
     }
@@ -319,6 +319,7 @@ async function extractComponentStyles(componentDirName: string): Promise<Compone
       const variable = {
         name,
         value,
+        declared: true,
         selector,
         atRules,
         slot,

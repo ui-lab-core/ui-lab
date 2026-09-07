@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* Generated from @ui-lab-core/library public metadata. Contains no private or premium source. */
-import type { WorkshopCatalogEntry } from "./workshop-content.js";
+import type { WorkshopCatalogEntry } from "../workshop-content.js";
 
 export const generatedWorkshopContent = [
   {
@@ -856,108 +856,173 @@ export const generatedWorkshopContent = [
     "code": "<Flex gap=\"xs\" align-center className=\"text-sm\">\n  {crumbs.map((crumb, i) => (\n    <span key={crumb.href} className=\"flex items-center gap-xs\">\n      {i > 0 && <span className=\"text-foreground-400 mx-1\">/</span>}\n      {i < crumbs.length - 1 ? (\n        <Anchor href={crumb.href}>{crumb.label}</Anchor>\n      ) : (\n        <span className=\"text-foreground-400\">{crumb.label}</span>\n      )}\n    </span>\n  ))}\n</Flex>"
   },
   {
-    "ref": "example:button/destructive-confirm",
+    "ref": "example:button/copy-action",
     "kind": "component-example",
-    "id": "destructive-confirm",
-    "name": "Destructive Confirm",
-    "description": "A branch deletion confirmed in place with Confirm, transitioning through deleting and a restore affordance.",
+    "id": "copy-action",
+    "name": "Copy To Clipboard",
+    "description": "Swap icon and label to confirm a copy action.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "<Flex align-center gap=\"sm\" aria-live=\"polite\">\n  {state === 'idle' && (\n    <Confirm\n      labels={{\n        trigger: <><FaTrashCan /> Delete branch</>,\n        confirm: <><FaTrashCan /> Yes, delete</>,\n        // An icon-only cancel still needs an accessible name: Button reads the\n        // sr-only span as the label and keeps rendering the control as icon-only.\n        cancel: <><FaXmark /><span className=\"sr-only\">Cancel</span></>,\n      }}\n      severity=\"critical\"\n      onConfirm={() => deleteBranch()}\n    />\n  )}\n\n  {state === 'deleting' && (\n    <Button variant=\"danger\" disabled icon={{ left: <FaSpinner className=\"animate-spin\" /> }}>\n      Deleting…\n    </Button>\n  )}\n\n  {state === 'deleted' && (\n    <Button variant=\"secondary\" icon={{ left: <FaArrowRotateLeft /> }} onPress={() => restoreBranch()}>\n      Restore branch\n    </Button>\n  )}\n</Flex>"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaCheck, FaLink } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [copied, setCopied] = useState(false)\n\n  const handlePress = () => {\n    navigator.clipboard.writeText('https://ui-lab.dev/components/button')\n    setCopied(true)\n    setTimeout(() => setCopied(false), 1500)\n  }\n\n  return (\n    <Button variant=\"secondary\" icon={copied ? <FaCheck /> : <FaLink />} onPress={handlePress}>\n      {copied ? 'Copied' : 'Copy link'}\n    </Button>\n  )\n}"
+  },
+  {
+    "ref": "example:button/destructive-confirm",
+    "kind": "component-example",
+    "id": "destructive-confirm",
+    "name": "Inline Confirmation",
+    "description": "Use Confirm for an inline confirm/cancel pair.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\"\n\nimport { Confirm } from 'ui-lab-components/confirm'\n\nexport default function Example({ onDelete }: { onDelete?: () => void }) {\n  return (\n    <Confirm mode=\"inline\" severity=\"critical\" onConfirm={() => onDelete?.()}\n      labels={{ trigger: 'Delete branch', confirm: 'Delete', cancel: 'Cancel' }} />\n  )\n}"
   },
   {
     "ref": "example:button/disabled-with-reason",
     "kind": "component-example",
     "id": "disabled-with-reason",
-    "name": "Disabled With Reason",
-    "description": "A merge blocked by pending checks that still explains itself on hover or focus — native disabled elements drop pointer and focus events, so the Button is wrapped in a focusable element that carries the Tooltip.",
+    "name": "Disabled With Tooltip",
+    "description": "A focusable wrapper exposes the disabled action’s tooltip.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "// Native disabled elements receive no hover/focus events, so wrap the\n// Button in a focusable element and let that surface the reason.\n<Tooltip content=\"2 required checks are still running\" show-arrow>\n  <span tabIndex={0}>\n    <Button disabled icon={{ left: <FaCodeMerge /> }}>Merge pull request</Button>\n  </span>\n</Tooltip>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { Tooltip } from 'ui-lab-components/tooltip'\n\nexport default function Example() {\n  return (\n    <Tooltip content=\"Required checks are still running\" show-arrow>\n      <span tabIndex={0} aria-label=\"Merge pull request\" className=\"inline-flex\">\n        <Button disabled>Merge pull request</Button>\n      </span>\n    </Tooltip>\n  )\n}"
   },
   {
     "ref": "example:button/icon-toolbar",
     "kind": "component-example",
     "id": "icon-toolbar",
-    "name": "Icon Toolbar",
-    "description": "A repository navigation cluster of icon-only Buttons, each named with aria-label and paired with an arrowed Tooltip so the icon is legible on hover as well as to assistive technology.",
+    "name": "Icon Toggle",
+    "description": "Combine Tooltip, aria-label, and aria-pressed for a named toggle.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "// Icon-only Buttons have no accessible name, so each carries an aria-label.\n// The Tooltip is the hover affordance for sighted users, not a substitute for it.\n<div className=\"flex items-center gap-1\">\n  <Tooltip content=\"All issues\" position=\"bottom\" show-arrow>\n    <Button variant=\"ghost\" aria-label=\"All issues\" icon={<FaCircleDot />} />\n  </Tooltip>\n  <Tooltip content=\"All pull requests\" position=\"bottom\" show-arrow>\n    <Button variant=\"ghost\" aria-label=\"All pull requests\" icon={<FaCodePullRequest />} />\n  </Tooltip>\n  <Tooltip content=\"All repositories\" position=\"bottom\" show-arrow>\n    <Button variant=\"ghost\" aria-label=\"All repositories\" icon={<FaBookBookmark />} />\n  </Tooltip>\n  <Tooltip content=\"Inbox\" position=\"bottom\" show-arrow hint={[\"G\", \"N\"]}>\n    <Button variant=\"ghost\" aria-label=\"Inbox\" icon={<FaInbox />} />\n  </Tooltip>\n</div>"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { Tooltip } from 'ui-lab-components/tooltip'\nimport { FaPause, FaPlay } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [paused, setPaused] = useState(false)\n\n  return (\n    <Tooltip content={paused ? 'Resume logs' : 'Pause logs'} show-arrow>\n      <Button variant=\"secondary\" aria-label=\"Pause logs\" aria-pressed={paused}\n        icon={paused ? <FaPlay /> : <FaPause />} onPress={() => setPaused(!paused)} />\n    </Tooltip>\n  )\n}"
   },
   {
     "ref": "example:button/link-button",
     "kind": "component-example",
     "id": "link-button",
     "name": "Link Button",
-    "description": "Button rendered as an anchor for internal navigation via href. The live preview omits href so it never redirects; the shown code carries the internal path.",
+    "description": "Use href for internal navigation.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "<Button href=\"/pulls/2481\" variant=\"secondary\">\n  Review pull request\n</Button>"
+    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return <Button href=\"/settings\" variant=\"secondary\">Settings</Button>\n}"
+  },
+  {
+    "ref": "example:button/menu-action",
+    "kind": "component-example",
+    "id": "menu-action",
+    "name": "Button With Menu",
+    "description": "Pair Menu.Trigger with Button styling for a dropdown action.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "import { Menu } from 'ui-lab-components/menu'\nimport { FaChevronDown } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger variant=\"primary\" icon={{ right: <FaChevronDown /> }}>\n        Create new\n      </Menu.Trigger>\n      <Menu.Content align=\"end\">\n        <Menu.Item onSelect={() => {}}>Document</Menu.Item>\n        <Menu.Item onSelect={() => {}}>Folder</Menu.Item>\n        <Menu.Separator />\n        <Menu.Item onSelect={() => {}}>Import…</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  )\n}"
   },
   {
     "ref": "example:button/pending-action",
     "kind": "component-example",
     "id": "pending-action",
-    "name": "Pending Action",
-    "description": "An async push composed from your own state — Button has no loading prop, so it disables during the request and swaps its icon and label to report progress.",
+    "name": "Pending Button",
+    "description": "Combine disabled, aria-busy, and a spinner.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "const [state, setState] = useState<'idle' | 'pushing' | 'pushed'>('idle')\n\n// Button has no `loading` prop — disable during the request and swap the\n// icon/label from your own state to report progress.\nif (state === 'pushing') {\n  return (\n    <Button disabled icon={{ left: <FaSpinner className=\"animate-spin\" /> }}>\n      Pushing…\n    </Button>\n  )\n}\n\nreturn (\n  <Button icon={{ left: <FaCloudArrowUp /> }} onPress={() => pushCommits()}>\n    Push 3 commits\n  </Button>\n)"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { FaSpinner } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <Button disabled aria-busy=\"true\" icon={{ left: <FaSpinner className=\"animate-spin\" /> }}>\n      Saving…\n    </Button>\n  )\n}"
+  },
+  {
+    "ref": "example:button/progress-action",
+    "kind": "component-example",
+    "id": "progress-action",
+    "name": "Upload Progress",
+    "description": "Disable the button and report percentage while a task runs.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\"\n\nimport { useRef, useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaUpload } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [progress, setProgress] = useState<number | null>(null)\n  const timer = useRef<ReturnType<typeof setInterval>>(undefined)\n\n  const startUpload = () => {\n    setProgress(0)\n    timer.current = setInterval(() => {\n      setProgress((value) => {\n        if (value === null || value >= 100) {\n          clearInterval(timer.current)\n          return null\n        }\n        return value + 20\n      })\n    }, 300)\n  }\n\n  return (\n    <Button\n      disabled={progress !== null}\n      aria-busy={progress !== null}\n      icon={<FaUpload />}\n      onPress={startUpload}\n    >\n      {progress === null ? 'Upload files' : `Uploading… ${progress}%`}\n    </Button>\n  )\n}"
   },
   {
     "ref": "example:button/shortcut-action",
     "kind": "component-example",
     "id": "shortcut-action",
-    "name": "Shortcut Action",
-    "description": "A file-finder action with a leading icon and its keyboard shortcut surfaced through the hint prop.",
+    "name": "Keyboard Hint",
+    "description": "Display a shortcut with hint; key binding is separate.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "<Button variant=\"secondary\" icon={{ left: <FaMagnifyingGlass /> }} hint={[\"⌘\", \"K\"]}>\n  Go to file\n</Button>"
+    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return <Button variant=\"ghost\" hint={['⌘', 'K']}>Search files</Button>\n}"
+  },
+  {
+    "ref": "example:button/social-buttons",
+    "kind": "component-example",
+    "id": "social-buttons",
+    "name": "Social Buttons",
+    "description": "Stack brand-icon buttons for Google, GitHub, X, and Discord sign-in.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { FcGoogle } from 'react-icons/fc'\nimport { FaGithub, FaXTwitter, FaDiscord } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <div className=\"flex w-64 flex-col gap-2\">\n      <Button variant=\"secondary\" styles={{ root: 'justify-start' }} icon={<FcGoogle />}>\n        Continue with Google\n      </Button>\n      <Button variant=\"secondary\" styles={{ root: 'justify-start' }} icon={<FaGithub />}>\n        Continue with GitHub\n      </Button>\n      <Button variant=\"secondary\" color=\"#000000\" styles={{ root: 'justify-start' }} icon={<FaXTwitter />}>\n        Continue with X\n      </Button>\n      <Button variant=\"secondary\" color=\"#5865F2\" styles={{ root: 'justify-start' }} icon={<FaDiscord />}>\n        Continue with Discord\n      </Button>\n    </div>\n  )\n}"
   },
   {
     "ref": "example:button/split-action",
     "kind": "component-example",
     "id": "split-action",
-    "name": "Split Action",
-    "description": "A primary merge action paired with a compact menu of alternate strategies using Group and Select.",
+    "name": "Split Button",
+    "description": "Combine Group.Button and Group.Select for a selectable action.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "<Group orientation=\"horizontal\" spacing=\"none\">\n  <Group.Button onPress={() => handleMerge(selected.value)}>\n    {selected.label}\n  </Group.Button>\n  <Divider orientation=\"vertical\" />\n  <Group.Select selectedKey={strategy} onSelectionChange={setStrategy}>\n    <Select.Trigger aria-label=\"Choose merge strategy\" icon={{ prefix: <FaChevronDown /> }} />\n    <Select.Content>\n      <Select.List>\n        {strategies.map((item) => (\n          <Select.Item key={item.value} value={item.value} description={item.description}>\n            {item.label}\n          </Select.Item>\n        ))}\n      </Select.List>\n    </Select.Content>\n  </Group.Select>\n</Group>"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Divider } from 'ui-lab-components/divider'\nimport { Group } from 'ui-lab-components/group'\nimport { Select } from 'ui-lab-components/select'\n\nexport default function Example({ onMerge }: { onMerge?: (strategy: string) => void }) {\n  const [strategy, setStrategy] = useState('Squash and merge')\n\n  return (\n    <Group orientation=\"horizontal\" spacing=\"none\">\n      <Group.Button onPress={() => onMerge?.(strategy)}>{strategy}</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Select selectedKey={strategy} onSelectionChange={(key) => setStrategy(String(key))}>\n        <Select.Trigger aria-label=\"Merge strategy\" styles={{ value: 'sr-only' }} />\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"Squash and merge\">Squash and merge</Select.Item>\n            <Select.Item value=\"Rebase and merge\">Rebase and merge</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </Group.Select>\n    </Group>\n  )\n}"
   },
   {
     "ref": "example:button/styled-button",
     "kind": "component-example",
     "id": "styled-button",
-    "name": "Styled Button",
-    "description": "A single Button restyled through its supported root and icon slots rather than ad-hoc overrides.",
+    "name": "Custom Styles",
+    "description": "Customize the root and trailing icon slots.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "<Button\n  styles={{ root: \"w-56 justify-between\", icon: { right: \"text-foreground-400\" } }}\n  icon={{ right: <FaArrowRight /> }}\n>\n  Open pull request\n</Button>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { FaArrowRight } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <Button variant=\"secondary\"\n      styles={{ root: 'inline-flex min-w-56 items-center justify-between rounded-full', icon: { right: 'text-foreground-400' } }}\n      icon={{ right: <FaArrowRight /> }}>\n      Review release\n    </Button>\n  )\n}"
+  },
+  {
+    "ref": "example:button/toggle-group",
+    "kind": "component-example",
+    "id": "toggle-group",
+    "name": "Mode Toggle Group",
+    "description": "Use Group and Group.Button for a single-selection segmented control.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Group } from 'ui-lab-components/group'\n\nconst MODE_LABELS = { classic: 'Classic', structured: 'Structured' } as const\n\nexport default function Example() {\n  const [mode, setMode] = useState<keyof typeof MODE_LABELS>('classic')\n\n  return (\n    <Group aria-label=\"Prompting mode\" value={mode} onChange={(value) => setMode(value as keyof typeof MODE_LABELS)}>\n      {(['classic', 'structured'] as const).map((value) => (\n        <Group.Button key={value} value={value} variant=\"ghost\" size=\"sm\">\n          {MODE_LABELS[value]}\n        </Group.Button>\n      ))}\n    </Group>\n  )\n}"
   },
   {
     "ref": "example:chart/01-basic-line",

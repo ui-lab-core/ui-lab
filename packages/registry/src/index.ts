@@ -9,8 +9,8 @@ export {
   generatedComponentDependencies,
   generatedCoreNpmDependencies,
   packageMetadata,
-} from "./generated-data.js";
-export { generatedPublicArtifacts, generatedPremiumArtifacts } from "./generated-artifacts.js";
+} from "./.generated/data.js";
+export { generatedPublicArtifacts, generatedPremiumArtifacts } from "./.generated/artifacts.js";
 export {
   publicWorkshopCatalog,
   createPublicWorkshopContentResolver,
@@ -177,3 +177,5 @@ export type {
   ProviderFeature,
   ProviderRegistry,
 } from "./providers/index.js";
+
+export { primitiveStyleVariables, describeStyleVariable } from "./style-documentation/primitives.js";

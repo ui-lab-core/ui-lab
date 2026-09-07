@@ -4,8 +4,8 @@ import test from "node:test";
 import { extractAllComponentAPIs } from "./generate-api-data.js";
 import { extractAllComponentStyles } from "./generate-styles-data.js";
 
-test("Color API documents hierarchical anatomy and compound state", () => {
-  const { color: api } = extractAllComponentAPIs(["Color"]);
+test("Color API documents hierarchical anatomy and compound state", async () => {
+  const { color: api } = await extractAllComponentAPIs(["Color"]);
   const slots = api.customTypes?.ColorStyleSlots.members?.map(({ name }) => name);
 
   assert.deepEqual(slots, [

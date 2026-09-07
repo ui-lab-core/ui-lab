@@ -34,9 +34,9 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./generated-data": {
-      "import": "./dist/generated-data.js",
-      "types": "./dist/generated-data.d.ts"
+    "./data": {
+      "import": "./dist/.generated/data.js",
+      "types": "./dist/.generated/data.d.ts"
     },
     "./artifacts": {
       "import": "./dist/artifacts.js",

@@ -1,4 +1,4 @@
-import type { SourceArtifact } from "./types.js";
+import type { SourceArtifact } from "../types.js";
 
 export const generatedPublicArtifacts: Record<string, SourceArtifact> = {};
 

@@ -83,6 +83,27 @@ export interface ComponentAPI {
   examples?: ComponentExample[];
 }
 
+/**
+ * Hand-authored API documentation for one component, colocated with the
+ * component's other registry data in `src/components/<Component>/api.ts`.
+ * The generator merges it over what react-docgen-typescript extracts.
+ */
+export interface ComponentAPIEnrichment {
+  /** Props documented by hand. Entries replace extracted props of the same name. */
+  props?: PropDefinition[];
+  subComponents?: {
+    /** Publishes only the subcomponents this accepts. Internal parts are dropped. */
+    include?: (name: string) => boolean;
+    /** Hand-documented props per subcomponent, merged the same way as `props`. */
+    props?: Record<string, PropDefinition[]>;
+  };
+  propGroups?: APIPropGroup[];
+  stateAttributes?: APIStateAttribute[];
+  customTypes?: Record<string, APICustomType>;
+  /** Escape hatch for API shaping this declarative format cannot express. */
+  refine?: (api: ComponentAPI) => ComponentAPI;
+}
+
 export interface ComponentUsageRule {
   type: "do" | "avoid" | "prefer";
   title: string;
@@ -119,6 +140,7 @@ export interface StyleableGroup {
 }
 
 export interface StyleVariableDefinition {
+  declared?: boolean;
   name: string;
   value: string;
   referencedVars: string[];
@@ -147,7 +169,35 @@ export interface ComponentStyleVariableGroup {
   code?: string;
 }
 
+export type StyleVariableCategory = "Layout" | "Typography" | "Appearance" | "Border" | "Interaction";
+
+export interface StyleVariablePurpose {
+  category: StyleVariableCategory;
+  description: string;
+}
+
+export interface StyleReferenceScope {
+  selector: string;
+  slot?: string;
+  atRules?: string[];
+  names?: string[];
+}
+
+export interface StyleReferenceGroup {
+  title: string;
+  description?: string;
+  scopes: StyleReferenceScope[];
+  purposes?: Record<string, StyleVariablePurpose>;
+}
+
+export interface StyleReferenceSection {
+  title: string;
+  description: string;
+  groups: StyleReferenceGroup[];
+}
+
 export interface ComponentStyleDocumentation {
+  variableReference?: StyleReferenceSection[];
   quickStart?: {
     title: string;
     description: string;

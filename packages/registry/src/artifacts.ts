@@ -1,4 +1,4 @@
-import { generatedPremiumArtifacts, generatedPublicArtifacts } from "./generated-artifacts.js";
+import { generatedPremiumArtifacts, generatedPublicArtifacts } from "./.generated/artifacts.js";
 import type { SourceArtifact, SourceArtifactInstallIntent } from "./types.js";
 
 export function getPublicArtifactById(id: string): SourceArtifact | undefined {

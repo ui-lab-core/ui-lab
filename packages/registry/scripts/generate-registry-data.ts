@@ -22,8 +22,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const REGISTRY_PATH = path.resolve(__dirname, "../src/registry.ts");
-const GENERATED_DATA_PATH = path.resolve(__dirname, "../src/generated-data.ts");
-const GENERATED_ARTIFACTS_PATH = path.resolve(__dirname, "../src/generated-artifacts.ts");
+const GENERATED_DATA_PATH = path.resolve(__dirname, "../src/.generated/data.ts");
+const GENERATED_ARTIFACTS_PATH = path.resolve(__dirname, "../src/.generated/artifacts.ts");
 const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
 const PACKAGE_JSON_PATH = path.resolve(__dirname, "../package.json");
 
@@ -95,7 +95,7 @@ function generateDataFile(
   reactAriaUrls: Record<string, string>,
   packageMetadata: { version: string },
 ): void {
-  const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata } from './types';
+  const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata } from '../types';
 
 export const generatedAPI: Record<string, ComponentAPI> = ${JSON.stringify(apiData, null, 2)};
 
@@ -112,6 +112,7 @@ export const generatedCorePeerDependencies = ${JSON.stringify(Array.from(corePee
 export const packageMetadata: PackageMetadata = ${JSON.stringify(packageMetadata, null, 2)};
 `;
 
+  fs.mkdirSync(path.dirname(GENERATED_DATA_PATH), { recursive: true });
   fs.writeFileSync(GENERATED_DATA_PATH, content, "utf-8");
   console.log(`Generated data written to: ${GENERATED_DATA_PATH}`);
 }
@@ -127,7 +128,8 @@ function generateArtifactFile(): void {
       }
     }
   }
-  const content = `import type { SourceArtifact } from "./types.js";\n\nexport const generatedPublicArtifacts: Record<string, SourceArtifact> = ${JSON.stringify(artifacts, null, 2)};\n\nexport const generatedPremiumArtifacts: Record<string, SourceArtifact> = {};\n`;
+  const content = `import type { SourceArtifact } from "../types.js";\n\nexport const generatedPublicArtifacts: Record<string, SourceArtifact> = ${JSON.stringify(artifacts, null, 2)};\n\nexport const generatedPremiumArtifacts: Record<string, SourceArtifact> = {};\n`;
+  fs.mkdirSync(path.dirname(GENERATED_ARTIFACTS_PATH), { recursive: true });
   fs.writeFileSync(GENERATED_ARTIFACTS_PATH, content, "utf8");
 }
 
@@ -138,7 +140,7 @@ async function main() {
   console.log(`Found ${componentIds.length} components: ${componentIds.join(", ")}\n`);
 
   console.log("Extracting API documentation...");
-  const apiData = extractAllComponentAPIs(componentIds);
+  const apiData = await extractAllComponentAPIs(componentIds);
   console.log(`Extracted API for ${Object.keys(apiData).length} components\n`);
 
   console.log("Extracting styles data...");

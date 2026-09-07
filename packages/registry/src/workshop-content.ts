@@ -1,4 +1,4 @@
-import { generatedWorkshopContent } from "./generated-workshop-content.js";
+import { generatedWorkshopContent } from "./.generated/workshop-content.js";
 
 export type WorkshopContentKind = "component-example" | "pattern" | "element" | "section" | "starter";
 export type WorkshopVisibility = "public" | "internal" | "private" | "hidden";
