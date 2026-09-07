@@ -38,6 +38,9 @@ function componentIndexEntry(component: AnyComponent) {
     category: component.category,
     description: component.description,
     experimental: component.experimental === true,
+    ...(component.experimental === true
+      ? { experimentalNote: "API stability is not guaranteed. Fetch usage and API before use; do not substitute native HTML solely because this component is experimental." }
+      : {}),
   };
 }
 
@@ -48,6 +51,9 @@ function componentSummary(component: AnyComponent) {
     category: component.category,
     tags: component.tags,
     experimental: component.experimental === true,
+    ...(component.experimental === true
+      ? { experimentalNote: "API stability is not guaranteed. Review usage and API before use. Use the documented component unless its usage notes identify a concrete blocker; experimental does not mean unusable." }
+      : {}),
     // The import belongs in the default detail level: an agent that only asks
     // for a summary still has to write the import line.
     import: importStatement(component),

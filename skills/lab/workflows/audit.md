@@ -25,12 +25,12 @@ See `references/core-pillars.md` for full definitions. Audit in this order:
 
 For each UI Lab component referenced in code:
 
-1. `search_components(name)` — confirm it exists
-2. `get_component(id, detail="api")` — retrieve prop signature
-3. `get_component(id, detail="usage")` when component nesting, placement, or surface semantics matter
+1. `get_component { query: "<name>" }` — confirm it exists (omit `query` to list every component)
+2. `get_component { query: "component:<id>", detail: "api" }` — retrieve prop signature
+3. `get_component { query: "component:<id>", detail: "usage" }` when component nesting, placement, or surface semantics matter
 4. Compare code props and placement against API/usage guidance; flag mismatches
 5. For native HTML elements, query the UI Lab replacement
-6. For theme/provider questions, `search_guides("theme")` → `get_guide`
+6. For theme/provider questions, `search_guides { query: "theme" }` → `search_guides { query: "guide:<id>", detail: "full" }`
 
 ### 3. Audit
 

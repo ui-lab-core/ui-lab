@@ -95,7 +95,7 @@ Imports:
 import { ComponentName } from "ui-lab-components";
 ```
 
-Do not infer component APIs from memory. Fetch from MCP `get_component`. Theme provider must come verbatim from MCP `get_theme_setup`.
+Do not infer component APIs from memory. Fetch from MCP `get_component { query: "component:<id>", detail: "api" }`. Theme provider must come verbatim from the MCP setup guide (`search_guides { query: "setup-ui-lab-in-project", detail: "full" }`).
 
 ### Prop conventions (React Aria)
 
@@ -161,7 +161,7 @@ Motion must be tied to state, feedback, or focus.
 1. Colors: neutral palette, semantic tokens, shade ranges
 2. Styling prohibitions (hex, rgba, shadow, gradient, `dark:`)
 3. Component substitutions for styled native elements
-4. Imports from `ui-lab-components`; theme from `get_theme_setup`
+4. Imports from `ui-lab-components`; theme from the MCP setup guide
 5. React Aria props; compound sub-components where available
 6. Interactive states present
 7. Affordance rules (zero-state, duplicates, mode-leaking, redundant surfaces)

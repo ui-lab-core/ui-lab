@@ -15,7 +15,7 @@ Six orthogonal dimensions. Each pillar: what it measures, what to check, what to
 - Semantic tokens for feedback states (success/danger/warning/info), not chromatic Tailwind
 - Component props (`disabled`, `onPress`, `isOpen`)
 - Compound sub-components where available
-- Theme provider from MCP `get_theme_setup`
+- Theme provider from the MCP setup guide (`search_guides { query: "setup-ui-lab-in-project", detail: "full" }`)
 
 **Flag:**
 

@@ -3,12 +3,18 @@ import foundationGuide from "./foundation.js";
 import setupUiLabInProjectGuide from "./setup-ui-lab-in-project.js";
 import themeSwitchingNextJsGuide from "./theme-switching-nextjs.js";
 import translateExistingUiToUiLabGuide from "./translate-existing-ui-to-ui-lab.js";
+import themeSwitchingViteGuide from "./theme-switching-vite.js";
+import typographyGuide from "./typography.js";
+import buildChecklistGuide from "./build-checklist.js";
 
 export const guideRegistry: GuideRegistry = {
   [foundationGuide.id]: foundationGuide,
   [setupUiLabInProjectGuide.id]: setupUiLabInProjectGuide,
   [themeSwitchingNextJsGuide.id]: themeSwitchingNextJsGuide,
   [translateExistingUiToUiLabGuide.id]: translateExistingUiToUiLabGuide,
+  [themeSwitchingViteGuide.id]: themeSwitchingViteGuide,
+  [typographyGuide.id]: typographyGuide,
+  [buildChecklistGuide.id]: buildChecklistGuide,
 };
 
 export function getGuideById(id: string): GuideMetadata | undefined {

@@ -16,6 +16,7 @@ const themeSwitchingNextJsGuide: GuideMetadata = {
   ],
   notFor: [
     "Do not use this guide as the default install path for every app. It is specifically for runtime theme switching.",
+    "Do not use this guide for Vite. Fetch theme-switching-vite instead; Vite uses its plugin and index.html integration rather than Next.js cookies and server layouts.",
     "Do not stamp system mode onto html. Leave system mode unstamped so prefers-color-scheme handles first paint.",
   ],
   taskMatchers: [

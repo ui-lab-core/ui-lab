@@ -39,14 +39,23 @@ fi
 
 # --- Gate: is UI Lab already wired? -----------------------------------------
 if [ -n "$(deps 'ui-lab-components')" ]; then
-  uilab_status="ui-lab-components INSTALLED — skip setup guide, go straight to work"
+  uilab_status="ui-lab-components INSTALLED — skip setup, go straight to work"
 else
-  uilab_status="ui-lab-components NOT FOUND — conform must run get_guide(\"setup-ui-lab-in-project\") first"
+  uilab_status="ui-lab-components NOT FOUND — run setup mode (CLI + setup-ui-lab-in-project guide) before build/conform edits"
+fi
+
+# --- Gate: is the ui-lab CLI available? -------------------------------------
+# The CLI does the heavy lifting for install/init/wiring. MCP availability is not
+# detectable here — the agent must confirm its own mcp__ui-lab__* tools instead.
+if command -v ui-lab >/dev/null 2>&1 || [ -x ./node_modules/.bin/ui-lab ]; then
+  cli_status="ui-lab CLI AVAILABLE — use it for init/add/status"
+else
+  cli_status="ui-lab CLI NOT FOUND — setup should not proceed until it is installed (npx --package ui-lab, or add the ui-lab package)"
 fi
 
 # --- Ground the routing table in files that actually exist ------------------
 modes=""
-for m in build ideate audit conform; do
+for m in setup build ideate audit conform; do
   [ -f "$SKILL_DIR/workflows/$m.md" ] && modes="$modes $m"
 done
 [ -z "$modes" ] && modes=" (none found — workflows/ missing)"
@@ -55,6 +64,7 @@ cat <<EOF
 ✅ lab skill loaded — $SKILL_DIR
 - Project: $web_status
 - UI Lab: $uilab_status
+- CLI: $cli_status
 - Modes available:$modes
 EOF
 

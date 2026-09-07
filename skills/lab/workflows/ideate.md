@@ -28,22 +28,24 @@ Write this as 2–4 sentences. Everything after this step must be informed by yo
 
 Generate 3–5 search queries based on domain, components seen, and suspected gaps. Use the right tool for the job:
 
-- **search_patterns**: Atomic use cases (e.g., "delete confirmation", "empty state", "filter controls")
-- **search_elements**: Multi-component UI blocks (e.g., "chat interface", "sidebar", "file browser")
-- **search_sections**: Landing page blocks (e.g., "hero", "pricing", "testimonials")
-- **search_guides**: Setup/migration/theming workflows (e.g., "translate existing page", "add dark mode", "setup ui lab")
-- **search_components**: Individual components (e.g., "button", "input", "checkbox")
+- `search_workshop { kind: "pattern", query }`: Atomic use cases (e.g., "delete confirmation", "empty state", "filter controls")
+- `search_workshop { kind: "element", query }`: Multi-component UI blocks (e.g., "chat interface", "sidebar", "file browser")
+- `search_workshop { kind: "section", query }`: Landing page blocks (e.g., "hero", "pricing", "testimonials")
+- `search_guides { query }`: Setup/migration/theming workflows (e.g., "translate existing page", "add dark mode", "setup ui lab")
+- `get_component { query }`: Individual components (e.g., "button", "input", "checkbox")
+
+Omit `query` on any of them to list everything of that kind.
 
 For each result, note `purpose`, `codeStructureHint`, `bestFor`, and `variationsSummary`.
 
-**Selective drill-down**: When a variation directly addresses a spotted gap, call the appropriate getter:
+**Selective drill-down**: When a variation directly addresses a spotted gap, pass its ref back verbatim:
 
-- `get_pattern(id)` for patterns
-- `get_element(id)` for elements
-- `get_section(id)` for sections
-- `get_guide(id)` for guides
-- `get_component(id, detail="examples")` for component usage examples
-- `get_component(id, detail="usage")` when deciding whether a component is appropriate for a given surface, nesting level, or workflow role
+- `search_workshop { query: "pattern:<id>", detail: "full" }` for patterns
+- `search_workshop { query: "element:<packageId>/<id>", detail: "full" }` for elements
+- `search_workshop { query: "section:<id>", detail: "full" }` for sections
+- `search_guides { query: "guide:<id>", detail: "full" }` for guides
+- `get_component { query: "component:<id>", detail: "examples" }` for component usage examples
+- `get_component { query: "component:<id>", detail: "usage" }` when deciding whether a component is appropriate for a given surface, nesting level, or workflow role
 
 Use sparingly — only when clearly applicable. Store findings as working material; weave into later reasoning naturally. If MCP calls fail, continue without them.
 
