@@ -157,7 +157,7 @@ function renderPreview(props: Record<string, unknown>) {
         <Gallery.Item
           key={item.id}
           className={itemClassName(item.tier)}
-          aria-disabled={item.tier === "experimental" ? true : undefined}
+          disabled={item.tier === "experimental"}
         >
           <Gallery.View aspectRatio={ratio}>
             <Frame

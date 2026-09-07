@@ -10,8 +10,8 @@ export const iconDetail: ComponentDetail = {
     <div className="space-y-4 text-foreground-300">
       <p>
         Icon renders monochrome SVG assets as CSS masks. The browser loads the requested file from a
-        public asset directory, while the component remains independent of Vite, Next.js, and other
-        bundlers.
+        public <code>/ui/icons/&lt;variant&gt;</code> directory, while the component remains independent
+        of Vite, Next.js, and other bundlers.
       </p>
       <p>
         Fill icons inherit the current text color. Use a label when the icon conveys meaning;

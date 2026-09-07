@@ -14,7 +14,8 @@
     "hasAriaSupport": true,
     "notes": [
       "Uses React Aria useFocusRing for keyboard focus indication",
-      "Supports both link and button interaction modes",
+      "Renders as an anchor when href is set, a role=\"button\" element when only onPress is set, and a plain, non-interactive element otherwise",
+      "disabled removes the item from tab order and suppresses press, hover, and onPress",
       "Proper focus order through natural DOM order",
       "Hover and focus states for visual feedback"
     ]

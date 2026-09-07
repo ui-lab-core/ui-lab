@@ -1,6 +1,9 @@
 import type { ComponentStyleDocumentation } from "../../types";
 
+import { variableReference } from "./variable-reference";
+
 export const styleDocumentation = {
+  variableReference,
   quickStart: {
     title: "How to style Select",
     description:
@@ -8,8 +11,8 @@ export const styleDocumentation = {
     recipes: [
       {
         title: "Size the Select root",
-        description: "Use className when the outer wrapper is all you need to change.",
-        code: '<Select className="w-72">...</Select>',
+        description: "Give longer labels room to breathe. Compare the wider wrapper with the default width.",
+        code: '<Select className="w-80 max-w-full">...</Select>',
       },
       {
         title: "Style named anatomy",
@@ -18,9 +21,9 @@ export const styleDocumentation = {
         code: `<Select.Trigger
   icon={{ prefix: <Globe /> }}
   styles={{
-    root: "shadow-sm",
-    value: "px-4 py-2.5",
-    icon: { left: "text-accent-500", right: "text-foreground-400" },
+    root: "rounded-xl ring-2 ring-accent-500/50",
+    value: "px-5 py-3 font-semibold",
+    icon: { left: "text-accent-500", right: "text-accent-500", section: "bg-accent-500/15 px-4" },
   }}
 />`,
       },
@@ -29,12 +32,12 @@ export const styleDocumentation = {
         description:
           "Set variables on the Select root when several parts and states should follow one value.",
         code: `.select {
-  --background: var(--background-900);
+  --background: color-mix(in srgb, var(--accent-500) 18%, var(--background-950));
   --foreground: var(--foreground-100);
 
   @slot trigger {
-    --padding-inline: 0.75rem;
-    --background-hover: var(--background-800);
+    --padding-inline: 1rem;
+    --background-hover: color-mix(in srgb, var(--accent-500) 25%, transparent);
   }
 }`,
       },
@@ -45,7 +48,7 @@ export const styleDocumentation = {
         code: `<Select.Item
   value="design"
   styles={{
-    root: "data-[highlighted=true]:bg-background-900 data-[selected=true]:text-accent-400 data-[disabled=true]:italic",
+    root: "data-[highlighted=true]:bg-accent-500/20 data-[selected=true]:text-accent-400 data-[selected=true]:font-semibold data-[disabled=true]:opacity-30 data-[disabled=true]:line-through",
   }}
 >
   Design
@@ -58,7 +61,7 @@ export const styleDocumentation = {
   anatomy: {
     title: "Anatomy",
     description:
-      "Choose a subcomponent to see the stable slots exposed by its styles prop. Dotted names such as icon.left are supplied as nested objects.",
+      "Hover or focus a subcomponent to spotlight it within the complete Select. SearchableTrigger reveals the input; submenu parts reveal the nested panel. Choose a part to explore its slots and matching Onyx CSS scopes. Dotted styles names such as icon.left are supplied as nested objects; @slot scopes CSS variables.",
     groupOrder: [
       "SelectStyleSlots",
       "SelectTriggerStyleSlots",
@@ -124,11 +127,11 @@ export const styleDocumentation = {
           },
         ],
         code: `.select {
-  --background: var(--background-900);
+  --background: color-mix(in srgb, var(--accent-500) 12%, var(--background-950));
   --foreground: var(--foreground-100);
-  --icon-foreground: var(--foreground-400);
+  --icon-foreground: var(--accent-500);
   --foreground-muted: var(--foreground-400);
-  --size: var(--text-sm);
+  --size: 1rem;
 }`,
       },
       {
@@ -161,12 +164,12 @@ export const styleDocumentation = {
           },
         ],
         code: `.select {
-  --background-radius: 0.5rem;
+  --background-radius: 1rem;
 
   @slot border {
-    --width: 1px;
+    --width: 2px;
     --style: solid;
-    --background: var(--background-600);
+    --background: var(--accent-500);
   }
 }`,
       },
@@ -198,9 +201,9 @@ export const styleDocumentation = {
         ],
         code: `.select {
   @slot trigger {
-    --padding-inline: 0.75rem;
-    --padding-block: 0.5rem;
-    --background-hover: var(--background-800);
+    --padding-inline: 1.25rem;
+    --padding-block: 0.875rem;
+    --background-hover: color-mix(in srgb, var(--accent-500) 25%, transparent);
   }
 }`,
       },
@@ -241,14 +244,18 @@ export const styleDocumentation = {
           },
         ],
         code: `.select {
-  --disabled-opacity: 0.4;
+  --disabled-opacity: 0.3;
   --hover-enter-duration: 0ms;
-  --hover-leave-duration: 220ms;
+  --hover-leave-duration: 450ms;
   --hover-transition-timing-function: var(--ease-snappy-pop);
+
+  @slot trigger {
+    --background-hover: color-mix(in srgb, var(--accent-500) 25%, transparent);
+  }
 }
 
 .select[data-open="true"] {
-  --background: var(--background-800);
+  --background: color-mix(in srgb, var(--accent-500) 18%, var(--background-950));
 }`,
       },
     ],

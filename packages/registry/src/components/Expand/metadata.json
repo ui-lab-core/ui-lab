@@ -13,10 +13,9 @@
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
-      "Full ARIA disclosure pattern support",
+      "The trigger publishes aria-expanded and aria-controls referencing the content panel's id, matching the ARIA disclosure pattern",
       "Keyboard navigation with Tab and Enter/Space",
-      "Proper button and panel roles",
-      "Screen reader friendly"
+      "The content panel is aria-hidden while collapsed"
     ]
   }
 }
