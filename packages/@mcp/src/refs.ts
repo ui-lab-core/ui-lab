@@ -2,21 +2,12 @@
  * One reference grammar for every ID the server accepts or emits.
  *
  * Every response carries a `ref` in this grammar, and every tool accepts a
- * `ref` back verbatim. Agents never have to learn a second ID format.
+ * `ref` back verbatim. Agents never have to learn a second ID format. The
+ * grammar itself is stated once in the server instructions rather than being
+ * attached to every response and repeated in every tool description.
  */
 
 export type RefKind = "component" | "example" | "pattern" | "element" | "section" | "starter" | "artifact" | "guide";
-
-export const REF_GRAMMAR = [
-  "component:<componentId>",
-  "example:<componentId>/<exampleId>",
-  "pattern:<patternId>",
-  "element:<packageId>/<elementId>",
-  "section:<sectionId>",
-  "starter:<starterId>",
-  "artifact:<artifactId>",
-  "guide:<guideId>",
-].join(" | ");
 
 export interface ParsedRef {
   kind: RefKind;

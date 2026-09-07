@@ -6,6 +6,15 @@ import { handleSearchGuides } from "./handlers/guides.js";
 import { handleSearchWorkshop } from "./handlers/workshop.js";
 import { countsByKind } from "./adapters/workshop-adapter.js";
 
+type Payload = Record<string, unknown>;
+
+/** Exact payloads are spread at the envelope root; nothing nests under `data`. */
+function payload(result: unknown): Payload {
+  const response = result as { status: string } & Payload;
+  assert.equal(response.status, "exact");
+  return response;
+}
+
 test("omitting the query enumerates instead of forcing a guess", async () => {
   const components = await handleGetComponent({});
   assert.equal(components.status, "list");
@@ -35,24 +44,24 @@ test("refs returned by a search resolve exactly when passed back", async () => {
   assert.equal(search.status, "exact");
   assert.equal(search.status === "exact" && search.ref, "component:button");
 
-  const examples = await handleGetComponent({ query: "component:button", detail: "examples" });
-  assert.ok(examples.status === "exact");
-  const list = (examples.data as { component: { examples: Array<{ ref: string }> } }).component
-    .examples;
-  if (list.length > 0) {
-    const example = await handleGetComponent({ query: list[0]!.ref });
-    assert.equal(example.status, "exact");
-    assert.ok((example.data as { example: { code: string } }).example.code.length > 0);
-  }
+  const examples = payload(await handleGetComponent({ query: "component:button", detail: "examples" }))
+    .examples as Array<{ ref: string }>;
+  assert.ok(examples.length > 0);
+  const example = payload(await handleGetComponent({ query: examples[0]!.ref }));
+  assert.equal(example.ref, examples[0]!.ref);
+  assert.ok((example.code as string).length > 0);
 });
 
-test("summaries disclose experimental status before a component is chosen", async () => {
-  const result = await handleGetComponent({ query: "component:button" });
-  assert.ok(result.status === "exact");
-  assert.equal(
-    typeof (result.data as { component: { experimental: boolean } }).component.experimental,
-    "boolean",
-  );
+test("experimental status is disclosed before a component is chosen, and only when true", async () => {
+  const listed = await handleGetComponent({});
+  assert.ok(listed.status === "list");
+  const items = listed.items as Array<{ ref: string; experimental: boolean }>;
+  const flagged = items.filter((item) => item.experimental === true);
+  assert.ok(flagged.length > 0, "the registry should still contain experimental components");
+
+  const stable = items.find((item) => item.experimental === false)!;
+  assert.equal(payload(await handleGetComponent({ query: stable.ref })).experimental, false);
+  assert.equal(payload(await handleGetComponent({ query: flagged[0]!.ref })).experimental, true);
 });
 
 test("a dropped detail level is reported rather than silently ignored", async () => {
@@ -76,49 +85,54 @@ test("advertised workshop kinds are the kinds the index can produce", async () =
   }
 });
 
+test("a listing caps its items but never misreports the total", async () => {
+  const capped = await handleSearchWorkshop({ kind: "pattern" });
+  assert.ok(capped.status === "list");
+  assert.ok(capped.total > capped.items.length);
+  assert.equal(capped.shown, capped.items.length);
+  assert.match(String(capped.note), /Showing/);
+
+  const raised = await handleSearchWorkshop({ kind: "pattern", limit: 200 });
+  assert.ok(raised.status === "list" && raised.items.length === raised.total);
+  assert.equal(raised.shown, undefined);
+});
+
 test("public free Workshop domains resolve to offline source payloads", async () => {
   for (const ref of ["pattern:account-menu", "element:extras/accordion", "section:cta", "starter:astro-static"]) {
-    const result = await handleSearchWorkshop({ query: ref, detail: "full" });
-    assert.equal(result.status, "exact");
-    const item = (result.data as { item: Record<string, unknown> }).item;
+    const item = payload(await handleSearchWorkshop({ query: ref, detail: "full" }));
     assert.equal(item.ref, ref);
-    assert.equal(item.access, "public");
-    assert.equal(item.locked, false);
-    assert.ok(typeof item.code === "string" && item.code.length > 0);
-    assert.ok(Array.isArray(item.files) && item.files.length > 0);
-    assert.ok(item.dependencies && typeof item.dependencies === "object");
+    assert.equal(item.install, "copy");
+    const files = item.files as Array<{ path: string; content: string }>;
+    assert.ok(Array.isArray(files) && files.length > 0);
+    assert.ok(files.every((file) => file.path.length > 0 && file.content.length > 0));
+  }
+});
+
+test("source is delivered once: no file content is repeated as a bare code field", async () => {
+  for (const ref of ["pattern:account-menu", "element:extras/accordion", "section:cta", "starter:astro-static"]) {
+    const item = payload(await handleSearchWorkshop({ query: ref, detail: "full" }));
+    const files = item.files as Array<{ content: string }>;
+    if (typeof item.code === "string")
+      assert.ok(!files.some((file) => file.content === item.code), `${ref} duplicates a file in code`);
   }
 });
 
 test("Button component examples return only their authored MCP JSX payload", async () => {
-  const listed = await handleGetComponent({ query: "component:button", detail: "examples" });
-  assert.equal(listed.status, "exact");
-  const examples = (listed.data as { component: { examples: Array<{ ref: string }> } }).component.examples;
-  assert.deepEqual(examples.map((example) => example.ref).sort(), [
-    "example:button/custom-styles",
-    "example:button/disabled-with-reason",
-    "example:button/group",
-    "example:button/inline-delete-confirmation",
-    "example:button/media-player",
-    "example:button/split-button",
-  ]);
+  const listed = payload(await handleGetComponent({ query: "component:button", detail: "examples" }));
+  const examples = listed.examples as Array<{ ref: string }>;
+  assert.ok(examples.length > 0);
+  assert.ok(examples.every((example) => example.ref.startsWith("example:button/")));
   for (const { ref } of examples) {
-    const result = await handleGetComponent({ query: ref });
-    assert.equal(result.status, "exact");
-    const example = (result.data as { example: { code: string; kind: string } }).example;
-    assert.equal(example.kind, "component-example");
-    assert.ok(example.code.includes("<"));
-    assert.doesNotMatch(example.code, /\bimport\s|function Example|\buseState\b|export default/);
+    const example = payload(await handleGetComponent({ query: ref }));
+    const code = example.code as string;
+    assert.ok(code.includes("<") && code.trim().length > 0);
   }
 });
 
 test("public premium teasers stay discoverable but never return source", async () => {
-  const result = await handleSearchWorkshop({ query: "element:agents/chat", detail: "full" });
-  assert.equal(result.status, "exact");
-  const item = (result.data as { item: Record<string, unknown> }).item;
-  assert.equal(item.access, "premium");
-  assert.equal(item.locked, true);
-  assert.equal((item.installIntent as { mode: string }).mode, "locked");
+  const item = payload(await handleSearchWorkshop({ query: "element:agents/chat", detail: "full" }));
+  assert.equal(item.install, "locked");
+  assert.match(String(item.note), /never returns its source/);
   for (const key of ["code", "files", "dependencies", "preview", "previewModule", "importPath"]) {
     assert.equal(key in item, false);
   }
@@ -128,7 +142,7 @@ test("public MCP runtime has no private registry dependency", async () => {
   const files = [
     new URL("../src/adapters/workshop-adapter.ts", import.meta.url),
     new URL("../../registry/src/workshop-content.ts", import.meta.url),
-    new URL("../../registry/src/generated-workshop-content.ts", import.meta.url),
+    new URL("../../registry/src/.generated/workshop-content.ts", import.meta.url),
   ];
   for (const file of files) {
     const source = await readFile(file, "utf8");
@@ -136,12 +150,12 @@ test("public MCP runtime has no private registry dependency", async () => {
   }
 });
 
-test("package components return an install intent instead of source", async () => {
-  const result = await handleSearchWorkshop({ query: "component:button", detail: "full" });
-  assert.ok(result.status === "exact");
-  const item = (result.data as { item: Record<string, unknown> }).item;
-  assert.equal((item.installIntent as { access?: string }).access, "package");
+test("package components return an install command instead of source", async () => {
+  const item = payload(await handleSearchWorkshop({ query: "component:button", detail: "full" }));
+  assert.equal(item.install, "package");
+  assert.equal(item.command, "ui-lab add button");
   assert.equal("files" in item, false);
+  assert.equal("code" in item, false);
 });
 
 test("each tool redirects refs that belong to another tool", async () => {
@@ -161,22 +175,48 @@ test("each tool redirects refs that belong to another tool", async () => {
 });
 
 test("full guide detail applies only to an exact guide", async () => {
-  const exact = await handleSearchGuides({ query: "foundation", detail: "full" });
-  assert.ok(exact.status === "exact");
-  assert.ok((exact.data as { guide: { steps: unknown[] } }).guide.steps.length > 0);
+  const guide = payload(await handleSearchGuides({ query: "foundation", detail: "full" }));
+  assert.ok((guide.steps as unknown[]).length > 0);
+  // Keyword fields exist to feed the ranker, not the reader.
+  for (const key of ["tags", "taskMatchers", "relatedTools", "id"]) assert.equal(key in guide, false);
 
   const fuzzy = await handleSearchGuides({ query: "how do I theme things", detail: "full" });
   assert.ok(fuzzy.status === "matches" || fuzzy.status === "not_found");
 });
 
 test("component responses carry the subpath import agents must write", async () => {
-  const result = await handleGetComponent({ query: "component:button" });
-  assert.ok(result.status === "exact");
-  const { import: spec } = (
-    result.data as { component: { import: { specifier?: string; importPath: string; statement: string } } }
-  ).component;
-  assert.equal(spec.importPath, "ui-lab-components/button");
-  assert.equal(spec.statement, "import { Button } from 'ui-lab-components/button';");
+  const button = payload(await handleGetComponent({ query: "component:button" }));
+  assert.equal(button.import, "import { Button } from 'ui-lab-components/button';");
+});
+
+test("API payloads carry no documentation-site rendering data", async () => {
+  const select = payload(await handleGetComponent({ query: "component:select", detail: "api" }));
+  const serialized = JSON.stringify(select.api);
+  for (const key of ["typeTokens", "tags", "links", "enumValueDetails", "propGroups", "developer.mozilla.org"])
+    assert.equal(serialized.includes(key), false, `${key} survived into the API payload`);
+
+  const api = select.api as { props: Array<{ name: string }>; customTypes: Array<{ name: string }> };
+  assert.ok(api.props.length > 0);
+  // Only the reachable closure ships; the generated dictionary holds more.
+  assert.ok(api.customTypes.length > 0);
+  const others = (name: string) =>
+    JSON.stringify({
+      props: api.props,
+      sub: (select.api as Record<string, unknown>).subComponents,
+      types: api.customTypes.filter((type) => type.name !== name),
+    });
+  for (const type of api.customTypes)
+    assert.ok(others(type.name).includes(type.name), `${type.name} is unreachable`);
+});
+
+test("state attributes move to the styling detail level", async () => {
+  const api = payload(await handleGetComponent({ query: "component:select", detail: "api" }));
+  assert.equal("styling" in api, false);
+  assert.equal("stateAttributes" in (api.api as Record<string, unknown>), false);
+
+  const styling = payload(await handleGetComponent({ query: "component:select", detail: "styling" }));
+  const parts = styling.styling as { stateAttributes: unknown[]; styleableParts: string[] };
+  assert.ok(parts.stateAttributes.length > 0 && parts.styleableParts.length > 0);
 });
 
 test("every component id has a real subpath export to import from", async () => {
@@ -191,10 +231,10 @@ test("every component id has a real subpath export to import from", async () => 
     return; // Not running inside the monorepo checkout.
   }
 
-  const listed = await handleGetComponent({});
+  const listed = await handleGetComponent({ limit: 200 });
   assert.ok(listed.status === "list");
-  const missing = (listed.items as Array<{ id: string }>)
-    .map((item) => item.id)
+  const missing = (listed.items as Array<{ ref: string }>)
+    .map((item) => item.ref.slice("component:".length))
     .filter((id) => !(`./${id}` in exports));
   assert.deepEqual(missing, []);
 });

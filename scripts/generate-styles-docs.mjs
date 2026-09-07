@@ -7,9 +7,9 @@ import ts from "typescript"; // Import TypeScript
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const UI_COMPONENTS_PATH = path.join(ROOT, "packages/@ui/src/components");
 const REGISTRY_PATH = path.join(ROOT, "packages/registry/src");
-const OUTPUT_FILE = path.join(REGISTRY_PATH, "generated-styles.ts");
+const OUTPUT_FILE = path.join(REGISTRY_PATH, ".generated", "styles.ts");
 const REGISTRY_DIST_PATH = path.join(ROOT, "packages/registry/dist");
-const OUTPUT_JSON_FILE = path.join(REGISTRY_DIST_PATH, "generated-styles.json");
+const OUTPUT_JSON_FILE = path.join(REGISTRY_DIST_PATH, ".generated", "styles.json");
 const ONYX_THEME_CSS = path.join(ROOT, "packages/themes/onyx/styles.css");
 
 // Helper to extract referenced variables and default values from a CSS value string

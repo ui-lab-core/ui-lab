@@ -2,18 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Suspense } from "react";
 import { currentUser } from "@clerk/nextjs/server";
-import { Divider } from "ui-lab-components/divider";
+import { Flex } from "ui-lab-components/flex";
 import { Skeleton } from "ui-lab-components/skeleton";
 import { getViewerEntitlement } from "@/features/entitlements/server";
-import {
-  AccessCard,
-  AccountActions,
-  DangerZone,
-  EditProfileButton,
-  LibraryList,
-  NotificationSettings,
-  PreferencesList,
-} from "@/features/account/components/account-ui";
+import { AccessCard, EditProfileButton } from "@/features/account/components/account-ui";
+import { Section } from "@/features/account/components/section";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 import { ROUTES } from "@/shared/lib/routes";
 
@@ -30,32 +23,12 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
-function Section({
-  id,
-  title,
-  children,
-}: {
-  id: string;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section aria-labelledby={id} className="mb-12">
-      <h2 id={id} className="text-header-sm font-semibold text-foreground-200">
-        {title}
-      </h2>
-      <Divider variant="dashed" spacing="lg" />
-      {children}
-    </section>
-  );
-}
-
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3">
+    <Flex wrap align-baseline justify-between gap-x={6} gap-y={1} className="py-3">
       <dt className="text-sm text-foreground-400">{label}</dt>
       <dd className="text-sm text-foreground-100">{value}</dd>
-    </div>
+    </Flex>
   );
 }
 
@@ -74,7 +47,7 @@ async function ProfileSection() {
 
   return (
     <div>
-      <div className="flex items-center gap-4">
+      <Flex align-center gap={4}>
         {user?.imageUrl ? (
           <Image
             // Clerk always serves an image, generating an initials avatar when
@@ -93,7 +66,7 @@ async function ProfileSection() {
         </div>
 
         <EditProfileButton />
-      </div>
+      </Flex>
 
       <dl className="mt-6">
         {user?.createdAt ? (
@@ -117,14 +90,7 @@ async function AccessSection() {
 
 export default function AccountPage() {
   return (
-    <main className="mx-auto pt-(--header-height) min-h-screen w-full max-w-2xl">
-      <header className="mb-12 pt-12">
-        <h1 className="text-2xl font-semibold text-foreground-50">Account</h1>
-        <p className="mt-1 text-sm text-foreground-300">
-          Your profile, what your account unlocks, and where to change it.
-        </p>
-      </header>
-
+    <>
       <Section id="account-profile" title="Profile">
         <Suspense fallback={<Skeleton w="100%" h={140} />}>
           <ProfileSection />
@@ -136,26 +102,6 @@ export default function AccountPage() {
           <AccessSection />
         </Suspense>
       </Section>
-
-      <Section id="account-library" title="Library">
-        <LibraryList />
-      </Section>
-
-      <Section id="account-preferences" title="Preferences">
-        <PreferencesList />
-      </Section>
-
-      <Section id="account-notifications" title="Notifications">
-        <NotificationSettings />
-      </Section>
-
-      <Section id="account-management" title="Account">
-        <AccountActions />
-      </Section>
-
-      <Section id="account-danger" title="Danger zone">
-        <DangerZone />
-      </Section>
-    </main>
+    </>
   );
 }

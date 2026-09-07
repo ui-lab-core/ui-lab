@@ -3,14 +3,15 @@
 /**
  * Design note — 02, the MCP claim.
  *
- * Claim: your agent asks your system while it works, over MCP, and builds from the
- * answer. A skeptic believes that by watching a transaction complete — a call, the
- * structured payload that comes back, the edit it causes — not by reading a config
- * snippet. Rejected the first idea (`.mcp.json` above a table of tool names): it
+ * Claim: `/lab` loads your design system into the agent, and the MCP server answers it
+ * while the work happens. A skeptic believes that by watching a transaction complete — a
+ * call, the structured payload that comes back, the edit it causes — not by reading a
+ * config snippet. Rejected the first idea (`.mcp.json` above a table of tool names): it
  * proves the server installs, not that it changes what gets written.
- * So the section plays four sessions, one per tool the server actually ships plus
- * the audit skill that drives them. Picking a tool on the left swaps the session on
- * the right; inside a session the turns arrive one at a time.
+ * So the section plays four sessions, one per mode the skill routes to — build, ideate,
+ * audit, conform — each driving the three tools the server actually ships. Picking a mode
+ * on the left swaps the session on the right; inside a session the turns arrive one at a
+ * time.
  * The right pane is a terminal: everything monospace on a character grid, with a title
  * bar, a scrolling transcript, and a prompt line — nothing drawn there couldn't be
  * drawn by a shell. System events (calls, edits) are bordered blocks that break the
@@ -22,8 +23,7 @@
  * down the way a live transcript does. The page never reflows.
  */
 
-import { Fragment, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
-import { BookOpen, Boxes, ClipboardCheck, Search } from "lucide-react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { Expand } from "ui-lab-components/expand";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 import { Section, SectionHeading } from "./section";
@@ -105,12 +105,18 @@ type Match = { entry: string; purpose: string };
 type Contract = { prop: string; expects: string };
 type Role = { token: string; role: string; swatch: string };
 type Pillar = { name: string; score: number };
+/** ideate returns gaps already classified, so the tier is the payload's own column. */
+type Gap = { tier: string; tone: "danger" | "warning" | "info"; note: string };
+/** conform reports the swap and its multiplicity, never a rewrite. */
+type Swap = { from: string; to: string; count: number };
 
 type Payload =
   | { kind: "matches"; rows: Match[] }
   | { kind: "contract"; rows: Contract[] }
   | { kind: "roles"; rows: Role[] }
   | { kind: "audit"; pillars: Pillar[] }
+  | { kind: "gaps"; rows: Gap[] }
+  | { kind: "swaps"; rows: Swap[] }
   | { kind: "note"; text: string };
 
 type Turn =
@@ -126,128 +132,30 @@ type Session = {
   /** Namespace / name, so every entry reads as one addressable call. */
   scope: string;
   name: string;
-  Icon: ComponentType<{ className?: string }>;
   turns: Turn[];
 };
 
 const sessions: Session[] = [
   {
-    title: "Search what already exists.",
-    desc: "Whole screens are already solved in the workshop. The agent finds the entry that owns the shape and builds from its source, instead of inventing a fifth version of it.",
-    scope: "ui-lab",
-    name: "search_workshop",
-    Icon: Search,
+    title: "Load the system, then build.",
+    desc: "build reads the foundation guide, the six pillars, and the slop patterns before it writes a line, then resolves every component's real signature from the registry. Nothing is recalled from memory.",
+    scope: "skill",
+    name: "lab:build",
     turns: [
-      { kind: "user", text: "Add a team members page — list, roles, and an invite action." },
+      { kind: "user", text: "/lab build the billing settings screen." },
       {
         kind: "agent",
-        text: "This shape is already solved. Searching the workshop before I write anything.",
-      },
-      {
-        kind: "call",
-        scope: "ui-lab",
-        label: 'search_workshop({ query: "team members", kind: "element" })',
-        meta: "3 matches",
-        payload: {
-          kind: "matches",
-          rows: [
-            { entry: "element:team-members", purpose: "Roster, roles, row actions" },
-            { entry: "pattern:media-object", purpose: "Avatar, name, supporting line" },
-            { entry: "example:table/03-row-actions", purpose: "Per-row menu on a Table" },
-          ],
-        },
-      },
-      {
-        kind: "agent",
-        text: "element:team-members is an exact match. Pulling the implementation, not a description of it.",
-      },
-      {
-        kind: "call",
-        scope: "ui-lab",
-        label: 'search_workshop({ query: "element:team-members", detail: "full" })',
-        meta: "4 files",
-        payload: { kind: "note", text: "Composed from Table, Badge, Menu, and Avatar." },
-      },
-      { kind: "edit", file: "app/team/page.tsx", removed: 0, added: 148 },
-      {
-        kind: "agent",
-        text: "Shipped from the catalog entry. Roles are Badge, row actions are Menu.",
-      },
-    ],
-  },
-  {
-    title: "Read the contract, not the vibes.",
-    desc: "An agent guessing a prop name writes code that type-checks and silently does nothing. This returns the signature the component actually guarantees, including the props it has already renamed.",
-    scope: "ui-lab",
-    name: "get_component",
-    Icon: Boxes,
-    turns: [
-      { kind: "user", text: "Save doesn't fire, and the disabled button still looks enabled." },
-      {
-        kind: "agent",
-        text: "That reads like a props mismatch. Getting the real signature rather than guessing at it.",
-      },
-      {
-        kind: "call",
-        scope: "ui-lab",
-        label: 'get_component({ query: "button", detail: "api" })',
-        meta: "4 props",
-        payload: {
-          kind: "contract",
-          rows: [
-            { prop: "onPress", expects: "React Aria handler — onClick is ignored" },
-            { prop: "disabled", expects: "boolean — replaces isDisabled" },
-            { prop: "variant", expects: "primary · secondary · ghost · danger" },
-            { prop: "icon", expects: "Node, or { left, right } slots" },
-          ],
-        },
-      },
-      {
-        kind: "agent",
-        text: "onClick and isDisabled are legacy names. Both type-check and both are dropped at runtime.",
-      },
-      {
-        kind: "call",
-        scope: "ui-lab",
-        label: 'get_component({ query: "button", detail: "usage" })',
-        meta: "2 rules",
-        payload: {
-          kind: "note",
-          text: "One primary per surface. Never nest a Button inside an Anchor.",
-        },
-      },
-      { kind: "edit", file: "app/settings/actions.tsx", removed: 12, added: 12 },
-      { kind: "agent", text: "onClick → onPress, isDisabled → disabled. No other line moved." },
-    ],
-  },
-  {
-    title: "Resolve the convention.",
-    desc: "Which grey, which spacing step, which state colour — the questions an agent otherwise answers by taste. The guides give every token a role, so the answer is looked up rather than chosen.",
-    scope: "ui-lab",
-    name: "search_guides",
-    Icon: BookOpen,
-    turns: [
-      { kind: "user", text: "Which grey should the border on this panel be?" },
-      {
-        kind: "agent",
-        text: "Not a judgement call. The foundation guide assigns that token a role.",
-      },
-      {
-        kind: "call",
-        scope: "ui-lab",
-        label: 'search_guides({ query: "surface and border tokens" })',
-        meta: "2 guides",
-        payload: { kind: "note", text: "foundation · theme-switching" },
+        text: "Loading the harness first. The foundation guide governs everything I write from here, not just this file.",
       },
       {
         kind: "call",
         scope: "ui-lab",
         label: 'search_guides({ query: "foundation", detail: "full" })',
-        meta: "neutral ramp",
+        meta: "5 steps · 7 checks",
         payload: {
           kind: "roles",
           rows: [
-            { token: "background-950", role: "Root depth layer", swatch: "bg-background-950" },
+            { token: "background-950", role: "Depth layer, root", swatch: "bg-background-950" },
             {
               token: "background-900",
               role: "First application layer",
@@ -263,44 +171,134 @@ const sessions: Session[] = [
         },
       },
       {
-        kind: "agent",
-        text: "background-700 is the divider role, on a background-800 panel. The values never appear in the code.",
+        kind: "call",
+        scope: "ui-lab",
+        label: 'search_workshop({ query: "billing rows and empty state" })',
+        meta: "3 matches",
+        payload: {
+          kind: "matches",
+          rows: [
+            { entry: "element:foundation/page", purpose: "Header, scrollable body, footer" },
+            { entry: "pattern:data-table-row", purpose: "Resource row built from List slots" },
+            { entry: "pattern:empty-state-pattern", purpose: "Zero state for a list with no rows" },
+          ],
+        },
       },
-      { kind: "edit", file: "app/billing/panel.tsx", removed: 6, added: 6 },
       {
         kind: "agent",
-        text: "Every surface on the screen now resolves to a named role instead of a hex.",
-      },
-    ],
-  },
-  {
-    title: "Audit before it ships.",
-    desc: "The same server backs a skill that reviews finished work against six pillars, validating every component against the registry. It rates rather than rewrites, so the last call is still yours.",
-    scope: "skill",
-    name: "ui-lab:audit",
-    Icon: ClipboardCheck,
-    turns: [
-      { kind: "user", text: "Review the billing screen before it ships." },
-      {
-        kind: "agent",
-        text: "Running the audit workflow — six pillars, every component validated against your registry.",
+        text: "element:foundation/page is copyable source, not a description of one. I start from it rather than re-deriving the scaffold.",
       },
       {
         kind: "call",
         scope: "ui-lab",
-        label: 'get_component({ query: "Input", detail: "api" })',
-        meta: "3 validated",
-        payload: { kind: "note", text: "1 native element found in the footer." },
+        label: 'get_component({ query: "component:button", detail: "api" })',
+        meta: "23 props",
+        payload: {
+          kind: "contract",
+          rows: [
+            { prop: "onPress", expects: "React Aria handler, preferred over onClick" },
+            { prop: "disabled", expects: "boolean — cannot receive focus while set" },
+            { prop: "variant", expects: "primary · secondary · ghost · danger" },
+            { prop: "icon", expects: "Node, or { left, right } slots" },
+          ],
+        },
+      },
+      { kind: "edit", file: "app/billing/page.tsx", removed: 0, added: 186 },
+      {
+        kind: "agent",
+        text: "Imported from ui-lab-components/button, never the barrel. The six-pillar self-check ran before you saw it.",
+      },
+    ],
+  },
+  {
+    title: "Decide what the screen should hold.",
+    desc: "ideate reads what the workshop already solves — 173 entries across components, patterns, elements, sections and starters — then returns an element inventory and ranked gaps. It writes no code; the brief comes first.",
+    scope: "skill",
+    name: "lab:ideate",
+    turns: [
+      { kind: "user", text: "What's missing from the onboarding flow?" },
+      {
+        kind: "agent",
+        text: "Routing to ideate. Reading what the registry already solves before I name anything it doesn't.",
+      },
+      {
+        kind: "call",
+        scope: "ui-lab",
+        label: 'search_workshop({ query: "onboarding", limit: 50 })',
+        meta: "173 indexed",
+        payload: {
+          kind: "note",
+          text: "42 components · 72 patterns · 32 elements · 17 sections · 10 starters",
+        },
       },
       {
         kind: "call",
         scope: "skill",
-        label: "ui-lab:audit — DESIGN AUDIT REPORT",
+        label: "lab:ideate — GAPS",
+        meta: "4 ranked",
+        payload: {
+          kind: "gaps",
+          rows: [
+            { tier: "CRITICAL", tone: "danger", note: "A failed invite has nowhere to land" },
+            {
+              tier: "CRITICAL",
+              tone: "danger",
+              note: "Step 2 has no empty state — pattern:empty-state-pattern",
+            },
+            {
+              tier: "LAYOUT COHERENCE",
+              tone: "warning",
+              note: "Three spacing rhythms across four steps",
+            },
+            {
+              tier: "PROGRESSIVE DISCLOSURE",
+              tone: "info",
+              note: "Every advanced option sits flat on screen",
+            },
+          ],
+        },
+      },
+      {
+        kind: "agent",
+        text: "Ranked by spatial coherence first, then criticality. Nothing is written yet — this is the brief.",
+      },
+      { kind: "user", text: "Do the first two." },
+      {
+        kind: "agent",
+        text: "That's a build. The gaps route straight into it with the registry entries already resolved.",
+      },
+    ],
+  },
+  {
+    title: "Rate it before it ships.",
+    desc: "audit checks every component against the registry's real API, classifies each violation by severity, and rates six pillars out of five. It reports rather than rewrites, so the last call is still yours.",
+    scope: "skill",
+    name: "lab:audit",
+    turns: [
+      { kind: "user", text: "Review the billing screen before it ships." },
+      {
+        kind: "agent",
+        text: "Routing to audit — six pillars, every component checked against your registry rather than my memory of it.",
+      },
+      {
+        kind: "call",
+        scope: "ui-lab",
+        label: 'get_component({ query: "component:input", detail: "api" })',
+        meta: "9 validated",
+        payload: {
+          kind: "note",
+          text: "8 of 9 resolved. One native <input> in the footer has no ref.",
+        },
+      },
+      {
+        kind: "call",
+        scope: "skill",
+        label: "lab:audit — DESIGN AUDIT REPORT",
         payload: {
           kind: "audit",
           pillars: [
             { name: "Design System Adherence", score: 2 },
-            { name: "Layout & Spacing", score: 4 },
+            { name: "Layout & Spacing", score: 3 },
             { name: "Accessibility & Usability", score: 3 },
             { name: "Cognitive Load", score: 5 },
             { name: "Visual Consistency", score: 4 },
@@ -310,7 +308,65 @@ const sessions: Session[] = [
       },
       {
         kind: "agent",
-        text: "One critical: a native <button> in the footer. The rest is token roles and a missing disabled state.",
+        text: "One critical: the footer's native input, which should be Input. The rest is token roles and a disabled state that still reads as enabled.",
+      },
+    ],
+  },
+  {
+    title: "Migrate what already exists.",
+    desc: "conform replaces native markup with field-tested registry source, view layer only. State, data fetching, routing and copy come through untouched, and the plan is yours to approve before a file changes.",
+    scope: "skill",
+    name: "lab:conform",
+    turns: [
+      { kind: "user", text: "Move the dashboard onto UI Lab." },
+      {
+        kind: "agent",
+        text: "Conform, not redesign. State, events, routing and copy come through untouched.",
+      },
+      {
+        kind: "call",
+        scope: "ui-lab",
+        label: 'search_guides({ query: "translate-existing-ui-to-ui-lab" })',
+        meta: "1 guide",
+        payload: {
+          kind: "note",
+          text: "Targeted migration — the visual layer changes, the product logic stays.",
+        },
+      },
+      {
+        kind: "call",
+        scope: "ui-lab",
+        label: 'search_workshop({ query: "element:foundation/shell", detail: "full" })',
+        meta: "copy",
+        payload: {
+          kind: "note",
+          text: "Source returned — Panel sidebar, Menu topbar, scrollable Card region.",
+        },
+      },
+      {
+        kind: "call",
+        scope: "skill",
+        label: "lab:conform — REPLACEMENT PLAN",
+        meta: "38 swaps",
+        payload: {
+          kind: "swaps",
+          rows: [
+            { from: "<button className>", to: "Button", count: 14 },
+            { from: '<div className="flex">', to: "Flex", count: 11 },
+            { from: '<input type="text">', to: "Input", count: 7 },
+            { from: "#1a1a1a", to: "bg-background-900", count: 6 },
+          ],
+        },
+      },
+      {
+        kind: "agent",
+        text: "Nothing is applied yet. Approve the plan and I run it file by file.",
+      },
+      { kind: "user", text: "Go." },
+      { kind: "edit", file: "app/dashboard/shell.tsx", removed: 214, added: 198 },
+      {
+        kind: "agent",
+        text: "38 swaps, every one sourced from a registry entry. No new flows and no invented layout — the report lists what couldn't be swapped.",
       },
     ],
   },
@@ -339,7 +395,7 @@ function Slab({
           ▸
         </span>
         <span className="min-w-0 flex-1 truncate text-foreground-200">
-          <span className="text-background-500">{scope}/</span>
+          <span className="text-foreground-400">{scope}/</span>
           {label}
         </span>
         {meta ? <span className="shrink-0">{meta}</span> : null}
@@ -353,10 +409,17 @@ function Rating({ score }: { score: number }) {
   return (
     <span role="img" aria-label={`${score} of 5`} className="shrink-0 tracking-widest">
       <span className="text-foreground-100">{"■".repeat(score)}</span>
-      <span className="text-background-500">{"□".repeat(5 - score)}</span>
+      <span className="text-foreground-400">{"□".repeat(5 - score)}</span>
     </span>
   );
 }
+
+/** Static map — Tailwind can't see a class name assembled at runtime. */
+const gapTone: Record<Gap["tone"], string> = {
+  danger: "text-danger-500",
+  warning: "text-warning-500",
+  info: "text-info-500",
+};
 
 function PayloadView({ payload }: { payload: Payload }) {
   switch (payload.kind) {
@@ -396,13 +459,39 @@ function PayloadView({ payload }: { payload: Payload }) {
           ))}
         </div>
       );
+    case "gaps":
+      return (
+        <div className="flex flex-col py-1">
+          {payload.rows.map((row) => (
+            <div key={row.note} className="flex gap-3 px-3 py-1 text-xs">
+              <span className={`w-52 shrink-0 truncate ${gapTone[row.tone]}`}>{row.tier}</span>
+              <span className="min-w-0 flex-1 truncate text-foreground-300">{row.note}</span>
+            </div>
+          ))}
+        </div>
+      );
+    case "swaps":
+      return (
+        <div className="flex flex-col py-1">
+          {payload.rows.map((row) => (
+            <div key={row.from} className="flex items-center gap-3 px-3 py-1 text-xs">
+              <span className="w-52 shrink-0 truncate text-foreground-400">{row.from}</span>
+              <span aria-hidden className="shrink-0 text-foreground-400">
+                →
+              </span>
+              <span className="min-w-0 flex-1 truncate text-foreground-200">{row.to}</span>
+              <span className="shrink-0 tabular-nums text-foreground-400">×{row.count}</span>
+            </div>
+          ))}
+        </div>
+      );
     case "audit":
       // the ratings column reading down is the report; the pillar names are its axis
       return (
         <div className="flex flex-col py-1">
           {payload.pillars.map(({ name, score }, index) => (
             <div key={name} className="flex items-center gap-3 px-3 py-1 text-xs">
-              <span className="w-3 shrink-0 text-background-500">{index + 1}</span>
+              <span className="w-3 shrink-0 text-foreground-400">{index + 1}</span>
               <span className="min-w-0 flex-1 truncate text-foreground-300">{name}</span>
               <Rating score={score} />
             </div>
@@ -538,11 +627,11 @@ export function McpSection() {
       <style>{keyframes}</style>
       <div className="grid h-190 items-start lg:grid-cols-[minmax(0,42rem)_minmax(0,1fr)]">
         <div className="flex flex-col h-full gap-10">
-          <div className="pt-8">
+          <div className="pt-4">
             <pre
               aria-hidden="true"
               className="p-6 mb-6 text-foreground-400 w-fit font-mono"
-              style={{ fontSize: "1.2em", letterSpacing: "-0.18em", lineHeight: 1.1 }}
+              style={{ fontSize: "1.1em", letterSpacing: "-0.18em", lineHeight: 1.1 }}
             >
               {`⠀⠀⢀⣠⣴⣾⣷⣦⣄⡀⠀⠀
 ⣴⣾⡿⠟⠋⠁⠉⠛⠿⣿⣷⣦
@@ -551,10 +640,10 @@ export function McpSection() {
 ⠻⢿⣿⣶⣤⣀⣀⠀⠀⠻⡿⠟
 ⠀⠀⠈⠙⠻⢿⡿⠇⠀⠀⠀⠀`}
             </pre>
-            <SectionHeading title="Conventions, served over MCP, so your agent searches your workshop, reads each contract, and audits against your system." />
+            <SectionHeading title="Your agent stops guessing at your design system and starts reading it." />
           </div>
 
-          {/* four tools, one open at a time, each driving its own session beside it */}
+          {/* four modes, one open at a time, each driving its own session beside it */}
           <ol className="divide-y m-3 rounded-sm mt-auto divide-background-700 overflow-hidden border border-background-700 bg-background-1000">
             {sessions.map((session, index) => {
               const current = index === active;
@@ -590,7 +679,7 @@ export function McpSection() {
                           {session.desc}
                         </p>
                         <p className="text-foreground-200">
-                          <span className="text-background-500">{session.scope} / </span>
+                          <span className="text-foreground-400">{session.scope} / </span>
                           {session.name}
                         </p>
                       </div>
@@ -621,9 +710,9 @@ export function McpSection() {
           <div className="flex h-full rounded-sm flex-col border border-background-700 bg-background-1050 font-mono text-foreground-300">
             {/* title bar */}
             <div className="flex items-center gap-2 border-b border-background-700 px-4 py-2 text-xs">
-              <span className="text-background-500">ui-lab</span>
+              <span className="text-foreground-400">ui-lab</span>
               <span className="text-background-600">:</span>
-              <span className="text-foreground-200">mcp</span>
+              <span className="text-foreground-200">/lab</span>
             </div>
 
             {/* every session shares one fixed viewport, so the pane never resizes mid-play */}
@@ -683,7 +772,7 @@ export function McpSection() {
               className="flex items-center gap-2 border-t border-background-700 px-4 py-2.5 text-xs"
             >
               <span className="text-accent-500">❯</span>
-              <span className="text-background-500">ask for the next screen</span>
+              <span className="text-foreground-400">/lab build the next screen</span>
             </div>
           </div>
         </div>

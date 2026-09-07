@@ -37,13 +37,6 @@ const INTEGRATIONS: Integration[] = [
     initiallyConnected: true,
   },
   {
-    id: "figma",
-    name: "Figma",
-    desc: "Design handoff with live preview.",
-    icon: <SiFigma size={20} />,
-    initiallyConnected: false,
-  },
-  {
     id: "linear",
     name: "Linear",
     desc: "Sync issues and pull requests.",
@@ -83,10 +76,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
   }
 
   return (
-    <div
-      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
-      style={{ height }}
-    >
+    <div className="flex w-full flex-col overflow-hidden bg-background-200" style={{ height }}>
       <div className="px-3 py-2.5 border-b border-background-700">
         <Group>
           <Group.Input
@@ -119,7 +109,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
         </Group>
       </div>
 
-      <List spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
+      <List layout="contained" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {visible.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-foreground-500">
             No integrations match your search.
@@ -131,7 +121,7 @@ export function IntegrationsPanel({ height }: ShowcasePanelProps) {
               <div key={item.id}>
                 <List.Item value={item.id} className="px-4 py-3">
                   <List.Media>
-                    <div className="w-20 h-20 rounded-md flex items-center justify-center bg-background-300 text-foreground-300">
+                    <div className="w-20 h-20 flex items-center justify-center bg-background-300 text-foreground-300">
                       {item.icon}
                     </div>
                   </List.Media>

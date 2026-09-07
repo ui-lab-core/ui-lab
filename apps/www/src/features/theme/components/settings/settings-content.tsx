@@ -279,8 +279,8 @@ export const SettingsContent = ({
       {showFooterLink ? (
         <div className="flex h-12 justify-end border-t border-background-700 bg-background-900/90 p-1.5">
           <Link href="/config">
-            <Button icon={<FaPlus size={16} />} variant="ghost">
-              New Project
+            <Button icon={<FaPlus size={16} />} variant="secondary">
+              Start Project
             </Button>
           </Link>
         </div>

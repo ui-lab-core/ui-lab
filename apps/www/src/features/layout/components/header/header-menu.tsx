@@ -2,10 +2,12 @@
 
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
+import { LogIn } from "lucide-react";
 import { SettingsPanel } from "@/features/landing/components/settings-panel";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { useApp } from "@/features/theme/lib/app-context";
+import { ROUTES } from "@/shared/lib/routes";
 import {
   FaBars,
   FaEllipsis,
@@ -17,7 +19,12 @@ import {
 } from "@/shared/icons/fa6";
 import { Menu } from "ui-lab-components/menu";
 
-export function HeaderMenu() {
+interface HeaderMenuProps {
+  /** Prepends a "Log in" item, used as the signed-out fallback for the account menu. */
+  showLogin?: boolean;
+}
+
+export function HeaderMenu({ showLogin }: HeaderMenuProps = {}) {
   const router = useRouter();
   const triggerRef = useRef<HTMLElement>(null);
   const {
@@ -72,6 +79,15 @@ export function HeaderMenu() {
           offset={8}
           className="min-w-52 bg-background-900 shadow-lg shadow-background-950/30"
         >
+          {showLogin ? (
+            <>
+              <Menu.Item onSelect={() => router.push(ROUTES.signIn)} textValue="Log in">
+                <LogIn size={14} className="shrink-0 text-foreground-400" />
+                <span className="flex-1">Log in</span>
+              </Menu.Item>
+              <Menu.Separator />
+            </>
+          ) : null}
           <Menu.Item onSelect={() => setIsSettingsPanelOpen(true)} textValue="Theme settings">
             <FaPaintRoller size={14} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Theme settings</span>

@@ -3,7 +3,7 @@
 import { useState, Fragment } from "react";
 import { cn } from "@/shared/lib/utils";
 import { InlineCodeHighlight } from "./code-display/inline-code-highlight";
-import { Expand } from "ui-lab-components";
+import { Divider, Expand } from "ui-lab-components";
 import { Table as UITable, type Column as UITableColumn } from "ui-lab-components/table";
 
 export interface TableExpandedDetail {
@@ -28,6 +28,8 @@ interface TableProps<T> {
   data: T[];
   columns: Column<T>[];
   unframed?: boolean;
+  /** Table sits inside a Popover: no outer frame, no header shading. */
+  popover?: boolean;
   showFilters?: boolean;
   onRowClick?: (row: T) => void;
   onFilterChange?: (filters: Record<string, string>) => void;
@@ -46,7 +48,7 @@ export function TableExpandedDetails({ details, className }: TableExpandedDetail
   return (
     <dl
       className={cn(
-        "grid grid-cols-1 gap-x-6 gap-y-3 p-2 sm:grid-cols-[minmax(110px,160px)_1fr]",
+        "grid grid-cols-1 gap-x-6 gap-y-3 p-2 sm:grid-cols-[minmax(120px,160px)_1fr]",
         className,
       )}
     >
@@ -64,6 +66,7 @@ export function Table<T extends object>({
   data,
   columns,
   unframed = false,
+  popover = false,
   showFilters = false,
   onRowClick,
   onFilterChange,
@@ -151,25 +154,27 @@ export function Table<T extends object>({
       )}
 
       <UITable
+        bare
         data={filteredData}
         columns={tableColumns}
         scroll="auto"
         aria-label="Documentation data"
         styles={{
-          container: unframed
-            ? "border-0 rounded-none"
-            : "border-background-800 rounded-sm",
+          container:
+            unframed || popover ? "border-0 rounded-none" : "border-background-800 rounded-sm",
           table: "min-w-full text-xs",
           header: {
-            root: "bg-background-1000",
-            cell: "px-4 py-3 text-left font-semibold text-foreground-200",
+            cell: cn(
+              "px-4 py-3 text-left text-foreground-200",
+              popover ? "font-medium" : "font-semibold",
+            ),
           },
-          cell: "bg-background-1000 px-4 py-3 text-foreground-300",
+          cell: "px-4 py-3 text-foreground-300",
           empty: { state: "px-4 py-8 text-center text-foreground-400" },
         }}
       >
         <UITable.Header>
-          <tr className="border-b border-background-800 bg-background-900">
+          <tr>
             {columns.map((col) => (
               <UITable.HeaderCell key={String(col.key)} style={{ width: col.width }}>
                 {col.label}
@@ -180,59 +185,58 @@ export function Table<T extends object>({
         </UITable.Header>
         <UITable.Body rows={filteredData}>
           {filteredData.length > 0 ? (
-            filteredData.map((row, rowIndex) => {
-              const rowKey = resolveRowKey(row);
-              const isExpanded = expandedRows.has(rowKey);
-              return (
-                <Fragment key={rowKey}>
-                  <UITable.Row
-                    row={row}
-                    rowIndex={rowIndex}
-                    onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
-                    className={cn(
-                      "border-b border-background-800",
-                      unframed && "last:border-b-0",
-                      expandRender || onRowClick
-                        ? "cursor-pointer hover:bg-background-900 transition-colors"
-                        : "",
-                    )}
-                  >
-                    {tableColumns.map((col, columnIndex) => (
-                      <UITable.Cell
-                        key={String(col.key)}
-                        row={row as Record<string, any>}
-                        rowIndex={rowIndex}
-                        column={col as unknown as UITableColumn<Record<string, any>, string>}
-                        columnIndex={columnIndex}
-                        style={{ width: col.width }}
-                      />
-                    ))}
-                    {expandRender && (
-                      <UITable.Cell className="px-4 py-3 text-right">
-                        <Expand expanded={isExpanded} onExpandedChange={() => toggleRow(rowKey)}>
-                          <Expand.Trigger
-                            aria-label={`Toggle details for row ${String(rowKey)}`}
-                            onClick={(event) => event.stopPropagation()}
-                            className="ml-auto w-auto justify-end bg-transparent p-0"
-                          >
-                            <Expand.Icon color="text-background-500" className="px-0 py-0" />
-                          </Expand.Trigger>
-                        </Expand>
-                      </UITable.Cell>
-                    )}
-                  </UITable.Row>
-                  {expandRender && isExpanded && (
-                    <UITable.Row className="border-b border-background-800 last:border-b-0 bg-background-950">
-                      <UITable.Cell colSpan={columns.length + 1} className="px-4 py-3">
-                        <Expand expanded={isExpanded}>
-                          <Expand.Content>{expandRender(row)}</Expand.Content>
-                        </Expand>
-                      </UITable.Cell>
+            <>
+              <DividerRow columns={columns} expandRender={expandRender} />
+              {filteredData.map((row, rowIndex) => {
+                const rowKey = resolveRowKey(row);
+                const isExpanded = expandedRows.has(rowKey);
+                const isLast = rowIndex === filteredData.length - 1;
+                return (
+                  <Fragment key={rowKey}>
+                    <UITable.Row
+                      row={row}
+                      rowIndex={rowIndex}
+                      onClick={() => (expandRender ? toggleRow(rowKey) : onRowClick?.(row))}
+                      className={expandRender || onRowClick ? "cursor-pointer" : ""}
+                    >
+                      {tableColumns.map((col, columnIndex) => (
+                        <UITable.Cell
+                          key={String(col.key)}
+                          row={row as Record<string, any>}
+                          rowIndex={rowIndex}
+                          column={col as unknown as UITableColumn<Record<string, any>, string>}
+                          columnIndex={columnIndex}
+                          style={{ width: col.width }}
+                        />
+                      ))}
+                      {expandRender && (
+                        <UITable.Cell className="px-4 py-3 text-right">
+                          <Expand expanded={isExpanded} onExpandedChange={() => toggleRow(rowKey)}>
+                            <Expand.Trigger
+                              aria-label={`Toggle details for row ${String(rowKey)}`}
+                              onClick={(event) => event.stopPropagation()}
+                              className="ml-auto w-auto justify-end bg-transparent p-0"
+                            >
+                              <Expand.Icon color="text-background-500" className="px-0 py-0" />
+                            </Expand.Trigger>
+                          </Expand>
+                        </UITable.Cell>
+                      )}
                     </UITable.Row>
-                  )}
-                </Fragment>
-              );
-            })
+                    {expandRender && isExpanded && (
+                      <UITable.Row>
+                        <UITable.Cell colSpan={columns.length + 1} className="px-4 py-3">
+                          <Expand expanded={isExpanded}>
+                            <Expand.Content>{expandRender(row)}</Expand.Content>
+                          </Expand>
+                        </UITable.Cell>
+                      </UITable.Row>
+                    )}
+                    {!isLast && <DividerRow columns={columns} expandRender={expandRender} />}
+                  </Fragment>
+                );
+              })}
+            </>
           ) : (
             <UITable.Row>
               <UITable.Cell
@@ -246,5 +250,22 @@ export function Table<T extends object>({
         </UITable.Body>
       </UITable>
     </div>
+  );
+}
+
+/** A hairline row spanning every column, standing in for a `<tr>`-level border-bottom. */
+function DividerRow<T>({
+  columns,
+  expandRender,
+}: {
+  columns: Column<T>[];
+  expandRender?: (row: T) => React.ReactNode;
+}) {
+  return (
+    <UITable.Row aria-hidden="true">
+      <UITable.Cell colSpan={columns.length + (expandRender ? 1 : 0)} className="p-0!">
+        <Divider spacing="sm" color="bg-background-800" />
+      </UITable.Cell>
+    </UITable.Row>
   );
 }

@@ -99,9 +99,6 @@ export async function ComponentPage({
       : []),
   ];
   const styleItems = [
-    ...(styles?.documentation?.quickStart
-      ? [{ id: "style-quick-start", title: styles.documentation.quickStart.title, level: 2 }]
-      : []),
     ...(styles?.documentation?.anatomy && styles.styleableGroups?.length
       ? [
           {
@@ -130,7 +127,7 @@ export async function ComponentPage({
             ) : null}
             <Preview id={example.id} flushBottom />
             <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700">
-              <ExampleCode id={example.id} code={example.code} />
+              <ExampleCode componentId={componentId} id={example.id} code={example.code} />
             </div>
           </article>
         ))}
@@ -175,6 +172,7 @@ export async function ComponentPage({
                       <ExampleReference id={first.title} level={2} />
                     ) : null}
                     <Playground
+                      componentId={componentId}
                       id={first.id}
                       code={first.code}
                       light={highlighted.light}

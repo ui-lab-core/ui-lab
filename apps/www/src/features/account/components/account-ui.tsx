@@ -1,21 +1,24 @@
 "use client";
 
+import { useConvexAuth, usePaginatedQuery } from "convex/react";
+import { api } from "@ui-lab/backend/convex/_generated/api";
+import { SavedGallery } from "@/features/saved-items/saved-gallery";
 import { Fragment } from "react";
 import { useClerk } from "@clerk/nextjs";
 import {
   Bell,
   Bookmark,
   ChevronRight,
-  Clock,
   Code2,
-  Download,
   Link2,
   Lock,
   LogOut,
   Monitor,
   Package,
+  Rocket,
   Sparkles,
   Trash2,
+  Unlock,
   User,
 } from "lucide-react";
 import { Badge } from "ui-lab-components/badge";
@@ -31,7 +34,7 @@ import { ROUTES } from "@/shared/lib/routes";
 
 /**
  * The account surface is one presentational page whose only live data are the
- * Clerk profile and the entitlement flag; everything else models the shape of
+ * Clerk profile, entitlement flag, and saved library; other sections model the shape of
  * the settings the design lays out. The interactive pieces live here as one
  * client module so the page shell stays a server component that just streams
  * the profile and access data into these views.
@@ -151,18 +154,15 @@ export function AccessCard({ supporter }: { supporter: boolean }) {
 
         <Banner
           variant="note"
-          styles={{ iconContainer: "hidden" }}
+          styles={{ iconContainer: "hidden", content: "w-full" }}
           className="rounded-sm border-background-700 bg-background-900"
         >
-          <div className="flex w-full items-center gap-4">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-sm bg-accent-500/15 text-accent-400">
-              <Sparkles className="size-5" />
-            </span>
+          <div className="flex items-center gap-4">
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-foreground-50">
                 Unlock the full UI Lab experience
               </p>
-              <p className="mt-0.5 text-sm text-foreground-400">
+              <p className="mt-0.5 max-w-[42ch] text-sm text-foreground-400">
                 Upgrade to Supporter to access premium patterns, starters, and future releases.
               </p>
             </div>
@@ -198,56 +198,37 @@ function RowTrail({ value }: { value?: string }) {
   );
 }
 
-const LIBRARY_ROWS = [
-  {
-    id: "saved",
-    icon: Bookmark,
-    title: "Saved items",
-    desc: "Components you've bookmarked for later.",
-    value: "24",
-  },
-  {
-    id: "recent",
-    icon: Clock,
-    title: "Recently viewed",
-    desc: "Your recently opened components and patterns.",
-    value: "12",
-  },
-  {
-    id: "downloads",
-    icon: Download,
-    title: "Downloads",
-    desc: "Previously downloaded starters and resources.",
-    value: "8",
-  },
-] as const;
+export function SavedItemsView() {
+  const { isAuthenticated } = useConvexAuth();
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.savedItems.list, isAuthenticated ? {} : "skip", { initialNumItems: 20 },
+  );
 
-export function LibraryList() {
+  if (status === "LoadingFirstPage") {
+    return <p role="status" className="text-sm text-foreground-400">Loading saved items…</p>;
+  }
+
+  if (results.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2 rounded-sm border border-dashed border-background-700 py-16 text-center">
+        <Bookmark className="size-6 text-foreground-500" />
+        <p className="text-sm text-foreground-400">
+          No saved items yet. Save code from the library to find it here.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <List gap="sm" aria-label="Library" className="max-w-none">
-      {LIBRARY_ROWS.map((row, index) => {
-        const Icon = row.icon;
-        return (
-          <Fragment key={row.id}>
-            <List.Item value={row.id} className="px-4 py-4 gap-8">
-              <List.Media className="text-foreground-400">
-                <Icon className="size-7" />
-              </List.Media>
-              <div className="min-w-0 flex-1">
-                <List.Title className="text-sm font-medium text-foreground-100">
-                  {row.title}
-                </List.Title>
-                <List.Desc className="text-sm whitespace-nowrap text-foreground-400">
-                  {row.desc}
-                </List.Desc>
-              </div>
-              <RowTrail value={row.value} />
-            </List.Item>
-            {index < LIBRARY_ROWS.length - 1 ? <List.Divider spacing="none" /> : null}
-          </Fragment>
-        );
-      })}
-    </List>
+    <div className="space-y-4">
+      <SavedGallery items={results} />
+      {status === "CanLoadMore" && (
+        <Button variant="secondary" size="sm" onPress={() => loadMore(20)}>
+          Load more
+        </Button>
+      )}
+      {status === "LoadingMore" && <p role="status" className="text-sm text-foreground-400">Loading more…</p>}
+    </div>
   );
 }
 

@@ -280,7 +280,7 @@ export function IndistinguishableSection() {
   const argument = (
     <div className="flex flex-col justify-between gap-12">
       <div>
-        <h2 className="font-serif max-w-[22ch] font-medium text-foreground-200 text-3xl">
+        <h2 className="max-w-[25ch] font-medium text-foreground-200 text-2xl">
           Give your agents the tools they need to <span>build great interfaces</span>.
         </h2>
       </div>

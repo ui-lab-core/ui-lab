@@ -19,11 +19,6 @@ import {
   type WorkshopCategory,
 } from "../lib/preview-heights";
 
-interface WorkshopFullscreenTarget {
-  categoryId: string;
-  exampleId: string;
-}
-
 interface WorkshopPreviewProps {
   /** Section heading anchor id. */
   headingId?: string;
@@ -45,8 +40,8 @@ interface WorkshopPreviewProps {
   /** Let the inline preview grow to the height of its rendered content. */
   dynamicPreviewHeight?: boolean;
   previewLayout?: "center" | "start";
-  /** Reserved for callers that still pass isolation targets. */
-  fullscreen?: WorkshopFullscreenTarget;
+  /** Stable catalog reference, shared by inline and modal source views. */
+  entryRef?: string;
   /** Render only the source (no live preview box). Used for full-project starters. */
   hidePreview?: boolean;
   /** Fill the parent grid cell, allowing cards in a row to share a height. */
@@ -90,6 +85,7 @@ const FALLBACK_CODE_LINE_HEIGHT = 21;
  * the code.
  */
 export function WorkshopPreview({
+  entryRef,
   headingId,
   title,
   description,
@@ -149,10 +145,14 @@ export function WorkshopPreview({
     () => uniqueFiles.filter((file) => file.filename !== primaryFile?.filename),
     [uniqueFiles, primaryFile],
   );
+  const displayedFiles = useMemo(
+    () => (primaryFile ? [primaryFile, ...secondaryFiles] : []),
+    [primaryFile, secondaryFiles],
+  );
   const activeFileName = selectedFileName ?? primaryFile?.filename;
   const activeFileIndex = Math.max(
     0,
-    uniqueFiles.findIndex((file) => file.filename === activeFileName),
+    displayedFiles.findIndex((file) => file.filename === activeFileName),
   );
   const isPreviewOnly = disclosure === "modal";
   const openDetail = () => setIsDetailOpen(true);
@@ -279,6 +279,8 @@ export function WorkshopPreview({
                   )}
                 >
                   <Code
+                    entryRef={selectedPattern ? `pattern:${selectedPattern.id}` : entryRef}
+                    entryTitle={selectedPattern?.id ?? title ?? entryRef}
                     className={cn("rounded-none! border-0", isModalDetail && "h-full")}
                     fillHeight={isModalDetail}
                     language={primaryFile.language}
@@ -303,7 +305,7 @@ export function WorkshopPreview({
                     activeFile={activeFileIndex}
                     onActiveFileChange={(index: number) => {
                       setSelectedPatternId(null);
-                      setSelectedFileName(uniqueFiles[index]?.filename ?? null);
+                      setSelectedFileName(displayedFiles[index]?.filename ?? null);
                     }}
                   >
                     {primaryFile.code ?? ""}
@@ -347,6 +349,8 @@ export function WorkshopPreview({
               />
             ) : null}
             <WorkshopPreview
+              entryRef={selectedPattern ? `pattern:${selectedPattern.id}` : entryRef}
+              title={selectedPattern?.id ?? title}
               headingId={headingId}
               files={
                 selectedPattern

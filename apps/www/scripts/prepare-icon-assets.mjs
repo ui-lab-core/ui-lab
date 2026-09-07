@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const appDirectory = path.resolve(scriptsDirectory, "..");
 const sourceDirectory = path.join(appDirectory, "src/assets/stroke");
-const outputDirectory = path.join(appDirectory, "public/ui-lab-icons/stroke");
+const outputDirectory = path.join(appDirectory, "public/ui/icons/stroke");
 
 await mkdir(outputDirectory, { recursive: true });
 

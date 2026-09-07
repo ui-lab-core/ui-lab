@@ -212,8 +212,8 @@ function PremiumGalleryItem({
         }}
       />
       {children}
-      <Badge className="bg-accent-400/20 py-1.5 text-accent-500 border-0 pointer-events-none rounded-xs absolute right-2 top-2 z-20">
-        <HiSparkles size={18} />
+      <Badge className="bg-accent-500/20 py-0.5 pl-0.5 pr-1 text-accent-500 border-0 pointer-events-none rounded-xs absolute right-2 top-2 z-20">
+        Pro
       </Badge>
     </Gallery.Item>
   );

@@ -73,7 +73,7 @@ export default function ComponentsPageClient() {
                               href={href}
                               className="group relative rounded-sm bg-background-950 hover:bg-background-900/50"
                               orientation="vertical"
-                              onClick={() => router.push(href)}
+                              onPress={() => router.push(href)}
                             >
                               {component.experimental && (
                                 <Tooltip content="Experimental" position="top" show-arrow>

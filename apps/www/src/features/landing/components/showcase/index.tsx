@@ -16,6 +16,7 @@ import { featureFlags } from "@/shared/config/feature-flags";
 import type { ShowcasePanelProps } from "./examples/types";
 import { AIComposer } from "./examples/showcase/ai-composer";
 import { ApiKeysPanel } from "./examples/showcase/api-keys";
+import { BuildDurationChart } from "./examples/showcase/build-duration";
 import { DeploymentList } from "./examples/showcase/deployments";
 import { IntegrationsPanel } from "./examples/showcase/integrations";
 import { FileBrowser } from "./examples/showcase/media-browser";
@@ -28,31 +29,8 @@ type PanelComponent = ComponentType<ShowcasePanelProps> & {
   preload?: () => Promise<ComponentType<ShowcasePanelProps>>;
 };
 
-/**
- * Fallback rendered while a panel chunk resolves. Its only job is to occupy the
- * card, which already has the panel's final height, so a loading panel never
- * shifts layout.
- */
 const PanelFallback = () => <div className="h-full w-full animate-pulse bg-background-900" />;
 
-/**
- * A panel has two render paths:
- *
- * - Preloaded: `preload()` has already resolved, so the module sits in `Loaded`
- *   and is read synchronously during render. Nothing suspends, no boundary is
- *   involved, and the panel appears in the same commit as the tab switch.
- * - Cold: falls back to `next/dynamic`. This keeps SSR for the first paint, and
- *   the explicit `loading` component is what makes next wrap the lazy in a
- *   Suspense boundary at all (see `hasSuspenseBoundary` in next's loadable.js).
- *   Without it a suspending panel propagates past the whole showcase to the
- *   route boundary, and React holds the previously committed view on screen —
- *   that is the stale-content flash.
- *
- * The two paths exist because `preload()` cannot prime `next/dynamic`'s internal
- * `React.lazy`: that lazy only resolves by being rendered once, so warming the
- * chunk alone still costs a suspended first render. Reading `Loaded` directly is
- * what turns a hover into a genuinely instant switch.
- */
 const panel = (load: () => Promise<ComponentType<ShowcasePanelProps>>): PanelComponent => {
   let Loaded: ComponentType<ShowcasePanelProps> | undefined;
   let loading: Promise<ComponentType<ShowcasePanelProps>> | undefined;
@@ -200,30 +178,6 @@ const SalesAccounts = panel(() =>
   import("./examples/sales/mockups").then((module) => module.sales.Accounts),
 );
 
-const EntertainmentLibrary = panel(() =>
-  import("./examples/entertainment/mockups").then((module) => module.entertainment.Library),
-);
-
-const EntertainmentPlayer = panel(() =>
-  import("./examples/entertainment/mockups").then((module) => module.entertainment.Player),
-);
-
-const EntertainmentQueue = panel(() =>
-  import("./examples/entertainment/mockups").then((module) => module.entertainment.Queue),
-);
-
-const EntertainmentCharts = panel(() =>
-  import("./examples/entertainment/mockups").then((module) => module.entertainment.Charts),
-);
-
-const EntertainmentFeatured = panel(() =>
-  import("./examples/entertainment/mockups").then((module) => module.entertainment.Featured),
-);
-
-const EntertainmentHistory = panel(() =>
-  import("./examples/entertainment/mockups").then((module) => module.entertainment.History),
-);
-
 type ShowcaseItem = {
   key: string;
   Panel: PanelComponent;
@@ -234,7 +188,8 @@ const size = (ratio: number) => `${Math.round(ratio * 44)}rem`;
 
 const views: Record<string, ShowcaseItem[]> = {
   showcase: [
-    { key: "deployments", Panel: DeploymentList, height: size(0.73) },
+    { key: "build-duration", Panel: BuildDurationChart, height: "15rem" },
+    { key: "deployments", Panel: DeploymentList, height: size(0.36) },
     { key: "integrations", Panel: IntegrationsPanel, height: size(0.73) },
     { key: "music", Panel: MusicPlayer, height: size(0.73) },
     { key: "composer", Panel: AIComposer, height: size(0.73) },
@@ -271,21 +226,20 @@ const views: Record<string, ShowcaseItem[]> = {
     { key: "chart", Panel: SalesChart, height: size(0.46) },
     { key: "accounts", Panel: SalesAccounts, height: size(0.54) },
   ],
-
-  entertainment: [
-    { key: "library", Panel: EntertainmentLibrary, height: size(0.66) },
-    { key: "player", Panel: EntertainmentPlayer, height: size(0.34) },
-    { key: "queue", Panel: EntertainmentQueue, height: size(0.6) },
-    { key: "charts", Panel: EntertainmentCharts, height: size(0.4) },
-    { key: "featured", Panel: EntertainmentFeatured, height: size(0.52) },
-    { key: "history", Panel: EntertainmentHistory, height: size(0.48) },
-  ],
 };
 
-function ShowcaseCard({ height = "100%", children }: { height?: string; children: ReactNode }) {
+function ShowcaseCard({
+  height = "100%",
+  className = "",
+  children,
+}: {
+  height?: string;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
     <div
-      className="w-full overflow-hidden rounded-sm border border-background-700"
+      className={`w-full overflow-hidden rounded-sm border border-background-700 ${className}`}
       style={{ height }}
     >
       {children}
@@ -297,10 +251,12 @@ type LayoutColumns = { sm: number; md?: number; lg: number };
 
 type LayoutSection = {
   items: ShowcaseItem[];
+  stackedFirstColumn?: boolean;
   columns: LayoutColumns;
   /** Fixed row height, for sections whose panels stretch to fill it. Masonry sections size from each item's own `height` instead. */
   height?: string;
   masonry?: boolean;
+  stagger?: boolean;
 };
 
 function chunk<T>(items: T[], size: number): T[][] {
@@ -317,12 +273,12 @@ function chunk<T>(items: T[], size: number): T[][] {
 function createLayout(sections: LayoutSection[]): ComponentType {
   function Layout() {
     return (
-      <div className="flex w-full flex-col gap-2 p-2">
+      <div className="flex w-full flex-col gap-2 p-2 pt-12">
         {sections.map((section, index) => (
           <Grid
             // eslint-disable-next-line react/no-array-index-key -- sections are a static layout config, not a dynamic list
             key={index}
-            rows={section.masonry ? "masonry" : "minmax(0, 1fr)"}
+            rows={section.stagger ? "auto" : section.masonry ? "masonry" : "minmax(0, 1fr)"}
             columns={section.columns}
             gap="md"
             h={section.height}
@@ -330,10 +286,31 @@ function createLayout(sections: LayoutSection[]): ComponentType {
             masonryColumnFill={section.masonry ? "balance" : undefined}
             className="w-full"
           >
-            {section.items.map(({ key, Panel, height }) => (
-              <ShowcaseCard key={key} height={section.masonry ? height : "100%"}>
-                <Panel height="100%" />
-              </ShowcaseCard>
+            {(section.stackedFirstColumn
+              ? [section.items.slice(0, 2), ...section.items.slice(2).map((item) => [item])]
+              : section.items.map((item) => [item])
+            ).map((items, itemIndex) => (
+              <div
+                key={items[0].key}
+                className={`flex min-w-0 flex-col gap-2 ${
+                  section.stagger
+                    ? itemIndex === 0
+                      ? "lg:mt-8"
+                      : itemIndex === 2
+                        ? "lg:mt-16"
+                        : ""
+                    : ""
+                }`}
+              >
+                {items.map(({ key, Panel, height }) => (
+                  <ShowcaseCard
+                    key={key}
+                    height={section.masonry || section.stagger ? height : "100%"}
+                  >
+                    <Panel height="100%" />
+                  </ShowcaseCard>
+                ))}
+              </div>
             ))}
           </Grid>
         ))}
@@ -363,9 +340,14 @@ const customLayouts: Partial<Record<string, ComponentType>> = {
   ),
 
   showcase: createLayout([
-    { items: views.showcase.slice(0, 3), columns: { sm: 1, md: 2, lg: 3 }, masonry: true },
-    { items: views.showcase.slice(3, 5), columns: { sm: 1, md: 2, lg: 2 }, masonry: true },
-    { items: views.showcase.slice(5, 7), columns: { sm: 1, md: 2, lg: 2 }, masonry: true },
+    {
+      items: views.showcase.slice(0, 4),
+      columns: { sm: 1, md: 2, lg: 3 },
+      stagger: true,
+      stackedFirstColumn: true,
+    },
+    { items: views.showcase.slice(4, 6), columns: { sm: 1, md: 2, lg: 2 }, masonry: true },
+    { items: views.showcase.slice(6, 8), columns: { sm: 1, md: 2, lg: 2 }, masonry: true },
   ]),
 };
 
@@ -382,12 +364,6 @@ const preloadView = (view: string): Promise<unknown> => {
 
   return Promise.resolve();
 };
-
-function readHeaderHeight() {
-  const value = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
-
-  return Number.parseFloat(value) || 0;
-}
 
 /**
  * Edge fade, mirroring `Scroll`'s `fade-y` defaults.
@@ -412,6 +388,7 @@ export function Showcase() {
   const [toolbarHeight, setToolbarHeight] = useState(0);
 
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   // The masked window is a fixed frame that never moves; contentRef is the only
   // thing document scroll translates.
@@ -443,7 +420,10 @@ export function Showcase() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const headerHeight = readHeaderHeight();
+    // Read the resolved pixel offset, not the raw rem-valued custom property.
+    const headerHeight = stickyRef.current
+      ? Number.parseFloat(getComputedStyle(stickyRef.current).top) || 0
+      : 0;
     const rect = section.getBoundingClientRect();
 
     pinOriginRef.current = window.scrollY + rect.top - headerHeight;
@@ -528,12 +508,18 @@ export function Showcase() {
 
       const offset = Math.min(Math.max(0, window.scrollY - pinOriginRef.current), maxOffset);
 
+      // Keep the bottom edge inside the viewport before the frame is pinned.
+      frame.style.setProperty(
+        "--showcase-viewport-offset",
+        `${Math.max(0, pinOriginRef.current - window.scrollY)}px`,
+      );
+
       content.style.transform = `translate3d(0, ${-offset}px, 0)`;
 
-      // The fade belongs to the window, so it is driven from the same frame as
-      // the transform rather than from a scroll event the window never fires.
       const top = Math.min(1, offset / FADE_DISTANCE) * FADE_SIZE;
-      const bottom = Math.min(1, (maxOffset - offset) / FADE_DISTANCE) * FADE_SIZE;
+      // Keep the bottom fade visible before entering the sticky scroll runway.
+      const bottom =
+        offset === 0 ? FADE_SIZE : Math.min(1, (maxOffset - offset) / FADE_DISTANCE) * FADE_SIZE;
 
       frame.style.setProperty("--mask-top-fade", `${top}%`);
       frame.style.setProperty("--mask-bottom-fade", `${bottom}%`);
@@ -628,7 +614,7 @@ export function Showcase() {
        * state here. The browser's layout engine is responsible for catching the
        * frame at the exact header boundary.
        */}
-      <div className="sticky top-(--header-height) flex w-full min-w-0 flex-col">
+      <div ref={stickyRef} className="sticky top-(--header-height) flex w-full min-w-0 flex-col">
         <div ref={toolbarRef}>
           <ShowcaseToolbar value={view} onValueChange={setView} onPreload={preloadView} />
         </div>
@@ -645,14 +631,14 @@ export function Showcase() {
           style={
             {
               overflow: "hidden",
-              maxHeight: `calc(100dvh - var(--header-height) - ${toolbarHeight}px)`,
+              maxHeight: `max(0px, calc(100dvh - var(--header-height) - ${toolbarHeight}px - var(--showcase-viewport-offset, 0px)))`,
               "--mask-top-fade": "0%",
               "--mask-bottom-fade": `${FADE_SIZE}%`,
             } as CSSProperties
           }
         >
           <Mask.Fade />
-          <Mask.Fade direction="bottom" intensity={3} fixed />
+          <Mask.Fade direction="bottom" intensity={3} />
 
           <div ref={contentRef} className="will-change-transform">
             {CustomLayout ? (

@@ -45,7 +45,7 @@ const fadeMask = [
 ].join(", ");
 
 /** Half the horizontal shift between a band's top and bottom edge, in percent. */
-const BAND_TILT = 9;
+const BAND_TILT = 0;
 /**
  * How far each band reaches back under its left neighbour, in percent. Two edges
  * animating towards the same seam can land a fraction of a pixel apart mid-flight
@@ -55,17 +55,21 @@ const BAND_TILT = 9;
 const BAND_OVERLAP = 4;
 
 /**
- * Cumulative band boundaries across the plane. The outer two run past the frame
- * so the tilt never exposes a corner, and the grown band takes its extra width
- * from the others rather than from the screen behind them.
+ * Band boundaries, one per hit-zone column. Every band keeps the same fixed slot
+ * as the column that hovers it, so nothing shifts when the active band changes:
+ * only the active band's own left edge moves, bleeding past the frame so it
+ * covers every band before it. `BAND_OVERLAP` pulls each left edge back under
+ * its neighbour, so the edges carry that offset forward and the painted seam
+ * still lands on the column boundary.
  */
 function bandEdgesFor(activeIndex: number) {
-  const weights = styles.map((_, index) => (index === activeIndex ? 2.6 : 1));
-  const total = weights.reduce((sum, weight) => sum + weight, 0);
-  const edges = [0];
-  weights.forEach((weight) => edges.push(edges[edges.length - 1] + (weight / total) * 100));
+  const edges = styles.map((_, index) => (index / styles.length) * 100 + BAND_OVERLAP);
+  // The first band has nothing to its left and the active one has to cover
+  // everything before it, so both start off-frame.
   edges[0] = -100;
-  edges[edges.length - 1] = 200;
+  edges[activeIndex] = -100;
+  // The trailing edge runs past the frame too, so the tilt never exposes a corner.
+  edges.push(200);
   return edges;
 }
 
@@ -85,7 +89,7 @@ const familyIcons: Record<FamilyKey, typeof Palette> = {
 export function TokensSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isNear = useNearViewport(ref);
-  const { currentThemeMode } = useApp();
+  const { currentThemeMode, currentThemeColors } = useApp();
   const [styleKey, setStyleKey] = useState<StyleKey>("notion");
   const [hoveredKey, setHoveredKey] = useState<StyleKey | null>(null);
   const [family, setFamily] = useState<FamilyKey>("background");
@@ -103,9 +107,25 @@ export function TokensSection() {
   const resolvedByKey = useMemo(
     () =>
       Object.fromEntries(
-        styles.map((candidate) => [candidate.key, resolveStyle(candidate, activeMode)]),
+        styles.map((candidate) => {
+          // "UI Lab" isn't a fixed brand palette like its neighbours — it stands
+          // for the site's own theme, so it resolves from whatever the visitor
+          // has actually configured rather than a hardcoded snapshot of it.
+          const style =
+            candidate.key === "ui-lab" && currentThemeColors
+              ? {
+                  ...candidate,
+                  background: currentThemeColors.background,
+                  foreground: currentThemeColors.foreground,
+                  accent: currentThemeColors.accent,
+                  accentChromaLimit: currentThemeColors.accentChromaLimit ?? candidate.accentChromaLimit,
+                  globalAdjustments: currentThemeColors.globalAdjustments ?? candidate.globalAdjustments,
+                }
+              : candidate;
+          return [candidate.key, resolveStyle(style, activeMode)];
+        }),
       ) as Record<StyleKey, ResolvedStyle>,
-    [activeMode],
+    [activeMode, currentThemeColors],
   );
 
   // Hovering a strip only previews; the pill's choice is what it falls back to.
@@ -237,7 +257,7 @@ export function TokensSection() {
 
           <figure className="relative h-full overflow-hidden">
             <div
-              className="absolute inset-0 [--shot-scale:0.55] sm:[--shot-scale:0.72] md:[--shot-scale:0.78] lg:[--shot-scale:0.86] xl:[--shot-scale:0.96] 2xl:[--shot-scale:1.04]"
+              className="absolute inset-0 [--shot-scale:0.66] [--shot-x:6%] [--shot-y:9%] sm:[--shot-scale:0.86] md:[--shot-scale:0.94] lg:[--shot-scale:1.03] xl:[--shot-scale:1.15] 2xl:[--shot-scale:1.25]"
               style={{
                 maskImage: fadeMask,
                 WebkitMaskImage: fadeMask,
@@ -252,8 +272,52 @@ export function TokensSection() {
               The mockup's tilt lives in the clip polygon (offset one way at the top,
               the other at the bottom) rather than in a transform, so nothing the
               reader looks at is ever sheared, and each band overlaps the one to its
-              left so a seam is a single animating edge that cannot come apart. */}
+              left so a seam is a single animating edge that cannot come apart.
+
+              This visual layer is purely decorative (`pointer-events-none`): the
+              clip that grows a hovered band over its neighbours must never move
+              the region the mouse is actually tracked against, or the boundary
+              sliding under the cursor mid-hover would hand hover off to whichever
+              band the pointer now sits over. Hit-testing lives in the fixed-width
+              layer below instead. */}
               <div className="absolute inset-0 bg-background-950" onMouseLeave={() => setHoveredKey(null)}>
+                {styles.map((candidate, index) => (
+                  <div
+                    key={candidate.key}
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 bg-background-950 transition-[clip-path] duration-500 ease-out motion-reduce:transition-none"
+                    style={{
+                      ...(resolvedByKey[candidate.key].vars as CSSProperties),
+                      colorScheme: activeMode,
+                      clipPath: bandClip(bandEdges, index),
+                      // Each band's left border is its own shadow, so it follows the
+                      // one edge that moves instead of being a strip that can widen.
+                      filter: "drop-shadow(-1.5px 0 0 var(--background-600))",
+                    }}
+                  >
+                    <div
+                      className="absolute origin-top-left select-none"
+                      style={{
+                        background: "var(--background-950)",
+                        // The screen is inset from the band's top-left corner, so the
+                        // sizes take that offset back out and it still runs flush to
+                        // the right and bottom edges.
+                        left: "var(--shot-x)",
+                        top: "var(--shot-y)",
+                        width: "calc((100% - var(--shot-x)) / var(--shot-scale))",
+                        height: "calc((100% - var(--shot-y)) / var(--shot-scale))",
+                        transform: "scale(var(--shot-scale))",
+                      }}
+                    >
+                      {isNear ? <TokensScreen /> : null}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Hit zones: one fixed-width, non-overlapping column per style,
+                always at the same place regardless of what's hovered. Only the
+                decorative layer above grows; the hoverable/clickable area never
+                does, so the target under the cursor can't change mid-hover. */}
                 {styles.map((candidate, index) => (
                   <div
                     key={candidate.key}
@@ -271,28 +335,12 @@ export function TokensSection() {
                     onMouseEnter={() => setHoveredKey(candidate.key)}
                     onFocus={() => setHoveredKey(candidate.key)}
                     onBlur={() => setHoveredKey(null)}
-                    className="absolute inset-0 cursor-pointer bg-background-950 transition-[clip-path] duration-500 ease-out motion-reduce:transition-none"
+                    className="absolute inset-y-0 cursor-pointer"
                     style={{
-                      ...(resolvedByKey[candidate.key].vars as CSSProperties),
-                      colorScheme: activeMode,
-                      clipPath: bandClip(bandEdges, index),
-                      // Each band's left border is its own shadow, so it follows the
-                      // one edge that moves instead of being a strip that can widen.
-                      filter: "drop-shadow(-1.5px 0 0 var(--background-600))",
+                      left: `${(index / styles.length) * 100}%`,
+                      width: `${100 / styles.length}%`,
                     }}
-                  >
-                    <div
-                      className="absolute left-0 top-0 origin-top-left select-none"
-                      style={{
-                        background: "var(--background-950)",
-                        width: "calc(100% / var(--shot-scale))",
-                        height: "calc(100% / var(--shot-scale))",
-                        transform: "scale(var(--shot-scale))",
-                      }}
-                    >
-                      {isNear ? <TokensScreen /> : null}
-                    </div>
-                  </div>
+                  />
                 ))}
               </div>
             </div>

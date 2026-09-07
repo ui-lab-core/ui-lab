@@ -1,4 +1,4 @@
-import { DEFAULT_THEME_NAME, themes } from "@/features/theme/constants/themes";
+import { DEFAULT_GLOBAL_ADJUSTMENTS, DEFAULT_THEME_NAME, themes } from "@/features/theme/constants/themes";
 import {
   generateThemePalettes,
   paletteToCssVars,
@@ -11,7 +11,7 @@ import {
 
 export type { ThemeMode };
 
-export type StyleKey = "notion" | "obsidian" | "spotify" | "reddit" | "raycast";
+export type StyleKey = "notion" | "obsidian" | "spotify" | "raycast" | "ui-lab";
 
 export interface StylePreset {
   key: StyleKey;
@@ -72,14 +72,14 @@ export const styles: StylePreset[] = [
     globalAdjustments: { lightnessShift: -0.012, chromaBoost: 1.1 },
   },
   {
-    key: "reddit",
-    label: "Reddit",
-    mode: "light",
-    background: { l: 0.98, c: 0.003, h: 35 },
-    foreground: { l: 0.32, c: 0.008, h: 35 },
-    accent: { l: 0.65, c: 0.22, h: 35 },
-    accentChromaLimit: 0.28,
-    globalAdjustments: { lightnessShift: 0.01, chromaBoost: 0.8 },
+    key: "ui-lab",
+    label: "UI Lab",
+    mode: "dark",
+    background: themes[DEFAULT_THEME_NAME].dark.background,
+    foreground: themes[DEFAULT_THEME_NAME].dark.foreground,
+    accent: themes[DEFAULT_THEME_NAME].dark.accent,
+    accentChromaLimit: themes[DEFAULT_THEME_NAME].dark.accentChromaLimit ?? 0.35,
+    globalAdjustments: themes[DEFAULT_THEME_NAME].dark.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
   },
 ];
 

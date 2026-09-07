@@ -28,6 +28,8 @@ export default function StarterDetailClient({ starterPromise }: StarterDetailCli
       preview={CardPreview ? <CardPreview /> : undefined}
     >
       <WorkshopPreview
+        entryRef={`starter:${starter.id}`}
+        title={starter.name}
         headingId="starter-files"
         category="starter"
         hidePreview

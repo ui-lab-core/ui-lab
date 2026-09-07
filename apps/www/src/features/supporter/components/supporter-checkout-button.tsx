@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { useAction, useConvexAuth } from "convex/react";
 import { api } from "@ui-lab/backend/convex/_generated/api";
 import { Button } from "ui-lab-components/button";
-import { formatSupporterPrice, SUPPORTER_PLAN } from "@ui-lab-core/library/access";
 import { ROUTES } from "@/shared/lib/routes";
 
 const SIGN_IN_URL = `${ROUTES.signIn}?redirect_url=${encodeURIComponent(ROUTES.supporter)}`;
@@ -53,7 +52,7 @@ export function SupporterCheckoutButton() {
           }
         }}
       >
-        Get {SUPPORTER_PLAN.name} — {formatSupporterPrice()}
+        Purchase
       </Button>
 
       {error ? (

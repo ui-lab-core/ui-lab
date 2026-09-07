@@ -32,79 +32,6 @@ const tracks = [
   { title: "Wind Parade", artist: "Donald Byrd", duration: "6:07" },
 ];
 
-const GRAIN_SVG = `<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`;
-const GRAIN = `url("data:image/svg+xml,${encodeURIComponent(GRAIN_SVG)}")`;
-
-// --- Cover gradient factory -------------------------------------------------
-// Given any string input, produce a deterministic, premium-feeling gradient.
-// Variety comes from seeding a PRNG with the input and pulling several
-// independent "channels" (palette, glow layout, base angle) from it, so two
-// inputs almost never collide while every result stays in a cohesive,
-// blue-leaning aesthetic.
-
-/** FNV-1a string hash → unsigned 32-bit seed. */
-function seedFrom(input: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < input.length; i++) {
-    h ^= input.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return h >>> 0;
-}
-
-/** mulberry32 PRNG: deterministic, well-distributed floats in [0, 1). */
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** Curated premium palettes. Each stays dark and moody but reads as distinct. */
-const COVER_PALETTES = [
-  { highlight: "222 100% 82%", mid: "224 95% 55%", rim: "226 100% 52%", baseHue: 226 }, // electric blue
-  { highlight: "260 90% 84%", mid: "258 85% 58%", rim: "255 90% 55%", baseHue: 258 }, // indigo / violet
-  { highlight: "192 95% 80%", mid: "196 90% 52%", rim: "200 95% 48%", baseHue: 200 }, // cyan / teal
-  { highlight: "290 80% 82%", mid: "295 78% 58%", rim: "300 82% 52%", baseHue: 288 }, // magenta / plum
-  { highlight: "160 80% 78%", mid: "168 78% 46%", rim: "172 82% 42%", baseHue: 170 }, // emerald
-  { highlight: "30 95% 78%", mid: "22 92% 56%", rim: "16 95% 50%", baseHue: 20 }, // amber / ember
-] as const;
-
-const pick = <T,>(rng: () => number, arr: readonly T[]): T => arr[Math.floor(rng() * arr.length)];
-const range = (rng: () => number, min: number, max: number): number => min + rng() * (max - min);
-
-function coverStyle(input: string): React.CSSProperties {
-  const rng = mulberry32(seedFrom(input));
-  const palette = pick(rng, COVER_PALETTES);
-
-  // Independent channels for the two glow blobs and the base sweep.
-  const glowX = range(rng, 45, 88);
-  const glowY = range(rng, 4, 30);
-  const glowSpread = range(rng, 45, 60);
-  const rimX = range(rng, 20, 60);
-  const rimY = range(rng, 78, 98);
-  const angle = range(rng, 120, 220);
-  const baseHue = palette.baseHue;
-
-  return {
-    backgroundImage: [
-      GRAIN,
-      // Bright highlight blob, drifting near the top edge.
-      `radial-gradient(120% 90% at ${glowX.toFixed(1)}% ${glowY.toFixed(1)}%, hsl(${palette.highlight}) 0%, hsl(${palette.mid}) 22%, transparent ${glowSpread.toFixed(0)}%)`,
-      // Lower rim glow.
-      `radial-gradient(110% 80% at ${rimX.toFixed(1)}% ${rimY.toFixed(1)}%, hsl(${palette.rim}) 0%, transparent 50%)`,
-      // Deep near-black body with a subtle tint from the chosen family.
-      `linear-gradient(${angle.toFixed(0)}deg, hsl(${baseHue} 45% 8%), hsl(${baseHue + 2} 55% 3%))`,
-    ].join(", "),
-    backgroundBlendMode: "overlay, screen, screen, normal",
-    backgroundSize: "160px 160px, cover, cover, cover",
-  };
-}
-
 export function MusicPlayer({ height }: ShowcasePanelProps) {
   const [playing, setPlaying] = useState(false);
   const [shuffle, setShuffle] = useState(false);
@@ -156,8 +83,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
                   >
                     <List.Media>
                       <span
-                        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xs"
-                        style={coverStyle(track.title)}
+                        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xs bg-background-950"
                         aria-hidden="true"
                       ></span>
                     </List.Media>
@@ -186,8 +112,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
         <div className="flex justify-between items-start gap-3.5">
           <div className="flex gap-4">
             <div
-              className="h-12 w-12 flex-shrink-0 rounded-sm"
-              style={coverStyle(tracks[current].title)}
+              className="h-12 w-12 flex-shrink-0 rounded-sm bg-background-950"
               aria-hidden="true"
             />
             <div className="flex flex-1 flex-col gap-1">
@@ -279,7 +204,7 @@ export function MusicPlayer({ height }: ShowcasePanelProps) {
               styles={{ root: shuffle ? "text-foreground-400" : "opacity-30" }}
               onPress={() => setShuffle(!shuffle)}
             />
-            <Group variant="ghost" orientation="horizontal" spacing="xs">
+            <Group variant="ghost" orientation="horizontal" spacing="none">
               <Group.Button size="icon" aria-label="Previous">
                 <FaBackwardStep size={16} />
               </Group.Button>

@@ -87,6 +87,7 @@ function CustomTypeInspector({ initialType, api }: { initialType: string; api: C
       {customType.kind === "interface" && customType.members?.length ? (
         <div className="mt-4">
           <Table
+            popover
             data={customType.members}
             getRowKey={(member) => member.name}
             columns={customTypeColumns(api, (name) => setPath((current) => [...current, name]))}
@@ -96,6 +97,7 @@ function CustomTypeInspector({ initialType, api }: { initialType: string; api: C
       {customType.values?.length ? (
         <div className="mt-4">
           <Table
+            popover
             data={customType.values}
             getRowKey={(item) => item.value}
             columns={enumValueColumns}
@@ -103,11 +105,13 @@ function CustomTypeInspector({ initialType, api }: { initialType: string; api: C
         </div>
       ) : null}
       {customType.examples?.length ? (
-        <div className="space-y-1">
+        <div className="space-y-1 my-4">
           <p className="font-medium text-foreground-300">Examples</p>
-          {customType.examples.map((example) => (
-            <InlineCodeHighlight key={example} code={example} language="tsx" />
-          ))}
+          <div className="flex flex-col">
+            {customType.examples.map((example) => (
+              <InlineCodeHighlight key={example} code={example} language="tsx" />
+            ))}
+          </div>
         </div>
       ) : null}
       {customType.notes?.map((note) => (
@@ -162,9 +166,7 @@ const enumValueColumns: Column<APIEnumValue>[] = [
     label: "Value",
     width: "10rem",
     minWidth: "10rem",
-    render: (value) => (
-      <InlineCodeHighlight code={`"${String(value)}"`} language="typescript" />
-    ),
+    render: (value) => <InlineCodeHighlight code={`"${String(value)}"`} language="typescript" />,
   },
   {
     key: "description",
@@ -191,7 +193,7 @@ function TypeToken({
       return (
         <button
           type="button"
-          className="text-xs text-accent-500 underline cursor-pointer"
+          className="text-xs font-mono text-accent-500 underline cursor-pointer"
           onClick={() => onCustomTypeSelect(customType.name)}
         >
           {token.text}

@@ -4,22 +4,48 @@ import {
   listWorkshop,
   searchWorkshop,
   suggestWorkshop,
+  type WorkshopDetail,
   type WorkshopItem,
   type WorkshopKind,
-  type WorkshopSource,
   type WorkshopSummary,
 } from "../adapters/workshop-adapter.js";
 import { parseRef } from "../refs.js";
-import { exact, list, matches, notFound, type ToolResponse } from "../response.js";
+import { exact, list, matches, notFound, LIST_CAP, type ToolResponse } from "../response.js";
 import { clampLimit } from "../search.js";
-
-const TOOL = "search_workshop";
 
 export interface SearchWorkshopInput {
   query?: string;
   kind?: WorkshopKind | "all";
   detail?: "summary" | "full";
   limit?: number;
+}
+
+/**
+ * Stated once per listing instead of once per row. The previous index repeated
+ * the same install sentence on all 42 component entries.
+ */
+const INSTALL_LEGEND =
+  "install: package = add the npm package; copy = copy the source into your project; locked = premium, source not returned.";
+
+const SOURCE_KEYS = [
+  "code",
+  "files",
+  "dependencies",
+  "npmDependencies",
+  "uiLabDependencies",
+  "entrypoints",
+  "version",
+] as const;
+
+function stripSource(item: WorkshopItem): WorkshopSummary {
+  const rest = { ...item } as WorkshopDetail;
+  for (const key of SOURCE_KEYS) delete rest[key];
+  return rest;
+}
+
+function payload(item: WorkshopItem) {
+  const { ref: _ref, ...rest } = item;
+  return rest;
 }
 
 export async function handleSearchWorkshop(input: SearchWorkshopInput): Promise<ToolResponse> {
@@ -30,65 +56,67 @@ export async function handleSearchWorkshop(input: SearchWorkshopInput): Promise<
 
   if (!query) {
     const counts = countsByKind();
-    return list(TOOL, listWorkshop(kind), [
-      `The index holds ${counts.component} components, ${counts.pattern} patterns, ${counts.element} elements, ${counts.section} sections, and ${counts.starter} starters.`,
-      'search_workshop { query: "<ref>", detail: "full" } for an item\'s source or install intent.',
-    ]);
+    const breakdown = (Object.entries(counts) as Array<[WorkshopKind, number]>)
+      .filter(([, count]) => count > 0)
+      .map(([itemKind, count]) => `${count} ${itemKind}`)
+      .join(", ");
+    return list(
+      listWorkshop(kind),
+      ['search_workshop { query: "<ref>", detail: "full" }'],
+      {
+        cap: clampLimit(input.limit, LIST_CAP, 200),
+        note: `${INSTALL_LEGEND} Index holds ${breakdown}; filter with \`kind\`.`,
+      },
+    );
   }
 
   const ref = parseRef(query);
   if (ref?.kind === "example") {
-    return notFound(TOOL, query, "Component examples are served by get_component.", [], [
+    return notFound(query, "Component examples are served by get_component.", [], [
       `get_component { query: "${query}" }`,
     ]);
   }
   if (ref?.kind === "guide") {
-    return notFound(TOOL, query, "Guides are served by search_guides.", [], [
+    return notFound(query, "Guides are served by search_guides.", [], [
       `search_guides { query: "${ref.id}", detail: "full" }`,
     ]);
   }
 
   const refKind = ref?.kind;
   if (refKind && !["component", "artifact", "pattern", "element", "section", "starter"].includes(refKind)) {
-    return notFound(TOOL, query, `search_workshop does not resolve "${refKind}:" refs.`, [], []);
+    return notFound(query, `search_workshop does not resolve "${refKind}:" refs.`, [], []);
   }
+
   const item = await getWorkshopItem(query, kind);
 
   if (item) {
+    const resolved = detail === "full" ? item : stripSource(item);
     return exact(
-      TOOL,
       item.ref,
-      { item: detail === "full" ? item : stripSource(item) },
-      detail === "full" || !("files" in item)
+      payload(resolved),
+      detail === "full" || !("files" in item || "code" in item)
         ? []
-        : [`search_workshop { query: "${item.ref}", detail: "full" } for its copyable source.`],
+        : [`search_workshop { query: "${item.ref}", detail: "full" }`],
     );
   }
 
   const found = searchWorkshop(query, kind, limit);
   if (found.length > 0) {
     return matches(
-      TOOL,
       query,
       found,
-      [`search_workshop { query: "${found[0]!.ref}", detail: "full" } for the best match.`],
-      detail === "full" ? 'detail "full" was not applied: it only applies to an exact ref.' : undefined,
+      [`search_workshop { query: "${found[0]!.ref}", detail: "full" }`],
+      detail === "full" ? 'detail "full" applies only to an exact ref.' : INSTALL_LEGEND,
     );
   }
 
   const counts = countsByKind();
   return notFound(
-    TOOL,
     query,
     kind === "artifact" && counts.artifact === 0
       ? "The public registry currently publishes no source artifacts; every UI Lab item installs as a package."
       : `No workshop item matches "${query}".`,
     suggestWorkshop(query, kind, limit),
-    ["search_workshop {} to list every indexed item.", `get_component { query: "${query}" }`],
+    ["search_workshop {}", `get_component { query: "${query}" }`],
   );
-}
-
-function stripSource(item: WorkshopItem): WorkshopSummary {
-  const { files: _files, code: _code, dependencies: _dependencies, ...rest } = item as WorkshopSource;
-  return rest;
 }

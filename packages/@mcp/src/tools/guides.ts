@@ -1,30 +1,24 @@
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
-import { envelopeSchema, limitProperty, REF_HELP } from "./shared.js";
+import { limitProperty } from "./shared.js";
 
 export const searchGuidesTool: Tool = {
   name: "search_guides",
   description:
-    "Read UI Lab's durable design and implementation guidance. " +
-    'Call `search_guides { query: "foundation", detail: "full" }` before designing or reviewing any UI: it carries the composition, token, responsive, interaction, and accessibility rules the library expects. ' +
-    "Other guides cover setup, theming, and migrating existing UI. Omit `query` to list every guide. " +
-    REF_HELP,
+    'UI Lab\'s durable design and implementation guidance. Call `search_guides { query: "foundation", detail: "full" }` once before designing or reviewing any UI. Other guides cover setup, theming, and migration. Omit `query` to list them.',
   inputSchema: {
     type: "object" as const,
     properties: {
       query: {
         type: "string",
-        description:
-          'A guide ref ("guide:foundation" or "foundation") or a topic such as "theme switching", "tokens", or "accessibility". Omit to list every guide.',
+        description: 'A `guide:` ref, a bare id, or a topic. Omit to list every guide.',
       },
       detail: {
         type: "string",
         enum: ["summary", "full"],
-        description:
-          "Applies only when `query` resolves to exactly one guide. full returns its complete steps and validation checklist.",
+        description: "Applies only to an exact guide ref. full returns its steps and validation checklist.",
         default: "summary",
       },
       limit: limitProperty,
     },
   },
-  outputSchema: envelopeSchema,
 };

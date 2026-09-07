@@ -2,6 +2,18 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  savedItems: defineTable({
+    clerkUserId: v.string(),
+    entryRef: v.string(),
+    title: v.string(),
+    href: v.string(),
+  }).index("byClerkUserId", ["clerkUserId"])
+    .index("byClerkUserIdAndEntryRef", ["clerkUserId", "entryRef"]),
+  savedItemCounts: defineTable({
+    clerkUserId: v.string(),
+    count: v.number(),
+  }).index("byClerkUserId", ["clerkUserId"]),
+
   /**
    * One row per Clerk user, kept in sync by the Clerk `user.*` webhook.
    * `externalId` is the Clerk user id (`user_…`), which is also the JWT `sub` claim.

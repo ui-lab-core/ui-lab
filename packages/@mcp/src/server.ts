@@ -1,4 +1,3 @@
-import YAML from "yaml";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -7,22 +6,27 @@ import {
   ListToolsRequestSchema,
   McpError,
 } from "@modelcontextprotocol/sdk/types.js";
+import { encode } from "./encode.js";
 import { handleTool } from "./handlers/index.js";
 import { tools } from "./tools/index.js";
 import { packageVersion } from "./version.js";
 
+/**
+ * Everything shared across tools lives here, once. Tool descriptions and this
+ * block are re-sent on every request in a session, so a rule repeated in three
+ * descriptions and again in every response body was being paid for repeatedly;
+ * a rule stated here is paid for once.
+ */
 const INSTRUCTIONS = [
   "UI Lab is a React component library. Use these tools instead of guessing component APIs or inventing markup.",
   "",
-  "Recommended order:",
-  '1. `search_guides { query: "foundation", detail: "full" }` once per design or review task, for the composition, token, responsive, and accessibility rules.',
-  "2. `get_component {}` to list component ids, then `get_component { query: \"component:<id>\", detail: \"api\" }` for the props you are about to write.",
-  "3. `search_workshop` only to answer how an item is installed or whether its source is copyable.",
+  'Order: `search_guides { query: "foundation", detail: "full" }` once per design or review task; `get_component {}` to list ids, then `get_component { query: "component:<id>", detail: "api" }` for the props you are about to write; `search_workshop` only for install and source questions.',
   "",
-  "Import components from their own subpath, `ui-lab-components/<componentId>`, not from the `ui-lab-components` barrel. Every component response carries the exact statement to write in its `import` field; copy it rather than composing one.",
+  "Import a component from its own subpath — `import { Button } from 'ui-lab-components/button'` — never from the `ui-lab-components` barrel, which resolves but pulls the whole library into the module graph. Every component response carries the exact statement in `import`; copy it rather than composing one.",
   "",
-  "Workshop references are category-aware: `pattern:<id>`, `element:<packageId>/<id>`, `section:<id>`, and `starter:<id>`. Component, example, artifact, and guide refs remain compatible. Pass emitted refs back verbatim.",
-  'Every response is one envelope with a `status` of "exact", "matches", "list", or "not_found", plus a `nextSteps` list of concrete follow-up calls. A miss is a normal result, not an error, so read `suggestions` rather than retrying blind.',
+  "Refs: `component:<id>` | `example:<componentId>/<exampleId>` | `pattern:<id>` | `element:<packageId>/<id>` | `section:<id>` | `starter:<id>` | `artifact:<id>` | `guide:<id>`. Every response emits the ref of everything it returns; pass one back verbatim to fetch that item exactly.",
+  "",
+  'Responses are indented `key: value` text. `status` is "exact", "matches", "list", or "not_found"; a miss is a normal result carrying `suggestions` and `nextSteps`, not an error. A `key:` line followed by tab-separated lines is a table: the first of those lines names the columns, one row follows per item, and a blank line ends it. `-` marks an absent cell, a boolean field appears only when it is true, and fenced blocks hold source verbatim.',
 ].join("\n");
 
 async function createServer(): Promise<McpServer> {
@@ -40,12 +44,10 @@ async function createServer(): Promise<McpServer> {
 
       try {
         const result = await handleTool(name, args);
-        return {
-          // YAML for clients that only read text; structuredContent for clients
-          // that can parse. Both carry the same envelope.
-          content: [{ type: "text", text: YAML.stringify(result) }],
-          structuredContent: result as unknown as Record<string, unknown>,
-        };
+        // One body, not two. Declaring an output schema obliges the server to
+        // send `structuredContent` alongside this text, and a client that reads
+        // both pays for the same envelope twice.
+        return { content: [{ type: "text", text: encode(result) }] };
       } catch (error) {
         // A "no match" is returned as a result, never thrown, so anything that
         // reaches here is a genuine server failure.

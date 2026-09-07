@@ -940,6 +940,22 @@ export function FaMicrochip(props: IconBaseProps) {
   })(props);
 }
 
+export function FaMicrophone(props: IconBaseProps) {
+  return GenIcon({
+    tag: "svg",
+    attr: { viewBox: "0 0 384 512" },
+    child: [
+      {
+        tag: "path",
+        attr: {
+          d: "M192 0C139 0 96 43 96 96l0 160c0 53 43 96 96 96s96-43 96-96l0-160c0-53-43-96-96-96zM64 216c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40c0 89.1 66.2 162.7 152 174.4l0 33.6-48 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l72 0 72 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-48 0 0-33.6c85.8-11.7 152-85.3 152-174.4l0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40c0 70.7-57.3 128-128 128s-128-57.3-128-128l0-40z",
+        },
+        child: [],
+      },
+    ],
+  })(props);
+}
+
 export function FaMinus(props: IconBaseProps) {
   return GenIcon({
     tag: "svg",
@@ -1084,7 +1100,7 @@ export function FaPen(props: IconBaseProps) {
   })(props);
 }
 
-function FaPencil(props: IconBaseProps) {
+export function FaPencil(props: IconBaseProps) {
   return GenIcon({
     tag: "svg",
     attr: { viewBox: "0 0 512 512" },
@@ -1621,6 +1637,22 @@ function FaUsers(props: IconBaseProps) {
         tag: "path",
         attr: {
           d: "M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192l42.7 0c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0L21.3 320C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7l42.7 0C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3l-213.3 0zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352l117.3 0C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7l-330.7 0c-14.7 0-26.7-11.9-26.7-26.7z",
+        },
+        child: [],
+      },
+    ],
+  })(props);
+}
+
+export function FaUser(props: IconBaseProps) {
+  return GenIcon({
+    tag: "svg",
+    attr: { viewBox: "0 0 448 512" },
+    child: [
+      {
+        tag: "path",
+        attr: {
+          d: "M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z",
         },
         child: [],
       },

@@ -12,6 +12,7 @@ import type * as admin from "../admin.js";
 import type * as entitlements from "../entitlements.js";
 import type * as http from "../http.js";
 import type * as purchases from "../purchases.js";
+import type * as savedItems from "../savedItems.js";
 import type * as stripe from "../stripe.js";
 import type * as users from "../users.js";
 
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   entitlements: typeof entitlements;
   http: typeof http;
   purchases: typeof purchases;
+  savedItems: typeof savedItems;
   stripe: typeof stripe;
   users: typeof users;
 }>;

@@ -19,12 +19,14 @@ type Value = string | number | boolean;
 const emptyControls: ElementPreviewControl[] = [];
 
 export function Playground({
+  componentId,
   id,
   code,
   light,
   dark,
   previewHeight,
 }: {
+  componentId: string;
   id: string;
   code: string;
   light: string;
@@ -135,6 +137,9 @@ export function Playground({
       </div>
       <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700 bg-background-950/40">
         <Code
+      entryRef={`example:${componentId}/${id.replace(`${componentId}-`, "")}`}
+      entryTitle={`${componentId} / ${id}`}
+      entryHref={`/components/${componentId}#${id}`}
           className="rounded-none border-0"
           files={result?.files}
           heading="Example.tsx"
@@ -150,7 +155,7 @@ export function Playground({
   );
 }
 
-export function ExampleCode({ id, code }: { id: string; code: string }) {
+export function ExampleCode({ componentId, id, code }: { componentId: string; id: string; code: string }) {
   const config = getElementPreviewConfig("components", id);
   const controls = config?.controls ?? emptyControls;
   const values = Object.fromEntries(
@@ -166,6 +171,9 @@ export function ExampleCode({ id, code }: { id: string; code: string }) {
 
   return (
     <Code
+      entryRef={`example:${componentId}/${id.replace(`${componentId}-`, "")}`}
+      entryTitle={`${componentId} / ${id}`}
+      entryHref={`/components/${componentId}#${id}`}
       className="rounded-none border-0"
       files={result?.files}
       heading="Example.tsx"

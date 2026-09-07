@@ -56,7 +56,7 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
             category="pattern"
             previewLayout="start"
             fillHeight
-            fullscreen={{ categoryId: "patterns", exampleId: entry.id }}
+            entryRef={`pattern:${entry.id}`}
             disclosure="modal"
             modalTitle={`patterns/${patternId}/${String(index + 1).padStart(2, "0")}`}
           >

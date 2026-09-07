@@ -254,7 +254,7 @@ export function SlopSection() {
               <p className="ml-auto mr-2 text-xs text-background-500">
                 Four domains, {total} entries
               </p>
-              <Lattice className="border-t! border-0 rounded-none! grid-cols-1 sm:grid-cols-2">
+              <Lattice className="m-3 border grid-cols-1 sm:grid-cols-2">
                 {domains.map(({ id, name, Icon, blurb, count }) => {
                   const active = open.includes(id);
 

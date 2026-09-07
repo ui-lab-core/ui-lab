@@ -27,7 +27,7 @@ export function SectionHeading({
       className={`flex flex-col pl-6 mt-8 gap-4 ${centered ? "items-center text-center" : ""} ${className}`}
     >
       <h2
-        className={`font-serif max-w-[25ch] text-balance ${headingSizes[size]} font-medium leading-tight tracking-normal text-foreground-100`}
+        className={`max-w-[25ch] text-balance ${headingSizes[size]} font-medium leading-tight tracking-normal text-foreground-100`}
       >
         {title}
       </h2>

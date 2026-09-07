@@ -7,7 +7,6 @@ const tabs = [
   { value: "primitives", label: "Primitives" },
   { value: "dashboard", label: "Dashboard" },
   { value: "sales", label: "Sales" },
-  { value: "entertainment", label: "Entertainment" },
 ];
 
 interface ShowcaseToolbarProps {
@@ -31,7 +30,7 @@ export function ShowcaseToolbar({ value, onValueChange, onPreload }: ShowcaseToo
             <Tabs.Trigger
               key={value}
               value={value}
-              className="shrink-0 rounded-full px-3 py-2 active:bg-background-700"
+              className="shrink-0 rounded-full px-3.5 py-1.5 active:bg-background-700"
               onMouseEnter={() => onPreload?.(value)}
               onFocus={() => onPreload?.(value)}
             >

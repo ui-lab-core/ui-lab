@@ -14,9 +14,8 @@ import { cn } from "@/shared/lib/utils";
 import { FaBars, FaGithub, FaPlus } from "@/shared/icons/fa6";
 import { LuSearch } from "@/shared/icons/lu";
 import { HiX } from "@/shared/icons/hi";
-import { PanelRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, PanelRight } from "lucide-react";
 import { MobileMenu } from "./mobile-menu";
-import { HeaderMenu } from "./header-menu";
 import { headerTabs, getActiveHeaderTab, type HeaderTab } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
 import { useLandingSidebarToggle } from "@/features/layout/hooks/landing-sidebar-context";
@@ -24,10 +23,7 @@ import { HeaderAccountLink } from "@/features/account/components/header-account-
 
 const TabItem = memo(({ tab }: { tab: HeaderTab }) => {
   return (
-    <Tabs.Trigger
-      value={tab.id}
-      className="text-md leading-[20px] font-medium tracking-normal"
-    >
+    <Tabs.Trigger value={tab.id} className="text-md leading-[20px] font-medium tracking-normal">
       {tab.label}
     </Tabs.Trigger>
   );
@@ -141,13 +137,8 @@ export default function Header({ pathname }: HeaderProps) {
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              <Button
-                href="/config"
-                variant="secondary"
-                className="rounded-full"
-                icon={<FaPlus strokeWidth={2.5} size={15} />}
-              >
-                New Project
+              <Button href="/config" icon={{ right: <ChevronRight /> }}>
+                Start Building
               </Button>
               {featureFlags.commandPalette ? (
                 <Tooltip show-arrow content="Open Command Palette" position="bottom" hint="ctrl-k">
@@ -174,10 +165,6 @@ export default function Header({ pathname }: HeaderProps) {
               className="p-2"
               size="icon"
             ></Button>
-
-            <div className="hidden md:block mr-3">
-              <HeaderMenu />
-            </div>
 
             <HeaderAccountLink />
 

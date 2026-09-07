@@ -44,7 +44,7 @@ export default function ElementDetailClient({
           previewHeight={variant.previewHeight}
           category="element"
           dynamicPreviewHeight
-          fullscreen={{ categoryId: "elements", exampleId: `${element.id}-${index}` }}
+          entryRef={`element:${packageId}/${element.id}#variant-${index}`}
           disclosure="modal"
           patterns={variant.patterns}
           locked={isLocked}
@@ -53,7 +53,7 @@ export default function ElementDetailClient({
         </WorkshopPreview>
       );
     });
-  }, [element, isLocked]);
+  }, [element, isLocked, packageId]);
 
   if (!element) {
     return <DetailPageShell name="" description="" notFoundLabel="Element not found." />;

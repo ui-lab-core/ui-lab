@@ -28,7 +28,12 @@ export function API({ api }: { api: ComponentAPI | null }) {
     {
       key: "type",
       label: "Type",
-      render: (_value, row) => <TypeDisplay prop={row} api={api} />,
+      render: (_value, row) => (
+        // Keep type popovers from toggling the row's expand panel.
+        <span onClick={(event) => event.stopPropagation()}>
+          <TypeDisplay prop={row} api={api} />
+        </span>
+      ),
     },
   ];
 
@@ -80,7 +85,7 @@ export function API({ api }: { api: ComponentAPI | null }) {
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-accent-500 underline cursor-pointer"
+                    className="font-mono text-accent-500 underline cursor-pointer"
                   >
                     {link.label}
                   </a>

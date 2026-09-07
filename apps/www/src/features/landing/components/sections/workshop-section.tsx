@@ -622,7 +622,7 @@ export function WorkshopSection() {
   return (
     <Section ground="1000" rhythm="small">
       <div className="grid pt-14 pl-12 items-center gap-8 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-16">
-        <h2 className="font-serif max-w-[25ch] text-balance text-3xl font-medium leading-tight tracking-normal text-foreground-100">
+        <h2 className="max-w-[25ch] text-balance text-3xl font-medium leading-tight tracking-normal text-foreground-100">
           A catalog to browse, not a blank page to invent from.
         </h2>
 

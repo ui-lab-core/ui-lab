@@ -10,6 +10,8 @@ import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 import { type SimpleThemeColors } from "@/features/theme/constants/themes";
 import { Check, Copy, FileCode2 } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { SaveButton } from "@/features/saved-items/save-button";
 import { SiCss3, SiReact } from "@/shared/icons/si";
 
 const escapeHtml = (s: string) =>
@@ -47,6 +49,9 @@ function FileIcon({ name, className }: { name: string; className?: string }) {
 }
 
 interface CodeProps {
+  entryRef?: string;
+  entryTitle?: string;
+  entryHref?: string;
   children: string;
   files?: Array<{ name: string; code: string; language?: string }>;
   language?: string;
@@ -124,6 +129,7 @@ function requestHighlight(
 }
 
 export function Code({
+  entryRef, entryTitle, entryHref,
   children,
   files,
   language = "ts",
@@ -143,6 +149,15 @@ export function Code({
   onActiveFileChange,
 }: CodeProps) {
   const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
+
+  const pathname = usePathname();
+  // Non-catalog documentation snippets remain distinct without relying on render order.
+  const snippetKey = useMemo(() => {
+    let hash = 2166136261;
+    for (const char of children) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+    return (hash >>> 0).toString(36);
+  }, [children]);
+  const saveRef = entryRef ?? `snippet:${pathname}/${filename ?? heading ?? language}/${snippetKey}`;
 
   // Refs
   const rootRef = useRef<HTMLDivElement>(null);
@@ -306,6 +321,9 @@ export function Code({
         )}
       >
         <Actions
+          entryRef={saveRef}
+          entryTitle={entryTitle ?? `${pathname}: ${heading ?? filename ?? "Code"}`}
+          entryHref={entryHref ?? pathname}
           code={activeCode}
           expanded={expanded}
           onToggleExpanded={() => setIsExpanded((current) => !current)}
@@ -372,11 +390,15 @@ export function Code({
 }
 
 function Actions({
+  entryRef, entryTitle, entryHref,
   code,
   expanded,
   onToggleExpanded,
   showExpand,
 }: {
+  entryRef: string;
+  entryTitle: string;
+  entryHref: string;
   code: string;
   expanded: boolean;
   onToggleExpanded: () => void;
@@ -391,20 +413,22 @@ function Actions({
   };
 
   return (
-    <div className="absolute top-2 right-2 z-10" aria-label="Code actions">
+    <div className="absolute flex gap-1 top-3.5 right-3.5 z-10" aria-label="Code actions">
       {showExpand ? (
         <Button
           variant="ghost"
           onClick={onToggleExpanded}
           aria-label={expanded ? "Collapse code" : "Expand code"}
-          icon={<HiOutlineChevronUpDown size={22} />}
+          icon={<HiOutlineChevronUpDown size={20} />}
+          size="icon"
         />
       ) : null}
+      <SaveButton key={entryRef} entryRef={entryRef} title={entryTitle} href={entryHref} />
       <Button
         variant="ghost"
         onClick={handleCopy}
         aria-label={copied ? "Code copied" : "Copy code"}
-        icon={copied ? <Check size={12} /> : <Copy size={12} />}
+        icon={copied ? <Check size={16} /> : <Copy size={16} />}
       />
     </div>
   );

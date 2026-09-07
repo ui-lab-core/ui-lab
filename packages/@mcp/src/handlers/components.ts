@@ -1,12 +1,13 @@
 import { publicWorkshopCatalog, type ComponentMetadata, type WorkshopCatalogEntry } from "ui-lab-registry";
-import { registryAdapter } from "../adapters/registry-adapter.js";
+import { registryAdapter, type Component } from "../adapters/registry-adapter.js";
 import { componentRef, parseRef } from "../refs.js";
-import { exact, list, matches, notFound, type ToolResponse } from "../response.js";
+import { exact, list, matches, notFound, LIST_CAP, type ToolResponse } from "../response.js";
 import { clampLimit } from "../search.js";
 
-const TOOL = "get_component";
+/** Both the raw registry record and the adapter's leaned record satisfy this. */
+type AnyComponent = Omit<ComponentMetadata, "api"> & { api?: { subComponents?: unknown } };
 
-export type ComponentDetail = "summary" | "api" | "usage" | "examples" | "full";
+export type ComponentDetail = "summary" | "api" | "styling" | "usage" | "examples" | "full";
 
 export interface GetComponentInput {
   query?: string;
@@ -19,134 +20,98 @@ export interface GetComponentInput {
  * metadata's `packagePath` is a type-declaration path, not an import specifier,
  * so surfacing it as `importPath` gave agents nothing usable and they fell back
  * to the bare package name from `packageName`.
+ *
+ * The statement is the only form worth emitting: `packageName`, `importPath`,
+ * and `exportName` are all readable off it, and the rule about preferring the
+ * subpath over the barrel is stated once in the server instructions instead of
+ * being repeated as a `note` on every component.
  */
-function importSpecifier(component: ComponentMetadata): string {
-  return `${component.source.packageName}/${component.id}`;
+function importStatement(component: AnyComponent): string {
+  return `import { ${component.source.exportName} } from '${component.source.packageName}/${component.id}';`;
 }
 
-function importStatement(component: ComponentMetadata): string {
-  return `import { ${component.source.exportName} } from '${importSpecifier(component)}';`;
-}
-
-function componentSummary(component: ComponentMetadata) {
+/** The shape used wherever a component is a candidate rather than the answer. */
+function componentIndexEntry(component: AnyComponent) {
   return {
     ref: componentRef(component.id),
-    id: component.id,
+    name: component.name,
+    category: component.category,
+    description: component.description,
+    experimental: component.experimental === true,
+  };
+}
+
+function componentSummary(component: AnyComponent) {
+  return {
     name: component.name,
     description: component.description,
     category: component.category,
     tags: component.tags,
-    // The import belongs in the default detail level, in the same shape at
-    // every detail level. An agent that only asks for a summary still has to
-    // write the import line.
-    import: componentImport(component),
-    // Surfaced in every summary: an agent must not discover this only at
-    // `detail: "full"`, after it has already chosen the component.
-    experimental: component.experimental ?? false,
+    experimental: component.experimental === true,
+    // The import belongs in the default detail level: an agent that only asks
+    // for a summary still has to write the import line.
+    import: importStatement(component),
+    // Every dist entry is a client module, so a server component importing one
+    // receives client references whose static properties are undefined.
+    ...(component.api?.subComponents
+      ? {
+          compound: `${component.source.exportName}.* resolves only inside a client component; a server component rendering a compound part gets undefined.`,
+        }
+      : {}),
   };
 }
 
-function componentIndexEntry(component: ComponentMetadata) {
-  return {
-    ref: componentRef(component.id),
-    id: component.id,
-    name: component.name,
-    category: component.category,
-    description: component.description,
-    experimental: component.experimental ?? false,
-  };
-}
-
-function componentExamples(component: ComponentMetadata) {
+function componentExamples(component: AnyComponent) {
   return publicWorkshopCatalog
     .filter((entry) => entry.kind === "component-example" && entry.componentId === component.id)
-    .map((example) => {
-    return {
+    .map((example) => ({
       ref: example.ref,
-      id: example.id,
       name: example.name,
       description: example.description,
-      kind: example.kind,
-      access: example.access,
-      locked: example.locked,
-    };
-  });
+      // Constant across the public catalog, so only the exception is worth a column.
+      access: example.access === "free" ? undefined : example.access,
+      locked: example.locked === true,
+    }));
 }
 
-function componentImport(component: ComponentMetadata) {
-  const { packageName, exportName } = component.source;
-  // Every dist entry is a client module, so a server component importing one
-  // receives client references whose static properties are undefined. The
-  // compound parts survive only inside a client component.
-  const compound = component.api?.subComponents
-    ? ` ${exportName}'s compound parts resolve only inside a client component; a server component that renders ${exportName}.* gets undefined.`
-    : "";
-  return {
-    packageName,
-    importPath: importSpecifier(component),
-    exportName,
-    statement: importStatement(component),
-    note: `Import from the component's subpath. The ${packageName} barrel also resolves, but it pulls the whole library into the module graph.${compound}`,
-  };
-}
-
-// Compound parts reach the registry either already namespaced (Select.Content)
-// or under their flat runtime export name (SelectContent). Surface the
-// namespaced accessor agents actually write in JSX.
-function componentApi(component: ComponentMetadata) {
-  const api = component.api;
-  if (!api?.subComponents) return api;
-
-  const { exportName } = component.source;
-  const subComponents = Object.fromEntries(
-    Object.entries(api.subComponents).map(([key, value]) => {
-      const accessor =
-        key.startsWith(`${exportName}.`) || !key.startsWith(exportName) || key === exportName
-          ? key
-          : `${exportName}.${key.slice(exportName.length)}`;
-      return [accessor, value];
-    }),
-  );
-
-  return { ...api, subComponents };
-}
-
-function detailPayload(component: ComponentMetadata, detail: ComponentDetail) {
+function detailPayload(component: Component, detail: ComponentDetail) {
   const summary = componentSummary(component);
+  const api = component.api;
+  const props = api
+    ? { props: api.props, subComponents: api.subComponents, customTypes: api.customTypes, styleableParts: api.styleableParts }
+    : undefined;
+  const styling = api
+    ? { styleableParts: api.styleableParts, stateAttributes: api.stateAttributes, styleTypes: api.styleTypes }
+    : undefined;
 
-  if (detail === "summary") return summary;
-  if (detail === "api") {
-    return { ...summary, api: componentApi(component) };
-  }
-  if (detail === "usage") {
+  if (detail === "api") return { ...summary, api: props };
+  if (detail === "styling") return { ...summary, styling };
+  if (detail === "usage")
     return { ...summary, relatedComponents: component.relatedComponents, usage: component.usage };
-  }
-  if (detail === "examples") {
-    return { ...summary, examples: componentExamples(component) };
-  }
+  if (detail === "examples") return { ...summary, examples: componentExamples(component) };
+  if (detail === "full")
+    return {
+      ...summary,
+      relatedComponents: component.relatedComponents,
+      accessibility: component.accessibility,
+      reactAriaUrl: component.reactAriaUrl,
+      api: props,
+      styling: styling ? { stateAttributes: styling.stateAttributes, styleTypes: styling.styleTypes } : undefined,
+      usage: component.usage,
+      examples: componentExamples(component),
+    };
 
-  return {
-    ...summary,
-    relatedComponents: component.relatedComponents,
-    accessibility: component.accessibility,
-    reactAriaUrl: component.reactAriaUrl,
-    api: componentApi(component),
-    usage: component.usage,
-    examples: componentExamples(component),
-  };
+  return summary;
 }
 
-function detailNextSteps(component: ComponentMetadata, detail: ComponentDetail): string[] {
+function detailNextSteps(component: Component, detail: ComponentDetail): string[] {
   const ref = componentRef(component.id);
-  if (detail === "summary") {
-    return [
-      `get_component { query: "${ref}", detail: "api" } for props, slots, and variants.`,
-      `get_component { query: "${ref}", detail: "usage" } for when to use it and what to use instead.`,
-    ];
-  }
-  if (detail === "examples") {
-    return ["Retrieve one example's source with its ref, for example get_component { query: \"<ref>\" }."];
-  }
+  if (detail === "summary") return [`get_component { query: "${ref}", detail: "api" }`];
+  if (detail === "examples") return ["get_component { query: <an example ref> } for its source."];
+  // `styleableParts` names every slot, so this is only worth calling when the
+  // slot interfaces themselves are needed.
+  if (detail === "api" && component.api?.styleTypes?.length)
+    return [`get_component { query: "${ref}", detail: "styling" } for the slot type definitions.`];
   return [];
 }
 
@@ -154,19 +119,18 @@ function getExample(componentId: string, exampleId: string) {
   const component = registryAdapter.getComponent(componentId.toLowerCase());
   if (!component) return null;
   const example = publicWorkshopCatalog.find(
-    (entry) => entry.kind === "component-example" && entry.componentId === component.id && entry.id === exampleId,
+    (entry) =>
+      entry.kind === "component-example" && entry.componentId === component.id && entry.id === exampleId,
   ) as WorkshopCatalogEntry | undefined;
   if (!example) return null;
   return {
     ref: example.ref,
-    component: componentRef(component.id),
-    kind: example.kind,
-    id: example.id,
-    name: example.name,
-    description: example.description,
-    access: example.access,
-    locked: example.locked,
-    ...("code" in example && example.access === "free" ? { code: example.code } : {}),
+    payload: {
+      name: example.name,
+      description: example.description,
+      ...(example.access === "free" ? {} : { access: example.access, locked: example.locked }),
+      ...("code" in example && example.access === "free" ? { code: example.code } : {}),
+    },
   };
 }
 
@@ -176,37 +140,34 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
   const detail = input.detail ?? "summary";
 
   if (!query) {
-    return list(TOOL, registryAdapter.all().map(componentIndexEntry), [
-      'get_component { query: "<ref>", detail: "api" } for a component\'s props.',
-      'search_guides { query: "foundation" } before making design decisions.',
-    ]);
+    return list(registryAdapter.all().map(componentIndexEntry), ['get_component { query: "<ref>", detail: "api" }'], {
+      cap: clampLimit(input.limit, LIST_CAP, 200),
+    });
   }
 
   const ref = parseRef(query);
 
   if (ref?.kind === "example") {
     const example = getExample(ref.id, ref.exampleId!);
-    if (example) return exact(TOOL, example.ref, { example });
+    if (example) return exact(example.ref, example.payload);
 
     const component = registryAdapter.getComponent(ref.id.toLowerCase());
-    const suggestions: unknown[] = component
-      ? componentExamples(component)
-      : registryAdapter.suggest(ref.id, limit).map(componentSummary);
     return notFound(
-      TOOL,
       query,
       component
         ? `Component "${ref.id}" has no example "${ref.exampleId}".`
         : `No UI Lab component "${ref.id}" exists.`,
-      suggestions,
+      (component
+        ? componentExamples(component)
+        : registryAdapter.suggest(ref.id, limit).map(componentIndexEntry)) as unknown[],
       component
-        ? [`get_component { query: "${componentRef(component.id)}", detail: "examples" } to list valid example refs.`]
-        : ["get_component {} to list every component."],
+        ? [`get_component { query: "${componentRef(component.id)}", detail: "examples" }`]
+        : ["get_component {}"],
     );
   }
 
   if (ref && ref.kind !== "component") {
-    return notFound(TOOL, query, `get_component does not resolve "${ref.kind}:" refs.`, [], [
+    return notFound(query, `get_component does not resolve "${ref.kind}:" refs.`, [], [
       ref.kind === "guide"
         ? `search_guides { query: "${ref.id}", detail: "full" }`
         : `search_workshop { query: "${query}", detail: "full" }`,
@@ -218,9 +179,8 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
 
   if (component) {
     return exact(
-      TOOL,
       componentRef(component.id),
-      { component: detailPayload(component, detail) },
+      detailPayload(component, detail),
       detailNextSteps(component, detail),
     );
   }
@@ -228,26 +188,17 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
   const found = registryAdapter.search(query, limit);
   if (found.length > 0) {
     return matches(
-      TOOL,
       query,
-      found.map(componentSummary),
-      [
-        `Call get_component again with a match's ref, for example { query: "${componentRef(found[0]!.id)}", detail: "${detail}" }.`,
-      ],
-      detail === "summary"
-        ? undefined
-        : `detail "${detail}" was not applied: it only applies to an exact component ref.`,
+      found.map(componentIndexEntry),
+      [`get_component { query: "${componentRef(found[0]!.id)}", detail: "${detail}" }`],
+      detail === "summary" ? undefined : `detail "${detail}" applies only to an exact component ref.`,
     );
   }
 
   return notFound(
-    TOOL,
     query,
     `No UI Lab component matches "${query}".`,
-    registryAdapter.suggest(query, limit).map(componentSummary),
-    [
-      "get_component {} to list every component id.",
-      `search_workshop { query: "${query}" } if you are looking for a source artifact rather than a component.`,
-    ],
+    registryAdapter.suggest(query, limit).map(componentIndexEntry),
+    ["get_component {}", `search_workshop { query: "${query}" }`],
   );
 }

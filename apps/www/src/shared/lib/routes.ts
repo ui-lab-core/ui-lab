@@ -10,6 +10,8 @@ export const ROUTES = {
   supporterSuccess: "/supporter/success",
   /** The signed-in account dashboard. Protected in `proxy.ts`. */
   account: "/accounts",
+  accountSaved: "/accounts/saved",
+  accountSettings: "/accounts/settings",
   signIn: "/sign-in",
   signUp: "/sign-up",
 } as const;

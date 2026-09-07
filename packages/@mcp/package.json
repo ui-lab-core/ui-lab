@@ -22,7 +22,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm --filter ui-lab-registry run build && tsc",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
     "start": "node dist/index.js",
@@ -30,8 +30,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "ui-lab-registry": "workspace:*",
-    "yaml": "^2.6.1"
+    "ui-lab-registry": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

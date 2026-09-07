@@ -167,10 +167,14 @@ body {
   color: var(--color-foreground-300);
 }
 
+/* Swapping the mode rewrites every derived color at once, so transitions are
+   suppressed for the length of the swap to stop the whole page smearing. A control
+   that triggers the swap is mid-animation exactly when the suppression lands, so it
+   opts out and keeps its own transitions. */
 html.theme-transition,
-html.theme-transition *,
-html.theme-transition *::before,
-html.theme-transition *::after {
+html.theme-transition *:not(.theme-transition-exempt, .theme-transition-exempt *),
+html.theme-transition *:not(.theme-transition-exempt, .theme-transition-exempt *)::before,
+html.theme-transition *:not(.theme-transition-exempt, .theme-transition-exempt *)::after {
   transition: none !important;
 }
 

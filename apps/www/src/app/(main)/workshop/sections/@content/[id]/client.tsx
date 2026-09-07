@@ -36,7 +36,7 @@ export default function SectionDetailClient({
       previewHeight={variant.previewHeight}
       category="section"
       dynamicPreviewHeight
-      fullscreen={{ categoryId: "sections", exampleId: `${sectionId}-${index}` }}
+      entryRef={`section:${sectionId}#variant-${index}`}
       disclosure="modal"
       locked={section.locked}
     >
