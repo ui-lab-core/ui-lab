@@ -30,6 +30,7 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
     transform = true,
     whileElementsMounted,
     open,
+    pin = false,
   } = options;
 
   const [data, setData] = React.useState<UseFloatingData>({
@@ -140,13 +141,13 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
       // scroll frame for the life of the page, to position a `display: none`
       // element with no box. Tracking belongs to the open state, not to the
       // mount: this effect re-runs when `open` flips and positions it then.
-      if (whileElementsMountedRef.current && open !== false) {
+      if (!pin && whileElementsMountedRef.current && open !== false) {
         return whileElementsMountedRef.current(referenceEl, floatingEl, update);
       }
 
       update();
     }
-  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted, open]);
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted, open, pin]);
 
   const refs = React.useMemo(
     () => ({

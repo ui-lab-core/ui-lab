@@ -183,6 +183,14 @@ describe("Grid.core", () => {
     expect(grid).toHaveStyle({ marginTop: "12px" });
   });
 
+  it("applies the conventional unscoped grid class alongside the CSS-module class", () => {
+    const container = renderGrid();
+    const grid = getGridRoot(container);
+
+    expect(grid).toHaveClass("grid");
+    expect(grid).toHaveClass(styles.grid);
+  });
+
   testRefForwarding({
     component: Grid,
     expectedElement: HTMLDivElement,

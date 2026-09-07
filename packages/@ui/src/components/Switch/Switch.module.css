@@ -43,7 +43,7 @@
     --inset-gap: slot(thumb, offset, 0.15rem);
 
     inset-inline-start: var(--inset-gap);
-    inline-size: slot(thumb, size, 1.05rem);
+    inline-size: slot(thumb, width, slot(thumb, size, 1.05rem));
     block-size: slot(thumb, height, slot(thumb, size, 1.05rem));
     transition:
       inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))
@@ -66,7 +66,7 @@
 
   .switch[data-selected="true"] > .switch-thumb {
     background-color: slot(thumb, background-selected, slot(thumb, background, var(--foreground, currentColor)));
-    inset-inline-start: calc(var(--width) - slot(thumb, size, 1.05rem) - slot(thumb, offset, 0.15rem));
+    inset-inline-start: calc(var(--width) - slot(thumb, width, slot(thumb, size, 1.05rem)) - slot(thumb, offset, 0.15rem));
   }
 
   .switch[data-disabled="true"] {
@@ -78,7 +78,8 @@
     --width: 2rem;
     --height: 1.125rem;
     @slot thumb {
-      --size: 0.875rem;
+      --width: 0.875rem;
+      --height: 0.875rem;
       --offset: 0.125rem;
     }
   }

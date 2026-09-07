@@ -4,18 +4,10 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import css from "./Icon.module.css";
+import { DEFAULT_ICON_ASSET_BASE_URL, IconContext } from "./IconContext";
+import type { IconSource, IconVariant } from "./IconContext";
 
-/** Name of an icon variant folder (e.g. `stroke`, `fill`, `duotone`). Consuming apps define their own. */
-export type IconVariant = string;
-
-export interface IconSource {
-  id: string;
-  variant: IconVariant;
-}
-
-export type IconSourceResolver = (icon: IconSource) => string;
-
-export const DEFAULT_ICON_ASSET_BASE_URL = "/ui-lab-icons";
+export { DEFAULT_ICON_ASSET_BASE_URL } from "./IconContext";
 
 const ICON_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -40,40 +32,6 @@ export function resolveIconSource(
   assetBaseUrl = DEFAULT_ICON_ASSET_BASE_URL,
 ): string {
   return `${normalizeAssetBaseUrl(assetBaseUrl)}/${variant}/${normalizeIconId(id)}.svg`;
-}
-
-interface IconContextValue {
-  assetBaseUrl: string;
-  defaultVariant?: IconVariant;
-  resolveSource?: IconSourceResolver;
-}
-
-const IconContext = React.createContext<IconContextValue>({
-  assetBaseUrl: DEFAULT_ICON_ASSET_BASE_URL,
-});
-
-export interface IconProviderProps {
-  children: React.ReactNode;
-  /** Base URL containing variant folders. Defaults to `/ui-lab-icons`. */
-  assetBaseUrl?: string;
-  /** Variant folder to use when an `<Icon>` doesn't specify one. */
-  defaultVariant?: IconVariant;
-  /** Optional application-level resolver for base paths, CDNs, or custom asset layouts. */
-  resolveSource?: IconSourceResolver;
-}
-
-export function IconProvider({
-  children,
-  assetBaseUrl = DEFAULT_ICON_ASSET_BASE_URL,
-  defaultVariant,
-  resolveSource,
-}: IconProviderProps) {
-  const value = React.useMemo(
-    () => ({ assetBaseUrl, defaultVariant, resolveSource }),
-    [assetBaseUrl, defaultVariant, resolveSource],
-  );
-
-  return <IconContext.Provider value={value}>{children}</IconContext.Provider>;
 }
 
 export interface IconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {

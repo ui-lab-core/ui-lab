@@ -117,6 +117,25 @@ describe("Flex.core", () => {
     expect(flex).toHaveStyle({ marginTop: "12px" });
   });
 
+  it("applies the conventional unscoped flex class alongside the scoped module class", () => {
+    const container = renderFlex();
+    const flex = getFlexRoot(container);
+
+    expect(flex).toHaveClass("flex");
+    expect(flex).toHaveClass(styles.flex);
+  });
+
+  it("applies styles.root after className on the root flex element", () => {
+    const container = renderFlex({
+      className: "custom-flex",
+      styles: { root: "slot-root" },
+    });
+    const flex = getFlexRoot(container);
+
+    expect(flex).toHaveClass("custom-flex");
+    expect(flex).toHaveClass("slot-root");
+  });
+
   testRefForwarding({
     component: Flex,
     expectedElement: HTMLDivElement,

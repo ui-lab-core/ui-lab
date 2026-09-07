@@ -149,6 +149,7 @@ interface ExpandContextValue {
   state: ToggleState;
   isDisabled: boolean;
   resolvedStyles: ReturnType<typeof resolveExpandStyles>;
+  contentId: string;
 }
 
 const ExpandContext = React.createContext<ExpandContextValue | null>(null);
@@ -175,6 +176,7 @@ export interface ExpandIconProps extends React.HTMLAttributes<HTMLSpanElement> {
   color?: string;
 }
 
+/** Disclosure icon rendered inside the trigger, rotated to reflect collapsed/expanded state. */
 const ExpandIcon = React.forwardRef<HTMLSpanElement, ExpandIconProps>(
   ({ children, className, color, ...props }, ref) => {
     const { state, resolvedStyles } = useExpandContext();
@@ -216,9 +218,10 @@ export interface ExpandTriggerProps
   title?: React.ReactNode;
 }
 
+/** Button that toggles Expand's expanded state and controls its content panel. */
 const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
   ({ children, className, title, ...props }, ref) => {
-    const { state, isDisabled, resolvedStyles } = useExpandContext();
+    const { state, isDisabled, resolvedStyles, contentId } = useExpandContext();
     const triggerRef = React.useRef<HTMLButtonElement>(null);
     const mergedRef = useMergeRefs(triggerRef, ref);
 
@@ -244,6 +247,7 @@ const ExpandTrigger = React.forwardRef<HTMLButtonElement, ExpandTriggerProps>(
         className={cn("trigger", css.trigger, className, resolvedStyles.trigger)}
         type="button"
         aria-expanded={state.isSelected}
+        aria-controls={contentId}
         data-selected={state.isSelected ? "true" : undefined}
         data-expanded={state.isSelected ? "true" : undefined}
         data-disabled={isDisabled ? "true" : undefined}
@@ -284,13 +288,15 @@ export interface ExpandContentProps extends React.HTMLAttributes<HTMLDivElement>
   from?: ExpandDirection;
 }
 
+/** Collapsible panel revealed while Expand is open. */
 const ExpandContent = React.forwardRef<HTMLDivElement, ExpandContentProps>(
   ({ children, className, from, ...props }, ref) => {
-    const { state, resolvedStyles } = useExpandContext();
+    const { state, resolvedStyles, contentId } = useExpandContext();
 
     return (
       <div
         ref={ref}
+        id={contentId}
         className={cn("content", css.content, className, resolvedStyles.content)}
         data-selected={state.isSelected ? "true" : undefined}
         data-expanded={state.isSelected ? "true" : undefined}
@@ -307,6 +313,7 @@ const ExpandContent = React.forwardRef<HTMLDivElement, ExpandContentProps>(
 );
 ExpandContent.displayName = "Expand.Content";
 
+/** Divider rendered between the trigger and content; automatically moved inside the content panel. */
 const ExpandDivider = React.forwardRef<HTMLDivElement, DividerProps>(
   ({ className, spacing = "none", styles: dividerStyles, ...props }, ref) => {
     const { resolvedStyles } = useExpandContext();
@@ -465,6 +472,8 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
     });
 
     const resolvedStyles = resolveExpandStyles(stylesProp);
+    // Links the trigger's aria-controls to the content panel per the ARIA disclosure pattern.
+    const contentId = React.useId();
     const rootRef = React.useRef<HTMLDivElement>(null);
     const scopeRef = React.useRef<HTMLDivElement>(null);
     const mergedRootRef = useMergeRefs(rootRef, ref);
@@ -484,8 +493,9 @@ const ExpandRoot = React.forwardRef<HTMLDivElement, ExpandProps>(
         state,
         isDisabled: disabled,
         resolvedStyles,
+        contentId,
       }),
-      [state, disabled, resolvedStyles],
+      [state, disabled, resolvedStyles, contentId],
     );
 
     return (

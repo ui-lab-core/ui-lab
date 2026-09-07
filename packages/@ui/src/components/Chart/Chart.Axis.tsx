@@ -54,22 +54,29 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
             y1={plot.y + plot.height}
             y2={plot.y + plot.height}
           />
-          {xTickIndices.map((index) => (
-            <text
-              key={index}
-              className={cn(styles.tick, resolved.tick)}
-              x={xPosition(index)}
-              y={plot.y + plot.height + 16}
-              textAnchor="middle"
-            >
-              {format ? format(xValues[index]) : formatX(xValues[index])}
-            </text>
-          ))}
+          {xTickIndices.map((index) => {
+            const x = xPosition(index);
+            // Anchor edge ticks inward so the first/last label sits flush with the
+            // plot edge instead of overflowing half its width into the margins.
+            const anchor =
+              x <= plot.x + 0.5 ? "start" : x >= plot.x + plot.width - 0.5 ? "end" : "middle";
+            return (
+              <text
+                key={index}
+                className={cn(styles.tick, resolved.tick)}
+                x={x}
+                y={plot.y + plot.height + 20}
+                textAnchor={anchor}
+              >
+                {format ? format(xValues[index]) : formatX(xValues[index])}
+              </text>
+            );
+          })}
           {label && (
             <text
               className={cn(styles.label, resolved.label)}
               x={plot.x + plot.width / 2}
-              y={plot.y + plot.height + 36}
+              y={plot.y + plot.height + 40}
               textAnchor="middle"
             >
               {label}
@@ -88,17 +95,25 @@ const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
           y1={plot.y}
           y2={plot.y + plot.height}
         />
-        {yTicks.map((value) => (
-          <text
-            key={value}
-            className={cn(styles.tick, resolved.tick)}
-            x={plot.x - 8}
-            y={yScale(value) + 3}
-            textAnchor="end"
-          >
-            {format ? format(value) : value.toLocaleString()}
-          </text>
-        ))}
+        {yTicks.map((value) => {
+          const y = yScale(value);
+          // Anchor the top/bottom ticks by their baseline so the first/last label
+          // sits flush inside the plot instead of bleeding past its top/bottom edge.
+          const baseline =
+            y <= plot.y + 0.5 ? "hanging" : y >= plot.y + plot.height - 0.5 ? "auto" : "central";
+          return (
+            <text
+              key={value}
+              className={cn(styles.tick, resolved.tick)}
+              x={plot.x - 8}
+              y={y}
+              textAnchor="end"
+              dominantBaseline={baseline}
+            >
+              {format ? format(value) : value.toLocaleString()}
+            </text>
+          );
+        })}
         {label && (
           <text
             className={cn(styles.label, resolved.label)}

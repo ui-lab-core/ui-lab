@@ -127,6 +127,15 @@ export interface TableProps<T extends Record<string, any>> extends Omit<
   scroll?: "auto" | "rows" | "none";
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: TableStylesProp;
+  /**
+   * Strips every part's own background so only content and any border/divider
+   * the consumer adds remains visible. The theme sets `--background` on the
+   * container, header, and body row at a higher-priority cascade layer than
+   * component defaults, so this paints `background-color: transparent`
+   * directly (and drops the cell/header-cell border-bottom) rather than
+   * trying to out-cascade that variable.
+   */
+  bare?: boolean;
   /** Optional composed table content. When omitted, the default header/body renderer is used. */
   children?: React.ReactNode;
 }
@@ -265,6 +274,7 @@ const TableRoot = <T extends Record<string, any>>(
     onFilterChange,
     scroll = "auto",
     styles,
+    bare = false,
     className,
     children,
     "aria-label": ariaLabel = "Data table",
@@ -410,6 +420,7 @@ const TableRoot = <T extends Record<string, any>>(
       <div
         ref={ref}
         className={cn("table", css.root, className, resolved.root)}
+        data-bare={bare ? "true" : undefined}
         role="region"
         aria-label={ariaLabel}
         {...props}
@@ -469,6 +480,7 @@ const TableRoot = <T extends Record<string, any>>(
               className={cn(css.scroller, resolved.scrollerRoot)}
               direction="horizontal"
               hide={false}
+              inline={true}
               data-slot="scroller"
             >
               {tableElement}

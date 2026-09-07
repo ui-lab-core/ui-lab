@@ -9,6 +9,7 @@ import {
   MenuRadioGroup,
 } from "./Menu.Decorative";
 import { MenuSub, MenuSubContent, MenuSubTrigger } from "./Menu.Submenu";
+import { Switch as MenuSwitch } from "../List/List.Controls";
 
 const Menu = Object.assign(MenuRoot, {
   Trigger: MenuTrigger,
@@ -16,6 +17,7 @@ const Menu = Object.assign(MenuRoot, {
   Item: MenuItem,
   CheckboxItem: MenuCheckboxItem,
   RadioItem: MenuRadioItem,
+  Switch: MenuSwitch,
   Label: MenuLabel,
   Separator: MenuSeparator,
   Shortcut: MenuShortcut,
@@ -34,6 +36,7 @@ export {
   MenuItem,
   MenuCheckboxItem,
   MenuRadioItem,
+  MenuSwitch,
   MenuLabel,
   MenuSeparator,
   MenuShortcut,
@@ -44,6 +47,7 @@ export {
   MenuSubContent,
   MenuSubTrigger,
 };
+export type { ListActionDef, ListSwitchProps as MenuSwitchProps } from "../List";
 export type {
   MenuType,
   MenuSelectionMode,

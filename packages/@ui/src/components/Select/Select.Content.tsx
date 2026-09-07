@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
+import { shift } from "../../hooks/useFloat/core/middleware/shift";
 import { offset } from "../../hooks/useFloat/core/middleware/offset";
 import type { Middleware } from "../../hooks/useFloat/core/types";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
@@ -211,7 +212,9 @@ const alignOverlayTarget = (
   target: "item" | "search" | "search-value" | "search-multiple",
 ): Middleware => ({
   name: "selectAlignOverlayTarget",
-  async fn({ elements }) {
+  async fn(state) {
+    const { elements, middlewareData } = state;
+    if (middlewareData.selectAlignOverlayTarget?.fallback) return {};
     const reference = elements.reference as HTMLElement;
     const floating = elements.floating as HTMLElement;
     const triggerText = reference.querySelector<HTMLElement>("[data-select-trigger-text]");
@@ -226,6 +229,7 @@ const alignOverlayTarget = (
         ? floating.querySelector<HTMLElement>("[data-select-content-search-input]")
         : selectedItem?.querySelector<HTMLElement>("[data-select-item-text]");
 
+    let coordinates: { x: number; y: number };
     if (target === "search-multiple") {
       const searchSlot = floating.querySelector<HTMLElement>("[data-select-content-search-anchor]");
       if (!triggerValue || !searchSlot) return {};
@@ -233,11 +237,11 @@ const alignOverlayTarget = (
       const triggerRect = triggerValue.getBoundingClientRect();
       const searchSlotRect = searchSlot.getBoundingClientRect();
       const floatingRect = floating.getBoundingClientRect();
-      return {
+      coordinates = {
         x: triggerRect.left - (searchSlotRect.left - floatingRect.left),
         y: triggerRect.top - (searchSlotRect.top - floatingRect.top),
       };
-    }
+    } else {
 
     if ((!triggerText && !triggerValue) || !overlayText) return {};
 
@@ -247,13 +251,35 @@ const alignOverlayTarget = (
         : triggerText
           ? getTextOrigin(triggerText)
           : null;
-    if (!triggerOrigin) return {};
+    if (!triggerOrigin) {
+      return { data: { fallback: true }, reset: { placement: state.initialPlacement } };
+    }
     const overlayOrigin = getTextOrigin(overlayText);
     const floatingRect = floating.getBoundingClientRect();
-    return {
+    coordinates = {
       x: triggerOrigin.x - (overlayOrigin.x - floatingRect.left),
       y: triggerOrigin.y - (overlayOrigin.y - floatingRect.top),
     };
+    }
+
+    // Text alignment can move the panel left of the trigger. Include that
+    // displacement in its minimum width so the opposite edge stays covered.
+    const referenceRect = reference.getBoundingClientRect();
+    const minWidth = referenceRect.width + Math.max(0, referenceRect.left - coordinates.x);
+    floating.style.minWidth = `${Math.min(minWidth, Number.parseFloat(floating.style.maxWidth) || Infinity)}px`;
+    const dimensions = await state.platform.getDimensions(floating);
+    if (dimensions.width !== state.rects.floating.width || dimensions.height !== state.rects.floating.height) {
+      return { ...coordinates, reset: { rects: true } };
+    }
+
+    const overflow = await state.platform.detectOverflow(
+      { ...state, ...coordinates },
+      { boundary: [], rootBoundary: "viewport", padding: 0 },
+    );
+    if (Object.values(overflow).some((value) => value > 0)) {
+      return { data: { fallback: true }, reset: { placement: state.initialPlacement } };
+    }
+    return coordinates;
   },
 });
 
@@ -326,7 +352,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
     const side = position === "top" ? "top" : "bottom";
     const requestedPlacement = align === "center" ? side : (`${side}-${align}` as const);
-    const { refs, floatingStyles, x, y, placement, update, isPositioned } = useFloating({
+    const { refs, floatingStyles, x, y, placement, update, isPositioned, middlewareData } = useFloating({
       placement: requestedPlacement,
       // Keep the panel anchored to viewport-fixed/sticky triggers without scroll lag.
       strategy: "fixed",
@@ -334,34 +360,56 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       // The panel stays portalled and hidden while closed, so tracking has to
       // be gated on the open state rather than on the mount.
       open: isOpen,
-      middleware:
-        position === "overlay"
-          ? [
-              alignOverlayTarget(
-                shouldMirrorTriggerValue
-                  ? "search-multiple"
-                  : hasContentSearch
-                    ? triggerType === "input"
-                      ? "search"
-                      : "search-value"
-                    : "item",
-              ),
-            ]
-          : [
-              offset({
-                mainAxis: offsetValue,
-                crossAxis: groupContext?.isInGroup ? -1 : 0,
-              }),
-              flip({
-                fallbackPlacements: [
-                  align === "center"
-                    ? position === "top"
-                      ? "bottom"
-                      : "top"
-                    : `${position === "top" ? "bottom" : "top"}-${align}`,
-                ],
-              }),
-            ],
+      middleware: [
+        ...(position === "overlay"
+          ? [alignOverlayTarget(
+              shouldMirrorTriggerValue
+                ? "search-multiple"
+                : hasContentSearch
+                  ? triggerType === "input" ? "search" : "search-value"
+                  : "item",
+            )]
+          : []),
+        ...[
+          offset({ mainAxis: offsetValue, crossAxis: groupContext?.isInGroup ? -1 : 0 }),
+          flip({
+            padding: 8,
+            fallbackPlacements: [align === "center"
+              ? side === "top" ? "bottom" : "top"
+              : `${side === "top" ? "bottom" : "top"}-${align}`],
+          }),
+          shift({ padding: 8 }),
+        ].map((middleware): Middleware => ({
+          ...middleware,
+          fn: (state) => position !== "overlay" || state.middlewareData.selectAlignOverlayTarget?.fallback
+            ? middleware.fn(state)
+            : {},
+        })),
+        {
+          name: "selectViewportSize",
+          async fn(state) {
+            const overflow = await state.platform.detectOverflow(state, {
+              boundary: [],
+              rootBoundary: "viewport",
+              padding: position === "overlay" && !state.middlewareData.selectAlignOverlayTarget?.fallback ? 0 : 8,
+            });
+            const floating = state.elements.floating as HTMLElement;
+            const panel = floating.firstElementChild as HTMLElement | null;
+            const { width, height } = state.rects.floating;
+            floating.style.maxWidth = `${Math.max(0, width - overflow.left - overflow.right)}px`;
+            // A viewport narrower than the trigger must take precedence over min-width.
+            floating.style.minWidth = `${Math.min(Number.parseFloat(floating.style.minWidth) || state.rects.reference.width, Number.parseFloat(floating.style.maxWidth))}px`;
+            if (panel) {
+              panel.style.maxHeight = `${Math.max(0, height - overflow[state.placement.startsWith("top") ? "top" : "bottom"])}px`;
+              panel.style.overflowY = "auto";
+            }
+            const dimensions = await state.platform.getDimensions(floating);
+            return dimensions.width !== width || dimensions.height !== height
+              ? { reset: { rects: true } }
+              : {};
+          },
+        },
+      ],
     });
 
     React.useLayoutEffect(() => {
@@ -654,10 +702,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       placement,
       skipExitAnimation: true,
     });
-    const resolvedAnimationStyles =
-      position === "overlay"
-        ? ({ opacity: 1, transform: "none", transition: "none", pointerEvents: "auto" } as const)
-        : animationStyles;
+    const isOverlayAlignmentValid =
+      position === "overlay" && !middlewareData.selectAlignOverlayTarget?.fallback;
+    const resolvedAnimationStyles = isOverlayAlignmentValid
+      ? ({ opacity: 1, transform: "none", transition: "none", pointerEvents: "auto" } as const)
+      : animationStyles;
 
     if (!mounted) return null;
 
@@ -684,6 +733,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         {/* The panel is already the listbox; the inner collection must not nest a second one. */}
         <List
           role="presentation"
+          layout="spaced"
           gap="xs"
           className={resolved["list.root"].className}
           style={resolved["list.root"].style}

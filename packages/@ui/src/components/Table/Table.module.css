@@ -21,7 +21,7 @@
     max-width: 100% !important;
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
-    background-color: var(--container-background, var(--background));
+    background-color: var(--container-background, slot(table, background, var(--background)));
   }
 
   /* The Scroll port inside handles the overflow in this mode. */
@@ -59,7 +59,7 @@
     display: table;
     border-collapse: collapse;
     min-width: max-content;
-    background-color: var(--background, transparent);
+    background-color: slot(table, background, var(--background));
     color: var(--foreground);
     letter-spacing: var(--letter-spacing-code, 0);
     line-height: var(--leading-code, 1.5);
@@ -67,23 +67,23 @@
 
   .header {
     display: table-header-group;
-    background-color: var(--background);
+    background-color: slot(table, background, var(--background));
   }
 
   .body {
     display: table-row-group;
-    background-color: var(--background);
+    background-color: slot(table, background, var(--background));
   }
 
   .headerRow {
     display: table-row;
-    background-color: var(--background);
+    background-color: slot(table, background, var(--background));
   }
 
   .table .headerCell {
     @apply px-3 py-2.5 text-left;
     display: table-cell;
-    background-color: var(--background);
+    background-color: slot(table, background, var(--background));
     color: var(--foreground);
     font-family: var(--font-body, inherit);
     font-size: var(--text-sm, 0.875rem);
@@ -185,7 +185,7 @@
   .table .cell {
     @apply px-3 py-2.5 align-middle;
     display: table-cell;
-    background-color: var(--background, transparent);
+    background-color: slot(table, background, var(--background));
     color: var(--foreground);
     border: 0;
     border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
@@ -211,7 +211,7 @@
 
   .emptyState {
     @apply px-4 py-8 text-center;
-    background-color: var(--background);
+    background-color: slot(table, background, var(--background));
     color: var(--foreground);
   }
 
@@ -259,5 +259,27 @@
 
   .filterInput {
     @apply w-full;
+  }
+
+  /*
+   * The theme sets `--background` on `.container`/`.header`/`.body > .item`
+   * from a higher-priority cascade layer, so zeroing that variable here can't
+   * win. Overriding `background-color` directly (a property the theme never
+   * touches) sidesteps the layer entirely.
+   */
+  .root[data-bare="true"] .container,
+  .root[data-bare="true"] .table,
+  .root[data-bare="true"] .header,
+  .root[data-bare="true"] .headerRow,
+  .root[data-bare="true"] .body,
+  .root[data-bare="true"] .table .headerCell,
+  .root[data-bare="true"] .table .cell,
+  .root[data-bare="true"] .emptyState {
+    background-color: transparent;
+  }
+
+  .root[data-bare="true"] .table .headerCell,
+  .root[data-bare="true"] .table .cell {
+    border-bottom: none;
   }
 }

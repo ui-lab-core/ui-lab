@@ -125,6 +125,7 @@ export default defineConfig({
     lib: {
       entry: {
         "ui-lab-ui": path.resolve(__dirname, "src/index.ts"),
+        "icon-provider": path.resolve(__dirname, "src/components/Icon/provider.ts"),
         providers: path.resolve(__dirname, "src/providers/index.ts"),
         "theme-script": path.resolve(__dirname, "src/providers/themeScript.ts"),
         "theme-server": path.resolve(__dirname, "src/theme-server.ts"),

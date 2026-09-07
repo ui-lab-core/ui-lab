@@ -236,8 +236,8 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
     const margin = {
       top: 8,
       right: 12,
-      bottom: xAxis ? (xAxis.label ? 44 : 28) : 8,
-      left: yAxis ? (yAxis.label ? 60 : 44) : 8,
+      bottom: xAxis ? (xAxis.label ? 48 : 32) : 8,
+      left: yAxis ? (yAxis.label ? 52 : 36) : 8,
     };
     const plot = {
       x: margin.left,

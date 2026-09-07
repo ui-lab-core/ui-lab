@@ -7,26 +7,38 @@ import { resolveGapStep, type GapSize } from "@/lib/gap";
 import { resolveSizingStyles, type SizingValue } from "@/lib/sizing";
 import css from "./Grid.module.css";
 
-interface GridStyleSlots {
+/** Style overrides for the Grid root element. */
+export interface GridStyleSlots {
+  /** Styles the grid root element. */
   root?: Style;
 }
 
-type GridStylesProp = StylesProp<GridStyleSlots>;
+/** Style overrides accepted by Grid. */
+export type GridStylesProp = StylesProp<GridStyleSlots>;
 
-const resolveGridBaseStyles = createStylesResolver(["root"] as const);
+const resolveGridStyles = createStylesResolver(["root"] as const);
 
-type GridColumns = number | "auto-fit" | "auto-fill";
-type GridRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto" | "masonry";
-type GridJustify =
+/** Column count or auto-placement keyword accepted by `columns`. */
+export type GridColumns = number | "auto-fit" | "auto-fill";
+/** Fixed row count or auto-placement keyword accepted by `rows`. */
+export type GridRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto" | "masonry";
+export type GridJustify =
   | "justify-start"
   | "justify-end"
   | "justify-center"
   | "justify-between"
   | "justify-around"
   | "justify-evenly";
-type GridAlign = "align-start" | "align-end" | "align-center" | "align-stretch" | "align-baseline";
-type GridJustifyItems = "start" | "end" | "center" | "stretch";
-type GridAlignContent =
+export type GridAlign =
+  | "align-start"
+  | "align-end"
+  | "align-center"
+  | "align-stretch"
+  | "align-baseline";
+/** Horizontal alignment of grid items within their cells, accepted by `justifyItems`. */
+export type GridJustifyItems = "start" | "end" | "center" | "stretch";
+/** Vertical distribution of grid rows within the container, accepted by `alignContent`. */
+export type GridAlignContent =
   | "start"
   | "end"
   | "center"
@@ -34,15 +46,23 @@ type GridAlignContent =
   | "space-between"
   | "space-around"
   | "space-evenly";
-type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
-type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
-type GridTemplateColumns = GridColumns | (string & {});
-type GridTemplateRows = GridRows | (string & {});
-type GridMasonryColumnWidth = string & {};
-type GridGap = GapSize | "none" | number;
-type GridLayout = "cards" | "dashboard" | "sidebar" | "sidebar-end" | "split" | "gallery";
+/** Auto-placement direction and packing accepted by `autoFlow`. */
+export type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
+/** Masonry column-fill strategy accepted by `masonryColumnFill`. */
+export type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
+/** `grid-template-columns` value accepted by `columns`: a track count, an auto-placement keyword, or any CSS grid-template-columns value. */
+export type GridTemplateColumns = GridColumns | (string & {});
+/** `grid-template-rows` value accepted by `rows`: a fixed row count, `auto`, `masonry`, or any CSS grid-template-rows value. */
+export type GridTemplateRows = GridRows | (string & {});
+/** An open CSS width value accepted by `masonryColumnWidth`, such as `"18rem"` or `"max(22rem, 40vw)"`. */
+export type GridMasonryColumnWidth = string & {};
+/** Gap size accepted by `gap`, `rowGap`, and `columnGap`: a design-system gap step, `none`, or a Tailwind spacing-scale number. */
+export type GridGap = GapSize | "none" | number;
+/** Golden-standard layout preset accepted by `layout`. */
+export type GridLayout = "cards" | "dashboard" | "sidebar" | "sidebar-end" | "split" | "gallery";
 
-type ResponsiveValue<T> = { sm?: T; md?: T; lg?: T; xl?: T };
+/** Per-breakpoint override of a Grid value, applied at the `sm`, `md`, `lg`, and `xl` container-query breakpoints. */
+export type ResponsiveValue<T> = { sm?: T; md?: T; lg?: T; xl?: T };
 
 const JUSTIFY_KEYS: readonly GridJustify[] = [
   "justify-start",
@@ -61,46 +81,119 @@ const ALIGN_KEYS: readonly GridAlign[] = [
   "align-baseline",
 ];
 
-type GridJustifyProps = { [K in GridJustify]?: boolean };
-type GridAlignProps = { [K in GridAlign]?: boolean };
+export type GridJustifyProps = { [K in GridJustify]?: boolean };
+export type GridAlignProps = { [K in GridAlign]?: boolean };
 
 export interface GridProps
   extends React.HTMLAttributes<HTMLDivElement>, GridJustifyProps, GridAlignProps {
-  /** Grid template columns value, or responsive object per breakpoint */
+  /**
+   * Grid template columns: a fixed track count, `auto-fit`/`auto-fill`, a responsive object per breakpoint, or any CSS `grid-template-columns` value. A responsive object wraps the root in a container-query parent so tracks change with the container's width instead of the viewport.
+   * @category Core
+   * @default 3
+   * @typeDoc GridTemplateColumns
+   */
   columns?: GridTemplateColumns | ResponsiveValue<GridTemplateColumns>;
-  /** Grid template rows value, or responsive object per breakpoint */
+  /**
+   * Grid template rows: a fixed row count, `auto`, `masonry`, a responsive object per breakpoint, or any CSS `grid-template-rows` value. `masonry` falls back to a CSS multi-column layout, since `grid-template-rows: masonry` is not supported by Chromium or WebKit.
+   * @category Core
+   * @default "auto"
+   * @typeDoc GridTemplateRows
+   */
   rows?: GridTemplateRows | ResponsiveValue<GridTemplateRows>;
-  /** Gap between all grid cells, or responsive object per breakpoint. A number maps directly to the Tailwind spacing scale (e.g. `gap={4}` behaves like `gap-4`). */
+  /**
+   * Gap between all grid cells, or a responsive object per breakpoint. A number maps directly to the Tailwind spacing scale (e.g. `gap={4}` behaves like `gap-4`).
+   * @category Core
+   * @default "md"
+   * @typeDoc GridGap
+   */
   gap?: GridGap | ResponsiveValue<GridGap>;
-  /** Root height. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS height. Overrides `style.height` and sizing classes. */
+  /**
+   * Root height. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS height. Overrides `style.height` and sizing classes.
+   * @category Core
+   * @typeDoc SizingValue
+   */
   h?: SizingValue;
-  /** Root width. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS width. Overrides `style.width` and sizing classes. */
+  /**
+   * Root width. Numbers use the Tailwind spacing scale; strings accept `auto`, `full`, `screen`, or any CSS width. Overrides `style.width` and sizing classes.
+   * @category Core
+   * @typeDoc SizingValue
+   */
   w?: SizingValue;
-  /** Override gap between rows only */
+  /**
+   * Overrides the gap between rows only, independent of `gap`.
+   * @category Core
+   * @typeDoc GridGap
+   */
   rowGap?: GridGap;
-  /** Override gap between columns only */
+  /**
+   * Overrides the gap between columns only, independent of `gap`.
+   * @category Core
+   * @typeDoc GridGap
+   */
   columnGap?: GridGap;
-  /** Override horizontal (column) gap. Alias for `columnGap`. */
+  /**
+   * Overrides horizontal (column) gap. Alias for `columnGap`; when both are set, `columnGap` takes precedence.
+   * @category Core
+   * @typeDoc GridGap
+   */
   "gap-x"?: GridGap;
-  /** Override vertical (row) gap. Alias for `rowGap`. */
+  /**
+   * Overrides vertical (row) gap. Alias for `rowGap`; when both are set, `rowGap` takes precedence.
+   * @category Core
+   * @typeDoc GridGap
+   */
   "gap-y"?: GridGap;
-  /** Horizontal alignment of items within their cells */
+  /**
+   * Horizontal alignment of each item within its own grid cell.
+   * @category Alignment
+   * @default "stretch"
+   */
   justifyItems?: GridJustifyItems;
-  /** Vertical distribution of the grid rows within its container */
+  /**
+   * Vertical distribution of the grid's rows within the container when the container is taller than the content.
+   * @category Alignment
+   * @default "start"
+   */
   alignContent?: GridAlignContent;
-  /** Direction items are auto-placed when no explicit placement is set */
+  /**
+   * Direction and packing used to auto-place items that have no explicit grid placement.
+   * @category Alignment
+   * @default "row"
+   */
   autoFlow?: GridAutoFlow;
-  /** Fixed masonry column width. Useful for horizontal masonry tracks that overflow the viewport. */
+  /**
+   * Fixed masonry column width. Useful for horizontal masonry tracks that overflow the viewport. Has no effect unless `rows="masonry"`.
+   * @category Masonry
+   * @typeDoc GridMasonryColumnWidth
+   */
   masonryColumnWidth?: GridMasonryColumnWidth | ResponsiveValue<GridMasonryColumnWidth>;
-  /** How masonry content fills columns when the grid has a constrained height. */
+  /**
+   * How masonry content fills columns when the grid has a constrained height. Has no effect unless `rows="masonry"`.
+   * @category Masonry
+   */
   masonryColumnFill?: GridMasonryColumnFill;
-  /** Whether masonry children receive the Grid-managed vertical gap margin. */
+  /**
+   * Whether masonry children receive the Grid-managed vertical gap margin between stacked items. Has no effect unless `rows="masonry"`.
+   * @category Masonry
+   * @default true
+   */
   masonryItemGap?: boolean;
-  /** Wraps the grid in a container query parent for breakpoint-aware responsiveness */
+  /**
+   * Wraps the root in a container-query parent so `columns`, `rows`, and `gap` respond to the container's width instead of the viewport, even when none of them is set to a responsive object.
+   * @category Core
+   * @default false
+   */
   containerQueryResponsive?: boolean;
-  /** Golden-standard layout preset. Sets sensible `columns`/`rows`/`gap` defaults that any explicit prop overrides. */
+  /**
+   * Golden-standard layout preset. Sets sensible `columns`/`rows`/`gap` defaults; any explicit prop the caller passes overrides the matching layout default.
+   * @category Core
+   */
   layout?: GridLayout;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /**
+   * Keyed styles for the root element. Use `className` for conventional root classes.
+   * @category Styling
+   * @typeDoc GridStyleSlots
+   */
   styles?: GridStylesProp;
 }
 
@@ -222,7 +315,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       delete props[key];
     }
 
-    const resolved = resolveGridBaseStyles(styles);
+    const resolved = resolveGridStyles(styles);
     const rootStyle = { ...style, ...resolveSizingStyles({ h, w }) };
     const responsiveCols = isResponsive<GridTemplateColumns>(columns);
     const responsiveRows = isResponsive<GridTemplateRows>(rows);
@@ -302,6 +395,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     if (masonryColumnFill) vars["--grid-masonry-col-fill"] = masonryColumnFill;
 
     const gridClasses = cn(
+      "grid",
       css.grid,
       responsiveCols && css["responsive-cols"],
       responsiveGap && css["responsive-gap"],
@@ -332,7 +426,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
           {...props}
         >
           <div
-            className={cn(gridClasses, className)}
+            className={gridClasses}
             style={
               { ...vars, ...(h !== undefined ? { height: "100%" } : {}) } as React.CSSProperties
             }

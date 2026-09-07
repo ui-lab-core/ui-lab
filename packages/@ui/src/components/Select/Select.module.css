@@ -77,28 +77,6 @@
     @apply flex-none w-auto;
   }
 
-  /* A Value placed beside the Trigger is the label segment of one Select,
-     not another interactive control. Give that segment the same visual
-     treatment as a normal trigger value while keeping one focus target. */
-  .select.select-split > .value[data-external="true"] {
-    align-items: center;
-    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
-      slot(trigger, padding-inline, calc(var(--spacing) * 2));
-    --inset-gap: slot(border, width, var(--border-width-base, 1px));
-    border-radius: var(--inset-radius) 0 0 var(--inset-radius);
-    background-color: var(--background, transparent);
-    transition-property: background-color;
-    transition-duration: var(--hover-duration, var(--hover-leave-duration));
-    transition-timing-function: var(--hover-transition-timing-function);
-
-    @media (hover: hover) {
-      &:not([data-disabled]):hover {
-        --hover-duration: var(--hover-enter-duration, 0ms);
-        background-color: slot(trigger, background-hover, transparent);
-      }
-    }
-  }
-
   .select button.trigger {
     @apply p-0;
   }
@@ -112,6 +90,7 @@
     transition-timing-function: var(--hover-transition-timing-function);
     padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
       slot(trigger, padding-inline, calc(var(--spacing) * 2));
+    padding-left: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) + var(--spacing, 0.25rem));
     --inset-gap: slot(border, width, var(--border-width-base, 1px));
     border-radius: var(--inset-radius) 0 0 var(--inset-radius);
     font-size: var(--size, var(--text-sm, 0.875rem));
@@ -215,7 +194,8 @@
   .item,
   .sub-trigger {
     @apply flex items-center gap-2 outline-none cursor-default select-none;
-    padding: calc(var(--content-padding) / 1.5) var(--content-padding);
+    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
+      slot(trigger, padding-inline, calc(var(--spacing) * 2));
     /* Restate the panel radius and gap on the row itself: List also paints
        these rows, so neither file may depend on stylesheet order. */
     --radius: var(--content-radius);

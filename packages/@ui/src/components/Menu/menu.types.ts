@@ -4,6 +4,7 @@ import type { ItemData } from "../../utils/list-navigation";
 import type { StylesProp } from "@/lib/styles";
 import type { Style } from "@/lib/utils";
 import type { ButtonProps } from "../Button";
+import type { ListActionDef } from "../List";
 
 /**
  * How many items a Menu may select at once.
@@ -370,6 +371,14 @@ export interface MenuItemProps
    * @typeDoc MenuItemStyleSlots
    */
   styles?: MenuItemStylesProp;
+
+  /**
+   * Declarative trailing actions rendered by an omitted List.Actions child, or a real
+   * interactive control (e.g. List.Switch) that should not trigger row selection.
+   * @category Content
+   * @typeDoc ListActionDef
+   */
+  actions?: Array<ListActionDef | React.ReactNode>;
 }
 
 /** Class-based slots for the Menu.CheckboxItem anatomy. */

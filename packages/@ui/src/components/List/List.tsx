@@ -27,6 +27,7 @@ const Container = React.forwardRef<ListRef, ListProps>(
   (
     {
       variant = "default",
+      layout = "spaced",
       orientation = "vertical",
       gap,
       spacing = "default",
@@ -237,6 +238,7 @@ const Container = React.forwardRef<ListRef, ListProps>(
           }
           {...(props as React.HTMLAttributes<HTMLDivElement>)}
           data-variant={variant}
+          data-layout={layout}
           data-slot="root"
           data-orientation={orientation}
           data-gap={gap}

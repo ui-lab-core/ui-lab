@@ -306,6 +306,19 @@ export type {
   GalleryItemProps,
   GalleryViewProps,
   GalleryBodyProps,
+  GalleryColumns,
+  GalleryGap,
+  GalleryItemOrientation,
+  GalleryRows,
+  GalleryResponsiveColumns,
+  GalleryStyleSlots,
+  GalleryStylesProp,
+  GalleryItemStyleSlots,
+  GalleryItemStylesProp,
+  GalleryViewStyleSlots,
+  GalleryViewStylesProp,
+  GalleryBodyStyleSlots,
+  GalleryBodyStylesProp,
 } from "./components/Gallery";
 
 export { Color } from "./components/Color";

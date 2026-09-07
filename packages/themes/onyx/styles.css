@@ -16,12 +16,6 @@
 @layer components.defaults, components.theme;
 
 @layer components.theme {
-  /* Shared slot defaults for every component that declares these slots. Kept
-     inside this layer (not unlayered :root), and first in it, because @slot
-     compiles to a flat --slot-<name>-<prop> custom property with no selector
-     scoping: a later same-specificity rule in this layer is what lets a
-     component override a value here, so any override must stay declared
-     below this block, not above it. */
   :root {
     @slot border {
       --background: var(--background-700);
@@ -63,23 +57,8 @@
       --foreground: var(--foreground-400);
       --size: 1.15em;
     }
-
-    /* Every filled button — primary or a custom `color` — derives its shade and
-       inset ring from the fill alone, one lightness step away at the fill's own
-       chroma and hue. One formula, so a custom colour is the primary treatment
-       with a different base colour rather than a second look. The step is signed
-       off the fill's own lightness: a light fill darkens, a dark fill lightens,
-       so a dark `color` on a dark surface still shows a hover. */
-    /* No `var(--background)` fallback on the origin colour: --background is
-       derived from --raised-shade on hover and press, so a fallback here closes
-       a custom-property cycle. WebKit detects it and drops the whole chain,
-       leaving a transparent fill and a currentColor border. Only filled buttons
-       read --raised-shade, and those always set --color. */
-    --raised-shade: oklch(
-      from var(--color)
-      calc(l + 0.11 - 0.22 * clamp(0, (l - 0.5) * 1000, 1)) c h
-    );
-    --raised-ring-tint: var(--raised-shade);
+    --raised-shade: oklch(from var(--color) calc(l + 0.11 - 0.22 * clamp(0, (l - 0.5) * 1000, 1)) c h);
+    --raised-ring-tint: oklch(from var(--color) calc(l + 0.05 - 0.10 * clamp(0, (l - 0.5) * 1000, 1)) c h);
     --raised-ring: var(--raised-ring-tint);
     --raised-gloss: linear-gradient(
       to bottom,
@@ -88,20 +67,13 @@
       transparent 56%,
       rgb(0 0 0 / 18%) 100%
     );
-    /* The ring is painted by the border, not an inset shadow: an inset shadow is
-       clipped to the padding box, leaving the button's own 1px border band
-       showing raw gloss outside it as a bright rim. */
     --raised-shadow:
       0 1px 2px rgb(0 0 0 / 20%),
       0 4px 10px rgb(0 0 0 / 14%);
-
-    /* Sheen effect: the top-lit wash worn by the unfilled variants. A variant
-       recolours it through the four tokens below. Opt in with
-       --background-image: var(--sheen). */
-    --sheen-tint: var(--foreground-50);
+    --sheen-tint: white;
     --sheen-tint-alpha: 5%;
-    --sheen-shade: var(--background-950);
-    --sheen-shade-alpha: 28%;
+    --sheen-shade: black;
+    --sheen-shade-alpha: 9%;
     --sheen: radial-gradient(
       130% 95% at 50% 0%,
       color-mix(in srgb, var(--sheen-tint) var(--sheen-tint-alpha), transparent),
@@ -614,10 +586,14 @@
     --foreground: var(--foreground-300);
     --size: var(--text-sm);
     --icon-foreground: var(--foreground-400);
+
     @slot border {
       --background-focus: var(--background-700);
     };
+
     @slot trigger {
+      --padding-inline: calc(var(--spacing) * 2);
+      --padding-block: calc(var(--spacing) * 1.5);
       --background-hover: var(--background-900);
     }
   }
@@ -686,8 +662,6 @@
     --icon-foreground: var(--foreground-300);
     --indicator-foreground: var(--accent-300);
 
-    /* List paints Select options through its item slot; submenu triggers read the
-       same row tokens directly. */
     @slot item {
       --background: var(--background);
       --background-hover: var(--background);
@@ -721,7 +695,6 @@
   .slider {
     --size: calc(var(--spacing-md) * 0.95);
     @slot thumb {
-      /* Drag handle: transparent border insets the painted pill inside the hit area. */
       --border: 4px solid transparent;
       --radius: 999px;
     }
@@ -749,6 +722,7 @@
       --background-selected: var(--foreground-300);
       --offset: 3px;
       --height: calc(var(--height) - slot(thumb, offset) * 2);
+      --width: calc(slot(thumb, height) * 1.15);
       --size: slot(thumb, height);
       --radius: calc(slot(thumb, height) * var(--background-radius));
     }
@@ -851,6 +825,17 @@
       --foreground: var(--foreground-200);
       --font-size: var(--text-xs);
       --font-weight: var(--font-weight-body-medium);
+    }
+  }
+
+  .chart > .tooltip {
+    --background: color-mix(in srgb, var(--background-900) calc(var(--floating-opacity)*0.75), transparent);
+    backdrop-filter: var(--floating-blur);
+    --background-shadow: 0 6px 5px -5px rgb(0 0 0 / 15%);
+    --foreground: var(--foreground-200);
+    --foreground-muted: var(--foreground-400);
+    @slot border {
+      --background: var(--background-700);
     }
   }
 
@@ -1128,14 +1113,6 @@
       @slot border {
         --background-hover: transparent;
         --background-selected: transparent;
-      }
-    }
-  }
-
-  @variant button secondary {
-    &[data-pressed="true"]:not([data-disabled]) {
-      --background: color-mix(in srgb, var(--background-800) 95%, var(--foreground-50));
-      @slot border {
         --background-pressed: transparent;
       }
     }
@@ -1145,6 +1122,8 @@
     --background: transparent;
     @slot border {
       --background: transparent;
+      --background-hover: transparent;
+      --background-pressed: transparent;
     }
     --backdrop: transparent;
     --foreground: var(--foreground-300);
@@ -1152,10 +1131,7 @@
 
   @variant button ghost {
     &:is([data-hovered="true"], [data-pressed="true"], [data-selected="true"]):not([data-disabled]) {
-      --background: var(--background-800);
-      @slot border {
-        --background-hover: transparent;
-      }
+      --background: var(--hover-100);
     }
   }
 
@@ -1172,13 +1148,38 @@
     }
   }
 
-  /* Filled buttons — the primary variant, or any button given a `color` — are
-     painted by the raised effect. The fill (--color) and the shade it darkens
-     toward (--raised-shade) are the only inputs; gloss, ring and shadow follow.
+  /* Filled buttons — the primary variant, or any button given a `color` — pick
+     up the tinted fill and its interactive darkening. The fill (--color) and
+     the shade it darkens toward (--raised-shade) are the only inputs.
      Placed after the variants so it also outranks the default variant. */
   .button:is([data-variant="primary"], [data-color]) {
     --background: var(--color);
+  }
+
+  .button:is([data-variant="primary"], [data-color]):is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
+    --background: color-mix(in srgb, var(--color) 72%, var(--raised-shade));
+  }
+
+  .button:is([data-variant="primary"], [data-color])[data-pressed="true"]:not([data-disabled]) {
+    --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));
+  }
+
+  /* The gloss is the part that reads as "raised", and that is primary's look.
+     It only carries over to a colour with no explicit variant — an explicit
+     non-primary variant (secondary, ghost, danger, or any theme-defined
+     variant) keeps its own surface, so a custom colour scales with how dramatic
+     that variant already is instead of forcing primary's treatment onto it. */
+  .button:is([data-variant="primary"], :not([data-variant])[data-color]) {
     --background-image: var(--raised-gloss);
+  }
+
+  /* The ring, the shadow and the icon are read off the fill, so they follow the
+     colour on every variant. Leaving the variant's own neutral border on a
+     coloured pill draws a grey outline that belongs to no part of the button —
+     the same --background-700 ring on black as on blurple — and drops the
+     shadow that gives the fill an edge. Both come from --raised-shade, which is
+     derived from --color, so each colour rings and shades itself. */
+  .button:is([data-variant="primary"], [data-color]) {
     --shadow: var(--raised-shadow);
 
     border-color: var(--raised-ring);
@@ -1193,14 +1194,6 @@
       --background-selected: var(--raised-ring);
       --background-pressed: var(--raised-ring);
     }
-  }
-
-  .button:is([data-variant="primary"], [data-color]):is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-    --background: color-mix(in srgb, var(--color) 72%, var(--raised-shade));
-  }
-
-  .button:is([data-variant="primary"], [data-color])[data-pressed="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));
   }
 
   /* A custom colour names no foreground, so pick black or white off the fill's

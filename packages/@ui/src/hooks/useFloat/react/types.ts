@@ -81,6 +81,16 @@ export type UseFloatingOptions<RT extends ReferenceType = ReferenceType> = Prett
      */
     open?: boolean;
     /**
+     * Computes position once when the reference and floating elements become
+     * available, then leaves it alone: `whileElementsMounted` is not
+     * subscribed, so scroll, resize, and layout-shift tracking (and any
+     * repositioning they trigger while the floating element's own entrance
+     * transition is running) never re-run `update()`. The floating element
+     * stays at its original spawn coordinates for the life of that open state.
+     * @default false
+     */
+    pin?: boolean;
+    /**
      * Whether to use `transform` for positioning instead of `top` and `left`
      * (layout) in the `floatingStyles` object.
      * @default true

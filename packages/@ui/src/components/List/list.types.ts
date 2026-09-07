@@ -62,6 +62,8 @@ export type ListItemStyleValue = Style | ListItemStyleSlots;
 
 /** Axis used by List keyboard navigation and layout. */
 export type ListOrientation = "vertical" | "horizontal";
+/** Visual grouping and density of the list rows. */
+export type ListLayout = "contained" | "spaced" | "bulky";
 /** Named spacing step applied between direct List.Item children. */
 export type ListGap = GapSize;
 
@@ -103,6 +105,13 @@ export interface ListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
    * @default "default"
    */
   variant?: "default" | "feed";
+  /**
+   * Borderless, flush rows; individually spaced rows; or a padded, rounded group.
+   * @category Styling
+   * @default "spaced"
+   * @typeDoc ListLayout
+   */
+  layout?: ListLayout;
   /**
    * Selects the layout and arrow-key axis for direct List.Item children.
    * @category Core

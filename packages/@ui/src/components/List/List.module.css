@@ -5,10 +5,48 @@
 @layer components.defaults {
   .root {
     --radius: var(--radius-sm, 0.375rem);
+    --list-item-radius: initial;
 
     color: var(--foreground, var(--foreground-100, currentColor));
     @apply flex flex-col;
+    gap: var(--gap, 0);
+  }
+
+  .root[data-layout="contained"] {
+    --list-item-radius: 0;
+
+    border: 0;
+    padding: 0;
+  }
+
+  .root[data-layout="spaced"] {
     gap: var(--gap, calc(var(--spacing, 0.25rem) * 0.5));
+  }
+
+  .root[data-layout="bulky"] {
+    --radius: var(--radius-xl, 1rem);
+
+    padding: 0;
+  }
+
+  .root[data-layout="bulky"] > .item {
+    flex-shrink: 0;
+    border: 1px solid var(--background-border, var(--background-700, transparent));
+    border-block-end-width: 0;
+    border-radius: 0;
+    background-color: slot(item, background, var(--background, var(--background-900, transparent)));
+    @apply px-5 py-4;
+  }
+
+  .root[data-layout="bulky"] > .item:first-child {
+    border-start-start-radius: var(--radius);
+    border-start-end-radius: var(--radius);
+  }
+
+  .root[data-layout="bulky"] > .item:last-child {
+    border-block-end-width: 1px;
+    border-end-start-radius: var(--radius);
+    border-end-end-radius: var(--radius);
   }
 
   .root[data-orientation="horizontal"] {
@@ -21,7 +59,7 @@
     box-sizing: border-box;
     /* Concentric with the list box: any padded or bordered surface around the
        rows sets --inset-gap, and the row shrinks its radius to match. */
-    border-radius: slot(item, radius, var(--inset-radius));
+    border-radius: var(--list-item-radius, slot(item, radius, var(--inset-radius)));
     @apply flex items-center gap-3 px-3 py-1 cursor-pointer;
     background-color: slot(item, background, var(--background, transparent));
     color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));
@@ -86,6 +124,15 @@
 
   .control {
     margin-inline-start: auto;
+  }
+
+  /* --hover-duration is inherited, and a hovered or highlighted row sets it to the
+     enter duration (0ms) for its own background swap. Nested controls own their
+     transitions, so reset the property to the guaranteed-invalid value and let each
+     one fall back to its own leave duration. */
+  .control,
+  .actions {
+    --hover-duration: initial;
   }
 
   .item[data-list-layout="columns"] .control,

@@ -67,13 +67,21 @@ export interface ButtonIconStyleSlots {
   right?: SlotStyle;
 }
 
-/** Style overrides for the button root and named content slots. */
+/**
+ * Style overrides for the button root and named content slots.
+ * Use className for root layout and styles for individual parts.
+ *
+ * @example
+ * <Button className="w-full justify-start" styles={{ hint: "opacity-60" }} hint="⌘S">
+ *   Save
+ * </Button>
+ */
 export interface ButtonStyleSlots {
-  /** Styles applied to the root element. */
+  /** Styles applied to the button or anchor root (data-slot="root"). Target interaction states here with data-[hovered=true], data-[pressed=true], data-[disabled=true], or data-[focus-visible=true]. */
   root?: SlotStyle;
-  /** Shared icon styles or separate leading and trailing icon styles. */
+  /** Styles applied to the icon wrappers, not the SVG itself. A shared value styles both sides; { left, right } styles them independently. An icon-only child uses the left slot. */
   icon?: SlotStyle | ButtonIconStyleSlots;
-  /** Styles applied to the hint badge. */
+  /** Styles applied to the hint badge container (data-slot="hint"), rather than the button label. */
   hint?: SlotStyle;
 }
 
@@ -126,7 +134,7 @@ export interface ButtonProps extends Omit<
    * @typeDoc ButtonColor
    */
   color?: ButtonColor;
-  /** Size class appended to the root element. Accepts any string.
+  /** Size class appended to the root element. Accepts any string defined by your theme. Defaults to "md" for labeled buttons and "icon" for icon-only content. Set size explicitly to override automatic sizing.
    * @category Core
    * @typeDoc ButtonSize
    */
@@ -144,11 +152,15 @@ export interface ButtonProps extends Omit<
    */
   onPress?: (e: PressEvent) => void;
   /** Icon content rendered before the label by default. Use icon={{ left: <Icon /> }} or icon={{ right: <Icon /> }} to choose a side; both slots may be provided together.
+   * Icon-only buttons are sized automatically; provide aria-label or screen-reader-only text for an accessible name. An explicitly supplied icon size prop is preserved.
    * @category Content
    * @typeDoc ButtonIconSlots
+   * @example
+   * <Button icon={<Plus />} aria-label="Add item" />
    */
   icon?: React.ReactNode | ButtonIconSlots;
   /** Keyboard shortcut or hint rendered as Badges at the end of the button. Arrays render each segment as its own badge.
+   * This is display-only; it does not register a keyboard shortcut.
    * @category Content
    * @typeDoc HintValue
    */
@@ -159,13 +171,19 @@ export interface ButtonProps extends Omit<
    */
   href?: string;
   /** Browsing context for the anchor variant, such as _blank.
+   * When target="_blank", rel defaults to "noopener noreferrer" unless explicitly supplied.
    * @category Link behavior
    * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
    */
   target?: React.HTMLAttributeAnchorTarget;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes.
+   * Available slots are root, icon (shared or { left, right }), and hint. Use the style prop for root inline styles; it takes precedence over styles.root inline styles.
    * @category Styling
    * @typeDoc ButtonStyleSlots
+   * @example
+   * <Button styles={{ root: "data-[pressed=true]:scale-95", hint: "opacity-60" }} hint="⌘S">
+   *   Save
+   * </Button>
    */
   styles?: ButtonStylesProp;
   /** Forces the visual hover state. Set by Menu.Trigger to keep the trigger highlighted while the menu is open. This is an advanced visual-state escape hatch, not a pending state.
@@ -181,6 +199,23 @@ function isButtonIconSlots(icon: ButtonProps["icon"]): icon is ButtonIconSlots {
     !React.isValidElement(icon) &&
     ("left" in icon || "right" in icon)
   );
+}
+
+// SVG size attributes lose to the button's themed CSS dimensions. Promote only
+// explicitly supplied sizes, leaving icon-library defaults under theme control.
+function preserveIconSize(content: React.ReactNode): React.ReactNode {
+  return React.Children.map(content, (child) => {
+    if (!React.isValidElement<{ size?: number | string; style?: React.CSSProperties }>(child)) {
+      return child;
+    }
+
+    const { size, style } = child.props;
+    if (size == null) return child;
+
+    return React.cloneElement(child, {
+      style: { width: size, height: size, ...style },
+    });
+  });
 }
 
 export function resolveButtonIcon(icon: ButtonProps["icon"]) {
@@ -393,7 +428,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
             style={resolved.iconLeft.style}
             data-slot="icon.left"
           >
-            {resolvedIcon.left}
+            {preserveIconSize(resolvedIcon.left)}
           </span>
         )}
         {wrapChildrenAsIcon ? (
@@ -402,7 +437,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
             style={resolved.iconLeft.style}
             data-slot="icon.left"
           >
-            {children}
+            {preserveIconSize(children)}
           </span>
         ) : (
           children
@@ -413,7 +448,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
             style={resolved.iconRight.style}
             data-slot="icon.right"
           >
-            {resolvedIcon.right}
+            {preserveIconSize(resolvedIcon.right)}
           </span>
         )}
         {hasHint(hint) && (

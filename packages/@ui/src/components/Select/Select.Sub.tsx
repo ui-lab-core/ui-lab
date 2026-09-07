@@ -23,6 +23,7 @@ import { List } from "../List";
 
 interface SelectSubmenuContextValue {
   isOpen: boolean;
+  isOpenControlled: boolean;
   setIsOpen: (open: boolean) => void;
   triggerRef: React.MutableRefObject<HTMLDivElement | null>;
   parentMenuRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -292,6 +293,7 @@ const SelectSub = ({
   const contextValue = React.useMemo(
     () => ({
       isOpen,
+      isOpenControlled: controlledOpen !== undefined,
       setIsOpen,
       triggerRef,
       parentMenuRef,
@@ -313,6 +315,7 @@ const SelectSub = ({
       parentSubmenuContext: parentSubmenuCtx,
     }),
     [
+      controlledOpen,
       isOpen,
       setIsOpen,
       submenuLevel,
@@ -506,7 +509,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
     const effectiveOpen =
       !!submenuContext?.isOpen &&
       effectiveParentIsOpen &&
-      effectiveParentFocusedKey === submenuContext?.triggerKey;
+      (submenuContext.isOpenControlled || effectiveParentFocusedKey === submenuContext.triggerKey);
 
     React.useEffect(() => {
       if (!submenuContext) return;
@@ -667,7 +670,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
 
     return createPortal(
       <>
-        {(showContent || isExiting) && (
+        {(effectiveOpen || isExiting) && (
           <div
             ref={mergedFloatingRef}
             className={cn("select", css["sub-content-root"], resolved.overlay)}
@@ -711,7 +714,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
                 >
                   <SelectContext.Provider value={overriddenContextValue}>
                     {/* The panel is already the listbox; the inner collection must not nest a second one. */}
-                    <List role="presentation" gap="xs" className={resolved["list.root"]}>
+                    <List role="presentation" layout="spaced" gap="xs" className={resolved["list.root"]}>
                       {children}
                     </List>
                   </SelectContext.Provider>

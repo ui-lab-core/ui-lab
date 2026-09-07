@@ -9,85 +9,159 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Grid } from "../Grid";
 import css from "./Gallery.module.css";
 
-type GridColumns = number;
-type GridGap = "xs" | "sm" | "md" | "lg" | "xl";
-type Orientation = "vertical" | "horizontal";
-type GalleryRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto";
-type ResponsiveColumns = {
-  sm?: GridColumns;
-  md?: GridColumns;
-  lg?: GridColumns;
-  xl?: GridColumns;
+/** Fixed column count accepted by `columns`, or a per-breakpoint override via {@link GalleryResponsiveColumns}. */
+export type GalleryColumns = number;
+/** Gap size accepted by `gap`, `gap-x`, and `gap-y`: a design-system gap step, a Tailwind spacing-scale number, or a raw CSS gap value. */
+export type GalleryGap = "xs" | "sm" | "md" | "lg" | "xl";
+/** Layout direction of a Gallery.Item's view and body, accepted by `orientation`. */
+export type GalleryItemOrientation = "vertical" | "horizontal";
+/** Fixed row count or `auto`, accepted by `rows`. */
+export type GalleryRows = "1" | "2" | "3" | "4" | "5" | "6" | "auto";
+/** Per-breakpoint column override accepted by `columns`, applied at the `sm`, `md`, `lg`, and `xl` container-query breakpoints. */
+export type GalleryResponsiveColumns = {
+  sm?: GalleryColumns;
+  md?: GalleryColumns;
+  lg?: GalleryColumns;
+  xl?: GalleryColumns;
 };
 
+/** Style overrides for the Gallery root and named component parts. */
 export interface GalleryStyleSlots {
+  /** Styles applied to the root grid element. */
   root?: Style;
+  /** Styles applied to every Gallery.Item, in addition to each item's own styles. */
   item?: Style;
+  /** Styles applied to every Gallery.View, in addition to each view's own styles. */
   view?: Style;
+  /** Styles applied to every Gallery.Body, in addition to each body's own styles. */
   body?: Style;
 }
 
 export type GalleryStylesProp = StylesProp<GalleryStyleSlots>;
 
+/** Style overrides for the Gallery.Item root. */
 export interface GalleryItemStyleSlots {
+  /** Styles applied to the rendered anchor, button, or div element. */
   root?: Style;
 }
 
 export type GalleryItemStylesProp = StylesProp<GalleryItemStyleSlots>;
 
+/** Style overrides for the Gallery.View root. */
 export interface GalleryViewStyleSlots {
+  /** Styles applied to the view root element. */
   root?: Style;
 }
 
 export type GalleryViewStylesProp = StylesProp<GalleryViewStyleSlots>;
 
+/** Style overrides for the Gallery.Body root. */
 export interface GalleryBodyStyleSlots {
+  /** Styles applied to the body root element. */
   root?: Style;
 }
 
 export type GalleryBodyStylesProp = StylesProp<GalleryBodyStyleSlots>;
 
 export interface GalleryProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Number of columns in the gallery grid */
-  columns?: GridColumns | ResponsiveColumns;
-  /** Gap between gallery items */
-  gap?: GridGap | number | string;
-  /** Override horizontal (column) gap between gallery items */
-  "gap-x"?: GridGap | number | string;
-  /** Override vertical (row) gap between gallery items */
-  "gap-y"?: GridGap | number | string;
-  /** Number of rows in the gallery grid */
+  /** Number of columns in the gallery grid, or a responsive object that changes the column count at the sm, md, lg, and xl container-query breakpoints.
+   * @category Core
+   * @default 3
+   * @typeDoc GalleryResponsiveColumns
+   */
+  columns?: GalleryColumns | GalleryResponsiveColumns;
+  /** Gap between gallery items. A design-system gap step, a Tailwind spacing-scale number, or a raw CSS gap value.
+   * @category Core
+   * @default "md"
+   * @typeDoc GalleryGap
+   */
+  gap?: GalleryGap | number | string;
+  /** Overrides horizontal (column) gap between gallery items, independent of gap.
+   * @category Core
+   * @typeDoc GalleryGap
+   */
+  "gap-x"?: GalleryGap | number | string;
+  /** Overrides vertical (row) gap between gallery items, independent of gap.
+   * @category Core
+   * @typeDoc GalleryGap
+   */
+  "gap-y"?: GalleryGap | number | string;
+  /** Number of rows in the gallery grid.
+   * @category Core
+   * @typeDoc GalleryRows
+   */
   rows?: GalleryRows;
-  /** Whether to enable container-query-based responsive columns */
+  /** Wraps the root in a container-query parent so a responsive columns object changes with the container's width instead of the viewport.
+   * @category Core
+   * @default false
+   */
   responsive?: boolean;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Keyed styles for the root and for every Gallery.Item, Gallery.View, and Gallery.Body rendered inside it. Use className for conventional root classes; use each compound part's own styles prop for a one-off override.
+   * @category Styling
+   * @typeDoc GalleryStyleSlots
+   */
   styles?: GalleryStylesProp;
 }
 
-export interface GalleryItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** URL the item links to */
+export interface GalleryItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "onClick"> {
+  /** URL the item links to. Renders the item as an anchor when the item is interactive; has no effect when disabled.
+   * @category Link behavior
+   * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href
+   */
   href?: string;
-  /** Called when the item is pressed */
+  /** Called when the item is activated by press, click, or keyboard selection. Takes precedence over native anchor navigation when href is also set.
+   * @category Events
+   */
   onPress?: (href?: string) => void;
-  /** Number of columns this item spans */
+  /** Disables interaction. A disabled item renders without a role, tab stop, or press/hover behavior, and does not call onPress.
+   * @category Core
+   * @default false
+   */
+  disabled?: boolean;
+  /** Marks the item as selected. Sets data-selected, and aria-pressed on an interactive, non-link item.
+   * @category Core
+   * @default false
+   */
+  selected?: boolean;
+  /** Number of grid columns this item spans.
+   * @category Core
+   */
   columnSpan?: number;
-  /** Number of rows this item spans */
+  /** Number of grid rows this item spans.
+   * @category Core
+   */
   rowSpan?: number;
-  /** Controls the item's layout orientation */
-  orientation?: Orientation;
-  /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
+  /** Controls the item's layout: view and body stack vertically, or sit side by side.
+   * @category Core
+   * @default "vertical"
+   * @typeDoc GalleryItemOrientation
+   */
+  orientation?: GalleryItemOrientation;
+  /** Keyed styles for the rendered anchor, button, or div element. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc GalleryItemStyleSlots
+   */
   styles?: GalleryItemStylesProp;
 }
 
 export interface GalleryViewProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Aspect ratio of the view area (e.g. "16/9") */
+  /** Aspect ratio of the view area, such as "16/9" or "1/1".
+   * @category Core
+   * @default "16/9"
+   */
   aspectRatio?: string;
-  /** Keyed styles for the root. Use className for conventional root classes. */
+  /** Keyed styles for the view root element. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc GalleryViewStyleSlots
+   */
   styles?: GalleryViewStylesProp;
 }
 
 export interface GalleryBodyProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Keyed styles for the root. Use className for conventional root classes. */
+  /** Keyed styles for the body root element. Use className for conventional root classes.
+   * @category Styling
+   * @typeDoc GalleryBodyStyleSlots
+   */
   styles?: GalleryBodyStylesProp;
 }
 
@@ -146,18 +220,18 @@ type GalleryResolvedStyles = ReturnType<typeof resolveGalleryStyles>;
 const GalleryStylesContext = React.createContext<GalleryResolvedStyles | undefined>(undefined);
 
 const mapColumnsToGrid = (
-  columns?: GridColumns | ResponsiveColumns,
-): GridColumns | ResponsiveColumns => {
+  columns?: GalleryColumns | GalleryResponsiveColumns,
+): GalleryColumns | GalleryResponsiveColumns => {
   if (!columns) return 3;
   if (typeof columns === "object") return columns;
   return columns;
 };
 
-const mapGapToGrid = (gap?: GridGap | number | string): GridGap => {
+const mapGapToGrid = (gap?: GalleryGap | number | string): GalleryGap => {
   if (!gap) return "md";
 
   if (typeof gap === "string" && ["xs", "sm", "md", "lg", "xl"].includes(gap)) {
-    return gap as GridGap;
+    return gap as GalleryGap;
   }
 
   if (typeof gap === "number") {
@@ -210,11 +284,13 @@ const GalleryRoot = React.forwardRef<HTMLDivElement, GalleryProps>(
 );
 GalleryRoot.displayName = "Gallery";
 
-const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
+const GalleryItem = React.forwardRef<HTMLElement, GalleryItemProps>(
   (
     {
       href,
       onPress,
+      disabled = false,
+      selected = false,
       columnSpan,
       rowSpan,
       orientation = "vertical",
@@ -222,17 +298,23 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
       style,
       styles: stylesProp,
       children,
-      ...props
+      tabIndex,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledby,
+      ...rest
     },
     ref,
   ) => {
     const inherited = React.useContext(GalleryStylesContext);
     const resolved = resolveGalleryItemStyles(stylesProp);
-    const itemRef = React.useRef<HTMLDivElement>(null);
+    const itemRef = React.useRef<HTMLElement>(null);
     const mergedRef = useMergeRefs(itemRef, ref);
+    const isInteractive = !disabled && (href !== undefined || onPress !== undefined);
+    const isAnchor = isInteractive && href !== undefined;
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
-    const { hoverProps, isHovered } = useHover({});
+    const { hoverProps, isHovered } = useHover({ isDisabled: !isInteractive });
     const { pressProps, isPressed } = usePress({
+      isDisabled: !isInteractive,
       onPress: () => onPress?.(href),
     });
     const { targetProps } = useFocus({ mode: "target" });
@@ -244,29 +326,75 @@ const GalleryItem = React.forwardRef<HTMLDivElement, GalleryItemProps>(
     };
 
     const hasAccessibleName =
-      props["aria-label"] ||
-      props["aria-labelledby"] ||
-      typeof props.title === "string" ||
-      React.Children.count(children) > 0;
+      Boolean(ariaLabel) || Boolean(ariaLabelledby) || React.Children.count(children) > 0;
+
+    const stateProps = {
+      "data-selected": selected ? "true" : undefined,
+      "data-disabled": disabled ? "true" : undefined,
+      "data-focused": isFocused ? "true" : undefined,
+      "data-focus-visible": isFocusVisible ? "true" : undefined,
+      "data-hovered": isHovered ? "true" : undefined,
+      "data-pressed": isPressed ? "true" : undefined,
+      "data-orientation": orientation,
+    } as const;
+
+    const itemClassName = cn("item", css.item, inherited?.item, resolved.root, className);
+
+    if (isAnchor) {
+      return (
+        <a
+          {...mergeProps(focusProps, hoverProps, pressProps, rest)}
+          {...targetProps}
+          ref={mergedRef as React.Ref<HTMLAnchorElement>}
+          href={href}
+          className={itemClassName}
+          style={spanStyles}
+          tabIndex={tabIndex ?? 0}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
+          {...stateProps}
+          onClick={(event) => {
+            if (onPress) {
+              event.preventDefault();
+              onPress(href);
+            }
+          }}
+        >
+          {children}
+        </a>
+      );
+    }
+
+    if (isInteractive) {
+      return (
+        <div
+          {...mergeProps(focusProps, hoverProps, pressProps, rest)}
+          {...targetProps}
+          ref={mergedRef as React.Ref<HTMLDivElement>}
+          role="button"
+          tabIndex={tabIndex ?? 0}
+          className={itemClassName}
+          style={spanStyles}
+          aria-label={hasAccessibleName ? ariaLabel : "Gallery item"}
+          aria-labelledby={ariaLabelledby}
+          aria-pressed={selected ? true : undefined}
+          {...stateProps}
+        >
+          {children}
+        </div>
+      );
+    }
 
     return (
       <div
-        {...mergeProps(focusProps, hoverProps, pressProps, props)}
-        {...targetProps}
-        ref={mergedRef}
-        role="button"
-        tabIndex={props.tabIndex ?? 0}
-        className={cn("item", css.item, inherited?.item, resolved.root, className)}
+        {...rest}
+        ref={mergedRef as React.Ref<HTMLDivElement>}
+        tabIndex={tabIndex}
+        className={itemClassName}
         style={spanStyles}
-        data-selected={props["aria-pressed"] === true ? "true" : undefined}
-        data-disabled={props["aria-disabled"] === true ? "true" : undefined}
-        data-focused={isFocused ? "true" : undefined}
-        data-focus-visible={isFocusVisible ? "true" : undefined}
-        data-hovered={isHovered ? "true" : undefined}
-        data-pressed={isPressed ? "true" : undefined}
-        data-orientation={orientation}
-        data-active="true"
-        aria-label={hasAccessibleName ? props["aria-label"] : "Gallery item"}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledby}
+        {...stateProps}
       >
         {children}
       </div>

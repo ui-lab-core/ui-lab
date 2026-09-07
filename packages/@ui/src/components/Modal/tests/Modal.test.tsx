@@ -85,6 +85,26 @@ describe("Modal focus management", () => {
     expect(footer).not.toBeNull();
     expect(bodyScroll?.contains(footer as Node)).toBe(false);
     expect(bodyScroll?.nextElementSibling).toBe(footer);
+    expect(bodyScroll).toHaveClass(styles["body-scroll"]);
+    expect(footer).toHaveClass(styles.footer);
+    expect(document.querySelector(".panel")).toHaveClass(styles.panel);
+    expect(bodyScroll).not.toHaveStyle({ maxHeight: "90vh" });
+  });
+
+  it("keeps short compound content and its footer as panel siblings", () => {
+    render(
+      <Modal isOpen close={false}>
+        <Modal.Body>Short content</Modal.Body>
+        <Modal.Footer>Footer</Modal.Footer>
+      </Modal>,
+    );
+
+    const panel = document.querySelector(".panel");
+    const body = screen.getByText("Short content").closest(".scroll");
+    const footer = screen.getByText("Footer").closest(".footer");
+
+    expect(Array.from(panel?.children ?? [])).toEqual(expect.arrayContaining([body, footer]));
+    expect(body?.nextElementSibling).toBe(footer);
   });
 });
 

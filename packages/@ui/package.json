@@ -125,6 +125,10 @@
       "import": "./dist/icon.es.js",
       "types": "./dist/icon.d.ts"
     },
+    "./icon-provider": {
+      "import": "./dist/icon-provider.es.js",
+      "types": "./dist/icon-provider.d.ts"
+    },
     "./label": {
       "import": "./dist/label.es.js",
       "types": "./dist/label.d.ts"

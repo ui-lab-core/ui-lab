@@ -105,6 +105,20 @@ describe("Expand", () => {
     expect(icon).not.toHaveAttribute("color");
   });
 
+  it("links the trigger to its content panel with aria-controls and a matching id", () => {
+    render(
+      <Expand title="Details">
+        <p>Preset content</p>
+      </Expand>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Details" });
+    const content = screen.getByText("Preset content").closest(`.${styles.content}`);
+
+    expect(trigger).toHaveAttribute("aria-controls", content?.id);
+    expect(content?.id).toBeTruthy();
+  });
+
   it("renders dividers inside the collapsing content region", () => {
     render(
       <>

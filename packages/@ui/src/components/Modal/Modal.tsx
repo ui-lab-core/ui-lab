@@ -301,7 +301,6 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       ) : (
         <Scroll
           className={cn("body-scroll", css["body-scroll"])}
-          maxHeight="90vh"
           style={{ height: "auto", flex: "1 1 auto", minHeight: 0 }}
           styles={{ content: cn("content", css.content, contentClassName, resolved.content) }}
         >
@@ -396,7 +395,6 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
       <Scroll
         viewportRef={ref}
         className={cn("body-scroll", css["body-scroll"])}
-        maxHeight="90vh"
         style={bodyStyle}
         styles={{ content: cn("content", css.content, className) }}
         {...props}

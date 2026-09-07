@@ -17,14 +17,18 @@ describe("Grid.responsive", () => {
 
     expect(wrapper).toBeInTheDocument();
     expect(grid).toBeInTheDocument();
+    expect(wrapper).not.toHaveClass("grid");
     expect(wrapper).toHaveClass(styles.container);
     expect(wrapper).toHaveClass("outer-grid");
     expect(wrapper).toHaveClass("slot-root");
     expect(wrapper).toHaveAttribute("id", "responsive-grid");
     expect(wrapper).toHaveStyle({ marginTop: "24px" });
 
+    expect(grid).toHaveClass("grid");
     expect(grid).toHaveClass(styles.grid);
     expect(grid).toHaveClass(styles["responsive-cols"]);
+    expect(grid).not.toHaveClass("outer-grid");
+    expect(grid).not.toHaveClass("slot-root");
     expect(grid).toHaveStyle({
       "--grid-tpl-sm": "repeat(1, 1fr)",
       "--grid-tpl-md": "repeat(2, 1fr)",

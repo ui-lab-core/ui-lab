@@ -222,6 +222,11 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       // The floating wrapper stays mounted while closed; only its children are
       // conditional. Gate tracking on the open state.
       open: isOpen,
+      // The panel's own entrance transition (opacity/scale) can trip autoUpdate's
+      // layout-shift and resize-observer tracking mid-animation, nudging the
+      // panel by a pixel or two as it settles. Compute position once per open
+      // and leave it there instead of resolving it continuously from the trigger.
+      pin: true,
       middleware: positioning.getMiddleware({ mainAxis: offset, crossAxis: 0 }),
     });
 

@@ -29,6 +29,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
       inset,
       className,
       styles: stylesProp,
+      actions,
       onMouseEnter,
       onClick,
       ...domProps
@@ -80,6 +81,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
       <List.Item
         {...domProps}
         ref={ref}
+        actions={actions}
         focusable={false}
         value={String(key)}
         role={role}

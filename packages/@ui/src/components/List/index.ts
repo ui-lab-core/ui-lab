@@ -39,6 +39,7 @@ export type {
   ListItemStylesProp,
   ListItemStyleValue,
   ListOrientation,
+  ListLayout,
   ListGap,
   ListRef,
   ListNavigateCallbacks,

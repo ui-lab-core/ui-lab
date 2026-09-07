@@ -37,7 +37,8 @@
     z-index: 1;
     opacity: 0;
     transform: translateY(0.5rem) scale(0.98);
-    max-height: 90vh;
+    max-height: min(90vh, calc(100dvh - 2rem));
+    min-height: 0;
     margin: 1rem;
     color: var(--foreground);
     background-color: var(--background);
@@ -133,11 +134,31 @@
   }
 
   .body-scroll {
+    display: flex;
+    flex-direction: column;
     flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Carry the body's flex constraint through Scroll's mask to its viewport.
+     Percentage heights cannot resolve against an intrinsically sized panel. */
+  .body-scroll > :first-child {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  .body-scroll > :first-child > .content {
+    flex: 1 1 auto;
+    height: auto;
     min-height: 0;
   }
 
   .body-static {
+    display: flex;
     flex: 1 1 auto;
     min-width: 0;
     min-height: 0;
@@ -146,6 +167,8 @@
 
   .footer {
     @apply flex shrink-0 items-center justify-between gap-4 px-6 py-4;
+    flex: 0 0 auto;
+    position: relative;
     background-color: var(--footer-background, var(--background));
     border-top: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
