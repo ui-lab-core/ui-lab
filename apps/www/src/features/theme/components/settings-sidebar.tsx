@@ -4,12 +4,19 @@ import { cn } from "@/shared/lib/utils";
 import type { ReactNode } from "react";
 import { SettingsContent } from "./settings/settings-content";
 
-export function SettingsSidebar({ footer }: { footer?: ReactNode }) {
+export function SettingsSidebar({
+  footer,
+  className,
+}: {
+  footer?: ReactNode;
+  className?: string;
+}) {
   return (
     <aside
       className={cn(
         "flex min-h-0 flex-col border-x border-background-700",
         "xl:sticky xl:self-start xl:top-[var(--header-height)] xl:h-[calc(100vh-var(--header-height))]",
+        className,
       )}
     >
       <div className="min-h-0 flex-1 overflow-hidden">

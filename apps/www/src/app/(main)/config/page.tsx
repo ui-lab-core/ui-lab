@@ -17,11 +17,7 @@ function readTypographyCss(): string {
   }
 
   const require = createRequire(import.meta.url);
-  try {
-    return readFileSync(require.resolve("ui-lab-components/typography.css"), "utf8");
-  } catch {
-    throw new Error("Unable to resolve ui-lab-components/typography.css");
-  }
+  return readFileSync(require.resolve("ui-lab-components/typography.css"), "utf8");
 }
 
 export default function Page() {

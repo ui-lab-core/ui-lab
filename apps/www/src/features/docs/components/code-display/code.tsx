@@ -151,13 +151,11 @@ export function Code({
   const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
 
   const pathname = usePathname();
-  // Non-catalog documentation snippets remain distinct without relying on render order.
-  const snippetKey = useMemo(() => {
-    let hash = 2166136261;
-    for (const char of children) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
-    return (hash >>> 0).toString(36);
-  }, [children]);
-  const saveRef = entryRef ?? `snippet:${pathname}/${filename ?? heading ?? language}/${snippetKey}`;
+  // The save button is offered only when a code block is bound to a catalog
+  // entry that has a live preview (component example, pattern, section, element,
+  // or starter). Arbitrary inline or one-off snippets pass no entryRef and are
+  // not saveable.
+  const canSave = Boolean(entryRef);
 
   // Refs
   const rootRef = useRef<HTMLDivElement>(null);
@@ -321,13 +319,14 @@ export function Code({
         )}
       >
         <Actions
-          entryRef={saveRef}
+          entryRef={entryRef}
           entryTitle={entryTitle ?? `${pathname}: ${heading ?? filename ?? "Code"}`}
           entryHref={entryHref ?? pathname}
           code={activeCode}
           expanded={expanded}
           onToggleExpanded={() => setIsExpanded((current) => !current)}
           showExpand={shouldShowExpandButton}
+          showSave={canSave}
         />
         {fillHeight ? (
           <Scroll
@@ -395,14 +394,16 @@ function Actions({
   expanded,
   onToggleExpanded,
   showExpand,
+  showSave,
 }: {
-  entryRef: string;
+  entryRef?: string;
   entryTitle: string;
   entryHref: string;
   code: string;
   expanded: boolean;
   onToggleExpanded: () => void;
   showExpand: boolean;
+  showSave: boolean;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -423,7 +424,9 @@ function Actions({
           size="icon"
         />
       ) : null}
-      <SaveButton key={entryRef} entryRef={entryRef} title={entryTitle} href={entryHref} />
+      {showSave && entryRef ? (
+        <SaveButton key={entryRef} entryRef={entryRef} title={entryTitle} href={entryHref} />
+      ) : null}
       <Button
         variant="ghost"
         onClick={handleCopy}

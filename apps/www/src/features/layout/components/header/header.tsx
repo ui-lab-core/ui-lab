@@ -43,6 +43,7 @@ export default function Header({ pathname }: HeaderProps) {
   const { toggleSidebar } = useSidebarToggle();
   const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
   const isLandingPage = pathname === "/";
+  const isConfigPage = pathname === "/config";
 
   useEffect(() => {
     if (!isCommandPaletteOpen || Palette) return;
@@ -81,8 +82,7 @@ export default function Header({ pathname }: HeaderProps) {
         <div
           className={cn(
             "relative h-full flex items-center justify-between pr-3 pl-8 w-full overflow-hidden transition-[margin] duration-300",
-            "max-w-(--page-width)",
-            "mx-auto",
+            !isConfigPage && "max-w-(--page-width) mx-auto",
           )}
         >
           {/* LEFT SECTION: Logo & Tabs - Added shrink-0 to prevent it being crushed */}

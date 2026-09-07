@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
+    "test:config": "node --import tsx --test 'src/app/(main)/config/config-command.test.ts'",
     "prepare:icons": "node scripts/prepare-icon-assets.mjs",
     "generate:docs": "node --import tsx scripts/generate-docs.mts",
     "verify:private-library": "node --conditions development --import tsx scripts/verify-private-library-link.mts",

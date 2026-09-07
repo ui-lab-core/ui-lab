@@ -1,16 +1,18 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useApp } from "@/features/theme/lib/app-context";
 import { generateThemeSetupFiles } from "@/features/theme/config";
+import { generateTypographyFile, sourceColors } from "ui-lab-registry/init-config";
 import { computeStyleVariables } from "@/features/theme/lib/css-variable-generator";
 import type { TypographyConfig } from "@/features/theme/lib/typography-config";
 import { SettingsSidebar } from "@/features/theme/components/settings-sidebar";
 import { PreviewCanvas } from "./preview-canvas";
-import { Button, Modal, Page, Scroll, Tabs } from "ui-lab-components";
-import { Download } from "lucide-react";
+import { Button, Input, Modal, Page, Panel, Scroll, Tabs } from "ui-lab-components";
+import { Copy, Download, PanelRightClose, PanelRightOpen } from "lucide-react";
+import type { InitializeCommandState } from "./initialize-content";
 
 const InitializeContent = dynamic(() =>
   import("./initialize-content").then((module) => module.InitializeContent),
@@ -76,6 +78,10 @@ function TypographyCanvas() {
 
 export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: string }) {
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [initializeCommand, setInitializeCommand] = useState<InitializeCommandState>({
+    value: "Generating command…",
+    canCopy: false,
+  });
   const [preview, setPreview] = useState("components");
   const {
     currentThemeColors,
@@ -131,8 +137,6 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
     return vars as CSSProperties;
   }, [currentTypography, radius, borderWidth, spacingScale]);
 
-  const typographyCss = baseTypographyCss;
-
   const themeSetup = useMemo(() => {
     if (!currentThemeColors) return null;
 
@@ -152,27 +156,21 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
     spacingScale,
   ]);
 
-  const fullBundle = useMemo(() => {
-    if (!themeSetup) return "";
-    return `${themeSetup.fullBundle}\n\n/* === app/typography.css === */\n${typographyCss}`;
-  }, [themeSetup, typographyCss]);
+  const typographyCss = useMemo(
+    () => generateTypographyFile(currentTypography, baseTypographyCss),
+    [currentTypography, baseTypographyCss],
+  );
 
-  const bundleSizeLabel = useMemo(() => {
-    if (!fullBundle) return "0 KB";
-    const kb = Math.max(1, Math.round(fullBundle.length / 1024));
-    return `~${kb} KB`;
-  }, [fullBundle]);
-
-  const handleDownload = useCallback(() => {
-    if (!fullBundle) return;
-    const blob = new Blob([fullBundle], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ui-lab-theme-setup.txt";
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [fullBundle]);
+  const initializeConfig = useMemo(
+    () => ({
+      version: 2 as const,
+      themeMode: currentThemeMode,
+      colors: sourceColors(currentThemeColors),
+      typography: currentTypography,
+      layout: { radius, borderWidth, spacingScale },
+    }),
+    [currentThemeMode, currentThemeColors, currentTypography, radius, borderWidth, spacingScale],
+  );
 
   if (!currentThemeColors) {
     return (
@@ -185,35 +183,42 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
   return (
     <Page
       padding="none"
-      max-width="var(--page-width)"
+      fullscreen
       className="bg-background-100 text-foreground-100 min-h-[calc(100dvh-var(--header-height))] xl:h-[calc(100dvh-var(--header-height))] xl:min-h-0 xl:overflow-hidden"
     >
-      <div className="grid w-full border-l border-background-700 xl:h-full xl:min-h-0 xl:grid-cols-[minmax(0,1fr)_25rem]">
-        <section className="flex min-w-0 min-h-0 flex-col gap-3 pt-2 xl:overflow-hidden">
-          <Tabs
-            value={preview}
-            onValueChange={setPreview}
-            className="sticky top-0 z-10 w-auto px-2"
-          >
-            <Tabs.List
-              aria-label="Configuration previews"
-              className="w-fit rounded-sm px-[5px]"
-              styles={{ indicator: "rounded-sm bg-background-700" }}
-            >
-              <Tabs.Trigger
-                value="components"
-                className="rounded-full bg-transparent text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+      <Panel spacing="none" className="w-full border-l border-background-700 xl:h-full xl:min-h-0">
+        <section className="flex flex-1 min-w-0 min-h-0 flex-col gap-3 pt-2 xl:overflow-hidden">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-2">
+            <Tabs value={preview} onValueChange={setPreview} className="w-auto">
+              <Tabs.List
+                aria-label="Configuration previews"
+                className="w-fit rounded-sm px-[5px]"
+                styles={{ indicator: "rounded-sm bg-background-700" }}
               >
-                Components
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="typography"
-                className="rounded-full bg-transparent text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+                <Tabs.Trigger
+                  value="components"
+                  className="rounded-full bg-transparent text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+                >
+                  Components
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="typography"
+                  className="rounded-full bg-transparent text-sm text-foreground-400 data-[selected=true]:text-foreground-100"
+                >
+                  Typography
+                </Tabs.Trigger>
+              </Tabs.List>
+            </Tabs>
+            <Panel.Toggle aria-controls="config-settings">
+              <button
+                aria-label="Toggle settings panel"
+                className="flex size-7 items-center justify-center rounded-sm text-foreground-400 transition-colors hover:bg-background-800 hover:text-foreground-100 [&[aria-expanded=false]_.collapse-icon]:hidden [&[aria-expanded=true]_.expand-icon]:hidden"
               >
-                Typography
-              </Tabs.Trigger>
-            </Tabs.List>
-          </Tabs>
+                <PanelRightClose className="collapse-icon" size={16} aria-hidden />
+                <PanelRightOpen className="expand-icon" size={16} aria-hidden />
+              </button>
+            </Panel.Toggle>
+          </div>
           <Scroll
             className="h-[calc(100svh-var(--header-height))] min-h-0 flex-1 border-t border-background-700 xl:h-auto"
             fade-y
@@ -224,35 +229,69 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
           </Scroll>
         </section>
 
-        <SettingsSidebar
-          footer={
-            <Button
-              onPress={() => setIsExportOpen(true)}
-              variant="secondary"
-              className="w-full justify-center"
-              icon={<Download size={12} />}
-            >
-              Initialize project
-            </Button>
-          }
-        />
-      </div>
+        <Panel.Sidebar id="config-settings" side="right" size="25rem" className="shrink-0">
+          <SettingsSidebar
+            className="w-full"
+            footer={
+              <Button
+                onPress={() => setIsExportOpen(true)}
+                variant="secondary"
+                className="w-full justify-center"
+                icon={<Download size={12} />}
+              >
+                Initialize project
+              </Button>
+            }
+          />
+        </Panel.Sidebar>
+      </Panel>
       <Modal
         open={isExportOpen}
         onOpenChange={setIsExportOpen}
         title="Initialize project"
         className="max-w-[min(84vw,40rem)]"
-        styles={{ content: "p-6" }}
       >
-        <InitializeContent
-          themeCss={themeSetup?.themeCss ?? ""}
-          typographyCss={typographyCss}
-          globalsCss={themeSetup?.globalsCss ?? ""}
-          layoutTsx={themeSetup?.layoutTsx ?? ""}
-          themeToggleTsx={themeSetup?.themeToggleTsx ?? ""}
-          bundleSizeLabel={bundleSizeLabel}
-          onDownload={handleDownload}
-        />
+        <Modal.Body className="px-6">
+          <InitializeContent
+            themeCss={themeSetup?.themeCss ?? ""}
+            typographyCss={typographyCss}
+            globalsCss={themeSetup?.globalsCss ?? ""}
+            layoutTsx={themeSetup?.layoutTsx ?? ""}
+            themeToggleTsx={themeSetup?.themeToggleTsx ?? ""}
+            onCommandChange={setInitializeCommand}
+            config={initializeConfig}
+          />
+        </Modal.Body>
+        <Modal.Footer className="flex items-center justify-between gap-6">
+          {initializeCommand.manual ? (
+            <p className="text-sm text-foreground-400">
+              Astro setup is available as manual instructions only; the CLI does not support Astro
+              projects yet.
+            </p>
+          ) : (
+            <>
+              <div className="min-w-0">
+                <h3 className="text-sm font-medium text-foreground-200">Initialize command</h3>
+                <p className="mt-1 text-xs text-foreground-400">Run this from your project root.</p>
+              </div>
+              <Input
+                aria-label="Initialization command"
+                className="w-100 shrink-0 text-xs"
+                readOnly
+                value={initializeCommand.value}
+                actions={[
+                  {
+                    icon: <Copy size={12} />,
+                    title: "Copy initialization command",
+                    onClick: () =>
+                      initializeCommand.canCopy &&
+                      void navigator.clipboard.writeText(initializeCommand.value),
+                  },
+                ]}
+              />
+            </>
+          )}
+        </Modal.Footer>
       </Modal>
     </Page>
   );
