@@ -9,6 +9,7 @@ export interface ProjectInfo {
   packageManager: PackageManagerName;
   stylesheet?: string;
   nextLayouts: string[];
+  viteEntries: string[];
 }
 export function findProjectRoot(start = process.cwd()): string {
   let current = resolve(start);
@@ -32,6 +33,8 @@ export function detectPackageManager(root: string): PackageManagerName {
 const NEXT_STYLESHEET_CANDIDATES = ["app/globals.css", "src/app/globals.css"];
 const NEXT_APP_DIRECTORIES = ["app", "src/app"];
 const NEXT_ROUTE_EXTENSIONS = ["tsx", "ts", "jsx", "js"];
+const VITE_STYLESHEET_CANDIDATES = ["src/index.css", "src/styles.css"];
+const VITE_HTML_CANDIDATES = ["index.html", "src/index.html"];
 
 function findNextLayouts(root: string): string[] {
   return NEXT_APP_DIRECTORIES.flatMap((directory) =>
@@ -39,11 +42,14 @@ function findNextLayouts(root: string): string[] {
   ).filter((file) => existsSync(join(root, file)));
 }
 
+function findViteEntries(root: string): string[] {
+  return VITE_HTML_CANDIDATES.filter((file) => existsSync(join(root, file)));
+}
+
 function findStylesheet(root: string): string | undefined {
   return [
     ...NEXT_STYLESHEET_CANDIDATES,
-    "src/index.css",
-    "src/styles.css",
+    ...VITE_STYLESHEET_CANDIDATES,
     "styles/globals.css",
   ].find((file) => existsSync(join(root, file)));
 }
@@ -62,6 +68,7 @@ export function detectProject(start = process.cwd()): ProjectInfo {
         : "unknown";
   const stylesheet = findStylesheet(root);
   const nextLayouts = findNextLayouts(root);
+  const viteEntries = findViteEntries(root);
   return {
     root,
     packageJson,
@@ -69,11 +76,17 @@ export function detectProject(start = process.cwd()): ProjectInfo {
     packageManager: detectPackageManager(root),
     stylesheet:
       stylesheet ??
-      (framework === "next" ? NEXT_STYLESHEET_CANDIDATES[0] : undefined),
+      (framework === "next"
+        ? NEXT_STYLESHEET_CANDIDATES[0]
+        : framework === "vite"
+          ? VITE_STYLESHEET_CANDIDATES[0]
+          : undefined),
     nextLayouts:
       nextLayouts.length || framework !== "next"
         ? nextLayouts
         : ["app/layout.tsx"],
+    viteEntries:
+      viteEntries.length || framework !== "vite" ? viteEntries : ["index.html"],
   };
 }
 export function packageVersion(

@@ -20,7 +20,7 @@ function logo(): void {
 }
 function help(): void {
   console.log(
-    "Usage: ui-lab <init|add|status|login> [options]\ninit: [--non-interactive] [--stylesheet <path>] [--theme <onyx|none>] [--typography|--no-typography] [--font <work-sans|inter|manrope>] [--color-mode <system|light|dark>] [--next-layout <path|none>] [--theme-stylesheet <path>] [--dry-run]\nFor agents and automation, use: ui-lab init --non-interactive\nNon-interactive init detects or completes the Next.js project and defaults to the Onyx theme, Work Sans variable font, typography, system color mode, and detected App Router layout. Explicit options override those defaults.\nadd: ui-lab add <artifact-id> [--target <path>] [--dry-run]",
+    "Usage: ui-lab <init|add|status|login> [options]\ninit: [--config <id>] [--non-interactive] [--framework <next|vite>] [--stylesheet <path>] [--theme <onyx|none>] [--typography|--no-typography] [--font <work-sans|inter|geist|karla|dm-sans|manrope>] [--color-mode <system|light|dark>] [--next-layout <path|none>] [--vite-html <path|none>] [--theme-stylesheet <path>] [--dry-run]\nA shareable --config ID supplies initialization settings offline. Explicit CLI flags override encoded values.\nadd: ui-lab add <artifact-id> [--target <path>] [--dry-run]",
   );
 }
 async function main() {
@@ -32,12 +32,15 @@ async function main() {
     if (has("--help") || has("-h")) return help();
     if (has("--typography") && has("--no-typography"))
       throw new Error("Choose either --typography or --no-typography.");
+    const framework = option("--framework");
+    if (framework && framework !== "next" && framework !== "vite")
+      throw new Error("--framework must be next or vite.");
     const theme = option("--theme");
     if (theme && theme !== "onyx" && theme !== "none")
       throw new Error("--theme must be onyx or none.");
     const font = option("--font");
-    if (font && font !== "work-sans" && font !== "inter" && font !== "manrope")
-      throw new Error("--font must be work-sans, inter, or manrope.");
+    if (font && !["work-sans", "inter", "geist", "karla", "dm-sans", "manrope"].includes(font))
+      throw new Error("--font must be work-sans, inter, geist, karla, dm-sans, or manrope.");
     const colorMode = option("--color-mode");
     if (
       colorMode &&
@@ -56,11 +59,14 @@ async function main() {
           : undefined,
       colorMode: colorMode as "system" | "light" | "dark" | undefined,
       font: font as "work-sans" | "inter" | "manrope" | undefined,
+      framework: framework as "next" | "vite" | undefined,
       nextLayout: option("--next-layout"),
+      viteHtml: option("--vite-html"),
       themeTarget: option("--theme-stylesheet"),
       dryRun,
       nonInteractive:
-        has("--non-interactive") || !process.stdin.isTTY || !process.stdout.isTTY,
+        has("--config") || has("--non-interactive") || !process.stdin.isTTY || !process.stdout.isTTY,
+      config: option("--config"),
     });
   }
   if (command === "add") {
@@ -74,6 +80,12 @@ async function main() {
   throw new Error(`Unknown command: ${command}`);
 }
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(message);
+  if (/\b(?:ETARGET|notarget|No matching version found)\b/i.test(message)) {
+    console.error(
+      "A requested package version is unavailable. Update or reinstall the UI Lab CLI using https://www.ui-lab.app/docs/installation, then rerun init. The project may be only partially configured.",
+    );
+  }
   process.exitCode = 1;
 });

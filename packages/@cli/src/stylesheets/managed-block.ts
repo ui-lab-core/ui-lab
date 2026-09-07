@@ -10,9 +10,11 @@ export function updateManagedStylesheet(
   typography: boolean,
   themeImport: string,
   fontsImport = "./fonts.css",
+  customFont = true,
+  globalCss = ONYX_GLOBAL_CSS,
 ): string {
   const managedImports = imports(typography, themeImport);
-  managedImports.splice(1, 0, `@import "${fontsImport}";`);
+  if (customFont) managedImports.splice(1, 0, `@import "${fontsImport}";`);
   const block = `${IMPORT_START}\n${managedImports.join("\n")}\n${IMPORT_END}`;
   const hasStart = content.includes(IMPORT_START);
   const hasEnd = content.includes(IMPORT_END);
@@ -33,7 +35,7 @@ export function updateManagedStylesheet(
     );
   if (
     hasGlobalStart &&
-    !content.includes(`${GLOBAL_START}\n${ONYX_GLOBAL_CSS}${GLOBAL_END}`)
+    !content.includes(`${GLOBAL_START}\n${globalCss}${GLOBAL_END}`)
   )
     throw new Error(
       "The managed UI Lab global stylesheet block has user edits. Refusing to overwrite it.",
@@ -42,6 +44,13 @@ export function updateManagedStylesheet(
     throw new Error(
       "Existing UI Lab global CSS is not in a managed block. Refusing to rewrite the stylesheet.",
     );
+  if (
+    hasStart &&
+    hasGlobalStart &&
+    content.includes(block) &&
+    content.includes(`${GLOBAL_START}\n${globalCss}${GLOBAL_END}`)
+  )
+    return content;
   const withoutImports = hasStart
     ? content.replace(
         new RegExp(`${IMPORT_START}[\\s\\S]*?${IMPORT_END}\\n?`),
@@ -54,7 +63,7 @@ export function updateManagedStylesheet(
         "",
       )
     : withoutImports;
-  return `${block}\n\n${GLOBAL_START}\n${ONYX_GLOBAL_CSS}${GLOBAL_END}\n\n${remainder}`.replace(
+  return `${block}\n\n${GLOBAL_START}\n${globalCss}${GLOBAL_END}\n\n${remainder}`.replace(
     /\n{3,}/g,
     "\n\n",
   );

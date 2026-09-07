@@ -1,19 +1,34 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { integrateNextLayout } from "../next/layout.js";
+import { integrateViteHtml } from "../vite/html.js";
 import {
   generatedWrite,
   updateManagedStylesheet,
 } from "../stylesheets/managed-block.js";
 import {
   ONYX_PACKAGES,
+  ONYX_GLOBAL_CSS,
   ONYX_THEME_CSS,
   ONYX_TYPOGRAPHY_CSS,
 } from "../themes/onyx.js";
 import type { BuildPlanOptions, InitPlan, PlannedWrite } from "./plan.js";
 import { fontPackages, fontStylesheet } from "../fonts.js";
+import { generateInitFiles, generateGlobalsCSS, generateTypographyFile, THEME_TOGGLE_TSX } from "ui-lab-registry/init-config";
+
+function configuredGlobals(options: BuildPlanOptions): string {
+  if (!options.layoutConfig || !options.typographyConfig) return ONYX_GLOBAL_CSS;
+  return generateGlobalsCSS(options.typographyConfig, options.layoutConfig);
+}
+function configuredTypography(options: BuildPlanOptions): string {
+  if (options.typographyCss) return options.typographyCss;
+  const t = options.typographyConfig;
+  if (!t) return ONYX_TYPOGRAPHY_CSS;
+  return generateTypographyFile(t, ONYX_TYPOGRAPHY_CSS);
+}
 
 export function buildInitPlan(options: BuildPlanOptions): InitPlan {
+  const generated = options.sourceConfig ? generateInitFiles({ ...options.sourceConfig, longFormTypography: options.typography }, ONYX_TYPOGRAPHY_CSS) : undefined;
   const stylesheetFile = join(options.root, options.stylesheet);
   if (!existsSync(stylesheetFile))
     throw new Error(
@@ -42,6 +57,8 @@ export function buildInitPlan(options: BuildPlanOptions): InitPlan {
     options.typography,
     themeImport,
     "./fonts.css",
+    options.customFont ?? true,
+    generated?.globalsCss ?? configuredGlobals(options),
   );
   if (updatedStylesheet !== stylesheet)
     writes.push({
@@ -49,18 +66,25 @@ export function buildInitPlan(options: BuildPlanOptions): InitPlan {
       content: updatedStylesheet,
       kind: "update",
     });
-  const themeWrite = generatedWrite(options.root, themePath, ONYX_THEME_CSS);
+  const themeWrite = generatedWrite(options.root, themePath, generated?.themeCss ?? options.themeCss ?? ONYX_THEME_CSS);
   if (themeWrite) writes.push(themeWrite);
   const font = options.font ?? "work-sans";
-  const fontsWrite = generatedWrite(options.root, fontsPath, fontStylesheet(font));
-  if (fontsWrite) writes.push(fontsWrite);
+  if (options.customFont ?? true) {
+    const fontsWrite = generatedWrite(options.root, fontsPath, fontStylesheet(font));
+    if (fontsWrite) writes.push(fontsWrite);
+  }
   if (options.typography) {
     const typographyWrite = generatedWrite(
       options.root,
       typographyPath,
-      ONYX_TYPOGRAPHY_CSS,
+      generated?.typographyCss ?? configuredTypography(options),
     );
     if (typographyWrite) writes.push(typographyWrite);
+  }
+  if (options.themeToggle) {
+    const togglePath = "components/theme-toggle.tsx";
+    const toggleWrite = generatedWrite(options.root, togglePath, THEME_TOGGLE_TSX);
+    if (toggleWrite) writes.push(toggleWrite);
   }
   let layoutContent: string | undefined;
   if (options.layout) {
@@ -78,8 +102,23 @@ export function buildInitPlan(options: BuildPlanOptions): InitPlan {
         kind: "layout",
       });
   }
+  if (options.viteHtml) {
+    const file = join(options.root, options.viteHtml);
+    if (!existsSync(file))
+      throw new Error(
+        `index.html does not exist: ${options.viteHtml}. Create the entry HTML, pass --vite-html <path>, or pass --vite-html none and integrate the theme script manually.`,
+      );
+    const current = readFileSync(file, "utf8");
+    const updated = integrateViteHtml(current, options.colorMode);
+    if (updated !== current)
+      writes.push({
+        path: options.viteHtml,
+        content: updated,
+        kind: "layout",
+      });
+  }
   return {
-    packages: [...ONYX_PACKAGES, ...fontPackages(font)],
+    packages: [...ONYX_PACKAGES, ...((options.customFont ?? true) ? fontPackages(font) : [])],
     writes,
   };
 }

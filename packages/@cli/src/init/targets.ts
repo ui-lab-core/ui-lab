@@ -21,3 +21,11 @@ export function resolveLayout(
     ? relativeProjectPath(project.root, layout)
     : undefined;
 }
+export function resolveViteHtml(
+  project: ProjectInfo,
+  html?: string,
+): string | undefined {
+  return project.framework === "vite" && html
+    ? relativeProjectPath(project.root, html)
+    : undefined;
+}

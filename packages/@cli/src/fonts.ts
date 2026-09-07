@@ -1,9 +1,12 @@
-export type FontChoice = "work-sans" | "inter" | "manrope";
+export type FontChoice = "work-sans" | "inter" | "manrope" | "geist" | "karla" | "dm-sans";
 
 const FONT_FAMILIES: Record<FontChoice, string> = {
   "work-sans": "Work Sans Variable",
   inter: "Inter Variable",
   manrope: "Manrope Variable",
+  geist: "Geist Variable",
+  karla: "Karla Variable",
+  "dm-sans": "DM Sans Variable",
 };
 
 export function fontPackages(font: FontChoice): string[] {

@@ -17,6 +17,7 @@
     ,"baseUrl": ".",
     "paths": {
       "ui-lab-registry": ["../registry/dist/index.d.ts"]
+      ,"ui-lab-registry/init-config": ["../registry/dist/init-config.d.ts"]
     }
   },
   "include": ["src/**/*"],

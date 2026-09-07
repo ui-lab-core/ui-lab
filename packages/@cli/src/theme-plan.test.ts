@@ -53,7 +53,9 @@ test("plans a complete Next App Router installation", () => {
     assert.deepEqual(plan.packages, [
       "ui-lab-components",
       "ui-lab-theme-onyx",
-      "tailwindcss@^4.0.0",
+      "tailwindcss@4.2.4",
+      "@fontsource-variable/work-sans",
+      "@fontsource-variable/jetbrains-mono",
     ]);
     assert.ok(
       plan.writes.some(
@@ -123,7 +125,7 @@ test("planning and dry-run inputs write nothing, then repeated plans are idempot
       colorMode: "system",
       layout: "app/layout.tsx",
     });
-    assert.equal(second.writes.length, 0);
+    assert.equal(second.writes.length, 0, JSON.stringify(second.writes.map((write) => write.path)));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -154,6 +156,27 @@ test("preserves user CSS and supports typography on and off", () => {
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("applies shared configuration output, optional font, typography, and toggle", () => {
+  const root = fixture();
+  try {
+    const plan = buildThemePlan({
+      root, stylesheet:"app/globals.css", typography:false, colorMode:"dark",
+      customFont:false, themeToggle:true, themeCss:":root { --accent-400: red; }",
+      typographyCss:"@layer theme { :root { --text-body-size: 1rem; } }",
+      layoutConfig:{radius:1.2,borderWidth:2,spacingScale:.8},
+      typographyConfig:{headerScale:.6,headerMinFontSizePx:11,bodyScale:.8,bodyMinFontSizePx:14,monoFontSizeScale:1.1,monoFontWeightScale:1.2,monoLetterSpacingScale:2,monoLineHeight:1.8,monoMinFontSizePx:12},
+    });
+    assert.deepEqual(plan.packages, ["ui-lab-components","ui-lab-theme-onyx","tailwindcss@4.2.4"]);
+    assert.equal(plan.writes.some((write) => write.path.endsWith("fonts.css")), false);
+    assert.equal(plan.writes.some((write) => write.path.endsWith("typography.css")), false);
+    assert.match(plan.writes.find((write) => write.path.endsWith("theme.css"))?.content ?? "", /accent-400: red/);
+    assert.ok(plan.writes.some((write) => write.path === "components/theme-toggle.tsx"));
+    const global = plan.writes.find((write) => write.path === "app/globals.css")?.content ?? "";
+    assert.match(global, /--radius-sm: 0\.600rem/);
+    assert.doesNotMatch(global, /fonts\.css/);
+  } finally { rmSync(root, { recursive:true, force:true }); }
 });
 
 test("safely transforms supported layouts and refuses unsupported layouts", () => {

@@ -9,11 +9,13 @@ import {
   resolveLayout,
   resolveStylesheet,
   resolveThemeTarget,
+  resolveViteHtml,
 } from "./init/targets.js";
 import type { ColorMode } from "./themes/onyx.js";
 import { prepareProject } from "./init/project-setup.js";
 import { packageName, packageVersion } from "./project.js";
 import type { FontChoice } from "./fonts.js";
+import { decodeInitConfig, type DecodedInitConfig } from "ui-lab-registry/init-config";
 
 export interface InitOptions {
   stylesheet?: string;
@@ -21,10 +23,15 @@ export interface InitOptions {
   typography?: boolean;
   colorMode?: ColorMode;
   font?: FontChoice;
+  framework?: "next" | "vite";
   nextLayout?: string;
+  viteHtml?: string;
   themeTarget?: string;
   dryRun?: boolean;
   nonInteractive?: boolean;
+  config?: string;
+  customFont?: boolean;
+  themeToggle?: boolean;
 }
 function orderedLegacyStyles(content: string): string {
   const imports = [
@@ -43,10 +50,25 @@ function orderedLegacyStyles(content: string): string {
   return `${imports.join("\n")}\n${remaining}`;
 }
 
+export function mergeInitConfigOptions(options: InitOptions, decoded: DecodedInitConfig): InitOptions {
+  const framework = options.framework ?? decoded.framework;
+  if (framework === "astro") throw new Error("This configuration targets Astro, which the UI Lab CLI does not support yet. Choose Next.js or Vite in the website initializer, or explicitly override --framework.");
+  return { ...options, framework, typography: options.typography ?? decoded.longFormTypography, colorMode: options.colorMode ?? decoded.themeMode, font: options.font ?? decoded.font, customFont: options.customFont ?? (options.font ? true : decoded.customFont), themeToggle: options.themeToggle ?? decoded.themeToggle, nonInteractive: true };
+}
 export async function initialize(options: InitOptions) {
-  const project = await prepareProject(process.cwd(), Boolean(options.dryRun));
+  let decoded: DecodedInitConfig | undefined;
+  if (options.config) {
+    decoded = await decodeInitConfig(options.config);
+    options = mergeInitConfigOptions(options, decoded);
+  }
+  const project = await prepareProject(
+    process.cwd(),
+    Boolean(options.dryRun),
+    options.framework,
+    options.nonInteractive,
+  );
   if (!project) {
-    console.log("[dry-run] configure UI Lab after Next.js project setup");
+    console.log("[dry-run] configure UI Lab after project setup");
     return;
   }
   const detectedFile = project.stylesheet && join(project.root, project.stylesheet);
@@ -77,8 +99,15 @@ export async function initialize(options: InitOptions) {
       (alreadyInitialized && inferredTheme === "onyx"
         ? project.nextLayouts[0]
         : undefined),
+    viteHtml:
+      options.viteHtml ??
+      (alreadyInitialized && inferredTheme === "onyx"
+        ? project.viteEntries[0]
+        : undefined),
     detectedStylesheet: project.stylesheet,
+    framework: project.framework,
     nextLayouts: project.framework === "next" ? project.nextLayouts : [],
+    viteEntries: project.framework === "vite" ? project.viteEntries : [],
   });
   const stylesheet = resolveStylesheet(project, selection.stylesheet);
   if (selection.theme === "none") {
@@ -88,7 +117,7 @@ export async function initialize(options: InitOptions) {
       );
     const content = readFileSync(join(project.root, stylesheet), "utf8");
     const updated = orderedLegacyStyles(content);
-    const packages = ["ui-lab-components", "tailwindcss@^4.0.0"].filter(
+    const packages = ["ui-lab-components", "tailwindcss@4.2.4"].filter(
       (name) => !packageVersion(project, packageName(name)),
     );
     if (options.dryRun) {
@@ -117,7 +146,14 @@ export async function initialize(options: InitOptions) {
     colorMode: selection.colorMode,
     font: selection.font,
     layout: resolveLayout(project, selection.nextLayout),
+    viteHtml: resolveViteHtml(project, selection.viteHtml),
     themeTarget: resolveThemeTarget(project, options.themeTarget),
+    customFont: options.customFont,
+    themeToggle: options.themeToggle,
+    themeCss: decoded?.version === 1 ? decoded.themeCss : undefined,
+    sourceConfig: decoded?.version === 2 ? decoded : undefined,
+    layoutConfig: decoded?.layout,
+    typographyConfig: decoded?.typography,
   });
   const packages = plan.packages.filter(
     (name) => !packageVersion(project, packageName(name)),

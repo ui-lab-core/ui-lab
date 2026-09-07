@@ -1,10 +1,12 @@
 import { spawn } from "node:child_process";
 import type { PackageManager, PackageManagerName } from "./types.js";
+import { resolveInstallSpecs } from "./dependency-resolution.js";
 const INSTALL_TIMEOUT_MS = 120_000;
 export function createPackageManager(name: PackageManagerName): PackageManager {
   return {
     name,
     async add(cwd, packages, dryRun, development = false) {
+      const installSpecs = resolveInstallSpecs(packages);
       const args =
         name === "npm"
           ? [
@@ -16,9 +18,9 @@ export function createPackageManager(name: PackageManagerName): PackageManager {
               "--fetch-retry-mintimeout=1000",
               "--fetch-retry-maxtimeout=5000",
               ...(development ? ["--save-dev"] : []),
-              ...packages,
+              ...installSpecs,
             ]
-          : ["add", ...(development ? ["--save-dev"] : []), ...packages];
+          : ["add", ...(development ? ["--save-dev"] : []), ...installSpecs];
       if (dryRun)
         return void console.log(`[dry-run] ${name} ${args.join(" ")}`);
       const command = `${name} ${args.join(" ")}`;
@@ -54,7 +56,7 @@ export function createPackageManager(name: PackageManagerName): PackageManager {
             ? resolve()
             : reject(
                 new Error(
-                  `${command} exited with ${code ?? "an error"}. Resolve the package-manager error shown above, run ${command} from ${cwd}, then rerun ui-lab init; completed file changes are safe to keep.`,
+                  `${command} exited with ${code ?? "an error"}. No planned UI Lab source or configuration changes were applied. Resolve the package-manager error shown above, then rerun ui-lab init.`,
                 ),
               );
         });

@@ -14,7 +14,7 @@ export const onyxTheme: ThemeDefinition = {
   id: "onyx",
   version: "1",
   cookieName: "ui-lab-theme",
-  packages: ["ui-lab-components", "ui-lab-theme-onyx", "tailwindcss@^4.0.0"],
+  packages: ["ui-lab-components", "ui-lab-theme-onyx", "tailwindcss@4.2.4"],
   themeCss: String.raw`/* Your configured tokens. Imported after ui-lab-theme-onyx so they override its defaults. */
 /* Generated from a dark preview, but both light and dark tokens are included here. */
 /* :root is the light default and also covers explicit data-theme='light'. */

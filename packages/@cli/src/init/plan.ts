@@ -16,6 +16,14 @@ export interface BuildPlanOptions {
   typography: boolean;
   colorMode: ColorMode;
   font?: FontChoice;
+  customFont?: boolean;
+  themeToggle?: boolean;
+  themeCss?: string;
+  sourceConfig?: import("ui-lab-registry/init-config").UiLabInitConfig;
+  typographyCss?: string;
+  layoutConfig?: { radius: number; borderWidth: number; spacingScale: number };
+  typographyConfig?: { headerScale: number; headerMinFontSizePx: number; bodyScale: number; bodyMinFontSizePx: number; monoFontSizeScale: number; monoFontWeightScale: number; monoLetterSpacingScale: number; monoLineHeight: number; monoMinFontSizePx: number };
   layout?: string;
+  viteHtml?: string;
   themeTarget?: string;
 }

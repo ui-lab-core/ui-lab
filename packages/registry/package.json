@@ -42,6 +42,16 @@
       "import": "./dist/artifacts.js",
       "types": "./dist/artifacts.d.ts"
     },
+    "./init-config": {
+      "types": "./dist/init-config.d.ts",
+      "import": "./dist/init-config.js",
+      "default": "./dist/init-config.js"
+    },
+    "./init-generation/*": {
+      "types": "./dist/init-generation/*.d.ts",
+      "import": "./dist/init-generation/*.js",
+      "default": "./dist/init-generation/*.js"
+    },
     "./components": {
       "import": "./dist/components/index.js",
       "types": "./dist/components/index.d.ts"
@@ -67,7 +77,7 @@
     "type-check": "tsc --noEmit",
     "generate": "node --import tsx scripts/generate-registry-data.ts",
     "validate": "node --import tsx scripts/validate-registry.ts",
-    "test": "node --import tsx --test src/artifacts.test.ts src/workshop-content.test.ts scripts/generate-public-artifacts.test.ts scripts/generate-styles-data.test.ts"
+    "test": "node --import tsx --test src/init-config.test.ts src/artifacts.test.ts src/workshop-content.test.ts scripts/generate-public-artifacts.test.ts scripts/generate-styles-data.test.ts"
   },
   "dependencies": {
     "react-icons": "^5.5.0",

@@ -9,6 +9,7 @@ export interface InitSelection {
   colorMode: ColorMode;
   font: FontChoice;
   nextLayout?: string;
+  viteHtml?: string;
 }
 export interface InitChoices {
   stylesheet?: string;
@@ -17,8 +18,11 @@ export interface InitChoices {
   colorMode?: ColorMode;
   font?: FontChoice;
   nextLayout?: string;
+  viteHtml?: string;
   detectedStylesheet?: string;
+  framework?: "next" | "vite" | "react" | "unknown";
   nextLayouts: string[];
+  viteEntries: string[];
   nonInteractive?: boolean;
 }
 function validateColorMode(value: string): ColorMode {
@@ -42,6 +46,10 @@ export async function chooseInitOptions(
         options.nextLayout === "none"
           ? undefined
           : options.nextLayout ?? (theme === "onyx" ? options.nextLayouts[0] : undefined),
+      viteHtml:
+        options.viteHtml === "none"
+          ? undefined
+          : options.viteHtml ?? (theme === "onyx" ? options.viteEntries[0] : undefined),
     };
   }
   const prompt = createInterface({ input: stdin, output: stdout });
@@ -76,10 +84,10 @@ export async function chooseInitOptions(
       );
     const selectedFont =
       options.font ??
-      ((await prompt.question("Font (work-sans, inter, or manrope) [work-sans]: "))
+      ((await prompt.question("Font (work-sans, inter, geist, karla, dm-sans, or manrope) [work-sans]: "))
         .trim() || "work-sans");
-    if (selectedFont !== "work-sans" && selectedFont !== "inter" && selectedFont !== "manrope")
-      throw new Error("Font must be work-sans, inter, or manrope.");
+    if (!["work-sans", "inter", "geist", "karla", "dm-sans", "manrope"].includes(selectedFont))
+      throw new Error("Font must be work-sans, inter, geist, karla, dm-sans, or manrope.");
     const nextLayout =
       options.nextLayout ??
       (options.nextLayouts.length
@@ -87,16 +95,25 @@ export async function chooseInitOptions(
             `Next layout to integrate [${options.nextLayouts[0]}] (or none): `,
           )
         : undefined);
+    const viteHtml =
+      options.viteHtml ??
+      (options.viteEntries.length
+        ? await prompt.question(
+            `index.html to integrate [${options.viteEntries[0]}] (or none): `,
+          )
+        : undefined);
     return {
       stylesheet,
       theme,
       typography,
       colorMode,
-      font: selectedFont,
+      font: selectedFont as FontChoice,
       nextLayout:
         nextLayout === "none"
           ? undefined
           : nextLayout || options.nextLayouts[0],
+      viteHtml:
+        viteHtml === "none" ? undefined : viteHtml || options.viteEntries[0],
     };
   } finally {
     prompt.close();
