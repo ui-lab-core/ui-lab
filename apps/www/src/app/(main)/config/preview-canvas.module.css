@@ -1,0 +1,29 @@
+.canvas {
+  container-type: inline-size;
+  min-width: 0;
+  width: 100%;
+  padding: 1rem;
+}
+
+.grid {
+  --preview-columns: 1;
+  column-gap: 1rem;
+  align-items: start;
+}
+
+.grid[data-measured="true"] { grid-auto-rows: 1px; }
+.tile { min-width: 0; padding-bottom: 1rem; }
+.content { min-width: 0; width: 100%; }
+
+@container (min-width: 640px) {
+  .grid { --preview-columns: 2; }
+  .tile[data-wide="true"] { grid-column: span 2; }
+}
+
+@container (min-width: 1000px) {
+  .grid { --preview-columns: 3; }
+}
+
+@container (min-width: 1400px) {
+  .grid { --preview-columns: 4; }
+}

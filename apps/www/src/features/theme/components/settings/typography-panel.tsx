@@ -5,12 +5,8 @@ import {
   FaChevronDown,
   FaFont,
   FaHeading,
-  FaTextWidth,
-  FaScaleUnbalanced,
-  FaRulerHorizontal,
-  FaArrowsLeftRight,
 } from "@/shared/icons/fa6";
-import { Divider, Slider } from "ui-lab-components";
+import { Divider, Select, Slider } from "ui-lab-components";
 import {
   MAX_MIN_FONT_SIZE_PX,
   MIN_MIN_FONT_SIZE_PX,
@@ -20,12 +16,16 @@ import {
   TYPOGRAPHY_LINE_HEIGHT_MIN,
   TypographyConfig,
 } from "../../lib/typography-config";
+import { FONTS, MONO_FONTS, type FontFamilyConfig, type FontId, type FontOption } from "../../lib/fonts";
 
 type TypographySectionKey = "header" | "body" | "mono";
+type TypographyFontRole = "header" | "body" | "mono";
 
 interface TypographyPanelProps {
   typography: TypographyConfig;
   onTypographyChange: (next: Partial<TypographyConfig>) => void;
+  fontFamily: FontFamilyConfig;
+  onFontFamilyChange: (role: TypographyFontRole, fontId: FontId) => void;
 }
 
 interface TypographySectionProps {
@@ -38,7 +38,6 @@ interface TypographySectionProps {
 }
 
 interface SliderRowProps {
-  icon: ReactNode;
   label: string;
   value: number;
   min: number;
@@ -52,49 +51,44 @@ const TypographySection = memo(
   ({ icon, title, select, isExpanded, onToggle, children }: TypographySectionProps) => {
     return (
       <div>
-        <div>
+        <div
+          className={`mx-[6px] rounded-[7px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700"} mb-[8px] transition-all duration-300 overflow-hidden group`}
+        >
           <div
             onClick={onToggle}
             aria-expanded={isExpanded}
-            className={`cursor-pointer rounded-[12px] p-3 w-full grid grid-cols-[minmax(0,1fr)_minmax(160px,220px)_auto] items-center gap-3 ${isExpanded ? "bg-background-700 border border-background-700" : "hover:bg-background-700 border border-transparent hover:border-background-700 active:bg-background-800/50"} mb-[8px] transition-all duration-300 overflow-hidden group`}
+            className="cursor-pointer flex items-center gap-3 py-[10px] px-[10px]"
           >
-            <button
-              type="button"
-              className="cursor-pointer min-w-0 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 text-left outline-none"
-            >
-              <div className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-background-700 border border-background-600 shrink-0 text-foreground-100">
+            <div className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none">
+              <div className="w-5 h-5 flex items-center justify-center rounded-[5px] bg-background-700 text-foreground-200 shrink-0">
                 {icon}
               </div>
-
-              <div className="min-w-0 flex flex-col justify-center">
-                <div className="text-sm font-semibold text-foreground-100 leading-tight group-hover:text-foreground-100 transition-colors">
+              <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="text-xs font-medium text-foreground-200 leading-tight group-hover:text-foreground-100 transition-colors">
                   {title}
                 </div>
               </div>
-            </button>
+            </div>
 
-            <div className="min-w-0" onClick={(e) => e.stopPropagation()}>
+            <div className="w-47 min-w-0" onClick={(e) => e.stopPropagation()}>
               {select}
             </div>
 
-            <button
-              type="button"
-              onClick={onToggle}
+            <div
               aria-label={`${isExpanded ? "Collapse" : "Expand"} ${title} typography settings`}
-              aria-expanded={isExpanded}
-              className="hidden cursor-pointer mr-3 text-foreground-400 transition-colors hover:text-foreground-100 outline-none"
+              className={`mr-2 text-foreground-400 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
             >
-              <FaChevronDown
-                size={13}
-                className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
-              />
-            </button>
+              <FaChevronDown size={11} />
+            </div>
           </div>
 
           <div
             className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[660px] opacity-100" : "max-h-0 opacity-0"}`}
           >
-            <div className="px-3 pb-4 pt-0">{children}</div>
+            <div className="pb-4 pt-0">
+              <div className="h-px w-full bg-background-700 mb-4" />
+              <div className="px-4">{children}</div>
+            </div>
           </div>
         </div>
         <Divider />
@@ -105,62 +99,99 @@ const TypographySection = memo(
 
 TypographySection.displayName = "TypographySection";
 
-const SliderRow = memo(({ icon, label, value, min, max, step, unit, onChange }: SliderRowProps) => {
+const SliderRow = memo(({ label, value, min, max, step, unit, onChange }: SliderRowProps) => {
   const safeValue = value ?? min + (max - min) / 2;
 
   return (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-1.5">
-      <div className="w-7 h-7 flex items-center justify-center rounded-[8px] bg-background-700 border border-background-600 shrink-0 text-foreground-100">
-        {icon}
+    <div className="space-y-2 group">
+      <div className="flex justify-between items-end">
+        <label className="text-sm font-medium text-foreground-400 group-hover:text-foreground-300 transition-colors">
+          {label}
+        </label>
+        <span className="border border-background-700 rounded-[8px] bg-background-900 px-1.5 py-0.5 text-sm text-foreground-300 tabular-nums">
+          {safeValue.toFixed(unit ? 2 : 3)}
+          {unit}
+        </span>
       </div>
-      <label className="text-sm font-medium text-foreground-400 leading-none">{label}</label>
-      <span className="border border-background-700 rounded-[8px] bg-background-900 px-1.5 py-0.5 text-sm text-foreground-300 tabular-nums">
-        {safeValue.toFixed(unit ? 2 : 3)}
-        {unit}
-      </span>
-      <div className="col-span-3">
-        <Slider.Root
-          value={[safeValue]}
-          onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
-          min={min}
-          max={max}
-          step={step}
-        />
-      </div>
+      <Slider.Root
+        value={[safeValue]}
+        onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
+        min={min}
+        max={max}
+        step={step}
+      />
     </div>
   );
 });
 
 SliderRow.displayName = "SliderRow";
 
-export const TypographyPanel = memo(({ typography, onTypographyChange }: TypographyPanelProps) => {
-  const {
-    headerScale,
-    bodyScale,
-    bodyMinFontSizePx,
-    headerMinFontSizePx,
-    monoFontSizeScale,
-    monoLetterSpacingScale,
-    monoFontWeightScale,
-    monoLineHeight,
-    monoMinFontSizePx,
-  } = typography;
-  const [expandedSection, setExpandedSection] = useState<TypographySectionKey | null>(null);
+const FontFamilySelect = memo(
+  ({
+    value,
+    options,
+    onChange,
+  }: {
+    value: FontId;
+    options: FontOption[];
+    onChange: (fontId: FontId) => void;
+  }) => {
+    return (
+      <Select
+          selectedKey={value}
+          onSelectionChange={(key) => key !== null && onChange(String(key) as FontId)}
+          className="w-full"
+        >
+          <Select.Trigger className="w-full" aria-label="Font family">
+            <Select.Value placeholder="Choose a font" />
+          </Select.Trigger>
+          <Select.Content>
+            {options.map((option) => (
+              <Select.Item key={option.id} value={option.id} textValue={option.name}>
+                {option.name}
+              </Select.Item>
+            ))}
+          </Select.Content>
+      </Select>
+    );
+  },
+);
 
-  return (
+FontFamilySelect.displayName = "FontFamilySelect";
+
+export const TypographyPanel = memo(
+  ({ typography, onTypographyChange, fontFamily, onFontFamilyChange }: TypographyPanelProps) => {
+    const {
+      headerScale,
+      bodyScale,
+      bodyMinFontSizePx,
+      headerMinFontSizePx,
+      monoFontSizeScale,
+      monoLetterSpacingScale,
+      monoFontWeightScale,
+      monoLineHeight,
+      monoMinFontSizePx,
+    } = typography;
+    const [expandedSection, setExpandedSection] = useState<TypographySectionKey | null>(null);
+
+    return (
     <div className="m-0 space-y-[8px]">
       <div className="space-y-[8px]">
         <TypographySection
-          icon={<FaHeading size={14} />}
+          icon={<FaHeading size={11} />}
           title="Header"
-          select={null}
+          select={
+            <FontFamilySelect
+              value={fontFamily.headerFontId}
+              options={FONTS}
+              onChange={(id) => onFontFamilyChange("header", id)}
+            />
+          }
           isExpanded={expandedSection === "header"}
           onToggle={() => setExpandedSection((current) => (current === "header" ? null : "header"))}
         >
           <div className="space-y-3">
-            <div className="h-px w-full bg-background-700/30" />
             <SliderRow
-              icon={<FaTextWidth size={13} />}
               label="Scale"
               value={headerScale}
               min={TYPOGRAPHY_SCALE_MIN}
@@ -170,7 +201,6 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
               onChange={(scale) => onTypographyChange({ headerScale: scale })}
             />
             <SliderRow
-              icon={<FaTextWidth size={13} />}
               label="Minimum Font Size"
               value={headerMinFontSizePx}
               min={MIN_MIN_FONT_SIZE_PX}
@@ -183,16 +213,20 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
         </TypographySection>
 
         <TypographySection
-          icon={<FaFont size={14} />}
+          icon={<FaFont size={11} />}
           title="Body"
-          select={null}
+          select={
+            <FontFamilySelect
+              value={fontFamily.bodyFontId}
+              options={FONTS}
+              onChange={(id) => onFontFamilyChange("body", id)}
+            />
+          }
           isExpanded={expandedSection === "body"}
           onToggle={() => setExpandedSection((current) => (current === "body" ? null : "body"))}
         >
           <div className="space-y-3">
-            <div className="h-px w-full bg-background-700/30" />
             <SliderRow
-              icon={<FaTextWidth size={13} />}
               label="Scale"
               value={bodyScale}
               min={TYPOGRAPHY_SCALE_MIN}
@@ -202,7 +236,6 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
               onChange={(scale) => onTypographyChange({ bodyScale: scale })}
             />
             <SliderRow
-              icon={<FaTextWidth size={13} />}
               label="Minimum Font Size"
               value={bodyMinFontSizePx}
               min={MIN_MIN_FONT_SIZE_PX}
@@ -216,16 +249,20 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
       </div>
 
       <TypographySection
-        icon={<FaFont size={14} />}
+        icon={<FaFont size={11} />}
         title="Mono"
-        select={null}
+        select={
+          <FontFamilySelect
+            value={fontFamily.monoFontId}
+            options={MONO_FONTS}
+            onChange={(id) => onFontFamilyChange("mono", id)}
+          />
+        }
         isExpanded={expandedSection === "mono"}
         onToggle={() => setExpandedSection((current) => (current === "mono" ? null : "mono"))}
       >
         <div className="space-y-3">
-          <div className="h-px w-full bg-background-700/30" />
           <SliderRow
-            icon={<FaTextWidth size={13} />}
             label="Code Size"
             value={monoFontSizeScale}
             min={0.8}
@@ -235,7 +272,6 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
             onChange={(scale) => onTypographyChange({ monoFontSizeScale: scale })}
           />
           <SliderRow
-            icon={<FaArrowsLeftRight size={13} />}
             label="Code Letter Spacing"
             value={monoLetterSpacingScale}
             min={0}
@@ -245,7 +281,6 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
             onChange={(scale) => onTypographyChange({ monoLetterSpacingScale: scale })}
           />
           <SliderRow
-            icon={<FaScaleUnbalanced size={13} />}
             label="Code Weight"
             value={monoFontWeightScale}
             min={0.8}
@@ -255,7 +290,6 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
             onChange={(scale) => onTypographyChange({ monoFontWeightScale: scale })}
           />
           <SliderRow
-            icon={<FaRulerHorizontal size={13} />}
             label="Code Line Height"
             value={monoLineHeight}
             min={TYPOGRAPHY_LINE_HEIGHT_MIN}
@@ -265,7 +299,6 @@ export const TypographyPanel = memo(({ typography, onTypographyChange }: Typogra
             onChange={(lineHeight) => onTypographyChange({ monoLineHeight: lineHeight })}
           />
           <SliderRow
-            icon={<FaTextWidth size={13} />}
             label="Code Minimum Size"
             value={monoMinFontSizePx}
             min={MIN_MIN_FONT_SIZE_PX}

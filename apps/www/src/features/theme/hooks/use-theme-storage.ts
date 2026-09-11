@@ -12,6 +12,7 @@ import {
 } from "../lib/theme-cache";
 import { type TypographyConfig } from "../lib/typography-config";
 import { getDefaultThemeSourceConfig } from "../lib/default-theme-config";
+import { type FontFamilyConfig } from "../lib/fonts";
 interface LayoutConfig {
   radius: number;
   borderWidth: number;
@@ -23,6 +24,7 @@ interface ThemeStorageOptions {
   onTypographyChange?: (config: TypographyConfig) => void;
   onLayoutChange?: (config: LayoutConfig) => void;
   onModeChange?: (mode: "light" | "dark") => void;
+  onFontChange?: (fonts: FontFamilyConfig) => void;
   currentThemeMode: "light" | "dark";
 }
 
@@ -36,6 +38,9 @@ function buildConfig(source: ThemeSourceConfig | null, mode: "light" | "dark"): 
     },
     layout: { ...defaults.layout, ...(source?.layout || {}) },
     mode,
+    headerFontId: source?.headerFontId ?? defaults.headerFontId,
+    bodyFontId: source?.bodyFontId ?? defaults.bodyFontId,
+    monoFontId: source?.monoFontId ?? defaults.monoFontId,
   };
 }
 
@@ -54,8 +59,14 @@ function computeAndCache(config: ThemeConfig): void {
 }
 
 export function useThemeStorage(options: ThemeStorageOptions) {
-  const { onColorsChange, onTypographyChange, onLayoutChange, onModeChange, currentThemeMode } =
-    options;
+  const {
+    onColorsChange,
+    onTypographyChange,
+    onLayoutChange,
+    onModeChange,
+    onFontChange,
+    currentThemeMode,
+  } = options;
 
   const applyAndPersistColors = useCallback(
     (colors: SimpleThemeColors, mode?: "light" | "dark") => {
@@ -88,6 +99,18 @@ export function useThemeStorage(options: ThemeStorageOptions) {
     [currentThemeMode, onLayoutChange],
   );
 
+  const applyAndPersistFont = useCallback(
+    (fonts: FontFamilyConfig) => {
+      const config = buildConfig(getSourceConfig(), currentThemeMode);
+      config.headerFontId = fonts.headerFontId;
+      config.bodyFontId = fonts.bodyFontId;
+      config.monoFontId = fonts.monoFontId;
+      computeAndCache(config);
+      onFontChange?.(fonts);
+    },
+    [currentThemeMode, onFontChange],
+  );
+
   const applyAndPersistMode = useCallback(
     (mode: "light" | "dark") => {
       const config = buildConfig(getSourceConfig(), currentThemeMode);
@@ -114,6 +137,7 @@ export function useThemeStorage(options: ThemeStorageOptions) {
     applyAndPersistColors,
     applyAndPersistTypography,
     applyAndPersistLayout,
+    applyAndPersistFont,
     applyAndPersistMode,
     applyAndPersistModeAndColors,
   };

@@ -8,6 +8,7 @@ import { DEFAULT_CODE_THEME } from "./themes/shiki/code-theme-options";
 import { type LayoutScaleConfig } from "../config/shared/layout-variables";
 import { ensureSemanticColorIntegrity } from "./color/semantic";
 import { DEFAULT_TYPOGRAPHY_CONFIG, type TypographyConfig } from "./typography-config";
+import { DEFAULT_FONT_ID, DEFAULT_MONO_FONT_ID } from "./fonts";
 
 const DEFAULT_THEME_MODE = "dark" as const;
 
@@ -34,6 +35,9 @@ export function getDefaultThemeSourceConfig(mode: "light" | "dark" = DEFAULT_THE
     typography: { ...DEFAULT_TYPOGRAPHY_CONFIG },
     layout: { ...DEFAULT_LAYOUT_CONFIG },
     mode,
+    headerFontId: DEFAULT_FONT_ID,
+    bodyFontId: DEFAULT_FONT_ID,
+    monoFontId: DEFAULT_MONO_FONT_ID,
   };
 }
 
@@ -47,6 +51,9 @@ export function getDefaultAppPreferences() {
     borderWidth: defaults.layout.borderWidth,
     spacingScale: defaults.layout.spacingScale,
     globalAdjustments: defaults.colors.globalAdjustments ?? DEFAULT_GLOBAL_ADJUSTMENTS,
+    headerFontId: defaults.headerFontId,
+    bodyFontId: defaults.bodyFontId,
+    monoFontId: defaults.monoFontId,
     ...defaults.typography,
   };
 }

@@ -21,6 +21,7 @@ import {
 } from "./typography-config";
 import { getDefaultAppPreferences } from "./default-theme-config";
 import { normalizeCodeThemeId } from "./themes/shiki/code-theme-options";
+import { type FontId } from "./fonts";
 
 interface AppContextType {
   isSettingsPanelOpen: boolean;
@@ -60,6 +61,12 @@ interface AppContextType {
   setBodyMinFontSizePx: (size: number) => void;
   headerMinFontSizePx: number;
   setHeaderMinFontSizePx: (size: number) => void;
+  headerFontId: FontId;
+  setHeaderFontId: (fontId: FontId) => void;
+  bodyFontId: FontId;
+  setBodyFontId: (fontId: FontId) => void;
+  monoFontId: FontId;
+  setMonoFontId: (fontId: FontId) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -86,6 +93,9 @@ interface AppState {
   monoMinFontSizePx: number;
   bodyMinFontSizePx: number;
   headerMinFontSizePx: number;
+  headerFontId: FontId;
+  bodyFontId: FontId;
+  monoFontId: FontId;
 }
 
 type PersistedAppPreferences = Omit<
@@ -122,6 +132,9 @@ function getInitialAppState(): AppState {
     monoMinFontSizePx: defaultPreferences.monoMinFontSizePx,
     bodyMinFontSizePx: defaultPreferences.bodyMinFontSizePx,
     headerMinFontSizePx: defaultPreferences.headerMinFontSizePx,
+    headerFontId: defaultPreferences.headerFontId,
+    bodyFontId: defaultPreferences.bodyFontId,
+    monoFontId: defaultPreferences.monoFontId,
   };
 }
 
@@ -185,6 +198,9 @@ function getPersistedPreferences(sourceConfig: ThemeSourceConfig): PersistedAppP
     monoMinFontSizePx,
     bodyMinFontSizePx,
     headerMinFontSizePx,
+    headerFontId: sourceConfig.headerFontId ?? defaultPreferences.headerFontId,
+    bodyFontId: sourceConfig.bodyFontId ?? defaultPreferences.bodyFontId,
+    monoFontId: sourceConfig.monoFontId ?? defaultPreferences.monoFontId,
   };
 }
 
@@ -289,6 +305,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       headerMinFontSizePx: state.headerMinFontSizePx,
       setHeaderMinFontSizePx: (size) =>
         dispatch({ type: "set", key: "headerMinFontSizePx", value: size }),
+      headerFontId: state.headerFontId,
+      setHeaderFontId: (fontId) => dispatch({ type: "set", key: "headerFontId", value: fontId }),
+      bodyFontId: state.bodyFontId,
+      setBodyFontId: (fontId) => dispatch({ type: "set", key: "bodyFontId", value: fontId }),
+      monoFontId: state.monoFontId,
+      setMonoFontId: (fontId) => dispatch({ type: "set", key: "monoFontId", value: fontId }),
     }),
     [state, dispatch],
   );

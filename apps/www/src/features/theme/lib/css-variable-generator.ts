@@ -7,12 +7,16 @@ import {
 } from "../config/shared/layout-variables";
 import { generateCodeTypographyVars, generateTypographyVars } from "../config/typography/generator";
 import { type TypographyConfig } from "./typography-config";
+import { type FontId } from "./fonts";
 
 export interface ThemeConfig {
   colors: SimpleThemeColors;
   typography: TypographyConfig;
   layout: { radius: number; borderWidth: number; spacingScale: number };
   mode: "light" | "dark";
+  headerFontId: FontId;
+  bodyFontId: FontId;
+  monoFontId: FontId;
 }
 
 function computeTypographyVars(typography: ThemeConfig["typography"]): Record<string, string> {

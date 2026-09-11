@@ -10,6 +10,7 @@ import { type TypographyConfig } from "../../lib/typography-config";
 import { Tabs, Button, Scroll } from "ui-lab-components";
 import { type CodeThemeOptionId } from "../../lib/themes/shiki/code-theme-options";
 import { setThemeColor, type ThemeColorType } from "../../lib/color/set-color";
+import { type FontFamilyConfig, type FontId } from "../../lib/fonts";
 import { ColorsPanel } from "./colors-panel";
 import { TypographyPanel } from "./typography-panel";
 import { LayoutPanel } from "./layout-panel";
@@ -29,6 +30,8 @@ function useSettingsHandlers(
   applyAndPersistColors: (colors: SimpleThemeColors) => void,
   applyAndPersistTypography: (typography: TypographyConfig) => void,
   currentTypography: TypographyConfig,
+  applyAndPersistFont: (fonts: FontFamilyConfig) => void,
+  currentFontFamily: FontFamilyConfig,
   setLocalColors: (colors: SimpleThemeColors) => void,
   setLocalGlobalAdjustments: (adj: GlobalColorAdjustments) => void,
   setGlobalAdjustments: (adj: GlobalColorAdjustments) => void,
@@ -37,6 +40,30 @@ function useSettingsHandlers(
     applyAndPersistTypography({
       ...currentTypography,
       ...next,
+    });
+  };
+
+  // Header carries Body while their families match. Body can always diverge
+  // independently; setting it back to Header re-enables Header-driven sync.
+  // Mono never links.
+  const updateFontFamily = (role: "header" | "body" | "mono", nextId: FontId) => {
+    if (role === "mono") {
+      // Mono is an independent role and never participates in the
+      // Header/Body convenience sync below.
+      applyAndPersistFont({ ...currentFontFamily, monoFontId: nextId });
+      return;
+    }
+
+    if (role === "body") {
+      applyAndPersistFont({ ...currentFontFamily, bodyFontId: nextId });
+      return;
+    }
+
+    const wasSynced = currentFontFamily.headerFontId === currentFontFamily.bodyFontId;
+    applyAndPersistFont({
+      headerFontId: nextId,
+      bodyFontId: wasSynced ? nextId : currentFontFamily.bodyFontId,
+      monoFontId: currentFontFamily.monoFontId,
     });
   };
 
@@ -66,6 +93,7 @@ function useSettingsHandlers(
     handleColorChange,
     handleCodeThemeChange,
     updateTypography,
+    updateFontFamily,
   };
 }
 
@@ -113,6 +141,12 @@ export const SettingsContent = ({
     setBodyMinFontSizePx,
     headerMinFontSizePx,
     setHeaderMinFontSizePx,
+    headerFontId,
+    setHeaderFontId,
+    bodyFontId,
+    setBodyFontId,
+    monoFontId,
+    setMonoFontId,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<ConfigTab>(panels[0] ?? "colors");
@@ -133,7 +167,7 @@ export const SettingsContent = ({
   // const [localGlobalAdjustments, setLocalGlobalAdjustments] = useState(globalAdjustments);
   // if (prevGlobalAdjustments !== globalAdjustments) { setLocalGlobalAdjustments(globalAdjustments); ... }
 
-  const { applyAndPersistColors, applyAndPersistTypography, applyAndPersistLayout } =
+  const { applyAndPersistColors, applyAndPersistTypography, applyAndPersistLayout, applyAndPersistFont } =
     useThemeStorage({
       onColorsChange: setCurrentThemeColors,
       onTypographyChange: (config: TypographyConfig) => {
@@ -152,6 +186,11 @@ export const SettingsContent = ({
         setBorderWidth(config.borderWidth);
         setSpacingScale(config.spacingScale);
       },
+      onFontChange: (fonts: FontFamilyConfig) => {
+        setHeaderFontId(fonts.headerFontId);
+        setBodyFontId(fonts.bodyFontId);
+        setMonoFontId(fonts.monoFontId);
+      },
       currentThemeMode,
     });
 
@@ -167,11 +206,14 @@ export const SettingsContent = ({
     headerMinFontSizePx,
   };
 
+  const currentFontFamily: FontFamilyConfig = { headerFontId, bodyFontId, monoFontId };
+
   const {
     handleGlobalAdjustmentChange,
     handleColorChange,
     handleCodeThemeChange,
     updateTypography,
+    updateFontFamily,
   } = useSettingsHandlers(
     localColors,
     localGlobalAdjustments,
@@ -179,6 +221,8 @@ export const SettingsContent = ({
     applyAndPersistColors,
     applyAndPersistTypography,
     currentTypography,
+    applyAndPersistFont,
+    currentFontFamily,
     setLocalColors,
     setLocalGlobalAdjustments,
     setGlobalAdjustments,
@@ -238,6 +282,8 @@ export const SettingsContent = ({
                 <TypographyPanel
                   typography={currentTypography}
                   onTypographyChange={updateTypography}
+                  fontFamily={currentFontFamily}
+                  onFontFamilyChange={updateFontFamily}
                 />
               </Tabs.Content>
             ) : null}
@@ -275,16 +321,6 @@ export const SettingsContent = ({
           </Tabs>
         </Scroll>
       </div>
-
-      {showFooterLink ? (
-        <div className="flex h-12 justify-end border-t border-background-700 bg-background-900/90 p-1.5">
-          <Link href="/config">
-            <Button icon={<FaPlus size={16} />} variant="secondary">
-              Start Project
-            </Button>
-          </Link>
-        </div>
-      ) : null}
     </div>
   );
 };

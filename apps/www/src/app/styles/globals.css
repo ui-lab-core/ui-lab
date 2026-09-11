@@ -267,6 +267,9 @@ body {
 p {
   font-weight: 500;
 }
+strong {
+  font-weight: 500;
+}
 
 article {
   max-width: var(--page-width);

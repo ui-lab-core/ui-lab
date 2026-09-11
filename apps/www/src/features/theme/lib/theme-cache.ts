@@ -6,12 +6,22 @@ import {
   normalizeTypographyScale,
 } from "./typography-config";
 import { getDefaultThemeSourceConfig } from "./default-theme-config";
+import { MONO_FONTS, type FontId } from "./fonts";
 
 export interface ThemeSourceConfig {
   colors: SimpleThemeColors;
   typography: TypographyConfig;
   layout: { radius: number; borderWidth: number; spacingScale: number };
   mode: "light" | "dark";
+  headerFontId: FontId;
+  bodyFontId: FontId;
+  monoFontId: FontId;
+}
+
+function normalizeFontId(value: unknown, fallback: FontId): FontId {
+  return typeof value === "string" && MONO_FONTS.some((font) => font.id === value)
+    ? (value as FontId)
+    : fallback;
 }
 
 interface CompleteThemeCache {
@@ -137,6 +147,9 @@ export function validateThemeCache(data: unknown): CompleteThemeCache | null {
             ...defaultSourceConfig.layout,
             ...(sourceConfig.layout || {}),
           },
+          headerFontId: normalizeFontId(sourceConfig.headerFontId, defaultSourceConfig.headerFontId),
+          bodyFontId: normalizeFontId(sourceConfig.bodyFontId, defaultSourceConfig.bodyFontId),
+          monoFontId: normalizeFontId(sourceConfig.monoFontId, defaultSourceConfig.monoFontId),
         }
       : defaultSourceConfig,
     timestamp: typeof d.timestamp === "number" ? d.timestamp : Date.now(),

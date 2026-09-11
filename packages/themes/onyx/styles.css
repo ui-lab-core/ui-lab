@@ -1,6 +1,7 @@
 @reference "tailwindcss";
 
 :root {
+  --ease-decelerate: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --hover-enter-duration: 0ms;
   --hover-leave-duration: 300ms;
   --hover-duration: var(--hover-leave-duration);
@@ -8,11 +9,12 @@
   --hover-100: color-mix(in srgb, var(--background-600) 60%, transparent);
   --hover-200: color-mix(in srgb, var(--background-600) 35%, transparent);
   --ring-background: #0f74c5;
+  --highlight-background: color-mix(in srgb, var(--accent-500) 10%, transparent);
+  --highlight-foreground: var(--accent-600);
   --floating-opacity: 92%;
   --floating-blur: blur(5px);
 }
 
-/* Keep theme tokens above component fallbacks even when component CSS is auto-imported later. */
 @layer components.defaults, components.theme;
 
 @layer components.theme {
@@ -50,6 +52,13 @@
     }
   }
 
+  [data-highlight="true"] {
+    @slot highlight {
+      --background: var(--highlight-background);
+      --foreground: var(--highlight-foreground);
+    }
+  }
+
   .button {
     --background: var(--background-800);
     --focus-visible: var(--accent-400);
@@ -67,9 +76,7 @@
       transparent 56%,
       rgb(0 0 0 / 18%) 100%
     );
-    --raised-shadow:
-      0 1px 2px rgb(0 0 0 / 20%),
-      0 4px 10px rgb(0 0 0 / 14%);
+    --raised-shadow: 0 1px 2px rgb(0 0 0 / 20%), 0 4px 10px rgb(0 0 0 / 14%);
     --sheen-tint: white;
     --sheen-tint-alpha: 5%;
     --sheen-shade: black;
@@ -90,9 +97,7 @@
     }
 
     --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));
-    --raised-shadow:
-      0 1px 2px rgb(0 0 0 / 24%),
-      0 5px 12px rgb(0 0 0 / 18%);
+    --raised-shadow: 0 1px 2px rgb(0 0 0 / 24%), 0 5px 12px rgb(0 0 0 / 18%);
   }
 
   .button[data-pressed="true"]:not([data-disabled]) {
@@ -101,17 +106,9 @@
       --background-pressed: var(--background-600);
     }
 
-    --raised-gloss: linear-gradient(
-      to bottom,
-      rgb(0 0 0 / 14%),
-      transparent 60%,
-      rgb(255 255 255 / 8%)
-    );
-
+    --raised-gloss: linear-gradient( to bottom, rgb(0 0 0 / 14%), transparent 60%, rgb(255 255 255 / 8%));
     --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));
-    --raised-shadow:
-      0 2px 4px rgb(0 0 0 / 24%) inset,
-      0 1px 2px rgb(0 0 0 / 16%);
+    --raised-shadow: 0 2px 4px rgb(0 0 0 / 24%) inset, 0 1px 2px rgb(0 0 0 / 16%);
   }
 
   .button.sm {
@@ -250,7 +247,6 @@
 
   .command {
     --background: color-mix(in srgb, var(--background-950) var(--floating-opacity), transparent);
-    /* Command passes this legacy token to Frame's decorative SVG stroke. */
     --border: var(--background-700);
     --height: min(35rem, 60dvh);
     --width: 30rem;
@@ -331,9 +327,9 @@
     --background: var(--background-700);
   }
 
-  .date > .day:where([data-range-start="true"], [data-range-end="true"]) {
+  .date > .day:is([data-range-start="true"], [data-range-end="true"]) {
     --background: transparent;
-    --foreground: var(--background-700);
+    --foreground: var(--background-950);
   }
 
   .date > .day:where([data-range-start="true"], [data-range-end="true"])::before {
@@ -341,7 +337,7 @@
   }
 
   .date > .day:where([data-range-start="true"], [data-range-end="true"])::after {
-    --background: var(--background-500);
+    --background: var(--accent-500);
   }
 
   .date > .day:is([data-disabled], [data-out-of-range="true"]) {
@@ -812,8 +808,6 @@
 
   .tooltip > .content,
   .popover > .content {
-    /* Frame paints the surface as an SVG fill, so the blur has to be clipped to
-       the same rounded box on the element behind it. */
     border-radius: var(--frame-radius, 8px);
     backdrop-filter: var(--floating-blur);
   }
@@ -843,7 +837,6 @@
     --size: calc(var(--spacing-md) * 0.475);
     --foreground: var(--foreground-400);
     @slot thumb {
-      /* Drag handle: transparent border insets the painted pill inside the hit area. */
       --border: 4px solid transparent;
       --radius: 999px;
     }
@@ -916,8 +909,6 @@
     --icon-foreground: var(--foreground-300);
     --indicator-foreground: var(--accent-300);
 
-    /* List paints Menu items through its item slot; submenu triggers read the
-       same row tokens directly. */
     @slot item {
       --background: var(--background);
       --background-hover: var(--background);
@@ -982,7 +973,6 @@
     }
 
     @slot list {
-      /* Tabs' vertical underline divider remains outside the surface-border contract. */
       --border: var(--background-700);
     }
   }
@@ -1040,10 +1030,6 @@
   }
 
   .skeleton {
-    /* Surface-relative. A fixed token disappears on whichever surface happens
-       to match it — background-900 vanished on background-900 cards. Mixing the
-       surface's own text colour holds the same contrast step on the page, on
-       cards, inside badges and inside filled buttons, in light and dark. */
     --background: color-mix(in srgb, currentColor 15%, transparent);
     --radius: var(--radius-sm, 0.375rem);
   }
@@ -1090,9 +1076,6 @@
 }
 
 @layer utilities {
-  /* Primary is the raised effect over the theme's light fill. It names only the
-     fill; the shade and ring come from the shared formula on .button, the same
-     one a custom `color` uses. */
   @variant button primary {
     --color: var(--foreground-100);
     --foreground: var(--background-950);
@@ -1137,7 +1120,7 @@
 
   @variant button danger {
     --foreground: var(--danger-500);
-    --background: color-mix(in srgb, var(--danger-600) 20%, transparent);
+    --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-800));
     --background-image: var(--sheen);
     --sheen-tint: var(--danger-50);
     --sheen-shade: var(--danger-500);
@@ -1148,10 +1131,6 @@
     }
   }
 
-  /* Filled buttons — the primary variant, or any button given a `color` — pick
-     up the tinted fill and its interactive darkening. The fill (--color) and
-     the shade it darkens toward (--raised-shade) are the only inputs.
-     Placed after the variants so it also outranks the default variant. */
   .button:is([data-variant="primary"], [data-color]) {
     --background: var(--color);
   }
@@ -1164,25 +1143,12 @@
     --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));
   }
 
-  /* The gloss is the part that reads as "raised", and that is primary's look.
-     It only carries over to a colour with no explicit variant — an explicit
-     non-primary variant (secondary, ghost, danger, or any theme-defined
-     variant) keeps its own surface, so a custom colour scales with how dramatic
-     that variant already is instead of forcing primary's treatment onto it. */
   .button:is([data-variant="primary"], :not([data-variant])[data-color]) {
     --background-image: var(--raised-gloss);
   }
 
-  /* The ring, the shadow and the icon are read off the fill, so they follow the
-     colour on every variant. Leaving the variant's own neutral border on a
-     coloured pill draws a grey outline that belongs to no part of the button —
-     the same --background-700 ring on black as on blurple — and drops the
-     shadow that gives the fill an edge. Both come from --raised-shade, which is
-     derived from --color, so each colour rings and shades itself. */
   .button:is([data-variant="primary"], [data-color]) {
     --shadow: var(--raised-shadow);
-
-    border-color: var(--raised-ring);
 
     @slot icon {
       --foreground: currentColor;
@@ -1196,8 +1162,6 @@
     }
   }
 
-  /* A custom colour names no foreground, so pick black or white off the fill's
-     own lightness. */
   .button[data-color] {
     --foreground: oklch(from var(--color) clamp(0, (0.62 - l) * 1000, 1) 0 h);
   }
@@ -1236,9 +1200,6 @@
     --icon-foreground: var(--info-500);
   }
 
-  /* Badge — one block per variant, each owning its own resting and interactive
-     tokens. Reached through data-variant, so a consumer's own class of the same
-     name never collides with a theme variant. */
   @variant badge default default {
     --background: color-mix(in srgb, var(--background-600) 10%, var(--background-900));
     --focus-visible: var(--accent-400);
@@ -1322,8 +1283,6 @@
     }
   }
 
-  /* Banner — `note` is the neutral default; the status variants tint the same
-     surface, border and icon from one semantic ramp each. */
   @variant banner note default {
     --background: var(--background-900);
     --foreground: var(--foreground-200);
@@ -1369,8 +1328,6 @@
     }
   }
 
-  /* Toast — same ramp as Banner over the toast surface; `default` is the
-     neutral notification with no status icon. */
   @variant toast default default {
     --background: color-mix(in srgb, var(--background-900) var(--floating-opacity), transparent);
     --foreground: var(--foreground-200);
