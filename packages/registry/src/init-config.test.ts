@@ -12,9 +12,10 @@ function put(object: any, path: string, value: unknown) {
 function frame(bytes: Uint8Array, version=2): string {
   let crc=0xffffffff;
   for(const byte of bytes) { crc^=byte; for(let i=0;i<8;i++) crc=(crc>>>1)^(0xedb88320&-(crc&1)); }
-  return `v${version}_${Buffer.from(bytes).toString("base64url")}_${((crc^0xffffffff)>>>0).toString(16).padStart(8,"0")}`;
+  const value=`${Buffer.from(bytes).toString("base64url")}_${((crc^0xffffffff)>>>0).toString(16).padStart(8,"0")}`;
+  return version===2 ? value : `v${version}_${value}`;
 }
-function bytes(id: string): Buffer { return Buffer.from(id.slice(3,-9),"base64url"); }
+function bytes(id: string): Buffer { return Buffer.from(id.replace(/^v2_/,"").slice(0,-9),"base64url"); }
 function bits(data: Uint8Array, offset: number, count: number, value: number) {
   for(let i=0;i<count;i++) { const bit=offset+i; data[bit>>>3]=(data[bit>>>3]&~(1<<(bit%8)))|(((value>>>i)&1)<<(bit%8)); }
 }
@@ -43,8 +44,8 @@ function worst(): UiLabInitConfig {
   return value;
 }
 test("binary round trips, canonical defaults, source precision and deterministic property order",async()=>{
-  assert.equal(await encodeInitConfig(defaultInitConfig()),"v2_DAIAAAAAAAAAAAA_6568f316");
-  assert.equal(await encodeInitConfig(defaultInitConfig("vite")),"v2_DQIAAAAAAAAAAAA_a4e62cd6");
+  assert.equal(await encodeInitConfig(defaultInitConfig()),"DAIAAAAAAAAAAAA_6568f316");
+  assert.equal(await encodeInitConfig(defaultInitConfig("vite")),"DQIAAAAAAAAAAAA_a4e62cd6");
   for(const config of [defaultInitConfig(),customized(),worst()]) {
     const id=await roundtrip(config);
     assert.equal(await encodeInitConfig(Object.fromEntries(Object.entries(config).reverse()) as UiLabInitConfig),id);
@@ -72,9 +73,9 @@ test("every numeric boundary and every stepped-control increment",async()=>{
   }
 });
 test("malformed Base64URL, corruption, versions and size limits",async()=>{
-  for(const payload of ["A","A=","A+","A/"," A","AB","%%%"] ) await assert.rejects(decodeInitConfig(`v2_${payload}_00000000`),/Base64URL/);
+  for(const payload of ["A","A=","A+","A/"," A","AB","%%%"] ) await assert.rejects(decodeInitConfig(`${payload}_00000000`),/Base64URL/);
   for(const version of [0,3,99]) await assert.rejects(decodeInitConfig(`v${version}_AA_00000000`),/unsupported schema version/);
-  await assert.rejects(decodeInitConfig("v2_"+"A".repeat(1100)+"_00000000"),/too large/);
+  await assert.rejects(decodeInitConfig("A".repeat(1100)+"_00000000"),/too large/);
   await assert.rejects(decodeInitConfig(frame(new Uint8Array(641))),/too large/);
   const id=await encodeInitConfig(defaultInitConfig());
   await assert.rejects(decodeInitConfig(id.slice(0,-8)+"00000000"),/checksum mismatch/);

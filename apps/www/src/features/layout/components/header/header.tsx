@@ -11,10 +11,10 @@ import { Tooltip } from "ui-lab-components/tooltip";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { cn } from "@/shared/lib/utils";
-import { FaBars, FaGithub, FaPlus } from "@/shared/icons/fa6";
+import { FaBars, FaGithub } from "@/shared/icons/fa6";
 import { LuSearch } from "@/shared/icons/lu";
 import { HiX } from "@/shared/icons/hi";
-import { ChevronLeft, ChevronRight, PanelRight } from "lucide-react";
+import { PanelRight, Paperclip, PlusCircle } from "lucide-react";
 import { MobileMenu } from "./mobile-menu";
 import { headerTabs, getActiveHeaderTab, type HeaderTab } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
@@ -137,34 +137,36 @@ export default function Header({ pathname }: HeaderProps) {
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              <Button href="/config" icon={{ right: <ChevronRight /> }}>
-                Start Building
+              <Button variant="ghost" href="/config" icon={<Paperclip />}>
+                New Project
               </Button>
-              {featureFlags.commandPalette ? (
-                <Tooltip show-arrow content="Open Command Palette" position="bottom" hint="ctrl-k">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-foreground-300 transition-colors hover:text-foreground-200"
-                    aria-label="Open command palette"
-                    onClick={() => setIsCommandPaletteOpen(true)}
-                  >
-                    <LuSearch strokeWidth={2.5} size={16} />
-                  </Button>
-                </Tooltip>
-              ) : null}
+              <Button variant="ghost" href="/config" icon={<PlusCircle />}>
+                Request Feature
+              </Button>
+              <Button
+                variant="ghost"
+                aria-label="GitHub repository"
+                target="_blank"
+                href="https://github.com/ui-lab-core/ui-lab"
+                icon={<FaGithub size={16} />}
+              ></Button>
+
               <Divider size="auto" orientation="vertical" />
             </div>
 
-            <Button
-              variant="ghost"
-              aria-label="GitHub repository"
-              target="_blank"
-              href="https://github.com/ui-lab-core/ui-lab"
-              icon={<FaGithub size={16} />}
-              className="p-2"
-              size="icon"
-            ></Button>
+            {featureFlags.commandPalette ? (
+              <Tooltip show-arrow content="Open Command Palette" position="bottom" hint="ctrl-k">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-foreground-300 transition-colors hover:text-foreground-200"
+                  aria-label="Open command palette"
+                  onClick={() => setIsCommandPaletteOpen(true)}
+                >
+                  <LuSearch strokeWidth={2.5} size={16} />
+                </Button>
+              </Tooltip>
+            ) : null}
 
             <HeaderAccountLink />
 

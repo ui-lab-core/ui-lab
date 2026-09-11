@@ -197,17 +197,18 @@ function checksum(bytes: Uint8Array): string {
 export async function encodeInitConfig(config: UiLabInitConfig): Promise<string> {
   const bytes = binary(config);
   if(bytes.length > MAX_CONFIG_PAYLOAD_BYTES) fail("decoded payload is too large.");
-  return `v2_${base64(bytes)}_${checksum(bytes)}`;
+  return `${base64(bytes)}_${checksum(bytes)}`;
 }
 export async function decodeInitConfig(id: string): Promise<DecodedInitConfig> {
   if(typeof id !== "string" || id.length > 32768) fail("encoded payload is too large.");
-  const match = /^v([^_]+)_(.+)_([0-9a-f]{8})$/.exec(id);
-  if(!match) fail("expected v<version>_<payload>_<checksum>.");
-  if(match[1] === "1") return decodeV1(id);
-  if(match[1] !== "2") fail(`unsupported schema version ${match[1]}.`);
+  const legacy = /^v([^_]+)_(.+)_([0-9a-f]{8})$/.exec(id);
+  if(legacy?.[1] === "1") return decodeV1(id);
+  if(legacy && legacy[1] !== "2") fail(`unsupported schema version ${legacy[1]}.`);
+  const match = /^(?:v2_)?(.+)_([0-9a-f]{8})$/.exec(id);
+  if(!match) fail("expected <payload>_<checksum>.");
   if(id.length > MAX_CONFIG_ID_LENGTH) fail("encoded payload is too large.");
-  const bytes = unbase64(match[2]);
+  const bytes = unbase64(match[1]);
   if(bytes.length > MAX_CONFIG_PAYLOAD_BYTES) fail("decoded payload is too large.");
-  if(checksum(bytes) !== match[3]) fail("checksum mismatch.");
+  if(checksum(bytes) !== match[2]) fail("checksum mismatch.");
   return readBinary(bytes);
 }

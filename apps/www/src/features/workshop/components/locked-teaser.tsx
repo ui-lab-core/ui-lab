@@ -4,7 +4,11 @@ import type { ReactNode } from "react";
 import { Lock } from "lucide-react";
 import { Mask, Skeleton } from "ui-lab-components";
 import { Button } from "ui-lab-components/button";
-import { formatSupporterPrice, SUPPORTER_PLAN } from "@ui-lab-core/library/access";
+import {
+  cheapestSupporterOption,
+  formatSupporterPrice,
+  SUPPORTER_PLAN,
+} from "@ui-lab-core/library/access";
 import { ROUTES } from "@/shared/lib/routes";
 import { cn } from "@/shared/lib/utils";
 import { LOCKED_TEASER_COUNT } from "@/features/workshop/types/content";
@@ -91,7 +95,8 @@ export function LockedCta({ hiddenCount, layout = "card", className }: LockedCta
   const scope = hiddenCount
     ? `${hiddenCount} more ${hiddenCount === 1 ? "entry" : "entries"} and the complete source are`
     : "The complete source and every other premium item are";
-  const description = `${scope} included with ${SUPPORTER_PLAN.name} — one payment of ${formatSupporterPrice()}, everything unlocked.`;
+  const entry = cheapestSupporterOption();
+  const description = `${scope} included with ${SUPPORTER_PLAN.name} — starting at ${formatSupporterPrice(entry)} ${entry.qualifier}, everything unlocked.`;
 
   if (layout === "wide") {
     return (

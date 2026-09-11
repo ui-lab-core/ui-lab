@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useAuth } from "@clerk/nextjs";
+import { SavedItemsProvider } from "@/features/saved-items/saved-items-provider";
 
 import { UserSync } from "./user-sync";
 
@@ -17,7 +18,7 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
   return (
     <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
       <UserSync />
-      {children}
+      <SavedItemsProvider>{children}</SavedItemsProvider>
     </ConvexProviderWithClerk>
   );
 }

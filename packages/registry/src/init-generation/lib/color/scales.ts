@@ -31,7 +31,7 @@ export const CHROMA_BOUNDARIES: Record<ColorRole, ChromaBounds> = {
 
 export const DEFAULT_GLOBAL_ADJUSTMENTS: GlobalColorAdjustments = {
   lightnessShift: 0,
-  chromaBoost: 1.0,
+  chromaBoost: 1.3,
 };
 
 export const ALL_SHADES: ShadeScale[] = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];

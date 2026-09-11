@@ -35,23 +35,43 @@ export default defineSchema({
     stripeCheckoutSessionId: v.string(),
     stripePaymentIntentId: v.optional(v.string()),
     stripeCustomerId: v.optional(v.string()),
+    /**
+     * Set only for subscription rows. The recurring events (renewals,
+     * cancellations, failed invoices) arrive keyed by this id, not by a session
+     * or payment intent, so a row can be found and re-synced by it.
+     */
+    stripeSubscriptionId: v.optional(v.string()),
+    /**
+     * How this grant is billed. Absent on legacy rows, which predate the
+     * subscription option and are therefore one-time.
+     */
+    billing: v.optional(v.union(v.literal("one-time"), v.literal("subscription"))),
     /** Email Stripe collected. May differ from the Clerk account email. Audit only. */
     stripeCustomerEmail: v.optional(v.string()),
     /** Minor units, e.g. 4999. */
     amountTotal: v.number(),
     currency: v.string(),
+    /**
+     * `paid` is the only entitled status, for both a settled one-time payment
+     * and an active subscription. A subscription that lapses, is cancelled, or
+     * goes past due flips to `canceled` and access is lost on the next read.
+     */
     status: v.union(
       v.literal("paid"),
       v.literal("pending"),
       v.literal("refunded"),
       v.literal("disputed"),
+      v.literal("canceled"),
     ),
+    /** For subscriptions: end of the paid-through period, in ms. Audit/display only. */
+    currentPeriodEnd: v.optional(v.number()),
     paidAt: v.optional(v.number()),
     revokedAt: v.optional(v.number()),
   })
     .index("byClerkUserId", ["clerkUserId"])
     .index("byCheckoutSession", ["stripeCheckoutSessionId"])
-    .index("byPaymentIntent", ["stripePaymentIntentId"]),
+    .index("byPaymentIntent", ["stripePaymentIntentId"])
+    .index("bySubscription", ["stripeSubscriptionId"]),
 
   /**
    * Manual, non-Stripe supporter grants: comps, team accounts, support

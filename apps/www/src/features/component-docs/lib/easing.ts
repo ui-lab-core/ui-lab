@@ -2,10 +2,10 @@
  * Micro interaction easing functions used by the showcase configurators.
  */
 export const EASING_FUNCTIONS = {
-  smoothSettle: {
-    name: "Smooth Settle",
+  decelerate: {
+    name: "Decelerate",
     bezier: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-    cssVar: "var(--ease-smooth-settle)",
+    cssVar: "var(--ease-decelerate)",
     description: "Gentle ease with subtle deceleration. Perfect for hovering and state changes.",
   },
   snappyPop: {

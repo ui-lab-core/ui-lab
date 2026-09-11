@@ -18,38 +18,81 @@ function stripeClient(): Stripe {
 }
 
 /**
- * Creates a Checkout Session for the one Supporter SKU and returns its hosted
- * URL. Requires a signed-in caller: the Clerk user id is the only thing that
- * links the payment back to an account, and it is taken from the verified JWT,
- * never from an argument the client controls.
+ * The two billing options, mirroring `SupporterBilling` in
+ * `@ui-lab-core/library/access`. Duplicated rather than imported because that
+ * package is a private, path-linked dependency the Convex bundler is not
+ * guaranteed to resolve. Keep in sync with the library.
+ */
+const SUPPORTER_BILLING = v.union(v.literal("one-time"), v.literal("monthly"));
+
+/** True for the subscription statuses that entitle a viewer. Everything else revokes. */
+function isActiveSubscription(status: Stripe.Subscription.Status): boolean {
+  return status === "active" || status === "trialing";
+}
+
+function customerId(
+  customer: string | Stripe.Customer | Stripe.DeletedCustomer | null | undefined,
+): string | undefined {
+  return typeof customer === "string" ? customer : (customer?.id ?? undefined);
+}
+
+/**
+ * Paid-through timestamp in ms. Recent API versions carry the period on the
+ * subscription item rather than the subscription, so read the item first and
+ * fall back for older shapes.
+ */
+function periodEndMs(subscription: Stripe.Subscription): number | undefined {
+  const seconds =
+    subscription.items?.data[0]?.current_period_end ??
+    (subscription as unknown as { current_period_end?: number }).current_period_end;
+  return typeof seconds === "number" ? seconds * 1000 : undefined;
+}
+
+/**
+ * Creates a Checkout Session for the Supporter plan on the chosen billing option
+ * and returns its hosted URL. One-time is a `payment` session against the fixed
+ * price; monthly is a `subscription` session against the recurring price. Both
+ * grant the same entitlement. Requires a signed-in caller: the Clerk user id is
+ * the only thing that links the purchase back to an account, and it is taken
+ * from the verified JWT, never from an argument the client controls.
  */
 export const createSupporterCheckout = action({
-  args: {},
+  args: { billing: SUPPORTER_BILLING },
   returns: v.object({ url: v.string() }),
-  handler: async (ctx, _args): Promise<{ url: string }> => {
+  handler: async (ctx, { billing }): Promise<{ url: string }> => {
     const identity = await ctx.auth.getUserIdentity();
     if (identity === null) throw new Error("Not signed in");
 
     const clerkUserId = identity.subject;
 
-    // Already a supporter? Don't let them pay twice.
+    // Already a supporter (one-time buyer or active subscriber)? Don't let them
+    // pay twice. A lapsed subscription is not `paid`, so it can be renewed.
     const existing = await ctx.runQuery(internal.purchases.paidForUser, { clerkUserId });
     if (existing) throw new Error("Already a supporter");
 
     const stripe = stripeClient();
     const siteUrl = process.env.SITE_URL!;
+    const isSubscription = billing === "monthly";
+
+    const price = isSubscription
+      ? process.env.STRIPE_SUPPORTER_MONTHLY_PRICE_ID!
+      : process.env.STRIPE_SUPPORTER_PRICE_ID!;
 
     const session = await stripe.checkout.sessions.create(
       {
-        mode: "payment",
-        line_items: [{ price: process.env.STRIPE_SUPPORTER_PRICE_ID!, quantity: 1 }],
+        mode: isSubscription ? "subscription" : "payment",
+        line_items: [{ price, quantity: 1 }],
 
-        // The link between payment and account. Read back in the webhook.
+        // The link between purchase and account. Read back in the webhook.
         client_reference_id: clerkUserId,
-        // `client_reference_id` does not propagate to the PaymentIntent, and
-        // refund events arrive on charges/PIs, so the id travels there too.
         metadata: { clerkUserId, plan: "supporter" },
-        payment_intent_data: { metadata: { clerkUserId, plan: "supporter" } },
+        // For one-time, `client_reference_id` does not propagate to the
+        // PaymentIntent and refund events arrive on charges/PIs, so the id
+        // travels there. For subscriptions, the recurring events arrive on the
+        // subscription, so the id travels there instead.
+        ...(isSubscription
+          ? { subscription_data: { metadata: { clerkUserId, plan: "supporter" } } }
+          : { payment_intent_data: { metadata: { clerkUserId, plan: "supporter" } } }),
 
         customer_email: identity.email ?? undefined,
 
@@ -61,12 +104,40 @@ export const createSupporterCheckout = action({
       },
       {
         // Stripe-level dedupe: a double-clicked button returns the same session
-        // instead of creating a second one. Scoped per user + day.
-        idempotencyKey: `supporter:${clerkUserId}:${new Date().toISOString().slice(0, 10)}`,
+        // instead of creating a second one. Scoped per user + option + day, so
+        // switching option is not blocked by an earlier press.
+        idempotencyKey: `supporter:${clerkUserId}:${billing}:${new Date().toISOString().slice(0, 10)}`,
       },
     );
 
     if (!session.url) throw new Error("Stripe returned no checkout URL");
+    return { url: session.url };
+  },
+});
+
+/**
+ * Opens the Stripe billing portal for the signed-in subscriber, so they can
+ * change or cancel their subscription. One-time buyers have nothing to manage,
+ * so this throws for them.
+ */
+export const createBillingPortal = action({
+  args: {},
+  returns: v.object({ url: v.string() }),
+  handler: async (ctx): Promise<{ url: string }> => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) throw new Error("Not signed in");
+
+    const subscription = await ctx.runQuery(internal.purchases.subscriptionForUser, {
+      clerkUserId: identity.subject,
+    });
+    if (!subscription?.stripeCustomerId) throw new Error("No subscription to manage");
+
+    const stripe = stripeClient();
+    const session = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripeCustomerId,
+      return_url: `${process.env.SITE_URL!}/accounts`,
+    });
+
     return { url: session.url };
   },
 });
@@ -134,6 +205,30 @@ export const handleWebhook = internalAction({
         break;
       }
 
+      // Subscription lifecycle. `created`/`updated` carry the current status, so
+      // one path both grants (active/trialing) and revokes (past_due, canceled,
+      // unpaid, …). `deleted` arrives already `canceled`, so it flows through
+      // the same sync and revokes.
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted": {
+        await syncSubscription(ctx, event.data.object as Stripe.Subscription);
+        break;
+      }
+
+      // A failed renewal invoice. Fail closed: revoke now, and a later recovery
+      // re-grants through `customer.subscription.updated`.
+      case "invoice.payment_failed": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = invoiceSubscriptionId(invoice);
+        if (subscriptionId) {
+          await ctx.runMutation(internal.purchases.revokeBySubscription, {
+            stripeSubscriptionId: subscriptionId,
+          });
+        }
+        break;
+      }
+
       default:
         console.log("Ignored Stripe webhook event", event.type);
     }
@@ -178,7 +273,7 @@ export const reconcileCheckout = action({
  */
 async function fulfillCheckout(ctx: ActionCtx, stripe: Stripe, sessionId: string): Promise<void> {
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ["line_items", "payment_intent"],
+    expand: ["line_items", "payment_intent", "subscription"],
   });
 
   // "unpaid" means nothing settled yet. Do not grant.
@@ -190,6 +285,30 @@ async function fulfillCheckout(ctx: ActionCtx, stripe: Stripe, sessionId: string
     return;
   }
 
+  if (session.mode === "subscription") {
+    const subscription =
+      typeof session.subscription === "string"
+        ? await stripe.subscriptions.retrieve(session.subscription)
+        : session.subscription;
+    if (!subscription) {
+      console.error("Subscription checkout has no subscription", sessionId);
+      return;
+    }
+
+    await ctx.runMutation(internal.purchases.upsertSubscription, {
+      clerkUserId,
+      stripeSubscriptionId: subscription.id,
+      stripeCheckoutSessionId: session.id,
+      stripeCustomerId: customerId(session.customer),
+      stripeCustomerEmail: session.customer_details?.email ?? undefined,
+      amountTotal: session.amount_total ?? 0,
+      currency: session.currency ?? "usd",
+      active: isActiveSubscription(subscription.status),
+      currentPeriodEnd: periodEndMs(subscription),
+    });
+    return;
+  }
+
   await ctx.runMutation(internal.purchases.grantSupporter, {
     clerkUserId,
     stripeCheckoutSessionId: session.id,
@@ -197,10 +316,47 @@ async function fulfillCheckout(ctx: ActionCtx, stripe: Stripe, sessionId: string
       typeof session.payment_intent === "string"
         ? session.payment_intent
         : session.payment_intent?.id,
-    stripeCustomerId:
-      typeof session.customer === "string" ? session.customer : (session.customer?.id ?? undefined),
+    stripeCustomerId: customerId(session.customer),
     stripeCustomerEmail: session.customer_details?.email ?? undefined,
     amountTotal: session.amount_total ?? 0,
     currency: session.currency ?? "usd",
   });
+}
+
+/**
+ * Reconciles a subscription lifecycle event onto its entitlement row. Keyed on
+ * the subscription id, so it converges with the checkout-completion grant no
+ * matter which arrives first. The `clerkUserId` rides on the subscription
+ * metadata set at checkout.
+ */
+async function syncSubscription(
+  ctx: ActionCtx,
+  subscription: Stripe.Subscription,
+): Promise<void> {
+  const clerkUserId = subscription.metadata?.clerkUserId;
+  if (!clerkUserId) {
+    console.error("Subscription has no clerkUserId", subscription.id);
+    return;
+  }
+
+  await ctx.runMutation(internal.purchases.upsertSubscription, {
+    clerkUserId,
+    stripeSubscriptionId: subscription.id,
+    stripeCustomerId: customerId(subscription.customer),
+    active: isActiveSubscription(subscription.status),
+    currentPeriodEnd: periodEndMs(subscription),
+  });
+}
+
+/** The subscription id an invoice belongs to, across API shapes. */
+function invoiceSubscriptionId(invoice: Stripe.Invoice): string | undefined {
+  const subscription = (
+    invoice as unknown as {
+      subscription?: string | { id: string } | null;
+    }
+  ).subscription;
+  if (typeof subscription === "string") return subscription;
+  if (subscription && typeof subscription === "object") return subscription.id;
+  // Newer API versions nest the subscription reference under `parent`.
+  return invoice.parent?.subscription_details?.subscription as string | undefined;
 }

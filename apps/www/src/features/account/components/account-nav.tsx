@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Bookmark, Settings, User } from "lucide-react";
 import { List } from "ui-lab-components/list";
 import { cn } from "@/shared/lib/utils";
@@ -13,7 +14,6 @@ const NAV_ITEMS = [
 ] as const;
 
 export function AccountNav() {
-  const router = useRouter();
   const pathname = usePathname();
 
   return (
@@ -24,25 +24,25 @@ export function AccountNav() {
         const Icon = item.icon;
 
         return (
+          <Link key={item.href} href={item.href} className="block">
           <List.Item
-            key={item.href}
             value={item.href}
             selected={isActive}
-            onClick={() => router.push(item.href)}
-            className="cursor-pointer gap-2.5"
+            className="cursor-pointer gap-1.5 px-1"
           >
-            <List.Media className={cn(isActive ? "text-foreground-50" : "text-foreground-400")}>
+            <List.Media className={cn(isActive ? "text-foreground-200" : "text-foreground-400")}>
               <Icon className="size-4" />
             </List.Media>
             <List.Title
               className={cn(
-                "text-sm",
-                isActive ? "font-medium text-foreground-50" : "font-normal text-foreground-400",
+                "text-base",
+                isActive ? "font-medium text-foreground-300" : "font-normal text-foreground-400",
               )}
             >
               {item.label}
             </List.Title>
           </List.Item>
+          </Link>
         );
       })}
     </List>

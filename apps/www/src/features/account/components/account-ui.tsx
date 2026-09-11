@@ -1,10 +1,12 @@
 "use client";
 
-import { useConvexAuth, usePaginatedQuery } from "convex/react";
-import { api } from "@ui-lab/backend/convex/_generated/api";
 import { SavedGallery } from "@/features/saved-items/saved-gallery";
-import { Fragment } from "react";
+import { useSavedItems } from "@/features/saved-items/saved-items-provider";
+import { Fragment, useRef, useState } from "react";
 import { useClerk } from "@clerk/nextjs";
+import { useAction } from "convex/react";
+import { api } from "@ui-lab/backend/convex/_generated/api";
+import type { ViewerEntitlement } from "@ui-lab-core/library/access";
 import {
   Bell,
   Bookmark,
@@ -26,7 +28,9 @@ import { Banner } from "ui-lab-components/banner";
 import { Button } from "ui-lab-components/button";
 import { Card } from "ui-lab-components/card";
 import { Divider } from "ui-lab-components/divider";
+import { Gallery } from "ui-lab-components/gallery";
 import { List } from "ui-lab-components/list";
+import { Skeleton } from "ui-lab-components/skeleton";
 import { Switch } from "ui-lab-components/switch";
 import { SUPPORTER_PLAN } from "@ui-lab-core/library/access";
 import { cn } from "@/shared/lib/utils";
@@ -86,7 +90,52 @@ function AccessFeature({
   );
 }
 
-export function AccessCard({ supporter }: { supporter: boolean }) {
+/**
+ * Opens the Stripe billing portal for a subscriber. A ref guards a second press
+ * while the redirect is in flight, matching the checkout button's pattern.
+ */
+function ManageBillingButton() {
+  const openPortal = useAction(api.stripe.createBillingPortal);
+  const [error, setError] = useState<string | null>(null);
+  const isLeaving = useRef(false);
+
+  return (
+    <div className="flex flex-col items-end gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        icon={{ right: <ChevronRight className="size-4" /> }}
+        onPress={async () => {
+          if (isLeaving.current) return;
+          isLeaving.current = true;
+          setError(null);
+          try {
+            const { url } = await openPortal({});
+            window.location.href = url;
+          } catch {
+            setError("Could not open billing. Please try again.");
+            isLeaving.current = false;
+          }
+        }}
+      >
+        Manage billing
+      </Button>
+      {error ? (
+        <p role="alert" className="text-sm text-danger-500">
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export function AccessCard({
+  supporter,
+  billing,
+}: {
+  supporter: boolean;
+  billing?: ViewerEntitlement["billing"];
+}) {
   if (supporter) {
     return (
       <Card className="border border-background-800 bg-background-950">
@@ -114,14 +163,20 @@ export function AccessCard({ supporter }: { supporter: boolean }) {
             <Button variant="secondary" size="sm" href="/workshop/elements">
               Browse the workshop
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              href={ROUTES.supporter}
-              icon={{ right: <ChevronRight className="size-4" /> }}
-            >
-              Manage access
-            </Button>
+            {/* A subscriber can change or cancel in the Stripe portal; a one-time
+                buyer has nothing to manage, so they just get the plan overview. */}
+            {billing === "subscription" ? (
+              <ManageBillingButton />
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                href={ROUTES.supporter}
+                icon={{ right: <ChevronRight className="size-4" /> }}
+              >
+                Manage access
+              </Button>
+            )}
           </div>
         </div>
       </Card>
@@ -166,7 +221,14 @@ export function AccessCard({ supporter }: { supporter: boolean }) {
                 Upgrade to Supporter to access premium patterns, starters, and future releases.
               </p>
             </div>
-            <Button href={ROUTES.supporter}>View plans</Button>
+            <Button
+              variant="primary"
+              className="text-white w-40"
+              color="accent-600"
+              href={ROUTES.supporter}
+            >
+              Upgrade
+            </Button>
           </div>
         </Banner>
 
@@ -198,14 +260,37 @@ function RowTrail({ value }: { value?: string }) {
   );
 }
 
-export function SavedItemsView() {
-  const { isAuthenticated } = useConvexAuth();
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.savedItems.list, isAuthenticated ? {} : "skip", { initialNumItems: 20 },
+const SAVED_ITEMS_SKELETON_COUNT = 4;
+
+function SavedItemsSkeleton() {
+  return (
+    <div role="status" aria-label="Loading saved items" className="space-y-4">
+      <Gallery columns={{ sm: 1, md: 2 }} gap="sm" className="overflow-visible p-1">
+        {Array.from({ length: SAVED_ITEMS_SKELETON_COUNT }, (_, index) => (
+          <Gallery.Item key={index} className="min-w-0 overflow-visible!">
+            <Skeleton.Image
+              w="100%"
+              h={256}
+              className="rounded-none border-b border-background-700"
+            />
+            <Gallery.Body className="w-full p-3">
+              <div className="flex items-center justify-between gap-3">
+                <Skeleton.Text lines={1} w="60%" />
+                <Skeleton w={28} h={28} />
+              </div>
+            </Gallery.Body>
+          </Gallery.Item>
+        ))}
+      </Gallery>
+    </div>
   );
+}
+
+export function SavedItemsView() {
+  const { results, status, loadMore } = useSavedItems();
 
   if (status === "LoadingFirstPage") {
-    return <p role="status" className="text-sm text-foreground-400">Loading saved items…</p>;
+    return <SavedItemsSkeleton />;
   }
 
   if (results.length === 0) {
@@ -227,7 +312,11 @@ export function SavedItemsView() {
           Load more
         </Button>
       )}
-      {status === "LoadingMore" && <p role="status" className="text-sm text-foreground-400">Loading more…</p>}
+      {status === "LoadingMore" && (
+        <p role="status" className="text-sm text-foreground-400">
+          Loading more…
+        </p>
+      )}
     </div>
   );
 }

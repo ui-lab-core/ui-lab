@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
       viewBox="0 0 23 23"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn("w-10 h-10", className)}
+      className={cn("size-10", className)}
     >
       <path
         fillRule="evenodd"

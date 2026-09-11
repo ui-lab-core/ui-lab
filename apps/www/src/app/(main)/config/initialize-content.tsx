@@ -11,10 +11,10 @@ import type { IconBaseProps } from "react-icons/lib";
 import "@styles/docs.css";
 import type { UiLabInitConfig } from "ui-lab-registry/init-config";
 import { createInitCommand } from "./config-command";
+import { FONTS, type ProportionalFontId } from "@/features/theme/lib/fonts";
 
 type Framework = "next" | "vite" | "astro";
 type SetupOption = "customFont" | "typography" | "themeToggle";
-type FontId = "inter" | "geist" | "work-sans" | "karla" | "dm-sans" | "manrope";
 
 export type InitializeCommandState = {
   value: string;
@@ -138,15 +138,6 @@ const SETUP_OPTIONS: { id: SetupOption; title: string; description: string }[] =
   },
 ];
 
-const FONTS: { id: FontId; name: string; family: string }[] = [
-  { id: "inter", name: "Inter", family: "Inter Variable" },
-  { id: "geist", name: "Geist", family: "Geist Variable" },
-  { id: "work-sans", name: "Work Sans", family: "Work Sans Variable" },
-  { id: "karla", name: "Karla", family: "Karla Variable" },
-  { id: "dm-sans", name: "DM Sans", family: "DM Sans Variable" },
-  { id: "manrope", name: "Manrope", family: "Manrope Variable" },
-];
-
 function SetupOptions({
   value,
   onChange,
@@ -205,7 +196,7 @@ export function InitializeContent({
     typography: true,
     themeToggle: false,
   });
-  const [font, setFont] = useState<FontId>("inter");
+  const [font, setFont] = useState<ProportionalFontId>("inter");
   const selectedFont = FONTS.find((option) => option.id === font) ?? FONTS[0];
 
   useEffect(() => {
@@ -284,7 +275,7 @@ export function InitializeContent({
             </p>
             <Select
               selectedKey={font}
-              onSelectionChange={(key) => key !== null && setFont(String(key) as FontId)}
+              onSelectionChange={(key) => key !== null && setFont(String(key) as ProportionalFontId)}
               className="w-full max-w-72"
             >
               <Select.Trigger className="w-full">

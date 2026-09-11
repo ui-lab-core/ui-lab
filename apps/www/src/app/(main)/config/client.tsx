@@ -1,13 +1,14 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useApp } from "@/features/theme/lib/app-context";
 import { generateThemeSetupFiles } from "@/features/theme/config";
 import { generateTypographyFile, sourceColors } from "ui-lab-registry/init-config";
 import { computeStyleVariables } from "@/features/theme/lib/css-variable-generator";
 import type { TypographyConfig } from "@/features/theme/lib/typography-config";
+import { getFont, loadPreviewFont } from "@/features/theme/lib/fonts";
 import { SettingsSidebar } from "@/features/theme/components/settings-sidebar";
 import { PreviewCanvas } from "./preview-canvas";
 import { Button, Input, Modal, Page, Panel, Scroll, Tabs } from "ui-lab-components";
@@ -98,7 +99,20 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
     radius,
     borderWidth,
     spacingScale,
+    headerFontId,
+    bodyFontId,
+    monoFontId,
   } = useApp();
+
+  const headerFont = useMemo(() => getFont(headerFontId), [headerFontId]);
+  const bodyFont = useMemo(() => getFont(bodyFontId), [bodyFontId]);
+  const monoFont = useMemo(() => getFont(monoFontId), [monoFontId]);
+
+  useEffect(() => {
+    loadPreviewFont(headerFontId);
+    loadPreviewFont(bodyFontId);
+    loadPreviewFont(monoFontId);
+  }, [headerFontId, bodyFontId, monoFontId]);
 
   const currentTypography: TypographyConfig = useMemo(
     () => ({
@@ -132,10 +146,12 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
       typography: currentTypography,
       layout: { radius, borderWidth, spacingScale },
     });
-    vars["--font-heading"] = vars["--font-header"];
+    vars["--font-body"] = `"${bodyFont.family}", sans-serif`;
+    vars["--font-heading"] = `"${headerFont.family}", sans-serif`;
+    vars["--font-mono"] = `"${monoFont.family}", monospace`;
     vars["--leading-heading"] = vars["--leading-header"];
     return vars as CSSProperties;
-  }, [currentTypography, radius, borderWidth, spacingScale]);
+  }, [currentTypography, radius, borderWidth, spacingScale, headerFont, bodyFont, monoFont]);
 
   const themeSetup = useMemo(() => {
     if (!currentThemeColors) return null;
@@ -161,16 +177,17 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
     [currentTypography, baseTypographyCss],
   );
 
-  const initializeConfig = useMemo(
-    () => ({
+  const initializeConfig = useMemo(() => {
+    if (!currentThemeColors) return null;
+
+    return {
       version: 2 as const,
       themeMode: currentThemeMode,
       colors: sourceColors(currentThemeColors),
       typography: currentTypography,
       layout: { radius, borderWidth, spacingScale },
-    }),
-    [currentThemeMode, currentThemeColors, currentTypography, radius, borderWidth, spacingScale],
-  );
+    };
+  }, [currentThemeMode, currentThemeColors, currentTypography, radius, borderWidth, spacingScale]);
 
   if (!currentThemeColors) {
     return (
@@ -259,7 +276,7 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
             layoutTsx={themeSetup?.layoutTsx ?? ""}
             themeToggleTsx={themeSetup?.themeToggleTsx ?? ""}
             onCommandChange={setInitializeCommand}
-            config={initializeConfig}
+            config={initializeConfig!}
           />
         </Modal.Body>
         <Modal.Footer className="flex items-center justify-between gap-6">

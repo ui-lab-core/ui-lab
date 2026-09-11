@@ -8,7 +8,7 @@ test("website produces a deterministic offline v2 command for each supported fra
   for(const framework of ["next","vite"] as const) {
     const config={...defaultInitConfig(framework),customFont:true,font:"geist" as const,themeToggle:true};
     const command=await createInitCommand(config);
-    assert.match(command,/^npx ui-lab-cli init --config v2_[A-Za-z0-9_-]+_[0-9a-f]{8}$/);
+    assert.match(command,/^npx ui-lab-cli init --config [A-Za-z0-9_-]+_[0-9a-f]{8}$/);
     assert.equal(command,await createInitCommand(config));
     assert.deepEqual(await decodeInitConfig(command.split(" ").at(-1)!),validateInitConfig(config));
     assert.ok(command.length<100);

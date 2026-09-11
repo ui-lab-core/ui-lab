@@ -7,7 +7,6 @@ import {
   useCommandContext,
   type CommandItemData,
 } from "ui-lab-components/command";
-import { Badge } from "ui-lab-components/badge";
 import { Divider } from "ui-lab-components/divider";
 import { useApp } from "@/features/theme/lib/app-context";
 import { useCommands, type ComponentResult } from "../hooks/use-commands";
@@ -66,24 +65,15 @@ function Content({ itemCount }: { itemCount: number }) {
         ) : undefined}
       </Command.List>
 
-      <Command.Footer>
-        {itemCount > 0 ? (
-          <>
-            <div>
-              <span>Navigate</span>
-              <Badge variant="default">↑↓</Badge>
-            </div>
-            <div>
-              <span>Select</span>
-              <Badge variant="default">↵</Badge>
-            </div>
-            <div>
-              <span>Close</span>
-              <Badge variant="default">Esc</Badge>
-            </div>
-          </>
-        ) : null}
-      </Command.Footer>
+      <Command.Footer
+        actions={itemCount > 0 ? {
+          left: [
+            { label: "Navigate", hint: ["↑", "↓"] },
+            { label: "Select", hint: "↵" },
+          ],
+          right: [{ label: "Close", hint: "Esc" }],
+        } : undefined}
+      />
     </>
   );
 }

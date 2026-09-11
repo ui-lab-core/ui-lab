@@ -25,7 +25,8 @@ import {
 } from "./lib/markdown";
 
 const menuClassName = "flex w-full min-w-0 flex-col overflow-hidden";
-const itemClassName = "flex w-full min-w-0 cursor-pointer items-center py-2.5 text-left";
+const itemClassName =
+  "hover:bg-background-700 flex w-full min-w-0 cursor-pointer items-center py-2.5 text-left";
 
 function PageAction({
   icon,
@@ -129,27 +130,25 @@ export function OpenPage({
       expanded={isOpen}
       onExpandedChange={setIsOpen}
     >
-      {isOpen ? (
-        <div className={menuClassName}>
-          {options.map(({ label, Icon, href }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={itemClassName}
-            >
-              <span className="flex items-center justify-center px-3 text-sm">
-                <Icon className="h-5 w-5" />
-              </span>
-              <span className="flex-1">{label}</span>
-              <span className="px-3 opacity-60">
-                <FaArrowUpRightFromSquare size={10} />
-              </span>
-            </a>
-          ))}
-        </div>
-      ) : null}
+      <div className={menuClassName} inert={!isOpen}>
+        {options.map(({ label, Icon, href }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={itemClassName}
+          >
+            <span className="flex items-center justify-center px-3 text-sm">
+              <Icon className="h-5 w-5" />
+            </span>
+            <span className="flex-1">{label}</span>
+            <span className="px-3 opacity-60">
+              <FaArrowUpRightFromSquare size={10} />
+            </span>
+          </a>
+        ))}
+      </div>
     </PageAction>
   );
 }
@@ -217,20 +216,18 @@ export function CopyComponentPage({
       expanded={isOpen}
       onExpandedChange={setIsOpen}
     >
-      {isOpen ? (
-        <div className={menuClassName}>
-          {copyOptions.map(({ label, source }) => (
-            <button
-              key={source}
-              type="button"
-              onClick={() => void handleCopy(source)}
-              className={itemClassName}
-            >
-              <span className="flex-1 px-3">{label}</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <div className={menuClassName} inert={!isOpen}>
+        {copyOptions.map(({ label, source }) => (
+          <button
+            key={source}
+            type="button"
+            onClick={() => void handleCopy(source)}
+            className={itemClassName}
+          >
+            <span className="flex-1 px-3">{label}</span>
+          </button>
+        ))}
+      </div>
     </PageAction>
   );
 }

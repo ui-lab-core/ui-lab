@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Gallery } from "ui-lab-components";
+import { Skeleton } from "ui-lab-components/skeleton";
+import { useNearViewport } from "@/shared/hooks/use-near-viewport";
 import { SaveButton } from "./save-button";
 
 type SavedItem = { entryRef: string; title: string; href: string };
@@ -9,9 +11,13 @@ const PREVIEW_SCALE = 0.75;
 const CARD_HEIGHT = 256;
 
 function SavedPreviewFrame({ item }: { item: SavedItem }) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
-  const [loaded, setLoaded] = useState(false);
   const [height, setHeight] = useState(CARD_HEIGHT / PREVIEW_SCALE);
+  const [loaded, setLoaded] = useState(false);
+  const [overlayGone, setOverlayGone] = useState(false);
+  const shouldLoad = useNearViewport(rootRef, { rootMargin: "600px 0px" });
+
   useEffect(() => {
     function receive(event: MessageEvent) {
       if (event.origin !== window.location.origin || event.source !== frame.current?.contentWindow)
@@ -25,33 +31,51 @@ function SavedPreviewFrame({ item }: { item: SavedItem }) {
     return () => window.removeEventListener("message", receive);
   }, []);
 
+  useEffect(() => {
+    if (!loaded) return;
+    const timeout = setTimeout(() => setOverlayGone(true), 200);
+    return () => clearTimeout(timeout);
+  }, [loaded]);
+
   return (
     <div
+      ref={rootRef}
+      aria-busy={loaded ? undefined : true}
       className="relative w-full overflow-visible border-b border-background-700 bg-background-1000"
       style={{
         height: CARD_HEIGHT,
         zIndex: height * PREVIEW_SCALE > CARD_HEIGHT + 1 ? 50 : undefined,
       }}
     >
-      {!loaded && (
-        <p role="status" className="p-6 text-center text-sm text-foreground-400">
-          Loading preview…
-        </p>
-      )}
-      <iframe
-        ref={frame}
-        src={`/preview/saved?${new URLSearchParams({ ref: item.entryRef })}`}
-        title={`${item.title} preview`}
-        loading="lazy"
-        onLoad={() => setLoaded(true)}
-        className="absolute left-0 top-0 block origin-top-left border-0 bg-transparent"
-        style={{
-          width: `${100 / PREVIEW_SCALE}%`,
-          height,
-          transform: `scale(${PREVIEW_SCALE})`,
-          visibility: loaded ? "visible" : "hidden",
-        }}
-      />
+      {shouldLoad ? (
+        <iframe
+          ref={frame}
+          src={`/preview/saved?${new URLSearchParams({ ref: item.entryRef })}`}
+          title={`${item.title} preview`}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          className="absolute left-0 top-0 block origin-top-left border-0 bg-transparent"
+          style={{
+            width: `${100 / PREVIEW_SCALE}%`,
+            height,
+            transform: `scale(${PREVIEW_SCALE})`,
+            visibility: loaded ? "visible" : "hidden",
+          }}
+        />
+      ) : null}
+
+      {!overlayGone ? (
+        <div
+          aria-atomic="true"
+          aria-live="polite"
+          role="status"
+          aria-hidden={loaded ? true : undefined}
+          className={`absolute inset-0 transition-opacity duration-200 ${loaded ? "pointer-events-none opacity-0" : "opacity-100"}`}
+        >
+          <Skeleton.Image w="100%" h="100%" className="rounded-none" />
+          <span className="sr-only">Loading saved preview</span>
+        </div>
+      ) : null}
     </div>
   );
 }

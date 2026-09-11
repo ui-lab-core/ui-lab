@@ -6,7 +6,11 @@ import { query, type QueryCtx } from "./_generated/server";
  * rather than imported because that package is a private, path-linked
  * dependency the Convex bundler is not guaranteed to resolve. Keep identical.
  */
-export type ViewerEntitlement = { supporter: boolean; includeNonPublic?: boolean };
+export type ViewerEntitlement = {
+  supporter: boolean;
+  billing?: "one-time" | "subscription";
+  includeNonPublic?: boolean;
+};
 
 const ANONYMOUS: ViewerEntitlement = { supporter: false };
 
@@ -30,7 +34,8 @@ export async function entitlementFor(
     .filter((q) => q.eq(q.field("status"), "paid"))
     .first();
 
-  if (paid !== null) return { supporter: true };
+  // Legacy paid rows predate the billing field and are one-time.
+  if (paid !== null) return { supporter: true, billing: paid.billing ?? "one-time" };
 
   const granted = await ctx.db
     .query("grants")
@@ -51,7 +56,10 @@ export async function entitlementFor(
  */
 export const viewer = query({
   args: {},
-  returns: v.object({ supporter: v.boolean() }),
+  returns: v.object({
+    supporter: v.boolean(),
+    billing: v.optional(v.union(v.literal("one-time"), v.literal("subscription"))),
+  }),
   handler: async (ctx): Promise<ViewerEntitlement> => {
     const identity = await ctx.auth.getUserIdentity();
     if (identity === null) return ANONYMOUS;

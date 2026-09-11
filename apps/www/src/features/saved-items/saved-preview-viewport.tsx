@@ -84,7 +84,7 @@ export function SavedPreviewViewport({ entryRef, targets }: { entryRef: string; 
   return (
     <div ref={surface} style={{ height: BASE_HEIGHT }} className="flex w-full shrink-0 items-center justify-center overflow-auto p-4">
       <PreviewBoundary>
-        <Suspense fallback={<p role="status" className="text-sm text-foreground-400">Loading preview…</p>}>
+        <Suspense fallback={null}>
           <SavedPreview item={{ entryRef }} targets={targets} />
         </Suspense>
       </PreviewBoundary>

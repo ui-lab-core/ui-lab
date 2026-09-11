@@ -1,6 +1,6 @@
 UI Lab initialization IDs, schema 2
 
-Framing is v2_<unpadded Base64URL binary>_<eight lowercase hexadecimal CRC32 digits>. The CRC covers the binary bytes. It detects accidental corruption, not authenticity. No network, filesystem paths, generated CSS, templates, comments, property names, or executable functions are serialized.
+Framing is <unpadded Base64URL binary>_<eight lowercase hexadecimal CRC32 digits>. The CRC covers the binary bytes. It detects accidental corruption, not authenticity. No network, filesystem paths, generated CSS, templates, comments, property names, or executable functions are serialized. The decoder also accepts the former v2_ prefix for backward compatibility.
 
 Bits are written least-significant-bit first, with canonical zero padding to the last byte. The 24-bit header contains framework (2), light/dark mode (1), long-form/custom-font/theme-toggle flags (3), font (3), semantic-presence (1), easing (2), chroma scaling (2), code-theme index (4), and reserved zero bits (6). Each of the three shades has one default-presence bit and, when changed, a four-bit index. A 56-bit numeric presence mask follows (24 bits without semantic colors), then only changed numeric values in INIT_NUMERIC_FIELDS order. Redundant default overrides, invalid enums, reserved bits, and alternative numeric encodings are rejected by canonical re-encoding. Defaults are snapshotted in init-config-defaults.ts independently of website preset changes.
 

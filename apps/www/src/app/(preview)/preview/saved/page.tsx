@@ -5,9 +5,11 @@ import { SavedPreviewViewport } from "@/features/saved-items/saved-preview-viewp
 export default function SavedPreviewPage({ searchParams }: {
   searchParams: Promise<{ ref?: string | string[] }>;
 }) {
-  return <Suspense fallback={<p role="status">Loading preview…</p>}>
-    <SavedPreviewContent searchParams={searchParams} />
-  </Suspense>;
+  return (
+    <Suspense fallback={null}>
+      <SavedPreviewContent searchParams={searchParams} />
+    </Suspense>
+  );
 }
 
 async function SavedPreviewContent({ searchParams }: {
