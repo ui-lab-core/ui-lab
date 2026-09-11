@@ -44,6 +44,8 @@ export type {
   CommandLabelProps,
   CommandDescriptionProps,
   CommandCategoryProps,
+  CommandFooterAction,
+  CommandFooterActionSlots,
   CommandFooterProps,
   CommandGroupsProps,
 } from "./Command.Items";

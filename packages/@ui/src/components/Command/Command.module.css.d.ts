@@ -17,6 +17,12 @@ export interface Styles {
   "category-header": string;
   empty: string;
   footer: string;
+  "footer-action": string;
+  "footer-action-badge": string;
+  "footer-action-hint": string;
+  "footer-action-label": string;
+  "footer-actions": string;
+  "footer-actions-right": string;
   "hint-wrapper": string;
 }
 

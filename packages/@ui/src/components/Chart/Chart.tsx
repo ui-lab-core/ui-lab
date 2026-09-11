@@ -25,6 +25,9 @@ import {
 } from "./Chart.shared";
 
 const PALETTE_SIZE = 8;
+// Match the wide plot area used by the chart layout (the legend occupies the
+// remaining root height) so the server viewBox does not distort its contents.
+const INITIAL_CHART_SIZE = { width: 800, height: 184 };
 
 export type SeriesType = "line" | "area" | "bar" | "point";
 
@@ -148,7 +151,9 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
   ) => {
     const svgRef = React.useRef<SVGSVGElement>(null);
     const surfaceRef = React.useRef<HTMLDivElement>(null);
-    const [size, setSize] = React.useState({ width: 0, height: 0 });
+    // A deterministic coordinate space lets the server render the complete chart.
+    // The browser replaces it with the measured size after hydration.
+    const [size, setSize] = React.useState(INITIAL_CHART_SIZE);
 
     React.useEffect(() => {
       const element = svgRef.current;
@@ -183,21 +188,8 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
       setRegistrations(Array.from(registryRef.current.values()));
     }, []);
 
-    const series: SeriesData[] = React.useMemo(
-      () =>
-        registrations.map((registration, index) => ({
-          ...registration,
-          index,
-          label: registration.label ?? `Series ${index + 1}`,
-          color: registration.color ?? `var(--color-${(index % PALETTE_SIZE) + 1})`,
-        })),
-      [registrations],
-    );
-
     const getX = React.useMemo(() => resolveAccessor<any, number | string | Date>(x), [x]);
     const xValues = React.useMemo(() => data.map(getX), [data, getX]);
-    const hasBars = series.some((s) => s.type === "bar");
-    const xKind: ScaleKind = scale ?? (hasBars ? "band" : inferScaleKind(xValues));
 
     const childArray = React.Children.toArray(children);
     const gridChildren = childArray.filter((child) => displayNameOf(child) === "ChartGrid");
@@ -205,6 +197,35 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
     const seriesChildren = childArray.filter((child) =>
       SERIES_DISPLAY_NAMES.has(displayNameOf(child) ?? ""),
     );
+    const declaredSeries: SeriesRegistration[] = seriesChildren.map((child, index) => {
+      const props = (child as React.ReactElement<any>).props;
+      const displayName = displayNameOf(child);
+      const type = displayName?.replace("Chart", "").toLowerCase() as SeriesType;
+      const y = props.y;
+      return {
+        id: `chart-series-${index}`,
+        type,
+        label: props.label ?? (typeof y === "string" ? y : undefined),
+        color: props.color,
+        stack: props.stack,
+        getValue: (row: any) => {
+          const value = typeof y === "function" ? y(row) : row?.[y];
+          if (value == null) return null;
+          const numeric = typeof value === "number" ? value : Number(value);
+          return Number.isFinite(numeric) ? numeric : null;
+        },
+      };
+    });
+    const series: SeriesData[] = [...declaredSeries, ...registrations].map(
+      (registration, index) => ({
+        ...registration,
+        index,
+        label: registration.label ?? `Series ${index + 1}`,
+        color: registration.color ?? `var(--color-${(index % PALETTE_SIZE) + 1})`,
+      }),
+    );
+    const hasBars = series.some((s) => s.type === "bar");
+    const xKind: ScaleKind = scale ?? (hasBars ? "band" : inferScaleKind(xValues));
     const hasOnlyBars =
       seriesChildren.length > 0 &&
       seriesChildren.every((child) => displayNameOf(child) === "ChartBar");
@@ -428,6 +449,8 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
           <svg
             ref={svgRef}
             className={cn("plot", styles.plot, resolvedStyles.plot)}
+            viewBox={`0 0 ${size.width} ${size.height}`}
+            preserveAspectRatio="none"
             aria-hidden="true"
             focusable="false"
           >
@@ -451,7 +474,11 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
                 rx={6}
               />
             )}
-            <g data-layer="series">{seriesChildren}</g>
+            <g data-layer="series">
+              {seriesChildren.map((child, index) =>
+                React.cloneElement(child as React.ReactElement<any>, { __seriesIndex: index }),
+              )}
+            </g>
             <g data-layer="decorative">
               {decorativeChildren}
               {!hasCursor && !hasOnlyBars && ready && activeIndex != null && (

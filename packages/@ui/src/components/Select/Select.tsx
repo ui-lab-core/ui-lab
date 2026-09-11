@@ -379,9 +379,14 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       ? (value ?? controlledSelectedKey)
       : undefined;
 
+    const controlledSingleKey =
+      controlledSingleStateValue !== undefined
+        ? controlledSingleStateValue
+        : controlledSingleValue;
+
     const [selectedKey, setSelectedKey] = useControlledState(
-      controlledSingleStateValue,
-      controlledSingleValue,
+      controlledSingleKey,
+      defaultSelectedKey,
       defaultSelectedKey ?? null,
     );
 

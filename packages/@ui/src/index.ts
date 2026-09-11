@@ -442,6 +442,8 @@ export { generateThemeScript } from "./providers/themeScript";
 export { generateColorModeScript } from "./providers/themeScript";
 
 export { useFilter } from "./hooks/useFilter";
+export { useHighlight } from "./hooks/useHighlight";
+export type { UseHighlightOptions, UseHighlightReturn } from "./hooks/useHighlight";
 export { useAnimatedSize } from "./hooks/useAnimatedSize";
 export type { AnimatedDimension, UseAnimatedSizeOptions } from "./hooks/useAnimatedSize";
 export { useRegionCoordinator, useRegion, isRegionFilled } from "./hooks/useRegionCoordinator";

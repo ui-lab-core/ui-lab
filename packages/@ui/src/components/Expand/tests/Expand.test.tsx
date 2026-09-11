@@ -9,10 +9,10 @@ describe("Expand", () => {
     const css = readFileSync("src/components/Expand/Expand.module.css", "utf8");
 
     expect(css).toContain(
-      "transition: grid-template-rows 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));",
+      "transition: grid-template-rows 200ms var(--ease-decelerate, cubic-bezier(0.25, 0.46, 0.45, 0.94));",
     );
     expect(css).toContain(
-      "transition: grid-template-columns 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));",
+      "transition: grid-template-columns 200ms var(--ease-decelerate, cubic-bezier(0.25, 0.46, 0.45, 0.94));",
     );
     expect(css).not.toContain("animation: var(--open-animation);");
     expect(css).not.toContain("animation: var(--closed-animation);");

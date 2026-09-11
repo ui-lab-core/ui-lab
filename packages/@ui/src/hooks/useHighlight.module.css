@@ -1,0 +1,8 @@
+@reference "tailwindcss";
+
+@layer components.defaults {
+  .highlight {
+    background-color: slot(highlight, background, color-mix(in srgb, var(--accent-500) 20%, transparent));
+    color: slot(highlight, foreground, var(--accent-600));
+  }
+}

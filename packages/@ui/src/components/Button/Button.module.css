@@ -17,47 +17,72 @@
     padding-block: var(--padding-block);
     padding-inline: var(--padding-inline);
     padding-inline-end: var(--padding-inline-end);
-    background-color: var(--background);
-    background-image: var(--background-image);
-    background-origin: border-box;
     color: var(--foreground);
-    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);
+    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) transparent;
     border-radius: var(--radius-sm, 0.375rem);
-    box-shadow: var(--shadow);
+    isolation: isolate;
     font-family: var(--font-body, inherit);
     font-size: var(--text-sm, 0.875rem);
     font-weight: var(--font-weight-body-medium, 500);
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition-property: background-color, border-color, color, opacity, transform;
+    transition-property: color, opacity;
     transition-duration:
       var(--hover-duration, var(--hover-leave-duration, 150ms)),
-      var(--hover-duration, var(--hover-leave-duration, 150ms)),
-      var(--hover-duration, var(--hover-leave-duration, 150ms)),
-      var(--hover-duration, var(--hover-leave-duration, 150ms)), var(--press-duration, 120ms);
+      var(--hover-duration, var(--hover-leave-duration, 150ms));
     transition-timing-function:
       var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
+      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: calc(slot(border, width, var(--border-width-base, 1px)) * -1);
+      z-index: -1;
+      pointer-events: none;
+      background-color: var(--background);
+      background-image: var(--background-image);
+      background-origin: border-box;
+      border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) slot(border, background, transparent);
+      border-radius: inherit;
+      box-shadow: var(--shadow);
+      transition-property: background-color, border-color, box-shadow, transform;
+      transition-duration:
+        var(--hover-duration, var(--hover-leave-duration, 150ms)),
+        var(--hover-duration, var(--hover-leave-duration, 150ms)),
+        var(--hover-duration, var(--hover-leave-duration, 150ms)),
+        var(--press-duration, 120ms);
+      transition-timing-function:
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+        var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
+    }
 
     &[data-hovered="true"]:not([data-disabled="true"]) {
       --hover-duration: var(--hover-enter-duration, 0ms);
-      background-color: var(--background);
-      border-color: slot(border, background-hover, slot(border, background, transparent));
       color: var(--foreground);
+
+      &::before {
+        background-color: var(--background);
+        border-color: slot(border, background-hover, slot(border, background, transparent));
+      }
     }
 
     &[data-pressed="true"]:not([data-disabled="true"]) {
-      background-color: var(--background);
-      border-color: slot(border, background-pressed, slot(border, background, transparent));
       color: var(--foreground);
-      transform: var(--press-transform, scale(0.96));
+
+      &::before {
+        background-color: var(--background);
+        border-color: slot(border, background-pressed, slot(border, background, transparent));
+        transform: var(--press-transform, scale(0.96));
+      }
     }
 
     &[data-selected="true"]:not([data-disabled="true"]) {
-      border-color: slot(border, background-selected, slot(border, background, transparent));
+      &::before {
+        border-color: slot(border, background-selected, slot(border, background, transparent));
+      }
     }
 
     & > span > svg,

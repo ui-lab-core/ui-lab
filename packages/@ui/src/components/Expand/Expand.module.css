@@ -47,9 +47,9 @@
     box-shadow: none;
     transition:
       background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-smooth-settle, ease-out)),
+        var(--hover-transition-timing-function, var(--ease-decelerate, ease-out)),
       opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-smooth-settle, ease-out));
+        var(--hover-transition-timing-function, var(--ease-decelerate, ease-out));
   }
 
   .trigger:focus,
@@ -157,7 +157,7 @@
     display: grid;
     overflow: hidden;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));
+    transition: grid-template-rows 200ms var(--ease-decelerate, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .content[data-selected="true"] {
@@ -168,7 +168,7 @@
   .content[data-from="right"] {
     grid-template-rows: 1fr;
     grid-template-columns: 0fr;
-    transition: grid-template-columns 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));
+    transition: grid-template-columns 200ms var(--ease-decelerate, cubic-bezier(0.25, 0.46, 0.45, 0.94));
   }
 
   .content[data-from="left"][data-selected="true"],

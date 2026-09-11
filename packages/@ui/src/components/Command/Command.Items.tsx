@@ -1,5 +1,7 @@
 import * as React from "react";
 import type { Key } from "react-aria";
+import { useHighlight } from "@/hooks/useHighlight";
+import { type HintValue, HintBadges } from "@/lib/hint";
 import { cn } from "@/lib/utils";
 import { Badge } from "../Badge";
 import { Frame } from "../Frame";
@@ -127,10 +129,11 @@ export interface CommandLabelProps extends React.HTMLAttributes<HTMLDivElement> 
 /** Primary text rendered within a command item. */
 export const CommandLabel = React.forwardRef<HTMLDivElement, CommandLabelProps>(
   ({ children, className, ...props }, ref) => {
-    const { styles } = useCommandContext();
+    const { styles, searchValue } = useCommandContext();
+    const { highlight } = useHighlight({ query: searchValue.trim() });
     return (
       <div ref={ref} {...props} className={cn("label", css.label, className, styles["item.label"])} data-slot="item.label">
-        {children}
+        {highlight(children)}
       </div>
     );
   },
@@ -143,10 +146,11 @@ export interface CommandDescriptionProps extends React.HTMLAttributes<HTMLDivEle
 /** Supplemental text rendered within a command item. */
 export const CommandDescription = React.forwardRef<HTMLDivElement, CommandDescriptionProps>(
   ({ children, className, ...props }, ref) => {
-    const { styles } = useCommandContext();
+    const { styles, searchValue } = useCommandContext();
+    const { highlight } = useHighlight({ query: searchValue.trim() });
     return (
       <div ref={ref} {...props} className={cn("description", css.description, className, styles["item.description"])} data-slot="item.description">
-        {children}
+        {highlight(children)}
       </div>
     );
   },
@@ -167,15 +171,53 @@ export const CommandCategory = React.forwardRef<HTMLDivElement, CommandCategoryP
 );
 CommandCategory.displayName = "Command.Category";
 
+/** A labeled keyboard action displayed in the command footer. */
+export interface CommandFooterAction {
+  /** Describes the action performed by the shortcut. */
+  label: React.ReactNode;
+  /** Keyboard control rendered with the shared hint treatment. */
+  hint: HintValue;
+}
+
+/** Actions positioned at either edge of the command footer. */
+export interface CommandFooterActionSlots {
+  /** Actions aligned to the start of the footer. */
+  left?: CommandFooterAction[];
+  /** Actions aligned to the end of the footer. */
+  right?: CommandFooterAction[];
+}
+
 /** Props forwarded to the command footer element. */
-export interface CommandFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CommandFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Labeled keyboard actions grouped on the left and right sides of the footer. */
+  actions?: CommandFooterActionSlots;
+}
+
+function CommandFooterActions({ actions, side }: { actions: CommandFooterAction[]; side: "left" | "right" }) {
+  return (
+    <div className={cn(css["footer-actions"], side === "right" && css["footer-actions-right"])} data-slot={`footer.actions.${side}`}>
+      {actions.map((action, index) => (
+        <div className={css["footer-action"]} data-slot="footer.action" key={index}>
+          <span className={css["footer-action-label"]}>{action.label}</span>
+          <HintBadges
+            hint={action.hint}
+            className={css["footer-action-hint"]}
+            badgeClassName={css["footer-action-badge"]}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /** Footer content rendered after the command list or groups. */
 export const CommandFooter = React.forwardRef<HTMLDivElement, CommandFooterProps>(
-  ({ children, className, ...props }, ref) => {
+  ({ actions, children, className, ...props }, ref) => {
     const { styles } = useCommandContext();
     return <div ref={ref} {...props} className={cn("footer", css.footer, className, styles["footer.root"])} data-slot="footer">
       {children}
+      {actions?.left?.length ? <CommandFooterActions actions={actions.left} side="left" /> : null}
+      {actions?.right?.length ? <CommandFooterActions actions={actions.right} side="right" /> : null}
     </div>;
   },
 );

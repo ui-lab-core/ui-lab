@@ -262,12 +262,18 @@ const Date = React.forwardRef<HTMLDivElement, DateProps>((props, ref) => {
   const [uncontrolledValue, setUncontrolledValue] = useControlledState<
     Date | DateRangeValue | null
   >(controlledState?.value, controlledValue, mode === "range" ? { start: null, end: null } : null);
+  const initialMonth =
+    defaultMonth ??
+    (mode === "range"
+      ? ((uncontrolledValue as DateRangeValue | null)?.end ??
+        (uncontrolledValue as DateRangeValue | null)?.start)
+      : (uncontrolledValue as Date | null));
   const [today, setToday] = React.useState<Date | null>(null);
   // Initialized synchronously (not via effect) so the grid is present on
-  // the very first render, server and client alike — gating this behind
-  // an effect leaves the calendar blank until after hydration.
+  // the very first render, server and client alike. Prefer the explicit or
+  // selected date so prerendering does not need to read the current time.
   const [currentMonth, setCurrentMonth] = React.useState<Date>(
-    () => defaultMonth ?? new NativeDate(),
+    () => initialMonth ?? new NativeDate(),
   );
   const [focusedDate, setFocusedDate] = React.useState<Date | null>(null);
   const [hoverDate, setHoverDate] = React.useState<Date | null>(null);

@@ -6,6 +6,7 @@ import { mergeProps } from "@react-aria/utils";
 
 import { Input } from "@/components/Input";
 import { Scroll } from "@/components/Scroll";
+import { useHighlight } from "@/hooks/useHighlight";
 import { type Style, cn } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 
@@ -22,6 +23,8 @@ export interface TableCellRenderContext<T, K extends keyof T = keyof T> {
   column: Column<T, K>;
   /** Zero-based column index. */
   columnIndex: number;
+  /** Highlights text within custom cell content using this column's active filter. */
+  highlight: (content: React.ReactNode) => React.ReactNode;
 }
 
 export interface Column<T, K extends keyof T = keyof T> {
@@ -769,9 +772,12 @@ const TableCell = React.forwardRef<HTMLElement, TableCellProps>(
     },
     ref,
   ) => {
-    const { columns, rowsLayout, styles } = useTableContext();
+    const { columns, rowsLayout, styles, filterState } = useTableContext();
     const Element = tableElementType(rowsLayout, "td");
     const resolvedColumn = column ?? (columnIndex !== undefined ? columns[columnIndex] : undefined);
+    const { highlight } = useHighlight({
+      query: resolvedColumn ? filterState[String(resolvedColumn.key)] ?? "" : "",
+    });
     const resolvedValue = value ?? (row && resolvedColumn ? row[resolvedColumn.key] : undefined);
     const content =
       children ??
@@ -782,6 +788,7 @@ const TableCell = React.forwardRef<HTMLElement, TableCellProps>(
             rowIndex,
             column: resolvedColumn,
             columnIndex,
+            highlight,
           })
         : resolvedColumn?.render && row
           ? resolvedColumn.render(resolvedValue, row)
@@ -797,7 +804,7 @@ const TableCell = React.forwardRef<HTMLElement, TableCellProps>(
         data-column={resolvedColumn ? String(resolvedColumn.key) : undefined}
         {...props}
       >
-        {content}
+        {highlight(content)}
       </Element>
     );
   },

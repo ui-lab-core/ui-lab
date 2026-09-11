@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
-import { useChartContext, type SeriesData, type SeriesType } from "./Chart";
+import { useChartContext, type SeriesData } from "./Chart";
 import { linePath, areaPath, roundedRectPath, type Curve, type PlotPoint } from "./Chart.shared";
 
 export interface ChartSeriesStyleSlots {
@@ -24,6 +24,8 @@ interface SeriesProps<T = any> {
   className?: string;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
   styles?: ChartSeriesStylesProp;
+  /** @internal Index assigned by the Chart root for server rendering. */
+  __seriesIndex?: number;
 }
 
 export interface ChartLineProps<T = any> extends SeriesProps<T> {
@@ -49,34 +51,10 @@ function resolveSeriesStyles(styles: ChartSeriesStylesProp | undefined) {
 }
 
 function useSeries(options: {
-  type: SeriesType;
-  y: any;
-  label?: string;
-  color?: string;
-  stack?: string;
+  seriesIndex?: number;
 }): SeriesData | null {
-  const { registerSeries, unregisterSeries, series } = useChartContext();
-  const id = React.useId();
-  const { type, y, label, color, stack } = options;
-  const yKey = typeof y === "string" ? y : null;
-
-  const accessorRef = React.useRef<(row: any) => number | null>(() => null);
-  accessorRef.current = (row: any) => {
-    const value = typeof y === "function" ? y(row) : row?.[y];
-    if (value == null) return null;
-    const numeric = typeof value === "number" ? value : Number(value);
-    return Number.isFinite(numeric) ? numeric : null;
-  };
-  const getValue = React.useCallback((row: any) => accessorRef.current(row), []);
-
-  const resolvedLabel = label ?? yKey ?? undefined;
-  React.useEffect(() => {
-    registerSeries({ id, type, label: resolvedLabel, color, stack, getValue });
-  }, [id, type, resolvedLabel, color, stack, yKey, getValue, registerSeries]);
-
-  React.useEffect(() => () => unregisterSeries(id), [id, unregisterSeries]);
-
-  return series.find((s) => s.id === id) ?? null;
+  const { series } = useChartContext();
+  return options.seriesIndex == null ? null : (series[options.seriesIndex] ?? null);
 }
 
 function usePoints(me: SeriesData | null): Array<PlotPoint | null> {
@@ -113,8 +91,8 @@ function ActiveMarker({
 
 /** Polyline series connecting one y value per row */
 const ChartLine = React.forwardRef<SVGGElement, ChartLineProps>(
-  ({ y, label, color, curve = "smooth", className, styles: stylesProp }, ref) => {
-    const me = useSeries({ type: "line", y, label, color });
+  ({ curve = "smooth", className, styles: stylesProp, __seriesIndex }, ref) => {
+    const me = useSeries({ seriesIndex: __seriesIndex });
     const points = usePoints(me);
     const { ready } = useChartContext();
     const resolved = resolveSeriesStyles(stylesProp);
@@ -136,9 +114,9 @@ ChartLine.displayName = "ChartLine";
 
 /** Line series with an accent fill that fades toward the baseline */
 const ChartArea = React.forwardRef<SVGGElement, ChartAreaProps>(
-  ({ y, label, color, curve = "smooth", className, styles: stylesProp }, ref) => {
+  ({ curve = "smooth", className, styles: stylesProp, __seriesIndex }, ref) => {
     const gradientId = `chart-area-${React.useId().replace(/:/g, "")}`;
-    const me = useSeries({ type: "area", y, label, color });
+    const me = useSeries({ seriesIndex: __seriesIndex });
     const points = usePoints(me);
     const { ready, plot, yScale, yDomain } = useChartContext();
     const resolved = resolveSeriesStyles(stylesProp);
@@ -183,8 +161,8 @@ const BAR_RADIUS = 6;
 
 /** Bar series; band-scaled columns that stack by id or group side by side */
 const ChartBar = React.forwardRef<SVGGElement, ChartBarProps>(
-  ({ y, label, color, stack, className, styles: stylesProp }, ref) => {
-    const me = useSeries({ type: "bar", y, label, color, stack });
+  ({ className, styles: stylesProp, __seriesIndex }, ref) => {
+    const me = useSeries({ seriesIndex: __seriesIndex });
     const { data, ready, barLayout, bandWidth, xPosition, yScale, activeIndex } = useChartContext();
     const resolved = resolveSeriesStyles(stylesProp);
     if (!me || !ready || !barLayout) return null;
@@ -242,8 +220,8 @@ ChartBar.displayName = "ChartBar";
 
 /** Discrete point series; one marker per row */
 const ChartPoint = React.forwardRef<SVGGElement, ChartPointProps>(
-  ({ y, label, color, className, styles: stylesProp }, ref) => {
-    const me = useSeries({ type: "point", y, label, color });
+  ({ className, styles: stylesProp, __seriesIndex }, ref) => {
+    const me = useSeries({ seriesIndex: __seriesIndex });
     const points = usePoints(me);
     const { ready, activeIndex } = useChartContext();
     const resolved = resolveSeriesStyles(stylesProp);

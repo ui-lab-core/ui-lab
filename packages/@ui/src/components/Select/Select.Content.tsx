@@ -417,8 +417,25 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         const floating = floatingRootRef.current;
         if (!floating) return;
         const referenceWidth = wrapperRef.current.getBoundingClientRect().width;
-        const contentWidth = contentElement.scrollWidth;
-        const width = Math.max(referenceWidth, contentWidth);
+
+        // A prior open already pinned this element's width to its own trigger's
+        // width; measuring scrollWidth against that stale, definite width just
+        // reports it back unchanged instead of the content's natural size.
+        // Release both constraints first so the panel measures at max-content.
+        floating.style.width = "max-content";
+        floating.style.minWidth = "";
+        contentElement.style.width = "max-content";
+        contentElement.style.minWidth = "";
+        const naturalWidth = contentElement.scrollWidth;
+
+        const rootFontSize =
+          Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        // Reasonable cap so a long option can't stretch the panel across the
+        // screen; the trigger's own width still wins if it's already wider.
+        const reasonableMaxWidth = rootFontSize * 20;
+        const ceiling = Math.max(referenceWidth, reasonableMaxWidth);
+        const width = Math.min(Math.max(referenceWidth, naturalWidth), ceiling);
+
         floating.style.width = `${width}px`;
         floating.style.minWidth = `${referenceWidth}px`;
         contentElement.style.width = "100%";

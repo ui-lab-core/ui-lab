@@ -22,6 +22,8 @@ export type ChartTooltipStylesProp = StylesProp<ChartTooltipStyleSlots>;
 export interface ChartTooltipProps<T = any> {
   /** Additional CSS class names */
   className?: string;
+  /** Axis the tooltip follows; the other axis remains fixed near the plot edge */
+  orientation?: "horizontal" | "vertical";
   /** Custom render function receiving the active row and the registered series */
   children?: (row: T, series: SeriesData[]) => React.ReactNode;
   /** Keyed styles for the root and named component parts. Use className for conventional root classes. */
@@ -45,7 +47,7 @@ function resolveTooltipStyles(styles: ChartTooltipStylesProp | undefined) {
 
 /** Floating readout of every series' value at the active row */
 const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
-  ({ className, children, styles: stylesProp }, ref) => {
+  ({ className, orientation = "horizontal", children, styles: stylesProp }, ref) => {
     const { activeIndex, data, series, xValues, xPositions, plot, yScale, formatX } =
       useChartContext();
     const resolved = resolveTooltipStyles(stylesProp);
@@ -97,16 +99,22 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
       const plotBottom = plot.y + plot.height;
       const fitsRight = position + TOOLTIP_GAP + tooltipSize.width <= plotRight;
       const fitsAbove = anchorY - TOOLTIP_GAP - tooltipSize.height >= plot.y;
-      const horizontalPlacement = fitsRight ? "right" : "left";
-      const verticalPlacement = fitsAbove ? "top" : "bottom";
-      const preferredX = fitsRight
-        ? position + TOOLTIP_GAP
-        : position - TOOLTIP_GAP - tooltipSize.width;
-      const preferredY = fitsAbove
-        ? anchorY - TOOLTIP_GAP - tooltipSize.height
-        : anchorY + TOOLTIP_GAP;
       const maxX = Math.max(plot.x, plotRight - tooltipSize.width);
       const maxY = Math.max(plot.y, plotBottom - tooltipSize.height);
+      const horizontalPlacement = orientation === "vertical" ? "left" : fitsRight ? "right" : "left";
+      const verticalPlacement = orientation === "horizontal" ? "bottom" : fitsAbove ? "top" : "bottom";
+      const preferredX =
+        orientation === "vertical"
+          ? plot.x + TOOLTIP_GAP
+          : fitsRight
+            ? position + TOOLTIP_GAP
+            : position - TOOLTIP_GAP - tooltipSize.width;
+      const preferredY =
+        orientation === "horizontal"
+          ? plotBottom - TOOLTIP_GAP - tooltipSize.height
+          : fitsAbove
+            ? anchorY - TOOLTIP_GAP - tooltipSize.height
+            : anchorY + TOOLTIP_GAP;
       const tooltipX = Math.min(Math.max(preferredX, plot.x), maxX);
       const tooltipY = Math.min(Math.max(preferredY, plot.y), maxY);
       card = (
