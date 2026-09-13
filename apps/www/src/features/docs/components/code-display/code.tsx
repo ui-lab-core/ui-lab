@@ -13,6 +13,7 @@ import { Check, Copy, FileCode2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SaveButton } from "@/features/saved-items/save-button";
 import { SiCss3, SiReact } from "@/shared/icons/si";
+import { getDefaultThemeSourceConfig } from "@/features/theme/lib/default-theme-config";
 
 const escapeHtml = (s: string) =>
   s.replace(
@@ -83,25 +84,8 @@ interface CodeProps {
 
 const MAX_HEIGHT_LINES = 5;
 const MAX_EXPANDED_HEIGHT_LINES = 28;
-const HIGHLIGHT_DELAY_MS = 120;
-let highlightQueue = Promise.resolve();
 const highlightRequests = new Map<string, Promise<{ html: string }>>();
-
-function enqueueHighlight<T>(job: () => Promise<T>) {
-  const result = highlightQueue.then(job, job);
-  highlightQueue = result.then(
-    () =>
-      new Promise<void>((resolve) => {
-        if (typeof requestIdleCallback === "function") {
-          requestIdleCallback(() => resolve(), { timeout: 100 });
-        } else {
-          setTimeout(resolve, 0);
-        }
-      }),
-    () => undefined,
-  );
-  return result;
-}
+const highlightResults = new Map<string, string>();
 
 function requestHighlight(
   code: string,
@@ -114,7 +98,7 @@ function requestHighlight(
   const existing = highlightRequests.get(key);
   if (existing) return existing;
 
-  const request = enqueueHighlight(async () => {
+  const request = (async () => {
     const response = await fetch("/api/highlight", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -122,7 +106,7 @@ function requestHighlight(
     });
     if (!response.ok) throw new Error(`Highlight request failed: ${response.status}`);
     return response.json() as Promise<{ html: string }>;
-  });
+  })();
   highlightRequests.set(key, request);
   request.catch(() => highlightRequests.delete(key));
   return request;
@@ -189,10 +173,13 @@ export function Code({
         ? preHighlightedLight
         : preHighlightedDark
       : undefined;
+  const defaultThemeKey = JSON.stringify(getDefaultThemeSourceConfig(currentThemeMode).colors);
+  const staticHighlightMatchesTheme = Boolean(staticHighlight) && themeKey === defaultThemeKey;
+  const cachedHighlight = highlightResults.get(highlightKey);
   const highlightedCode =
     resolved?.key === highlightKey && resolved.status === "resolved"
       ? resolved.html
-      : (staticHighlight ?? fallbackHtml);
+      : (cachedHighlight ?? staticHighlight ?? fallbackHtml);
   const totalCodeLines = activeCode.split("\n").length;
   // Server-provided highlighting is already deterministic and must render the
   // same markup during hydration before the client theme finishes initializing.
@@ -201,7 +188,16 @@ export function Code({
   const displayHtml = hasResolvedSyntax ? normalizedHtml : stripSyntaxColorStyles(normalizedHtml);
 
   useEffect(() => {
-    if (!isNearViewport || !isThemeInitialized || !currentThemeColors) return;
+    if (
+      !isNearViewport ||
+      !isThemeInitialized ||
+      !currentThemeColors ||
+      staticHighlightMatchesTheme ||
+      cachedHighlight ||
+      (resolved?.key === highlightKey && resolved.status === "resolved")
+    ) {
+      return;
+    }
     let cancelled = false;
 
     const highlight = async () => {
@@ -219,6 +215,7 @@ export function Code({
         let styledHtml = html.replace(/<code>/, '<code style="display: block; padding: 1rem;">');
         styledHtml = styledHtml.replace(/background-color:\s*[^;]+;?/g, "");
         styledHtml = stripPreTabIndex(styledHtml);
+        highlightResults.set(highlightKey, styledHtml);
         setResolved({ key: highlightKey, html: styledHtml, status: "resolved" });
       } catch (error) {
         console.error("Failed to highlight code:", error);
@@ -228,20 +225,22 @@ export function Code({
       }
     };
 
-    const timeout = window.setTimeout(highlight, HIGHLIGHT_DELAY_MS);
+    void highlight();
     return () => {
       cancelled = true;
-      window.clearTimeout(timeout);
     };
   }, [
     activeCode,
     activeLanguage,
+    cachedHighlight,
     currentThemeColors,
     currentThemeMode,
     fallbackHtml,
     highlightKey,
     isNearViewport,
     isThemeInitialized,
+    resolved,
+    staticHighlightMatchesTheme,
   ]);
 
   const hiddenCodeLines = totalCodeLines - (maxHeightLines ?? totalCodeLines);
@@ -340,7 +339,12 @@ export function Code({
             }}
             className="relative h-full min-h-0 min-w-0"
           >
-            <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
+            <CodeContent
+              html={displayHtml}
+              hasResolvedSyntax={hasResolvedSyntax}
+              mode={currentThemeMode}
+              faded={false}
+            />
           </Scroll>
         ) : expanded ? (
           <Scroll
@@ -355,7 +359,12 @@ export function Code({
             }}
             className="relative min-h-0 min-w-0 flex-1"
           >
-            <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
+            <CodeContent
+              html={displayHtml}
+              hasResolvedSyntax={hasResolvedSyntax}
+              mode={currentThemeMode}
+              faded={false}
+            />
           </Scroll>
         ) : (
           <div
@@ -370,7 +379,12 @@ export function Code({
                 : "none",
             }}
           >
-            <CodeContent html={displayHtml} hasResolvedSyntax={hasResolvedSyntax} faded={false} />
+            <CodeContent
+              html={displayHtml}
+              hasResolvedSyntax={hasResolvedSyntax}
+              mode={currentThemeMode}
+              faded={false}
+            />
           </div>
         )}
 
@@ -440,10 +454,12 @@ function Actions({
 function CodeContent({
   html,
   hasResolvedSyntax,
+  mode,
   faded,
 }: {
   html: string;
   hasResolvedSyntax: boolean;
+  mode: "light" | "dark";
   faded: boolean;
 }) {
   return (
@@ -451,6 +467,9 @@ function CodeContent({
       dangerouslySetInnerHTML={{ __html: html }}
       className={cn(
         `[&_code]:font-mono [&_code]:whitespace-pre [&_pre]:m-0 [&_pre]:w-fit [&_pre]:bg-transparent [&_pre]:p-0`,
+        mode === "dark"
+          ? "[&_.shiki-themes]:!text-[var(--shiki-dark)] [&_.shiki-themes_span]:!text-[var(--shiki-dark)]"
+          : "[&_.shiki-themes]:!text-[var(--shiki-light)] [&_.shiki-themes_span]:!text-[var(--shiki-light)]",
         !hasResolvedSyntax &&
           "[&_code]:text-foreground-400 [&_pre]:text-foreground-400 [&_span]:!text-inherit",
       )}

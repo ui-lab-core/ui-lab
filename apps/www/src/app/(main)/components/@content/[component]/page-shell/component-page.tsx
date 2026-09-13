@@ -76,11 +76,11 @@ export async function ComponentPage({
     code: entry.code,
   }));
   const first = examples[0];
-  const highlighted = first ? await highlightCode(first.code, "tsx") : { light: "", dark: "" };
   const importPattern = getElementGroup("components", componentId)?.importPattern;
-  const importPatternHighlight = importPattern
-    ? await highlightCode(importPattern, "typescript")
-    : null;
+  const [highlighted, importPatternHighlight] = await Promise.all([
+    first ? highlightCode(first.code, "tsx") : Promise.resolve({ light: "", dark: "" }),
+    importPattern ? highlightCode(importPattern, "typescript") : Promise.resolve(null),
+  ]);
   const tocItems = examples
     .slice(1)
     .filter((example) => !isInteractivePreview(example.id))

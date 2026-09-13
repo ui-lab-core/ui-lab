@@ -25,28 +25,42 @@ export const showcaseLayout = {
   masonry: true,
   gridGap: "none",
   tileGap: 16,
+  // Base masonry row unit in pixels. Every tile spans a whole number of these
+  // rows so the packed layout is deterministic at server render — no JS
+  // measurement, no first-load shift. A tile spanning `rows` is
+  // `rows * rowUnit + (rows - 1) * tileGap` pixels tall.
+  rowUnit: 32,
 } as const;
 
-export const previewExamples: { id: string; component: ComponentType; wide?: boolean }[] = [
-  { id: "revenue", component: Revenue, wide: true },
-  { id: "booking", component: Booking },
-  { id: "music", component: Music },
-  { id: "tasks", component: Tasks },
-  { id: "payments", component: Payments, wide: true },
-  { id: "notifications", component: Notifications },
-  { id: "messages", component: Messages },
-  { id: "team", component: Team, wide: true },
-  { id: "plan", component: Plan },
-  { id: "traffic", component: Traffic },
-  { id: "developer", component: Developer, wide: true },
-  { id: "storage", component: Storage },
-  { id: "feedback", component: Feedback },
-  { id: "files", component: Files },
-  { id: "delivery", component: Delivery },
-  { id: "states", component: DataStates },
-  { id: "project-launcher", component: ProjectLauncher },
-  { id: "integrations-workspace", component: IntegrationsWorkspace, wide: true },
-  { id: "email-workspace", component: EmailWorkspace, wide: true },
-  { id: "appearance-editor", component: AppearanceEditor },
-  { id: "deployment-activity", component: DeploymentActivity },
+// `rows` is the tile's fixed height expressed in `showcaseLayout.rowUnit` tracks,
+// chosen to fit each preview's natural content. `wide` spans two columns. Cards
+// stretch to fill their cell, so any slack reads as padding and any overflow is
+// clipped by the card rather than overlapping neighbours.
+export const previewExamples: {
+  id: string;
+  component: ComponentType;
+  rows: number;
+  wide?: boolean;
+}[] = [
+  { id: "revenue", component: Revenue, rows: 10, wide: true },
+  { id: "booking", component: Booking, rows: 12 },
+  { id: "music", component: Music, rows: 9 },
+  { id: "tasks", component: Tasks, rows: 7 },
+  { id: "payments", component: Payments, rows: 10, wide: true },
+  { id: "notifications", component: Notifications, rows: 9 },
+  { id: "messages", component: Messages, rows: 8 },
+  { id: "team", component: Team, rows: 6, wide: true },
+  { id: "plan", component: Plan, rows: 8 },
+  { id: "traffic", component: Traffic, rows: 7 },
+  { id: "developer", component: Developer, rows: 7, wide: true },
+  { id: "storage", component: Storage, rows: 5 },
+  { id: "feedback", component: Feedback, rows: 7 },
+  { id: "files", component: Files, rows: 6 },
+  { id: "delivery", component: Delivery, rows: 10 },
+  { id: "states", component: DataStates, rows: 7 },
+  { id: "project-launcher", component: ProjectLauncher, rows: 11 },
+  { id: "integrations-workspace", component: IntegrationsWorkspace, rows: 9, wide: true },
+  { id: "email-workspace", component: EmailWorkspace, rows: 10, wide: true },
+  { id: "appearance-editor", component: AppearanceEditor, rows: 9 },
+  { id: "deployment-activity", component: DeploymentActivity, rows: 9 },
 ];

@@ -16,15 +16,15 @@ export function Surface({
   footer?: ReactNode;
 }) {
   return (
-    <Card className="w-full min-w-0">
+    <Card className="w-full min-w-0 h-full flex flex-col">
       <Card.Header>
         <Flex layout="bar" gap="sm" wrap>
           <h3>{title}</h3>
           {action}
         </Flex>
       </Card.Header>
-      <Card.Body>
-        <Flex direction="column" gap="md" className="min-w-0">
+      <Card.Body className="flex flex-col flex-1 min-h-0">
+        <Flex direction="column" gap="md" justify-between className="min-w-0 flex-1">
           {children}
         </Flex>
       </Card.Body>

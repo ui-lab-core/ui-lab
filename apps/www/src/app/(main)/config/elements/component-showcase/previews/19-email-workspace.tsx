@@ -60,15 +60,15 @@ export default function EmailWorkspace() {
     setNotice(`Archived “${current.subject}”.`);
   };
   return (
-    <Card className="w-full min-w-0">
+    <Card className="w-full min-w-0 h-full flex flex-col">
       <Card.Header>
         <Flex layout="bar" gap="sm" wrap>
           <h3>Customer support / Shared inbox</h3>
           {unread > 0 && <Note>{`${unread} unread`}</Note>}
         </Flex>
       </Card.Header>
-      <Card.Body>
-        <Panel collapseAt={520} spacing="sm" className="min-h-80">
+      <Card.Body className="flex flex-col flex-1 min-h-0">
+        <Panel collapseAt={520} spacing="sm" className="min-h-80 flex-1">
           <Flex
             id={`${id}-inbox`}
             direction="column"

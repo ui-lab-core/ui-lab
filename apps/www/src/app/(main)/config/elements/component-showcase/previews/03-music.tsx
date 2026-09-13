@@ -1,97 +1,127 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Headphones, Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { useState } from "react";
+import {
+  Pause,
+  Play,
+  Plus,
+  SkipBack,
+  SkipForward,
+} from "lucide-react";
 import { Button } from "ui-lab-components/button";
-import { Flex } from "ui-lab-components/flex";
-import { Slider } from "ui-lab-components/slider";
-import { Surface, Note } from "./shared";
+import { Divider } from "ui-lab-components/divider";
+import { Group } from "ui-lab-components/group";
+import { List } from "ui-lab-components/list";
+import { Progress } from "ui-lab-components/progress";
+import { Scroll } from "ui-lab-components/scroll";
+import { Surface } from "./shared";
 
 const tracks = [
-  { name: "A little room to think", artist: "Northbound", duration: 224 },
-  { name: "After the rain", artist: "Soft Signal", duration: 196 },
-  { name: "Blue hour", artist: "Northbound", duration: 248 },
+  { title: "Summer Nights", artist: "Lonnie Liston Smith", duration: "5:05" },
+  { title: "A Garden of Peace", artist: "Lonnie Liston Smith", duration: "4:24" },
+  { title: "Think Twice", artist: "Donald Byrd", duration: "6:10" },
 ];
 
 export default function Music() {
-  const [track, setTrack] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [position, setPosition] = useState(46);
-  const [volume, setVolume] = useState(65);
-  const current = tracks[track];
-  useEffect(() => {
-    if (!playing) return;
-    const timer = setInterval(
-      () => setPosition((value) => Math.min(value + 1, current.duration)),
-      1000,
-    );
-    return () => clearInterval(timer);
-  }, [playing, current.duration]);
-  useEffect(() => {
-    if (position >= current.duration) setPlaying(false);
-  }, [position, current.duration]);
-  const skip = (delta: number) => {
-    setTrack((value) => (value + delta + tracks.length) % tracks.length);
-    setPosition(0);
-  };
-  const duration = (value: number) =>
-    `${Math.floor(value / 60)}:${String(value % 60).padStart(2, "0")}`;
+  const [liked, setLiked] = useState(false);
+  const [progress, setProgress] = useState(37);
+  const [current, setCurrent] = useState(0);
+
   return (
     <Surface title="Listening room">
-      <Flex align-center gap="md" className="min-w-0">
-        <Flex
-          align-center
-          justify-center
-          className="h-20 w-20 shrink-0 rounded-md bg-background-800 text-foreground-300"
-        >
-          <Headphones size={32} />
-        </Flex>
-        <Flex direction="column" gap="xs" className="min-w-0">
-          <strong>{current.name}</strong>
-          <Note>{current.artist}</Note>
-        </Flex>
-      </Flex>
-      <Flex direction="column" gap="xs" className="min-w-0">
-        <Slider
-          aria-label="Track position"
-          min={0}
-          max={current.duration}
-          value={position}
-          onValueChange={([value]) => setPosition(value)}
-        />
-        <Flex layout="bar" className="text-xs text-foreground-400">
-          <span>{duration(position)}</span>
-          <span>{duration(current.duration)}</span>
-        </Flex>
-      </Flex>
-      <Flex align-center justify-center gap="sm">
-        <Button variant="ghost" aria-label="Previous track" onPress={() => skip(-1)}>
-          <SkipBack size={18} />
-        </Button>
-        <Button
-          aria-label={playing ? "Pause preview" : "Play preview"}
-          onPress={() => {
-            if (position >= current.duration) setPosition(0);
-            setPlaying(!playing);
-          }}
-        >
-          {playing ? <Pause size={20} /> : <Play size={20} />}
-        </Button>
-        <Button variant="ghost" aria-label="Next track" onPress={() => skip(1)}>
-          <SkipForward size={18} />
-        </Button>
-      </Flex>
-      <Flex align-center gap="sm">
-        <Volume2 size={16} />
-        <Slider
-          aria-label="Volume"
-          value={volume}
-          onValueChange={([value]) => setVolume(value)}
-          className="flex-1"
-        />
-      </Flex>
-      <Note small>Player interaction demo · no audio</Note>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="mb-1 flex items-center justify-between border-b border-background-700/60 px-2 py-1">
+          <span className="text-xs font-medium text-foreground-400">Up next</span>
+          <span className="text-xs text-foreground-500 tabular-nums">{tracks.length}</span>
+        </div>
+        <Scroll className="min-h-0 flex-1 max-w-none" fade-y inline>
+          <List gap="xs" spacing="xs" className="max-w-none">
+            {tracks.map((track, i) => {
+              const active = i === current;
+              return (
+                <List.Item
+                  key={track.title}
+                  value={track.title}
+                  interactive
+                  selected={active}
+                  onClick={() => setCurrent(i)}
+                  className="rounded-sm px-2 py-1"
+                >
+                  <List.Title
+                    className={`min-w-0 truncate text-xs ${
+                      active ? "font-medium text-foreground-100" : "text-foreground-300"
+                    }`}
+                  >
+                    {track.title}
+                  </List.Title>
+                  <span className="text-xs text-foreground-500 tabular-nums">{track.duration}</span>
+                </List.Item>
+              );
+            })}
+          </List>
+        </Scroll>
+      </div>
+
+      <div className="space-y-2 rounded-sm border border-background-700 p-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex min-w-0 flex-1 gap-2">
+            <div
+              className="h-8 w-8 flex-shrink-0 rounded-xs bg-background-950"
+              aria-hidden="true"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-xs font-semibold text-foreground-100">
+                {tracks[current].title}
+              </div>
+              <div className="truncate text-xs text-foreground-400">
+                {tracks[current].artist}
+              </div>
+            </div>
+          </div>
+          <Button
+            aria-label={liked ? "Unsave" : "Save"}
+            styles={{ root: liked ? "opacity-30" : "opacity-100" }}
+            onPress={() => setLiked(!liked)}
+            variant="ghost"
+            size="sm"
+            icon={<Plus size={13} />}
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Progress
+            show-controls
+            value={progress}
+            onValueChange={setProgress}
+            aria-label="Track position"
+            styles={{ root: "flex-1", track: "overflow-hidden h-3" }}
+          />
+          <span className="text-xs text-foreground-400 tabular-nums">
+            {tracks[current].duration}
+          </span>
+        </div>
+
+        <div className="flex justify-center">
+          <Group variant="ghost" orientation="horizontal" spacing="none">
+            <Group.Button size="icon" aria-label="Previous">
+              <SkipBack size={15} />
+            </Group.Button>
+            <Divider orientation="vertical" />
+            <Group.Button
+              size="icon"
+              aria-label={playing ? "Pause" : "Play"}
+              onPress={() => setPlaying(!playing)}
+            >
+              {playing ? <Pause size={15} /> : <Play size={15} />}
+            </Group.Button>
+            <Divider orientation="vertical" />
+            <Group.Button size="icon" aria-label="Next">
+              <SkipForward size={15} />
+            </Group.Button>
+          </Group>
+        </div>
+      </div>
     </Surface>
   );
 }
-
