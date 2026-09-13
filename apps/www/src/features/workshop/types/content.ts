@@ -27,6 +27,7 @@ export interface WorkshopFile {
 }
 
 export interface WorkshopPatternRef {
+  href?: string;
   id: string;
   name: string;
   description: string;

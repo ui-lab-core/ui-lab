@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getPatternLocation } from "@/features/element-preview/pattern-location";
+
 import {
   elementOrder,
   getAllCategories,
@@ -70,6 +72,7 @@ function toPatternRefs(patternIds: string[] | undefined): WorkshopPatternRef[] {
     .filter((pattern): pattern is NonNullable<typeof pattern> => Boolean(pattern))
     .map((pattern) => ({
       id: pattern.id,
+      href: getPatternLocation(pattern.id)?.href,
       name: pattern.name,
       description: pattern.description,
       previewHeight: pattern.previewHeight,

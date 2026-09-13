@@ -1,5 +1,7 @@
 "use client";
 
+import { variantAnchor, variantHref } from "@/features/element-preview/entry-location";
+
 import { use, useMemo } from "react";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 import { WorkshopPreview } from "@/features/workshop";
@@ -37,7 +39,8 @@ export default function ElementDetailClient({
       return (
         <WorkshopPreview
           key={`variant-${index}`}
-          headingId={`variant-${index}`}
+          headingId={variantAnchor(index)}
+          entryHref={variantHref("element", `${packageId}/${element.id}`, index)}
           title={variant.name}
           description={variant.description}
           files={variant.files}

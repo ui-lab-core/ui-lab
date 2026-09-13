@@ -1,5 +1,7 @@
 "use client";
 
+import { variantAnchor, variantHref } from "@/features/element-preview/entry-location";
+
 import { use } from "react";
 
 import type { WorkshopSection } from "@/features/workshop/types/content";
@@ -28,7 +30,8 @@ export default function SectionDetailClient({
   const variants = section.variants.map((variant, index) => (
     <WorkshopPreview
       key={`variant-${index}`}
-      headingId={`variant-${index}`}
+      headingId={variantAnchor(index)}
+          entryHref={variantHref("section", section.id, index)}
       title={variant.name}
       description={variant.description}
       files={variant.files}

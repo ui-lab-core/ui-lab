@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { Gallery } from "ui-lab-components";
 import { Skeleton } from "ui-lab-components/skeleton";
 import { useNearViewport } from "@/shared/hooks/use-near-viewport";
+import { ElementPreviewDialog } from "@/features/element-preview/element-preview";
+import { ResolvedElementPreview } from "@/features/element-preview/resolved-preview";
+import { resolveElementPreview } from "@/features/element-preview/resolve-entry";
+import type { ElementPreviewEntry } from "@/features/element-preview/types";
 import { SaveButton } from "./save-button";
 
 type SavedItem = { entryRef: string; title: string; href: string };
@@ -81,24 +85,60 @@ function SavedPreviewFrame({ item }: { item: SavedItem }) {
 }
 
 export function SavedGallery({ items }: { items: SavedItem[] }) {
+  const [selected, setSelected] = useState<SavedItem | null>(null);
+  const [entry, setEntry] = useState<ElementPreviewEntry | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!selected) return;
+    let cancelled = false;
+    resolveElementPreview(selected.entryRef).then((resolved) => {
+      if (cancelled) return;
+      setEntry(resolved);
+      setError(!resolved);
+    }).catch(() => { if (!cancelled) setError(true); });
+    return () => { cancelled = true; };
+  }, [selected]);
+
+  const openItem = (item: SavedItem) => {
+    setEntry(null);
+    setError(false);
+    setSelected(item);
+  };
+
   return (
+    <>
     <Gallery columns={{ sm: 1, md: 2 }} gap="sm" className="overflow-visible p-1">
       {items.map((item) => (
         <Gallery.Item key={item.entryRef} className="min-w-0 overflow-visible!">
-          <SavedPreviewFrame item={item} />
+          <div className="relative overflow-hidden">
+            <div inert><SavedPreviewFrame item={item} /></div>
+            <button type="button" aria-label={`Preview ${item.title}`} onClick={() => openItem(item)} className="absolute inset-0 z-[60] cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500" />
+          </div>
           <Gallery.Body className="w-full p-3">
             <div className="flex items-center justify-between gap-3">
-              <a
-                href={item.href}
+              <button
+                type="button"
+                onClick={() => openItem(item)}
                 className="min-w-0 text-sm font-medium text-foreground-100 hover:underline"
               >
                 {item.title}
-              </a>
+              </button>
               <SaveButton entryRef={item.entryRef} title={item.title} href={item.href} />
             </div>
           </Gallery.Body>
         </Gallery.Item>
       ))}
     </Gallery>
+    {selected ? entry ? (
+      <ResolvedElementPreview key={selected.entryRef} entry={entry} onClose={() => setSelected(null)} />
+    ) : (
+      <ElementPreviewDialog title={selected.title} entryHref={error ? selected.href : undefined} open onOpenChange={(open) => { if (!open) setSelected(null); }}>
+        <p role={error ? "alert" : "status"} className="p-6 text-sm text-foreground-400">
+          {error ? "This preview could not be loaded. Use View original to open the saved entry." : "Loading preview…"}
+        </p>
+      </ElementPreviewDialog>
+    ) : null}
+    </>
   );
 }

@@ -29,6 +29,7 @@ export default function StarterDetailClient({ starterPromise }: StarterDetailCli
     >
       <WorkshopPreview
         entryRef={`starter:${starter.id}`}
+        entryHref={`/workshop/starters/${encodeURIComponent(starter.id)}#starter-files`}
         title={starter.name}
         headingId="starter-files"
         category="starter"

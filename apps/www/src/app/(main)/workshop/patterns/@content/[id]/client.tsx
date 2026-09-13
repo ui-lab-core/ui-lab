@@ -1,5 +1,6 @@
 "use client";
 
+import { patternAnchor, patternHref } from "@/features/element-preview/entry-location";
 import type { WorkshopPatternEntry } from "@/features/workshop/types/content";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 import { WorkshopPreview } from "@/features/workshop";
@@ -48,7 +49,8 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
         {entries.map((entry, index) => (
           <WorkshopPreview
             key={entry.id}
-            headingId={`pattern-preview-${index + 1}`}
+            headingId={patternAnchor(index)}
+            entryHref={patternHref(patternId, index)}
             title={entry.name}
             description={entry.description}
             code={entry.code}

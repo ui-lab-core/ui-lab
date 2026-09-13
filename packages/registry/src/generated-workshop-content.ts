@@ -856,6 +856,19 @@ export const generatedWorkshopContent = [
     "code": "<Flex gap=\"xs\" align-center className=\"text-sm\">\n  {crumbs.map((crumb, i) => (\n    <span key={crumb.href} className=\"flex items-center gap-xs\">\n      {i > 0 && <span className=\"text-foreground-400 mx-1\">/</span>}\n      {i < crumbs.length - 1 ? (\n        <Anchor href={crumb.href}>{crumb.label}</Anchor>\n      ) : (\n        <span className=\"text-foreground-400\">{crumb.label}</span>\n      )}\n    </span>\n  ))}\n</Flex>"
   },
   {
+    "ref": "example:button/color-variants",
+    "kind": "component-example",
+    "id": "color-variants",
+    "name": "Color Variants",
+    "description": "Paint a button with a theme token or a Tailwind palette color.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return (\n    <div className=\"flex gap-2\">\n      <Button color=\"accent-500\">Accent</Button>\n      <Button color=\"purple-500\">Purple</Button>\n      <Button color=\"blue-500\">Blue</Button>\n    </div>\n  )\n}"
+  },
+  {
     "ref": "example:button/copy-action",
     "kind": "component-example",
     "id": "copy-action",
@@ -867,6 +880,19 @@ export const generatedWorkshopContent = [
     "access": "free",
     "locked": false,
     "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaCheck, FaLink } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [copied, setCopied] = useState(false)\n\n  const handlePress = () => {\n    navigator.clipboard.writeText('https://ui-lab.dev/components/button')\n    setCopied(true)\n    setTimeout(() => setCopied(false), 1500)\n  }\n\n  return (\n    <Button variant=\"secondary\" icon={copied ? <FaCheck /> : <FaLink />} onPress={handlePress}>\n      {copied ? 'Copied' : 'Copy link'}\n    </Button>\n  )\n}"
+  },
+  {
+    "ref": "example:button/css-module-styles",
+    "kind": "component-example",
+    "id": "css-module-styles",
+    "name": "CSS Module Styles",
+    "description": "Wrap Button and style it with a CSS Module targeting its data attributes.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "button",
+    "access": "free",
+    "locked": false,
+    "code": "import { Button } from 'ui-lab-components/button'\nimport styles from './Button.module.css'\n\nexport default function Example() {\n  return <Button className={styles.button}>Deploy</Button>\n}"
   },
   {
     "ref": "example:button/destructive-confirm",
