@@ -418,28 +418,23 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         if (!floating) return;
         const referenceWidth = wrapperRef.current.getBoundingClientRect().width;
 
-        // A prior open already pinned this element's width to its own trigger's
-        // width; measuring scrollWidth against that stale, definite width just
-        // reports it back unchanged instead of the content's natural size.
-        // Release both constraints first so the panel measures at max-content.
-        floating.style.width = "max-content";
-        floating.style.minWidth = "";
-        contentElement.style.width = "max-content";
-        contentElement.style.minWidth = "";
-        const naturalWidth = contentElement.scrollWidth;
-
         const rootFontSize =
           Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         // Reasonable cap so a long option can't stretch the panel across the
         // screen; the trigger's own width still wins if it's already wider.
         const reasonableMaxWidth = rootFontSize * 20;
-        const ceiling = Math.max(referenceWidth, reasonableMaxWidth);
-        const width = Math.min(Math.max(referenceWidth, naturalWidth), ceiling);
 
-        floating.style.width = `${width}px`;
+        // Let the browser size the panel to its own content. Option rows are
+        // intrinsically wider than the trigger — every single-mode row reserves
+        // the selected-state indicator the trigger never renders — so a measured
+        // trigger-relative width truncates them. max-content fits the widest row
+        // (indicator included); minWidth floors it at the trigger, maxWidth caps
+        // the growth, and selectViewportSize still clamps both to the viewport.
+        floating.style.width = "max-content";
         floating.style.minWidth = `${referenceWidth}px`;
+        floating.style.maxWidth = `${Math.max(referenceWidth, reasonableMaxWidth)}px`;
         contentElement.style.width = "100%";
-        contentElement.style.minWidth = "100%";
+        contentElement.style.minWidth = "";
         update();
       }
     }, [contentElement, isOpen, update, wrapperRef]);

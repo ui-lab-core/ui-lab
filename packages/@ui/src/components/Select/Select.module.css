@@ -20,7 +20,7 @@
     height: fit-content;
     align-self: center;
 
-    @apply p-0 gap-0 w-fit min-w-0 flex-none flex-row items-center;
+    @apply p-0 gap-0 w-max min-w-0 flex-none flex-row items-center;
     position: relative;
     overflow: visible;
 
@@ -151,6 +151,13 @@
     /* Rows inset themselves from this radius via --inset-radius. */
     --radius: var(--content-radius);
     --disabled-opacity: 0.5;
+    /* Row box. Kept in lockstep with Menu's .item padding (see
+       Menu.module.css --row-padding-*) so Select items, Select sub-trigger
+       items, Menu items and Menu sub-trigger items all resolve to one
+       identical height. The trigger slot still lets a theme retune the
+       trigger and its rows together; the fallbacks must equal Menu's. */
+    --row-padding-block: slot(trigger, padding-block, calc(var(--spacing) * 1.5));
+    --row-padding-inline: slot(trigger, padding-inline, calc(var(--spacing) * 2));
     @apply overflow-hidden;
     outline: none;
     background-color: var(--background);
@@ -194,8 +201,7 @@
   .item,
   .sub-trigger {
     @apply flex items-center gap-2 outline-none cursor-default select-none;
-    padding: slot(trigger, padding-block, calc(var(--spacing) * 1.5))
-      slot(trigger, padding-inline, calc(var(--spacing) * 2));
+    padding: var(--row-padding-block) var(--row-padding-inline);
     /* Restate the panel radius and gap on the row itself: List also paints
        these rows, so neither file may depend on stylesheet order. */
     --radius: var(--content-radius);

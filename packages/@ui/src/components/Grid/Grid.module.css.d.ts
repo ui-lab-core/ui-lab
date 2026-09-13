@@ -11,6 +11,7 @@ declare const styles: {
   readonly "responsive-masonry-width": string;
   readonly "masonry-column-fill": string;
   readonly "masonry-no-item-gap": string;
+  readonly "span-aware-masonry": string;
 };
 
 export default styles;

@@ -50,6 +50,8 @@ export type GridAlignContent =
 export type GridAutoFlow = "row" | "column" | "row-dense" | "column-dense";
 /** Masonry column-fill strategy accepted by `masonryColumnFill`. */
 export type GridMasonryColumnFill = "auto" | "balance" | "balance-all";
+/** Span-aware JavaScript packing for mixed-width, naturally-sized grid items. */
+export type GridMasonryPacking = "span-aware";
 /** `grid-template-columns` value accepted by `columns`: a track count, an auto-placement keyword, or any CSS grid-template-columns value. */
 export type GridTemplateColumns = GridColumns | (string & {});
 /** `grid-template-rows` value accepted by `rows`: a fixed row count, `auto`, `masonry`, or any CSS grid-template-rows value. */
@@ -179,6 +181,15 @@ export interface GridProps
    */
   masonryItemGap?: boolean;
   /**
+   * Packs naturally-sized children with mixed column spans while preserving their DOM order.
+   * Each direct child may declare `data-grid-span`; later children can visually backfill
+   * cavities, but are never remounted. Uses the resolved Grid gap for a consistent gutter.
+   * Custom responsive column templates should also expose their active track count through
+   * `--grid-masonry-pack-columns`, because implicit tracks make computed templates ambiguous.
+   * @category Masonry
+   */
+  masonryPacking?: GridMasonryPacking;
+  /**
    * Wraps the root in a container-query parent so `columns`, `rows`, and `gap` respond to the container's width instead of the viewport, even when none of them is set to a responsive object.
    * @category Core
    * @default false
@@ -269,6 +280,116 @@ const GRID_LAYOUTS: Record<GridLayout, GridLayoutConfig> = {
   gallery: { rows: "masonry", columns: { sm: 1, md: 2, lg: 3 }, gap: "md" },
 };
 
+type PackedRect = { index: number; x: number; y: number; width: number; height: number };
+type PackingState = { rects: PackedRect[]; bottom: number; inversions: number };
+
+const countTracks = (template: string): number => {
+  let depth = 0;
+  let tracks = 1;
+  for (const char of template.trim()) {
+    if (char === "(") depth++;
+    else if (char === ")") depth--;
+    else if (char === " " && depth === 0) tracks++;
+  }
+  return template.trim() ? tracks : 1;
+};
+
+const overlaps = (a: PackedRect, b: PackedRect) =>
+  a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+
+const lowestOpenY = (rects: PackedRect[], x: number, width: number, height: number) => {
+  let y = 0;
+  while (true) {
+    const candidate = { index: -1, x, y, width, height };
+    const collisions = rects.filter((rect) => overlaps(candidate, rect));
+    if (!collisions.length) return y;
+    y = Math.min(...collisions.map((rect) => rect.y + rect.height));
+  }
+};
+
+const scorePacking = (state: PackingState, columns: number) =>
+  state.bottom * columns + state.inversions * 8;
+
+const packRects = (spans: number[], heights: number[], columns: number): PackedRect[] => {
+  let states: PackingState[] = [{ rects: [], bottom: 0, inversions: 0 }];
+
+  for (let index = 0; index < spans.length; index++) {
+    const width = Math.min(spans[index], columns);
+    const next: PackingState[] = [];
+    for (const state of states) {
+      for (let x = 0; x <= columns - width; x++) {
+        const y = lowestOpenY(state.rects, x, width, heights[index]);
+        const rect = { index, x, y, width, height: heights[index] };
+        const rects = [...state.rects, rect];
+        const bottom = Math.max(state.bottom, y + rect.height);
+        const inversions = state.inversions + state.rects.filter((prior) => prior.y > y).length;
+        next.push({ rects, bottom, inversions });
+      }
+    }
+    next.sort((a, b) => scorePacking(a, columns) - scorePacking(b, columns));
+    states = next.slice(0, 96);
+  }
+
+  return states[0]?.rects ?? [];
+};
+
+const useSpanAwareMasonry = (enabled: boolean) => {
+  const gridRef = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!enabled || !grid) return;
+    const items = Array.from(grid.children) as HTMLElement[];
+    let frame = 0;
+    let previousColumns = 0;
+    let previousSignature = "";
+
+    const layout = () => {
+      const computed = getComputedStyle(grid);
+      const declaredColumns = Number.parseInt(computed.getPropertyValue("--grid-masonry-pack-columns"), 10);
+      const columns = declaredColumns || countTracks(computed.gridTemplateColumns);
+      const gap = Number.parseFloat(computed.columnGap) || 0;
+      const spans = items.map((item) => Number(item.dataset.gridSpan) || 1);
+      if (columns !== previousColumns) {
+        items.forEach((item, index) => {
+          item.style.gridColumn = `span ${Math.min(spans[index], columns)}`;
+        });
+        previousColumns = columns;
+      }
+      const heights = items.map((item) =>
+        Math.ceil((item.firstElementChild ?? item).getBoundingClientRect().height) + gap,
+      );
+      const signature = `${columns}:${heights.join(",")}`;
+      if (signature === previousSignature) return;
+      previousSignature = signature;
+      const rects = packRects(spans, heights, columns);
+      for (const rect of rects) {
+        const item = items[rect.index];
+        item.style.gridColumn = `${rect.x + 1} / span ${rect.width}`;
+        item.style.gridRow = `${rect.y + 1} / span ${rect.height}`;
+      }
+      grid.dataset.masonryMeasured = "true";
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(layout);
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(grid);
+    items.forEach((item) => observer.observe(item.firstElementChild ?? item));
+    // Enhance the readable, normal-row server layout before the browser paints
+    // hydration. Later size changes remain frame-batched through the observer.
+    layout();
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      delete grid.dataset.masonryMeasured;
+    };
+  }, [enabled]);
+
+  return gridRef;
+};
+
 const Grid = React.forwardRef<HTMLDivElement, GridProps>(
   (
     {
@@ -289,6 +410,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       masonryColumnWidth,
       masonryColumnFill,
       masonryItemGap = true,
+      masonryPacking,
       containerQueryResponsive = false,
       layout,
       styles,
@@ -298,6 +420,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     ref,
   ) => {
     const layoutConfig = layout ? GRID_LAYOUTS[layout] : undefined;
+    const packingRef = useSpanAwareMasonry(masonryPacking === "span-aware");
     columns = columns ?? layoutConfig?.columns ?? 3;
     rows = rows ?? layoutConfig?.rows ?? "auto";
     gap = gap ?? layoutConfig?.gap ?? "md";
@@ -407,6 +530,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
       isMasonry && responsiveMasonryColumnWidth && css["responsive-masonry-width"],
       isMasonry && masonryColumnFill && css["masonry-column-fill"],
       isMasonry && !masonryItemGap && css["masonry-no-item-gap"],
+      masonryPacking === "span-aware" && css["span-aware-masonry"],
     );
 
     const dataAttrs = {
@@ -426,6 +550,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
           {...props}
         >
           <div
+            ref={packingRef}
             className={gridClasses}
             style={
               { ...vars, ...(h !== undefined ? { height: "100%" } : {}) } as React.CSSProperties
@@ -440,7 +565,11 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
 
     return (
       <div
-        ref={ref}
+        ref={(node) => {
+          packingRef.current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
+        }}
         className={cn(gridClasses, className, resolved.root)}
         style={{ ...rootStyle, ...vars } as React.CSSProperties}
         {...dataAttrs}

@@ -174,6 +174,16 @@
     margin-bottom: 0;
   }
 
+  /*
+   * Keep SSR in normal Grid flow. The client adds this attribute only after it
+   * has measured every item and assigned an explicit rectangle.
+   */
+  .grid.span-aware-masonry[data-masonry-measured="true"] {
+    grid-auto-rows: 1px;
+    row-gap: 0;
+    align-items: start;
+  }
+
   .grid.masonry.responsive-cols {
     column-count: var(--grid-col-count-sm, 1);
   }

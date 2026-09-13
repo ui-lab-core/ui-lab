@@ -22,6 +22,12 @@
   .panel {
     --padding: calc(var(--spacing, 0.25rem) * 2);
     --radius: var(--radius-sm, 0.375rem);
+    /* Row box. Kept in lockstep with Select's .item/.sub-trigger padding
+       (see Select.module.css --row-padding-*) so Menu items, Menu sub-trigger
+       items, Select items and Select sub-trigger items all resolve to one
+       identical height. These two formulas must stay equal across both files. */
+    --row-padding-block: calc(var(--spacing, 0.25rem) * 1.5);
+    --row-padding-inline: calc(var(--spacing, 0.25rem) * 2);
 
     @apply min-w-40 max-w-80 overflow-hidden;
     box-sizing: border-box;
@@ -45,8 +51,8 @@
 
     .item {
       @apply flex min-w-0 items-center gap-2;
-      padding-block: calc(var(--padding) / 1.5);
-      padding-inline: var(--padding);
+      padding-block: var(--row-padding-block);
+      padding-inline: var(--row-padding-inline);
       /* Inside the panel border. */
       --inset-gap: slot(border, width, var(--border-width-base, 1px));
       border-radius: slot(item, radius, var(--inset-radius));
@@ -66,7 +72,7 @@
     }
 
     .item[data-inset="true"] {
-      padding-inline-start: calc(var(--padding) * 2.67);
+      padding-inline-start: calc(var(--row-padding-inline) * 2.67);
     }
 
     .indicator {
@@ -134,7 +140,9 @@
       font-size: var(--text-code-size, var(--text-sm, 0.875rem));
       font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));
       letter-spacing: var(--letter-spacing-code, 0);
-      line-height: var(--leading-code, 1.5);
+      /* Match the row's line box (not --leading-code's taller 1.5) so a shortcut
+         can't inflate the item beyond the shared row height. */
+      line-height: var(--leading-sm, 1.25rem);
     }
   }
 }
