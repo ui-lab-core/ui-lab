@@ -281,7 +281,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
 
   const positionedStyle: React.CSSProperties = {
     position: positioning,
-    zIndex: 9999,
+    zIndex: 50000,
     pointerEvents: "none",
     width: "356px",
     maxWidth: "calc(100% - 3rem)",

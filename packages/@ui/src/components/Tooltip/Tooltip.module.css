@@ -8,7 +8,7 @@
   .root {
     @apply absolute;
     pointer-events: none;
-    z-index: 50;
+    z-index: 50000;
   }
 
   .content {
