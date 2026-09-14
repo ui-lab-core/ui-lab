@@ -396,7 +396,12 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             const floating = state.elements.floating as HTMLElement;
             const panel = floating.firstElementChild as HTMLElement | null;
             const { width, height } = state.rects.floating;
-            floating.style.maxWidth = `${Math.max(0, width - overflow.left - overflow.right)}px`;
+            const viewportMaxWidth = Math.max(0, width - overflow.left - overflow.right);
+            const configuredMaxWidth = Number.parseFloat(floating.style.maxWidth);
+            floating.style.maxWidth = `${Math.min(
+              Number.isFinite(configuredMaxWidth) ? configuredMaxWidth : viewportMaxWidth,
+              viewportMaxWidth,
+            )}px`;
             // A viewport narrower than the trigger must take precedence over min-width.
             floating.style.minWidth = `${Math.min(Number.parseFloat(floating.style.minWidth) || state.rects.reference.width, Number.parseFloat(floating.style.maxWidth))}px`;
             if (panel) {
