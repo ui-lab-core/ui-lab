@@ -373,7 +373,7 @@ export function TableOfContents({
               : "duration-300 text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
           )}
         >
-          <span className="tracking-(--letter-spacing-md) text-md font-medium whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
+          <span className="text-md font-medium whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">
             {formatTitle(item.title)}
           </span>
         </button>

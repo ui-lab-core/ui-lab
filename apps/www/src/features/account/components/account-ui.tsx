@@ -17,10 +17,6 @@ import {
   LogOut,
   Monitor,
   Package,
-  Rocket,
-  Sparkles,
-  Trash2,
-  Unlock,
   User,
 } from "lucide-react";
 import { Badge } from "ui-lab-components/badge";
@@ -434,7 +430,7 @@ export function AccountActions() {
                 <Icon className="size-7" />
               </List.Media>
               <div className="min-w-0 flex-1">
-                <List.Title className="text-sm font-medium text-foreground-100">
+                <List.Title className="text-xs font-medium text-foreground-100">
                   {row.title}
                 </List.Title>
                 <List.Desc className="text-sm whitespace-nowrap text-foreground-400">

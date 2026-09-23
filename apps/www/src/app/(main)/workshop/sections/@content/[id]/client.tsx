@@ -56,12 +56,14 @@ export default function SectionDetailClient({
       preview={CardPreview ? <CardPreview /> : undefined}
     >
       {section.locked ? (
-        <LockedTeaser hiddenCount={section.hiddenVariantCount}>
-          <div className="space-y-16">
-            {variants}
+        <div className="space-y-16">
+          {variants}
+          {/* Only the last, disclosed entry carries the fade and CTA — the real
+              variants above stay crisp. */}
+          <LockedTeaser hiddenCount={section.hiddenVariantCount} ctaPlacement="center">
             <LockedPlaceholder />
-          </div>
-        </LockedTeaser>
+          </LockedTeaser>
+        </div>
       ) : (
         variants
       )}

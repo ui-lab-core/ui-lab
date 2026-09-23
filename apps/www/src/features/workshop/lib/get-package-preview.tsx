@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { packagePreviews } from "@/gallery/package-previews";
+import { packagePreviews } from "@ui-lab-core/library/gallery-previews";
 
 type PreviewComponent = React.ComponentType<object>;
 

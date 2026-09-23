@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { getElementPreview } from "@ui-lab-core/library/previews";
-import { patternPreviews } from "@/gallery/pattern-previews";
+import { patternPreviews } from "@ui-lab-core/library/gallery-previews";
 
 type PreviewComponent = React.ComponentType<object>;
 

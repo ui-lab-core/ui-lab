@@ -1,32 +1,32 @@
 @reference "tailwindcss"
 
 #docs #doc-content h1 {
-  font-size: var(--text-md);
-  font-weight: var(--font-weight-header-medium) !important;
+  font-size: var(--text-md-body);
+  font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: 1.25;
   margin-block: 2.5rem 1rem;
 }
 
 #docs #doc-content h2 {
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-header-medium) !important;
+  font-size: var(--text-lg-body);
+  font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: 1.6;
   margin-block: 3.5rem 0.5rem;
 }
 
 #docs #doc-content h3 {
-  font-size: var(--text-md);
-  font-weight: var(--font-weight-header-medium) !important;
+  font-size: var(--text-md-body);
+  font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: 1.6;
   margin-block: 2.5rem 0.5rem;
 }
 
 #docs #doc-content :is(h4, h5, h6) {
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-header-medium) !important;
+  font-size: var(--text-sm-body);
+  font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: var(--leading-sm);
   margin-block: 2rem 0.5rem;
@@ -53,7 +53,7 @@
 }
 
 #docs .banner a {
-  font-size: var(--text-xs);
+  font-size: var(--text-xs-body);
 }
 
 #docs .content p,

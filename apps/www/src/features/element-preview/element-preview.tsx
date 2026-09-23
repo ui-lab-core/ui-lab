@@ -1,6 +1,15 @@
 "use client";
 
-import { Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  Suspense,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { ChevronRight, FileCode2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { getElementPreview } from "@ui-lab-core/library/previews";
 import {
@@ -77,10 +86,10 @@ const DEFAULT_PREVIEW_HEIGHT = 320;
 /** Lines of a locked entry's source that are shown before the fade. */
 const LOCKED_CODE_LINES = LOCKED_SOURCE_PREVIEW_LINES;
 
-const EMPTY_PATTERNS: WorkshopPatternRef[] = [];
-
 /** Used before the code block has rendered a measurable line height. */
 const FALLBACK_CODE_LINE_HEIGHT = 21;
+
+const EMPTY_PATTERNS: WorkshopPatternRef[] = [];
 
 /**
  * Renders a single workshop entry with the source code directly below the
@@ -144,7 +153,6 @@ export function ElementPreview({
   const splitId = useId().replace(/:/g, "");
   const codePaneId = `${splitId}-code`;
   const previewPaneId = `${splitId}-preview`;
-
   const primaryFile = useMemo(() => {
     if (!uniqueFiles.length) return null;
     return uniqueFiles.find((file) => file.isEntryPoint) ?? uniqueFiles[0];
@@ -164,8 +172,7 @@ export function ElementPreview({
   );
   const isPreviewOnly = disclosure !== "inline";
   const openDetail = () => setIsDetailOpen(true);
-
-  const handlePreviewKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+  const handlePreviewKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       openDetail();
@@ -174,165 +181,166 @@ export function ElementPreview({
 
   return (
     <>
-      {disclosure !== "dialog" ? <section
-        className={cn(
-          "scroll-mt-24",
-          fillHeight && !isModalDetail && "flex h-full min-h-0 flex-col",
-          isModalDetail && "h-full min-h-0 min-w-0 flex-1",
-          isPreviewOnly && "group cursor-pointer",
-        )}
-        id={headingId}
-        role={isPreviewOnly ? "button" : undefined}
-        tabIndex={isPreviewOnly ? 0 : undefined}
-        onClick={isPreviewOnly ? openDetail : undefined}
-        onKeyDown={isPreviewOnly ? handlePreviewKeyDown : undefined}
-      >
-        <ElementDetailLayout isModalDetail={isModalDetail}>
-          {/* Preview-only cards carry their title too: the entry's name is what
-              says which variant a box is, and leaving it to the modal meant the
-              page rendered a row of unlabelled boxes. */}
-          {title && !isModalDetail ? (
-            <div
-              className="p-4 mb-5 flex overflow-hidden items-start justify-between gap-4 border-b border-background-700 pb-5"
-              // A fixed row: one line of title against at most two lines of
-              // description, so the copy arriving cannot move the preview box
-              // below it and the skeleton can reserve the row exactly.
-              style={{ height: ENTRY_HEADER_HEIGHT }}
-            >
-              <h3
-                id={headingId ? `${headingId}-title` : undefined}
-                className="min-w-0 truncate text-foreground-50"
-              >
-                {title}
-              </h3>
-              {description ? (
-                <p className="line-clamp-2 max-w-[45ch] text-sm text-foreground-400">
-                  {description}
-                </p>
-              ) : null}
-            </div>
-          ) : null}
-
-          {hidePreview ? null : (
-            <div
-              id={isModalDetail ? previewPaneId : undefined}
-              className={cn(
-                "min-w-0 overflow-hidden rounded-sm",
-                isPreviewOnly &&
-                  "border border-background-700 transition-colors group-hover:border-background-500",
-                !isPreviewOnly && "rounded-b-none",
-                (fillHeight || isModalDetail) && "flex min-h-0 flex-1 flex-col",
-                isModalDetail && "order-3 h-full rounded-none lg:min-w-[25%] lg:max-w-[75%]",
-              )}
-            >
+      {disclosure !== "dialog" ? (
+        <section
+          className={cn(
+            "scroll-mt-24",
+            fillHeight && !isModalDetail && "flex h-full min-h-0 flex-col",
+            isModalDetail && "h-full min-h-0 min-w-0 flex-1",
+            isPreviewOnly && "group cursor-pointer",
+          )}
+          id={headingId}
+          role={isPreviewOnly ? "button" : undefined}
+          tabIndex={isPreviewOnly ? 0 : undefined}
+          onClick={isPreviewOnly ? openDetail : undefined}
+          onKeyDown={isPreviewOnly ? handlePreviewKeyDown : undefined}
+        >
+          <ElementDetailLayout isModalDetail={isModalDetail}>
+            {/* Preview-only cards carry their title too: the entry's name is what
+                says which variant a box is, and leaving it to the modal meant the
+                page rendered a row of unlabelled boxes. */}
+            {title && !isModalDetail ? (
               <div
+                className="p-4 mb-5 flex overflow-hidden items-start justify-between gap-4 border-b border-background-700 pb-5"
+                // A fixed row: one line of title against at most two lines of
+                // description, so the copy arriving cannot move the preview box
+                // below it and the skeleton can reserve the row exactly.
+                style={{ height: ENTRY_HEADER_HEIGHT }}
+              >
+                <h3
+                  id={headingId ? `${headingId}-title` : undefined}
+                  className="min-w-0 truncate text-foreground-50"
+                >
+                  {title}
+                </h3>
+                {description ? (
+                  <p className="line-clamp-2 max-w-[45ch] text-sm text-foreground-400">
+                    {description}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+            {hidePreview ? null : (
+              <div
+                id={isModalDetail ? previewPaneId : undefined}
                 className={cn(
-                  "relative min-h-0 min-w-0 flex",
-                  (fillHeight || isModalDetail) && "h-full",
+                  "min-w-0 overflow-hidden rounded-sm",
+                  isPreviewOnly &&
+                    "border border-background-700 transition-colors group-hover:border-background-500",
+                  !isPreviewOnly && "rounded-b-none",
+                  (fillHeight || isModalDetail) && "flex min-h-0 flex-1 flex-col",
+                  isModalDetail && "order-3 h-full rounded-none lg:min-w-[25%] lg:max-w-[75%]",
                 )}
-                style={
-                  isModalDetail
-                    ? undefined
-                    : fillHeight || dynamicPreviewHeight
-                      ? // A taller demo may still grow the box, but it can never
-                        // come in under the height the page already reserved.
-                        { minHeight: reservedHeight }
-                      : { height: reservedHeight ?? previewHeight }
-                }
               >
                 <div
                   className={cn(
-                    "flex min-h-0 mx-auto w-full",
-                    dynamicPreviewHeight && !isModalDetail
-                      ? "overflow-visible"
-                      : "h-full overflow-auto",
+                    "relative min-h-0 min-w-0 flex",
+                    (fillHeight || isModalDetail) && "h-full",
                   )}
+                  style={
+                    isModalDetail
+                      ? undefined
+                      : fillHeight || dynamicPreviewHeight
+                        ? // A taller demo may still grow the box, but it can never
+                          // come in under the height the page already reserved.
+                          { minHeight: reservedHeight }
+                        : { height: reservedHeight ?? previewHeight }
+                  }
                 >
                   <div
                     className={cn(
-                      "flex justify-center  w-full min-w-[min(100%,16rem)] max-w-full items-center",
-                      // previewLayout === "start" ? "mx-auto" : "max-w-2xl",
-                      // Preview-only cards are a single click target that opens the
-                      // modal; the live demo is shown purely as a thumbnail, so its
-                      // controls are made inert. Only the modal detail is interactable.
-                      isPreviewOnly && "pointer-events-none",
+                      "flex min-h-0 mx-auto w-full",
+                      dynamicPreviewHeight && !isModalDetail
+                        ? "overflow-visible"
+                        : "h-full overflow-auto",
                     )}
                   >
-                    <Suspense fallback={<PreviewSkeleton />}>{children}</Suspense>
+                    <div
+                      className={cn(
+                        "flex justify-center  w-full min-w-[min(100%,16rem)] max-w-full items-center",
+                        // Preview-only cards are a single click target that opens the
+                        // modal; the live demo is shown purely as a thumbnail, so its
+                        // controls are made inert. Only the modal detail is interactable.
+                        isPreviewOnly && "pointer-events-none",
+                      )}
+                    >
+                      <Suspense fallback={<PreviewSkeleton />}>{children}</Suspense>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {!isPreviewOnly && primaryFile ? (
-            <div
-              id={isModalDetail ? codePaneId : undefined}
-              className={cn(
-                "overflow-hidden bg-background-950/40",
-                isModalDetail
-                  ? "order-1 h-full min-h-0 overflow-hidden rounded-none! border-t-0 lg:min-w-[25%] lg:max-w-[75%]"
-                  : hidePreview
-                    ? "rounded-sm"
-                    : "rounded-sm rounded-t-none border-t-0",
-              )}
-            >
-              {locked ? (
-                <LockedSource file={primaryFile} fillHeight={isModalDetail} />
-              ) : (
-                <div
-                  className={cn(
-                    "grid min-w-0 grid-cols-1",
-                    isModalDetail && "h-full min-h-0 grid-rows-[minmax(0,1fr)]",
-                  )}
-                >
-                  <Code
-                    entryRef={selectedPattern ? `pattern:${selectedPattern.id}` : entryRef}
-                    entryHref={selectedPattern?.href ?? entryHref}
-                    entryTitle={selectedPattern?.id ?? title ?? entryRef}
-                    className={cn("rounded-none! border-0", isModalDetail && "h-full")}
-                    fillHeight={isModalDetail}
-                    language={primaryFile.language}
-                    filename={selectedPattern ? undefined : primaryFile.filename}
-                    heading={
-                      selectedPattern
-                        ? undefined
-                        : hasMultipleFiles
-                          ? primaryFile.filename
-                          : undefined
-                    }
-                    hideFileTabs={hasMultipleFiles}
-                    files={secondaryFiles.map((file) => ({
-                      name: file.filename,
-                      code: file.code ?? "",
-                      language: file.language,
-                    }))}
-                    showHeader={showCodeHeader || hasMultipleFiles || Boolean(fileTreeTrigger)}
-                    headerPrefix={fileTreeTrigger}
-                    showLineNumbers
-                    maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
-                    activeFile={activeFileIndex}
-                    onActiveFileChange={(index: number) => {
-                      setSelectedPatternId(null);
-                      setSelectedFileName(displayedFiles[index]?.filename ?? null);
-                    }}
+            )}
+            {!isPreviewOnly && primaryFile ? (
+              <div
+                id={isModalDetail ? codePaneId : undefined}
+                className={cn(
+                  "overflow-hidden bg-background-950/40",
+                  isModalDetail
+                    ? "order-1 h-full min-h-0 overflow-hidden rounded-none! border-t-0 lg:min-w-[25%] lg:max-w-[75%]"
+                    : hidePreview
+                      ? "rounded-sm"
+                      : "rounded-sm rounded-t-none border-t-0",
+                  // Stretch the code pane so LockedSource can measure a real
+                  // height in both the modal and fill-height card layouts.
+                  (isModalDetail || fillHeight) && "flex min-h-0 flex-1 flex-col",
+                )}
+              >
+                {locked ? (
+                  <LockedSource file={primaryFile} fillHeight={isModalDetail || fillHeight} />
+                ) : (
+                  <div
+                    className={cn(
+                      "grid min-w-0 grid-cols-1",
+                      isModalDetail && "h-full min-h-0 grid-rows-[minmax(0,1fr)]",
+                    )}
                   >
-                    {primaryFile.code ?? ""}
-                  </Code>
-                </div>
-              )}
-            </div>
-          ) : null}
-
-          {isModalDetail && !hidePreview && primaryFile ? (
-            <Panel.Resize
-              aria-controls={`${codePaneId} ${previewPaneId}`}
-              aria-label="Resize code and preview panes"
-              className="order-2"
-            />
-          ) : null}
-        </ElementDetailLayout>
-      </section> : null}
+                    <Code
+                      entryRef={selectedPattern ? `pattern:${selectedPattern.id}` : entryRef}
+                      entryHref={selectedPattern?.href ?? entryHref}
+                      entryTitle={selectedPattern?.id ?? title ?? entryRef}
+                      className={cn("rounded-none! border-0", isModalDetail && "h-full")}
+                      fillHeight={isModalDetail}
+                      language={primaryFile.language}
+                      filename={selectedPattern ? undefined : primaryFile.filename}
+                      heading={
+                        selectedPattern
+                          ? undefined
+                          : hasMultipleFiles
+                            ? primaryFile.filename
+                            : undefined
+                      }
+                      hideFileTabs={hasMultipleFiles}
+                      files={secondaryFiles.map((file) => ({
+                        name: file.filename,
+                        code: file.code ?? "",
+                        language: file.language,
+                      }))}
+                      showHeader={showCodeHeader || hasMultipleFiles || Boolean(fileTreeTrigger)}
+                      headerPrefix={fileTreeTrigger}
+                      showLineNumbers
+                      maxHeightLines={isModalDetail ? null : codeMaxHeightLines}
+                      activeFile={activeFileIndex}
+                      onActiveFileChange={(index: number) => {
+                        setSelectedPatternId(null);
+                        setSelectedFileName(displayedFiles[index]?.filename ?? null);
+                      }}
+                    >
+                      {primaryFile.code ?? ""}
+                    </Code>
+                  </div>
+                )}
+              </div>
+            ) : null}
+            {isModalDetail && !hidePreview && primaryFile ? (
+              <Panel.Resize
+                aria-controls={`${codePaneId} ${previewPaneId}`}
+                aria-label="Resize code and preview panes"
+                className="order-2"
+              />
+            ) : null}
+          </ElementDetailLayout>
+        </section>
+      ) : null}
       {isPreviewOnly ? (
         <Modal
           open={isDetailOpen}
@@ -359,7 +367,7 @@ export function ElementPreview({
             ) : null}
             <ElementPreview
               entryRef={selectedPattern ? `pattern:${selectedPattern.id}` : entryRef}
-                    entryHref={selectedPattern?.href ?? entryHref}
+              entryHref={selectedPattern?.href ?? entryHref}
               title={selectedPattern?.id ?? title}
               headingId={headingId}
               files={
@@ -432,7 +440,9 @@ export function ElementPreview({
                 </p>
               ) : null}
               {entryHref ? (
-                <a href={entryHref} className="text-sm text-foreground-200 hover:underline">View original</a>
+                <a href={entryHref} className="text-sm text-foreground-200 hover:underline">
+                  View original
+                </a>
               ) : null}
             </Modal.Footer>
           ) : null}
@@ -520,7 +530,6 @@ function ElementDetailLayout({
   isModalDetail: boolean;
 }) {
   if (!isModalDetail) return <>{children}</>;
-
   return (
     <Panel orientation="horizontal" collapseAt={900} spacing="none">
       {children}
@@ -603,6 +612,11 @@ function ElementFileTree({
   );
 }
 
-export function ElementPreviewDialog(props: Omit<ElementPreviewProps, "disclosure"> & { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function ElementPreviewDialog(
+  props: Omit<ElementPreviewProps, "disclosure"> & {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  },
+) {
   return <ElementPreview {...props} disclosure="dialog" />;
 }

@@ -11,7 +11,7 @@ import type { LayoutConfig } from "@ui-lab-core/library/catalog";
  */
 
 /** Lines of a locked entry's source that are shown before the fade. */
-export const LOCKED_SOURCE_PREVIEW_LINES = 14;
+export const LOCKED_SOURCE_PREVIEW_LINES = 28;
 
 /**
  * Entries of a locked package that are sent at all. The teaser renders one more
@@ -44,6 +44,18 @@ export interface WorkshopVariant {
   patterns: WorkshopPatternRef[];
 }
 
+/**
+ * The library's disclosed-but-gated variant for a locked entry: rendered live
+ * under the fade in place of a fixed placeholder. It carries no files — the
+ * library marks it with `role: "teaser"` precisely so no source ever ships.
+ */
+export interface WorkshopTeaserVariant {
+  name: string;
+  description: string;
+  previewHeight?: number;
+  demoPath?: string;
+}
+
 interface WorkshopEntryBase {
   id: string;
   name: string;
@@ -58,6 +70,8 @@ interface WorkshopVariantList {
   variants: WorkshopVariant[];
   /** Variants withheld from a locked entry. Only the count crosses the wire. */
   hiddenVariantCount: number;
+  /** The library's designated teaser variant for a locked entry, or `null` when none is marked. */
+  teaserVariant: WorkshopTeaserVariant | null;
 }
 
 export interface WorkshopElement extends WorkshopEntryBase, WorkshopVariantList {

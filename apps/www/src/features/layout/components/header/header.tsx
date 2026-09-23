@@ -11,14 +11,13 @@ import { Tooltip } from "ui-lab-components/tooltip";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { cn } from "@/shared/lib/utils";
-import { FaBars, FaGithub } from "@/shared/icons/fa6";
+import { FaGithub } from "@/shared/icons/fa6";
 import { LuSearch } from "@/shared/icons/lu";
 import { HiX } from "@/shared/icons/hi";
 import { PanelRight, Paperclip, PlusCircle } from "lucide-react";
 import { MobileMenu } from "./mobile-menu";
 import { headerTabs, getActiveHeaderTab, type HeaderTab } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
-import { useLandingSidebarToggle } from "@/features/layout/hooks/landing-sidebar-context";
 import { HeaderAccountLink } from "@/features/account/components/header-account-link";
 
 const TabItem = memo(({ tab }: { tab: HeaderTab }) => {
@@ -40,10 +39,10 @@ export default function Header({ pathname }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isCommandPaletteOpen, setIsCommandPaletteOpen } = useApp();
   const [Palette, setPalette] = useState<ComponentType | null>(null);
-  const { toggleSidebar } = useSidebarToggle();
-  const { toggleSidebar: toggleLandingSidebar } = useLandingSidebarToggle();
+  const { isOpen: isSidebarOpen, toggleSidebar } = useSidebarToggle();
   const isLandingPage = pathname === "/";
   const isConfigPage = pathname === "/config";
+  const isNavigationOpen = isLandingPage ? isMobileMenuOpen : isSidebarOpen;
 
   useEffect(() => {
     if (!isCommandPaletteOpen || Palette) return;
@@ -56,11 +55,8 @@ export default function Header({ pathname }: HeaderProps) {
     };
   }, [Palette, isCommandPaletteOpen]);
   const handleToggleSidebar = () => {
-    if (isLandingPage) {
-      toggleLandingSidebar();
-    } else {
-      toggleSidebar();
-    }
+    if (isLandingPage) setIsMobileMenuOpen((v) => !v);
+    else toggleSidebar();
   };
 
   const activeTabId = useMemo(() => getActiveHeaderTab(pathname), [pathname]);
@@ -101,9 +97,13 @@ export default function Header({ pathname }: HeaderProps) {
             <button
               onClick={handleToggleSidebar}
               className="lg:hidden flex items-center justify-center rounded-sm p-2 text-foreground-300 hover:bg-background-800"
-              aria-label="Toggle sidebar"
+              aria-label={isNavigationOpen ? "Close navigation" : "Open navigation"}
             >
-              <PanelRight className="text-foreground-400" strokeWidth={2.4} size={17} />
+              {isNavigationOpen ? (
+                <HiX className="text-foreground-400" size={17} />
+              ) : (
+                <PanelRight className="text-foreground-400" strokeWidth={2.4} size={17} />
+              )}
             </button>
 
             <div className="h-full">
@@ -170,30 +170,19 @@ export default function Header({ pathname }: HeaderProps) {
 
             <HeaderAccountLink />
 
-            <Tooltip
-              show-arrow
-              content={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
-              position="bottom"
-            >
-              <Button
-                onClick={() => setIsMobileMenuOpen((v) => !v)}
-                variant="ghost"
-                className="text-foreground-300 md:hidden flex items-center justify-center p-2"
-                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-              >
-                {isMobileMenuOpen ? <HiX size={16} /> : <FaBars size={16} />}
-              </Button>
-            </Tooltip>
           </div>
         </div>
       </header>
 
       {featureFlags.commandPalette && Palette ? <Palette /> : null}
-      <MobileMenu
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-        pathname={pathname}
-      />
+
+      {isLandingPage && (
+        <MobileMenu
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          pathname={pathname}
+        />
+      )}
     </>
   );
 }

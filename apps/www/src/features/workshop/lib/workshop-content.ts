@@ -30,6 +30,7 @@ import {
   type WorkshopPatternRef,
   type WorkshopSection,
   type WorkshopStarter,
+  type WorkshopTeaserVariant,
   type WorkshopVariant,
 } from "@/features/workshop/types/content";
 
@@ -81,18 +82,47 @@ function toPatternRefs(patternIds: string[] | undefined): WorkshopPatternRef[] {
 }
 
 /**
- * A locked entry ships only the teaser's worth of variants. The remainder is
- * dropped here, not hidden in the browser, so the count is all that travels.
+ * The library's designated teaser projection: name, description, and the demo
+ * path to render it live. No files travel with it — that is the point of the
+ * `teaser` role.
+ */
+function toTeaserVariant(variant: ElementVariant): WorkshopTeaserVariant {
+  return {
+    name: variant.name,
+    description: variant.description,
+    previewHeight: variant.previewHeight,
+    demoPath: variant.demoPath,
+  };
+}
+
+/**
+ * A locked entry ships only its disclosed variants' worth of source. The
+ * library marks which variants those are (`role: "visible"`) and which single
+ * variant is the gated, source-free preview (`role: "teaser"`); entries
+ * without explicit roles fall back to the first `LOCKED_TEASER_COUNT`
+ * variants, preserving prior behavior until they are migrated.
  */
 function toVariantList(
   variants: ElementVariant[],
   locked: boolean,
-): { variants: WorkshopVariant[]; hiddenVariantCount: number } {
-  const kept = locked ? variants.slice(0, LOCKED_TEASER_COUNT) : variants;
+): { variants: WorkshopVariant[]; hiddenVariantCount: number; teaserVariant: WorkshopTeaserVariant | null } {
+  if (!locked) {
+    return {
+      variants: variants.map((variant) => toVariant(variant, false)),
+      hiddenVariantCount: 0,
+      teaserVariant: null,
+    };
+  }
+
+  const teaser = variants.find((variant) => variant.role === "teaser");
+  const rest = variants.filter((variant) => variant !== teaser);
+  const explicitVisible = rest.filter((variant) => variant.role === "visible");
+  const kept = explicitVisible.length > 0 ? explicitVisible : rest.slice(0, LOCKED_TEASER_COUNT);
 
   return {
-    variants: kept.map((variant) => toVariant(variant, locked)),
-    hiddenVariantCount: variants.length - kept.length,
+    variants: kept.map((variant) => toVariant(variant, true)),
+    hiddenVariantCount: rest.length - kept.length,
+    teaserVariant: teaser ? toTeaserVariant(teaser) : null,
   };
 }
 

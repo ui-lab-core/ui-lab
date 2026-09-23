@@ -2,13 +2,9 @@
 
 import type { ReactNode } from "react";
 import { Lock } from "lucide-react";
-import { Mask, Skeleton } from "ui-lab-components";
+import { Skeleton } from "ui-lab-components";
 import { Button } from "ui-lab-components/button";
-import {
-  cheapestSupporterOption,
-  formatSupporterPrice,
-  SUPPORTER_PLAN,
-} from "@ui-lab-core/library/access";
+import { SUPPORTER_PLAN } from "@ui-lab-core/library/access";
 import { ROUTES } from "@/shared/lib/routes";
 import { cn } from "@/shared/lib/utils";
 import { LOCKED_TEASER_COUNT } from "@/features/workshop/types/content";
@@ -93,10 +89,9 @@ interface LockedCtaProps {
  */
 export function LockedCta({ hiddenCount, layout = "card", className }: LockedCtaProps) {
   const scope = hiddenCount
-    ? `${hiddenCount} more ${hiddenCount === 1 ? "entry" : "entries"} and the complete source are`
-    : "The complete source and every other premium item are";
-  const entry = cheapestSupporterOption();
-  const description = `${scope} included with ${SUPPORTER_PLAN.name} — starting at ${formatSupporterPrice(entry)} ${entry.qualifier}, everything unlocked.`;
+    ? `${hiddenCount} more ${hiddenCount === 1 ? "entry" : "entries"} and the complete source`
+    : "The complete source and every other premium item";
+  const description = `${scope} unlock with ${SUPPORTER_PLAN.name}.`;
 
   if (layout === "wide") {
     return (
@@ -184,6 +179,15 @@ interface LockedTeaserProps {
   hiddenCount?: number;
   ctaPlacement?: "end" | "center";
   ctaLayout?: "card" | "wide";
+  /**
+   * Fixed height, in pixels, of the visible teaser window. The disclosed entry
+   * renders at its natural height but only this region is shown, so the fade and
+   * CTA sit over a consistent band rather than being stretched across a tall
+   * entry. Left unset the teaser takes the entry's own height, as a small mock
+   * placeholder does. Clipping is `overflow-hidden`, not a scroll area, so a
+   * tall entry gains no scrollbar and the entry's own layout is untouched.
+   */
+  viewportHeight?: number;
   className?: string;
 }
 
@@ -196,14 +200,20 @@ export function LockedTeaser({
   hiddenCount,
   ctaPlacement = "end",
   ctaLayout = "card",
+  viewportHeight,
   className,
 }: LockedTeaserProps) {
   return (
     <div className={cn("relative", className)}>
-      <Mask>
-        <Mask.Fade direction="bottom" intensity={5} />
+      {/* The entry renders at its natural height; the window shows only a fixed
+          region of it. This anchors the fade to a consistent band regardless of
+          how tall the disclosed component grows, without capping the entry's own
+          box (which would turn it into a scroll area). */}
+      <div className="overflow-hidden" style={viewportHeight ? { height: viewportHeight } : undefined}>
         {children}
-      </Mask>
+      </div>
+
+      <DisclosureFade />
 
       <div
         className={cn(
@@ -214,6 +224,45 @@ export function LockedTeaser({
       >
         <LockedCta hiddenCount={hiddenCount} layout={ctaLayout} />
       </div>
+    </div>
+  );
+}
+
+/**
+ * Stacked blur bands that each start lower and blur harder than the last, so
+ * the disclosed content loses focus gradually toward the bottom rather than in
+ * one step. A scrim over the top settles the same region to `background-1000`,
+ * so the fade reads as the content dissolving into the page behind the CTA.
+ */
+const DISCLOSURE_BLUR_BANDS = [
+  { blur: 0.5, from: 25, to: 40 },
+  { blur: 1, from: 35, to: 50 },
+  { blur: 2, from: 45, to: 60 },
+  { blur: 4, from: 55, to: 70 },
+  { blur: 8, from: 65, to: 80 },
+  { blur: 16, from: 75, to: 90 },
+] as const;
+
+function DisclosureFade() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] overflow-hidden">
+      {DISCLOSURE_BLUR_BANDS.map((band) => {
+        const gradient = `linear-gradient(to bottom, transparent ${band.from}%, black ${band.to}%)`;
+        return (
+          <div
+            key={band.blur}
+            className="absolute inset-0"
+            style={{
+              backdropFilter: `blur(${band.blur}px)`,
+              WebkitBackdropFilter: `blur(${band.blur}px)`,
+              maskImage: gradient,
+              WebkitMaskImage: gradient,
+            }}
+          />
+        );
+      })}
+
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent from-[30%] via-background-1000/70 to-background-1000" />
     </div>
   );
 }

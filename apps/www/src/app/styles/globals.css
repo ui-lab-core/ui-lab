@@ -12,78 +12,24 @@
 @import "./theme.css";
 @import "ui-lab-components/styles.css";
 
-/* Static typography baseline. Deliberately kept OUT of @theme: --text-xs
-   through --text-5xl are Tailwind's own font-size scale keys, so declaring
-   them inside @theme would rewire every text-xs/text-sm/... utility class
-   site-wide onto this scale instead of Tailwind's defaults. Plain :root
-   custom properties are consumed explicitly via var() (body, typography.css,
-   header-text-*) without that collision. The site never customizes these at
-   runtime (only colors are user-themable); the config route scopes its own
-   overrides to the preview. */
+/* Font size is a single knob per role. --header-scale / --body-scale are the
+   only typography tokens defined here; every --text-<size>-<role> default is
+   derived from them in ui-lab-components' base.css, and any one size can be
+   pinned by overriding that token directly (e.g. --text-md-body: 1.2rem). Kept
+   OUT of @theme so these stay runtime custom properties without colliding with
+   Tailwind's own --text-xs..--text-5xl scale keys. The site never customizes
+   these at runtime (only colors are user-themable); the config route scopes its
+   own overrides to the preview. */
 :root {
   --font-interface: "Work Sans Variable", system-ui, sans-serif;
   --font-serif-family: "Fraunces Variable", ui-serif, Georgia, serif;
   --header-scale: 0.75;
-  --body-scale: 0.75;
-  --leading-header: 1.25;
-  --leading-body: 1.64;
-  --text-xs: 0.84375rem;
-  --text-sm: 0.85rem;
-  --text-md: 0.9rem;
-  --text-base: 0.9rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.75rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 2.75rem;
-  --text-body-size: var(--text-base);
+  --body-scale: 0.8;
 
-  /* One site-wide control for code and semantic mono text. */
-  --text-code-size: 0.9rem;
+  /* One site-wide control for code and semantic mono text. Derived from the
+     body role so code tracks --body-scale like every other size. */
+  --text-code-size: var(--text-md-body);
   --leading-code: 1.7;
-  --header-text-xs: 0.75rem;
-  --header-text-sm: 0.8225rem;
-  --header-text-md: 0.9375rem;
-  --header-text-base: 0.9375rem;
-  --header-text-lg: 1.125rem;
-  --header-text-xl: 1.25rem;
-  --header-text-2xl: 1.5rem;
-  --header-text-3xl: 1.75rem;
-  --header-text-4xl: 2.25rem;
-  --header-text-5xl: 2.75rem;
-  --font-weight-header-thin: 100;
-  --font-weight-body-thin: 105;
-  --font-weight-header-extralight: 200;
-  --font-weight-body-extralight: 210;
-  --font-weight-header-light: 300;
-  --font-weight-body-light: 315;
-  --font-weight-header-normal: 400;
-  --font-weight-body-normal: 500;
-  --font-weight-header-medium: 500;
-  --font-weight-body-medium: 500;
-  --font-weight-header-semibold: 600;
-  --font-weight-body-semibold: 600;
-  --font-weight-header-bold: 700;
-  --font-weight-body-bold: 700;
-  --font-weight-header-extrabold: 800;
-  --font-weight-body-extrabold: 840;
-  --font-weight-header-black: 900;
-  --font-weight-body-black: 900;
-  --letter-spacing-xs: normal;
-  --letter-spacing-sm: normal;
-  --letter-spacing-md: normal;
-  --letter-spacing-base: normal;
-  --letter-spacing-lg: normal;
-  --letter-spacing-xl: normal;
-  --letter-spacing-2xl: normal;
-  --letter-spacing-3xl: normal;
-  --letter-spacing-4xl: normal;
-  --letter-spacing-5xl: normal;
-  --letter-spacing-header-sm: normal;
-  --letter-spacing-header-md: normal;
-  --letter-spacing-header-lg: normal;
-  --letter-spacing-header-xl: normal;
   --letter-spacing-code: normal;
   --font-weight-code: 400;
   /* Semantic component spacing tokens are runtime values, not Tailwind theme
@@ -123,8 +69,10 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
 
-  --header-scale: 0.75;
-  --body-scale: 0.75;
+  /* Tailwind has no `md` font-size key, so declare it here to generate the
+     text-md utility; base.css aliases every key, including this one, to the
+     matching --text-*-body token. */
+  --text-md: var(--text-md-body);
 
   --spacing: clamp(0.18rem, 2.25vw, 0.225rem);
 
@@ -157,10 +105,10 @@
 
 body {
   font-family: var(--font-body);
-  font-size: var(--text-body-size);
-  font-weight: var(--font-weight-body-normal);
+  font-size: var(--text-base-body);
+  font-weight: 500;
   letter-spacing: normal;
-  line-height: var(--leading-body);
+  line-height: 1.64;
   background: var(--color-background-950);
   font-synthesis: none;
   text-rendering: optimizeLegibility;

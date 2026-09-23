@@ -35,6 +35,8 @@ const getThemeColor = (variableName: string, fallback: string) => {
 };
 
 interface StarryAuraProps {
+  /** Use 'accent' to restore the theme's single-color appearance. */
+  colorMode?: 'chromatic' | 'accent';
   gridDensity?: number;
   dotSize?: number;
   twinkleSpeed?: number;
@@ -47,6 +49,7 @@ interface StarryAuraProps {
 }
 
 const StarryGridShader = ({
+  colorMode = 'chromatic',
   gridDensity = 170,
   dotSize = 0.300,
   twinkleSpeed = 1.50,
@@ -73,7 +76,8 @@ const StarryGridShader = ({
     u_is_dark: { value: 1.0 },
     u_background: { value: new THREE.Color(0, 0, 0) },
     u_accent: { value: new THREE.Color(1, 1, 1) },
-  }), [gridDensity, dotSize, twinkleSpeed, twinkleSharpness, sparsity, baseOpacity, accentOpacity]);
+    u_chromatic: { value: colorMode === 'chromatic' ? 1.0 : 0.0 },
+  }), [gridDensity, dotSize, twinkleSpeed, twinkleSharpness, sparsity, baseOpacity, accentOpacity, colorMode]);
 
   useEffect(() => {
     let throttleTimeout: NodeJS.Timeout | null = null;
@@ -102,7 +106,7 @@ const StarryGridShader = ({
       observer.disconnect();
       if (throttleTimeout) clearTimeout(throttleTimeout);
     };
-  }, [bgVariable, accentVariable]);
+  }, [bgVariable, accentVariable, uniforms]);
 
   useFrame((state) => {
     const mat = meshRef.current.material as THREE.ShaderMaterial;
@@ -140,6 +144,7 @@ const StarryGridShader = ({
           uniform float u_is_dark;
           uniform vec3 u_background;
           uniform vec3 u_accent;
+          uniform float u_chromatic;
           varying vec2 vUv;
 
           float hash(vec2 p) {
@@ -184,7 +189,15 @@ const StarryGridShader = ({
             float dotDist = length(gridUv);
             float dotMask = smoothstep(u_dot_size, u_dot_size - 0.1, dotDist);
 
-            vec3 finalColor = mix(u_background, u_accent, twinkle);
+            // Brighter in dark mode; darker and more muted against light backgrounds.
+            float hue = vUv.x * 0.85 + vUv.y * 0.20;
+            float colorBrightness = mix(0.32, 0.74, u_is_dark);
+            float colorAmplitude = mix(0.10, 0.25, u_is_dark);
+            vec3 chromaticColor = vec3(colorBrightness) + vec3(colorAmplitude) * cos(
+              6.2831853 * (hue + vec3(0.0, 0.33, 0.67))
+            );
+            vec3 starColor = mix(u_accent, chromaticColor, u_chromatic);
+            vec3 finalColor = mix(u_background, starColor, twinkle);
             gl_FragColor = vec4(finalColor, dotMask * intensity * powerOn);
           }
         `}

@@ -93,7 +93,7 @@ export default function ComponentsPageClient() {
 
                               <Gallery.Body className="py-4">
                                 <div className="flex items-center gap-1 w-full">
-                                  <h4>{component.name}</h4>
+                                  <h4 className="text-base font-medium">{component.name}</h4>
                                 </div>
                                 <p className="font-medium text-md text-foreground-400">
                                   {component.description}

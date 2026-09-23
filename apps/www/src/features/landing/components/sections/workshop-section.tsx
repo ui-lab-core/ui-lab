@@ -18,10 +18,13 @@ import { Card } from "ui-lab-components/card";
 import { Scroll } from "ui-lab-components/scroll";
 import { Skeleton } from "ui-lab-components/skeleton";
 import { listPackagesByCategory } from "@ui-lab-core/library/metadata";
-import { elementPreviews, elementPreviewShapes } from "@/gallery/element-previews";
-import type { ElementPreviewShape } from "@/gallery/element-previews";
-import { patternPreviews } from "@/gallery/pattern-previews";
-import { sectionPreviews } from "@/gallery/section-previews";
+import {
+  elementPreviews,
+  elementPreviewShapes,
+  patternPreviews,
+  sectionPreviews,
+  type ElementPreviewShape,
+} from "@ui-lab-core/library/gallery-previews";
 import { getPreviewComponent as getStarterPreview } from "@/features/starters";
 import { Section } from "./section";
 

@@ -149,7 +149,6 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
     vars["--font-body"] = `"${bodyFont.family}", sans-serif`;
     vars["--font-heading"] = `"${headerFont.family}", sans-serif`;
     vars["--font-mono"] = `"${monoFont.family}", monospace`;
-    vars["--leading-heading"] = vars["--leading-header"];
     return vars as CSSProperties;
   }, [currentTypography, radius, borderWidth, spacingScale, headerFont, bodyFont, monoFont]);
 

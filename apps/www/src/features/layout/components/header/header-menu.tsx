@@ -80,7 +80,7 @@ export function HeaderMenu({ profile, onProfileSelect, showLogin }: HeaderMenuPr
           side="bottom"
           align="end"
           offset={8}
-          className="min-w-52 bg-background-900 shadow-lg shadow-background-950/30"
+          className="min-w-62 bg-background-900 shadow-lg shadow-background-950/30"
         >
           {profile ? (
             <>

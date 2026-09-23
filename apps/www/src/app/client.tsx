@@ -82,7 +82,7 @@ function KeyboardShortcuts() {
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
-    <IconProvider defaultVariant="stroke">
+    <IconProvider default-variant="stroke">
       <AppProvider>
         <KeyboardShortcuts />
         {/* <PerfOverlay /> */}

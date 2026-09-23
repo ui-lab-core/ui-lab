@@ -20,12 +20,17 @@ import {
 } from "@/features/navigation/lib/sidebar-sections";
 import { useDocsNavigationData } from "@/features/navigation/lib/docs-navigation-context";
 import { Flex } from "ui-lab-components";
+import { Badge } from "ui-lab-components/badge";
+import { List } from "ui-lab-components/list";
+import { getComponentCount } from "ui-lab-registry";
 import { Logo } from "@/features/layout/components/logo";
 import { FaTags } from "@/shared/icons/fa6";
 import { ElementsList } from "@/features/workshop/components/sidebar-content";
 import type { WorkshopNavigation } from "@/features/workshop/types/navigation";
 
 type ElementsNavType = "packages" | "sections" | "starters" | "patterns";
+
+const componentCount = getComponentCount();
 
 function getElementsNav(pathname: string): ElementsNavType {
   if (pathname.startsWith("/workshop/sections")) return "sections";
@@ -133,6 +138,12 @@ export function Sidebar({
     ? "w-78 md:w-66 lg:w-52 xl:w-62"
     : "w-76 md:w-60 lg:w-46 xl:w-62";
 
+  const mobileNavigation = [
+    { label: "Documentation", href: "/docs", active: pathname.startsWith("/docs") },
+    { label: "Components", href: "/components", active: pathname.startsWith("/components") },
+    { label: "Workshop", href: "/workshop/elements", active: pathname.startsWith("/workshop") },
+  ];
+
   return (
     <>
       {isOpen && (
@@ -153,9 +164,10 @@ export function Sidebar({
           "flex flex-col",
           "bg-background-1000 fixed lg:static left-0 top-0 h-screen lg:h-auto",
           "z-[55] lg:z-20",
-          "transition-transform duration-300 ease-out",
           "lg:transition-none lg:transform-none",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          isOpen
+            ? "translate-x-0 transition-none"
+            : "-translate-x-full transition-transform duration-300 ease-out lg:translate-x-0",
         )}
       >
         <div className="flex border-r border-background-700 flex-col h-screen lg:h-[calc(100vh-var(--header-height))] sticky top-0 lg:top-[var(--header-height)]">
@@ -177,6 +189,35 @@ export function Sidebar({
               Changelog
             </Link>
           </div>
+
+          <nav aria-label="Explore" className="border-b border-background-700 px-3 py-3 lg:hidden">
+            <List aria-label="Explore" gap="xs" className="max-w-none">
+              {mobileNavigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  onClick={closeSidebar}
+                  className="block"
+                >
+                  <List.Item
+                    value={item.href}
+                    selected={item.active}
+                    className="cursor-pointer px-4 py-2.5"
+                  >
+                    <List.Title
+                      className={cn(
+                        "text-sm font-medium",
+                        item.active ? "text-foreground-50" : "text-foreground-300",
+                      )}
+                    >
+                      {item.label}
+                    </List.Title>
+                  </List.Item>
+                </Link>
+              ))}
+            </List>
+          </nav>
 
           {mainNavItems.length > 0 && (
             <div className="z-10">
@@ -207,7 +248,13 @@ export function Sidebar({
                       </div>
                       }
                      */}
-                      <span>{navItem.label}</span>
+                      <span className="flex-1">{navItem.label}</span>
+                      {navItem.id === "components-core" && (
+                        <Badge
+                          count={componentCount}
+                          className="bg-background-600 border-2 px-1.5"
+                        />
+                      )}
                     </Link>
                   );
                 })}

@@ -13,6 +13,7 @@ import {
   SupporterBillingToggle,
   SupporterPurchasePanel,
 } from "@/features/supporter/components/supporter-billing";
+import { PremiumShowcase } from "@/features/supporter/components/premium-showcase";
 import Aura from "@/shared/components/Aura";
 import { ROUTES } from "@/shared/lib/routes";
 
@@ -69,64 +70,72 @@ export default function SupporterPage() {
         justify-center
         className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 pt-(--header-height)"
       >
-        <Card className="flex rounded-xl flex-col border border-background-700 bg-background-950/40 backdrop-blur-[1px] shadow-none lg:flex-row">
+        <Card className="flex rounded-xl flex-col border border-background-700 bg-background-1000 shadow-none lg:flex-row">
           <Card.Body className="m-4 bg-background-900 rounded-2xl space-y-7 p-5 sm:p-6 lg:w-[560px] lg:shrink-0">
             <SupporterBillingProvider>
-            <Flex layout="bar" gap={3}>
-              <Flex gap={3} align-center>
-                <div className="rounded-sm border border-accent-400/40 bg-gradient-to-br from-accent-500/40 to-accent-600 p-1">
-                  <Logo className="inline size-5 text-accent-50" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-medium text-foreground-50">{SUPPORTER_PLAN.name}</h1>
-                  <p className="text-sm text-foreground-400">{SUPPORTER_PLAN.tagline}</p>
-                </div>
+              <Flex layout="bar" gap={3}>
+                <Flex gap={3} align-center>
+                  <div className="rounded-sm border border-accent-400/40 bg-gradient-to-br from-accent-500/40 to-accent-600 p-1">
+                    <Logo className="inline size-5 text-accent-50" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-medium text-foreground-50">
+                      {SUPPORTER_PLAN.name}
+                    </h1>
+                    <p className="text-sm text-foreground-400">{SUPPORTER_PLAN.tagline}</p>
+                  </div>
+                </Flex>
+
+                <Suspense fallback={<SupporterBillingToggle />}>
+                  <SupporterBillingToggleSlot />
+                </Suspense>
               </Flex>
 
-              <Suspense fallback={<SupporterBillingToggle />}>
-                <SupporterBillingToggleSlot />
+              <Suspense fallback={<SupporterPurchasePanel />}>
+                <SupporterCallToAction />
               </Suspense>
-            </Flex>
 
-            <Suspense fallback={<SupporterPurchasePanel />}>
-              <SupporterCallToAction />
-            </Suspense>
+              <div className="flex items-center justify-start gap-2 text-sm text-foreground-400">
+                <LockKeyhole aria-hidden="true" className="size-4" />
+                <span>
+                  Secure checkout powered by{" "}
+                  <span className="font-[550] text-foreground-50">Stripe</span>
+                </span>
+              </div>
 
-            <div className="flex items-center justify-start gap-2 text-sm text-foreground-400">
-              <LockKeyhole aria-hidden="true" className="size-4" />
-              <span>
-                Secure checkout powered by{" "}
-                <span className="font-[550] text-foreground-50">Stripe</span>
-              </span>
-            </div>
+              <Divider spacing="sm" className="mb-4" />
 
-            <Divider spacing="sm" className="mb-4" />
+              <section className="space-y-4 mb-16">
+                <h2 className="text-sm font-medium text-foreground-200">Included with Supporter</h2>
+                <ul className="space-y-4">
+                  {INCLUDED_FEATURES.map((feature, index) => {
+                    const Icon = FEATURE_ICONS[index];
 
-            <section className="space-y-4 mb-16">
-              <h2 className="text-sm font-medium text-foreground-200">Included with Supporter</h2>
-              <ul className="space-y-4">
-                {INCLUDED_FEATURES.map((feature, index) => {
-                  const Icon = FEATURE_ICONS[index];
+                    return (
+                      <li key={feature}>
+                        <Flex gap={4} align-center className="text-foreground-400">
+                          <Icon
+                            aria-hidden="true"
+                            className="size-6 shrink-0 text-foreground-400"
+                          />
+                          <span>{feature}</span>
+                        </Flex>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
 
-                  return (
-                    <li key={feature}>
-                      <Flex gap={4} align-center className="text-foreground-400">
-                        <Icon aria-hidden="true" className="size-6 shrink-0 text-foreground-400" />
-                        <span>{feature}</span>
-                      </Flex>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-
-            <a href="/sign-in" className="text-sm text-foreground-400 underline underline-offset-2">
-              Already purchased?&nbsp; Sign in
-            </a>
+              <a
+                href="/sign-in"
+                className="text-sm text-foreground-400 underline underline-offset-2"
+              >
+                Already purchased?&nbsp; Sign in
+              </a>
             </SupporterBillingProvider>
           </Card.Body>
 
-          <div className="min-h-75 flex-1 lg:min-h-0" />
+          <PremiumShowcase className="hidden flex-1 lg:block lg:rounded-r-xl" />
         </Card>
       </Flex>
     </div>

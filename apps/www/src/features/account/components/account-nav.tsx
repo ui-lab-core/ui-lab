@@ -25,23 +25,23 @@ export function AccountNav() {
 
         return (
           <Link key={item.href} href={item.href} className="block">
-          <List.Item
-            value={item.href}
-            selected={isActive}
-            className="cursor-pointer gap-1.5 px-1"
-          >
-            <List.Media className={cn(isActive ? "text-foreground-200" : "text-foreground-400")}>
-              <Icon className="size-4" />
-            </List.Media>
-            <List.Title
-              className={cn(
-                "text-base",
-                isActive ? "font-medium text-foreground-300" : "font-normal text-foreground-400",
-              )}
+            <List.Item
+              value={item.href}
+              selected={isActive}
+              className="cursor-pointer gap-1.5 px-1"
             >
-              {item.label}
-            </List.Title>
-          </List.Item>
+              <List.Media className={cn(isActive ? "text-foreground-200" : "text-foreground-400")}>
+                <Icon className="size-5" />
+              </List.Media>
+              <List.Title
+                className={cn(
+                  "text-sm font-medium",
+                  isActive ? "text-foreground-300" : "text-foreground-400",
+                )}
+              >
+                {item.label}
+              </List.Title>
+            </List.Item>
           </Link>
         );
       })}

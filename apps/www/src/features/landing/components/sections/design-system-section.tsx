@@ -68,18 +68,17 @@ export function DesignSystemSection() {
             <Link
               key={title}
               href={href}
-              className="group grid min-h-30 grid-cols-[minmax(0,1fr)_auto] items-center gap-8 bg-background-1000 p-3 transition-colors hover:bg-background-950 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground-200 sm:p-4 lg:p-6"
+              className="group grid min-h-30 grid-cols-[auto_minmax(0,1fr)] items-center gap-8 bg-background-1000 p-3 transition-colors hover:bg-background-950 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground-200 sm:p-4 lg:p-6"
             >
+              <span className="grid size-16 shrink-0 place-items-center rounded-md text-foreground-300 transition-colors group-hover:text-foreground-100 sm:size-12 lg:size-20">
+                <Icon aria-hidden className="text-background-500 size-6 sm:size-8 lg:size-10" />
+              </span>
               <div className="self-center">
                 <h3 className="text-lg font-medium text-foreground-100">{title}</h3>
-                <p className="mt-3 max-w-[38ch] text-md leading-relaxed text-foreground-400">
+                <p className="mt-1 max-w-[38ch] text-md leading-relaxed text-foreground-400">
                   {description}
                 </p>
               </div>
-
-              <span className="grid size-16 shrink-0 place-items-center rounded-md text-foreground-300 transition-colors group-hover:text-foreground-100 sm:size-12 lg:size-20">
-                <Icon aria-hidden className="text-background-500 size-4 sm:size-6 lg:size-8" />
-              </span>
             </Link>
           ))}
         </Lattice>
