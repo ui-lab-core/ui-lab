@@ -4,10 +4,10 @@
   .banner {
     @apply flex w-full items-start gap-3 px-4 py-3;
     font-family: var(--font-body, inherit);
-    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-base-body);
+    font-weight: 500;
     letter-spacing: normal;
-    line-height: var(--leading-body, 1.5);
+    line-height: 1.64;
     background-color: var(--background, var(--background-900));
     color: var(--foreground, var(--foreground-200));
     border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
@@ -70,10 +70,10 @@
 
   .title {
     font-family: var(--font-heading, var(--font-body, inherit));
-    font-size: var(--header-text-lg, var(--text-lg, 1.125rem));
-    font-weight: var(--font-weight-header-medium, 500);
+    font-size: var(--text-lg-header);
+    font-weight: 500;
     letter-spacing: normal;
-    line-height: var(--leading-heading, 1.25);
+    line-height: 1.25;
     @apply my-0;
   }
 

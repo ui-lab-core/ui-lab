@@ -242,24 +242,23 @@ const alignOverlayTarget = (
         y: triggerRect.top - (searchSlotRect.top - floatingRect.top),
       };
     } else {
+      if ((!triggerText && !triggerValue) || !overlayText) return {};
 
-    if ((!triggerText && !triggerValue) || !overlayText) return {};
-
-    const triggerOrigin =
-      target === "search-value" && triggerValue
-        ? getContentOrigin(triggerValue)
-        : triggerText
-          ? getTextOrigin(triggerText)
-          : null;
-    if (!triggerOrigin) {
-      return { data: { fallback: true }, reset: { placement: state.initialPlacement } };
-    }
-    const overlayOrigin = getTextOrigin(overlayText);
-    const floatingRect = floating.getBoundingClientRect();
-    coordinates = {
-      x: triggerOrigin.x - (overlayOrigin.x - floatingRect.left),
-      y: triggerOrigin.y - (overlayOrigin.y - floatingRect.top),
-    };
+      const triggerOrigin =
+        target === "search-value" && triggerValue
+          ? getContentOrigin(triggerValue)
+          : triggerText
+            ? getTextOrigin(triggerText)
+            : null;
+      if (!triggerOrigin) {
+        return { data: { fallback: true }, reset: { placement: state.initialPlacement } };
+      }
+      const overlayOrigin = getTextOrigin(overlayText);
+      const floatingRect = floating.getBoundingClientRect();
+      coordinates = {
+        x: triggerOrigin.x - (overlayOrigin.x - floatingRect.left),
+        y: triggerOrigin.y - (overlayOrigin.y - floatingRect.top),
+      };
     }
 
     // Text alignment can move the panel left of the trigger. Include that
@@ -268,7 +267,10 @@ const alignOverlayTarget = (
     const minWidth = referenceRect.width + Math.max(0, referenceRect.left - coordinates.x);
     floating.style.minWidth = `${Math.min(minWidth, Number.parseFloat(floating.style.maxWidth) || Infinity)}px`;
     const dimensions = await state.platform.getDimensions(floating);
-    if (dimensions.width !== state.rects.floating.width || dimensions.height !== state.rects.floating.height) {
+    if (
+      dimensions.width !== state.rects.floating.width ||
+      dimensions.height !== state.rects.floating.height
+    ) {
       return { ...coordinates, reset: { rects: true } };
     }
 
@@ -293,7 +295,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       searchPlaceholder,
       onSearch,
       emptyContent = "No results found.",
-      position = "overlay",
+      position = "bottom",
       align = "start",
       styles: stylesProp,
       ...domProps
@@ -352,70 +354,85 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
     const side = position === "top" ? "top" : "bottom";
     const requestedPlacement = align === "center" ? side : (`${side}-${align}` as const);
-    const { refs, floatingStyles, x, y, placement, update, isPositioned, middlewareData } = useFloating({
-      placement: requestedPlacement,
-      // Keep the panel anchored to viewport-fixed/sticky triggers without scroll lag.
-      strategy: "fixed",
-      whileElementsMounted: autoUpdate,
-      // The panel stays portalled and hidden while closed, so tracking has to
-      // be gated on the open state rather than on the mount.
-      open: isOpen,
-      middleware: [
-        ...(position === "overlay"
-          ? [alignOverlayTarget(
-              shouldMirrorTriggerValue
-                ? "search-multiple"
-                : hasContentSearch
-                  ? triggerType === "input" ? "search" : "search-value"
-                  : "item",
-            )]
-          : []),
-        ...[
-          offset({ mainAxis: offsetValue, crossAxis: groupContext?.isInGroup ? -1 : 0 }),
-          flip({
-            padding: 8,
-            fallbackPlacements: [align === "center"
-              ? side === "top" ? "bottom" : "top"
-              : `${side === "top" ? "bottom" : "top"}-${align}`],
-          }),
-          shift({ padding: 8 }),
-        ].map((middleware): Middleware => ({
-          ...middleware,
-          fn: (state) => position !== "overlay" || state.middlewareData.selectAlignOverlayTarget?.fallback
-            ? middleware.fn(state)
-            : {},
-        })),
-        {
-          name: "selectViewportSize",
-          async fn(state) {
-            const overflow = await state.platform.detectOverflow(state, {
-              boundary: [],
-              rootBoundary: "viewport",
-              padding: position === "overlay" && !state.middlewareData.selectAlignOverlayTarget?.fallback ? 0 : 8,
-            });
-            const floating = state.elements.floating as HTMLElement;
-            const panel = floating.firstElementChild as HTMLElement | null;
-            const { width, height } = state.rects.floating;
-            const viewportMaxWidth = Math.max(0, width - overflow.left - overflow.right);
-            const configuredMaxWidth = Number.parseFloat(floating.style.maxWidth);
-            floating.style.maxWidth = `${Math.min(
-              Number.isFinite(configuredMaxWidth) ? configuredMaxWidth : viewportMaxWidth,
-              viewportMaxWidth,
-            )}px`;
-            // A viewport narrower than the trigger must take precedence over min-width.
-            floating.style.minWidth = `${Math.min(Number.parseFloat(floating.style.minWidth) || state.rects.reference.width, Number.parseFloat(floating.style.maxWidth))}px`;
-            if (panel) {
-              panel.style.maxHeight = `${Math.max(0, height - overflow[state.placement.startsWith("top") ? "top" : "bottom"])}px`;
-              panel.style.overflowY = "auto";
-            }
-            const dimensions = await state.platform.getDimensions(floating);
-            return dimensions.width !== width || dimensions.height !== height
-              ? { reset: { rects: true } }
-              : {};
+    const { refs, floatingStyles, x, y, placement, update, isPositioned, middlewareData } =
+      useFloating({
+        placement: requestedPlacement,
+        // Keep the panel anchored to viewport-fixed/sticky triggers without scroll lag.
+        strategy: "fixed",
+        whileElementsMounted: autoUpdate,
+        // The panel stays portalled and hidden while closed, so tracking has to
+        // be gated on the open state rather than on the mount.
+        open: isOpen,
+        middleware: [
+          ...(position === "overlay"
+            ? [
+                alignOverlayTarget(
+                  shouldMirrorTriggerValue
+                    ? "search-multiple"
+                    : hasContentSearch
+                      ? triggerType === "input"
+                        ? "search"
+                        : "search-value"
+                      : "item",
+                ),
+              ]
+            : []),
+          ...[
+            offset({ mainAxis: offsetValue, crossAxis: groupContext?.isInGroup ? -1 : 0 }),
+            flip({
+              padding: 8,
+              fallbackPlacements: [
+                align === "center"
+                  ? side === "top"
+                    ? "bottom"
+                    : "top"
+                  : `${side === "top" ? "bottom" : "top"}-${align}`,
+              ],
+            }),
+            shift({ padding: 8 }),
+          ].map((middleware): Middleware => ({
+            ...middleware,
+            fn: (state) =>
+              position !== "overlay" || state.middlewareData.selectAlignOverlayTarget?.fallback
+                ? middleware.fn(state)
+                : {},
+          })),
+          {
+            name: "selectViewportSize",
+            async fn(state) {
+              if (!isOpen) return {};
+
+              const overflow = await state.platform.detectOverflow(state, {
+                boundary: [],
+                rootBoundary: "viewport",
+                padding:
+                  position === "overlay" && !state.middlewareData.selectAlignOverlayTarget?.fallback
+                    ? 0
+                    : 8,
+              });
+              const floating = state.elements.floating as HTMLElement;
+              const panel = floating.firstElementChild as HTMLElement | null;
+              const { width, height } = state.rects.floating;
+              const viewportMaxWidth = Math.max(0, width - overflow.left - overflow.right);
+              const configuredMaxWidth = Number.parseFloat(floating.style.maxWidth);
+              floating.style.maxWidth = `${Math.min(
+                Number.isFinite(configuredMaxWidth) ? configuredMaxWidth : viewportMaxWidth,
+                viewportMaxWidth,
+              )}px`;
+              // A viewport narrower than the trigger must take precedence over min-width.
+              floating.style.minWidth = `${Math.min(Number.parseFloat(floating.style.minWidth) || state.rects.reference.width, Number.parseFloat(floating.style.maxWidth))}px`;
+              if (panel) {
+                panel.style.maxHeight = `${Math.max(0, height - overflow[state.placement.startsWith("top") ? "top" : "bottom"])}px`;
+                panel.style.overflowY = "auto";
+              }
+              const dimensions = await state.platform.getDimensions(floating);
+              return dimensions.width !== width || dimensions.height !== height
+                ? { reset: { rects: true } }
+                : {};
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
 
     React.useLayoutEffect(() => {
       if (contentElement && isOpen && wrapperRef.current) {
@@ -552,14 +569,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
 
       scrollItemIntoView(activeItem);
       keyboardScrollIntentRef.current = false;
-    }, [
-      contentElement,
-      focusedKey,
-      isOpen,
-      keyboardScrollIntentRef,
-      mouseMoveDetectedRef,
-      update,
-    ]);
+    }, [contentElement, focusedKey, isOpen, keyboardScrollIntentRef, mouseMoveDetectedRef, update]);
 
     const setSharedContentRef = React.useCallback(
       (element: HTMLDivElement | null) => {

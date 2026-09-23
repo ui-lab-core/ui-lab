@@ -40,9 +40,9 @@
     @apply flex items-center gap-1.5 p-2.5;
     color: slot(content, foreground, var(--foreground));
     font-family: slot(content, font-family, var(--font-body, inherit));
-    font-size: slot(content, font-size, var(--text-body-size, var(--text-base, 0.9375rem)));
-    font-weight: slot(content, font-weight, var(--font-weight-body-normal, 400));
+    font-size: slot(content, font-size, var(--text-base-body));
+    font-weight: slot(content, font-weight, 500);
     letter-spacing: normal;
-    line-height: var(--leading-body, 1.5);
+    line-height: 1.64;
   }
 }

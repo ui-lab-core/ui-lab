@@ -19,7 +19,7 @@
   /* Overlay Container */
   .overlay {
     @apply fixed inset-0;
-    z-index: 999;
+    z-index: 10000;
     /* Apply backdrop styles directly to avoid creating a containing block that disrupts sticky elements */
     background-color: var(--overlay);
     backdrop-filter: var(--overlay-backdrop);
@@ -54,8 +54,8 @@
     border-radius: var(--radius-sm);
     background: var(--background);
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-sm-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     box-shadow: var(--background-shadow);
@@ -80,8 +80,8 @@
     border-radius: var(--radius-sm);
     background: var(--background);
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-sm-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     box-shadow: var(--background-shadow);
@@ -122,7 +122,7 @@
   .input {
     background: transparent;
     box-shadow: none;
-    font-weight: var(--font-weight-body-medium, 500);
+    font-weight: 500;
   }
 
   .search :global([data-focus-indicator="local"]) {
@@ -193,8 +193,8 @@
 
   .item .label {
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-sm, 0.875rem));
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--size, var(--text-sm-body));
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading, var(--leading-sm, 1.25rem));
     color: inherit;
@@ -204,18 +204,18 @@
   .item .description {
     color: var(--foreground);
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--size, var(--text-base-body));
+    font-weight: 500;
     letter-spacing: normal;
-    line-height: var(--leading, var(--leading-body, 1.5));
+    line-height: var(--leading, 1.64);
     @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .hint-wrapper {
     @apply flex items-center;
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
   }
@@ -223,8 +223,8 @@
   .category-header {
     @apply px-2 py-1.5 mt-2 first:mt-0;
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground);
@@ -235,10 +235,10 @@
     padding: 1.5rem 1rem;
     text-align: center;
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--size, var(--text-base-body));
+    font-weight: 500;
     letter-spacing: normal;
-    line-height: var(--leading, var(--leading-body, 1.5));
+    line-height: var(--leading, 1.64);
     color: var(--foreground);
   }
 
@@ -249,8 +249,8 @@
     border-top: slot(border, width, 1px) slot(border, style, solid)
       slot(border, background, transparent);
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
   }

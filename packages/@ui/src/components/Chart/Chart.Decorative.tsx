@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
-import { useChartContext } from "./Chart";
+import { useChartContext, ChartLayerContext } from "./Chart";
 
 export interface ChartReferenceStyleSlots {
   root?: Style;
@@ -58,9 +58,10 @@ export interface ChartCursorProps {
 /** Dashed vertical guide following the active chart row */
 const ChartCursor = React.forwardRef<SVGGElement, ChartCursorProps>(
   ({ className, styles: stylesProp }, ref) => {
+    const layer = React.useContext(ChartLayerContext);
     const { activeIndex, ready, plot, xPositions } = useChartContext();
     const resolved = resolveCursorStyles(stylesProp);
-    if (!ready || activeIndex == null) return null;
+    if (layer !== "svg" || !ready || activeIndex == null) return null;
 
     const position = xPositions[activeIndex];
     if (position == null) return null;
@@ -84,9 +85,44 @@ ChartCursor.displayName = "ChartCursor";
 /** Annotation line marking a threshold or moment across the plot */
 const ChartReference = React.forwardRef<SVGGElement, ChartReferenceProps>(
   ({ x, y, label, className, styles: stylesProp }, ref) => {
+    const layer = React.useContext(ChartLayerContext);
     const { ready, plot, yScale, xValuePosition } = useChartContext();
     const resolved = resolveReferenceStyles(stylesProp);
     if (!ready) return null;
+
+    // The annotation text is HTML in the label layer so it never stretches.
+    if (layer === "html") {
+      if (!label) return null;
+      if (y !== undefined) {
+        return (
+          <span
+            className={cn(styles.label, resolved.label)}
+            style={{
+              right: 0,
+              top: `${((yScale(y) - plot.y) / plot.height) * 100}%`,
+              transform: "translateY(calc(-100% - 4px))",
+            }}
+          >
+            {label}
+          </span>
+        );
+      }
+      if (x === undefined) return null;
+      const position = xValuePosition(x);
+      if (position == null) return null;
+      return (
+        <span
+          className={cn(styles.label, resolved.label)}
+          style={{
+            left: `${((position - plot.x) / plot.width) * 100}%`,
+            top: 3,
+            transform: "translateX(4px)",
+          }}
+        >
+          {label}
+        </span>
+      );
+    }
 
     if (y !== undefined) {
       const position = yScale(y);
@@ -99,16 +135,6 @@ const ChartReference = React.forwardRef<SVGGElement, ChartReferenceProps>(
             y1={position}
             y2={position}
           />
-          {label && (
-            <text
-              className={cn(styles.label, resolved.label)}
-              x={plot.x + plot.width}
-              y={position - 4}
-              textAnchor="end"
-            >
-              {label}
-            </text>
-          )}
         </g>
       );
     }
@@ -125,16 +151,6 @@ const ChartReference = React.forwardRef<SVGGElement, ChartReferenceProps>(
             y1={plot.y}
             y2={plot.y + plot.height}
           />
-          {label && (
-            <text
-              className={cn(styles.label, resolved.label)}
-              x={position + 4}
-              y={plot.y + 12}
-              textAnchor="start"
-            >
-              {label}
-            </text>
-          )}
         </g>
       );
     }

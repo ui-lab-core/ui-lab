@@ -37,14 +37,14 @@ export function resolveIconSource(
 export interface IconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** SVG filename with or without the `.svg` extension. */
   id: string;
-  /** Icon collection to resolve. Falls back to the `IconProvider`'s `defaultVariant`. */
+  /** Icon collection to resolve. Falls back to the `IconProvider`'s `default-variant`. */
   variant?: IconVariant;
   /** Width and height. Numeric values are interpreted as pixels. */
   size?: number | string;
   /** Accessible label for a meaningful icon. Icons are decorative by default. */
   label?: string;
   /** Per-icon override for the provider's asset base URL. */
-  assetBaseUrl?: string;
+  "asset-url"?: string;
 }
 
 export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
@@ -54,7 +54,7 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
       variant,
       size = 20,
       label,
-      assetBaseUrl,
+      "asset-url": assetUrl,
       className,
       style,
       role,
@@ -68,14 +68,14 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
     const resolvedVariant = variant ?? context.defaultVariant;
     if (!resolvedVariant) {
       throw new Error(
-        `<Icon id="${id}"> requires a "variant" prop or an <IconProvider defaultVariant="...">.`,
+        `<Icon id="${id}"> requires a "variant" prop or an <IconProvider default-variant="...">.`,
       );
     }
     const normalizedId = normalizeIconId(id);
     const icon = { id: normalizedId, variant: resolvedVariant };
     const source = context.resolveSource
       ? context.resolveSource(icon)
-      : resolveIconSource(icon, assetBaseUrl ?? context.assetBaseUrl);
+      : resolveIconSource(icon, assetUrl ?? context.assetBaseUrl);
     const accessibleLabel = label ?? ariaLabel;
 
     return (

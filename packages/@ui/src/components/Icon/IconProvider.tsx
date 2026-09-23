@@ -10,22 +10,27 @@ export { DEFAULT_ICON_ASSET_BASE_URL } from "./IconContext";
 export interface IconProviderProps {
   children: React.ReactNode;
   /** Base URL containing variant folders. Defaults to `/ui/icons`. */
-  assetBaseUrl?: string;
+  "asset-url"?: string;
   /** Variant folder to use when an `<Icon>` doesn't specify one. */
-  defaultVariant?: IconVariant;
+  "default-variant"?: IconVariant;
   /** Optional application-level resolver for base paths, CDNs, or custom asset layouts. */
-  resolveSource?: IconSourceResolver;
+  "resolve-source"?: IconSourceResolver;
 }
 
 export function IconProvider({
   children,
-  assetBaseUrl = DEFAULT_ICON_ASSET_BASE_URL,
-  defaultVariant,
-  resolveSource,
+  "asset-url": assetUrl,
+  "default-variant": defaultVariant,
+  "resolve-source": resolveSource,
 }: IconProviderProps) {
+  const parent = React.useContext(IconContext);
   const value = React.useMemo(
-    () => ({ assetBaseUrl, defaultVariant, resolveSource }),
-    [assetBaseUrl, defaultVariant, resolveSource],
+    () => ({
+      assetBaseUrl: assetUrl ?? parent.assetBaseUrl,
+      defaultVariant: defaultVariant ?? parent.defaultVariant,
+      resolveSource: resolveSource ?? parent.resolveSource,
+    }),
+    [assetUrl, defaultVariant, resolveSource, parent],
   );
 
   return <IconContext.Provider value={value}>{children}</IconContext.Provider>;

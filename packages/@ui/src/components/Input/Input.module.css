@@ -16,8 +16,8 @@
     flex: 1;
     @apply py-1.5 px-3;
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-sm-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground, currentColor);
@@ -174,8 +174,8 @@
     margin-inline-start: calc(var(--spacing, 0.25rem) * 0.5);
     margin-inline-end: var(--adornment-offset);
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-sm-body);
+    font-weight: 500;
     line-height: 1; /* adornment is vertically centered by its fixed surface */
     color: var(--foreground, currentColor);
     background-color: var(--background, transparent);

@@ -158,8 +158,8 @@
 
   .title {
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-sm-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));
@@ -167,10 +167,10 @@
 
   .desc {
     font-family: var(--font-body, inherit);
-    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-base-body);
+    font-weight: 500;
     letter-spacing: normal;
-    line-height: var(--leading-body, 1.5);
+    line-height: 1.64;
     color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));
   }
 

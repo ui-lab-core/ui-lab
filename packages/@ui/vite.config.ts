@@ -126,6 +126,7 @@ export default defineConfig({
       entry: {
         "ui-lab-ui": path.resolve(__dirname, "src/index.ts"),
         "icon-provider": path.resolve(__dirname, "src/components/Icon/provider.ts"),
+        "icon-route": path.resolve(__dirname, "src/components/Icon/route.ts"),
         providers: path.resolve(__dirname, "src/providers/index.ts"),
         "theme-script": path.resolve(__dirname, "src/providers/themeScript.ts"),
         "theme-server": path.resolve(__dirname, "src/theme-server.ts"),
@@ -137,6 +138,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        /^node:/,
         "react",
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
@@ -160,7 +162,13 @@ export default defineConfig({
         // Component/provider entries are client components; the pure script entries are not.
         banner: (chunk) => {
           if (!chunk.isEntry) return "";
-          const serverSafe = new Set(["theme-script", "theme-server", "theme-contract", "scripts"]);
+          const serverSafe = new Set([
+            "theme-script",
+            "theme-server",
+            "theme-contract",
+            "scripts",
+            "icon-route",
+          ]);
           return serverSafe.has(chunk.name) ? "" : '"use client";';
         },
       },

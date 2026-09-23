@@ -60,8 +60,8 @@
       user-select: none;
       outline: none;
       font-family: var(--font-body, inherit);
-      font-size: var(--text-sm, 0.875rem);
-      font-weight: var(--font-weight-body-medium, 500);
+      font-size: var(--text-sm-body);
+      font-weight: 500;
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
     }
@@ -116,8 +116,8 @@
       padding-inline: var(--padding);
       color: var(--foreground-muted, var(--foreground-400));
       font-family: var(--font-body, inherit);
-      font-size: var(--text-sm, 0.875rem);
-      font-weight: var(--font-weight-body-medium, 500);
+      font-size: var(--text-sm-body);
+      font-weight: 500;
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
     }
@@ -137,8 +137,8 @@
       margin-inline-start: auto;
       color: var(--foreground-muted, var(--foreground-400));
       font-family: var(--font-mono, ui-monospace, monospace);
-      font-size: var(--text-code-size, var(--text-sm, 0.875rem));
-      font-weight: var(--font-weight-code, var(--font-weight-body-normal, 400));
+      font-size: var(--text-code-size, var(--text-sm-body));
+      font-weight: var(--font-weight-code, 500);
       letter-spacing: var(--letter-spacing-code, 0);
       /* Match the row's line box (not --leading-code's taller 1.5) so a shortcut
          can't inflate the item beyond the shared row height. */

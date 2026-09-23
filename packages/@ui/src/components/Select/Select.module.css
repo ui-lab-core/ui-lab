@@ -13,8 +13,8 @@
     };
 
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-sm, 0.875rem));
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--size, var(--text-sm-body));
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     height: fit-content;
@@ -93,7 +93,7 @@
     padding-left: calc(slot(trigger, padding-inline, calc(var(--spacing) * 2)) + var(--spacing, 0.25rem));
     --inset-gap: slot(border, width, var(--border-width-base, 1px));
     border-radius: var(--inset-radius) 0 0 var(--inset-radius);
-    font-size: var(--size, var(--text-sm, 0.875rem));
+    font-size: var(--size, var(--text-sm-body));
     &:only-child {
       border-radius: var(--inset-radius);
       justify-content: center;
@@ -208,8 +208,8 @@
     --inset-gap: slot(border, width, var(--border-width-base, 1px));
     border-radius: var(--inset-radius);
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-sm, 0.875rem));
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--size, var(--text-sm-body));
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     /* Rows are List items; List paints their background and foreground. */
@@ -246,10 +246,10 @@
 
   .item-description {
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-body-size, var(--text-base, 0.9375rem)));
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--size, var(--text-base-body));
+    font-weight: 500;
     letter-spacing: normal;
-    line-height: var(--leading-body, 1.5);
+    line-height: 1.64;
     color: var(--foreground-muted);
     @apply min-w-0 whitespace-normal break-words;
   }
@@ -279,8 +279,8 @@
   .option-group-title {
     @apply px-2 py-1;
     font-family: var(--font-body, inherit);
-    font-size: var(--size, var(--text-sm, 0.875rem));
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--size, var(--text-sm-body));
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground-muted, var(--foreground-400));

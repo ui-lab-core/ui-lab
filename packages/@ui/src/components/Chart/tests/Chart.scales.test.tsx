@@ -271,7 +271,7 @@ describe("Chart.scales", () => {
         <Chart.Line key="a" y="mrr" />,
         <Chart.Axis key="y" axis="y" />,
       ]);
-      const ticks = Array.from(container.querySelectorAll("svg .axis text")).map(
+      const ticks = Array.from(container.querySelectorAll('[data-axis="y"] span')).map(
         (t) => t.textContent,
       );
       expect(ticks).toContain((10000).toLocaleString());

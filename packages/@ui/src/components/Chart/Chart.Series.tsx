@@ -68,6 +68,34 @@ function usePoints(me: SeriesData | null): Array<PlotPoint | null> {
   }, [me, ready, data, xPosition, yScale]);
 }
 
+// Dots are drawn as a near-zero-radius circle whose non-scaling stroke forms the
+// disk, over a zero-length round-capped ring path. Both stay round in CSS pixels
+// however the viewBox is stretched (e.g. the server placeholder before hydration).
+const DOT_RADIUS = 0.01;
+
+function Dot({
+  point,
+  className,
+  active,
+}: {
+  point: PlotPoint;
+  className?: string;
+  active?: boolean;
+}) {
+  return (
+    <>
+      <path className={styles["dot-ring"]} d={`M${point.x},${point.y}h0`} />
+      <circle
+        className={className}
+        cx={point.x}
+        cy={point.y}
+        r={DOT_RADIUS}
+        data-active={active ? "true" : undefined}
+      />
+    </>
+  );
+}
+
 function ActiveMarker({
   points,
   className,
@@ -79,13 +107,7 @@ function ActiveMarker({
   const point = activeIndex == null ? null : points[activeIndex];
   if (!point) return null;
   return (
-    <circle
-      className={cn("marker", styles.marker, className)}
-      data-active="true"
-      cx={point.x}
-      cy={point.y}
-      r={4}
-    />
+    <Dot point={point} className={cn("marker", styles.marker, className)} active />
   );
 }
 
@@ -235,13 +257,11 @@ const ChartPoint = React.forwardRef<SVGGElement, ChartPointProps>(
       >
         {points.map((point, index) =>
           point == null ? null : (
-            <circle
+            <Dot
               key={index}
+              point={point}
               className={cn(styles.point, resolved.mark)}
-              cx={point.x}
-              cy={point.y}
-              r={4}
-              data-active={activeIndex === index ? "true" : undefined}
+              active={activeIndex === index}
             />
           ),
         )}

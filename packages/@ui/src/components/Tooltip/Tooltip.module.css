@@ -34,8 +34,8 @@
 
   .frame {
     @apply flex max-w-120 items-center gap-1.5 px-2 py-1 whitespace-normal wrap-break-word;
-    font-size: slot(content, font-size, var(--text-xs, 0.75rem));
-    font-weight: slot(content, font-weight, var(--font-weight-body-medium, 500));
+    font-size: slot(content, font-size, var(--text-xs-body));
+    font-weight: slot(content, font-weight, 500);
   }
 
   .frame[data-hint="true"] {

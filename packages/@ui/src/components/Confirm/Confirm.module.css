@@ -28,14 +28,14 @@
   }
 
   .row-title {
-    font: var(--font-weight-body-medium, 500) var(--text-md, 0.875rem) / var(--leading-sm, 1.25rem)
+    font: 500 var(--text-md-body) / var(--leading-sm, 1.25rem)
       var(--font-body, inherit);
     letter-spacing: normal;
     color: var(--header-foreground);
   }
 
   .row-description {
-    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem)
+    font: 500 var(--text-sm-body) / var(--leading-sm, 1.25rem)
       var(--font-body, inherit);
     letter-spacing: normal;
     color: var(--description-foreground);
@@ -46,14 +46,14 @@
   }
 
   .description {
-    font: var(--font-weight-body-normal, 400) var(--text-body-size, var(--text-base, 0.9375rem)) /
-      var(--leading-body, 1.5) var(--font-body, inherit);
+    font: 500 var(--text-base-body) /
+      1.64 var(--font-body, inherit);
     letter-spacing: normal;
     color: var(--description-foreground);
   }
 
   .error-message {
-    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem)
+    font: 500 var(--text-xs-body) / var(--leading-sm, 1.25rem)
       var(--font-body, inherit);
     letter-spacing: normal;
     color: var(--error-foreground);
@@ -65,8 +65,8 @@
       slot(border, background, var(--warning-border-color-low));
     background-color: var(--warning-background);
     color: var(--warning-foreground);
-    font: var(--font-weight-body-normal, 400) var(--text-body-size, var(--text-base, 0.9375rem)) /
-      var(--leading-body, 1.5) var(--font-body, inherit);
+    font: 500 var(--text-base-body) /
+      1.64 var(--font-body, inherit);
     letter-spacing: normal;
   }
 
@@ -103,14 +103,14 @@
   }
 
   .countdown-text {
-    font: var(--font-weight-body-normal, 400) var(--text-xs, 0.75rem) / var(--leading-sm, 1.25rem)
+    font: 500 var(--text-xs-body) / var(--leading-sm, 1.25rem)
       var(--font-body, inherit);
     letter-spacing: normal;
     color: var(--countdown-foreground);
   }
 
   .input-label {
-    font: var(--font-weight-body-medium, 500) var(--text-sm, 0.875rem) / var(--leading-sm, 1.25rem)
+    font: 500 var(--text-sm-body) / var(--leading-sm, 1.25rem)
       var(--font-body, inherit);
     letter-spacing: normal;
     margin-left: 0.25rem;

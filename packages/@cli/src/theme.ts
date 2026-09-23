@@ -177,35 +177,19 @@ export const onyxTheme: ThemeDefinition = {
   --color-info-600: var(--info-600);
 }
 `,
-  globalCssBody: String.raw`/* Runtime component tokens stay outside @theme. --text-sm and related names
-   would replace Tailwind's text utility scale. --spacing intentionally remains
-   runtime: Tailwind's numeric spacing utilities and UI Lab components share it. */
+  globalCssBody: String.raw`/* Font size is a single knob per role: --header-scale / --body-scale.
+   Every --text-<size>-<role> default is derived from them in
+   ui-lab-components' base.css, so overriding a scale reflows the whole role and
+   a single size can be pinned directly (e.g. --text-md-body: 1.2rem). --spacing
+   intentionally remains runtime: Tailwind's numeric spacing utilities and UI Lab
+   components share it. */
 :root {
-  --header-text-md: 0.9375rem;
-  --header-text-lg: 1.125rem;
-  --header-text-xl: 1.25rem;
-  --header-text-2xl: 1.5rem;
-  --header-text-3xl: 1.75rem;
-  --leading-header: 1.25;
-  --letter-spacing-header-md: 0em;
-  --letter-spacing-header-lg: 0em;
-  --letter-spacing-header-xl: 0em;
-  --font-weight-header-medium: 500;
-  --text-xs: 0.84375rem;
-  --text-sm: 0.85rem;
-  --text-md: 0.9rem;
-  --text-base: 0.9rem;
-  --text-body-size: 0.9rem;
-  --leading-body: 1.64;
-  --letter-spacing-base: 0em;
-  --font-weight-body-normal: 500;
-  --font-weight-body-medium: 500;
-  --font-weight-body-semibold: 600;
-  --text-code-size: 0.875rem;
+  --header-scale: 0.75;
+  --body-scale: 0.75;
+  --text-code-size: var(--text-md-body);
   --leading-code: 1.55;
   --letter-spacing-code: 0.0000em;
   --font-weight-code: 400;
-  --leading-heading: var(--leading-header);
 
   --spacing-xs: clamp(0.450rem, 2.25vw, 0.675rem);
   --spacing-sm: clamp(0.585rem, 2.93vw, 0.877rem);
@@ -220,6 +204,11 @@ export const onyxTheme: ThemeDefinition = {
 /* These scales intentionally customize Tailwind's rounded-* and border-*
    utilities in addition to supplying UI Lab's component tokens. */
 @theme {
+  /* Tailwind has no `md` font-size key, so declare it here to generate the
+     text-md utility; base.css aliases every key, including this one, to the
+     matching --text-*-body token. */
+  --text-md: var(--text-md-body);
+
   --radius-xs: 0.350rem;
   --radius-sm: 0.700rem;
   --radius-base: 1.050rem;
@@ -240,7 +229,7 @@ export const onyxTheme: ThemeDefinition = {
 @layer base {
   body {
     font-family: var(--font-body);
-    font-size: var(--text-body-size);
+    font-size: var(--text-base-body);
   }
 }
 `,
@@ -248,12 +237,28 @@ export const onyxTheme: ThemeDefinition = {
   /*
    * This file styles long-form reading surfaces only. Components use the
    * shared body, heading, and mono family tokens from base.css.
+   *
+   * Type here resolves the font-size scale only. Weight, leading, and
+   * tracking fall back to sensible browser defaults so the copyable
+   * stylesheet stays small and easy to reason about.
    */
   :where(h1, h2, h3, h4, h5, h6) {
     font-family: var(--font-heading, var(--font-body, inherit));
-    font-weight: var(--font-weight-header-medium);
-    letter-spacing: var(--letter-spacing-header-md);
-    line-height: var(--leading-heading, var(--leading-header));
+  }
+  :where(h1) {
+    font-size: var(--text-3xl-header);
+  }
+  :where(h2) {
+    font-size: var(--text-2xl-header);
+  }
+  :where(h3) {
+    font-size: var(--text-xl-header);
+  }
+  :where(h4) {
+    font-size: var(--text-lg-header);
+  }
+  :where(h5, h6) {
+    font-size: var(--text-md-header);
   }
 
   /* A reading surface: UI type remains body-first, while headings define hierarchy. */
@@ -261,15 +266,13 @@ export const onyxTheme: ThemeDefinition = {
     --font: var(--font-body, inherit);
     --heading-font: var(--font-heading, var(--font-header, var(--font)));
     --mono-font: var(--font-mono, ui-monospace, monospace);
-    --size: var(--text-body-size);
-    --leading: var(--leading-body);
-    --heading-leading: var(--leading-heading, var(--leading-header));
-    --typography-h1-size: var(--header-text-3xl);
-    --typography-h2-size: var(--header-text-2xl);
-    --typography-h3-size: var(--header-text-xl);
-    --typography-h4-size: var(--header-text-lg);
-    --typography-h5-size: var(--header-text-md);
-    --typography-h6-size: var(--header-text-md);
+    --size: var(--text-base-body);
+    --typography-h1-size: var(--text-3xl-header);
+    --typography-h2-size: var(--text-2xl-header);
+    --typography-h3-size: var(--text-xl-header);
+    --typography-h4-size: var(--text-lg-header);
+    --typography-h5-size: var(--text-md-header);
+    --typography-h6-size: var(--text-md-header);
     --space: 1.5rem;
     --muted: var(--foreground-400, color-mix(in oklab, currentColor 60%, transparent));
     --rule: var(--background-700, color-mix(in oklab, currentColor 20%, transparent));
@@ -277,9 +280,6 @@ export const onyxTheme: ThemeDefinition = {
     color: var(--foreground-300, currentColor);
     font-family: var(--font);
     font-size: var(--size);
-    font-weight: var(--font-weight-body-normal);
-    letter-spacing: var(--letter-spacing-base);
-    line-height: var(--leading);
     overflow-wrap: break-word;
     text-wrap: pretty;
   }
@@ -293,45 +293,31 @@ export const onyxTheme: ThemeDefinition = {
   .typography :is(h1, h2, h3, h4, h5, h6) {
     color: var(--foreground-100, currentColor);
     font-family: var(--heading-font);
-    font-weight: var(--font-weight-header-medium);
-    letter-spacing: var(--letter-spacing-header-md);
     margin-block: calc(var(--space) * 1.5) 0;
   }
 
   .typography h1 {
     font-size: var(--typography-h1-size);
-    letter-spacing: var(--letter-spacing-header-xl);
-    line-height: var(--heading-leading);
   }
 
   .typography h2 {
     font-size: var(--typography-h2-size);
-    letter-spacing: var(--letter-spacing-header-xl);
-    line-height: var(--heading-leading);
     margin-block-start: calc(var(--space) * 2);
   }
 
   .typography h3 {
     font-size: var(--typography-h3-size);
-    letter-spacing: var(--letter-spacing-header-xl);
-    line-height: var(--heading-leading);
   }
 
   .typography h4 {
     font-size: var(--typography-h4-size);
-    letter-spacing: var(--letter-spacing-header-lg);
-    line-height: var(--heading-leading);
   }
   .typography h5 {
     font-size: var(--typography-h5-size);
-    letter-spacing: var(--letter-spacing-header-md);
-    line-height: var(--heading-leading);
   }
   .typography h6 {
     color: var(--muted);
     font-size: var(--typography-h6-size);
-    letter-spacing: var(--letter-spacing-header-md);
-    line-height: var(--heading-leading);
   }
 
   .typography :where([id]) {
@@ -339,7 +325,6 @@ export const onyxTheme: ThemeDefinition = {
   }
   .typography :where(a[href]:not([class])) {
     color: inherit;
-    font-weight: var(--font-weight-body-semibold, 600);
     text-decoration: underline;
     text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
     text-underline-offset: 0.15em;
@@ -354,7 +339,6 @@ export const onyxTheme: ThemeDefinition = {
   }
   .typography :where(strong, b) {
     color: var(--foreground-100, currentColor);
-    font-weight: var(--font-weight-body-medium);
   }
   .typography :where(del, s) {
     color: var(--muted);
@@ -384,7 +368,7 @@ export const onyxTheme: ThemeDefinition = {
     background: var(--background-800, color-mix(in oklab, currentColor 8%, transparent));
     border-radius: var(--radius-sm, 0.25em);
     font-family: var(--mono-font);
-    font-size: var(--text-code-size, 0.75rem);
+    font-size: var(--text-code-size, var(--text-sm-body));
     line-height: var(--leading-code, 1.5);
     letter-spacing: var(--letter-spacing-code);
     padding: 0.125em 0.3em;
@@ -397,7 +381,7 @@ export const onyxTheme: ThemeDefinition = {
     background: var(--background-900, color-mix(in oklab, currentColor 8%, transparent));
     border-radius: var(--radius-md, 0.5em);
     font-family: var(--mono-font);
-    font-size: var(--text-code-size, 0.75rem);
+    font-size: var(--text-code-size, var(--text-sm-body));
     line-height: var(--leading-code, 1.5);
     overflow-x: auto;
     padding: 0.75em 1em;
@@ -422,7 +406,6 @@ export const onyxTheme: ThemeDefinition = {
   }
   .typography :where(details > summary) {
     cursor: pointer;
-    font-weight: 600;
   }
   .typography :where(img, video) {
     border-radius: var(--radius-md, 0.5em);
@@ -443,7 +426,6 @@ export const onyxTheme: ThemeDefinition = {
     border-collapse: collapse;
     color: var(--foreground-300, currentColor);
     font-size: 1em;
-    line-height: var(--leading);
     max-width: 100%;
     width: 100%;
   }
@@ -456,8 +438,6 @@ export const onyxTheme: ThemeDefinition = {
   .typography :where(th) {
     color: var(--foreground-300, currentColor);
     font-size: 0.9286em;
-    font-weight: 500;
-    line-height: 1.5385;
   }
   .typography :where(th:first-child, td:first-child) {
     padding-inline-start: 0;
@@ -467,8 +447,7 @@ export const onyxTheme: ThemeDefinition = {
   .typography :where(li, blockquote, td, th, dd, figure) > :first-child {
     margin-block-start: 0;
   }
-}
-`,
+}`,
 };
 
 export function onyxImports(

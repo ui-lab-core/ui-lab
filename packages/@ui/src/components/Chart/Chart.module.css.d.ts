@@ -1,11 +1,14 @@
 declare const styles: {
   chart: string;
+  frame: string;
   plot: string;
+  labels: string;
   surface: string;
   line: string;
   area: string;
   marker: string;
   point: string;
+  "dot-ring": string;
   bar: string;
   "column-highlight": string;
   cursor: string;

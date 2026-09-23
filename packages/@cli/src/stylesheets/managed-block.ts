@@ -40,7 +40,9 @@ export function updateManagedStylesheet(
     throw new Error(
       "The managed UI Lab global stylesheet block has user edits. Refusing to overwrite it.",
     );
-  if (!hasGlobalStart && content.includes("--header-text-md:"))
+  // Keyed on a token the generated global block actually emits. --text-md-header
+  // lives in typography.css, not here, so it never matched this file.
+  if (!hasGlobalStart && content.includes("--text-code-size:"))
     throw new Error(
       "Existing UI Lab global CSS is not in a managed block. Refusing to rewrite the stylesheet.",
     );

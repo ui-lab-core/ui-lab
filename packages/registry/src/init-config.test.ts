@@ -120,9 +120,11 @@ test("website generation before encoding equals validated offline generation aft
     const decoded=await decodeInitConfig(await encodeInitConfig(value)); assert.equal(decoded.version,2);
     const after=generateInitFiles(decoded as UiLabInitConfig,"/* typography template */");
     assert.equal(after.themeCss,before.themeCss);assert.ok(before.globalsCss.endsWith(after.globalsCss));
-    assert.match(after.typographyCss!,/^@layer theme \{\n  :root/);
-    assert.match(after.typographyCss!,/--header-text-md:/);
-    assert.ok(after.typographyCss!.indexOf("--header-text-md")<after.typographyCss!.indexOf("/* typography template */"));
+    assert.equal(after.typographyCss,"/* typography template */");
+    assert.match(before.globalsCss,/--header-scale:/);
+    assert.match(before.globalsCss,/--body-scale:/);
+    assert.doesNotMatch(before.globalsCss,/--text-(xs|sm|md|base|lg|xl|2xl|3xl|4xl|5xl)-(body|header):/);
+    assert.doesNotMatch(before.globalsCss,/--font-weight-(header|body)-|--letter-spacing-(header|base)|--leading-(header|body)/);
   }
   assert.equal(generateInitFiles({...defaultInitConfig(),longFormTypography:false},"").typographyCss,undefined);
 });

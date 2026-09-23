@@ -25,9 +25,18 @@ import {
 } from "./Chart.shared";
 
 const PALETTE_SIZE = 8;
-// Match the wide plot area used by the chart layout (the legend occupies the
-// remaining root height) so the server viewBox does not distort its contents.
-const INITIAL_CHART_SIZE = { width: 800, height: 184 };
+// Placeholder plot size for server rendering. The SVG maps its viewBox onto the
+// plot area only (margins are CSS padding), so any placeholder scales affinely:
+// geometry stays correct, strokes are non-scaling and text is laid out in HTML.
+const INITIAL_PLOT_SIZE = { width: 752, height: 144 };
+
+// Measure before the browser paints on the client; fall back to useEffect on the
+// server, where layout effects never run and would only emit a warning.
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
+/** Which half of the chart a child is rendering into: SVG marks or HTML labels. */
+export const ChartLayerContext = React.createContext<"svg" | "html">("svg");
 
 export type SeriesType = "line" | "area" | "bar" | "point";
 
@@ -151,11 +160,11 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
   ) => {
     const svgRef = React.useRef<SVGSVGElement>(null);
     const surfaceRef = React.useRef<HTMLDivElement>(null);
-    // A deterministic coordinate space lets the server render the complete chart.
-    // The browser replaces it with the measured size after hydration.
-    const [size, setSize] = React.useState(INITIAL_CHART_SIZE);
+    // A deterministic plot size lets the server render the complete chart. The
+    // browser replaces it with the measured plot (SVG content box) after hydration.
+    const [size, setSize] = React.useState(INITIAL_PLOT_SIZE);
 
-    React.useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       const element = svgRef.current;
       if (!element) return;
       const apply = (width: number, height: number) => {
@@ -164,7 +173,11 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
         );
       };
       const rect = element.getBoundingClientRect();
-      apply(rect.width, rect.height);
+      const computed = getComputedStyle(element);
+      apply(
+        rect.width - parseFloat(computed.paddingLeft) - parseFloat(computed.paddingRight),
+        rect.height - parseFloat(computed.paddingTop) - parseFloat(computed.paddingBottom),
+      );
       if (typeof ResizeObserver === "undefined") return;
       const observer = new ResizeObserver((entries) => {
         for (const entry of entries) {
@@ -263,8 +276,8 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
     const plot = {
       x: margin.left,
       y: margin.top,
-      width: Math.max(0, size.width - margin.left - margin.right),
-      height: Math.max(0, size.height - margin.top - margin.bottom),
+      width: Math.max(0, size.width),
+      height: Math.max(0, size.height),
     };
     const ready = plot.width > 0 && plot.height > 0 && data.length > 0;
 
@@ -446,66 +459,93 @@ const Chart = React.forwardRef<HTMLDivElement, ChartProps<any>>(
           data-focus-visible={isFocusVisible ? "true" : "false"}
           {...domProps}
         >
-          <svg
-            ref={svgRef}
-            className={cn("plot", styles.plot, resolvedStyles.plot)}
-            viewBox={`0 0 ${size.width} ${size.height}`}
-            preserveAspectRatio="none"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <g data-layer="grid">
-              {gridChildren}
-              {axisChildren}
-            </g>
-            {hasBars && activeIndex != null && (
-              <rect
-                className={cn(
-                  "column-highlight",
-                  styles["column-highlight"],
-                  resolvedStyles.columnHighlight,
+          <div className={styles.frame}>
+            <svg
+              ref={svgRef}
+              className={cn("plot", styles.plot, resolvedStyles.plot)}
+              viewBox={`${plot.x} ${plot.y} ${plot.width || 1} ${plot.height || 1}`}
+              preserveAspectRatio="none"
+              style={{
+                padding: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px`,
+              }}
+              aria-hidden="true"
+              focusable="false"
+            >
+              <g data-layer="grid">
+                {gridChildren}
+                {axisChildren}
+              </g>
+              {hasBars && activeIndex != null && (
+                <rect
+                  className={cn(
+                    "column-highlight",
+                    styles["column-highlight"],
+                    resolvedStyles.columnHighlight,
+                  )}
+                  data-active="true"
+                  data-layer="bar-column-highlight"
+                  x={xPosition(activeIndex) - plot.width / data.length / 2}
+                  y={plot.y}
+                  width={plot.width / data.length}
+                  height={plot.height}
+                  rx={6}
+                />
+              )}
+              <g data-layer="series">
+                {seriesChildren.map((child, index) =>
+                  React.cloneElement(child as React.ReactElement<any>, { __seriesIndex: index }),
                 )}
-                data-active="true"
-                data-layer="bar-column-highlight"
-                x={xPosition(activeIndex) - plot.width / data.length / 2}
-                y={plot.y}
-                width={plot.width / data.length}
-                height={plot.height}
-                rx={6}
-              />
+              </g>
+              <g data-layer="decorative">
+                {decorativeChildren}
+                {!hasCursor && !hasOnlyBars && ready && activeIndex != null && (
+                  <g className={cn("cursor", styles.cursor)}>
+                    <line
+                      className={cn("cursor-line", styles["cursor-line"])}
+                      data-active="true"
+                      x1={xPositions[activeIndex]}
+                      x2={xPositions[activeIndex]}
+                      y1={plot.y}
+                      y2={plot.y + plot.height}
+                    />
+                  </g>
+                )}
+              </g>
+            </svg>
+            {ready && (
+              <div
+                className={styles.labels}
+                aria-hidden="true"
+                style={{
+                  top: margin.top,
+                  right: margin.right,
+                  bottom: margin.bottom,
+                  left: margin.left,
+                }}
+              >
+                <ChartLayerContext.Provider value="html">
+                  {axisChildren}
+                  {decorativeChildren}
+                </ChartLayerContext.Provider>
+              </div>
             )}
-            <g data-layer="series">
-              {seriesChildren.map((child, index) =>
-                React.cloneElement(child as React.ReactElement<any>, { __seriesIndex: index }),
-              )}
-            </g>
-            <g data-layer="decorative">
-              {decorativeChildren}
-              {!hasCursor && !hasOnlyBars && ready && activeIndex != null && (
-                <g className={cn("cursor", styles.cursor)}>
-                  <line
-                    className={cn("cursor-line", styles["cursor-line"])}
-                    data-active="true"
-                    x1={xPositions[activeIndex]}
-                    x2={xPositions[activeIndex]}
-                    y1={plot.y}
-                    y2={plot.y + plot.height}
-                  />
-                </g>
-              )}
-            </g>
-          </svg>
-          <div
-            ref={surfaceRef}
-            className={cn("surface", styles.surface)}
-            tabIndex={0}
-            aria-label={computedLabel}
-            style={{ left: plot.x, top: plot.y, width: plot.width, height: plot.height }}
-            onPointerMove={handlePointerMove}
-            onPointerLeave={() => setActive(null)}
-            onKeyDown={handleKeyDown}
-            {...focusProps}
-          />
+            <div
+              ref={surfaceRef}
+              className={cn("surface", styles.surface)}
+              tabIndex={0}
+              aria-label={computedLabel}
+              style={{
+                top: margin.top,
+                right: margin.right,
+                bottom: margin.bottom,
+                left: margin.left,
+              }}
+              onPointerMove={handlePointerMove}
+              onPointerLeave={() => setActive(null)}
+              onKeyDown={handleKeyDown}
+              {...focusProps}
+            />
+          </div>
           {overlayChildren}
         </div>
       </ChartContext.Provider>

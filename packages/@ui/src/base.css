@@ -12,6 +12,22 @@
 
   --border-width-base: 1px;
 
+  /*
+   * Corner radii are a single knob: --radius-ratio. Every --radius-<size> below
+   * is derived from it (multiplier × 0.4rem, matching the config generator's
+   * radius curve), so overriding the ratio reflows the whole scale. To pin one
+   * corner, override that token directly, e.g. `--radius-md: 1rem;`.
+   */
+  --radius-ratio: 3.5;
+  --radius-xs: calc(var(--radius-ratio) * 0.1rem);
+  --radius-sm: calc(var(--radius-ratio) * 0.2rem);
+  --radius-base: calc(var(--radius-ratio) * 0.3rem);
+  --radius-md: calc(var(--radius-ratio) * 0.36rem);
+  --radius-lg: calc(var(--radius-ratio) * 0.396rem);
+  --radius-xl: calc(var(--radius-ratio) * 0.4176rem);
+  --radius-2xl: calc(var(--radius-ratio) * 0.43056rem);
+  --radius-full: 9999px;
+
   /* Bridge: --color-* (Tailwind namespace) → short-form vars used by components */
   --background-500: var(--color-background-500, oklch(50% 0 0));
   --background-600: var(--color-background-600, oklch(32% 0 0));
@@ -45,6 +61,97 @@
   --info-50: var(--color-info-50, oklch(16% 0 255));
   --info-500: var(--color-info-500, oklch(60% 0.105 255));
   --info-600: var(--color-info-600, oklch(81% 0.19 255));
+}
+
+/*
+ * Font size is a single knob per role. Set --header-scale / --body-scale to
+ * shift a whole role; every --text-<size>-<role> below is derived from it as
+ * 2^((scale - 0.75) * 2), clamped to a legible minimum. To pin one size,
+ * override that token directly, e.g. `--text-md-body: 1.2rem;`.
+ */
+:root {
+  --header-scale: 0.75;
+  --body-scale: 0.75;
+
+  /* pow() is CSS Values 4. Where it is unsupported the declaration is invalid
+     at computed-value time, which would poison every token derived from it, so
+     the unscaled identity is declared first and pow() upgrades it. */
+  --header-size-multiplier: 1;
+  --body-size-multiplier: 1;
+
+  --text-xs-header: max(0.75rem * var(--header-size-multiplier), 0.75rem);
+  --text-sm-header: max(0.8225rem * var(--header-size-multiplier), 0.75rem);
+  --text-md-header: max(0.9375rem * var(--header-size-multiplier), 0.75rem);
+  --text-base-header: max(0.9375rem * var(--header-size-multiplier), 0.75rem);
+  --text-lg-header: max(1.125rem * var(--header-size-multiplier), 0.75rem);
+  --text-xl-header: max(1.25rem * var(--header-size-multiplier), 0.75rem);
+  --text-2xl-header: max(1.5rem * var(--header-size-multiplier), 0.75rem);
+  --text-3xl-header: max(1.75rem * var(--header-size-multiplier), 0.75rem);
+  --text-4xl-header: max(2.25rem * var(--header-size-multiplier), 0.75rem);
+  --text-5xl-header: max(2.75rem * var(--header-size-multiplier), 0.75rem);
+
+  --text-xs-body: max(0.8125rem * var(--body-size-multiplier), 0.84375rem);
+  --text-sm-body: max(0.85rem * var(--body-size-multiplier), 0.84375rem);
+  --text-md-body: max(0.9rem * var(--body-size-multiplier), 0.84375rem);
+  --text-base-body: max(0.9rem * var(--body-size-multiplier), 0.84375rem);
+  --text-lg-body: max(1.125rem * var(--body-size-multiplier), 0.84375rem);
+  --text-xl-body: max(1.25rem * var(--body-size-multiplier), 0.84375rem);
+  --text-2xl-body: max(1.5rem * var(--body-size-multiplier), 0.84375rem);
+  --text-3xl-body: max(1.75rem * var(--body-size-multiplier), 0.84375rem);
+  --text-4xl-body: max(2.25rem * var(--body-size-multiplier), 0.84375rem);
+  --text-5xl-body: max(2.75rem * var(--body-size-multiplier), 0.84375rem);
+}
+
+@supports (width: calc(pow(2, 2) * 1px)) {
+  :root {
+    --header-size-multiplier: pow(2, (var(--header-scale) - 0.75) * 2);
+    --body-size-multiplier: pow(2, (var(--body-scale) - 0.75) * 2);
+  }
+}
+
+/*
+ * Tailwind's own font-size scale keys alias the body tokens, so plain
+ * text-xs/sm/base/... utilities ride --body-scale and its legibility floor
+ * instead of Tailwind's unrelated hardcoded defaults. This is a plain
+ * unlayered :root rather than @theme: Tailwind emits its defaults into
+ * @layer theme, so an unlayered declaration wins, and it survives into the
+ * published stylesheet instead of being dropped as reference-only output.
+ * Tailwind's --text-*--line-height defaults are unitless ratios, so leading
+ * tracks the new sizes on its own; only --text-md, which has no Tailwind
+ * default, needs one declared.
+ */
+:root {
+  --text-xs: var(--text-xs-body);
+  --text-sm: var(--text-sm-body);
+  --text-base: var(--text-base-body);
+  --text-md: var(--text-md-body);
+  --text-md--line-height: calc(1.25 / 0.9);
+  --text-lg: var(--text-lg-body);
+  --text-xl: var(--text-xl-body);
+  --text-2xl: var(--text-2xl-body);
+  --text-3xl: var(--text-3xl-body);
+  --text-4xl: var(--text-4xl-body);
+  --text-5xl: var(--text-5xl-body);
+}
+
+/*
+ * Fluid spacing is a single knob: --spacing-scale. Every --spacing-<size> below
+ * is the base (scale-1) clamp() multiplied by the scale, matching the config
+ * generator's exponential curve. Scaling commutes through clamp(), so this is
+ * identical to scaling each min/fluid/max. Override any one token directly to
+ * pin a step, e.g. `--spacing-md: 1rem;`.
+ */
+:root {
+  --spacing-scale: 0.9;
+
+  --spacing-xs: calc(var(--spacing-scale) * clamp(0.5rem, 2.5vw, 0.75rem));
+  --spacing-sm: calc(var(--spacing-scale) * clamp(0.65rem, 3.25vw, 0.975rem));
+  --spacing-base: calc(var(--spacing-scale) * clamp(0.845rem, 4.23vw, 1.268rem));
+  --spacing-md: calc(var(--spacing-scale) * clamp(1.099rem, 5.49vw, 1.648rem));
+  --spacing-lg: calc(var(--spacing-scale) * clamp(1.428rem, 7.14vw, 2.142rem));
+  --spacing-xl: calc(var(--spacing-scale) * clamp(1.856rem, 9.28vw, 2.785rem));
+  --spacing-2xl: calc(var(--spacing-scale) * clamp(2.413rem, 12.07vw, 3.62rem));
+  --spacing: calc(var(--spacing-scale) * clamp(0.2rem, 2.5vw, 0.25rem));
 }
 
 @layer components.defaults {

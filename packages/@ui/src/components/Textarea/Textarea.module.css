@@ -25,8 +25,8 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-body, inherit);
-    font-size: var(--text-sm, 0.875rem);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-size: var(--text-sm-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     outline: none;
@@ -83,7 +83,7 @@
     min-height: calc(3.5 * 1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);
     --padding-inline: 0.5rem;
     --padding-block: 0.25rem;
-    font-size: var(--text-sm, 0.875rem);
+    font-size: var(--text-sm-body);
     @apply px-2 py-1;
   }
 
@@ -91,7 +91,7 @@
     min-height: calc(3.9 * 1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);
     --padding-inline: 0.75rem;
     --padding-block: 0.5rem;
-    font-size: var(--text-sm, 0.875rem);
+    font-size: var(--text-sm-body);
     @apply px-3 py-2;
   }
 
@@ -99,7 +99,7 @@
     min-height: calc(5.1 * 1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);
     --padding-inline: 1rem;
     --padding-block: 0.75rem;
-    font-size: var(--text-body-size, var(--text-base, 0.9375rem));
+    font-size: var(--text-base-body);
     @apply px-4 py-3;
   }
 
@@ -223,8 +223,8 @@
     @apply mt-1;
     color: slot(count, foreground, var(--foreground, inherit));
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     transition: color var(--hover-duration, var(--hover-leave-duration, 300ms))

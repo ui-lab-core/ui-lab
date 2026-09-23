@@ -31,12 +31,43 @@
     --color-8: #e34948;
   }
 
-  .plot {
-    display: block;
+  .frame {
+    position: relative;
     flex: 1 1 auto;
     min-height: 0;
+  }
+
+  /* The viewBox covers only the plot; margins are padding, so the server's
+   * placeholder coordinates scale affinely onto the real plot box. */
+  .plot {
+    position: absolute;
+    inset: 0;
+    display: block;
+    box-sizing: border-box;
     width: 100%;
+    height: 100%;
     overflow: visible;
+  }
+
+  /* Keep stroke widths in CSS pixels however the viewBox is scaled. */
+  .plot path,
+  .plot line,
+  .plot circle {
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Tick and annotation text is HTML positioned in plot percentages so it never
+   * stretches with the SVG. */
+  .labels {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .labels .tick,
+  .labels .label {
+    position: absolute;
+    white-space: nowrap;
+    line-height: 1;
   }
 
   .surface {
@@ -62,11 +93,19 @@
     stroke: none;
   }
 
+  /* Disk: the stroke of a near-zero-radius circle (see Dot in Chart.Series). */
   .marker,
   .point {
-    fill: currentColor;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 6;
+  }
+
+  .dot-ring {
+    fill: none;
     stroke: var(--background-950, oklch(18% 0 0));
-    stroke-width: 2;
+    stroke-width: 10;
+    stroke-linecap: round;
   }
 
   .bar {
@@ -120,9 +159,10 @@
   .tick,
   .label {
     fill: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
+    color: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
   }
@@ -133,7 +173,7 @@
 
   .label {
     font-family: var(--font-body, inherit);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-weight: 500;
   }
 
   .tooltip {
@@ -153,8 +193,8 @@
     box-shadow: var(--background-shadow);
     color: var(--foreground, var(--foreground-100, oklch(95% 0 0)));
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     transition: transform var(--chart-tooltip-move-duration, 200ms)
@@ -171,7 +211,7 @@
   .header {
     color: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
     font-family: var(--font-body, inherit);
-    font-weight: var(--font-weight-body-medium, 500);
+    font-weight: 500;
   }
 
   .row {
@@ -210,8 +250,8 @@
     align-items: center;
     gap: calc(var(--spacing, 0.25rem) * 1.5);
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
-    font-weight: var(--font-weight-body-normal, 400);
+    font-size: var(--text-xs-body);
+    font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
@@ -241,7 +281,7 @@
     flex-direction: column;
     color: var(--foreground-muted, var(--foreground-400, oklch(65% 0 0)));
     font-family: var(--font-body, inherit);
-    font-size: var(--text-xs, 0.75rem);
+    font-size: var(--text-xs-body);
   }
 
   .grid-chart-viewport {

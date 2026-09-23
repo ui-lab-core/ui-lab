@@ -21,6 +21,23 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/aichatinput-toolbar",
+    "kind": "element",
+    "id": "aichatinput-toolbar",
+    "name": "Toolbar Composer",
+    "description": "A single-line agent composer flanked by an inline tool rail for attachments, images, mentions, and voice.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "aichatinput-toolbar"
+    }
+  },
+  {
     "ref": "element:agents/aichatinput-with-suggestions",
     "kind": "element",
     "id": "aichatinput-with-suggestions",
@@ -52,6 +69,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "chainofthought"
+    }
+  },
+  {
+    "ref": "element:agents/chainofthought-compact",
+    "kind": "element",
+    "id": "chainofthought-compact",
+    "name": "Compact Reasoning",
+    "description": "A condensed reasoning trace that collapses completed thoughts into pills and highlights the step still in progress.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "chainofthought-compact"
     }
   },
   {
@@ -89,6 +123,23 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/chat-streaming",
+    "kind": "element",
+    "id": "chat-streaming",
+    "name": "Streaming Chat",
+    "description": "A chat panel captured mid-response, with a typing indicator trailing the assistant's latest turn.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "chat-streaming"
+    }
+  },
+  {
     "ref": "element:agents/chat-with-actions",
     "kind": "element",
     "id": "chat-with-actions",
@@ -123,6 +174,23 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/history-search",
+    "kind": "element",
+    "id": "history-search",
+    "name": "Searchable History",
+    "description": "A conversation history panel with an inline filter that narrows the grouped sessions as you type.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "history-search"
+    }
+  },
+  {
     "ref": "element:agents/sessions",
     "kind": "element",
     "id": "sessions",
@@ -137,6 +205,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "sessions"
+    }
+  },
+  {
+    "ref": "element:agents/sessions-grid",
+    "kind": "element",
+    "id": "sessions-grid",
+    "name": "Session Grid",
+    "description": "A selectable card grid of agent sessions surfacing model, status, and last activity at a glance.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "sessions-grid"
     }
   },
   {
@@ -157,6 +242,23 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/toolcalls-timeline",
+    "kind": "element",
+    "id": "toolcalls-timeline",
+    "name": "Tool Timeline",
+    "description": "A compact vertical timeline of agent tool calls with inline status, duration, and a live running step.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "toolcalls-timeline"
+    }
+  },
+  {
     "ref": "element:documentation/article",
     "kind": "element",
     "id": "article",
@@ -171,6 +273,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "article"
+    }
+  },
+  {
+    "ref": "element:documentation/article-cover",
+    "kind": "element",
+    "id": "article-cover",
+    "name": "Cover Article",
+    "description": "A documentation article that opens with a full-width cover and an overlaid eyebrow and headline.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "article-cover"
     }
   },
   {
@@ -208,10 +327,27 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:documentation/feedback-rating",
+    "kind": "element",
+    "id": "feedback-rating",
+    "name": "Rating Feedback",
+    "description": "A five-star helpfulness rating that reveals an optional comment field and confirms on submit.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "feedback-rating"
+    }
+  },
+  {
     "ref": "element:documentation/nextarticle",
     "kind": "element",
     "id": "nextarticle",
-    "name": "Next Article",
+    "name": "Navigation",
     "description": "Previous and next link cards that close an article with clear sequential navigation.",
     "category": "elements",
     "visibility": "public",
@@ -222,6 +358,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "nextarticle"
+    }
+  },
+  {
+    "ref": "element:documentation/nextarticle-series",
+    "kind": "element",
+    "id": "nextarticle-series",
+    "name": "Series Pager",
+    "description": "A sequential pager that places the article within a numbered series and links the next step with progress.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "nextarticle-series"
     }
   },
   {
@@ -256,6 +409,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "pageactions"
+    }
+  },
+  {
+    "ref": "element:documentation/pageactions-dock",
+    "kind": "element",
+    "id": "pageactions-dock",
+    "name": "Action Dock",
+    "description": "A floating action dock beside the article with copy, link, share, and source controls.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pageactions-dock"
     }
   },
   {
@@ -313,7 +483,7 @@ export const generatedWorkshopContent = [
     "ref": "element:documentation/sitesearch",
     "kind": "element",
     "id": "sitesearch",
-    "name": "Site Search",
+    "name": "Search",
     "description": "A ⌘K command palette for documentation with a search trigger, grouped ranked results, and keyboard navigation.",
     "category": "elements",
     "visibility": "public",
@@ -324,6 +494,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "sitesearch"
+    }
+  },
+  {
+    "ref": "element:documentation/sitesearch-inline",
+    "kind": "element",
+    "id": "sitesearch-inline",
+    "name": "Inline Search",
+    "description": "A docs search that surfaces ranked results and recent queries inline beneath the field, without a modal palette.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "sitesearch-inline"
     }
   },
   {
@@ -344,10 +531,27 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:documentation/toc-dot-minimap",
+    "kind": "element",
+    "id": "toc-dot-minimap",
+    "name": "Table of Contents Dot Minimap",
+    "description": "A floating dot mini-map as an alternative to the labelled rail.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "toc-dot-minimap"
+    }
+  },
+  {
     "ref": "element:documentation/toc-expanded",
     "kind": "element",
     "id": "toc-expanded",
-    "name": "Expandable Table of Contents",
+    "name": "Table of Contents",
     "description": "A nested table of contents with collapsible groups and an active subsection highlight.",
     "category": "elements",
     "visibility": "public",
@@ -856,19 +1060,6 @@ export const generatedWorkshopContent = [
     "code": "<Flex gap=\"xs\" align-center className=\"text-sm\">\n  {crumbs.map((crumb, i) => (\n    <span key={crumb.href} className=\"flex items-center gap-xs\">\n      {i > 0 && <span className=\"text-foreground-400 mx-1\">/</span>}\n      {i < crumbs.length - 1 ? (\n        <Anchor href={crumb.href}>{crumb.label}</Anchor>\n      ) : (\n        <span className=\"text-foreground-400\">{crumb.label}</span>\n      )}\n    </span>\n  ))}\n</Flex>"
   },
   {
-    "ref": "example:button/color-variants",
-    "kind": "component-example",
-    "id": "color-variants",
-    "name": "Color Variants",
-    "description": "Paint a button with a theme token or a Tailwind palette color.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return (\n    <div className=\"flex gap-2\">\n      <Button color=\"accent-500\">Accent</Button>\n      <Button color=\"purple-500\">Purple</Button>\n      <Button color=\"blue-500\">Blue</Button>\n    </div>\n  )\n}"
-  },
-  {
     "ref": "example:button/copy-action",
     "kind": "component-example",
     "id": "copy-action",
@@ -880,19 +1071,6 @@ export const generatedWorkshopContent = [
     "access": "free",
     "locked": false,
     "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaCheck, FaLink } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [copied, setCopied] = useState(false)\n\n  const handlePress = () => {\n    navigator.clipboard.writeText('https://ui-lab.dev/components/button')\n    setCopied(true)\n    setTimeout(() => setCopied(false), 1500)\n  }\n\n  return (\n    <Button variant=\"secondary\" icon={copied ? <FaCheck /> : <FaLink />} onPress={handlePress}>\n      {copied ? 'Copied' : 'Copy link'}\n    </Button>\n  )\n}"
-  },
-  {
-    "ref": "example:button/css-module-styles",
-    "kind": "component-example",
-    "id": "css-module-styles",
-    "name": "CSS Module Styles",
-    "description": "Wrap Button and style it with a CSS Module targeting its data attributes.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\nimport styles from './Button.module.css'\n\nexport default function Example() {\n  return <Button className={styles.button}>Deploy</Button>\n}"
   },
   {
     "ref": "example:button/destructive-confirm",
@@ -984,19 +1162,6 @@ export const generatedWorkshopContent = [
     "access": "free",
     "locked": false,
     "code": "\"use client\"\n\nimport { useRef, useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaUpload } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [progress, setProgress] = useState<number | null>(null)\n  const timer = useRef<ReturnType<typeof setInterval>>(undefined)\n\n  const startUpload = () => {\n    setProgress(0)\n    timer.current = setInterval(() => {\n      setProgress((value) => {\n        if (value === null || value >= 100) {\n          clearInterval(timer.current)\n          return null\n        }\n        return value + 20\n      })\n    }, 300)\n  }\n\n  return (\n    <Button\n      disabled={progress !== null}\n      aria-busy={progress !== null}\n      icon={<FaUpload />}\n      onPress={startUpload}\n    >\n      {progress === null ? 'Upload files' : `Uploading… ${progress}%`}\n    </Button>\n  )\n}"
-  },
-  {
-    "ref": "example:button/shortcut-action",
-    "kind": "component-example",
-    "id": "shortcut-action",
-    "name": "Keyboard Hint",
-    "description": "Display a shortcut with hint; key binding is separate.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return <Button variant=\"ghost\" hint={['⌘', 'K']}>Search files</Button>\n}"
   },
   {
     "ref": "example:button/social-buttons",
@@ -1848,13 +2013,13 @@ export const generatedWorkshopContent = [
     "kind": "component-example",
     "id": "07-custom-asset-source",
     "name": "Custom Asset Source",
-    "description": "Point a single icon at another location with assetBaseUrl, or configure the whole tree with IconProvider — including a resolveSource function for CDNs, base paths, or alias layers.",
+    "description": "Point a single icon at another location with asset-url, or configure the whole tree with IconProvider — including a resolve-source function for CDNs, base paths, or alias layers.",
     "category": "examples",
     "visibility": "public",
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\" align-center justify-center className=\"text-foreground-100\">\n  {/* Per-icon override of the provider's base URL. */}\n  <Flex direction=\"column\" gap=\"xs\" align-center>\n    <Icon id=\"cake-fill\" size={24} assetBaseUrl=\"/ui-lab-icons\" />\n    <span className=\"text-xs text-foreground-400\">assetBaseUrl</span>\n  </Flex>\n\n  {/* A resolver owns the whole subtree, so assetBaseUrl no longer applies. */}\n  <IconProvider\n    resolveSource={({ variant, id }) =>\n      `/ui-lab-icons/${variant}/${aliases[id] ?? id}.svg`\n    }\n  >\n    <Flex gap=\"lg\" align-center justify-center wrap>\n      {Object.keys(aliases).map((id) => (\n        <Flex key={id} direction=\"column\" gap=\"xs\" align-center>\n          <Icon id={id} size={24} />\n          <span className=\"text-xs text-foreground-400\">{id}</span>\n        </Flex>\n      ))}\n    </Flex>\n  </IconProvider>\n</Flex>"
+    "code": "<Flex direction=\"column\" gap=\"lg\" align-center justify-center className=\"text-foreground-100\">\n  {/* Per-icon override of the provider's base URL. */}\n  <Flex direction=\"column\" gap=\"xs\" align-center>\n    <Icon id=\"cake-fill\" size={24} asset-url=\"/ui-lab-icons\" />\n    <span className=\"text-xs text-foreground-400\">asset-url</span>\n  </Flex>\n\n  {/* A resolver owns the whole subtree, so asset-url no longer applies. */}\n  <IconProvider\n    resolve-source={({ variant, id }) =>\n      `/ui-lab-icons/${variant}/${aliases[id] ?? id}.svg`\n    }\n  >\n    <Flex gap=\"lg\" align-center justify-center wrap>\n      {Object.keys(aliases).map((id) => (\n        <Flex key={id} direction=\"column\" gap=\"xs\" align-center>\n          <Icon id={id} size={24} />\n          <span className=\"text-xs text-foreground-400\">{id}</span>\n        </Flex>\n      ))}\n    </Flex>\n  </IconProvider>\n</Flex>"
   },
   {
     "ref": "example:icon/08-status-list",
@@ -2417,7 +2582,7 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<article aria-busy=\"true\" aria-label=\"Loading article\" data-skeleton-animate>\n  <Skeleton.Image w=\"100%\" ratio=\"16/9\" />\n  <div className=\"flex items-center gap-3\">\n    <Skeleton w={36} h={36} className=\"rounded-full\" />\n    <Skeleton.Text lines={2} w={140} scale={0.75} />\n  </div>\n  <Skeleton.Text size=\"heading\" w=\"82%\" />\n  <Skeleton.Text lines={4} />\n</article>"
+    "code": "<article>\n  <Skeleton.Image w=\"100%\" ratio=\"16/9\" />\n  <div className=\"flex items-center gap-3\">\n    <Skeleton w={36} h={36} className=\"rounded-full\" />\n    <Skeleton.Text lines={2} w={140} scale={0.75} />\n  </div>\n  <Skeleton.Text size=\"heading\" w=\"82%\" />\n  <Skeleton.Text lines={4} />\n</article>"
   },
   {
     "ref": "example:switch/02-settings-panel",
@@ -4817,37 +4982,6 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "copy",
       "target": "src/ui-lab/pattern/tab-content-header-with-badge"
-    }
-  },
-  {
-    "ref": "pattern:table-of-contents",
-    "kind": "pattern",
-    "id": "table-of-contents",
-    "name": "Table Of Contents",
-    "description": "A vertical in-page anchor nav that marks the active section with an accent rail and indents nested headings.",
-    "category": "patterns",
-    "visibility": "public",
-    "access": "free",
-    "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { id: 'overview', width: 72, level: 1 },\n  { id: 'installation', width: 96, level: 1 },\n  { id: 'peer-deps', width: 120, level: 2 },\n  { id: 'usage', width: 60, level: 1 },\n  { id: 'theming', width: 80, level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-2 pr-3 transition-colors ${\n                  isActive\n                    ? 'border-accent-500'\n                    : 'border-transparent hover:border-background-500'\n                }`}\n              >\n                <Skeleton.Text lines={1} w={item.width} color={isActive ? 'foreground-200' : undefined} />\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
-    "files": [
-      {
-        "path": "index.tsx",
-        "language": "tsx",
-        "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { id: 'overview', width: 72, level: 1 },\n  { id: 'installation', width: 96, level: 1 },\n  { id: 'peer-deps', width: 120, level: 2 },\n  { id: 'usage', width: 60, level: 1 },\n  { id: 'theming', width: 80, level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-2 pr-3 transition-colors ${\n                  isActive\n                    ? 'border-accent-500'\n                    : 'border-transparent hover:border-background-500'\n                }`}\n              >\n                <Skeleton.Text lines={1} w={item.width} color={isActive ? 'foreground-200' : undefined} />\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
-        "entrypoint": true
-      }
-    ],
-    "dependencies": {
-      "npm": [],
-      "uiLab": [
-        "ui-lab-components/skeleton"
-      ]
-    },
-    "installIntent": {
-      "mode": "copy",
-      "target": "src/ui-lab/pattern/table-of-contents"
     }
   },
   {

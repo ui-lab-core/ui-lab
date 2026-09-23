@@ -37,27 +37,6 @@ const HEADER_BASELINE_REM: Record<TextSizeName, number> = {
   "5xl": 2.75,
 };
 
-const WEIGHTS = {
-  thin: 100,
-  extralight: 200,
-  light: 300,
-  normal: 400,
-  medium: 500,
-  semibold: 600,
-  bold: 700,
-  extrabold: 800,
-  black: 900,
-} as const;
-
-const BODY_WEIGHT_BASELINE = {
-  ...WEIGHTS,
-  thin: 105,
-  extralight: 210,
-  light: 315,
-  normal: 500,
-  extrabold: 840,
-};
-
 function formatCssNumber(value: number, precision: number = 6): string {
   return String(Number(value.toFixed(precision)));
 }
@@ -85,6 +64,11 @@ function getScaleMultiplier(scale: number, defaultScale: number): number {
   return Math.pow(2, (clampScale(scale) - defaultScale) * 2);
 }
 
+/**
+ * Every font size is a single knob: `--<role>-scale`. The per-size tokens
+ * (`--text-<size>-<role>`) are the resolved defaults, and any one of them can
+ * be overridden directly, e.g. `--text-md-body: 1.2rem`.
+ */
 function deriveRoleTypographyVars(
   role: TypographyRole,
   scale: number,
@@ -94,37 +78,13 @@ function deriveRoleTypographyVars(
   const defaultScale = role === "header" ? DEFAULT_HEADER_SCALE : DEFAULT_BODY_SCALE;
   const multiplier = getScaleMultiplier(scale, defaultScale);
   const minSizeRem = pxToRem(minFontSizePx);
-  const prefix = role === "header" ? "header-text" : "text";
   const vars: Record<string, string> = {
     [`--${role}-scale`]: formatCssNumber(clampScale(scale)),
   };
 
   textSizeNames.forEach((name) => {
     const size = Math.max(baseline[name] * multiplier, minSizeRem);
-    vars[`--${prefix}-${name}`] = formatRem(size);
-  });
-
-  if (role === "body") {
-    vars["--text-body-size"] = vars["--text-base"];
-  }
-
-  const scaleOffset = clampScale(scale) - defaultScale;
-  const leading = role === "header" ? 1.25 - scaleOffset * 0.4 : 1.64 - scaleOffset * 0.48;
-  vars[`--leading-${role}`] = formatCssNumber(leading);
-
-  const tracking = -scaleOffset * (role === "header" ? 0.04 : 0.02);
-  const trackingNames = role === "header" ? ["sm", "md", "lg", "xl"] : textSizeNames;
-  trackingNames.forEach((name) => {
-    vars[role === "header" ? `--letter-spacing-header-${name}` : `--letter-spacing-${name}`] =
-      `${formatCssNumber(tracking, 4)}em`;
-  });
-
-  const weightBaseline = role === "header" ? WEIGHTS : BODY_WEIGHT_BASELINE;
-  const weightOffset = Math.round(scaleOffset * 200);
-  Object.entries(weightBaseline).forEach(([name, weight]) => {
-    vars[`--font-weight-${role}-${name}`] = String(
-      Math.max(100, Math.min(900, weight + weightOffset)),
-    );
+    vars[`--text-${name}-${role}`] = formatRem(size);
   });
 
   return vars;
@@ -142,41 +102,19 @@ export function generateTypographyVars(
   };
 }
 
-export function generateTypographyCSS(
+/**
+ * The only typography tokens a copied stylesheet needs: the two scales. Every
+ * `--text-<size>-<role>` default is derived from these in the shipped library
+ * CSS, so overriding a scale reflows the whole role.
+ */
+export function generateTypographyScaleVars(
   headerScale: number,
   bodyScale: number,
-  headerMinFontSizePx: number,
-  bodyMinFontSizePx: number,
-): string {
-  const exportedTokenNames = new Set([
-    "--header-text-md",
-    "--header-text-lg",
-    "--header-text-xl",
-    "--header-text-2xl",
-    "--header-text-3xl",
-    "--text-xs",
-    "--text-sm",
-    "--text-md",
-    "--text-base",
-    "--text-body-size",
-    "--leading-header",
-    "--leading-body",
-    "--letter-spacing-base",
-    "--letter-spacing-header-md",
-    "--letter-spacing-header-lg",
-    "--letter-spacing-header-xl",
-    "--font-weight-header-medium",
-    "--font-weight-body-normal",
-    "--font-weight-body-medium",
-    "--font-weight-body-semibold",
-  ]);
-
-  return Object.entries(
-    generateTypographyVars(headerScale, bodyScale, headerMinFontSizePx, bodyMinFontSizePx),
-  )
-    .filter(([name]) => exportedTokenNames.has(name))
-    .map(([name, value]) => `  ${name}: ${value};`)
-    .join("\n");
+): Record<string, string> {
+  return {
+    "--header-scale": formatCssNumber(clampScale(headerScale)),
+    "--body-scale": formatCssNumber(clampScale(bodyScale)),
+  };
 }
 
 export function generateCodeTypographyVars(

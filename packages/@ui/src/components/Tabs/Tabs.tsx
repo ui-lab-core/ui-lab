@@ -286,6 +286,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const resolved = resolveTabsListBaseStyles(stylesProp);
     const triggerStyle = resolved.trigger;
     const listRef = React.useRef<HTMLDivElement>(null);
+    const selectedValueRef = React.useRef(selectedValue);
+    selectedValueRef.current = selectedValue;
     const [indicatorPosition, setIndicatorPosition] = React.useState<IndicatorPosition>({
       left: 0,
       top: 0,
@@ -360,27 +362,32 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     React.useLayoutEffect(() => {
       measureList();
       setIndicatorReady(updateIndicator(selectedValue));
-    }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
+    }, [children, selectedValue, updateIndicator, measureList, setIndicatorReady]);
 
     React.useEffect(() => {
       if (!listRef.current) return;
 
+      let frame: number | undefined;
       const resizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(() => {
+        if (frame !== undefined) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
           measureList();
-          setIndicatorReady(updateIndicator(selectedValue));
+          setIndicatorReady(updateIndicator(selectedValueRef.current));
         });
       });
 
       resizeObserver.observe(listRef.current);
-      return () => resizeObserver.disconnect();
+      return () => {
+        resizeObserver.disconnect();
+        if (frame !== undefined) cancelAnimationFrame(frame);
+      };
     }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
 
     React.useEffect(() => {
       const handleWindowResize = () => {
         requestAnimationFrame(() => {
           measureList();
-          setIndicatorReady(updateIndicator(selectedValue));
+          setIndicatorReady(updateIndicator(selectedValueRef.current));
         });
       };
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import styles from "./Chart.module.css";
-import { useChartContext } from "./Chart";
+import { useChartContext, ChartLayerContext } from "./Chart";
 
 export interface ChartAxisStyleSlots {
   root?: Style;
@@ -39,93 +39,112 @@ function resolveAxisStyles(styles: ChartAxisStylesProp | undefined) {
 /** Axis line, tick labels and optional title for either dimension */
 const ChartAxis = React.forwardRef<SVGGElement, ChartAxisProps>(
   ({ axis, format, label, className, styles: stylesProp }, ref) => {
+    const layer = React.useContext(ChartLayerContext);
     const { ready, plot, xTickIndices, xValues, xPosition, yTicks, yScale, formatX } =
       useChartContext();
     const resolved = resolveAxisStyles(stylesProp);
     if (!ready) return null;
 
-    if (axis === "x") {
+    // The rule is drawn in the SVG; tick text lives in the HTML label layer,
+    // positioned in plot percentages so it never stretches with the viewBox.
+    if (layer === "svg") {
       return (
-        <g ref={ref} className={cn("axis", styles.axis, className, resolved.root)} data-axis="x">
-          <line
-            className={cn(styles.rule, resolved.line)}
-            x1={plot.x}
-            x2={plot.x + plot.width}
-            y1={plot.y + plot.height}
-            y2={plot.y + plot.height}
-          />
-          {xTickIndices.map((index) => {
-            const x = xPosition(index);
-            // Anchor edge ticks inward so the first/last label sits flush with the
-            // plot edge instead of overflowing half its width into the margins.
-            const anchor =
-              x <= plot.x + 0.5 ? "start" : x >= plot.x + plot.width - 0.5 ? "end" : "middle";
-            return (
-              <text
-                key={index}
-                className={cn(styles.tick, resolved.tick)}
-                x={x}
-                y={plot.y + plot.height + 20}
-                textAnchor={anchor}
-              >
-                {format ? format(xValues[index]) : formatX(xValues[index])}
-              </text>
-            );
-          })}
-          {label && (
-            <text
-              className={cn(styles.label, resolved.label)}
-              x={plot.x + plot.width / 2}
-              y={plot.y + plot.height + 40}
-              textAnchor="middle"
-            >
-              {label}
-            </text>
+        <g
+          ref={ref}
+          className={cn("axis", styles.axis, className, resolved.root)}
+          data-axis={axis}
+        >
+          {axis === "x" ? (
+            <line
+              className={cn(styles.rule, resolved.line)}
+              x1={plot.x}
+              x2={plot.x + plot.width}
+              y1={plot.y + plot.height}
+              y2={plot.y + plot.height}
+            />
+          ) : (
+            <line
+              className={cn(styles.rule, resolved.line)}
+              x1={plot.x}
+              x2={plot.x}
+              y1={plot.y}
+              y2={plot.y + plot.height}
+            />
           )}
         </g>
       );
     }
 
+    if (axis === "x") {
+      return (
+        <div className={cn("axis", styles.axis, className, resolved.root)} data-axis="x">
+          {xTickIndices.map((index) => {
+            const x = xPosition(index);
+            // Anchor edge ticks inward so the first/last label sits flush with the
+            // plot edge instead of overflowing half its width into the margins.
+            const shift =
+              x <= plot.x + 0.5 ? "0%" : x >= plot.x + plot.width - 0.5 ? "-100%" : "-50%";
+            return (
+              <span
+                key={index}
+                className={cn(styles.tick, resolved.tick)}
+                style={{
+                  left: `${((x - plot.x) / plot.width) * 100}%`,
+                  top: "calc(100% + 11px)",
+                  transform: `translateX(${shift})`,
+                }}
+              >
+                {format ? format(xValues[index]) : formatX(xValues[index])}
+              </span>
+            );
+          })}
+          {label && (
+            <span
+              className={cn(styles.label, resolved.label)}
+              style={{ left: "50%", top: "calc(100% + 31px)", transform: "translateX(-50%)" }}
+            >
+              {label}
+            </span>
+          )}
+        </div>
+      );
+    }
+
     return (
-      <g ref={ref} className={cn("axis", styles.axis, className, resolved.root)} data-axis="y">
-        <line
-          className={cn(styles.rule, resolved.line)}
-          x1={plot.x}
-          x2={plot.x}
-          y1={plot.y}
-          y2={plot.y + plot.height}
-        />
+      <div className={cn("axis", styles.axis, className, resolved.root)} data-axis="y">
         {yTicks.map((value) => {
           const y = yScale(value);
-          // Anchor the top/bottom ticks by their baseline so the first/last label
+          // Anchor the top/bottom ticks by their edge so the first/last label
           // sits flush inside the plot instead of bleeding past its top/bottom edge.
-          const baseline =
-            y <= plot.y + 0.5 ? "hanging" : y >= plot.y + plot.height - 0.5 ? "auto" : "central";
+          const shift =
+            y <= plot.y + 0.5 ? "0%" : y >= plot.y + plot.height - 0.5 ? "-100%" : "-50%";
           return (
-            <text
+            <span
               key={value}
               className={cn(styles.tick, resolved.tick)}
-              x={plot.x - 8}
-              y={y}
-              textAnchor="end"
-              dominantBaseline={baseline}
+              style={{
+                right: "calc(100% + 8px)",
+                top: `${((y - plot.y) / plot.height) * 100}%`,
+                transform: `translateY(${shift})`,
+              }}
             >
               {format ? format(value) : value.toLocaleString()}
-            </text>
+            </span>
           );
         })}
         {label && (
-          <text
+          <span
             className={cn(styles.label, resolved.label)}
-            transform="rotate(-90)"
-            x={-(plot.y + plot.height / 2)}
-            y={12}
-            textAnchor="middle"
+            style={{
+              left: 8 - plot.x,
+              top: "50%",
+              transform: "translate(-50%, -50%) rotate(-90deg)",
+            }}
           >
             {label}
-          </text>
+          </span>
         )}
-      </g>
+      </div>
     );
   },
 );

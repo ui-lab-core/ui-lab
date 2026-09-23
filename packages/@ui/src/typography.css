@@ -2,12 +2,28 @@
   /*
    * This file styles long-form reading surfaces only. Components use the
    * shared body, heading, and mono family tokens from base.css.
+   *
+   * Type here resolves the font-size scale only. Weight, leading, and
+   * tracking fall back to sensible browser defaults so the copyable
+   * stylesheet stays small and easy to reason about.
    */
   :where(h1, h2, h3, h4, h5, h6) {
     font-family: var(--font-heading, var(--font-body, inherit));
-    font-weight: var(--font-weight-header-medium);
-    letter-spacing: var(--letter-spacing-header-md);
-    line-height: var(--leading-heading, var(--leading-header));
+  }
+  :where(h1) {
+    font-size: var(--text-3xl-header);
+  }
+  :where(h2) {
+    font-size: var(--text-2xl-header);
+  }
+  :where(h3) {
+    font-size: var(--text-xl-header);
+  }
+  :where(h4) {
+    font-size: var(--text-lg-header);
+  }
+  :where(h5, h6) {
+    font-size: var(--text-md-header);
   }
 
   /* A reading surface: UI type remains body-first, while headings define hierarchy. */
@@ -15,15 +31,13 @@
     --font: var(--font-body, inherit);
     --heading-font: var(--font-heading, var(--font-header, var(--font)));
     --mono-font: var(--font-mono, ui-monospace, monospace);
-    --size: var(--text-body-size);
-    --leading: var(--leading-body);
-    --heading-leading: var(--leading-heading, var(--leading-header));
-    --typography-h1-size: var(--header-text-3xl);
-    --typography-h2-size: var(--header-text-2xl);
-    --typography-h3-size: var(--header-text-xl);
-    --typography-h4-size: var(--header-text-lg);
-    --typography-h5-size: var(--header-text-md);
-    --typography-h6-size: var(--header-text-md);
+    --size: var(--text-base-body);
+    --typography-h1-size: var(--text-3xl-header);
+    --typography-h2-size: var(--text-2xl-header);
+    --typography-h3-size: var(--text-xl-header);
+    --typography-h4-size: var(--text-lg-header);
+    --typography-h5-size: var(--text-md-header);
+    --typography-h6-size: var(--text-md-header);
     --space: 1.5rem;
     --muted: var(--foreground-400, color-mix(in oklab, currentColor 60%, transparent));
     --rule: var(--background-700, color-mix(in oklab, currentColor 20%, transparent));
@@ -31,9 +45,6 @@
     color: var(--foreground-300, currentColor);
     font-family: var(--font);
     font-size: var(--size);
-    font-weight: var(--font-weight-body-normal);
-    letter-spacing: var(--letter-spacing-base);
-    line-height: var(--leading);
     overflow-wrap: break-word;
     text-wrap: pretty;
   }
@@ -47,45 +58,31 @@
   .typography :is(h1, h2, h3, h4, h5, h6) {
     color: var(--foreground-100, currentColor);
     font-family: var(--heading-font);
-    font-weight: var(--font-weight-header-medium);
-    letter-spacing: var(--letter-spacing-header-md);
     margin-block: calc(var(--space) * 1.5) 0;
   }
 
   .typography h1 {
     font-size: var(--typography-h1-size);
-    letter-spacing: var(--letter-spacing-header-xl);
-    line-height: var(--heading-leading);
   }
 
   .typography h2 {
     font-size: var(--typography-h2-size);
-    letter-spacing: var(--letter-spacing-header-xl);
-    line-height: var(--heading-leading);
     margin-block-start: calc(var(--space) * 2);
   }
 
   .typography h3 {
     font-size: var(--typography-h3-size);
-    letter-spacing: var(--letter-spacing-header-xl);
-    line-height: var(--heading-leading);
   }
 
   .typography h4 {
     font-size: var(--typography-h4-size);
-    letter-spacing: var(--letter-spacing-header-lg);
-    line-height: var(--heading-leading);
   }
   .typography h5 {
     font-size: var(--typography-h5-size);
-    letter-spacing: var(--letter-spacing-header-md);
-    line-height: var(--heading-leading);
   }
   .typography h6 {
     color: var(--muted);
     font-size: var(--typography-h6-size);
-    letter-spacing: var(--letter-spacing-header-md);
-    line-height: var(--heading-leading);
   }
 
   .typography :where([id]) {
@@ -93,7 +90,6 @@
   }
   .typography :where(a[href]:not([class])) {
     color: inherit;
-    font-weight: var(--font-weight-body-semibold, 600);
     text-decoration: underline;
     text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
     text-underline-offset: 0.15em;
@@ -108,7 +104,6 @@
   }
   .typography :where(strong, b) {
     color: var(--foreground-100, currentColor);
-    font-weight: var(--font-weight-body-medium);
   }
   .typography :where(del, s) {
     color: var(--muted);
@@ -138,7 +133,7 @@
     background: var(--background-800, color-mix(in oklab, currentColor 8%, transparent));
     border-radius: var(--radius-sm, 0.25em);
     font-family: var(--mono-font);
-    font-size: var(--text-code-size, 0.75rem);
+    font-size: var(--text-code-size, var(--text-sm-body));
     line-height: var(--leading-code, 1.5);
     letter-spacing: var(--letter-spacing-code);
     padding: 0.125em 0.3em;
@@ -151,7 +146,7 @@
     background: var(--background-900, color-mix(in oklab, currentColor 8%, transparent));
     border-radius: var(--radius-md, 0.5em);
     font-family: var(--mono-font);
-    font-size: var(--text-code-size, 0.75rem);
+    font-size: var(--text-code-size, var(--text-sm-body));
     line-height: var(--leading-code, 1.5);
     overflow-x: auto;
     padding: 0.75em 1em;
@@ -176,7 +171,6 @@
   }
   .typography :where(details > summary) {
     cursor: pointer;
-    font-weight: 600;
   }
   .typography :where(img, video) {
     border-radius: var(--radius-md, 0.5em);
@@ -197,7 +191,6 @@
     border-collapse: collapse;
     color: var(--foreground-300, currentColor);
     font-size: 1em;
-    line-height: var(--leading);
     max-width: 100%;
     width: 100%;
   }
@@ -210,8 +203,6 @@
   .typography :where(th) {
     color: var(--foreground-300, currentColor);
     font-size: 0.9286em;
-    font-weight: 500;
-    line-height: 1.5385;
   }
   .typography :where(th:first-child, td:first-child) {
     padding-inline-start: 0;

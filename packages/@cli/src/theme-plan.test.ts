@@ -164,7 +164,7 @@ test("applies shared configuration output, optional font, typography, and toggle
     const plan = buildThemePlan({
       root, stylesheet:"app/globals.css", typography:false, colorMode:"dark",
       customFont:false, themeToggle:true, themeCss:":root { --accent-400: red; }",
-      typographyCss:"@layer theme { :root { --text-body-size: 1rem; } }",
+      typographyCss:"@layer theme { :root { --text-base-body: 1rem; } }",
       layoutConfig:{radius:1.2,borderWidth:2,spacingScale:.8},
       typographyConfig:{headerScale:.6,headerMinFontSizePx:11,bodyScale:.8,bodyMinFontSizePx:14,monoFontSizeScale:1.1,monoFontWeightScale:1.2,monoLetterSpacingScale:2,monoLineHeight:1.8,monoMinFontSizePx:12},
     });

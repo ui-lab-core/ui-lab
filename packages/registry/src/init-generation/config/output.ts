@@ -1,17 +1,29 @@
 import type { TypographyConfig } from "../lib/typography-config.js";
-import { generateTypographyCSS, generateTypographyVars, generateCodeTypographyVars } from "./typography/generator.js";
+import { generateTypographyScaleVars } from "./typography/generator.js";
 import { getSpacingCssVariables, getRadiusCssVariables, getBorderWidthCssVariables, type LayoutScaleConfig } from "./shared/layout-variables.js";
 
-function code(t: TypographyConfig) {
-  return generateCodeTypographyVars(t.monoFontSizeScale,t.monoLineHeight,t.monoLetterSpacingScale,t.monoFontWeightScale,t.monoMinFontSizePx);
-}
 function render(vars: Record<string,string>, indent = "  ") {
   return Object.entries(vars).map(([name,value])=>`${indent}${name}: ${value};`).join("\n");
 }
-export function generateTypographyFile(t: TypographyConfig, template: string): string {
-  const variables = generateTypographyCSS(t.headerScale,t.bodyScale,t.headerMinFontSizePx,t.bodyMinFontSizePx).split("\n").map(line=>`  ${line}`).join("\n");
-  return `@layer theme {\n  :root {\n${variables}\n${render(code(t),"    ")}\n    --leading-heading: var(--leading-header);\n  }\n}\n\n${template}`;
+export function generateTypographyFile(_t: TypographyConfig, template: string): string {
+  return template;
 }
+/**
+ * The copied globals.css carries only the scale knobs; ui-lab-components/styles.css
+ * derives every --spacing-*, --radius-*, and per-size token from them, and each
+ * derived token stays individually overridable in the copied file if needed.
+ */
 export function generateGlobalsCSS(t: TypographyConfig, layout: LayoutScaleConfig): string {
-  return `:root {\n${render({...generateTypographyVars(t.headerScale,t.bodyScale,t.headerMinFontSizePx,t.bodyMinFontSizePx),...code(t),...getSpacingCssVariables(layout.spacingScale)})}\n}\n\n@theme {\n${render({...getRadiusCssVariables(layout.radius),...getBorderWidthCssVariables(layout.borderWidth)})}\n}\n\n@layer base {\n  body {\n    font-family: var(--font-body);\n    font-size: var(--text-body-size);\n  }\n}`;
+  const rootVars = {
+    ...generateTypographyScaleVars(t.headerScale, t.bodyScale),
+    "--spacing-scale": getSpacingCssVariables(layout.spacingScale)["--spacing-scale"]!,
+  };
+  const themeVars = {
+    // Tailwind has no `md` font-size key, so declare it to generate the text-md
+    // utility; base.css aliases every key to the matching --text-*-body token.
+    "--text-md": "var(--text-md-body)",
+    "--radius-ratio": String(Number(Number(getRadiusCssVariables(layout.radius)["--radius-ratio"]).toFixed(4))),
+    "--border-width-base": getBorderWidthCssVariables(layout.borderWidth)["--border-width-base"]!,
+  };
+  return `:root {\n${render(rootVars)}\n}\n\n@theme {\n${render(themeVars)}\n}\n\n@layer base {\n  body {\n    font-family: var(--font-body);\n    font-size: var(--text-base-body);\n  }\n}`;
 }
