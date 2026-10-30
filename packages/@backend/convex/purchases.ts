@@ -54,6 +54,8 @@ export const grantSupporter = internalMutation({
     stripeCustomerEmail: v.optional(v.string()),
     amountTotal: v.number(),
     currency: v.string(),
+    plan: v.optional(v.union(v.literal("supporter"), v.literal("team"))),
+    seats: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -103,6 +105,8 @@ export const upsertSubscription = internalMutation({
     currency: v.optional(v.string()),
     active: v.boolean(),
     currentPeriodEnd: v.optional(v.number()),
+    plan: v.optional(v.union(v.literal("supporter"), v.literal("team"))),
+    seats: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const status = args.active ? ("paid" as const) : ("canceled" as const);
@@ -122,6 +126,9 @@ export const upsertSubscription = internalMutation({
         stripeCustomerId: args.stripeCustomerId ?? existing.stripeCustomerId,
         stripeCustomerEmail: args.stripeCustomerEmail ?? existing.stripeCustomerEmail,
         currentPeriodEnd: args.currentPeriodEnd ?? existing.currentPeriodEnd,
+        // Seats change through the billing portal, so every sync carries them.
+        plan: args.plan ?? existing.plan,
+        seats: args.seats ?? existing.seats,
         status,
         ...(status === "paid" ? { paidAt: existing.paidAt ?? Date.now() } : { revokedAt: Date.now() }),
       });
@@ -142,6 +149,8 @@ export const upsertSubscription = internalMutation({
       currency: args.currency ?? "usd",
       status,
       currentPeriodEnd: args.currentPeriodEnd,
+      plan: args.plan,
+      seats: args.seats,
       ...(status === "paid" ? { paidAt: Date.now() } : { revokedAt: Date.now() }),
     });
   },

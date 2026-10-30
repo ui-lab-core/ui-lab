@@ -25,6 +25,30 @@ function stripeClient(): Stripe {
  */
 const SUPPORTER_BILLING = v.union(v.literal("one-time"), v.literal("monthly"));
 
+/** Mirrors `SUPPORTER_PLAN.id` / `TEAM_PLAN.id`. Keep in sync with the library. */
+const PLAN = v.union(v.literal("supporter"), v.literal("team"));
+type Plan = "supporter" | "team";
+
+/** Mirrors `TEAM_PLAN.minSeats` / `maxSeats`. Keep in sync with the library. */
+const TEAM_MIN_SEATS = 3;
+const TEAM_MAX_SEATS = 50;
+
+function priceId(plan: Plan, isSubscription: boolean): string {
+  if (plan === "team") {
+    return isSubscription
+      ? process.env.STRIPE_TEAM_MONTHLY_PRICE_ID!
+      : process.env.STRIPE_TEAM_PRICE_ID!;
+  }
+  return isSubscription
+    ? process.env.STRIPE_SUPPORTER_MONTHLY_PRICE_ID!
+    : process.env.STRIPE_SUPPORTER_PRICE_ID!;
+}
+
+/** The plan recorded at checkout. Absent on sessions that predate Team. */
+function planFromMetadata(metadata: Stripe.Metadata | null | undefined): Plan {
+  return metadata?.plan === "team" ? "team" : "supporter";
+}
+
 /** True for the subscription statuses that entitle a viewer. Everything else revokes. */
 function isActiveSubscription(status: Stripe.Subscription.Status): boolean {
   return status === "active" || status === "trialing";
@@ -49,50 +73,64 @@ function periodEndMs(subscription: Stripe.Subscription): number | undefined {
 }
 
 /**
- * Creates a Checkout Session for the Supporter plan on the chosen billing option
- * and returns its hosted URL. One-time is a `payment` session against the fixed
- * price; monthly is a `subscription` session against the recurring price. Both
- * grant the same entitlement. Requires a signed-in caller: the Clerk user id is
+ * Creates a Checkout Session for the chosen plan and billing option and returns
+ * its hosted URL. One-time is a `payment` session against the fixed price;
+ * monthly is a `subscription` session against the recurring price. Team is the
+ * same per-seat, with the seat count picked on Stripe's page. All grant the
+ * buyer the same entitlement. Requires a signed-in caller: the Clerk user id is
  * the only thing that links the purchase back to an account, and it is taken
  * from the verified JWT, never from an argument the client controls.
  */
 export const createSupporterCheckout = action({
-  args: { billing: SUPPORTER_BILLING },
+  args: { billing: SUPPORTER_BILLING, plan: v.optional(PLAN) },
   returns: v.object({ url: v.string() }),
-  handler: async (ctx, { billing }): Promise<{ url: string }> => {
+  handler: async (ctx, { billing, plan = "supporter" }): Promise<{ url: string }> => {
     const identity = await ctx.auth.getUserIdentity();
     if (identity === null) throw new Error("Not signed in");
 
     const clerkUserId = identity.subject;
 
     // Already a supporter (one-time buyer or active subscriber)? Don't let them
-    // pay twice. A lapsed subscription is not `paid`, so it can be renewed.
-    const existing = await ctx.runQuery(internal.purchases.paidForUser, { clerkUserId });
-    if (existing) throw new Error("Already a supporter");
+    // pay twice. A lapsed subscription is not `paid`, so it can be renewed. A
+    // supporter may still buy Team seats for their colleagues.
+    if (plan === "supporter") {
+      const existing = await ctx.runQuery(internal.purchases.paidForUser, { clerkUserId });
+      if (existing) throw new Error("Already a supporter");
+    }
 
     const stripe = stripeClient();
     const siteUrl = process.env.SITE_URL!;
     const isSubscription = billing === "monthly";
 
-    const price = isSubscription
-      ? process.env.STRIPE_SUPPORTER_MONTHLY_PRICE_ID!
-      : process.env.STRIPE_SUPPORTER_PRICE_ID!;
+    const price = priceId(plan, isSubscription);
 
     const session = await stripe.checkout.sessions.create(
       {
         mode: isSubscription ? "subscription" : "payment",
-        line_items: [{ price, quantity: 1 }],
+        line_items: [
+          plan === "team"
+            ? {
+                price,
+                quantity: TEAM_MIN_SEATS,
+                adjustable_quantity: {
+                  enabled: true,
+                  minimum: TEAM_MIN_SEATS,
+                  maximum: TEAM_MAX_SEATS,
+                },
+              }
+            : { price, quantity: 1 },
+        ],
 
         // The link between purchase and account. Read back in the webhook.
         client_reference_id: clerkUserId,
-        metadata: { clerkUserId, plan: "supporter" },
+        metadata: { clerkUserId, plan },
         // For one-time, `client_reference_id` does not propagate to the
         // PaymentIntent and refund events arrive on charges/PIs, so the id
         // travels there. For subscriptions, the recurring events arrive on the
         // subscription, so the id travels there instead.
         ...(isSubscription
-          ? { subscription_data: { metadata: { clerkUserId, plan: "supporter" } } }
-          : { payment_intent_data: { metadata: { clerkUserId, plan: "supporter" } } }),
+          ? { subscription_data: { metadata: { clerkUserId, plan } } }
+          : { payment_intent_data: { metadata: { clerkUserId, plan } } }),
 
         customer_email: identity.email ?? undefined,
 
@@ -106,7 +144,7 @@ export const createSupporterCheckout = action({
         // Stripe-level dedupe: a double-clicked button returns the same session
         // instead of creating a second one. Scoped per user + option + day, so
         // switching option is not blocked by an earlier press.
-        idempotencyKey: `supporter:${clerkUserId}:${billing}:${new Date().toISOString().slice(0, 10)}`,
+        idempotencyKey: `${plan}:${clerkUserId}:${billing}:${new Date().toISOString().slice(0, 10)}`,
       },
     );
 
@@ -285,6 +323,9 @@ async function fulfillCheckout(ctx: ActionCtx, stripe: Stripe, sessionId: string
     return;
   }
 
+  const plan = planFromMetadata(session.metadata);
+  const seats = plan === "team" ? (session.line_items?.data[0]?.quantity ?? undefined) : undefined;
+
   if (session.mode === "subscription") {
     const subscription =
       typeof session.subscription === "string"
@@ -305,6 +346,8 @@ async function fulfillCheckout(ctx: ActionCtx, stripe: Stripe, sessionId: string
       currency: session.currency ?? "usd",
       active: isActiveSubscription(subscription.status),
       currentPeriodEnd: periodEndMs(subscription),
+      plan,
+      seats,
     });
     return;
   }
@@ -320,6 +363,8 @@ async function fulfillCheckout(ctx: ActionCtx, stripe: Stripe, sessionId: string
     stripeCustomerEmail: session.customer_details?.email ?? undefined,
     amountTotal: session.amount_total ?? 0,
     currency: session.currency ?? "usd",
+    plan,
+    seats,
   });
 }
 
@@ -339,12 +384,16 @@ async function syncSubscription(
     return;
   }
 
+  const plan = planFromMetadata(subscription.metadata);
+
   await ctx.runMutation(internal.purchases.upsertSubscription, {
     clerkUserId,
     stripeSubscriptionId: subscription.id,
     stripeCustomerId: customerId(subscription.customer),
     active: isActiveSubscription(subscription.status),
     currentPeriodEnd: periodEndMs(subscription),
+    plan,
+    seats: plan === "team" ? subscription.items?.data[0]?.quantity : undefined,
   });
 }
 

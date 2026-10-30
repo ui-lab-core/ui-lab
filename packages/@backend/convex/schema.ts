@@ -46,6 +46,13 @@ export default defineSchema({
      * subscription option and are therefore one-time.
      */
     billing: v.optional(v.union(v.literal("one-time"), v.literal("subscription"))),
+    /** Which plan was bought. Absent on rows that predate Team, which are Supporter. */
+    plan: v.optional(v.union(v.literal("supporter"), v.literal("team"))),
+    /**
+     * Seats paid for on a Team purchase; the buyer holds one. The rest are
+     * assigned by hand as `grants` until self-serve seat assignment exists.
+     */
+    seats: v.optional(v.number()),
     /** Email Stripe collected. May differ from the Clerk account email. Audit only. */
     stripeCustomerEmail: v.optional(v.string()),
     /** Minor units, e.g. 4999. */
@@ -67,6 +74,8 @@ export default defineSchema({
     currentPeriodEnd: v.optional(v.number()),
     paidAt: v.optional(v.number()),
     revokedAt: v.optional(v.number()),
+    /** Clerk user id of the admin who voided a Stripe test-mode row. Never set on live rows. */
+    voidedBy: v.optional(v.string()),
   })
     .index("byClerkUserId", ["clerkUserId"])
     .index("byCheckoutSession", ["stripeCheckoutSessionId"])
@@ -86,6 +95,10 @@ export default defineSchema({
     clerkUserId: v.string(),
     /** Why this account was comped. Free text, for the audit trail. */
     reason: v.optional(v.string()),
+    /** Which plan this grant stands in for. Absent on rows that predate tiers, which are Supporter. */
+    plan: v.optional(v.union(v.literal("supporter"), v.literal("team"))),
+    /** Seats on a Team grant. Display/audit only, like `purchases.seats`. */
+    seats: v.optional(v.number()),
     /** Clerk user id of the admin who issued it. */
     grantedBy: v.string(),
     grantedAt: v.number(),

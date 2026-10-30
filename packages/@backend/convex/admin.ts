@@ -8,6 +8,10 @@ import {
 } from "./_generated/server";
 import { entitlementFor } from "./entitlements";
 
+/** Mirrors `SUPPORTER_PLAN.id` / `TEAM_PLAN.id`. Keep in sync with the library. */
+const PLAN = v.union(v.literal("supporter"), v.literal("team"));
+type Plan = "supporter" | "team";
+
 /**
  * Admin authority comes from a deployment environment variable, never from a
  * database field and never from a token claim.
@@ -95,11 +99,16 @@ export const listUsers = query({
  * `requireAdmin` runs first.
  */
 export const grantSupporter = mutation({
-  args: { clerkUserId: v.string(), reason: v.optional(v.string()) },
+  args: {
+    clerkUserId: v.string(),
+    reason: v.optional(v.string()),
+    plan: v.optional(PLAN),
+    seats: v.optional(v.number()),
+  },
   returns: v.null(),
-  handler: async (ctx, { clerkUserId, reason }) => {
+  handler: async (ctx, { clerkUserId, reason, plan, seats }) => {
     const adminId = await requireAdmin(ctx);
-    await applyGrant(ctx, clerkUserId, reason, adminId);
+    await applyGrant(ctx, clerkUserId, reason, adminId, plan, seats);
     return null;
   },
 });
@@ -117,10 +126,15 @@ export const grantSupporter = mutation({
  * honest about which path was used.
  */
 export const grantSupporterAsOperator = internalMutation({
-  args: { clerkUserId: v.string(), reason: v.optional(v.string()) },
+  args: {
+    clerkUserId: v.string(),
+    reason: v.optional(v.string()),
+    plan: v.optional(PLAN),
+    seats: v.optional(v.number()),
+  },
   returns: v.null(),
-  handler: async (ctx, { clerkUserId, reason }) => {
-    await applyGrant(ctx, clerkUserId, reason, "operator");
+  handler: async (ctx, { clerkUserId, reason, plan, seats }) => {
+    await applyGrant(ctx, clerkUserId, reason, "operator", plan, seats);
     return null;
   },
 });
@@ -151,26 +165,69 @@ export const revokeSupporterAsOperator = internalMutation({
   },
 });
 
-/** Idempotent: re-granting an active grant refreshes it instead of stacking duplicates. */
+/**
+ * Idempotent: re-granting an active grant refreshes it instead of stacking
+ * duplicates, which is also how an admin changes an account's tier.
+ */
 async function applyGrant(
   ctx: MutationCtx,
   clerkUserId: string,
   reason: string | undefined,
   actorId: string,
+  plan: Plan = "supporter",
+  seats?: number,
 ) {
+  if (clerkUserId === "") throw new Error("Missing Clerk user id");
+
+  const fields = {
+    reason,
+    plan,
+    seats: plan === "team" ? seats : undefined,
+    grantedBy: actorId,
+    grantedAt: Date.now(),
+  };
+
   const existing = await activeGrant(ctx, clerkUserId);
   if (existing !== null) {
-    await ctx.db.patch(existing._id, { reason, grantedBy: actorId, grantedAt: Date.now() });
+    await ctx.db.patch(existing._id, fields);
     return;
   }
 
-  await ctx.db.insert("grants", {
-    clerkUserId,
-    reason,
-    grantedBy: actorId,
-    grantedAt: Date.now(),
-  });
+  await ctx.db.insert("grants", { clerkUserId, ...fields });
 }
+
+/**
+ * Voids a Stripe *test-mode* purchase so a test account can be returned to the
+ * non-supporter state. Live purchases stay untouchable — their only exit is a
+ * refund in Stripe — so this refuses any session id without the `cs_test_`
+ * prefix. The row is kept as `canceled` with `voidedBy`, not deleted.
+ */
+export const voidTestPurchase = mutation({
+  args: { stripeCheckoutSessionId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, { stripeCheckoutSessionId }) => {
+    const adminId = await requireAdmin(ctx);
+    if (!stripeCheckoutSessionId.startsWith("cs_test_")) {
+      throw new Error("Only Stripe test-mode purchases can be voided");
+    }
+
+    const purchase = await ctx.db
+      .query("purchases")
+      .withIndex("byCheckoutSession", (q) =>
+        q.eq("stripeCheckoutSessionId", stripeCheckoutSessionId),
+      )
+      .first();
+    if (purchase === null) throw new Error("Purchase not found");
+    if (purchase.status !== "paid") return null;
+
+    await ctx.db.patch(purchase._id, {
+      status: "canceled",
+      revokedAt: Date.now(),
+      voidedBy: adminId,
+    });
+    return null;
+  },
+});
 
 async function applyRevoke(ctx: MutationCtx, clerkUserId: string, actorId: string) {
   const grant = await activeGrant(ctx, clerkUserId);
@@ -227,8 +284,21 @@ export const entitlementsFor = query({
           .withIndex("byExternalId", (q) => q.eq("externalId", clerkUserId))
           .first();
 
-        const paid = purchases.some((purchase) => purchase.status === "paid");
-        const granted = grants.some((grant) => grant.revokedAt === undefined);
+        const paidPurchases = purchases.filter((purchase) => purchase.status === "paid");
+        const active = grants.find((grant) => grant.revokedAt === undefined);
+        const paid = paidPurchases.length > 0;
+        const granted = active !== undefined;
+
+        // Rows that predate tiers are Supporter. Team outranks Supporter.
+        const plans: Plan[] = [
+          ...paidPurchases.map((purchase) => purchase.plan ?? "supporter"),
+          ...(active !== undefined ? [active.plan ?? "supporter"] : []),
+        ];
+        const plan: Plan | null = plans.includes("team")
+          ? "team"
+          : plans.length > 0
+            ? "supporter"
+            : null;
 
         return {
           clerkUserId,
@@ -241,6 +311,17 @@ export const entitlementsFor = query({
            */
           fromPurchase: paid,
           fromGrant: granted,
+          /** Highest tier held across paid purchases and the active grant. */
+          plan,
+          /**
+           * True when every paid purchase is Stripe test mode, so an admin may
+           * void them all and fully toggle the account off.
+           */
+          onlyTestPurchases:
+            paid &&
+            paidPurchases.every((purchase) =>
+              purchase.stripeCheckoutSessionId.startsWith("cs_test_"),
+            ),
           /** Whether the Clerk `user.*` webhook has ever written this account. */
           synced: syncedUser !== null,
           purchases: purchases.map((purchase) => ({
@@ -249,8 +330,13 @@ export const entitlementsFor = query({
             currency: purchase.currency,
             paidAt: purchase.paidAt,
             stripeCheckoutSessionId: purchase.stripeCheckoutSessionId,
+            plan: purchase.plan ?? "supporter",
+            seats: purchase.seats,
+            voidedBy: purchase.voidedBy,
           })),
           grants: grants.map((grant) => ({
+            plan: grant.plan ?? "supporter",
+            seats: grant.seats,
             reason: grant.reason,
             grantedBy: grant.grantedBy,
             grantedAt: grant.grantedAt,
