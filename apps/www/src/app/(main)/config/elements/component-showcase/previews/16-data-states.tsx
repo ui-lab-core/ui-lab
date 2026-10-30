@@ -81,7 +81,7 @@ export default function CommandPalette() {
           placeholder="Type a command or search…"
           icon={<Search size={16} />}
         />
-        <Command.List maxHeight="280px" emptyMessage="No matching commands.">
+        <Command.List max-height="280px" empty-message="No matching commands.">
           <Command.Groups
             renderCategory={(category) => <Command.Category>{category}</Command.Category>}
             renderItem={(item) => (

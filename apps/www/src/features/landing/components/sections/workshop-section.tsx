@@ -664,11 +664,11 @@ export function WorkshopSection() {
         </div>
 
         <Scroll
-          viewportRef={railRef}
+          viewport-ref={railRef}
           direction="horizontal"
           fade-x
-          fadeDistance={48}
-          fadeSize={6}
+          fade-distance={48}
+          fade-size={6}
           aria-label="Workshop categories"
           styles={{
             content:

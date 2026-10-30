@@ -1,6 +1,6 @@
 "use client";
 
-import { Code } from "./code";
+import { Code } from "@shared/code/code";
 import { PackageManagerTabs } from "./package-manager-tabs";
 
 type PackageManager = "npm" | "pnpm" | "yarn" | "bun";

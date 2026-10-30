@@ -30,7 +30,7 @@ import {
   type ReactNode,
 } from "react";
 import { Tabs } from "ui-lab-components/tabs";
-import { useNearViewport } from "@/shared/hooks/use-near-viewport";
+import { useNearViewport } from "@shared/lib/use-near-viewport";
 import { Section } from "./section";
 import { Button } from "ui-lab-components";
 

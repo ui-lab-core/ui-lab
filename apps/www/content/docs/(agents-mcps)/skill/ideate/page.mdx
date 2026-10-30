@@ -1,0 +1,60 @@
+---
+title: Ideate
+description: A design brief covering what a screen should contain, what it is missing, and what to remove.
+category: Agents & MCPs
+---
+
+Ideate answers "what should this be?" rather than "what's wrong with it?". It reasons about who uses the screen and why, then returns a design brief. It doesn't write code or change files, so it runs without the CLI.
+
+**Say:** "What am I missing on this screen?" · "What should we design for the onboarding flow?" · "Is this the right design?" · "Design critique on this page"
+
+Ideate works from a file path, pasted code, a description, or a screenshot.
+
+## What it does
+
+<Timeline>
+
+## Understand the context
+
+Before judging anything, Claude writes down the domain, who the user is, what they were doing before this screen, and what they need to get done on it. Everything after this step is judged against that context.
+
+## Search the registry
+
+Three to five MCP searches look for patterns, elements, and sections that match the domain and the gaps it suspects.
+
+## Take inventory
+
+Every element is listed, including missing ones such as a loading state that doesn't exist. Each is rated by whether it sits on the critical path and how much value it adds: high, medium, low, or remove.
+
+## Find gaps
+
+Gaps are grouped into three kinds: critical (missing feedback states, dead ends, native elements), layout coherence (related controls scattered apart), and progressive disclosure (secondary controls that don't need to be visible all the time).
+
+</Timeline>
+
+## What you get
+
+```
+DESIGN BRIEF
+
+DOMAIN CONTEXT
+A filtering view in an internal admin tool. Users arrive mid-task
+and want to narrow a dataset with as few decisions as possible.
+
+ELEMENT INVENTORY
+Search input        | Text filter          | Load-bearing: YES | Value: HIGH
+Status select       | Lifecycle filter     | Load-bearing: YES | Value: HIGH
+[ABSENT] Clear all  | Reset filters        | Load-bearing: YES | Value: HIGH
+
+GAPS
+CRITICAL:
+- No clear-all: users must unset each filter by hand
+
+LAYOUT COHERENCE:
+- Search and filters are stacked; group them in one toolbar
+
+TOP 5 SUGGESTIONS
+1. ...
+```
+
+The brief describes what should exist, not how to build it. Hand it to [Build](/docs/skill-build) to implement it.

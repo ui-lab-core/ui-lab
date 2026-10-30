@@ -13,7 +13,7 @@
   font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: 1.6;
-  margin-block: 3.5rem 0.5rem;
+  margin-block: 4.5rem 0.5rem;
 }
 
 #docs #doc-content h3 {
@@ -21,7 +21,7 @@
   font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: 1.6;
-  margin-block: 2.5rem 0.5rem;
+  margin-block: 3.5rem 0.5rem;
 }
 
 #docs #doc-content :is(h4, h5, h6) {
@@ -29,7 +29,7 @@
   font-weight: 500 !important;
   letter-spacing: normal !important;
   line-height: var(--leading-sm);
-  margin-block: 2rem 0.5rem;
+  margin-block: 2.5rem 0.5rem;
 }
 
 #docs #doc-content :is(h1, h2, h3, h4, h5, h6) + * {

@@ -5,6 +5,7 @@ import {
   getWorkshopElementSummaries,
 } from "@/features/workshop/lib/workshop-content";
 import { ContentHeader } from "@/features/navigation/components/content-header";
+import { getWorkshopPackageKinds } from "@/features/workshop/lib/workshop-navigation";
 import PackageElementsClientWrapper from "./wrapper";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 import PackagePreview from "./package-preview";
@@ -57,6 +58,7 @@ async function PackageContent({ packageId }: { packageId: string }) {
       <PackageElementsClientWrapper
         packageId={packageId}
         elements={elements}
+        kinds={getWorkshopPackageKinds(packageId)}
         facets={getWorkshopElementFacets()}
       />
     </>

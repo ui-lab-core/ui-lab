@@ -126,12 +126,6 @@ html.theme-transition *:not(.theme-transition-exempt, .theme-transition-exempt *
   transition: none !important;
 }
 
-pre.shiki .indent {
-  display: inline-block;
-  position: relative;
-  left: var(--indent-offset);
-}
-
 /* `font-mono` is semantic code text across the site, so its size has one
    owner. Change --text-code-size above to update every use at once. */
 .font-mono,
@@ -141,45 +135,6 @@ pre {
   line-height: var(--leading-code);
   letter-spacing: 0.015em;
   font-weight: 450;
-}
-
-pre.shiki .indent::before {
-  content: "";
-  position: absolute;
-  opacity: 0.15;
-  width: 1px;
-  height: 100%;
-  background-color: currentColor;
-}
-
-.code-block--line-numbers .shiki code {
-  counter-reset: step;
-  counter-increment: step 0;
-  display: block;
-  width: fit-content;
-  min-width: 100%;
-  white-space: pre;
-}
-
-.code-block--line-numbers .shiki .line::before {
-  content: counter(step);
-  counter-increment: step;
-  width: 1rem;
-  margin-right: 1rem;
-  display: inline-block;
-  text-align: right;
-  color: var(--background-500);
-}
-
-pre.shiki .indent {
-  display: inline-block;
-  position: relative;
-  left: calc(var(--indent-offset, 0px) + 0.4rem);
-}
-
-pre.shiki .indent:empty {
-  height: 1lh;
-  vertical-align: bottom;
 }
 
 .grid-paper {
@@ -224,7 +179,12 @@ article {
   margin: 0 auto;
 }
 
-::selection {
+/* ::selection {
   background: color-mix(in srgb, var(--accent-600) 10%, transparent);
   color: var(--accent-600);
+} */
+
+::selection {
+  background: var(--ring-background);
+  color: #fff;
 }

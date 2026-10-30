@@ -246,7 +246,10 @@ export function SlopSection() {
           {/* the plate: fixed height, so the list visibly runs past its own frame */}
           <div className="flex flex-col justify-between gap-10">
             <div className="pr-6 pt-16">
-              <SectionHeading title="Slop, named and filed, from every domain of interface design to the tells a model reaches for without a pattern to follow." />
+              <SectionHeading
+                size="small"
+                title="Slop, named and filed, from every domain of interface design to the tells a model reaches for without a pattern to follow."
+              />
             </div>
 
             {/* the legend is the control: a card and its group row share one open state */}

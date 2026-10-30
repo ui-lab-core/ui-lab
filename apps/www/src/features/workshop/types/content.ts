@@ -32,6 +32,7 @@ export interface WorkshopPatternRef {
   name: string;
   description: string;
   previewHeight?: number;
+  previewWidth?: number;
   code?: string;
 }
 
@@ -39,6 +40,7 @@ export interface WorkshopVariant {
   name: string;
   description: string;
   previewHeight?: number;
+  previewWidth?: number;
   demoPath?: string;
   files: WorkshopFile[];
   patterns: WorkshopPatternRef[];
@@ -53,6 +55,7 @@ export interface WorkshopTeaserVariant {
   name: string;
   description: string;
   previewHeight?: number;
+  previewWidth?: number;
   demoPath?: string;
 }
 
@@ -94,6 +97,10 @@ export interface WorkshopEntrySummary {
   name: string;
   description: string;
   category: string;
+  /** Universal kind (components, skills, utility, templates), for packages laid out by kind. */
+  kind?: string;
+  /** Purpose category inside the package, e.g. navigation. */
+  purpose?: string;
   tags: string[];
   access?: ContentAccess;
   /** Position in the catalog's curated order; `Infinity` when unordered. */
@@ -108,6 +115,7 @@ export interface WorkshopPatternEntry {
   category: string;
   complexity: string;
   previewHeight?: number;
+  previewWidth?: number;
   code?: string;
   variations: WorkshopPatternRef[];
 }

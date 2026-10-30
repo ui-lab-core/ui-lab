@@ -16,6 +16,7 @@ interface DocsNavigationPageTreeItem {
   label: string;
   slug: string;
   url: string;
+  children?: DocsNavigationPageTreeItem[];
 }
 
 interface DocsNavigationPageTreeSection {
@@ -39,6 +40,7 @@ export function getSectionsForDomain(data: DocsNavigationData, domain: DocsNavig
     items: section.items.map((item) => ({
       id: item.slug,
       label: item.label,
+      children: item.children?.map((child) => ({ id: child.slug, label: child.label })),
     })),
   }));
 }

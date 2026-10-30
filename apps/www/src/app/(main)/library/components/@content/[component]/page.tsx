@@ -9,7 +9,8 @@ import {
   reactAriaUrls,
   sourceUrls,
 } from "ui-lab-registry";
-import { ComponentPage } from "./page-shell/component-page";
+import { ComponentPage } from "@shared/page/component-page";
+import { highlightCode } from "@/features/docs/lib/shiki-server";
 
 export function generateStaticParams() {
   return Object.keys(componentRegistry).map((component) => ({ component }));
@@ -52,6 +53,7 @@ export default async function ComponentDetailPage({
       styles={generatedStyles[componentId] ?? null}
       reactAriaUrl={reactAriaUrls[componentId] ?? null}
       sourceUrl={sourceUrls[componentId] ?? null}
+      highlight={highlightCode}
     />
   );
 }

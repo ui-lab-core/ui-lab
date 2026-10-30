@@ -5,6 +5,7 @@ import { IconProvider } from "ui-lab-components/icon-provider";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { AppProvider, useApp } from "@/features/theme/lib/app-context";
+import { WwwDocsHost } from "@/features/docs/docs-host";
 
 function KeyboardShortcuts() {
   const {
@@ -82,11 +83,13 @@ function KeyboardShortcuts() {
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
-    <IconProvider default-variant="stroke">
+    <IconProvider default-variant="duo-tone">
       <AppProvider>
-        <KeyboardShortcuts />
-        {/* <PerfOverlay /> */}
-        {children}
+        <WwwDocsHost>
+          <KeyboardShortcuts />
+          {/* <PerfOverlay /> */}
+          {children}
+        </WwwDocsHost>
       </AppProvider>
     </IconProvider>
   );

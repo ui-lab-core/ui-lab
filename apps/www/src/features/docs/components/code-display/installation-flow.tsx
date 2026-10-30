@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Code } from "./code";
+import { Code } from "@shared/code/code";
 import { CodeWithPackageManager } from "./code-with-package-manager";
 import { Card, Badge, Button, Divider } from "ui-lab-components";
 

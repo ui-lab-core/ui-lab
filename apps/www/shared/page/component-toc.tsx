@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   TableOfContents,
   type TableOfContentsItem,
-} from "@/features/docs/components/table-of-contents";
+} from "./table-of-contents";
 
 export function ComponentToc({ items }: { items: Record<string, TableOfContentsItem[]> }) {
   const [tab, setTab] = useState("examples");

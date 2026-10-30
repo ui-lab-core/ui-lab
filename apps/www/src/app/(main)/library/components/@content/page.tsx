@@ -3,7 +3,7 @@ import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 import ComponentsPageClient from "./client";
 
 export const metadata: Metadata = buildMetadata({
-  pathname: "/components",
+  pathname: "/library/components",
   title: "Components",
   description: "Browse UI Lab components by category with live previews and usage guidance.",
 });

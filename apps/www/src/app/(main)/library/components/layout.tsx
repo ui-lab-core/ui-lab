@@ -7,7 +7,7 @@ interface ComponentsLayoutProps {
   content: ReactNode;
 }
 
-export const metadata = generateMetadata({ pathname: "/components" });
+export const metadata = generateMetadata({ pathname: "/library/components" });
 
 export default function ComponentsLayout({
   sidebar,

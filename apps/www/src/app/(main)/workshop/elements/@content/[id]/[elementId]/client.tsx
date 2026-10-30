@@ -46,6 +46,8 @@ export default function ElementDetailClient({
 
     return element.variants.map((variant, index) => {
       const DemoComponent = variant.demoPath ? getDemoComponent(variant.demoPath) : null;
+      // Skills and utilities carry no demo: their source is the entry, shown inline.
+      const isSourceOnly = !variant.demoPath;
 
       return (
         <WorkshopPreview
@@ -56,10 +58,12 @@ export default function ElementDetailClient({
           description={variant.description}
           files={variant.files}
           previewHeight={variant.previewHeight}
+          previewWidth={variant.previewWidth}
           category="element"
           dynamicPreviewHeight
           entryRef={`element:${packageId}/${element.id}#variant-${index}`}
-          disclosure="modal"
+          disclosure={isSourceOnly ? "inline" : "modal"}
+          hidePreview={isSourceOnly}
           patterns={variant.patterns}
           locked={isLocked}
         >
@@ -100,6 +104,7 @@ export default function ElementDetailClient({
                 title={teaser.name}
                 description={teaser.description}
                 previewHeight={teaser.previewHeight}
+                previewWidth={teaser.previewWidth}
                 category="element"
                 dynamicPreviewHeight
                 disclosure="inline"

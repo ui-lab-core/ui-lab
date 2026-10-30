@@ -2,22 +2,12 @@
 
 import { useRef, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Bookmark,
-  Home,
-  LifeBuoy,
-  LogIn,
-  MessageSquare,
-  Moon,
-  Paintbrush,
-  Tag,
-} from "lucide-react";
 import { SettingsPanel } from "@/features/landing/components/settings-panel";
 import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { useApp } from "@/features/theme/lib/app-context";
 import { ROUTES } from "@/shared/lib/routes";
-import { FaBars } from "@/shared/icons/fa6";
+import { Icon } from "ui-lab-components/icon";
 import { Menu } from "ui-lab-components/menu";
 
 interface HeaderMenuProps {
@@ -73,7 +63,7 @@ export function HeaderMenu({ profile, onProfileSelect, showLogin }: HeaderMenuPr
           variant="ghost"
           size="icon"
           aria-label="Open more menu"
-          icon={<FaBars size={16} />}
+          icon={<Icon id="menu" size={20} />}
           className="text-foreground-300 transition-colors hover:text-foreground-200"
         />
         <Menu.Content
@@ -93,25 +83,25 @@ export function HeaderMenu({ profile, onProfileSelect, showLogin }: HeaderMenuPr
           {showLogin ? (
             <>
               <Menu.Item onSelect={() => router.push(ROUTES.signIn)} textValue="Log in">
-                <LogIn size={14} className="shrink-0 text-foreground-400" />
+                <Icon id="login" size={18} className="shrink-0 text-foreground-400" />
                 <span className="flex-1">Log in</span>
               </Menu.Item>
               <Menu.Separator />
             </>
           ) : null}
           <Menu.Item onSelect={() => router.push("/")} textValue="Home">
-            <Home size={14} className="shrink-0 text-foreground-400" />
+            <Icon id="home" size={18} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Home</span>
           </Menu.Item>
           {profile ? (
             <Menu.Item onSelect={() => router.push("/account/saved")} textValue="Saved">
-              <Bookmark size={14} className="shrink-0 text-foreground-400" />
+              <Icon id="bookmark" size={18} className="shrink-0 text-foreground-400" />
               <span className="flex-1">Saved</span>
             </Menu.Item>
           ) : null}
           <Menu.Separator />
           <Menu.Item onSelect={() => setIsSettingsPanelOpen(true)} textValue="Theme settings">
-            <Paintbrush size={14} className="shrink-0 text-foreground-400" />
+            <Icon id="theme" size={18} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Theme Settings</span>
           </Menu.Item>
           <Menu.Item
@@ -127,21 +117,21 @@ export function HeaderMenu({ profile, onProfileSelect, showLogin }: HeaderMenuPr
             ]}
           >
             <span className="flex min-w-0 flex-1 items-center gap-2">
-              <Moon size={14} className="shrink-0 text-foreground-400" />
+              <Icon id="moon" size={18} className="shrink-0 text-foreground-400" />
               <span className="flex-1">Dark Mode</span>
             </span>
           </Menu.Item>
           <Menu.Separator />
           <Menu.Item onSelect={() => router.push("/changelog")} textValue="Changelog">
-            <Tag size={14} className="shrink-0 text-foreground-400" />
+            <Icon id="tag" size={18} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Changelog</span>
           </Menu.Item>
           <Menu.Item onSelect={() => router.push("/contact")} textValue="Feedback">
-            <MessageSquare size={14} className="shrink-0 text-foreground-400" />
+            <Icon id="chat" size={18} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Feedback</span>
           </Menu.Item>
           <Menu.Item onSelect={() => router.push("/docs")} textValue="Help & Support">
-            <LifeBuoy size={14} className="shrink-0 text-foreground-400" />
+            <Icon id="support" size={18} className="shrink-0 text-foreground-400" />
             <span className="flex-1">Help &amp; Support</span>
           </Menu.Item>
         </Menu.Content>

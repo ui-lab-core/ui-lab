@@ -13,8 +13,26 @@ export interface WorkshopNavGroup extends WorkshopNavLeaf {
   children: WorkshopNavLeaf[];
 }
 
+/** A kind or purpose category inside a package: its label, icon, and members. */
+export interface WorkshopNavNode extends WorkshopNavLeaf {
+  description?: string;
+  icon?: string;
+}
+
+export interface WorkshopNavCategory extends WorkshopNavNode {
+  elements: string[];
+}
+
+export interface WorkshopNavKind extends WorkshopNavNode {
+  /** Element ids that sit in the kind without a category. */
+  elements: string[];
+  categories: WorkshopNavCategory[];
+}
+
 export interface WorkshopNavPackage extends WorkshopNavLeaf {
   elements: WorkshopNavGroup[];
+  /** The package laid out by kind and category, in authored order. */
+  kinds: WorkshopNavKind[];
 }
 
 export interface WorkshopNavSection extends WorkshopNavGroup {

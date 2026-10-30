@@ -12,6 +12,7 @@ export interface ElementPreviewEntry {
   locked?: boolean;
   hidePreview?: boolean;
   previewHeight?: number;
+  previewWidth?: number;
   category?: WorkshopCategory;
   preview?: { packageId: string; id: string };
 }

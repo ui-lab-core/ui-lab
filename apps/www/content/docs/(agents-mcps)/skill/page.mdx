@@ -1,0 +1,89 @@
+---
+title: Skill
+description: The lab skill for Claude Code. Turn it on with $lab, describe the UI work you want, and it picks the right workflow.
+category: Agents & MCPs
+---
+
+The `lab` skill is a session mode for Claude Code. Type `$lab` once and every web UI design request after it goes through UI Lab: Claude reads what you asked for, picks one of six workflows (routes), and runs it with the component registry and design rules loaded.
+
+You never name a route. Say "build me a settings page" or "what's wrong with this card" and the skill decides whether that is a build, an audit, or something else.
+
+---
+
+## Install and activate
+
+Copy `skills/lab` from the [UI Lab repository](https://github.com/ui-lab-core/ui-lab/tree/master/skills/lab) into your project's `.claude/skills/` directory, or into `~/.claude/skills/` to use it in every project.
+
+Then start a session and type:
+
+```
+$lab
+```
+
+Claude replies `UI Lab mode activated. Tell me what you want to work on.` The mode stays on for the rest of the session, so you don't have to repeat `$lab`.
+
+The skill never turns itself on. Mentioning "UI", "design", "React", or "UI Lab" does nothing until you type `$lab`. After activation it only takes web UI design requests. Bug fixes, API wiring, state logic, tests, and non-web projects are handled by Claude as usual.
+
+## Requirements
+
+The skill depends on two tools:
+
+| Tool | What it does for the skill |
+| --- | --- |
+| `ui-lab` CLI | Installs packages, wires stylesheets, scaffolds projects (`ui-lab init`, `ui-lab add`, `ui-lab status`) |
+| UI Lab MCP server | Returns real component APIs, examples, workshop source, and setup guides, so nothing is written from memory |
+
+When the skill loads, a preflight script checks the project and reports whether it is a web project, whether `ui-lab-components` is installed, and whether the CLI is on the path. Claude confirms the MCP tools itself.
+
+If either tool is missing, the read-only routes still work and the routes that edit files stop:
+
+| Route | Edits files | Without the CLI or MCP |
+| --- | --- | --- |
+| [Audit](/docs/skill-audit) | No | Runs |
+| [Ideate](/docs/skill-ideate) | No | Runs |
+| [Setup](/docs/skill-setup) | Yes | Stops and names the missing tool |
+| [Build](/docs/skill-build) | Yes | Stops and names the missing tool |
+| [Quickfix](/docs/skill-quickfix) | Yes | Stops and names the missing tool |
+| [Conform](/docs/skill-conform) | Yes | Stops and names the missing tool |
+
+Claude won't hand-wire an install from memory to get around a missing tool. Install the CLI from the [installation guide](/docs/installation) and connect the MCP server from the [MCP overview](/docs/agents-mcps-installation).
+
+If the project has no `ui-lab-components` yet, Build and Conform run Setup first, then continue with what you asked for.
+
+## How routing works
+
+Describe what you want in plain language. Before doing anything, Claude names the route it picked in one line:
+
+```
+You:    can you look at the Card component and see what's wrong with it
+Claude: Routing to audit — reviewing Card against the six pillars.
+```
+
+If the pick is wrong, say so ("no, just fix it") and Claude switches routes. When a request could reasonably go two ways, such as a bare "improve this", it asks a single question instead of guessing.
+
+Some rough guides to how requests get routed:
+
+- New UI that doesn't exist yet goes to Build. Existing UI rewritten onto UI Lab goes to Conform.
+- A fast cleanup of one file or screen goes to Quickfix. A reviewed, project-wide migration goes to Conform.
+- "What should this have?" goes to Ideate. "What's wrong with this?" goes to Audit.
+
+## What the output aims for
+
+Every route judges UI by the same ideas. They come from three reference files that ship with the skill.
+
+**Reduce visual friction.** Anything the eye has to process without it helping the user read, decide, or act is friction. Each border, fill, wrapper, icon, and label has to earn its place by carrying structure, state, hierarchy, or interaction that nothing else already shows. Decorative gradients, badges that aren't real status, icons that repeat a heading, cards nested in cards, and empty states that explain too much get removed or flattened. Sparse is fine.
+
+**Finish what remains with craft.** Once the noise is gone, small details decide whether a surface feels finished. Inner shapes should follow the radius of their container. Content should be sized to be read rather than shrunk to fit a frame, and it should sit on the surface that already contains it instead of getting a second border. Icons should show what the thing actually is, not the stock symbol for its category.
+
+**Judge against six pillars.** Output is checked against Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, and Slop Avoidance. Audit scores them. Build runs the same check on its own work before showing it to you.
+
+## Routes
+
+| Route | Use it to | Edits files |
+| --- | --- | --- |
+| [Setup](/docs/skill-setup) | Install and wire UI Lab in a new or existing project | Yes |
+| [Build](/docs/skill-build) | Write new UI from existing UI Lab compositions | Yes |
+| [Ideate](/docs/skill-ideate) | Get a design brief: what a screen should contain and what it is missing | No |
+| [Audit](/docs/skill-audit) | Get a star-rated report against the six pillars | No |
+| [Quickfix](/docs/skill-quickfix) | Swap to UI Lab components, remove slop, and apply tokens in one pass | Yes |
+| [Conform](/docs/skill-conform) | Migrate existing UI to UI Lab, or fix an audit, after you approve a plan | Yes |

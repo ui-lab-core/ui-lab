@@ -138,12 +138,12 @@ export const previews: Record<string, React.ReactNode> = {
   icon: (
     <div className="grid grid-cols-3 gap-4 text-foreground-300">
       {[
-        "cake-fill",
-        "bell-simple-ringing-fill",
-        "magnifying-glass-plus-fill",
-        "person-fill",
-        "code-fill",
-        "warning-fill",
+        "folder",
+        "bell",
+        "search",
+        "agent",
+        "code",
+        "music",
       ].map((id, index) => (
         <div
           key={id}
@@ -153,7 +153,7 @@ export const previews: Record<string, React.ReactNode> = {
               : "flex size-12 items-center justify-center rounded-lg bg-background-800"
           }
         >
-          <Icon variant="fill" id={id} size={24} />
+          <Icon id={id} size={24} />
         </div>
       ))}
     </div>

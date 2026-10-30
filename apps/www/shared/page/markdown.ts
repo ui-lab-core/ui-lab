@@ -1,23 +1,18 @@
 import type { ComponentAPI } from "ui-lab-registry";
-import type { ComponentDetail } from "@/types/component";
 
 export type CopySource = "examples" | "api" | "styles";
 export type CopyExample = { title?: string; description?: string; code: string };
 export type CopyStyles = { rawCss?: string } | string | null;
 
 export function buildExamplesMarkdown(
-  component: ComponentDetail | undefined,
   name?: string,
   description?: string,
   examples?: CopyExample[],
 ): string {
-  const resolvedName = component?.name ?? name;
-  const resolvedDescription = component?.description ?? description;
-  const resolvedExamples = component?.examples ?? examples;
-  if (!resolvedName || !resolvedExamples) return "";
+  if (!name || !examples) return "";
 
-  const lines = [`# ${resolvedName}\n\n${resolvedDescription ?? ""}`];
-  resolvedExamples.forEach((example) => {
+  const lines = [`# ${name}\n\n${description ?? ""}`];
+  examples.forEach((example) => {
     if (example.title) lines.push(`\n## ${example.title}`);
     if (example.description) lines.push(example.description);
     lines.push(`\`\`\`tsx\n${example.code}\n\`\`\``);

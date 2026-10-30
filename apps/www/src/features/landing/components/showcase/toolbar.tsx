@@ -20,9 +20,9 @@ export function ShowcaseToolbar({ value, onValueChange, onPreload }: ShowcaseToo
     <div className="flex w-full min-w-0 flex-col items-stretch pt-2 px-2 sm:flex-row sm:items-center sm:justify-between">
       <Tabs value={value} onValueChange={onValueChange}>
         <Tabs.List
-          className="w-full max-w-full overflow-x-auto rounded-full border border-background-700 bg-background-950 px-[4px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit"
+          className="w-full max-w-full overflow-x-auto border border-background-700 bg-background-950 px-[4px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit"
           styles={{
-            indicator: "bg-background-700 rounded-full",
+            indicator: "bg-background-700",
           }}
           aria-label="Showcase categories"
         >
@@ -30,7 +30,7 @@ export function ShowcaseToolbar({ value, onValueChange, onPreload }: ShowcaseToo
             <Tabs.Trigger
               key={value}
               value={value}
-              className="shrink-0 rounded-full px-3.5 py-1.5 active:bg-background-700"
+              className="shrink-0 px-3.5 py-1.5 active:bg-background-700"
               onMouseEnter={() => onPreload?.(value)}
               onFocus={() => onPreload?.(value)}
             >

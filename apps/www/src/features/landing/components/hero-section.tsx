@@ -16,10 +16,10 @@ export function HeroSection() {
               </h2>
             </div>
             <div className="flex w-full flex-wrap gap-3 md:mb-0 md:mt-8 md:w-fit md:shrink-0 md:gap-4">
-              <Button className="rounded-full" variant="primary" href="/docs">
+              <Button className="w-36" variant="primary" href="/docs">
                 Get Started
               </Button>
-              <Button className="rounded-full" variant="secondary" href="/components">
+              <Button className="px-3" variant="secondary" href="/library/components">
                 Browse Components
               </Button>
             </div>

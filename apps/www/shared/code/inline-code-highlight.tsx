@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useApp } from "@/features/theme/lib/app-context";
-import { useNearViewport } from "@/shared/hooks/use-near-viewport";
-import { highlightInlineCode } from "@/features/docs/lib/shiki-client";
+import { useDocsHost } from "../host";
+import { useNearViewport } from "../lib/use-near-viewport";
 
 interface InlineCodeHighlightProps {
   code: string;
@@ -16,18 +15,17 @@ export function InlineCodeHighlight({
   language = "typescript",
   className = "",
 }: InlineCodeHighlightProps) {
-  const { currentThemeMode, currentThemeColors, isThemeInitialized } = useApp();
+  const { ready, themeKey, highlightInline } = useDocsHost().code;
   const [highlightedCode, setHighlightedCode] = useState<string | null>(null);
   const htmlRef = useRef<HTMLElement>(null);
   const isNearViewport = useNearViewport(htmlRef);
 
   useEffect(() => {
-    if (!isNearViewport || !isThemeInitialized || !currentThemeColors || code.trim().length < 4)
-      return;
+    if (!isNearViewport || !ready || !highlightInline || code.trim().length < 4) return;
     let cancelled = false;
 
     const highlight = () => {
-      highlightInlineCode(code, language, currentThemeColors, currentThemeMode)
+      highlightInline(code, language)
         .then((html) => {
           if (!cancelled) setHighlightedCode(html);
         })
@@ -49,7 +47,7 @@ export function InlineCodeHighlight({
       if (idleCallback) window.cancelIdleCallback(idleCallback);
       if (timeout) window.clearTimeout(timeout);
     };
-  }, [code, currentThemeColors, currentThemeMode, isNearViewport, isThemeInitialized, language]);
+  }, [code, highlightInline, isNearViewport, language, ready, themeKey]);
 
   return (
     <code

@@ -1,5 +1,5 @@
-import { InlineCodeHighlight } from "@/features/docs/components/code-display/inline-code-highlight";
-import { Table, type Column } from "@/features/docs/components/table";
+import { InlineCodeHighlight } from "../code/inline-code-highlight";
+import { Table, type Column } from "./table";
 import { Popover } from "ui-lab-components";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";

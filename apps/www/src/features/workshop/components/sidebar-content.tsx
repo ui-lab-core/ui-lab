@@ -5,9 +5,12 @@ import { Expand } from "ui-lab-components";
 import { useUrlSearchParams } from "@/shared/hooks/use-url-search-params";
 import { cn } from "@/shared/lib/utils";
 import { SidebarItemLink } from "@/features/navigation";
+import { getStructureIcon } from "@ui-lab-core/library/gallery-previews";
 import {
   EMPTY_WORKSHOP_NAVIGATION,
+  type WorkshopNavGroup,
   type WorkshopNavigation,
+  type WorkshopNavNode,
 } from "@/features/workshop/types/navigation";
 
 interface ElementsSidebarContentProps {
@@ -68,6 +71,23 @@ function ExpandGroup({
       </Expand.Content>
     </Expand>
   );
+}
+
+/** A kind label — the package's root level — with its icon. */
+function KindLabel({ node }: { node: WorkshopNavNode }) {
+  const Icon = getStructureIcon(node.icon);
+
+  return (
+    <p className="flex items-center gap-2 px-3 pt-2 pb-1 text-sm font-semibold text-foreground-200">
+      {Icon && <Icon size={14} className="shrink-0 text-foreground-400" aria-hidden />}
+      {node.name}
+    </p>
+  );
+}
+
+/** A purpose-category label inside a kind: plain text, no icon. */
+function CategoryLabel({ name }: { name: string }) {
+  return <p className="px-3 pt-3 pb-1 text-sm font-medium text-foreground-400">{name}</p>;
 }
 
 function EmptyState({ children }: { children: React.ReactNode }) {
@@ -200,42 +220,71 @@ function ElementsListContent({
       return <EmptyState>No elements in this package yet.</EmptyState>;
     }
 
-    return (
-      <div className="space-y-1">
-        {packageElements.map((element) => {
-          const isActive = currentElementId === element.id;
-          const href = `/workshop/elements/${currentPackageId}/${element.id}`;
+    const renderElement = (element: WorkshopNavGroup) => {
+      const isActive = currentElementId === element.id;
+      const href = `/workshop/elements/${currentPackageId}/${element.id}`;
 
-          if (element.children.length === 0) {
+      if (element.children.length === 0) {
+        return (
+          <NavLink key={element.id} href={href} isActive={isActive}>
+            {element.name}
+          </NavLink>
+        );
+      }
+
+      return (
+        <ExpandGroup
+          key={element.id}
+          name={element.name}
+          isExpanded={effectiveExpandedItems.has(element.id)}
+          onToggle={toggleItem(element.id)}
+        >
+          {element.children.map((variant) => {
+            const isVariantActive = isActive && currentVariant === variant.id;
             return (
-              <NavLink key={element.id} href={href} isActive={isActive}>
-                {element.name}
+              <NavLink
+                key={`${element.id}-${variant.id}`}
+                href={`${href}?variant=${variant.id}`}
+                isActive={isVariantActive}
+              >
+                {variant.name}
               </NavLink>
             );
-          }
+          })}
+        </ExpandGroup>
+      );
+    };
 
-          return (
-            <ExpandGroup
-              key={element.id}
-              name={element.name}
-              isExpanded={effectiveExpandedItems.has(element.id)}
-              onToggle={toggleItem(element.id)}
-            >
-              {element.children.map((variant) => {
-                const isVariantActive = isActive && currentVariant === variant.id;
-                return (
-                  <NavLink
-                    key={`${element.id}-${variant.id}`}
-                    href={`${href}?variant=${variant.id}`}
-                    isActive={isVariantActive}
-                  >
-                    {variant.name}
-                  </NavLink>
-                );
-              })}
-            </ExpandGroup>
-          );
-        })}
+    const kinds = packages.find((pkg) => pkg.id === currentPackageId)?.kinds ?? [];
+    const isStructured = kinds.length > 1 || kinds.some((kind) => kind.categories.length > 0);
+
+    if (!isStructured) {
+      return <div className="space-y-1">{packageElements.map(renderElement)}</div>;
+    }
+
+    const elementsById = new Map(packageElements.map((element) => [element.id, element]));
+    const pick = (ids: string[]) =>
+      ids
+        .map((id) => elementsById.get(id))
+        .filter((element): element is WorkshopNavGroup => Boolean(element));
+
+    return (
+      <div className="space-y-1">
+        {kinds.map((kind) => (
+          <div key={kind.id} className="space-y-1">
+            <KindLabel node={kind} />
+            {kind.elements.length === 0 && kind.categories.length === 0 && (
+              <p className="px-3 pb-1 text-sm text-foreground-500">None yet</p>
+            )}
+            {pick(kind.elements).map(renderElement)}
+            {kind.categories.map((category) => (
+              <div key={category.id} className="space-y-1">
+                <CategoryLabel name={category.name} />
+                {pick(category.elements).map(renderElement)}
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     );
   }

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Gallery } from "ui-lab-components";
 import { Skeleton } from "ui-lab-components/skeleton";
-import { useNearViewport } from "@/shared/hooks/use-near-viewport";
+import { useNearViewport } from "@shared/lib/use-near-viewport";
 import { ElementPreviewDialog } from "@/features/element-preview/element-preview";
 import { ResolvedElementPreview } from "@/features/element-preview/resolved-preview";
 import { resolveElementPreview } from "@/features/element-preview/resolve-entry";

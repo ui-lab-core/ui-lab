@@ -2,16 +2,16 @@
   "title": "Agents & MCPs",
   "pages": [
     {
+      "name": "skill",
+      "title": "Skill"
+    },
+    {
       "name": "agents-mcps-installation",
       "title": "Overview"
     },
     {
       "name": "agents-mcps-workflows",
       "title": "Workflows"
-    },
-    {
-      "name": "agents-mcps-design-skill",
-      "title": "Skills"
     }
   ]
 }

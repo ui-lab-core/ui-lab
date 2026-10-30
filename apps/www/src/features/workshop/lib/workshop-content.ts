@@ -77,6 +77,7 @@ function toPatternRefs(patternIds: string[] | undefined): WorkshopPatternRef[] {
       name: pattern.name,
       description: pattern.description,
       previewHeight: pattern.previewHeight,
+      previewWidth: pattern.previewWidth,
       code: pattern.code,
     }));
 }
@@ -91,6 +92,7 @@ function toTeaserVariant(variant: ElementVariant): WorkshopTeaserVariant {
     name: variant.name,
     description: variant.description,
     previewHeight: variant.previewHeight,
+    previewWidth: variant.previewWidth,
     demoPath: variant.demoPath,
   };
 }
@@ -131,6 +133,7 @@ function toVariant(variant: ElementVariant, locked: boolean): WorkshopVariant {
     name: variant.name,
     description: variant.description,
     previewHeight: variant.previewHeight,
+    previewWidth: variant.previewWidth,
     demoPath: variant.demoPath,
     files: toFiles(variant.files, locked),
     patterns: toPatternRefs(variant.patterns),
@@ -221,12 +224,14 @@ export function getWorkshopPattern(patternId: string): WorkshopPatternEntry | nu
     category: pattern.category,
     complexity: pattern.complexity,
     previewHeight: pattern.previewHeight,
+    previewWidth: pattern.previewWidth,
     code: pattern.code,
     variations: (pattern.variations ?? []).map((variation) => ({
       id: variation.id,
       name: variation.name,
       description: variation.description,
       previewHeight: variation.previewHeight,
+      previewWidth: variation.previewWidth,
       code: variation.code,
     })),
   };
@@ -255,6 +260,8 @@ export function getWorkshopElementSummaries(packageId: string): WorkshopEntrySum
       name: element.name,
       description: element.description,
       category: element.category,
+      ...(element.kind ? { kind: element.kind } : {}),
+      ...(element.purpose ? { purpose: element.purpose } : {}),
       tags: element.tags,
       access: element.access,
       order: orderOf(element.id),

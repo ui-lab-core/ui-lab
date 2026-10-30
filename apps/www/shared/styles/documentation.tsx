@@ -1,4 +1,4 @@
-import { Code } from "@/features/docs/components/code-display/code";
+import { Code } from "../code/code";
 import type { ComponentStyleDocumentation } from "ui-lab-registry";
 
 export type CssVariable = {

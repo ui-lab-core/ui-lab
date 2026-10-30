@@ -3,7 +3,7 @@ import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import * as LucideIcons from "lucide-react";
 
-import { Code } from "./code-display/code";
+import { Code } from "@shared/code/code";
 import { CodeWithPackageManager } from "./code-display/code-with-package-manager";
 import { InstallCommand } from "./code-display/install-command";
 import { InstallationFlow } from "./code-display/installation-flow";
@@ -13,7 +13,6 @@ import { Banner, BannerTitle, BannerBody } from "./mdx/client-banner";
 import { Anchor } from "./mdx/client-anchor";
 import { Divider } from "./mdx/client-divider";
 import { MermaidDiagramWrapper as MermaidDiagram } from "./mdx/mermaid-diagram-wrapper";
-import { SkillFiles } from "./mdx/skill-files";
 import {
   MarkdownTable,
   MarkdownTableBody,
@@ -64,7 +63,6 @@ const components = {
   Banner: Object.assign(Banner, { Title: BannerTitle, Body: BannerBody }),
   Divider,
   MermaidDiagram,
-  SkillFiles,
   pre: async ({ children }: any) => {
     if (typeof children === "object" && children !== null && "props" in children) {
       const code = (children.props?.children as string) || "";

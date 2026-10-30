@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useMemo, memo } from "react";
+import { useMemo, memo, useState } from "react";
 import { Divider } from "ui-lab-components/divider";
+import { Expand } from "ui-lab-components/expand";
 import { Scroll } from "ui-lab-components/scroll";
 import { usePrefetchOnHover } from "@/shared/hooks/use-prefetch-on-hover";
 import { cn } from "@/shared/lib/utils";
@@ -23,6 +24,7 @@ import { Flex } from "ui-lab-components";
 import { Badge } from "ui-lab-components/badge";
 import { List } from "ui-lab-components/list";
 import { getComponentCount } from "ui-lab-registry";
+import { lumenIcons } from "@ui-lab-core/library/icons";
 import { Logo } from "@/features/layout/components/logo";
 import { FaTags } from "@/shared/icons/fa6";
 import { ElementsList } from "@/features/workshop/components/sidebar-content";
@@ -31,6 +33,7 @@ import type { WorkshopNavigation } from "@/features/workshop/types/navigation";
 type ElementsNavType = "packages" | "sections" | "starters" | "patterns";
 
 const componentCount = getComponentCount();
+const iconCount = lumenIcons.icons.length;
 
 function getElementsNav(pathname: string): ElementsNavType {
   if (pathname.startsWith("/workshop/sections")) return "sections";
@@ -80,6 +83,71 @@ const SidebarItemLink = memo(function SidebarItemLink({
   );
 });
 
+function docsItemClassName(active: boolean) {
+  return cn(
+    "block relative px-3 py-2.5 font-medium text-md leading-[20px] tracking-normal rounded-[6px] cursor-pointer",
+    "transition-colors duration-300 ease-out",
+    "hover:duration-0  hover:bg-background-800/50",
+    active
+      ? 'text-foreground-100 font-medium after:content-[""] after:absolute after:-left-2.5 after:top-1/2 after:-translate-y-1/2 after:bg-foreground-300 after:w-0.5 after:h-[60%]'
+      : cn("text-foreground-300", "hover:text-foreground-200"),
+  );
+}
+
+/** A docs page that is also a group: the label opens the page, the chevron toggles its children. */
+function SidebarGroup({
+  item,
+  pathname,
+  activeNavItem,
+}: {
+  item: { id: string; label: string; children: Array<{ id: string; label: string }> };
+  pathname: string;
+  activeNavItem: ReturnType<typeof getActiveNavItemForDomain>;
+}) {
+  const href = getHrefForNavItem(activeNavItem, item.id);
+  const active = href === pathname;
+  const containsActive =
+    active || item.children.some((child) => isNavItemActive(child.id, pathname, activeNavItem));
+  const [expanded, setExpanded] = useState(containsActive);
+  const [prevContainsActive, setPrevContainsActive] = useState(containsActive);
+
+  if (containsActive !== prevContainsActive) {
+    setPrevContainsActive(containsActive);
+    if (containsActive) setExpanded(true);
+  }
+
+  return (
+    <Expand expanded={expanded} onExpandedChange={setExpanded}>
+      <div className="flex items-center">
+        <div className="flex-1 min-w-0">
+          <SidebarItemLink href={href} className={docsItemClassName(active)}>
+            {item.label}
+          </SidebarItemLink>
+        </div>
+        <Expand.Trigger
+          aria-label={`${expanded ? "Collapse" : "Expand"} ${item.label}`}
+          className="w-auto shrink-0 text-foreground-400 hover:text-foreground-200"
+        >
+          <Expand.Icon />
+        </Expand.Trigger>
+      </div>
+      <Expand.Content>
+        <div className="pl-3 space-y-0.5 mt-0.5">
+          {item.children.map((child) => (
+            <SidebarItemLink
+              key={child.id}
+              href={getHrefForNavItem(activeNavItem, child.id)}
+              className={docsItemClassName(isNavItemActive(child.id, pathname, activeNavItem))}
+            >
+              {child.label}
+            </SidebarItemLink>
+          ))}
+        </div>
+      </Expand.Content>
+    </Expand>
+  );
+}
+
 export function Sidebar({
   activeDomain: activeDomainProp,
   activeElementsNav: activeElementsNavProp,
@@ -88,6 +156,7 @@ export function Sidebar({
   activeDomain?:
     | "docs"
     | "components"
+    | "icons"
     | "packages"
     | "sections"
     | "starters"
@@ -140,7 +209,7 @@ export function Sidebar({
 
   const mobileNavigation = [
     { label: "Documentation", href: "/docs", active: pathname.startsWith("/docs") },
-    { label: "Components", href: "/components", active: pathname.startsWith("/components") },
+    { label: "Library", href: "/library", active: pathname.startsWith("/library") },
     { label: "Workshop", href: "/workshop/elements", active: pathname.startsWith("/workshop") },
   ];
 
@@ -231,10 +300,10 @@ export function Sidebar({
                       href={navItem.href}
                       prefetch={false}
                       className={cn(
-                        "flex items-center gap-3 rounded-[6px] border px-4 py-3 text-md leading-[20px] font-medium tracking-normal",
+                        "flex items-center gap-3 rounded-xs border px-4 py-3 text-md leading-[20px] font-medium tracking-normal",
                         isActive
-                          ? "border-background-700 text-foreground-50 bg-background-800"
-                          : "border-transparent text-foreground-400 hover:text-foreground-200 hover:bg-background-800/60",
+                          ? "border-background-700 text-foreground-50 bg-background-900"
+                          : "border-transparent text-foreground-300 hover:text-foreground-200 hover:bg-background-800/60",
                       )}
                     >
                       {/*
@@ -252,7 +321,13 @@ export function Sidebar({
                       {navItem.id === "components-core" && (
                         <Badge
                           count={componentCount}
-                          className="bg-background-600 border-2 px-1.5"
+                          className="w-12 justify-center rounded-full border-none bg-transparent text-foreground-400"
+                        />
+                      )}
+                      {navItem.id === "icons" && (
+                        <Badge
+                          count={iconCount}
+                          className="w-12 justify-center rounded-full border-none bg-transparent text-foreground-400"
                         />
                       )}
                     </Link>
@@ -262,7 +337,7 @@ export function Sidebar({
             </div>
           )}
 
-          <Scroll className="flex-1" maxHeight="100%" fade-y storageKey={scrollStorageKey}>
+          <Scroll className="flex-1" max-height="100%" fade-y storage-key={scrollStorageKey}>
             {isElementsOrSectionsOrStarters ? (
               <div className="px-4">
                 <ElementsList
@@ -288,26 +363,26 @@ export function Sidebar({
                         className="absolute left-0.5 top-0 bottom-0 bg-foreground-400"
                       />
                       <div className="pl-3 space-y-0.5">
-                        {section.items.map((item) => {
-                          const active = isNavItemActive(item.id, pathname, activeNavItem);
-                          const href = getHrefForNavItem(activeNavItem, item.id);
-                          return (
+                        {section.items.map((item) =>
+                          item.children?.length ? (
+                            <SidebarGroup
+                              key={item.id}
+                              item={{ ...item, children: item.children }}
+                              pathname={pathname}
+                              activeNavItem={activeNavItem}
+                            />
+                          ) : (
                             <SidebarItemLink
                               key={item.id}
-                              href={href}
-                              className={cn(
-                                "block relative px-3 py-2.5 font-medium text-md leading-[20px] tracking-normal rounded-[6px] cursor-pointer",
-                                "transition-colors duration-300 ease-out",
-                                "hover:duration-0  hover:bg-background-800/50",
-                                active
-                                  ? 'text-foreground-100 font-medium after:content-[""] after:absolute after:-left-2.5 after:top-1/2 after:-translate-y-1/2 after:bg-foreground-300 after:w-0.5 after:h-[60%]'
-                                  : cn("text-foreground-300", "hover:text-foreground-200"),
+                              href={getHrefForNavItem(activeNavItem, item.id)}
+                              className={docsItemClassName(
+                                isNavItemActive(item.id, pathname, activeNavItem),
                               )}
                             >
                               {item.label}
                             </SidebarItemLink>
-                          );
-                        })}
+                          ),
+                        )}
                       </div>
                     </div>
                   </div>

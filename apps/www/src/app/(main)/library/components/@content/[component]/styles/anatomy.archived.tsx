@@ -1,13 +1,13 @@
 "use client";
 
 // Archived anatomy design. Intentionally not used by active documentation.
-import { Code } from "@/features/docs/components/code-display/code";
-import { InlineCodeHighlight } from "@/features/docs/components/code-display/inline-code-highlight";
+import { Code } from "@shared/code/code";
+import { InlineCodeHighlight } from "@shared/code/inline-code-highlight";
 import { StylePreview } from "@/features/docs/components/style-preview";
 import { List, Scroll } from "ui-lab-components";
 import { useState } from "react";
 import type { ComponentStyleDocumentation } from "ui-lab-registry";
-import type { StyleInfo } from "./documentation";
+import type { StyleInfo } from "@shared/styles/documentation";
 
 type StyleableGroup = NonNullable<StyleInfo["styleableGroups"]>[number];
 
@@ -60,7 +60,7 @@ export function StyleAnatomy({
           ) : null}
         </div>
         <div className="flex flex-col border-b border-background-700 min-w-48 p-2 lg:border-r lg:border-b-0">
-          <Scroll className="flex-1" maxHeight="32rem" fade-y>
+          <Scroll className="flex-1" max-height="32rem" fade-y>
             <List layout="spaced" spacing="sm" aria-label="Anatomy subcomponents">
               {ordered.map((group) => (
                 <List.Item
@@ -115,7 +115,7 @@ export function StyleAnatomy({
               {current.slots.length} {current.slots.length === 1 ? "slot" : "slots"}
             </span>
           </div>
-          <Scroll maxHeight="18rem" fade-y>
+          <Scroll max-height="18rem" fade-y>
             <List
               spacing="sm"
               aria-label={`${documentation.groupLabels?.[current.name] ?? current.name.replace(/StyleSlots$/, "")} style slots`}

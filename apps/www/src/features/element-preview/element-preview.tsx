@@ -11,13 +11,15 @@ import {
   type ReactNode,
 } from "react";
 import { ChevronRight, FileCode2, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import type { PreviewFrame } from "@ui-lab-core/library/preview-frame";
+import { PreviewStage, previewHostStyle } from "@shared/previews/preview-stage";
 import { getElementPreview } from "@ui-lab-core/library/previews";
 import {
   LOCKED_SOURCE_PREVIEW_LINES,
   type WorkshopFile,
   type WorkshopPatternRef,
 } from "@/features/workshop/types/content";
-import { Code } from "@/features/docs/components/code-display/code";
+import { Code } from "@shared/code/code";
 import { cn } from "@/shared/lib/utils";
 import { Mask, Modal, Panel } from "ui-lab-components";
 import { LockedCta } from "@/features/workshop/components/locked-teaser";
@@ -49,6 +51,9 @@ export interface ElementPreviewProps {
   /** Maximum visible source lines before the code display expands. */
   codeMaxHeightLines?: number | null;
   previewHeight?: number;
+  /** Widest the live demo may render, in pixels. Defaults to the standard 672px frame. */
+  previewWidth?: number;
+  previewFrame?: PreviewFrame;
   /** Let the inline preview grow to the height of its rendered content. */
   dynamicPreviewHeight?: boolean;
   previewLayout?: "center" | "start";
@@ -112,6 +117,8 @@ export function ElementPreview({
   showCodeHeader = true,
   codeMaxHeightLines,
   previewHeight = DEFAULT_PREVIEW_HEIGHT,
+  previewWidth,
+  previewFrame,
   dynamicPreviewHeight = false,
   previewLayout = "center",
   hidePreview = false,
@@ -257,14 +264,26 @@ export function ElementPreview({
                   >
                     <div
                       className={cn(
-                        "flex justify-center  w-full min-w-[min(100%,16rem)] max-w-full items-center",
+                        "mx-auto flex justify-center w-full min-w-[min(100%,16rem)] items-center",
+                        !previewFrame && !previewWidth && "max-w-2xl",
                         // Preview-only cards are a single click target that opens the
                         // modal; the live demo is shown purely as a thumbnail, so its
                         // controls are made inert. Only the modal detail is interactable.
                         isPreviewOnly && "pointer-events-none",
                       )}
+                      style={!previewFrame && previewWidth ? { maxWidth: previewWidth } : undefined}
                     >
-                      <Suspense fallback={<PreviewSkeleton />}>{children}</Suspense>
+                      {previewFrame ? (
+                        <div
+                          className="h-full w-full min-w-0"
+                          // A fixed-height card bounds the stage; a dynamic one grows with it.
+                          style={dynamicPreviewHeight && !isModalDetail ? undefined : previewHostStyle}
+                        >
+                          <PreviewStage frame={previewFrame}>
+                            <Suspense fallback={<PreviewSkeleton />}>{children}</Suspense>
+                          </PreviewStage>
+                        </div>
+                      ) : <Suspense fallback={<PreviewSkeleton />}>{children}</Suspense>}
                     </div>
                   </div>
                 </div>
@@ -386,6 +405,8 @@ export function ElementPreview({
               showCodeHeader={false}
               codeMaxHeightLines={null}
               previewHeight={previewHeight}
+              previewWidth={previewWidth}
+              previewFrame={previewFrame}
               dynamicPreviewHeight={dynamicPreviewHeight}
               previewLayout={previewLayout}
               hidePreview={hidePreview}

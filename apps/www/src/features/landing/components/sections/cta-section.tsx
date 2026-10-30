@@ -20,7 +20,7 @@ export function CtaSection() {
             <Button className="rounded-full" variant="primary" href="/docs">
               Get Started
             </Button>
-            <Button className="rounded-full" variant="secondary" href="/components">
+            <Button className="rounded-full" variant="secondary" href="/library/components">
               Browse Components
             </Button>
           </div>

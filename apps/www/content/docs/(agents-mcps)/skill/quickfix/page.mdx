@@ -1,0 +1,31 @@
+---
+title: Quickfix
+description: One pass over existing UI that swaps in UI Lab components, removes slop, and applies tokens, without a plan or confirmation step.
+category: Agents & MCPs
+---
+
+Quickfix cleans up existing UI in a single pass. Use it for one file or screen when you want the result now, without reviewing a plan first. It runs in your session.
+
+**Say:** "Quickfix this page" · "Clean this up with UI Lab" · "De-slop this and use our tokens"
+
+Quickfix works on whatever you point at. If you don't name anything, it uses the files already under discussion. If nothing is under discussion, it asks for a path. Tests, stories, fixtures, and build output are left alone.
+
+## What it does
+
+Quickfix assumes you want all three of these:
+
+**Swap to UI Lab components.** Styled native elements, generic layout wrappers, and hand-rolled controls (tabs, menus, dialogs, tooltips) are replaced with their UI Lab equivalents. Each replacement is based on the component's real API and examples from the MCP. Anything without a clear equivalent stays as it is and is listed in the report.
+
+**Remove obvious slop.** Decorative gradients and shadows, tiny uppercase tracked labels, icons that repeat a heading, badges that aren't real status, nested cards, over-explained empty states, and leftover placeholder chrome. "Obvious" means Claude can say in one clause what the element fails to communicate. Anything that carries real state, hierarchy, or interaction stays.
+
+**Apply tokens.** Every color, surface, and border becomes a UI Lab token: background shades for surfaces, foreground shades for text, accent only for the primary action and current location, and semantic colors only for real feedback. Hex values, Tailwind neutrals, shadows, gradients, and `dark:` prefixes are removed.
+
+State, events, data fetching, routing, and copy that carries meaning are left alone. Quickfix is not a redesign.
+
+## What you get
+
+A short report of the swaps, the slop removed, the tokens replaced, and anything left untouched with the reason. Quickfix doesn't run tests or builds unless you ask.
+
+## Quickfix or Conform?
+
+Use Quickfix for fast cleanup of a specific file or screen. Use [Conform](/docs/skill-conform) for a project-wide migration, when you want to review a plan before anything changes, or when you're working from an audit report.

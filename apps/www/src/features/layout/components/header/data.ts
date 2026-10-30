@@ -10,7 +10,7 @@ interface NavigationItem {
 
 export const navigationData: NavigationItem[] = [
   { name: "documentation", label: "Documentation", isDropdown: true },
-  { name: "components", label: "Components" },
+  { name: "components", label: "Library" },
   { name: "workshop", label: "Workshop" },
   { name: "tools", label: "Tools" },
 ] as const;
@@ -23,12 +23,12 @@ export interface HeaderTab {
 
 export const headerTabs: HeaderTab[] = [
   { id: "documentation", label: "Documentation", path: "/docs" },
-  { id: "components", label: "Components", path: "/components" },
+  { id: "components", label: "Library", path: "/library" },
   { id: "workshop", label: "Workshop", path: "/workshop/elements" },
 ];
 
 export const getActiveHeaderTab = (pathname: string): string | undefined => {
-  if (pathname.startsWith("/components")) return "components";
+  if (pathname.startsWith("/library")) return "components";
   if (pathname.startsWith("/workshop")) return "workshop";
   if (
     pathname.startsWith("/docs") ||

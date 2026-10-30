@@ -1,5 +1,6 @@
 "use client";
 
+import { resolvePreviewFrame } from "@ui-lab-core/library/preview-frame";
 import { Component, type ReactNode } from "react";
 import { getElementPreview, getElementPreviewConfig } from "@ui-lab-core/library/previews";
 import { getPreviewComponent as getPatternPreview } from "@/features/patterns/lib/get-pattern-preview";
@@ -17,7 +18,7 @@ class PreviewBoundary extends Component<{ children: ReactNode }, { failed: boole
 
 export function ResolvedElementPreview({ entry, onClose }: { entry: ElementPreviewEntry; onClose: () => void }) {
   const target = entry.preview;
-  const config = target?.packageId === "components" ? getElementPreviewConfig("components", target.id) : null;
+  const config = target ? getElementPreviewConfig(target.packageId, target.id) : null;
   const values = Object.fromEntries((config?.controls ?? []).map((control) => [control.name, control.defaultValue ?? control.options?.[0]?.value ?? ""]));
   const result = config?.factory?.(values, () => {});
   const Preview = target ? target.packageId === "patterns" ? getPatternPreview(target.id) : getElementPreview(target.packageId, target.id) : null;
@@ -27,7 +28,7 @@ export function ResolvedElementPreview({ entry, onClose }: { entry: ElementPrevi
   ] : entry.files;
 
   return (
-    <ElementPreviewDialog {...entry} files={files} code={result?.code ?? entry.code} open onOpenChange={(open) => { if (!open) onClose(); }}>
+    <ElementPreviewDialog {...entry} previewFrame={config ? resolvePreviewFrame(config) : undefined} files={files} code={result?.code ?? entry.code} open onOpenChange={(open) => { if (!open) onClose(); }}>
       <PreviewBoundary>
         {target?.packageId === "sections" ? <SectionLivePreview demoId={target.id} /> : Preview ? <Preview /> : <p className="p-6 text-sm text-foreground-400">Live preview unavailable. Use View original to open the entry.</p>}
       </PreviewBoundary>

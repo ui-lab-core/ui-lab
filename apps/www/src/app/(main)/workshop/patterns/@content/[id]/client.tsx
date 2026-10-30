@@ -28,6 +28,7 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
             description: pattern.description,
             code: pattern.code,
             previewHeight: pattern.previewHeight,
+            previewWidth: pattern.previewWidth,
             scope: "pattern" as const,
           },
         ]
@@ -55,6 +56,7 @@ export default function PatternDetailClient({ patternId, pattern }: PatternDetai
             description={entry.description}
             code={entry.code}
             previewHeight={Math.min(entry.previewHeight ?? 320, 240)}
+            previewWidth={entry.previewWidth}
             category="pattern"
             previewLayout="start"
             fillHeight

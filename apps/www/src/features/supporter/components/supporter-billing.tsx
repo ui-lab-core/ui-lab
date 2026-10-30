@@ -1,17 +1,18 @@
 "use client";
-
-import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useAction, useConvexAuth } from "convex/react";
 import {
   formatSupporterPrice,
   SUPPORTER_PLAN,
   supporterBillingOption,
+  TEAM_PLAN,
   type SupporterBilling,
 } from "@ui-lab-core/library/access";
 import { api } from "@ui-lab/backend/convex/_generated/api";
 import { Button } from "ui-lab-components/button";
 import { Group } from "ui-lab-components/group";
 import { ROUTES } from "@/shared/lib/routes";
+import { PlanPrice } from "./plan-card";
 
 const SIGN_IN_URL = `${ROUTES.signIn}?redirect_url=${encodeURIComponent(ROUTES.supporter)}`;
 
@@ -23,7 +24,7 @@ type SupporterBillingContextValue = {
 const SupporterBillingContext = createContext<SupporterBillingContextValue | null>(null);
 
 /**
- * Holds the selected billing option so the toggle in the card header and the
+ * Holds the selected billing option so the toggle above the plans and the
  * price + checkout below move together despite sitting in different parts of
  * the layout. Opens on {@link SUPPORTER_PLAN.defaultBilling} — one-time.
  */
@@ -52,11 +53,17 @@ export function SupporterBillingToggle() {
       value={billing}
       onChange={(value) => setBilling(value as SupporterBilling)}
       aria-label="Billing"
-      spacing="none"
-      className="w-45"
+      spacing="xs"
+      variant="ghost"
+      className="w-52 rounded-full"
     >
       {SUPPORTER_PLAN.billingOptions.map((entry) => (
-        <Group.Button className="flex-1" key={entry.billing} value={entry.billing} size="sm">
+        <Group.Button
+          className="rounded-full flex-1"
+          key={entry.billing}
+          value={entry.billing}
+          size="sm"
+        >
           {entry.label}
         </Group.Button>
       ))}
@@ -74,25 +81,54 @@ export function SupporterBillingToggle() {
  * action is authenticated with.
  *
  * `billing` is the option the viewer selected upstream; it decides whether the
- * checkout action opens a one-time or a subscription session.
+ * checkout action opens a one-time or a subscription session. `plan` picks
+ * Supporter or per-seat Team; the seat count is chosen on Stripe's page.
  */
-function SupporterCheckoutButton({ billing = "one-time" }: { billing?: SupporterBilling }) {
+function SupporterCheckoutButton({
+  billing = "one-time",
+  plan = "supporter",
+}: {
+  billing?: SupporterBilling;
+  plan?: "supporter" | "team";
+}) {
+  // Supporter is the featured plan, so only its checkout is filled with the accent.
+  const featured = plan === "supporter";
   const { isAuthenticated } = useConvexAuth();
   const startCheckout = useAction(api.stripe.createSupporterCheckout);
   const [error, setError] = useState<string | null>(null);
-  // A ref, not state: it keeps a second press from opening a second checkout
-  // without the button changing appearance while the redirect is in flight.
-  const isLeaving = useRef(false);
+  // Set from press until the browser leaves for Stripe (or sign-in): shows the
+  // spinner and keeps a second press from opening a second checkout.
+  const [isLeaving, setIsLeaving] = useState(false);
+
+  // Going back from Stripe can restore this page from the bfcache with the
+  // pending state intact; clear it so the button is usable again.
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) setIsLeaving(false);
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
 
   return (
     <div className="space-y-2">
       <Button
         size="lg"
-        variant="primary"
+        variant={featured ? "primary" : "secondary"}
+        // color={featured ? "accent-600" : undefined}
         className="w-full"
+        disabled={isLeaving}
+        icon={
+          isLeaving ? (
+            <span
+              aria-hidden
+              className="block size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            />
+          ) : undefined
+        }
         onPress={async () => {
-          if (isLeaving.current) return;
-          isLeaving.current = true;
+          if (isLeaving) return;
+          setIsLeaving(true);
           setError(null);
 
           // The grant needs an account to land on, so sign-in comes first and
@@ -103,15 +139,15 @@ function SupporterCheckoutButton({ billing = "one-time" }: { billing?: Supporter
           }
 
           try {
-            const { url } = await startCheckout({ billing });
+            const { url } = await startCheckout({ billing, plan });
             window.location.href = url;
           } catch {
             setError("Checkout could not be started. Please try again.");
-            isLeaving.current = false;
+            setIsLeaving(false);
           }
         }}
       >
-        {billing === "monthly" ? "Subscribe" : "Purchase"}
+        {plan === "team" ? "Buy seats" : billing === "monthly" ? "Subscribe" : "Purchase"}
       </Button>
 
       {error ? (
@@ -125,8 +161,8 @@ function SupporterCheckoutButton({ billing = "one-time" }: { billing?: Supporter
 
 /**
  * The price + checkout region of the supporter page. The billing option is
- * shared state (see {@link useSupporterBilling}) set by the toggle in the card
- * header, so the price, its qualifier, and the checkout it starts all move
+ * shared state (see {@link useSupporterBilling}) set by the toggle above the
+ * plans, so the price, its qualifier, and the checkout it starts all move
  * together with that toggle.
  */
 export function SupporterPurchasePanel() {
@@ -135,18 +171,30 @@ export function SupporterPurchasePanel() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center gap-4">
-        <span className="text-3xl font-medium tracking-tight text-foreground-200 sm:text-4xl">
-          {formatSupporterPrice(option)}
-        </span>
-        <p className="text-sm leading-6 text-foreground-400">
-          {option.qualifier}
-          <br />
-          {option.note}
-        </p>
-      </div>
+      <PlanPrice
+        price={formatSupporterPrice(option)}
+        qualifier={option.qualifier}
+        note={option.note}
+      />
 
       <SupporterCheckoutButton billing={billing} />
+    </div>
+  );
+}
+
+/** The Team counterpart to {@link SupporterPurchasePanel}: per-seat price, same toggle. */
+export function TeamPurchasePanel() {
+  const { billing } = useSupporterBilling();
+  const option = supporterBillingOption(billing, TEAM_PLAN);
+
+  return (
+    <div className="space-y-5">
+      <PlanPrice
+        price={formatSupporterPrice(option, TEAM_PLAN)}
+        qualifier={option.qualifier}
+        note={option.note}
+      />
+      <SupporterCheckoutButton billing={billing} plan="team" />
     </div>
   );
 }

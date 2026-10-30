@@ -4,7 +4,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ui-lab.app";
 
 const routes = [
   "",
-  "/components",
+  "/library/components",
   "/docs",
   "/docs/installation",
   "/docs/agents-mcps-installation",
@@ -22,6 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return routes.map((route) => ({
     url: `${siteUrl}${route}`,
     changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : route === "/components" || route === "/docs" ? 0.9 : 0.8,
+    priority: route === "" ? 1 : route === "/library/components" || route === "/docs" ? 0.9 : 0.8,
   }));
 }

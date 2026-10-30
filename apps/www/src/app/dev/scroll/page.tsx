@@ -41,7 +41,7 @@ function WithoutObservers() {
   if (!ready) return null;
 
   return (
-    <Scroll inline maxHeight="100%">
+    <Scroll inline max-height="100%">
       {items.map((item) => (
         <div className="border-b border-background-700 p-2" key={item}>
           {item}
@@ -66,7 +66,7 @@ export default function ScrollDevPage() {
 
       <div className="grid gap-5 md:grid-cols-2">
         <Example title="Vertical inline: overflowing">
-          <Scroll inline maxHeight="100%">
+          <Scroll inline max-height="100%">
             {items.map((item) => (
               <div className="border-b border-background-700 p-2" key={item}>
                 {item}
@@ -76,7 +76,7 @@ export default function ScrollDevPage() {
         </Example>
 
         <Example title="Vertical inline: no overflow">
-          <Scroll inline maxHeight="100%">
+          <Scroll inline max-height="100%">
             <div className="p-2">
               This content fits, but its inline reservation remains deterministic.
             </div>
@@ -92,7 +92,7 @@ export default function ScrollDevPage() {
               Toggle content
             </button>
           </div>
-          <Scroll inline maxHeight="100%">
+          <Scroll inline max-height="100%">
             {items.slice(0, dynamicItems).map((item) => (
               <div className="border-b border-background-700 p-2" key={item}>
                 {item}
@@ -109,7 +109,7 @@ export default function ScrollDevPage() {
       <section className="space-y-2 rounded-lg border border-background-700 p-4">
         <h2 className="font-medium">Horizontal inline</h2>
         <div className="relative h-32 overflow-hidden border border-amber-500/70 bg-amber-500/15 pb-4">
-          <Scroll inline direction="horizontal" maxWidth="100%">
+          <Scroll inline direction="horizontal" max-width="100%">
             <div className="flex h-full w-max gap-3 p-2">
               {items.slice(0, 8).map((item) => (
                 <div className="w-40 shrink-0 rounded border border-background-700 p-3" key={item}>

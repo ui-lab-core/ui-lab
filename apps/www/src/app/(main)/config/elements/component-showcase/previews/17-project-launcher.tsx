@@ -68,7 +68,7 @@ export default function ProjectLauncher() {
           aria-label="Search project pages and actions"
           placeholder="Where would you like to go?"
         />
-        <Command.List maxHeight="260px" emptyMessage="No matching pages or actions.">
+        <Command.List max-height="260px" empty-message="No matching pages or actions.">
           <Command.Groups
             renderCategory={(category) => <Command.Category>{category}</Command.Category>}
             renderItem={(item) => (

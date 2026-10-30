@@ -19,6 +19,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@shared/*": ["./shared/*"],
       "@styles/*": ["./src/app/styles/*"],
       "@private": ["node_modules/@ui-lab-core/library"]
     }

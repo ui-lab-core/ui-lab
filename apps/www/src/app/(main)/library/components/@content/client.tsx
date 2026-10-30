@@ -66,7 +66,7 @@ export default function ComponentsPageClient() {
                       }}
                     >
                       {componentsInCategory.map((component) => {
-                        const href = `/components/${component.id}`;
+                        const href = `/library/components/${component.id}`;
                         return (
                           <div key={component.id}>
                             <Gallery.Item

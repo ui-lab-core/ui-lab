@@ -30,7 +30,7 @@ function Content({ itemCount }: { itemCount: number }) {
     <>
       <Command.Input placeholder="Search commands, components, docs..." />
 
-      <Command.List className={css.list} emptyMessage={`0 results for "${searchValue}"`}>
+      <Command.List className={css.list} empty-message={`0 results for "${searchValue}"`}>
         {filteredItems.length > 0 ? (
           <Command.Groups
             className="[&>div:not(:first-child)_.category]:mt-8"

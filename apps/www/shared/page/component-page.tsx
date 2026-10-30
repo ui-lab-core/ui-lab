@@ -4,19 +4,22 @@ import {
   type ElementSourceEntry,
 } from "@ui-lab-core/library/server";
 import type { ComponentAPI, ComponentMetadata } from "ui-lab-registry";
-import { CopyComponentPage, OpenPage } from "@/features/docs/page-actions";
-import { highlightCode } from "@/features/docs/lib/shiki-server";
-import { Code } from "@/features/docs/components/code-display/code";
-import { ExampleCode, Playground, Preview } from "../examples/component-preview";
-import { isInteractivePreview } from "../examples/preview-utils";
-import { ExampleReference } from "../examples/example-reference";
-import type { StyleInfo } from "../styles/documentation";
-import { ContentTabs } from "./content-tabs";
-import { ComponentToc } from "./component-toc";
 import { Divider, Group } from "ui-lab-components";
 import { Button } from "ui-lab-components/button";
+import { Code } from "../code/code";
+import { FaFlask, FaGithub } from "../lib/icons";
+import { Preview } from "../previews/lazy-preview";
+import { ExampleCode, Playground } from "../previews/playground";
+import { ExampleReference } from "../previews/example-reference";
+import { isInteractivePreview } from "../previews/preview-utils";
+import type { StyleInfo } from "../styles/documentation";
+import { CopyComponentPage, OpenPage } from "./actions";
+import { ContentTabs } from "./content-tabs";
+import { ComponentToc } from "./component-toc";
 import css from "./component-page.module.css";
-import { FaFlask, FaGithub } from "@/shared/icons/fa6";
+
+type Highlighted = { light: string; dark: string };
+const noHighlight = async (): Promise<Highlighted> => ({ light: "", dark: "" });
 
 const ReactAriaIcon = () => (
   <svg
@@ -60,6 +63,7 @@ export async function ComponentPage({
   styles,
   reactAriaUrl,
   sourceUrl,
+  highlight = noHighlight,
 }: {
   componentId: string;
   component: ComponentMetadata;
@@ -67,6 +71,8 @@ export async function ComponentPage({
   styles: StyleInfo | null;
   reactAriaUrl: string | null;
   sourceUrl: string | null;
+  /** Server-side highlighter for the first example and import snippet; skipped when absent. */
+  highlight?: (code: string, language: string) => Promise<Highlighted>;
 }) {
   const examples = getExamples(componentId).map((entry) => ({
     id: entry.id,
@@ -78,8 +84,8 @@ export async function ComponentPage({
   const first = examples[0];
   const importPattern = getElementGroup("components", componentId)?.importPattern;
   const [highlighted, importPatternHighlight] = await Promise.all([
-    first ? highlightCode(first.code, "tsx") : Promise.resolve({ light: "", dark: "" }),
-    importPattern ? highlightCode(importPattern, "typescript") : Promise.resolve(null),
+    first ? highlight(first.code, "tsx") : noHighlight(),
+    importPattern ? highlight(importPattern, "typescript") : Promise.resolve(null),
   ]);
   const tocItems = examples
     .slice(1)
@@ -154,11 +160,11 @@ export async function ComponentPage({
                       {component.description}
                     </p>
                   </div>
-                  {importPatternHighlight && importPattern ? (
+                  {importPattern ? (
                     <Code
                       language="typescript"
-                      preHighlightedDark={importPatternHighlight.dark}
-                      preHighlightedLight={importPatternHighlight.light}
+                      preHighlightedDark={importPatternHighlight?.dark || undefined}
+                      preHighlightedLight={importPatternHighlight?.light || undefined}
                       className="mb-4"
                     >
                       {importPattern}
@@ -182,6 +188,7 @@ export async function ComponentPage({
                 ) : null}
 
                 <ContentTabs
+                  tabBarClassName="sticky top-(--header-height) z-40 bg-background-1000"
                   actions={
                     <nav aria-label="Component resources" className="flex items-center gap-1">
                       {sourceUrl ? (

@@ -37,6 +37,7 @@ export default function SectionDetailClient({
       files={variant.files}
       patterns={variant.patterns}
       previewHeight={variant.previewHeight}
+      previewWidth={variant.previewWidth}
       category="section"
       dynamicPreviewHeight
       entryRef={`section:${sectionId}#variant-${index}`}

@@ -17,6 +17,7 @@ export interface GeneratedDocsPageManifest {
   section: string | null;
   toc: GeneratedDocsTocItem[];
   isIndex: boolean;
+  parent: string | null;
   order: number;
   sectionOrder: number;
   publishedOn: string | null;
@@ -28,6 +29,7 @@ export interface GeneratedDocsPageTreeItem {
   label: string;
   slug: string;
   url: string;
+  children?: GeneratedDocsPageTreeItem[];
 }
 
 export interface GeneratedDocsPageTreeSection {
@@ -88,8 +90,8 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "level": 3
           },
           {
-            "id": "design-claude-code-skill",
-            "title": "`/design` Claude Code skill",
+            "id": "lab-claude-code-skill",
+            "title": "`lab` Claude Code skill",
             "level": 3
           },
           {
@@ -104,6 +106,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": true,
+        "parent": null,
         "order": -1,
         "sectionOrder": 999,
         "publishedOn": "2026-07-18",
@@ -184,6 +187,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 0,
         "sectionOrder": 0,
         "publishedOn": "2026-07-18",
@@ -269,6 +273,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 0,
         "sectionOrder": 1,
         "publishedOn": "2026-02-25",
@@ -331,6 +336,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 0,
         "sectionOrder": 2,
         "publishedOn": "2026-03-12",
@@ -341,6 +347,335 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           "tailwind",
           "next-js"
         ]
+      },
+      {
+        "domain": "docs",
+        "slug": "skill",
+        "url": "/docs/skill",
+        "title": "Skill",
+        "label": "Skill",
+        "description": "The lab skill for Claude Code. Turn it on with $lab, describe the UI work you want, and it picks the right workflow.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "install-and-activate",
+            "title": "Install and activate",
+            "level": 2
+          },
+          {
+            "id": "requirements",
+            "title": "Requirements",
+            "level": 2
+          },
+          {
+            "id": "how-routing-works",
+            "title": "How routing works",
+            "level": 2
+          },
+          {
+            "id": "what-the-output-aims-for",
+            "title": "What the output aims for",
+            "level": 2
+          },
+          {
+            "id": "routes",
+            "title": "Routes",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": null,
+        "order": 0,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
+      },
+      {
+        "domain": "docs",
+        "slug": "skill-setup",
+        "url": "/docs/skill-setup",
+        "title": "Setup",
+        "label": "Setup",
+        "description": "Install UI Lab into a new or existing project and wire its styles in the right order.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "requirements",
+            "title": "Requirements",
+            "level": 2
+          },
+          {
+            "id": "what-it-does",
+            "title": "What it does",
+            "level": 2
+          },
+          {
+            "id": "load-the-guides",
+            "title": "Load the guides",
+            "level": 2
+          },
+          {
+            "id": "pick-the-path",
+            "title": "Pick the path",
+            "level": 2
+          },
+          {
+            "id": "preview-then-run",
+            "title": "Preview, then run",
+            "level": 2
+          },
+          {
+            "id": "verify",
+            "title": "Verify",
+            "level": 2
+          },
+          {
+            "id": "what-you-get",
+            "title": "What you get",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": "skill",
+        "order": 1,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
+      },
+      {
+        "domain": "docs",
+        "slug": "skill-build",
+        "url": "/docs/skill-build",
+        "title": "Build",
+        "label": "Build",
+        "description": "Write new UI from existing UI Lab compositions, with the design rules active for the rest of the session.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "what-it-does",
+            "title": "What it does",
+            "level": 2
+          },
+          {
+            "id": "load-the-rules",
+            "title": "Load the rules",
+            "level": 2
+          },
+          {
+            "id": "start-from-the-largest-composition",
+            "title": "Start from the largest composition",
+            "level": 2
+          },
+          {
+            "id": "list-the-parts",
+            "title": "List the parts",
+            "level": 2
+          },
+          {
+            "id": "write-it",
+            "title": "Write it",
+            "level": 2
+          },
+          {
+            "id": "check-against-the-pillars",
+            "title": "Check against the pillars",
+            "level": 2
+          },
+          {
+            "id": "premium-items",
+            "title": "Premium items",
+            "level": 2
+          },
+          {
+            "id": "what-you-get",
+            "title": "What you get",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": "skill",
+        "order": 2,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
+      },
+      {
+        "domain": "docs",
+        "slug": "skill-ideate",
+        "url": "/docs/skill-ideate",
+        "title": "Ideate",
+        "label": "Ideate",
+        "description": "A design brief covering what a screen should contain, what it is missing, and what to remove.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "what-it-does",
+            "title": "What it does",
+            "level": 2
+          },
+          {
+            "id": "understand-the-context",
+            "title": "Understand the context",
+            "level": 2
+          },
+          {
+            "id": "search-the-registry",
+            "title": "Search the registry",
+            "level": 2
+          },
+          {
+            "id": "take-inventory",
+            "title": "Take inventory",
+            "level": 2
+          },
+          {
+            "id": "find-gaps",
+            "title": "Find gaps",
+            "level": 2
+          },
+          {
+            "id": "what-you-get",
+            "title": "What you get",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": "skill",
+        "order": 3,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
+      },
+      {
+        "domain": "docs",
+        "slug": "skill-audit",
+        "url": "/docs/skill-audit",
+        "title": "Audit",
+        "label": "Audit",
+        "description": "A star-rated review of existing UI against the six pillars, with a specific fix for every violation.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "what-it-checks",
+            "title": "What it checks",
+            "level": 2
+          },
+          {
+            "id": "what-you-get",
+            "title": "What you get",
+            "level": 2
+          },
+          {
+            "id": "design-audit-report",
+            "title": "DESIGN AUDIT REPORT",
+            "level": 2
+          },
+          {
+            "id": "1-design-system-adherence",
+            "title": "1. Design System Adherence",
+            "level": 3
+          },
+          {
+            "id": "2-layout-spacing",
+            "title": "2. Layout & Spacing",
+            "level": 3
+          },
+          {
+            "id": "summary",
+            "title": "Summary",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": "skill",
+        "order": 4,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
+      },
+      {
+        "domain": "docs",
+        "slug": "skill-quickfix",
+        "url": "/docs/skill-quickfix",
+        "title": "Quickfix",
+        "label": "Quickfix",
+        "description": "One pass over existing UI that swaps in UI Lab components, removes slop, and applies tokens, without a plan or confirmation step.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "what-it-does",
+            "title": "What it does",
+            "level": 2
+          },
+          {
+            "id": "what-you-get",
+            "title": "What you get",
+            "level": 2
+          },
+          {
+            "id": "quickfix-or-conform",
+            "title": "Quickfix or Conform?",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": "skill",
+        "order": 5,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
+      },
+      {
+        "domain": "docs",
+        "slug": "skill-conform",
+        "url": "/docs/skill-conform",
+        "title": "Conform",
+        "label": "Conform",
+        "description": "Migrate existing UI to UI Lab, or fix an audit's findings, after you approve a plan. Product logic is preserved.",
+        "section": "Agents & MCPs",
+        "toc": [
+          {
+            "id": "two-starting-points",
+            "title": "Two starting points",
+            "level": 2
+          },
+          {
+            "id": "plan-confirm-execute",
+            "title": "Plan, confirm, execute",
+            "level": 2
+          },
+          {
+            "id": "scope",
+            "title": "Scope",
+            "level": 2
+          },
+          {
+            "id": "plan",
+            "title": "Plan",
+            "level": 2
+          },
+          {
+            "id": "confirm",
+            "title": "Confirm",
+            "level": 2
+          },
+          {
+            "id": "execute",
+            "title": "Execute",
+            "level": 2
+          },
+          {
+            "id": "what-you-get",
+            "title": "What you get",
+            "level": 2
+          }
+        ],
+        "isIndex": false,
+        "parent": "skill",
+        "order": 6,
+        "sectionOrder": 3,
+        "publishedOn": null,
+        "tags": []
       },
       {
         "domain": "docs",
@@ -423,7 +758,8 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
-        "order": 0,
+        "parent": null,
+        "order": 7,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -594,113 +930,8 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
-        "order": 1,
-        "sectionOrder": 3,
-        "publishedOn": null,
-        "tags": []
-      },
-      {
-        "domain": "docs",
-        "slug": "agents-mcps-design-skill",
-        "url": "/docs/agents-mcps-design-skill",
-        "title": "Skills",
-        "label": "Skills",
-        "description": "Claude Code skills that route UI design tasks to specialized audit, ideate, and overhaul agents.",
-        "section": "Agents & MCPs",
-        "toc": [
-          {
-            "id": "how-invocation-works",
-            "title": "How invocation works",
-            "level": 2
-          },
-          {
-            "id": "trigger",
-            "title": "Trigger",
-            "level": 2
-          },
-          {
-            "id": "route",
-            "title": "Route",
-            "level": 2
-          },
-          {
-            "id": "load-context",
-            "title": "Load context",
-            "level": 2
-          },
-          {
-            "id": "query-the-registry",
-            "title": "Query the registry",
-            "level": 2
-          },
-          {
-            "id": "5-return-structured-output",
-            "title": "5. Return structured output",
-            "level": 2
-          },
-          {
-            "id": "scenarios",
-            "title": "Scenarios",
-            "level": 2
-          },
-          {
-            "id": "auditing-an-existing-ui",
-            "title": "Auditing an existing UI",
-            "level": 3
-          },
-          {
-            "id": "design-audit-report",
-            "title": "DESIGN AUDIT REPORT",
-            "level": 2
-          },
-          {
-            "id": "1-design-system-adherence",
-            "title": "1. Design System Adherence",
-            "level": 3
-          },
-          {
-            "id": "2-layout-spacing",
-            "title": "2. Layout & Spacing",
-            "level": 3
-          },
-          {
-            "id": "summary",
-            "title": "Summary",
-            "level": 2
-          },
-          {
-            "id": "getting-holistic-design-feedback",
-            "title": "Getting holistic design feedback",
-            "level": 3
-          },
-          {
-            "id": "migrating-to-ui-lab",
-            "title": "Migrating to UI Lab",
-            "level": 3
-          },
-          {
-            "id": "phase-1-replacement-report",
-            "title": "Phase 1: Replacement Report",
-            "level": 2
-          },
-          {
-            "id": "context-budget",
-            "title": "Context budget",
-            "level": 2
-          },
-          {
-            "id": "skill-files",
-            "title": "Skill files",
-            "level": 2
-          },
-          {
-            "id": "next-steps",
-            "title": "Next steps",
-            "level": 2
-          }
-        ],
-        "isIndex": false,
-        "order": 2,
+        "parent": null,
+        "order": 8,
         "sectionOrder": 3,
         "publishedOn": null,
         "tags": []
@@ -744,6 +975,50 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
         "label": "Agents & MCPs",
         "items": [
           {
+            "id": "skill",
+            "label": "Skill",
+            "slug": "skill",
+            "url": "/docs/skill",
+            "children": [
+              {
+                "id": "skill-setup",
+                "label": "Setup",
+                "slug": "skill-setup",
+                "url": "/docs/skill-setup"
+              },
+              {
+                "id": "skill-build",
+                "label": "Build",
+                "slug": "skill-build",
+                "url": "/docs/skill-build"
+              },
+              {
+                "id": "skill-ideate",
+                "label": "Ideate",
+                "slug": "skill-ideate",
+                "url": "/docs/skill-ideate"
+              },
+              {
+                "id": "skill-audit",
+                "label": "Audit",
+                "slug": "skill-audit",
+                "url": "/docs/skill-audit"
+              },
+              {
+                "id": "skill-quickfix",
+                "label": "Quickfix",
+                "slug": "skill-quickfix",
+                "url": "/docs/skill-quickfix"
+              },
+              {
+                "id": "skill-conform",
+                "label": "Conform",
+                "slug": "skill-conform",
+                "url": "/docs/skill-conform"
+              }
+            ]
+          },
+          {
             "id": "agents-mcps-installation",
             "label": "Overview",
             "slug": "agents-mcps-installation",
@@ -754,12 +1029,6 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
             "label": "Workflows",
             "slug": "agents-mcps-workflows",
             "url": "/docs/agents-mcps-workflows"
-          },
-          {
-            "id": "agents-mcps-design-skill",
-            "label": "Skills",
-            "slug": "agents-mcps-design-skill",
-            "url": "/docs/agents-mcps-design-skill"
           }
         ]
       }
@@ -833,6 +1102,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": true,
+        "parent": null,
         "order": -1,
         "sectionOrder": 999,
         "publishedOn": "2026-12-15",
@@ -953,6 +1223,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 0,
         "sectionOrder": 0,
         "publishedOn": "2026-12-15",
@@ -1254,6 +1525,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 1,
         "sectionOrder": 0,
         "publishedOn": "2026-12-15",
@@ -1404,6 +1676,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 2,
         "sectionOrder": 0,
         "publishedOn": "2026-12-15",
@@ -1469,6 +1742,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 0,
         "sectionOrder": 1,
         "publishedOn": "2026-12-15",
@@ -1679,6 +1953,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 1,
         "sectionOrder": 1,
         "publishedOn": "2026-12-15",
@@ -2024,6 +2299,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 0,
         "sectionOrder": 2,
         "publishedOn": "2026-12-15",
@@ -2355,6 +2631,7 @@ export const DOCS_MANIFEST: GeneratedDocsManifest = {
           }
         ],
         "isIndex": false,
+        "parent": null,
         "order": 1,
         "sectionOrder": 2,
         "publishedOn": "2026-12-15",

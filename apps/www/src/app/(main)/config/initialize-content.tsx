@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ComponentType } from "react";
-import { Code } from "@/features/docs/components/code-display/code";
+import { Code } from "@shared/code/code";
 import { InstallCommand } from "@/features/docs/components/code-display/install-command";
 import { Button, Expand, Flex, Select, Tabs } from "ui-lab-components";
 import { Check } from "lucide-react";

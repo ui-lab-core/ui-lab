@@ -11,6 +11,7 @@ import {
 type SidebarDomain =
   | "docs"
   | "components"
+  | "icons"
   | "packages"
   | "sections"
   | "starters"
@@ -20,6 +21,7 @@ type SidebarDomain =
 export type MainNavItem =
   | "overview"
   | "components-core"
+  | "icons"
   | "packages"
   | "sections"
   | "starters"
@@ -51,10 +53,16 @@ const MAIN_NAV_ITEMS: MainNavItemConfig[] = [
   },
   {
     id: "components-core",
-    label: "Library",
-    href: "/components",
+    label: "Components",
+    href: "/library/components",
     icon: FaCube,
     domain: "components",
+  },
+  {
+    id: "icons",
+    label: "Icons",
+    href: "/library/icons",
+    domain: "icons",
   },
   {
     id: "packages",
@@ -88,7 +96,8 @@ const MAIN_NAV_ITEMS: MainNavItemConfig[] = [
 
 export function getActiveDomainForPathname(pathname: string): SidebarDomain {
   if (pathname.startsWith("/docs")) return "docs";
-  if (pathname.startsWith("/components")) return "components";
+  if (pathname.startsWith("/library/icons")) return "icons";
+  if (pathname.startsWith("/library")) return "components";
   if (pathname.startsWith("/workshop/elements")) return "packages";
   if (pathname.startsWith("/workshop/sections")) return "sections";
   if (pathname.startsWith("/workshop/starters")) return "starters";
@@ -103,8 +112,8 @@ export function getActiveNavItemForDomain(domain: SidebarDomain): MainNavItem {
 }
 
 export function getMainNavItemsForDomain(domain: SidebarDomain): MainNavItemConfig[] {
-  if (domain === "components") {
-    return MAIN_NAV_ITEMS.filter((item) => item.domain === "components");
+  if (domain === "components" || domain === "icons") {
+    return MAIN_NAV_ITEMS.filter((item) => item.domain === "components" || item.domain === "icons");
   }
   if (
     domain === "packages" ||

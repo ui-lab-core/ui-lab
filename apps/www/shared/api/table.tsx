@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, Fragment } from "react";
-import { cn } from "@/shared/lib/utils";
-import { InlineCodeHighlight } from "./code-display/inline-code-highlight";
+import { cn } from "../lib/cn";
+import { InlineCodeHighlight } from "../code/inline-code-highlight";
 import { Divider, Expand } from "ui-lab-components";
 import { Table as UITable, type Column as UITableColumn } from "ui-lab-components/table";
 

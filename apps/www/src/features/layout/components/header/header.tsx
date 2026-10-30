@@ -11,10 +11,7 @@ import { Tooltip } from "ui-lab-components/tooltip";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { cn } from "@/shared/lib/utils";
-import { FaGithub } from "@/shared/icons/fa6";
-import { LuSearch } from "@/shared/icons/lu";
-import { HiX } from "@/shared/icons/hi";
-import { PanelRight, Paperclip, PlusCircle } from "lucide-react";
+import { Icon } from "ui-lab-components/icon";
 import { MobileMenu } from "./mobile-menu";
 import { headerTabs, getActiveHeaderTab, type HeaderTab } from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
@@ -100,17 +97,18 @@ export default function Header({ pathname }: HeaderProps) {
               aria-label={isNavigationOpen ? "Close navigation" : "Open navigation"}
             >
               {isNavigationOpen ? (
-                <HiX className="text-foreground-400" size={17} />
+                <Icon id="close" className="text-foreground-400" size={20} />
               ) : (
-                <PanelRight className="text-foreground-400" strokeWidth={2.4} size={17} />
+                <Icon id="sidebar" className="text-foreground-400" size={20} />
               )}
             </button>
 
             <div className="h-full">
               <Tabs
-                className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:top-[calc(100%-2px)]!"
+                // className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:top-[calc(100%-2px)]!"
+                className="hidden h-full w-fit ml-8 md:flex"
                 value={activeTabId || ""}
-                variant="underline"
+                // variant="underline"
               >
                 <div className="h-full" onClickCapture={handleTabsNavigation}>
                   <Tabs.List className="h-full p-0!">
@@ -137,18 +135,22 @@ export default function Header({ pathname }: HeaderProps) {
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              <Button variant="ghost" href="/config" icon={<Paperclip />}>
+              <Button variant="ghost" href="/config" icon={<Icon id="paperclip" size={20} />}>
                 New Project
               </Button>
-              <Button variant="ghost" href="/config" icon={<PlusCircle />}>
-                Request Feature
+              <Button
+                variant="ghost"
+                href="https://github.com/ui-lab-core/ui-lab/issues"
+                icon={<Icon id="plus-circle" size={20} />}
+              >
+                Submit Issue
               </Button>
               <Button
                 variant="ghost"
                 aria-label="GitHub repository"
                 target="_blank"
                 href="https://github.com/ui-lab-core/ui-lab"
-                icon={<FaGithub size={16} />}
+                icon={<Icon id="github" size={20} />}
               ></Button>
 
               <Divider size="auto" orientation="vertical" />
@@ -163,13 +165,12 @@ export default function Header({ pathname }: HeaderProps) {
                   aria-label="Open command palette"
                   onClick={() => setIsCommandPaletteOpen(true)}
                 >
-                  <LuSearch strokeWidth={2.5} size={16} />
+                  <Icon id="search" size={20} />
                 </Button>
               </Tooltip>
             ) : null}
 
             <HeaderAccountLink />
-
           </div>
         </div>
       </header>

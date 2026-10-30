@@ -1,0 +1,43 @@
+---
+title: Setup
+description: Install UI Lab into a new or existing project and wire its styles in the right order.
+category: Agents & MCPs
+---
+
+Setup installs `ui-lab-components`, creates the token layer, and imports the stylesheets in the correct order. The `ui-lab` CLI makes the changes and the MCP setup guides define what a correct result looks like. It runs in your current session rather than in a subagent, so Build can carry on from it.
+
+**Say:** "Set up UI Lab in this project" · "Install UI Lab here" · "Scaffold a new UI Lab app"
+
+Setup also runs automatically when you ask for Build or Conform in a project that doesn't have `ui-lab-components` yet.
+
+## Requirements
+
+Setup needs both the `ui-lab` CLI and the UI Lab MCP server. If either is missing, it changes nothing, tells you which one is missing, and links the install path.
+
+## What it does
+
+<Timeline>
+
+## Load the guides
+
+Claude fetches the setup guide for your framework, plus the typography guide, from the MCP. If you mention theme switching, it also fetches that guide. Import order and the token contract come from these guides, not from memory.
+
+## Pick the path
+
+A new or incomplete Next.js project gets scaffolded by `ui-lab init`. An existing Next.js app only gets what it is missing. Vite projects use `ui-lab init --framework vite`. An empty project can be seeded from a starter that matches its domain (CRM, landing page, docs, blog), and Claude asks before writing more than a couple of files.
+
+## Preview, then run
+
+`ui-lab init --non-interactive --dry-run` lists every package install and file change first. Claude reads the plan back to you before running the real command. If the CLI fails, it stops instead of patching the install by hand.
+
+## Verify
+
+`ui-lab status` has to report the package installed and the stylesheet configured. Claude checks the import order (Tailwind, the Onyx theme, fonts, your `theme.css`, component styles, typography) and renders one simple component on an existing route to confirm the tokens are active.
+
+</Timeline>
+
+## What you get
+
+A short report of what the CLI installed, created, and changed, the verified import order, and the `ui-lab status` result. If you asked for UI work, Claude continues into [Build](/docs/skill-build) in the same session.
+
+If UI Lab is already installed, Claude asks what you want to change (theme, fonts, color mode) instead of setting it up again.

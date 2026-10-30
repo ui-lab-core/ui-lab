@@ -1,18 +1,24 @@
 import { categoryMap, getCategoriesInOrder, getComponentsInCategoryOrder } from "ui-lab-registry";
 import { getSectionsForDomain, type DocsNavigationData } from "./sidebar-registry-resolver";
 import { MainNavItem } from "@/app/lib/sidebar-config";
+import { lumenIcons } from "@ui-lab-core/library/icons";
+
+interface SidebarSectionItem {
+  id: string;
+  label: string;
+  /** Child pages; the item is then both a page and an expandable group. */
+  children?: Array<{ id: string; label: string }>;
+}
 
 interface SidebarSection {
   label: string;
-  items: Array<{
-    id: string;
-    label: string;
-  }>;
+  items: SidebarSectionItem[];
 }
 
 const SECTION_LABEL_FILTERS: Record<MainNavItem, string[] | null> = {
   overview: null,
   "components-core": null,
+  icons: null,
   "design-system": null,
   packages: null,
   sections: null,
@@ -22,7 +28,7 @@ const SECTION_LABEL_FILTERS: Record<MainNavItem, string[] | null> = {
 
 function deduplicateSectionItems(section: SidebarSection): SidebarSection {
   const seenLabels = new Map<string, { id: string; index: number }>();
-  const uniqueItems: Array<{ id: string; label: string }> = [];
+  const uniqueItems: SidebarSectionItem[] = [];
 
   for (const item of section.items) {
     const normalizedLabel = item.label.toLowerCase();
@@ -77,6 +83,13 @@ export function getSectionsForNav(
       break;
     case "components-core":
       return getComponentSections();
+    case "icons":
+      return [
+        {
+          label: lumenIcons.name,
+          items: lumenIcons.categories.map((category) => ({ id: category.id, label: category.label })),
+        },
+      ];
     case "design-system":
       sections = getSectionsForDomain(docsNavigationData, "design-system");
       break;
@@ -97,11 +110,13 @@ export function getHrefForNavItem(activeNav: MainNavItem, itemId: string): strin
     case "overview":
       return itemId === "introduction" ? "/docs" : `/docs/${itemId}`;
     case "components-core":
-      return itemId === "overview" ? "/components" : `/components/${itemId}`;
+      return itemId === "overview" ? "/library/components" : `/library/components/${itemId}`;
     case "design-system":
       return itemId === "overview" ? "/design-system" : `/design-system/${itemId}`;
+    case "icons":
+      return `/library/icons#${itemId}`;
     default:
-      return itemId === "overview" ? "/components" : `/components/${itemId}`;
+      return itemId === "overview" ? "/library/components" : `/library/components/${itemId}`;
   }
 }
 
@@ -110,7 +125,7 @@ export function isNavItemActive(itemId: string, pathname: string, activeNav: Mai
   if (href === pathname) return true;
   if (itemId === "introduction" && (pathname === "/docs" || pathname === "/design-system"))
     return true;
-  if (itemId === "overview" && (pathname === "/components" || pathname === "/design-system"))
+  if (itemId === "overview" && (pathname === "/library/components" || pathname === "/design-system"))
     return true;
   return pathname.includes(`/${itemId}`);
 }

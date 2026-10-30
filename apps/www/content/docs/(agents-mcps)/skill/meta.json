@@ -1,0 +1,10 @@
+{
+  "pages": [
+    { "name": "setup", "title": "Setup" },
+    { "name": "build", "title": "Build" },
+    { "name": "ideate", "title": "Ideate" },
+    { "name": "audit", "title": "Audit" },
+    { "name": "quickfix", "title": "Quickfix" },
+    { "name": "conform", "title": "Conform" }
+  ]
+}

@@ -1,6 +1,6 @@
-import { Code } from "@/features/docs/components/code-display/code";
-import { InlineCodeHighlight } from "@/features/docs/components/code-display/inline-code-highlight";
-import { Table, type Column } from "@/features/docs/components/table";
+import { Code } from "@shared/code/code";
+import { InlineCodeHighlight } from "@shared/code/inline-code-highlight";
+import { Table, type Column } from "@shared/api/table";
 import { Scroll } from "ui-lab-components";
 import { ChevronRight } from "lucide-react";
 import { describeStyleVariable, type ComponentStyleDocumentation } from "ui-lab-registry";
@@ -62,7 +62,7 @@ function CssVariableReference({
             <Scroll
               inline
               direction="horizontal"
-              maxWidth="100%"
+              max-width="100%"
               hide={false}
               className="min-w-0"
               styles={{

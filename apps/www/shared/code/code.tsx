@@ -1,19 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
-import { type OklchColor } from "@/features/theme/lib/color-utils";
-import { useApp } from "@/features/theme/lib/app-context";
-import { cn } from "@/shared/lib/utils";
 import { Button } from "ui-lab-components/button";
 import { Scroll } from "ui-lab-components/scroll";
-import { HiOutlineChevronUpDown } from "@/shared/icons/hi2";
-import { useNearViewport } from "@/shared/hooks/use-near-viewport";
-import { type SimpleThemeColors } from "@/features/theme/constants/themes";
 import { Check, Copy, FileCode2 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { SaveButton } from "@/features/saved-items/save-button";
-import { SiCss3, SiReact } from "@/shared/icons/si";
-import { getDefaultThemeSourceConfig } from "@/features/theme/lib/default-theme-config";
+import { useDocsHost } from "../host";
+import { cn } from "../lib/cn";
+import { HiOutlineChevronUpDown, SiCss3, SiReact } from "../lib/icons";
+import { useNearViewport } from "../lib/use-near-viewport";
+import "./code.css";
 
 const escapeHtml = (s: string) =>
   s.replace(
@@ -74,43 +70,13 @@ interface CodeProps {
   fillHeight?: boolean;
   activeFile?: number;
   onActiveFileChange?: (index: number) => void;
-  backgroundColor?: OklchColor;
-  foregroundColor?: OklchColor;
-  accentColor?: OklchColor;
-  accentChromaLimit?: number;
   preHighlightedLight?: string;
   preHighlightedDark?: string;
 }
 
 const MAX_HEIGHT_LINES = 5;
 const MAX_EXPANDED_HEIGHT_LINES = 28;
-const highlightRequests = new Map<string, Promise<{ html: string }>>();
 const highlightResults = new Map<string, string>();
-
-function requestHighlight(
-  code: string,
-  language: string,
-  colors: SimpleThemeColors,
-  mode: "light" | "dark",
-) {
-  const theme = JSON.stringify(colors);
-  const key = `${language}\u0000${mode}\u0000${theme}\u0000${code}`;
-  const existing = highlightRequests.get(key);
-  if (existing) return existing;
-
-  const request = (async () => {
-    const response = await fetch("/api/highlight", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ code, language, colors, mode }),
-    });
-    if (!response.ok) throw new Error(`Highlight request failed: ${response.status}`);
-    return response.json() as Promise<{ html: string }>;
-  })();
-  highlightRequests.set(key, request);
-  request.catch(() => highlightRequests.delete(key));
-  return request;
-}
 
 export function Code({
   entryRef, entryTitle, entryHref,
@@ -132,7 +98,8 @@ export function Code({
   activeFile: controlledActiveFile,
   onActiveFileChange,
 }: CodeProps) {
-  const { currentThemeColors, currentThemeMode, isThemeInitialized } = useApp();
+  const { renderSave, ...host } = useDocsHost().code;
+  const currentThemeMode = host.mode;
 
   const pathname = usePathname();
   // The save button is offered only when a code block is bound to a catalog
@@ -165,16 +132,14 @@ export function Code({
   const activeLanguage = selectedFile?.language ?? language;
 
   const fallbackHtml = useMemo(() => generateFallbackHtml(activeCode), [activeCode]);
-  const themeKey = currentThemeColors ? JSON.stringify(currentThemeColors) : "uninitialized";
-  const highlightKey = `${activeLanguage}\u0000${currentThemeMode}\u0000${themeKey}\u0000${activeCode}`;
+  const highlightKey = `${activeLanguage}\u0000${currentThemeMode}\u0000${host.themeKey}\u0000${activeCode}`;
   const staticHighlight =
     activeFile === 0 || !codeFiles
       ? currentThemeMode === "light"
         ? preHighlightedLight
         : preHighlightedDark
       : undefined;
-  const defaultThemeKey = JSON.stringify(getDefaultThemeSourceConfig(currentThemeMode).colors);
-  const staticHighlightMatchesTheme = Boolean(staticHighlight) && themeKey === defaultThemeKey;
+  const staticHighlightMatchesTheme = Boolean(staticHighlight) && host.staticHighlightCurrent;
   const cachedHighlight = highlightResults.get(highlightKey);
   const highlightedCode =
     resolved?.key === highlightKey && resolved.status === "resolved"
@@ -190,8 +155,8 @@ export function Code({
   useEffect(() => {
     if (
       !isNearViewport ||
-      !isThemeInitialized ||
-      !currentThemeColors ||
+      !host.ready ||
+      !host.highlight ||
       staticHighlightMatchesTheme ||
       cachedHighlight ||
       (resolved?.key === highlightKey && resolved.status === "resolved")
@@ -202,13 +167,7 @@ export function Code({
 
     const highlight = async () => {
       try {
-        const result = await requestHighlight(
-          activeCode,
-          activeLanguage,
-          currentThemeColors,
-          currentThemeMode,
-        );
-        const html = result.html;
+        const html = await host.highlight!(activeCode, activeLanguage);
 
         if (cancelled) return;
 
@@ -233,12 +192,11 @@ export function Code({
     activeCode,
     activeLanguage,
     cachedHighlight,
-    currentThemeColors,
-    currentThemeMode,
     fallbackHtml,
     highlightKey,
+    host.highlight,
+    host.ready,
     isNearViewport,
-    isThemeInitialized,
     resolved,
     staticHighlightMatchesTheme,
   ]);
@@ -325,12 +283,12 @@ export function Code({
           expanded={expanded}
           onToggleExpanded={() => setIsExpanded((current) => !current)}
           showExpand={shouldShowExpandButton}
-          showSave={canSave}
+          renderSave={canSave ? renderSave : undefined}
         />
         {fillHeight ? (
           <Scroll
             direction="vertical"
-            maxWidth="100%"
+            max-width="100%"
             hide={false}
             styles={{
               track: "bg-transparent",
@@ -349,8 +307,8 @@ export function Code({
         ) : expanded ? (
           <Scroll
             direction="vertical"
-            maxHeight={expandedMaxHeight}
-            maxWidth="100%"
+            max-height={expandedMaxHeight}
+            max-width="100%"
             hide={false}
             styles={{
               track: "bg-transparent",
@@ -408,7 +366,7 @@ function Actions({
   expanded,
   onToggleExpanded,
   showExpand,
-  showSave,
+  renderSave,
 }: {
   entryRef?: string;
   entryTitle: string;
@@ -417,7 +375,7 @@ function Actions({
   expanded: boolean;
   onToggleExpanded: () => void;
   showExpand: boolean;
-  showSave: boolean;
+  renderSave?: (entry: { entryRef: string; title: string; href: string }) => ReactNode;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -438,8 +396,10 @@ function Actions({
           size="icon"
         />
       ) : null}
-      {showSave && entryRef ? (
-        <SaveButton key={entryRef} entryRef={entryRef} title={entryTitle} href={entryHref} />
+      {renderSave && entryRef ? (
+        <span key={entryRef} className="contents">
+          {renderSave({ entryRef, title: entryTitle, href: entryHref })}
+        </span>
       ) : null}
       <Button
         variant="ghost"

@@ -40,6 +40,7 @@ interface GeneratedDocsPageManifest {
   section: string | null;
   toc: GeneratedTocItem[];
   isIndex: boolean;
+  parent: string | null;
   order: number;
   sectionOrder: number;
   publishedOn: string | null;
@@ -51,6 +52,7 @@ interface GeneratedDocsPageTreeItem {
   label: string;
   slug: string;
   url: string;
+  children?: GeneratedDocsPageTreeItem[];
 }
 
 interface GeneratedDocsPageTreeSection {
@@ -117,6 +119,8 @@ interface TraversalContext {
   section: string | null;
   sectionOrder: number;
   label?: string;
+  /** Slug of the directory page this entry nests under in the page tree. */
+  parent?: string;
 }
 
 function isGroupingFolder(name: string): boolean {
@@ -316,6 +320,7 @@ function createPageManifest(
       section,
       toc: extractHeadings(content),
       isIndex,
+      parent: context.parent ?? null,
       order,
       sectionOrder: context.section ? context.sectionOrder : 999,
       publishedOn,
@@ -333,11 +338,15 @@ function collectDirectoryPages(
 ): void {
   const directoryPageFile = getDirectoryPageFile(directory);
   const orderKey = context.section ?? "__root__";
+  let parent = context.parent;
 
   if (directoryPageFile && context.rawSegments.length > 0) {
     const order = orderState.get(orderKey) ?? 0;
     orderState.set(orderKey, order + 1);
-    pages.push(createPageManifest(directoryPageFile.filePath, context, order));
+    const directoryPage = createPageManifest(directoryPageFile.filePath, context, order);
+    pages.push(directoryPage);
+    // A directory with its own page is both a page and a group: its entries nest under it.
+    if (context.section) parent = directoryPage.page.slug;
   }
 
   for (const entry of getOrderedDirectoryEntries(directory)) {
@@ -351,6 +360,7 @@ function collectDirectoryPages(
           section: context.section,
           sectionOrder: context.sectionOrder,
           label: entry.title,
+          parent,
         },
         orderState,
         pages,
@@ -370,6 +380,7 @@ function collectDirectoryPages(
           section: context.section,
           sectionOrder: context.sectionOrder,
           label: entry.title,
+          parent,
         },
         order,
       ),
@@ -403,6 +414,7 @@ function comparePages(a: GeneratedDocsPageManifest, b: GeneratedDocsPageManifest
 
 function buildPageTree(pages: GeneratedDocsPageManifest[]): GeneratedDocsPageTreeSection[] {
   const sectionMap = new Map<string, GeneratedDocsPageTreeItem[]>();
+  const itemMap = new Map<string, GeneratedDocsPageTreeItem>();
 
   for (const page of pages) {
     if (page.isIndex || !page.section) {
@@ -413,12 +425,20 @@ function buildPageTree(pages: GeneratedDocsPageManifest[]): GeneratedDocsPageTre
       sectionMap.set(page.section, []);
     }
 
-    sectionMap.get(page.section)?.push({
+    const item: GeneratedDocsPageTreeItem = {
       id: page.slug,
       label: page.label,
       slug: page.slug,
       url: page.url,
-    });
+    };
+    itemMap.set(page.slug, item);
+
+    const parentItem = page.parent ? itemMap.get(page.parent) : undefined;
+    if (parentItem) {
+      (parentItem.children ??= []).push(item);
+    } else {
+      sectionMap.get(page.section)?.push(item);
+    }
   }
 
   return Array.from(sectionMap.entries()).map(([label, items]) => ({
@@ -535,6 +555,7 @@ export interface GeneratedDocsPageManifest {
   section: string | null;
   toc: GeneratedDocsTocItem[];
   isIndex: boolean;
+  parent: string | null;
   order: number;
   sectionOrder: number;
   publishedOn: string | null;
@@ -546,6 +567,7 @@ export interface GeneratedDocsPageTreeItem {
   label: string;
   slug: string;
   url: string;
+  children?: GeneratedDocsPageTreeItem[];
 }
 
 export interface GeneratedDocsPageTreeSection {

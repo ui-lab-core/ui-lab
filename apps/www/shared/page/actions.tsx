@@ -10,9 +10,10 @@ import {
   FaFileLines,
   FaGithub,
   FaRegClipboard,
-} from "@/shared/icons/fa6";
-import { SiClaude, SiGooglegemini, SiOpenai } from "@/shared/icons/si";
-import type { ComponentDetail } from "@/types/component";
+  SiClaude,
+  SiGooglegemini,
+  SiOpenai,
+} from "../lib/icons";
 import {
   buildApiMarkdown,
   buildExamplesMarkdown,
@@ -22,7 +23,7 @@ import {
   type CopyExample,
   type CopySource,
   type CopyStyles,
-} from "./lib/markdown";
+} from "./markdown";
 
 const menuClassName = "flex w-full min-w-0 flex-col overflow-hidden";
 const itemClassName =
@@ -161,7 +162,6 @@ const copyOptions: { label: string; source: CopySource }[] = [
 
 export function CopyComponentPage({
   componentId,
-  component,
   name,
   description,
   examples,
@@ -170,7 +170,6 @@ export function CopyComponentPage({
   dataUrl,
 }: {
   componentId: string;
-  component?: ComponentDetail;
   name?: string;
   description?: string;
   examples?: CopyExample[];
@@ -184,7 +183,7 @@ export function CopyComponentPage({
   const handleCopy = async (source: CopySource) => {
     let markdown = "";
     if (source === "examples") {
-      markdown = buildExamplesMarkdown(component, name, description, examples);
+      markdown = buildExamplesMarkdown(name, description, examples);
     } else if (source === "api") {
       const resolvedApi =
         api ??

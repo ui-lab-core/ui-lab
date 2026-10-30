@@ -3,8 +3,72 @@
 import { useRouter } from "next/navigation";
 import { useState, useCallback, useMemo } from "react";
 import type { WorkshopEntrySummary } from "@/features/workshop/types/content";
+import type { WorkshopNavKind, WorkshopNavNode } from "@/features/workshop/types/navigation";
 import { ElementsGridClient, ElementsLayoutToggle, Toolbar } from "@/features/workshop";
+import { getStructureIcon } from "@ui-lab-core/library/gallery-previews";
 import { Divider } from "ui-lab-components";
+
+/** A kind heading — the package's root level — with its icon and description. */
+function KindHeading({ node }: { node: WorkshopNavNode }) {
+  const Icon = getStructureIcon(node.icon);
+
+  return (
+    <div className="space-y-1">
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground-50">
+        {Icon && <Icon size={18} className="shrink-0 text-foreground-400" aria-hidden />}
+        {node.name}
+      </h2>
+      {node.description && <p className="text-sm text-foreground-400">{node.description}</p>}
+    </div>
+  );
+}
+
+/**
+ * Lists a package by kind — every kind, empty ones included — then by purpose
+ * category inside each kind. Only members that survive the current filters show.
+ */
+function StructuredGrid({
+  kinds,
+  elements,
+  packageId,
+}: {
+  kinds: WorkshopNavKind[];
+  elements: WorkshopEntrySummary[];
+  packageId: string;
+}) {
+  const byId = new Map(elements.map((element) => [element.id, element]));
+  const pick = (ids: string[]) =>
+    ids.map((id) => byId.get(id)).filter((element): element is WorkshopEntrySummary => Boolean(element));
+
+  return (
+    <div className="space-y-12">
+      {kinds.map((kind) => {
+        const loose = pick(kind.elements);
+        const categories = kind.categories
+          .map((category) => ({ category, members: pick(category.elements) }))
+          .filter(({ members }) => members.length > 0);
+        const isEmpty = loose.length === 0 && categories.length === 0;
+
+        return (
+          <section key={kind.id} className="space-y-6">
+            <KindHeading node={kind} />
+            {isEmpty && (
+              <p className="text-sm text-foreground-400">No {kind.name.toLowerCase()} in this package yet.</p>
+            )}
+            {loose.length > 0 && <ElementsGridClient elements={loose} packageId={packageId} />}
+            {/* Purpose categories label their elements the way component categories do. */}
+            {categories.map(({ category, members }) => (
+              <div key={category.id} className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground-300">{category.name}</h3>
+                <ElementsGridClient elements={members} packageId={packageId} />
+              </div>
+            ))}
+          </section>
+        );
+      })}
+    </div>
+  );
+}
 
 function sortElements(
   elements: WorkshopEntrySummary[],
@@ -27,10 +91,12 @@ function sortElements(
 export default function PackageElementsClient({
   packageId,
   elements,
+  kinds,
   facets,
 }: {
   packageId: string;
   elements: WorkshopEntrySummary[];
+  kinds: WorkshopNavKind[];
   facets: { categories: string[]; tags: string[] };
 }) {
   const router = useRouter();
@@ -58,6 +124,9 @@ export default function PackageElementsClient({
     }
     return sortElements(filtered, sortBy);
   }, [elements, searchQuery, selectedCategory, selectedTags, sortBy]);
+
+  // A package with one implicit kind and no categories keeps the flat grid.
+  const isStructured = kinds.length > 1 || kinds.some((kind) => kind.categories.length > 0);
 
   const buildParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -142,7 +211,11 @@ export default function PackageElementsClient({
           onClearAll={handleClearAll}
         />
       </div>
-      <ElementsGridClient elements={filteredElements} packageId={packageId} />
+      {isStructured ? (
+        <StructuredGrid kinds={kinds} elements={filteredElements} packageId={packageId} />
+      ) : (
+        <ElementsGridClient elements={filteredElements} packageId={packageId} />
+      )}
     </div>
   );
 }

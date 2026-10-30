@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Blocks, Code2, Headphones, LockKeyhole, Sparkles, Wallet } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
 import { Button } from "ui-lab-components/button";
-import { Card, Divider } from "ui-lab-components";
 import { Flex } from "ui-lab-components/flex";
-import { SUPPORTER_PLAN } from "@ui-lab-core/library/access";
+import { Icon } from "ui-lab-components/icon";
+import type { LumenIconId } from "@ui-lab-core/library/icons";
+import { SUPPORTER_PLAN, TEAM_PLAN } from "@ui-lab-core/library/access";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
 import { getViewerEntitlement } from "@/features/entitlements/server";
 import { Logo } from "@/features/layout/components/logo";
@@ -12,8 +13,9 @@ import {
   SupporterBillingProvider,
   SupporterBillingToggle,
   SupporterPurchasePanel,
+  TeamPurchasePanel,
 } from "@/features/supporter/components/supporter-billing";
-import { PremiumShowcase } from "@/features/supporter/components/premium-showcase";
+import { PlanCard, PlanGrid, PlanPrice } from "@/features/supporter/components/plan-card";
 import Aura from "@/shared/components/Aura";
 import { ROUTES } from "@/shared/lib/routes";
 
@@ -23,8 +25,38 @@ export const metadata: Metadata = buildMetadata({
   description: SUPPORTER_PLAN.tagline,
 });
 
-const INCLUDED_FEATURES = [...SUPPORTER_PLAN.features, "Priority Support"];
-const FEATURE_ICONS = [Blocks, Code2, Sparkles, Wallet, Headphones];
+const TEAM_CONTACT_URL = "mailto:contact@kyza.dev?subject=UI%20Lab%20Team";
+
+const SUPPORTER_FEATURE_ICONS: LumenIconId[] = ["blocks", "code", "sparkle"];
+
+type Feature = { icon: LumenIconId; label: string };
+
+const FREE_FEATURES: Feature[] = [
+  { icon: "blocks", label: "Full component library" },
+  { icon: "layers", label: "Free workshop content" },
+  { icon: "book", label: "Docs and guides" },
+  { icon: "agent", label: "MCP server" },
+];
+
+const SUPPORTER_FEATURES: Feature[] = [
+  ...SUPPORTER_PLAN.features.map((label, index) => ({
+    icon: SUPPORTER_FEATURE_ICONS[index],
+    label,
+  })),
+  { icon: "apps", label: "All icons included" },
+];
+
+const TEAM_FEATURE_ICONS: LumenIconId[] = ["sparkle", "users", "user-plus"];
+
+const TEAM_FEATURES: Feature[] = [
+  ...TEAM_PLAN.features.map((label, index) => ({ icon: TEAM_FEATURE_ICONS[index], label })),
+  { icon: "support", label: "Priority Support" },
+];
+
+const MARK =
+  "flex size-11 shrink-0 items-center justify-center rounded-sm border bg-gradient-to-br";
+const ACCENT_MARK = `${MARK} border-accent-400/40 from-accent-500/40 to-accent-600`;
+const NEUTRAL_MARK = `${MARK} border-background-600 from-background-700 to-background-800`;
 
 /**
  * Entitlement is request data, so the call to action streams in behind its own
@@ -60,83 +92,129 @@ async function SupporterBillingToggleSlot() {
   return <SupporterBillingToggle />;
 }
 
+/** Sign-in is only offered to visitors who are not already signed in. */
+async function SupporterSignInLink() {
+  const { userId } = await auth();
+  if (userId) return null;
+
+  return (
+    <a href="/sign-in" className="text-sm text-foreground-400 underline underline-offset-2">
+      Already purchased?&nbsp; Sign in
+    </a>
+  );
+}
+
 export default function SupporterPage() {
   return (
     <div className="relative isolate min-h-screen overflow-hidden">
-      <Aura />
+      <Aura colorMode="accent" />
 
       <Flex
         layout="stack"
-        justify-center
-        className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 pt-(--header-height)"
+        className="mx-auto min-h-screen w-full max-w-400 px-4 py-0 pt-(--header-height)"
       >
-        <Card className="flex rounded-xl flex-col border border-background-700 bg-background-1000 shadow-none lg:flex-row">
-          <Card.Body className="m-4 bg-background-900 rounded-2xl space-y-7 p-5 sm:p-6 lg:w-[560px] lg:shrink-0">
-            <SupporterBillingProvider>
-              <Flex layout="bar" gap={3}>
-                <Flex gap={3} align-center>
-                  <div className="rounded-sm border border-accent-400/40 bg-gradient-to-br from-accent-500/40 to-accent-600 p-1">
-                    <Logo className="inline size-5 text-accent-50" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-medium text-foreground-50">
-                      {SUPPORTER_PLAN.name}
-                    </h1>
-                    <p className="text-sm text-foreground-400">{SUPPORTER_PLAN.tagline}</p>
-                  </div>
-                </Flex>
-
-                <Suspense fallback={<SupporterBillingToggle />}>
-                  <SupporterBillingToggleSlot />
-                </Suspense>
+        <SupporterBillingProvider>
+          <Flex layout="stack" gap={8} className="mx-auto w-full max-w-6xl">
+            <Flex className="px-4" wrap align-end justify-between gap-x={6} gap-y={4}>
+              <Flex className="mt-24" layout="stack" gap={4}>
+                <h1 className="text-2xl font-medium tracking-tight text-foreground-50 sm:text-3xl">
+                  Pricing
+                </h1>
+                <p className="max-w-[34ch] text-foreground-400">
+                  Start free with the open-source library. Upgrade for the whole workshop.
+                </p>
               </Flex>
-
-              <Suspense fallback={<SupporterPurchasePanel />}>
-                <SupporterCallToAction />
+              <Suspense fallback={<SupporterBillingToggle />}>
+                <SupporterBillingToggleSlot />
               </Suspense>
+            </Flex>
 
-              <div className="flex items-center justify-start gap-2 text-sm text-foreground-400">
-                <LockKeyhole aria-hidden="true" className="size-4" />
-                <span>
-                  Secure checkout powered by{" "}
-                  <span className="font-[550] text-foreground-50">Stripe</span>
-                </span>
-              </div>
-
-              <Divider spacing="sm" className="mb-4" />
-
-              <section className="space-y-4 mb-16">
-                <h2 className="text-sm font-medium text-foreground-200">Included with Supporter</h2>
-                <ul className="space-y-4">
-                  {INCLUDED_FEATURES.map((feature, index) => {
-                    const Icon = FEATURE_ICONS[index];
-
-                    return (
-                      <li key={feature}>
-                        <Flex gap={4} align-center className="text-foreground-400">
-                          <Icon
-                            aria-hidden="true"
-                            className="size-6 shrink-0 text-foreground-400"
-                          />
-                          <span>{feature}</span>
-                        </Flex>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-
-              <a
-                href="/sign-in"
-                className="text-sm text-foreground-400 underline underline-offset-2"
+            <PlanGrid>
+              <PlanCard
+                name="Free"
+                tagline="The open-source library."
+                mark={
+                  <div className={NEUTRAL_MARK}>
+                    <Logo className="size-8 text-foreground-300" />
+                  </div>
+                }
+                assurance={{ icon: "card", label: "No credit card required" }}
+                features={FREE_FEATURES}
               >
-                Already purchased?&nbsp; Sign in
-              </a>
-            </SupporterBillingProvider>
-          </Card.Body>
+                <div className="space-y-5">
+                  <PlanPrice
+                    price="$0"
+                    qualifier="free forever"
+                    note="Open source · MIT licensed"
+                  />
+                  <Button size="lg" variant="secondary" className="w-full" href="/components">
+                    Browse components
+                  </Button>
+                </div>
+              </PlanCard>
 
-          <PremiumShowcase className="hidden flex-1 lg:block lg:rounded-r-xl" />
-        </Card>
+              <PlanCard
+                featured
+                name={SUPPORTER_PLAN.name}
+                tagline={SUPPORTER_PLAN.tagline}
+                mark={
+                  <div className={ACCENT_MARK}>
+                    <Logo className="size-8 text-accent-50" />
+                  </div>
+                }
+                assurance={{
+                  icon: "lock",
+                  label: (
+                    <>
+                      Secure checkout powered by{" "}
+                      <span className="font-[550] text-foreground-50">Stripe</span>
+                    </>
+                  ),
+                }}
+                features={SUPPORTER_FEATURES}
+                footer={
+                  <Suspense>
+                    <SupporterSignInLink />
+                  </Suspense>
+                }
+              >
+                <Suspense fallback={<SupporterPurchasePanel />}>
+                  <SupporterCallToAction />
+                </Suspense>
+              </PlanCard>
+
+              <PlanCard
+                name={TEAM_PLAN.name}
+                tagline={TEAM_PLAN.tagline}
+                mark={
+                  <div className={NEUTRAL_MARK}>
+                    <Icon id="users" size={20} className="text-foreground-300" />
+                  </div>
+                }
+                assurance={{
+                  icon: "lock",
+                  label: (
+                    <>
+                      Secure checkout powered by{" "}
+                      <span className="font-[550] text-foreground-50">Stripe</span>
+                    </>
+                  ),
+                }}
+                features={TEAM_FEATURES}
+                footer={
+                  <a
+                    href={TEAM_CONTACT_URL}
+                    className="text-sm text-foreground-400 underline underline-offset-2"
+                  >
+                    More than {TEAM_PLAN.maxSeats} seats?&nbsp; Contact us
+                  </a>
+                }
+              >
+                <TeamPurchasePanel />
+              </PlanCard>
+            </PlanGrid>
+          </Flex>
+        </SupporterBillingProvider>
       </Flex>
     </div>
   );

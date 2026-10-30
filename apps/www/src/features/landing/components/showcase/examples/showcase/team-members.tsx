@@ -86,7 +86,7 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
 
   return (
     <div
-      className="flex w-full flex-col overflow-hidden rounded-sm bg-background-200"
+      className="flex w-full flex-col overflow-hidden rounded-sm"
       style={{ height }}
     >
       <div className="border-b border-background-700 px-3 py-2">
@@ -132,16 +132,16 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
             </Select.Content>
           </Group.Select>
         </Group>
-        <Button variant="ghost" className="text-foreground-400 w-10 h-10 p-0">
-          <FaGear size={19} />
-        </Button>
+        <Button
+          variant="ghost"
+          className="text-foreground-400"
+          aria-label="Team settings"
+          icon={<FaGear size={16} />}
+        />
       </div>
 
       {/* Member list */}
-      <List
-        spacing="default"
-        className="min-h-0 flex-1 overflow-y-auto max-w-none"
-      >
+      <List layout="contained" spacing="default" className="min-h-0 flex-1 overflow-y-auto max-w-none">
         {filtered.map((member, i) => {
           const originalIndex = members.indexOf(member);
           return (
@@ -156,11 +156,9 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
                 </List.Media>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-medium text-foreground-100 truncate">
-                      {member.name}
-                    </span>
-                  </div>
+                  <span className="block text-sm font-medium text-foreground-100 truncate">
+                    {member.name}
+                  </span>
                   <List.Desc>{member.email}</List.Desc>
                 </div>
 
@@ -191,7 +189,7 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
         <List.Item value="pending-alex" className="px-4 py-3">
           <List.Media>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background-700">
-              <FaEnvelope size={19} className="text-foreground-500" />
+              <FaEnvelope size={19} />
             </div>
           </List.Media>
           <div className="flex-1 min-w-0">
@@ -233,9 +231,7 @@ export function MemberRolePanel({ height }: ShowcasePanelProps) {
             </Select.Content>
           </Group.Select>
           <Group.Button
-            className="gap-4"
-            variant="primary"
-            icon={{ right: <FaArrowTurnUp className="rotate-90 w-12" /> }}
+            icon={{ right: <FaArrowTurnUp className="rotate-90" /> }}
             size="sm"
           >
             Invite

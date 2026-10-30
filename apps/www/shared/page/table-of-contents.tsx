@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
-import { cn } from "@/shared/lib/utils";
 import { Divider } from "ui-lab-components/divider";
 import { Scroll } from "ui-lab-components/scroll";
-import { DOCS_MANIFEST } from "../lib/generated-docs-manifest";
-import { FaList } from "@/shared/icons/fa6";
+import { cn } from "../lib/cn";
+import { FaList } from "../lib/icons";
 
 export interface TableOfContentsItem {
   id: string;
@@ -30,16 +29,6 @@ function formatTitle(title: string) {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
-}
-
-function getRouteTocItems(pathname: string | null): TableOfContentsItem[] | null {
-  if (!pathname || (!pathname.startsWith("/docs") && !pathname.startsWith("/design-system"))) {
-    return null;
-  }
-
-  const domain = pathname.startsWith("/design-system") ? "design-system" : "docs";
-  const page = DOCS_MANIFEST[domain].pages.find((entry) => entry.url === pathname);
-  return page?.toc ?? null;
 }
 
 function getCurrentPageItems(initialItems: TableOfContentsItem[]): TableOfContentsItem[] {
@@ -78,10 +67,7 @@ export function TableOfContents({
   className,
 }: TableOfContentsProps) {
   const pathname = usePathname();
-  const routeItems = useMemo(
-    () => getRouteTocItems(pathname) ?? initialItems,
-    [initialItems, pathname],
-  );
+  const routeItems = initialItems;
   const [activeId, setActiveId] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isMounted = useSyncExternalStore(

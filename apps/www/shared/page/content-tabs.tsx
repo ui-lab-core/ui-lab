@@ -15,10 +15,12 @@ export function ContentTabs({
   examples,
   componentId,
   actions,
+  tabBarClassName = "",
 }: {
   examples: React.ReactNode;
   componentId: string;
   actions?: React.ReactNode;
+  tabBarClassName?: string;
 }) {
   const [active, setActive] = useState<Tab>("examples");
   const [visited, setVisited] = useState<Set<Tab>>(() => new Set(["examples"]));
@@ -57,12 +59,13 @@ export function ContentTabs({
 
   return (
     <Tabs variant="underline" value={active} onValueChange={select}>
-      <Flex direction="row" justify-between className="border-b border-background-700">
+      <Flex
+        direction="row"
+        justify-between
+        className={`border-b border-background-700 ${tabBarClassName}`}
+      >
         <div onMouseOver={prepareHoveredTab} onFocus={prepareHoveredTab}>
-          <Tabs.List
-            className="grid w-fit grid-cols-3"
-            styles={{ indicator: "translate-y-1", trigger: "h-8" }}
-          >
+          <Tabs.List className="grid w-fit grid-cols-3">
             <Tabs.Trigger value="examples">Examples</Tabs.Trigger>
             <Tabs.Trigger value="api">API</Tabs.Trigger>
             <Tabs.Trigger value="styles">Styles</Tabs.Trigger>

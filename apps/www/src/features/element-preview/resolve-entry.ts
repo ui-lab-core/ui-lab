@@ -22,14 +22,14 @@ export async function resolveElementPreview(entryRef: string): Promise<ElementPr
     const entries = [...(pattern.code ? [pattern] : []), ...pattern.variations];
     const entry = entries[location.index];
     if (!entry) return null;
-    return { entryRef, entryHref: location.href, title: entry.name, description: entry.description, code: entry.code, previewHeight: entry.previewHeight, category: "pattern", preview: { packageId: "patterns", id } };
+    return { entryRef, entryHref: location.href, title: entry.name, description: entry.description, code: entry.code, previewHeight: entry.previewHeight, previewWidth: entry.previewWidth, category: "pattern", preview: { packageId: "patterns", id } };
   }
 
   if (kind === "example") {
     const [componentId, exampleId] = id.split("/");
     const entry = listElements("components").find((entry) => entry.groupPath[0] === componentId && (entry.id === exampleId || entry.id === `${componentId}-${exampleId}`) && entry.previewEligible && entry.visibility === "public" && entry.access === "free");
     if (!entry) return null;
-    return { entryRef, entryHref: `/components/${encodeURIComponent(componentId)}#${encodeURIComponent(entry.id)}`, title: `${componentId} / ${entry.id}`, description: entry.description, code: entry.code, preview: { packageId: "components", id: entry.id } };
+    return { entryRef, entryHref: `/library/components/${encodeURIComponent(componentId)}#${encodeURIComponent(entry.id)}`, title: `${componentId} / ${entry.id}`, description: entry.description, code: entry.code, preview: { packageId: "components", id: entry.id } };
   }
 
   if (kind !== "element" && kind !== "section" && kind !== "starter") return null;
@@ -48,5 +48,5 @@ export async function resolveElementPreview(entryRef: string): Promise<ElementPr
   const parent = kind === "element" ? getWorkshopElement(packageId, elementId, entitlement) : getWorkshopSection(parentId, entitlement);
   const variant = parent?.variants[index];
   if (!parent || !variant) return null;
-  return { entryRef, entryHref: variantHref(kind, parentId, index), title: variant.name, description: variant.description, files: variant.files, patterns: variant.patterns, locked: parent.locked, previewHeight: variant.previewHeight, category: kind, preview: variant.demoPath ? { packageId: kind === "section" ? "sections" : packageId, id: variant.demoPath } : undefined };
+  return { entryRef, entryHref: variantHref(kind, parentId, index), title: variant.name, description: variant.description, files: variant.files, patterns: variant.patterns, locked: parent.locked, previewHeight: variant.previewHeight, previewWidth: variant.previewWidth, category: kind, preview: variant.demoPath ? { packageId: kind === "section" ? "sections" : packageId, id: variant.demoPath } : undefined };
 }

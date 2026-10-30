@@ -25,7 +25,7 @@
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { Expand } from "ui-lab-components/expand";
-import { useNearViewport } from "@/shared/hooks/use-near-viewport";
+import { useNearViewport } from "@shared/lib/use-near-viewport";
 import { Section, SectionHeading } from "./section";
 
 /** One turn lands, then the next. A finished session holds before the next tool. */

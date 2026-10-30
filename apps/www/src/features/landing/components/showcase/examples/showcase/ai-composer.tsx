@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Scroll } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
+import { Scroll } from "ui-lab-components/scroll";
+import { TextArea } from "ui-lab-components/textarea";
 import {
   FaCheck,
-  FaChevronDown,
   FaCodeBranch,
   FaFileLines,
   FaList,
@@ -12,10 +13,9 @@ import {
   FaMicrophone,
   FaPencil,
   FaPlus,
-  FaUser,
-  FaWandMagicSparkles,
 } from "@/shared/icons/fa6";
 import { HiArrowUturnRight } from "@/shared/icons/hi2";
+import { LuBot } from "@/shared/icons/lu";
 import { cn } from "@/shared/lib/utils";
 import type { ShowcasePanelProps } from "../types";
 
@@ -27,6 +27,8 @@ interface ToolDetail {
   id: string;
   operationIcon: IconType;
   message: string;
+  /** Where the operation ran: the UI Lab MCP server, the lab skill, the editor or git. */
+  source: string;
 }
 
 interface ToolCall {
@@ -35,19 +37,27 @@ interface ToolCall {
   detailsHistory: ToolDetail[];
 }
 
+interface Attachment {
+  name: string;
+  dimensions: string;
+}
+
 type ChatMessage =
-  | { id: string; role: "user" | "assistant"; type: "text"; content: string; reveal?: boolean }
+  | {
+      id: string;
+      role: "user" | "assistant";
+      type: "text";
+      content: string;
+      reveal?: boolean;
+      attachment?: Attachment;
+    }
   | { id: string; role: "assistant"; type: "tool-call"; toolCall: ToolCall }
   | { id: string; role: "assistant"; type: "processing" };
-
-/* -------------------------------------------------------------------------- */
-/*                              Animation styles                              */
-/* -------------------------------------------------------------------------- */
 
 /** Ported from the app's theme.css / components.css so the panel needs no global CSS. */
 const keyframes = `
 @keyframes ai-fade-in-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0px); }
 }
 @keyframes ai-timeline-reveal {
@@ -66,14 +76,14 @@ const keyframes = `
   87.5% { opacity: 0.82; }
   100% { opacity: 1; }
 }
-.ai-fade-in-up { animation: ai-fade-in-up 0.4s ease-out both; }
+.ai-fade-in-up { animation: ai-fade-in-up 0.35s ease-out both; }
 .ai-message-with-timeline { position: relative; }
 .ai-message-with-timeline::before {
   content: '';
   position: absolute;
-  left: 20px;
-  top: 50px;
-  height: calc(100% - 34px);
+  left: 15px;
+  top: 36px;
+  height: calc(100% - 20px);
   width: 2px;
   opacity: 0.3;
   animation: ai-timeline-reveal 0.8s ease-out forwards;
@@ -134,75 +144,59 @@ function FanLoader({
 /*                               Tool call card                               */
 /* -------------------------------------------------------------------------- */
 
-const getStatusMessage = (status: ToolStatus, actionLabel: string) =>
-  status === "completed" ? "Completed" : `${actionLabel}...`;
-
 const getStatusIcon = (status: ToolStatus) =>
-  status === "completed" ? <FaCheck className="w-4 h-4" /> : <FanLoader size={16} duration={1} />;
+  status === "completed" ? (
+    <FaCheck className="w-3.5 h-3.5" />
+  ) : (
+    <FanLoader size={14} duration={1} />
+  );
 
 const getStatusColor = (status: ToolStatus) =>
   status === "completed"
     ? "text-success-600 bg-success-500/10"
-    : "text-background-400 bg-background-600/20";
+    : "text-foreground-400 bg-background-600/20";
 
-function ToolCallCard({
-  toolCall,
-  showChevron = true,
-}: {
-  toolCall: ToolCall;
-  showChevron?: boolean;
-}) {
-  const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
+/** The avatar slot doubles as the status of whatever the agent is doing. */
+function StatusAvatar({ status }: { status: ToolStatus }) {
+  return (
+    <div
+      className={cn(
+        "w-8 h-8 flex items-center justify-center flex-shrink-0 rounded-sm border border-background-700 inset-ring-3 inset-ring-background-950",
+        getStatusColor(status),
+      )}
+    >
+      {getStatusIcon(status)}
+    </div>
+  );
+}
 
+function ToolCallCard({ toolCall }: { toolCall: ToolCall }) {
   const { actionLabel, status, detailsHistory } = toolCall;
-  const statusMessage = getStatusMessage(status, actionLabel);
-  const mostRecentDetail =
-    detailsHistory.length > 0 ? detailsHistory[detailsHistory.length - 1] : null;
 
   return (
-    <div className="w-full">
-      <div className="relative min-w-[16rem] flex items-center overflow-hidden p-3 pl-4 h-fit gap-3 rounded-[1.3rem] border bg-background-950/90 border-background-700">
-        <div className="flex-1">
-          <div className="font-medium text-sm text-foreground-100">{actionLabel}</div>
-          <p className="text-sm font-semibold text-foreground-200">{statusMessage}</p>
-        </div>
+    <div className="rounded-2xl border border-background-700 bg-background-950/90 px-3 py-2">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="text-sm font-medium text-foreground-100">{actionLabel}</span>
+        <span className="text-xs text-foreground-400">
+          {status === "completed" ? "Done" : "Working…"}
+        </span>
       </div>
 
       {detailsHistory.length > 0 && (
-        <div className="flex mt-1 ml-2 mr-7">
-          <div className="py-1 overflow-x-hidden min-w-[18rem] relative flex flex-col-reverse pr-1 bg-background-950/90 border border-background-700 rounded-xl px-2 border-r-0 rounded-r-none">
-            {(isDetailsExpanded ? detailsHistory : [mostRecentDetail]).map((detail) => {
-              if (!detail) return null;
-              const IconComponent = detail.operationIcon;
-              return (
-                <div
-                  key={detail.id}
-                  className="ai-fade-in-up text-sm flex items-center gap-2 text-foreground-200 my-1 last:pb-0 border-background-700 last:border-0"
-                >
-                  <div className="bg-background-900/90 aspect-square text-background-300 border border-background-700 flex items-center justify-center w-7 h-7 rounded-lg">
-                    <IconComponent className="w-3.5 h-3.5" />
-                  </div>
-                  <p className="mt-1 whitespace-nowrap text-sm font-medium">{detail.message}</p>
-                </div>
-              );
-            })}
-          </div>
-          <div className="p-2 bg-background-950/90 border border-background-700 rounded-xl rounded-l-none border-l-0">
-            {showChevron && (
-              <button
-                type="button"
-                aria-expanded={isDetailsExpanded}
-                aria-label={isDetailsExpanded ? "Hide tool details" : "Show tool details"}
-                className="z-10 p-2 rounded-lg cursor-pointer top-2 right-2 flex items-center gap-2 text-sm text-foreground-300 hover:text-foreground-100 transition-colors hover:bg-background-700/50"
-                onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
-              >
-                <FaChevronDown
-                  className={cn("w-3 h-3 transition-transform", isDetailsExpanded && "rotate-180")}
-                />
-              </button>
-            )}
-          </div>
-        </div>
+        <ul className="mt-2 space-y-1.5 border-t border-background-800 pt-2">
+          {detailsHistory.map((detail) => {
+            const IconComponent = detail.operationIcon;
+            return (
+              <li key={detail.id} className="ai-fade-in-up flex items-center gap-2.5">
+                <IconComponent className="w-3.5 h-3.5 flex-shrink-0 text-foreground-400" />
+                <span className="min-w-0 flex-1 truncate font-mono text-xs text-foreground-400">
+                  {detail.message}
+                </span>
+                <span className="flex-shrink-0 text-xs text-foreground-400">{detail.source}</span>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
   );
@@ -240,9 +234,7 @@ function RevealedText({ text, animate }: { text: string; animate: boolean }) {
     return () => cancelAnimationFrame(frame);
   }, [text]);
 
-  return (
-    <p className="font-medium mb-3 last:mb-0 leading-relaxed">{text.slice(0, visibleCount)}</p>
-  );
+  return <p className="leading-5">{text.slice(0, visibleCount)}</p>;
 }
 
 const LOADING_LABELS = [
@@ -261,9 +253,47 @@ function LoadingLabel({ initialIndex }: { initialIndex: number }) {
   }, []);
 
   return (
-    <p className="text-sm font-semibold text-foreground-200" aria-live="polite">
+    <p className="text-sm font-medium text-foreground-200" aria-live="polite">
       {LOADING_LABELS[index]}
     </p>
+  );
+}
+
+/** Uneven widths so the drawn feature rows read as content, not placeholders. */
+const MOCKUP_FEATURES = ["w-4/5", "w-3/5", "w-2/3"];
+
+/** A drawn stand-in for the attached screenshot: a phone mockup of a billing card. */
+function ScreenshotAttachment({ attachment }: { attachment: Attachment }) {
+  return (
+    <figure className="w-56 rounded-md border border-background-600/40 bg-background-900/90 p-1">
+      <div
+        aria-hidden="true"
+        className="flex h-32 items-end justify-center overflow-hidden rounded-sm border border-background-800 bg-background-950 px-6 pt-4"
+      >
+        <div className="flex w-full flex-col gap-1.5 rounded-t-sm border border-b-0 border-background-700 bg-background-900 p-2.5">
+          <div className="flex items-center justify-between">
+            <div className="h-1 w-8 rounded-full bg-background-600" />
+            <div className="h-2 w-6 rounded-full bg-background-700" />
+          </div>
+          <p className="text-sm font-semibold leading-none tabular-nums text-foreground-200">
+            $24<span className="text-[10px] font-normal text-foreground-400">/mo</span>
+          </p>
+          {MOCKUP_FEATURES.map((width) => (
+            <div key={width} className="flex items-center gap-1">
+              <div className="h-1 w-1 flex-shrink-0 rounded-full bg-background-500" />
+              <div className={cn("h-1 rounded-full bg-background-700", width)} />
+            </div>
+          ))}
+          <div className="mt-0.5 h-3.5 rounded-sm bg-foreground-200/80" />
+        </div>
+      </div>
+      <figcaption className="flex items-center justify-between gap-2 px-1.5 pb-0.5 pt-1.5 text-xs">
+        <span className="truncate font-medium text-foreground-200">{attachment.name}</span>
+        <span className="flex-shrink-0 tabular-nums text-foreground-400">
+          {attachment.dimensions}
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -277,41 +307,20 @@ function MessageBubble({
   if (message.type === "processing") {
     return (
       <div className={cn("flex gap-2 justify-start", animateEntrance && "ai-fade-in-up")}>
-        <div className="w-12 h-12 p-0.5 bg-background-950/90 rounded-2xl flex border border-background-700 flex-shrink-0">
-          <div
-            className={cn(
-              "h-full w-full flex items-center justify-center rounded-xl",
-              getStatusColor("executing"),
-            )}
-          >
-            {getStatusIcon("executing")}
-          </div>
-        </div>
-        <div className="p-3 pr-4 h-fit rounded-[1.3rem] bg-background-950/90 border border-background-700">
-          <div className="flex items-center gap-2">
-            <LoadingLabel initialIndex={1} />
-          </div>
+        <StatusAvatar status="executing" />
+        <div className="px-3 py-1.5 rounded-2xl bg-background-950/90 border border-background-700">
+          <LoadingLabel initialIndex={1} />
         </div>
       </div>
     );
   }
 
   if (message.type === "tool-call") {
-    const hasMultipleTasks = message.toolCall.detailsHistory.length > 1;
     return (
       <div className={cn("flex gap-2 justify-start", animateEntrance && "ai-fade-in-up")}>
-        <div className="w-12 h-12 p-0.5 bg-background-950/90 rounded-2xl flex border border-background-700 flex-shrink-0">
-          <div
-            className={cn(
-              "h-full w-full flex items-center justify-center rounded-xl",
-              getStatusColor(message.toolCall.status),
-            )}
-          >
-            {getStatusIcon(message.toolCall.status)}
-          </div>
-        </div>
-        <div className="max-w-100">
-          <ToolCallCard toolCall={message.toolCall} showChevron={hasMultipleTasks} />
+        <StatusAvatar status={message.toolCall.status} />
+        <div className="min-w-0 flex-1">
+          <ToolCallCard toolCall={message.toolCall} />
         </div>
       </div>
     );
@@ -324,37 +333,27 @@ function MessageBubble({
       className={cn(
         "flex gap-2",
         animateEntrance && !isUser && "ai-fade-in-up",
-        isUser ? "justify-end my-10" : "justify-start",
+        isUser ? "justify-end py-1" : "justify-start",
       )}
     >
       {!isUser && (
-        <div className="w-12 h-12 rounded-2xl flex border border-background-700 items-center justify-center flex-shrink-0 bg-background-950/90">
-          <FaWandMagicSparkles className="w-5 h-5 text-foreground-200" />
+        <div className="w-8 h-8 rounded-sm flex border border-background-700 items-center justify-center flex-shrink-0 bg-background-950/90">
+          <LuBot className="w-5 h-5 text-foreground-300" />
         </div>
       )}
-      <div className="flex flex-col gap-2 max-w-100">
+      <div className={cn("flex min-w-0 max-w-[85%] flex-col gap-1.5", isUser && "items-end")}>
+        {message.attachment && <ScreenshotAttachment attachment={message.attachment} />}
         <div
           className={cn(
-            "px-4 py-3 rounded-[1.3rem] min-h-11",
+            "px-3 py-2 rounded-2xl text-sm text-foreground-200",
             isUser
-              ? "bg-background-900/90 border border-background-600/40"
-              : "bg-background-950/90 border border-background-700",
+              ? "rounded-br-md bg-background-900/90 border border-background-600/40"
+              : "rounded-tl-md bg-background-950/90 border border-background-700",
           )}
         >
-          <div className="text-sm text-foreground-200 min-h-5">
-            <RevealedText
-              key={message.id}
-              text={message.content}
-              animate={message.reveal ?? false}
-            />
-          </div>
+          <RevealedText key={message.id} text={message.content} animate={message.reveal ?? false} />
         </div>
       </div>
-      {isUser && (
-        <div className="w-12 h-12 rounded-2xl flex border border-background-600/40 items-center justify-center flex-shrink-0 bg-background-900/90">
-          <FaUser className="w-4 h-4 text-foreground-300" />
-        </div>
-      )}
     </div>
   );
 }
@@ -366,49 +365,79 @@ function MessageBubble({
 interface Exchange {
   userMessage: string;
   actionLabel: string;
-  details: { operationIcon: IconType; message: string }[];
+  details: { operationIcon: IconType; message: string; source: string }[];
   reply: string;
 }
 
-const GREETING = "I'm watching this repo. Tell me what should change and I'll take it from there.";
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    id: "greeting",
+    role: "assistant",
+    type: "text",
+    content:
+      "UI Lab is connected. Share a screen or describe it, and I'll build it from your library.",
+  },
+  {
+    id: "request",
+    role: "user",
+    type: "text",
+    content: "Can you rebuild this billing card from my mockup?",
+    attachment: { name: "billing-mockup.png", dimensions: "390 × 844" },
+  },
+  {
+    id: "plan",
+    role: "assistant",
+    type: "text",
+    content:
+      "A plan header, price, three included features and an upgrade action. That maps to Card, Badge and Button, so it'll pick up your theme as is.",
+  },
+];
 
 const EXCHANGES: Exchange[] = [
   {
-    userMessage: "Keep my place in the collection when I return from an item.",
-    actionLabel: "Checking routes",
+    userMessage: "Go ahead and build it.",
+    actionLabel: "Reading UI Lab",
     details: [
-      { operationIcon: FaFileLines, message: "collection/[slug]/page.tsx" },
-      { operationIcon: FaMagnifyingGlass, message: "use-collection-filters.ts" },
+      { operationIcon: FaFileLines, message: "lab/SKILL.md", source: "Skill" },
+      { operationIcon: FaMagnifyingGlass, message: "search_guides foundation", source: "MCP" },
+      { operationIcon: FaList, message: "get_component card", source: "MCP" },
+      { operationIcon: FaPencil, message: "billing-card.tsx", source: "Edit" },
     ],
     reply:
-      "The collection was resetting on every visit. It now restores your filters and scroll position, so opening an item won't interrupt browsing.",
+      "Done. billing-card.tsx uses Card, Badge and Button from their subpaths, with spacing and color from your theme tokens.",
   },
   {
-    userMessage: "Ship it behind a flag as well.",
-    actionLabel: "Planning work",
+    userMessage: "Make sure it holds up in light mode.",
+    actionLabel: "Checking theme",
     details: [
-      { operationIcon: FaList, message: "Persist the query in the URL" },
-      { operationIcon: FaPencil, message: "Restore focus on the last card" },
+      { operationIcon: FaMagnifyingGlass, message: "search_guides theming", source: "MCP" },
+      { operationIcon: FaPencil, message: "billing-card.tsx", source: "Edit" },
     ],
-    reply: "Both steps are staged on the same branch — say the word and I'll open the PR.",
+    reply:
+      "One border was hardcoded, so I moved it to a semantic token. Everything else already flips with the theme.",
   },
   {
-    userMessage: "Run the checks first.",
-    actionLabel: "Running checks",
+    userMessage: "Run the checks.",
+    actionLabel: "Running preflight",
     details: [
-      { operationIcon: FaCodeBranch, message: "branch: keep-collection-state" },
-      { operationIcon: FaCheck, message: "12 tests passed" },
+      { operationIcon: FaList, message: "scripts/preflight.sh", source: "Skill" },
+      { operationIcon: FaCheck, message: "0 issues", source: "Skill" },
     ],
-    reply: "Clean run. The collection keeps your place across every entry point now.",
+    reply: "Preflight is clean: no barrel imports, no raw colors, and every control has a label.",
+  },
+  {
+    userMessage: "Open a PR.",
+    actionLabel: "Opening pull request",
+    details: [
+      { operationIcon: FaCodeBranch, message: "billing-card → main", source: "Git" },
+      { operationIcon: FaFileLines, message: "2 files, +64 −3", source: "Git" },
+    ],
+    reply: "PR #214 is up, with a screenshot of the card beside your mockup.",
   },
 ];
 
 const formatDuration = (seconds: number) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-
-/** Single-line height of the field: one `leading-6` line plus its `py-1`. */
-const INPUT_LINE_HEIGHT = 32;
-const INPUT_MAX_HEIGHT = 440;
 
 function ChatInputArea({
   input,
@@ -421,20 +450,8 @@ function ChatInputArea({
   handleSendMessage: () => void;
   isLoading: boolean;
 }) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
-
-  // The field grows with its content once a line can no longer hold it.
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    textarea.style.height = `${INPUT_LINE_HEIGHT}px`;
-    if (textarea.scrollHeight > INPUT_LINE_HEIGHT) {
-      textarea.style.height = `${Math.min(textarea.scrollHeight, INPUT_MAX_HEIGHT)}px`;
-    }
-  }, [input]);
 
   useEffect(() => {
     if (!isRecording) return;
@@ -449,72 +466,69 @@ function ChatInputArea({
   };
 
   return (
-    <div className="relative flex-shrink-0 space-y-2">
-      <div className="relative grid grid-cols-[auto_1fr_auto] border-background-700 bg-background-950 p-1.5 w-full rounded-3xl flex-col border">
-        <div className="flex items-end">
-          <Button variant="ghost" className="px-3 rounded-3xl" aria-label="Add attachment">
-            <FaPlus size={18} />
-          </Button>
-        </div>
+    <div className="grid grid-cols-[auto_1fr_auto] items-end gap-1 rounded-2xl border border-background-700 bg-background-950 p-1">
+      <Button variant="ghost" className="h-8 w-8 px-0 rounded-xl" aria-label="Add attachment">
+        <FaPlus size={14} />
+      </Button>
 
-        <div className="flex items-center relative w-full">
-          <textarea
-            ref={textareaRef}
-            rows={1}
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
-                event.preventDefault();
-                handleSendMessage();
-              }
-            }}
-            placeholder="Ask me anything or request AI assistance..."
-            aria-label="Message"
-            className="block w-full px-2 py-1 leading-6 font-medium bg-transparent resize-none focus:outline-none text-foreground-100 placeholder:text-background-500"
-          />
-        </div>
+      <TextArea
+        rows={1}
+        size="sm"
+        resize="none"
+        maxHeight="7rem"
+        value={input}
+        onChange={(event) => setInput(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+            event.preventDefault();
+            handleSendMessage();
+          }
+        }}
+        placeholder="Message"
+        aria-label="Message"
+        className="w-full"
+        variant="ghost"
+        styles={{
+          scroll: "border-0 bg-transparent",
+          field: "min-h-0 border-0 bg-transparent px-1 py-1.5",
+        }}
+      />
 
-        <div className="flex items-end">
-          <div>
-            <Button
-              type="button"
-              variant="ghost"
-              onPress={toggleRecording}
-              aria-label={isRecording ? "Stop recording" : "Start voice recording"}
-              className={cn(
-                "relative transition-all overflow-hidden rounded-3xl",
-                isRecording
-                  ? "animate-pulse bg-background-800 hover:bg-background-800/60 border-background-700 px-4 gap-2"
-                  : "w-auto",
-              )}
-            >
-              {isRecording ? (
-                <>
-                  <div className="w-4 h-4 bg-background-300 rounded-md transition-all duration-300" />
-                  <span className="text-foreground-300 font-medium text-sm whitespace-nowrap">
-                    {formatDuration(recordingDuration)}
-                  </span>
-                </>
-              ) : (
-                <FaMicrophone size={16} className="transition-colors" />
-              )}
-            </Button>
-          </div>
-          <Button
-            type="button"
-            variant="secondary"
-            onPress={handleSendMessage}
-            aria-label="Send message"
-            className="bg-background-700 hover:bg-background-600/80 border border-background-600/50 w-12 px-2 rounded-3xl ml-2"
-          >
-            {isLoading ? (
-              <div className="bg-background-400 w-3.5 h-3.5 rounded-sm" />
-            ) : (
-              <HiArrowUturnRight size={16} strokeWidth={1.1} />
-            )}
-          </Button>
-        </div>
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant="ghost"
+          onPress={toggleRecording}
+          aria-label={isRecording ? "Stop recording" : "Start voice recording"}
+          className={cn(
+            "h-8 rounded-xl",
+            isRecording ? "animate-pulse bg-background-800 px-2.5 gap-1.5" : "w-8 px-0",
+          )}
+        >
+          {isRecording ? (
+            <>
+              <div className="w-3 h-3 bg-background-500 rounded-sm" />
+              <span className="text-foreground-300 text-xs tabular-nums">
+                {formatDuration(recordingDuration)}
+              </span>
+            </>
+          ) : (
+            <FaMicrophone size={13} />
+          )}
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onPress={handleSendMessage}
+          aria-label="Send message"
+          className="h-8 w-8 px-0 rounded-xl"
+        >
+          {isLoading ? (
+            <div className="bg-background-500 w-2.5 h-2.5 rounded-sm" />
+          ) : (
+            <HiArrowUturnRight size={14} strokeWidth={1.1} />
+          )}
+        </Button>
       </div>
     </div>
   );
@@ -539,9 +553,7 @@ const upsertMessage = (messages: ChatMessage[], message: ChatMessage): ChatMessa
     : [...messages, message];
 
 export function AIComposer({ height }: ShowcasePanelProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: "greeting", role: "assistant", type: "text", content: GREETING },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [isLoading, setIsLoading] = useState(false);
   // The next question waits in the composer; nothing happens until send is pressed.
   const [input, setInput] = useState(EXCHANGES[0].userMessage);
@@ -625,7 +637,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
         }),
       );
 
-      later(1400, () =>
+      later(1200, () =>
         setMessages((current) =>
           upsertMessage(current, {
             id: toolId,
@@ -643,7 +655,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
       exchange.details.forEach((detail, index) => {
         const detailId = `${toolId}-detail-${index}`;
 
-        later(2200 + index * 900, () =>
+        later(1900 + index * 700, () =>
           setMessages((current) =>
             current.map((message) => {
               if (message.id !== toolId || message.type !== "tool-call") return message;
@@ -663,7 +675,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
         );
       });
 
-      const completedAt = 2200 + exchange.details.length * 900;
+      const completedAt = 1900 + exchange.details.length * 700;
 
       later(completedAt, () =>
         setMessages((current) =>
@@ -675,7 +687,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
         ),
       );
 
-      later(completedAt + 700, () => {
+      later(completedAt + 600, () => {
         setMessages((current) =>
           upsertMessage(current, {
             id: `turn-${turn}-reply`,
@@ -714,12 +726,13 @@ export function AIComposer({ height }: ShowcasePanelProps) {
 
       <div ref={chatRef} className="min-h-0 flex-1">
         <Scroll
-          viewportRef={viewportRef}
-          maxHeight={chatHeight ? `${chatHeight}px` : undefined}
+          viewport-ref={viewportRef}
+          max-height={chatHeight ? `${chatHeight}px` : undefined}
+          fade-y
           className="relative"
         >
-          <div ref={transcriptRef} className="w-full px-4">
-            <div className="flex flex-col space-y-4 max-w-4xl pt-6 pb-6 justify-start">
+          <div ref={transcriptRef} className="w-full px-3">
+            <div className="flex flex-col space-y-3 py-4">
               {messages.map((message, index) => {
                 const nextMessage = messages[index + 1];
                 const shouldShowTimeline =
@@ -752,7 +765,7 @@ export function AIComposer({ height }: ShowcasePanelProps) {
         </Scroll>
       </div>
 
-      <div className="px-3 pb-3">
+      <div className="px-2 pb-2">
         <ChatInputArea
           input={input}
           setInput={setInput}

@@ -34,7 +34,7 @@ export default function Messages() {
         </Badge>
       }
     >
-      <Scroll maxHeight="320px" hide={false}>
+      <Scroll max-height="320px" hide={false}>
         <Flex
           direction="column"
           gap="sm"

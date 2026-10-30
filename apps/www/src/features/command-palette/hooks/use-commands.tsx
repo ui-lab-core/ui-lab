@@ -65,7 +65,7 @@ export function useCommands({
         category: "Components",
         icon: <FaPuzzlePiece className="w-4 h-4" />,
         keywords: [component.id, component.name.toLowerCase(), ...component.tags],
-        action: () => router.push(`/components/${component.id}`),
+        action: () => router.push(`/library/components/${component.id}`),
       });
     });
 

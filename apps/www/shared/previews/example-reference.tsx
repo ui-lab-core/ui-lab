@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "ui-lab-components/button";
-import { FaCheck, FaCopy } from "@/shared/icons/fa6";
+import { Check, Copy } from "lucide-react";
 
 export function ExampleReference({ id, level = 3 }: { id: string; level?: 2 | 3 }) {
   const [copied, setCopied] = useState(false);
@@ -24,7 +24,7 @@ export function ExampleReference({ id, level = 3 }: { id: string; level?: 2 | 3 
         size="icon"
         variant="ghost"
       >
-        {copied ? <FaCheck size={12} /> : <FaCopy size={12} />}
+        {copied ? <Check size={12} /> : <Copy size={12} />}
       </Button>
     </div>
   );

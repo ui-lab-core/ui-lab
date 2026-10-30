@@ -25,7 +25,7 @@ The AI-native angle: an MCP server lets agents query live component APIs, semant
 
 AI-generated UIs tend toward visual mediocrity. Hallucinated props, arbitrary hex colors, Tailwind utility names that don't exist in the design system, no enforced color hierarchy. The result is code that runs but looks like it was assembled without taste.
 
-UI Lab makes correct usage machine-readable. The MCP server returns one recommended color per semantic intent — not options, one WCAG-verified answer. It returns real component APIs, not invented prop names. The `/design` Claude Code skill audits code for violations and substitutes correct tokens mechanically.
+UI Lab makes correct usage machine-readable. The MCP server returns one recommended color per semantic intent — not options, one WCAG-verified answer. It returns real component APIs, not invented prop names. The `lab` Claude Code skill routes UI design requests to the right workflow and builds, audits, or fixes UI against the same rules.
 
 ## Quick start
 
@@ -95,16 +95,11 @@ Every tool response injects the design rules: seven color families, enforced sha
 
 Setup takes two minutes. See the [MCP installation guide](/docs/agents-mcps-installation).
 
-### `/design` Claude Code skill
+### `lab` Claude Code skill
 
-The `/design` skill routes to four sub-agents based on intent:
+Type `$lab` in Claude Code and describe what you want. The skill picks one of six routes (setup, build, ideate, audit, quickfix, or conform), says which one it chose, and runs it against the MCP registry, so components come from real APIs and examples instead of memory.
 
-- **design-ideator** — structured design brief process for new UI
-- **design-auditor** — detects violations: wrong shade ranges, arbitrary colors, incorrect sub-component usage
-
-The auditor enforces hard rules. `bg-white` → `bg-background-950`. `text-gray-900` → `text-foreground-300`. `shadow-md` → removed. Violations are corrected in the tool response, not flagged for a human to fix later.
-
-See [Agent workflows](/docs/agents-mcps-workflows) for usage examples.
+See [Skill](/docs/skill) for requirements and what each route does.
 
 ## Composing components
 

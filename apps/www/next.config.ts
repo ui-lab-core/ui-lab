@@ -42,12 +42,19 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   redirects: async () => [
     { source: "/workshop", destination: "/workshop/elements", permanent: false },
+    { source: "/library", destination: "/library/components", permanent: false },
+    { source: "/components/:path*", destination: "/library/components/:path*", permanent: true },
     { source: "/packages/:path*", destination: "/workshop/elements/:path*", permanent: true },
     { source: "/sections/:path*", destination: "/workshop/sections/:path*", permanent: true },
     { source: "/patterns/:path*", destination: "/workshop/patterns/:path*", permanent: true },
     { source: "/starters/:path*", destination: "/workshop/starters/:path*", permanent: true },
+    { source: "/docs/agents-mcps-design-skill", destination: "/docs/skill", permanent: true },
   ],
   outputFileTracingRoot: nextRoot,
+  // The icon route reads SVGs at request time, which tracing can't see.
+  outputFileTracingIncludes: {
+    "/ui/icons/[...slug]": ["./node_modules/@ui-lab-core/library/content/icons/**/*.svg"],
+  },
   turbopack: {
     root: nextRoot,
   },

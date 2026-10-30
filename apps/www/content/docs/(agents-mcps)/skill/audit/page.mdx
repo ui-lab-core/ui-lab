@@ -1,0 +1,57 @@
+---
+title: Audit
+description: A star-rated review of existing UI against the six pillars, with a specific fix for every violation.
+category: Agents & MCPs
+---
+
+Audit reviews existing UI and reports what's wrong with it. It doesn't write code or change files, so it runs without the CLI.
+
+**Say:** "Can you look at the Card component and see what's wrong with it?" · "Is our settings page following the design system?" · "Check this for design system violations"
+
+Audit works from a file path, pasted code, a description, or a screenshot. It reports only what it can see and doesn't invent details.
+
+## What it checks
+
+Each pillar is scored on its own, in this order:
+
+| Pillar | Looks at |
+| --- | --- |
+| Design System Adherence | Tokens, UI Lab components versus native elements, prop conventions |
+| Layout & Spacing | Alignment, padding, whitespace, grouping |
+| Accessibility & Usability | Keyboard access, ARIA, interaction states, error recovery |
+| Cognitive Load | Density, progressive disclosure, noise |
+| Visual Consistency | Typography, color meaning, weight, icons |
+| Slop Avoidance | Decorative noise, filler patterns, structural clichés |
+
+For adherence, every UI Lab component in the code is checked against its real API from the MCP. Native elements like `<button>` or a styled `<div>` are flagged as critical and paired with their UI Lab replacement.
+
+Each violation is rated `CRITICAL`, `WARNING`, or `SUGGESTION`. Five stars means no violations. One star means the pillar is fundamentally broken.
+
+## What you get
+
+A report in a fixed format, with no code:
+
+```
+## DESIGN AUDIT REPORT
+
+### 1. Design System Adherence
+■■□□□
+Native controls bypass the component layer.
+- <button> (Save): [CRITICAL] Native button → <Button>
+- bg-white: [WARNING] Tailwind neutral → bg-background-950
+
+### 2. Layout & Spacing
+■■■■■
+No violations.
+
+...
+
+---
+
+## Summary
+**Overall:** Replace native controls first, then migrate colors to tokens.
+**Total violations:** 4 (1 critical, 2 warnings, 1 suggestion)
+**Priority focus:** Adherence
+```
+
+To fix what the audit found, say "fix the violations from that audit". That routes to [Conform](/docs/skill-conform), which works from the report.

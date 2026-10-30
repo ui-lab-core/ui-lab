@@ -1,12 +1,12 @@
-import { InlineCodeHighlight } from "@/features/docs/components/code-display/inline-code-highlight";
+import { InlineCodeHighlight } from "../code/inline-code-highlight";
 import {
   Table,
   TableExpandedDetails,
   type Column,
   type TableExpandedDetail,
-} from "@/features/docs/components/table";
+} from "./table";
 import type { APIStateAttribute, ComponentAPI, PropDefinition } from "ui-lab-registry";
-import { TypeDisplay } from "../shared/type-display";
+import { TypeDisplay } from "./type-display";
 
 export function API({ api }: { api: ComponentAPI | null }) {
   if (!api)

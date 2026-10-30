@@ -22,6 +22,8 @@ import { IntegrationsPanel } from "./examples/showcase/integrations";
 import { FileBrowser } from "./examples/showcase/media-browser";
 import { MusicPlayer } from "./examples/showcase/music-player";
 import { SessionConfigPanel } from "./examples/showcase/session-config";
+import { MemberRolePanel } from "./examples/showcase/team-members";
+import { UptimeStatusPanel } from "./examples/showcase/uptime-status";
 import { Toaster } from "ui-lab-components/toast";
 import { ShowcaseToolbar } from "./toolbar";
 
@@ -196,6 +198,8 @@ const views: Record<string, ShowcaseItem[]> = {
     { key: "files", Panel: FileBrowser, height: size(0.73) },
     { key: "session", Panel: SessionConfigPanel, height: size(0.35) },
     { key: "keys", Panel: ApiKeysPanel, height: size(0.35) },
+    { key: "team", Panel: MemberRolePanel, height: size(0.73) },
+    { key: "uptime", Panel: UptimeStatusPanel, height: size(0.35) },
   ],
 
   primitives: [
@@ -252,6 +256,8 @@ type LayoutColumns = { sm: number; md?: number; lg: number };
 type LayoutSection = {
   items: ShowcaseItem[];
   stackedFirstColumn?: boolean;
+  /** Explicit per-column stacks, for a fixed 3-column staggered masonry. */
+  groups?: ShowcaseItem[][];
   columns: LayoutColumns;
   /** Fixed row height, for sections whose panels stretch to fill it. Masonry sections size from each item's own `height` instead. */
   height?: string;
@@ -286,9 +292,10 @@ function createLayout(sections: LayoutSection[]): ComponentType {
             masonryColumnFill={section.masonry ? "balance" : undefined}
             className="w-full"
           >
-            {(section.stackedFirstColumn
+            {(section.groups ??
+              (section.stackedFirstColumn
               ? [section.items.slice(0, 2), ...section.items.slice(2).map((item) => [item])]
-              : section.items.map((item) => [item])
+              : section.items.map((item) => [item]))
             ).map((items, itemIndex) => (
               <div
                 key={items[0].key}
@@ -321,6 +328,9 @@ function createLayout(sections: LayoutSection[]): ComponentType {
   return Layout;
 }
 
+const byKey = (items: ShowcaseItem[], columns: string[][]) =>
+  columns.map((keys) => keys.map((key) => items.find((item) => item.key === key)!));
+
 const dashboardItems: ShowcaseItem[] = [
   { key: "earnings", Panel: DashboardEarnings, height: "100%" },
   { key: "stats", Panel: DashboardStats, height: "100%" },
@@ -341,13 +351,15 @@ const customLayouts: Partial<Record<string, ComponentType>> = {
 
   showcase: createLayout([
     {
-      items: views.showcase.slice(0, 4),
+      items: views.showcase,
       columns: { sm: 1, md: 2, lg: 3 },
       stagger: true,
-      stackedFirstColumn: true,
+      groups: byKey(views.showcase, [
+        ["composer", "build-duration", "files"],
+        ["integrations", "deployments", "team"],
+        ["music", "session", "keys", "uptime"],
+      ]),
     },
-    { items: views.showcase.slice(4, 6), columns: { sm: 1, md: 2, lg: 2 }, masonry: true },
-    { items: views.showcase.slice(6, 8), columns: { sm: 1, md: 2, lg: 2 }, masonry: true },
   ]),
 };
 

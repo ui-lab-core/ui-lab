@@ -1,6 +1,6 @@
 import type { SimpleThemeColors } from "@/features/theme/constants/themes";
 import { resolveCodeThemeSelection } from "@/features/theme/lib/themes/shiki/resolve-code-theme";
-import { resolveShikiLanguage } from "@/features/docs/lib/shiki-language";
+import { resolveShikiLanguage } from "@shared/code/language";
 
 type ShikiModule = typeof import("shiki");
 

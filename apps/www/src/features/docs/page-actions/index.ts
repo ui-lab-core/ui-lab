@@ -1,1 +1,1 @@
-export { CopyComponentPage, CopyPage, OpenPage } from "./page-actions";
+export { CopyComponentPage, CopyPage, OpenPage } from "@shared/page/actions";

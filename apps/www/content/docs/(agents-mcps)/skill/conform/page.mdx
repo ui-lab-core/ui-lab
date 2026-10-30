@@ -1,0 +1,45 @@
+---
+title: Conform
+description: Migrate existing UI to UI Lab, or fix an audit's findings, after you approve a plan. Product logic is preserved.
+category: Agents & MCPs
+---
+
+Conform brings existing UI in line with UI Lab without redesigning it. Only the view layer changes. State, events, data fetching, routing, copy, and analytics hooks stay as they are.
+
+**Say:** "Fix the violations from that audit" · "Make this use UI Lab components" · "Migrate our project UI to UI Lab"
+
+## Two starting points
+
+**From an audit report.** If you have just run [Audit](/docs/skill-audit), Conform works from its findings directly and doesn't audit again. Every violation gets fixed or explained.
+
+**Without an audit.** Conform finds violations itself using Audit's adherence checks (native elements, raw colors, token misuse) and skips the other five pillars. This is a mechanical migration, not a critique.
+
+If UI Lab isn't installed, the plan starts with [Setup](/docs/skill-setup).
+
+## Plan, confirm, execute
+
+<Timeline>
+
+## Scope
+
+Claude confirms what's included. If you don't say, it defaults to the main product app and leaves out docs, demos, tests, and build output.
+
+## Plan
+
+You get an ordered plan (shared primitives, then composites, then pages) and a replacement report. For each item it shows where it is, what it becomes, which MCP example the new markup comes from, and a confidence rating.
+
+## Confirm
+
+Nothing changes until you approve. For low-confidence items, you choose whether to skip them, keep the existing UI, or proceed and iterate.
+
+## Execute
+
+Fixes go bottom-up and use field-tested markup from MCP examples rather than hand-written JSX. Exported names, callbacks, and keyboard behavior are kept. Claude then runs the repo's checks and fixes only failures that conform introduced.
+
+</Timeline>
+
+## What you get
+
+A conform report covering what was fixed and where the replacement came from, what was skipped and why, and the riskiest files to review, such as client/server boundaries, portals, and focus traps.
+
+Conform doesn't add features, invent layouts, or "improve" anything beyond what was flagged. Optional improvements are listed separately and left out of the patch.
