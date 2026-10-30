@@ -12,24 +12,16 @@ import { tools } from "./tools/index.js";
 import { packageVersion } from "./version.js";
 
 /**
- * Everything shared across tools lives here, once. Tool descriptions and this
- * block are re-sent on every request in a session, so a rule repeated in three
- * descriptions and again in every response body was being paid for repeatedly;
- * a rule stated here is paid for once.
+ * MCP delivers this through initialize.instructions. Some clients prepend it
+ * to every tool description instead of delivering it once, so keep it compact
+ * and leave ordering, selectors, and ref kinds in the relevant tool schemas.
  */
-const INSTRUCTIONS = [
-  "UI Lab is a React component library. Use these tools instead of guessing component APIs or inventing markup.",
-  "",
-  'Order: `search_guides { query: "foundation", detail: "full" }` once per design or review task; `get_component {}` to list ids, then `get_component { query: "component:<id>", detail: "api" }` for the props you are about to write; `search_workshop` only for install and source questions.',
-  "",
-  "Import a component from its own subpath — `import { Button } from 'ui-lab-components/button'` — never from the `ui-lab-components` barrel, which resolves but pulls the whole library into the module graph. Every component response carries the exact statement in `import`; copy it rather than composing one.",
-  "",
-  "Refs: `component:<id>` | `example:<componentId>/<exampleId>` | `pattern:<id>` | `element:<packageId>/<id>` | `section:<id>` | `starter:<id>` | `artifact:<id>` | `guide:<id>`. Every response emits the ref of everything it returns; pass one back verbatim to fetch that item exactly.",
-  "",
-  'Responses are indented `key: value` text. `status` is "exact", "matches", "list", or "not_found"; a miss is a normal result carrying `suggestions` and `nextSteps`, not an error. A `key:` line followed by tab-separated lines is a table: the first of those lines names the columns, one row follows per item, and a blank line ends it. `-` marks an absent cell, a boolean field appears only when it is true, and fenced blocks hold source verbatim.',
+export const INSTRUCTIONS = [
+  "UI Lab: use documented React APIs. Copy returned subpath imports; never the ui-lab-components barrel. Pass refs back verbatim; explicit refs never search.",
+  "Responses: indented key/value; tab-separated tables with header and blank-line end. '-' = absent; false flags omitted; zero counts retained; fenced source verbatim. Status: exact/matches/list/not_found; misses are results, not errors.",
 ].join("\n");
 
-async function createServer(): Promise<McpServer> {
+export async function createServer(): Promise<McpServer> {
   const mcp = new McpServer(
     { name: "ui-lab", version: packageVersion() },
     { capabilities: { tools: {} }, instructions: INSTRUCTIONS },

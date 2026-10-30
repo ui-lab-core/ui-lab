@@ -137,7 +137,7 @@ describe("Command", () => {
     vi.useFakeTimers();
     render(
       <Command open>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
 
@@ -153,7 +153,7 @@ describe("Command", () => {
     vi.useFakeTimers();
     const { rerender } = render(
       <Command open>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
     const dialog = screen.getByRole("dialog");
@@ -161,7 +161,7 @@ describe("Command", () => {
 
     rerender(
       <Command open={false}>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
     expect(dialog.parentElement).toHaveAttribute("data-state", "exiting");
@@ -284,7 +284,7 @@ describe("Command", () => {
     vi.useFakeTimers();
     const { rerender } = render(
       <Command open>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
     const dialog = screen.getByRole("dialog");
@@ -292,7 +292,7 @@ describe("Command", () => {
 
     rerender(
       <Command open={false}>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
     act(() => {
@@ -300,7 +300,7 @@ describe("Command", () => {
     });
     rerender(
       <Command open>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
 
@@ -409,7 +409,7 @@ describe("Command", () => {
   it("applies root and overlay slot styles through the styles prop", async () => {
     render(
       <Command open className="custom-root" styles={{ root: "slot-root", overlay: "slot-overlay" }}>
-        <Command.List emptyMessage="Nothing here" />
+        <Command.List empty-message="Nothing here" />
       </Command>,
     );
 

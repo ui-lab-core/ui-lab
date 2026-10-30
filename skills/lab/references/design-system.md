@@ -22,6 +22,26 @@ Surface is dark-first: higher shade = deeper surface.
 | Card / panel / modal | `bg-background-800` or `-900` |
 | Toolbar / header     | `bg-background-700` to `-800` |
 | Hover                | One shade lighter than base   |
+| Raised / selected    | `bg-background-600` to `-500` |
+
+Text is light-first: lower shade = stronger text.
+
+| Role                         | Shade                  |
+| ---------------------------- | ---------------------- |
+| Headings, primary text       | `text-foreground-50`   |
+| Body text                    | `text-foreground-100`–`200` |
+| Secondary / supporting text  | `text-foreground-300`  |
+| Muted, placeholder, disabled | `text-foreground-400`  |
+
+### Accent
+
+`accent` is the single primary-emphasis color. Use it only for the main action in a local context, selected/active/current states, focus indication, and links that need emphasis. One accent focus per local context. Never use accent for decoration, headings, or icons that carry no state.
+
+| Role                      | Use                                     |
+| ------------------------- | --------------------------------------- |
+| Primary action            | Component variant first (e.g. `Button` primary), else `bg-accent-500`/`-600` |
+| Selected / active item    | `text-accent-500` or a tinted `bg-accent-*` fill |
+| Accent text on dark       | `text-accent-400`/`-500`                |
 
 ### Semantic tokens
 
@@ -34,6 +54,8 @@ Feedback states use semantic tokens, not chromatic Tailwind:
 | Warning | `text-warning-*`, `bg-warning-*` | `*-yellow-*`, `*-amber-*` |
 | Info    | `text-info-*`, `bg-info-*`       | `*-blue-*`                |
 
+Semantic tokens mark real feedback state (validation, status, alerts, destructive actions). Do not use them as decoration or as a second accent.
+
 Chromatic Tailwind is allowed as intentional decoration (brand, file-type indicators, illustration). Only flag when it substitutes for a semantic token.
 
 ### Shade ranges
@@ -41,11 +63,11 @@ Chromatic Tailwind is allowed as intentional decoration (brand, file-type indica
 | Token                                                   | Valid range                  |
 | ------------------------------------------------------- | ---------------------------- |
 | `text-foreground-*`                                     | 50–400 (500+ does not exist) |
-| `bg-background-*` (surfaces)                            | 600–950                      |
+| `bg-background-*` (surfaces)                            | 500–950                      |
 | `bg-background-*` (text/icon-on-dark only)              | any                          |
-| Semantic (`success`/`danger`/`warning`/`info`/`accent`) | max 600                      |
+| Semantic (`success`/`danger`/`warning`/`info`/`accent`) | 50–600                       |
 
-`bg-background-{<600}` used as a surface fill is a depth inversion.
+`bg-background-{<500}` used as a surface fill is a depth inversion.
 
 ### Borders
 
@@ -92,8 +114,10 @@ Any native element with styling must be replaced with its UI Lab equivalent.
 Imports:
 
 ```js
-import { ComponentName } from "ui-lab-components";
+import { Button } from "ui-lab-components/button";
 ```
+
+Import each component from its own subpath, never the `ui-lab-components` barrel. Copy the `import` line from the MCP component response.
 
 Do not infer component APIs from memory. Fetch from MCP `get_component { query: "component:<id>", detail: "api" }`. Theme provider must come verbatim from the MCP setup guide (`search_guides { query: "setup-ui-lab-in-project", detail: "full" }`).
 
@@ -161,7 +185,7 @@ Motion must be tied to state, feedback, or focus.
 1. Colors: neutral palette, semantic tokens, shade ranges
 2. Styling prohibitions (hex, rgba, shadow, gradient, `dark:`)
 3. Component substitutions for styled native elements
-4. Imports from `ui-lab-components`; theme from the MCP setup guide
+4. Imports from per-component `ui-lab-components/<id>` subpaths; theme from the MCP setup guide
 5. React Aria props; compound sub-components where available
 6. Interactive states present
 7. Affordance rules (zero-state, duplicates, mode-leaking, redundant surfaces)

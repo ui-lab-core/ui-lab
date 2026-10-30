@@ -702,8 +702,8 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
             >
               <Scroll
                 className={cn(css.list, resolved.scroller)}
-                maxHeight={positioning.maxHeight}
-                maxWidth={positioning.maxWidth}
+                max-height={positioning.maxHeight}
+                max-width={positioning.maxWidth}
                 direction="vertical"
                 fade-y
                 hide={false}

@@ -25,7 +25,7 @@ const Command = Object.assign(CommandBase, {
   Trigger: CommandTrigger,
 });
 
-export type { CommandProps, CommandState, UseCommandStateProps } from "./Command";
+export type { CommandProps, CommandPortalContainer, CommandState, UseCommandStateProps } from "./Command";
 export { useCommandState } from "./Command";
 export type { CommandRootProps } from "./Command.Root";
 export type {
@@ -37,6 +37,14 @@ export type {
   CommandStylesProp,
 } from "./Command.shared";
 export { scoreCommandRelevance, useCommandContext } from "./Command.shared";
+export { useCompletion } from "@/hooks/useCompletion";
+export type {
+  CompletionController,
+  CompletionMatch,
+  CompletionNavigator,
+  CompletionOrigin,
+  UseCompletionOptions,
+} from "@/hooks/useCompletion";
 export type { CommandInputProps } from "./Command.Input";
 export type {
   CommandListProps,

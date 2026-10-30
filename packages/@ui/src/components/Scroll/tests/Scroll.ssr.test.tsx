@@ -8,7 +8,7 @@ describe("Scroll SSR", () => {
   it("includes a first-paint vertical fade in server markup", () => {
     const { renderToString } = require("react-dom/server");
     const html = renderToString(
-      <Scroll maxHeight="12rem" fade-y>
+      <Scroll max-height="12rem" fade-y>
         <div>Alpha</div>
         <div>Beta</div>
       </Scroll>,
@@ -22,7 +22,7 @@ describe("Scroll SSR", () => {
   it("includes inline scrollbar reservation in server markup", () => {
     const { renderToString } = require("react-dom/server");
     const html = renderToString(
-      <Scroll inline maxHeight="12rem">
+      <Scroll inline max-height="12rem">
         <div>Content</div>
       </Scroll>,
     );
@@ -34,7 +34,7 @@ describe("Scroll SSR", () => {
     const { renderToString } = require("react-dom/server");
     const container = document.createElement("div");
     container.innerHTML = renderToString(
-      <Scroll inline maxHeight="12rem">
+      <Scroll inline max-height="12rem">
         <div>Content</div>
       </Scroll>,
     );
@@ -45,7 +45,7 @@ describe("Scroll SSR", () => {
     await act(async () => {
       hydrateRoot(
         container,
-        <Scroll inline maxHeight="12rem">
+        <Scroll inline max-height="12rem">
           <div>Content</div>
         </Scroll>,
       );
@@ -57,7 +57,7 @@ describe("Scroll SSR", () => {
   it("does not reserve inline scrollbar space when inline is false", () => {
     const { renderToString } = require("react-dom/server");
     const html = renderToString(
-      <Scroll maxHeight="12rem">
+      <Scroll max-height="12rem">
         <div>Content</div>
       </Scroll>,
     );

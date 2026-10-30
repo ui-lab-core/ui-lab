@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseRef } from "./refs.js";
+import { parseRef, isExplicitRef } from "./refs.js";
 
 test("one ref grammar resolves every documented form", () => {
   assert.deepEqual(parseRef("component:button"), { kind: "component", id: "button" });
@@ -32,4 +32,9 @@ test("plain queries are not refs", () => {
   assert.equal(parseRef("button"), null);
   assert.equal(parseRef("component:a/b"), null);
   assert.equal(parseRef(""), null);
+});
+
+test("malformed and unsupported explicit refs are distinct from free text", () => {
+  for (const ref of ["component:", "component:a/b", "unknown:item"]) assert.equal(isExplicitRef(ref), true);
+  assert.equal(isExplicitRef("pick a date"), false);
 });

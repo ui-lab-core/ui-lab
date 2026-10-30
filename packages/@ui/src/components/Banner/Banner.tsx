@@ -32,7 +32,7 @@ interface BannerTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   styles?: StylesProp<{ root?: Style }>;
 }
 
-interface BannerBodyProps extends React.HTMLAttributes<HTMLParagraphElement> {
+interface BannerBodyProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Keyed styles for the root. Use className for conventional root classes. */
   styles?: StylesProp<{ root?: Style }>;
 }
@@ -72,10 +72,10 @@ const BannerTitle = React.forwardRef<HTMLHeadingElement, BannerTitleProps>(
 
 BannerTitle.displayName = "Banner.Title";
 
-/** Body text content of the banner */
-const BannerBody = React.forwardRef<HTMLParagraphElement, BannerBodyProps>(
+/** Body content of the banner. Accepts text and block content. */
+const BannerBody = React.forwardRef<HTMLDivElement, BannerBodyProps>(
   ({ className, styles, ...props }, ref) => (
-    <p ref={ref} className={cn("body", css.body, className, styles?.root)} {...props} />
+    <div ref={ref} className={cn("body", css.body, className, styles?.root)} {...props} />
   ),
 );
 

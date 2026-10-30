@@ -185,10 +185,14 @@
   [data-ring="true"][data-focus-visible="true"][data-focus-indicator="target"] {
     position: relative;
     z-index: var(--ring-z, auto);
-    outline: slot(ring, width, 0px) slot(ring-border, style, solid)
-      slot(ring-border, background-visible, slot(ring-border, background, transparent));
-    outline-offset: calc(slot(ring, width, 0px) * -1);
+    /* The outer ring stays on the host: a host that clips its content
+       (overflow: hidden) would clip it on ::after, but never its own shadow. */
+    box-shadow: slot(ring, shadow, none);
   }
+
+  /* The inset ring border is drawn on ::after, not the host's own outline:
+     positioned descendants paint above the host's outline, while ::after, as
+     the last positioned child, paints above them. */
 
   [data-ring="true"][data-focus-visible="true"][data-focus-indicator="target"]::after {
     content: "";
@@ -196,6 +200,8 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: slot(ring, shadow, none);
+    outline: slot(ring, width, 0px) slot(ring-border, style, solid)
+      slot(ring-border, background-visible, slot(ring-border, background, transparent));
+    outline-offset: calc(slot(ring, width, 0px) * -1);
   }
 }

@@ -1,7 +1,7 @@
 import type { GuideMetadata } from "ui-lab-registry";
 import { guidesAdapter } from "../adapters/guides-adapter.js";
-import { guideRef, parseRef } from "../refs.js";
-import { exact, list, matches, notFound, type ToolResponse } from "../response.js";
+import { guideRef, parseRef, isExplicitRef } from "../refs.js";
+import { exact, list, matches, notFound, LIST_CAP, type ToolResponse } from "../response.js";
 import { clampLimit } from "../search.js";
 
 export interface SearchGuidesInput {
@@ -36,13 +36,16 @@ export async function handleSearchGuides(input: SearchGuidesInput): Promise<Tool
   if (!query) {
     return list(guidesAdapter.all().map(guideIndexEntry), [
       'search_guides { query: "foundation", detail: "full" }',
-    ]);
+    ], { cap: clampLimit(input.limit, LIST_CAP, 200) });
   }
 
   const ref = parseRef(query);
+  if (!ref && isExplicitRef(query)) return notFound(query, "Invalid or unsupported reference.", [], []);
   if (ref && ref.kind !== "guide") {
     return notFound(query, `search_guides does not resolve "${ref.kind}:" refs.`, [], [
-      `get_component { query: "${query}" }`,
+      ref.kind === "component" || ref.kind === "example"
+        ? `get_component { query: "${query}" }`
+        : `search_workshop { query: "${query}" }`,
     ]);
   }
 
@@ -56,6 +59,8 @@ export async function handleSearchGuides(input: SearchGuidesInput): Promise<Tool
       detail === "full" ? [] : [`search_guides { query: "${guideRef(guide.id)}", detail: "full" }`],
     );
   }
+
+  if (ref) return notFound(query, `No UI Lab guide "${ref.id}" exists.`, [], []);
 
   const found = guidesAdapter.search(query, detail === "full" ? 1 : limit);
 
@@ -81,6 +86,6 @@ export async function handleSearchGuides(input: SearchGuidesInput): Promise<Tool
     query,
     `No UI Lab guide matches "${query}".`,
     guidesAdapter.suggest(query, limit).map(guideIndexEntry),
-    ["search_guides {}"],
+    [],
   );
 }

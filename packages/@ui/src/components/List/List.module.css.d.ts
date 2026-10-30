@@ -4,7 +4,6 @@ declare const styles: {
   readonly item: string;
   readonly actionGroup: string;
   readonly actions: string;
-  readonly action: string;
   readonly checkbox: string;
   readonly control: string;
   readonly media: string;

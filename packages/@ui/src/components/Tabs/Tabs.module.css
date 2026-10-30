@@ -24,6 +24,10 @@
       min-inline-size: 0;
       block-size: auto;
       align-self: flex-start;
+
+      & .trigger {
+        justify-content: flex-start;
+      }
     }
 
     &[data-variant="underline"] {
@@ -83,13 +87,14 @@
   }
 
   .trigger {
-    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-2 py-1.5 cursor-pointer select-none;
+    @apply relative z-[1] flex shrink-0 items-center justify-center gap-2 px-3 py-1.5 cursor-pointer select-none;
     --ring-z: 1;
     block-size: auto;
     background-color: slot(trigger, background, var(--background, transparent));
     border: none;
     border-radius: var(--radius-sm, 0.375rem);
     color: slot(trigger, foreground, var(--foreground, inherit));
+    font-size: var(--text-sm-body);
     outline: none;
     box-shadow: none;
     transition:

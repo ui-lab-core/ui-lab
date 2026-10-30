@@ -73,3 +73,8 @@ export function elementRef(packageId: string, id: string): string {
 export function guideRef(id: string): string {
   return `guide:${id}`;
 }
+
+/** Includes malformed prefixed refs: they must not become discovery queries. */
+export function isExplicitRef(raw: string): boolean {
+  return /^[a-z]+:/i.test(raw.trim());
+}

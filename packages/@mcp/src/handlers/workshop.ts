@@ -9,7 +9,7 @@ import {
   type WorkshopKind,
   type WorkshopSummary,
 } from "../adapters/workshop-adapter.js";
-import { parseRef } from "../refs.js";
+import { parseRef, isExplicitRef } from "../refs.js";
 import { exact, list, matches, notFound, LIST_CAP, type ToolResponse } from "../response.js";
 import { clampLimit } from "../search.js";
 
@@ -71,6 +71,7 @@ export async function handleSearchWorkshop(input: SearchWorkshopInput): Promise<
   }
 
   const ref = parseRef(query);
+  if (!ref && isExplicitRef(query)) return notFound(query, "Invalid or unsupported reference.", [], []);
   if (ref?.kind === "example") {
     return notFound(query, "Component examples are served by get_component.", [], [
       `get_component { query: "${query}" }`,
@@ -100,6 +101,8 @@ export async function handleSearchWorkshop(input: SearchWorkshopInput): Promise<
     );
   }
 
+  if (ref) return notFound(query, `No workshop item "${query}" exists in kind "${kind}".`, [], []);
+
   const found = searchWorkshop(query, kind, limit);
   if (found.length > 0) {
     return matches(
@@ -117,6 +120,6 @@ export async function handleSearchWorkshop(input: SearchWorkshopInput): Promise<
       ? "The public registry currently publishes no source artifacts; every UI Lab item installs as a package."
       : `No workshop item matches "${query}".`,
     suggestWorkshop(query, kind, limit),
-    ["search_workshop {}", `get_component { query: "${query}" }`],
+    [],
   );
 }

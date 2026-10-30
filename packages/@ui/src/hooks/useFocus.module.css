@@ -7,10 +7,15 @@
     overflow: visible;
   }
 
+  /* Tracked modes are laid out against the focused element's anchor box, so
+     the ring shares its exact edges instead of a measured copy of them. */
   .focus-indicator {
     position: absolute;
-    left: 0;
-    top: 0;
+    position-anchor: var(--focus-anchor);
+    top: anchor(top, 0px);
+    left: anchor(left, 0px);
+    right: anchor(right, 100%);
+    bottom: anchor(bottom, 100%);
     pointer-events: none;
     box-sizing: border-box;
     z-index: var(--ring-z, auto);
@@ -18,13 +23,13 @@
     box-shadow: slot(ring, shadow, none);
     border: slot(ring, width, 0px) slot(ring-border, style, solid)
       slot(ring-border, background-visible, slot(ring-border, background, transparent));
-    transition-property: border-radius;
-    transition-duration: 0ms;
+    transition-property: opacity, border-radius;
+    transition-duration: var(--ring-fade-duration, 150ms), 0ms;
     transition-timing-function: var(--ring-transition-timing-function, ease-out);
   }
 
   .focus-indicator[data-transition-radius="true"] {
-    transition-duration: var(--ring-transition-duration, 200ms);
+    transition-duration: var(--ring-fade-duration, 150ms), var(--ring-transition-duration, 200ms);
   }
 
   .focus-indicator[data-visible="true"] {
@@ -43,6 +48,7 @@
      offset/border arithmetic that rounds differently at fractional zoom. */
   .focus-indicator[data-self-target="true"] {
     inset: 0;
+    border-radius: inherit;
     box-shadow: slot(
       ring,
       shadow,
@@ -51,7 +57,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .focus-indicator {
+    .focus-indicator,
+    .focus-indicator[data-transition-radius="true"] {
       transition-duration: 0ms;
     }
   }

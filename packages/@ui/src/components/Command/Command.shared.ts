@@ -304,9 +304,13 @@ export function useCommandEngine({
     [focusedKey, orderedKeys],
   );
 
+  // Mounted Command.Item actions win; declarative items cover custom renderers that skip Command.Item.
   const runFocusedAction = React.useCallback(
-    () => (focusedKey === null ? undefined : actionRef.current.get(focusedKey)),
-    [focusedKey],
+    () =>
+      focusedKey === null
+        ? undefined
+        : (actionRef.current.get(focusedKey) ?? items.find((command) => command.id === focusedKey)?.action),
+    [focusedKey, items],
   );
 
   return {

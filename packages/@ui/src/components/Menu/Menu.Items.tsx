@@ -25,6 +25,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
       id,
       disabled = false,
       onSelect,
+      closeOnSelect,
       textValue,
       inset,
       className,
@@ -61,7 +62,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
       if (isSelectable) toggleSelection(key);
       onSelect?.();
       // Multiple selection keeps the panel open so several items can be toggled in one pass.
-      if (selectionMode !== "multiple") close();
+      if (closeOnSelect ?? selectionMode !== "multiple") close();
     };
 
     React.useEffect(() => {
@@ -137,6 +138,7 @@ const MenuCheckboxItem = React.forwardRef<HTMLDivElement, MenuCheckboxItemProps>
       onCheckedChange,
       disabled = false,
       onSelect,
+      closeOnSelect = false,
       textValue,
       className,
       styles: stylesProp,
@@ -167,7 +169,7 @@ const MenuCheckboxItem = React.forwardRef<HTMLDivElement, MenuCheckboxItemProps>
       if (disabled) return;
       onCheckedChange?.(!checked);
       onSelect?.();
-      close();
+      if (closeOnSelect) close();
     };
 
     React.useEffect(() => {
@@ -227,6 +229,7 @@ const MenuRadioItem = React.forwardRef<HTMLDivElement, MenuRadioItemProps>(
       value,
       disabled = false,
       onSelect,
+      closeOnSelect = false,
       textValue,
       className,
       styles: stylesProp,
@@ -259,7 +262,7 @@ const MenuRadioItem = React.forwardRef<HTMLDivElement, MenuRadioItemProps>(
       if (disabled) return;
       radioGroupContext?.onValueChange(value);
       onSelect?.();
-      close();
+      if (closeOnSelect) close();
     };
 
     React.useEffect(() => {

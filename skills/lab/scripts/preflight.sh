@@ -55,7 +55,7 @@ fi
 
 # --- Ground the routing table in files that actually exist ------------------
 modes=""
-for m in setup build ideate audit conform; do
+for m in setup build ideate audit conform quickfix; do
   [ -f "$SKILL_DIR/workflows/$m.md" ] && modes="$modes $m"
 done
 [ -z "$modes" ] && modes=" (none found — workflows/ missing)"

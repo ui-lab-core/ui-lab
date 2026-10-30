@@ -203,7 +203,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       setMounted(true);
     }, []);
 
-    const { present, state, finishExit } = usePresence(mounted && isOpen, transitionDuration);
+    const { present, state, finishExit } = usePresence(mounted && isOpen, transitionDuration, { settleExit: true });
 
     // Use forwardRef callback to expose modalRef
     React.useImperativeHandle(ref, () => modalRef.current as HTMLDivElement);
@@ -393,7 +393,7 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
 
     return (
       <Scroll
-        viewportRef={ref}
+        viewport-ref={ref}
         className={cn("body-scroll", css["body-scroll"])}
         style={bodyStyle}
         styles={{ content: cn("content", css.content, className) }}

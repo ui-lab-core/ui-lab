@@ -3,11 +3,8 @@ import css from "./useFocus.module.css";
 
 interface FocusState {
   visible: boolean;
+  focused: boolean;
   transitionRadius: boolean;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
   radius: string;
 }
 
@@ -21,7 +18,7 @@ interface UseFocusOptions {
   /** Which element's borderRadius to inherit: the surface itself or closest item wrapper */
   radiusSource?: "surface" | "item";
   /** Positioning mode:
-   *  - "track" (default): measures the surface with getBoundingClientRect and positions via transform
+   *  - "track" (default): anchors the indicator to the focused surface with CSS anchor positioning
    *  - "ring": like track but applies inset box-shadow for inner edge focus styling
    *  - "self": indicator covers the scope itself using pure CSS (no JS measurement), immune to subpixel drift at fractional zoom levels. Use when scope === surface.
    *  - "target": applies data-ring directly to the focusable target with no wrapper or indicator element. */
@@ -43,6 +40,7 @@ interface UseFocusReturn {
     "data-ring-inset"?: "true";
     "data-transition-radius"?: "true";
     "data-visible": "true" | undefined;
+    "data-focused": "true" | undefined;
     "aria-hidden": "true";
     style: React.CSSProperties;
   };
@@ -56,11 +54,8 @@ interface UseFocusReturn {
 
 const HIDDEN_FOCUS: FocusState = {
   visible: false,
+  focused: false,
   transitionRadius: false,
-  left: 0,
-  top: 0,
-  width: 0,
-  height: 0,
   radius: "0px",
 };
 
@@ -72,11 +67,25 @@ export function useFocus({
   mode = "track",
   dependencies = [],
 }: UseFocusOptions): UseFocusReturn {
-  const focusSurfaceRef = React.useRef<HTMLElement | null>(null);
-  const visibleFocusSurfaceRef = React.useRef<HTMLElement | null>(null);
+  const anchorElementRef = React.useRef<HTMLElement | null>(null);
   const rafRef = React.useRef<number | null>(null);
   const [focus, setFocus] = React.useState<FocusState>(HIDDEN_FOCUS);
   const usesOverlay = mode !== "target";
+  const anchorName = `--focus-${React.useId().replace(/[^\w-]/g, "")}`;
+
+  // Geometry is never measured: the browser positions the indicator against the
+  // anchored element during layout, so both snap to device pixels identically
+  // and the ring follows the element through resizes, reflows and scrolling.
+  const setAnchorElement = React.useCallback(
+    (element: HTMLElement | null) => {
+      const previous = anchorElementRef.current;
+      if (previous === element) return;
+      previous?.style.removeProperty("anchor-name");
+      element?.style.setProperty("anchor-name", anchorName);
+      anchorElementRef.current = element;
+    },
+    [anchorName],
+  );
 
   const updateFocus = React.useCallback(() => {
     if (!usesOverlay) {
@@ -86,84 +95,66 @@ export function useFocus({
     const scope = scopeRef?.current;
     const container = containerRef?.current;
     const activeElement = document.activeElement;
+    const surface =
+      scope &&
+      container &&
+      activeElement instanceof HTMLElement &&
+      container.contains(activeElement)
+        ? activeElement.closest(surfaceSelector)
+        : null;
 
-    if (
-      !scope ||
-      !container ||
-      !(activeElement instanceof HTMLElement) ||
-      !container.contains(activeElement)
-    ) {
-      focusSurfaceRef.current = null;
-      visibleFocusSurfaceRef.current = null;
-      setFocus(HIDDEN_FOCUS);
-      return;
-    }
+    // A descendant that draws its own ring (target mode) owns focus indication,
+    // so the surrounding surface stays quiet instead of ringing alongside it.
+    const ownsIndicator =
+      activeElement instanceof HTMLElement &&
+      activeElement !== surface &&
+      activeElement.matches('[data-focus-indicator="target"]');
 
-    const surface = activeElement.closest(surfaceSelector);
-    if (!(surface instanceof HTMLElement) || !container.contains(surface)) {
-      focusSurfaceRef.current = null;
-      visibleFocusSurfaceRef.current = null;
-      setFocus(HIDDEN_FOCUS);
-      return;
-    }
-
-    const focusVisibleNode = surface.matches('[data-focus-visible="true"]')
-      ? surface
-      : surface.querySelector('[data-focus-visible="true"]');
-
-    if (!focusVisibleNode) {
-      focusSurfaceRef.current = surface;
-      visibleFocusSurfaceRef.current = null;
-      setFocus(HIDDEN_FOCUS);
-      return;
-    }
-
-    const isSameSurface = visibleFocusSurfaceRef.current === surface;
-    focusSurfaceRef.current = surface;
-    visibleFocusSurfaceRef.current = surface;
-
-    if (mode === "self") {
-      const radius = window.getComputedStyle(scope).borderRadius;
+    if (!(surface instanceof HTMLElement) || !container?.contains(surface) || ownsIndicator) {
+      // The anchor stays on the last element so the ring fades out in place
+      // instead of collapsing to its fallback position mid-transition.
       setFocus((prev) =>
-        prev.visible && prev.radius === radius
-          ? prev
-          : {
-              ...HIDDEN_FOCUS,
-              visible: true,
-              transitionRadius: isSameSurface,
-              radius,
-            },
+        prev.focused || prev.visible
+          ? { ...prev, visible: false, focused: false, transitionRadius: false }
+          : prev,
       );
       return;
     }
 
-    let radiusElement = surface;
+    // The indicator is shown for any focus so themes can opt into showing it
+    // on pointer focus via data-focused; data-visible stays keyboard-only.
+    const visible =
+      surface.matches('[data-focus-visible="true"]') ||
+      surface.querySelector('[data-focus-visible="true"]') !== null;
+
+    if (mode === "self") {
+      // Self mode covers the scope via CSS and takes its radius from inherit.
+      setFocus((prev) =>
+        prev.focused && prev.visible === visible
+          ? prev
+          : { ...HIDDEN_FOCUS, visible, focused: true },
+      );
+      return;
+    }
+
+    let anchorElement = surface;
     if (radiusSource === "item") {
       const itemWrapper = surface.closest(".item");
       if (itemWrapper instanceof HTMLElement && container.contains(itemWrapper)) {
-        radiusElement = itemWrapper;
+        anchorElement = itemWrapper;
       }
     }
 
-    const dpr = window.devicePixelRatio || 1;
-    const snap = (v: number) => Math.round(v * dpr) / dpr;
-
-    const scopeRect = scope.getBoundingClientRect();
-    const scopePaddingBoxLeft = scopeRect.left + scope.clientLeft;
-    const scopePaddingBoxTop = scopeRect.top + scope.clientTop;
-    const surfaceRect = radiusElement.getBoundingClientRect();
-    const surfaceStyles = window.getComputedStyle(radiusElement);
+    const isSameElement = anchorElementRef.current === anchorElement;
+    setAnchorElement(anchorElement);
 
     setFocus({
-      visible: true,
-      transitionRadius: isSameSurface,
-      left: snap(surfaceRect.left - scopePaddingBoxLeft),
-      top: snap(surfaceRect.top - scopePaddingBoxTop),
-      width: snap(surfaceRect.width),
-      height: snap(surfaceRect.height),
-      radius: surfaceStyles.borderRadius,
+      visible,
+      focused: true,
+      transitionRadius: isSameElement,
+      radius: window.getComputedStyle(anchorElement).borderRadius,
     });
-  }, [scopeRef, containerRef, surfaceSelector, radiusSource, mode, usesOverlay]);
+  }, [scopeRef, containerRef, surfaceSelector, radiusSource, mode, usesOverlay, setAnchorElement]);
 
   const scheduleFocusUpdate = React.useCallback(() => {
     if (rafRef.current !== null) {
@@ -184,49 +175,43 @@ export function useFocus({
   React.useEffect(() => {
     if (!usesOverlay) return;
 
-    const scope = scopeRef?.current;
     const container = containerRef?.current;
-    if (!scope || !container) return;
+    if (!container) return;
 
     const handleFocusChange = () => {
+      // Self mode updates in the same tick as the focus change. A deferred
+      // frame would let a same-tick state change (e.g. a Select closing) paint
+      // with the ring briefly missing.
+      if (mode === "self") {
+        updateFocus();
+        return;
+      }
       scheduleFocusUpdate();
     };
 
-    const handleViewportChange = () => {
-      if (focusSurfaceRef.current) {
-        scheduleFocusUpdate();
-      }
-    };
-
-    const resizeObserver =
-      typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(() => {
-            if (focusSurfaceRef.current) {
-              scheduleFocusUpdate();
-            }
-          })
-        : null;
-
-    resizeObserver?.observe(scope);
-    resizeObserver?.observe(container);
+    // data-focus-visible is committed by React after the focus event, so a
+    // focus change alone can read it stale; re-evaluate when it actually lands.
+    const focusVisibleObserver = new MutationObserver(handleFocusChange);
+    focusVisibleObserver.observe(container, {
+      attributes: true,
+      attributeFilter: ["data-focus-visible"],
+      subtree: true,
+    });
 
     container.addEventListener("focusin", handleFocusChange);
     container.addEventListener("focusout", handleFocusChange);
-    window.addEventListener("resize", handleViewportChange);
-    window.addEventListener("scroll", handleViewportChange, true);
 
     return () => {
+      focusVisibleObserver.disconnect();
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
-      resizeObserver?.disconnect();
       container.removeEventListener("focusin", handleFocusChange);
       container.removeEventListener("focusout", handleFocusChange);
-      window.removeEventListener("resize", handleViewportChange);
-      window.removeEventListener("scroll", handleViewportChange, true);
+      setAnchorElement(null);
     };
-  }, [scopeRef, containerRef, scheduleFocusUpdate, usesOverlay]);
+  }, [containerRef, scheduleFocusUpdate, updateFocus, mode, usesOverlay, setAnchorElement]);
 
   const isSelf = mode === "self";
   const isRing = mode === "ring";
@@ -242,15 +227,14 @@ export function useFocus({
       "data-ring-inset": isRing ? "true" : undefined,
       "data-transition-radius": focus.transitionRadius ? "true" : undefined,
       "data-visible": focus.visible ? "true" : undefined,
+      "data-focused": focus.focused ? "true" : undefined,
       "aria-hidden": "true",
       style: isSelf
-        ? { borderRadius: focus.radius }
-        : {
-            width: `${focus.width}px`,
-            height: `${focus.height}px`,
-            transform: `translate(${focus.left}px, ${focus.top}px)`,
+        ? {}
+        : ({
+            "--focus-anchor": anchorName,
             borderRadius: focus.radius,
-          },
+          } as React.CSSProperties),
     },
     targetProps: {
       "data-ring": "true",

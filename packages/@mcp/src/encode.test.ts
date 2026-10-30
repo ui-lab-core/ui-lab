@@ -75,3 +75,7 @@ test("tabs and newlines inside a cell are neutralised rather than breaking the g
   const cells = text.split("\n")[2]!.split("\t");
   assert.deepEqual(cells, ["a", "x y"]);
 });
+
+ test("zero availability counts survive empty-array omission", () => {
+  assert.equal(encode({exampleCount: 0, examples: []}), "exampleCount: 0\n");
+});

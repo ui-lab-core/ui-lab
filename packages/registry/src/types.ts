@@ -395,8 +395,9 @@ export interface ControlOption {
 export interface ControlDef {
   name: string;
   label: string;
-  type: "select" | "toggle" | "text" | "stepper";
+  type: "select" | "toggle" | "text" | "stepper" | "slider";
   options?: ControlOption[];
+  presets?: ControlOption[];
   defaultValue?: string | number | boolean;
   min?: number;
   max?: number;

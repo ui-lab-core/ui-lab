@@ -232,6 +232,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
 
     const contextValue: GroupContextValue = {
       isInGroup: true,
+      groupRef,
       groupOrientation: orientation,
       groupSpacing: spacing,
       groupIsDisabled: disabled,

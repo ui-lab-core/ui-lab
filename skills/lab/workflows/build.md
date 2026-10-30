@@ -5,7 +5,7 @@ checklist. Every component you write from here on is governed by them.
 
 ## Step 1 — Load the harness (mandatory, once per session)
 
-Read these three files in full before writing any markup. Do not skim them, and
+Read these four files in full before writing any markup. Do not skim them, and
 do not proceed on memory of them from a previous session:
 
 - `references/design-system.md` — tokens, component substitutions, prop
@@ -13,8 +13,9 @@ do not proceed on memory of them from a previous session:
 - `references/core-pillars.md` — the six pillars your output is judged against
 - `references/slop-patterns.md` — the canonical slop patterns to avoid emitting
   in the first place
+- `references/craft.md` — the details of fit that finish what remains
 
-If you have already read all three in this session, say so and skip to Step 2.
+If you have already read all four in this session, say so and skip to Step 2.
 
 ## Step 2 — Assemble from the top of the composition ladder
 

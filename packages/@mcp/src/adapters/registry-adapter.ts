@@ -5,7 +5,7 @@ import {
   getComponentById as getRegistryComponent,
 } from "ui-lab-registry";
 import type { ComponentMetadata } from "ui-lab-registry";
-import { rank, relaxedRank, type Field } from "../search.js";
+import { rank, relaxedRank, tokenize, type Field } from "../search.js";
 
 /**
  * The generated API metadata is authored for the documentation site, so it
@@ -18,6 +18,12 @@ import { rank, relaxedRank, type Field } from "../search.js";
  * The adapter is the boundary where that presentation layer is dropped, so no
  * handler has to remember to strip it.
  */
+
+export interface ApiSelection {
+  parts?: string[];
+  /** Root names or qualified part props, e.g. Trigger.children. */
+  props?: string[];
+}
 
 export interface ApiProp {
   name: string;
@@ -169,9 +175,22 @@ function subComponents(raw: unknown, exportName: string): Record<string, ApiPart
   return parts.length > 0 ? Object.fromEntries(parts) : undefined;
 }
 
-function buildApi(id: string, raw: unknown, exportName: string): ComponentApi | undefined {
+function buildApi(id: string, raw: unknown, exportName: string, selection?: ApiSelection): ComponentApi | undefined {
   if (typeof raw !== "object" || raw === null) return undefined;
-  const api = raw as RawRecord;
+  const api = { ...(raw as RawRecord) };
+  const partName = (name: string) => name.replace(new RegExp(`^${exportName}\\.?`), "");
+  const selectProps = (props: unknown, prefix = "") => asArray<RawRecord>(props).filter((prop) =>
+    !selection?.props || selection.props.includes(`${prefix}${prop.name}`) ||
+    prop.required === true || prop.category === "Accessibility",
+  );
+  if (selection) {
+    api.props = selectProps(api.props);
+    api.subComponents = Object.fromEntries(
+      Object.entries((api.subComponents ?? {}) as Record<string, RawRecord>)
+        .filter(([name]) => !selection.parts || selection.parts.includes(partName(name)))
+        .map(([name, part]) => [name, { ...part, props: selectProps(part.props, `${partName(name)}.`) }]),
+    );
+  }
 
   const styles = generatedStyles[id as keyof typeof generatedStyles] as
     | { styleableParts?: Array<{ name: string }>; variants?: string[] }
@@ -217,7 +236,7 @@ function buildApi(id: string, raw: unknown, exportName: string): ComponentApi | 
     subComponents: subComponents(api.subComponents, exportName),
     customTypes: definitionsFor([...behaviouralTypes], dictionary),
     styleTypes: definitionsFor([...allTypes].filter((name) => !behaviouralTypes.has(name)), dictionary),
-    styleableParts,
+    styleableParts: selection ? undefined : styleableParts,
     stateAttributes: asArray<RawRecord>(api.stateAttributes).map((attribute) => ({
       name: String(attribute.name),
       description: text(attribute.description),
@@ -235,7 +254,7 @@ export interface Component extends Omit<ComponentMetadata, "api"> {
   api?: ComponentApi;
 }
 
-function getComponent(id: string): Component | null {
+function getComponent(id: string, selection?: ApiSelection): Component | null {
   const component = getRegistryComponent(id);
   if (!component) return null;
 
@@ -244,7 +263,7 @@ function getComponent(id: string): Component | null {
   const generated = generatedAPI[apiId as keyof typeof generatedAPI];
   const source = generated ?? component.api;
 
-  return { ...component, api: buildApi(apiId, source, component.source.exportName) };
+  return { ...component, api: buildApi(apiId, source, component.source.exportName, selection) };
 }
 
 function all(): ComponentMetadata[] {
@@ -252,7 +271,7 @@ function all(): ComponentMetadata[] {
 }
 
 function fields(component: ComponentMetadata): Field[] {
-  return [
+  return ([
     { value: component.id, weight: 50, exactWeight: 120 },
     { value: component.name, weight: 40, exactWeight: 100 },
     { value: component.tags ?? [], weight: 15, exactWeight: 30 },
@@ -260,15 +279,28 @@ function fields(component: ComponentMetadata): Field[] {
     { value: component.description, weight: 10 },
     { value: component.usage?.summary ?? "", weight: 8 },
     { value: component.usage?.whenToUse ?? [], weight: 8 },
-  ];
+  ] satisfies Field[]).map((field) => ({ ...field, match: "word-prefix" }));
+}
+
+// Function words and catalog boilerplate alone are not relevance evidence.
+const QUERY_STOP_WORDS = new Set([
+  "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "i",
+  "in", "is", "it", "me", "no", "not", "of", "on", "or", "such", "that", "the",
+  "this", "to", "use", "with", "component", "components", "ui", "lab",
+]);
+
+function discoveryQuery(query: string): string {
+  return tokenize(query).filter((token) => !QUERY_STOP_WORDS.has(token)).join(" ");
 }
 
 function search(query: string, limit = 5): ComponentMetadata[] {
-  return rank(all(), fields, query, limit);
+  const meaningful = discoveryQuery(query);
+  return meaningful ? rank(all(), fields, meaningful, limit) : [];
 }
 
 function suggest(query: string, limit = 5): ComponentMetadata[] {
-  return relaxedRank(all(), fields, query, limit);
+  const meaningful = discoveryQuery(query);
+  return meaningful ? relaxedRank(all(), fields, meaningful, limit) : [];
 }
 
 export const registryAdapter = { getComponent, all, search, suggest };

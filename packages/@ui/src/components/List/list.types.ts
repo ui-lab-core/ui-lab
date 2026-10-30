@@ -1,3 +1,4 @@
+import type { ActionDef } from "@/lib/internal/Action";
 import React from "react";
 import { DividerProps } from "@/components/Divider";
 import { type Style } from "@/lib/utils";
@@ -167,14 +168,7 @@ export interface ListHeaderProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 /** Declarative action rendered by List.Actions. */
-export interface ListActionDef {
-  /** Content rendered inside the generated action button. */
-  icon: React.ReactNode;
-  /** Tooltip content and accessible name for the generated action button. */
-  title: string;
-  /** Runs when the generated action button is clicked. */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-}
+export type ListActionDef = ActionDef;
 
 // Item sub-component props
 export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {

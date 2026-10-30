@@ -6,6 +6,8 @@ export type { GroupOrientation, GroupSpacing };
 
 export interface GroupContextValue {
   isInGroup: boolean;
+  /** Group root; grouped popovers anchor to it so they span the whole group. */
+  groupRef?: RefObject<HTMLDivElement | null>;
   groupOrientation: GroupOrientation;
   groupSpacing: GroupSpacing;
   groupIsDisabled: boolean;

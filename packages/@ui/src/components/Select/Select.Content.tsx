@@ -20,6 +20,7 @@ import { Input } from "../Input";
 import { List } from "../List";
 import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared";
 import { useScrollLock } from "../../hooks/useScrollLock";
+import type { CompletionController } from "@/hooks/useCompletion";
 
 /**
  * Styles for the search anatomy rendered inside searchable content.
@@ -138,6 +139,15 @@ export interface SelectContentProps extends Omit<React.HTMLAttributes<HTMLDivEle
    * @typeDoc SelectContentStyleSlots
    */
   styles?: SelectContentStylesProp;
+
+  /**
+   * Turns the panel into a completion menu for a text field managed by useCompletion. The panel
+   * anchors to the completion origin, filters by the typed query, and takes keyboard input from
+   * the field without moving focus. Control visibility with Select's state.open.
+   * @category Core
+   * @typeDoc CompletionController
+   */
+  completion?: CompletionController;
 }
 
 const resolveSelectContentStyles = createStylePropsResolver([
@@ -298,6 +308,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       position = "bottom",
       align = "start",
       styles: stylesProp,
+      completion,
       ...domProps
     },
     ref,
@@ -350,7 +361,17 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       !!selectedKeys?.size &&
       triggerContent !== undefined;
 
-    const offsetValue = groupContext?.isInGroup ? 4 : 2;
+    // Inside a Group the panel sizes and aligns to this segment, but clears the
+    // Group's own padding and border so it sits below the whole control.
+    const getOffset = () => {
+      const group = groupContext?.groupRef?.current;
+      const segment = wrapperRef.current;
+      if (!group || !segment) return 2;
+      const groupRect = group.getBoundingClientRect();
+      const segmentRect = segment.getBoundingClientRect();
+      return Math.max(groupRect.bottom - segmentRect.bottom, segmentRect.top - groupRect.top) + 4;
+    };
+    const getAnchor = () => wrapperRef.current;
 
     const side = position === "top" ? "top" : "bottom";
     const requestedPlacement = align === "center" ? side : (`${side}-${align}` as const);
@@ -378,7 +399,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
               ]
             : []),
           ...[
-            offset({ mainAxis: offsetValue, crossAxis: groupContext?.isInGroup ? -1 : 0 }),
+            offset(getOffset),
             flip({
               padding: 8,
               fallbackPlacements: [
@@ -435,10 +456,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       });
 
     React.useLayoutEffect(() => {
-      if (contentElement && isOpen && wrapperRef.current) {
+      const anchor = getAnchor();
+      if (contentElement && isOpen && anchor) {
         const floating = floatingRootRef.current;
         if (!floating) return;
-        const referenceWidth = wrapperRef.current.getBoundingClientRect().width;
+        const referenceWidth = completion ? 0 : anchor.getBoundingClientRect().width;
 
         const rootFontSize =
           Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
@@ -459,7 +481,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         contentElement.style.minWidth = "";
         update();
       }
-    }, [contentElement, isOpen, update, wrapperRef]);
+    }, [completion, contentElement, isOpen, update, wrapperRef]);
 
     React.useLayoutEffect(() => {
       const floating = floatingRootRef.current;
@@ -486,10 +508,45 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     }, [contentElement, isOpen, position, update, wrapperRef]);
 
     React.useLayoutEffect(() => {
-      if (wrapperRef.current) {
-        refs.setReference(wrapperRef.current);
+      const reference = completion?.anchor ?? getAnchor();
+      if (reference) {
+        refs.setReference(reference);
       }
-    }, [refs, wrapperRef.current]);
+    }, [refs, completion?.anchor, wrapperRef.current]);
+
+    const completionQuery = completion?.query;
+    React.useEffect(() => {
+      if (completionQuery === undefined) return;
+      setSearchValue(completionQuery);
+    }, [completionQuery, setSearchValue]);
+
+    React.useEffect(() => {
+      if (!completion || !isOpen) return;
+      setFocusedKey(filteredItems.find((item) => !item.isDisabled)?.key ?? null);
+    }, [completion?.query, filteredItems.length, isOpen]);
+
+    React.useEffect(() => {
+      if (!completion) return;
+      return completion.register({
+        move: (direction) => {
+          markKeyboardNavigation();
+          if (direction === 1) navigateToNextItem();
+          else navigateToPrevItem();
+        },
+        confirm: () => {
+          if (focusedKey === null) return false;
+          selectFocusedItem();
+          return true;
+        },
+      });
+    }, [
+      completion?.register,
+      focusedKey,
+      markKeyboardNavigation,
+      navigateToNextItem,
+      navigateToPrevItem,
+      selectFocusedItem,
+    ]);
 
     React.useEffect(() => {
       setMounted(true);
@@ -517,6 +574,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       const shouldKeepTriggerFocus =
         triggerType === "input" || triggerRef.current?.tagName === "INPUT";
 
+      if (completion) return;
+
       if (isOpen && !hasContentSearch && shouldKeepTriggerFocus) {
         focusFrameRef.current = requestAnimationFrame(() => {
           triggerRef.current?.focus({ preventScroll: true });
@@ -534,14 +593,14 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           focusFrameRef.current = null;
         }
       };
-    }, [isOpen, hasContentSearch, contentElement, triggerRef, triggerType]);
+    }, [completion, isOpen, hasContentSearch, contentElement, triggerRef, triggerType]);
 
     useListPointerModality({
       isOpen,
       mouseMoveDetectedRef,
     });
 
-    useScrollLock(isOpen, contentElement);
+    useScrollLock(isOpen && !completion, contentElement);
 
     React.useEffect(() => {
       if (isOpen) {
@@ -743,7 +802,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       ? `calc(${maxItems} * 36px + 8px)`
       : undefined;
     const hasResults = filteredItems.length > 0;
-    const shouldShowEmptyState = hasContentSearch && !hasResults;
+    const shouldShowEmptyState = (hasContentSearch || !!completion) && !hasResults;
     const shouldHideEmptySearchTriggerContent = triggerType === "input" && !hasContentSearch;
 
     const listContent = (
@@ -775,7 +834,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
         {shouldConstrainListHeight ? (
           <Scroll
             className="viewport"
-            maxHeight={scrollMaxHeight}
+            max-height={scrollMaxHeight}
             direction="vertical"
             fade-y={!hasContentSearch}
             inline
@@ -853,6 +912,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           ref={mergedFloatingRef}
           className={cn("select", css["content-root"], resolved.overlay.className)}
           data-slot="overlay"
+          data-mode={mode}
           data-position={position}
           data-align={align}
           style={{

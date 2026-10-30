@@ -92,7 +92,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
       };
     }, [context]);
 
-    const buttonVariant = variant ?? context.groupVariant ?? "ghost";
+    const buttonVariant = variant ?? context.groupVariant;
 
     return (
       <Button

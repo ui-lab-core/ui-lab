@@ -3,7 +3,7 @@ name: lab
 description: >
   Manual session mode. The explicit command "$lab" activates UI Lab for the
   rest of the session; it does not require a sub-mode or target in the same
-  message. After activation, infer setup, build, ideate, audit, or conform from
+  message. After activation, infer setup, build, ideate, audit, conform, or quickfix from
   each subsequent web UI design request. Do not activate from ordinary UI,
   design, frontend, React, component, or UI Lab mentions. Never use UI Lab to
   determine whether a project is web. Do not route non-web, backend, data/model,
@@ -52,7 +52,7 @@ available.
 </preflight>
 
 <objective>
-Route manually-invoked `/lab` web front-end UI design tasks. setup installs and wires UI Lab into a new or existing project — the CLI (`ui-lab init/add/status`) does the heavy lifting while the MCP setup guides define correct import order and the token layer; it runs inline and requires both the CLI and the MCP. build loads the UI Lab harness (pillars, design system, MCP usage) into this session and governs everything you write from then on — it runs inline, not as a subagent, and routes through setup first when UI Lab is not yet installed. ideate produces design briefs. audit validates visual/interface design against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports (no code changes). conform fixes what audit finds, or — without an audit in hand — finds and fixes the same adherence violations itself, replacing markup with field-tested UI Lab examples sourced via MCP while preserving product logic (no redesign).
+Route manually-invoked `/lab` web front-end UI design tasks. setup installs and wires UI Lab into a new or existing project — the CLI (`ui-lab init/add/status`) does the heavy lifting while the MCP setup guides define correct import order and the token layer; it runs inline and requires both the CLI and the MCP. build loads the UI Lab harness (pillars, design system, MCP usage) into this session and governs everything you write from then on — it runs inline, not as a subagent, and routes through setup first when UI Lab is not yet installed. ideate produces design briefs. audit validates visual/interface design against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports (no code changes). quickfix runs inline with no plan or confirmation step: it swaps all applicable UI to UI Lab components, removes obvious slop patterns, and rewrites colors to UI Lab tokens. conform fixes what audit finds, or — without an audit in hand — finds and fixes the same adherence violations itself, replacing markup with field-tested UI Lab examples sourced via MCP while preserving product logic (no redesign).
 </objective>
 
 <quick_start>
@@ -114,6 +114,7 @@ Worked examples — these route without any `/lab` prefix:
 | "Build me a header" / "Add a settings panel" / "Design a good header" | `build` |
 | "Make this use UI Lab components" | `conform` |
 | "Fix the violations from that audit" | `conform` |
+| "Quickfix this page" / "Clean this up with UI Lab" / "De-slop this and use our tokens" | `quickfix` |
 
 Announce the route in one line before running it (`Routing to **audit** — …`), so
 the user can redirect if you picked wrong.
@@ -135,6 +136,7 @@ answer or edit normally — do not route or spawn anything.
 | Build new UI               | `build`   | build, add, create, implement, design a/the &lt;thing&gt;, make a &lt;component/page/screen&gt;, new component, new page, wire up this screen                                       |
 | Ideate / critique          | `ideate`  | what should this have, what am I missing, ideate, is this the right design, what would make this better, design critique                                                 |
 | Audit                      | `audit`   | UI design review, visual audit, interface audit, design-system violations, layout/accessibility/usability critique                                                       |
+| Quickfix                   | `quickfix` | quickfix, quick fix, clean this up, de-slop, tidy this UI, fix this up quickly, make this look like UI Lab                                                                     |
 | Conform / fix / replace UI | `conform` | conform, fix the audit findings, apply the audit, replace our ui, swap ui to ui lab, migrate project ui, convert ui to ui lab, refactor UI to UI Lab, bring this in line |
 
 **Routing disambiguation:**
@@ -149,6 +151,11 @@ When trigger words match `conform` and anything else:
 - If the user has an audit report (or says "fix"/"apply" the audit findings) → `conform`, working from that report
 - If the user wants a broad mechanical swap with no audit in hand (“replace all available components with UI Lab equivalents”, “conform our project UI to UI Lab components”) → `conform`, finding and fixing violations itself
 - If the user wants a critique/audit of an existing UI with no intent to fix it yet → ask whether they want (A) audit only, (B) fix/conform only, or (C) audit then conform; default to (C)
+
+When trigger words match `quickfix` and `conform`:
+
+- The user says quickfix/quick fix, or wants a fast one-pass cleanup of a specific file/screen → `quickfix` (no plan, no confirmation)
+- The user wants a project-wide migration, a reviewed plan, or is working from an audit report → `conform`
 
 When trigger words match `build` and anything else:
 
@@ -201,6 +208,16 @@ When the request is about installing or wiring UI Lab itself (not building UI):
 
 </agent>
 
+<agent id="quickfix">
+
+<trigger>User says "quickfix" / "quick fix", or wants existing web UI cleaned up in one pass: swap all applicable markup to UI Lab components, remove obvious slop, and conform colors to UI Lab tokens. No plan or confirmation step.</trigger>
+
+<spawn_prompt_file>workflows/quickfix.md</spawn_prompt_file>
+
+<inline>true</inline>
+
+</agent>
+
 <agent id="conform">
 
 <trigger>User wants violations fixed rather than just reported: either working from an existing `audit` report ("fix these violations", "conform to the audit", "apply the audit findings"), or asking for a broad UI Lab component migration with no audit in hand ("conform our web project UI to UI Lab components", "swap/replace web UI to UI Lab", "migrate web project UI"), preserving all existing product logic, data flow, and behavior.</trigger>
@@ -213,7 +230,7 @@ When the request is about installing or wiring UI Lab itself (not building UI):
 
 **Spawning:** Use the Task tool with subagent_type "general-purpose". Read the agent's `spawn_prompt_file` and pass its content as the prompt, appending the user's code, description, audit report, or file path at the end.
 
-**`setup` and `build` are the exceptions — never spawn them.** Both carry `<inline>true</inline>`: read the workflow file and follow it yourself, in this session. `setup` mutates the real project and runs the CLI, then hands off to `build` in the same session; `build` governs the UI *you* write, and a subagent's context dies with the subagent. Spawning either defeats the mode. Once `build` is loaded, its rules stand for the rest of the session, so later UI work does not re-read it.
+**`setup`, `build`, and `quickfix` are the exceptions — never spawn them.** All three carry `<inline>true</inline>`: read the workflow file and follow it yourself, in this session. `setup` mutates the real project and runs the CLI, then hands off to `build` in the same session; `build` governs the UI *you* write, and a subagent's context dies with the subagent. Spawning either defeats the mode. Once `build` is loaded, its rules stand for the rest of the session, so later UI work does not re-read it.
 
 **MCP Usage:** All agents leverage ui-lab tools to query the registry:
 
@@ -225,6 +242,7 @@ Only three tools exist: `get_component { query, detail, limit }`, `search_worksh
 
 - **audit**: Validates components/props against registry via `get_component { query: "<name>" }` → `get_component { query: "component:<id>", detail: "api" }`; when a component's placement or nesting matters, also query `detail: "usage"`. Uses `search_guides { query: "theme" }` → `search_guides { query: "guide:<id>", detail: "full" }` for theme/color setup validation instead of hardcoded rules.
 - **ideate**: Discovers patterns/elements/sections via `search_workshop { kind, query }` and guides via `search_guides` before suggesting gaps. Queries component examples via `get_component { query: "component:<id>", detail: "examples" }` when needed and `detail: "usage"` when composition semantics matter.
+- **quickfix**: Fetches the foundation guide once, resolves each swap via `get_component { query: "<name>" }` → `detail: "api"`, and pulls `detail: "examples"` only for committed components. Checks `search_workshop { kind: "pattern" | "element" }` at summary for matching blocks.
 - **conform**: Uses `search_guides { query: "setup-ui-lab-in-project", detail: "full" }` before any fix if UI Lab is not already wired. Uses `get_component` at `detail: "api"` and `detail: "usage"`, plus `search_workshop { query: "component:<id>", detail: "full" }` for source, to perform safe 1:1 replacements and keep imports correct. Prefers `get_component { detail: "examples" }` for field-tested replacement markup over hand-written JSX, and uses `search_workshop { query: "pattern:<id>" | "element:<pkg>/<id>" | "section:<id>", detail: "full" }` for larger structural matches — only when it preserves the existing structure (no redesign).
 
 </orchestration>
@@ -243,7 +261,7 @@ Only three tools exist: `get_component { query, detail, limit }`, `search_worksh
 
 **build**: A build is complete when:
 
-- `references/design-system.md`, `references/core-pillars.md`, and `references/slop-patterns.md` have all been read in full this session
+- `references/design-system.md`, `references/core-pillars.md`, `references/slop-patterns.md`, and `references/craft.md` have all been read in full this session
 - Every component used was resolved via `get_component { query: "<name>" }` → `get_component { query: "component:<id>", detail: "api" }` before being written — no API inferred from memory
 - Replacement markup started from `get_component { detail: "examples" }` or a `search_workshop { detail: "full" }` pattern/element/section result wherever one exists
 - A bill of materials was emitted before writing each screen, and full/examples detail fetched only for refs in the bill of materials, at most once each
@@ -274,6 +292,14 @@ Only three tools exist: `get_component { query, detail, limit }`, `search_worksh
 - Gaps classified into CRITICAL, LAYOUT COHERENCE, PROGRESSIVE DISCLOSURE categories
 - Top 5 suggestions ranked by spatial coherence impact first, then functional criticality
 - No code written; focus purely on "what should exist"
+
+**quickfix**: A quickfix pass is complete when:
+
+- `references/design-system.md`, `references/slop-patterns.md`, and `references/craft.md` were read in full this session
+- Every styled native element or hand-rolled control in scope with a UI Lab equivalent was swapped, using APIs fetched via MCP
+- Obvious slop patterns were removed without changing behavior or meaning
+- Colors use only `bg-background-500`–`950`, `text-foreground-50`–`400`, `border-background-*`, `accent-*` for primary emphasis, and semantic tokens for feedback states. No hex, `rgba()`, Tailwind neutrals, shadows, gradients, or `dark:`
+- Product logic is unchanged and a brief report lists swaps, removals, and anything left untouched
 
 **conform**: A conform pass is complete when:
 

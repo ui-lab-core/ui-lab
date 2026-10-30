@@ -348,6 +348,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         className={cn(
           "item",
           css.item,
+          mode === "multiple" && css["item-multiple"],
           hasDescription && css["item-with-description"],
           className,
           resolved.root,

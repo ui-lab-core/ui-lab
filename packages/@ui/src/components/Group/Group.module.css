@@ -141,7 +141,7 @@
   }
 
   .select {
-    @apply flex items-stretch min-w-0 p-0 bg-transparent border-none;
+    @apply flex items-stretch min-w-0 p-0 border-none;
     /* Select paints its trigger sections from its own radius tokens. Resolve
        both to the Group item's shape so middle items remain square. */
     --background-radius: slot(item, radius, 0);

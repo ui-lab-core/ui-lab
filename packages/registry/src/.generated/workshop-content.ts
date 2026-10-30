@@ -4,11 +4,11 @@ import type { WorkshopCatalogEntry } from "../workshop-content.js";
 
 export const generatedWorkshopContent = [
   {
-    "ref": "element:agents/aichatinput",
+    "ref": "element:agents/approval",
     "kind": "element",
-    "id": "aichatinput",
-    "name": "Prompt Composer",
-    "description": "An agent message composer pairing a growing text field with a model selector, attachment control, and a primary send action.",
+    "id": "approval",
+    "name": "Command Approval",
+    "description": "A permission request that shows the exact command and what it will touch, answers with Allow once, Always allow, or Deny (each on a single key), and turns Deny into a note telling the agent what to do instead.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -17,15 +17,15 @@ export const generatedWorkshopContent = [
     "bundleId": "agents",
     "installIntent": {
       "mode": "locked",
-      "artifactId": "aichatinput"
+      "artifactId": "approval"
     }
   },
   {
-    "ref": "element:agents/aichatinput-with-suggestions",
+    "ref": "element:agents/approval-plan",
     "kind": "element",
-    "id": "aichatinput-with-suggestions",
-    "name": "Prompt Composer with Suggestions",
-    "description": "A message composer that surfaces starter prompt suggestions while the field is empty, seeding the input on selection and hiding once the user begins typing.",
+    "id": "approval-plan",
+    "name": "Plan Approval",
+    "description": "A numbered plan the agent will follow, each step with the files it touches and a flag on anything that writes data; steps can be left out, revised with a note, or approved to run.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -34,49 +34,15 @@ export const generatedWorkshopContent = [
     "bundleId": "agents",
     "installIntent": {
       "mode": "locked",
-      "artifactId": "aichatinput-with-suggestions"
-    }
-  },
-  {
-    "ref": "element:agents/chainofthought",
-    "kind": "element",
-    "id": "chainofthought",
-    "name": "Chain of Thought",
-    "description": "A reasoning trace that shows an agent's intermediate steps as a connected timeline, marking completed thoughts and the step in progress.",
-    "category": "elements",
-    "visibility": "public",
-    "packageId": "agents",
-    "access": "premium",
-    "locked": true,
-    "bundleId": "agents",
-    "installIntent": {
-      "mode": "locked",
-      "artifactId": "chainofthought"
-    }
-  },
-  {
-    "ref": "element:agents/chainofthought-with-details",
-    "kind": "element",
-    "id": "chainofthought-with-details",
-    "name": "Chain of Thought with Details",
-    "description": "A reasoning trace whose steps expand to reveal the supporting detail behind each decision, keeping the summary compact by default.",
-    "category": "elements",
-    "visibility": "public",
-    "packageId": "agents",
-    "access": "premium",
-    "locked": true,
-    "bundleId": "agents",
-    "installIntent": {
-      "mode": "locked",
-      "artifactId": "chainofthought-with-details"
+      "artifactId": "approval-plan"
     }
   },
   {
     "ref": "element:agents/chat",
     "kind": "element",
     "id": "chat",
-    "name": "Chat",
-    "description": "A conversational agent panel with an identified header, alternating assistant and user message bubbles, and an inline composer for replies.",
+    "name": "Conversation",
+    "description": "A full agent thread: user turns as bubbles, agent turns with a collapsible thinking summary, touched files, formatted prose with inline code, and copy, rating, and retry actions, over a docked reply field.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -89,11 +55,11 @@ export const generatedWorkshopContent = [
     }
   },
   {
-    "ref": "element:agents/chat-with-actions",
+    "ref": "element:agents/chat-review",
     "kind": "element",
-    "id": "chat-with-actions",
-    "name": "Chat with Message Actions",
-    "description": "A conversational agent panel where each assistant response exposes copy, feedback, and regenerate actions beneath the message bubble.",
+    "id": "chat-review",
+    "name": "Review Thread",
+    "description": "A collaborative thread where a teammate asks, the agent answers with the files it changed, and the change waits on Accept or Reject, with undo after either.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -102,15 +68,83 @@ export const generatedWorkshopContent = [
     "bundleId": "agents",
     "installIntent": {
       "mode": "locked",
-      "artifactId": "chat-with-actions"
+      "artifactId": "chat-review"
+    }
+  },
+  {
+    "ref": "element:agents/chat-streaming",
+    "kind": "element",
+    "id": "chat-streaming",
+    "name": "Streaming",
+    "description": "A live agent turn that thinks with a shimmering label and elapsed time, searches, then writes its answer in word bursts behind a caret, with stop, replay, and a suggested follow-up.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "chat-streaming"
+    }
+  },
+  {
+    "ref": "element:agents/codediff",
+    "kind": "element",
+    "id": "codediff",
+    "name": "File Diff",
+    "description": "One file's proposed edit as a line-numbered diff, switchable between unified and split views, with folded unchanged lines and Keep or Undo for the whole file.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "codediff"
+    }
+  },
+  {
+    "ref": "element:agents/codediff-changeset",
+    "kind": "element",
+    "id": "codediff-changeset",
+    "name": "Changeset",
+    "description": "Every file the agent touched in one list, with added, modified, and deleted markers, line counts, an expandable preview of each edit, and Keep or Undo per file or for the whole set.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "codediff-changeset"
+    }
+  },
+  {
+    "ref": "element:agents/elapsed",
+    "kind": "element",
+    "id": "elapsed",
+    "name": "Source",
+    "description": "A hook that counts the seconds since an agent started working and formats them as 12s or 1m 04s.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "elapsed"
     }
   },
   {
     "ref": "element:agents/history",
     "kind": "element",
     "id": "history",
-    "name": "History",
-    "description": "A conversation history panel that groups past agent sessions by recency and lets the user select one to resume.",
+    "name": "Chat History",
+    "description": "A sidebar of past chats grouped by recency under a pinned section, with per-chat rename in place, pin, and delete that can be undone.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -123,11 +157,113 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/history-search",
+    "kind": "element",
+    "id": "history-search",
+    "name": "Search",
+    "description": "Search across past chats that matches titles and message text, highlights the hit in both, trims each excerpt to show it, and offers a new chat when nothing matches.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "history-search"
+    }
+  },
+  {
+    "ref": "element:agents/promptcomposer",
+    "kind": "element",
+    "id": "promptcomposer",
+    "name": "Composer",
+    "description": "A message field with attachment chips, a tools menu whose active tool becomes a removable chip, a model picker, and a send button that turns into stop while the agent responds.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "promptcomposer"
+    }
+  },
+  {
+    "ref": "element:agents/promptcomposer-inline",
+    "kind": "element",
+    "id": "promptcomposer-inline",
+    "name": "Inline",
+    "description": "A pill-shaped composer that grows with its text, swaps dictation for send once there is something to send, and opens a slash-command list when the message starts with /.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "promptcomposer-inline"
+    }
+  },
+  {
+    "ref": "element:agents/promptcomposer-suggestions",
+    "kind": "element",
+    "id": "promptcomposer-suggestions",
+    "name": "Empty State",
+    "description": "A new-conversation screen: a greeting over the composer, category toggles that swap in starter prompts, and a prompt that fills the field and focuses it on pick.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "promptcomposer-suggestions"
+    }
+  },
+  {
+    "ref": "element:agents/reasoning",
+    "kind": "element",
+    "id": "reasoning",
+    "name": "Thinking Block",
+    "description": "Reasoning that streams in under a shimmering Thinking label with a pulsing dot glyph and elapsed time, then folds into a Thought for 6s summary the reader can reopen as the answer starts.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "reasoning"
+    }
+  },
+  {
+    "ref": "element:agents/reasoning-steps",
+    "kind": "element",
+    "id": "reasoning-steps",
+    "name": "Activity Steps",
+    "description": "A running log of what the agent is doing, one row per step with the sources it touched and how long it took, led by a dot glyph that pulses on the live step and thins out as the work narrows.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "reasoning-steps"
+    }
+  },
+  {
     "ref": "element:agents/sessions",
     "kind": "element",
     "id": "sessions",
-    "name": "Sessions",
-    "description": "A session manager listing active, paused, and completed agent workspaces with their model and status for quick resumption.",
+    "name": "Background Sessions",
+    "description": "Agents running in the background, each with its task, branch, live step, and elapsed time; sessions that need input, review, or a retry carry the action inline and collect under a Needs you filter.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -140,11 +276,62 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/sessions-grid",
+    "kind": "element",
+    "id": "sessions-grid",
+    "name": "Session Board",
+    "description": "A board of agent sessions as cards, each with its progress, the steps behind it with the live one shimmering, and the approval it is blocked on, if any.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "sessions-grid"
+    }
+  },
+  {
+    "ref": "element:agents/streamingtext",
+    "kind": "element",
+    "id": "streamingtext",
+    "name": "Streaming Response",
+    "description": "A response that writes itself in with a choice of effect: words fading up from a blur, a typewriter with a blinking caret, or uneven token bursts, with stop, copy, and replay.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "streamingtext"
+    }
+  },
+  {
+    "ref": "element:agents/textstream",
+    "kind": "element",
+    "id": "textstream",
+    "name": "Source",
+    "description": "A hook that reveals text in word-sized steps at a steady pace, for replaying or smoothing a streamed agent response.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "textstream"
+    }
+  },
+  {
     "ref": "element:agents/toolcalls",
     "kind": "element",
     "id": "toolcalls",
     "name": "Tool Calls",
-    "description": "A log of agent tool invocations, each expanding to show the call arguments and returned result, with success and error states surfaced at a glance.",
+    "description": "Each tool call as a row that reads as a sentence (Read src/auth/session.ts), with result, duration, and status, opening to the raw input and output; failures open by default and the running call shimmers until it lands.",
     "category": "elements",
     "visibility": "public",
     "packageId": "agents",
@@ -157,11 +344,79 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:agents/toolcalls-timeline",
+    "kind": "element",
+    "id": "toolcalls-timeline",
+    "name": "Live Timeline",
+    "description": "Tool calls landing one after another on a connected timeline, with parallel calls grouped as chips, a failure and its retry kept in sequence, and the running call shimmering at the end.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "toolcalls-timeline"
+    }
+  },
+  {
+    "ref": "element:agents/workingindicator",
+    "kind": "element",
+    "id": "workingindicator",
+    "name": "Parallel Agents",
+    "description": "Several agents working at once, each with a motion that matches its work: a dot wave for thinking, an orbit for searching, bars for writing, a scanner for running, and a calm ping for waiting on approval.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "workingindicator"
+    }
+  },
+  {
+    "ref": "element:agents/workingindicator-status-bar",
+    "kind": "element",
+    "id": "workingindicator-status-bar",
+    "name": "Status Bar",
+    "description": "A status line above the composer naming what the agent is doing, with elapsed time, a live token count, and Esc to interrupt; messages typed while it works are queued instead of cutting it off.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "agents",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "agents",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "workingindicator-status-bar"
+    }
+  },
+  {
+    "ref": "element:documentation/activeheading",
+    "kind": "element",
+    "id": "activeheading",
+    "name": "Source",
+    "description": "A scroll-spy hook that reports which heading the reader is on, for marking the current item in a table of contents.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "activeheading"
+    }
+  },
+  {
     "ref": "element:documentation/article",
     "kind": "element",
     "id": "article",
-    "name": "Article",
-    "description": "A documentation article page with an eyebrow, headline, meta row, body, and an inline callout.",
+    "name": "Basic",
+    "description": "A single-column documentation page with a title, summary, sectioned prose, a list, and an inline callout.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -174,11 +429,28 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:documentation/article-cover",
+    "kind": "element",
+    "id": "article-cover",
+    "name": "Cover",
+    "description": "A documentation page that opens with a full-width cover image above the title and summary.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "article-cover"
+    }
+  },
+  {
     "ref": "element:documentation/article-with-toc",
     "kind": "element",
     "id": "article-with-toc",
-    "name": "Article with Contents",
-    "description": "A two-column documentation article with a sticky table of contents that tracks the active section.",
+    "name": "With Contents",
+    "description": "A two-column documentation page with a sticky table of contents that tracks the active section.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -191,11 +463,96 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:documentation/builddocspage",
+    "kind": "element",
+    "id": "builddocspage",
+    "name": "Skill",
+    "description": "Teaches an agent to assemble a product documentation page from this package's components, choosing each element by the job it does.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "builddocspage"
+    }
+  },
+  {
+    "ref": "element:documentation/docshome",
+    "kind": "element",
+    "id": "docshome",
+    "name": "Card Grid",
+    "description": "A title and summary with search beneath it, then a grid of entry cards that the search narrows.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "docshome"
+    }
+  },
+  {
+    "ref": "element:documentation/docspage",
+    "kind": "element",
+    "id": "docspage",
+    "name": "Three Column",
+    "description": "Section navigation on the left, the article in the middle, and its table of contents on the right, collapsing to the article alone on narrow screens.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "docspage"
+    }
+  },
+  {
+    "ref": "element:documentation/dodont",
+    "kind": "element",
+    "id": "dodont",
+    "name": "Visual",
+    "description": "Do and don't examples as image cards, for visual and interface guidance.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "dodont"
+    }
+  },
+  {
+    "ref": "element:documentation/dodont-code",
+    "kind": "element",
+    "id": "dodont-code",
+    "name": "Code",
+    "description": "Do and don't examples as code samples, for API and implementation guidance.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "dodont-code"
+    }
+  },
+  {
     "ref": "element:documentation/feedback",
     "kind": "element",
     "id": "feedback",
-    "name": "Feedback",
-    "description": "A helpfulness prompt that collects a yes/no signal, an optional follow-up comment, and confirms on submit.",
+    "name": "Yes or No",
+    "description": "A yes or no helpfulness prompt with an optional follow-up comment, confirmed on submit.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -208,11 +565,11 @@ export const generatedWorkshopContent = [
     }
   },
   {
-    "ref": "element:documentation/nextarticle",
+    "ref": "element:documentation/feedback-rating",
     "kind": "element",
-    "id": "nextarticle",
-    "name": "Next Article",
-    "description": "Previous and next link cards that close an article with clear sequential navigation.",
+    "id": "feedback-rating",
+    "name": "Rating",
+    "description": "A five-point helpfulness rating that reveals an optional comment field, confirmed on submit.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -221,15 +578,15 @@ export const generatedWorkshopContent = [
     "bundleId": "documentation",
     "installIntent": {
       "mode": "locked",
-      "artifactId": "nextarticle"
+      "artifactId": "feedback-rating"
     }
   },
   {
-    "ref": "element:documentation/nextarticle-with-icon",
+    "ref": "element:documentation/glossaryterm",
     "kind": "element",
-    "id": "nextarticle-with-icon",
-    "name": "Next Article with Icons",
-    "description": "A stacked list of suggested next articles, each an icon-led card with a title and a one-line summary.",
+    "id": "glossaryterm",
+    "name": "Hover",
+    "description": "An underlined term that shows its definition in a popover on hover or focus.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -238,15 +595,32 @@ export const generatedWorkshopContent = [
     "bundleId": "documentation",
     "installIntent": {
       "mode": "locked",
-      "artifactId": "nextarticle-with-icon"
+      "artifactId": "glossaryterm"
+    }
+  },
+  {
+    "ref": "element:documentation/headings",
+    "kind": "element",
+    "id": "headings",
+    "name": "Source",
+    "description": "Collects a page's headings with stable slug ids and nests them into the tree a table of contents renders.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "headings"
     }
   },
   {
     "ref": "element:documentation/pageactions",
     "kind": "element",
     "id": "pageactions",
-    "name": "Page Actions",
-    "description": "A documentation page header with its action row: copy the page as Markdown with inline confirmation, and open the raw Markdown source.",
+    "name": "Basic",
+    "description": "A header action row that copies the page as Markdown with inline confirmation and opens the raw source.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -259,11 +633,28 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:documentation/pageactions-floating",
+    "kind": "element",
+    "id": "pageactions-floating",
+    "name": "Floating",
+    "description": "A floating column of icon actions beside the article: copy, link, share, and source.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pageactions-floating"
+    }
+  },
+  {
     "ref": "element:documentation/pageactions-menu",
     "kind": "element",
     "id": "pageactions-menu",
-    "name": "Page Actions Menu",
-    "description": "A split action: copy the page directly, with a menu beside it holding the rest of the destinations — raw Markdown, a shareable link, and handoff to an AI assistant.",
+    "name": "Menu",
+    "description": "A split action: copy the page directly, with a menu beside it for the raw source, a shareable link, and an AI assistant.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -279,8 +670,8 @@ export const generatedWorkshopContent = [
     "ref": "element:documentation/pageactions-toolbar",
     "kind": "element",
     "id": "pageactions-toolbar",
-    "name": "Page Actions Toolbar",
-    "description": "A compact icon-only toolbar for dense documentation headers: copy, share, edit on GitHub, and print, each labelled by a tooltip and an accessible name.",
+    "name": "Toolbar",
+    "description": "An icon-only toolbar for dense headers: copy, share, edit on GitHub, and print, each labelled by a tooltip.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -296,8 +687,8 @@ export const generatedWorkshopContent = [
     "ref": "element:documentation/pageactions-with-toast",
     "kind": "element",
     "id": "pageactions-with-toast",
-    "name": "Page Actions with Toast",
-    "description": "The same page action row, confirming the copy with a success toast and reporting a blocked clipboard with a danger toast instead of a silent failure.",
+    "name": "Toast",
+    "description": "A header action row that confirms each copy with a success toast and reports a blocked clipboard with a danger toast.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -310,11 +701,11 @@ export const generatedWorkshopContent = [
     }
   },
   {
-    "ref": "element:documentation/sitesearch",
+    "ref": "element:documentation/pager",
     "kind": "element",
-    "id": "sitesearch",
-    "name": "Site Search",
-    "description": "A ⌘K command palette for documentation with a search trigger, grouped ranked results, and keyboard navigation.",
+    "id": "pager",
+    "name": "Previous and Next",
+    "description": "Previous and next link cards that move the reader through pages in order.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -323,15 +714,168 @@ export const generatedWorkshopContent = [
     "bundleId": "documentation",
     "installIntent": {
       "mode": "locked",
-      "artifactId": "sitesearch"
+      "artifactId": "pager"
+    }
+  },
+  {
+    "ref": "element:documentation/pager-series",
+    "kind": "element",
+    "id": "pager-series",
+    "name": "Series",
+    "description": "A pager for an ordered guide that shows progress through the series and links the next part.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pager-series"
+    }
+  },
+  {
+    "ref": "element:documentation/pager-suggested",
+    "kind": "element",
+    "id": "pager-suggested",
+    "name": "Suggested",
+    "description": "A stacked list of suggested next pages, each a card with a title, a short summary, and an arrow.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "pager-suggested"
+    }
+  },
+  {
+    "ref": "element:documentation/prerequisites",
+    "kind": "element",
+    "id": "prerequisites",
+    "name": "Checklist",
+    "description": "A checklist of requirements the reader confirms before starting, with progress toward being ready.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "prerequisites"
+    }
+  },
+  {
+    "ref": "element:documentation/quiz",
+    "kind": "element",
+    "id": "quiz",
+    "name": "Single Answer",
+    "description": "A question with one correct answer, chosen from a set of options.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "quiz"
+    }
+  },
+  {
+    "ref": "element:documentation/quiz-multiple",
+    "kind": "element",
+    "id": "quiz-multiple",
+    "name": "Multiple Answer",
+    "description": "A question with more than one correct answer, marking wrong picks so the reader can adjust and retry.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "quiz-multiple"
+    }
+  },
+  {
+    "ref": "element:documentation/search",
+    "kind": "element",
+    "id": "search",
+    "name": "Palette",
+    "description": "A ⌘K command palette with a search trigger, grouped results, and keyboard navigation.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "search"
+    }
+  },
+  {
+    "ref": "element:documentation/search-inline",
+    "kind": "element",
+    "id": "search-inline",
+    "name": "Inline",
+    "description": "Search with results and recent queries listed directly beneath the field, without a modal.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "search-inline"
+    }
+  },
+  {
+    "ref": "element:documentation/steps",
+    "kind": "element",
+    "id": "steps",
+    "name": "Numbered",
+    "description": "Numbered steps on a connecting rail, each with a heading, instructions, and an optional code sample.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "steps"
+    }
+  },
+  {
+    "ref": "element:documentation/steps-checkable",
+    "kind": "element",
+    "id": "steps-checkable",
+    "name": "Checkable",
+    "description": "Steps the reader ticks off as they finish them, so they can keep their place in a long task.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "steps-checkable"
     }
   },
   {
     "ref": "element:documentation/toc",
     "kind": "element",
     "id": "toc",
-    "name": "Table of Contents",
-    "description": "A documentation layout with a sticky table of contents that marks the active section with an accent rail.",
+    "name": "Rail",
+    "description": "A sticky outline rail that indents by heading level and marks the current section.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -344,11 +888,28 @@ export const generatedWorkshopContent = [
     }
   },
   {
+    "ref": "element:documentation/toc-dot-minimap",
+    "kind": "element",
+    "id": "toc-dot-minimap",
+    "name": "Minimap",
+    "description": "A compact rail of markers, one per section, for pages where the outline should stay out of the way.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "toc-dot-minimap"
+    }
+  },
+  {
     "ref": "element:documentation/toc-expanded",
     "kind": "element",
     "id": "toc-expanded",
-    "name": "Expandable Table of Contents",
-    "description": "A nested table of contents with collapsible groups and an active subsection highlight.",
+    "name": "Grouped",
+    "description": "An outline with collapsible groups of subsections, for long pages with deep heading trees.",
     "category": "elements",
     "visibility": "public",
     "packageId": "documentation",
@@ -358,6 +919,23 @@ export const generatedWorkshopContent = [
     "installIntent": {
       "mode": "locked",
       "artifactId": "toc-expanded"
+    }
+  },
+  {
+    "ref": "element:documentation/writearticle",
+    "kind": "element",
+    "id": "writearticle",
+    "name": "Skill",
+    "description": "Teaches an agent to write a documentation article of the right type — tutorial, guide, reference, or concept — structured for the elements that will display it.",
+    "category": "elements",
+    "visibility": "public",
+    "packageId": "documentation",
+    "access": "premium",
+    "locked": true,
+    "bundleId": "documentation",
+    "installIntent": {
+      "mode": "locked",
+      "artifactId": "writearticle"
     }
   },
   {
@@ -422,14 +1000,14 @@ export const generatedWorkshopContent = [
         "path": "layout/BeforeAfterSlider.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport React, { useCallback, useRef, useState } from 'react';\nimport { FiChevronLeft, FiChevronRight } from 'react-icons/fi';\n\ninterface BeforeAfterSliderProps {\n  before: React.ReactNode;\n  after: React.ReactNode;\n  beforeLabel?: string;\n  afterLabel?: string;\n  /** Starting divider position, as a percentage from the left edge. */\n  defaultPosition?: number;\n}\n\nconst clamp = (value: number) => Math.min(100, Math.max(0, value));\n\nexport function BeforeAfterSlider({\n  before,\n  after,\n  beforeLabel = 'Before',\n  afterLabel = 'After',\n  defaultPosition = 55,\n}: BeforeAfterSliderProps) {\n  const [position, setPosition] = useState(clamp(defaultPosition));\n  const frameRef = useRef<HTMLDivElement>(null);\n  const draggingRef = useRef(false);\n\n  const moveTo = useCallback((clientX: number) => {\n    const frame = frameRef.current;\n    if (!frame) return;\n    const bounds = frame.getBoundingClientRect();\n    if (bounds.width === 0) return;\n    setPosition(clamp(((clientX - bounds.left) / bounds.width) * 100));\n  }, []);\n\n  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {\n    draggingRef.current = true;\n    event.currentTarget.setPointerCapture(event.pointerId);\n    moveTo(event.clientX);\n  };\n\n  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {\n    if (!draggingRef.current) return;\n    moveTo(event.clientX);\n  };\n\n  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {\n    draggingRef.current = false;\n    if (event.currentTarget.hasPointerCapture(event.pointerId)) {\n      event.currentTarget.releasePointerCapture(event.pointerId);\n    }\n  };\n\n  return (\n    <div\n      ref={frameRef}\n      onPointerDown={handlePointerDown}\n      onPointerMove={handlePointerMove}\n      onPointerUp={endDrag}\n      onPointerCancel={endDrag}\n      className=\"group relative aspect-[16/9] w-full touch-none select-none overflow-hidden rounded-md border border-background-700 bg-background-900\"\n    >\n      <div className=\"absolute inset-0\">{after}</div>\n      {/* Both layers stay frame-sized; the reveal is a clip, so neither one is\n          ever squeezed as the divider moves. */}\n      <div\n        className=\"absolute inset-0\"\n        style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}\n      >\n        {before}\n      </div>\n\n      <span className=\"pointer-events-none absolute left-3 top-3 rounded-sm bg-background-950/80 px-2 py-1 text-xs font-medium text-foreground-200\">\n        {beforeLabel}\n      </span>\n      <span className=\"pointer-events-none absolute right-3 top-3 rounded-sm bg-background-950/80 px-2 py-1 text-xs font-medium text-foreground-200\">\n        {afterLabel}\n      </span>\n\n      <div\n        className=\"pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-foreground-50/70\"\n        style={{ left: `${position}%` }}\n      />\n\n      <div\n        className=\"pointer-events-none absolute top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-background-700 bg-background-950 text-foreground-200 shadow-lg group-focus-within:ring-2 group-focus-within:ring-accent-500/40\"\n        style={{ left: `${position}%` }}\n      >\n        <FiChevronLeft size={12} aria-hidden />\n        <FiChevronRight size={12} aria-hidden />\n      </div>\n\n      {/* Keyboard and assistive-technology control for the same position. */}\n      <input\n        type=\"range\"\n        min={0}\n        max={100}\n        step={1}\n        value={Math.round(position)}\n        onChange={(event) => setPosition(clamp(Number(event.target.value)))}\n        aria-label={`Reveal ${afterLabel} over ${beforeLabel}`}\n        className=\"sr-only\"\n      />\n    </div>\n  );\n}\n"
+        "content": "'use client';\n\nimport React, { useCallback, useRef, useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\n\ninterface BeforeAfterSliderProps {\n  before: React.ReactNode;\n  after: React.ReactNode;\n  beforeLabel?: string;\n  afterLabel?: string;\n  /** Starting divider position, as a percentage from the left edge. */\n  defaultPosition?: number;\n}\n\nconst clamp = (value: number) => Math.min(100, Math.max(0, value));\n\nexport function BeforeAfterSlider({\n  before,\n  after,\n  beforeLabel = 'Before',\n  afterLabel = 'After',\n  defaultPosition = 55,\n}: BeforeAfterSliderProps) {\n  const [position, setPosition] = useState(clamp(defaultPosition));\n  const frameRef = useRef<HTMLDivElement>(null);\n  const draggingRef = useRef(false);\n\n  const moveTo = useCallback((clientX: number) => {\n    const frame = frameRef.current;\n    if (!frame) return;\n    const bounds = frame.getBoundingClientRect();\n    if (bounds.width === 0) return;\n    setPosition(clamp(((clientX - bounds.left) / bounds.width) * 100));\n  }, []);\n\n  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {\n    draggingRef.current = true;\n    event.currentTarget.setPointerCapture(event.pointerId);\n    moveTo(event.clientX);\n  };\n\n  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {\n    if (!draggingRef.current) return;\n    moveTo(event.clientX);\n  };\n\n  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {\n    draggingRef.current = false;\n    if (event.currentTarget.hasPointerCapture(event.pointerId)) {\n      event.currentTarget.releasePointerCapture(event.pointerId);\n    }\n  };\n\n  return (\n    <div\n      ref={frameRef}\n      onPointerDown={handlePointerDown}\n      onPointerMove={handlePointerMove}\n      onPointerUp={endDrag}\n      onPointerCancel={endDrag}\n      className=\"group relative aspect-[16/9] w-full touch-none select-none overflow-hidden rounded-md border border-background-700 bg-background-900\"\n    >\n      <div className=\"absolute inset-0\">{after}</div>\n      {/* Both layers stay frame-sized; the reveal is a clip, so neither one is\n          ever squeezed as the divider moves. */}\n      <div\n        className=\"absolute inset-0\"\n        style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}\n      >\n        {before}\n      </div>\n\n      <span className=\"pointer-events-none absolute left-3 top-3 rounded-sm bg-background-950/80 px-2 py-1 text-xs font-medium text-foreground-200\">\n        {beforeLabel}\n      </span>\n      <span className=\"pointer-events-none absolute right-3 top-3 rounded-sm bg-background-950/80 px-2 py-1 text-xs font-medium text-foreground-200\">\n        {afterLabel}\n      </span>\n\n      <div\n        className=\"pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-foreground-50/70\"\n        style={{ left: `${position}%` }}\n      />\n\n      <div\n        className=\"pointer-events-none absolute top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-background-700 bg-background-950 text-foreground-200 shadow-lg group-focus-within:ring-2 group-focus-within:ring-accent-500/40\"\n        style={{ left: `${position}%` }}\n      >\n        <Icon id=\"back\" size={12} aria-hidden />\n        <Icon id=\"fwd\" size={12} aria-hidden />\n      </div>\n\n      {/* Keyboard and assistive-technology control for the same position. */}\n      <input\n        type=\"range\"\n        min={0}\n        max={100}\n        step={1}\n        value={Math.round(position)}\n        onChange={(event) => setPosition(clamp(Number(event.target.value)))}\n        aria-label={`Reveal ${afterLabel} over ${beforeLabel}`}\n        className=\"sr-only\"\n      />\n    </div>\n  );\n}\n"
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
-      "uiLab": []
+      "npm": [],
+      "uiLab": [
+        "ui-lab-components/icon"
+      ]
     },
     "installIntent": {
       "mode": "copy",
@@ -576,17 +1154,16 @@ export const generatedWorkshopContent = [
         "path": "layout/Footer.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "import { FiBox, FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Button } from 'ui-lab-components/button';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Input } from 'ui-lab-components/input';\n\ninterface FooterColumn {\n  heading: string;\n  links: string[];\n}\n\nconst columns: FooterColumn[] = [\n  { heading: 'Product', links: ['Overview', 'Components', 'Pricing', 'Changelog'] },\n  { heading: 'Resources', links: ['Documentation', 'Guides', 'Support'] },\n  { heading: 'Company', links: ['About', 'Careers', 'Contact'] },\n];\n\nconst socials = [\n  { label: 'GitHub', icon: FiGithub },\n  { label: 'Twitter', icon: FiTwitter },\n  { label: 'LinkedIn', icon: FiLinkedin },\n];\n\ninterface FooterProps {\n  brand?: string;\n  tagline?: string;\n}\n\nexport function Footer({\n  brand = 'UI Lab',\n  tagline = 'Interface primitives for teams that ship.',\n}: FooterProps) {\n  return (\n    <footer className=\"border-t border-background-800 bg-background-900\">\n      <div className=\"flex flex-col gap-10 px-6 py-12\">\n        <div className=\"grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]\">\n          <div className=\"flex flex-col gap-4\">\n            <div className=\"flex items-center gap-2.5\">\n              <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n                <FiBox size={18} />\n              </span>\n              <span className=\"text-base font-semibold text-foreground-50\">{brand}</span>\n            </div>\n            <p className=\"max-w-xs text-sm text-foreground-400\">{tagline}</p>\n\n            <form\n              className=\"flex max-w-sm items-center gap-2 pt-2\"\n              onSubmit={(event) => event.preventDefault()}\n            >\n              <Input type=\"email\" aria-label=\"Email address\" placeholder=\"you@company.com\" className=\"flex-1\" />\n              <Button type=\"submit\" variant=\"primary\" size=\"sm\">\n                Subscribe\n              </Button>\n            </form>\n          </div>\n\n          {columns.map((column) => (\n            <nav key={column.heading} aria-label={column.heading} className=\"flex flex-col gap-3\">\n              <h2 className=\"text-sm font-semibold text-foreground-100\">{column.heading}</h2>\n              <ul className=\"flex flex-col gap-2.5\">\n                {column.links.map((link) => (\n                  <li key={link}>\n                    <Anchor href=\"#\" target=\"_self\" className=\"text-sm text-foreground-400 hover:text-foreground-100\">\n                      {link}\n                    </Anchor>\n                  </li>\n                ))}\n              </ul>\n            </nav>\n          ))}\n        </div>\n\n        <Divider />\n\n        <div className=\"flex flex-col-reverse items-start gap-4 sm:flex-row sm:items-center sm:justify-between\">\n          <div className=\"flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-foreground-400\">\n            <span>© {new Date().getFullYear()} {brand}. All rights reserved.</span>\n            <Anchor href=\"#\" target=\"_self\" className=\"text-foreground-400 hover:text-foreground-100\">\n              Privacy\n            </Anchor>\n            <Anchor href=\"#\" target=\"_self\" className=\"text-foreground-400 hover:text-foreground-100\">\n              Terms\n            </Anchor>\n          </div>\n\n          <div className=\"flex items-center gap-1.5\">\n            {socials.map((social) => {\n              const Icon = social.icon;\n              return (\n                <Button\n                  key={social.label}\n                  variant=\"secondary\"\n                  size=\"sm\"\n                  aria-label={social.label}\n                  icon={<Icon size={16} />}\n                  className=\"bg-transparent\"\n                />\n              );\n            })}\n          </div>\n        </div>\n      </div>\n    </footer>\n  );\n}\n"
+        "content": "import { Icon } from 'ui-lab-components/icon';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Button } from 'ui-lab-components/button';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Input } from 'ui-lab-components/input';\n\ninterface FooterColumn {\n  heading: string;\n  links: string[];\n}\n\nconst columns: FooterColumn[] = [\n  { heading: 'Product', links: ['Overview', 'Components', 'Pricing', 'Changelog'] },\n  { heading: 'Resources', links: ['Documentation', 'Guides', 'Support'] },\n  { heading: 'Company', links: ['About', 'Careers', 'Contact'] },\n];\n\nconst socials = [\n  { label: 'GitHub', icon: 'github' },\n  { label: 'Twitter', icon: 'twitter' },\n  { label: 'LinkedIn', icon: 'linkedin' },\n];\n\ninterface FooterProps {\n  brand?: string;\n  tagline?: string;\n}\n\nexport function Footer({\n  brand = 'UI Lab',\n  tagline = 'Interface primitives for teams that ship.',\n}: FooterProps) {\n  return (\n    <footer className=\"border-t border-background-800 bg-background-900\">\n      <div className=\"flex flex-col gap-10 px-6 py-12\">\n        <div className=\"grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]\">\n          <div className=\"flex flex-col gap-4\">\n            <div className=\"flex items-center gap-2.5\">\n              <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n                <Icon id=\"box\" size={18} />\n              </span>\n              <span className=\"text-base font-semibold text-foreground-50\">{brand}</span>\n            </div>\n            <p className=\"max-w-xs text-sm text-foreground-400\">{tagline}</p>\n\n            <form\n              className=\"flex max-w-sm items-center gap-2 pt-2\"\n              onSubmit={(event) => event.preventDefault()}\n            >\n              <Input type=\"email\" aria-label=\"Email address\" placeholder=\"you@company.com\" className=\"flex-1\" />\n              <Button type=\"submit\" variant=\"primary\" size=\"sm\">\n                Subscribe\n              </Button>\n            </form>\n          </div>\n\n          {columns.map((column) => (\n            <nav key={column.heading} aria-label={column.heading} className=\"flex flex-col gap-3\">\n              <h2 className=\"text-sm font-semibold text-foreground-100\">{column.heading}</h2>\n              <ul className=\"flex flex-col gap-2.5\">\n                {column.links.map((link) => (\n                  <li key={link}>\n                    <Anchor href=\"#\" target=\"_self\" className=\"text-sm text-foreground-400 hover:text-foreground-100\">\n                      {link}\n                    </Anchor>\n                  </li>\n                ))}\n              </ul>\n            </nav>\n          ))}\n        </div>\n\n        <Divider />\n\n        <div className=\"flex flex-col-reverse items-start gap-4 sm:flex-row sm:items-center sm:justify-between\">\n          <div className=\"flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-foreground-400\">\n            <span>© {new Date().getFullYear()} {brand}. All rights reserved.</span>\n            <Anchor href=\"#\" target=\"_self\" className=\"text-foreground-400 hover:text-foreground-100\">\n              Privacy\n            </Anchor>\n            <Anchor href=\"#\" target=\"_self\" className=\"text-foreground-400 hover:text-foreground-100\">\n              Terms\n            </Anchor>\n          </div>\n\n          <div className=\"flex items-center gap-1.5\">\n            {socials.map((social) => {\n              return (\n                <Button\n                  key={social.label}\n                  variant=\"secondary\"\n                  size=\"sm\"\n                  aria-label={social.label}\n                  icon={<Icon id={social.icon} size={16} />}\n                  className=\"bg-transparent\"\n                />\n              );\n            })}\n          </div>\n        </div>\n      </div>\n    </footer>\n  );\n}\n"
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/anchor",
         "ui-lab-components/button",
         "ui-lab-components/divider",
+        "ui-lab-components/icon",
         "ui-lab-components/input"
       ]
     },
@@ -619,18 +1196,17 @@ export const generatedWorkshopContent = [
         "path": "layout/Header.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport {\n  FiBell,\n  FiBookOpen,\n  FiBox,\n  FiChevronDown,\n  FiFileText,\n  FiHelpCircle,\n  FiLogOut,\n  FiMenu,\n  FiSearch,\n  FiSettings,\n  FiUser,\n} from 'react-icons/fi';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Input } from 'ui-lab-components/input';\nimport { Menu } from 'ui-lab-components/menu';\n\ninterface NavLink {\n  label: string;\n  href: string;\n}\n\nconst primaryLinks: NavLink[] = [\n  { label: 'Dashboard', href: '#' },\n  { label: 'Projects', href: '#' },\n  { label: 'Team', href: '#' },\n];\n\nconst resources: Array<NavLink & { description: string; icon: typeof FiBookOpen }> = [\n  { label: 'Documentation', description: 'Guides and API reference', href: '#', icon: FiBookOpen },\n  { label: 'Changelog', description: \"What's new in the platform\", href: '#', icon: FiFileText },\n  { label: 'Support', description: 'Talk to the team', href: '#', icon: FiHelpCircle },\n];\n\ninterface HeaderProps {\n  brand?: string;\n  activeLink?: string;\n}\n\nexport function Header({ brand = 'UI Lab', activeLink = 'Dashboard' }: HeaderProps) {\n  return (\n    <header className=\"sticky top-0 z-20 border-b border-background-800 bg-background-900/80 backdrop-blur\">\n      <div className=\"flex h-16 items-center gap-5 px-4 sm:px-6\">\n        <a href=\"#\" className=\"flex items-center gap-2.5\">\n          <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n            <FiBox size={18} />\n          </span>\n          <span className=\"text-base font-semibold text-foreground-50\">{brand}</span>\n        </a>\n\n        <nav className=\"hidden items-center gap-5 md:flex\" aria-label=\"Primary\">\n          {primaryLinks.map((link) => (\n            <Anchor\n              key={link.label}\n              href={link.href}\n              target=\"_self\"\n              aria-current={activeLink === link.label ? 'page' : undefined}\n              className={\n                activeLink === link.label\n                  ? 'text-sm font-medium text-foreground-50'\n                  : 'text-sm text-foreground-300 hover:text-foreground-50'\n              }\n            >\n              {link.label}\n            </Anchor>\n          ))}\n\n          <Menu type=\"pop-over\">\n            <Menu.Trigger as=\"child\">\n              <Button\n                variant=\"secondary\"\n                size=\"sm\"\n                icon={{ right: <FiChevronDown size={14} /> }}\n                className=\"bg-transparent text-foreground-300 hover:text-foreground-50\"\n              >\n                Resources\n              </Button>\n            </Menu.Trigger>\n            <Menu.Content align=\"start\" className=\"w-72\">\n              <Menu.Label>Resources</Menu.Label>\n              {resources.map((item) => {\n                const Icon = item.icon;\n                return (\n                  <Menu.Item key={item.label} textValue={item.label}>\n                    <span className=\"flex items-start gap-3\">\n                      <Icon size={16} className=\"mt-0.5 shrink-0 text-foreground-400\" />\n                      <span className=\"flex flex-col\">\n                        <span className=\"text-sm text-foreground-100\">{item.label}</span>\n                        <span className=\"text-xs text-foreground-400\">{item.description}</span>\n                      </span>\n                    </span>\n                  </Menu.Item>\n                );\n              })}\n            </Menu.Content>\n          </Menu>\n        </nav>\n\n        <div className=\"ml-auto flex items-center gap-2\">\n          <Input\n            aria-label=\"Search\"\n            placeholder=\"Search…\"\n            icon={<FiSearch size={16} />}\n            className=\"hidden w-56 lg:flex\"\n          />\n\n          <div className=\"relative\">\n            <Button\n              variant=\"secondary\"\n              size=\"sm\"\n              aria-label=\"Notifications\"\n              icon={<FiBell size={16} />}\n              className=\"bg-transparent\"\n            />\n            <Badge\n              variant=\"danger\"\n              className=\"pointer-events-none absolute -right-1 -top-1 min-w-4 px-1 text-[10px]\"\n            >\n              3\n            </Badge>\n          </div>\n\n          <UserMenu />\n\n          <div className=\"md:hidden\">\n            <MobileMenu />\n          </div>\n        </div>\n      </div>\n    </header>\n  );\n}\n\nfunction UserMenu() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"hidden text-foreground-400 sm:block\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <span className=\"flex flex-col\">\n            <span className=\"text-sm text-foreground-100\">Avery Reid</span>\n            <span className=\"text-xs text-foreground-400\">avery@uilab.dev</span>\n          </span>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nfunction MobileMenu() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Open menu\" icon={<FiMenu size={16} />} className=\"bg-transparent\" />\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>Menu</Menu.Label>\n        {primaryLinks.map((link) => (\n          <Menu.Item key={link.label} textValue={link.label}>\n            {link.label}\n          </Menu.Item>\n        ))}\n        <Menu.Separator />\n        {resources.map((item) => (\n          <Menu.Item key={item.label} textValue={item.label}>\n            {item.label}\n          </Menu.Item>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Input } from 'ui-lab-components/input';\nimport { Menu } from 'ui-lab-components/menu';\n\ninterface NavLink {\n  label: string;\n  href: string;\n}\n\nconst primaryLinks: NavLink[] = [\n  { label: 'Dashboard', href: '#' },\n  { label: 'Projects', href: '#' },\n  { label: 'Team', href: '#' },\n];\n\nconst resources: Array<NavLink & { description: string; icon: string }> = [\n  { label: 'Documentation', description: 'Guides and API reference', href: '#', icon: 'book' },\n  { label: 'Changelog', description: \"What's new in the platform\", href: '#', icon: 'notes' },\n  { label: 'Support', description: 'Talk to the team', href: '#', icon: 'help' },\n];\n\ninterface HeaderProps {\n  brand?: string;\n  activeLink?: string;\n}\n\nexport function Header({ brand = 'UI Lab', activeLink = 'Dashboard' }: HeaderProps) {\n  return (\n    <header className=\"sticky top-0 z-20 border-b border-background-800 bg-background-900/80 backdrop-blur\">\n      <div className=\"flex h-16 items-center gap-5 px-4 sm:px-6\">\n        <a href=\"#\" className=\"flex items-center gap-2.5\">\n          <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n            <Icon id=\"box\" size={18} />\n          </span>\n          <span className=\"text-base font-semibold text-foreground-50\">{brand}</span>\n        </a>\n\n        <nav className=\"hidden items-center gap-5 md:flex\" aria-label=\"Primary\">\n          {primaryLinks.map((link) => (\n            <Anchor\n              key={link.label}\n              href={link.href}\n              target=\"_self\"\n              aria-current={activeLink === link.label ? 'page' : undefined}\n              className={\n                activeLink === link.label\n                  ? 'text-sm font-medium text-foreground-50'\n                  : 'text-sm text-foreground-300 hover:text-foreground-50'\n              }\n            >\n              {link.label}\n            </Anchor>\n          ))}\n\n          <Menu type=\"pop-over\">\n            <Menu.Trigger as=\"child\">\n              <Button\n                variant=\"secondary\"\n                size=\"sm\"\n                icon={{ right: <Icon id=\"chev\" size={14} /> }}\n                className=\"bg-transparent text-foreground-300 hover:text-foreground-50\"\n              >\n                Resources\n              </Button>\n            </Menu.Trigger>\n            <Menu.Content align=\"start\">\n              <Menu.Label>Resources</Menu.Label>\n              {resources.map((item) => {\n                return (\n                  <Menu.Item key={item.label} textValue={item.label}>\n                    <span className=\"flex items-start gap-3\">\n                      <Icon id={item.icon} size={16} className=\"mt-0.5 shrink-0 text-foreground-400\" />\n                      <span className=\"flex flex-col\">\n                        <span className=\"text-sm text-foreground-100\">{item.label}</span>\n                        <span className=\"text-xs text-foreground-400\">{item.description}</span>\n                      </span>\n                    </span>\n                  </Menu.Item>\n                );\n              })}\n            </Menu.Content>\n          </Menu>\n        </nav>\n\n        <div className=\"ml-auto flex items-center gap-2\">\n          <Input\n            aria-label=\"Search\"\n            placeholder=\"Search…\"\n            icon={<Icon id=\"search\" size={16} />}\n            className=\"hidden w-56 lg:flex\"\n          />\n\n          <div className=\"relative\">\n            <Button\n              variant=\"secondary\"\n              size=\"sm\"\n              aria-label=\"Notifications\"\n              icon={<Icon id=\"bell\" size={16} />}\n              className=\"bg-transparent\"\n            />\n            <Badge\n              variant=\"danger\"\n              className=\"pointer-events-none absolute -right-1 -top-1 min-w-4 px-1 text-[10px]\"\n            >\n              3\n            </Badge>\n          </div>\n\n          <UserMenu />\n\n          <div className=\"md:hidden\">\n            <MobileMenu />\n          </div>\n        </div>\n      </div>\n    </header>\n  );\n}\n\nfunction UserMenu() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <Icon id=\"chev\" size={14} className=\"hidden text-foreground-400 sm:block\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <span className=\"flex flex-col\">\n            <span className=\"text-sm text-foreground-100\">Avery Reid</span>\n            <span className=\"text-xs text-foreground-400\">avery@uilab.dev</span>\n          </span>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <Icon id=\"user\" size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <Icon id=\"gear\" size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <Icon id=\"logout\" size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nfunction MobileMenu() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Open menu\" icon={<Icon id=\"menu\" size={16} />} className=\"bg-transparent\" />\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>Menu</Menu.Label>\n        {primaryLinks.map((link) => (\n          <Menu.Item key={link.label} textValue={link.label}>\n            {link.label}\n          </Menu.Item>\n        ))}\n        <Menu.Separator />\n        {resources.map((item) => (\n          <Menu.Item key={item.label} textValue={item.label}>\n            {item.label}\n          </Menu.Item>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/anchor",
         "ui-lab-components/badge",
         "ui-lab-components/button",
         "ui-lab-components/card",
+        "ui-lab-components/icon",
         "ui-lab-components/input",
         "ui-lab-components/menu",
         "ui-lab-components/page",
@@ -666,17 +1242,16 @@ export const generatedWorkshopContent = [
         "path": "layout/Nav.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiChevronRight, FiPlus, FiShare2 } from 'react-icons/fi';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\nimport { Tabs } from 'ui-lab-components/tabs';\n\nconst crumbs = [\n  { label: 'Home', href: '#' },\n  { label: 'Projects', href: '#' },\n];\n\nconst tabs = [\n  { value: 'overview', label: 'Overview' },\n  { value: 'activity', label: 'Activity' },\n  { value: 'files', label: 'Files', count: 12 },\n  { value: 'settings', label: 'Settings' },\n];\n\nexport function Nav() {\n  return (\n    <div className=\"space-y-6\">\n      <nav aria-label=\"Breadcrumb\">\n        <ol className=\"flex flex-wrap items-center gap-2 text-sm\">\n          {crumbs.map((crumb) => (\n            <li key={crumb.label} className=\"flex items-center gap-2\">\n              <Anchor href={crumb.href} target=\"_self\" className=\"text-foreground-400 hover:text-foreground-100\">\n                {crumb.label}\n              </Anchor>\n              <FiChevronRight size={14} className=\"text-foreground-500\" aria-hidden />\n            </li>\n          ))}\n          <li aria-current=\"page\" className=\"text-foreground-100\">\n            Acme Redesign\n          </li>\n        </ol>\n      </nav>\n\n      <div className=\"flex flex-wrap items-end justify-between gap-4\">\n        <div className=\"space-y-1\">\n          <h1 className=\"text-xl font-semibold text-foreground-50\">Acme Redesign</h1>\n          <p className=\"text-sm text-foreground-400\">Design system migration and marketing refresh.</p>\n        </div>\n        <div className=\"flex items-center gap-2\">\n          <Button variant=\"secondary\" size=\"sm\" icon={<FiShare2 size={15} />}>\n            Share\n          </Button>\n          <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>\n            New task\n          </Button>\n        </div>\n      </div>\n\n      <Tabs variant=\"underline\" defaultValue=\"overview\">\n        <Tabs.List aria-label=\"Project sections\">\n          {tabs.map((tab) => (\n            <Tabs.Trigger key={tab.value} value={tab.value}>\n              <span className=\"flex items-center gap-2\">\n                {tab.label}\n                {tab.count ? (\n                  <Badge variant=\"default\" className=\"text-[10px]\">\n                    {tab.count}\n                  </Badge>\n                ) : null}\n              </span>\n            </Tabs.Trigger>\n          ))}\n        </Tabs.List>\n\n        {tabs.map((tab) => (\n          <Tabs.Content key={tab.value} value={tab.value}>\n            <div\n              aria-busy=\"true\"\n              aria-label={`Loading ${tab.label}`}\n              className=\"space-y-4 py-6\"\n            >\n              <Skeleton.Text size=\"heading\" w={180} color=\"background-800\" />\n              <Skeleton.Text lines={3} lastLineWidth=\"65%\" color=\"background-800\" />\n            </div>\n          </Tabs.Content>\n        ))}\n      </Tabs>\n    </div>\n  );\n}\n"
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\nimport { Tabs } from 'ui-lab-components/tabs';\n\nconst crumbs = [\n  { label: 'Home', href: '#' },\n  { label: 'Projects', href: '#' },\n];\n\nconst tabs = [\n  { value: 'overview', label: 'Overview' },\n  { value: 'activity', label: 'Activity' },\n  { value: 'files', label: 'Files', count: 12 },\n  { value: 'settings', label: 'Settings' },\n];\n\nexport function Nav() {\n  return (\n    <div className=\"space-y-6\">\n      <nav aria-label=\"Breadcrumb\">\n        <ol className=\"flex flex-wrap items-center gap-2 text-sm\">\n          {crumbs.map((crumb) => (\n            <li key={crumb.label} className=\"flex items-center gap-2\">\n              <Anchor href={crumb.href} target=\"_self\" className=\"text-foreground-400 hover:text-foreground-100\">\n                {crumb.label}\n              </Anchor>\n              <Icon id=\"fwd\" size={14} className=\"text-foreground-500\" aria-hidden />\n            </li>\n          ))}\n          <li aria-current=\"page\" className=\"text-foreground-100\">\n            Acme Redesign\n          </li>\n        </ol>\n      </nav>\n\n      <div className=\"flex flex-wrap items-end justify-between gap-4\">\n        <div className=\"space-y-1\">\n          <h1 className=\"text-xl font-semibold text-foreground-50\">Acme Redesign</h1>\n          <p className=\"text-sm text-foreground-400\">Design system migration and marketing refresh.</p>\n        </div>\n        <div className=\"flex items-center gap-2\">\n          <Button variant=\"secondary\" size=\"sm\" icon={<Icon id=\"share\" size={15} />}>\n            Share\n          </Button>\n          <Button variant=\"primary\" size=\"sm\" icon={<Icon id=\"plus\" size={15} />}>\n            New task\n          </Button>\n        </div>\n      </div>\n\n      <Tabs variant=\"underline\" defaultValue=\"overview\">\n        <Tabs.List aria-label=\"Project sections\">\n          {tabs.map((tab) => (\n            <Tabs.Trigger key={tab.value} value={tab.value}>\n              <span className=\"flex items-center gap-2\">\n                {tab.label}\n                {tab.count ? (\n                  <Badge variant=\"default\" className=\"text-[10px]\">\n                    {tab.count}\n                  </Badge>\n                ) : null}\n              </span>\n            </Tabs.Trigger>\n          ))}\n        </Tabs.List>\n\n        {tabs.map((tab) => (\n          <Tabs.Content key={tab.value} value={tab.value}>\n            <div\n              aria-busy=\"true\"\n              aria-label={`Loading ${tab.label}`}\n              className=\"space-y-4 py-6\"\n            >\n              <Skeleton.Text size=\"heading\" w={180} color=\"background-800\" />\n              <Skeleton.Text lines={3} lastLineWidth=\"65%\" color=\"background-800\" />\n            </div>\n          </Tabs.Content>\n        ))}\n      </Tabs>\n    </div>\n  );\n}\n"
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/anchor",
         "ui-lab-components/badge",
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton",
         "ui-lab-components/tabs"
       ]
@@ -710,17 +1285,16 @@ export const generatedWorkshopContent = [
         "path": "layout/Page.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "import { FiArrowUp } from 'react-icons/fi';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Page } from 'ui-lab-components/page';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function DocumentPage() {\n  return (\n    <Page max-width={860} padding=\"lg\" gap=\"lg\" centered>\n      <Page.Header sticky divided>\n        <div className=\"flex flex-wrap items-center justify-between gap-4\">\n          <div className=\"space-y-1\">\n            <p className=\"text-xs font-medium uppercase tracking-wide text-foreground-400\">Guides</p>\n            <h1 className=\"text-2xl font-semibold text-foreground-50\">Building a design system</h1>\n          </div>\n          <div className=\"flex items-center gap-2\">\n            <Button variant=\"secondary\" size=\"sm\">\n              Save draft\n            </Button>\n            <Button variant=\"primary\" size=\"sm\">\n              Publish\n            </Button>\n          </div>\n        </div>\n      </Page.Header>\n\n      <Page.Body>\n        <div aria-busy=\"true\" aria-label=\"Loading article\" className=\"space-y-8\">\n          <Skeleton.Image ratio=\"21/9\" color=\"background-800\" />\n\n          <Card>\n            <Card.Header className=\"p-5 pb-0\">\n              <Skeleton.Text size=\"heading\" w={220} color=\"background-800\" />\n            </Card.Header>\n            <Card.Body className=\"space-y-3 p-5\">\n              <Skeleton.Text lines={4} lastLineWidth=\"60%\" color=\"background-800\" />\n            </Card.Body>\n          </Card>\n\n          <Card>\n            <Card.Header className=\"p-5 pb-0\">\n              <Skeleton.Text size=\"heading\" w={180} color=\"background-800\" />\n            </Card.Header>\n            <Card.Body className=\"space-y-3 p-5\">\n              <Skeleton.Text lines={3} lastLineWidth=\"75%\" color=\"background-800\" />\n            </Card.Body>\n          </Card>\n        </div>\n      </Page.Body>\n\n      <Page.Footer divided>\n        <div className=\"flex flex-wrap items-center justify-between gap-3 text-sm text-foreground-400\">\n          <span>Last updated 3 days ago</span>\n          <Anchor href=\"#\" target=\"_self\" className=\"inline-flex items-center gap-1.5 text-foreground-300\">\n            <FiArrowUp size={14} /> Back to top\n          </Anchor>\n        </div>\n      </Page.Footer>\n    </Page>\n  );\n}\n"
+        "content": "import { Icon } from 'ui-lab-components/icon';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Page } from 'ui-lab-components/page';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function DocumentPage() {\n  return (\n    <Page max-width={860} padding=\"lg\" gap=\"lg\" centered>\n      <Page.Header sticky divided>\n        <div className=\"flex flex-wrap items-center justify-between gap-4\">\n          <div className=\"space-y-1\">\n            <p className=\"text-xs font-medium text-foreground-400\">Guides</p>\n            <h1 className=\"text-2xl font-semibold text-foreground-50\">Building a design system</h1>\n          </div>\n          <div className=\"flex items-center gap-2\">\n            <Button variant=\"secondary\" size=\"sm\">\n              Save draft\n            </Button>\n            <Button variant=\"primary\" size=\"sm\">\n              Publish\n            </Button>\n          </div>\n        </div>\n      </Page.Header>\n\n      <Page.Body>\n        <div aria-busy=\"true\" aria-label=\"Loading article\" className=\"space-y-8\">\n          <Skeleton.Image ratio=\"21/9\" color=\"background-800\" />\n\n          <Card>\n            <Card.Header className=\"p-5 pb-0\">\n              <Skeleton.Text size=\"heading\" w={220} color=\"background-800\" />\n            </Card.Header>\n            <Card.Body className=\"space-y-3 p-5\">\n              <Skeleton.Text lines={4} lastLineWidth=\"60%\" color=\"background-800\" />\n            </Card.Body>\n          </Card>\n\n          <Card>\n            <Card.Header className=\"p-5 pb-0\">\n              <Skeleton.Text size=\"heading\" w={180} color=\"background-800\" />\n            </Card.Header>\n            <Card.Body className=\"space-y-3 p-5\">\n              <Skeleton.Text lines={3} lastLineWidth=\"75%\" color=\"background-800\" />\n            </Card.Body>\n          </Card>\n        </div>\n      </Page.Body>\n\n      <Page.Footer divided>\n        <div className=\"flex flex-wrap items-center justify-between gap-3 text-sm text-foreground-400\">\n          <span>Last updated 3 days ago</span>\n          <Anchor href=\"#\" target=\"_self\" className=\"inline-flex items-center gap-1.5 text-foreground-300\">\n            <Icon id=\"up\" size={14} /> Back to top\n          </Anchor>\n        </div>\n      </Page.Footer>\n    </Page>\n  );\n}\n"
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/anchor",
         "ui-lab-components/button",
         "ui-lab-components/card",
+        "ui-lab-components/icon",
         "ui-lab-components/page",
         "ui-lab-components/skeleton"
       ]
@@ -754,30 +1328,29 @@ export const generatedWorkshopContent = [
         "path": "layout/Shell.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Panel } from 'ui-lab-components/panel';\nimport { Skeleton } from 'ui-lab-components/skeleton';\nimport { ShellSidebar } from './ShellSidebar';\nimport { ShellTopbar } from './ShellTopbar';\n\nexport function Shell() {\n  const [active, setActive] = useState('overview');\n\n  return (\n    <Panel collapseAt={720}>\n      <ShellSidebar active={active} onSelect={setActive} />\n\n      <main className=\"min-w-0 flex-1\">\n        <ShellTopbar title={active} />\n\n        <div className=\"space-y-8 p-6\">\n          <div className=\"flex flex-wrap items-end justify-between gap-4\">\n            <div className=\"space-y-1\">\n              <h1 className=\"text-xl font-semibold capitalize text-foreground-50\">{active}</h1>\n              <p className=\"text-sm text-foreground-400\">Everything happening across your workspace.</p>\n            </div>\n            <div className=\"flex items-center gap-2\">\n              <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>\n                Export\n              </Button>\n              <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>\n                New project\n              </Button>\n            </div>\n          </div>\n\n          <div aria-busy=\"true\" aria-label=\"Loading metrics\" className=\"grid gap-4 sm:grid-cols-3\">\n            {[0, 1, 2].map((i) => (\n              <Card key={i}>\n                <Card.Body className=\"space-y-4 p-5\">\n                  <Skeleton.Text lines={1} w={100} color=\"background-800\" />\n                  <Skeleton w={128} h={30} color=\"background-800\" />\n                  <Skeleton.Text lines={1} w=\"55%\" color=\"background-800\" />\n                </Card.Body>\n              </Card>\n            ))}\n          </div>\n\n          <Card>\n            <Card.Header className=\"p-5 pb-0\">\n              <Skeleton.Text size=\"heading\" w={200} color=\"background-800\" />\n            </Card.Header>\n            <Card.Body className=\"space-y-4 p-5\" aria-busy=\"true\" aria-label=\"Loading activity\">\n              {[0, 1, 2, 3].map((i) => (\n                <div key={i} className=\"flex items-center gap-4\">\n                  <Skeleton w={40} h={40} className=\"rounded-full\" color=\"background-800\" />\n                  <div className=\"flex-1 space-y-2\">\n                    <Skeleton.Text lines={1} w=\"40%\" color=\"background-800\" />\n                    <Skeleton.Text lines={1} w=\"70%\" color=\"background-800\" />\n                  </div>\n                  <Skeleton w={72} h={24} color=\"background-800\" />\n                </div>\n              ))}\n            </Card.Body>\n          </Card>\n        </div>\n      </main>\n    </Panel>\n  );\n}\n"
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Panel } from 'ui-lab-components/panel';\nimport { Skeleton } from 'ui-lab-components/skeleton';\nimport { ShellSidebar } from './ShellSidebar';\nimport { ShellTopbar } from './ShellTopbar';\n\nexport function Shell() {\n  const [active, setActive] = useState('overview');\n\n  return (\n    <Panel collapseAt={720}>\n      <ShellSidebar active={active} onSelect={setActive} />\n\n      <main className=\"min-w-0 flex-1\">\n        <ShellTopbar title={active} />\n\n        <div className=\"space-y-8 p-6\">\n          <div className=\"flex flex-wrap items-end justify-between gap-4\">\n            <div className=\"space-y-1\">\n              <h1 className=\"text-xl font-semibold capitalize text-foreground-50\">{active}</h1>\n              <p className=\"text-sm text-foreground-400\">Everything happening across your workspace.</p>\n            </div>\n            <div className=\"flex items-center gap-2\">\n              <Button variant=\"secondary\" size=\"sm\" icon={<Icon id=\"download\" size={15} />}>\n                Export\n              </Button>\n              <Button variant=\"primary\" size=\"sm\" icon={<Icon id=\"plus\" size={15} />}>\n                New project\n              </Button>\n            </div>\n          </div>\n\n          <div aria-busy=\"true\" aria-label=\"Loading metrics\" className=\"grid gap-4 sm:grid-cols-3\">\n            {[0, 1, 2].map((i) => (\n              <Card key={i}>\n                <Card.Body className=\"space-y-4 p-5\">\n                  <Skeleton.Text lines={1} w={100} color=\"background-800\" />\n                  <Skeleton w={128} h={30} color=\"background-800\" />\n                  <Skeleton.Text lines={1} w=\"55%\" color=\"background-800\" />\n                </Card.Body>\n              </Card>\n            ))}\n          </div>\n\n          <Card>\n            <Card.Header className=\"p-5 pb-0\">\n              <Skeleton.Text size=\"heading\" w={200} color=\"background-800\" />\n            </Card.Header>\n            <Card.Body className=\"space-y-4 p-5\" aria-busy=\"true\" aria-label=\"Loading activity\">\n              {[0, 1, 2, 3].map((i) => (\n                <div key={i} className=\"flex items-center gap-4\">\n                  <Skeleton w={40} h={40} className=\"rounded-full\" color=\"background-800\" />\n                  <div className=\"flex-1 space-y-2\">\n                    <Skeleton.Text lines={1} w=\"40%\" color=\"background-800\" />\n                    <Skeleton.Text lines={1} w=\"70%\" color=\"background-800\" />\n                  </div>\n                  <Skeleton w={72} h={24} color=\"background-800\" />\n                </div>\n              ))}\n            </Card.Body>\n          </Card>\n        </div>\n      </main>\n    </Panel>\n  );\n}\n"
       },
       {
         "path": "layout/ShellSidebar.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport {\n  FiBox,\n  FiCreditCard,\n  FiGrid,\n  FiInbox,\n  FiLayers,\n  FiLifeBuoy,\n  FiSettings,\n  FiUsers,\n} from 'react-icons/fi';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { List } from 'ui-lab-components/list';\nimport { Panel } from 'ui-lab-components/panel';\n\nexport const SHELL_NAV_ID = 'shell-nav';\n\ninterface NavItem {\n  id: string;\n  label: string;\n  icon: typeof FiGrid;\n  badge?: string;\n}\n\nconst workspace: NavItem[] = [\n  { id: 'overview', label: 'Overview', icon: FiGrid },\n  { id: 'projects', label: 'Projects', icon: FiLayers },\n  { id: 'inbox', label: 'Inbox', icon: FiInbox, badge: '5' },\n  { id: 'members', label: 'Members', icon: FiUsers },\n];\n\nconst account: NavItem[] = [\n  { id: 'billing', label: 'Billing', icon: FiCreditCard },\n  { id: 'settings', label: 'Settings', icon: FiSettings },\n  { id: 'support', label: 'Support', icon: FiLifeBuoy },\n];\n\ninterface ShellSidebarProps {\n  active: string;\n  onSelect: (id: string) => void;\n}\n\nexport function ShellSidebar({ active, onSelect }: ShellSidebarProps) {\n  const renderItems = (items: NavItem[]) =>\n    items.map((item) => {\n      const Icon = item.icon;\n      return (\n        <List.Item\n          key={item.id}\n          value={item.id}\n          interactive\n          selected={active === item.id}\n          onClick={() => onSelect(item.id)}\n        >\n          <List.Media>\n            <Icon size={18} />\n          </List.Media>\n          <List.Title>{item.label}</List.Title>\n          {item.badge ? (\n            <Badge variant=\"default\" className=\"ml-auto text-[10px]\">\n              {item.badge}\n            </Badge>\n          ) : null}\n        </List.Item>\n      );\n    });\n\n  return (\n    <Panel.Sidebar\n      id={SHELL_NAV_ID}\n      size={264}\n      collapsedSize={0}\n      defaultOpen\n      className=\"flex flex-col gap-4 border-r border-background-800 bg-background-900 p-4\"\n    >\n      <div className=\"flex items-center gap-2.5 px-2 py-1\">\n        <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n          <FiBox size={18} />\n        </span>\n        <span className=\"text-base font-semibold text-foreground-50\">Acme Inc.</span>\n      </div>\n\n      <nav aria-label=\"Primary\" className=\"flex flex-1 flex-col gap-4\">\n        <List aria-label=\"Workspace\">{renderItems(workspace)}</List>\n        <Divider />\n        <List aria-label=\"Account\">{renderItems(account)}</List>\n      </nav>\n\n      <div className=\"flex items-center gap-3 rounded-lg border border-background-800 bg-background-950 p-3\">\n        <span className=\"flex h-9 w-9 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n          AR\n        </span>\n        <div className=\"min-w-0\">\n          <p className=\"truncate text-sm font-medium text-foreground-100\">Avery Reid</p>\n          <p className=\"truncate text-xs text-foreground-400\">Pro workspace</p>\n        </div>\n      </div>\n    </Panel.Sidebar>\n  );\n}\n"
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { List } from 'ui-lab-components/list';\nimport { Panel } from 'ui-lab-components/panel';\n\nexport const SHELL_NAV_ID = 'shell-nav';\n\ninterface NavItem {\n  id: string;\n  label: string;\n  icon: string;\n  badge?: string;\n}\n\nconst workspace: NavItem[] = [\n  { id: 'overview', label: 'Overview', icon: 'grid' },\n  { id: 'projects', label: 'Projects', icon: 'layers' },\n  { id: 'inbox', label: 'Inbox', icon: 'inbox', badge: '5' },\n  { id: 'members', label: 'Members', icon: 'users' },\n];\n\nconst account: NavItem[] = [\n  { id: 'billing', label: 'Billing', icon: 'card' },\n  { id: 'settings', label: 'Settings', icon: 'gear' },\n  { id: 'support', label: 'Support', icon: 'support' },\n];\n\ninterface ShellSidebarProps {\n  active: string;\n  onSelect: (id: string) => void;\n}\n\nexport function ShellSidebar({ active, onSelect }: ShellSidebarProps) {\n  const renderItems = (items: NavItem[]) =>\n    items.map((item) => {\n      return (\n        <List.Item\n          key={item.id}\n          value={item.id}\n          interactive\n          selected={active === item.id}\n          onClick={() => onSelect(item.id)}\n        >\n          <List.Media>\n            <Icon id={item.icon} size={18} />\n          </List.Media>\n          <List.Title>{item.label}</List.Title>\n          {item.badge ? (\n            <Badge variant=\"default\" className=\"ml-auto text-[10px]\">\n              {item.badge}\n            </Badge>\n          ) : null}\n        </List.Item>\n      );\n    });\n\n  return (\n    <Panel.Sidebar\n      id={SHELL_NAV_ID}\n      size={264}\n      collapsedSize={0}\n      defaultOpen\n      className=\"flex flex-col gap-4 border-r border-background-800 bg-background-900 p-4\"\n    >\n      <div className=\"flex items-center gap-2.5 px-2 py-1\">\n        <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n          <Icon id=\"box\" size={18} />\n        </span>\n        <span className=\"text-base font-semibold text-foreground-50\">Acme Inc.</span>\n      </div>\n\n      <nav aria-label=\"Primary\" className=\"flex flex-1 flex-col gap-4\">\n        <List aria-label=\"Workspace\">{renderItems(workspace)}</List>\n        <Divider />\n        <List aria-label=\"Account\">{renderItems(account)}</List>\n      </nav>\n\n      <div className=\"flex items-center gap-3 rounded-lg border border-background-800 bg-background-950 p-3\">\n        <span className=\"flex h-9 w-9 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n          AR\n        </span>\n        <div className=\"min-w-0\">\n          <p className=\"truncate text-sm font-medium text-foreground-100\">Avery Reid</p>\n          <p className=\"truncate text-xs text-foreground-400\">Pro workspace</p>\n        </div>\n      </div>\n    </Panel.Sidebar>\n  );\n}\n"
       },
       {
         "path": "layout/ShellTopbar.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiBell, FiChevronDown, FiLogOut, FiMenu, FiSearch, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Input } from 'ui-lab-components/input';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Panel } from 'ui-lab-components/panel';\nimport { SHELL_NAV_ID } from './ShellSidebar';\n\nexport function ShellTopbar({ title }: { title: string }) {\n  return (\n    <header className=\"flex h-14 shrink-0 items-center gap-3 border-b border-background-800 bg-background-900 px-4\">\n      <Panel.Toggle aria-controls={SHELL_NAV_ID}>\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Toggle navigation\" icon={<FiMenu size={16} />} className=\"bg-transparent\" />\n      </Panel.Toggle>\n\n      <span className=\"text-sm font-medium capitalize text-foreground-100\">{title}</span>\n\n      <div className=\"ml-auto flex items-center gap-2\">\n        <Input aria-label=\"Search\" placeholder=\"Search…\" icon={<FiSearch size={16} />} className=\"hidden w-52 md:flex\" />\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Notifications\" icon={<FiBell size={16} />} className=\"bg-transparent\" />\n\n        <Menu type=\"pop-over\">\n          <Menu.Trigger as=\"child\">\n            <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n              <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n                AR\n              </span>\n              <FiChevronDown size={14} className=\"hidden text-foreground-400 sm:block\" />\n            </Button>\n          </Menu.Trigger>\n          <Menu.Content align=\"end\" className=\"w-52\">\n            <Menu.Item textValue=\"Profile\">\n              <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n            </Menu.Item>\n            <Menu.Item textValue=\"Settings\">\n              <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n            </Menu.Item>\n            <Menu.Separator />\n            <Menu.Item textValue=\"Sign out\">\n              <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n            </Menu.Item>\n          </Menu.Content>\n        </Menu>\n      </div>\n    </header>\n  );\n}\n"
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Input } from 'ui-lab-components/input';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Panel } from 'ui-lab-components/panel';\nimport { SHELL_NAV_ID } from './ShellSidebar';\n\nexport function ShellTopbar({ title }: { title: string }) {\n  return (\n    <header className=\"flex h-14 shrink-0 items-center gap-3 border-b border-background-800 bg-background-900 px-4\">\n      <Panel.Toggle aria-controls={SHELL_NAV_ID}>\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Toggle navigation\" icon={<Icon id=\"menu\" size={16} />} className=\"bg-transparent\" />\n      </Panel.Toggle>\n\n      <span className=\"text-sm font-medium capitalize text-foreground-100\">{title}</span>\n\n      <div className=\"ml-auto flex items-center gap-2\">\n        <Input aria-label=\"Search\" placeholder=\"Search…\" icon={<Icon id=\"search\" size={16} />} className=\"hidden w-52 md:flex\" />\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Notifications\" icon={<Icon id=\"bell\" size={16} />} className=\"bg-transparent\" />\n\n        <Menu type=\"pop-over\">\n          <Menu.Trigger as=\"child\">\n            <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n              <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n                AR\n              </span>\n              <Icon id=\"chev\" size={14} className=\"hidden text-foreground-400 sm:block\" />\n            </Button>\n          </Menu.Trigger>\n          <Menu.Content align=\"end\" className=\"w-52\">\n            <Menu.Item textValue=\"Profile\">\n              <Icon id=\"user\" size={15} className=\"mr-2 text-foreground-400\" /> Profile\n            </Menu.Item>\n            <Menu.Item textValue=\"Settings\">\n              <Icon id=\"gear\" size={15} className=\"mr-2 text-foreground-400\" /> Settings\n            </Menu.Item>\n            <Menu.Separator />\n            <Menu.Item textValue=\"Sign out\">\n              <Icon id=\"logout\" size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n            </Menu.Item>\n          </Menu.Content>\n        </Menu>\n      </div>\n    </header>\n  );\n}\n"
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/button",
         "ui-lab-components/card",
         "ui-lab-components/divider",
+        "ui-lab-components/icon",
         "ui-lab-components/input",
         "ui-lab-components/list",
         "ui-lab-components/menu",
@@ -801,7 +1374,7 @@ export const generatedWorkshopContent = [
     "componentId": "anchor",
     "access": "free",
     "locked": false,
-    "code": "<Anchor>\n  Hover me\n  <Anchor.Preview>\n    <div className=\"text-sm\">Preview content</div>\n  </Anchor.Preview>\n</Anchor>"
+    "code": "\"use client\";\n\nimport { Anchor } from 'ui-lab-components/anchor';\n\nexport default function Example() {\n  return (\n    <Anchor>\n      Hover me\n      <Anchor.Preview>\n        <div className=\"text-sm\">Preview content</div>\n      </Anchor.Preview>\n    </Anchor>\n  );\n}\n"
   },
   {
     "ref": "example:anchor/01-inline-text",
@@ -814,7 +1387,7 @@ export const generatedWorkshopContent = [
     "componentId": "anchor",
     "access": "free",
     "locked": false,
-    "code": "<p className=\"text-sm text-foreground max-w-prose leading-relaxed\">\n  Read the{\" \"}\n  <Anchor href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a\">\n    MDN documentation\n  </Anchor>{\" \"}\n  for a full reference on anchor semantics, or check the{\" \"}\n  <Anchor href=\"https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html\">\n    WCAG link purpose guidelines\n  </Anchor>{\" \"}\n  for accessibility requirements.\n</p>"
+    "code": "import { Anchor } from 'ui-lab-components/anchor';\n\nexport default function Example() {\n  return (\n    <p className=\"text-sm text-foreground max-w-prose leading-relaxed\">\n      Read the{\" \"}\n      <Anchor href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a\">\n        MDN documentation\n      </Anchor>{\" \"}\n      for a full reference on anchor semantics, or check the{\" \"}\n      <Anchor href=\"https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html\">\n        WCAG link purpose guidelines\n      </Anchor>{\" \"}\n      for accessibility requirements.\n    </p>\n  );\n}\n"
   },
   {
     "ref": "example:anchor/02-underline-variants",
@@ -827,7 +1400,7 @@ export const generatedWorkshopContent = [
     "componentId": "anchor",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"lg\" align-center>\n  <Anchor href=\"#\">\n    Solid\n  </Anchor>\n  <Anchor href=\"#\">\n    <Anchor.Underline variant=\"dashed\" />\n    Dashed\n  </Anchor>\n  <Anchor href=\"#\">\n    <Anchor.Underline variant=\"dotted\" />\n    Dotted\n  </Anchor>\n</Flex>"
+    "code": "import { Anchor } from 'ui-lab-components/anchor'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex gap=\"lg\" align-center>\n      <Anchor href=\"#\">\n        Solid\n      </Anchor>\n      <Anchor href=\"#\">\n        <Anchor.Underline variant=\"dashed\" />\n        Dashed\n      </Anchor>\n      <Anchor href=\"#\">\n        <Anchor.Underline variant=\"dotted\" />\n        Dotted\n      </Anchor>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:anchor/03-preview-tooltip",
@@ -840,7 +1413,7 @@ export const generatedWorkshopContent = [
     "componentId": "anchor",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"lg\" align-center>\n  <Anchor\n    href=\"https://github.com\"\n    preview={\n      <span className=\"text-xs text-foreground-400\">github.com</span>\n    }\n  >\n    GitHub\n  </Anchor>\n  <Anchor href=\"https://vercel.com\">\n    <Anchor.Preview>\n      <span className=\"text-xs text-foreground-400\">vercel.com</span>\n    </Anchor.Preview>\n    Vercel\n  </Anchor>\n</Flex>"
+    "code": "import { Anchor } from 'ui-lab-components/anchor'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex gap=\"lg\" align-center>\n      <Anchor\n        href=\"https://github.com\"\n        preview={\n          <span className=\"text-xs text-foreground-400\">github.com</span>\n        }\n      >\n        GitHub\n      </Anchor>\n      <Anchor href=\"https://vercel.com\">\n        <Anchor.Preview>\n          <span className=\"text-xs text-foreground-400\">vercel.com</span>\n        </Anchor.Preview>\n        Vercel\n      </Anchor>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:anchor/04-breadcrumb",
@@ -853,176 +1426,280 @@ export const generatedWorkshopContent = [
     "componentId": "anchor",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"xs\" align-center className=\"text-sm\">\n  {crumbs.map((crumb, i) => (\n    <span key={crumb.href} className=\"flex items-center gap-xs\">\n      {i > 0 && <span className=\"text-foreground-400 mx-1\">/</span>}\n      {i < crumbs.length - 1 ? (\n        <Anchor href={crumb.href}>{crumb.label}</Anchor>\n      ) : (\n        <span className=\"text-foreground-400\">{crumb.label}</span>\n      )}\n    </span>\n  ))}\n</Flex>"
+    "code": "import { Anchor } from 'ui-lab-components/anchor'\nimport { Flex } from 'ui-lab-components/flex';\n\nconst crumbs = [\n  { label: 'Home', href: '/' },\n  { label: 'Projects', href: '/projects' },\n  { label: 'ui-lab', href: '/projects/ui-lab' },\n];\n\nexport default function Example() {\n  return (\n    <Flex gap=\"xs\" align-center className=\"text-sm\">\n      {crumbs.map((crumb, i) => (\n        <span key={crumb.href} className=\"flex items-center gap-xs\">\n          {i > 0 && <span className=\"text-foreground-400 mx-1\">/</span>}\n          {i < crumbs.length - 1 ? (\n            <Anchor href={crumb.href}>{crumb.label}</Anchor>\n          ) : (\n            <span className=\"text-foreground-400\">{crumb.label}</span>\n          )}\n        </span>\n      ))}\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:badge/applied-filters",
+    "kind": "component-example",
+    "id": "applied-filters",
+    "name": "Applied Filters",
+    "description": "Active filters on a deployments list shown as dismissible badges. Each dismiss removes that filter from state.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "badge",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Badge } from 'ui-lab-components/badge'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  const [filters, setFilters] = useState(['status: failing', 'branch: main', 'env: staging'])\n\n  return (\n    <Flex gap=\"xs\" align-center wrap>\n      {filters.map((filter) => (\n        <Badge\n          key={filter}\n          dismissible\n          onDismiss={() => setFilters((prev) => prev.filter((f) => f !== filter))}\n        >\n          {filter}\n        </Badge>\n      ))}\n      {filters.length === 0 && (\n        <span className=\"text-sm text-foreground-400\">Showing all deployments</span>\n      )}\n    </Flex>\n  )\n}\n\nfunction renderCode(): string {\n  return `{filters.map((filter) => (\n  <Badge key={filter} dismissible onDismiss={() => removeFilter(filter)}>\n    {filter}\n  </Badge>\n))}`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
+  },
+  {
+    "ref": "example:badge/beta-feature-heading",
+    "kind": "component-example",
+    "id": "beta-feature-heading",
+    "name": "Beta Feature Heading",
+    "description": "A badge set beside a settings section heading to flag a feature as beta without changing the layout of the section.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "badge",
+    "access": "free",
+    "locked": false,
+    "code": "import { Badge } from 'ui-lab-components/badge'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  return (\n    <div className=\"max-w-sm\">\n      <Flex gap=\"sm\" align-center>\n        <h3 className=\"text-base font-medium text-foreground-100\">Deploy hooks</h3>\n        <Badge variant=\"info\">Beta</Badge>\n      </Flex>\n      <p className=\"mt-1 text-sm text-foreground-400\">\n        Trigger a build from any service with a signed POST request.\n      </p>\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Flex gap=\"sm\" align-center>\n  <h3>Deploy hooks</h3>\n  <Badge variant=\"info\">Beta</Badge>\n</Flex>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
+  },
+  {
+    "ref": "example:badge/deployment-branch",
+    "kind": "component-example",
+    "id": "deployment-branch",
+    "name": "Inline Branch Label",
+    "description": "A branch name rendered as an icon badge inside an activity sentence. Passing a single node to icon places it on the left.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "badge",
+    "access": "free",
+    "locked": false,
+    "code": "import { Badge } from 'ui-lab-components/badge'\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function Example() {\n  return (\n    <p className=\"text-sm text-foreground-300\">\n      Deployed{' '}\n      <Badge icon={<Icon id=\"branch\" size={10} />}>release/2.4</Badge>{' '}\n      to production 3 minutes ago\n    </p>\n  )\n}\n\nfunction renderCode(): string {\n  return `<p>\n  Deployed <Badge icon={<Icon id=\"branch\" size={10} />}>release/2.4</Badge> to\n  production 3 minutes ago\n</p>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
+  },
+  {
+    "ref": "example:badge/pull-request-status",
+    "kind": "component-example",
+    "id": "pull-request-status",
+    "name": "Pull Request Status",
+    "description": "A pull request list where each row ends in a status badge. The variant maps directly to the PR state, so status is scannable down the right edge.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "badge",
+    "access": "free",
+    "locked": false,
+    "code": "import { Badge } from 'ui-lab-components/badge'\nimport { Flex } from 'ui-lab-components/flex'\n\nconst pulls = [\n  { title: 'Migrate session store to Redis', number: 482, state: 'Merged', variant: 'success' },\n  { title: 'Add retry budget to webhook worker', number: 479, state: 'Open', variant: 'info' },\n  { title: 'Drop Node 18 from CI matrix', number: 471, state: 'Closed', variant: 'danger' },\n]\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"sm\" className=\"w-full max-w-md\">\n      {pulls.map((pr) => (\n        <Flex key={pr.number} justify-between align-center gap=\"md\">\n          <span className=\"text-sm text-foreground-100\">\n            {pr.title} <span className=\"text-foreground-400\">#{pr.number}</span>\n          </span>\n          <Badge variant={pr.variant}>{pr.state}</Badge>\n        </Flex>\n      ))}\n    </Flex>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Flex justify-between align-center gap=\"md\">\n  <span>Migrate session store to Redis #482</span>\n  <Badge variant=\"success\">Merged</Badge>\n</Flex>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
+  },
+  {
+    "ref": "example:badge/tab-counts",
+    "kind": "component-example",
+    "id": "tab-counts",
+    "name": "Tab Counts",
+    "description": "Pill badges inside buttons that show item counts per view. The count prop renders the number, and a danger variant draws attention to failures.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "badge",
+    "access": "free",
+    "locked": false,
+    "code": "import { Badge } from 'ui-lab-components/badge'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  return (\n    <Flex gap=\"xs\" align-center>\n      <Button variant=\"secondary\">\n        Open issues <Badge pill count={24} />\n      </Button>\n      <Button variant=\"ghost\">\n        Pull requests <Badge pill count={7} />\n      </Button>\n      <Button variant=\"ghost\">\n        Failed runs <Badge pill variant=\"danger\" count={2} />\n      </Button>\n    </Flex>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Button variant=\"secondary\">\n  Open issues <Badge pill count={openIssues} />\n</Button>\n<Button variant=\"ghost\">\n  Failed runs <Badge pill variant=\"danger\" count={failedRuns} />\n</Button>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
+  },
+  {
+    "ref": "example:banner/01-variants",
+    "kind": "component-example",
+    "id": "01-variants",
+    "name": "Variants",
+    "description": "All five semantic variants: note, info, success, warning, and danger.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "banner",
+    "access": "free",
+    "locked": false,
+    "code": "import { Banner } from 'ui-lab-components/banner'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Banner variant=\"note\">\n        <Banner.Title>Note</Banner.Title>\n        <Banner.Body>This is a general note with supplementary context.</Banner.Body>\n      </Banner>\n      <Banner variant=\"info\">\n        <Banner.Title>Info</Banner.Title>\n        <Banner.Body>Your workspace is on the free plan. Upgrade to unlock more seats.</Banner.Body>\n      </Banner>\n      <Banner variant=\"success\">\n        <Banner.Title>Success</Banner.Title>\n        <Banner.Body>Your changes have been saved and are now live.</Banner.Body>\n      </Banner>\n      <Banner variant=\"warning\">\n        <Banner.Title>Warning</Banner.Title>\n        <Banner.Body>This action cannot be undone. Proceed with caution.</Banner.Body>\n      </Banner>\n      <Banner variant=\"danger\">\n        <Banner.Title>Danger</Banner.Title>\n        <Banner.Body>Your account has exceeded its storage limit.</Banner.Body>\n      </Banner>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:banner/02-dismissible",
+    "kind": "component-example",
+    "id": "02-dismissible",
+    "name": "Dismissible",
+    "description": "A banner with a dismiss button. The caller controls what happens after dismissal.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "banner",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Banner } from 'ui-lab-components/banner'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [dismissed, setDismissed] = useState(false);\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      {!dismissed ? (\n        <Banner variant=\"info\" dismissible onDismiss={() => setDismissed(true)}>\n          <Banner.Title>Scheduled maintenance</Banner.Title>\n          <Banner.Body>The system will be unavailable on Saturday from 2–4 AM UTC.</Banner.Body>\n        </Banner>\n      ) : (\n        <Flex gap=\"sm\" style={{ alignItems: 'center' }}>\n          <span className=\"text-sm text-foreground-400\">Banner dismissed.</span>\n          <Button variant=\"ghost\" onClick={() => setDismissed(false)}>\n            Restore\n          </Button>\n        </Flex>\n      )}\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:banner/03-form-feedback",
+    "kind": "component-example",
+    "id": "03-form-feedback",
+    "name": "Form Feedback",
+    "description": "Banners shown conditionally after a form action to relay success or failure.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "banner",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Banner } from 'ui-lab-components/banner'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [submitted, setSubmitted] = useState(false);\n  const [error, setError] = useState(false);\n\n  const handleSubmit = () => {\n    if (!submitted) {\n      setError(true);\n      return;\n    }\n    setError(false);\n  };\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      {error && (\n        <Banner variant=\"danger\" dismissible onDismiss={() => setError(false)}>\n          <Banner.Title>Submission failed</Banner.Title>\n          <Banner.Body>Please review the form and correct any errors before retrying.</Banner.Body>\n        </Banner>\n      )}\n      {submitted && !error && (\n        <Banner variant=\"success\">\n          <Banner.Title>Profile updated</Banner.Title>\n          <Banner.Body>Your changes have been saved successfully.</Banner.Body>\n        </Banner>\n      )}\n      <Flex gap=\"sm\">\n        <Button variant=\"primary\" onClick={() => { setSubmitted(true); setError(false); }}>\n          Save changes\n        </Button>\n        <Button variant=\"secondary\" onClick={() => { setSubmitted(false); handleSubmit(); }}>\n          Trigger error\n        </Button>\n      </Flex>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:banner/04-settings-panel-banner",
+    "kind": "component-example",
+    "id": "04-settings-panel-banner",
+    "name": "Settings Panel",
+    "description": "A small warning banner inline with a destructive settings action.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "banner",
+    "access": "free",
+    "locked": false,
+    "code": "import { Banner } from 'ui-lab-components/banner'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <div>\n        <p className=\"text-sm font-semibold text-foreground-100\">API Access</p>\n        <p className=\"text-xs text-foreground-400\">Manage keys for external integrations.</p>\n      </div>\n      <Banner variant=\"warning\">\n        <Banner.Body>Regenerating your key will revoke all existing integrations immediately.</Banner.Body>\n      </Banner>\n      <Button variant=\"secondary\">Regenerate API key</Button>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:banner/05-body-only",
+    "kind": "component-example",
+    "id": "05-body-only",
+    "name": "Body Only",
+    "description": "Single-line banners without a title for compact inline notifications.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "banner",
+    "access": "free",
+    "locked": false,
+    "code": "import { Banner } from 'ui-lab-components/banner'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Banner variant=\"info\" dismissible>\n        <Banner.Body>\n          Two-factor authentication is not enabled on your account.{' '}\n          <a href=\"#\" className=\"underline\">Enable now</a>\n        </Banner.Body>\n      </Banner>\n      <Banner variant=\"success\" dismissible>\n        <Banner.Body>Deployment #142 completed in 38 seconds.</Banner.Body>\n      </Banner>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:button/copy-action",
     "kind": "component-example",
     "id": "copy-action",
-    "name": "Copy To Clipboard",
-    "description": "Swap icon and label to confirm a copy action.",
+    "name": "Copy Deploy Link",
+    "description": "Briefly swap the icon and label after copying so the user can see it worked, then reset. The compact icon-only version beside it relies on the icon swap alone.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaCheck, FaLink } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [copied, setCopied] = useState(false)\n\n  const handlePress = () => {\n    navigator.clipboard.writeText('https://ui-lab.dev/components/button')\n    setCopied(true)\n    setTimeout(() => setCopied(false), 1500)\n  }\n\n  return (\n    <Button variant=\"secondary\" icon={copied ? <FaCheck /> : <FaLink />} onPress={handlePress}>\n      {copied ? 'Copied' : 'Copy link'}\n    </Button>\n  )\n}"
+    "code": "\"use client\"\n\nimport { useEffect, useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { Icon } from 'ui-lab-components/icon'\n\nfunction CopyButton({ compact = false }: { compact?: boolean }) {\n  const [copied, setCopied] = useState(false)\n\n  useEffect(() => {\n    if (!copied) return\n    const id = setTimeout(() => setCopied(false), 1500)\n    return () => clearTimeout(id)\n  }, [copied])\n\n  const copy = async () => {\n    await navigator.clipboard.writeText('https://ui-lab.app/deployments/dpl_8f2a')\n    setCopied(true)\n  }\n\n  const label = copied ? 'Copied' : 'Copy deploy link'\n\n  return (\n    <Button\n      variant=\"secondary\"\n      aria-label={compact ? label : undefined}\n      icon={copied ? <Icon id=\"check\" size=\"1em\" /> : <Icon id=\"link\" size=\"1em\" />}\n      onPress={copy}\n    >\n      {compact ? undefined : label}\n    </Button>\n  )\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center gap-12\">\n      <CopyButton />\n      <CopyButton compact />\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Button\n  variant=\"secondary\"\n  icon={copied ? <Icon id=\"check\" size=\"1em\" /> : <Icon id=\"link\" size=\"1em\" />}\n  onPress={copyLink}\n>\n  {copied ? 'Copied' : 'Copy deploy link'}\n</Button>\n\n{/* Compact: icon-only, the check confirms the copy */}\n<Button\n  variant=\"secondary\"\n  aria-label={copied ? 'Copied' : 'Copy deploy link'}\n  icon={copied ? <Icon id=\"check\" size=\"1em\" /> : <Icon id=\"link\" size=\"1em\" />}\n  onPress={copyLink}\n/>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/destructive-confirm",
     "kind": "component-example",
     "id": "destructive-confirm",
-    "name": "Inline Confirmation",
-    "description": "Use Confirm for an inline confirm/cancel pair.",
+    "name": "Inline Delete Confirmation",
+    "description": "Confirm swaps a settings row's text and trigger for a warning and Delete/Keep pair in place, with a compact icon-only version beside it for dense rows like token lists. Both reset if the user walks away.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "\"use client\"\n\nimport { Confirm } from 'ui-lab-components/confirm'\n\nexport default function Example({ onDelete }: { onDelete?: () => void }) {\n  return (\n    <Confirm mode=\"inline\" severity=\"critical\" onConfirm={() => onDelete?.()}\n      labels={{ trigger: 'Delete branch', confirm: 'Delete', cancel: 'Cancel' }} />\n  )\n}"
-  },
-  {
-    "ref": "example:button/disabled-with-reason",
-    "kind": "component-example",
-    "id": "disabled-with-reason",
-    "name": "Disabled With Tooltip",
-    "description": "A focusable wrapper exposes the disabled action’s tooltip.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\nimport { Tooltip } from 'ui-lab-components/tooltip'\n\nexport default function Example() {\n  return (\n    <Tooltip content=\"Required checks are still running\" show-arrow>\n      <span tabIndex={0} aria-label=\"Merge pull request\" className=\"inline-flex\">\n        <Button disabled>Merge pull request</Button>\n      </span>\n    </Tooltip>\n  )\n}"
+    "code": "\"use client\"\n\nimport { Confirm } from 'ui-lab-components/confirm'\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function Example({ onDelete }: { onDelete?: () => void }) {\n  return (\n    <div className=\"flex items-center gap-12\">\n      <Confirm\n        mode=\"inline\"\n        severity=\"critical\"\n        auto-reset-after={5000}\n        onConfirm={() => onDelete?.()}\n        labels={{\n          idle: { title: 'Delete branch', body: 'feature/billing-v2 and its preview deploys.' },\n          confirming: { title: 'Delete feature/billing-v2?', body: 'Open pull requests will be closed.' },\n          trigger: 'Delete branch',\n          confirm: 'Delete',\n          cancel: 'Keep',\n        }}\n      />\n      <Confirm\n        mode=\"inline\"\n        severity=\"critical\"\n        auto-reset-after={3000}\n        onConfirm={() => onDelete?.()}\n        labels={{\n          trigger: <><Icon id=\"trash\" size=\"1em\" /><span className=\"sr-only\">Revoke token</span></>,\n          confirm: 'Revoke',\n          cancel: <><Icon id=\"close\" size=\"1em\" /><span className=\"sr-only\">Cancel</span></>,\n        }}\n      />\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Confirm\n  mode=\"inline\"\n  severity=\"critical\"\n  auto-reset-after={5000}\n  onConfirm={deleteBranch}\n  labels={{\n    idle: { title: 'Delete branch', body: 'feature/billing-v2 and its preview deploys.' },\n    confirming: { title: 'Delete feature/billing-v2?', body: 'Open pull requests will be closed.' },\n    trigger: 'Delete branch',\n    confirm: 'Delete',\n    cancel: 'Keep',\n  }}\n/>\n\n{/* Compact, for dense rows */}\n<Confirm\n  mode=\"inline\"\n  severity=\"critical\"\n  auto-reset-after={3000}\n  onConfirm={revokeToken}\n  labels={{\n    trigger: <><Icon id=\"trash\" size=\"1em\" /><span className=\"sr-only\">Revoke token</span></>,\n    confirm: 'Revoke',\n    cancel: <><Icon id=\"close\" size=\"1em\" /><span className=\"sr-only\">Cancel</span></>,\n  }}\n/>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/icon-toolbar",
     "kind": "component-example",
     "id": "icon-toolbar",
-    "name": "Icon Toggle",
-    "description": "Combine Tooltip, aria-label, and aria-pressed for a named toggle.",
+    "name": "Formatting Toolbar",
+    "description": "Toggle buttons with aria-pressed in a labelled toolbar, shown with text labels and as a compact icon-only version beside it that relies on aria-label and Tooltip.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { Tooltip } from 'ui-lab-components/tooltip'\nimport { FaPause, FaPlay } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [paused, setPaused] = useState(false)\n\n  return (\n    <Tooltip content={paused ? 'Resume logs' : 'Pause logs'} show-arrow>\n      <Button variant=\"secondary\" aria-label=\"Pause logs\" aria-pressed={paused}\n        icon={paused ? <FaPlay /> : <FaPause />} onPress={() => setPaused(!paused)} />\n    </Tooltip>\n  )\n}"
-  },
-  {
-    "ref": "example:button/link-button",
-    "kind": "component-example",
-    "id": "link-button",
-    "name": "Link Button",
-    "description": "Use href for internal navigation.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return <Button href=\"/settings\" variant=\"secondary\">Settings</Button>\n}"
-  },
-  {
-    "ref": "example:button/menu-action",
-    "kind": "component-example",
-    "id": "menu-action",
-    "name": "Button With Menu",
-    "description": "Pair Menu.Trigger with Button styling for a dropdown action.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Menu } from 'ui-lab-components/menu'\nimport { FaChevronDown } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger variant=\"primary\" icon={{ right: <FaChevronDown /> }}>\n        Create new\n      </Menu.Trigger>\n      <Menu.Content align=\"end\">\n        <Menu.Item onSelect={() => {}}>Document</Menu.Item>\n        <Menu.Item onSelect={() => {}}>Folder</Menu.Item>\n        <Menu.Separator />\n        <Menu.Item onSelect={() => {}}>Import…</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  )\n}"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { Tooltip } from 'ui-lab-components/tooltip'\nimport { Icon } from 'ui-lab-components/icon'\n\nconst FORMATS = [\n  { id: 'bold', label: 'Bold', icon: <Icon id=\"bold\" size=\"1em\" /> },\n  { id: 'italic', label: 'Italic', icon: <Icon id=\"italic\" size=\"1em\" /> },\n  { id: 'underline', label: 'Underline', icon: <Icon id=\"underline\" size=\"1em\" /> },\n]\n\nfunction Toolbar({ compact = false }: { compact?: boolean }) {\n  const [active, setActive] = useState<string[]>(['bold'])\n\n  const toggle = (id: string) =>\n    setActive((current) => (current.includes(id) ? current.filter((f) => f !== id) : [...current, id]))\n\n  return (\n    <div role=\"toolbar\" aria-label=\"Text formatting\" className=\"flex gap-1\">\n      {FORMATS.map(({ id, label, icon }) => {\n        const pressed = active.includes(id)\n        const button = (\n          <Button\n            key={id}\n            variant={pressed ? 'secondary' : 'ghost'}\n            aria-label={compact ? label : undefined}\n            aria-pressed={pressed}\n            icon={icon}\n            onPress={() => toggle(id)}\n          >\n            {compact ? undefined : label}\n          </Button>\n        )\n        return compact ? <Tooltip key={id} content={label} show-arrow>{button}</Tooltip> : button\n      })}\n    </div>\n  )\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center gap-12\">\n      <Toolbar />\n      <Toolbar compact />\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `<div role=\"toolbar\" aria-label=\"Text formatting\" className=\"flex gap-1\">\n  {FORMATS.map(({ id, label, icon }) => (\n    <Button\n      key={id}\n      variant={active.includes(id) ? 'secondary' : 'ghost'}\n      aria-pressed={active.includes(id)}\n      icon={icon}\n      onPress={() => toggle(id)}\n    >\n      {label}\n    </Button>\n  ))}\n</div>\n\n{/* Compact: icon-only, labelled by aria-label and Tooltip */}\n<div role=\"toolbar\" aria-label=\"Text formatting\" className=\"flex gap-1\">\n  {FORMATS.map(({ id, label, icon }) => (\n    <Tooltip key={id} content={label} show-arrow>\n      <Button\n        variant={active.includes(id) ? 'secondary' : 'ghost'}\n        aria-label={label}\n        aria-pressed={active.includes(id)}\n        icon={icon}\n        onPress={() => toggle(id)}\n      />\n    </Tooltip>\n  ))}\n</div>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/pending-action",
     "kind": "component-example",
     "id": "pending-action",
-    "name": "Pending Button",
-    "description": "Combine disabled, aria-busy, and a spinner.",
+    "name": "Pending Save",
+    "description": "Disable the button, set aria-busy, and show a spinner while the save runs so it can't be submitted twice. The compact icon-only version beside it swaps its icon for the spinner.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\nimport { FaSpinner } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <Button disabled aria-busy=\"true\" icon={{ left: <FaSpinner className=\"animate-spin\" /> }}>\n      Saving…\n    </Button>\n  )\n}"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { Icon } from 'ui-lab-components/icon'\n\nfunction SaveButton({ compact = false }: { compact?: boolean }) {\n  const [pending, setPending] = useState(false)\n\n  const save = async () => {\n    setPending(true)\n    await new Promise((resolve) => setTimeout(resolve, 1500))\n    setPending(false)\n  }\n\n  const spinner = pending ? <Icon id=\"spinner\" size=\"1em\" className=\"animate-spin\" /> : undefined\n\n  return (\n    <Button\n      disabled={pending}\n      aria-busy={pending}\n      aria-label={compact ? (pending ? 'Saving' : 'Save changes') : undefined}\n      icon={compact ? spinner ?? <Icon id=\"save\" size=\"1em\" /> : spinner}\n      onPress={save}\n    >\n      {compact ? undefined : pending ? 'Saving…' : 'Save changes'}\n    </Button>\n  )\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center gap-12\">\n      <SaveButton />\n      <SaveButton compact />\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Button\n  disabled={pending}\n  aria-busy={pending}\n  icon={pending ? <Icon id=\"spinner\" size=\"1em\" className=\"animate-spin\" /> : undefined}\n  onPress={save}\n>\n  {pending ? 'Saving…' : 'Save changes'}\n</Button>\n\n{/* Compact: the spinner replaces the icon */}\n<Button\n  disabled={pending}\n  aria-busy={pending}\n  aria-label={pending ? 'Saving' : 'Save changes'}\n  icon={pending ? <Icon id=\"spinner\" size=\"1em\" className=\"animate-spin\" /> : <Icon id=\"save\" size=\"1em\" />}\n  onPress={save}\n/>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/progress-action",
     "kind": "component-example",
     "id": "progress-action",
     "name": "Upload Progress",
-    "description": "Disable the button and report percentage while a task runs.",
+    "description": "The button background doubles as the progress bar: a hard-stop gradient on the --background-image surface variable fills as the upload runs. Shown next to a label-only version for comparison.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "\"use client\"\n\nimport { useRef, useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { FaUpload } from 'react-icons/fa6'\n\nexport default function Example() {\n  const [progress, setProgress] = useState<number | null>(null)\n  const timer = useRef<ReturnType<typeof setInterval>>(undefined)\n\n  const startUpload = () => {\n    setProgress(0)\n    timer.current = setInterval(() => {\n      setProgress((value) => {\n        if (value === null || value >= 100) {\n          clearInterval(timer.current)\n          return null\n        }\n        return value + 20\n      })\n    }, 300)\n  }\n\n  return (\n    <Button\n      disabled={progress !== null}\n      aria-busy={progress !== null}\n      icon={<FaUpload />}\n      onPress={startUpload}\n    >\n      {progress === null ? 'Upload files' : `Uploading… ${progress}%`}\n    </Button>\n  )\n}"
-  },
-  {
-    "ref": "example:button/shortcut-action",
-    "kind": "component-example",
-    "id": "shortcut-action",
-    "name": "Keyboard Hint",
-    "description": "Display a shortcut with hint; key binding is separate.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\n\nexport default function Example() {\n  return <Button variant=\"ghost\" hint={['⌘', 'K']}>Search files</Button>\n}"
+    "code": "\"use client\"\n\nimport { useEffect, useState } from 'react'\nimport { Button } from 'ui-lab-components/button'\nimport { Icon } from 'ui-lab-components/icon'\n\nfunction UploadButton({ fill = false }: { fill?: boolean }) {\n  const [progress, setProgress] = useState<number | null>(null)\n  const uploading = progress !== null\n\n  useEffect(() => {\n    if (progress === null) return\n    const id = setTimeout(() => setProgress(progress >= 100 ? null : progress + 1), 30)\n    return () => clearTimeout(id)\n  }, [progress])\n\n  return (\n    <Button\n      variant=\"secondary\"\n      disabled={uploading}\n      aria-busy={uploading}\n      icon={<Icon id=\"upload\" size=\"1em\" />}\n      onPress={() => setProgress(0)}\n      className=\"min-w-40 tabular-nums\"\n      style={fill && uploading ? ({\n        '--background-image': `linear-gradient(to right, color-mix(in oklab, currentColor 18%, transparent) ${progress}%, transparent 0)`,\n      } as React.CSSProperties) : undefined}\n    >\n      {uploading ? `Uploading… ${progress}%` : 'Upload files'}\n    </Button>\n  )\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center gap-12\">\n      <UploadButton />\n      <UploadButton fill />\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Button\n  variant=\"secondary\"\n  disabled={uploading}\n  aria-busy={uploading}\n  icon={<Icon id=\"upload\" size=\"1em\" />}\n  onPress={upload}\n  style={uploading ? {\n    '--background-image': \\`linear-gradient(to right, color-mix(in oklab, currentColor 18%, transparent) \\${progress}%, transparent 0)\\`,\n  } : undefined}\n>\n  {uploading ? \\`Uploading… \\${progress}%\\` : 'Upload files'}\n</Button>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/social-buttons",
     "kind": "component-example",
     "id": "social-buttons",
-    "name": "Social Buttons",
-    "description": "Stack brand-icon buttons for Google, GitHub, X, and Discord sign-in.",
+    "name": "Social Sign-In",
+    "description": "Map providers to left-aligned buttons with brand icons, using color for brands that need their own tint.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\nimport { FcGoogle } from 'react-icons/fc'\nimport { FaGithub, FaXTwitter, FaDiscord } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <div className=\"flex w-64 flex-col gap-2\">\n      <Button variant=\"secondary\" styles={{ root: 'justify-start' }} icon={<FcGoogle />}>\n        Continue with Google\n      </Button>\n      <Button variant=\"secondary\" styles={{ root: 'justify-start' }} icon={<FaGithub />}>\n        Continue with GitHub\n      </Button>\n      <Button variant=\"secondary\" color=\"#000000\" styles={{ root: 'justify-start' }} icon={<FaXTwitter />}>\n        Continue with X\n      </Button>\n      <Button variant=\"secondary\" color=\"#5865F2\" styles={{ root: 'justify-start' }} icon={<FaDiscord />}>\n        Continue with Discord\n      </Button>\n    </div>\n  )\n}"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { Icon } from 'ui-lab-components/icon'\n\nconst PROVIDERS = [\n  { name: 'Google', icon: <Icon id=\"google\" size=\"1em\" /> },\n  { name: 'GitHub', icon: <Icon id=\"github\" size=\"1em\" /> },\n  { name: 'X', icon: <Icon id=\"twitter\" size=\"1em\" /> },\n  { name: 'Discord', icon: <Icon id=\"discord\" size=\"1em\" />, color: '#5865F2' },\n]\n\nexport default function Example() {\n  return (\n    <div className=\"flex w-64 flex-col gap-2\">\n      {PROVIDERS.map(({ name, icon, color }) => (\n        <Button key={name} variant=\"secondary\" color={color} icon={icon} styles={{ root: 'justify-start' }}>\n          Continue with {name}\n        </Button>\n      ))}\n    </div>\n  )\n}\n\nfunction renderCode(): string {\n  return `{PROVIDERS.map(({ name, icon, color }) => (\n  <Button\n    key={name}\n    variant=\"secondary\"\n    color={color}\n    icon={icon}\n    styles={{ root: 'justify-start' }}\n    onPress={() => signIn(name)}\n  >\n    Continue with {name}\n  </Button>\n))}`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/split-action",
     "kind": "component-example",
     "id": "split-action",
-    "name": "Split Button",
-    "description": "Combine Group.Button and Group.Select for a selectable action.",
+    "name": "Merge Split Button",
+    "description": "Group.Button and Group.Select share one control, so the main action runs the selected merge strategy and the chevron changes it.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Divider } from 'ui-lab-components/divider'\nimport { Group } from 'ui-lab-components/group'\nimport { Select } from 'ui-lab-components/select'\n\nexport default function Example({ onMerge }: { onMerge?: (strategy: string) => void }) {\n  const [strategy, setStrategy] = useState('Squash and merge')\n\n  return (\n    <Group orientation=\"horizontal\" spacing=\"none\">\n      <Group.Button onPress={() => onMerge?.(strategy)}>{strategy}</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Select selectedKey={strategy} onSelectionChange={(key) => setStrategy(String(key))}>\n        <Select.Trigger aria-label=\"Merge strategy\" styles={{ value: 'sr-only' }} />\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"Squash and merge\">Squash and merge</Select.Item>\n            <Select.Item value=\"Rebase and merge\">Rebase and merge</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </Group.Select>\n    </Group>\n  )\n}"
-  },
-  {
-    "ref": "example:button/styled-button",
-    "kind": "component-example",
-    "id": "styled-button",
-    "name": "Custom Styles",
-    "description": "Customize the root and trailing icon slots.",
-    "category": "examples",
-    "visibility": "public",
-    "componentId": "button",
-    "access": "free",
-    "locked": false,
-    "code": "import { Button } from 'ui-lab-components/button'\nimport { FaArrowRight } from 'react-icons/fa6'\n\nexport default function Example() {\n  return (\n    <Button variant=\"secondary\"\n      styles={{ root: 'inline-flex min-w-56 items-center justify-between rounded-full', icon: { right: 'text-foreground-400' } }}\n      icon={{ right: <FaArrowRight /> }}>\n      Review release\n    </Button>\n  )\n}"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Divider } from 'ui-lab-components/divider'\nimport { Group } from 'ui-lab-components/group'\nimport { Select } from 'ui-lab-components/select'\n\nconst STRATEGIES = ['Squash and merge', 'Rebase and merge', 'Create a merge commit']\n\nexport default function Example({ onMerge }: { onMerge?: (strategy: string) => void }) {\n  const [strategy, setStrategy] = useState(STRATEGIES[0])\n\n  return (\n    <Group orientation=\"horizontal\" spacing=\"none\">\n      <Group.Button onPress={() => onMerge?.(strategy)}>{strategy}</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Select selectedKey={strategy} onSelectionChange={(key) => setStrategy(String(key))}>\n        <Select.Trigger aria-label=\"Merge strategy\" styles={{ value: 'sr-only' }} />\n        <Select.Content align=\"end\">\n          <Select.List>\n            {STRATEGIES.map((s) => (\n              <Select.Item key={s} value={s}>{s}</Select.Item>\n            ))}\n          </Select.List>\n        </Select.Content>\n      </Group.Select>\n    </Group>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Group orientation=\"horizontal\" spacing=\"none\">\n  <Group.Button onPress={() => merge(strategy)}>{strategy}</Group.Button>\n  <Divider orientation=\"vertical\" />\n  <Group.Select selectedKey={strategy} onSelectionChange={(key) => setStrategy(String(key))}>\n    <Select.Trigger aria-label=\"Merge strategy\" styles={{ value: 'sr-only' }} />\n    <Select.Content align=\"end\">\n      <Select.List>\n        {STRATEGIES.map((s) => (\n          <Select.Item key={s} value={s}>{s}</Select.Item>\n        ))}\n      </Select.List>\n    </Select.Content>\n  </Group.Select>\n</Group>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
   },
   {
     "ref": "example:button/toggle-group",
     "kind": "component-example",
     "id": "toggle-group",
-    "name": "Mode Toggle Group",
-    "description": "Use Group and Group.Button for a single-selection segmented control.",
+    "name": "Segmented View Switcher",
+    "description": "Give Group a value and onChange and its Group.Button children act as a single-selection segmented control.",
     "category": "examples",
     "visibility": "public",
     "componentId": "button",
     "access": "free",
     "locked": false,
-    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Group } from 'ui-lab-components/group'\n\nconst MODE_LABELS = { classic: 'Classic', structured: 'Structured' } as const\n\nexport default function Example() {\n  const [mode, setMode] = useState<keyof typeof MODE_LABELS>('classic')\n\n  return (\n    <Group aria-label=\"Prompting mode\" value={mode} onChange={(value) => setMode(value as keyof typeof MODE_LABELS)}>\n      {(['classic', 'structured'] as const).map((value) => (\n        <Group.Button key={value} value={value} variant=\"ghost\" size=\"sm\">\n          {MODE_LABELS[value]}\n        </Group.Button>\n      ))}\n    </Group>\n  )\n}"
+    "code": "\"use client\"\n\nimport { useState } from 'react'\nimport { Group } from 'ui-lab-components/group'\n\nconst VIEWS = [\n  { value: 'list', label: 'List' },\n  { value: 'board', label: 'Board' },\n  { value: 'calendar', label: 'Calendar' },\n]\n\nexport default function Example() {\n  const [view, setView] = useState('list')\n\n  return (\n    <Group spacing=\"sm\" aria-label=\"View\" value={view} onChange={(value) => setView(String(value))}>\n      {VIEWS.map(({ value, label }) => (\n        <Group.Button key={value} value={value} variant=\"ghost\" size=\"sm\">\n          {label}\n        </Group.Button>\n      ))}\n    </Group>\n  )\n}\n\nfunction renderCode(): string {\n  return `<Group spacing=\"sm\" aria-label=\"View\" value={view} onChange={(value) => setView(String(value))}>\n  {VIEWS.map(({ value, label }) => (\n    <Group.Button key={value} value={value} variant=\"ghost\" size=\"sm\">\n      {label}\n    </Group.Button>\n  ))}\n</Group>`\n}\n\nexport function factory(_props: Record<string, unknown>) {\n  return { preview: <Example />, code: renderCode() }\n}\n"
+  },
+  {
+    "ref": "example:card/01-notification",
+    "kind": "component-example",
+    "id": "01-notification",
+    "name": "Notification Card",
+    "description": "A status-driven card with a badge, body copy, and a footer action. Caller controls read state.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "card",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Card } from 'ui-lab-components/card'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Badge } from 'ui-lab-components/badge';\n\n\nexport default function Example() {\n  const [read, setRead] = useState(false);\n\n  return (\n    <Card style={{ width: 360, opacity: read ? 0.6 : 1, transition: 'opacity 0.2s' }}>\n      <Card.Header>\n        <Flex justify-between align-center>\n          Deployment failed\n          <Badge variant=\"destructive\">Error</Badge>\n        </Flex>\n      </Card.Header>\n      <Card.Body>\n        <p className=\"text-foreground-400\" style={{ fontFamily: \"var(--font-body)\", fontSize: \"var(--text-body-size)\", fontWeight: \"var(--font-weight-body-normal)\", lineHeight: \"var(--leading-body)\" }}>\n          The production deploy of <span className=\"text-foreground-200\">api-gateway</span> failed at step \"Run tests\". Check the logs for details.\n        </p>\n      </Card.Body>\n      <Card.Footer>\n        <Flex justify-between align-center>\n          <span className=\"text-foreground-500\" style={{ fontFamily: \"var(--font-body)\", fontSize: \"var(--text-xs)\", fontWeight: \"var(--font-weight-body-normal)\", lineHeight: \"var(--leading-sm)\" }}>2 minutes ago</span>\n          <Button size=\"sm\" variant=\"ghost\" onPress={() => setRead(true)}>\n            Mark as read\n          </Button>\n        </Flex>\n      </Card.Footer>\n    </Card>\n  );\n}\n"
+  },
+  {
+    "ref": "example:card/02-settings-panel-card",
+    "kind": "component-example",
+    "id": "02-settings-panel-card",
+    "name": "Settings Panel",
+    "description": "Card used as a settings section with a list of toggle rows and save/cancel actions in the footer.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "card",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Card } from 'ui-lab-components/card'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Switch } from 'ui-lab-components/switch';\n\n\nconst items = [\n  { label: 'Email alerts', description: 'Receive alerts via email' },\n  { label: 'Push notifications', description: 'Browser push notifications' },\n  { label: 'Weekly digest', description: 'Summary sent every Monday' },\n];\n\nexport default function Example() {\n  const [enabled, setEnabled] = useState(true);\n\n  return (\n    <Card>\n      <Card.Header>\n        Notifications\n      </Card.Header>\n      <Card.Body className=\"space-y-4 py-4\">\n        {items.map((item) => (\n          <Flex key={item.label} justify-between align-center>\n            <div>\n              <p className=\"text-sm text-foreground-100\">{item.label}</p>\n              <p className=\"text-xs text-foreground-500\">{item.description}</p>\n            </div>\n            <Switch\n              isSelected={enabled}\n              onChange={setEnabled}\n              aria-label={item.label}\n            />\n          </Flex>\n        ))}\n      </Card.Body>\n      <Card.Footer>\n        <Flex justify-end gap=\"xs\">\n          <Button size=\"sm\" variant=\"ghost\">Cancel</Button>\n          <Button size=\"sm\" variant=\"primary\">Save</Button>\n        </Flex>\n      </Card.Footer>\n    </Card>\n  );\n}\n"
+  },
+  {
+    "ref": "example:card/03-task-progress",
+    "kind": "component-example",
+    "id": "03-task-progress",
+    "name": "Task Progress",
+    "description": "Card displaying a checklist with a progress bar in the header to summarize completion state.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "card",
+    "access": "free",
+    "locked": false,
+    "code": "import { Card } from 'ui-lab-components/card'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Progress } from 'ui-lab-components/progress';\n\n\nconst tasks = [\n  { label: 'Design review', done: true },\n  { label: 'Write changelog', done: true },\n  { label: 'Update docs', done: false },\n  { label: 'Deploy to staging', done: false },\n];\n\nconst completed = tasks.filter((t) => t.done).length;\n\nexport default function Example() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex justify-between align-center>\n          Release v2.4.0\n          <span className=\"text-xs text-foreground-500\">{completed}/{tasks.length}</span>\n        </Flex>\n        <Progress value={(completed / tasks.length) * 100} className=\"mt-2\" />\n      </Card.Header>\n      <Card.Body className=\"py-3\">\n        <ul className=\"space-y-2\">\n          {tasks.map((task) => (\n            <li key={task.label} className=\"flex items-center gap-2 text-sm\">\n              <span className={task.done ? 'text-foreground-500 line-through' : 'text-foreground-200'}>\n                {task.label}\n              </span>\n            </li>\n          ))}\n        </ul>\n      </Card.Body>\n      <Card.Footer>\n        <Button size=\"sm\" variant=\"secondary\" className=\"w-full\">View milestone</Button>\n      </Card.Footer>\n    </Card>\n  );\n}\n"
   },
   {
     "ref": "example:chart/01-basic-line",
@@ -1035,7 +1712,7 @@ export const generatedWorkshopContent = [
     "componentId": "chart",
     "access": "free",
     "locked": false,
-    "code": "<Chart data={data} x=\"month\" aria-label=\"Monthly revenue\">\n  <Chart.Grid />\n  <Chart.Axis axis=\"x\" />\n  <Chart.Axis axis=\"y\" />\n  <Chart.Line y=\"revenue\" label=\"Revenue\" />\n  <Chart.Tooltip />\n</Chart>"
+    "code": "import { Chart } from 'ui-lab-components/chart';\n\nconst data = [\n  { month: 'Jan', revenue: 42 },\n  { month: 'Feb', revenue: 58 },\n  { month: 'Mar', revenue: 51 },\n  { month: 'Apr', revenue: 76 },\n  { month: 'May', revenue: 68 },\n  { month: 'Jun', revenue: 89 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"month\" aria-label=\"Monthly revenue\">\n      <Chart.Grid />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Line y=\"revenue\" label=\"Revenue\" />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}\n"
   },
   {
     "ref": "example:chart/02-multi-series",
@@ -1048,7 +1725,7 @@ export const generatedWorkshopContent = [
     "componentId": "chart",
     "access": "free",
     "locked": false,
-    "code": "<Chart data={data} x=\"month\" aria-label=\"Revenue comparison\">\n  <Chart.Grid axis=\"y\" />\n  <Chart.Axis axis=\"x\" />\n  <Chart.Axis axis=\"y\" />\n  <Chart.Line y=\"current\" label=\"This year\" curve=\"smooth\" />\n  <Chart.Line y=\"previous\" label=\"Last year\" curve=\"smooth\" />\n  <Chart.Legend />\n  <Chart.Tooltip />\n</Chart>"
+    "code": "import { Chart } from 'ui-lab-components/chart';\n\nconst data = [\n  { month: 'Jan', current: 42, previous: 34 },\n  { month: 'Feb', current: 58, previous: 46 },\n  { month: 'Mar', current: 51, previous: 49 },\n  { month: 'Apr', current: 76, previous: 61 },\n  { month: 'May', current: 68, previous: 64 },\n  { month: 'Jun', current: 89, previous: 72 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"month\" aria-label=\"Revenue comparison\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Line y=\"current\" label=\"This year\" curve=\"smooth\" />\n      <Chart.Line y=\"previous\" label=\"Last year\" curve=\"smooth\" />\n      <Chart.Legend />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}\n"
   },
   {
     "ref": "example:chart/03-stacked-bars",
@@ -1061,7 +1738,7 @@ export const generatedWorkshopContent = [
     "componentId": "chart",
     "access": "free",
     "locked": false,
-    "code": "<Chart data={data} x=\"quarter\" aria-label=\"Quarterly revenue by category\">\n  <Chart.Grid axis=\"y\" />\n  <Chart.Axis axis=\"x\" />\n  <Chart.Axis axis=\"y\" />\n  <Chart.Bar y=\"product\" label=\"Product\" stack=\"revenue\" />\n  <Chart.Bar y=\"services\" label=\"Services\" stack=\"revenue\" />\n  <Chart.Bar y=\"support\" label=\"Support\" stack=\"revenue\" />\n  <Chart.Legend />\n  <Chart.Tooltip />\n</Chart>"
+    "code": "import { Chart } from 'ui-lab-components/chart';\n\nconst data = [\n  { quarter: 'Q1', product: 38, services: 24, support: 12 },\n  { quarter: 'Q2', product: 46, services: 31, support: 15 },\n  { quarter: 'Q3', product: 42, services: 36, support: 18 },\n  { quarter: 'Q4', product: 55, services: 39, support: 21 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"quarter\" aria-label=\"Quarterly revenue by category\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Bar y=\"product\" label=\"Product\" stack=\"revenue\" />\n      <Chart.Bar y=\"services\" label=\"Services\" stack=\"revenue\" />\n      <Chart.Bar y=\"support\" label=\"Support\" stack=\"revenue\" />\n      <Chart.Legend />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}\n"
   },
   {
     "ref": "example:chart/04-area-reference",
@@ -1074,7 +1751,7 @@ export const generatedWorkshopContent = [
     "componentId": "chart",
     "access": "free",
     "locked": false,
-    "code": "<Chart\n  data={data}\n  x=\"week\"\n  domain={[0, 100]}\n  aria-label=\"Weekly performance score\"\n>\n  <Chart.Grid axis=\"y\" />\n  <Chart.Axis axis=\"x\" />\n  <Chart.Axis axis=\"y\" />\n  <Chart.Area y=\"score\" label=\"Score\" curve=\"smooth\" />\n  <Chart.Reference y={75} label=\"Target\" />\n  <Chart.Tooltip />\n</Chart>"
+    "code": "import { Chart } from 'ui-lab-components/chart';\n\nconst data = [\n  { week: 'Week 1', score: 62 },\n  { week: 'Week 2', score: 71 },\n  { week: 'Week 3', score: 68 },\n  { week: 'Week 4', score: 79 },\n  { week: 'Week 5', score: 84 },\n  { week: 'Week 6', score: 88 }\n];\n\nexport default function Example() {\n  return (\n    <Chart data={data} x=\"week\" domain={[0, 100]} aria-label=\"Weekly performance score\">\n      <Chart.Grid axis=\"y\" />\n      <Chart.Axis axis=\"x\" />\n      <Chart.Axis axis=\"y\" />\n      <Chart.Area y=\"score\" label=\"Score\" curve=\"smooth\" />\n      <Chart.Reference y={75} label=\"Target\" />\n      <Chart.Tooltip />\n    </Chart>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/00-permissions-panel",
@@ -1087,7 +1764,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col gap-2\">\n  {permissions.map((permission) => (\n    <Checkbox\n      key={permission.id}\n      id={`permission-${permission.id}`}\n      label={permission.label}\n      helper={permission.helper}\n      state={{ checked: granted.has(permission.id) }}\n      onChange={() => toggle(permission.id)}\n    />\n  ))}\n</div>\n<Button variant=\"primary\" disabled={granted.size === 0} styles={{ root: 'w-full' }}>\n  Send invite\n</Button>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Button } from 'ui-lab-components/button'\nimport { Checkbox } from 'ui-lab-components/checkbox'\nimport { Flex } from 'ui-lab-components/flex';\n\nconst invitees = ['Ava', 'Marcus', 'Priya'];\n\nconst permissions = [\n  { id: 'edit', label: 'Edit files', helper: 'Create, rename, and update project files.' },\n  { id: 'invite', label: 'Invite members', helper: 'Add or remove people from this workspace.' },\n  { id: 'billing', label: 'Manage billing', helper: 'View invoices and change the payment method.' },\n];\n\nexport default function Example() {\n  const [granted, setGranted] = useState<Set<string>>(new Set(['edit']));\n\n  const toggle = (id: string) => {\n    setGranted((current) => {\n      const next = new Set(current);\n      next.has(id) ? next.delete(id) : next.add(id);\n      return next;\n    });\n  };\n\n  return (\n    <section className=\"flex flex-col gap-6 rounded-sm p-5\">\n      <Flex align-center gap=\"md\" aria-hidden=\"true\">\n        <div className=\"flex -space-x-2\">\n          {invitees.map((_, i) => (\n            <div\n              key={i}\n              className=\"h-8 w-8 rounded-full border-2 border-background-950 bg-background-700/50\"\n              style={{ opacity: 1 - i * 0.2 }}\n            />\n          ))}\n        </div>\n        <Flex direction=\"column\" gap=\"xs\">\n          <div className=\"h-3 w-32 rounded bg-background-700/55\" />\n          <div className=\"h-2.5 w-20 rounded bg-background-700/30\" />\n        </Flex>\n      </Flex>\n\n      <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n      <Flex direction=\"column\" gap=\"sm\">\n        {permissions.map((permission) => (\n          <Checkbox\n            key={permission.id}\n            id={`permission-${permission.id}`}\n            label={permission.label}\n            helper={permission.helper}\n            state={{ checked: granted.has(permission.id) }}\n            onChange={() => toggle(permission.id)}\n          />\n        ))}\n      </Flex>\n\n      <Button variant=\"primary\" disabled={granted.size === 0} styles={{ root: 'w-full' }}>\n        Send invite\n      </Button>\n    </section>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/01-basic-states",
@@ -1100,7 +1777,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-[280px] flex-col gap-4\">\n  <Checkbox id=\"basic-unchecked\" label=\"Unchecked\" />\n  <Checkbox id=\"basic-checked\" label=\"Checked\" checked />\n  <Checkbox id=\"basic-disabled\" label=\"Disabled\" disabled />\n  <Checkbox id=\"basic-disabled-checked\" label=\"Disabled checked\" disabled checked />\n</div>"
+    "code": "import { Checkbox } from 'ui-lab-components/checkbox'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Checkbox id=\"basic-unchecked\" label=\"Unchecked\" />\n      <Checkbox id=\"basic-checked\" label=\"Checked\" checked />\n      <Checkbox id=\"basic-disabled\" label=\"Disabled\" disabled />\n      <Checkbox id=\"basic-disabled-checked\" label=\"Disabled checked\" disabled checked />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/02-helper-text",
@@ -1113,7 +1790,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-80 flex-col gap-6\">\n  <Checkbox\n    id=\"helper-release-notes\"\n    label=\"Release notes\"\n    helper=\"Get a short product update when a new version ships.\"\n    checked\n  />\n  <Checkbox\n    id=\"helper-terms\"\n    label=\"Accept terms\"\n    helper=\"You must accept the terms before continuing.\"\n    helperTextError\n    aria-invalid=\"true\"\n  />\n</div>"
+    "code": "import { Checkbox } from 'ui-lab-components/checkbox'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"lg\">\n      <Checkbox\n        id=\"helper-release-notes\"\n        label=\"Release notes\"\n        helper=\"Get a short product update when a new version ships.\"\n        checked\n      />\n      <Checkbox\n        id=\"helper-terms\"\n        label=\"Accept terms\"\n        helper=\"You must accept the terms before continuing.\"\n        helperTextError\n        aria-invalid=\"true\"\n      />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/03-controlled",
@@ -1126,7 +1803,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-[300px] flex-col gap-4\">\n  <Checkbox\n    id=\"controlled-email\"\n    label=\"Email notifications\"\n    helper={checked ? 'Notifications are enabled.' : 'Notifications are paused.'}\n    state={{ checked }}\n    onChange={(event) => setChecked(event.currentTarget.checked)}\n  />\n  <Button variant=\"secondary\" onClick={() => setChecked((value) => !value)}>\n    {checked ? 'Turn off' : 'Turn on'}\n  </Button>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Button } from 'ui-lab-components/button'\nimport { Checkbox } from 'ui-lab-components/checkbox'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [checked, setChecked] = useState(true);\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Checkbox\n        id=\"controlled-email\"\n        label=\"Email notifications\"\n        helper={checked ? 'Notifications are enabled.' : 'Notifications are paused.'}\n        state={{ checked }}\n        onChange={(event) => setChecked(event.currentTarget.checked)}\n      />\n      <Button variant=\"secondary\" onClick={() => setChecked((value) => !value)}>\n        {checked ? 'Turn off' : 'Turn on'}\n      </Button>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/04-group",
@@ -1139,7 +1816,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-[300px] flex-col gap-4\">\n  <div>\n    <p className=\"text-sm font-medium text-foreground-100\">Subscriptions</p>\n    <p className=\"text-xs text-foreground-400\">Choose the emails this workspace receives.</p>\n  </div>\n  <div className=\"flex flex-col gap-2\">\n    {subscriptionOptions.map((option) => (\n      <Checkbox\n        key={option}\n        id={`subscription-${option.toLowerCase().replace(/ /g, '-')}`}\n        label={option}\n        state={{ checked: selected.has(option) }}\n        onChange={() => toggleOption(option)}\n      />\n    ))}\n  </div>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Checkbox } from 'ui-lab-components/checkbox'\nimport { Flex } from 'ui-lab-components/flex';\n\nconst subscriptionOptions = [\n  'Product updates',\n  'Security alerts',\n  'Billing reminders',\n];\n\nexport default function Example() {\n  const [selected, setSelected] = useState<Set<string>>(\n    new Set(['Product updates', 'Security alerts'])\n  );\n\n  const toggleOption = (option: string) => {\n    setSelected((current) => {\n      const next = new Set(current);\n      next.has(option) ? next.delete(option) : next.add(option);\n      return next;\n    });\n  };\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <div>\n        <p className=\"text-sm font-medium text-foreground-100\">Subscriptions</p>\n        <p className=\"text-xs text-foreground-400\">Choose the emails this workspace receives.</p>\n      </div>\n      <Flex direction=\"column\" gap=\"sm\">\n        {subscriptionOptions.map((option) => (\n          <Checkbox\n            key={option}\n            id={`subscription-${option.toLowerCase().replace(/ /g, '-')}`}\n            label={option}\n            state={{ checked: selected.has(option) }}\n            onChange={() => toggleOption(option)}\n          />\n        ))}\n      </Flex>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/05-indeterminate",
@@ -1152,7 +1829,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-[280px] flex-col gap-2\">\n  <Checkbox\n    id=\"columns-all\"\n    label=\"Show all columns\"\n    state={{ checked: allSelected, indeterminate: isIndeterminate }}\n    onChange={toggleAll}\n  />\n  <Divider />\n  <div className=\"flex flex-col gap-2 pl-8\">\n    {tableColumns.map((column) => (\n      <Checkbox\n        key={column}\n        id={`column-${column.toLowerCase().replace(/ /g, '-')}`}\n        label={column}\n        state={{ checked: visibleColumns.has(column) }}\n        onChange={() => toggleColumn(column)}\n      />\n    ))}\n  </div>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Checkbox } from 'ui-lab-components/checkbox'\nimport { Divider } from 'ui-lab-components/divider'\nimport { Flex } from 'ui-lab-components/flex';\n\nconst tableColumns = ['Name', 'Email', 'Role', 'Last active'];\n\nexport default function Example() {\n  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(\n    new Set(['Name', 'Email'])\n  );\n\n  const allSelected = visibleColumns.size === tableColumns.length;\n  const isIndeterminate = visibleColumns.size > 0 && !allSelected;\n\n  const toggleAll = () => {\n    setVisibleColumns(allSelected ? new Set() : new Set(tableColumns));\n  };\n\n  const toggleColumn = (column: string) => {\n    setVisibleColumns((current) => {\n      const next = new Set(current);\n      next.has(column) ? next.delete(column) : next.add(column);\n      return next;\n    });\n  };\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <Checkbox\n        id=\"columns-all\"\n        label=\"Show all columns\"\n        state={{ checked: allSelected, indeterminate: isIndeterminate }}\n        onChange={toggleAll}\n      />\n      <Divider />\n      <Flex direction=\"column\" gap=\"sm\" className=\"pl-8\">\n        {tableColumns.map((column) => (\n          <Checkbox\n            key={column}\n            id={`column-${column.toLowerCase().replace(/ /g, '-')}`}\n            label={column}\n            state={{ checked: visibleColumns.has(column) }}\n            onChange={() => toggleColumn(column)}\n          />\n        ))}\n      </Flex>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:checkbox/06-consent-form",
@@ -1165,7 +1842,7 @@ export const generatedWorkshopContent = [
     "componentId": "checkbox",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-80 flex-col gap-4\">\n  <Checkbox\n    id=\"consent-terms\"\n    label=\"I agree to the terms\"\n    helper=\"Required to create a workspace.\"\n    state={{ checked: accepted }}\n    onChange={(event) => setAccepted(event.currentTarget.checked)}\n  />\n  <Checkbox\n    id=\"consent-updates\"\n    label=\"Send product updates\"\n    state={{ checked: updates }}\n    onChange={(event) => setUpdates(event.currentTarget.checked)}\n  />\n  <Button variant=\"primary\" disabled={!accepted} styles={{ root: 'w-full' }}>\n    Continue\n  </Button>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Button } from 'ui-lab-components/button'\nimport { Checkbox } from 'ui-lab-components/checkbox'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [accepted, setAccepted] = useState(false);\n  const [updates, setUpdates] = useState(false);\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Checkbox\n        id=\"consent-terms\"\n        label=\"I agree to the terms\"\n        helper=\"Required to create a workspace.\"\n        state={{ checked: accepted }}\n        onChange={(event) => setAccepted(event.currentTarget.checked)}\n      />\n      <Checkbox\n        id=\"consent-updates\"\n        label=\"Send product updates\"\n        state={{ checked: updates }}\n        onChange={(event) => setUpdates(event.currentTarget.checked)}\n      />\n      <Button variant=\"primary\" disabled={!accepted} styles={{ root: 'w-full' }}>\n        Continue\n      </Button>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:color/01-basic-picker",
@@ -1178,7 +1855,7 @@ export const generatedWorkshopContent = [
     "componentId": "color",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex items-center justify-center\">\n  <Color value=\"#3b82f6\" size=\"md\">\n    <Color.Trigger aria-label=\"Choose color\" />\n  </Color>\n</div>"
+    "code": "\"use client\";\n\nimport { Color } from 'ui-lab-components/color';\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center justify-center\">\n      <Color value=\"#3b82f6\" size=\"md\">\n        <Color.Trigger aria-label=\"Choose color\" />\n      </Color>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:color/02-picker-opacity",
@@ -1191,7 +1868,7 @@ export const generatedWorkshopContent = [
     "componentId": "color",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col items-center gap-4\">\n  <Color\n    value={color}\n    onChange={setColor}\n    showOpacity\n    size=\"md\"\n  >\n    <Color.Trigger aria-label=\"Choose accent color\" />\n  </Color>\n  <div className=\"text-sm text-foreground-400\">\n    Selected: {color}\n  </div>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Color } from 'ui-lab-components/color';\n\nexport default function Example() {\n  const [color, setColor] = useState('#ef4444');\n\n  return (\n    <div className=\"flex flex-col gap-4 items-center\">\n      <Color\n        value={color}\n        onChange={setColor}\n        showOpacity={true}\n        size=\"md\"\n      >\n        <Color.Trigger aria-label=\"Choose accent color\" />\n      </Color>\n      <div className=\"text-sm text-foreground-400\">\n        Selected: {color}\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:color/03-picker-preview",
@@ -1204,7 +1881,7 @@ export const generatedWorkshopContent = [
     "componentId": "color",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col items-center gap-4\">\n  <Color\n    value={color}\n    onChange={setColor}\n    showPreview\n    format=\"hex\"\n    size=\"md\"\n  >\n    <Color.Area />\n  </Color>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Color } from 'ui-lab-components/color';\n\nexport default function Example() {\n  const [color, setColor] = useState('#8b5cf6');\n\n  return (\n    <div className=\"flex flex-col gap-4 items-center\">\n      <Color\n        value={color}\n        onChange={setColor}\n        showPreview={true}\n        format=\"hex\"\n        size=\"md\"\n      >\n        <Color.Area />\n      </Color>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:color/04-slider-primitive",
@@ -1217,7 +1894,7 @@ export const generatedWorkshopContent = [
     "componentId": "color",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-72 space-y-4\">\n  <div className=\"flex items-center gap-3\">\n    <div\n      className=\"h-10 w-10 rounded-sm border border-background-700\"\n      style={{ backgroundColor: previewColor }}\n      aria-hidden=\"true\"\n    />\n    <div className=\"min-w-0 flex-1 text-sm text-foreground-300\">\n      <div>Hue {Math.round(hue)} deg</div>\n      <div>Opacity {Math.round(opacity * 100)}%</div>\n    </div>\n  </div>\n\n  <Color.Slider aria-label=\"Accent hue\" value={hue} onChange={setHue} />\n\n  <Color.Slider\n    type=\"opacity\"\n    aria-label=\"Accent opacity\"\n    value={opacity}\n    onChange={setOpacity}\n    color={baseColor}\n  />\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Color } from 'ui-lab-components/color';\n\nexport default function Example() {\n  const [hue, setHue] = useState(215);\n  const [opacity, setOpacity] = useState(0.72);\n\n  const baseColor = `hsl(${hue} 100% 50%)`;\n  const previewColor = `hsl(${hue} 100% 50% / ${opacity})`;\n\n  return (\n    <div className=\"space-y-4\">\n      <div className=\"flex items-center gap-3\">\n        <div\n          className=\"h-10 w-10 rounded-sm border border-background-700\"\n          style={{ backgroundColor: previewColor }}\n          aria-hidden=\"true\"\n        />\n        <div className=\"min-w-0 flex-1 text-sm text-foreground-300\">\n          <div>Hue {Math.round(hue)} deg</div>\n          <div>Opacity {Math.round(opacity * 100)}%</div>\n        </div>\n      </div>\n\n      <Color.Slider\n        aria-label=\"Accent hue\"\n        value={hue}\n        onChange={setHue}\n      />\n\n      <Color.Slider\n        type=\"opacity\"\n        aria-label=\"Accent opacity\"\n        value={opacity}\n        onChange={setOpacity}\n        color={baseColor}\n      />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:color/05-canvas-only",
@@ -1230,20 +1907,59 @@ export const generatedWorkshopContent = [
     "componentId": "color",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex items-center justify-center\">\n  <Color value={color} onChange={setColor} size=\"md\">\n    <Color.Canvas />\n  </Color>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Color } from 'ui-lab-components/color';\n\nexport default function Example() {\n  const [color, setColor] = useState('#3b82f6');\n\n  return (\n    <div className=\"flex items-center justify-center\">\n      <Color value={color} onChange={setColor} size=\"md\">\n        <Color.Canvas />\n      </Color>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:command/01-basic-command",
+    "kind": "component-example",
+    "id": "01-basic-command",
+    "name": "Basic Command Palette",
+    "description": "An always-visible floating palette scoped to its preview, with grouped commands, icons, descriptions, shortcuts, keyboard navigation, and selection feedback.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "command",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport React from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Command, type CommandItemData, useCommandContext } from 'ui-lab-components/command';\n\nconst commandData: Omit<CommandItemData, 'action'>[] = [\n  { id: 'search', label: 'Search documents', description: 'Find anything in your workspace', category: 'Workspace', shortcut: '⌘F', icon: <Icon id=\"search\" size={16} /> },\n  { id: 'projects', label: 'Browse projects', description: 'Jump to an active project', category: 'Workspace', shortcut: '⌘P', icon: <Icon id=\"folder\" size={16} /> },\n  { id: 'create', label: 'Create document', description: 'Start with a blank page', category: 'Actions', shortcut: '⌘N', icon: <Icon id=\"file-plus\" size={16} /> },\n  { id: 'invite', label: 'Invite teammate', description: 'Bring someone into your workspace', category: 'Actions', icon: <Icon id=\"users\" size={16} /> },\n  { id: 'settings', label: 'Workspace settings', category: 'Settings', shortcut: '⌘,', icon: <Icon id=\"gear\" size={16} /> },\n];\n\nfunction Results() {\n  const { filteredItems } = useCommandContext();\n  return (\n    <Command.List empty-message=\"No commands found. Try ‘project’ or ‘create’.\">\n      {filteredItems.length > 0 ? (\n        <Command.Groups\n          renderCategory={(category) => category ? <Command.Category>{category}</Command.Category> : null}\n          renderItem={(cmd) => (\n            <Command.Item value={cmd.id} textValue={cmd.label} action={cmd.action} icon={cmd.icon} hint={cmd.shortcut}>\n              <div className=\"min-w-0\">\n                <Command.Label>{cmd.label}</Command.Label>\n                {cmd.description && <Command.Description>{cmd.description}</Command.Description>}\n              </div>\n            </Command.Item>\n          )}\n        />\n      ) : null}\n    </Command.List>\n  );\n}\n\nexport default function Example() {\n  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);\n  const [, setSelected] = React.useState('');\n  const commands = React.useMemo(() => commandData.map((cmd) => ({ ...cmd, action: () => setSelected(cmd.label) })), []);\n\n  return (\n    <div className=\"w-full\">\n      <div ref={setContainer} className=\"[&>[data-slot=overlay]]:bg-transparent! [&>[data-slot=overlay]]:backdrop-filter-none!\" style={{ position: 'relative', isolation: 'isolate', overflow: 'hidden', width: '100%', height: 520 }}>\n        <Command\n          open\n          container={container}\n          items={commands}\n          style={{ '--origin': '50% 6%', '--width': '28rem', '--height': '28rem', height: '28rem', minHeight: '28rem' } as React.CSSProperties}\n        >\n          <Command.Input autoFocus={false} placeholder=\"Search your workspace...\" />\n          <Results />\n          <Command.Footer actions={{ left: [{ label: 'Navigate', hint: ['↑', '↓'] }], right: [{ label: 'Select', hint: 'Enter' }] }} />\n        </Command>\n      </div>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:command/02-sidebar-panel",
+    "kind": "component-example",
+    "id": "02-sidebar-panel",
+    "name": "Sidebar Panel",
+    "description": "Command.Root used as a headless primitive — no dialog, portal, or trigger — dropped inline into a Card for a sidebar-style quick switcher.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "command",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport React from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Command, type CommandItemData, useCommandContext } from 'ui-lab-components/command';\nimport { Card } from 'ui-lab-components/card';\nimport { List } from 'ui-lab-components/list';\nimport { Scroll } from 'ui-lab-components/scroll';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Button } from 'ui-lab-components/button';\nimport { Input } from 'ui-lab-components/input';\nimport { Label } from 'ui-lab-components/label';\n\nconst initialProjects = [\n  { id: 'WEB-101', label: 'Website refresh', description: 'In progress · Maya Chen · 18 issues', keywords: ['marketing', 'design', 'website'] },\n  { id: 'APP-102', label: 'Mobile onboarding', description: 'In review · Alex Rivera · 8 issues', keywords: ['mobile', 'activation', 'onboarding'] },\n  { id: 'API-103', label: 'Public API v2', description: 'Planning · Sam Patel · 12 issues', keywords: ['developer', 'platform', 'api'] },\n];\n\nfunction Results({ current }: { current: string }) {\n  const { filteredItems, groupedItems, focusedKey, setFocusedKey, actionRef, scrollableRef } = useCommandContext();\n\n  React.useEffect(() => {\n    filteredItems.forEach((item) => actionRef.current.set(item.id, item.action));\n    return () => {\n      filteredItems.forEach((item) => actionRef.current.delete(item.id));\n    };\n  }, [filteredItems, actionRef]);\n\n  return (\n    <Scroll viewport-ref={scrollableRef} max-height=\"100%\" fade-y className=\"min-h-0 overflow-hidden px-2 pb-2\">\n      {filteredItems.length ? (\n        <List layout=\"spaced\" aria-label=\"Workspace navigation\" highlighted={focusedKey as string | null}>\n          {groupedItems.flatMap(({ category, items }) => [\n            ...(category ? [\n              <List.Header key={`category-${category}`} className=\"px-3 pt-4 pb-2 text-sm text-foreground-400\">{category}</List.Header>,\n            ] : []),\n            ...items.map((item) => (\n              <List.Item\n                key={item.id}\n                value={item.id}\n                interactive\n                selected={current === item.id}\n                aria-current={current === item.id ? 'page' : undefined}\n                onClick={() => item.action()}\n                onFocus={() => setFocusedKey(item.id)}\n                onKeyDown={(event) => {\n                  if (event.key === 'Enter' || event.key === ' ') {\n                    event.preventDefault();\n                    item.action();\n                  }\n                }}\n              >\n                <List.Media>{item.icon}</List.Media>\n                <Flex direction=\"column\" gap={1} className=\"min-w-0\">\n                  <List.Title>{item.label}</List.Title>\n                  <List.Desc>{item.description}</List.Desc>\n                </Flex>\n              </List.Item>\n            )),\n          ])}\n        </List>\n      ) : (\n        <Flex className=\"px-3 py-6 text-sm text-foreground-300\">No matches. Try a project name or ID.</Flex>\n      )}\n    </Scroll>\n  );\n}\n\nexport default function Example() {\n  const [projects, setProjects] = React.useState(initialProjects);\n  const [current, setCurrent] = React.useState('WEB-101');\n  const [creating, setCreating] = React.useState(false);\n  const [name, setName] = React.useState('');\n  const [error, setError] = React.useState('');\n  const projectNameId = React.useId();\n  const commands = React.useMemo<CommandItemData[]>(() => [\n    { id: 'my-issues', label: 'My issues', description: '6 assigned to you · 2 due today', category: 'Workspace', icon: <Icon id=\"inbox\" size={18} aria-hidden=\"true\" />, keywords: ['assigned', 'tasks'], action: () => setCurrent('my-issues') },\n    { id: 'all-projects', label: 'All projects', description: `${projects.length} projects across your team`, category: 'Workspace', icon: <Icon id=\"layers\" size={18} aria-hidden=\"true\" />, keywords: ['team', 'browse'], action: () => setCurrent('all-projects') },\n    ...projects.map((project) => ({\n      ...project,\n      description: `${project.id} · ${project.description}`,\n      category: 'Recent projects',\n      icon: <Icon id=\"folder\" size={18} aria-hidden=\"true\" />,\n      keywords: [project.id, ...project.keywords],\n      action: () => setCurrent(project.id),\n    })),\n  ], [projects]);\n  const currentLabel = commands.find((item) => item.id === current)?.label;\n\n  function createProject(event: React.FormEvent<HTMLFormElement>) {\n    event.preventDefault();\n    const label = name.trim();\n    if (!label) {\n      setError('Enter a project name.');\n      return;\n    }\n    if (projects.some((project) => project.label.toLowerCase() === label.toLowerCase())) {\n      setError('A project with this name already exists.');\n      return;\n    }\n    const id = `PRJ-${104 + projects.length - initialProjects.length}`;\n    setProjects((previous) => [{ id, label, description: 'Planning · Maya Chen', keywords: [label] }, ...previous]);\n    setCurrent(id);\n    setCreating(false);\n    setName('');\n    setError('');\n  }\n\n  return (\n    <Card className=\"grid h-[28rem] w-[28rem] max-w-[calc(100%-2rem)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-background-900 p-0\">\n      <Card.Header className=\"border-b border-background-800 px-5 py-4\">\n        <Flex align-center gap={3}>\n          <Flex layout=\"center\" className=\"h-9 w-9 shrink-0 rounded-sm bg-background-700 text-foreground-50 font-semibold\" aria-hidden=\"true\">F</Flex>\n          <Flex direction=\"column\" gap={1}>\n            <strong>Forma</strong>\n            <Flex className=\"text-sm text-foreground-300\">Product team · 12 members</Flex>\n          </Flex>\n        </Flex>\n      </Card.Header>\n      <Command.Root items={commands} className=\"grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]\">\n        <Flex className=\"px-3 pt-3 pb-1\">\n          <Command.Input aria-label=\"Search workspace\" placeholder=\"Search projects or jump to…\" autoFocus={false} />\n        </Flex>\n        <Results current={current} />\n        <Command.Footer\n          className=\"px-5 py-3 text-foreground-400\"\n          actions={{ left: [{ label: 'Navigate', hint: ['↑', '↓'] }], right: [{ label: 'Open', hint: 'Enter' }] }}\n        />\n      </Command.Root>\n      <Card.Footer className=\"border-t border-background-800 px-3 py-3\">\n        <Flex direction=\"column\" gap={3}>\n          {creating ? (\n            <form onSubmit={createProject}>\n              <Flex direction=\"column\" gap={3}>\n                <Flex direction=\"column\" gap={2}>\n                  <Label htmlFor={projectNameId} error={Boolean(error)}>Project name</Label>\n                  <Input id={projectNameId} value={name} onChange={(event) => { setName(event.target.value); setError(''); }} placeholder=\"e.g. Customer portal\" autoFocus required maxLength={60} error={Boolean(error)} aria-invalid={Boolean(error)} aria-describedby={error ? `${projectNameId}-error` : undefined} />\n                  {error && <Flex id={`${projectNameId}-error`} role=\"alert\" className=\"text-sm text-danger-400\">{error}</Flex>}\n                </Flex>\n                <Flex layout=\"actions\" gap={2}>\n                  <Button variant=\"ghost\" onPress={() => { setCreating(false); setName(''); setError(''); }}>Cancel</Button>\n                  <Button variant=\"primary\" type=\"submit\" disabled={!name.trim()}>Create project</Button>\n                </Flex>\n              </Flex>\n            </form>\n          ) : (\n            <Button variant=\"ghost\" icon={<Icon id=\"plus\" size={16} />} className=\"w-full justify-start\" onPress={() => setCreating(true)}>Create project</Button>\n          )}\n          <Flex role=\"status\" className=\"sr-only\">Viewing {currentLabel}</Flex>\n        </Flex>\n      </Card.Footer>\n    </Card>\n  );\n}\n"
+  },
+  {
+    "ref": "example:command/03-inline-completion",
+    "kind": "component-example",
+    "id": "03-inline-completion",
+    "name": "Inline Slash Commands",
+    "description": "Command.Root wired to a textarea through useCompletion: typing / filters commands, arrows and Enter drive the list while focus stays in the field.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "command",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport { useMemo, useRef, useState, type KeyboardEvent, type RefObject } from 'react';\nimport { Command, type CommandItemData, useCommandContext, useCompletion } from 'ui-lab-components/command';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\nimport { List } from 'ui-lab-components/list';\nimport { Scroll } from 'ui-lab-components/scroll';\n\n// Only keyboard moves scroll the active row into view; hover-driven scrolling would chase the pointer.\nfunction Suggestions({ keyboardRef }: { keyboardRef: RefObject<boolean> }) {\n  const { filteredItems, focusedKey, setFocusedKey } = useCommandContext();\n  if (!filteredItems.length) return null;\n  return (\n    <div className=\"absolute inset-x-0 top-full z-10 mt-2 rounded-sm border border-background-700 bg-background-800 px-1\">\n      <Scroll max-height=\"14rem\" fade-y padding-y={1}>\n        <List aria-label=\"Commands\" layout=\"spaced\" highlighted={keyboardRef.current ? (focusedKey as string | null) : null}>\n          {filteredItems.map((item) => (\n            <List.Item\n              key={item.id}\n              value={item.id}\n              interactive\n              data-highlighted={item.id === focusedKey ? 'true' : 'false'}\n              onPointerEnter={() => {\n                keyboardRef.current = false;\n                setFocusedKey(item.id);\n              }}\n              onMouseDown={(event) => event.preventDefault()}\n              onClick={() => item.action()}\n              className=\"gap-2 px-2 py-1.5 text-sm\"\n            >\n              <List.Media>{item.icon}</List.Media>\n              <List.Title>{item.description}</List.Title>\n              <span className=\"ml-auto pl-6 text-foreground-400\">/{item.label}</span>\n            </List.Item>\n          ))}\n        </List>\n      </Scroll>\n    </div>\n  );\n}\n\nexport default function Example() {\n  const [value, setValue] = useState('');\n  const completion = useCompletion({ value, onValueChange: setValue, triggers: ['/'], atStart: true });\n  const keyboardRef = useRef(false);\n  const commands = useMemo<CommandItemData[]>(\n    () =>\n      [\n        { id: 'review', description: 'Review changes', icon: <Icon id=\"branch\" size={16} /> },\n        { id: 'test', description: 'Write tests', icon: <Icon id=\"check\" size={16} /> },\n        { id: 'debug', description: 'Debug an error', icon: <Icon id=\"code\" size={16} /> },\n        { id: 'explain', description: 'Explain this file', icon: <Icon id=\"file\" size={16} /> },\n        { id: 'search', description: 'Search the codebase', icon: <Icon id=\"search\" size={16} /> },\n        { id: 'refactor', description: 'Refactor a component', icon: <Icon id=\"folder-code\" size={16} /> },\n        { id: 'perf', description: 'Profile performance', icon: <Icon id=\"gauge\" size={16} /> },\n        { id: 'notes', description: 'Summarize the session', icon: <Icon id=\"notes\" size={16} /> },\n        { id: 'agent', description: 'Hand off to an agent', icon: <Icon id=\"agent\" size={16} /> },\n        { id: 'settings', description: 'Adjust model settings', icon: <Icon id=\"sliders\" size={16} /> },\n      ].map((command) => ({ ...command, label: command.id, action: () => completion.complete(`/${command.id} `) })),\n    [completion.complete],\n  );\n\n  return (\n    <Command.Root items={commands} completion={completion} className=\"relative\">\n      <Input\n        ref={completion.fieldProps.ref}\n        aria-label=\"Message\"\n        placeholder=\"Type / for commands\"\n        value={value}\n        onChange={(event) => setValue(event.target.value)}\n        onSelect={completion.fieldProps.onSelect}\n        onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {\n          keyboardRef.current = event.key === 'ArrowDown' || event.key === 'ArrowUp';\n          completion.fieldProps.onKeyDown(event);\n        }}\n      />\n      {completion.open && <Suggestions keyboardRef={keyboardRef} />}\n    </Command.Root>\n  );\n}\n"
   },
   {
     "ref": "example:confirm/01-basic-confirm",
     "kind": "component-example",
     "id": "01-basic-confirm",
     "name": "Basic Confirm",
-    "description": "A confirmation dialog for critical actions. Use this to prevent accidental deletions or destructive operations.",
+    "description": "A single button that swaps in place: Delete account, then Confirm, then Undo. No title or description.",
     "category": "examples",
     "visibility": "public",
     "componentId": "confirm",
     "access": "free",
     "locked": false,
-    "code": "<Confirm\n  labels={{\n    trigger: 'Delete Account',\n    confirming: {\n      title: 'Are you sure?',\n      body: 'This action cannot be undone. All your data will be permanently deleted.',\n    },\n    confirm: 'Delete',\n    cancel: 'Cancel',\n  }}\n  severity=\"critical\"\n  onConfirm={() => {\n    toast({ title: 'Account deleted', variant: 'danger' });\n  }}\n/>"
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\n\ntype Step = 'idle' | 'confirming' | 'deleted';\n\nconst steps: Record<Step, { label: string; icon: React.ReactNode; next: Step }> = {\n  idle: { label: 'Delete account', icon: <Icon id=\"trash\" size=\"1em\" />, next: 'confirming' },\n  confirming: { label: 'Confirm', icon: <Icon id=\"check\" size=\"1em\" />, next: 'deleted' },\n  deleted: { label: 'Undo', icon: <Icon id=\"restart\" size=\"1em\" />, next: 'idle' },\n};\n\nexport default function Example() {\n  const [step, setStep] = useState<Step>('idle');\n  const { label, icon, next } = steps[step];\n\n  return (\n    <Flex justify-center w={160}>\n      <Button icon={{ left: icon }} onPress={() => setStep(next)}>\n        {label}\n      </Button>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:confirm/02-inline-row",
@@ -1256,7 +1972,7 @@ export const generatedWorkshopContent = [
     "componentId": "confirm",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\" className=\"w-180 p-5\">\n  <Confirm\n    labels={{\n      trigger: 'Remove',\n      idle: {\n        title: 'Two-factor authentication',\n        body: 'Adds a second step when signing in.',\n      },\n      confirming: {\n        title: 'Turn off two-factor authentication?',\n        body: 'Your account will only be protected by your password.',\n      },\n      confirm: 'Turn off',\n      cancel: 'Keep it on',\n    }}\n    severity=\"critical\"\n    onConfirm={() => {\n      toast({ title: '2FA disabled', variant: 'warning' });\n    }}\n  />\n\n  <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n  <Confirm\n    labels={{\n      trigger: 'Delete',\n      confirming: {\n        title: 'Delete this project?',\n        body: 'All files and history are removed immediately.',\n      },\n      confirm: 'Delete',\n      cancel: 'Cancel',\n    }}\n    severity=\"critical\"\n    onConfirm={() => {\n      toast({ title: 'Project deleted', variant: 'danger' });\n    }}\n  />\n</Flex>"
+    "code": "import { Confirm } from 'ui-lab-components/confirm';\nimport { Flex } from 'ui-lab-components/flex';\nimport { toast, Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Flex direction=\"column\" gap=\"lg\" className=\"p-5\">\n        <Confirm\n          labels={{\n            trigger: 'Remove',\n            idle: {\n              title: 'Two-factor authentication',\n              body: 'Adds a second step when signing in.',\n            },\n            confirming: {\n              title: 'Turn off two-factor authentication?',\n              body: 'Your account will only be protected by your password.',\n            },\n            confirm: 'Turn off',\n            cancel: 'Keep it on',\n          }}\n          severity=\"critical\"\n          onConfirm={() => {\n            toast({ title: '2FA disabled', variant: 'warning' });\n          }}\n        />\n\n        <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n        <Confirm\n          labels={{\n            trigger: 'Delete',\n            confirming: {\n              title: 'Delete this project?',\n              body: 'All files and history are removed immediately.',\n            },\n            confirm: 'Delete',\n            cancel: 'Cancel',\n          }}\n          severity=\"critical\"\n          onConfirm={() => {\n            toast({ title: 'Project deleted', variant: 'danger' });\n          }}\n        />\n      </Flex>\n      <Toaster />\n    </>\n  );\n}\n"
   },
   {
     "ref": "example:confirm/03-dialog-mode",
@@ -1269,7 +1985,20 @@ export const generatedWorkshopContent = [
     "componentId": "confirm",
     "access": "free",
     "locked": false,
-    "code": "<Confirm\n  mode=\"dialog\"\n  labels={{\n    trigger: 'Delete environment',\n    confirming: {\n      title: 'Delete acme-production?',\n      body: 'This permanently removes the environment, its secrets, and deploy history.',\n    },\n    confirm: 'Delete environment',\n    cancel: 'Cancel',\n  }}\n  destructive-action-warning=\"This action cannot be undone.\"\n  requires-reason\n  confirm-text=\"acme-production\"\n  severity=\"critical\"\n  onConfirm={() => {\n    toast({\n      title: 'Environment deleted',\n      description: 'acme-production is gone.',\n      variant: 'danger',\n    });\n  }}\n/>"
+    "code": "import { Confirm } from 'ui-lab-components/confirm';\nimport { Flex } from 'ui-lab-components/flex';\nimport { toast, Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Flex align-center justify-between gap=\"xl\" className=\"rounded-sm p-5\">\n        <Flex direction=\"column\" gap=\"xs\">\n          <span className=\"text-sm font-medium text-foreground-100\">acme-production</span>\n          <span className=\"text-xs text-foreground-300\">Deployed 3 hours ago</span>\n        </Flex>\n\n        <Confirm\n          mode=\"dialog\"\n          labels={{\n            trigger: 'Delete environment',\n            confirming: {\n              title: 'Delete acme-production?',\n              body: 'This permanently removes the environment, its secrets, and deploy history.',\n            },\n            confirm: 'Delete environment',\n            cancel: 'Cancel',\n          }}\n          destructive-action-warning=\"This action cannot be undone.\"\n          requires-reason\n          confirm-text=\"acme-production\"\n          severity=\"critical\"\n          onConfirm={() => {\n            toast({ title: 'Environment deleted', description: 'acme-production is gone.', variant: 'danger' });\n          }}\n        />\n      </Flex>\n      <Toaster />\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:confirm/04-confirm-with-details",
+    "kind": "component-example",
+    "id": "04-confirm-with-details",
+    "name": "Confirm With Details",
+    "description": "A confirmation panel with a title and description explaining the consequences before the user commits.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "confirm",
+    "access": "free",
+    "locked": false,
+    "code": "import { Flex } from 'ui-lab-components';\nimport { Confirm } from 'ui-lab-components/confirm';\nimport { toast, Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <Flex justify-center w={160}>\n      <Confirm\n        labels={{\n          trigger: 'Delete Account',\n          confirming: {\n            title: 'Are you sure?',\n            body: 'This action cannot be undone. All your data will be permanently deleted.',\n          },\n          confirm: 'Delete',\n          cancel: 'Cancel',\n        }}\n        severity=\"critical\"\n        onConfirm={() => {\n          toast({ title: 'Account deleted', variant: 'danger' });\n        }}\n      />\n      <Toaster />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:date/01-basic-date",
@@ -1282,7 +2011,7 @@ export const generatedWorkshopContent = [
     "componentId": "date",
     "access": "free",
     "locked": false,
-    "code": "<Date value={date} onChange={setDate} />"
+    "code": "import React from 'react'\nimport type { ReactNode } from 'react'\nimport { Date as DatePicker } from 'ui-lab-components/date'\n\nexport default function Example() {\n  const [date, setDate] = React.useState<globalThis.Date | null>(null)\n  return <DatePicker value={date} onChange={setDate} />\n}\n"
   },
   {
     "ref": "example:date/02-with-disabled-dates",
@@ -1295,7 +2024,7 @@ export const generatedWorkshopContent = [
     "componentId": "date",
     "access": "free",
     "locked": false,
-    "code": "<Date value={date} onChange={setDate} disabled={disabled} />"
+    "code": "import React from 'react'\nimport type { ReactNode } from 'react'\nimport { Date as DatePicker } from 'ui-lab-components/date'\n\nexport default function Example() {\n  const [date, setDate] = React.useState<globalThis.Date | null>(null)\n\n  const disabled = React.useCallback(\n    (dateToCompare: globalThis.Date) => {\n      const day = dateToCompare.getDay()\n      return day === 0 || day === 6 // Disable weekends only\n    },\n    []\n  )\n\n  return <DatePicker value={date} onChange={setDate} disabled={disabled} />\n}\n"
   },
   {
     "ref": "example:date/03-controlled-mode",
@@ -1308,7 +2037,7 @@ export const generatedWorkshopContent = [
     "componentId": "date",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"md\">\n  <Flex gap=\"sm\">\n    <Button variant=\"primary\" onClick={() => setDate(new Date())}>Today</Button>\n    <Button variant=\"secondary\" onClick={() => setDate(null)}>Clear</Button>\n  </Flex>\n  <div className=\"text-sm text-foreground-400\">\n    Selected: {formatDate(date)}\n  </div>\n  <Date value={date} onChange={setDate} />\n</Flex>"
+    "code": "import React from 'react'\nimport type { ReactNode } from 'react'\nimport { Date as DatePicker } from 'ui-lab-components/date'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  const [date, setDate] = React.useState<globalThis.Date | null>(null)\n\n  const handleSetToday = () => {\n    setDate(new Date())\n  }\n\n  const handleClear = () => {\n    setDate(null)\n  }\n\n  const formatDate = (d: globalThis.Date | null) => {\n    if (!d) return 'No date selected'\n    return d.toLocaleDateString('en-US', {\n      weekday: 'long',\n      year: 'numeric',\n      month: 'long',\n      day: 'numeric'\n    })\n  }\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex gap=\"sm\">\n        <Button variant=\"primary\" onClick={handleSetToday}>\n          Today\n        </Button>\n        <Button variant=\"secondary\" onClick={handleClear}>\n          Clear\n        </Button>\n      </Flex>\n      <div className=\"text-sm text-foreground-400\">\n        Selected: {formatDate(date)}\n      </div>\n      <DatePicker value={date} onChange={setDate} />\n    </Flex>\n  )\n}\n"
   },
   {
     "ref": "example:date/04-range",
@@ -1321,7 +2050,7 @@ export const generatedWorkshopContent = [
     "componentId": "date",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\">\n  <Date mode=\"range\" value={range} onChange={setRange} />\n  <div className=\"rounded-md bg-background-300 p-3\">\n    <div className=\"mb-1 text-sm text-foreground-400\">Selected Range</div>\n    <div className=\"font-medium text-foreground-400\">\n      {formatDate(range.start)} → {formatDate(range.end)}\n    </div>\n    {daysDifference !== null && (\n      <div className=\"mt-2 text-sm text-foreground-400\">\n        Duration: {daysDifference} {daysDifference === 1 ? 'day' : 'days'}\n      </div>\n    )}\n  </div>\n</Flex>"
+    "code": "import React from 'react'\nimport type { ReactNode } from 'react'\nimport { Date as DatePicker } from 'ui-lab-components/date'\nimport type { DateRangeValue } from 'ui-lab-components/date'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  const [range, setRange] = React.useState<DateRangeValue>({ start: null, end: null })\n\n  const formatDate = (date: globalThis.Date | null) => {\n    if (!date) return 'Select date'\n    return date.toLocaleDateString('en-US', {\n      month: 'short',\n      day: 'numeric',\n      year: 'numeric'\n    })\n  }\n\n  const daysDifference = range.start && range.end\n    ? Math.floor((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24)) + 1\n    : null\n\n  return (\n    <Flex direction=\"column\" w={60} gap=\"lg\">\n      <DatePicker mode=\"range\" value={range} onChange={setRange} />\n\n      <div className=\"p-3 bg-background-300 rounded-md\">\n        <div className=\"text-sm text-foreground-400 mb-1\">\n          Selected Range\n        </div>\n        <div className=\"text-foreground-400 font-medium\">\n          {formatDate(range.start)} → {formatDate(range.end)}\n        </div>\n        {daysDifference !== null && (\n          <div className=\"text-sm text-foreground-400 mt-2\">\n            Duration: {daysDifference} {daysDifference === 1 ? 'day' : 'days'}\n          </div>\n        )}\n      </div>\n    </Flex>\n  )\n}\n"
   },
   {
     "ref": "example:date/05-date-input",
@@ -1334,7 +2063,7 @@ export const generatedWorkshopContent = [
     "componentId": "date",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\">\n  <Date.Input value={date} onChange={setDate} label=\"Due date\" />\n  <div className=\"rounded-md bg-background-300 p-3\">\n    <div className=\"mb-1 text-sm text-foreground-400\">Selected Date</div>\n    <div className=\"font-medium text-foreground-400\">{formatDate(date)}</div>\n  </div>\n</Flex>"
+    "code": "import React from 'react'\nimport type { ReactNode } from 'react'\nimport { Date as DatePicker } from 'ui-lab-components/date'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  const [date, setDate] = React.useState<globalThis.Date | null>(null)\n\n  const formatDate = (value: globalThis.Date | null) => {\n    if (!value) return 'No date yet'\n    return value.toLocaleDateString('en-US', {\n      month: 'short',\n      day: 'numeric',\n      year: 'numeric'\n    })\n  }\n\n  return (\n    <Flex direction=\"column\" gap=\"lg\">\n      <DatePicker.Input value={date} onChange={setDate} label=\"Due date\" />\n\n      <div className=\"p-3 bg-background-300 rounded-md\">\n        <div className=\"text-sm text-foreground-400 mb-1\">\n          Selected Date\n        </div>\n        <div className=\"text-foreground-400 font-medium\">\n          {formatDate(date)}\n        </div>\n      </div>\n    </Flex>\n  )\n}\n"
   },
   {
     "ref": "example:date/06-date-input-range",
@@ -1347,7 +2076,46 @@ export const generatedWorkshopContent = [
     "componentId": "date",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\">\n  <Date.Input mode=\"range\" value={range} onChange={setRange} label=\"Stay\" />\n  <div className=\"rounded-md bg-background-300 p-3\">\n    <div className=\"mb-1 text-sm text-foreground-400\">Selected Range</div>\n    <div className=\"font-medium text-foreground-400\">\n      {formatDate(range.start)} → {formatDate(range.end)}\n    </div>\n    {nights !== null && (\n      <div className=\"mt-2 text-sm text-foreground-400\">\n        Duration: {nights} {nights === 1 ? 'night' : 'nights'}\n      </div>\n    )}\n  </div>\n</Flex>"
+    "code": "import React from 'react'\nimport type { ReactNode } from 'react'\nimport { Date as DatePicker } from 'ui-lab-components/date'\nimport type { DateRangeValue } from 'ui-lab-components/date'\nimport { Flex } from 'ui-lab-components/flex'\n\nexport default function Example() {\n  const [range, setRange] = React.useState<DateRangeValue>({ start: null, end: null })\n\n  const formatDate = (value: globalThis.Date | null) => {\n    if (!value) return 'Select date'\n    return value.toLocaleDateString('en-US', {\n      month: 'short',\n      day: 'numeric',\n      year: 'numeric'\n    })\n  }\n\n  const nights = range.start && range.end\n    ? Math.floor((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24))\n    : null\n\n  return (\n    <Flex direction=\"column\" gap=\"lg\">\n      <DatePicker.Input mode=\"range\" value={range} onChange={setRange} label=\"Stay\" />\n\n      <div className=\"p-3 bg-background-300 rounded-md\">\n        <div className=\"text-sm text-foreground-400 mb-1\">\n          Selected Range\n        </div>\n        <div className=\"text-foreground-400 font-medium\">\n          {formatDate(range.start)} → {formatDate(range.end)}\n        </div>\n        {nights !== null && (\n          <div className=\"text-sm text-foreground-400 mt-2\">\n            Duration: {nights} {nights === 1 ? 'night' : 'nights'}\n          </div>\n        )}\n      </div>\n    </Flex>\n  )\n}\n"
+  },
+  {
+    "ref": "example:divider/01-basic-divider",
+    "kind": "component-example",
+    "id": "01-basic-divider",
+    "name": "Basic Divider",
+    "description": "A simple horizontal divider separating content sections. Use this to create visual separation between different areas of your interface.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "divider",
+    "access": "free",
+    "locked": false,
+    "code": "import { Divider } from 'ui-lab-components/divider';\n\nexport default function Example() {\n  return (\n    <div className=\"space-y-4\">\n      <div className=\"text-foreground-300\">Content above</div>\n      <Divider />\n      <div className=\"text-foreground-300\">Content below</div>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:divider/02-pattern-variants",
+    "kind": "component-example",
+    "id": "02-pattern-variants",
+    "name": "Pattern Variants",
+    "description": "Dividers support three distinct pattern styles: solid for continuous lines, dashed for rectangular segments, and dotted for circular dots.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "divider",
+    "access": "free",
+    "locked": false,
+    "code": "import { Divider } from 'ui-lab-components/divider';\n\nexport default function Example() {\n  return (\n    <div className=\"space-y-6 w-full\">\n      <div className=\"space-y-2\">\n        <span className=\"text-sm text-foreground-400\">Solid</span>\n        <Divider variant=\"solid\" />\n      </div>\n      <div className=\"space-y-2\">\n        <span className=\"text-sm text-foreground-400\">Dashed</span>\n        <Divider variant=\"dashed\" />\n      </div>\n      <div className=\"space-y-2\">\n        <span className=\"text-sm text-foreground-400\">Dotted</span>\n        <Divider variant=\"dotted\" />\n      </div>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:divider/03-vertical-divider",
+    "kind": "component-example",
+    "id": "03-vertical-divider",
+    "name": "Vertical Orientation",
+    "description": "Vertical dividers separate side-by-side content. All pattern variants work in both horizontal and vertical orientations.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "divider",
+    "access": "free",
+    "locked": false,
+    "code": "import { Divider } from 'ui-lab-components/divider';\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center gap-4 h-16\">\n      <span className=\"text-foreground-300\">First</span>\n      <Divider orientation=\"vertical\" variant=\"solid\" spacing=\"none\" />\n      <span className=\"text-foreground-300\">Second</span>\n      <Divider orientation=\"vertical\" variant=\"dashed\" spacing=\"none\" />\n      <span className=\"text-foreground-300\">Third</span>\n      <Divider orientation=\"vertical\" variant=\"dotted\" spacing=\"none\" />\n      <span className=\"text-foreground-300\">Fourth</span>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:expand/01-accordion",
@@ -1360,7 +2128,7 @@ export const generatedWorkshopContent = [
     "componentId": "expand",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-96 divide-y rounded-sm border\">\n  {items.map((item) => (\n    <Expand\n      key={item.id}\n      layout=\"contained\"\n      title={item.title}\n      isExpanded={open === item.id}\n      onExpandedChange={(expanded) => setOpen(expanded ? item.id : null)}\n    >\n      <p className=\"px-3 py-3 text-sm\">{item.content}</p>\n    </Expand>\n  ))}\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Expand } from 'ui-lab-components/expand';\n\nconst items = [\n  {\n    id: 'shipping',\n    title: 'Shipping & Delivery',\n    content: 'Standard shipping takes 3–5 business days. Express options are available at checkout for next-day delivery.',\n  },\n  {\n    id: 'returns',\n    title: 'Returns & Refunds',\n    content: 'Items can be returned within 30 days of purchase. Refunds are processed within 5–7 business days after we receive the item.',\n  },\n  {\n    id: 'warranty',\n    title: 'Warranty',\n    content: 'All products include a 12-month manufacturer warranty. Extended coverage can be purchased at checkout.',\n  },\n];\n\nexport default function AccordionPreview() {\n  const [open, setOpen] = useState<string | null>('shipping');\n\n  return (\n    <div className=\"overflow-hidden border border-background-700 rounded-sm divide-y divide-background-700\">\n      {items.map((item) => (\n        <Expand\n          key={item.id}\n          layout=\"contained\"\n          title={item.title}\n          isExpanded={open === item.id}\n          onExpandedChange={(expanded) => setOpen(expanded ? item.id : null)}\n        >\n          <p className=\"text-sm text-foreground-400 px-3 py-3\">{item.content}</p>\n        </Expand>\n      ))}\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:expand/02-custom-trigger",
@@ -1373,7 +2141,7 @@ export const generatedWorkshopContent = [
     "componentId": "expand",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-96 rounded-sm border\">\n  <Expand>\n    <Expand.Trigger>\n      <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n        <FaUser className=\"shrink-0 text-xs\" />\n        <span className=\"text-sm font-medium\">Account Settings</span>\n        <Badge className=\"ml-auto mr-2\">New</Badge>\n      </Flex>\n      <Expand.Icon />\n    </Expand.Trigger>\n    <Expand.Divider />\n    <Expand.Content>\n      <Flex direction=\"column\" gap=\"xs\" className=\"px-3 py-3\">\n        <p className=\"text-sm\">\n          Manage your profile, password, and notification preferences.\n        </p>\n      </Flex>\n    </Expand.Content>\n  </Expand>\n</div>"
+    "code": "import { Expand } from 'ui-lab-components/expand'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Badge } from 'ui-lab-components/badge';\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function Example() {\n  return (\n    <div className=\"border border-background-700 rounded-sm\">\n      <Expand>\n        <Expand.Trigger>\n          <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n            <Icon id=\"user\" size=\"1em\" className=\"text-foreground-400 text-xs shrink-0\" />\n            <span className=\"text-sm font-medium\">Account Settings</span>\n            <Badge className=\"ml-auto mr-2\">New</Badge>\n          </Flex>\n          <Expand.Icon />\n        </Expand.Trigger>\n        <Expand.Divider />\n        <Expand.Content>\n          <Flex direction=\"column\" gap=\"xs\" className=\"px-3 py-3\">\n            <p className=\"text-sm text-foreground-400\">Manage your profile, password, and notification preferences.</p>\n          </Flex>\n        </Expand.Content>\n      </Expand>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:expand/03-reveal-directions",
@@ -1386,12 +2154,12 @@ export const generatedWorkshopContent = [
     "componentId": "expand",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\" className=\"w-96\">\n  <div>\n    <p className=\"mb-2 px-1 text-xs\">from=\"above\"</p>\n    <div className=\"rounded-sm border\">\n      <Expand title=\"Reveal above\">\n        <Expand.Content from=\"above\">\n          <p className=\"px-3 py-3 text-sm\">\n            This content slides in from above the trigger.\n          </p>\n        </Expand.Content>\n      </Expand>\n    </div>\n  </div>\n  <div>\n    <p className=\"mb-2 px-1 text-xs\">from=\"right\"</p>\n    <div className=\"rounded-sm border\">\n      <Expand title=\"Reveal right\">\n        <Expand.Content from=\"right\">\n          <p className=\"px-3 py-3 text-sm\">Expands horizontally to the right.</p>\n        </Expand.Content>\n      </Expand>\n    </div>\n  </div>\n</Flex>"
+    "code": "import { Expand } from 'ui-lab-components/expand'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"lg\">\n      <div>\n        <p className=\"text-xs text-foreground-500 mb-2 px-1\">from=\"above\"</p>\n        <div className=\"border border-background-700 rounded-sm\">\n          <Expand title=\"Reveal above\">\n            <Expand.Content from=\"above\">\n              <p className=\"text-sm text-foreground-400 px-3 py-3\">This content slides in from above the trigger.</p>\n            </Expand.Content>\n          </Expand>\n        </div>\n      </div>\n      <div>\n        <p className=\"text-xs text-foreground-500 mb-2 px-1\">from=\"right\"</p>\n        <div className=\"border border-background-700 rounded-sm\">\n          <Expand title=\"Reveal right\">\n            <Expand.Content from=\"right\">\n              <p className=\"text-sm text-foreground-400 px-3 py-3\">Expands horizontally to the right.</p>\n            </Expand.Content>\n          </Expand>\n        </div>\n      </div>\n    </Flex>\n  );\n}\n"
   },
   {
-    "ref": "example:expand/04-settings-panel",
+    "ref": "example:expand/04-settings-panel-expand",
     "kind": "component-example",
-    "id": "04-settings-panel",
+    "id": "04-settings-panel-expand",
     "name": "Settings Panel",
     "description": "Grouped settings sections using compound mode with icons, dividers, and a list of rows.",
     "category": "examples",
@@ -1399,7 +2167,20 @@ export const generatedWorkshopContent = [
     "componentId": "expand",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-96 divide-y rounded-sm border\">\n  <Expand expanded>\n    <Expand.Trigger>\n      <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n        <FaGear className=\"text-xs\" />\n        <span className=\"text-sm font-medium\">General</span>\n      </Flex>\n      <Expand.Icon />\n    </Expand.Trigger>\n    <Expand.Divider />\n    <Expand.Content>\n      <Flex direction=\"column\" className=\"divide-y\">\n        {['Language', 'Timezone', 'Date format'].map((setting) => (\n          <Flex key={setting} justify-between align-center className=\"px-3 py-2.5\">\n            <span className=\"text-sm\">{setting}</span>\n            <span className=\"text-xs\">Auto</span>\n          </Flex>\n        ))}\n      </Flex>\n    </Expand.Content>\n  </Expand>\n  <Expand>\n    <Expand.Trigger>\n      <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n        <FaCode className=\"text-xs\" />\n        <span className=\"text-sm font-medium\">Developer</span>\n      </Flex>\n      <Expand.Icon />\n    </Expand.Trigger>\n    <Expand.Divider />\n    <Expand.Content>\n      <Flex direction=\"column\" className=\"divide-y\">\n        {['API keys', 'Webhooks', 'Debug mode'].map((setting) => (\n          <Flex key={setting} justify-between align-center className=\"px-3 py-2.5\">\n            <span className=\"text-sm\">{setting}</span>\n            <span className=\"text-xs\">Off</span>\n          </Flex>\n        ))}\n      </Flex>\n    </Expand.Content>\n  </Expand>\n</div>"
+    "code": "import { Expand } from 'ui-lab-components/expand'\nimport { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function Example() {\n  return (\n    <div className=\"overflow-hidden border border-background-700 rounded-sm divide-y divide-background-700\">\n      <Expand layout=\"contained\" expanded>\n        <Expand.Trigger>\n          <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n            <Icon id=\"gear\" size=\"1em\" className=\"text-foreground-400 text-xs\" />\n            <span className=\"text-sm font-medium\">General</span>\n          </Flex>\n          <Expand.Icon />\n        </Expand.Trigger>\n        <Expand.Divider />\n        <Expand.Content>\n          <Flex direction=\"column\" className=\"divide-y divide-background-700\">\n            {['Language', 'Timezone', 'Date format'].map((setting) => (\n              <Flex key={setting} justify-between align-center className=\"px-3 py-2.5\">\n                <span className=\"text-sm text-foreground-300\">{setting}</span>\n                <span className=\"text-xs text-foreground-500\">Auto</span>\n              </Flex>\n            ))}\n          </Flex>\n        </Expand.Content>\n      </Expand>\n      <Expand layout=\"contained\">\n        <Expand.Trigger>\n          <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n            <Icon id=\"code\" size=\"1em\" className=\"text-foreground-400 text-xs\" />\n            <span className=\"text-sm font-medium\">Developer</span>\n          </Flex>\n          <Expand.Icon />\n        </Expand.Trigger>\n        <Expand.Divider />\n        <Expand.Content>\n          <Flex direction=\"column\" className=\"divide-y divide-background-700\">\n            {['API keys', 'Webhooks', 'Debug mode'].map((setting) => (\n              <Flex key={setting} justify-between align-center className=\"px-3 py-2.5\">\n                <span className=\"text-sm text-foreground-300\">{setting}</span>\n                <span className=\"text-xs text-foreground-500\">Off</span>\n              </Flex>\n            ))}\n          </Flex>\n        </Expand.Content>\n      </Expand>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:expand/05-disabled-state-expand",
+    "kind": "component-example",
+    "id": "05-disabled-state-expand",
+    "name": "Disabled State",
+    "description": "An disabled section is visually dimmed and blocks interaction.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "expand",
+    "access": "free",
+    "locked": false,
+    "code": "import { Expand } from 'ui-lab-components/expand';\n\nexport default function Example() {\n  return (\n    <div className=\"border border-background-700 rounded-sm divide-y divide-background-700\">\n      <Expand title=\"Available section\">\n        <p className=\"text-sm text-foreground-400 px-3 py-3\">This section is accessible and can be expanded.</p>\n      </Expand>\n      <Expand title=\"Restricted section\" disabled>\n        <p className=\"text-sm text-foreground-400 px-3 py-3\">This content is not accessible.</p>\n      </Expand>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:expand/06-inline-info",
@@ -1412,7 +2193,7 @@ export const generatedWorkshopContent = [
     "componentId": "expand",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-96 rounded-sm border\">\n  <Expand>\n    <Expand.Trigger>\n      <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n        <FaCircleInfo className=\"shrink-0 text-xs\" />\n        <span className=\"text-sm font-medium\">Why do we collect this?</span>\n      </Flex>\n      <Expand.Icon />\n    </Expand.Trigger>\n    <Expand.Divider />\n    <Expand.Content>\n      <p className=\"px-3 py-3 text-sm leading-relaxed\">\n        We use this information only to verify your identity and improve the service.\n        It is never shared with third parties.\n      </p>\n    </Expand.Content>\n  </Expand>\n</div>"
+    "code": "import { Expand } from 'ui-lab-components/expand'\nimport { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function Example() {\n  return (\n    <div className=\"rounded-sm border border-background-700 bg-background-900\">\n      <Expand>\n        <Expand.Trigger>\n          <Flex align-center gap=\"xs\" className=\"flex-1 px-3 py-2.5\">\n            <Icon id=\"info\" size=\"1em\" className=\"text-foreground-400 text-xs shrink-0\" />\n            <span className=\"text-sm font-medium text-foreground-200\">Why do we collect this?</span>\n          </Flex>\n          <Expand.Icon />\n        </Expand.Trigger>\n        <Expand.Divider />\n        <Expand.Content>\n          <p className=\"text-sm text-foreground-400 px-3 py-3 leading-relaxed\">\n            We use this information only to verify your identity and improve the service. It is never shared with third parties.\n          </p>\n        </Expand.Content>\n      </Expand>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:flex/02-page-header",
@@ -1425,7 +2206,7 @@ export const generatedWorkshopContent = [
     "componentId": "flex",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-full max-w-3xl flex-col gap-2\">\n  <Flex align-center justify-between gap=\"md\" className=\"h-8\">\n    <div className=\"size-8 shrink-0 rounded-sm bg-background-800\" />\n    <div className=\"h-8 min-w-0 flex-1 rounded-sm bg-background-800\" />\n    <div className=\"flex shrink-0 gap-1\">\n      <div className=\"h-8 w-14 rounded-sm bg-background-800\" />\n      <div className=\"h-8 w-14 rounded-sm bg-background-800\" />\n    </div>\n  </Flex>\n  <div className=\"flex w-full gap-2\">\n    <div className=\"h-32 flex-1 rounded-sm bg-background-800\" />\n    <div className=\"h-32 flex-1 rounded-sm bg-background-800\" />\n  </div>\n</div>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex w-full max-w-3xl flex-col gap-2\">\n      <Flex align-center justify-between gap=\"md\" className=\"h-8\">\n        <FrameCell label={1} className=\"shrink-0 rounded\" style={{ width: 32, height: 32 }} />\n        <FrameCell label={2} className=\"min-w-0 flex-1\" style={{ height: 32 }} />\n        <div className=\"flex shrink-0 gap-1\">\n          <FrameCell label={3} className=\"rounded-sm\" style={{ width: 56, height: 32 }} />\n          <FrameCell label={4} className=\"rounded-sm\" style={{ width: 56, height: 32 }} />\n        </div>\n      </Flex>\n      <div className=\"flex w-full gap-2\">\n        <FrameCell label={5} className=\"flex-1\" style={{ height: 128 }} />\n        <FrameCell label={6} className=\"flex-1\" style={{ height: 128 }} />\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:flex/03-sidebar-layout",
@@ -1438,7 +2219,7 @@ export const generatedWorkshopContent = [
     "componentId": "flex",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"sm\" className=\"w-full max-w-3xl\">\n  <div className=\"w-32 shrink-0 rounded-sm bg-background-800\" />\n  <div className=\"flex min-w-0 flex-1 flex-col gap-1\">\n    <div className=\"h-8 w-full rounded-sm bg-background-800\" />\n    <div className=\"flex flex-wrap gap-1\">\n      <div className=\"aspect-square min-w-28 flex-1 rounded-sm bg-background-800\" />\n      <div className=\"aspect-square min-w-28 flex-1 rounded-sm bg-background-800\" />\n      <div className=\"aspect-square min-w-28 flex-1 rounded-sm bg-background-800\" />\n    </div>\n  </div>\n</Flex>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Flex gap=\"sm\" className=\"w-full max-w-3xl\">\n      <FrameCell label={1} className=\"shrink-0\" style={{ width: 128, height: 'auto' }} />\n      <div className=\"flex min-w-0 flex-1 flex-col gap-1\">\n        <FrameCell label={2} className=\"w-full\" style={{ height: 32 }} />\n        <div className=\"flex flex-wrap gap-1\">\n          <FrameCell label={3} className=\"min-w-28 flex-1\" style={{ aspectRatio: '1/1' }} />\n          <FrameCell label={4} className=\"min-w-28 flex-1\" style={{ aspectRatio: '1/1' }} />\n          <FrameCell label={5} className=\"min-w-28 flex-1\" style={{ aspectRatio: '1/1' }} />\n        </div>\n      </div>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:flex/04-stack-layout",
@@ -1451,7 +2232,7 @@ export const generatedWorkshopContent = [
     "componentId": "flex",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"md\" className=\"h-full w-full\">\n  <div className=\"h-12 shrink-0 rounded-sm bg-background-800\" />\n  <div className=\"min-h-0 flex-1 rounded-sm bg-background-800\" />\n  <div className=\"h-12 shrink-0 rounded-sm bg-background-800\" />\n</Flex>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex h-full min-h-0 w-full flex-col\">\n      <Flex direction=\"column\" gap=\"md\" className=\"h-full min-h-0 w-full\">\n        <FrameCell label={1} className=\"shrink-0\" style={{ height: '3rem' }} />\n        <FrameCell label={2} className=\"min-h-0 flex-1\" />\n        <FrameCell label={3} className=\"shrink-0\" style={{ height: '3rem' }} />\n      </Flex>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:flex/05-split-layout",
@@ -1464,7 +2245,7 @@ export const generatedWorkshopContent = [
     "componentId": "flex",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"md\" className=\"h-full w-full\">\n  <div className=\"w-40 shrink-0 rounded-sm bg-background-800\" />\n  <div className=\"min-w-0 flex-1 rounded-sm bg-background-800\" />\n</Flex>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex h-full min-h-0 w-full flex-col\">\n      <Flex gap=\"md\" className=\"h-full min-h-0 w-full\">\n        <FrameCell label={1} className=\"shrink-0\" style={{ width: '10rem' }} />\n        <FrameCell label={2} className=\"min-w-0 flex-1\" />\n      </Flex>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:flex/06-center-layout",
@@ -1477,7 +2258,7 @@ export const generatedWorkshopContent = [
     "componentId": "flex",
     "access": "free",
     "locked": false,
-    "code": "<Flex justify-center align-center className=\"h-full w-full\">\n  <div className=\"h-24 w-40 rounded-sm bg-background-800\" />\n</Flex>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex h-full min-h-0 w-full flex-col\">\n      <Flex justify-center align-center className=\"h-full min-h-0 w-full\">\n        <FrameCell label={1} style={{ width: '10rem', height: '6rem' }} />\n      </Flex>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/accent-callout",
@@ -1490,7 +2271,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "// `edges=\"left\"` strokes only the left edge but keeps its rounded\n// corners; a wider, recolored stroke turns it into an accent bar, and\n// `strokeAlign=\"inside\"` keeps that thicker stroke within bounds.\n<Frame\n  edges=\"left\"\n  strokeAlign=\"inside\"\n  style={{\n    '--fill': 'var(--background-900)',\n    '--stroke-color': 'var(--accent-500)',\n    '--frame-stroke-width': '3px',\n    '--frame-radius': '10px',\n  }}\n>\n  <div className=\"flex items-start gap-3 py-4 pl-5 pr-4\">\n    <FaLightbulb className=\"mt-0.5 size-4 shrink-0 text-accent-400\" />\n    <div>\n      <p className=\"text-sm font-semibold text-foreground-50\">Good to know</p>\n      <p className=\"mt-1 text-sm leading-relaxed text-foreground-300\">\n        Pick a single edge and it still keeps its corner arcs.\n      </p>\n    </div>\n  </div>\n</Frame>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst CALLOUT_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--accent-500)',\n  '--frame-stroke-width': '3px',\n  '--frame-radius': '10px',\n} as CSSProperties;\n\nexport default function Example() {\n  return (\n    <div>\n      <Frame edges=\"left\" strokeAlign=\"inside\" style={CALLOUT_STYLE}>\n        <div className=\"flex items-start gap-3 py-4 pl-5 pr-4\">\n          <Icon id=\"bulb\" size={16} className=\"mt-0.5 shrink-0 text-accent-400\" />\n          <div>\n            <p className=\"text-sm font-semibold text-foreground-50\">Good to know</p>\n            <p className=\"mt-1 text-sm leading-relaxed text-foreground-300\">\n              Pick a single edge and it still keeps its corner arcs — so a left\n              accent bar reads as part of the card, not a rectangle glued to its\n              side.\n            </p>\n          </div>\n        </div>\n      </Frame>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/animated-path",
@@ -1503,7 +2284,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport { useEffect, useRef, useState } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { FaBell, FaCamera, FaHouse, FaPen, FaPlus, FaUser } from 'react-icons/fa6';\n\nconst CONTROL_HEIGHT = 52;\nconst CLOSED_CONTROL_WIDTH = CONTROL_HEIGHT;\nconst OPEN_CONTROL_WIDTH = 188;\nconst CLEARANCE = 6;\nconst SHOULDER_WIDTH = 20;\nconst JOIN_ANGLE = Math.PI / 6;\nconst round = (value: number) => Number(value.toFixed(3));\n\nfunction dockShape(progress: number) {\n  const controlWidth = CLOSED_CONTROL_WIDTH + (OPEN_CONTROL_WIDTH - CLOSED_CONTROL_WIDTH) * progress;\n  const radius = CONTROL_HEIGHT / 2 + CLEARANCE;\n  const straight = controlWidth - CONTROL_HEIGHT;\n  const width = SHOULDER_WIDTH * 2 + radius * 2 + straight;\n  const leftCenter = SHOULDER_WIDTH + radius;\n  const rightCenter = leftCenter + straight;\n  const joinX = leftCenter - radius * Math.cos(JOIN_ANGLE);\n  const joinY = -radius * Math.sin(JOIN_ANGLE);\n  const tangentX = Math.sin(JOIN_ANGLE);\n  const tangentY = -Math.cos(JOIN_ANGLE);\n  const shoulderHandle = 8;\n  const arcHandle = (4 / 3) * Math.tan((Math.PI / 2 - JOIN_ANGLE) / 4) * radius;\n  const leftJoinControlX = joinX - shoulderHandle * tangentX;\n  const leftJoinControlY = joinY - shoulderHandle * tangentY;\n  const leftArcControlX = joinX + arcHandle * tangentX;\n  const leftArcControlY = joinY + arcHandle * tangentY;\n\n  return {\n    width,\n    controlWidth,\n    path: [\n      'M 0 0',\n      `C 9 0 ${round(leftJoinControlX)} ${round(leftJoinControlY)} ${round(joinX)} ${round(joinY)}`,\n      `C ${round(leftArcControlX)} ${round(leftArcControlY)} ${round(leftCenter - arcHandle)} ${-radius} ${round(leftCenter)} ${-radius}`,\n      `L ${round(rightCenter)} ${-radius}`,\n      `C ${round(rightCenter + arcHandle)} ${-radius} ${round(width - leftArcControlX)} ${round(leftArcControlY)} ${round(width - joinX)} ${round(joinY)}`,\n      `C ${round(width - leftJoinControlX)} ${round(leftJoinControlY)} ${round(width - 9)} 0 ${round(width)} 0`,\n    ].join(' '),\n  };\n}\n\nfunction useDockShape(open: boolean) {\n  const progress = useRef(0);\n  const [shape, setShape] = useState(() => dockShape(0));\n\n  useEffect(() => {\n    const target = open ? 1 : 0;\n\n    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {\n      progress.current = target;\n      setShape(dockShape(target));\n      return;\n    }\n\n    const from = progress.current;\n    const startedAt = performance.now();\n    let frame = 0;\n\n    const tick = (now: number) => {\n      const elapsed = Math.min((now - startedAt) / 320, 1);\n      const eased = 1 - Math.pow(1 - elapsed, 3);\n      progress.current = from + (target - from) * eased;\n      setShape(dockShape(progress.current));\n      if (elapsed < 1) frame = requestAnimationFrame(tick);\n    };\n\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [open]);\n\n  return shape;\n}\n\nconst NAV_ITEMS = [\n  { label: 'Home', icon: FaHouse },\n  { label: 'Alerts', icon: FaBell },\n  { label: 'Profile', icon: FaUser },\n];\n\nfunction ActionDock() {\n  const [open, setOpen] = useState(false);\n  const shape = useDockShape(open);\n\n  return (\n    <div className=\"relative w-105 max-w-full pt-14\">\n      <Frame\n        path={shape.path}\n        pathWidth={shape.width}\n        className=\"shadow-xl\"\n        style={{\n          '--fill': 'var(--background-900)',\n          '--stroke-color': 'var(--background-600)',\n          '--frame-radius': '18px',\n        }}\n      >\n        <nav aria-label=\"Primary navigation\" className=\"flex h-20 items-center px-3\">\n          <a href=\"#\" aria-label=\"Home\" className=\"flex min-w-0 flex-1 items-center justify-center text-accent-400\">\n            <FaHouse className=\"size-4.5\" />\n          </a>\n          <div style={{ width: shape.controlWidth + 24 }} className=\"shrink-0\" />\n          {NAV_ITEMS.slice(1).map(({ label, icon: Icon }) => (\n            <a key={label} href=\"#\" aria-label={label} className=\"flex min-w-0 flex-1 items-center justify-center text-foreground-400\">\n              <Icon className=\"size-4.5\" />\n            </a>\n          ))}\n        </nav>\n      </Frame>\n\n      <div\n        style={{ width: shape.controlWidth }}\n        className=\"absolute left-1/2 top-14 flex h-13 -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border border-accent-500 bg-accent-500 text-white shadow-lg\"\n      >\n        <div\n          aria-hidden={!open}\n          className={open\n            ? 'flex items-center gap-0.5 pr-9 opacity-100 transition-opacity duration-200 motion-reduce:transition-none'\n            : 'pointer-events-none flex items-center gap-0.5 pr-9 opacity-0 transition-opacity duration-200 motion-reduce:transition-none'}\n        >\n          <button disabled={!open} type=\"button\" className=\"flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium transition-colors hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white motion-reduce:transition-none\">\n            <FaPen className=\"size-3.5\" /> Post\n          </button>\n          <span className=\"h-5 w-px bg-white/30\" />\n          <button disabled={!open} type=\"button\" className=\"flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium transition-colors hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white motion-reduce:transition-none\">\n            <FaCamera className=\"size-3.5\" /> Photo\n          </button>\n        </div>\n        <button\n          type=\"button\"\n          aria-label={open ? 'Close create menu' : 'Open create menu'}\n          aria-expanded={open}\n          onClick={() => setOpen((value) => !value)}\n          className={open\n            ? 'absolute inset-y-0 right-0 flex aspect-square rotate-45 items-center justify-center rounded-full transition-[background-color,transform] duration-300 hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white motion-reduce:transition-none'\n            : 'absolute inset-y-0 left-0 flex aspect-square rotate-0 items-center justify-center rounded-full transition-[background-color,transform] duration-300 hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white motion-reduce:transition-none'}\n        >\n          <FaPlus className=\"size-4\" />\n        </button>\n      </div>\n    </div>\n  );\n}\n\nexport default ActionDock;"
+    "code": "\"use client\";\n\nimport { useEffect, useRef, useState, type CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\ntype DockShape = {\n  path: string;\n  width: number;\n  controlWidth: number;\n};\n\nconst CONTROL_HEIGHT = 52;\nconst CLOSED_CONTROL_WIDTH = CONTROL_HEIGHT;\nconst OPEN_CONTROL_WIDTH = 188;\nconst CLEARANCE = 6;\nconst SHOULDER_WIDTH = 20;\nconst JOIN_ANGLE = Math.PI / 6;\n\nconst round = (value: number) => Number(value.toFixed(3));\n\n// The notch follows the lower contour of the control at a constant offset.\n// Its capsule's straight section has zero length when closed and grows with\n// the control, so both states keep the same SVG command topology.\nfunction dockShape(progress: number): DockShape {\n  const controlWidth = CLOSED_CONTROL_WIDTH + (OPEN_CONTROL_WIDTH - CLOSED_CONTROL_WIDTH) * progress;\n  const radius = CONTROL_HEIGHT / 2 + CLEARANCE;\n  const straight = controlWidth - CONTROL_HEIGHT;\n  const width = SHOULDER_WIDTH * 2 + radius * 2 + straight;\n  const leftCenter = SHOULDER_WIDTH + radius;\n  const rightCenter = leftCenter + straight;\n\n  const joinX = leftCenter - radius * Math.cos(JOIN_ANGLE);\n  const joinY = -radius * Math.sin(JOIN_ANGLE);\n  const tangentX = Math.sin(JOIN_ANGLE);\n  const tangentY = -Math.cos(JOIN_ANGLE);\n  const shoulderHandle = 8;\n  const arcHandle = (4 / 3) * Math.tan((Math.PI / 2 - JOIN_ANGLE) / 4) * radius;\n\n  const leftJoinControlX = joinX - shoulderHandle * tangentX;\n  const leftJoinControlY = joinY - shoulderHandle * tangentY;\n  const leftArcControlX = joinX + arcHandle * tangentX;\n  const leftArcControlY = joinY + arcHandle * tangentY;\n\n  return {\n    width,\n    controlWidth,\n    path: [\n      'M 0 0',\n      `C 9 0 ${round(leftJoinControlX)} ${round(leftJoinControlY)} ${round(joinX)} ${round(joinY)}`,\n      `C ${round(leftArcControlX)} ${round(leftArcControlY)} ${round(leftCenter - arcHandle)} ${-radius} ${round(leftCenter)} ${-radius}`,\n      `L ${round(rightCenter)} ${-radius}`,\n      `C ${round(rightCenter + arcHandle)} ${-radius} ${round(width - leftArcControlX)} ${round(leftArcControlY)} ${round(width - joinX)} ${round(joinY)}`,\n      `C ${round(width - leftJoinControlX)} ${round(leftJoinControlY)} ${round(width - 9)} 0 ${round(width)} 0`,\n    ].join(' '),\n  };\n}\n\nfunction useDockShape(open: boolean): DockShape {\n  const progress = useRef(0);\n  const [shape, setShape] = useState(() => dockShape(0));\n\n  useEffect(() => {\n    const target = open ? 1 : 0;\n\n    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {\n      progress.current = target;\n      setShape(dockShape(target));\n      return;\n    }\n\n    const from = progress.current;\n    const startedAt = performance.now();\n    let frame = 0;\n\n    const tick = (now: number) => {\n      const elapsed = Math.min((now - startedAt) / 320, 1);\n      const eased = 1 - Math.pow(1 - elapsed, 3);\n      progress.current = from + (target - from) * eased;\n      setShape(dockShape(progress.current));\n\n      if (elapsed < 1) frame = requestAnimationFrame(tick);\n    };\n\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [open]);\n\n  return shape;\n}\n\nconst NAV_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n  '--frame-radius': '18px',\n} as CSSProperties;\n\nconst NAV_ITEMS = [\n  { label: 'Home', icon: 'home' },\n  { label: 'Alerts', icon: 'bell' },\n  { label: 'Profile', icon: 'user' },\n];\n\nexport default function ExpandableActionDock() {\n  const [open, setOpen] = useState(false);\n  const shape = useDockShape(open);\n\n  return (\n    <div className=\"relative pt-14\">\n      <Frame\n        path={shape.path}\n        pathWidth={shape.width}\n        className=\"shadow-xl\"\n        style={NAV_STYLE}\n      >\n        <nav aria-label=\"Primary navigation\" className=\"flex h-20 items-center px-3\">\n          <a\n            href=\"#\"\n            aria-label=\"Home\"\n            className=\"flex min-w-0 flex-1 items-center justify-center text-accent-400\"\n          >\n            <Icon id=\"home\" size={18} />\n          </a>\n\n          <div\n            style={{ width: shape.controlWidth + 24 }}\n            className=\"shrink-0\"\n          />\n\n          {NAV_ITEMS.slice(1).map(({ label, icon }) => (\n            <a\n              key={label}\n              href=\"#\"\n              aria-label={label}\n              className=\"flex min-w-0 flex-1 items-center justify-center text-foreground-400\"\n            >\n              <Icon id={icon} size={18} />\n            </a>\n          ))}\n        </nav>\n      </Frame>\n\n      {/* Controls in a cutout are siblings of Frame because its children are\n          clipped to the animated silhouette. */}\n      <div\n        style={{ width: shape.controlWidth }}\n        className=\"absolute left-1/2 top-14 flex h-13 -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border border-accent-500 bg-accent-500 text-white shadow-lg\"\n      >\n        <div\n          className={`flex items-center gap-0.5 pr-9 transition-opacity duration-200 motion-reduce:transition-none ${open ? 'opacity-100' : 'pointer-events-none opacity-0'\n            }`}\n          aria-hidden={!open}\n        >\n          <button disabled={!open} type=\"button\" className=\"flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium transition-colors hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white motion-reduce:transition-none\">\n            <Icon id=\"edit\" size={14} />\n            Post\n          </button>\n          <span className=\"h-5 w-px bg-white/30\" />\n          <button disabled={!open} type=\"button\" className=\"flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium transition-colors hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white motion-reduce:transition-none\">\n            <Icon id=\"camera\" size={14} />\n            Photo\n          </button>\n        </div>\n\n        <button\n          type=\"button\"\n          aria-label={open ? 'Close create menu' : 'Open create menu'}\n          aria-expanded={open}\n          onClick={() => setOpen((value) => !value)}\n          className={`absolute inset-y-0 flex aspect-square items-center justify-center rounded-full transition-[background-color,transform] duration-300 hover:bg-white/15 active:bg-white/25 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white motion-reduce:transition-none ${open ? 'right-0 rotate-45' : 'left-0 rotate-0'\n            }`}\n        >\n          <Icon id=\"plus\" size={16} />\n        </button>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/bleed-media",
@@ -1516,7 +2297,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "// Paths are always authored along the top edge; `side=\"bottom\"` rotates this\n// one onto the opposite edge, scooping a dip for the play button.\nconst DIP_PATH = 'M 0 0 C 18 0 18 -26 48 -26 C 78 -26 78 0 96 0';\n\n<div className=\"relative w-80\">\n  <Frame\n    side=\"bottom\"\n    path={DIP_PATH}\n    pathWidth={96}\n    style={{\n      // No `--fill` needed — the artwork covers the frame edge to edge. Frame\n      // draws its outline above its children, so content that reaches the\n      // border cannot paint over the stroke's inner half.\n      '--stroke-color': 'var(--background-600)',\n      '--frame-radius': '14px',\n    }}\n  >\n    <div\n      className=\"relative aspect-video w-full\"\n      style={{ backgroundImage: 'linear-gradient(135deg, var(--accent-600), var(--accent-300) 45%, var(--background-800))' }}\n    >\n      <div\n        className=\"absolute inset-x-0 bottom-0 h-2/3\"\n        style={{ backgroundImage: 'linear-gradient(to top, var(--background-1000), transparent)' }}\n      />\n      <div className=\"absolute bottom-8 left-4 right-4\">\n        <p className=\"text-sm font-semibold text-foreground-50\">Frames, end to end</p>\n        <p className=\"text-xs text-foreground-300\">4 min · Design systems</p>\n      </div>\n    </div>\n  </Frame>\n\n  {/* Cradled in the dip — a sibling, like any content that belongs in a cutout. */}\n  <div className=\"absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2\">\n    <div className=\"flex size-11 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg\">\n      <FaPlay className=\"ml-0.5 size-4\" />\n    </div>\n  </div>\n</div>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\n// A dip scooped out of the bottom edge for the play button to sit in. Authored\n// along the top edge as every Frame path is; `side=\"bottom\"` rotates it onto\n// the opposite edge, so the same path would work on any of the four.\nconst DIP_WIDTH = 96;\nconst DIP_PATH = 'M 0 0 C 18 0 18 -26 48 -26 C 78 -26 78 0 96 0';\n\n// No `--fill` is needed: the artwork covers the frame edge to edge. Frame draws\n// its outline *above* its children, so content that reaches the border cannot\n// paint over the stroke's inner half — the hairline stays a hairline whether\n// what sits under it is opaque, transparent or moving.\nconst CARD_STYLE = {\n  '--stroke-color': 'var(--background-600)',\n  '--frame-radius': '14px',\n} as CSSProperties;\n\n// Stand-in artwork. Gradients go through `style` rather than an arbitrary\n// Tailwind class so the example carries its own colours wherever it is dropped.\nconst ARTWORK_STYLE: CSSProperties = {\n  backgroundImage:\n    'linear-gradient(135deg, var(--accent-600), var(--accent-300) 45%, var(--background-800))',\n};\n\nconst SCRIM_STYLE: CSSProperties = {\n  backgroundImage: 'linear-gradient(to top, var(--background-1000), transparent)',\n};\n\nexport default function Example() {\n  return (\n    <div className=\"relative\">\n      <Frame\n        side=\"bottom\"\n        path={DIP_PATH}\n        pathWidth={DIP_WIDTH}\n        style={CARD_STYLE}\n      >\n        {/* Bleeds to all four edges. The silhouette clips it, including around\n            the dip, so there is no rounded-corner mismatch to patch up. */}\n        <div className=\"relative aspect-video w-full\" style={ARTWORK_STYLE}>\n          <div className=\"absolute inset-x-0 bottom-0 h-2/3\" style={SCRIM_STYLE} />\n          <div className=\"absolute bottom-8 left-4 right-4\">\n            <p className=\"text-sm font-semibold text-foreground-50\">Frames, end to end</p>\n            <p className=\"text-xs text-foreground-300\">4 min · Design systems</p>\n          </div>\n        </div>\n      </Frame>\n\n      {/* Cradled in the dip, half below the bottom edge — a sibling, like any\n          content that belongs in a cutout. */}\n      <div className=\"absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2\">\n        <div className=\"flex size-11 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg\">\n          <Icon id=\"play\" size={16} className=\"ml-0.5\" />\n        </div>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/corner-step",
@@ -1529,7 +2310,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport { useEffect, useRef, useState } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { FaBolt } from 'react-icons/fa6';\n\n// `shapeAlign=\"end\"` pins the path's far end to the corner, and the path is\n// free to leave off part-way down the *next* edge — so the step swallows the\n// top-right corner and hands the frame back one of its own. Match the arc's\n// radius to `--frame-radius` and the returned corner matches the other three.\nconst STEP_PATH = [\n  'M 0 0',\n  'c 10 0 30 -40 40 -40',   // ease down to the notch floor, tangent at both ends\n  'L 132 -40',              // flat run to the corner\n  'a 12 12 0 0 0 12 -12',   // turn into the right edge\n].join(' ');\n\n<div className=\"relative w-80\">\n  <Frame\n    side=\"top\"\n    shapeAlign=\"end\"\n    path={STEP_PATH}\n    pathWidth={144}\n    style={{\n      '--fill': 'var(--background-900)',\n      // Translucent strokes stay one even weight: Frame paints the border and\n      // the shape's outline through a single mask, so the overlap at the seam\n      // does not composite brighter than the rest.\n      '--stroke-color': 'color-mix(in oklch, var(--accent-500) 70%, transparent)',\n      '--frame-radius': '12px',\n    }}\n  >\n    <div className=\"flex flex-col gap-2 px-5 pb-5 pt-4\">\n      <p className=\"font-semibold text-foreground-50\">Priority routing</p>\n      <p className=\"text-sm leading-relaxed text-foreground-300\">\n        The step is part of the outline, not a badge sitting on top of one.\n      </p>\n    </div>\n  </Frame>\n\n  {/* Sits *in* the cut, so it is a sibling — children are clipped away here. */}\n  <div\n    className=\"pointer-events-none absolute right-0 top-0 flex items-center justify-center gap-1.5 text-xs font-medium text-accent-400\"\n    style={{ width: 104, height: 40 }}\n  >\n    <FaBolt className=\"size-3\" />\n    Featured\n  </div>\n</div>\n\n// Keeping the same commands at both ends makes every point interpolatable.\n// At progress 0 the curve is a straight top edge followed by the card's 12px\n// corner; increasing the depth unfolds that corner into the step above.\nconst clamp = (value) => Math.min(1, Math.max(0, value));\nconst easeInOutSine = (value) =>\n  (1 - Math.cos(Math.PI * clamp(value))) / 2;\n\nfunction cornerStepPath(progress) {\n  const rightDepth = 40 * easeInOutSine(progress / 0.78);\n  const middleDepth = 40 * easeInOutSine((progress - 0.1) / 0.8);\n  const leftDepth = 40 * easeInOutSine((progress - 0.22) / 0.78);\n  return [\n    'M 0 0',\n    `C 10 0 30 ${-leftDepth} 40 ${-leftDepth}`,\n    `C 64 ${-leftDepth} 104 ${-middleDepth} 132 ${-rightDepth}`,\n    `a 12 12 0 0 0 12 -12`,\n  ].join(' ');\n}\n\nfunction useCornerStep(active) {\n  const progress = useRef(0);\n  const [shape, setShape] = useState(() => ({ path: cornerStepPath(0), progress: 0 }));\n\n  useEffect(() => {\n    const target = active ? 1 : 0;\n    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {\n      progress.current = target;\n      setShape({ path: cornerStepPath(target), progress: target });\n      return;\n    }\n\n    const from = progress.current;\n    const startedAt = performance.now();\n    let frame = 0;\n    const tick = (now) => {\n      const elapsed = Math.min((now - startedAt) / 480, 1);\n      const eased = easeInOutSine(elapsed);\n      const next = from + (target - from) * eased;\n      progress.current = next;\n      setShape({ path: cornerStepPath(next), progress: next });\n      if (elapsed < 1) frame = requestAnimationFrame(tick);\n    };\n\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [active]);\n\n  return shape;\n}\n\nfunction AnimatedCornerStep() {\n  const [active, setActive] = useState(false);\n  const shape = useCornerStep(active);\n  const animatedStyle = {\n    '--fill': 'var(--background-950)',\n    '--stroke-color': `color-mix(in oklch, var(--background-700) ${100 - shape.progress * 100}%, var(--accent-500) ${shape.progress * 100}%)`,\n    '--frame-radius': '12px',\n  };\n\n  return (\n    <div\n      className=\"relative isolate w-80 outline-none\"\n      tabIndex={0}\n      onMouseEnter={() => setActive(true)}\n      onMouseLeave={() => setActive(false)}\n      onFocus={() => setActive(true)}\n      onBlur={() => setActive(false)}\n    >\n      <Frame\n        side=\"top\"\n        shapeAlign=\"end\"\n        path={shape.path}\n        pathWidth={144}\n        className=\"z-10\"\n        style={animatedStyle}\n      >\n        <div className=\"flex flex-col gap-2 px-5 pb-5 pt-4\">\n          <p className=\"font-semibold text-foreground-50\">Hover to transform</p>\n          <p className=\"text-sm text-foreground-300\">\n            The original rounded corner continuously unfolds into the step.\n          </p>\n        </div>\n      </Frame>\n\n      <div\n        className=\"pointer-events-none absolute right-0 top-0 z-0 flex h-10 w-26 items-center justify-center gap-1.5 text-xs font-medium text-accent-400\"\n      >\n        <FaBolt className=\"size-3\" /> Animated\n      </div>\n    </div>\n  );\n}"
+    "code": "\"use client\";\n\nimport { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\n// A step cut into the top-right corner. `shapeAlign=\"end\"` pins the path's far\n// end to the corner instead of centring it on the edge, and the path is free to\n// leave off part-way down the *next* edge — it eases to the notch floor, runs\n// flat, then turns into the right edge and stops there. Frame closes the region\n// back along the outside of the border either way, so the shape swallows the\n// corner and hands the frame back one of its own.\n//\n// `radius` matches `--frame-radius` so the corner it returns is the same shape\n// as the three it did not touch.\nconst STEP = { ease: 40, depth: 40, span: 104, radius: 12 };\nconst STEP_WIDTH = STEP.ease + STEP.span;\n\n// The cubic's handles are horizontal at both ends, a quarter of the run in, so\n// the curve leaves the top edge and meets the notch floor tangentially — that\n// tangency is what makes the step read as a slope rather than a ledge.\nconst STEP_PATH = [\n  'M 0 0',\n  `c ${STEP.ease * 0.25} 0 ${STEP.ease * 0.75} ${-STEP.depth} ${STEP.ease} ${-STEP.depth}`,\n  `L ${STEP_WIDTH - STEP.radius} ${-STEP.depth}`,\n  `a ${STEP.radius} ${STEP.radius} 0 0 0 ${STEP.radius} ${-STEP.radius}`,\n].join(' ');\n\nconst clamp = (value: number) => Math.min(1, Math.max(0, value));\nconst easeInOutSine = (value: number) =>\n  (1 - Math.cos(Math.PI * clamp(value))) / 2;\n\nfunction cornerStepPath(progress: number) {\n  // Stagger the depth from right to left so the existing corner pulls the\n  // shape inward instead of the whole top edge dropping at once.\n  const rightDepth = STEP.depth * easeInOutSine(progress / 0.78);\n  const middleDepth = STEP.depth * easeInOutSine((progress - 0.1) / 0.8);\n  const leftDepth = STEP.depth * easeInOutSine((progress - 0.22) / 0.78);\n\n  return [\n    'M 0 0',\n    `C ${STEP.ease * 0.25} 0 ${STEP.ease * 0.75} ${-leftDepth} ${STEP.ease} ${-leftDepth}`,\n    `C 64 ${-leftDepth} 104 ${-middleDepth} ${STEP_WIDTH - STEP.radius} ${-rightDepth}`,\n    `a ${STEP.radius} ${STEP.radius} 0 0 0 ${STEP.radius} ${-STEP.radius}`,\n  ].join(' ');\n}\n\nfunction useCornerStep(active: boolean) {\n  const progress = useRef(0);\n  const [shape, setShape] = useState(() => ({ path: cornerStepPath(0), progress: 0 }));\n\n  useEffect(() => {\n    const target = active ? 1 : 0;\n\n    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {\n      progress.current = target;\n      setShape({ path: cornerStepPath(target), progress: target });\n      return;\n    }\n\n    const from = progress.current;\n    const startedAt = performance.now();\n    let frame = 0;\n\n    const tick = (now: number) => {\n      const elapsed = Math.min((now - startedAt) / 480, 1);\n      // A symmetric curve makes hover-in and hover-out exact time-reverses\n      // without rushing either end of the morph.\n      const eased = easeInOutSine(elapsed);\n      const next = from + (target - from) * eased;\n\n      progress.current = next;\n      setShape({ path: cornerStepPath(next), progress: next });\n      if (elapsed < 1) frame = requestAnimationFrame(tick);\n    };\n\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [active]);\n\n  return shape;\n}\n\n// The stroke is translucent on purpose. Frame collects the border and the\n// shape's outline into one mask and colours it once, so the two lap over each\n// other at the seam without compositing to a brighter knot — a see-through\n// outline stays one even weight the whole way round.\nconst CARD_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'color-mix(in oklch, var(--accent-500) 70%, transparent)',\n  '--frame-radius': `${STEP.radius}px`,\n} as CSSProperties;\n\nfunction StaticCornerStep(): ReactNode {\n  return (\n    <div className=\"relative\">\n      <Frame\n        side=\"top\"\n        shapeAlign=\"end\"\n        path={STEP_PATH}\n        pathWidth={STEP_WIDTH}\n        style={CARD_STYLE}\n      >\n        <div className=\"flex flex-col gap-2 px-5 pb-5 pt-4\">\n          <p className=\"font-semibold text-foreground-50\">Priority routing</p>\n          <p className=\"text-sm leading-relaxed text-foreground-300\">\n            The step is part of the outline, not a badge sitting on top of one —\n            the fill and the content are clipped to it too.\n          </p>\n        </div>\n      </Frame>\n\n      {/* The label sits *in* the cut, so it is a sibling of the Frame: children\n          are clipped to the silhouette and would be cut away here. */}\n      <div\n        className=\"pointer-events-none absolute right-0 top-0 flex items-center justify-center gap-1.5 text-xs font-medium text-accent-400\"\n        style={{ width: STEP.span, height: STEP.depth }}\n      >\n        <Icon id=\"bolt\" size={12} />\n        Featured\n      </div>\n    </div>\n  );\n}\n\nfunction AnimatedCornerStep(): ReactNode {\n  const [active, setActive] = useState(false);\n  const shape = useCornerStep(active);\n  const animatedStyle = {\n    '--fill': 'var(--background-950)',\n    '--stroke-color': `color-mix(in oklch, var(--background-700) ${100 - shape.progress * 100}%, var(--accent-500) ${shape.progress * 100}%)`,\n    '--frame-radius': `${STEP.radius}px`,\n  } as CSSProperties;\n\n  return (\n    <div\n      className=\"relative isolate cursor-default rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-500\"\n      tabIndex={0}\n      onMouseEnter={() => setActive(true)}\n      onMouseLeave={() => setActive(false)}\n      onFocus={() => setActive(true)}\n      onBlur={() => setActive(false)}\n    >\n      <Frame\n        side=\"top\"\n        shapeAlign=\"end\"\n        path={shape.path}\n        pathWidth={STEP_WIDTH}\n        className=\"z-10\"\n        style={animatedStyle}\n      >\n        <div className=\"flex flex-col gap-2 px-5 pb-5 pt-4\">\n          <p className=\"font-semibold text-foreground-50\">Hover to transform</p>\n          <p className=\"text-sm leading-relaxed text-foreground-300\">\n            The original rounded corner continuously unfolds into the step.\n          </p>\n        </div>\n      </Frame>\n\n      <div\n        className=\"pointer-events-none absolute right-0 top-0 z-0 flex items-center justify-center gap-1.5 text-xs font-medium text-accent-400\"\n        style={{\n          width: STEP.span,\n          height: STEP.depth,\n        }}\n      >\n        <Icon id=\"bolt\" size={12} />\n        Animated\n      </div>\n    </div>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-8\">\n      <StaticCornerStep />\n      <AnimatedCornerStep />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/dashed-dropzone",
@@ -1542,7 +2323,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "// The dash is an SVG stroke, so it stays evenly spaced around the\n// rounded corners at any size — no path needed.\n<Frame\n  pathStroke=\"dashed\"\n  style={{\n    '--fill': 'var(--background-900)',\n    '--stroke-color': 'var(--background-600)',\n    '--frame-radius': '16px',\n  }}\n>\n  <div className=\"flex flex-col items-center gap-3 px-6 py-10 text-center\">\n    <span className=\"flex size-12 items-center justify-center rounded-full bg-background-800 text-accent-400\">\n      <FaCloudArrowUp className=\"size-5\" />\n    </span>\n    <div>\n      <p className=\"text-sm font-medium text-foreground-100\">\n        Drop files to upload\n      </p>\n      <p className=\"mt-1 text-xs text-foreground-400\">\n        or <span className=\"text-accent-400\">browse</span> — PNG, JPG up to 10MB\n      </p>\n    </div>\n  </div>\n</Frame>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\n// No path here — just the plain rounded frame with `pathStroke=\"dashed\"`.\n// The dash is an SVG stroke, so it stays crisp and evenly spaced around the\n// corners at any size, unlike a CSS `border: dashed` on a rounded box.\nconst DROPZONE_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n  '--frame-radius': '16px',\n} as CSSProperties;\n\nexport default function Example() {\n  return (\n    <div>\n      <Frame pathStroke=\"dashed\" style={DROPZONE_STYLE}>\n        <div className=\"flex flex-col items-center gap-3 px-6 py-10 text-center\">\n          <span className=\"flex size-12 items-center justify-center rounded-full bg-background-800 text-accent-400\">\n            <Icon id=\"cloud\" size={20} />\n          </span>\n          <div>\n            <p className=\"text-sm font-medium text-foreground-100\">\n              Drop files to upload\n            </p>\n            <p className=\"mt-1 text-xs text-foreground-400\">\n              or <span className=\"text-accent-400\">browse</span> — PNG, JPG up to 10MB\n            </p>\n          </div>\n        </div>\n      </Frame>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/featured-card",
@@ -1555,7 +2336,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "// Paths are authored bulging away from the frame;\n// `shapeMode=\"indent\"` (the default) mirrors the curve so it carves out of\n// the frame, leaving a concave pocket. The avatar is a *sibling* of the Frame,\n// not a child — Frame clips its content to the notched outline, which would cut\n// off anything rendered inside the scoop.\nconst NOTCH_PATH = 'M 0 0 C 36 0 36 -44 90 -44 C 144 -44 144 0 180 0';\n\n<div className=\"relative w-80\">\n  <Frame\n    path={NOTCH_PATH}\n    pathWidth={180}\n    className=\"shadow-2xl\"\n    style={{\n      '--fill': 'var(--background-900)',\n      '--stroke-color': 'var(--background-700)',\n      '--frame-radius': '20px',\n    }}\n  >\n    <div className=\"flex flex-col items-center px-6 pb-6 pt-12 text-center\">\n      <p className=\"font-semibold text-foreground-50\">Ava Klein</p>\n      <p className=\"text-sm text-foreground-400\">Design Engineer</p>\n      <p className=\"mt-3 text-sm leading-relaxed text-foreground-300\">\n        “The notch does the hard part for me.”\n      </p>\n      <div className=\"mt-4 flex gap-1 text-accent-500\">\n        {stars.map((i) => <FaStar key={i} className=\"size-3.5\" />)}\n      </div>\n    </div>\n  </Frame>\n\n  <div className=\"absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2\">\n    <div className=\"flex size-14 items-center justify-center rounded-full bg-accent-500 text-lg font-semibold text-white shadow-lg\">\n      AK\n    </div>\n  </div>\n</div>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\n// A rounded scoop cut into the top edge. Paths are authored bulging *away*\n// from the frame; `shapeMode=\"indent\"` (the default) mirrors the curve so it\n// carves into the frame instead — the border follows it and the fill is\n// clipped to match, leaving a concave pocket for an avatar to sit in.\nconst NOTCH_WIDTH = 180;\nconst NOTCH_PATH = 'M 0 0 C 36 0 36 -44 90 -44 C 144 -44 144 0 180 0';\n\nconst CARD_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-700)',\n  '--frame-radius': '20px',\n} as CSSProperties;\n\nexport default function Example() {\n  // The avatar is a *sibling* of the Frame, not a child: Frame clips its\n  // content to the notched outline, which would cut off anything rendered\n  // inside the scoop. Sitting it in the wrapper instead keeps it visible.\n  return (\n    <div className=\"relative\">\n      <Frame\n        path={NOTCH_PATH}\n        pathWidth={NOTCH_WIDTH}\n        className=\"shadow-2xl\"\n        style={CARD_STYLE}\n      >\n        <div className=\"flex flex-col items-center px-6 pb-6 pt-12 text-center\">\n          <p className=\"font-semibold text-foreground-50\">Ava Klein</p>\n          <p className=\"text-sm text-foreground-400\">Design Engineer</p>\n          <p className=\"mt-3 text-sm leading-relaxed text-foreground-300\">\n            “The notch does the hard part — the border traces the curve and the\n            fill clips to match, so the avatar just drops in.”\n          </p>\n          <div className=\"mt-4 flex gap-1 text-accent-500\">\n            {Array.from({ length: 5 }).map((_, i) => (\n              <Icon id=\"star\" size={14} key={i} />\n            ))}\n          </div>\n        </div>\n      </Frame>\n\n      {/* Cradled in the scoop: half above the top edge, half in the pocket. */}\n      <div className=\"absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2\">\n        <div className=\"flex size-14 items-center justify-center rounded-full bg-accent-500 text-lg font-semibold text-white shadow-lg\">\n          AK\n        </div>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/sidebar-tab",
@@ -1568,7 +2349,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "// The tab `extend`s from the left edge so the panel border grows a lip\n// that reaches back toward the active nav item.\nconst TAB_PATH = 'M 0 0 C 20 0 20 -24 40 -24 L 80 -24 C 100 -24 100 0 120 0';\n\n<Frame\n  side=\"left\"\n  shapeMode=\"extend\"\n  path={TAB_PATH}\n  pathWidth={120}\n  className=\"h-56\"\n  style={{\n    '--fill': 'var(--background-900)',\n    '--stroke-color': 'var(--background-700)',\n    '--frame-radius': '16px',\n  }}\n>\n  <div className=\"flex h-full flex-col gap-4 p-6\">\n    <h2 className=\"text-lg font-semibold text-foreground-50\">Settings</h2>\n    <div className=\"space-y-2.5\">\n      <div className=\"h-2.5 w-2/3 rounded bg-background-700\" />\n      <div className=\"h-2.5 w-1/2 rounded bg-background-700\" />\n      <div className=\"h-2.5 w-3/4 rounded bg-background-700\" />\n    </div>\n  </div>\n</Frame>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\n// A flat-topped tab extended from the left edge. Because it `extend`s, the\n// panel's border grows a lip that reaches back toward the active nav item —\n// the panel and the menu read as one connected surface.\nconst TAB_WIDTH = 120;\nconst TAB_PATH = 'M 0 0 C 20 0 20 -24 40 -24 L 80 -24 C 100 -24 100 0 120 0';\n\nconst PANEL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-700)',\n  '--frame-radius': '16px',\n} as CSSProperties;\n\nconst NAV = [\n  { label: 'Home', icon: 'home', active: false },\n  { label: 'Settings', icon: 'gear', active: true },\n  { label: 'Profile', icon: 'user', active: false },\n];\n\nexport default function Example() {\n  return (\n    <div className=\"flex items-center\">\n      {/* Mock sidebar. The active row aligns with the tab's mouth. */}\n      <nav className=\"flex shrink-0 flex-col items-stretch gap-1 pr-0.5\">\n        {NAV.map(({ label, icon, active }) => (\n          <span\n            key={label}\n            className={`flex items-center gap-2.5 rounded-l-md px-3 py-2 text-sm ${\n              active ? 'font-medium text-accent-400' : 'text-foreground-400'\n            }`}\n          >\n            <Icon id={icon} size={16} />\n            {label}\n          </span>\n        ))}\n      </nav>\n\n      <div className=\"h-56 w-64 shrink-0\">\n        <Frame\n          side=\"left\"\n          shapeMode=\"extend\"\n          path={TAB_PATH}\n          pathWidth={TAB_WIDTH}\n          className=\"h-full\"\n          style={PANEL_STYLE}\n        >\n          <div className=\"flex h-full flex-col gap-4 p-6\">\n            <h2 className=\"text-lg font-semibold text-foreground-50\">Settings</h2>\n            <div className=\"space-y-2.5\">\n              <div className=\"h-2.5 w-2/3 rounded bg-background-700\" />\n              <div className=\"h-2.5 w-1/2 rounded bg-background-700\" />\n              <div className=\"h-2.5 w-3/4 rounded bg-background-700\" />\n            </div>\n          </div>\n        </Frame>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:frame/tooltip",
@@ -1581,7 +2362,7 @@ export const generatedWorkshopContent = [
     "componentId": "frame",
     "access": "free",
     "locked": false,
-    "code": "// `shapeMode=\"extend\"` pushes the path out of the frame, and the border\n// wraps it — so the tail is one continuous outline of the bubble.\nconst TAIL_PATH = 'M 0 0 C 8 0 20 -16 24 -16 C 28 -16 36 0 48 0';\n\n<Frame\n  side=\"bottom\"\n  shapeMode=\"extend\"\n  path={TAIL_PATH}\n  pathWidth={48}\n  className=\"shadow-xl\"\n  style={{\n    '--fill': 'var(--background-800)',\n    '--stroke-color': 'var(--background-600)',\n    '--frame-radius': '12px',\n  }}\n>\n  <div className=\"flex items-start gap-2.5 px-3.5 py-2.5\">\n    <FaCircleInfo className=\"mt-0.5 size-4 shrink-0 text-accent-400\" />\n    <p className=\"text-sm leading-snug text-foreground-200\">\n      Point the tail at whatever it explains — flip <code>side</code> to move\n      it to any edge.\n    </p>\n  </div>\n</Frame>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Icon } from 'ui-lab-components/icon';\n\n// `shapeMode=\"extend\"` pushes the path *out* of the frame instead of carving\n// into it, and the border wraps the extended shape — so the tail reads as one\n// continuous outline of the bubble, not a separate triangle stuck underneath.\nconst TAIL_WIDTH = 48;\nconst TAIL_PATH = 'M 0 0 C 8 0 20 -16 24 -16 C 28 -16 36 0 48 0';\n\nconst TOOLTIP_STYLE = {\n  '--fill': 'var(--background-800)',\n  '--stroke-color': 'var(--background-600)',\n  '--frame-radius': '12px',\n} as CSSProperties;\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col items-center\">\n      <Frame\n        side=\"bottom\"\n        shapeMode=\"extend\"\n        path={TAIL_PATH}\n        pathWidth={TAIL_WIDTH}\n        className=\"shadow-xl\"\n        style={TOOLTIP_STYLE}\n      >\n        <div className=\"flex items-start gap-2.5 px-3.5 py-2.5\">\n          <Icon id=\"info\" size={16} className=\"mt-0.5 shrink-0 text-accent-400\" />\n          <p className=\"text-sm leading-snug text-foreground-200\">\n            Point the tail at whatever it explains — flip{' '}\n            <code className=\"rounded bg-background-950/60 px-1 text-foreground-100\">\n              side\n            </code>{' '}\n            to move it to any edge.\n          </p>\n        </div>\n      </Frame>\n\n      {/* The element the tooltip is anchored to. */}\n      <button\n        type=\"button\"\n        className=\"mt-2 rounded-md bg-background-800 px-3 py-1.5 text-sm text-foreground-300\"\n      >\n        Hover target\n      </button>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:gallery/02-item-orientation",
@@ -1594,7 +2375,7 @@ export const generatedWorkshopContent = [
     "componentId": "gallery",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-full flex-col gap-8\">\n  <Gallery columns={3} gap=\"sm\">\n    {Array.from({ length: 3 }, (_, index) => (\n      <Gallery.Item key={index} orientation=\"vertical\">\n        <Gallery.View aspectRatio=\"4/3\" className=\"rounded-sm bg-background-900\" />\n        <Gallery.Body />\n      </Gallery.Item>\n    ))}\n  </Gallery>\n\n  <Gallery columns={1} gap=\"sm\">\n    {Array.from({ length: 3 }, (_, index) => (\n      <Gallery.Item key={index} orientation=\"horizontal\">\n        <Gallery.View aspectRatio=\"1/1\" className=\"rounded-sm bg-background-900\" />\n        <Gallery.Body />\n      </Gallery.Item>\n    ))}\n  </Gallery>\n</div>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Gallery } from 'ui-lab-components/gallery';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction GalleryViewFrame({ orientation }: { orientation: 'vertical' | 'horizontal' }) {\n  return (\n    <Frame\n      className={orientation === 'horizontal' ? 'shrink-0 p-px' : 'p-px'}\n      pathStroke=\"dashed\"\n      strokeAlign=\"inside\"\n      style={{\n        ...BASE_CELL_STYLE,\n        ...(orientation === 'horizontal' ? { width: 'var(--view-width)', flexShrink: 0 } : {}),\n      }}\n    >\n      <Gallery.View\n        aspectRatio={orientation === 'horizontal' ? '1/1' : '4/3'}\n        className=\"overflow-hidden rounded-sm bg-background-900\"\n        style={orientation === 'horizontal' ? { width: '100%' } : undefined}\n      />\n    </Frame>\n  );\n}\n\nfunction GalleryBodyFrame({ orientation }: { orientation: 'vertical' | 'horizontal' }) {\n  return (\n    <Frame\n      className={orientation === 'horizontal' ? 'min-w-0 flex-1 w-auto' : undefined}\n      pathStroke=\"dashed\"\n      strokeAlign=\"inside\"\n      style={BASE_CELL_STYLE}\n    >\n      <Gallery.Body>\n      </Gallery.Body>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex h-full w-[min(100%,640px)] min-h-0 min-w-0 flex-col gap-4\">\n      <Gallery columns={3} gap=\"sm\" className=\"w-full\">\n        {Array.from({ length: 3 }, (_, index) => (\n          <Gallery.Item key={index} orientation=\"vertical\" className=\"bg-background-950 border-background-700 p-2\" styles={{ root: 'gap-2' }}>\n            <GalleryViewFrame orientation=\"vertical\" />\n            <GalleryBodyFrame orientation=\"vertical\" />\n          </Gallery.Item>\n        ))}\n      </Gallery>\n\n      <Gallery columns={1} gap=\"sm\" className=\"w-full\">\n        {Array.from({ length: 3 }, (_, index) => (\n          <Gallery.Item\n            key={index}\n            orientation=\"horizontal\"\n            className=\"bg-background-950 border-background-700 p-2\"\n            styles={{ root: 'gap-2' }}\n            style={{ '--view-width': '160px' } as CSSProperties}\n          >\n            <GalleryViewFrame orientation=\"horizontal\" />\n            <GalleryBodyFrame orientation=\"horizontal\" />\n          </Gallery.Item>\n        ))}\n      </Gallery>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:gallery/03-span-layout",
@@ -1607,7 +2388,7 @@ export const generatedWorkshopContent = [
     "componentId": "gallery",
     "access": "free",
     "locked": false,
-    "code": "<Gallery columns={3} gap=\"md\">\n  <Gallery.Item columnSpan={2} rowSpan={2}>\n    <Gallery.View className=\"h-full rounded-sm bg-background-900\" />\n    <Gallery.Body />\n  </Gallery.Item>\n\n  {Array.from({ length: 4 }, (_, index) => (\n    <Gallery.Item key={index}>\n      <Gallery.View aspectRatio=\"4/3\" className=\"rounded-sm bg-background-900\" />\n      <Gallery.Body />\n    </Gallery.Item>\n  ))}\n</Gallery>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Gallery } from 'ui-lab-components/gallery';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nconst VIEW_FRAME_STYLE = {\n  ...BASE_CELL_STYLE,\n  '--fill': 'var(--background-900)',\n} as CSSProperties;\n\nfunction GalleryViewFrame({ featured = false }: { featured?: boolean }) {\n  return (\n    <Frame className={`${featured ? 'order-1 ' : ''} min-h-0 flex-1 p-px`} pathStroke=\"dashed\" strokeAlign=\"inside\" style={VIEW_FRAME_STYLE}>\n      <div className=\"h-full\">\n        <Gallery.View\n          aspectRatio={featured ? '16/9' : '4/3'}\n          className=\"h-full w-full overflow-hidden rounded-sm bg-background-900\"\n          style={featured ? { aspectRatio: 'auto' } : undefined}\n        />\n      </div>\n    </Frame>\n  );\n}\n\nfunction GalleryBodyFrame({ featured = false }: { featured?: boolean }) {\n  return (\n    <Frame className={`${featured ? 'order-2 ' : ''}shrink-0`} pathStroke=\"dashed\" strokeAlign=\"inside\" style={BASE_CELL_STYLE}>\n      <Gallery.Body>\n      </Gallery.Body>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"flex h-full w-[min(100%,640px)] min-h-0 min-w-0 flex-col\">\n      <Gallery columns={3} gap=\"md\" className=\"h-full min-h-0 w-full flex-1\">\n        <Gallery.Item columnSpan={2} rowSpan={2} className=\"bg-background-950 border-background-700 p-2\" style={{ gap: 8 }} styles={{ root: 'gap-2' }}>\n          <GalleryViewFrame featured />\n          <GalleryBodyFrame featured />\n        </Gallery.Item>\n\n        {Array.from({ length: 4 }, (_, i) => (\n          <Gallery.Item key={i} className=\"bg-background-950 border-background-700 p-2\" style={{ gap: 8 }} styles={{ root: 'gap-2' }}>\n            <GalleryViewFrame />\n            <GalleryBodyFrame />\n          </Gallery.Item>\n        ))}\n      </Gallery>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:grid/01-responsive-feature",
@@ -1620,7 +2401,7 @@ export const generatedWorkshopContent = [
     "componentId": "grid",
     "access": "free",
     "locked": false,
-    "code": "<Grid columns=\"auto-fit\" gap=\"md\" className=\"w-full max-w-3xl\">\n  {Array.from({ length: 3 }, (_, index) => (\n    <div\n      key={index}\n      className=\"h-45 w-full rounded-sm bg-background-800\"\n    />\n  ))}\n</Grid>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style }: { label: number; style?: CSSProperties }) {\n  return (\n    <Frame className=\"p-2\" pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\" className=\"w-full max-w-3xl\">\n      {Array.from({ length: 3 }, (_, index) => (\n        <FrameCell key={index} label={index + 1} style={{ width: '100%', height: 180 }} />\n      ))}\n    </Grid>\n  );\n}\n"
   },
   {
     "ref": "example:grid/02-track-placement",
@@ -1633,7 +2414,7 @@ export const generatedWorkshopContent = [
     "componentId": "grid",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"h-24 w-full rounded-sm bg-background-800\" />"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nconst cells: CSSProperties[] = [\n  { minHeight: '9rem', gridRow: 'span 2' },\n  { minHeight: '5rem', gridColumn: 'span 2' },\n  { minHeight: '3rem' },\n  { minHeight: '3rem' },\n  { minHeight: '6rem', gridColumn: 'span 2' },\n  { minHeight: '3rem' },\n];\n\nfunction FrameCell({ label, style }: { label: number; style?: CSSProperties }) {\n  return (\n    <Frame className=\"w-full h-full p-2\" pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Grid columns={3} gap=\"md\" justifyItems=\"stretch\" align-stretch autoFlow=\"row\" className=\"w-full\">\n      {cells.map((style, index) => (\n        <FrameCell key={index} label={index + 1} style={style} />\n      ))}\n    </Grid>\n  );\n}\n"
   },
   {
     "ref": "example:grid/03-dashboard-metrics",
@@ -1646,7 +2427,7 @@ export const generatedWorkshopContent = [
     "componentId": "grid",
     "access": "free",
     "locked": false,
-    "code": "<Grid\n  columns={{ sm: 1, md: 2, lg: 4 }}\n  gap={{ sm: \"sm\", md: \"md\" }}\n  className=\"w-full max-w-4xl\"\n>\n  {Array.from({ length: 4 }, (_, index) => (\n    <div\n      key={index}\n      className=\"h-36 w-full rounded-sm bg-background-800\"\n    />\n  ))}\n</Grid>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style }: { label: number; style?: CSSProperties }) {\n  return (\n    <Frame className=\"p-2\" pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Grid\n      columns={{ sm: 1, md: 2, lg: 4 }}\n      gap={{ sm: 'sm', md: 'md' }}\n      className=\"w-full max-w-4xl\"\n    >\n      {Array.from({ length: 4 }, (_, index) => (\n        <FrameCell key={index} label={index + 1} style={{ width: '100%', height: 144 }} />\n      ))}\n    </Grid>\n  );\n}\n"
   },
   {
     "ref": "example:grid/04-app-shell",
@@ -1659,7 +2440,7 @@ export const generatedWorkshopContent = [
     "componentId": "grid",
     "access": "free",
     "locked": false,
-    "code": "<Grid columns=\"10rem minmax(0, 1fr)\" gap=\"sm\" className=\"w-full max-w-3xl\">\n  <div className=\"col-span-2 h-12 w-full rounded-sm bg-background-800\" />\n  <div className=\"h-55 w-full rounded-sm bg-background-800\" />\n  <Grid columns={2} gap=\"sm\">\n    <div className=\"h-20 w-full rounded-sm bg-background-800\" />\n    <div className=\"h-20 w-full rounded-sm bg-background-800\" />\n    <div className=\"col-span-2 h-32 w-full rounded-sm bg-background-800\" />\n  </Grid>\n</Grid>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Grid columns=\"10rem minmax(0, 1fr)\" gap=\"sm\" className=\"w-full max-w-3xl\">\n      <FrameCell label={1} className=\"col-span-2\" style={{ width: '100%', height: 48 }} />\n      <FrameCell label={2} style={{ width: '100%', height: 220 }} />\n      <Grid columns={2} gap=\"sm\">\n        <FrameCell label={3} style={{ width: '100%', height: 80 }} />\n        <FrameCell label={4} style={{ width: '100%', height: 80 }} />\n        <FrameCell label={5} className=\"col-span-2\" style={{ width: '100%', height: 128 }} />\n      </Grid>\n    </Grid>\n  );\n}\n"
   },
   {
     "ref": "example:grid/05-article-sidebar",
@@ -1672,7 +2453,7 @@ export const generatedWorkshopContent = [
     "componentId": "grid",
     "access": "free",
     "locked": false,
-    "code": "<Grid\n  columns={{ sm: 1, lg: \"minmax(0, 1fr) 13rem\" }}\n  gap={{ sm: \"lg\", lg: \"xl\" }}\n  align-start\n  className=\"w-full max-w-3xl\"\n>\n  <div className=\"h-70 w-full rounded-sm bg-background-800\" />\n  <div className=\"h-40 w-full rounded-sm bg-background-800\" />\n</Grid>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style }: { label: number; style?: CSSProperties }) {\n  return (\n    <Frame className=\"p-2\" pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Grid\n      columns={{ sm: 1, lg: 'minmax(0, 1fr) 13rem' }}\n      gap={{ sm: 'lg', lg: 'xl' }}\n      align-start\n      className=\"w-full max-w-3xl\"\n    >\n      <FrameCell label={1} style={{ width: '100%', height: 280 }} />\n      <FrameCell label={2} style={{ width: '100%', height: 160 }} />\n    </Grid>\n  );\n}\n"
   },
   {
     "ref": "example:grid/06-bento-highlights",
@@ -1685,7 +2466,33 @@ export const generatedWorkshopContent = [
     "componentId": "grid",
     "access": "free",
     "locked": false,
-    "code": "<Grid columns={4} rows=\"2\" gap=\"sm\" className=\"w-full max-w-3xl\">\n  <div className=\"col-span-2 row-span-2 h-60 w-full rounded-sm bg-background-800\" />\n  <div className=\"col-span-2 h-28 w-full rounded-sm bg-background-800\" />\n  <div className=\"h-28 w-full rounded-sm bg-background-800\" />\n  <div className=\"h-28 w-full rounded-sm bg-background-800\" />\n</Grid>"
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Frame } from 'ui-lab-components/frame';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ label, style, className }: { label: number; style?: CSSProperties; className?: string }) {\n  return (\n    <Frame className={`p-2 ${className ?? ''}`} pathStroke=\"dashed\" style={{ ...BASE_CELL_STYLE, ...style }}>\n      <span className=\"w-6 h-6 font-medium underline text-foreground-400 flex rounded-sm items-center justify-center text-xs\">\n        {label}\n      </span>\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Grid columns={4} rows=\"2\" gap=\"sm\" className=\"w-full max-w-3xl\">\n      <FrameCell label={1} className=\"col-span-2 row-span-2\" style={{ width: '100%', height: 240 }} />\n      <FrameCell label={2} className=\"col-span-2\" style={{ width: '100%', height: 112 }} />\n      <FrameCell label={3} style={{ width: '100%', height: 112 }} />\n      <FrameCell label={4} style={{ width: '100%', height: 112 }} />\n    </Grid>\n  );\n}\n"
+  },
+  {
+    "ref": "example:group/01-basic-group",
+    "kind": "component-example",
+    "id": "01-basic-group",
+    "name": "Basic Group",
+    "description": "A simple group container that arranges multiple elements together. Use this to organize related UI elements in a consistent layout.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "group",
+    "access": "free",
+    "locked": false,
+    "code": "import { Fragment } from 'react';\nimport { Group } from 'ui-lab-components/group';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst actions = [\n  { label: 'Edit', icon: 'compose' },\n  { label: 'Copy', icon: 'copy' },\n  { label: 'Delete', icon: 'trash' },\n];\n\nexport default function Example() {\n  return (\n    <Group>\n      {actions.map(({ label, icon }, index) => (\n        <Fragment key={label}>\n          {index > 0 && <Divider />}\n          <Group.Button icon={{ left: <Icon id={icon} size=\"1em\" /> }}>{label}</Group.Button>\n        </Fragment>\n      ))}\n    </Group>\n  );\n}\n"
+  },
+  {
+    "ref": "example:group/02-compact-group",
+    "kind": "component-example",
+    "id": "02-compact-group",
+    "name": "Compact Icon Group",
+    "description": "An icon-only group of actions with a tooltip hint on each button, shown beside the basic group.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "group",
+    "access": "free",
+    "locked": false,
+    "code": "import { Fragment } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Group } from 'ui-lab-components/group';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Tooltip } from 'ui-lab-components/tooltip';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst actions = [\n  { label: 'Edit', hint: 'Edit this item', key: 'E', icon: 'compose' },\n  { label: 'Copy', hint: 'Copy to clipboard', key: 'C', icon: 'copy' },\n  { label: 'Delete', hint: 'Delete this item', key: 'D', icon: 'trash' },\n];\n\nexport default function Example() {\n  return (\n    <Flex gap=\"md\" align-center>\n      <Group aria-label=\"Item actions\">\n        {actions.map(({ label, hint, key, icon }, index) => (\n          <Fragment key={label}>\n            {index > 0 && <Divider />}\n            <Tooltip content={hint} hint={key} position=\"top\">\n              <Group.Button aria-label={label} icon={<Icon id={icon} size=\"1em\" />} />\n            </Tooltip>\n          </Fragment>\n        ))}\n      </Group>\n      <Group>\n        {actions.map(({ label, icon }, index) => (\n          <Fragment key={label}>\n            {index > 0 && <Divider />}\n            <Group.Button icon={{ left: <Icon id={icon} size=\"1em\" /> }}>{label}</Group.Button>\n          </Fragment>\n        ))}\n      </Group>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:group/03-filter-bar",
@@ -1698,7 +2505,7 @@ export const generatedWorkshopContent = [
     "componentId": "group",
     "access": "free",
     "locked": false,
-    "code": "<Group variant=\"default\" orientation=\"horizontal\">\n  <Group.Input icon={<FaMagnifyingGlass />} placeholder=\"Search...\" />\n  <Divider />\n  <Group.Select\n    selectedKey={status}\n    onSelectionChange={setStatus}\n    className=\"w-36\"\n  >\n    <Select.Trigger>\n      <Select.Value placeholder=\"Status\" />\n    </Select.Trigger>\n    <Select.Content>\n      <Select.List>\n        <Select.Item value=\"active\" textValue=\"Active\">Active</Select.Item>\n        <Select.Item value=\"inactive\" textValue=\"Inactive\">Inactive</Select.Item>\n        <Select.Item value=\"pending\" textValue=\"Pending\">Pending</Select.Item>\n      </Select.List>\n    </Select.Content>\n  </Group.Select>\n  <Divider />\n  <Group.Button size=\"md\">\n    <FaFilter className=\"mr-1.5\" /> Apply\n  </Group.Button>\n</Group>"
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Divider } from 'ui-lab-components/divider'\nimport { Group } from 'ui-lab-components/group'\nimport { Select } from 'ui-lab-components/select';\nimport { Icon } from \"ui-lab-components/icon\"\n\nexport default function Example() {\n  const [status, setStatus] = useState<string | number | null>(\"active\");\n\n  return (\n    <Group variant=\"default\" orientation=\"horizontal\">\n      <Group.Input icon={<Icon id=\"search\" size=\"1em\" />} placeholder=\"Search...\">\n      </Group.Input>\n      <Divider />\n      <Group.Select selectedKey={status} onSelectionChange={setStatus} className=\"w-36\">\n        <Select.Trigger><Select.Value placeholder=\"Status\" /></Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"active\" textValue=\"Active\">Active</Select.Item>\n            <Select.Item value=\"inactive\" textValue=\"Inactive\">Inactive</Select.Item>\n            <Select.Item value=\"pending\" textValue=\"Pending\">Pending</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </Group.Select>\n      <Divider />\n      <Group.Button size=\"md\"><Icon id=\"filter\" size=\"1em\" className=\"mr-1.5\" /> Apply</Group.Button>\n    </Group>\n  );\n}\n"
   },
   {
     "ref": "example:group/04-documentation-search",
@@ -1711,7 +2518,7 @@ export const generatedWorkshopContent = [
     "componentId": "group",
     "access": "free",
     "locked": false,
-    "code": "<Group variant=\"secondary\">\n  <div className=\"flex items-center bg-background-800 px-3 text-foreground-400\">\n    <FaMagnifyingGlass />\n  </div>\n  <Divider />\n  <Group.Input placeholder=\"Search documentation...\" className=\"w-64\" />\n  <Divider />\n  <Group.Button className=\"w-full\">Search</Group.Button>\n</Group>"
+    "code": "import { Divider } from 'ui-lab-components/divider'\nimport { Group } from 'ui-lab-components/group';\nimport { Icon } from \"ui-lab-components/icon\"\n\nexport default function Example() {\n  return (\n    <Group variant=\"secondary\">\n      <div className=\"bg-background-800 flex items-center px-3 text-foreground-400\">\n        <Icon id=\"search\" size=\"1em\" />\n      </div>\n      <Divider />\n      <Group.Input placeholder=\"Search documentation...\" className=\"w-64\" />\n      <Divider />\n      <Group.Button className=\"w-full\">Search</Group.Button>\n    </Group>\n  );\n}\n"
   },
   {
     "ref": "example:group/06-copy-command",
@@ -1724,7 +2531,7 @@ export const generatedWorkshopContent = [
     "componentId": "group",
     "access": "free",
     "locked": false,
-    "code": "<Group>\n  <Group.Input\n    defaultValue=\"npm install ui-lab\"\n    readOnly\n    className=\"w-full font-mono text-sm\"\n  />\n  <Divider />\n  <Group.Button\n    icon={{ left: <FaCopy className=\"text-foreground-400\" /> }}\n  />\n</Group>"
+    "code": "import { Divider } from 'ui-lab-components/divider'\nimport { Group } from 'ui-lab-components/group';\nimport { Icon } from \"ui-lab-components/icon\"\n\nexport default function Example() {\n  return (\n    <Group>\n      <Group.Input defaultValue=\"npm install ui-lab\" readOnly className=\"w-55 font-mono text-sm\" />\n      <Divider />\n      <Group.Button variant=\"secondary\" icon={{ left: <Icon id=\"copy\" size=\"1em\" className=\"text-foreground-400\" /> }} />\n    </Group>\n  );\n}\n"
   },
   {
     "ref": "example:group/08-slider-integration",
@@ -1737,20 +2544,20 @@ export const generatedWorkshopContent = [
     "componentId": "group",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-64 space-y-4\">\n  <Group>\n    <Group.Input\n      type=\"number\"\n      min={0}\n      max={100}\n      value={sliderValue[0]}\n      onChange={handleInputChange}\n      className=\"w-full\"\n    />\n    <div className=\"flex items-center bg-background-800 px-3 text-sm font-medium text-foreground-400\">\n      <FaPercent />\n    </div>\n  </Group>\n  <Slider.Root\n    value={sliderValue}\n    onValueChange={setSliderValue}\n    max={100}\n    step={1}\n  />\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Group } from 'ui-lab-components/group'\nimport { Slider } from 'ui-lab-components/slider';\nimport { Icon } from \"ui-lab-components/icon\";\n\nexport default function Example() {\n  const [sliderValue, setSliderValue] = useState<number[]>([45]);\n  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {\n    const val = parseInt(e.target.value);\n    if (!isNaN(val)) setSliderValue([Math.min(Math.max(val, 0), 100)]);\n  };\n\n  return (\n    <div className=\"space-y-4 w-64\">\n      <Group>\n        <Group.Input type=\"number\" min={0} max={100} value={sliderValue[0]} onChange={handleInputChange} className=\"w-full\" />\n        <div className=\"bg-background-800 flex items-center px-3 text-foreground-400 text-sm font-medium\">\n          <Icon id=\"percent\" size=\"1em\" />\n        </div>\n      </Group>\n      <Slider.Root value={sliderValue} onValueChange={setSliderValue} max={100} step={1} />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:icon/01-icon-gallery",
     "kind": "component-example",
     "id": "01-icon-gallery",
     "name": "Icon Gallery",
-    "description": "A row of fill icons referenced by id. Every icon renders as a single currentColor silhouette, so a shared text color styles the whole set.",
+    "description": "A row of Lumen duo-tone icons referenced by id. Each icon draws a 34% back layer under a solid front layer, both in currentColor, so a shared text color styles the whole set.",
     "category": "examples",
     "visibility": "public",
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"md\" align-center justify-center wrap className=\"text-foreground-100\">\n  {icons.map((id) => (\n    <Icon key={id} id={id} size={24} />\n  ))}\n</Flex>"
+    "code": "import { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst icons = [\n  'home',\n  'search',\n  'bell',\n  'mail',\n  'cal',\n  'folder',\n  'gear',\n  'user',\n  'heart',\n  'star',\n  'code',\n  'rocket',\n];\n\nexport default function Example() {\n  return (\n    <Flex gap=\"md\" align-center justify-center wrap className=\"text-foreground-100\">\n      {icons.map((id) => (\n        <Icon key={id} id={id} size={24} />\n      ))}\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/02-sizes",
@@ -1763,7 +2570,7 @@ export const generatedWorkshopContent = [
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"lg\" align-center justify-center wrap className=\"text-foreground-100\">\n  {[16, 20, 24, 32, '2.5rem'].map((size) => (\n    <Flex key={String(size)} direction=\"column\" gap=\"xs\" align-center>\n      <Icon id=\"cake-fill\" size={size} />\n      <span className=\"text-xs text-foreground-400\">{String(size)}</span>\n    </Flex>\n  ))}\n</Flex>"
+    "code": "import { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst sizes: Array<number | string> = [16, 20, 24, 32, '2.5rem'];\n\nexport default function Example() {\n  return (\n    <Flex gap=\"lg\" align-center justify-center wrap className=\"text-foreground-100\">\n      {sizes.map((size) => (\n        <Flex key={String(size)} direction=\"column\" gap=\"xs\" align-center>\n          <Icon id=\"rocket\" size={size} />\n          <span className=\"text-xs text-foreground-400\">{String(size)}</span>\n        </Flex>\n      ))}\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/03-color-inheritance",
@@ -1776,7 +2583,7 @@ export const generatedWorkshopContent = [
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"lg\" align-center justify-center wrap>\n  {tones.map((tone) => (\n    <Flex\n      key={tone.label}\n      direction=\"column\"\n      gap=\"xs\"\n      align-center\n      className={tone.className}\n    >\n      {/* The icon takes its color from the container's currentColor. */}\n      <Icon id={tone.id} size={24} />\n      <span className=\"text-xs\">{tone.label}</span>\n    </Flex>\n  ))}\n</Flex>"
+    "code": "import { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst tones = [\n  { id: 'user', label: 'Foreground', className: 'text-foreground-100' },\n  { id: 'sparkle', label: 'Accent', className: 'text-accent-500' },\n  { id: 'check-circle', label: 'Success', className: 'text-success-500' },\n  { id: 'warning', label: 'Warning', className: 'text-warning-500' },\n  { id: 'close-circle', label: 'Danger', className: 'text-danger-500' },\n];\n\nexport default function Example() {\n  return (\n    <Flex gap=\"lg\" align-center justify-center wrap>\n      {tones.map((tone) => (\n        <Flex\n          key={tone.label}\n          direction=\"column\"\n          gap=\"xs\"\n          align-center\n          className={tone.className}\n        >\n          <Icon id={tone.id} size={24} />\n          <span className=\"text-xs\">{tone.label}</span>\n        </Flex>\n      ))}\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/04-buttons-and-badges",
@@ -1789,7 +2596,7 @@ export const generatedWorkshopContent = [
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"md\" align-center justify-center>\n  <Flex gap=\"sm\" align-center justify-center wrap>\n    {/* The button label names the action, so the icon stays decorative. */}\n    <Button icon={{ left: <Icon id=\"magnifying-glass-plus-fill\" size={14} /> }}>\n      Search\n    </Button>\n    <Button variant=\"secondary\" icon={{ right: <Icon id=\"arrow-right-fill\" size={14} /> }}>\n      Continue\n    </Button>\n    {/* An icon-only button carries the accessible name itself. */}\n    <Button\n      aria-label=\"Open settings\"\n      variant=\"ghost\"\n      icon={{ left: <Icon id=\"gear-fill\" size={16} /> }}\n    />\n  </Flex>\n\n  <Flex gap=\"xs\" align-center justify-center wrap>\n    <Badge icon={{ left: <Icon id=\"check-circle-fill\" size={10} /> }}>Verified</Badge>\n    <Badge icon={{ left: <Icon id=\"lightning-fill\" size={10} /> }}>Fast</Badge>\n    <Badge icon={{ right: <Icon id=\"arrow-right-fill\" size={10} /> }}>Continue</Badge>\n  </Flex>\n</Flex>"
+    "code": "import { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\" align-center justify-center>\n      <Flex gap=\"sm\" align-center justify-center wrap>\n        <Button icon={{ left: <Icon id=\"search\" size={14} /> }}>\n          Search\n        </Button>\n        <Button variant=\"secondary\" icon={{ right: <Icon id=\"right\" size={14} /> }}>\n          Continue\n        </Button>\n        <Button\n          aria-label=\"Open settings\"\n          variant=\"ghost\"\n          icon={{ left: <Icon id=\"gear\" size={16} /> }}\n        />\n      </Flex>\n\n      <Flex gap=\"xs\" align-center justify-center wrap>\n        <Badge icon={{ left: <Icon id=\"check-circle\" size={10} /> }}>Verified</Badge>\n        <Badge icon={{ left: <Icon id=\"bolt\" size={10} /> }}>Fast</Badge>\n        <Badge icon={{ right: <Icon id=\"right\" size={10} /> }}>Continue</Badge>\n      </Flex>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/05-inputs-and-navigation",
@@ -1802,7 +2609,7 @@ export const generatedWorkshopContent = [
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex gap=\"lg\" align-start className=\"w-120\">\n  <nav aria-label=\"Workspace\" className=\"flex w-40 flex-col gap-1\">\n    {navigation.map((item) => (\n      <a\n        key={item.label}\n        href=\"#\"\n        aria-current={item.active ? 'page' : undefined}\n        className={`flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm ${\n          item.active ? 'bg-background-800 text-foreground-100' : 'text-foreground-400'\n        }`}\n      >\n        <Icon id={item.id} size={16} />\n        {item.label}\n      </a>\n    ))}\n  </nav>\n\n  <div className=\"flex flex-1 flex-col gap-1.5\">\n    <Label helperText=\"Filter the member list by name or email.\">Search members</Label>\n    <Input\n      placeholder=\"Search…\"\n      icon={{\n        prefix: <Icon id=\"magnifying-glass-fill\" size={14} className=\"text-foreground-400\" />,\n        suffix: <Icon id=\"funnel-fill\" size={14} className=\"text-foreground-400\" />,\n      }}\n    />\n  </div>\n</Flex>"
+    "code": "import { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\nimport { Label } from 'ui-lab-components/label';\n\nconst navigation = [\n  { id: 'home', label: 'Overview', active: true },\n  { id: 'trend', label: 'Analytics', active: false },\n  { id: 'users', label: 'Members', active: false },\n  { id: 'gear', label: 'Settings', active: false },\n];\n\nexport default function Example() {\n  return (\n    <Flex gap=\"lg\" align-start>\n      <nav aria-label=\"Workspace\" className=\"flex w-40 flex-col gap-1\">\n        {navigation.map((item) => (\n          <a\n            key={item.label}\n            href=\"#\"\n            aria-current={item.active ? 'page' : undefined}\n            className={`flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm ${\n              item.active\n                ? 'bg-background-800 text-foreground-100'\n                : 'text-foreground-400'\n            }`}\n          >\n            <Icon id={item.id} size={16} />\n            {item.label}\n          </a>\n        ))}\n      </nav>\n\n      <div className=\"flex flex-1 flex-col gap-1.5\">\n        <Label helperText=\"Filter the member list by name or email.\">Search members</Label>\n        <Input\n          placeholder=\"Search…\"\n          icon={{\n            prefix: <Icon id=\"search\" size={14} className=\"text-foreground-400\" />,\n            suffix: <Icon id=\"filter\" size={14} className=\"text-foreground-400\" />,\n          }}\n        />\n      </div>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/06-standalone-label",
@@ -1815,20 +2622,20 @@ export const generatedWorkshopContent = [
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"md\" align-center justify-center className=\"w-90 text-center\">\n  {/* Standalone and meaningful: label exposes an accessible name. */}\n  <Icon id=\"warning-fill\" label=\"Warning\" size={32} className=\"text-warning-500\" />\n\n  <div className=\"space-y-1\">\n    <p className=\"text-sm text-foreground-100\">Payment method expired</p>\n    <p className=\"text-xs text-foreground-400\">\n      Nothing else on this card names the problem, so the icon carries the meaning and\n      needs a label.\n    </p>\n  </div>\n\n  {/* Next to a label, the icon stays decorative. */}\n  <Button variant=\"secondary\" icon={{ left: <Icon id=\"credit-card-fill\" size={14} /> }}>\n    Update billing\n  </Button>\n</Flex>"
+    "code": "import { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Icon } from 'ui-lab-components/icon';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\" align-center justify-center className=\"text-center\">\n      <Icon id=\"warning\" label=\"Warning\" size={32} className=\"text-warning-500\" />\n\n      <div className=\"space-y-1\">\n        <p className=\"text-sm text-foreground-100\">Payment method expired</p>\n        <p className=\"text-xs text-foreground-400\">\n          Nothing else on this card names the problem, so the icon carries the meaning and\n          needs a label.\n        </p>\n      </div>\n\n      <Button variant=\"secondary\" icon={{ left: <Icon id=\"card\" size={14} /> }}>\n        Update billing\n      </Button>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/07-custom-asset-source",
     "kind": "component-example",
     "id": "07-custom-asset-source",
     "name": "Custom Asset Source",
-    "description": "Point a single icon at another location with assetBaseUrl, or configure the whole tree with IconProvider — including a resolveSource function for CDNs, base paths, or alias layers.",
+    "description": "Point a single icon at another location with asset-url, or configure the whole tree with IconProvider — including a resolve-source function that maps friendly aliases onto Lumen ids, or points at a CDN or base path.",
     "category": "examples",
     "visibility": "public",
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"lg\" align-center justify-center className=\"text-foreground-100\">\n  {/* Per-icon override of the provider's base URL. */}\n  <Flex direction=\"column\" gap=\"xs\" align-center>\n    <Icon id=\"cake-fill\" size={24} assetBaseUrl=\"/ui-lab-icons\" />\n    <span className=\"text-xs text-foreground-400\">assetBaseUrl</span>\n  </Flex>\n\n  {/* A resolver owns the whole subtree, so assetBaseUrl no longer applies. */}\n  <IconProvider\n    resolveSource={({ variant, id }) =>\n      `/ui-lab-icons/${variant}/${aliases[id] ?? id}.svg`\n    }\n  >\n    <Flex gap=\"lg\" align-center justify-center wrap>\n      {Object.keys(aliases).map((id) => (\n        <Flex key={id} direction=\"column\" gap=\"xs\" align-center>\n          <Icon id={id} size={24} />\n          <span className=\"text-xs text-foreground-400\">{id}</span>\n        </Flex>\n      ))}\n    </Flex>\n  </IconProvider>\n</Flex>"
+    "code": "\"use client\";\n\nimport { Flex } from 'ui-lab-components/flex';\nimport { DEFAULT_ICON_ASSET_BASE_URL, Icon, IconProvider } from 'ui-lab-components/icon';\n\n// A resolver can map friendly product-level names onto the Lumen ids that\n// actually ship, or point the whole app at a CDN / base path.\nconst aliases: Record<string, string> = {\n  house: 'home',\n  'magnifying-glass': 'search',\n  alert: 'warning',\n};\n\nconst baseUrl = DEFAULT_ICON_ASSET_BASE_URL;\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"lg\" align-center justify-center className=\"text-foreground-100\">\n      <Flex direction=\"column\" gap=\"xs\" align-center>\n        <Icon id=\"rocket\" size={24} asset-url={baseUrl} />\n        <span className=\"text-xs text-foreground-400\">asset-url</span>\n      </Flex>\n\n      <IconProvider\n        resolve-source={({ variant, id }) => `${baseUrl}/${variant}/${aliases[id] ?? id}.svg`}\n      >\n        <Flex gap=\"lg\" align-center justify-center wrap>\n          {Object.keys(aliases).map((id) => (\n            <Flex key={id} direction=\"column\" gap=\"xs\" align-center>\n              <Icon id={id} size={24} />\n              <span className=\"text-xs text-foreground-400\">{id}</span>\n            </Flex>\n          ))}\n        </Flex>\n      </IconProvider>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:icon/08-status-list",
@@ -1841,7 +2648,7 @@ export const generatedWorkshopContent = [
     "componentId": "icon",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-90 flex-col gap-4\">\n  <div className=\"flex flex-col gap-0.5\">\n    {services.map((service) => (\n      <div\n        key={service.name}\n        className=\"flex items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-sm\"\n      >\n        <span className=\"flex items-center gap-2 text-foreground-100\">\n          <Icon id={service.id} size={16} className={service.tone} />\n          {service.name}\n        </span>\n        <span className=\"text-xs text-foreground-400\">{service.status}</span>\n      </div>\n    ))}\n  </div>\n\n  <div className=\"flex flex-wrap items-center gap-x-4 gap-y-1 px-2 text-xs text-foreground-400\">\n    {meta.map((item) => (\n      <span key={item.id} className=\"flex items-center gap-1.5\">\n        <Icon id={item.id} size={12} />\n        {item.value}\n      </span>\n    ))}\n  </div>\n</div>"
+    "code": "import { Icon } from 'ui-lab-components/icon';\n\nconst services = [\n  { id: 'check-circle', name: 'API', status: 'Operational', tone: 'text-success-500' },\n  { id: 'warning', name: 'Webhooks', status: 'Degraded', tone: 'text-warning-500' },\n  { id: 'close-circle', name: 'Exports', status: 'Outage', tone: 'text-danger-500' },\n  { id: 'clock', name: 'Search index', status: 'Rebuilding', tone: 'text-foreground-400' },\n];\n\nconst meta = [\n  { id: 'user', value: 'Ana Sørensen' },\n  { id: 'clock', value: 'Updated 4m ago' },\n  { id: 'database', value: 'eu-central-1' },\n];\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-4\">\n      <div className=\"flex flex-col gap-0.5\">\n        {services.map((service) => (\n          <div\n            key={service.name}\n            className=\"flex items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-sm\"\n          >\n            <span className=\"flex items-center gap-2 text-foreground-100\">\n              <Icon id={service.id} size={16} className={service.tone} />\n              {service.name}\n            </span>\n            <span className=\"text-xs text-foreground-400\">{service.status}</span>\n          </div>\n        ))}\n      </div>\n\n      <div className=\"flex flex-wrap items-center gap-x-4 gap-y-1 px-2 text-xs text-foreground-400\">\n        {meta.map((item) => (\n          <span key={item.id} className=\"flex items-center gap-1.5\">\n            <Icon id={item.id} size={12} />\n            {item.value}\n          </span>\n        ))}\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:input/01-basic-input",
@@ -1854,7 +2661,7 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<Input placeholder=\"Enter text...\" />"
+    "code": "import { Input } from 'ui-lab-components/input';\n\nexport default function Example() {\n  return <Input placeholder=\"Enter text...\" />;\n}\n"
   },
   {
     "ref": "example:input/02-validation-states",
@@ -1867,7 +2674,7 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex w-full max-w-sm flex-col gap-6\">\n  <div className=\"flex flex-col gap-1.5\">\n    <Label error helperText=\"Please enter a valid email address\" helperTextError>\n      Email\n    </Label>\n    <Input\n      type=\"email\"\n      placeholder=\"Enter your email\"\n      error\n      defaultValue=\"invalid-email\"\n      icon={{\n        suffix: <FaCircleExclamation className=\"text-danger-600\" size={14} />,\n      }}\n    />\n  </div>\n\n  <div className=\"flex flex-col gap-1.5\">\n    <Label helperText=\"Email address is available\">Email</Label>\n    <Input\n      type=\"email\"\n      placeholder=\"Enter your email\"\n      defaultValue=\"user@example.com\"\n      icon={{\n        suffix: <FaCircleCheck className=\"text-success-600\" size={14} />,\n      }}\n      className=\"border-success-600 focus:border-success-600\"\n    />\n  </div>\n\n  <div className=\"flex flex-col gap-1.5\">\n    <Label required helperText=\"We'll never share your email with anyone else.\">\n      Email\n    </Label>\n    <Input type=\"email\" placeholder=\"Enter your email\" />\n  </div>\n</div>"
+    "code": "import { Input } from 'ui-lab-components/input'\nimport { Label } from 'ui-lab-components/label';\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-6\">\n      <div className=\"flex flex-col gap-1.5\">\n        <Label error helperText=\"Please enter a valid email address\" helperTextError>\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          error\n          defaultValue=\"invalid-email\"\n          icon={{ suffix: <Icon id=\"alert\" className=\"text-danger-600\" size={14} /> }}\n        />\n      </div>\n\n      <div className=\"flex flex-col gap-1.5\">\n        <Label helperText=\"Email address is available\">\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\"\n          defaultValue=\"user@example.com\"\n          icon={{ suffix: <Icon id=\"check-circle\" className=\"text-success-600\" size={14} /> }}\n          className=\"border-success-600 focus:border-success-600\"\n        />\n      </div>\n\n      <div className=\"flex flex-col gap-1.5\">\n        <Label required helperText=\"We'll never share your email with anyone else.\">\n          Email\n        </Label>\n        <Input\n          type=\"email\"\n          placeholder=\"Enter your email\" />\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:input/03-sign-in-form",
@@ -1880,7 +2687,7 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <Input\n    type=\"email\"\n    icon={<FaEnvelope className=\"h-3.5 w-3.5\" />}\n    placeholder=\"Email address\"\n    autoComplete=\"email\"\n  />\n  <Input\n    type={showPassword ? 'text' : 'password'}\n    icon={<FaLock className=\"h-3.5 w-3.5\" />}\n    placeholder=\"Password\"\n    autoComplete=\"current-password\"\n    actions={[\n      {\n        icon: showPassword\n          ? <FaEyeSlash className=\"h-3.5 w-3.5\" />\n          : <FaEye className=\"h-3.5 w-3.5\" />,\n        title: showPassword ? 'Hide password' : 'Show password',\n        onClick: () => setShowPassword((value) => !value),\n      },\n    ]}\n  />\n  <Button variant=\"primary\" className=\"mt-1 w-full\">\n    Sign in\n  </Button>\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Input } from 'ui-lab-components/input';\nimport { Icon } from 'ui-lab-components/icon'\n\nexport default function SignInForm() {\n  const [showPassword, setShowPassword] = useState(false);\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <Input\n        type=\"email\"\n        icon={<Icon id=\"mail\" size={14} />}\n        placeholder=\"Email address\"\n        autoComplete=\"email\"\n      />\n      <Input\n        type={showPassword ? 'text' : 'password'}\n        icon={<Icon id=\"lock\" size={14} />}\n        placeholder=\"Password\"\n        autoComplete=\"current-password\"\n        actions={[\n          {\n            icon: showPassword\n              ? <Icon id=\"eye-off\" size={14} />\n              : <Icon id=\"eye\" size={14} />,\n            title: showPassword ? 'Hide password' : 'Show password',\n            onClick: () => setShowPassword((value) => !value),\n          },\n        ]}\n      />\n      <Button variant=\"primary\" className=\"w-full mt-1\">Sign in</Button>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:input/05-user-handle",
@@ -1893,7 +2700,7 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <Input\n    icon={<FaAt className=\"h-3.5 w-3.5\" />}\n    placeholder=\"username\"\n    value={handle}\n    onChange={(event) => setHandle(event.target.value)}\n    actions={[\n      {\n        icon: copied\n          ? <FaCheck className=\"h-3.5 w-3.5 text-green-500\" />\n          : <FaCopy className=\"h-3.5 w-3.5\" />,\n        title: copied ? 'Copied!' : 'Copy handle',\n        onClick: handleCopy,\n      },\n    ]}\n  />\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Flex } from 'ui-lab-components/flex'\nimport { Input } from 'ui-lab-components/input';\nimport { Icon } from 'ui-lab-components/icon';\n\nexport default function UserHandle() {\n  const [handle, setHandle] = useState('kyza');\n  const [copied, setCopied] = useState(false);\n\n  const handleCopy = () => {\n    setCopied(true);\n    setTimeout(() => setCopied(false), 1500);\n  };\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <Input\n        icon={<Icon id=\"at\" size={14} />}\n        placeholder=\"username\"\n        value={handle}\n        onChange={(event) => setHandle(event.target.value)}\n        actions={[\n          {\n            icon: copied\n              ? <Icon id=\"check\" size={14} className=\"text-green-500\" />\n              : <Icon id=\"copy\" size={14} />,\n            title: copied ? 'Copied!' : 'Copy handle',\n            onClick: handleCopy,\n          },\n        ]}\n      />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:input/06-api-key",
@@ -1906,7 +2713,7 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <Input\n    type={revealed ? 'text' : 'password'}\n    icon={<FaKey className=\"h-3.5 w-3.5\" />}\n    value={key}\n    readOnly\n    actions={[\n      {\n        icon: revealed\n          ? <FaEyeSlash className=\"h-3.5 w-3.5\" />\n          : <FaEye className=\"h-3.5 w-3.5\" />,\n        title: revealed ? 'Hide key' : 'Reveal key',\n        onClick: () => setRevealed((value) => !value),\n      },\n      {\n        icon: copied\n          ? <FaCheck className=\"h-3.5 w-3.5 text-green-500\" />\n          : <FaCopy className=\"h-3.5 w-3.5\" />,\n        title: copied ? 'Copied!' : 'Copy key',\n        onClick: handleCopy,\n      },\n    ]}\n  />\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Flex } from 'ui-lab-components/flex'\nimport { Input } from 'ui-lab-components/input';\nimport { Icon } from 'ui-lab-components/icon';\n\nexport default function ApiKey() {\n  const [revealed, setRevealed] = useState(false);\n  const [copied, setCopied] = useState(false);\n  const key = 'sk-proj-a8f2c1d9e4b7';\n\n  const handleCopy = () => {\n    setCopied(true);\n    setTimeout(() => setCopied(false), 1500);\n  };\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <Input\n        type={revealed ? 'text' : 'password'}\n        icon={<Icon id=\"key\" size={14} />}\n        value={key}\n        readOnly\n        actions={[\n          {\n            icon: revealed\n              ? <Icon id=\"eye-off\" size={14} />\n              : <Icon id=\"eye\" size={14} />,\n            title: revealed ? 'Hide key' : 'Reveal key',\n            onClick: () => setRevealed((value) => !value),\n          },\n          {\n            icon: copied\n              ? <Icon id=\"check\" size={14} className=\"text-green-500\" />\n              : <Icon id=\"copy\" size={14} />,\n            title: copied ? 'Copied!' : 'Copy key',\n            onClick: handleCopy,\n          },\n        ]}\n      />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:input/07-url-validation",
@@ -1919,7 +2726,7 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <Input\n    placeholder=\"https://example.com\"\n    value={url}\n    onChange={(event) => setUrl(event.target.value)}\n    error={showError}\n    icon={{\n      prefix: <FaLink className=\"h-3.5 w-3.5\" />,\n      suffix: showError\n        ? <FaCircleExclamation className=\"h-3.5 w-3.5 text-red-500\" />\n        : url.length > 0\n          ? <FaCheck className=\"h-3.5 w-3.5 text-green-500\" />\n          : undefined,\n    }}\n  />\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Flex } from 'ui-lab-components/flex'\nimport { Input } from 'ui-lab-components/input';\nimport { Icon } from 'ui-lab-components/icon';\n\nexport default function UrlValidation() {\n  const [url, setUrl] = useState('');\n\n  const isValid = url.length === 0 || /^https?:\\/\\/.+\\..+/.test(url);\n  const showError = url.length > 0 && !isValid;\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <Input\n        placeholder=\"https://example.com\"\n        value={url}\n        onChange={(event) => setUrl(event.target.value)}\n        error={showError}\n        icon={{\n          prefix: <Icon id=\"link\" size={14} />,\n          suffix: showError\n            ? <Icon id=\"alert\" size={14} className=\"text-red-500\" />\n            : url.length > 0\n              ? <Icon id=\"check\" size={14} className=\"text-green-500\" />\n              : undefined,\n        }}\n      />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:input/08-quantity",
@@ -1932,7 +2739,20 @@ export const generatedWorkshopContent = [
     "componentId": "input",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <Input\n    type=\"number\"\n    placeholder=\"Qty\"\n    value={qty}\n    min={1}\n    max={99}\n    onChange={(event) => setQty(Number(event.target.value))}\n  />\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Flex } from 'ui-lab-components/flex'\nimport { Input } from 'ui-lab-components/input';\n\nexport default function Quantity() {\n  const [qty, setQty] = useState(1);\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <Input\n        type=\"number\"\n        placeholder=\"Qty\"\n        value={qty}\n        min={1}\n        max={99}\n        onChange={(event) => setQty(Number(event.target.value))}\n      />\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:label/01-basic-label",
+    "kind": "component-example",
+    "id": "01-basic-label",
+    "name": "Basic Label",
+    "description": "A simple label component associated with a form input. Use this to provide accessible labels for form elements.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "label",
+    "access": "free",
+    "locked": false,
+    "code": "import { Label } from 'ui-lab-components/label'\nimport { Input } from 'ui-lab-components/input';\n\n\nexport default function Example() {\n  return (\n    <div>\n      <Label htmlFor=\"name\">Name</Label>\n      <Input id=\"name\" placeholder=\"Enter your name\" />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:list/01-basic-list",
@@ -1945,7 +2765,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List aria-label=\"Recent projects\">\n  <List.Header>\n    <h2>Projects</h2>\n  </List.Header>\n  {projects.map((project) => (\n    <List.Item key={project.id} value={project.id} interactive>\n      <div className=\"h-6 w-6 flex-shrink-0 rounded bg-background-700/50\" />\n      <List.Title>{project.title}</List.Title>\n    </List.Item>\n  ))}\n</List>"
+    "code": "import { List } from 'ui-lab-components/list'\n\nconst projects = [\n  { id: \"design-system\", title: \"Design system audit\" },\n  { id: \"onboarding\", title: \"Onboarding flow\" },\n  { id: \"billing\", title: \"Billing dashboard\" },\n];\n\nexport default function BasicList() {\n  return (\n    <div className=\"flex flex-col gap-4 rounded-sm\">\n      <div className=\"h-2.5 w-24 rounded bg-background-700/40\" aria-hidden=\"true\" />\n\n      <List aria-label=\"Recent projects\">\n        <List.Header>\n          <h2>Projects</h2>\n        </List.Header>\n        {projects.map((project) => (\n          <List.Item key={project.id} value={project.id} interactive>\n            <List.Title>{project.title}</List.Title>\n          </List.Item>\n        ))}\n      </List>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:list/02-review-queue",
@@ -1958,7 +2778,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List spacing=\"sm\">\n  {reviewItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Mark ${item.title} reviewed`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n    </List.Item>\n  ))}\n</List>\n\n<Button variant=\"primary\" size=\"sm\" icon={{ left: <FaCircleCheck /> }} disabled={!allChecked}>\n  Submit review\n</Button>"
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { List } from 'ui-lab-components/list';\nimport { Button } from 'ui-lab-components/button';\nimport { Icon } from 'ui-lab-components/icon';\n\nconst reviewItems = [\n  { id: \"legal\", title: \"Legal review\", desc: \"Updated retention language\" },\n  { id: \"security\", title: \"Security review\", desc: \"New access scopes\" },\n  { id: \"billing\", title: \"Billing review\", desc: \"Invoice copy changes\" },\n];\n\nexport default function ReviewQueue() {\n  const [checked, setChecked] = useState(() => new Set([\"legal\"]));\n  const allChecked = checked.size === reviewItems.length;\n\n  const setItem = (id: string, value: boolean) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      value ? next.add(id) : next.delete(id);\n      return next;\n    });\n  };\n\n  const toggleItem = (id: string) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      next.has(id) ? next.delete(id) : next.add(id);\n      return next;\n    });\n  };\n\n  return (\n    <div className=\"flex flex-col gap-4 rounded-sm p-4\">\n      <div className=\"flex items-center gap-3\" aria-hidden=\"true\">\n        <div className=\"h-9 w-9 rounded-full border-2 border-background-950 bg-background-700/50\" />\n        <div className=\"flex flex-col gap-2\">\n          <div className=\"h-3 w-32 rounded bg-background-700/50\" />\n          <div className=\"h-2.5 w-20 rounded bg-background-700/30\" />\n        </div>\n      </div>\n\n      <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n      <List spacing=\"sm\">\n        {reviewItems.map((item) => (\n          <List.Item key={item.id} value={item.id} interactive onClick={() => toggleItem(item.id)}>\n            <List.Checkbox\n              aria-label={`Mark ${item.title} reviewed`}\n              placement=\"start\"\n              checked={checked.has(item.id)}\n              onCheckedChange={(value) => setItem(item.id, value)}\n            />\n            <div className=\"min-w-0 flex-1\">\n              <List.Title>{item.title}</List.Title>\n              <List.Desc>{item.desc}</List.Desc>\n            </div>\n          </List.Item>\n        ))}\n      </List>\n\n      <Button variant=\"primary\" size=\"sm\" icon={{ left: <Icon id=\"check-circle\" size=\"1em\" /> }} disabled={!allChecked}>\n        Submit review\n      </Button>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:list/03-notification-rules",
@@ -1971,7 +2791,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List spacing=\"sm\">\n  {notificationItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Enable ${item.title.toLowerCase()} notifications`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Select\n        selectedKey={delivery[item.id]}\n        label={String(delivery[item.id] ?? \"\")}\n        disabled={!checked.has(item.id)}\n        className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n        onSelectionChange={(value) => setDeliveryMode(item.id, value)}\n      >\n        <Select.Trigger>\n          <Select.Value placeholder=\"Mode\" />\n        </Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"email\">Email</Select.Item>\n            <Select.Item value=\"digest\">Digest</Select.Item>\n            <Select.Item value=\"push\">Push</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  ))}\n</List>"
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { List } from 'ui-lab-components/list'\nimport { Select } from 'ui-lab-components/select';\n\nconst notificationItems = [\n  { id: \"comments\", title: \"Comments\", desc: \"Replies and mentions\" },\n  { id: \"deployments\", title: \"Deployments\", desc: \"Preview and production updates\" },\n  { id: \"incidents\", title: \"Incidents\", desc: \"Status changes and postmortems\" },\n];\n\nexport default function NotificationRules() {\n  const [checked, setChecked] = useState(() => new Set([\"comments\", \"incidents\"]));\n  const [delivery, setDelivery] = useState<Record<string, string | number | null>>({\n    comments: \"digest\",\n    deployments: \"email\",\n    incidents: \"push\",\n  });\n\n  const setItem = (id: string, value: boolean) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      value ? next.add(id) : next.delete(id);\n      return next;\n    });\n  };\n\n  const toggleItem = (id: string) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      next.has(id) ? next.delete(id) : next.add(id);\n      return next;\n    });\n  };\n\n  const setDeliveryMode = (id: string, value: string | number | null) => {\n    setDelivery((current) => ({ ...current, [id]: value }));\n  };\n\n  return (\n    <div className=\"flex flex-col gap-4 rounded-sm p-4\">\n      <div className=\"flex flex-col gap-2\" aria-hidden=\"true\">\n        <div className=\"h-3 w-28 rounded bg-background-700/50\" />\n        <div className=\"h-2.5 w-44 rounded bg-background-700/30\" />\n      </div>\n\n      <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n      <List spacing=\"sm\">\n        {notificationItems.map((item) => (\n          <List.Item key={item.id} value={item.id} interactive onClick={() => toggleItem(item.id)}>\n            <List.Checkbox\n              aria-label={`Enable ${item.title.toLowerCase()} notifications`}\n              placement=\"start\"\n              checked={checked.has(item.id)}\n              onCheckedChange={(value) => setItem(item.id, value)}\n            />\n            <div className=\"min-w-0 flex-1\">\n              <List.Title>{item.title}</List.Title>\n              <List.Desc>{item.desc}</List.Desc>\n            </div>\n            <List.Select\n              selectedKey={delivery[item.id]}\n              label={String(delivery[item.id] ?? \"\")}\n              disabled={!checked.has(item.id)}\n              className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n              onSelectionChange={(value) => setDeliveryMode(item.id, value)}\n            >\n              <Select.Trigger>\n                <Select.Value placeholder=\"Mode\" />\n              </Select.Trigger>\n              <Select.Content>\n                <Select.List>\n                  <Select.Item value=\"email\">Email</Select.Item>\n                  <Select.Item value=\"digest\">Digest</Select.Item>\n                  <Select.Item value=\"push\">Push</Select.Item>\n                </Select.List>\n              </Select.Content>\n            </List.Select>\n          </List.Item>\n        ))}\n      </List>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:list/04-quota-editor",
@@ -1984,7 +2804,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List spacing=\"sm\">\n  {quotaItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => toggleItem(item.id)}\n    >\n      <List.Checkbox\n        aria-label={`Enable ${item.title.toLowerCase()} limit`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"flex min-w-0 flex-1 flex-col gap-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Input\n        aria-label={`${item.title} limit`}\n        type=\"number\"\n        value={limits[item.id]}\n        disabled={!checked.has(item.id)}\n        onChange={(event) => setLimit(item.id, event.currentTarget.value)}\n        className=\"w-28\"\n      />\n    </List.Item>\n  ))}\n</List>"
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { List } from 'ui-lab-components/list';\n\nconst quotaItems = [\n  { id: \"seats\", title: \"Seats\", desc: \"Maximum workspace members\" },\n  { id: \"projects\", title: \"Projects\", desc: \"Active projects per workspace\" },\n  { id: \"tokens\", title: \"Tokens\", desc: \"Monthly API token budget\" },\n];\n\nexport default function QuotaEditor() {\n  const [checked, setChecked] = useState(() => new Set([\"seats\", \"projects\"]));\n  const [limits, setLimits] = useState<Record<string, string>>({\n    seats: \"24\",\n    projects: \"12\",\n    tokens: \"50000\",\n  });\n\n  const setItem = (id: string, value: boolean) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      value ? next.add(id) : next.delete(id);\n      return next;\n    });\n  };\n\n  const toggleItem = (id: string) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      next.has(id) ? next.delete(id) : next.add(id);\n      return next;\n    });\n  };\n\n  const setLimit = (id: string, value: string) => {\n    setLimits((current) => ({ ...current, [id]: value }));\n  };\n\n  return (\n    <div className=\"flex flex-col gap-4 rounded-sm p-4\">\n      <div className=\"flex items-center justify-between\" aria-hidden=\"true\">\n        <div className=\"h-3 w-24 rounded bg-background-700/50\" />\n        <div className=\"h-5 w-16 rounded-full bg-background-700/30\" />\n      </div>\n\n      <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n      <List spacing=\"sm\">\n        {quotaItems.map((item) => (\n          <List.Item key={item.id} value={item.id} interactive onClick={() => toggleItem(item.id)}>\n            <List.Checkbox\n              aria-label={`Enable ${item.title.toLowerCase()} limit`}\n              placement=\"start\"\n              checked={checked.has(item.id)}\n              onCheckedChange={(value) => setItem(item.id, value)}\n            />\n            <div className=\"flex min-w-0 flex-1 flex-col gap-1\">\n              <List.Title>{item.title}</List.Title>\n              <List.Desc>{item.desc}</List.Desc>\n            </div>\n            <List.Input\n              aria-label={`${item.title} limit`}\n              type=\"number\"\n              value={limits[item.id]}\n              disabled={!checked.has(item.id)}\n              onChange={(event) => setLimit(item.id, event.currentTarget.value)}\n              className=\"w-28\"\n            />\n          </List.Item>\n        ))}\n      </List>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:list/05-permissions-matrix",
@@ -1997,7 +2817,7 @@ export const generatedWorkshopContent = [
     "componentId": "list",
     "access": "free",
     "locked": false,
-    "code": "<List spacing=\"sm\">\n  <List.Item value=\"all\" interactive onClick={() => setAll(!allChecked)}>\n    <List.Checkbox\n      aria-label=\"Toggle all permissions\"\n      placement=\"start\"\n      checked={allChecked}\n      isIndeterminate={isIndeterminate}\n      onCheckedChange={setAll}\n    />\n    <List.Title>All permissions</List.Title>\n  </List.Item>\n  <List.Divider />\n  {permissionItems.map((item) => (\n    <List.Item\n      key={item.id}\n      value={item.id}\n      interactive\n      onClick={() => setItem(item.id, !checked.has(item.id))}\n    >\n      <div className=\"w-5 flex-shrink-0\" />\n      <List.Checkbox\n        aria-label={`Allow ${item.title.toLowerCase()}`}\n        placement=\"start\"\n        checked={checked.has(item.id)}\n        onCheckedChange={(value) => setItem(item.id, value)}\n      />\n      <div className=\"min-w-0 flex-1\">\n        <List.Title>{item.title}</List.Title>\n        <List.Desc>{item.desc}</List.Desc>\n      </div>\n      <List.Select\n        selectedKey={level[item.id]}\n        label={String(level[item.id] ?? \"\")}\n        disabled={!checked.has(item.id)}\n        className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n        onSelectionChange={(value) => setPermissionLevel(item.id, value)}\n      >\n        <Select.Trigger>\n          <Select.Value placeholder=\"Access\" />\n        </Select.Trigger>\n        <Select.Content>\n          <Select.List>\n            <Select.Item value=\"view\">View</Select.Item>\n            <Select.Item value=\"edit\">Edit</Select.Item>\n            <Select.Item value=\"admin\">Admin</Select.Item>\n          </Select.List>\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  ))}\n</List>"
+    "code": "\"use client\";\n\nimport { useMemo, useState } from \"react\";\nimport { List } from 'ui-lab-components/list'\nimport { Select } from 'ui-lab-components/select';\n\nconst permissionItems = [\n  { id: \"members\", title: \"Members\", desc: \"Invite and remove workspace members\" },\n  { id: \"billing\", title: \"Billing\", desc: \"Update plan, seats, and invoices\" },\n  { id: \"tokens\", title: \"Tokens\", desc: \"Issue scoped API credentials\" },\n];\n\nexport default function PermissionsMatrix() {\n  const rows = useMemo(() => [{ id: \"all\", title: \"All permissions\" }, ...permissionItems], []);\n  const [checked, setChecked] = useState(() => new Set([\"members\", \"tokens\"]));\n  const [level, setLevel] = useState<Record<string, string | number | null>>({\n    members: \"edit\",\n    billing: \"view\",\n    tokens: \"edit\",\n  });\n  const allChecked = checked.size === permissionItems.length;\n  const isIndeterminate = checked.size > 0 && !allChecked;\n\n  const setItem = (id: string, value: boolean) => {\n    setChecked((current) => {\n      const next = new Set(current);\n      value ? next.add(id) : next.delete(id);\n      return next;\n    });\n  };\n\n  const setAll = (value: boolean) => {\n    permissionItems.forEach((item) => setItem(item.id, value));\n  };\n\n  const setPermissionLevel = (id: string, value: string | number | null) => {\n    setLevel((current) => ({ ...current, [id]: value }));\n  };\n\n  return (\n    <div className=\"flex flex-col gap-4 rounded-sm p-4\">\n      <div className=\"flex items-center gap-3\" aria-hidden=\"true\">\n        <div className=\"h-9 w-9 rounded-full border-2 border-background-950 bg-background-800\" />\n        <div className=\"flex flex-col gap-2\">\n          <div className=\"h-3 w-28 rounded bg-background-700/50\" />\n          <div className=\"h-2.5 w-20 rounded bg-background-700/30\" />\n        </div>\n      </div>\n\n      <div className=\"h-px bg-background-700/40\" aria-hidden=\"true\" />\n\n      <List spacing=\"sm\">\n        <List.Item value=\"all\" interactive onClick={() => setAll(!allChecked)}>\n          <List.Checkbox\n            aria-label=\"Toggle all permissions\"\n            placement=\"start\"\n            checked={allChecked}\n            isIndeterminate={isIndeterminate}\n            onCheckedChange={setAll}\n          />\n          <List.Title>All permissions</List.Title>\n        </List.Item>\n        <List.Divider />\n        {permissionItems.map((item) => (\n          <List.Item key={item.id} value={item.id} interactive onClick={() => setItem(item.id, !checked.has(item.id))}>\n            <div className=\"w-5 flex-shrink-0\" />\n            <List.Checkbox\n              aria-label={`Allow ${item.title.toLowerCase()}`}\n              placement=\"start\"\n              checked={checked.has(item.id)}\n              onCheckedChange={(value) => setItem(item.id, value)}\n            />\n            <div className=\"min-w-0 flex-1\">\n              <List.Title>{item.title}</List.Title>\n              <List.Desc>{item.desc}</List.Desc>\n            </div>\n            <List.Select\n              selectedKey={level[item.id]}\n              label={String(level[item.id] ?? \"\")}\n              disabled={!checked.has(item.id)}\n              className={!checked.has(item.id) ? \"pointer-events-none\" : undefined}\n              onSelectionChange={(value) => setPermissionLevel(item.id, value)}\n            >\n              <Select.Trigger>\n                <Select.Value placeholder=\"Access\" />\n              </Select.Trigger>\n              <Select.Content>\n                <Select.List>\n                  <Select.Item value=\"view\">View</Select.Item>\n                  <Select.Item value=\"edit\">Edit</Select.Item>\n                  <Select.Item value=\"admin\">Admin</Select.Item>\n                </Select.List>\n              </Select.Content>\n            </List.Select>\n          </List.Item>\n        ))}\n      </List>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:mask/activity-feed",
@@ -2010,7 +2830,7 @@ export const generatedWorkshopContent = [
     "componentId": "mask",
     "access": "free",
     "locked": false,
-    "code": "// `<Mask.Fade />` with no props is the scroll-fade preset. It reads\n// `--mask-top-fade` / `--mask-bottom-fade` off the root, so both must be\n// declared in `style` up front — the handler only rewrites their values.\nconst FADE_RAMP_PX = 40;\nconst FADE_SIZE_PERCENT = 10;\n\nconst maskRef = useRef<HTMLDivElement>(null);\n\nfunction handleScroll(event: UIEvent<HTMLDivElement>) {\n  const viewport = event.currentTarget;\n  const mask = maskRef.current;\n  if (!mask) return;\n\n  const maxScroll = viewport.scrollHeight - viewport.clientHeight;\n  const above = maxScroll > 0 ? Math.min(1, viewport.scrollTop / FADE_RAMP_PX) : 0;\n  const below = maxScroll > 0 ? Math.min(1, (maxScroll - viewport.scrollTop) / FADE_RAMP_PX) : 0;\n\n  mask.style.setProperty('--mask-top-fade', `${above * FADE_SIZE_PERCENT}%`);\n  mask.style.setProperty('--mask-bottom-fade', `${below * FADE_SIZE_PERCENT}%`);\n}\n\n<Mask\n  ref={maskRef}\n  className=\"h-64 overflow-hidden\"\n  style={{ '--mask-top-fade': '0%', '--mask-bottom-fade': '10%' }}\n>\n  <Mask.Fade />\n  <div className=\"h-full overflow-y-auto px-4 py-3\" onScroll={handleScroll}>\n    <ul className=\"flex flex-col gap-3\">\n      {activity.map((entry) => (\n        <li className=\"flex items-start gap-3\" key={entry.id}>\n          <p className=\"min-w-0 flex-1 text-sm leading-relaxed text-foreground-300\">\n            <span className=\"font-medium text-foreground-100\">{entry.actor}</span>{' '}\n            {entry.action} <span className=\"text-foreground-200\">{entry.target}</span>\n          </p>\n          <span className=\"shrink-0 text-xs text-foreground-400\">{entry.time}</span>\n        </li>\n      ))}\n    </ul>\n  </div>\n</Mask>"
+    "code": "'use client';\n\nimport { useRef, type CSSProperties, type ReactNode, type UIEvent } from 'react';\nimport { Mask } from 'ui-lab-components/mask';\nimport { Icon } from 'ui-lab-components/icon';\n\n// How far the reader has to scroll before an edge fade reaches full size, and\n// how tall that full-size fade is relative to the container. Two knobs, same as\n// the ones Scroll exposes as `fadeDistance` and `fadeSize`.\nconst FADE_RAMP_PX = 40;\nconst FADE_SIZE_PERCENT = 10;\n\n// `<Mask.Fade />` with no props selects the scroll-fade preset, but only when\n// the root already carries these two custom properties — they are what the\n// preset's gradient reads. Declare them up front (top closed, bottom open,\n// because the list starts at the top with more content below) and let the\n// scroll handler do nothing but rewrite their values.\nconst INITIAL_FADE_VARS = {\n  '--mask-top-fade': '0%',\n  '--mask-bottom-fade': `${FADE_SIZE_PERCENT}%`,\n} as CSSProperties;\n\nconst ACTIVITY = [\n  { id: 'a1', icon: 'rocket', tone: 'text-accent-400', actor: 'Priya Raman', action: 'deployed', target: 'web-app@4.12.0 to production', time: '2m' },\n  { id: 'a2', icon: 'check-circle', tone: 'text-success-500', actor: 'CI', action: 'passed 218 checks on', target: 'release/4.12', time: '9m' },\n  { id: 'a3', icon: 'pr', tone: 'text-foreground-400', actor: 'Tomas Lindqvist', action: 'merged', target: '#2841 Cache invalidation on tenant switch', time: '31m' },\n  { id: 'a4', icon: 'warning', tone: 'text-warning-500', actor: 'Alerting', action: 'flagged elevated p95 latency on', target: 'api-gateway (eu-west-1)', time: '1h' },\n  { id: 'a5', icon: 'commit', tone: 'text-foreground-400', actor: 'Dana Whitfield', action: 'pushed 4 commits to', target: 'feat/usage-billing', time: '2h' },\n  { id: 'a6', icon: 'user-plus', tone: 'text-info-500', actor: 'Marcus Oyelaran', action: 'invited', target: 'j.okafor@northwind.io as Reviewer', time: '3h' },\n  { id: 'a7', icon: 'check-circle', tone: 'text-success-500', actor: 'Migrations', action: 'applied', target: '0142_add_seat_limits on all shards', time: '5h' },\n  { id: 'a8', icon: 'pr', tone: 'text-foreground-400', actor: 'Priya Raman', action: 'opened', target: '#2846 Retry webhook deliveries with jitter', time: '7h' },\n  { id: 'a9', icon: 'rocket', tone: 'text-accent-400', actor: 'Tomas Lindqvist', action: 'rolled back', target: 'worker@4.11.3 in staging', time: '11h' },\n  { id: 'a10', icon: 'commit', tone: 'text-foreground-400', actor: 'Dana Whitfield', action: 'tagged', target: 'v4.11.2', time: '19h' },\n];\n\nfunction ActivityFeed(): ReactNode {\n  const maskRef = useRef<HTMLDivElement>(null);\n\n  // Top fade grows as content disappears above; bottom fade shrinks to nothing\n  // as the reader lands on the last row — so a fade only ever means \"there is\n  // more this way\".\n  function handleScroll(event: UIEvent<HTMLDivElement>) {\n    const viewport = event.currentTarget;\n    const mask = maskRef.current;\n    if (!mask) return;\n\n    const maxScroll = viewport.scrollHeight - viewport.clientHeight;\n    const above = maxScroll > 0 ? Math.min(1, viewport.scrollTop / FADE_RAMP_PX) : 0;\n    const below = maxScroll > 0 ? Math.min(1, (maxScroll - viewport.scrollTop) / FADE_RAMP_PX) : 0;\n\n    mask.style.setProperty('--mask-top-fade', `${above * FADE_SIZE_PERCENT}%`);\n    mask.style.setProperty('--mask-bottom-fade', `${below * FADE_SIZE_PERCENT}%`);\n  }\n\n  return (\n    <Mask ref={maskRef} className=\"h-64 overflow-hidden\" style={INITIAL_FADE_VARS}>\n      <Mask.Fade />\n      <div className=\"h-full overflow-y-auto px-4 py-3\" onScroll={handleScroll}>\n        <ul className=\"flex flex-col gap-3\">\n          {ACTIVITY.map(({ id, icon, tone, actor, action, target, time }) => (\n            <li className=\"flex items-start gap-3\" key={id}>\n              <Icon id={icon} size={14} className={`mt-0.5 shrink-0 ${tone}`} />\n              <p className=\"min-w-0 flex-1 text-sm leading-relaxed text-foreground-300\">\n                <span className=\"font-medium text-foreground-100\">{actor}</span> {action}{' '}\n                <span className=\"text-foreground-200\">{target}</span>\n              </p>\n              <span className=\"shrink-0 text-xs text-foreground-400\">{time}</span>\n            </li>\n          ))}\n        </ul>\n      </div>\n    </Mask>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"overflow-hidden rounded-md border border-background-700 bg-background-900\">\n      <div className=\"flex items-center justify-between border-b border-background-700 px-4 py-2.5\">\n        <h3 className=\"text-sm font-semibold text-foreground-100\">Workspace activity</h3>\n        <span className=\"text-xs text-foreground-400\">Last 24 hours</span>\n      </div>\n      <ActivityFeed />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:mask/integration-row",
@@ -2023,7 +2843,7 @@ export const generatedWorkshopContent = [
     "componentId": "mask",
     "access": "free",
     "locked": false,
-    "code": "// Two fades on one Mask composite rather than replacing each other, so the\n// row dissolves on both sides instead of hard-cropping. `intensity` is the\n// fade length in px steps (1.5 → 60px), and hiding the row's scrollbar keeps\n// it from being faded along with the logos.\n<Mask>\n  <Mask.Fade direction=\"left\" intensity={1.5} />\n  <Mask.Fade direction=\"right\" intensity={1.5} />\n  <div className=\"flex gap-2 overflow-x-auto px-5\" style={{ scrollbarWidth: 'none' }}>\n    {integrations.map((integration) => (\n      <span\n        className=\"flex shrink-0 items-center gap-2 rounded-sm border border-background-700 bg-background-800 px-3 py-2 text-sm text-foreground-300\"\n        key={integration.id}\n      >\n        <integration.icon className=\"size-4 text-foreground-400\" />\n        {integration.label}\n      </span>\n    ))}\n  </div>\n</Mask>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Mask } from 'ui-lab-components/mask';\nimport { Icon } from 'ui-lab-components/icon';\n\n// Two fades on the same Mask composite instead of replacing each other, so one\n// pass gives the row a soft edge on both sides. `intensity` is the fade length:\n// 1.5 → 60px, roughly one logo tile, which is enough to read as \"keep scrolling\"\n// without swallowing the tile underneath it.\nconst FADE_INTENSITY = 1.5;\n\n// The row is the scroll container, so its scrollbar would sit inside the mask\n// and get faded along with the logos. Hiding it leaves the fade as the only\n// overflow affordance.\nconst ROW_STYLE = { scrollbarWidth: 'none' } as CSSProperties;\n\nconst INTEGRATIONS = [\n  { id: 'github', label: 'GitHub', icon: 'github' },\n  { id: 'gitlab', label: 'GitLab', icon: 'gitlab' },\n  { id: 'aws', label: 'AWS', icon: 'aws' },\n  { id: 'docker', label: 'Docker', icon: 'docker' },\n  { id: 'slack', label: 'Slack', icon: 'slack' },\n  { id: 'stripe', label: 'Stripe', icon: 'stripe' },\n  { id: 'figma', label: 'Figma', icon: 'figma' },\n  { id: 'react', label: 'React', icon: 'react' },\n  { id: 'vue', label: 'Vue', icon: 'vue' },\n  { id: 'angular', label: 'Angular', icon: 'angular' },\n  { id: 'node', label: 'Node.js', icon: 'node' },\n  { id: 'python', label: 'Python', icon: 'python' },\n];\n\nexport default function Example() {\n  return (\n    <div className=\"rounded-md border border-background-700 bg-background-900 py-5\">\n      <div className=\"mb-4 px-5\">\n        <h3 className=\"text-sm font-semibold text-foreground-100\">Connected integrations</h3>\n        <p className=\"mt-1 text-xs text-foreground-400\">12 services syncing to this workspace</p>\n      </div>\n\n      <Mask>\n        <Mask.Fade direction=\"left\" intensity={FADE_INTENSITY} />\n        <Mask.Fade direction=\"right\" intensity={FADE_INTENSITY} />\n        <div className=\"flex gap-2 overflow-x-auto px-5\" style={ROW_STYLE}>\n          {INTEGRATIONS.map(({ id, label, icon }) => (\n            <span\n              className=\"flex shrink-0 items-center gap-2 rounded-sm border border-background-700 bg-background-800 px-3 py-2 text-sm text-foreground-300\"\n              key={id}\n            >\n              <Icon id={icon} size={16} className=\"text-foreground-400\" />\n              {label}\n            </span>\n          ))}\n        </div>\n      </Mask>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:mask/marketing-headline",
@@ -2036,7 +2856,7 @@ export const generatedWorkshopContent = [
     "componentId": "mask",
     "access": "free",
     "locked": false,
-    "code": "// The gradient is painted behind the text and clipped to the glyphs, so it\n// follows the letterforms across line breaks. Everything nested inside\n// inherits the transparent fill — keep supporting copy outside.\n<Mask.Gradient gradient=\"linear-gradient(105deg, var(--foreground-50) 0%, var(--foreground-200) 32%, var(--accent-400) 68%, var(--accent-600) 100%)\">\n  <h1 className=\"text-balance text-4xl font-semibold leading-tight tracking-tight\">\n    Ship a design system your whole team actually reaches for\n  </h1>\n</Mask.Gradient>\n\n<p className=\"mt-4 text-sm leading-relaxed text-pretty text-foreground-400\">\n  Tokens, primitives, and documentation that stay in sync.\n</p>"
+    "code": "import { Mask } from 'ui-lab-components/mask';\n\n// `Mask.Gradient` paints the gradient behind the text and clips it to the glyph\n// shapes, so the fill follows the letterforms across line breaks and reflows\n// with them. Anything nested inside inherits the transparent fill — keep the\n// supporting copy and the buttons outside it.\nconst HEADLINE_GRADIENT =\n  'linear-gradient(105deg, var(--foreground-50) 0%, var(--foreground-200) 32%, var(--accent-400) 68%, var(--accent-600) 100%)';\n\nexport default function Example() {\n  return (\n    <div className=\"rounded-md border border-background-700 bg-background-950 px-8 py-12 text-center\">\n      <span className=\"text-xs font-medium text-accent-400\">\n        Northwind 4.0\n      </span>\n\n      <Mask.Gradient gradient={HEADLINE_GRADIENT} className=\"mt-4\">\n        <h1 className=\"text-balance text-4xl font-semibold leading-tight tracking-tight\">\n          Ship a design system your whole team actually reaches for\n        </h1>\n      </Mask.Gradient>\n\n      <p className=\"mt-4 text-sm leading-relaxed text-pretty text-foreground-400\">\n        Tokens, primitives, and documentation that stay in sync — one install, no\n        build step, no lock-in.\n      </p>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:mask/photo-hero",
@@ -2049,7 +2869,7 @@ export const generatedWorkshopContent = [
     "componentId": "mask",
     "access": "free",
     "locked": false,
-    "code": "// `as=\"child\"` puts the mask on the <img> itself rather than a wrapping div.\n// No extra element means no extra box to size or round, and the image's own\n// object-fit still governs the crop. `intensity={3}` fades the bottom 120px\n// into the page background, so the copy can sit in the faded region.\n<Mask as=\"child\">\n  <Mask.Fade direction=\"bottom\" intensity={3} />\n  <img\n    alt=\"Dusk over a layered mountain ridgeline\"\n    className=\"h-64 w-full rounded-t-md object-cover\"\n    src=\"/media/ridgeline-dusk.jpg\"\n  />\n</Mask>\n\n<div className=\"relative -mt-16 px-7 pb-8\">\n  <h2 className=\"mt-2 text-2xl font-semibold leading-tight text-foreground-50\">\n    Three days above the treeline\n  </h2>\n  <p className=\"mt-2 text-sm leading-relaxed text-pretty text-foreground-300\">\n    What a week of trail data looks like when the only uplink is a satellite\n    messenger.\n  </p>\n</div>"
+    "code": "import { Mask } from 'ui-lab-components/mask';\n\n// Stand-in artwork so the example ships without an external asset. In real use\n// this is just the `src` of your photo.\nconst PHOTO_SRC = `data:image/svg+xml;utf8,${encodeURIComponent(\n  `<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 500\" preserveAspectRatio=\"none\">\n    <defs>\n      <linearGradient id=\"sky\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n        <stop offset=\"0%\" stop-color=\"#101a33\"/>\n        <stop offset=\"52%\" stop-color=\"#3b4a78\"/>\n        <stop offset=\"100%\" stop-color=\"#9a7590\"/>\n      </linearGradient>\n    </defs>\n    <rect width=\"800\" height=\"500\" fill=\"url(#sky)\"/>\n    <circle cx=\"612\" cy=\"146\" r=\"44\" fill=\"#f2dcbb\" opacity=\"0.92\"/>\n    <path d=\"M0 372 L152 244 L262 326 L384 206 L522 348 L646 276 L800 396 L800 500 L0 500 Z\" fill=\"#233052\"/>\n    <path d=\"M0 438 L182 338 L342 428 L522 328 L702 418 L800 378 L800 500 L0 500 Z\" fill=\"#141c31\"/>\n  </svg>`,\n)}`;\n\nexport default function Example() {\n  return (\n    <div className=\"rounded-md bg-background-950\">\n      {/*\n        `as=\"child\"` puts the mask on the <img> itself instead of a wrapping div.\n        No extra element means no extra box to size or round, and the photo's\n        own object-fit still governs how it crops — a wrapper would need its own\n        height, its own overflow, and would re-introduce the hard edge the fade\n        is there to remove. `intensity={3}` fades the bottom 120px straight into\n        the page background, which is why nothing sits behind the image.\n      */}\n      <Mask as=\"child\">\n        <Mask.Fade direction=\"bottom\" intensity={3} />\n        <img\n          alt=\"Dusk over a layered mountain ridgeline\"\n          className=\"h-64 w-full rounded-t-md object-cover\"\n          src={PHOTO_SRC}\n        />\n      </Mask>\n\n      <div className=\"relative -mt-16 px-7 pb-8\">\n        <span className=\"text-xs font-medium text-accent-400\">\n          Field report\n        </span>\n        <h2 className=\"mt-2 text-2xl font-semibold leading-tight text-foreground-50\">\n          Three days above the treeline\n        </h2>\n        <p className=\"mt-2 text-sm leading-relaxed text-pretty text-foreground-300\">\n          What a week of trail data looks like when the only uplink is a satellite\n          messenger and every reading has to survive the trip home.\n        </p>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:mask/policy-excerpt",
@@ -2062,7 +2882,7 @@ export const generatedWorkshopContent = [
     "componentId": "mask",
     "access": "free",
     "locked": false,
-    "code": "// Nothing scrolls — the box is a fixed height and the rest is cut. `fixed`\n// makes `intensity` a share of the container instead of a pixel length\n// (15% per step, capped at 50%), so 2 dissolves the bottom 30% at any height.\n<Mask className=\"h-44\">\n  <Mask.Fade direction=\"bottom\" intensity={2} fixed />\n  <div className=\"flex flex-col gap-3 px-5 py-4 text-sm leading-relaxed text-foreground-300\">\n    <p>\n      This addendum applies whenever Northwind processes personal data on your\n      behalf in the course of providing the Services.\n    </p>\n    <p>\n      You remain the controller of the personal data you upload. Northwind acts\n      solely as a processor and will process that data only on your documented\n      instructions.\n    </p>\n  </div>\n</Mask>\n\n<button className=\"flex items-center gap-1.5 text-sm font-medium text-accent-400\" type=\"button\">\n  Read the full addendum\n  <FaChevronDown className=\"size-3\" />\n</button>"
+    "code": "import { Mask } from 'ui-lab-components/mask';\nimport { Icon } from 'ui-lab-components/icon';\n\n// Nothing scrolls here — the box is a fixed height and the overflow is simply\n// cut. `fixed` switches `intensity` from a pixel length to a share of the\n// container (15% per step, capped at 50%), so 2 → the bottom 30% of the box\n// dissolves no matter how tall the collapsed height ends up being. That is what\n// keeps the truncation reading as \"continues below\" rather than \"ends here\".\nconst FADE_INTENSITY = 2;\n\nexport default function Example() {\n  return (\n    <article className=\"overflow-hidden rounded-md border border-background-700 bg-background-900\">\n      <header className=\"border-b border-background-700 px-5 py-3\">\n        <h3 className=\"text-sm font-semibold text-foreground-100\">Data Processing Addendum</h3>\n        <p className=\"mt-0.5 text-xs text-foreground-400\">Version 3.1 · Effective 1 March 2026</p>\n      </header>\n\n      <Mask className=\"h-44\">\n        <Mask.Fade direction=\"bottom\" intensity={FADE_INTENSITY} fixed />\n        <div className=\"flex flex-col gap-3 px-5 py-4 text-sm leading-relaxed text-foreground-300\">\n          <p>\n            This addendum applies whenever Northwind processes personal data on your behalf in the\n            course of providing the Services. It supplements, and does not replace, the Master\n            Subscription Agreement between the parties.\n          </p>\n          <p>\n            You remain the controller of the personal data you upload. Northwind acts solely as a\n            processor and will process that data only on your documented instructions, including\n            with regard to transfers to a third country, unless required to do otherwise by law.\n          </p>\n          <p>\n            Northwind maintains a published list of subprocessors and will give you at least thirty\n            days' notice before adding or replacing any of them, during which you may object on\n            reasonable data-protection grounds.\n          </p>\n        </div>\n      </Mask>\n\n      <footer className=\"px-5 pb-4\">\n        <button\n          className=\"flex items-center gap-1.5 text-sm font-medium text-accent-400\"\n          type=\"button\"\n        >\n          Read the full addendum\n          <Icon id=\"chev\" size={12} />\n        </button>\n      </footer>\n    </article>\n  );\n}\n"
   },
   {
     "ref": "example:mask/release-banner",
@@ -2075,7 +2895,7 @@ export const generatedWorkshopContent = [
     "componentId": "mask",
     "access": "free",
     "locked": false,
-    "code": "// `Mask.Clip` takes any CSS clip-path — polygon(), circle(), ellipse(),\n// inset(). It clips what the Mask paints without changing its layout box, so\n// the copy below still flows from the banner's full height and the diagonal\n// reveals the card behind it.\n<Mask className=\"h-44\">\n  <Mask.Clip shape=\"polygon(0 0, 100% 0, 100% 76%, 0 100%)\" />\n  <img src=\"/media/usage-billing-cover.jpg\" alt=\"\" className=\"h-full w-full object-cover\" />\n</Mask>\n\n<div className=\"px-6 pb-6 pt-2\">\n  <h3 className=\"mt-2 text-lg font-semibold text-foreground-50\">\n    Usage-based billing is now generally available\n  </h3>\n  <p className=\"mt-1.5 text-sm leading-relaxed text-foreground-400\">\n    Meter any resource, preview invoices before they send, and reconcile\n    against Stripe without a nightly job.\n  </p>\n</div>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Mask } from 'ui-lab-components/mask';\nimport { Icon } from 'ui-lab-components/icon';\n\n// `Mask.Clip` takes any CSS `clip-path` — `polygon()` here, but `circle()`,\n// `ellipse()`, and `inset()` all work the same way. It clips the Mask's painted\n// box without changing its layout box, so the card below keeps flowing from the\n// banner's full height and the diagonal just reveals the card behind it.\nconst ANGLED_BANNER = 'polygon(0 0, 100% 0, 100% 76%, 0 100%)';\n\n// Stand-in artwork built from theme tokens so the example has no external\n// asset; drop an <img> or a real background-image in here instead.\nconst COVER_STYLE = {\n  background: [\n    'radial-gradient(120% 90% at 18% 8%, color-mix(in srgb, var(--accent-500) 60%, transparent), transparent 62%)',\n    'radial-gradient(100% 80% at 88% 24%, color-mix(in srgb, var(--info-500) 55%, transparent), transparent 66%)',\n    'linear-gradient(155deg, var(--background-700), var(--background-950))',\n  ].join(', '),\n} as CSSProperties;\n\nexport default function Example() {\n  return (\n    <div className=\"overflow-hidden rounded-md border border-background-700 bg-background-900\">\n      <Mask className=\"h-44\">\n        <Mask.Clip shape={ANGLED_BANNER} />\n        <div className=\"h-full w-full\" style={COVER_STYLE} />\n      </Mask>\n\n      <div className=\"px-6 pb-6 pt-2\">\n        <span className=\"flex items-center gap-1.5 text-xs font-medium text-accent-400\">\n          <Icon id=\"tag\" size={12} />\n          Release notes\n        </span>\n        <h3 className=\"mt-2 text-lg font-semibold text-foreground-50\">\n          Usage-based billing is now generally available\n        </h3>\n        <p className=\"mt-1.5 text-sm leading-relaxed text-foreground-400\">\n          Meter any resource, preview invoices before they send, and reconcile against Stripe\n          without a nightly job.\n        </p>\n        <span className=\"mt-3 flex items-center gap-1.5 text-sm font-medium text-accent-400\">\n          Read the announcement\n          <Icon id=\"right\" size={12} />\n        </span>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:menu/02-nested",
@@ -2088,7 +2908,7 @@ export const generatedWorkshopContent = [
     "componentId": "menu",
     "access": "free",
     "locked": false,
-    "code": "<Menu>\n  <Menu.Trigger className=\"flex w-full cursor-context-menu select-none items-center justify-center rounded-md border-2 border-dashed border-background-600 p-12 text-foreground-300 transition-colors hover:border-background-500\">\n    Right click here\n  </Menu.Trigger>\n  <Menu.Content>\n    <Menu.Item>New File</Menu.Item>\n    <Menu.Item>New Folder</Menu.Item>\n    <Menu.Separator />\n    <Menu.Sub>\n      <Menu.SubTrigger>Open with...</Menu.SubTrigger>\n      <Menu.SubContent>\n        <Menu.Item>VS Code</Menu.Item>\n        <Menu.Item>Sublime Text</Menu.Item>\n        <Menu.Item>Vim</Menu.Item>\n        <Menu.Separator />\n        <Menu.Item>Other Application...</Menu.Item>\n      </Menu.SubContent>\n    </Menu.Sub>\n    <Menu.Sub>\n      <Menu.SubTrigger>Share</Menu.SubTrigger>\n      <Menu.SubContent>\n        <Menu.Item>Copy Link</Menu.Item>\n        <Menu.Item>Email</Menu.Item>\n        <Menu.Sub>\n          <Menu.SubTrigger>Social Media</Menu.SubTrigger>\n          <Menu.SubContent>\n            <Menu.Item>Twitter</Menu.Item>\n            <Menu.Item>LinkedIn</Menu.Item>\n            <Menu.Item>Facebook</Menu.Item>\n          </Menu.SubContent>\n        </Menu.Sub>\n      </Menu.SubContent>\n    </Menu.Sub>\n    <Menu.Separator />\n    <Menu.Item>Rename</Menu.Item>\n    <Menu.Item disabled>Delete</Menu.Item>\n  </Menu.Content>\n</Menu>"
+    "code": "import { Menu } from 'ui-lab-components/menu';\n\nexport default function Example() {\n  return (\n    <Menu>\n      <Menu.Trigger className=\"flex items-center justify-center rounded-md border-2 border-dashed border-background-600 p-12 w-full cursor-context-menu select-none text-foreground-300 hover:border-background-500 transition-colors\">\n        Right click here\n      </Menu.Trigger>\n      <Menu.Content>\n        <Menu.Item>New File</Menu.Item>\n        <Menu.Item>New Folder</Menu.Item>\n        <Menu.Separator />\n        <Menu.Sub>\n          <Menu.SubTrigger>Open with...</Menu.SubTrigger>\n          <Menu.SubContent>\n            <Menu.Item>VS Code</Menu.Item>\n            <Menu.Item>Sublime Text</Menu.Item>\n            <Menu.Item>Vim</Menu.Item>\n            <Menu.Separator />\n            <Menu.Item>Other Application...</Menu.Item>\n          </Menu.SubContent>\n        </Menu.Sub>\n        <Menu.Sub>\n          <Menu.SubTrigger>Share</Menu.SubTrigger>\n          <Menu.SubContent>\n            <Menu.Item>Copy Link</Menu.Item>\n            <Menu.Item>Email</Menu.Item>\n            <Menu.Sub>\n              <Menu.SubTrigger>Social Media</Menu.SubTrigger>\n              <Menu.SubContent>\n                <Menu.Item>Twitter</Menu.Item>\n                <Menu.Item>LinkedIn</Menu.Item>\n                <Menu.Item>Facebook</Menu.Item>\n              </Menu.SubContent>\n            </Menu.Sub>\n          </Menu.SubContent>\n        </Menu.Sub>\n        <Menu.Separator />\n        <Menu.Item>Rename</Menu.Item>\n        <Menu.Item disabled>Delete</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
   },
   {
     "ref": "example:menu/03-toolbar-dropdown",
@@ -2101,7 +2921,7 @@ export const generatedWorkshopContent = [
     "componentId": "menu",
     "access": "free",
     "locked": false,
-    "code": "<Menu type=\"pop-over\">\n  <Menu.Trigger variant=\"ghost\">\n    File <FaChevronDown className=\"ml-1 size-3\" />\n  </Menu.Trigger>\n  <Menu.Content align=\"start\">\n    <Menu.Item onSelect={() => {}}>\n      New file\n      <Menu.Shortcut>⌘N</Menu.Shortcut>\n    </Menu.Item>\n    <Menu.Item onSelect={() => {}}>\n      Open…\n      <Menu.Shortcut>⌘O</Menu.Shortcut>\n    </Menu.Item>\n    <Menu.Item onSelect={() => {}}>\n      Save\n      <Menu.Shortcut>⌘S</Menu.Shortcut>\n    </Menu.Item>\n    <Menu.Separator />\n    <Menu.Item disabled>Recent files</Menu.Item>\n  </Menu.Content>\n</Menu>"
+    "code": "import { Menu } from 'ui-lab-components/menu'\nimport { Icon } from \"ui-lab-components/icon\"\n\nexport default function Example() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger variant=\"ghost\">\n        File <Icon id=\"chev\" size={12} className=\"ml-1\" />\n      </Menu.Trigger>\n      <Menu.Content align=\"start\">\n        <Menu.Item onSelect={() => {}}>\n          New file\n          <Menu.Shortcut>⌘N</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item onSelect={() => {}}>\n          Open…\n          <Menu.Shortcut>⌘O</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item onSelect={() => {}}>\n          Save\n          <Menu.Shortcut>⌘S</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item disabled>Recent files</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
   },
   {
     "ref": "example:menu/04-table-row-actions",
@@ -2114,7 +2934,7 @@ export const generatedWorkshopContent = [
     "componentId": "menu",
     "access": "free",
     "locked": false,
-    "code": "<table className=\"w-full border-collapse text-sm\">\n  <thead>\n    <tr className=\"border-b border-background-700\">\n      <th className=\"px-3 py-2 text-left font-medium text-foreground-200\">Document</th>\n      <th className=\"px-3 py-2 text-left font-medium text-foreground-200\">Updated</th>\n      <th className=\"px-3 py-2\" />\n    </tr>\n  </thead>\n  <tbody>\n    {rows.map((row) => (\n      <tr key={row.id} className=\"border-b border-background-700 last:border-0\">\n        <td className=\"px-3 py-2 text-foreground-100\">{row.name}</td>\n        <td className=\"px-3 py-2 text-foreground-400\">{row.updated}</td>\n        <td className=\"px-3 py-2 text-right\">\n          <Menu type=\"pop-over\">\n            <Menu.Trigger icon={<FaEllipsis />} className=\"p-2\" size=\"icon\" variant=\"ghost\" aria-label={`Row actions for ${row.name}`} />\n            <Menu.Content align=\"end\">\n              <Menu.Item onSelect={() => {}}>Open</Menu.Item>\n              <Menu.Item onSelect={() => {}}>Rename</Menu.Item>\n              <Menu.Item onSelect={() => {}}>Duplicate</Menu.Item>\n              <Menu.Separator />\n              <Menu.Item onSelect={() => {}} styles={{ root: \"text-destructive\" }}>\n                Delete\n              </Menu.Item>\n            </Menu.Content>\n          </Menu>\n        </td>\n      </tr>\n    ))}\n  </tbody>\n</table>"
+    "code": "import { Menu } from 'ui-lab-components/menu'\nimport { Icon } from \"ui-lab-components/icon\"\n\nconst rows = [\n  { id: \"doc_1\", name: \"Q3 roadmap\", updated: \"2 hours ago\" },\n  { id: \"doc_2\", name: \"Pricing review\", updated: \"yesterday\" },\n  { id: \"doc_3\", name: \"Hiring plan\", updated: \"3 days ago\" },\n];\n\nexport default function Example() {\n  return (\n    <table className=\"w-full text-sm border-collapse\">\n      <thead>\n        <tr className=\"border-b border-background-700\">\n          <th className=\"text-left py-2 px-3 font-medium text-foreground-200\">Document</th>\n          <th className=\"text-left py-2 px-3 font-medium text-foreground-200\">Updated</th>\n          <th className=\"py-2 px-3\" />\n        </tr>\n      </thead>\n      <tbody>\n        {rows.map((row) => (\n          <tr key={row.id} className=\"border-b border-background-700 last:border-0\">\n            <td className=\"py-2 px-3 text-foreground-100\">{row.name}</td>\n            <td className=\"py-2 px-3 text-foreground-400\">{row.updated}</td>\n            <td className=\"py-2 px-3 text-right\">\n              <Menu type=\"pop-over\">\n                <Menu.Trigger icon={<Icon id=\"more\" size=\"1em\" />} size=\"icon\" variant=\"ghost\" aria-label={`Row actions for ${row.name}`} />\n                <Menu.Content align=\"end\">\n                  <Menu.Item onSelect={() => { }}>Open</Menu.Item>\n                  <Menu.Item onSelect={() => { }}>Rename</Menu.Item>\n                  <Menu.Item onSelect={() => { }}>Duplicate</Menu.Item>\n                  <Menu.Separator />\n                  <Menu.Item onSelect={() => { }} styles={{ root: \"text-destructive\" }}>\n                    Delete\n                  </Menu.Item>\n                </Menu.Content>\n              </Menu>\n            </td>\n          </tr>\n        ))}\n      </tbody>\n    </table>\n  );\n}\n"
   },
   {
     "ref": "example:menu/05-context-menu",
@@ -2127,7 +2947,7 @@ export const generatedWorkshopContent = [
     "componentId": "menu",
     "access": "free",
     "locked": false,
-    "code": "<Menu type=\"context-menu\">\n  <Menu.Trigger as=\"child\">\n    <div className=\"flex h-32 w-80 select-none items-center justify-center rounded-sm border border-dashed border-background-700 text-sm text-foreground-400\">\n      Right-click anywhere in this area\n    </div>\n  </Menu.Trigger>\n  <Menu.Content>\n    <Menu.Item onSelect={() => {}}>\n      Cut\n      <Menu.Shortcut>⌘X</Menu.Shortcut>\n    </Menu.Item>\n    <Menu.Item onSelect={() => {}}>\n      Copy\n      <Menu.Shortcut>⌘C</Menu.Shortcut>\n    </Menu.Item>\n    <Menu.Item onSelect={() => {}}>\n      Paste\n      <Menu.Shortcut>⌘V</Menu.Shortcut>\n    </Menu.Item>\n    <Menu.Separator />\n    <Menu.Item onSelect={() => {}} styles={{ root: \"text-destructive\" }}>\n      Delete\n    </Menu.Item>\n  </Menu.Content>\n</Menu>"
+    "code": "import { Menu } from 'ui-lab-components/menu';\n\nexport default function Example() {\n  return (\n    <Menu type=\"context-menu\">\n      <Menu.Trigger as=\"child\">\n        <div className=\"flex items-center justify-center h-32 border border-dashed border-background-700 rounded-sm text-sm text-foreground-400 select-none\">\n          Right-click anywhere in this area\n        </div>\n      </Menu.Trigger>\n      <Menu.Content>\n        <Menu.Item onSelect={() => {}}>\n          Cut\n          <Menu.Shortcut>⌘X</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item onSelect={() => {}}>\n          Copy\n          <Menu.Shortcut>⌘C</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item onSelect={() => {}}>\n          Paste\n          <Menu.Shortcut>⌘V</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item onSelect={() => {}} styles={{ root: \"text-destructive\" }}>\n          Delete\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
   },
   {
     "ref": "example:menu/06-view-options",
@@ -2140,7 +2960,7 @@ export const generatedWorkshopContent = [
     "componentId": "menu",
     "access": "free",
     "locked": false,
-    "code": "<Menu type=\"pop-over\">\n  <Menu.Trigger>View</Menu.Trigger>\n  <Menu.Content align=\"start\">\n    <Menu.Label>Display</Menu.Label>\n    <Menu.CheckboxItem checked={showGrid} onCheckedChange={setShowGrid}>\n      Show grid\n    </Menu.CheckboxItem>\n    <Menu.CheckboxItem checked={showRulers} onCheckedChange={setShowRulers}>\n      Show rulers\n    </Menu.CheckboxItem>\n    <Menu.Separator />\n    <Menu.Label>Density</Menu.Label>\n    <Menu.RadioGroup value={density} onValueChange={setDensity}>\n      <Menu.RadioItem value=\"compact\">Compact</Menu.RadioItem>\n      <Menu.RadioItem value=\"comfortable\">Comfortable</Menu.RadioItem>\n      <Menu.RadioItem value=\"spacious\">Spacious</Menu.RadioItem>\n    </Menu.RadioGroup>\n  </Menu.Content>\n</Menu>"
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Menu } from 'ui-lab-components/menu'\n\nexport default function Example() {\n  const [showGrid, setShowGrid] = useState(true);\n  const [showRulers, setShowRulers] = useState(false);\n  const [density, setDensity] = useState(\"comfortable\");\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger>View</Menu.Trigger>\n      <Menu.Content align=\"start\">\n        <Menu.Label>Display</Menu.Label>\n        <Menu.CheckboxItem checked={showGrid} onCheckedChange={setShowGrid}>\n          Show grid\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem checked={showRulers} onCheckedChange={setShowRulers}>\n          Show rulers\n        </Menu.CheckboxItem>\n        <Menu.Separator />\n        <Menu.Label>Density</Menu.Label>\n        <Menu.RadioGroup value={density} onValueChange={setDensity}>\n          <Menu.RadioItem value=\"compact\">Compact</Menu.RadioItem>\n          <Menu.RadioItem value=\"comfortable\">Comfortable</Menu.RadioItem>\n          <Menu.RadioItem value=\"spacious\">Spacious</Menu.RadioItem>\n        </Menu.RadioGroup>\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
   },
   {
     "ref": "example:menu/07-submenus",
@@ -2153,7 +2973,98 @@ export const generatedWorkshopContent = [
     "componentId": "menu",
     "access": "free",
     "locked": false,
-    "code": "<Menu type=\"pop-over\">\n  <Menu.Trigger>Open menu</Menu.Trigger>\n  <Menu.Content align=\"start\">\n    <Menu.Item>New document</Menu.Item>\n    <Menu.Item>Open document</Menu.Item>\n    <Menu.Separator />\n    <Menu.Sub>\n      <Menu.SubTrigger>Open recent</Menu.SubTrigger>\n      <Menu.SubContent>\n        <Menu.Item>Project proposal</Menu.Item>\n        <Menu.Item>Quarterly report</Menu.Item>\n        <Menu.Item>Meeting notes</Menu.Item>\n        <Menu.Separator />\n        <Menu.Item>Clear recent documents</Menu.Item>\n      </Menu.SubContent>\n    </Menu.Sub>\n    <Menu.Sub>\n      <Menu.SubTrigger>Share</Menu.SubTrigger>\n      <Menu.SubContent>\n        <Menu.Item>Copy link</Menu.Item>\n        <Menu.Item>Email a copy</Menu.Item>\n        <Menu.Sub>\n          <Menu.SubTrigger>Permissions</Menu.SubTrigger>\n          <Menu.SubContent>\n            <Menu.Item>Can view</Menu.Item>\n            <Menu.Item>Can comment</Menu.Item>\n            <Menu.Item>Can edit</Menu.Item>\n          </Menu.SubContent>\n        </Menu.Sub>\n      </Menu.SubContent>\n    </Menu.Sub>\n    <Menu.Separator />\n    <Menu.Item>Close document</Menu.Item>\n  </Menu.Content>\n</Menu>"
+    "code": "import { Menu } from 'ui-lab-components/menu';\n\nexport default function Example() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger>Open menu</Menu.Trigger>\n      <Menu.Content align=\"start\">\n        <Menu.Item>New document</Menu.Item>\n        <Menu.Item>Open document</Menu.Item>\n        <Menu.Separator />\n        <Menu.Sub>\n          <Menu.SubTrigger>Open recent</Menu.SubTrigger>\n          <Menu.SubContent>\n            <Menu.Item>Project proposal</Menu.Item>\n            <Menu.Item>Quarterly report</Menu.Item>\n            <Menu.Item>Meeting notes</Menu.Item>\n            <Menu.Separator />\n            <Menu.Item>Clear recent documents</Menu.Item>\n          </Menu.SubContent>\n        </Menu.Sub>\n        <Menu.Sub>\n          <Menu.SubTrigger>Share</Menu.SubTrigger>\n          <Menu.SubContent>\n            <Menu.Item>Copy link</Menu.Item>\n            <Menu.Item>Email a copy</Menu.Item>\n            <Menu.Sub>\n              <Menu.SubTrigger>Permissions</Menu.SubTrigger>\n              <Menu.SubContent>\n                <Menu.Item>Can view</Menu.Item>\n                <Menu.Item>Can comment</Menu.Item>\n                <Menu.Item>Can edit</Menu.Item>\n              </Menu.SubContent>\n            </Menu.Sub>\n          </Menu.SubContent>\n        </Menu.Sub>\n        <Menu.Separator />\n        <Menu.Item>Close document</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n"
+  },
+  {
+    "ref": "example:modal/01-basic-modal",
+    "kind": "component-example",
+    "id": "01-basic-modal",
+    "name": "Basic Modal",
+    "description": "A simple modal dialog with a trigger button. Use this for important user interactions that require focused attention.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "modal",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport React from 'react';\nimport { Modal } from 'ui-lab-components/modal'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  const [isOpen, setIsOpen] = React.useState(false);\n  return (\n    <>\n      <Button onClick={() => setIsOpen(true)}>Open Modal</Button>\n      <Modal open={isOpen} onOpenChange={setIsOpen}>\n        <Modal.Header>Modal Title</Modal.Header>\n        <Modal.Body>This is the modal content. It displays important information or actions.</Modal.Body>\n        <Modal.Footer>Modal Footer</Modal.Footer>\n      </Modal>\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:modal/02-form-modal",
+    "kind": "component-example",
+    "id": "02-form-modal",
+    "name": "Form Modal",
+    "description": "A modal dialog containing a form for editing user profile settings. Demonstrates using form inputs, labels, and action buttons within a modal.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "modal",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport React from 'react';\nimport { Modal } from 'ui-lab-components/modal'\nimport { Button } from 'ui-lab-components/button'\nimport { Input } from 'ui-lab-components/input'\nimport { Label } from 'ui-lab-components/label'\nimport { TextArea } from 'ui-lab-components/textarea'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [isOpen, setIsOpen] = React.useState(false);\n  const [formData, setFormData] = React.useState({\n    name: 'John Doe',\n    email: 'john.doe@example.com',\n    bio: 'Software developer passionate about building great user experiences.',\n  });\n  const handleSubmit = (e: React.FormEvent) => {\n    e.preventDefault();\n    // Handle form submission\n    setIsOpen(false);\n  };\n  return (\n    <>\n      <Button onClick={() => setIsOpen(true)}>Edit Profile</Button>\n      <Modal open={isOpen} onOpenChange={setIsOpen} size=\"auto\">\n        <Modal.Header>Edit Profile</Modal.Header>\n        <Modal.Body>\n          <form id=\"profile-form\" onSubmit={handleSubmit}>\n            <Flex direction=\"column\" gap=\"md\">\n              <div>\n                <Label htmlFor=\"name\" required>\n                  Full Name\n                </Label>\n                <Input\n                  id=\"name\"\n                  value={formData.name}\n                  onChange={(e) =>\n                    setFormData({ ...formData, name: e.target.value })\n                  }\n                  placeholder=\"Enter your name\"\n                />\n              </div>\n              <div>\n                <Label htmlFor=\"email\" required>\n                  Email Address\n                </Label>\n                <Input\n                  id=\"email\"\n                  type=\"email\"\n                  value={formData.email}\n                  onChange={(e) =>\n                    setFormData({ ...formData, email: e.target.value })\n                  }\n                  placeholder=\"Enter your email\"\n                />\n              </div>\n              <div>\n                <Label htmlFor=\"bio\">Bio</Label>\n                <TextArea\n                  id=\"bio\"\n                  value={formData.bio}\n                  onChange={(e) =>\n                    setFormData({ ...formData, bio: e.target.value })\n                  }\n                  placeholder=\"Tell us about yourself\"\n                  rows={3}\n                />\n              </div>\n            </Flex>\n          </form>\n        </Modal.Body>\n        <Modal.Footer>\n          <Flex gap=\"sm\" justify-end>\n            <Button variant=\"ghost\" onClick={() => setIsOpen(false)}>\n              Cancel\n            </Button>\n            <Button type=\"submit\" form=\"profile-form\">\n              Save Changes\n            </Button>\n          </Flex>\n        </Modal.Footer>\n      </Modal>\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:modal/03-delete-confirmation",
+    "kind": "component-example",
+    "id": "03-delete-confirmation",
+    "name": "Delete Confirmation",
+    "description": "Destructive action dialog that blocks the user until they explicitly confirm or cancel.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "modal",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Modal } from 'ui-lab-components/modal'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  const [isOpen, setIsOpen] = useState(false);\n  return (\n    <>\n      <Button variant=\"destructive\" onClick={() => setIsOpen(true)}>\n        Delete workspace\n      </Button>\n      <Modal\n        open={isOpen}\n        onOpenChange={setIsOpen}\n        title=\"Delete workspace\"\n        footer={\n          <>\n            <Button variant=\"ghost\" onClick={() => setIsOpen(false)}>\n              Cancel\n            </Button>\n            <Button variant=\"destructive\" onClick={() => setIsOpen(false)}>\n              Delete\n            </Button>\n          </>\n        }\n      >\n        <p className=\"text-sm text-foreground-300\">\n          This will permanently delete <strong className=\"text-foreground-100\">acme-corp</strong> and all\n          its data. This action cannot be undone.\n        </p>\n      </Modal>\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:modal/04-create-api-key",
+    "kind": "component-example",
+    "id": "04-create-api-key",
+    "name": "Create API Key",
+    "description": "Form modal with a single required input. The primary action stays disabled until the field has a value.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "modal",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Modal } from 'ui-lab-components/modal'\nimport { Button } from 'ui-lab-components/button'\nimport { Input } from 'ui-lab-components/input'\nimport { Label } from 'ui-lab-components/label';\n\nexport default function Example() {\n  const [isOpen, setIsOpen] = useState(false);\n  const [name, setName] = useState(\"\");\n  return (\n    <>\n      <Button onClick={() => setIsOpen(true)}>New API key</Button>\n      <Modal\n        open={isOpen}\n        onOpenChange={setIsOpen}\n        title=\"New API key\"\n        footer={\n          <>\n            <Button variant=\"ghost\" onClick={() => setIsOpen(false)}>\n              Cancel\n            </Button>\n            <Button\n              onClick={() => setIsOpen(false)}\n              disabled={!name.trim()}\n            >\n              Create\n            </Button>\n          </>\n        }\n      >\n        <div className=\"flex flex-col gap-4 px-6 py-4\">\n          <div className=\"flex flex-col gap-1.5\">\n            <Label htmlFor=\"key-name\">Name</Label>\n            <Input\n              id=\"key-name\"\n              placeholder=\"e.g. CI deploy key\"\n              value={name}\n              onChange={(e) => setName(e.target.value)}\n            />\n          </div>\n          <p className=\"text-xs text-foreground-400\">\n            The key will only be shown once after creation.\n          </p>\n        </div>\n      </Modal>\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:modal/05-notification-settings",
+    "kind": "component-example",
+    "id": "05-notification-settings",
+    "name": "Notification Settings",
+    "description": "Settings panel using the compound Modal.Header / Modal.Body / Modal.Footer API with toggle rows.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "modal",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Modal } from 'ui-lab-components/modal'\nimport { Button } from 'ui-lab-components/button'\nimport { Switch } from 'ui-lab-components/switch';\n\n\nexport default function Example() {\n  const [isOpen, setIsOpen] = useState(false);\n  const [prefs, setPrefs] = useState({ email: true, push: false, marketing: false });\n\n  const toggle = (key: keyof typeof prefs) =>\n    setPrefs((p) => ({ ...p, [key]: !p[key] }));\n\n  return (\n    <>\n      <Button variant=\"ghost\" onClick={() => setIsOpen(true)}>\n        Notification settings\n      </Button>\n\n      <Modal open={isOpen} onOpenChange={setIsOpen}>\n        <Modal.Header>\n          <span className=\"text-sm font-semibold text-foreground-100\">Notification preferences</span>\n        </Modal.Header>\n\n        <Modal.Body>\n          <div className=\"flex flex-col divide-y divide-border px-6\">\n            {(\n              [\n                { key: \"email\", label: \"Email notifications\", description: \"Receive updates and alerts by email\" },\n                { key: \"push\", label: \"Push notifications\", description: \"Browser and mobile push alerts\" },\n                { key: \"marketing\", label: \"Product updates\", description: \"New features and announcements\" },\n              ] as const\n            ).map(({ key, label, description }) => (\n              <div key={key} className=\"flex items-center justify-between py-4\">\n                <div className=\"flex flex-col gap-0.5\">\n                  <span className=\"text-sm text-foreground-100\">{label}</span>\n                  <span className=\"text-xs text-foreground-400\">{description}</span>\n                </div>\n                <Switch state={{ checked: prefs[key] }} onChange={() => toggle(key)} />\n              </div>\n            ))}\n          </div>\n        </Modal.Body>\n\n        <Modal.Footer>\n          <Button variant=\"ghost\" onClick={() => setIsOpen(false)}>\n            Cancel\n          </Button>\n          <Button onClick={() => setIsOpen(false)}>Save</Button>\n        </Modal.Footer>\n      </Modal>\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:modal/06-settings-panel",
+    "kind": "component-example",
+    "id": "06-settings-panel",
+    "name": "Settings Panel",
+    "description": "A floating settings layout composed directly from Panel inside Modal.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "modal",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Modal } from \"ui-lab-components/modal\";\nimport { Panel } from \"ui-lab-components/panel\";\nimport { Switch } from \"ui-lab-components/switch\";\n\nexport default function Example() {\n  const [isOpen, setIsOpen] = useState(false);\n  const [settings, setSettings] = useState({\n    desktop: true,\n    sounds: false,\n    compactMode: false,\n  });\n  const toggle = (key: keyof typeof settings) =>\n    setSettings((current) => ({ ...current, [key]: !current[key] }));\n  return (\n    <>\n      <Button onClick={() => setIsOpen(true)}>Open settings</Button>\n      <Modal\n        open={isOpen}\n        onOpenChange={setIsOpen}\n        aria-label=\"Settings\"\n        close={false}\n        className=\"h-[32rem] max-w-3xl\"\n        contentClassName=\"p-0\"\n      >\n        <Panel spacing=\"none\" collapseAt={0} className=\"h-full\">\n          <Panel.Sidebar\n            id=\"settings-navigation\"\n            side=\"left\"\n            size={176}\n            aria-label=\"Settings navigation\"\n            className=\"bg-background-950 p-3\"\n          >\n            <p className=\"px-2 pb-3 text-sm font-semibold text-foreground-100\">Settings</p>\n            <nav className=\"flex flex-col gap-1 text-sm\">\n              <button type=\"button\" className=\"rounded-sm bg-background-800 px-2 py-1.5 text-left text-foreground-100\">\n                General\n              </button>\n              <button type=\"button\" className=\"rounded-sm px-2 py-1.5 text-left text-foreground-400\">\n                Notifications\n              </button>\n              <button type=\"button\" className=\"rounded-sm px-2 py-1.5 text-left text-foreground-400\">\n                Appearance\n              </button>\n            </nav>\n          </Panel.Sidebar>\n          <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n            <header className=\"shrink-0 border-b border-background-700 px-5 py-4\">\n              <div>\n                <h2 className=\"text-sm font-semibold text-foreground-100\">General settings</h2>\n                <p className=\"mt-1 text-xs text-foreground-400\">Manage your workspace preferences.</p>\n              </div>\n            </header>\n            <main className=\"min-h-0 flex-1 space-y-5 overflow-auto p-5\">\n              {([\n                [\"desktop\", \"Desktop notifications\", \"Show updates even when the app is in the background.\"],\n                [\"sounds\", \"Notification sounds\", \"Play a sound for new activity.\"],\n                [\"compactMode\", \"Compact mode\", \"Use a denser layout throughout the app.\"],\n              ] as const).map(([key, label, description]) => (\n                <div key={key} className=\"flex items-center justify-between gap-6\">\n                  <div>\n                    <p className=\"text-sm text-foreground-100\">{label}</p>\n                    <p className=\"mt-1 text-xs text-foreground-400\">{description}</p>\n                  </div>\n                  <Switch state={{ checked: settings[key] }} onChange={() => toggle(key)} />\n                </div>\n              ))}\n            </main>\n            <footer className=\"flex shrink-0 justify-end gap-2 border-t border-background-700 px-5 py-3\">\n              <Button variant=\"ghost\" onClick={() => setIsOpen(false)}>\n                Cancel\n              </Button>\n              <Button onClick={() => setIsOpen(false)}>Save changes</Button>\n            </footer>\n          </section>\n        </Panel>\n      </Modal>\n    </>\n  );\n}\n"
+  },
+  {
+    "ref": "example:page/01-dashboard",
+    "kind": "component-example",
+    "id": "01-dashboard",
+    "name": "Dashboard overview",
+    "description": "A dashboard page with divided header and footer regions and a grid of summary panels.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "page",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport type { CSSProperties } from 'react';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Page } from 'ui-lab-components/page';\n\nconst BASE_CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ className, style }: { className?: string; style?: CSSProperties }) {\n  return (\n    <Frame pathStroke=\"dashed\" className={className} style={{ ...BASE_CELL_STYLE, ...style }}>\n      <div className=\"size-full\" />\n    </Frame>\n  );\n}\n\nexport default function Example() {\n  return (\n    <div className=\"h-[400px] w-full max-w-4xl overflow-hidden\">\n      <Page max-width=\"100%\" padding=\"none\" gap=\"md\" className=\"h-full overflow-x-hidden overflow-y-auto\">\n        <Page.Header divided>\n          <Flex gap={4} h={10} align-center justify-between>\n            <FrameCell className=\"shrink-0\" style={{ width: 132, height: 24 }} />\n            <Flex gap={2} w=\"auto\" className=\"shrink-0\">\n              <FrameCell className=\"shrink-0\" style={{ width: 48, height: 24 }} />\n              <FrameCell className=\"shrink-0\" style={{ width: 64, height: 24 }} />\n            </Flex>\n          </Flex>\n        </Page.Header>\n\n        <Page.Body className=\"block\">\n          <section className=\"grid min-w-0 gap-2.5\">\n            <FrameCell className=\"w-full min-w-0\" style={{ height: 104 }} />\n            <div className=\"grid min-w-0 grid-cols-3 gap-2.5\">\n              <FrameCell className=\"w-full min-w-0\" style={{ height: 112 }} />\n              <FrameCell className=\"w-full min-w-0\" style={{ height: 112 }} />\n              <FrameCell className=\"w-full min-w-0\" style={{ height: 112 }} />\n            </div>\n          </section>\n        </Page.Body>\n\n        <Page.Footer divided>\n          <Flex gap={3} h={8} align-center justify-between>\n            <FrameCell className=\"shrink-0\" style={{ width: 88, height: 20 }} />\n            <FrameCell className=\"shrink-0\" style={{ width: 56, height: 20 }} />\n          </Flex>\n        </Page.Footer>\n      </Page>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:panel/01-sidebar-toggle",
@@ -2166,7 +3077,7 @@ export const generatedWorkshopContent = [
     "componentId": "panel",
     "access": "free",
     "locked": false,
-    "code": "<Panel collapseAt={480} spacing=\"none\">\n      <Panel.Sidebar id=\"navigation\" side=\"left\" size={184} defaultOpen aria-label=\"Navigation\" className=\"border-r border-background-700\">\n        <div className=\"grid h-full w-full min-w-0 content-start gap-2 p-3\">\n          {Array.from({ length: 4 }, (_, index) => (\n            <div key={index} className=\"h-7 rounded-sm bg-background-800\" />\n          ))}\n        </div>\n      </Panel.Sidebar>\n      <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n        <header className=\"flex shrink-0 items-center justify-between border-b border-background-700 px-2 py-2\">\n          <div className=\"flex items-center gap-2\">\n            <Panel.Toggle aria-controls=\"navigation\">\n              <button\n                aria-label=\"Toggle navigation\"\n                className=\"h-7 w-7 cursor-pointer rounded-sm bg-background-700 hover:bg-background-600\"\n              />\n            </Panel.Toggle>\n            <div className=\"h-4 w-24 rounded-sm bg-background-800\" />\n          </div>\n          <div className=\"size-7 rounded-sm bg-background-800\" />\n        </header>\n        <main className=\"grid min-h-0 min-w-0 flex-1 content-start gap-3 overflow-auto p-3\">\n          <div className=\"h-22 rounded-sm bg-background-800\" />\n          <div className=\"grid min-w-0 grid-cols-2 gap-3\">\n            <div className=\"h-22 rounded-sm bg-background-800\" />\n            <div className=\"h-22 rounded-sm bg-background-800\" />\n          </div>\n        </main>\n        <footer className=\"flex shrink-0 justify-between border-t border-background-700 px-2 py-2\">\n          <div className=\"h-4 w-14 rounded-sm bg-background-800\" />\n          <div className=\"h-4 w-10 rounded-sm bg-background-800\" />\n        </footer>\n      </section>\n    </Panel>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Panel } from 'ui-lab-components/panel';\n\nconst CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ className, style }: { className?: string; style?: CSSProperties }) {\n  return (\n    <Frame pathStroke=\"dashed\" className={className} style={{ ...CELL_STYLE, ...style }}>\n      <div className=\"size-full\" />\n    </Frame>\n  );\n}\n\nfunction NavCells() {\n  return (\n    <div className=\"grid h-full w-full min-w-0 content-start gap-2 p-3\">\n      {Array.from({ length: 4 }, (_, index) => <FrameCell key={index} style={{ height: 28 }} />)}\n    </div>\n  );\n}\n\nexport default function Example() {\n  return (\n    <Panel collapseAt={480} spacing=\"none\">\n      <Panel.Sidebar\n        id=\"navigation\"\n        side=\"left\"\n        size={184}\n        defaultOpen\n        aria-label=\"Navigation\"\n        className=\"border-r border-background-700\"\n      >\n        <NavCells />\n      </Panel.Sidebar>\n\n      <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n        <header className=\"flex shrink-0 items-center justify-between border-b border-background-700 px-2 py-2\">\n          <div className=\"flex items-center gap-2\">\n            <Panel.Toggle aria-controls=\"navigation\">\n              <button aria-label=\"Toggle navigation\" className=\"h-7 w-7 cursor-pointer rounded-sm bg-background-700 hover:bg-background-600\" />\n            </Panel.Toggle>\n            <FrameCell className=\"shrink-0\" style={{ width: 96, height: 16 }} />\n          </div>\n          <FrameCell className=\"shrink-0\" style={{ width: 28, height: 28 }} />\n        </header>\n\n        <main className=\"grid min-h-0 min-w-0 flex-1 content-start gap-3 overflow-auto p-3\">\n          <FrameCell style={{ height: 88 }} />\n          <div className=\"grid min-w-0 grid-cols-2 gap-3\">\n            <FrameCell style={{ height: 88 }} />\n            <FrameCell style={{ height: 88 }} />\n          </div>\n        </main>\n\n        <footer className=\"flex shrink-0 justify-between border-t border-background-700 px-2 py-2\">\n          <FrameCell className=\"shrink-0\" style={{ width: 56, height: 16 }} />\n          <FrameCell className=\"shrink-0\" style={{ width: 40, height: 16 }} />\n        </footer>\n      </section>\n    </Panel>\n  );\n}\n"
   },
   {
     "ref": "example:panel/02-resizable-workspace",
@@ -2179,7 +3090,7 @@ export const generatedWorkshopContent = [
     "componentId": "panel",
     "access": "free",
     "locked": false,
-    "code": "<Panel spacing=\"none\">\n      <div className=\"flex min-w-0 flex-1 gap-2 overflow-hidden\">\n        <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n          <header className=\"flex shrink-0 items-center justify-between border-b border-background-700 px-2 py-2\">\n            <div className=\"h-4 w-24 rounded-sm bg-background-800\" />\n            <div className=\"size-7 rounded-sm bg-background-800\" />\n          </header>\n          <Panel orientation=\"horizontal\" spacing=\"none\" className=\"min-h-0 flex-1\">\n            <aside id=\"workspace-source\" style={{ flexBasis: '32%', minWidth: '20%', maxWidth: '45%' }}>\n              <div className=\"grid h-full w-full min-w-0 content-start gap-2 p-3\">\n                {Array.from({ length: 4 }, (_, index) => (\n                  <div key={index} className=\"h-7 rounded-sm bg-background-800\" />\n                ))}\n              </div>\n            </aside>\n            <Panel.Resize aria-controls=\"workspace-source workspace-preview\" aria-label=\"Resize workspace columns\" />\n            <Panel\n              id=\"workspace-preview\"\n              orientation=\"vertical\"\n              spacing=\"none\"\n              style={{ flexBasis: '68%', minWidth: '45%' }}\n            >\n              <section id=\"workspace-primary\" style={{ flexBasis: '64%', minHeight: '42%' }} className=\"p-3\">\n                <div className=\"h-full rounded-sm bg-background-800\" />\n              </section>\n              <Panel.Resize aria-controls=\"workspace-primary workspace-secondary\" aria-label=\"Resize workspace rows\" />\n              <section id=\"workspace-secondary\" style={{ flexBasis: '36%', minHeight: '22%', maxHeight: '58%' }} className=\"p-3\">\n                <div className=\"h-full rounded-sm bg-background-800\" />\n              </section>\n            </Panel>\n          </Panel>\n        </section>\n      </div>\n    </Panel>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Panel } from 'ui-lab-components/panel';\n\nconst CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ className, style }: { className?: string; style?: CSSProperties }) {\n  return <Frame pathStroke=\"dashed\" className={className} style={{ ...CELL_STYLE, ...style }}><div className=\"size-full\" /></Frame>;\n}\n\nfunction NavCells() {\n  return <div className=\"grid h-full w-full min-w-0 content-start gap-2 p-3\">{Array.from({ length: 4 }, (_, index) => <FrameCell key={index} style={{ height: 28 }} />)}</div>;\n}\n\nexport default function Example() {\n  return (\n    <Panel spacing=\"none\">\n      <div className=\"flex min-w-0 flex-1 gap-2 overflow-hidden\">\n        <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n          <header className=\"flex shrink-0 items-center justify-between border-b border-background-700 px-2 py-2\">\n            <div className=\"flex items-center gap-2\"><FrameCell className=\"shrink-0\" style={{ width: 96, height: 16 }} /></div>\n            <FrameCell className=\"shrink-0\" style={{ width: 28, height: 28 }} />\n          </header>\n          <Panel orientation=\"horizontal\" spacing=\"none\" className=\"min-h-0 flex-1\">\n            <aside id=\"workspace-source\" style={{ flexBasis: '32%', minWidth: '20%', maxWidth: '45%' }}><NavCells /></aside>\n            <Panel.Resize aria-controls=\"workspace-source workspace-preview\" aria-label=\"Resize workspace columns\" />\n            <Panel id=\"workspace-preview\" orientation=\"vertical\" spacing=\"none\" style={{ flexBasis: '68%', minWidth: '45%' }}>\n              <section id=\"workspace-primary\" style={{ flexBasis: '64%', minHeight: '42%' }} className=\"p-3\"><FrameCell className=\"h-full\" /></section>\n              <Panel.Resize aria-controls=\"workspace-primary workspace-secondary\" aria-label=\"Resize workspace rows\" />\n              <section id=\"workspace-secondary\" style={{ flexBasis: '36%', minHeight: '22%', maxHeight: '58%' }} className=\"p-3\"><FrameCell className=\"h-full\" /></section>\n            </Panel>\n          </Panel>\n        </section>\n      </div>\n    </Panel>\n  );\n}\n"
   },
   {
     "ref": "example:panel/03-nested-dashboard",
@@ -2192,7 +3103,59 @@ export const generatedWorkshopContent = [
     "componentId": "panel",
     "access": "free",
     "locked": false,
-    "code": "<Panel spacing=\"none\">\n      <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n        <header className=\"flex shrink-0 items-center justify-between border-b border-background-700 px-2 py-2\">\n          <div className=\"h-4 w-24 rounded-sm bg-background-800\" />\n          <div className=\"size-7 rounded-sm bg-background-800\" />\n        </header>\n        <Panel orientation=\"horizontal\" spacing=\"none\" className=\"min-h-0 flex-1\">\n          <Panel id=\"dashboard-primary\" orientation=\"vertical\" spacing=\"none\" style={{ flexBasis: '70%', minWidth: '46%' }}>\n            <section id=\"dashboard-summary\" style={{ flexBasis: '36%', minHeight: '24%' }} className=\"p-3\">\n              <div className=\"grid h-full w-full min-w-0 grid-cols-3 gap-3\">\n                <div className=\"h-full rounded-sm bg-background-800\" />\n                <div className=\"h-full rounded-sm bg-background-800\" />\n                <div className=\"h-full rounded-sm bg-background-800\" />\n              </div>\n            </section>\n            <Panel.Resize aria-controls=\"dashboard-summary dashboard-chart\" aria-label=\"Resize dashboard rows\" />\n            <section id=\"dashboard-chart\" style={{ flexBasis: '64%', minHeight: '40%' }} className=\"p-3\">\n              <div className=\"h-full rounded-sm bg-background-800\" />\n            </section>\n          </Panel>\n          <Panel.Resize aria-controls=\"dashboard-primary dashboard-activity\" aria-label=\"Resize dashboard columns\" />\n          <aside id=\"dashboard-activity\" style={{ flexBasis: '30%', minWidth: '20%', maxWidth: '42%' }}>\n            <div className=\"grid h-full w-full min-w-0 content-start gap-2 p-3\">\n              {Array.from({ length: 4 }, (_, index) => (\n                <div key={index} className=\"h-7 rounded-sm bg-background-800\" />\n              ))}\n            </div>\n          </aside>\n        </Panel>\n      </section>\n    </Panel>"
+    "code": "import type { CSSProperties } from 'react';\nimport { Frame } from 'ui-lab-components/frame';\nimport { Panel } from 'ui-lab-components/panel';\n\nconst CELL_STYLE = {\n  '--fill': 'var(--background-900)',\n  '--stroke-color': 'var(--background-600)',\n} as CSSProperties;\n\nfunction FrameCell({ className, style }: { className?: string; style?: CSSProperties }) {\n  return <Frame pathStroke=\"dashed\" className={className} style={{ ...CELL_STYLE, ...style }}><div className=\"size-full\" /></Frame>;\n}\n\nfunction NavCells() {\n  return <div className=\"grid h-full w-full min-w-0 content-start gap-2 p-3\">{Array.from({ length: 4 }, (_, index) => <FrameCell key={index} style={{ height: 28 }} />)}</div>;\n}\n\nexport default function Example() {\n  return (\n    <Panel spacing=\"none\">\n      <section className=\"flex min-w-0 flex-1 flex-col overflow-hidden\">\n        <header className=\"flex shrink-0 items-center justify-between border-b border-background-700 px-2 py-2\">\n          <div className=\"flex items-center gap-2\"><FrameCell className=\"shrink-0\" style={{ width: 96, height: 16 }} /></div>\n          <FrameCell className=\"shrink-0\" style={{ width: 28, height: 28 }} />\n        </header>\n        <Panel orientation=\"horizontal\" spacing=\"none\" className=\"min-h-0 flex-1\">\n          <Panel id=\"dashboard-primary\" orientation=\"vertical\" spacing=\"none\" style={{ flexBasis: '70%', minWidth: '46%' }}>\n            <section id=\"dashboard-summary\" style={{ flexBasis: '36%', minHeight: '24%' }} className=\"p-3\">\n              <div className=\"grid h-full w-full min-w-0 grid-cols-3 gap-3\"><FrameCell className=\"h-full\" /><FrameCell className=\"h-full\" /><FrameCell className=\"h-full\" /></div>\n            </section>\n            <Panel.Resize aria-controls=\"dashboard-summary dashboard-chart\" aria-label=\"Resize dashboard rows\" />\n            <section id=\"dashboard-chart\" style={{ flexBasis: '64%', minHeight: '40%' }} className=\"p-3\"><FrameCell className=\"h-full\" /></section>\n          </Panel>\n          <Panel.Resize aria-controls=\"dashboard-primary dashboard-activity\" aria-label=\"Resize dashboard columns\" />\n          <aside id=\"dashboard-activity\" style={{ flexBasis: '30%', minWidth: '20%', maxWidth: '42%' }}><NavCells /></aside>\n        </Panel>\n      </section>\n    </Panel>\n  );\n}\n"
+  },
+  {
+    "ref": "example:path/01-basic-path",
+    "kind": "component-example",
+    "id": "01-basic-path",
+    "name": "Basic Path",
+    "description": "A simple path navigation showing the current page location. Use this to help users understand their position in the site hierarchy.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "path",
+    "access": "free",
+    "locked": false,
+    "code": "import { Path } from 'ui-lab-components/path';\n\n\nexport default function Example() {\n  return (\n    <Path>\n      <Path.Item href=\"/\">Home</Path.Item>\n      <Path.Item href=\"/products\">Products</Path.Item>\n      <Path.Item href=\"/products/electronics\">Electronics</Path.Item>\n      <Path.Item>Laptop</Path.Item>\n    </Path>\n  );\n}\n"
+  },
+  {
+    "ref": "example:path/02-custom-separator",
+    "kind": "component-example",
+    "id": "02-custom-separator",
+    "name": "Custom Separator",
+    "description": "Pass any node via the separator prop to replace the default slash.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "path",
+    "access": "free",
+    "locked": false,
+    "code": "import { Path } from 'ui-lab-components/path';\nimport { Icon } from \"ui-lab-components/icon\";\n\n\nexport default function Example() {\n  return (\n    <Path separator={<Icon id=\"fwd\" size={12} className=\"text-foreground-400\" />}>\n      <Path.Item href=\"/projects\">Projects</Path.Item>\n      <Path.Item href=\"/projects/ui-lab\">ui-lab</Path.Item>\n      <Path.Item>components</Path.Item>\n    </Path>\n  );\n}\n"
+  },
+  {
+    "ref": "example:path/03-collapsed-breadcrumb",
+    "kind": "component-example",
+    "id": "03-collapsed-breadcrumb",
+    "name": "Collapsed Breadcrumb",
+    "description": "Deep paths collapse intermediate crumbs into an ellipsis menu — Path.Item wraps the Menu trigger directly.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "path",
+    "access": "free",
+    "locked": false,
+    "code": "import { Path } from 'ui-lab-components/path'\nimport { Menu } from 'ui-lab-components/menu'\nimport { Icon } from \"ui-lab-components/icon\"\n\n\nconst collapsed = [\n  { label: \"Projects\", href: \"/projects\" },\n  { label: \"ui-lab\", href: \"/projects/ui-lab\" },\n  { label: \"packages\", href: \"/projects/ui-lab/packages\" },\n];\n\nexport default function Example() {\n  return (\n    <Path>\n      <Path.Item href=\"/\">Home</Path.Item>\n      <Path.Item>\n        <Menu type=\"pop-over\">\n          <Menu.Trigger icon={<Icon id=\"more\" size=\"1em\" />} className=\"p-2\" size=\"icon\" variant=\"ghost\" aria-label=\"Show collapsed path\" />\n          <Menu.Content align=\"start\">\n            {collapsed.map((crumb) => (\n              <Menu.Item key={crumb.href} onSelect={() => {}}>\n                {crumb.label}\n              </Menu.Item>\n            ))}\n          </Menu.Content>\n        </Menu>\n      </Path.Item>\n      <Path.Item href=\"/projects/ui-lab/packages/@ui\">@ui</Path.Item>\n      <Path.Item>Path.tsx</Path.Item>\n    </Path>\n  );\n}\n"
+  },
+  {
+    "ref": "example:popover/01-basic-popover",
+    "kind": "component-example",
+    "id": "01-basic-popover",
+    "name": "Basic",
+    "description": "Default popover with a short note and two clear actions.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "popover",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { Popover } from 'ui-lab-components/popover'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  return (\n    <Popover\n      content={\n        <div className=\"w-64 space-y-3\">\n          <div className=\"space-y-1\">\n            <div className=\"text-sm font-medium\">Quick note</div>\n            <p>A popover works best when it adds one small piece of context, one simple choice, or one short action.</p>\n          </div>\n\n          <div className=\"flex items-center gap-2\">\n            <Button variant=\"ghost\" size=\"sm\">\n              Dismiss\n            </Button>\n            <Button size=\"sm\">\n              Continue\n            </Button>\n          </div>\n        </div>\n      }\n    >\n      <Button>Show info</Button>\n    </Popover>\n  );\n}\n"
   },
   {
     "ref": "example:popover/02-toggleable-options",
@@ -2205,7 +3168,7 @@ export const generatedWorkshopContent = [
     "componentId": "popover",
     "access": "free",
     "locked": false,
-    "code": "<Popover\n  position=\"bottom\"\n  content={\n    <List spacing=\"sm\">\n      {toggleableItems.map((item) => (\n        <List.Item\n          key={item.id}\n          value={item.id}\n          interactive\n          onClick={() => toggle(item.id)}\n        >\n          <div className=\"min-w-0 flex-1\">\n            <List.Title>{item.label}</List.Title>\n            <List.Desc>{item.desc}</List.Desc>\n          </div>\n          <List.Switch\n            isSelected={enabled.has(item.id)}\n            onChange={() => toggle(item.id)}\n            aria-label={item.label}\n          />\n        </List.Item>\n      ))}\n    </List>\n  }\n>\n  <Button>Options</Button>\n</Popover>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Popover } from 'ui-lab-components/popover'\nimport { Button } from 'ui-lab-components/button'\nimport { List } from 'ui-lab-components/list';\n\nconst toggleableItems = [\n  { id: \"notifications\", label: \"Notifications\", desc: \"Push and email alerts\" },\n  { id: \"autoSave\", label: \"Auto-save\", desc: \"Save changes automatically\" },\n  { id: \"darkMode\", label: \"Dark mode\", desc: \"Use dark color scheme\" },\n];\n\nexport default function Example() {\n  const [enabled, setEnabled] = useState<Set<string>>(\n    () => new Set([\"notifications\", \"darkMode\"])\n  );\n\n  const toggle = (id: string) =>\n    setEnabled((prev) => {\n      const next = new Set(prev);\n      next.has(id) ? next.delete(id) : next.add(id);\n      return next;\n    });\n\n  return (\n    <Popover\n      position=\"bottom\"\n      content={\n        <List spacing=\"sm\">\n          {toggleableItems.map((item) => (\n            <List.Item\n              key={item.id}\n              value={item.id}\n              interactive\n              onClick={() => toggle(item.id)}\n            >\n              <div className=\"min-w-0 flex-1\">\n                <List.Title>{item.label}</List.Title>\n                <List.Desc>{item.desc}</List.Desc>\n              </div>\n              <List.Switch\n                isSelected={enabled.has(item.id)}\n                onChange={() => toggle(item.id)}\n                aria-label={item.label}\n              />\n            </List.Item>\n          ))}\n        </List>\n      }\n    >\n      <Button>Options</Button>\n    </Popover>\n  );\n}\n"
   },
   {
     "ref": "example:popover/03-table-row-actions",
@@ -2218,7 +3181,7 @@ export const generatedWorkshopContent = [
     "componentId": "popover",
     "access": "free",
     "locked": false,
-    "code": "<td className=\"py-2 px-3 text-right\">\n  <Popover\n    position=\"left\"\n    content={\n      <List gap=\"sm\" styles={{ root: \"w-full\" }}>\n        <Button variant=\"ghost\" size=\"sm\" styles={{ root: \"justify-start\" }}>\n          Edit {row.name}\n        </Button>\n        <Button variant=\"danger\" size=\"sm\" styles={{ root: \"justify-start\" }}>\n          Remove {row.name}\n        </Button>\n      </List>\n    }\n  >\n    <Button\n      icon={<FaEllipsis />}\n      className=\"p-2\"\n      size=\"icon\"\n      variant=\"ghost\"\n      aria-label={`Row actions for ${row.name}`}\n    />\n  </Popover>\n</td>"
+    "code": "\"use client\";\n\nimport { Popover } from 'ui-lab-components/popover'\nimport { Button } from 'ui-lab-components/button'\nimport { List } from 'ui-lab-components/list';\nimport { Icon } from 'ui-lab-components/icon'\n\nconst rows = [\n  { id: \"usr_1\", name: \"Alice\", role: \"Admin\", status: \"Active\" },\n  { id: \"usr_2\", name: \"Bob\", role: \"Member\", status: \"Invited\" },\n  { id: \"usr_3\", name: \"Carol\", role: \"Viewer\", status: \"Active\" },\n];\n\nexport default function Example() {\n  return (\n    <table className=\"w-full text-sm border-collapse\">\n      <thead>\n        <tr className=\"border-b border-background-700\">\n          <th className=\"text-left py-2 px-3 font-medium text-foreground-200\">Name</th>\n          <th className=\"text-left py-2 px-3 font-medium text-foreground-200\">Role</th>\n          <th className=\"text-left py-2 px-3 font-medium text-foreground-200\">Status</th>\n          <th className=\"py-2 px-3\" />\n        </tr>\n      </thead>\n      <tbody>\n        {rows.map((row) => (\n          <tr key={row.id} className=\"border-b border-background-700 last:border-0\">\n            <td className=\"py-2 px-3\">{row.name}</td>\n            <td className=\"py-2 px-3 text-foreground-200\">{row.role}</td>\n            <td className=\"py-2 px-3 text-foreground-200\">{row.status}</td>\n            <td className=\"py-2 px-3 text-right\">\n              <Popover\n                position=\"left\"\n                content={\n                  <List gap=\"sm\" styles={{ root: \"w-full\" }}>\n                    <Button\n                      variant=\"ghost\"\n                      size=\"sm\"\n                      styles={{ root: \"justify-start\" }}\n                    >\n                      Edit {row.name}\n                    </Button>\n                    <Button\n                      variant=\"danger\"\n                      size=\"sm\"\n                      styles={{ root: \"justify-start\" }}\n                    >\n                      Remove {row.name}\n                    </Button>\n                  </List>\n                }\n              >\n                <Button icon={<Icon id=\"more\" size=\"1em\" />} className=\"p-2\" size=\"icon\" variant=\"ghost\" aria-label={`Row actions for ${row.name}`} />\n              </Popover>\n            </td>\n          </tr>\n        ))}\n      </tbody>\n    </table>\n  );\n}\n"
   },
   {
     "ref": "example:popover/04-input-form",
@@ -2231,7 +3194,7 @@ export const generatedWorkshopContent = [
     "componentId": "popover",
     "access": "free",
     "locked": false,
-    "code": "<Popover\n  position=\"bottom\"\n  content={\n    <Flex direction=\"column\" gap=\"sm\" className=\"w-80\">\n      <Flex direction=\"column\" gap=\"xs\">\n        <Label htmlFor=\"contact-name\">Name</Label>\n        <Input\n          id=\"contact-name\"\n          type=\"text\"\n          value={name}\n          onChange={(e) => setName(e.target.value)}\n          placeholder=\"Full name\"\n        />\n      </Flex>\n      <Flex direction=\"column\" gap=\"xs\">\n        <Label htmlFor=\"contact-email\">Email</Label>\n        <Input\n          id=\"contact-email\"\n          type=\"email\"\n          value={email}\n          onChange={(e) => setEmail(e.target.value)}\n          placeholder=\"name@example.com\"\n        />\n      </Flex>\n    </Flex>\n  }\n>\n  <Button>Edit contact</Button>\n</Popover>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Popover } from 'ui-lab-components/popover'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Label } from 'ui-lab-components/label'\nimport { Input } from 'ui-lab-components/input';\n\nexport default function Example() {\n  const [name, setName] = useState(\"\");\n  const [email, setEmail] = useState(\"\");\n\n  return (\n    <Popover\n      position=\"bottom\"\n      content={\n        <Flex direction=\"column\" gap=\"sm\">\n          <Flex direction=\"column\" gap=\"xs\">\n            <Label htmlFor=\"contact-name\">Name</Label>\n            <Input\n              id=\"contact-name\"\n              type=\"text\"\n              value={name}\n              onChange={(e) => setName((e.target as HTMLInputElement).value)}\n              placeholder=\"Full name\"\n            />\n          </Flex>\n          <Flex direction=\"column\" gap=\"xs\">\n            <Label htmlFor=\"contact-email\">Email</Label>\n            <Input\n              id=\"contact-email\"\n              type=\"email\"\n              value={email}\n              onChange={(e) => setEmail((e.target as HTMLInputElement).value)}\n              placeholder=\"name@example.com\"\n            />\n          </Flex>\n        </Flex>\n      }\n    >\n      <Button>Edit contact</Button>\n    </Popover>\n  );\n}\n"
   },
   {
     "ref": "example:popover/05-arrow-positions",
@@ -2244,24 +3207,85 @@ export const generatedWorkshopContent = [
     "componentId": "popover",
     "access": "free",
     "locked": false,
-    "code": "<Flex align-center>\n  {([\"top\", \"bottom\", \"left\", \"right\"] as const).map((position) => (\n    <Popover\n      key={position}\n      position={position}\n      show-arrow\n      content={<span className=\"text-sm capitalize\">{position}</span>}\n    >\n      <Button variant=\"ghost\">\n        <span className=\"capitalize\">{position}</span>\n      </Button>\n    </Popover>\n  ))}\n</Flex>"
+    "code": "\"use client\";\n\nimport { Popover } from 'ui-lab-components/popover'\nimport { Button } from 'ui-lab-components/button'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex align-center>\n      {([\"top\", \"bottom\", \"left\", \"right\"] as const).map((position) => (\n        <Popover\n          key={position}\n          position={position}\n          show-arrow\n          content={<span className=\"text-sm capitalize\">{position}</span>}\n        >\n          <Button variant=\"ghost\">\n            <span className=\"capitalize\">{position}</span>\n          </Button>\n        </Popover>\n      ))}\n    </Flex>\n  );\n}\n"
   },
   {
-    "ref": "example:premium-gate/02-premium-gate-fixture",
+    "ref": "example:progress/01-basic-progress",
     "kind": "component-example",
-    "id": "02-premium-gate-fixture",
-    "name": "Premium Gate Fixture",
-    "description": "Premium fixture that should only be returned for premium viewers.",
+    "id": "01-basic-progress",
+    "name": "File Upload",
+    "description": "Simulated upload progress with a label and live percentage — starts on button click.",
     "category": "examples",
     "visibility": "public",
-    "componentId": "premium-gate",
-    "access": "premium",
-    "locked": true,
-    "bundleId": "components",
-    "installIntent": {
-      "mode": "locked",
-      "artifactId": "02-premium-gate-fixture"
-    }
+    "componentId": "progress",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState, useEffect } from 'react';\nimport { Progress } from 'ui-lab-components/progress'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  const [progress, setProgress] = useState(0);\n  const [running, setRunning] = useState(false);\n\n  useEffect(() => {\n    if (!running) return;\n    if (progress >= 100) { setRunning(false); return; }\n    const t = setTimeout(() => setProgress((p) => Math.min(p + Math.random() * 12, 100)), 200);\n    return () => clearTimeout(t);\n  }, [running, progress]);\n\n  const reset = () => { setProgress(0); setRunning(false); };\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex direction=\"column\" gap=\"xs\">\n        <span style={{ fontSize: \"var(--text-sm)\", color: \"var(--foreground-muted)\" }}>\n          report-q4-2025.pdf\n        </span>\n        <Progress value={progress} label=\"Uploading\" showValue />\n      </Flex>\n      <Flex gap=\"sm\">\n        <Button variant=\"primary\" onClick={() => setRunning(true)} disabled={running || progress === 100}>\n          {progress === 100 ? \"Done\" : \"Upload\"}\n        </Button>\n        <Button variant=\"ghost\" onClick={reset}>Reset</Button>\n      </Flex>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:progress/02-storage-quota",
+    "kind": "component-example",
+    "id": "02-storage-quota",
+    "name": "Storage Quota",
+    "description": "Fixed progress bar showing disk usage relative to a custom max value.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "progress",
+    "access": "free",
+    "locked": false,
+    "code": "import { Progress } from 'ui-lab-components/progress'\nimport { Flex } from 'ui-lab-components/flex';\n\nconst used = 7.4;\nconst total = 10;\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex direction=\"column\" gap=\"xs\">\n        <Progress value={used} max={total} label=\"Storage\" showValue />\n        <span style={{\n          color: \"var(--foreground-muted)\",\n          fontFamily: \"var(--font-body)\",\n          fontSize: \"var(--text-xs)\",\n          fontWeight: \"var(--font-weight-body-normal)\",\n          lineHeight: \"var(--leading-sm)\",\n        }}>\n          {used} GB of {total} GB used\n        </span>\n      </Flex>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:progress/03-onboarding-steps",
+    "kind": "component-example",
+    "id": "03-onboarding-steps",
+    "name": "Onboarding Steps",
+    "description": "Step tracker using value/max to represent wizard completion.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "progress",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Progress } from 'ui-lab-components/progress'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Button } from 'ui-lab-components/button';\n\nconst steps = [\"Profile\", \"Preferences\", \"Integrations\", \"Invite team\"];\n\nexport default function Example() {\n  const [step, setStep] = useState(1);\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex direction=\"column\" gap=\"xs\">\n        <Progress value={step} max={steps.length} />\n        <span style={{ fontSize: \"var(--text-sm)\", color: \"var(--foreground-muted)\" }}>\n          Step {step} of {steps.length} — {steps[step - 1]}\n        </span>\n      </Flex>\n      <Flex gap=\"sm\">\n        <Button variant=\"ghost\" onClick={() => setStep((s) => Math.max(1, s - 1))} disabled={step === 1}>\n          Back\n        </Button>\n        <Button variant=\"primary\" onClick={() => setStep((s) => Math.min(steps.length, s + 1))} disabled={step === steps.length}>\n          Next\n        </Button>\n      </Flex>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:progress/04-indeterminate",
+    "kind": "component-example",
+    "id": "04-indeterminate",
+    "name": "Indeterminate Loading",
+    "description": "Animated bar for unknown-duration operations — switches to complete when done.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "progress",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState, useEffect } from 'react';\nimport { Progress } from 'ui-lab-components/progress'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    if (!loading) return;\n    const t = setTimeout(() => setLoading(false), 3000);\n    return () => clearTimeout(t);\n  }, [loading]);\n\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <Flex direction=\"column\" gap=\"xs\">\n        <span style={{ fontSize: \"var(--text-sm)\", color: \"var(--foreground-muted)\" }}>\n          {loading ? \"Fetching results…\" : \"Results loaded\"}\n        </span>\n        <Progress indeterminate={loading} value={loading ? 0 : 100} />\n      </Flex>\n      <Button variant=\"ghost\" onClick={() => setLoading(true)} disabled={loading}>\n        Reload\n      </Button>\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:progress/05-skill-levels",
+    "kind": "component-example",
+    "id": "05-skill-levels",
+    "name": "Skill Levels",
+    "description": "Stacked progress bars in a profile or stats context with labels and values.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "progress",
+    "access": "free",
+    "locked": false,
+    "code": "import { Progress } from 'ui-lab-components/progress'\nimport { Flex } from 'ui-lab-components/flex';\n\nconst skills = [\n  { name: \"TypeScript\", value: 92 },\n  { name: \"Rust\", value: 54 },\n  { name: \"Go\", value: 38 },\n];\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      {skills.map((s) => (\n        <Progress key={s.name} value={s.value} label={s.name} showValue />\n      ))}\n    </Flex>\n  );\n}\n"
+  },
+  {
+    "ref": "example:radio/01-basic-radio",
+    "kind": "component-example",
+    "id": "01-basic-radio",
+    "name": "Basic Radio",
+    "description": "A simple radio button option with a label. Use this for single-choice selection in forms and settings.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "radio",
+    "access": "free",
+    "locked": false,
+    "code": "import { Radio } from 'ui-lab-components/radio';\n\nexport default function Example() {\n  return (\n    <Radio value=\"option1\" label=\"Select this option\" />\n  );\n}\n"
   },
   {
     "ref": "example:radio/02-with-descriptions",
@@ -2274,7 +3298,7 @@ export const generatedWorkshopContent = [
     "componentId": "radio",
     "access": "free",
     "locked": false,
-    "code": "<Radio.Group value=\"pro\">\n  <Radio.Item\n    value=\"starter\"\n    label=\"Starter Plan\"\n    description=\"Perfect for individuals and small projects. Includes 5GB storage and basic support.\"\n  />\n  <Radio.Item\n    value=\"pro\"\n    label=\"Pro Plan\"\n    description=\"Ideal for growing teams. Includes 50GB storage, priority support, and advanced analytics.\"\n  />\n  <Radio.Item\n    value=\"enterprise\"\n    label=\"Enterprise Plan\"\n    description=\"For large organizations. Unlimited storage, dedicated support, and custom integrations.\"\n  />\n</Radio.Group>"
+    "code": "'use client';\n\nimport { Radio } from 'ui-lab-components/radio';\n\nexport default function Example() {\n  return (\n    <Radio.Group value=\"pro\">\n      <Radio.Item\n        value=\"starter\"\n        label=\"Starter Plan\"\n        description=\"Perfect for individuals and small projects. Includes 5GB storage and basic support.\"\n      />\n      <Radio.Item\n        value=\"pro\"\n        label=\"Pro Plan\"\n        description=\"Ideal for growing teams. Includes 50GB storage, priority support, and advanced analytics.\"\n      />\n      <Radio.Item\n        value=\"enterprise\"\n        label=\"Enterprise Plan\"\n        description=\"For large organizations. Unlimited storage, dedicated support, and custom integrations.\"\n      />\n    </Radio.Group>\n  );\n}\n"
   },
   {
     "ref": "example:radio/03-radio-list",
@@ -2287,7 +3311,20 @@ export const generatedWorkshopContent = [
     "componentId": "radio",
     "access": "free",
     "locked": false,
-    "code": "import { Radio } from 'ui-lab-components/radio';\n\nconst options = ${JSON.stringify(options, null, 2)};\n\nconst cardStyles = ${JSON.stringify(cardStyles, null, 2)};\n\nexport default function Example() {\n  return (\n    <Radio.Group\n      value=\"mentions\"\n      label=\"Notifications\"\n      description=\"Choose what reaches you.\"\n      className=\"w-full max-w-sm\"\n      styles={{ label: 'text-base text-foreground-100', description: 'text-sm text-foreground-400', group: 'mt-5 gap-3' }}\n    >\n      {options.map((option) => (\n        <Radio.Item key={option.value} {...option} styles={cardStyles} />\n      ))}\n    </Radio.Group>\n  );\n}"
+    "code": "'use client';\n\nimport { Radio } from 'ui-lab-components/radio';\n\nconst options = [\n  { value: 'all', label: 'All activity', description: 'Stay up to date with everything.' },\n  { value: 'mentions', label: 'Mentions only', description: 'Just the conversations that need you.' },\n  { value: 'none', label: 'Nothing for now', description: 'A little space to focus.' },\n];\n\nconst cardStyles = {\n  item: 'items-start rounded-sm border border-background-700 p-3 hover:bg-background-900',\n  label: 'text-foreground-100',\n  description: 'text-sm text-foreground-400',\n};\n\nexport default function Example() {\n  return (\n    <Radio.Group\n      value=\"mentions\"\n      label=\"Notifications\"\n      description=\"Choose what reaches you.\"\n      className=\"w-full max-w-sm\"\n      styles={{ label: 'text-base text-foreground-100', description: 'text-sm text-foreground-400', group: 'mt-5 gap-3' }}\n    >\n      {options.map((option) => (\n        <Radio.Item key={option.value} {...option} styles={cardStyles} />\n      ))}\n    </Radio.Group>\n  );\n}\n"
+  },
+  {
+    "ref": "example:radio/04-card-radios",
+    "kind": "component-example",
+    "id": "04-card-radios",
+    "name": "Card Radios",
+    "description": "A delivery-method picker composed with Card and Radio. Details sit on the left and radios on the right, with whole-card selection and built-in keyboard navigation.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "radio",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport { Card } from 'ui-lab-components/card';\nimport { Radio } from 'ui-lab-components/radio';\n\nconst deliveryMethods = [\n  { value: 'standard', label: 'Standard delivery', estimate: 'Arrives in 4–6 business days', price: 'Free' },\n  { value: 'express', label: 'Express delivery', estimate: 'Arrives in 2–3 business days', price: '$8.00' },\n  { value: 'next-day', label: 'Next-day delivery', estimate: 'Arrives the next business day', price: '$16.00' },\n];\n\nexport default function Example() {\n  return (\n    <Radio.Group\n      value=\"standard\"\n      label=\"Delivery method\"\n      description=\"Choose how soon your order arrives.\"\n      className=\"w-full max-w-md\"\n      styles={{ group: 'mt-4' }}\n    >\n      {deliveryMethods.map((method) => (\n        <Card key={method.value}>\n          <Radio.Item\n            value={method.value}\n            label={method.label}\n            description={`${method.estimate} · ${method.price}`}\n            styles={{ item: 'flex-row-reverse justify-between p-4' }}\n          />\n        </Card>\n      ))}\n    </Radio.Group>\n  );\n}\n"
   },
   {
     "ref": "example:scroll/01-basic-scroll",
@@ -2300,7 +3337,20 @@ export const generatedWorkshopContent = [
     "componentId": "scroll",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"overflow-hidden rounded-sm\">\n  <Scroll maxHeight=\"200px\" fade-y fadeDistance={8} fadeSize={5}>\n    <div className=\"flex flex-col gap-3 p-4\">\n      {lineWidths.map((width) => (\n        <Skeleton.Text key={width} lines={1} w={width} />\n      ))}\n    </div>\n  </Scroll>\n</div>"
+    "code": "import { Scroll } from 'ui-lab-components/scroll';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst LINE_WIDTHS = ['92%', '78%', '85%', '60%', '95%', '70%', '88%', '55%', '90%', '75%'];\n\nexport default function Example() {\n  return (\n    <div className=\"overflow-hidden rounded-sm\">\n      <Scroll max-height=\"200px\" fade-y fade-distance={8} fade-size={5}>\n        <div\n          className=\"flex flex-col gap-3 p-4\"\n          style={{ '--background': 'var(--background-700)' } as React.CSSProperties}\n          aria-hidden=\"true\"\n        >\n          {LINE_WIDTHS.map((w, i) => (\n            <Skeleton.Text key={i} lines={1} w={w} />\n          ))}\n        </div>\n      </Scroll>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:scroll/02-settings-panel-scroll",
+    "kind": "component-example",
+    "id": "02-settings-panel-scroll",
+    "name": "Settings Panel",
+    "description": "Constrained-height list of skeleton settings rows with a custom scrollbar shown on hover.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "scroll",
+    "access": "free",
+    "locked": false,
+    "code": "import { Scroll } from 'ui-lab-components/scroll';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst ITEMS = Array.from({ length: 14 }, (_, i) => i);\n\nexport default function Example() {\n  return (\n    <div className=\"overflow-hidden rounded-sm border border-background-700/40 bg-background-950\">\n      <div className=\"border-b border-background-700/40 px-4 py-3\" aria-hidden=\"true\">\n        <Skeleton.Text w={120} scale={0.9} />\n      </div>\n      <Scroll max-height=\"240px\">\n        <div className=\"flex flex-col\" aria-hidden=\"true\">\n          {ITEMS.map((i) => (\n            <div\n              key={i}\n              className=\"flex items-center gap-3 border-b border-background-700/30 px-4 py-2.5 last:border-b-0\"\n            >\n              <Skeleton w={32} h={32} className=\"rounded-full\" />\n              <div className=\"flex flex-1 flex-col gap-1.5\">\n                <Skeleton.Text w={100} scale={0.8} />\n                <Skeleton.Text w={160} scale={0.65} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </Scroll>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:scroll/03-horizontal-tags",
@@ -2313,7 +3363,72 @@ export const generatedWorkshopContent = [
     "componentId": "scroll",
     "access": "free",
     "locked": false,
-    "code": "<Scroll direction=\"horizontal\" maxWidth=\"420px\" hide={false} inline>\n  <div className=\"flex gap-2 py-0.5\">\n    {tags.map((tag) => (\n      <Skeleton key={tag.id} w={tag.width} h={22} className=\"shrink-0 rounded-full\" />\n    ))}\n  </div>\n</Scroll>"
+    "code": "import { Scroll } from 'ui-lab-components/scroll';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst TAGS = Array.from({ length: 12 }, (_, i) => 40 + ((i * 17) % 60));\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-2\">\n      <Skeleton.Text w={90} scale={0.8} />\n      <Scroll direction=\"horizontal\" max-width=\"420px\" hide={false} inline>\n        <div className=\"flex gap-2 py-0.5\" aria-hidden=\"true\">\n          {TAGS.map((w, i) => (\n            <Skeleton key={i} w={w} h={22} className=\"shrink-0 rounded-full\" />\n          ))}\n        </div>\n      </Scroll>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:select/01-basic-select",
+    "kind": "component-example",
+    "id": "01-basic-select",
+    "name": "Basic Select",
+    "description": "A simple dropdown select component with options. Use this for form inputs and user choices.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "select",
+    "access": "free",
+    "locked": false,
+    "code": "import { Select } from 'ui-lab-components/select';\n\nexport default function Example() {\n  return (\n    <Select>\n      <Select.Trigger>\n        <Select.Value placeholder=\"Select an option\" />\n      </Select.Trigger>\n      <Select.Content>\n        <Select.Item value=\"option1\" textValue=\"Option 1\">Option 1</Select.Item>\n        <Select.Item value=\"option2\" textValue=\"Option 2\">Option 2</Select.Item>\n        <Select.Item value=\"option3\" textValue=\"Option 3\">Option 3</Select.Item>\n      </Select.Content>\n    </Select>\n  );\n}\n"
+  },
+  {
+    "ref": "example:select/02-searchable",
+    "kind": "component-example",
+    "id": "02-searchable",
+    "name": "Searchable Select",
+    "description": "A filterable select component with search input. Type to filter through a large list of options.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "select",
+    "access": "free",
+    "locked": false,
+    "code": "import { Select, Searchable } from 'ui-lab-components/select';\n\nconst countries = [\n  { value: 'us', label: 'United States' },\n  { value: 'ca', label: 'Canada' },\n  { value: 'mx', label: 'Mexico' },\n  { value: 'br', label: 'Brazil' },\n  { value: 'ar', label: 'Argentina' },\n  { value: 'uk', label: 'United Kingdom' },\n  { value: 'fr', label: 'France' },\n  { value: 'de', label: 'Germany' },\n  { value: 'it', label: 'Italy' },\n  { value: 'es', label: 'Spain' },\n  { value: 'pt', label: 'Portugal' },\n  { value: 'nl', label: 'Netherlands' },\n  { value: 'be', label: 'Belgium' },\n  { value: 'ch', label: 'Switzerland' },\n  { value: 'at', label: 'Austria' },\n  { value: 'se', label: 'Sweden' },\n  { value: 'no', label: 'Norway' },\n  { value: 'dk', label: 'Denmark' },\n  { value: 'fi', label: 'Finland' },\n  { value: 'pl', label: 'Poland' },\n  { value: 'jp', label: 'Japan' },\n  { value: 'cn', label: 'China' },\n  { value: 'kr', label: 'South Korea' },\n  { value: 'in', label: 'India' },\n  { value: 'au', label: 'Australia' },\n  { value: 'nz', label: 'New Zealand' },\n];\n\nexport default function Example() {\n  return (\n    <Select>\n      <Searchable.Input placeholder=\"Search countries...\" />\n      <Select.Content>\n        {countries.map((country) => (\n          <Select.Item key={country.value} value={country.value} textValue={country.label}>\n            {country.label}\n          </Select.Item>\n        ))}\n      </Select.Content>\n    </Select>\n  );\n}\n"
+  },
+  {
+    "ref": "example:select/03-country",
+    "kind": "component-example",
+    "id": "03-country",
+    "name": "Country Selector",
+    "description": "Button trigger reveals a searchable country list with flags and dial codes inside the dropdown content.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "select",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Select, Searchable } from 'ui-lab-components/select';\n\nconst countries = [\n  { value: \"us\", label: \"United States\", flag: \"🇺🇸\", code: \"+1\" },\n  { value: \"gb\", label: \"United Kingdom\", flag: \"🇬🇧\", code: \"+44\" },\n  { value: \"de\", label: \"Germany\", flag: \"🇩🇪\", code: \"+49\" },\n  { value: \"fr\", label: \"France\", flag: \"🇫🇷\", code: \"+33\" },\n  { value: \"jp\", label: \"Japan\", flag: \"🇯🇵\", code: \"+81\" },\n  { value: \"kr\", label: \"South Korea\", flag: \"🇰🇷\", code: \"+82\" },\n  { value: \"cn\", label: \"China\", flag: \"🇨🇳\", code: \"+86\" },\n  { value: \"in\", label: \"India\", flag: \"🇮🇳\", code: \"+91\" },\n  { value: \"br\", label: \"Brazil\", flag: \"🇧🇷\", code: \"+55\" },\n  { value: \"au\", label: \"Australia\", flag: \"🇦🇺\", code: \"+61\" },\n  { value: \"ca\", label: \"Canada\", flag: \"🇨🇦\", code: \"+1\" },\n  { value: \"mx\", label: \"Mexico\", flag: \"🇲🇽\", code: \"+52\" },\n];\n\nconst code = `<Select\n  selectedKey={country}\n  label={selected?.label}\n  onSelectionChange={setCountry}\n>\n  <Select.Trigger>\n    <Select.Value\n      placeholder=\"Choose a country...\"\n      icon={selected && <span className=\"text-sm\">{selected.flag}</span>}\n    />\n  </Select.Trigger>\n  <Searchable.Content searchPlaceholder=\"Search countries...\">\n    {countries.map((country) => (\n      <Select.Item\n        key={country.value}\n        value={country.value}\n        textValue={country.label}\n        icon={<span className=\"text-md\">{country.flag}</span>}\n      >\n        <div className=\"flex w-full items-center justify-between\">\n          <span>{country.label}</span>\n          <span className=\"ml-2 text-sm text-foreground-400\">{country.code}</span>\n        </div>\n      </Select.Item>\n    ))}\n  </Searchable.Content>\n</Select>`;\n\nexport default function Example() {\n  const [country, setCountry] = useState<string | number | null>(\"us\");\n  const selected = countries.find(c => c.value === country);\n\n  return (\n    <Select\n      selectedKey={country}\n      label={selected?.label}\n      onSelectionChange={setCountry}\n    >\n      <Select.Trigger>\n        <Select.Value\n          placeholder=\"Choose a country...\"\n          icon={selected && <span className=\"text-sm\">{selected.flag}</span>}\n        />\n      </Select.Trigger>\n      <Searchable.Content searchPlaceholder=\"Search countries...\">\n        {countries.map((c) => (\n          <Select.Item key={c.value} value={c.value} textValue={c.label} icon={<span className=\"text-md\">{c.flag}</span>}>\n            <div className=\"flex items-center justify-between w-full\">\n              <span>{c.label}</span>\n              <span className=\"ml-2 text-sm text-foreground-400\">{c.code}</span>\n            </div>\n          </Select.Item>\n        ))}\n      </Searchable.Content>\n    </Select>\n  );\n}\n"
+  },
+  {
+    "ref": "example:select/04-chip-multi-pick",
+    "kind": "component-example",
+    "id": "04-chip-multi-pick",
+    "name": "Chip Multi-Pick",
+    "description": "A multi-select that renders current values as dismissible chips and lets users add more items from the dropdown.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "select",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useMemo, useState } from 'react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Select, Searchable } from 'ui-lab-components/select';\n\nconst options = [\n  {\n    value: 'approval-queue',\n    label: 'Approval Queue',\n    description: 'Review requests and route decisions to the right owner.',\n  },\n  {\n    value: 'ai-assistant',\n    label: 'AI Assistant',\n    description: 'Help teammates summarize records and draft next steps.',\n  },\n  {\n    value: 'customer-lookup',\n    label: 'Customer Lookup',\n    description: 'Find accounts, contacts, and recent activity in one place.',\n  },\n  {\n    value: 'data-import',\n    label: 'Data Import',\n    description: 'Turn uploaded CSV files into validated workspace records.',\n  },\n  {\n    value: 'audit-log',\n    label: 'Audit Log',\n    description: 'Keep a searchable history of sensitive changes and actions.',\n  },\n  {\n    value: 'role-access',\n    label: 'Role Access',\n    description: 'Control which tools and data each teammate can use.',\n  },\n  {\n    value: 'webhooks',\n    label: 'Webhooks',\n    description: 'Notify other systems when important workflow events happen.',\n  },\n  {\n    value: 'command-palette',\n    label: 'Command Palette',\n    description: 'Let power users jump to records and actions from the keyboard.',\n  },\n];\n\nexport default function Example() {\n  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([\n    'approval-queue',\n    'ai-assistant',\n  ]);\n\n  const selectedSet = useMemo(() => new Set(selectedKeys), [selectedKeys]);\n  const selectedOptions = useMemo(\n    () => options.filter((option) => selectedSet.has(option.value)),\n    [selectedSet]\n  );\n\n  return (\n    <Select\n      mode=\"multiple\"\n      selectedKeys={selectedKeys}\n      onSelectionChange={setSelectedKeys}\n      className=\"w-full max-w-xl\"\n      label={selectedOptions.map((option) => option.label).join(', ')}\n    >\n      <Select.Trigger>\n        <Select.Value>\n          {() => (\n            <Flex gap=\"xs\" wrap align-center>\n              {selectedOptions.length > 0 ? (\n                selectedOptions.map((option) => (\n                  <Badge\n                    key={option.value}\n                    className=\"min-h-7 gap-1 px-2 text-sm\"\n                    dismissible\n                    onDismiss={() => setSelectedKeys((prev) => prev.filter((value) => value !== option.value))}\n                  >\n                    {option.label}\n                  </Badge>\n                ))\n              ) : (\n                <span className=\"text-foreground-400\">Add features to your internal app</span>\n              )}\n            </Flex>\n          )}\n        </Select.Value>\n      </Select.Trigger>\n      <Searchable.Content searchPlaceholder=\"Search app features...\">\n        <Select.List>\n          {options.map((option) => (\n            <Select.Item\n              key={option.value}\n              value={option.value}\n              textValue={option.label}\n              description={option.description}\n            >\n              {option.label}\n            </Select.Item>\n          ))}\n        </Select.List>\n      </Searchable.Content>\n    </Select>\n  );\n}\n"
+  },
+  {
+    "ref": "example:select/05-mention-completion",
+    "kind": "component-example",
+    "id": "05-mention-completion",
+    "name": "Mention Completion",
+    "description": "useCompletion turns Select.Content into an @mention menu anchored to the trigger character inside a textarea, driven by the textarea's keyboard.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "select",
+    "access": "free",
+    "locked": false,
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\nimport { Select, useCompletion } from 'ui-lab-components/select';\n\nconst people = [\n  { handle: 'maya', name: 'Maya Chen' },\n  { handle: 'alex', name: 'Alex Rivera' },\n  { handle: 'sam', name: 'Sam Patel' },\n  { handle: 'jordan', name: 'Jordan Lee' },\n];\n\nexport default function Example() {\n  const [value, setValue] = useState('');\n  const completion = useCompletion({ value, onValueChange: setValue, triggers: ['@'] });\n\n  return (\n    <Select\n      state={{ open: completion.open }}\n      selectedKey={null}\n      onSelectionChange={(handle) => completion.complete(`@${handle} `)}\n    >\n      <Select.Content completion={completion} emptyContent=\"No one by that name\">\n        {people.map((person) => (\n          <Select.Item\n            key={person.handle}\n            value={person.handle}\n            textValue={`${person.handle} ${person.name}`}\n            icon={<Icon id=\"agent\" size={16} />}\n          >\n            <span className=\"flex w-full min-w-44 items-center justify-between gap-6\">\n              {person.name}\n              <span className=\"text-foreground-400\">@{person.handle}</span>\n            </span>\n          </Select.Item>\n        ))}\n      </Select.Content>\n      <Input\n        ref={completion.fieldProps.ref}\n        aria-label=\"Comment\"\n        placeholder=\"Leave a comment, type @ to mention\"\n        value={value}\n        onChange={(event) => setValue(event.target.value)}\n        onSelect={completion.fieldProps.onSelect}\n        onKeyDown={completion.fieldProps.onKeyDown}\n      />\n    </Select>\n  );\n}\n"
   },
   {
     "ref": "example:skeleton/01-rectangles",
@@ -2326,7 +3441,7 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col gap-4\">\n  <Skeleton />\n  <Skeleton w={180} h={20} />\n</div>"
+    "code": "import { Skeleton } from 'ui-lab-components/skeleton';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-4\">\n      <Skeleton />\n      <Skeleton w={180} h={20} />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:skeleton/02-paragraph",
@@ -2339,7 +3454,7 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<Skeleton.Text lines={4} lastLineWidth=\"70%\" w={320} />"
+    "code": "import { Skeleton } from 'ui-lab-components/skeleton';\n\nexport default function Example() {\n  return <Skeleton.Text lines={4} lastLineWidth=\"70%\" w={320} />;\n}\n"
   },
   {
     "ref": "example:skeleton/03-height-derived",
@@ -2352,7 +3467,7 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<Skeleton.Text h={200} w={320} />"
+    "code": "import { Skeleton } from 'ui-lab-components/skeleton';\n\nexport default function Example() {\n  return <Skeleton.Text h={200} w={320} />;\n}\n"
   },
   {
     "ref": "example:skeleton/04-semantic-sizes",
@@ -2365,7 +3480,7 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col gap-5\">\n  <Skeleton.Text size=\"heading\" w={150} />\n  <Skeleton.Text size=\"display\" w={240} />\n  <Skeleton.Text size=\"heading\" scale={1.25} w={180} />\n</div>"
+    "code": "import { Skeleton } from 'ui-lab-components/skeleton';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-5\">\n      <Skeleton.Text size=\"heading\" w={150} />\n      <Skeleton.Text size=\"display\" w={240} />\n      <Skeleton.Text size=\"heading\" scale={1.25} w={180} />\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:skeleton/05-image",
@@ -2378,7 +3493,7 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<Skeleton.Image w={320} ratio=\"16/9\" />"
+    "code": "import { Skeleton } from 'ui-lab-components/skeleton';\n\nexport default function Example() {\n  return <Skeleton.Image w={320} ratio=\"16/9\" />;\n}\n"
   },
   {
     "ref": "example:skeleton/06-article",
@@ -2391,12 +3506,103 @@ export const generatedWorkshopContent = [
     "componentId": "skeleton",
     "access": "free",
     "locked": false,
-    "code": "<article aria-busy=\"true\" aria-label=\"Loading article\" data-skeleton-animate>\n  <Skeleton.Image w=\"100%\" ratio=\"16/9\" />\n  <div className=\"flex items-center gap-3\">\n    <Skeleton w={36} h={36} className=\"rounded-full\" />\n    <Skeleton.Text lines={2} w={140} scale={0.75} />\n  </div>\n  <Skeleton.Text size=\"heading\" w=\"82%\" />\n  <Skeleton.Text lines={4} />\n</article>"
+    "code": "import { Skeleton } from 'ui-lab-components/skeleton';\n\nexport default function Example() {\n  return (\n    <article className=\"flex w-full max-w-md flex-col gap-5\" >\n      <Skeleton.Image w=\"100%\" ratio=\"16/9\" />\n      <div className=\"flex items-center gap-3\">\n        <Skeleton w={36} h={36} className=\"rounded-full\" />\n        <Skeleton.Text lines={2} w={140} scale={0.75} />\n      </div>\n      <Skeleton.Text size=\"heading\" w=\"82%\" />\n      <Skeleton.Text lines={4} />\n    </article>\n  );\n}\n"
   },
   {
-    "ref": "example:switch/02-settings-panel",
+    "ref": "example:slider/01-volume-control",
     "kind": "component-example",
-    "id": "02-settings-panel",
+    "id": "01-volume-control",
+    "name": "Volume Control",
+    "description": "Horizontal slider with a label and live numeric readout.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "slider",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Slider } from 'ui-lab-components/slider';\n\nexport default function Example() {\n  const [volume, setVolume] = useState(60);\n\n  return (\n    <div className=\"flex items-center gap-4\">\n      <span className=\"text-sm text-muted-foreground w-16\">Volume</span>\n      <Slider\n        aria-label=\"Volume\"\n        value={volume}\n        onValueChange={([v]) => setVolume(v)}\n        className=\"flex-1\"\n      />\n      <span className=\"text-sm tabular-nums w-8 text-right\">{volume}</span>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:slider/02-settings-panel-slider",
+    "kind": "component-example",
+    "id": "02-settings-panel-slider",
+    "name": "Settings Panel",
+    "description": "Multiple sliders in a settings list with dividers.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "slider",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Slider } from 'ui-lab-components/slider';\n\nexport default function Example() {\n  const [brightness, setBrightness] = useState(80);\n  const [contrast, setContrast] = useState(50);\n  const [saturation, setSaturation] = useState(40);\n\n  const settings = [\n    { id: \"brightness\", label: \"Brightness\", value: brightness, onChange: (v: number[]) => setBrightness(v[0]) },\n    { id: \"contrast\", label: \"Contrast\", value: contrast, onChange: (v: number[]) => setContrast(v[0]) },\n    { id: \"saturation\", label: \"Saturation\", value: saturation, onChange: (v: number[]) => setSaturation(v[0]) },\n  ];\n\n  return (\n    <div className=\"divide-y divide-border divide-background-700\">\n      {settings.map(({ id, label, value, onChange }) => (\n        <div key={id} className=\"flex items-center gap-4 py-3\">\n          <span className=\"text-sm w-24 shrink-0\">{label}</span>\n          <Slider aria-label={label} value={value} onValueChange={onChange} className=\"flex-1\" />\n          <span className=\"text-sm tabular-nums w-8 text-right text-muted-foreground\">{value}</span>\n        </div>\n      ))}\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:slider/03-price-range",
+    "kind": "component-example",
+    "id": "03-price-range",
+    "name": "Price Range",
+    "description": "Range slider with two thumbs for min/max filtering.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "slider",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Slider } from 'ui-lab-components/slider';\n\nexport default function Example() {\n  const [range, setRange] = useState([200, 800]);\n\n  return (\n    <div className=\"flex flex-col gap-4\">\n      <div className=\"flex justify-between text-sm text-muted-foreground\">\n        <span>Price range</span>\n        <span>${range[0]} – ${range[1]}</span>\n      </div>\n      <Slider\n        aria-label=\"Price range\"\n        value={range}\n        min={0}\n        max={1000}\n        step={10}\n        onValueChange={setRange}\n      />\n      <div className=\"flex justify-between text-xs text-muted-foreground\">\n        <span>$0</span>\n        <span>$1,000</span>\n      </div>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:slider/04-step",
+    "kind": "component-example",
+    "id": "04-step",
+    "name": "Step Slider",
+    "description": "Slider constrained to discrete steps with tick labels.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "slider",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Slider } from 'ui-lab-components/slider';\n\nexport default function Example() {\n  const [rating, setRating] = useState(3);\n\n  return (\n    <div className=\"flex flex-col gap-3 w-64\">\n      <div className=\"flex justify-between items-center\">\n        <label className=\"text-sm\">Quality rating</label>\n        <span className=\"text-sm font-medium\">{rating} / 5</span>\n      </div>\n      <Slider\n        aria-label=\"Quality rating\"\n        value={rating}\n        min={1}\n        max={5}\n        step={1}\n        onValueChange={([v]) => setRating(v)}\n      />\n      <div className=\"flex justify-between text-xs text-muted-foreground\">\n        {[1, 2, 3, 4, 5].map((n) => (\n          <span key={n}>{n}</span>\n        ))}\n      </div>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:slider/05-disabled-state-slider",
+    "kind": "component-example",
+    "id": "05-disabled-state-slider",
+    "name": "Disabled State",
+    "description": "Active and disabled sliders side by side.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "slider",
+    "access": "free",
+    "locked": false,
+    "code": "import { Slider } from 'ui-lab-components/slider';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-4 w-64\">\n      <div className=\"flex items-center gap-4\">\n        <span className=\"text-sm text-muted-foreground w-20\">Active</span>\n        <Slider aria-label=\"Active slider\" defaultValue={40} className=\"flex-1\" />\n      </div>\n      <div className=\"flex items-center gap-4\">\n        <span className=\"text-sm text-muted-foreground w-20\">Disabled</span>\n        <Slider aria-label=\"Disabled slider\" defaultValue={40} disabled className=\"flex-1\" />\n      </div>\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:slider/06-vertical-mixer",
+    "kind": "component-example",
+    "id": "06-vertical-mixer",
+    "name": "Vertical Mixer",
+    "description": "Vertical orientation for audio-style channel controls.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "slider",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Slider } from 'ui-lab-components/slider';\n\nexport default function Example() {\n  const [channels, setChannels] = useState([70, 50, 80, 40]);\n\n  return (\n    <div className=\"flex items-end gap-6 h-40\">\n      {[\"CH1\", \"CH2\", \"CH3\", \"CH4\"].map((label, i) => (\n        <div key={label} className=\"flex flex-col items-center gap-2\">\n          <Slider\n            aria-label={label}\n            value={channels[i]}\n            orientation=\"vertical\"\n            onValueChange={([v]) => {\n              const next = [...channels];\n              next[i] = v;\n              setChannels(next);\n            }}\n            style={{ height: 120 }}\n          />\n          <span className=\"text-xs text-muted-foreground\">{label}</span>\n        </div>\n      ))}\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:switch/01-basic-switch",
+    "kind": "component-example",
+    "id": "01-basic-switch",
+    "name": "Inline Form Field",
+    "description": "Switch paired with a label in a horizontal form row.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "switch",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Switch } from 'ui-lab-components/switch';\n\nexport default function Example() {\n  const [enabled, setEnabled] = useState(false);\n\n  return (\n    <div className=\"flex items-center justify-between gap-4 w-64\">\n      <label htmlFor=\"marketing\" className=\"text-sm\">\n        Marketing emails\n      </label>\n      <Switch\n        id=\"marketing\"\n        aria-label=\"Marketing emails\"\n        isSelected={enabled}\n        onChange={setEnabled}\n      />\n    </div>\n  );\n}\n"
+  },
+  {
+    "ref": "example:switch/02-settings-panel-switch",
+    "kind": "component-example",
+    "id": "02-settings-panel-switch",
     "name": "Settings Panel",
     "description": "A list of toggleable settings with dividers.",
     "category": "examples",
@@ -2404,7 +3610,7 @@ export const generatedWorkshopContent = [
     "componentId": "switch",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"w-72 divide-y divide-background-700\">\n  {settings.map(({ id, label, value, onChange }) => (\n    <div key={id} className=\"flex items-center justify-between py-3\">\n      <span className=\"text-sm\">{label}</span>\n      <Switch\n        aria-label={label}\n        state={{ checked: value }}\n        onChange={onChange}\n      />\n    </div>\n  ))}\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Switch } from 'ui-lab-components/switch';\n\nexport default function Example() {\n  const [notifications, setNotifications] = useState(true);\n  const [sounds, setSounds] = useState(false);\n  const [badge, setBadge] = useState(true);\n\n  const settings = [\n    { id: \"notifications\", label: \"Push notifications\", value: notifications, onChange: setNotifications },\n    { id: \"sounds\", label: \"Sound effects\", value: sounds, onChange: setSounds },\n    { id: \"badge\", label: \"App badge\", value: badge, onChange: setBadge },\n  ];\n\n  return (\n    <div className=\"divide-y divide-background-700\">\n      {settings.map(({ id, label, value, onChange }) => (\n        <div key={id} className=\"flex items-center justify-between py-3\">\n          <span className=\"text-sm\">{label}</span>\n          <Switch aria-label={label} state={{ checked: value }} onChange={onChange} />\n        </div>\n      ))}\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:switch/03-disabled-state",
@@ -2417,7 +3623,7 @@ export const generatedWorkshopContent = [
     "componentId": "switch",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col gap-4\">\n  <div className=\"flex items-center gap-3\">\n    <Switch aria-label=\"Off disabled\" disabled checked={false} />\n    <span className=\"text-sm text-foreground-400\">Disabled off</span>\n  </div>\n  <div className=\"flex items-center gap-3\">\n    <Switch aria-label=\"On disabled\" disabled checked />\n    <span className=\"text-sm text-foreground-400\">Disabled on</span>\n  </div>\n</div>"
+    "code": "import { Switch } from 'ui-lab-components/switch';\n\nexport default function Example() {\n  return (\n    <div className=\"flex flex-col gap-4\">\n      <div className=\"flex items-center gap-3\">\n        <Switch aria-label=\"Off disabled\" disabled checked={false} />\n        <span className=\"text-sm text-foreground-400\">Disabled off</span>\n      </div>\n      <div className=\"flex items-center gap-3\">\n        <Switch aria-label=\"On disabled\" disabled checked />\n        <span className=\"text-sm text-foreground-400\">Disabled on</span>\n      </div>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:switch/04-small-size",
@@ -2430,7 +3636,7 @@ export const generatedWorkshopContent = [
     "componentId": "switch",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex items-center gap-2\">\n  <Switch\n    size=\"sm\"\n    aria-label=\"Dense mode\"\n    isSelected={dense}\n    onChange={setDense}\n  />\n  <span className=\"text-sm text-foreground-400\">Dense mode</span>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Switch } from 'ui-lab-components/switch';\n\nexport default function Example() {\n  const [dense, setDense] = useState(false);\n\n  return (\n    <div className=\"flex items-center gap-2\">\n      <Switch\n        size=\"sm\"\n        aria-label=\"Dense mode\"\n        isSelected={dense}\n        onChange={setDense}\n      />\n      <span className=\"text-sm text-foreground-400\">Dense mode</span>\n    </div>\n  );\n}\n"
   },
   {
     "ref": "example:switch/05-controlled-toggle",
@@ -2443,12 +3649,77 @@ export const generatedWorkshopContent = [
     "componentId": "switch",
     "access": "free",
     "locked": false,
-    "code": "<div className=\"flex flex-col items-center gap-4\">\n  <Switch\n    aria-label=\"Feature flag\"\n    isSelected={active}\n    onChange={setActive}\n  />\n  <p className=\"text-xs text-foreground-400\">\n    Feature is <strong>{active ? \"enabled\" : \"disabled\"}</strong>\n  </p>\n  <button\n    className=\"text-xs text-foreground-400 underline\"\n    onClick={() => setActive(false)}\n  >\n    Reset\n  </button>\n</div>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Switch } from 'ui-lab-components/switch';\n\nexport default function Example() {\n  const [active, setActive] = useState(false);\n\n  return (\n    <div className=\"flex flex-col items-center gap-4\">\n      <Switch\n        aria-label=\"Feature flag\"\n        isSelected={active}\n        onChange={setActive}\n      />\n      <p className=\"text-xs text-foreground-400\">\n        Feature is <strong>{active ? \"enabled\" : \"disabled\"}</strong>\n      </p>\n      <button\n        className=\"text-xs underline text-foreground-400\"\n        onClick={() => setActive(false)}\n      >\n        Reset\n      </button>\n    </div>\n  );\n}\n"
   },
   {
-    "ref": "example:textarea/01-basic",
+    "ref": "example:table/01-basic-table",
     "kind": "component-example",
-    "id": "01-basic",
+    "id": "01-basic-table",
+    "name": "Basic Table",
+    "description": "A simple data table displaying structured information with columns and rows. Use this for displaying tabular data in your application.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "table",
+    "access": "free",
+    "locked": false,
+    "code": "import { Table } from 'ui-lab-components/table';\n\n\nexport default function Example() {\n  const data = [\n    { id: 1, name: 'Alice Johnson', email: 'alice@example.com', status: 'Active' },\n    { id: 2, name: 'Bob Smith', email: 'bob@example.com', status: 'Inactive' },\n    { id: 3, name: 'Carol White', email: 'carol@example.com', status: 'Active' }\n  ];\n\n  return (\n    <Table\n      data={data}\n      columns={[\n        { key: 'id', label: 'ID' },\n        { key: 'name', label: 'Name' },\n        { key: 'email', label: 'Email' },\n        { key: 'status', label: 'Status' }\n      ]}\n    />\n  );\n}\n"
+  },
+  {
+    "ref": "example:tabs/01-basic-tabs",
+    "kind": "component-example",
+    "id": "01-basic-tabs",
+    "name": "Basic Tabs",
+    "description": "A simple tabbed interface with content switching. Use this to organize related content into separate views.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "tabs",
+    "access": "free",
+    "locked": false,
+    "code": "import { Tabs } from 'ui-lab-components/tabs';\n\nexport default function Example() {\n  return (\n    <Tabs default=\"overview\">\n      <Tabs.List aria-label=\"Content sections\">\n        <Tabs.Trigger value=\"overview\">Overview</Tabs.Trigger>\n        <Tabs.Trigger value=\"details\">Details</Tabs.Trigger>\n        <Tabs.Trigger value=\"settings\">Settings</Tabs.Trigger>\n      </Tabs.List>\n      <Tabs.Content value=\"overview\">\n        <p>Overview content goes here.</p>\n      </Tabs.Content>\n      <Tabs.Content value=\"details\">\n        <p>Details content goes here.</p>\n      </Tabs.Content>\n      <Tabs.Content value=\"settings\">\n        <p>Settings content goes here.</p>\n      </Tabs.Content>\n    </Tabs>\n  );\n}\n"
+  },
+  {
+    "ref": "example:tabs/02-vertical",
+    "kind": "component-example",
+    "id": "02-vertical",
+    "name": "Vertical Tabs",
+    "description": "A vertical tab layout with the tab list stacked beside its content panel.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "tabs",
+    "access": "free",
+    "locked": false,
+    "code": "import { Tabs } from 'ui-lab-components/tabs';\n\nconst tabs = ['Profile', 'Notifications', 'Security'];\n\nexport default function Example() {\n  return (\n    <Tabs default=\"Profile\" orientation=\"vertical\" className=\"w-fit gap-6\">\n      <Tabs.List aria-label=\"Settings sections\" className=\"pr-2\">\n        {tabs.map((tab) => (\n          <Tabs.Trigger key={tab} value={tab}>{tab}</Tabs.Trigger>\n        ))}\n      </Tabs.List>\n      {tabs.map((tab) => (\n        <Tabs.Content key={tab} value={tab} className=\"w-64 pt-0\">\n          <p>{tab} content goes here.</p>\n        </Tabs.Content>\n      ))}\n    </Tabs>\n  );\n}\n"
+  },
+  {
+    "ref": "example:tabs/03-underline",
+    "kind": "component-example",
+    "id": "03-underline",
+    "name": "Underline Variant",
+    "description": "Horizontal tabs with underline indicator. Great for documentation sites.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "tabs",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Tabs } from 'ui-lab-components/tabs';\n\nexport default function Example() {\n  const [selected, setSelected] = useState(\"tab1\");\n\n  return (\n    <Tabs value={selected} onValueChange={setSelected} variant=\"underline\" className=\"w-fit\">\n      <Tabs.List aria-label=\"Tab options\">\n        <Tabs.Trigger value=\"tab1\">Install</Tabs.Trigger>\n        <Tabs.Trigger value=\"tab2\">Usage</Tabs.Trigger>\n        <Tabs.Trigger value=\"tab3\">API</Tabs.Trigger>\n      </Tabs.List>\n    </Tabs>\n  );\n}\n"
+  },
+  {
+    "ref": "example:tabs/04-vertical-underline",
+    "kind": "component-example",
+    "id": "04-vertical-underline",
+    "name": "Vertical Underline",
+    "description": "Vertical tabs with underline variant indicator.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "tabs",
+    "access": "free",
+    "locked": false,
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { Tabs } from 'ui-lab-components/tabs';\n\nexport default function Example() {\n  const [selected, setSelected] = useState(\"tab1\");\n\n  return (\n    <Tabs value={selected} onValueChange={setSelected} variant=\"underline\" orientation=\"vertical\" className=\"flex w-fit gap-4\">\n      <Tabs.List aria-label=\"Tab options\" className=\"flex flex-col w-fit\">\n        <Tabs.Trigger value=\"tab1\">Profile</Tabs.Trigger>\n        <Tabs.Trigger value=\"tab2\">Billing</Tabs.Trigger>\n        <Tabs.Trigger value=\"tab3\">Team</Tabs.Trigger>\n      </Tabs.List>\n    </Tabs>\n  );\n}\n"
+  },
+  {
+    "ref": "example:textarea/01-basic-textarea",
+    "kind": "component-example",
+    "id": "01-basic-textarea",
     "name": "Feedback Form",
     "description": "TextArea with a character limit and submit button — disabled until the user types.",
     "category": "examples",
@@ -2456,7 +3727,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    placeholder=\"Tell us what you think...\"\n    value={value}\n    onChange={(e) => setValue(e.target.value)}\n    showCharacterCount\n    maxCharacters={300}\n    rows={4}\n  />\n  <Button variant=\"primary\" disabled={value.trim().length === 0} className=\"self-end\">\n    Submit\n  </Button>\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { TextArea } from 'ui-lab-components/textarea'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  const [value, setValue] = useState(\"\");\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <TextArea\n        placeholder=\"Tell us what you think...\"\n        value={value}\n        onChange={(e) => setValue(e.target.value)}\n        showCharacterCount\n        maxCharacters={300}\n        rows={4}\n      />\n      <Button variant=\"primary\" disabled={value.trim().length === 0} className=\"self-end\">\n        Submit\n      </Button>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:textarea/02-bio-settings",
@@ -2469,7 +3740,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    value={bio}\n    onChange={(e) => setBio(e.target.value)}\n    showCharacterCount\n    maxCharacters={160}\n    rows={3}\n    resize=\"none\"\n  />\n  <Flex justify-end gap=\"sm\">\n    <Button size=\"sm\" variant=\"ghost\" onClick={() => setBio(\"\")}>Clear</Button>\n    <Button size=\"sm\" variant=\"primary\">Save</Button>\n  </Flex>\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { TextArea } from 'ui-lab-components/textarea'\nimport { Flex } from 'ui-lab-components/flex'\nimport { Button } from 'ui-lab-components/button';\n\nexport default function Example() {\n  const [bio, setBio] = useState(\"UI designer & developer building minimal tools.\");\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <TextArea\n        value={bio}\n        onChange={(e) => setBio(e.target.value)}\n        showCharacterCount\n        maxCharacters={160}\n        rows={3}\n        resize=\"none\"\n      />\n      <Flex justify-end gap=\"sm\">\n        <Button size=\"sm\" variant=\"ghost\" onClick={() => setBio(\"\")}>Clear</Button>\n        <Button size=\"sm\" variant=\"primary\">Save</Button>\n      </Flex>\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:textarea/03-error-state",
@@ -2482,7 +3753,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    placeholder=\"Describe the issue in detail...\"\n    value={value}\n    onChange={(e) => setValue(e.target.value)}\n    error={hasError}\n    rows={4}\n  />\n  {hasError && (\n    <span style={{ fontSize: \"0.75rem\", color: \"var(--color-destructive)\" }}>\n      Description must be at least 20 characters.\n    </span>\n  )}\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { TextArea } from 'ui-lab-components/textarea'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [value, setValue] = useState(\"\");\n  const hasError = value.trim().length > 0 && value.trim().length < 20;\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <TextArea\n        placeholder=\"Describe the issue in detail...\"\n        value={value}\n        onChange={(e) => setValue(e.target.value)}\n        error={hasError}\n        rows={4}\n      />\n      {hasError && (\n        <span style={{ fontSize: \"0.75rem\", color: \"var(--color-destructive)\" }}>\n          Description must be at least 20 characters.\n        </span>\n      )}\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:textarea/04-disabled-readonly",
@@ -2495,7 +3766,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"md\">\n  <TextArea\n    value=\"This field is disabled and cannot be edited.\"\n    disabled\n    rows={2}\n    resize=\"none\"\n  />\n  <TextArea\n    value=\"This is a read-only note visible to all team members.\"\n    readOnly\n    rows={2}\n    resize=\"none\"\n  />\n</Flex>"
+    "code": "import { TextArea } from 'ui-lab-components/textarea'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  return (\n    <Flex direction=\"column\" gap=\"md\">\n      <TextArea\n        value=\"This field is disabled and cannot be edited.\"\n        disabled\n        rows={2}\n        resize=\"none\"\n      />\n      <TextArea\n        value=\"This is a read-only note visible to all team members.\"\n        readOnly\n        rows={2}\n        resize=\"none\"\n      />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:textarea/05-scrolling",
@@ -2508,7 +3779,7 @@ export const generatedWorkshopContent = [
     "componentId": "textarea",
     "access": "free",
     "locked": false,
-    "code": "<Flex direction=\"column\" gap=\"sm\">\n  <TextArea\n    value={value}\n    onChange={(e) => setValue(e.target.value)}\n    maxHeight=\"120px\"\n    resize=\"none\"\n  />\n</Flex>"
+    "code": "\"use client\";\n\nimport { useState } from 'react';\nimport { TextArea } from 'ui-lab-components/textarea'\nimport { Flex } from 'ui-lab-components/flex';\n\nexport default function Example() {\n  const [value, setValue] = useState(\n    \"Line 1\\nLine 2\\nLine 3\\nLine 4\\nLine 5\\nLine 6\\nLine 7\\nLine 8\"\n  );\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\">\n      <TextArea\n        value={value}\n        onChange={(e) => setValue(e.target.value)}\n        maxHeight=\"120px\"\n        resize=\"none\"\n      />\n    </Flex>\n  );\n}\n"
   },
   {
     "ref": "example:toast/01-basic-toast",
@@ -2521,7 +3792,7 @@ export const generatedWorkshopContent = [
     "componentId": "toast",
     "access": "free",
     "locked": false,
-    "code": "<>\n  <Button\n    size=\"sm\"\n    onClick={() =>\n      toast({\n        toasterId: \"basic-toast\",\n        title: \"Notification\",\n        description: \"This is a toast message\",\n      })\n    }\n  >\n    Show Toast\n  </Button>\n  <Toaster toasterId=\"basic-toast\" />\n</>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { toast } from 'ui-lab-components/toast'\nimport { Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'basic-toast',\n            title: 'Notification',\n            description: 'This is a toast message',\n          })\n        }\n      >\n        Show Toast\n      </Button>\n      <Toaster toasterId=\"basic-toast\" />\n    </>\n  )\n}\n"
   },
   {
     "ref": "example:toast/02-success-toast",
@@ -2534,7 +3805,7 @@ export const generatedWorkshopContent = [
     "componentId": "toast",
     "access": "free",
     "locked": false,
-    "code": "<>\n  <Button\n    size=\"sm\"\n    onClick={() =>\n      toast({\n        toasterId: \"success-toast\",\n        title: \"Success\",\n        description: \"Operation completed successfully\",\n        variant: \"success\",\n      })\n    }\n  >\n    Show Success\n  </Button>\n  <Toaster toasterId=\"success-toast\" />\n</>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { toast } from 'ui-lab-components/toast'\nimport { Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'success-toast',\n            title: 'Success',\n            description: 'Operation completed successfully',\n            variant: 'success',\n          })\n        }\n      >\n        Show Success\n      </Button>\n      <Toaster toasterId=\"success-toast\" />\n    </>\n  )\n}\n"
   },
   {
     "ref": "example:toast/03-danger-toast",
@@ -2547,7 +3818,7 @@ export const generatedWorkshopContent = [
     "componentId": "toast",
     "access": "free",
     "locked": false,
-    "code": "<>\n  <Button\n    size=\"sm\"\n    onClick={() =>\n      toast({\n        toasterId: \"danger-toast\",\n        title: \"Error\",\n        description: \"Something went wrong\",\n        variant: \"danger\",\n      })\n    }\n  >\n    Show Error\n  </Button>\n  <Toaster toasterId=\"danger-toast\" />\n</>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { toast } from 'ui-lab-components/toast'\nimport { Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'danger-toast',\n            title: 'Error',\n            description: 'Something went wrong',\n            variant: 'danger',\n          })\n        }\n      >\n        Show Error\n      </Button>\n      <Toaster toasterId=\"danger-toast\" />\n    </>\n  )\n}\n"
   },
   {
     "ref": "example:toast/04-info-toast",
@@ -2560,7 +3831,7 @@ export const generatedWorkshopContent = [
     "componentId": "toast",
     "access": "free",
     "locked": false,
-    "code": "<>\n  <Button\n    size=\"sm\"\n    onClick={() =>\n      toast({\n        toasterId: \"info-toast\",\n        title: \"Info\",\n        description: \"Here is some useful information\",\n        variant: \"info\",\n      })\n    }\n  >\n    Show Info\n  </Button>\n  <Toaster toasterId=\"info-toast\" />\n</>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { toast } from 'ui-lab-components/toast'\nimport { Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'info-toast',\n            title: 'Info',\n            description: 'Here is some useful information',\n            variant: 'info',\n          })\n        }\n      >\n        Show Info\n      </Button>\n      <Toaster toasterId=\"info-toast\" />\n    </>\n  )\n}\n"
   },
   {
     "ref": "example:toast/05-warning-toast",
@@ -2573,7 +3844,20 @@ export const generatedWorkshopContent = [
     "componentId": "toast",
     "access": "free",
     "locked": false,
-    "code": "<>\n  <Button\n    size=\"sm\"\n    onClick={() =>\n      toast({\n        toasterId: \"warning-toast\",\n        title: \"Warning\",\n        description: \"Please be careful\",\n        variant: \"warning\",\n      })\n    }\n  >\n    Show Warning\n  </Button>\n  <Toaster toasterId=\"warning-toast\" />\n</>"
+    "code": "import { Button } from 'ui-lab-components/button'\nimport { toast } from 'ui-lab-components/toast'\nimport { Toaster } from 'ui-lab-components/toast';\n\nexport default function Example() {\n  return (\n    <>\n      <Button\n        size=\"sm\"\n        onClick={() =>\n          toast({\n            toasterId: 'warning-toast',\n            title: 'Warning',\n            description: 'Please be careful',\n            variant: 'warning',\n          })\n        }\n      >\n        Show Warning\n      </Button>\n      <Toaster toasterId=\"warning-toast\" />\n    </>\n  )\n}\n"
+  },
+  {
+    "ref": "example:tooltip/01-basic-tooltip",
+    "kind": "component-example",
+    "id": "01-basic-tooltip",
+    "name": "Basic Tooltip",
+    "description": "A simple tooltip that appears on hover. Hover over the button to see the tooltip with helpful information.",
+    "category": "examples",
+    "visibility": "public",
+    "componentId": "tooltip",
+    "access": "free",
+    "locked": false,
+    "code": "import { Tooltip } from 'ui-lab-components/tooltip';\n\nexport default function Example() {\n  return (\n    <Tooltip content=\"This is a helpful tooltip\">\n      <button>Hover me</button>\n    </Tooltip>\n  );\n}\n"
   },
   {
     "ref": "pattern:account-menu",
@@ -2585,22 +3869,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiChevronDown, FiLogOut, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <div className=\"flex flex-col gap-1.5\">\n            <Skeleton.Text lines={1} w={96} />\n            <Skeleton.Text lines={1} w={140} />\n          </div>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <div className=\"flex flex-col gap-1.5\">\n            <Skeleton.Text lines={1} w={96} />\n            <Skeleton.Text lines={1} w={140} />\n          </div>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <Icon id=\"user\" size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <Icon id=\"gear\" size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <Icon id=\"logout\" size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiChevronDown, FiLogOut, FiSettings, FiUser } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <div className=\"flex flex-col gap-1.5\">\n            <Skeleton.Text lines={1} w={96} />\n            <Skeleton.Text lines={1} w={140} />\n          </div>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <FiUser size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <FiSettings size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <FiLogOut size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function AccountMenuDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" aria-label=\"Account\" className=\"gap-2 bg-transparent px-1.5\">\n          <span className=\"flex h-7 w-7 items-center justify-center rounded-full bg-accent-500/15 text-xs font-semibold text-accent-500\">\n            AR\n          </span>\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content align=\"end\" className=\"w-56\">\n        <Menu.Label>\n          <div className=\"flex flex-col gap-1.5\">\n            <Skeleton.Text lines={1} w={96} />\n            <Skeleton.Text lines={1} w={140} />\n          </div>\n        </Menu.Label>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Profile\">\n          <Icon id=\"user\" size={15} className=\"mr-2 text-foreground-400\" /> Profile\n        </Menu.Item>\n        <Menu.Item textValue=\"Settings\">\n          <Icon id=\"gear\" size={15} className=\"mr-2 text-foreground-400\" /> Settings\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Sign out\">\n          <Icon id=\"logout\" size={15} className=\"mr-2 text-foreground-400\" /> Sign out\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/menu",
         "ui-lab-components/skeleton"
       ]
@@ -2620,23 +3903,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { CalendarDays, Clock } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" className=\"uppercase tracking-wide\">Guides</Badge>\n      <Skeleton.Text size=\"display\" lines={1} w=\"80%\" className=\"mt-4\" />\n      <Skeleton.Text lines={2} lastLineWidth=\"60%\" className=\"mt-3\" />\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-foreground-500\">\n        <div className=\"inline-flex items-center gap-1.5\"><Clock size={14} /><Skeleton.Text lines={1} w={72} /></div>\n        <div className=\"inline-flex items-center gap-1.5\"><CalendarDays size={14} /><Skeleton.Text lines={1} w={128} /></div>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\">Guides</Badge>\n      <Skeleton.Text size=\"display\" lines={1} w=\"80%\" className=\"mt-4\" />\n      <Skeleton.Text lines={2} lastLineWidth=\"60%\" className=\"mt-3\" />\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-foreground-500\">\n        <div className=\"inline-flex items-center gap-1.5\"><Icon id=\"clock\" size={14} /><Skeleton.Text lines={1} w={72} /></div>\n        <div className=\"inline-flex items-center gap-1.5\"><Icon id=\"cal\" size={14} /><Skeleton.Text lines={1} w={128} /></div>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { CalendarDays, Clock } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" className=\"uppercase tracking-wide\">Guides</Badge>\n      <Skeleton.Text size=\"display\" lines={1} w=\"80%\" className=\"mt-4\" />\n      <Skeleton.Text lines={2} lastLineWidth=\"60%\" className=\"mt-3\" />\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-foreground-500\">\n        <div className=\"inline-flex items-center gap-1.5\"><Clock size={14} /><Skeleton.Text lines={1} w={72} /></div>\n        <div className=\"inline-flex items-center gap-1.5\"><CalendarDays size={14} /><Skeleton.Text lines={1} w={128} /></div>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ArticleHeaderDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\">Guides</Badge>\n      <Skeleton.Text size=\"display\" lines={1} w=\"80%\" className=\"mt-4\" />\n      <Skeleton.Text lines={2} lastLineWidth=\"60%\" className=\"mt-3\" />\n      <div className=\"mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-foreground-500\">\n        <div className=\"inline-flex items-center gap-1.5\"><Icon id=\"clock\" size={14} /><Skeleton.Text lines={1} w={72} /></div>\n        <div className=\"inline-flex items-center gap-1.5\"><Icon id=\"cal\" size={14} /><Skeleton.Text lines={1} w={128} /></div>\n      </div>\n      <Divider className=\"mt-6\" />\n    </header>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/divider",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -2751,21 +4033,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiBox } from 'react-icons/fi';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <FiBox size={18} />\n      </span>\n      <Skeleton.Text lines={1} w={64} />\n    </a>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <Icon id=\"box\" size={18} />\n      </span>\n      <Skeleton.Text lines={1} w={64} />\n    </a>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiBox } from 'react-icons/fi';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <FiBox size={18} />\n      </span>\n      <Skeleton.Text lines={1} w={64} />\n    </a>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function BrandLockupDemo() {\n  return (\n    <a href=\"#\" className=\"flex items-center gap-2.5\">\n      <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-foreground-50\">\n        <Icon id=\"box\" size={18} />\n      </span>\n      <Skeleton.Text lines={1} w={64} />\n    </a>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -2784,22 +4065,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Bold, Italic, Underline } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupPatternDemo() {\n  const [format, setFormat] = useState('bold');\n\n  return (\n    <Group spacing=\"none\" value={format} onChange={setFormat} aria-label=\"Text formatting\">\n      <Group.Button value=\"bold\" size=\"icon\" aria-label=\"Bold\" icon={<Bold size={16} />} />\n      <Group.Button value=\"italic\" size=\"icon\" aria-label=\"Italic\" icon={<Italic size={16} />} />\n      <Group.Button value=\"underline\" size=\"icon\" aria-label=\"Underline\" icon={<Underline size={16} />} />\n    </Group>\n  );\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupPatternDemo() {\n  const [format, setFormat] = useState('bold');\n\n  return (\n    <Group spacing=\"none\" value={format} onChange={setFormat} aria-label=\"Text formatting\">\n      <Group.Button value=\"bold\" size=\"icon\" aria-label=\"Bold\" icon={<Icon id=\"bold\" size={16} />} />\n      <Group.Button value=\"italic\" size=\"icon\" aria-label=\"Italic\" icon={<Icon id=\"italic\" size={16} />} />\n      <Group.Button value=\"underline\" size=\"icon\" aria-label=\"Underline\" icon={<Icon id=\"underline\" size={16} />} />\n    </Group>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Bold, Italic, Underline } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupPatternDemo() {\n  const [format, setFormat] = useState('bold');\n\n  return (\n    <Group spacing=\"none\" value={format} onChange={setFormat} aria-label=\"Text formatting\">\n      <Group.Button value=\"bold\" size=\"icon\" aria-label=\"Bold\" icon={<Bold size={16} />} />\n      <Group.Button value=\"italic\" size=\"icon\" aria-label=\"Italic\" icon={<Italic size={16} />} />\n      <Group.Button value=\"underline\" size=\"icon\" aria-label=\"Underline\" icon={<Underline size={16} />} />\n    </Group>\n  );\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupPatternDemo() {\n  const [format, setFormat] = useState('bold');\n\n  return (\n    <Group spacing=\"none\" value={format} onChange={setFormat} aria-label=\"Text formatting\">\n      <Group.Button value=\"bold\" size=\"icon\" aria-label=\"Bold\" icon={<Icon id=\"bold\" size={16} />} />\n      <Group.Button value=\"italic\" size=\"icon\" aria-label=\"Italic\" icon={<Icon id=\"italic\" size={16} />} />\n      <Group.Button value=\"underline\" size=\"icon\" aria-label=\"Underline\" icon={<Icon id=\"underline\" size={16} />} />\n    </Group>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
-        "ui-lab-components/group"
+        "ui-lab-components/group",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -2817,23 +4097,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Save, Trash2 } from 'lucide-react';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupHorizontalDemo() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Document actions\">\n      <Group.Button variant=\"secondary\" icon={<Save size={16} />}>Save</Group.Button>\n      <Group.Button variant=\"secondary\" icon={<Copy size={16} />}>Duplicate</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Button variant=\"danger\" icon={<Trash2 size={16} />}>Delete</Group.Button>\n    </Group>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupHorizontalDemo() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Document actions\">\n      <Group.Button variant=\"secondary\" icon={<Icon id=\"save\" size={16} />}>Save</Group.Button>\n      <Group.Button variant=\"secondary\" icon={<Icon id=\"copy\" size={16} />}>Duplicate</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Button variant=\"danger\" icon={<Icon id=\"trash\" size={16} />}>Delete</Group.Button>\n    </Group>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Save, Trash2 } from 'lucide-react';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupHorizontalDemo() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Document actions\">\n      <Group.Button variant=\"secondary\" icon={<Save size={16} />}>Save</Group.Button>\n      <Group.Button variant=\"secondary\" icon={<Copy size={16} />}>Duplicate</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Button variant=\"danger\" icon={<Trash2 size={16} />}>Delete</Group.Button>\n    </Group>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Divider } from 'ui-lab-components/divider';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupHorizontalDemo() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Document actions\">\n      <Group.Button variant=\"secondary\" icon={<Icon id=\"save\" size={16} />}>Save</Group.Button>\n      <Group.Button variant=\"secondary\" icon={<Icon id=\"copy\" size={16} />}>Duplicate</Group.Button>\n      <Divider orientation=\"vertical\" />\n      <Group.Button variant=\"danger\" icon={<Icon id=\"trash\" size={16} />}>Delete</Group.Button>\n    </Group>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/divider",
-        "ui-lab-components/group"
+        "ui-lab-components/group",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -2851,22 +4130,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { AlignCenter, AlignLeft, AlignRight } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupIconDemo() {\n  const [alignment, setAlignment] = useState('left');\n\n  return (\n    <Group spacing=\"none\" value={alignment} onChange={setAlignment} aria-label=\"Text alignment\">\n      <Group.Button value=\"left\" size=\"icon\" aria-label=\"Align left\" icon={<AlignLeft size={16} />} />\n      <Group.Button value=\"center\" size=\"icon\" aria-label=\"Align center\" icon={<AlignCenter size={16} />} />\n      <Group.Button value=\"right\" size=\"icon\" aria-label=\"Align right\" icon={<AlignRight size={16} />} />\n    </Group>\n  );\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupIconDemo() {\n  const [alignment, setAlignment] = useState('left');\n\n  return (\n    <Group spacing=\"none\" value={alignment} onChange={setAlignment} aria-label=\"Text alignment\">\n      <Group.Button value=\"left\" size=\"icon\" aria-label=\"Align left\" icon={<Icon id=\"align-left\" size={16} />} />\n      <Group.Button value=\"center\" size=\"icon\" aria-label=\"Align center\" icon={<Icon id=\"align-center\" size={16} />} />\n      <Group.Button value=\"right\" size=\"icon\" aria-label=\"Align right\" icon={<Icon id=\"align-right\" size={16} />} />\n    </Group>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { AlignCenter, AlignLeft, AlignRight } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupIconDemo() {\n  const [alignment, setAlignment] = useState('left');\n\n  return (\n    <Group spacing=\"none\" value={alignment} onChange={setAlignment} aria-label=\"Text alignment\">\n      <Group.Button value=\"left\" size=\"icon\" aria-label=\"Align left\" icon={<AlignLeft size={16} />} />\n      <Group.Button value=\"center\" size=\"icon\" aria-label=\"Align center\" icon={<AlignCenter size={16} />} />\n      <Group.Button value=\"right\" size=\"icon\" aria-label=\"Align right\" icon={<AlignRight size={16} />} />\n    </Group>\n  );\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\n\nexport function ButtonGroupIconDemo() {\n  const [alignment, setAlignment] = useState('left');\n\n  return (\n    <Group spacing=\"none\" value={alignment} onChange={setAlignment} aria-label=\"Text alignment\">\n      <Group.Button value=\"left\" size=\"icon\" aria-label=\"Align left\" icon={<Icon id=\"align-left\" size={16} />} />\n      <Group.Button value=\"center\" size=\"icon\" aria-label=\"Align center\" icon={<Icon id=\"align-center\" size={16} />} />\n      <Group.Button value=\"right\" size=\"icon\" aria-label=\"Align right\" icon={<Icon id=\"align-right\" size={16} />} />\n    </Group>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
-        "ui-lab-components/group"
+        "ui-lab-components/group",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -2884,22 +4162,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { CornerDownLeft, FileText, Hash, LifeBuoy, Settings } from 'lucide-react';\nimport { Command, type CommandItemData } from 'ui-lab-components/command';\n\nconst items: CommandItemData[] = [\n  { id: 'getting-started', label: 'Getting started', category: 'Documentation', icon: <FileText size={16} />, action: () => {} },\n  { id: 'installation', label: 'Installation', category: 'Documentation', icon: <FileText size={16} />, action: () => {} },\n  { id: 'theming', label: 'Theming', category: 'Documentation', icon: <Hash size={16} />, action: () => {} },\n  { id: 'settings', label: 'Account settings', category: 'Actions', icon: <Settings size={16} />, hint: '⌘,', action: () => {} },\n  { id: 'support', label: 'Contact support', category: 'Actions', icon: <LifeBuoy size={16} />, action: () => {} },\n];\n\nexport function CommandMenuDemo() {\n  return (\n    <Command embedded items={items} className=\"shadow-lg\">\n      <Command.Input placeholder=\"Search documentation...\" />\n      <Command.List emptyMessage=\"No results found.\">\n        <Command.Groups\n          renderCategory={(category) => <Command.Category>{category}</Command.Category>}\n          renderItem={(command, hint) => (\n            <Command.Item\n              value={command.id}\n              textValue={command.label}\n              action={command.action}\n              icon={command.icon}\n              hint={hint}\n            >\n              <Command.Label>{command.label}</Command.Label>\n            </Command.Item>\n          )}\n        />\n      </Command.List>\n      <Command.Footer className=\"flex items-center gap-1.5 text-xs text-foreground-500\">\n        <CornerDownLeft size={12} /> to select\n      </Command.Footer>\n    </Command>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Command, type CommandItemData } from 'ui-lab-components/command';\n\nconst items: CommandItemData[] = [\n  { id: 'getting-started', label: 'Getting started', category: 'Documentation', icon: <Icon id=\"notes\" size={16} />, action: () => {} },\n  { id: 'installation', label: 'Installation', category: 'Documentation', icon: <Icon id=\"notes\" size={16} />, action: () => {} },\n  { id: 'theming', label: 'Theming', category: 'Documentation', icon: <Icon id=\"hash\" size={16} />, action: () => {} },\n  { id: 'settings', label: 'Account settings', category: 'Actions', icon: <Icon id=\"gear\" size={16} />, hint: '⌘,', action: () => {} },\n  { id: 'support', label: 'Contact support', category: 'Actions', icon: <Icon id=\"support\" size={16} />, action: () => {} },\n];\n\nexport function CommandMenuDemo() {\n  return (\n    <Command embedded items={items} className=\"shadow-lg\">\n      <Command.Input placeholder=\"Search documentation...\" />\n      <Command.List empty-message=\"No results found.\">\n        <Command.Groups\n          renderCategory={(category) => <Command.Category>{category}</Command.Category>}\n          renderItem={(command, hint) => (\n            <Command.Item\n              value={command.id}\n              textValue={command.label}\n              action={command.action}\n              icon={command.icon}\n              hint={hint}\n            >\n              <Command.Label>{command.label}</Command.Label>\n            </Command.Item>\n          )}\n        />\n      </Command.List>\n      <Command.Footer className=\"flex items-center gap-1.5 text-xs text-foreground-500\">\n        <Icon id=\"enter\" size={12} /> to select\n      </Command.Footer>\n    </Command>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { CornerDownLeft, FileText, Hash, LifeBuoy, Settings } from 'lucide-react';\nimport { Command, type CommandItemData } from 'ui-lab-components/command';\n\nconst items: CommandItemData[] = [\n  { id: 'getting-started', label: 'Getting started', category: 'Documentation', icon: <FileText size={16} />, action: () => {} },\n  { id: 'installation', label: 'Installation', category: 'Documentation', icon: <FileText size={16} />, action: () => {} },\n  { id: 'theming', label: 'Theming', category: 'Documentation', icon: <Hash size={16} />, action: () => {} },\n  { id: 'settings', label: 'Account settings', category: 'Actions', icon: <Settings size={16} />, hint: '⌘,', action: () => {} },\n  { id: 'support', label: 'Contact support', category: 'Actions', icon: <LifeBuoy size={16} />, action: () => {} },\n];\n\nexport function CommandMenuDemo() {\n  return (\n    <Command embedded items={items} className=\"shadow-lg\">\n      <Command.Input placeholder=\"Search documentation...\" />\n      <Command.List emptyMessage=\"No results found.\">\n        <Command.Groups\n          renderCategory={(category) => <Command.Category>{category}</Command.Category>}\n          renderItem={(command, hint) => (\n            <Command.Item\n              value={command.id}\n              textValue={command.label}\n              action={command.action}\n              icon={command.icon}\n              hint={hint}\n            >\n              <Command.Label>{command.label}</Command.Label>\n            </Command.Item>\n          )}\n        />\n      </Command.List>\n      <Command.Footer className=\"flex items-center gap-1.5 text-xs text-foreground-500\">\n        <CornerDownLeft size={12} /> to select\n      </Command.Footer>\n    </Command>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Command, type CommandItemData } from 'ui-lab-components/command';\n\nconst items: CommandItemData[] = [\n  { id: 'getting-started', label: 'Getting started', category: 'Documentation', icon: <Icon id=\"notes\" size={16} />, action: () => {} },\n  { id: 'installation', label: 'Installation', category: 'Documentation', icon: <Icon id=\"notes\" size={16} />, action: () => {} },\n  { id: 'theming', label: 'Theming', category: 'Documentation', icon: <Icon id=\"hash\" size={16} />, action: () => {} },\n  { id: 'settings', label: 'Account settings', category: 'Actions', icon: <Icon id=\"gear\" size={16} />, hint: '⌘,', action: () => {} },\n  { id: 'support', label: 'Contact support', category: 'Actions', icon: <Icon id=\"support\" size={16} />, action: () => {} },\n];\n\nexport function CommandMenuDemo() {\n  return (\n    <Command embedded items={items} className=\"shadow-lg\">\n      <Command.Input placeholder=\"Search documentation...\" />\n      <Command.List empty-message=\"No results found.\">\n        <Command.Groups\n          renderCategory={(category) => <Command.Category>{category}</Command.Category>}\n          renderItem={(command, hint) => (\n            <Command.Item\n              value={command.id}\n              textValue={command.label}\n              action={command.action}\n              icon={command.icon}\n              hint={hint}\n            >\n              <Command.Label>{command.label}</Command.Label>\n            </Command.Item>\n          )}\n        />\n      </Command.List>\n      <Command.Footer className=\"flex items-center gap-1.5 text-xs text-foreground-500\">\n        <Icon id=\"enter\" size={12} /> to select\n      </Command.Footer>\n    </Command>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
-        "ui-lab-components/command"
+        "ui-lab-components/command",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -2917,22 +4194,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { ArrowLeft, ArrowRight } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <ArrowLeft size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <div className=\"flex min-w-0 flex-col gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Previous</span>\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <div className=\"flex min-w-0 flex-col items-end gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Next</span>\n              <Skeleton.Text lines={1} w={140} />\n            </div>\n            <ArrowRight size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <Icon id=\"left\" size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <div className=\"flex min-w-0 flex-col gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Previous</span>\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <div className=\"flex min-w-0 flex-col items-end gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Next</span>\n              <Skeleton.Text lines={1} w={140} />\n            </div>\n            <Icon id=\"right\" size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { ArrowLeft, ArrowRight } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <ArrowLeft size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <div className=\"flex min-w-0 flex-col gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Previous</span>\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <div className=\"flex min-w-0 flex-col items-end gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Next</span>\n              <Skeleton.Text lines={1} w={140} />\n            </div>\n            <ArrowRight size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function ContentPagerDemo() {\n  return (\n    <nav aria-label=\"Article navigation\" className=\"grid gap-3 sm:grid-cols-2\">\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center gap-3 p-4\">\n            <Icon id=\"left\" size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n            <div className=\"flex min-w-0 flex-col gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Previous</span>\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n          </Card.Body>\n        </Card>\n      </a>\n      <a href=\"#\" className=\"group\">\n        <Card className=\"h-full transition-colors group-hover:border-accent-500/60\">\n          <Card.Body className=\"flex items-center justify-end gap-3 p-4 text-right\">\n            <div className=\"flex min-w-0 flex-col items-end gap-1.5\">\n              <span className=\"text-xs text-foreground-500\">Next</span>\n              <Skeleton.Text lines={1} w={140} />\n            </div>\n            <Icon id=\"right\" size={16} className=\"shrink-0 text-foreground-500 transition-colors group-hover:text-accent-400\" />\n          </Card.Body>\n        </Card>\n      </a>\n    </nav>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/card",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -2951,22 +4227,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Check, Copy } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\n\nfunction CopyButton({ value, label = 'Copy page' }: { value: string; label?: string }) {\n  const [copied, setCopied] = useState(false);\n\n  const handleCopy = async () => {\n    try {\n      await navigator.clipboard.writeText(value);\n      setCopied(true);\n      setTimeout(() => setCopied(false), 2000);\n    } catch {\n      /* clipboard unavailable */\n    }\n  };\n\n  return (\n    <Button\n      size=\"sm\"\n      variant=\"secondary\"\n      icon={copied ? <Check size={14} /> : <Copy size={14} />}\n      onPress={handleCopy}\n      aria-label={copied ? 'Copied to clipboard' : label}\n    >\n      {copied ? 'Copied' : label}\n    </Button>\n  );\n}\n\nexport function CopyButtonDemo() {\n  return <CopyButton value=\"# Documentation\\n\\nThe full page content, ready to paste.\" />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\n\nfunction CopyButton({ value, label = 'Copy page' }: { value: string; label?: string }) {\n  const [copied, setCopied] = useState(false);\n\n  const handleCopy = async () => {\n    try {\n      await navigator.clipboard.writeText(value);\n      setCopied(true);\n      setTimeout(() => setCopied(false), 2000);\n    } catch {\n      /* clipboard unavailable */\n    }\n  };\n\n  return (\n    <Button\n      size=\"sm\"\n      variant=\"secondary\"\n      icon={copied ? <Icon id=\"check\" size={14} /> : <Icon id=\"copy\" size={14} />}\n      onPress={handleCopy}\n      aria-label={copied ? 'Copied to clipboard' : label}\n    >\n      {copied ? 'Copied' : label}\n    </Button>\n  );\n}\n\nexport function CopyButtonDemo() {\n  return <CopyButton value=\"# Documentation\\n\\nThe full page content, ready to paste.\" />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Check, Copy } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\n\nfunction CopyButton({ value, label = 'Copy page' }: { value: string; label?: string }) {\n  const [copied, setCopied] = useState(false);\n\n  const handleCopy = async () => {\n    try {\n      await navigator.clipboard.writeText(value);\n      setCopied(true);\n      setTimeout(() => setCopied(false), 2000);\n    } catch {\n      /* clipboard unavailable */\n    }\n  };\n\n  return (\n    <Button\n      size=\"sm\"\n      variant=\"secondary\"\n      icon={copied ? <Check size={14} /> : <Copy size={14} />}\n      onPress={handleCopy}\n      aria-label={copied ? 'Copied to clipboard' : label}\n    >\n      {copied ? 'Copied' : label}\n    </Button>\n  );\n}\n\nexport function CopyButtonDemo() {\n  return <CopyButton value=\"# Documentation\\n\\nThe full page content, ready to paste.\" />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\n\nfunction CopyButton({ value, label = 'Copy page' }: { value: string; label?: string }) {\n  const [copied, setCopied] = useState(false);\n\n  const handleCopy = async () => {\n    try {\n      await navigator.clipboard.writeText(value);\n      setCopied(true);\n      setTimeout(() => setCopied(false), 2000);\n    } catch {\n      /* clipboard unavailable */\n    }\n  };\n\n  return (\n    <Button\n      size=\"sm\"\n      variant=\"secondary\"\n      icon={copied ? <Icon id=\"check\" size={14} /> : <Icon id=\"copy\" size={14} />}\n      onPress={handleCopy}\n      aria-label={copied ? 'Copied to clipboard' : label}\n    >\n      {copied ? 'Copied' : label}\n    </Button>\n  );\n}\n\nexport function CopyButtonDemo() {\n  return <CopyButton value=\"# Documentation\\n\\nThe full page content, ready to paste.\" />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
-        "ui-lab-components/button"
+        "ui-lab-components/button",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -3084,23 +4359,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><Icon id=\"folder-plus\" size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<Icon id=\"folder-plus\" size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><Icon id=\"folder-plus\" size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<Icon id=\"folder-plus\" size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
         "ui-lab-components/card",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -3119,22 +4393,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FileText } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><FileText size={16} /></span>\n        <Skeleton.Text lines={1} w={180} />\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><Icon id=\"notes\" size={16} /></span>\n        <Skeleton.Text lines={1} w={180} />\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FileText } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><FileText size={16} /></span>\n        <Skeleton.Text lines={1} w={180} />\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateMinimalDemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-3 py-10 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3 text-foreground-500\"><Icon id=\"notes\" size={16} /></span>\n        <Skeleton.Text lines={1} w={180} />\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/card",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -3153,23 +4426,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><Icon id=\"folder-plus\" size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<Icon id=\"folder-plus\" size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FolderPlus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><FolderPlus size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<FolderPlus size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function EmptyStateWithCTADemo() {\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-12 text-center\">\n        <span className=\"rounded-full bg-background-800 p-3\"><Icon id=\"folder-plus\" size={20} /></span>\n        <div className=\"flex flex-col items-center gap-2\">\n          <Skeleton.Text size=\"heading\" w={140} />\n          <Skeleton.Text lines={2} w={240} lastLineWidth=\"70%\" />\n        </div>\n        <Button size=\"sm\" icon={<Icon id=\"folder-plus\" size={14} />}>Create project</Button>\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
         "ui-lab-components/card",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -3188,23 +4460,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { ThumbsDown, ThumbsUp } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function FeedbackPromptDemo() {\n  const [response, setResponse] = useState<'up' | 'down' | null>(null);\n\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-8 text-center\">\n        {response ? (\n          <p className=\"text-sm text-foreground-300\">Thanks — your feedback helps us improve these docs.</p>\n        ) : (\n          <>\n            <p className=\"text-sm font-medium text-foreground-100\">Was this page helpful?</p>\n            <div className=\"flex gap-2\">\n              <Button size=\"sm\" variant=\"secondary\" icon={<ThumbsUp size={14} />} onPress={() => setResponse('up')}>\n                Yes\n              </Button>\n              <Button size=\"sm\" variant=\"secondary\" icon={<ThumbsDown size={14} />} onPress={() => setResponse('down')}>\n                No\n              </Button>\n            </div>\n          </>\n        )}\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function FeedbackPromptDemo() {\n  const [response, setResponse] = useState<'up' | 'down' | null>(null);\n\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-8 text-center\">\n        {response ? (\n          <p className=\"text-sm text-foreground-300\">Thanks — your feedback helps us improve these docs.</p>\n        ) : (\n          <>\n            <p className=\"text-sm font-medium text-foreground-100\">Was this page helpful?</p>\n            <div className=\"flex gap-2\">\n              <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"like\" size={14} />} onPress={() => setResponse('up')}>\n                Yes\n              </Button>\n              <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"dislike\" size={14} />} onPress={() => setResponse('down')}>\n                No\n              </Button>\n            </div>\n          </>\n        )}\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { ThumbsDown, ThumbsUp } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function FeedbackPromptDemo() {\n  const [response, setResponse] = useState<'up' | 'down' | null>(null);\n\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-8 text-center\">\n        {response ? (\n          <p className=\"text-sm text-foreground-300\">Thanks — your feedback helps us improve these docs.</p>\n        ) : (\n          <>\n            <p className=\"text-sm font-medium text-foreground-100\">Was this page helpful?</p>\n            <div className=\"flex gap-2\">\n              <Button size=\"sm\" variant=\"secondary\" icon={<ThumbsUp size={14} />} onPress={() => setResponse('up')}>\n                Yes\n              </Button>\n              <Button size=\"sm\" variant=\"secondary\" icon={<ThumbsDown size={14} />} onPress={() => setResponse('down')}>\n                No\n              </Button>\n            </div>\n          </>\n        )}\n      </Card.Body>\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\n\nexport function FeedbackPromptDemo() {\n  const [response, setResponse] = useState<'up' | 'down' | null>(null);\n\n  return (\n    <Card>\n      <Card.Body className=\"flex flex-col items-center gap-4 py-8 text-center\">\n        {response ? (\n          <p className=\"text-sm text-foreground-300\">Thanks — your feedback helps us improve these docs.</p>\n        ) : (\n          <>\n            <p className=\"text-sm font-medium text-foreground-100\">Was this page helpful?</p>\n            <div className=\"flex gap-2\">\n              <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"like\" size={14} />} onPress={() => setResponse('up')}>\n                Yes\n              </Button>\n              <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"dislike\" size={14} />} onPress={() => setResponse('down')}>\n                No\n              </Button>\n            </div>\n          </>\n        )}\n      </Card.Body>\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
-        "ui-lab-components/card"
+        "ui-lab-components/card",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -3222,23 +4493,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Search, X } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Input } from 'ui-lab-components/input';\nimport { Select } from 'ui-lab-components/select';\n\nconst statuses = [\n  { id: 'all', label: 'All statuses' },\n  { id: 'active', label: 'Active' },\n  { id: 'archived', label: 'Archived' },\n];\n\nconst sorts = [\n  { id: 'recent', label: 'Most recent' },\n  { id: 'oldest', label: 'Oldest' },\n  { id: 'name', label: 'Name' },\n];\n\nfunction FilterBar() {\n  const [query, setQuery] = useState('');\n  const [status, setStatus] = useState('all');\n  const [sort, setSort] = useState('recent');\n  const isFiltered = query !== '' || status !== 'all' || sort !== 'recent';\n\n  const reset = () => {\n    setQuery('');\n    setStatus('all');\n    setSort('recent');\n  };\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Filter results\">\n      <Input\n        type=\"search\"\n        aria-label=\"Search results\"\n        placeholder=\"Search...\"\n        state={{ value: query }}\n        onChange={(event) => setQuery(event.target.value)}\n        icon={<Search size={16} />}\n        actions={query ? [{ icon: <X size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n      />\n      <Select selectedKey={status} onSelectionChange={setStatus}>\n        <Select.Trigger aria-label=\"Filter by status\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {statuses.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      <Select selectedKey={sort} onSelectionChange={setSort}>\n        <Select.Trigger aria-label=\"Sort results\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {sorts.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      {isFiltered && (\n        <Button variant=\"ghost\" icon={<X size={16} />} onPress={reset}>Clear</Button>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarDemo() {\n  return <FilterBar />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Input } from 'ui-lab-components/input';\nimport { Select } from 'ui-lab-components/select';\n\nconst statuses = [\n  { id: 'all', label: 'All statuses' },\n  { id: 'active', label: 'Active' },\n  { id: 'archived', label: 'Archived' },\n];\n\nconst sorts = [\n  { id: 'recent', label: 'Most recent' },\n  { id: 'oldest', label: 'Oldest' },\n  { id: 'name', label: 'Name' },\n];\n\nfunction FilterBar() {\n  const [query, setQuery] = useState('');\n  const [status, setStatus] = useState('all');\n  const [sort, setSort] = useState('recent');\n  const isFiltered = query !== '' || status !== 'all' || sort !== 'recent';\n\n  const reset = () => {\n    setQuery('');\n    setStatus('all');\n    setSort('recent');\n  };\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Filter results\">\n      <Input\n        type=\"search\"\n        aria-label=\"Search results\"\n        placeholder=\"Search...\"\n        state={{ value: query }}\n        onChange={(event) => setQuery(event.target.value)}\n        icon={<Icon id=\"search\" size={16} />}\n        actions={query ? [{ icon: <Icon id=\"close\" size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n      />\n      <Select selectedKey={status} onSelectionChange={setStatus}>\n        <Select.Trigger aria-label=\"Filter by status\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {statuses.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      <Select selectedKey={sort} onSelectionChange={setSort}>\n        <Select.Trigger aria-label=\"Sort results\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {sorts.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      {isFiltered && (\n        <Button variant=\"ghost\" icon={<Icon id=\"close\" size={16} />} onPress={reset}>Clear</Button>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarDemo() {\n  return <FilterBar />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Search, X } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Input } from 'ui-lab-components/input';\nimport { Select } from 'ui-lab-components/select';\n\nconst statuses = [\n  { id: 'all', label: 'All statuses' },\n  { id: 'active', label: 'Active' },\n  { id: 'archived', label: 'Archived' },\n];\n\nconst sorts = [\n  { id: 'recent', label: 'Most recent' },\n  { id: 'oldest', label: 'Oldest' },\n  { id: 'name', label: 'Name' },\n];\n\nfunction FilterBar() {\n  const [query, setQuery] = useState('');\n  const [status, setStatus] = useState('all');\n  const [sort, setSort] = useState('recent');\n  const isFiltered = query !== '' || status !== 'all' || sort !== 'recent';\n\n  const reset = () => {\n    setQuery('');\n    setStatus('all');\n    setSort('recent');\n  };\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Filter results\">\n      <Input\n        type=\"search\"\n        aria-label=\"Search results\"\n        placeholder=\"Search...\"\n        state={{ value: query }}\n        onChange={(event) => setQuery(event.target.value)}\n        icon={<Search size={16} />}\n        actions={query ? [{ icon: <X size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n      />\n      <Select selectedKey={status} onSelectionChange={setStatus}>\n        <Select.Trigger aria-label=\"Filter by status\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {statuses.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      <Select selectedKey={sort} onSelectionChange={setSort}>\n        <Select.Trigger aria-label=\"Sort results\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {sorts.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      {isFiltered && (\n        <Button variant=\"ghost\" icon={<X size={16} />} onPress={reset}>Clear</Button>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarDemo() {\n  return <FilterBar />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Input } from 'ui-lab-components/input';\nimport { Select } from 'ui-lab-components/select';\n\nconst statuses = [\n  { id: 'all', label: 'All statuses' },\n  { id: 'active', label: 'Active' },\n  { id: 'archived', label: 'Archived' },\n];\n\nconst sorts = [\n  { id: 'recent', label: 'Most recent' },\n  { id: 'oldest', label: 'Oldest' },\n  { id: 'name', label: 'Name' },\n];\n\nfunction FilterBar() {\n  const [query, setQuery] = useState('');\n  const [status, setStatus] = useState('all');\n  const [sort, setSort] = useState('recent');\n  const isFiltered = query !== '' || status !== 'all' || sort !== 'recent';\n\n  const reset = () => {\n    setQuery('');\n    setStatus('all');\n    setSort('recent');\n  };\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Filter results\">\n      <Input\n        type=\"search\"\n        aria-label=\"Search results\"\n        placeholder=\"Search...\"\n        state={{ value: query }}\n        onChange={(event) => setQuery(event.target.value)}\n        icon={<Icon id=\"search\" size={16} />}\n        actions={query ? [{ icon: <Icon id=\"close\" size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n      />\n      <Select selectedKey={status} onSelectionChange={setStatus}>\n        <Select.Trigger aria-label=\"Filter by status\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {statuses.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      <Select selectedKey={sort} onSelectionChange={setSort}>\n        <Select.Trigger aria-label=\"Sort results\"><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {sorts.map((option) => <Select.Item key={option.id} value={option.id}>{option.label}</Select.Item>)}\n        </Select.Content>\n      </Select>\n      {isFiltered && (\n        <Button variant=\"ghost\" icon={<Icon id=\"close\" size={16} />} onPress={reset}>Clear</Button>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarDemo() {\n  return <FilterBar />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
         "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/input",
         "ui-lab-components/select"
       ]
@@ -3291,25 +4561,24 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { SlidersHorizontal } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Checkbox } from 'ui-lab-components/checkbox';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Popover } from 'ui-lab-components/popover';\n\nconst facets = [\n  { id: 'bug', label: 'Bug' },\n  { id: 'feature', label: 'Feature' },\n  { id: 'docs', label: 'Documentation' },\n  { id: 'design', label: 'Design' },\n];\n\nfunction FacetedFilter() {\n  const [selected, setSelected] = useState<string[]>(['bug']);\n\n  const toggle = (id: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, id] : current.filter((value) => value !== id)));\n\n  const panel = (\n    <Flex direction=\"column\" gap=\"sm\" role=\"group\" aria-label=\"Filter by label\">\n      {facets.map((facet) => (\n        <Checkbox\n          key={facet.id}\n          label={facet.label}\n          state={{ checked: selected.includes(facet.id) }}\n          onChange={(event) => toggle(facet.id, event.target.checked)}\n        />\n      ))}\n    </Flex>\n  );\n\n  return (\n    <Popover content={panel} position=\"bottom\" align=\"start\">\n      <Button variant=\"secondary\" icon={<SlidersHorizontal size={16} />}>\n        Labels\n        {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n      </Button>\n    </Popover>\n  );\n}\n\nexport function FacetedFilterDemo() {\n  return <FacetedFilter />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Checkbox } from 'ui-lab-components/checkbox';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Popover } from 'ui-lab-components/popover';\n\nconst facets = [\n  { id: 'bug', label: 'Bug' },\n  { id: 'feature', label: 'Feature' },\n  { id: 'docs', label: 'Documentation' },\n  { id: 'design', label: 'Design' },\n];\n\nfunction FacetedFilter() {\n  const [selected, setSelected] = useState<string[]>(['bug']);\n\n  const toggle = (id: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, id] : current.filter((value) => value !== id)));\n\n  const panel = (\n    <Flex direction=\"column\" gap=\"sm\" role=\"group\" aria-label=\"Filter by label\">\n      {facets.map((facet) => (\n        <Checkbox\n          key={facet.id}\n          label={facet.label}\n          state={{ checked: selected.includes(facet.id) }}\n          onChange={(event) => toggle(facet.id, event.target.checked)}\n        />\n      ))}\n    </Flex>\n  );\n\n  return (\n    <Popover content={panel} position=\"bottom\" align=\"start\">\n      <Button variant=\"secondary\" icon={<Icon id=\"sliders\" size={16} />}>\n        Labels\n        {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n      </Button>\n    </Popover>\n  );\n}\n\nexport function FacetedFilterDemo() {\n  return <FacetedFilter />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { SlidersHorizontal } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Checkbox } from 'ui-lab-components/checkbox';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Popover } from 'ui-lab-components/popover';\n\nconst facets = [\n  { id: 'bug', label: 'Bug' },\n  { id: 'feature', label: 'Feature' },\n  { id: 'docs', label: 'Documentation' },\n  { id: 'design', label: 'Design' },\n];\n\nfunction FacetedFilter() {\n  const [selected, setSelected] = useState<string[]>(['bug']);\n\n  const toggle = (id: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, id] : current.filter((value) => value !== id)));\n\n  const panel = (\n    <Flex direction=\"column\" gap=\"sm\" role=\"group\" aria-label=\"Filter by label\">\n      {facets.map((facet) => (\n        <Checkbox\n          key={facet.id}\n          label={facet.label}\n          state={{ checked: selected.includes(facet.id) }}\n          onChange={(event) => toggle(facet.id, event.target.checked)}\n        />\n      ))}\n    </Flex>\n  );\n\n  return (\n    <Popover content={panel} position=\"bottom\" align=\"start\">\n      <Button variant=\"secondary\" icon={<SlidersHorizontal size={16} />}>\n        Labels\n        {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n      </Button>\n    </Popover>\n  );\n}\n\nexport function FacetedFilterDemo() {\n  return <FacetedFilter />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Checkbox } from 'ui-lab-components/checkbox';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Popover } from 'ui-lab-components/popover';\n\nconst facets = [\n  { id: 'bug', label: 'Bug' },\n  { id: 'feature', label: 'Feature' },\n  { id: 'docs', label: 'Documentation' },\n  { id: 'design', label: 'Design' },\n];\n\nfunction FacetedFilter() {\n  const [selected, setSelected] = useState<string[]>(['bug']);\n\n  const toggle = (id: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, id] : current.filter((value) => value !== id)));\n\n  const panel = (\n    <Flex direction=\"column\" gap=\"sm\" role=\"group\" aria-label=\"Filter by label\">\n      {facets.map((facet) => (\n        <Checkbox\n          key={facet.id}\n          label={facet.label}\n          state={{ checked: selected.includes(facet.id) }}\n          onChange={(event) => toggle(facet.id, event.target.checked)}\n        />\n      ))}\n    </Flex>\n  );\n\n  return (\n    <Popover content={panel} position=\"bottom\" align=\"start\">\n      <Button variant=\"secondary\" icon={<Icon id=\"sliders\" size={16} />}>\n        Labels\n        {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n      </Button>\n    </Popover>\n  );\n}\n\nexport function FacetedFilterDemo() {\n  return <FacetedFilter />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/button",
         "ui-lab-components/checkbox",
         "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/popover"
       ]
     },
@@ -3328,24 +4597,23 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Plus, X } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst available = [\n  { group: 'Status', values: ['Open', 'Closed'] },\n  { group: 'Owner', values: ['Me', 'Unassigned'] },\n  { group: 'Label', values: ['Bug', 'Feature'] },\n];\n\nfunction FilterBarWithChips() {\n  const [applied, setApplied] = useState<string[]>(['Status: Open']);\n\n  const add = (label: string) =>\n    setApplied((current) => (current.includes(label) ? current : [...current, label]));\n  const remove = (label: string) => setApplied((current) => current.filter((item) => item !== label));\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\" aria-label=\"Filter results\">\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Menu type=\"pop-over\">\n          <Menu.Trigger as=\"child\">\n            <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n              <Plus size={14} className=\"text-foreground-400\" />\n              Add filter\n            </Button>\n          </Menu.Trigger>\n          <Menu.Content className=\"w-48\">\n            {available.map((section, index) => (\n              <Menu.Group key={section.group}>\n                {index > 0 && <Menu.Separator />}\n                <Menu.Label>{section.group}</Menu.Label>\n                {section.values.map((value) => {\n                  const label = `${section.group}: ${value}`;\n                  return (\n                    <Menu.Item key={value} textValue={label} onSelect={() => add(label)}>\n                      {value}\n                    </Menu.Item>\n                  );\n                })}\n              </Menu.Group>\n            ))}\n          </Menu.Content>\n        </Menu>\n        {applied.length > 0 && (\n          <Button variant=\"ghost\" size=\"sm\" icon={<X size={16} />} onPress={() => setApplied([])}>\n            Clear all\n          </Button>\n        )}\n      </Flex>\n      {applied.length > 0 && (\n        <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Active filters\">\n          {applied.map((label) => (\n            <Badge key={label} variant=\"secondary\" dismissible onDismiss={() => remove(label)}>\n              {label}\n            </Badge>\n          ))}\n        </Flex>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarWithChipsDemo() {\n  return <FilterBarWithChips />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst available = [\n  { group: 'Status', values: ['Open', 'Closed'] },\n  { group: 'Owner', values: ['Me', 'Unassigned'] },\n  { group: 'Label', values: ['Bug', 'Feature'] },\n];\n\nfunction FilterBarWithChips() {\n  const [applied, setApplied] = useState<string[]>(['Status: Open']);\n\n  const add = (label: string) =>\n    setApplied((current) => (current.includes(label) ? current : [...current, label]));\n  const remove = (label: string) => setApplied((current) => current.filter((item) => item !== label));\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\" aria-label=\"Filter results\">\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Menu type=\"pop-over\">\n          <Menu.Trigger as=\"child\">\n            <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n              <Icon id=\"plus\" size={14} className=\"text-foreground-400\" />\n              Add filter\n            </Button>\n          </Menu.Trigger>\n          <Menu.Content className=\"w-48\">\n            {available.map((section, index) => (\n              <Menu.Group key={section.group}>\n                {index > 0 && <Menu.Separator />}\n                <Menu.Label>{section.group}</Menu.Label>\n                {section.values.map((value) => {\n                  const label = `${section.group}: ${value}`;\n                  return (\n                    <Menu.Item key={value} textValue={label} onSelect={() => add(label)}>\n                      {value}\n                    </Menu.Item>\n                  );\n                })}\n              </Menu.Group>\n            ))}\n          </Menu.Content>\n        </Menu>\n        {applied.length > 0 && (\n          <Button variant=\"ghost\" size=\"sm\" icon={<Icon id=\"close\" size={16} />} onPress={() => setApplied([])}>\n            Clear all\n          </Button>\n        )}\n      </Flex>\n      {applied.length > 0 && (\n        <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Active filters\">\n          {applied.map((label) => (\n            <Badge key={label} variant=\"secondary\" dismissible onDismiss={() => remove(label)}>\n              {label}\n            </Badge>\n          ))}\n        </Flex>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarWithChipsDemo() {\n  return <FilterBarWithChips />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Plus, X } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst available = [\n  { group: 'Status', values: ['Open', 'Closed'] },\n  { group: 'Owner', values: ['Me', 'Unassigned'] },\n  { group: 'Label', values: ['Bug', 'Feature'] },\n];\n\nfunction FilterBarWithChips() {\n  const [applied, setApplied] = useState<string[]>(['Status: Open']);\n\n  const add = (label: string) =>\n    setApplied((current) => (current.includes(label) ? current : [...current, label]));\n  const remove = (label: string) => setApplied((current) => current.filter((item) => item !== label));\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\" aria-label=\"Filter results\">\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Menu type=\"pop-over\">\n          <Menu.Trigger as=\"child\">\n            <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n              <Plus size={14} className=\"text-foreground-400\" />\n              Add filter\n            </Button>\n          </Menu.Trigger>\n          <Menu.Content className=\"w-48\">\n            {available.map((section, index) => (\n              <Menu.Group key={section.group}>\n                {index > 0 && <Menu.Separator />}\n                <Menu.Label>{section.group}</Menu.Label>\n                {section.values.map((value) => {\n                  const label = `${section.group}: ${value}`;\n                  return (\n                    <Menu.Item key={value} textValue={label} onSelect={() => add(label)}>\n                      {value}\n                    </Menu.Item>\n                  );\n                })}\n              </Menu.Group>\n            ))}\n          </Menu.Content>\n        </Menu>\n        {applied.length > 0 && (\n          <Button variant=\"ghost\" size=\"sm\" icon={<X size={16} />} onPress={() => setApplied([])}>\n            Clear all\n          </Button>\n        )}\n      </Flex>\n      {applied.length > 0 && (\n        <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Active filters\">\n          {applied.map((label) => (\n            <Badge key={label} variant=\"secondary\" dismissible onDismiss={() => remove(label)}>\n              {label}\n            </Badge>\n          ))}\n        </Flex>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarWithChipsDemo() {\n  return <FilterBarWithChips />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst available = [\n  { group: 'Status', values: ['Open', 'Closed'] },\n  { group: 'Owner', values: ['Me', 'Unassigned'] },\n  { group: 'Label', values: ['Bug', 'Feature'] },\n];\n\nfunction FilterBarWithChips() {\n  const [applied, setApplied] = useState<string[]>(['Status: Open']);\n\n  const add = (label: string) =>\n    setApplied((current) => (current.includes(label) ? current : [...current, label]));\n  const remove = (label: string) => setApplied((current) => current.filter((item) => item !== label));\n\n  return (\n    <Flex direction=\"column\" gap=\"sm\" aria-label=\"Filter results\">\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Menu type=\"pop-over\">\n          <Menu.Trigger as=\"child\">\n            <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n              <Icon id=\"plus\" size={14} className=\"text-foreground-400\" />\n              Add filter\n            </Button>\n          </Menu.Trigger>\n          <Menu.Content className=\"w-48\">\n            {available.map((section, index) => (\n              <Menu.Group key={section.group}>\n                {index > 0 && <Menu.Separator />}\n                <Menu.Label>{section.group}</Menu.Label>\n                {section.values.map((value) => {\n                  const label = `${section.group}: ${value}`;\n                  return (\n                    <Menu.Item key={value} textValue={label} onSelect={() => add(label)}>\n                      {value}\n                    </Menu.Item>\n                  );\n                })}\n              </Menu.Group>\n            ))}\n          </Menu.Content>\n        </Menu>\n        {applied.length > 0 && (\n          <Button variant=\"ghost\" size=\"sm\" icon={<Icon id=\"close\" size={16} />} onPress={() => setApplied([])}>\n            Clear all\n          </Button>\n        )}\n      </Flex>\n      {applied.length > 0 && (\n        <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Active filters\">\n          {applied.map((label) => (\n            <Badge key={label} variant=\"secondary\" dismissible onDismiss={() => remove(label)}>\n              {label}\n            </Badge>\n          ))}\n        </Flex>\n      )}\n    </Flex>\n  );\n}\n\nexport function FilterBarWithChipsDemo() {\n  return <FilterBarWithChips />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/button",
         "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -3364,23 +4632,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { ChevronDown, Filter } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst groups = [\n  { id: 'status', label: 'Status', options: ['Open', 'In progress', 'Closed'] },\n  { id: 'priority', label: 'Priority', options: ['High', 'Medium', 'Low'] },\n];\n\nfunction MenuFacets() {\n  const [selected, setSelected] = useState<string[]>(['Open']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <Filter size={14} className=\"text-foreground-400\" />\n          Filter\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <ChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        {groups.map((group, index) => (\n          <Menu.Group key={group.id}>\n            {index > 0 && <Menu.Separator />}\n            <Menu.Label>{group.label}</Menu.Label>\n            {group.options.map((option) => (\n              <Menu.CheckboxItem\n                key={option}\n                textValue={option}\n                checked={selected.includes(option)}\n                onCheckedChange={(checked) => toggle(option, checked)}\n              >\n                {option}\n              </Menu.CheckboxItem>\n            ))}\n          </Menu.Group>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function MenuFacetsFilterDemo() {\n  return <MenuFacets />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst groups = [\n  { id: 'status', label: 'Status', options: ['Open', 'In progress', 'Closed'] },\n  { id: 'priority', label: 'Priority', options: ['High', 'Medium', 'Low'] },\n];\n\nfunction MenuFacets() {\n  const [selected, setSelected] = useState<string[]>(['Open']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <Icon id=\"filter\" size={14} className=\"text-foreground-400\" />\n          Filter\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        {groups.map((group, index) => (\n          <Menu.Group key={group.id}>\n            {index > 0 && <Menu.Separator />}\n            <Menu.Label>{group.label}</Menu.Label>\n            {group.options.map((option) => (\n              <Menu.CheckboxItem\n                key={option}\n                textValue={option}\n                checked={selected.includes(option)}\n                onCheckedChange={(checked) => toggle(option, checked)}\n              >\n                {option}\n              </Menu.CheckboxItem>\n            ))}\n          </Menu.Group>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function MenuFacetsFilterDemo() {\n  return <MenuFacets />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { ChevronDown, Filter } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst groups = [\n  { id: 'status', label: 'Status', options: ['Open', 'In progress', 'Closed'] },\n  { id: 'priority', label: 'Priority', options: ['High', 'Medium', 'Low'] },\n];\n\nfunction MenuFacets() {\n  const [selected, setSelected] = useState<string[]>(['Open']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <Filter size={14} className=\"text-foreground-400\" />\n          Filter\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <ChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        {groups.map((group, index) => (\n          <Menu.Group key={group.id}>\n            {index > 0 && <Menu.Separator />}\n            <Menu.Label>{group.label}</Menu.Label>\n            {group.options.map((option) => (\n              <Menu.CheckboxItem\n                key={option}\n                textValue={option}\n                checked={selected.includes(option)}\n                onCheckedChange={(checked) => toggle(option, checked)}\n              >\n                {option}\n              </Menu.CheckboxItem>\n            ))}\n          </Menu.Group>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function MenuFacetsFilterDemo() {\n  return <MenuFacets />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst groups = [\n  { id: 'status', label: 'Status', options: ['Open', 'In progress', 'Closed'] },\n  { id: 'priority', label: 'Priority', options: ['High', 'Medium', 'Low'] },\n];\n\nfunction MenuFacets() {\n  const [selected, setSelected] = useState<string[]>(['Open']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <Icon id=\"filter\" size={14} className=\"text-foreground-400\" />\n          Filter\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        {groups.map((group, index) => (\n          <Menu.Group key={group.id}>\n            {index > 0 && <Menu.Separator />}\n            <Menu.Label>{group.label}</Menu.Label>\n            {group.options.map((option) => (\n              <Menu.CheckboxItem\n                key={option}\n                textValue={option}\n                checked={selected.includes(option)}\n                onCheckedChange={(checked) => toggle(option, checked)}\n              >\n                {option}\n              </Menu.CheckboxItem>\n            ))}\n          </Menu.Group>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function MenuFacetsFilterDemo() {\n  return <MenuFacets />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -3399,23 +4666,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst sorts = [\n  { value: 'updated', label: 'Last updated' },\n  { value: 'created', label: 'Date created' },\n  { value: 'name', label: 'Name' },\n  { value: 'priority', label: 'Priority' },\n];\n\nfunction MenuSort() {\n  const [sort, setSort] = useState('updated');\n  const [ascending, setAscending] = useState(false);\n  const current = sorts.find((option) => option.value === sort);\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Sort results\">\n      <Menu type=\"pop-over\">\n        <Menu.Trigger as=\"child\">\n          <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n            Sort: {current?.label}\n            <ChevronDown size={14} className=\"text-foreground-400\" />\n          </Button>\n        </Menu.Trigger>\n        <Menu.Content className=\"w-48\">\n          <Menu.Label>Sort by</Menu.Label>\n          <Menu.RadioGroup value={sort} onValueChange={setSort}>\n            {sorts.map((option) => (\n              <Menu.RadioItem key={option.value} value={option.value} textValue={option.label}>\n                {option.label}\n              </Menu.RadioItem>\n            ))}\n          </Menu.RadioGroup>\n        </Menu.Content>\n      </Menu>\n      <Button\n        variant=\"ghost\"\n        size=\"sm\"\n        aria-label={ascending ? 'Sort descending' : 'Sort ascending'}\n        icon={ascending ? <ArrowUpNarrowWide size={16} /> : <ArrowDownNarrowWide size={16} />}\n        onPress={() => setAscending((value) => !value)}\n      />\n    </Flex>\n  );\n}\n\nexport function MenuSortFilterDemo() {\n  return <MenuSort />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst sorts = [\n  { value: 'updated', label: 'Last updated' },\n  { value: 'created', label: 'Date created' },\n  { value: 'name', label: 'Name' },\n  { value: 'priority', label: 'Priority' },\n];\n\nfunction MenuSort() {\n  const [sort, setSort] = useState('updated');\n  const [ascending, setAscending] = useState(false);\n  const current = sorts.find((option) => option.value === sort);\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Sort results\">\n      <Menu type=\"pop-over\">\n        <Menu.Trigger as=\"child\">\n          <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n            Sort: {current?.label}\n            <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n          </Button>\n        </Menu.Trigger>\n        <Menu.Content className=\"w-48\">\n          <Menu.Label>Sort by</Menu.Label>\n          <Menu.RadioGroup value={sort} onValueChange={setSort}>\n            {sorts.map((option) => (\n              <Menu.RadioItem key={option.value} value={option.value} textValue={option.label}>\n                {option.label}\n              </Menu.RadioItem>\n            ))}\n          </Menu.RadioGroup>\n        </Menu.Content>\n      </Menu>\n      <Button\n        variant=\"ghost\"\n        size=\"sm\"\n        aria-label={ascending ? 'Sort descending' : 'Sort ascending'}\n        icon={ascending ? <Icon id=\"sort-asc\" size={16} /> : <Icon id=\"sort-desc\" size={16} />}\n        onPress={() => setAscending((value) => !value)}\n      />\n    </Flex>\n  );\n}\n\nexport function MenuSortFilterDemo() {\n  return <MenuSort />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst sorts = [\n  { value: 'updated', label: 'Last updated' },\n  { value: 'created', label: 'Date created' },\n  { value: 'name', label: 'Name' },\n  { value: 'priority', label: 'Priority' },\n];\n\nfunction MenuSort() {\n  const [sort, setSort] = useState('updated');\n  const [ascending, setAscending] = useState(false);\n  const current = sorts.find((option) => option.value === sort);\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Sort results\">\n      <Menu type=\"pop-over\">\n        <Menu.Trigger as=\"child\">\n          <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n            Sort: {current?.label}\n            <ChevronDown size={14} className=\"text-foreground-400\" />\n          </Button>\n        </Menu.Trigger>\n        <Menu.Content className=\"w-48\">\n          <Menu.Label>Sort by</Menu.Label>\n          <Menu.RadioGroup value={sort} onValueChange={setSort}>\n            {sorts.map((option) => (\n              <Menu.RadioItem key={option.value} value={option.value} textValue={option.label}>\n                {option.label}\n              </Menu.RadioItem>\n            ))}\n          </Menu.RadioGroup>\n        </Menu.Content>\n      </Menu>\n      <Button\n        variant=\"ghost\"\n        size=\"sm\"\n        aria-label={ascending ? 'Sort descending' : 'Sort ascending'}\n        icon={ascending ? <ArrowUpNarrowWide size={16} /> : <ArrowDownNarrowWide size={16} />}\n        onPress={() => setAscending((value) => !value)}\n      />\n    </Flex>\n  );\n}\n\nexport function MenuSortFilterDemo() {\n  return <MenuSort />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst sorts = [\n  { value: 'updated', label: 'Last updated' },\n  { value: 'created', label: 'Date created' },\n  { value: 'name', label: 'Name' },\n  { value: 'priority', label: 'Priority' },\n];\n\nfunction MenuSort() {\n  const [sort, setSort] = useState('updated');\n  const [ascending, setAscending] = useState(false);\n  const current = sorts.find((option) => option.value === sort);\n\n  return (\n    <Flex layout=\"cluster\" gap=\"sm\" aria-label=\"Sort results\">\n      <Menu type=\"pop-over\">\n        <Menu.Trigger as=\"child\">\n          <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n            Sort: {current?.label}\n            <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n          </Button>\n        </Menu.Trigger>\n        <Menu.Content className=\"w-48\">\n          <Menu.Label>Sort by</Menu.Label>\n          <Menu.RadioGroup value={sort} onValueChange={setSort}>\n            {sorts.map((option) => (\n              <Menu.RadioItem key={option.value} value={option.value} textValue={option.label}>\n                {option.label}\n              </Menu.RadioItem>\n            ))}\n          </Menu.RadioGroup>\n        </Menu.Content>\n      </Menu>\n      <Button\n        variant=\"ghost\"\n        size=\"sm\"\n        aria-label={ascending ? 'Sort descending' : 'Sort ascending'}\n        icon={ascending ? <Icon id=\"sort-asc\" size={16} /> : <Icon id=\"sort-desc\" size={16} />}\n        onPress={() => setAscending((value) => !value)}\n      />\n    </Flex>\n  );\n}\n\nexport function MenuSortFilterDemo() {\n  return <MenuSort />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
         "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -3434,23 +4700,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { ChevronDown, SlidersHorizontal } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst categories = [\n  { id: 'assignee', label: 'Assignee', options: ['Avery Reid', 'Jordan Cole', 'Sam Ito'] },\n  { id: 'label', label: 'Label', options: ['Bug', 'Feature', 'Documentation'] },\n  { id: 'milestone', label: 'Milestone', options: ['v1.2', 'v1.3', 'Backlog'] },\n];\n\nfunction NestedFacets() {\n  const [selected, setSelected] = useState<string[]>(['Bug']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <SlidersHorizontal size={14} className=\"text-foreground-400\" />\n          Filters\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <ChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-48\">\n        <Menu.Label>Narrow by</Menu.Label>\n        {categories.map((category) => (\n          <Menu.Sub key={category.id}>\n            <Menu.SubTrigger textValue={category.label}>{category.label}</Menu.SubTrigger>\n            <Menu.SubContent className=\"w-48\">\n              {category.options.map((option) => (\n                <Menu.CheckboxItem\n                  key={option}\n                  textValue={option}\n                  checked={selected.includes(option)}\n                  onCheckedChange={(checked) => toggle(option, checked)}\n                >\n                  {option}\n                </Menu.CheckboxItem>\n              ))}\n            </Menu.SubContent>\n          </Menu.Sub>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function NestedFacetsFilterDemo() {\n  return <NestedFacets />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst categories = [\n  { id: 'assignee', label: 'Assignee', options: ['Avery Reid', 'Jordan Cole', 'Sam Ito'] },\n  { id: 'label', label: 'Label', options: ['Bug', 'Feature', 'Documentation'] },\n  { id: 'milestone', label: 'Milestone', options: ['v1.2', 'v1.3', 'Backlog'] },\n];\n\nfunction NestedFacets() {\n  const [selected, setSelected] = useState<string[]>(['Bug']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <Icon id=\"sliders\" size={14} className=\"text-foreground-400\" />\n          Filters\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-48\">\n        <Menu.Label>Narrow by</Menu.Label>\n        {categories.map((category) => (\n          <Menu.Sub key={category.id}>\n            <Menu.SubTrigger textValue={category.label}>{category.label}</Menu.SubTrigger>\n            <Menu.SubContent className=\"w-48\">\n              {category.options.map((option) => (\n                <Menu.CheckboxItem\n                  key={option}\n                  textValue={option}\n                  checked={selected.includes(option)}\n                  onCheckedChange={(checked) => toggle(option, checked)}\n                >\n                  {option}\n                </Menu.CheckboxItem>\n              ))}\n            </Menu.SubContent>\n          </Menu.Sub>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function NestedFacetsFilterDemo() {\n  return <NestedFacets />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { ChevronDown, SlidersHorizontal } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst categories = [\n  { id: 'assignee', label: 'Assignee', options: ['Avery Reid', 'Jordan Cole', 'Sam Ito'] },\n  { id: 'label', label: 'Label', options: ['Bug', 'Feature', 'Documentation'] },\n  { id: 'milestone', label: 'Milestone', options: ['v1.2', 'v1.3', 'Backlog'] },\n];\n\nfunction NestedFacets() {\n  const [selected, setSelected] = useState<string[]>(['Bug']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <SlidersHorizontal size={14} className=\"text-foreground-400\" />\n          Filters\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <ChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-48\">\n        <Menu.Label>Narrow by</Menu.Label>\n        {categories.map((category) => (\n          <Menu.Sub key={category.id}>\n            <Menu.SubTrigger textValue={category.label}>{category.label}</Menu.SubTrigger>\n            <Menu.SubContent className=\"w-48\">\n              {category.options.map((option) => (\n                <Menu.CheckboxItem\n                  key={option}\n                  textValue={option}\n                  checked={selected.includes(option)}\n                  onCheckedChange={(checked) => toggle(option, checked)}\n                >\n                  {option}\n                </Menu.CheckboxItem>\n              ))}\n            </Menu.SubContent>\n          </Menu.Sub>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function NestedFacetsFilterDemo() {\n  return <NestedFacets />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nconst categories = [\n  { id: 'assignee', label: 'Assignee', options: ['Avery Reid', 'Jordan Cole', 'Sam Ito'] },\n  { id: 'label', label: 'Label', options: ['Bug', 'Feature', 'Documentation'] },\n  { id: 'milestone', label: 'Milestone', options: ['v1.2', 'v1.3', 'Backlog'] },\n];\n\nfunction NestedFacets() {\n  const [selected, setSelected] = useState<string[]>(['Bug']);\n\n  const toggle = (value: string, checked: boolean) =>\n    setSelected((current) => (checked ? [...current, value] : current.filter((item) => item !== value)));\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          <Icon id=\"sliders\" size={14} className=\"text-foreground-400\" />\n          Filters\n          {selected.length > 0 && <Badge variant=\"secondary\" count={selected.length} />}\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-48\">\n        <Menu.Label>Narrow by</Menu.Label>\n        {categories.map((category) => (\n          <Menu.Sub key={category.id}>\n            <Menu.SubTrigger textValue={category.label}>{category.label}</Menu.SubTrigger>\n            <Menu.SubContent className=\"w-48\">\n              {category.options.map((option) => (\n                <Menu.CheckboxItem\n                  key={option}\n                  textValue={option}\n                  checked={selected.includes(option)}\n                  onCheckedChange={(checked) => toggle(option, checked)}\n                >\n                  {option}\n                </Menu.CheckboxItem>\n              ))}\n            </Menu.SubContent>\n          </Menu.Sub>\n        ))}\n      </Menu.Content>\n    </Menu>\n  );\n}\n\nexport function NestedFacetsFilterDemo() {\n  return <NestedFacets />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -3500,22 +4765,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 176 },\n  { key: 'row-2', width: 148 },\n  { key: 'row-3', width: 196 },\n];\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Icon id=\"edit\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Icon id=\"copy\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Icon id=\"trash\" size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 176 },\n  { key: 'row-2', width: 148 },\n  { key: 'row-3', width: 196 },\n];\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 176 },\n  { key: 'row-2', width: 148 },\n  { key: 'row-3', width: 196 },\n];\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBar() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Icon id=\"edit\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Icon id=\"copy\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Icon id=\"trash\" size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 176 },\n  { key: 'row-2', width: 148 },\n  { key: 'row-3', width: 196 },\n];\n\nexport function IconActionBarDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBar key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/group",
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -3535,22 +4799,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Copy size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={12} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 132 },\n  { key: 'row-2', width: 104 },\n  { key: 'row-3', width: 120 },\n];\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Icon id=\"edit\" size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Icon id=\"copy\" size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Icon id=\"trash\" size={12} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 132 },\n  { key: 'row-2', width: 104 },\n  { key: 'row-3', width: 120 },\n];\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Pencil, Trash2 } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Copy size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Trash2 size={12} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 132 },\n  { key: 'row-2', width: 104 },\n  { key: 'row-3', width: 120 },\n];\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarCompact() {\n  return (\n    <Group spacing=\"none\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Icon id=\"edit\" size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Copy\" icon={<Icon id=\"copy\" size={12} />} />\n      <Group.Button size=\"icon\" aria-label=\"Delete\" icon={<Icon id=\"trash\" size={12} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 132 },\n  { key: 'row-2', width: 104 },\n  { key: 'row-3', width: 120 },\n];\n\nexport function IconActionBarCompactDemo() {\n  return (\n    <List aria-label=\"Workflow actions\" spacing=\"sm\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarCompact key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/group",
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -3570,22 +4833,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Copy, Ellipsis, Pencil } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Ellipsis size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 196 },\n  { key: 'row-2', width: 164 },\n];\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Icon id=\"edit\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Icon id=\"copy\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Icon id=\"more\" size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 196 },\n  { key: 'row-2', width: 164 },\n];\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Copy, Ellipsis, Pencil } from 'lucide-react';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Pencil size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Copy size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Ellipsis size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 196 },\n  { key: 'row-2', width: 164 },\n];\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Group } from 'ui-lab-components/group';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nfunction IconActionBarWithMore() {\n  return (\n    <Group spacing=\"sm\" aria-label=\"Item actions\">\n      <Group.Button size=\"icon\" aria-label=\"Edit\" icon={<Icon id=\"edit\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"Duplicate\" icon={<Icon id=\"copy\" size={14} />} />\n      <Group.Button size=\"icon\" aria-label=\"More actions\" icon={<Icon id=\"more\" size={14} />} />\n    </Group>\n  );\n}\n\nconst rows = [\n  { key: 'row-1', width: 196 },\n  { key: 'row-2', width: 164 },\n];\n\nexport function IconActionBarWithMoreDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {rows.map((row) => (\n        <List.Item key={row.key} focusable={false} actions={[<IconActionBarWithMore key=\"actions\" />]}>\n          <Skeleton.Text lines={1} w={row.width} />\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/group",
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -3797,21 +5059,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 232, icon: <Bell size={18} /> },\n  { key: 'security', title: 128, description: 208, icon: <ShieldCheck size={18} /> },\n  { key: 'analytics', title: 160, description: 196, icon: <ChartNoAxesCombined size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 232, icon: <Icon id=\"bell\" size={18} /> },\n  { key: 'security', title: 128, description: 208, icon: <Icon id=\"shield\" size={18} /> },\n  { key: 'analytics', title: 160, description: 196, icon: <Icon id=\"chart\" size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 232, icon: <Bell size={18} /> },\n  { key: 'security', title: 128, description: 208, icon: <ShieldCheck size={18} /> },\n  { key: 'analytics', title: 160, description: 196, icon: <ChartNoAxesCombined size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 232, icon: <Icon id=\"bell\" size={18} /> },\n  { key: 'security', title: 128, description: 208, icon: <Icon id=\"shield\" size={18} /> },\n  { key: 'analytics', title: 160, description: 196, icon: <Icon id=\"chart\" size={18} /> },\n];\n\nexport function MediaObjectDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"md\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"py-2\">\n          <List.Media className=\"h-10 w-10 rounded-lg bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -3831,21 +5092,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Bell, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', icon: <Bell size={22} /> },\n  { key: 'security', icon: <ShieldCheck size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-2\"><Skeleton.Text size=\"heading\" w={160} /><Skeleton.Text lines={2} lastLineWidth=\"70%\" /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', icon: <Icon id=\"bell\" size={22} /> },\n  { key: 'security', icon: <Icon id=\"shield\" size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-2\"><Skeleton.Text size=\"heading\" w={160} /><Skeleton.Text lines={2} lastLineWidth=\"70%\" /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Bell, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', icon: <Bell size={22} /> },\n  { key: 'security', icon: <ShieldCheck size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-2\"><Skeleton.Text size=\"heading\" w={160} /><Skeleton.Text lines={2} lastLineWidth=\"70%\" /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', icon: <Icon id=\"bell\" size={22} /> },\n  { key: 'security', icon: <Icon id=\"shield\" size={22} /> },\n];\n\nexport function MediaObjectLgDemo() {\n  return (\n    <List aria-label=\"Notification features\" gap=\"lg\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false} className=\"items-start py-3\">\n          <List.Media className=\"h-14 w-14 rounded-xl bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-2\"><Skeleton.Text size=\"heading\" w={160} /><Skeleton.Text lines={2} lastLineWidth=\"70%\" /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -3865,21 +5125,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 168, icon: <Bell size={14} /> },\n  { key: 'security', title: 128, description: 152, icon: <ShieldCheck size={14} /> },\n  { key: 'analytics', title: 160, description: 140, icon: <ChartNoAxesCombined size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 168, icon: <Icon id=\"bell\" size={14} /> },\n  { key: 'security', title: 128, description: 152, icon: <Icon id=\"shield\" size={14} /> },\n  { key: 'analytics', title: 160, description: 140, icon: <Icon id=\"chart\" size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Bell, ChartNoAxesCombined, ShieldCheck } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 168, icon: <Bell size={14} /> },\n  { key: 'security', title: 128, description: 152, icon: <ShieldCheck size={14} /> },\n  { key: 'analytics', title: 160, description: 140, icon: <ChartNoAxesCombined size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { key: 'notifications', title: 150, description: 168, icon: <Icon id=\"bell\" size={14} /> },\n  { key: 'security', title: 128, description: 152, icon: <Icon id=\"shield\" size={14} /> },\n  { key: 'analytics', title: 160, description: 140, icon: <Icon id=\"chart\" size={14} /> },\n];\n\nexport function MediaObjectSmDemo() {\n  return (\n    <List aria-label=\"Notification features\" spacing=\"sm\">\n      {items.map((item) => (\n        <List.Item key={item.key} focusable={false}>\n          <List.Media className=\"h-8 w-8 rounded-md bg-background-800\">{item.icon}</List.Media>\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -3899,22 +5158,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiChevronDown } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuBasicDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Actions\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-44\">\n        <Menu.Item textValue=\"Open\">Open</Menu.Item>\n        <Menu.Item textValue=\"Rename\">Rename</Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">Duplicate</Menu.Item>\n        <Menu.Item textValue=\"Archive\">Archive</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuBasicDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Actions\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-44\">\n        <Menu.Item textValue=\"Open\">Open</Menu.Item>\n        <Menu.Item textValue=\"Rename\">Rename</Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">Duplicate</Menu.Item>\n        <Menu.Item textValue=\"Archive\">Archive</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiChevronDown } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuBasicDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Actions\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-44\">\n        <Menu.Item textValue=\"Open\">Open</Menu.Item>\n        <Menu.Item textValue=\"Rename\">Rename</Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">Duplicate</Menu.Item>\n        <Menu.Item textValue=\"Archive\">Archive</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuBasicDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Actions\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-44\">\n        <Menu.Item textValue=\"Open\">Open</Menu.Item>\n        <Menu.Item textValue=\"Rename\">Rename</Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">Duplicate</Menu.Item>\n        <Menu.Item textValue=\"Archive\">Archive</Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -3933,21 +5191,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport {\n  FiClipboard,\n  FiCopy,\n  FiDownload,\n  FiFileText,\n  FiImage,\n  FiRefreshCw,\n  FiScissors,\n  FiTrash2,\n} from 'react-icons/fi';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuDenseDemo() {\n  return (\n    <Menu type=\"context-menu\">\n      <Menu.Trigger as=\"child\">\n        <div className=\"flex h-40 w-72 select-none items-center justify-center rounded-lg border border-dashed border-foreground-700 text-sm text-foreground-400\">\n          Right-click this area\n        </div>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-60\">\n        <Menu.Group>\n          <Menu.Item textValue=\"Cut\">\n            <FiScissors size={15} className=\"mr-2 text-foreground-400\" /> Cut\n            <Menu.Shortcut className=\"ml-auto\">⌘X</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Copy\">\n            <FiCopy size={15} className=\"mr-2 text-foreground-400\" /> Copy\n            <Menu.Shortcut className=\"ml-auto\">⌘C</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Paste\">\n            <FiClipboard size={15} className=\"mr-2 text-foreground-400\" /> Paste\n            <Menu.Shortcut className=\"ml-auto\">⌘V</Menu.Shortcut>\n          </Menu.Item>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Group>\n          <Menu.Label>File</Menu.Label>\n          <Menu.Item textValue=\"Reload\">\n            <FiRefreshCw size={15} className=\"mr-2 text-foreground-400\" /> Reload\n            <Menu.Shortcut className=\"ml-auto\">⌘R</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Sub>\n            <Menu.SubTrigger textValue=\"Export as\">\n              <FiDownload size={15} className=\"mr-2 text-foreground-400\" /> Export as\n            </Menu.SubTrigger>\n            <Menu.SubContent className=\"w-44\">\n              <Menu.Item textValue=\"PNG image\">\n                <FiImage size={15} className=\"mr-2 text-foreground-400\" /> PNG image\n              </Menu.Item>\n              <Menu.Item textValue=\"SVG vector\">\n                <FiImage size={15} className=\"mr-2 text-foreground-400\" /> SVG vector\n              </Menu.Item>\n              <Menu.Separator />\n              <Menu.Item textValue=\"PDF document\">\n                <FiFileText size={15} className=\"mr-2 text-foreground-400\" /> PDF document\n              </Menu.Item>\n              <Menu.Item textValue=\"Markdown\" disabled>\n                <FiFileText size={15} className=\"mr-2 text-foreground-400\" /> Markdown\n              </Menu.Item>\n            </Menu.SubContent>\n          </Menu.Sub>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <FiTrash2 size={15} className=\"mr-2\" /> Delete\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuDenseDemo() {\n  return (\n    <Menu type=\"context-menu\">\n      <Menu.Trigger as=\"child\">\n        <div className=\"flex h-40 select-none items-center justify-center rounded-lg border border-dashed border-foreground-700 text-sm text-foreground-400\">\n          Right-click this area\n        </div>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-60\">\n        <Menu.Group>\n          <Menu.Item textValue=\"Cut\">\n            <Icon id=\"cut\" size={15} className=\"mr-2 text-foreground-400\" /> Cut\n            <Menu.Shortcut className=\"ml-auto\">⌘X</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Copy\">\n            <Icon id=\"copy\" size={15} className=\"mr-2 text-foreground-400\" /> Copy\n            <Menu.Shortcut className=\"ml-auto\">⌘C</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Paste\">\n            <Icon id=\"clipboard\" size={15} className=\"mr-2 text-foreground-400\" /> Paste\n            <Menu.Shortcut className=\"ml-auto\">⌘V</Menu.Shortcut>\n          </Menu.Item>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Group>\n          <Menu.Label>File</Menu.Label>\n          <Menu.Item textValue=\"Reload\">\n            <Icon id=\"restart\" size={15} className=\"mr-2 text-foreground-400\" /> Reload\n            <Menu.Shortcut className=\"ml-auto\">⌘R</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Sub>\n            <Menu.SubTrigger textValue=\"Export as\">\n              <Icon id=\"download\" size={15} className=\"mr-2 text-foreground-400\" /> Export as\n            </Menu.SubTrigger>\n            <Menu.SubContent className=\"w-44\">\n              <Menu.Item textValue=\"PNG image\">\n                <Icon id=\"image\" size={15} className=\"mr-2 text-foreground-400\" /> PNG image\n              </Menu.Item>\n              <Menu.Item textValue=\"SVG vector\">\n                <Icon id=\"image\" size={15} className=\"mr-2 text-foreground-400\" /> SVG vector\n              </Menu.Item>\n              <Menu.Separator />\n              <Menu.Item textValue=\"PDF document\">\n                <Icon id=\"notes\" size={15} className=\"mr-2 text-foreground-400\" /> PDF document\n              </Menu.Item>\n              <Menu.Item textValue=\"Markdown\" disabled>\n                <Icon id=\"notes\" size={15} className=\"mr-2 text-foreground-400\" /> Markdown\n              </Menu.Item>\n            </Menu.SubContent>\n          </Menu.Sub>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <Icon id=\"trash\" size={15} className=\"mr-2\" /> Delete\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport {\n  FiClipboard,\n  FiCopy,\n  FiDownload,\n  FiFileText,\n  FiImage,\n  FiRefreshCw,\n  FiScissors,\n  FiTrash2,\n} from 'react-icons/fi';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuDenseDemo() {\n  return (\n    <Menu type=\"context-menu\">\n      <Menu.Trigger as=\"child\">\n        <div className=\"flex h-40 w-72 select-none items-center justify-center rounded-lg border border-dashed border-foreground-700 text-sm text-foreground-400\">\n          Right-click this area\n        </div>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-60\">\n        <Menu.Group>\n          <Menu.Item textValue=\"Cut\">\n            <FiScissors size={15} className=\"mr-2 text-foreground-400\" /> Cut\n            <Menu.Shortcut className=\"ml-auto\">⌘X</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Copy\">\n            <FiCopy size={15} className=\"mr-2 text-foreground-400\" /> Copy\n            <Menu.Shortcut className=\"ml-auto\">⌘C</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Paste\">\n            <FiClipboard size={15} className=\"mr-2 text-foreground-400\" /> Paste\n            <Menu.Shortcut className=\"ml-auto\">⌘V</Menu.Shortcut>\n          </Menu.Item>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Group>\n          <Menu.Label>File</Menu.Label>\n          <Menu.Item textValue=\"Reload\">\n            <FiRefreshCw size={15} className=\"mr-2 text-foreground-400\" /> Reload\n            <Menu.Shortcut className=\"ml-auto\">⌘R</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Sub>\n            <Menu.SubTrigger textValue=\"Export as\">\n              <FiDownload size={15} className=\"mr-2 text-foreground-400\" /> Export as\n            </Menu.SubTrigger>\n            <Menu.SubContent className=\"w-44\">\n              <Menu.Item textValue=\"PNG image\">\n                <FiImage size={15} className=\"mr-2 text-foreground-400\" /> PNG image\n              </Menu.Item>\n              <Menu.Item textValue=\"SVG vector\">\n                <FiImage size={15} className=\"mr-2 text-foreground-400\" /> SVG vector\n              </Menu.Item>\n              <Menu.Separator />\n              <Menu.Item textValue=\"PDF document\">\n                <FiFileText size={15} className=\"mr-2 text-foreground-400\" /> PDF document\n              </Menu.Item>\n              <Menu.Item textValue=\"Markdown\" disabled>\n                <FiFileText size={15} className=\"mr-2 text-foreground-400\" /> Markdown\n              </Menu.Item>\n            </Menu.SubContent>\n          </Menu.Sub>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <FiTrash2 size={15} className=\"mr-2\" /> Delete\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuDenseDemo() {\n  return (\n    <Menu type=\"context-menu\">\n      <Menu.Trigger as=\"child\">\n        <div className=\"flex h-40 select-none items-center justify-center rounded-lg border border-dashed border-foreground-700 text-sm text-foreground-400\">\n          Right-click this area\n        </div>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-60\">\n        <Menu.Group>\n          <Menu.Item textValue=\"Cut\">\n            <Icon id=\"cut\" size={15} className=\"mr-2 text-foreground-400\" /> Cut\n            <Menu.Shortcut className=\"ml-auto\">⌘X</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Copy\">\n            <Icon id=\"copy\" size={15} className=\"mr-2 text-foreground-400\" /> Copy\n            <Menu.Shortcut className=\"ml-auto\">⌘C</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Item textValue=\"Paste\">\n            <Icon id=\"clipboard\" size={15} className=\"mr-2 text-foreground-400\" /> Paste\n            <Menu.Shortcut className=\"ml-auto\">⌘V</Menu.Shortcut>\n          </Menu.Item>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Group>\n          <Menu.Label>File</Menu.Label>\n          <Menu.Item textValue=\"Reload\">\n            <Icon id=\"restart\" size={15} className=\"mr-2 text-foreground-400\" /> Reload\n            <Menu.Shortcut className=\"ml-auto\">⌘R</Menu.Shortcut>\n          </Menu.Item>\n          <Menu.Sub>\n            <Menu.SubTrigger textValue=\"Export as\">\n              <Icon id=\"download\" size={15} className=\"mr-2 text-foreground-400\" /> Export as\n            </Menu.SubTrigger>\n            <Menu.SubContent className=\"w-44\">\n              <Menu.Item textValue=\"PNG image\">\n                <Icon id=\"image\" size={15} className=\"mr-2 text-foreground-400\" /> PNG image\n              </Menu.Item>\n              <Menu.Item textValue=\"SVG vector\">\n                <Icon id=\"image\" size={15} className=\"mr-2 text-foreground-400\" /> SVG vector\n              </Menu.Item>\n              <Menu.Separator />\n              <Menu.Item textValue=\"PDF document\">\n                <Icon id=\"notes\" size={15} className=\"mr-2 text-foreground-400\" /> PDF document\n              </Menu.Item>\n              <Menu.Item textValue=\"Markdown\" disabled>\n                <Icon id=\"notes\" size={15} className=\"mr-2 text-foreground-400\" /> Markdown\n              </Menu.Item>\n            </Menu.SubContent>\n          </Menu.Sub>\n        </Menu.Group>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <Icon id=\"trash\" size={15} className=\"mr-2\" /> Delete\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -3966,22 +5223,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiChevronDown, FiCopy, FiEdit2, FiShare2, FiTrash2 } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuIntermediateDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Document\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-56\">\n        <Menu.Label>Edit</Menu.Label>\n        <Menu.Item textValue=\"Rename\">\n          <FiEdit2 size={15} className=\"mr-2 text-foreground-400\" /> Rename\n          <Menu.Shortcut className=\"ml-auto\">⌘E</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">\n          <FiCopy size={15} className=\"mr-2 text-foreground-400\" /> Duplicate\n          <Menu.Shortcut className=\"ml-auto\">⌘D</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Label>Share</Menu.Label>\n        <Menu.Item textValue=\"Copy link\">\n          <FiShare2 size={15} className=\"mr-2 text-foreground-400\" /> Copy link\n          <Menu.Shortcut className=\"ml-auto\">⌘L</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <FiTrash2 size={15} className=\"mr-2\" /> Delete\n          <Menu.Shortcut className=\"ml-auto\">⌫</Menu.Shortcut>\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuIntermediateDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Document\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-56\">\n        <Menu.Label>Edit</Menu.Label>\n        <Menu.Item textValue=\"Rename\">\n          <Icon id=\"edit\" size={15} className=\"mr-2 text-foreground-400\" /> Rename\n          <Menu.Shortcut className=\"ml-auto\">⌘E</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">\n          <Icon id=\"copy\" size={15} className=\"mr-2 text-foreground-400\" /> Duplicate\n          <Menu.Shortcut className=\"ml-auto\">⌘D</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Label>Share</Menu.Label>\n        <Menu.Item textValue=\"Copy link\">\n          <Icon id=\"share\" size={15} className=\"mr-2 text-foreground-400\" /> Copy link\n          <Menu.Shortcut className=\"ml-auto\">⌘L</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <Icon id=\"trash\" size={15} className=\"mr-2\" /> Delete\n          <Menu.Shortcut className=\"ml-auto\">⌫</Menu.Shortcut>\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiChevronDown, FiCopy, FiEdit2, FiShare2, FiTrash2 } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuIntermediateDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Document\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-56\">\n        <Menu.Label>Edit</Menu.Label>\n        <Menu.Item textValue=\"Rename\">\n          <FiEdit2 size={15} className=\"mr-2 text-foreground-400\" /> Rename\n          <Menu.Shortcut className=\"ml-auto\">⌘E</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">\n          <FiCopy size={15} className=\"mr-2 text-foreground-400\" /> Duplicate\n          <Menu.Shortcut className=\"ml-auto\">⌘D</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Label>Share</Menu.Label>\n        <Menu.Item textValue=\"Copy link\">\n          <FiShare2 size={15} className=\"mr-2 text-foreground-400\" /> Copy link\n          <Menu.Shortcut className=\"ml-auto\">⌘L</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <FiTrash2 size={15} className=\"mr-2\" /> Delete\n          <Menu.Shortcut className=\"ml-auto\">⌫</Menu.Shortcut>\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuIntermediateDemo() {\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          Document\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-56\">\n        <Menu.Label>Edit</Menu.Label>\n        <Menu.Item textValue=\"Rename\">\n          <Icon id=\"edit\" size={15} className=\"mr-2 text-foreground-400\" /> Rename\n          <Menu.Shortcut className=\"ml-auto\">⌘E</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Item textValue=\"Duplicate\">\n          <Icon id=\"copy\" size={15} className=\"mr-2 text-foreground-400\" /> Duplicate\n          <Menu.Shortcut className=\"ml-auto\">⌘D</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Label>Share</Menu.Label>\n        <Menu.Item textValue=\"Copy link\">\n          <Icon id=\"share\" size={15} className=\"mr-2 text-foreground-400\" /> Copy link\n          <Menu.Shortcut className=\"ml-auto\">⌘L</Menu.Shortcut>\n        </Menu.Item>\n        <Menu.Separator />\n        <Menu.Item textValue=\"Delete\" className=\"text-danger-500\">\n          <Icon id=\"trash\" size={15} className=\"mr-2\" /> Delete\n          <Menu.Shortcut className=\"ml-auto\">⌫</Menu.Shortcut>\n        </Menu.Item>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -4000,22 +5256,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { FiChevronDown } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuSelectionDemo() {\n  const [columns, setColumns] = useState({ status: true, owner: true, updated: false });\n  const [sort, setSort] = useState('name');\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          View\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        <Menu.Label>Columns</Menu.Label>\n        <Menu.CheckboxItem\n          checked={columns.status}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, status: checked }))}\n          textValue=\"Status\"\n        >\n          Status\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.owner}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, owner: checked }))}\n          textValue=\"Owner\"\n        >\n          Owner\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.updated}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, updated: checked }))}\n          textValue=\"Last updated\"\n        >\n          Last updated\n        </Menu.CheckboxItem>\n        <Menu.Separator />\n        <Menu.Label>Sort by</Menu.Label>\n        <Menu.RadioGroup value={sort} onValueChange={setSort}>\n          <Menu.RadioItem value=\"name\" textValue=\"Name\">Name</Menu.RadioItem>\n          <Menu.RadioItem value=\"created\" textValue=\"Date created\">Date created</Menu.RadioItem>\n          <Menu.RadioItem value=\"updated\" textValue=\"Last updated\">Last updated</Menu.RadioItem>\n        </Menu.RadioGroup>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuSelectionDemo() {\n  const [columns, setColumns] = useState({ status: true, owner: true, updated: false });\n  const [sort, setSort] = useState('name');\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          View\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        <Menu.Label>Columns</Menu.Label>\n        <Menu.CheckboxItem\n          checked={columns.status}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, status: checked }))}\n          textValue=\"Status\"\n        >\n          Status\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.owner}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, owner: checked }))}\n          textValue=\"Owner\"\n        >\n          Owner\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.updated}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, updated: checked }))}\n          textValue=\"Last updated\"\n        >\n          Last updated\n        </Menu.CheckboxItem>\n        <Menu.Separator />\n        <Menu.Label>Sort by</Menu.Label>\n        <Menu.RadioGroup value={sort} onValueChange={setSort}>\n          <Menu.RadioItem value=\"name\" textValue=\"Name\">Name</Menu.RadioItem>\n          <Menu.RadioItem value=\"created\" textValue=\"Date created\">Date created</Menu.RadioItem>\n          <Menu.RadioItem value=\"updated\" textValue=\"Last updated\">Last updated</Menu.RadioItem>\n        </Menu.RadioGroup>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { FiChevronDown } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuSelectionDemo() {\n  const [columns, setColumns] = useState({ status: true, owner: true, updated: false });\n  const [sort, setSort] = useState('name');\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          View\n          <FiChevronDown size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        <Menu.Label>Columns</Menu.Label>\n        <Menu.CheckboxItem\n          checked={columns.status}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, status: checked }))}\n          textValue=\"Status\"\n        >\n          Status\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.owner}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, owner: checked }))}\n          textValue=\"Owner\"\n        >\n          Owner\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.updated}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, updated: checked }))}\n          textValue=\"Last updated\"\n        >\n          Last updated\n        </Menu.CheckboxItem>\n        <Menu.Separator />\n        <Menu.Label>Sort by</Menu.Label>\n        <Menu.RadioGroup value={sort} onValueChange={setSort}>\n          <Menu.RadioItem value=\"name\" textValue=\"Name\">Name</Menu.RadioItem>\n          <Menu.RadioItem value=\"created\" textValue=\"Date created\">Date created</Menu.RadioItem>\n          <Menu.RadioItem value=\"updated\" textValue=\"Last updated\">Last updated</Menu.RadioItem>\n        </Menu.RadioGroup>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Menu } from 'ui-lab-components/menu';\n\nexport function MenuSelectionDemo() {\n  const [columns, setColumns] = useState({ status: true, owner: true, updated: false });\n  const [sort, setSort] = useState('name');\n\n  return (\n    <Menu type=\"pop-over\">\n      <Menu.Trigger as=\"child\">\n        <Button variant=\"secondary\" size=\"sm\" className=\"gap-2\">\n          View\n          <Icon id=\"chev\" size={14} className=\"text-foreground-400\" />\n        </Button>\n      </Menu.Trigger>\n      <Menu.Content className=\"w-52\">\n        <Menu.Label>Columns</Menu.Label>\n        <Menu.CheckboxItem\n          checked={columns.status}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, status: checked }))}\n          textValue=\"Status\"\n        >\n          Status\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.owner}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, owner: checked }))}\n          textValue=\"Owner\"\n        >\n          Owner\n        </Menu.CheckboxItem>\n        <Menu.CheckboxItem\n          checked={columns.updated}\n          onCheckedChange={(checked) => setColumns((current) => ({ ...current, updated: checked }))}\n          textValue=\"Last updated\"\n        >\n          Last updated\n        </Menu.CheckboxItem>\n        <Menu.Separator />\n        <Menu.Label>Sort by</Menu.Label>\n        <Menu.RadioGroup value={sort} onValueChange={setSort}>\n          <Menu.RadioItem value=\"name\" textValue=\"Name\">Name</Menu.RadioItem>\n          <Menu.RadioItem value=\"created\" textValue=\"Date created\">Date created</Menu.RadioItem>\n          <Menu.RadioItem value=\"updated\" textValue=\"Last updated\">Last updated</Menu.RadioItem>\n        </Menu.RadioGroup>\n      </Menu.Content>\n    </Menu>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/menu"
       ]
     },
@@ -4034,22 +5289,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiGrid, FiInbox, FiSettings } from 'react-icons/fi';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nexport function NavigationItemDemo() {\n  return (\n    <List aria-label=\"Workspace\">\n      <List.Item value=\"overview\" interactive selected>\n        <List.Media><FiGrid size={18} /></List.Media>\n        <List.Title>Overview</List.Title>\n      </List.Item>\n      <List.Item value=\"inbox\" interactive>\n        <List.Media><FiInbox size={18} /></List.Media>\n        <List.Title>Inbox</List.Title>\n        <Badge variant=\"default\" className=\"ml-auto text-[10px]\">8</Badge>\n      </List.Item>\n      <List.Item value=\"settings\" interactive>\n        <List.Media><FiSettings size={18} /></List.Media>\n        <List.Title>Settings</List.Title>\n      </List.Item>\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nexport function NavigationItemDemo() {\n  return (\n    <List aria-label=\"Workspace\">\n      <List.Item value=\"overview\" interactive selected>\n        <List.Media><Icon id=\"grid\" size={18} /></List.Media>\n        <List.Title>Overview</List.Title>\n      </List.Item>\n      <List.Item value=\"inbox\" interactive>\n        <List.Media><Icon id=\"inbox\" size={18} /></List.Media>\n        <List.Title>Inbox</List.Title>\n        <Badge variant=\"default\" className=\"ml-auto text-[10px]\">8</Badge>\n      </List.Item>\n      <List.Item value=\"settings\" interactive>\n        <List.Media><Icon id=\"gear\" size={18} /></List.Media>\n        <List.Title>Settings</List.Title>\n      </List.Item>\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiGrid, FiInbox, FiSettings } from 'react-icons/fi';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nexport function NavigationItemDemo() {\n  return (\n    <List aria-label=\"Workspace\">\n      <List.Item value=\"overview\" interactive selected>\n        <List.Media><FiGrid size={18} /></List.Media>\n        <List.Title>Overview</List.Title>\n      </List.Item>\n      <List.Item value=\"inbox\" interactive>\n        <List.Media><FiInbox size={18} /></List.Media>\n        <List.Title>Inbox</List.Title>\n        <Badge variant=\"default\" className=\"ml-auto text-[10px]\">8</Badge>\n      </List.Item>\n      <List.Item value=\"settings\" interactive>\n        <List.Media><FiSettings size={18} /></List.Media>\n        <List.Title>Settings</List.Title>\n      </List.Item>\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { List } from 'ui-lab-components/list';\n\nexport function NavigationItemDemo() {\n  return (\n    <List aria-label=\"Workspace\">\n      <List.Item value=\"overview\" interactive selected>\n        <List.Media><Icon id=\"grid\" size={18} /></List.Media>\n        <List.Title>Overview</List.Title>\n      </List.Item>\n      <List.Item value=\"inbox\" interactive>\n        <List.Media><Icon id=\"inbox\" size={18} /></List.Media>\n        <List.Title>Inbox</List.Title>\n        <Badge variant=\"default\" className=\"ml-auto text-[10px]\">8</Badge>\n      </List.Item>\n      <List.Item value=\"settings\" interactive>\n        <List.Media><Icon id=\"gear\" size={18} /></List.Media>\n        <List.Title>Settings</List.Title>\n      </List.Item>\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
+        "ui-lab-components/icon",
         "ui-lab-components/list"
       ]
     },
@@ -4068,22 +5322,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-2\">\n        <Skeleton.Text size=\"heading\" w={140} />\n        <Skeleton.Text lines={1} w={220} />\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-2\">\n        <Skeleton.Text size=\"heading\" w={140} />\n        <Skeleton.Text lines={1} w={220} />\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<Icon id=\"download\" size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<Icon id=\"plus\" size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { FiDownload, FiPlus } from 'react-icons/fi';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-2\">\n        <Skeleton.Text size=\"heading\" w={140} />\n        <Skeleton.Text lines={1} w={220} />\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<FiDownload size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<FiPlus size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function PageHeaderActionsDemo() {\n  return (\n    <div className=\"flex flex-wrap items-end justify-between gap-4\">\n      <div className=\"space-y-2\">\n        <Skeleton.Text size=\"heading\" w={140} />\n        <Skeleton.Text lines={1} w={220} />\n      </div>\n      <div className=\"flex items-center gap-2\">\n        <Button variant=\"secondary\" size=\"sm\" icon={<Icon id=\"download\" size={15} />}>Export</Button>\n        <Button variant=\"primary\" size=\"sm\" icon={<Icon id=\"plus\" size={15} />}>New project</Button>\n      </div>\n    </div>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "react-icons"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -4195,21 +5448,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Search, X } from 'lucide-react';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInput({ placeholder = 'Search...' }: { placeholder?: string }) {\n  const [query, setQuery] = useState('');\n\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search\"\n      placeholder={placeholder}\n      state={{ value: query }}\n      onChange={(event) => setQuery(event.target.value)}\n      icon={<Search size={16} />}\n      actions={query ? [{ icon: <X size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n    />\n  );\n}\n\nexport function SearchInputDemo() {\n  return <SearchInput placeholder=\"Search components...\" />;\n}\n",
+    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInput({ placeholder = 'Search...' }: { placeholder?: string }) {\n  const [query, setQuery] = useState('');\n\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search\"\n      placeholder={placeholder}\n      state={{ value: query }}\n      onChange={(event) => setQuery(event.target.value)}\n      icon={<Icon id=\"search\" size={16} />}\n      actions={query ? [{ icon: <Icon id=\"close\" size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n    />\n  );\n}\n\nexport function SearchInputDemo() {\n  return <SearchInput placeholder=\"Search components...\" />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Search, X } from 'lucide-react';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInput({ placeholder = 'Search...' }: { placeholder?: string }) {\n  const [query, setQuery] = useState('');\n\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search\"\n      placeholder={placeholder}\n      state={{ value: query }}\n      onChange={(event) => setQuery(event.target.value)}\n      icon={<Search size={16} />}\n      actions={query ? [{ icon: <X size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n    />\n  );\n}\n\nexport function SearchInputDemo() {\n  return <SearchInput placeholder=\"Search components...\" />;\n}\n",
+        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInput({ placeholder = 'Search...' }: { placeholder?: string }) {\n  const [query, setQuery] = useState('');\n\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search\"\n      placeholder={placeholder}\n      state={{ value: query }}\n      onChange={(event) => setQuery(event.target.value)}\n      icon={<Icon id=\"search\" size={16} />}\n      actions={query ? [{ icon: <Icon id=\"close\" size={14} />, title: 'Clear search', onClick: () => setQuery('') }] : undefined}\n    />\n  );\n}\n\nexport function SearchInputDemo() {\n  return <SearchInput placeholder=\"Search components...\" />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/input"
       ]
     },
@@ -4228,21 +5480,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Search } from 'lucide-react';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputBare({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Filter results\"\n      placeholder={placeholder}\n      variant=\"ghost\"\n      icon={<Search size={16} />}\n    />\n  );\n}\n\nexport function SearchInputBareDemo() {\n  return <SearchInputBare placeholder=\"Filter results...\" />;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputBare({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Filter results\"\n      placeholder={placeholder}\n      variant=\"ghost\"\n      icon={<Icon id=\"search\" size={16} />}\n    />\n  );\n}\n\nexport function SearchInputBareDemo() {\n  return <SearchInputBare placeholder=\"Filter results...\" />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Search } from 'lucide-react';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputBare({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Filter results\"\n      placeholder={placeholder}\n      variant=\"ghost\"\n      icon={<Search size={16} />}\n    />\n  );\n}\n\nexport function SearchInputBareDemo() {\n  return <SearchInputBare placeholder=\"Filter results...\" />;\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputBare({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Filter results\"\n      placeholder={placeholder}\n      variant=\"ghost\"\n      icon={<Icon id=\"search\" size={16} />}\n    />\n  );\n}\n\nexport function SearchInputBareDemo() {\n  return <SearchInputBare placeholder=\"Filter results...\" />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/input"
       ]
     },
@@ -4261,21 +5512,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Search } from 'lucide-react';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputWithKbd({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search everything\"\n      placeholder={placeholder}\n      icon={<Search size={16} />}\n      hint={<kbd>⌘K</kbd>}\n    />\n  );\n}\n\nexport function SearchInputWithKbdDemo() {\n  return <SearchInputWithKbd placeholder=\"Search everything...\" />;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputWithKbd({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search everything\"\n      placeholder={placeholder}\n      icon={<Icon id=\"search\" size={16} />}\n      hint={<kbd>⌘K</kbd>}\n    />\n  );\n}\n\nexport function SearchInputWithKbdDemo() {\n  return <SearchInputWithKbd placeholder=\"Search everything...\" />;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Search } from 'lucide-react';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputWithKbd({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search everything\"\n      placeholder={placeholder}\n      icon={<Search size={16} />}\n      hint={<kbd>⌘K</kbd>}\n    />\n  );\n}\n\nexport function SearchInputWithKbdDemo() {\n  return <SearchInputWithKbd placeholder=\"Search everything...\" />;\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Input } from 'ui-lab-components/input';\n\nfunction SearchInputWithKbd({ placeholder = 'Search...' }: { placeholder?: string }) {\n  return (\n    <Input\n      type=\"search\"\n      aria-label=\"Search everything\"\n      placeholder={placeholder}\n      icon={<Icon id=\"search\" size={16} />}\n      hint={<kbd>⌘K</kbd>}\n    />\n  );\n}\n\nexport function SearchInputWithKbdDemo() {\n  return <SearchInputWithKbd placeholder=\"Search everything...\" />;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/input"
       ]
     },
@@ -4294,22 +5544,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "import { Sparkles } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowBadgeDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" pill>\n        <Sparkles size={12} /> New in 2.0\n      </Badge>\n      <Skeleton.Text lines={1} w={240} className=\"mt-4\" />\n    </header>\n  );\n}\n",
+    "code": "import { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowBadgeDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" pill>\n        <Icon id=\"sparkle\" size={12} /> New in 2.0\n      </Badge>\n      <Skeleton.Text lines={1} w={240} className=\"mt-4\" />\n    </header>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "import { Sparkles } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowBadgeDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" pill>\n        <Sparkles size={12} /> New in 2.0\n      </Badge>\n      <Skeleton.Text lines={1} w={240} className=\"mt-4\" />\n    </header>\n  );\n}\n",
+        "content": "import { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowBadgeDemo() {\n  return (\n    <header>\n      <Badge variant=\"secondary\" pill>\n        <Icon id=\"sparkle\" size={12} /> New in 2.0\n      </Badge>\n      <Skeleton.Text lines={1} w={240} className=\"mt-4\" />\n    </header>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -4328,24 +5577,23 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "import { ChevronRight } from 'lucide-react';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowUpdateDemo() {\n  return (\n    <header>\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Badge variant=\"success\" pill>New</Badge>\n        <span className=\"text-sm text-foreground-300\">Realtime collaboration is live</span>\n        <Anchor\n          href=\"#\"\n          target=\"_self\"\n          className=\"group inline-flex items-center gap-1 text-sm font-medium text-foreground-100\"\n        >\n          See more\n          <ChevronRight size={14} className=\"transition-transform group-hover:translate-x-0.5\" />\n        </Anchor>\n      </Flex>\n      <Skeleton.Text lines={1} w={260} className=\"mt-4\" />\n    </header>\n  );\n}\n",
+    "code": "import { Icon } from 'ui-lab-components/icon';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowUpdateDemo() {\n  return (\n    <header>\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Badge variant=\"success\" pill>New</Badge>\n        <span className=\"text-sm text-foreground-300\">Realtime collaboration is live</span>\n        <Anchor\n          href=\"#\"\n          target=\"_self\"\n          className=\"group inline-flex items-center gap-1 text-sm font-medium text-foreground-100\"\n        >\n          See more\n          <Icon id=\"fwd\" size={14} className=\"transition-transform group-hover:translate-x-0.5\" />\n        </Anchor>\n      </Flex>\n      <Skeleton.Text lines={1} w={260} className=\"mt-4\" />\n    </header>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "import { ChevronRight } from 'lucide-react';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowUpdateDemo() {\n  return (\n    <header>\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Badge variant=\"success\" pill>New</Badge>\n        <span className=\"text-sm text-foreground-300\">Realtime collaboration is live</span>\n        <Anchor\n          href=\"#\"\n          target=\"_self\"\n          className=\"group inline-flex items-center gap-1 text-sm font-medium text-foreground-100\"\n        >\n          See more\n          <ChevronRight size={14} className=\"transition-transform group-hover:translate-x-0.5\" />\n        </Anchor>\n      </Flex>\n      <Skeleton.Text lines={1} w={260} className=\"mt-4\" />\n    </header>\n  );\n}\n",
+        "content": "import { Icon } from 'ui-lab-components/icon';\nimport { Anchor } from 'ui-lab-components/anchor';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function SectionBrowUpdateDemo() {\n  return (\n    <header>\n      <Flex layout=\"cluster\" gap=\"sm\">\n        <Badge variant=\"success\" pill>New</Badge>\n        <span className=\"text-sm text-foreground-300\">Realtime collaboration is live</span>\n        <Anchor\n          href=\"#\"\n          target=\"_self\"\n          className=\"group inline-flex items-center gap-1 text-sm font-medium text-foreground-100\"\n        >\n          See more\n          <Icon id=\"fwd\" size={14} className=\"transition-transform group-hover:translate-x-0.5\" />\n        </Anchor>\n      </Flex>\n      <Skeleton.Text lines={1} w={260} className=\"mt-4\" />\n    </header>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/anchor",
         "ui-lab-components/badge",
         "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -4463,21 +5711,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Languages } from 'lucide-react';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Languages size={18} /></List.Media>\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" descriptionWidth={196} defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Icon id=\"translate\" size={18} /></List.Media>\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" descriptionWidth={196} defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Languages } from 'lucide-react';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Languages size={18} /></List.Media>\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" descriptionWidth={196} defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Label } from 'ui-lab-components/label';\nimport { List } from 'ui-lab-components/list';\nimport { Select } from 'ui-lab-components/select';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst languages = [\n  { id: 'en', label: 'English' },\n  { id: 'fr', label: 'French' },\n  { id: 'de', label: 'German' },\n];\n\nfunction SelectRowWithIcon({ id, label, defaultValue, descriptionWidth }: { id: string; label: string; defaultValue?: string; descriptionWidth?: number }) {\n  return (\n    <List.Item focusable={false} className=\"py-3\">\n      <List.Media><Icon id=\"translate\" size={18} /></List.Media>\n      <div className=\"space-y-1.5\">\n        <List.Title><Label htmlFor={id}>{label}</Label></List.Title>\n        {descriptionWidth ? <Skeleton.Text lines={1} w={descriptionWidth} /> : null}\n      </div>\n      <List.Select defaultSelectedKey={defaultValue}>\n        <Select.Trigger id={id}><Select.Value /></Select.Trigger>\n        <Select.Content>\n          {languages.map((language) => <Select.Item key={language.id} value={language.id}>{language.label}</Select.Item>)}\n        </Select.Content>\n      </List.Select>\n    </List.Item>\n  );\n}\n\nexport function SelectRowWithIconDemo() {\n  return (\n    <List aria-label=\"Language settings\">\n      <SelectRowWithIcon id=\"lang\" label=\"Language\" descriptionWidth={196} defaultValue=\"en\" />\n      <SelectRowWithIcon id=\"lang2\" label=\"Secondary language\" defaultValue=\"fr\" />\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/label",
         "ui-lab-components/list",
         "ui-lab-components/select",
@@ -4532,21 +5779,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Pencil, Trash2 } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst keys = [\n  { key: 'key-1', title: 196, description: 148 },\n  { key: 'key-2', title: 172, description: 132 },\n  { key: 'key-3', title: 208, description: 160 },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((item) => (\n        <List.Item\n          key={item.key}\n          value={item.key}\n          actions={[\n            { icon: <Pencil size={14} />, title: 'Edit' },\n            { icon: <Trash2 size={14} />, title: 'Delete' },\n          ]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst keys = [\n  { key: 'key-1', title: 196, description: 148 },\n  { key: 'key-2', title: 172, description: 132 },\n  { key: 'key-3', title: 208, description: 160 },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((item) => (\n        <List.Item\n          key={item.key}\n          value={item.key}\n          actions={[\n            { icon: <Icon id=\"edit\" size={14} />, title: 'Edit' },\n            { icon: <Icon id=\"trash\" size={14} />, title: 'Delete' },\n          ]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Pencil, Trash2 } from 'lucide-react';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst keys = [\n  { key: 'key-1', title: 196, description: 148 },\n  { key: 'key-2', title: 172, description: 132 },\n  { key: 'key-3', title: 208, description: 160 },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((item) => (\n        <List.Item\n          key={item.key}\n          value={item.key}\n          actions={[\n            { icon: <Pencil size={14} />, title: 'Edit' },\n            { icon: <Trash2 size={14} />, title: 'Delete' },\n          ]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { List } from 'ui-lab-components/list';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst keys = [\n  { key: 'key-1', title: 196, description: 148 },\n  { key: 'key-2', title: 172, description: 132 },\n  { key: 'key-3', title: 208, description: 160 },\n];\n\nexport function SplitRowActionsDemo() {\n  return (\n    <List aria-label=\"API keys\">\n      {keys.map((item) => (\n        <List.Item\n          key={item.key}\n          value={item.key}\n          actions={[\n            { icon: <Icon id=\"edit\" size={14} />, title: 'Edit' },\n            { icon: <Icon id=\"trash\" size={14} />, title: 'Delete' },\n          ]}\n        >\n          <div className=\"space-y-1.5\"><Skeleton.Text lines={1} w={item.title} /><Skeleton.Text lines={1} w={item.description} /></div>\n        </List.Item>\n      ))}\n    </List>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/list",
         "ui-lab-components/skeleton"
       ]
@@ -4663,23 +5909,22 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Activity, DollarSign, Users } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true, icon: <Users size={18} /> },\n  { key: 'revenue', trend: true, icon: <DollarSign size={18} /> },\n  { key: 'uptime', trend: false, icon: <Activity size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><Skeleton.Text lines={1} w={90} /></Card.Header>\n          <Card.Body className=\"space-y-2\">\n            <Skeleton.Text size=\"heading\" w={100} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true, icon: <Icon id=\"users\" size={18} /> },\n  { key: 'revenue', trend: true, icon: <Icon id=\"dollar\" size={18} /> },\n  { key: 'uptime', trend: false, icon: <Icon id=\"pulse\" size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><Skeleton.Text lines={1} w={90} /></Card.Header>\n          <Card.Body className=\"space-y-2\">\n            <Skeleton.Text size=\"heading\" w={100} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Activity, DollarSign, Users } from 'lucide-react';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true, icon: <Users size={18} /> },\n  { key: 'revenue', trend: true, icon: <DollarSign size={18} /> },\n  { key: 'uptime', trend: false, icon: <Activity size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><Skeleton.Text lines={1} w={90} /></Card.Header>\n          <Card.Body className=\"space-y-2\">\n            <Skeleton.Text size=\"heading\" w={100} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Card } from 'ui-lab-components/card';\nimport { Grid } from 'ui-lab-components/grid';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst stats = [\n  { key: 'users', trend: true, icon: <Icon id=\"users\" size={18} /> },\n  { key: 'revenue', trend: true, icon: <Icon id=\"dollar\" size={18} /> },\n  { key: 'uptime', trend: false, icon: <Icon id=\"pulse\" size={18} /> },\n];\n\nexport function StatBlockWithIconDemo() {\n  return (\n    <Grid columns=\"auto-fit\" gap=\"md\">\n      {stats.map((stat) => (\n        <Card key={stat.key}>\n          <Card.Header className=\"flex items-center gap-2\"><span className=\"rounded-lg bg-background-800 p-2\">{stat.icon}</span><Skeleton.Text lines={1} w={90} /></Card.Header>\n          <Card.Body className=\"space-y-2\">\n            <Skeleton.Text size=\"heading\" w={100} />\n            {stat.trend ? <Skeleton.Text lines={1} w={130} color=\"success-500\" /> : null}\n          </Card.Body>\n        </Card>\n      ))}\n    </Grid>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/card",
         "ui-lab-components/grid",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -4698,24 +5943,23 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <div className=\"space-y-1.5\"><Skeleton.Text size=\"heading\" w={110} /><Skeleton.Text lines={1} w={224} /></div>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <div className=\"space-y-1.5\"><Skeleton.Text size=\"heading\" w={110} /><Skeleton.Text lines={1} w={224} /></div>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"plus\" size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <div className=\"space-y-1.5\"><Skeleton.Text size=\"heading\" w={110} /><Skeleton.Text lines={1} w={224} /></div>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <div className=\"space-y-1.5\"><Skeleton.Text size=\"heading\" w={110} /><Skeleton.Text lines={1} w={224} /></div>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"plus\" size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
         "ui-lab-components/card",
         "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -4766,62 +6010,30 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><Skeleton.Text size=\"heading\" w={110} /><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><Skeleton.Text size=\"heading\" w={110} /><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"plus\" size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { Plus } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><Skeleton.Text size=\"heading\" w={110} /><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Plus size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
-        "entrypoint": true
-      }
-    ],
-    "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
-      "uiLab": [
-        "ui-lab-components/badge",
-        "ui-lab-components/button",
-        "ui-lab-components/card",
-        "ui-lab-components/flex",
-        "ui-lab-components/skeleton"
-      ]
-    },
-    "installIntent": {
-      "mode": "copy",
-      "target": "src/ui-lab/pattern/tab-content-header-with-badge"
-    }
-  },
-  {
-    "ref": "pattern:table-of-contents",
-    "kind": "pattern",
-    "id": "table-of-contents",
-    "name": "Table Of Contents",
-    "description": "A vertical in-page anchor nav that marks the active section with an accent rail and indents nested headings.",
-    "category": "patterns",
-    "visibility": "public",
-    "access": "free",
-    "locked": false,
-    "code": "'use client';\n\nimport { useState } from 'react';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { id: 'overview', width: 72, level: 1 },\n  { id: 'installation', width: 96, level: 1 },\n  { id: 'peer-deps', width: 120, level: 2 },\n  { id: 'usage', width: 60, level: 1 },\n  { id: 'theming', width: 80, level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-2 pr-3 transition-colors ${\n                  isActive\n                    ? 'border-accent-500'\n                    : 'border-transparent hover:border-background-500'\n                }`}\n              >\n                <Skeleton.Text lines={1} w={item.width} color={isActive ? 'foreground-200' : undefined} />\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
-    "files": [
-      {
-        "path": "index.tsx",
-        "language": "tsx",
-        "kind": "module",
-        "content": "'use client';\n\nimport { useState } from 'react';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nconst items = [\n  { id: 'overview', width: 72, level: 1 },\n  { id: 'installation', width: 96, level: 1 },\n  { id: 'peer-deps', width: 120, level: 2 },\n  { id: 'usage', width: 60, level: 1 },\n  { id: 'theming', width: 80, level: 1 },\n];\n\nexport function TableOfContentsDemo() {\n  const [active, setActive] = useState('installation');\n\n  return (\n    <nav aria-label=\"On this page\">\n      <p className=\"mb-3 px-3 text-xs font-medium uppercase tracking-wide text-foreground-500\">\n        On this page\n      </p>\n      <ul className=\"border-l border-background-700\">\n        {items.map((item) => {\n          const isActive = active === item.id;\n          return (\n            <li key={item.id}>\n              <a\n                href={`#${item.id}`}\n                aria-current={isActive ? 'location' : undefined}\n                onClick={() => setActive(item.id)}\n                style={{ paddingLeft: `${item.level * 12}px` }}\n                className={`-ml-px block border-l py-2 pr-3 transition-colors ${\n                  isActive\n                    ? 'border-accent-500'\n                    : 'border-transparent hover:border-background-500'\n                }`}\n              >\n                <Skeleton.Text lines={1} w={item.width} color={isActive ? 'foreground-200' : undefined} />\n              </a>\n            </li>\n          );\n        })}\n      </ul>\n    </nav>\n  );\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\nimport { Skeleton } from 'ui-lab-components/skeleton';\n\nexport function TabContentHeaderWithBadgeDemo() {\n  return (\n    <Card>\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\" gap=\"sm\"><Skeleton.Text size=\"heading\" w={110} /><Badge>4</Badge></Flex>\n          <Button size=\"sm\" variant=\"secondary\" icon={<Icon id=\"plus\" size={14} />}>Add key</Button>\n        </Flex>\n      </Card.Header>\n      <Card.Body />\n    </Card>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
       "npm": [],
       "uiLab": [
+        "ui-lab-components/badge",
+        "ui-lab-components/button",
+        "ui-lab-components/card",
+        "ui-lab-components/flex",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
     "installIntent": {
       "mode": "copy",
-      "target": "src/ui-lab/pattern/table-of-contents"
+      "target": "src/ui-lab/pattern/tab-content-header-with-badge"
     }
   },
   {
@@ -4992,22 +6204,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <SquareDashed className=\"ml-2 h-4 w-4\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <Icon id=\"placeholder\" size={16} className=\"ml-2\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <SquareDashed className=\"ml-2 h-4 w-4\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <Icon id=\"placeholder\" size={16} className=\"ml-2\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5026,22 +6237,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <SquareDashed className=\"ml-2 h-4 w-4\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <Icon id=\"placeholder\" size={16} className=\"ml-2\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <SquareDashed className=\"ml-2 h-4 w-4\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function BannerCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        <div className=\"rounded-sm border border-background-700 bg-background-900 px-6 py-12 md:px-12 md:py-16\">\n          <div>\n            <Skeleton.Text\n              size=\"heading\"\n              w=\"100%\"\n              className=\"mx-auto mb-4 max-w-md\"\n            />\n            <Skeleton.Text\n              lines={2}\n              w=\"100%\"\n              lastLineWidth=\"60%\"\n              className=\"mx-auto mb-8 max-w-xl\"\n            />\n\n            <div className=\"flex flex-col gap-4 sm:flex-row sm:justify-center\">\n              <Button\n                variant=\"secondary\"\n               \n                className=\"group w-full sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={120} />\n                <Icon id=\"placeholder\" size={16} className=\"ml-2\" />\n              </Button>\n              <Button\n                variant=\"ghost\"\n               \n                className=\"w-full border-background-700 sm:w-auto\"\n              >\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5060,22 +6270,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function SplitCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          {/* Left content */}\n          <div className=\"order-2 md:order-1\">\n            <div className=\"mb-4 inline-block rounded-sm bg-background-700 px-4 py-1.5\">\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n\n            <Skeleton.Text size=\"heading\" lines={2} lastLineWidth=\"70%\" className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"65%\" className=\"mb-8\" />\n\n            <ul className=\"mb-8 space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <SquareDashed className=\"h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={200} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-col gap-3 sm:flex-row\">\n              <Button className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={92} />\n              </Button>\n              <Button variant=\"secondary\" className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={88} />\n              </Button>\n            </div>\n\n            <Skeleton.Text lines={1} w={220} className=\"mt-6\" />\n          </div>\n\n          <div className=\"order-1 md:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function SplitCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          {/* Left content */}\n          <div className=\"order-2 md:order-1\">\n            <div className=\"mb-4 inline-block rounded-sm bg-background-700 px-4 py-1.5\">\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n\n            <Skeleton.Text size=\"heading\" lines={2} lastLineWidth=\"70%\" className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"65%\" className=\"mb-8\" />\n\n            <ul className=\"mb-8 space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <Icon id=\"placeholder\" size={20} className=\"flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={200} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-col gap-3 sm:flex-row\">\n              <Button className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={92} />\n              </Button>\n              <Button variant=\"secondary\" className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={88} />\n              </Button>\n            </div>\n\n            <Skeleton.Text lines={1} w={220} className=\"mt-6\" />\n          </div>\n\n          <div className=\"order-1 md:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function SplitCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          {/* Left content */}\n          <div className=\"order-2 md:order-1\">\n            <div className=\"mb-4 inline-block rounded-sm bg-background-700 px-4 py-1.5\">\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n\n            <Skeleton.Text size=\"heading\" lines={2} lastLineWidth=\"70%\" className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"65%\" className=\"mb-8\" />\n\n            <ul className=\"mb-8 space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <SquareDashed className=\"h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={200} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-col gap-3 sm:flex-row\">\n              <Button className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={92} />\n              </Button>\n              <Button variant=\"secondary\" className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={88} />\n              </Button>\n            </div>\n\n            <Skeleton.Text lines={1} w={220} className=\"mt-6\" />\n          </div>\n\n          <div className=\"order-1 md:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function SplitCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          {/* Left content */}\n          <div className=\"order-2 md:order-1\">\n            <div className=\"mb-4 inline-block rounded-sm bg-background-700 px-4 py-1.5\">\n              <Skeleton.Text lines={1} w={120} />\n            </div>\n\n            <Skeleton.Text size=\"heading\" lines={2} lastLineWidth=\"70%\" className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"65%\" className=\"mb-8\" />\n\n            <ul className=\"mb-8 space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <Icon id=\"placeholder\" size={20} className=\"flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={200} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-col gap-3 sm:flex-row\">\n              <Button className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={92} />\n              </Button>\n              <Button variant=\"secondary\" className=\"w-full sm:w-auto\">\n                <Skeleton.Text lines={1} w={88} />\n              </Button>\n            </div>\n\n            <Skeleton.Text lines={1} w={220} className=\"mt-6\" />\n          </div>\n\n          <div className=\"order-1 md:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5094,21 +6303,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <SquareDashed className=\"h-6 w-6 text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <Icon id=\"placeholder\" size={24} className=\"text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <SquareDashed className=\"h-6 w-6 text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <Icon id=\"placeholder\" size={24} className=\"text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5127,21 +6335,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <SquareDashed className=\"h-6 w-6 text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <Icon id=\"placeholder\" size={24} className=\"text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <SquareDashed className=\"h-6 w-6 text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function GridFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={360} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"70%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {Array.from({ length: 6 }).map((_, i) => (\n            <div\n              key={i}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                <Icon id=\"placeholder\" size={24} className=\"text-foreground-400\" />\n              </div>\n              <Skeleton.Text size=\"heading\" w={150} className=\"mb-2\" />\n              <Skeleton.Text lines={2} lastLineWidth=\"75%\" />\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5160,21 +6367,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function FeatureList() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          <div>\n            <Skeleton.Text size=\"heading\" w={240} className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"80%\" className=\"mb-6\" />\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <SquareDashed className=\"h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={190} />\n                </li>\n              ))}\n            </ul>\n          </div>\n          <div className=\"relative\">\n            <Skeleton.Image h=\"25rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function FeatureList() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          <div>\n            <Skeleton.Text size=\"heading\" w={240} className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"80%\" className=\"mb-6\" />\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <Icon id=\"placeholder\" size={20} className=\"flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={190} />\n                </li>\n              ))}\n            </ul>\n          </div>\n          <div className=\"relative\">\n            <Skeleton.Image h=\"25rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function FeatureList() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          <div>\n            <Skeleton.Text size=\"heading\" w={240} className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"80%\" className=\"mb-6\" />\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <SquareDashed className=\"h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={190} />\n                </li>\n              ))}\n            </ul>\n          </div>\n          <div className=\"relative\">\n            <Skeleton.Image h=\"25rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function FeatureList() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid gap-8 md:gap-12 md:grid-cols-2 items-center\">\n          <div>\n            <Skeleton.Text size=\"heading\" w={240} className=\"mb-4\" />\n            <Skeleton.Text lines={2} lastLineWidth=\"80%\" className=\"mb-6\" />\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 4 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <Icon id=\"placeholder\" size={20} className=\"flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={190} />\n                </li>\n              ))}\n            </ul>\n          </div>\n          <div className=\"relative\">\n            <Skeleton.Image h=\"25rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5257,22 +6463,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center\">\n          <div className=\"space-y-8 order-2 lg:order-1\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={84} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"60%\"\n              />\n              <Skeleton.Text lines={3} w=\"100%\" lastLineWidth=\"70%\" />\n            </div>\n\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 3 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <SquareDashed className=\"h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={150} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-wrap gap-4 pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={80} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"order-1 lg:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithCTA() {\n  return (\n    <section className=\"py-16 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center\">\n          <div className=\"space-y-8 order-2 lg:order-1\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={84} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"60%\"\n              />\n              <Skeleton.Text lines={3} w=\"100%\" lastLineWidth=\"70%\" />\n            </div>\n\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 3 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <Icon id=\"placeholder\" size={20} className=\"flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={150} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-wrap gap-4 pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={80} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"order-1 lg:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithCTA() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center\">\n          <div className=\"space-y-8 order-2 lg:order-1\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={84} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"60%\"\n              />\n              <Skeleton.Text lines={3} w=\"100%\" lastLineWidth=\"70%\" />\n            </div>\n\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 3 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <SquareDashed className=\"h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={150} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-wrap gap-4 pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={80} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"order-1 lg:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithCTA() {\n  return (\n    <section className=\"py-16 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center\">\n          <div className=\"space-y-8 order-2 lg:order-1\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={84} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"60%\"\n              />\n              <Skeleton.Text lines={3} w=\"100%\" lastLineWidth=\"70%\" />\n            </div>\n\n            <ul className=\"space-y-3\">\n              {Array.from({ length: 3 }).map((_, i) => (\n                <li key={i} className=\"flex items-center gap-3\">\n                  <Icon id=\"placeholder\" size={20} className=\"flex-shrink-0 text-foreground-400\" />\n                  <Skeleton.Text lines={1} w={150} />\n                </li>\n              ))}\n            </ul>\n\n            <div className=\"flex flex-wrap gap-4 pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={80} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"order-1 lg:order-2\">\n            <Skeleton.Image h=\"24rem\" />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5291,22 +6496,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"space-y-12\">\n          <div className=\"text-center space-y-6\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={110} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"55%\"\n                className=\"mx-auto max-w-3xl\"\n              />\n              <Skeleton.Text\n                lines={3}\n                w=\"100%\"\n                lastLineWidth=\"65%\"\n                className=\"mx-auto max-w-2xl\"\n              />\n            </div>\n\n            <div className=\"flex flex-wrap gap-4 justify-center pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={132} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"grid grid-cols-1 md:grid-cols-2 gap-8 pt-12\">\n            {Array.from({ length: 4 }).map((_, i) => (\n              <div\n                key={i}\n                className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n              >\n                <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                  <SquareDashed className=\"h-6 w-6 text-foreground-400\" />\n                </div>\n                <Skeleton.Text size=\"heading\" w={160} className=\"mb-2\" />\n                <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n              </div>\n            ))}\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"space-y-12\">\n          <div className=\"text-center space-y-6\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={110} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"55%\"\n                className=\"mx-auto max-w-3xl\"\n              />\n              <Skeleton.Text\n                lines={3}\n                w=\"100%\"\n                lastLineWidth=\"65%\"\n                className=\"mx-auto max-w-2xl\"\n              />\n            </div>\n\n            <div className=\"flex flex-wrap gap-4 justify-center pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={132} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"grid grid-cols-1 md:grid-cols-2 gap-8 pt-12\">\n            {Array.from({ length: 4 }).map((_, i) => (\n              <div\n                key={i}\n                className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n              >\n                <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                  <Icon id=\"placeholder\" size={24} className=\"text-foreground-400\" />\n                </div>\n                <Skeleton.Text size=\"heading\" w={160} className=\"mb-2\" />\n                <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n              </div>\n            ))}\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"space-y-12\">\n          <div className=\"text-center space-y-6\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={110} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"55%\"\n                className=\"mx-auto max-w-3xl\"\n              />\n              <Skeleton.Text\n                lines={3}\n                w=\"100%\"\n                lastLineWidth=\"65%\"\n                className=\"mx-auto max-w-2xl\"\n              />\n            </div>\n\n            <div className=\"flex flex-wrap gap-4 justify-center pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={132} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"grid grid-cols-1 md:grid-cols-2 gap-8 pt-12\">\n            {Array.from({ length: 4 }).map((_, i) => (\n              <div\n                key={i}\n                className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n              >\n                <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                  <SquareDashed className=\"h-6 w-6 text-foreground-400\" />\n                </div>\n                <Skeleton.Text size=\"heading\" w={160} className=\"mb-2\" />\n                <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n              </div>\n            ))}\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nexport function HeroWithFeatures() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        <div className=\"space-y-12\">\n          <div className=\"text-center space-y-6\">\n            <div className=\"inline-flex items-center gap-2 rounded-sm border border-background-700 bg-background-900 px-3 py-1\">\n              <Skeleton w={8} h={8} className=\"shrink-0\" />\n              <Skeleton.Text lines={1} w={110} />\n            </div>\n\n            <div className=\"space-y-4\">\n              <Skeleton.Text\n                size=\"display\"\n                lines={2}\n                w=\"100%\"\n                lastLineWidth=\"55%\"\n                className=\"mx-auto max-w-3xl\"\n              />\n              <Skeleton.Text\n                lines={3}\n                w=\"100%\"\n                lastLineWidth=\"65%\"\n                className=\"mx-auto max-w-2xl\"\n              />\n            </div>\n\n            <div className=\"flex flex-wrap gap-4 justify-center pt-4\">\n              <Button variant=\"primary\">\n                <Skeleton.Text lines={1} w={104} />\n              </Button>\n              <Button variant=\"secondary\">\n                <Skeleton.Text lines={1} w={132} />\n              </Button>\n            </div>\n          </div>\n\n          <div className=\"grid grid-cols-1 md:grid-cols-2 gap-8 pt-12\">\n            {Array.from({ length: 4 }).map((_, i) => (\n              <div\n                key={i}\n                className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n              >\n                <div className=\"mb-4 inline-flex rounded-sm bg-background-700 p-3\">\n                  <Icon id=\"placeholder\" size={24} className=\"text-foreground-400\" />\n                </div>\n                <Skeleton.Text size=\"heading\" w={160} className=\"mb-2\" />\n                <Skeleton.Text lines={2} lastLineWidth=\"70%\" />\n              </div>\n            ))}\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5357,22 +6561,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <SquareDashed className=\"mt-0.5 h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <Icon id=\"placeholder\" size={20} className=\"mt-0.5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <SquareDashed className=\"mt-0.5 h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <Icon id=\"placeholder\" size={20} className=\"mt-0.5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5391,22 +6594,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <SquareDashed className=\"mt-0.5 h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <Icon id=\"placeholder\" size={20} className=\"mt-0.5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <SquareDashed className=\"mt-0.5 h-5 w-5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst pricingPlans = [\n  { id: 1, highlighted: false, hasPrice: true, featureCount: 4 },\n  { id: 2, highlighted: true, hasPrice: true, featureCount: 6 },\n  { id: 3, highlighted: false, hasPrice: false, featureCount: 6 },\n];\n\nexport function PricingCards() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={320} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"65%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Pricing Cards */}\n        <div className=\"grid gap-8 md:grid-cols-3 items-start\">\n          {pricingPlans.map((plan) => (\n            <div\n              key={plan.id}\n              className=\"relative rounded-sm border border-background-700 bg-background-900 p-8\"\n            >\n              {plan.highlighted && (\n                <div className=\"absolute -top-4 left-1/2 -translate-x-1/2\">\n                  <div className=\"rounded-sm bg-background-700 px-4 py-1\">\n                    <Skeleton.Text lines={1} w={88} />\n                  </div>\n                </div>\n              )}\n\n              <Skeleton.Text size=\"heading\" w={130} className=\"mb-2\" />\n              <Skeleton.Text lines={1} w={180} className=\"mb-6\" />\n\n              {/* Pricing */}\n              <div className=\"mb-8\">\n                {plan.hasPrice ? (\n                  <Skeleton.Text size=\"display\" w={120} />\n                ) : (\n                  <Skeleton.Text size=\"heading\" w={140} />\n                )}\n              </div>\n\n              {/* CTA */}\n              <Button\n                className=\"mb-8 w-full\"\n                variant={plan.highlighted ? \"primary\" : \"secondary\"}\n              >\n                <Skeleton.Text lines={1} w={100} />\n              </Button>\n\n              {/* Features */}\n              <div className=\"border-t border-background-700 pt-8\">\n                <ul className=\"space-y-4\">\n                  {Array.from({ length: plan.featureCount }).map((_, index) => (\n                    <li key={index} className=\"flex items-start gap-3\">\n                      <Icon id=\"placeholder\" size={20} className=\"mt-0.5 flex-shrink-0 text-foreground-400\" />\n                      <Skeleton.Text lines={1} w={160} />\n                    </li>\n                  ))}\n                </ul>\n              </div>\n            </div>\n          ))}\n        </div>\n\n        {/* Footer note */}\n        <div className=\"mt-12 text-center\">\n          <Skeleton.Text lines={1} w={320} className=\"mx-auto\" />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5425,22 +6627,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst comparisonData = {\n  plans: [\n    { id: 1, hasPrice: true },\n    { id: 2, hasPrice: true },\n    { id: 3, hasPrice: false },\n  ],\n  categories: [\n    { id: 1, items: [\"value\", \"value\", \"value\", \"check\"] as const },\n    { id: 2, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n    { id: 3, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n  ],\n};\n\nexport function PricingComparison() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-7xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={280} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Comparison Table */}\n        <div className=\"overflow-x-auto rounded-sm border border-background-700 bg-background-900\">\n          <table className=\"w-full\">\n            <thead>\n              <tr className=\"border-b border-background-700\">\n                <th className=\"px-6 py-4 text-left\">\n                  <Skeleton.Text lines={1} w={90} />\n                </th>\n                {comparisonData.plans.map((plan) => (\n                  <th key={plan.id} className=\"px-6 py-4\">\n                    <Skeleton.Text lines={1} w={90} className=\"mx-auto mb-2\" />\n                    {plan.hasPrice ? (\n                      <Skeleton.Text\n                        size=\"heading\"\n                        w={64}\n                        className=\"mx-auto\"\n                      />\n                    ) : (\n                      <Skeleton.Text lines={1} w={56} className=\"mx-auto\" />\n                    )}\n                  </th>\n                ))}\n              </tr>\n            </thead>\n            <tbody>\n              {comparisonData.categories.map((category) => (\n                <React.Fragment key={category.id}>\n                  <tr className=\"border-t border-background-700 bg-background-900\">\n                    <td colSpan={4} className=\"px-6 py-4\">\n                      <Skeleton.Text lines={1} w={160} />\n                    </td>\n                  </tr>\n                  {category.items.map((kind, itemIndex) => (\n                    <tr\n                      key={itemIndex}\n                      className=\"border-t border-background-700\"\n                    >\n                      <td className=\"px-6 py-4\">\n                        <Skeleton.Text lines={1} w={140} />\n                      </td>\n                      {comparisonData.plans.map((plan) => (\n                        <td key={plan.id} className=\"px-6 py-4 text-center\">\n                          {kind === \"check\" ? (\n                            <SquareDashed className=\"mx-auto h-5 w-5 text-foreground-400\" />\n                          ) : (\n                            <Skeleton.Text\n                              lines={1}\n                              w={72}\n                              className=\"mx-auto\"\n                            />\n                          )}\n                        </td>\n                      ))}\n                    </tr>\n                  ))}\n                </React.Fragment>\n              ))}\n            </tbody>\n          </table>\n        </div>\n\n        {/* CTA Section */}\n        <div className=\"mt-12 rounded-sm border border-background-700 bg-background-900 p-8 text-center\">\n          <Skeleton.Text size=\"heading\" w={220} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"55%\"\n            className=\"mx-auto mb-6 max-w-xl\"\n          />\n          <div className=\"flex flex-col gap-3 sm:flex-row sm:justify-center\">\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={92} />\n            </Button>\n            <Button>\n              <Skeleton.Text lines={1} w={120} />\n            </Button>\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={100} />\n            </Button>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst comparisonData = {\n  plans: [\n    { id: 1, hasPrice: true },\n    { id: 2, hasPrice: true },\n    { id: 3, hasPrice: false },\n  ],\n  categories: [\n    { id: 1, items: [\"value\", \"value\", \"value\", \"check\"] as const },\n    { id: 2, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n    { id: 3, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n  ],\n};\n\nexport function PricingComparison() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-7xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={280} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Comparison Table */}\n        <div className=\"overflow-x-auto rounded-sm border border-background-700 bg-background-900\">\n          <table className=\"w-full\">\n            <thead>\n              <tr className=\"border-b border-background-700\">\n                <th className=\"px-6 py-4 text-left\">\n                  <Skeleton.Text lines={1} w={90} />\n                </th>\n                {comparisonData.plans.map((plan) => (\n                  <th key={plan.id} className=\"px-6 py-4\">\n                    <Skeleton.Text lines={1} w={90} className=\"mx-auto mb-2\" />\n                    {plan.hasPrice ? (\n                      <Skeleton.Text\n                        size=\"heading\"\n                        w={64}\n                        className=\"mx-auto\"\n                      />\n                    ) : (\n                      <Skeleton.Text lines={1} w={56} className=\"mx-auto\" />\n                    )}\n                  </th>\n                ))}\n              </tr>\n            </thead>\n            <tbody>\n              {comparisonData.categories.map((category) => (\n                <React.Fragment key={category.id}>\n                  <tr className=\"border-t border-background-700 bg-background-900\">\n                    <td colSpan={4} className=\"px-6 py-4\">\n                      <Skeleton.Text lines={1} w={160} />\n                    </td>\n                  </tr>\n                  {category.items.map((kind, itemIndex) => (\n                    <tr\n                      key={itemIndex}\n                      className=\"border-t border-background-700\"\n                    >\n                      <td className=\"px-6 py-4\">\n                        <Skeleton.Text lines={1} w={140} />\n                      </td>\n                      {comparisonData.plans.map((plan) => (\n                        <td key={plan.id} className=\"px-6 py-4 text-center\">\n                          {kind === \"check\" ? (\n                            <Icon id=\"placeholder\" size={20} className=\"mx-auto text-foreground-400\" />\n                          ) : (\n                            <Skeleton.Text\n                              lines={1}\n                              w={72}\n                              className=\"mx-auto\"\n                            />\n                          )}\n                        </td>\n                      ))}\n                    </tr>\n                  ))}\n                </React.Fragment>\n              ))}\n            </tbody>\n          </table>\n        </div>\n\n        {/* CTA Section */}\n        <div className=\"mt-12 rounded-sm border border-background-700 bg-background-900 p-8 text-center\">\n          <Skeleton.Text size=\"heading\" w={220} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"55%\"\n            className=\"mx-auto mb-6 max-w-xl\"\n          />\n          <div className=\"flex flex-col gap-3 sm:flex-row sm:justify-center\">\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={92} />\n            </Button>\n            <Button>\n              <Skeleton.Text lines={1} w={120} />\n            </Button>\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={100} />\n            </Button>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst comparisonData = {\n  plans: [\n    { id: 1, hasPrice: true },\n    { id: 2, hasPrice: true },\n    { id: 3, hasPrice: false },\n  ],\n  categories: [\n    { id: 1, items: [\"value\", \"value\", \"value\", \"check\"] as const },\n    { id: 2, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n    { id: 3, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n  ],\n};\n\nexport function PricingComparison() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-7xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={280} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Comparison Table */}\n        <div className=\"overflow-x-auto rounded-sm border border-background-700 bg-background-900\">\n          <table className=\"w-full\">\n            <thead>\n              <tr className=\"border-b border-background-700\">\n                <th className=\"px-6 py-4 text-left\">\n                  <Skeleton.Text lines={1} w={90} />\n                </th>\n                {comparisonData.plans.map((plan) => (\n                  <th key={plan.id} className=\"px-6 py-4\">\n                    <Skeleton.Text lines={1} w={90} className=\"mx-auto mb-2\" />\n                    {plan.hasPrice ? (\n                      <Skeleton.Text\n                        size=\"heading\"\n                        w={64}\n                        className=\"mx-auto\"\n                      />\n                    ) : (\n                      <Skeleton.Text lines={1} w={56} className=\"mx-auto\" />\n                    )}\n                  </th>\n                ))}\n              </tr>\n            </thead>\n            <tbody>\n              {comparisonData.categories.map((category) => (\n                <React.Fragment key={category.id}>\n                  <tr className=\"border-t border-background-700 bg-background-900\">\n                    <td colSpan={4} className=\"px-6 py-4\">\n                      <Skeleton.Text lines={1} w={160} />\n                    </td>\n                  </tr>\n                  {category.items.map((kind, itemIndex) => (\n                    <tr\n                      key={itemIndex}\n                      className=\"border-t border-background-700\"\n                    >\n                      <td className=\"px-6 py-4\">\n                        <Skeleton.Text lines={1} w={140} />\n                      </td>\n                      {comparisonData.plans.map((plan) => (\n                        <td key={plan.id} className=\"px-6 py-4 text-center\">\n                          {kind === \"check\" ? (\n                            <SquareDashed className=\"mx-auto h-5 w-5 text-foreground-400\" />\n                          ) : (\n                            <Skeleton.Text\n                              lines={1}\n                              w={72}\n                              className=\"mx-auto\"\n                            />\n                          )}\n                        </td>\n                      ))}\n                    </tr>\n                  ))}\n                </React.Fragment>\n              ))}\n            </tbody>\n          </table>\n        </div>\n\n        {/* CTA Section */}\n        <div className=\"mt-12 rounded-sm border border-background-700 bg-background-900 p-8 text-center\">\n          <Skeleton.Text size=\"heading\" w={220} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"55%\"\n            className=\"mx-auto mb-6 max-w-xl\"\n          />\n          <div className=\"flex flex-col gap-3 sm:flex-row sm:justify-center\">\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={92} />\n            </Button>\n            <Button>\n              <Skeleton.Text lines={1} w={120} />\n            </Button>\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={100} />\n            </Button>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst comparisonData = {\n  plans: [\n    { id: 1, hasPrice: true },\n    { id: 2, hasPrice: true },\n    { id: 3, hasPrice: false },\n  ],\n  categories: [\n    { id: 1, items: [\"value\", \"value\", \"value\", \"check\"] as const },\n    { id: 2, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n    { id: 3, items: [\"check\", \"check\", \"check\", \"check\"] as const },\n  ],\n};\n\nexport function PricingComparison() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-7xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={280} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Comparison Table */}\n        <div className=\"overflow-x-auto rounded-sm border border-background-700 bg-background-900\">\n          <table className=\"w-full\">\n            <thead>\n              <tr className=\"border-b border-background-700\">\n                <th className=\"px-6 py-4 text-left\">\n                  <Skeleton.Text lines={1} w={90} />\n                </th>\n                {comparisonData.plans.map((plan) => (\n                  <th key={plan.id} className=\"px-6 py-4\">\n                    <Skeleton.Text lines={1} w={90} className=\"mx-auto mb-2\" />\n                    {plan.hasPrice ? (\n                      <Skeleton.Text\n                        size=\"heading\"\n                        w={64}\n                        className=\"mx-auto\"\n                      />\n                    ) : (\n                      <Skeleton.Text lines={1} w={56} className=\"mx-auto\" />\n                    )}\n                  </th>\n                ))}\n              </tr>\n            </thead>\n            <tbody>\n              {comparisonData.categories.map((category) => (\n                <React.Fragment key={category.id}>\n                  <tr className=\"border-t border-background-700 bg-background-900\">\n                    <td colSpan={4} className=\"px-6 py-4\">\n                      <Skeleton.Text lines={1} w={160} />\n                    </td>\n                  </tr>\n                  {category.items.map((kind, itemIndex) => (\n                    <tr\n                      key={itemIndex}\n                      className=\"border-t border-background-700\"\n                    >\n                      <td className=\"px-6 py-4\">\n                        <Skeleton.Text lines={1} w={140} />\n                      </td>\n                      {comparisonData.plans.map((plan) => (\n                        <td key={plan.id} className=\"px-6 py-4 text-center\">\n                          {kind === \"check\" ? (\n                            <Icon id=\"placeholder\" size={20} className=\"mx-auto text-foreground-400\" />\n                          ) : (\n                            <Skeleton.Text\n                              lines={1}\n                              w={72}\n                              className=\"mx-auto\"\n                            />\n                          )}\n                        </td>\n                      ))}\n                    </tr>\n                  ))}\n                </React.Fragment>\n              ))}\n            </tbody>\n          </table>\n        </div>\n\n        {/* CTA Section */}\n        <div className=\"mt-12 rounded-sm border border-background-700 bg-background-900 p-8 text-center\">\n          <Skeleton.Text size=\"heading\" w={220} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"55%\"\n            className=\"mx-auto mb-6 max-w-xl\"\n          />\n          <div className=\"flex flex-col gap-3 sm:flex-row sm:justify-center\">\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={92} />\n            </Button>\n            <Button>\n              <Skeleton.Text lines={1} w={120} />\n            </Button>\n            <Button variant=\"secondary\">\n              <Skeleton.Text lines={1} w={100} />\n            </Button>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5459,21 +6660,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <SquareDashed key={i} className=\"h-4 w-4 text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <Icon id=\"placeholder\" size={16} key={i} className=\"text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <SquareDashed key={i} className=\"h-4 w-4 text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <Icon id=\"placeholder\" size={16} key={i} className=\"text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5492,21 +6692,20 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <SquareDashed key={i} className=\"h-4 w-4 text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <Icon id=\"placeholder\" size={16} key={i} className=\"text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <SquareDashed key={i} className=\"h-4 w-4 text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function CardTestimonials() {\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-6xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center md:mb-16\">\n          <Skeleton.Text size=\"heading\" w={300} className=\"mx-auto mb-4\" />\n          <Skeleton.Text\n            lines={2}\n            w=\"100%\"\n            lastLineWidth=\"60%\"\n            className=\"mx-auto max-w-2xl\"\n          />\n        </div>\n\n        {/* Testimonials Grid */}\n        <div className=\"grid gap-8 md:grid-cols-3\">\n          {testimonials.map((testimonial) => (\n            <div\n              key={testimonial.id}\n              className=\"rounded-sm border border-background-700 bg-background-900 p-6\"\n            >\n              {/* Stars */}\n              <div className=\"mb-4 flex gap-1\">\n                {Array.from({ length: testimonial.rating }).map((_, i) => (\n                  <Icon id=\"placeholder\" size={16} key={i} className=\"text-foreground-400\" />\n                ))}\n              </div>\n\n              {/* Quote */}\n              <div className=\"mb-6\">\n                <Skeleton.Text lines={4} lastLineWidth=\"55%\" />\n              </div>\n\n              {/* Author */}\n              <div className=\"border-t border-background-700 pt-4\">\n                <Skeleton.Text lines={1} w={130} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={170} />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5525,22 +6724,21 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function FeaturedTestimonial() {\n  const [activeIndex, setActiveIndex] = useState(0);\n  const current = testimonials[activeIndex];\n\n  const goToPrevious = () => {\n    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));\n  };\n\n  const goToNext = () => {\n    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));\n  };\n\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={260} className=\"mx-auto mb-4\" />\n        </div>\n\n        {/* Featured Testimonial */}\n        <div>\n          <div className=\"rounded-sm border border-background-700 bg-background-900 p-8 md:p-12\">\n            {/* Stars */}\n            <div className=\"mb-6 flex gap-1\">\n              {Array.from({ length: current.rating }).map((_, i) => (\n                <SquareDashed key={i} className=\"h-5 w-5 text-foreground-400\" />\n              ))}\n            </div>\n\n            {/* Quote */}\n            <div className=\"mb-8\">\n              <Skeleton.Text size=\"heading\" lines={3} lastLineWidth=\"45%\" />\n            </div>\n\n            {/* Author Info */}\n            <div className=\"mb-8 flex items-center gap-4\">\n              <Skeleton w={48} h={48} className=\"shrink-0\" />\n              <div>\n                <Skeleton.Text lines={1} w={140} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={180} />\n              </div>\n            </div>\n\n            {/* Navigation */}\n            <div className=\"flex items-center justify-between border-t border-background-700 pt-8\">\n              <div className=\"flex gap-2\">\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToPrevious}\n                  aria-label=\"Previous testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <SquareDashed className=\"h-4 w-4\" />\n                </Button>\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToNext}\n                  aria-label=\"Next testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <SquareDashed className=\"h-4 w-4\" />\n                </Button>\n              </div>\n\n              {/* Dot indicators */}\n              <div className=\"flex gap-2\">\n                {testimonials.map((_, index) => (\n                  <button\n                    key={index}\n                    onClick={() => setActiveIndex(index)}\n                    className={`h-2 w-2 rounded-sm ${\n                      index === activeIndex\n                        ? \"w-6 bg-foreground-400\"\n                        : \"bg-background-700\"\n                    }`}\n                    aria-label={`Go to testimonial ${index + 1}`}\n                  />\n                ))}\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+    "code": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function FeaturedTestimonial() {\n  const [activeIndex, setActiveIndex] = useState(0);\n  const current = testimonials[activeIndex];\n\n  const goToPrevious = () => {\n    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));\n  };\n\n  const goToNext = () => {\n    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));\n  };\n\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={260} className=\"mx-auto mb-4\" />\n        </div>\n\n        {/* Featured Testimonial */}\n        <div>\n          <div className=\"rounded-sm border border-background-700 bg-background-900 p-8 md:p-12\">\n            {/* Stars */}\n            <div className=\"mb-6 flex gap-1\">\n              {Array.from({ length: current.rating }).map((_, i) => (\n                <Icon id=\"placeholder\" size={20} key={i} className=\"text-foreground-400\" />\n              ))}\n            </div>\n\n            {/* Quote */}\n            <div className=\"mb-8\">\n              <Skeleton.Text size=\"heading\" lines={3} lastLineWidth=\"45%\" />\n            </div>\n\n            {/* Author Info */}\n            <div className=\"mb-8 flex items-center gap-4\">\n              <Skeleton w={48} h={48} className=\"shrink-0\" />\n              <div>\n                <Skeleton.Text lines={1} w={140} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={180} />\n              </div>\n            </div>\n\n            {/* Navigation */}\n            <div className=\"flex items-center justify-between border-t border-background-700 pt-8\">\n              <div className=\"flex gap-2\">\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToPrevious}\n                  aria-label=\"Previous testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <Icon id=\"placeholder\" size={16} />\n                </Button>\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToNext}\n                  aria-label=\"Next testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <Icon id=\"placeholder\" size={16} />\n                </Button>\n              </div>\n\n              {/* Dot indicators */}\n              <div className=\"flex gap-2\">\n                {testimonials.map((_, index) => (\n                  <button\n                    key={index}\n                    onClick={() => setActiveIndex(index)}\n                    className={`h-2 w-2 rounded-sm ${\n                      index === activeIndex\n                        ? \"w-6 bg-foreground-400\"\n                        : \"bg-background-700\"\n                    }`}\n                    aria-label={`Go to testimonial ${index + 1}`}\n                  />\n                ))}\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { SquareDashed } from \"lucide-react\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function FeaturedTestimonial() {\n  const [activeIndex, setActiveIndex] = useState(0);\n  const current = testimonials[activeIndex];\n\n  const goToPrevious = () => {\n    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));\n  };\n\n  const goToNext = () => {\n    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));\n  };\n\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={260} className=\"mx-auto mb-4\" />\n        </div>\n\n        {/* Featured Testimonial */}\n        <div>\n          <div className=\"rounded-sm border border-background-700 bg-background-900 p-8 md:p-12\">\n            {/* Stars */}\n            <div className=\"mb-6 flex gap-1\">\n              {Array.from({ length: current.rating }).map((_, i) => (\n                <SquareDashed key={i} className=\"h-5 w-5 text-foreground-400\" />\n              ))}\n            </div>\n\n            {/* Quote */}\n            <div className=\"mb-8\">\n              <Skeleton.Text size=\"heading\" lines={3} lastLineWidth=\"45%\" />\n            </div>\n\n            {/* Author Info */}\n            <div className=\"mb-8 flex items-center gap-4\">\n              <Skeleton w={48} h={48} className=\"shrink-0\" />\n              <div>\n                <Skeleton.Text lines={1} w={140} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={180} />\n              </div>\n            </div>\n\n            {/* Navigation */}\n            <div className=\"flex items-center justify-between border-t border-background-700 pt-8\">\n              <div className=\"flex gap-2\">\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToPrevious}\n                  aria-label=\"Previous testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <SquareDashed className=\"h-4 w-4\" />\n                </Button>\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToNext}\n                  aria-label=\"Next testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <SquareDashed className=\"h-4 w-4\" />\n                </Button>\n              </div>\n\n              {/* Dot indicators */}\n              <div className=\"flex gap-2\">\n                {testimonials.map((_, index) => (\n                  <button\n                    key={index}\n                    onClick={() => setActiveIndex(index)}\n                    className={`h-2 w-2 rounded-sm ${\n                      index === activeIndex\n                        ? \"w-6 bg-foreground-400\"\n                        : \"bg-background-700\"\n                    }`}\n                    aria-label={`Go to testimonial ${index + 1}`}\n                  />\n                ))}\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+        "content": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { Icon } from \"ui-lab-components/icon\";\nimport { Button } from \"ui-lab-components/button\";\nimport { Skeleton } from \"ui-lab-components/skeleton\";\n\nconst testimonials = [\n  { id: 1, rating: 5 },\n  { id: 2, rating: 5 },\n  { id: 3, rating: 5 },\n];\n\nexport function FeaturedTestimonial() {\n  const [activeIndex, setActiveIndex] = useState(0);\n  const current = testimonials[activeIndex];\n\n  const goToPrevious = () => {\n    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));\n  };\n\n  const goToNext = () => {\n    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));\n  };\n\n  return (\n    <section className=\"py-16 px-4 md:py-24\">\n      <div className=\"mx-auto max-w-4xl\">\n        {/* Header */}\n        <div className=\"mb-12 text-center\">\n          <Skeleton.Text size=\"heading\" w={260} className=\"mx-auto mb-4\" />\n        </div>\n\n        {/* Featured Testimonial */}\n        <div>\n          <div className=\"rounded-sm border border-background-700 bg-background-900 p-8 md:p-12\">\n            {/* Stars */}\n            <div className=\"mb-6 flex gap-1\">\n              {Array.from({ length: current.rating }).map((_, i) => (\n                <Icon id=\"placeholder\" size={20} key={i} className=\"text-foreground-400\" />\n              ))}\n            </div>\n\n            {/* Quote */}\n            <div className=\"mb-8\">\n              <Skeleton.Text size=\"heading\" lines={3} lastLineWidth=\"45%\" />\n            </div>\n\n            {/* Author Info */}\n            <div className=\"mb-8 flex items-center gap-4\">\n              <Skeleton w={48} h={48} className=\"shrink-0\" />\n              <div>\n                <Skeleton.Text lines={1} w={140} className=\"mb-2\" />\n                <Skeleton.Text lines={1} w={180} />\n              </div>\n            </div>\n\n            {/* Navigation */}\n            <div className=\"flex items-center justify-between border-t border-background-700 pt-8\">\n              <div className=\"flex gap-2\">\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToPrevious}\n                  aria-label=\"Previous testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <Icon id=\"placeholder\" size={16} />\n                </Button>\n                <Button\n                  variant=\"ghost\"\n                  size=\"sm\"\n                  onClick={goToNext}\n                  aria-label=\"Next testimonial\"\n                  className=\"border-background-700\"\n                >\n                  <Icon id=\"placeholder\" size={16} />\n                </Button>\n              </div>\n\n              {/* Dot indicators */}\n              <div className=\"flex gap-2\">\n                {testimonials.map((_, index) => (\n                  <button\n                    key={index}\n                    onClick={() => setActiveIndex(index)}\n                    className={`h-2 w-2 rounded-sm ${\n                      index === activeIndex\n                        ? \"w-6 bg-foreground-400\"\n                        : \"bg-background-700\"\n                    }`}\n                    aria-label={`Go to testimonial ${index + 1}`}\n                  />\n                ))}\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/button",
+        "ui-lab-components/icon",
         "ui-lab-components/skeleton"
       ]
     },
@@ -5559,7 +6757,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Globe } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'astro-static',\n  name: 'Astro',\n  description: 'A content-focused Astro starter using islands architecture and zero client JavaScript by default.',\n};\n\nexport function AstroStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Body><Flex layout=\"bar\"><Flex layout=\"inline\"><Globe size={20} /><strong>Astro</strong></Flex><Badge>Islands</Badge></Flex></Card.Body></Card>;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'astro-static',\n  name: 'Astro',\n  description: 'A content-focused Astro starter using islands architecture and zero client JavaScript by default.',\n};\n\nexport function AstroStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Body><Flex layout=\"bar\"><Flex layout=\"inline\"><Icon id=\"globe\" size={20} /><strong>Astro</strong></Flex><Badge>Islands</Badge></Flex></Card.Body></Card>;\n}\n",
     "files": [
       {
         "path": "astro.config.mjs",
@@ -5630,7 +6828,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { PenLine } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'blog-platform',\n  name: 'Blog Platform',\n  description: 'A publishing starter with Markdown content, categories, search, and social sharing.',\n};\n\nexport function BlogStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Header><Flex layout=\"bar\"><Flex layout=\"inline\"><PenLine size={20} /><strong>Journal</strong></Flex><Badge>Markdown</Badge></Flex></Card.Header><Card.Body><h3 className=\"font-semibold\">Designing resilient interfaces</h3><p className=\"text-sm text-foreground-400\">A practical guide to composable UI systems.</p></Card.Body></Card>;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'blog-platform',\n  name: 'Blog Platform',\n  description: 'A publishing starter with Markdown content, categories, search, and social sharing.',\n};\n\nexport function BlogStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Header><Flex layout=\"bar\"><Flex layout=\"inline\"><Icon id=\"edit\" size={20} /><strong>Journal</strong></Flex><Badge>Markdown</Badge></Flex></Card.Header><Card.Body><h3 className=\"font-semibold\">Designing resilient interfaces</h3><p className=\"text-sm text-foreground-400\">A practical guide to composable UI systems.</p></Card.Body></Card>;\n}\n",
     "files": [
       {
         "path": "astro.config.mjs",
@@ -5707,7 +6905,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { BriefcaseBusiness, Plus } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'crm-starter',\n  name: 'CRM System',\n  description: 'A customer relationship starter with contacts, interaction history, pipelines, and reporting.',\n};\n\nexport function CrmStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Header><Flex layout=\"bar\"><Flex layout=\"inline\"><BriefcaseBusiness size={20} /><strong>Customers</strong></Flex><Button size=\"sm\" icon={<Plus size={14} />}>Add</Button></Flex></Card.Header><Card.Body><p className=\"text-sm text-foreground-400\">Track relationships from first contact through renewal.</p></Card.Body></Card>;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'crm-starter',\n  name: 'CRM System',\n  description: 'A customer relationship starter with contacts, interaction history, pipelines, and reporting.',\n};\n\nexport function CrmStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Header><Flex layout=\"bar\"><Flex layout=\"inline\"><Icon id=\"briefcase\" size={20} /><strong>Customers</strong></Flex><Button size=\"sm\" icon={<Icon id=\"plus\" size={14} />}>Add</Button></Flex></Card.Header><Card.Body><p className=\"text-sm text-foreground-400\">Track relationships from first contact through renewal.</p></Card.Body></Card>;\n}\n",
     "files": [
       {
         "path": "app/contacts/page.tsx",
@@ -5796,7 +6994,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { BookOpen } from 'lucide-react';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'docs-site',\n  name: 'Documentation',\n  description: 'A documentation starter with sidebar navigation, search, code examples, and article navigation.',\n};\n\nexport function DocumentationStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Header><Flex layout=\"inline\"><BookOpen size={20} /><strong>Documentation</strong></Flex></Card.Header><Card.Body><p className=\"text-sm text-foreground-400\">Guides, API reference, and searchable examples.</p></Card.Body><Card.Footer><Button size=\"sm\">Read the docs</Button></Card.Footer></Card>;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'docs-site',\n  name: 'Documentation',\n  description: 'A documentation starter with sidebar navigation, search, code examples, and article navigation.',\n};\n\nexport function DocumentationStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Header><Flex layout=\"inline\"><Icon id=\"book\" size={20} /><strong>Documentation</strong></Flex></Card.Header><Card.Body><p className=\"text-sm text-foreground-400\">Guides, API reference, and searchable examples.</p></Card.Body><Card.Footer><Button size=\"sm\">Read the docs</Button></Card.Footer></Card>;\n}\n",
     "files": [
       {
         "path": "astro.config.mjs",
@@ -5879,7 +7077,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Boxes, FolderTree } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'nextjs-basic',\n  name: 'Next.js 16',\n  description: 'An App Router starter with TypeScript, server components, and a clear feature-based project structure.',\n};\n\nexport function NextJsStarterPreview() {\n  return (\n    <Card className=\"w-full max-w-md\">\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\"><Boxes size={20} /><strong>Next.js 16</strong></Flex>\n          <Badge>App Router</Badge>\n        </Flex>\n      </Card.Header>\n      <Card.Body>\n        <Flex layout=\"stack\" gap=\"sm\">\n          <Flex layout=\"inline\"><FolderTree size={16} /><code>app/</code></Flex>\n          <code className=\"pl-6 text-sm text-foreground-400\">layout.tsx · page.tsx · globals.css</code>\n        </Flex>\n      </Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'nextjs-basic',\n  name: 'Next.js 16',\n  description: 'An App Router starter with TypeScript, server components, and a clear feature-based project structure.',\n};\n\nexport function NextJsStarterPreview() {\n  return (\n    <Card className=\"w-full max-w-md\">\n      <Card.Header>\n        <Flex layout=\"bar\">\n          <Flex layout=\"inline\"><Icon id=\"box\" size={20} /><strong>Next.js 16</strong></Flex>\n          <Badge>App Router</Badge>\n        </Flex>\n      </Card.Header>\n      <Card.Body>\n        <Flex layout=\"stack\" gap=\"sm\">\n          <Flex layout=\"inline\"><Icon id=\"tree\" size={16} /><code>app/</code></Flex>\n          <code className=\"pl-6 text-sm text-foreground-400\">layout.tsx · page.tsx · globals.css</code>\n        </Flex>\n      </Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": ".gitignore",
@@ -5982,25 +7180,24 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { ArrowRight, Rocket } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'saas-landing',\n  name: 'SaaS Landing',\n  description: 'A conversion-focused SaaS landing starter with responsive product, proof, pricing, and CTA sections.',\n};\n\nexport function SaasLandingPreview() {\n  return <Card className=\"w-full max-w-lg\"><Card.Body><Flex layout=\"stack\" align-center className=\"py-8 text-center\"><Badge><Rocket size={12} /> Launch faster</Badge><h2 className=\"text-2xl font-bold\">Ship your next idea</h2><p className=\"max-w-sm text-foreground-400\">A polished foundation for product storytelling and conversion.</p><Button icon={{ right: <ArrowRight size={14} /> }}>Start building</Button></Flex></Card.Body></Card>;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'saas-landing',\n  name: 'SaaS Landing',\n  description: 'A conversion-focused SaaS landing starter with responsive product, proof, pricing, and CTA sections.',\n};\n\nexport function SaasLandingPreview() {\n  return <Card className=\"w-full max-w-lg\"><Card.Body><Flex layout=\"stack\" align-center className=\"py-8 text-center\"><Badge><Icon id=\"rocket\" size={12} /> Launch faster</Badge><h2 className=\"text-2xl font-medium\">Ship your next idea</h2><p className=\"max-w-sm text-foreground-400\">A polished foundation for product storytelling and conversion.</p><Button icon={{ right: <Icon id=\"right\" size={14} /> }}>Start building</Button></Flex></Card.Body></Card>;\n}\n",
     "files": [
       {
         "path": "index.tsx",
         "language": "tsx",
         "kind": "module",
-        "content": "'use client';\n\nimport { ArrowRight, Rocket } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'saas-landing',\n  name: 'SaaS Landing',\n  description: 'A conversion-focused SaaS landing starter with responsive product, proof, pricing, and CTA sections.',\n};\n\nexport function SaasLandingPreview() {\n  return <Card className=\"w-full max-w-lg\"><Card.Body><Flex layout=\"stack\" align-center className=\"py-8 text-center\"><Badge><Rocket size={12} /> Launch faster</Badge><h2 className=\"text-2xl font-bold\">Ship your next idea</h2><p className=\"max-w-sm text-foreground-400\">A polished foundation for product storytelling and conversion.</p><Button icon={{ right: <ArrowRight size={14} /> }}>Start building</Button></Flex></Card.Body></Card>;\n}\n",
+        "content": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Button } from 'ui-lab-components/button';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'saas-landing',\n  name: 'SaaS Landing',\n  description: 'A conversion-focused SaaS landing starter with responsive product, proof, pricing, and CTA sections.',\n};\n\nexport function SaasLandingPreview() {\n  return <Card className=\"w-full max-w-lg\"><Card.Body><Flex layout=\"stack\" align-center className=\"py-8 text-center\"><Badge><Icon id=\"rocket\" size={12} /> Launch faster</Badge><h2 className=\"text-2xl font-medium\">Ship your next idea</h2><p className=\"max-w-sm text-foreground-400\">A polished foundation for product storytelling and conversion.</p><Button icon={{ right: <Icon id=\"right\" size={14} /> }}>Start building</Button></Flex></Card.Body></Card>;\n}\n",
         "entrypoint": true
       }
     ],
     "dependencies": {
-      "npm": [
-        "lucide-react"
-      ],
+      "npm": [],
       "uiLab": [
         "ui-lab-components/badge",
         "ui-lab-components/button",
         "ui-lab-components/card",
-        "ui-lab-components/flex"
+        "ui-lab-components/flex",
+        "ui-lab-components/icon"
       ]
     },
     "installIntent": {
@@ -6018,7 +7215,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { AppWindow } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'tauri-desktop',\n  name: 'Tauri Desktop',\n  description: 'A cross-platform desktop starter with a Rust backend and React frontend.',\n};\n\nexport function TauriStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Body><Flex layout=\"bar\"><Flex layout=\"inline\"><AppWindow size={20} /><strong>Tauri Desktop</strong></Flex><Badge>Rust + React</Badge></Flex></Card.Body></Card>;\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'tauri-desktop',\n  name: 'Tauri Desktop',\n  description: 'A cross-platform desktop starter with a Rust backend and React frontend.',\n};\n\nexport function TauriStarterPreview() {\n  return <Card className=\"w-full max-w-sm\"><Card.Body><Flex layout=\"bar\"><Flex layout=\"inline\"><Icon id=\"window\" size={20} /><strong>Tauri Desktop</strong></Flex><Badge>Rust + React</Badge></Flex></Card.Body></Card>;\n}\n",
     "files": [
       {
         "path": "index.html",
@@ -6108,7 +7305,7 @@ export const generatedWorkshopContent = [
     "visibility": "public",
     "access": "free",
     "locked": false,
-    "code": "'use client';\n\nimport { Zap } from 'lucide-react';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'vite-react',\n  name: 'Vite + React',\n  description: 'A fast React 19 and TypeScript starter with instant HMR and a minimal production-ready toolchain.',\n};\n\nexport function ViteStarterPreview() {\n  return (\n    <Card className=\"w-full max-w-sm\">\n      <Card.Body><Flex layout=\"bar\"><Flex layout=\"inline\"><Zap size={20} /><strong>Vite + React</strong></Flex><Badge variant=\"success\">Ready</Badge></Flex></Card.Body>\n    </Card>\n  );\n}\n",
+    "code": "'use client';\n\nimport { Icon } from 'ui-lab-components/icon';\nimport { Badge } from 'ui-lab-components/badge';\nimport { Card } from 'ui-lab-components/card';\nimport { Flex } from 'ui-lab-components/flex';\n\nexport const metadata = {\n  id: 'vite-react',\n  name: 'Vite + React',\n  description: 'A fast React 19 and TypeScript starter with instant HMR and a minimal production-ready toolchain.',\n};\n\nexport function ViteStarterPreview() {\n  return (\n    <Card className=\"w-full max-w-sm\">\n      <Card.Body><Flex layout=\"bar\"><Flex layout=\"inline\"><Icon id=\"bolt\" size={20} /><strong>Vite + React</strong></Flex><Badge variant=\"success\">Ready</Badge></Flex></Card.Body>\n    </Card>\n  );\n}\n",
     "files": [
       {
         "path": "index.html",

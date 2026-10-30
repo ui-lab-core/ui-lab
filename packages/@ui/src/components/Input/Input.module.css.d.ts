@@ -8,7 +8,6 @@ declare const styles: {
   prefix: string;
   suffix: string;
   actions: string;
-  action: string;
   hint: string;
   controls: string;
   stepper: string;

@@ -628,7 +628,7 @@ const TableBody = React.forwardRef<HTMLElement, TableBodyProps>(
     return (
       <Scroll
         direction="vertical"
-        maxHeight="100%"
+        max-height="100%"
         presentational
         className={cn(css.bodyScroller, styles.bodyScroller)}
         data-slot="body-scroller"

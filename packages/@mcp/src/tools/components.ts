@@ -4,7 +4,7 @@ import { limitProperty } from "./shared.js";
 export const getComponentTool: Tool = {
   name: "get_component",
   description:
-    "Authoritative props, usage, and example source for `ui-lab-components`. Omit `query` to list every component id.",
+    "Authoritative React component APIs and examples. Known id: request api directly, without listing/summary calls. Use parts/props to scope api; omit selectors for complete API. Omit query to list components.",
   inputSchema: {
     type: "object" as const,
     properties: {
@@ -17,9 +17,11 @@ export const getComponentTool: Tool = {
         type: "string",
         enum: ["summary", "api", "styling", "usage", "examples", "full"],
         description:
-          "Applies only to an exact component ref. summary: identity and import. api: props, compound parts, custom types. styling: style slots and data attributes. usage: when to use and what instead. examples: example refs. full: all of it.",
+          "Exact ref or bare id. summary: identity and import. api: props, compound parts, custom types. styling: style slots and data attributes. usage: when to use and what instead. examples: example refs. full: all of it.",
         default: "summary",
       },
+      parts: { type: "array", items: { type: "string" }, description: "api only: compound parts, e.g. Trigger, Value, Content, Item. Omit for all; [] for root only." },
+      props: { type: "array", items: { type: "string" }, description: "api only: root or qualified props, e.g. selectedKey, Trigger.children. Required/accessibility props retained; omit for all." },
       limit: limitProperty,
     },
   },

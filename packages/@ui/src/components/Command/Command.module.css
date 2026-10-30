@@ -30,6 +30,10 @@
       backdrop-filter 180ms var(--ease-snappy-pop, ease-out);
   }
 
+  .overlay[data-contained="true"] {
+    position: absolute;
+  }
+
   .overlay[data-state="entered"] {
     opacity: 1;
     pointer-events: auto;
@@ -60,7 +64,7 @@
     line-height: var(--leading-sm, 1.25rem);
     box-shadow: var(--background-shadow);
     opacity: 0;
-    transform: scale(0.98);
+    transform: translateY(0.25rem);
     pointer-events: none;
     transition:
       opacity 180ms var(--ease-snappy-pop, ease-out),
@@ -69,7 +73,7 @@
 
   .overlay[data-state="entered"] .content {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
     pointer-events: auto;
   }
 

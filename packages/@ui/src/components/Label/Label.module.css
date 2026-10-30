@@ -3,12 +3,18 @@
 @layer components.defaults {
   .label {
     --background: transparent;
-    --foreground: var(--foreground-primary);
-    --disabled-foreground: var(--foreground-secondary);
+    --foreground: var(--foreground-300);
+    --disabled-foreground: var(--foreground-400);
     --error-foreground: var(--danger-600);
-    --helper-color: var(--foreground-secondary);
+    --helper-color: var(--foreground-400);
     --helper-error-color: var(--danger-600);
     --required-color: var(--danger-600);
+
+    /* Clears the corner curve of the control below; collapses to 0 with no radius. */
+    --inset: calc(var(--radius-base, 0) * 0.5);
+
+    margin-block-end: 0.5rem;
+    padding-inline: var(--inset);
   }
 
   .text {

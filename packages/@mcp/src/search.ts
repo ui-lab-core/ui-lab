@@ -10,6 +10,8 @@ export interface Field {
   weight: number;
   /** Score awarded when a token equals the field exactly. */
   exactWeight?: number;
+  /** Component discovery accepts word prefixes, not incidental infixes. */
+  match?: "word-prefix";
 }
 
 export function tokenize(query: string): string[] {
@@ -27,7 +29,9 @@ export function score(fields: Field[], tokens: string[]): number {
         const value = raw.toLowerCase();
         if (!value) continue;
         if (value === token) total += field.exactWeight ?? field.weight * 2;
-        else if (value.includes(token)) total += field.weight;
+        else if (field.match === "word-prefix"
+          ? tokenize(value).some((word) => word === token || (token.length >= 3 && word.startsWith(token)))
+          : value.includes(token)) total += field.weight;
       }
     }
   }

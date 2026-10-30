@@ -18,6 +18,7 @@ import { Frame } from "../Frame";
 import css from "./Popover.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
+import { usePresence } from "@/hooks/usePresence";
 import { getArrowShapeOffset, getFrameSideFromPlacement } from "@/utils/arrow-positioning";
 
 const ARROW_PATH = "M 0 0 Q 2.5 -1 4 -5.5 Q 6 -9 8 -5.5 Q 9.5 -1 12 0";
@@ -118,8 +119,6 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     const triggerRef = React.useRef<HTMLDivElement>(null);
     const popoverContentRef = React.useRef<HTMLDivElement>(null);
     const [arrowElement, setArrowElement] = React.useState<HTMLDivElement | null>(null);
-    const [isAnimating, setIsAnimating] = React.useState(false);
-    const [isExiting, setIsExiting] = React.useState(false);
 
     const [isOpen, setOpen] = useControlledState(
       controlledState?.open,
@@ -182,25 +181,12 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
         })
       : undefined;
 
-    // Trigger animation when popover is opened and positioned
-    React.useEffect(() => {
-      if (state.isOpen && isPositioned) {
-        setIsExiting(false);
-        setIsAnimating(true);
-      }
-    }, [state.isOpen, isPositioned]);
-
-    // Handle exit animation when closing
-    React.useEffect(() => {
-      if (!state.isOpen && isAnimating) {
-        // First, enable exit mode so element stays in DOM
-        setIsExiting(true);
-
-        requestAnimationFrame(() => setIsAnimating(false));
-        const timer = setTimeout(() => setIsExiting(false), 50);
-        return () => clearTimeout(timer);
-      }
-    }, [state.isOpen, isAnimating]);
+    const { present, state: presenceState, finishExit } = usePresence(
+      state.isOpen && isPositioned,
+      disableAnimations ? 0 : 200,
+      { settleExit: true },
+    );
+    const isVisible = presenceState === "entered";
 
     React.useLayoutEffect(() => {
       refs.setReference(triggerRef.current);
@@ -261,7 +247,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
     return (
       <>
         {triggerElement}
-        {(state.isOpen || isAnimating || isExiting) &&
+        {(state.isOpen || present) &&
           createPortal(
             <div
               ref={mergedContentRef}
@@ -269,6 +255,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                 mergeProps(triggerOverlayProps, dismissOverlayProps, dialogProps)
               )}
               className={cn("popover", css.root, resolved.root)}
+              data-state={presenceState}
               style={{
                 ...floatingStyles,
               }}
@@ -276,12 +263,17 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
               <div
                 className={cn("content", css.content, resolved.content)}
                 data-instant={disableAnimations ? "true" : undefined}
+                onTransitionEnd={(event) => {
+                  if (event.target === event.currentTarget && event.propertyName === "opacity") {
+                    finishExit();
+                  }
+                }}
                 style={{
-                  opacity: isAnimating ? 1 : 0,
-                  transform: isAnimating
+                  opacity: isVisible ? 1 : 0,
+                  transform: isVisible
                     ? "translate(0, 0)"
                     : getInitialTransform(placement.split("-")[0]),
-                  pointerEvents: isAnimating ? "auto" : "none",
+                  pointerEvents: isVisible ? "auto" : "none",
                 }}
               >
                 <Frame

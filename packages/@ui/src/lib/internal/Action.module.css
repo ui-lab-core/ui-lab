@@ -1,0 +1,49 @@
+@reference "tailwindcss";
+
+@layer components.defaults {
+  .action {
+    @apply flex items-center justify-center shrink-0;
+    min-inline-size: slot(action, size, calc(var(--spacing, 0.25rem) * 7));
+    min-block-size: slot(action, size, calc(var(--spacing, 0.25rem) * 7));
+    padding-block: slot(action, padding-block, calc(var(--spacing, 0.25rem) * 1.5));
+    padding-inline: slot(action, padding-inline, calc(var(--spacing, 0.25rem) * 1.5));
+    border: none;
+    border-radius: slot(action, radius, var(--inset-radius));
+    background-color: slot(action, background, transparent);
+    color: slot(action, foreground, currentColor);
+    cursor: pointer;
+    transition:
+      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
+      color var(--hover-duration, var(--hover-leave-duration, 300ms))
+        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+  }
+
+  .action[data-hovered="true"],
+  .action[data-focus-visible="true"] {
+    --hover-duration: var(--hover-enter-duration, 0ms);
+    background-color: slot(
+      action,
+      background-hover,
+      color-mix(in oklab, currentColor 10%, slot(action, background, transparent))
+    );
+    color: slot(action, foreground-hover, slot(action, foreground, currentColor));
+  }
+
+  .action[data-pressed="true"] {
+    background-color: slot(
+      action,
+      background-pressed,
+      color-mix(in oklab, currentColor 16%, slot(action, background, transparent))
+    );
+  }
+
+  .action[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity, 0.5);
+  }
+
+  .icon {
+    @apply flex items-center justify-center;
+  }
+}

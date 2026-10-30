@@ -24,6 +24,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
       actions,
       styles: inputComponentStyles,
       placeholder = "Search...",
+      autoFocus,
       ...props
     },
     ref,
@@ -64,8 +65,8 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
     };
     const inputRef = useMergeRefs(ref, searchInputRef);
     React.useLayoutEffect(() => {
-      if (isOpen) searchInputRef.current?.focus({ preventScroll: true });
-    }, [isOpen, searchInputRef]);
+      if (autoFocus ?? isOpen) searchInputRef.current?.focus({ preventScroll: true });
+    }, [autoFocus, isOpen, searchInputRef]);
     const usesDefaultClearAction = actions === undefined;
     const resolvedActions = actions ?? [
       {

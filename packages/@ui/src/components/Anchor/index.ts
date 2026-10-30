@@ -4,6 +4,7 @@ export type {
   AnchorPreviewProps,
   AnchorUnderlineProps,
   AnchorVariant,
+  AnchorUnderlineVariant,
   AnchorStyleSlots,
   AnchorStyleSlot,
   AnchorStylesProp,

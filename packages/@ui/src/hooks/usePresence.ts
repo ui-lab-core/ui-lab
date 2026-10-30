@@ -1,6 +1,6 @@
 import * as React from "react";
 
-type PresenceState = "entering" | "entered" | "exiting";
+type PresenceState = "entering" | "entered" | "exiting" | "exited";
 
 function isReducedMotion() {
   return (
@@ -13,11 +13,22 @@ function isReducedMotion() {
  * Keeps content mounted through its exit transition and guarantees that newly
  * mounted content paints its initial state before being promoted to entered.
  */
-export function usePresence(open: boolean, duration: number) {
+export function usePresence(
+  open: boolean,
+  duration: number,
+  { settleExit = false }: { settleExit?: boolean } = {},
+) {
   const [present, setPresent] = React.useState(false);
   const [state, setState] = React.useState<PresenceState>("exiting");
 
-  React.useEffect(() => {
+  const completeExit = React.useCallback(() => {
+    if (settleExit) setState("exited");
+    else setPresent(false);
+  }, [settleExit]);
+
+  // Cancel pending entry/exit work during the commit, before a frame callback
+  // can restore an obsolete state after dismissal or reopening.
+  React.useLayoutEffect(() => {
     let firstFrame = 0;
     let secondFrame = 0;
     let timeout = 0;
@@ -26,7 +37,7 @@ export function usePresence(open: boolean, duration: number) {
       if (!present) {
         setState("entering");
         setPresent(true);
-      } else if (state === "exiting") {
+      } else if (state === "exiting" || state === "exited") {
         // Reversing an in-progress exit should transition from its current
         // computed value instead of restarting from the hidden state.
         setState("entered");
@@ -44,14 +55,26 @@ export function usePresence(open: boolean, duration: number) {
         }
       }
     } else if (present) {
-      if (state !== "exiting") {
+      if (state === "exited") {
+        // The owner hides this terminal state. Commit it for a rendering
+        // opportunity before removing the portal; reopening cancels both frames.
+        firstFrame = window.requestAnimationFrame(() => {
+          secondFrame = window.requestAnimationFrame(() => setPresent(false));
+        });
+      } else if (state !== "exiting") {
         setState("exiting");
-      } else if (isReducedMotion()) {
-        setPresent(false);
+      } else if (isReducedMotion() || duration === 0) {
+        completeExit();
+      } else if (settleExit) {
+        // Start the missing-event fallback only after the exit styles have had
+        // a rendering opportunity, not before the CSS transition starts.
+        firstFrame = window.requestAnimationFrame(() => {
+          secondFrame = window.requestAnimationFrame(() => {
+            timeout = window.setTimeout(completeExit, duration);
+          });
+        });
       } else {
-        // transitionend is authoritative. This covers interrupted/missing
-        // events and stays synchronized with the CSS duration.
-        timeout = window.setTimeout(() => setPresent(false), duration);
+        timeout = window.setTimeout(completeExit, duration);
       }
     }
 
@@ -60,13 +83,13 @@ export function usePresence(open: boolean, duration: number) {
       window.cancelAnimationFrame(secondFrame);
       window.clearTimeout(timeout);
     };
-  }, [duration, open, present, state]);
+  }, [completeExit, duration, open, present, settleExit, state]);
 
   const finishExit = React.useCallback(() => {
     if (!open && state === "exiting") {
-      setPresent(false);
+      completeExit();
     }
-  }, [open, state]);
+  }, [completeExit, open, state]);
 
   return { present, state, finishExit };
 }

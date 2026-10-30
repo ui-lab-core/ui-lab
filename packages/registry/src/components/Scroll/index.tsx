@@ -7,7 +7,7 @@ const scrollBasicCode = `import { Scroll } from "ui-lab-components";
 
 export function Example() {
   return (
-    <Scroll maxHeight="300px">
+    <Scroll max-height="300px">
       <div className="p-4 space-y-2">
         {Array.from({ length: 20 }).map((_, i) => (
           <div key={i} className="p-3 bg-background-700 rounded-md">
@@ -47,7 +47,7 @@ export const scrollDetail: ComponentDetail = {
       id: "default",
       name: "Default",
       description: "Scroll with standard 300px height for typical content",
-      code: `<Scroll maxHeight="300px">
+      code: `<Scroll max-height="300px">
   <div className="p-4 space-y-2">
     {Array.from({ length: 20 }).map((_, i) => (
       <div key={i} className="p-3 bg-background-700 rounded-md">
@@ -57,7 +57,7 @@ export const scrollDetail: ComponentDetail = {
   </div>
 </Scroll>`,
       preview: (
-        <Scroll maxHeight="300px">
+        <Scroll max-height="300px">
           <div className="space-y-2 p-4">
             {Array.from({ length: 20 }).map((_, i) => (
               <div key={i} className="rounded-md bg-background-700 p-3">

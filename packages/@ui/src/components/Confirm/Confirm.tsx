@@ -102,26 +102,18 @@ const severityConfig = {
   low: {
     icon: <Info className="w-5 h-5 text-blue-500" />,
     warningBoxClass: styles["warning-box-low"],
-    buttonVariant: "primary" as const,
-    confirmVariant: "primary" as const,
   },
   medium: {
     icon: <TriangleAlert className="w-5 h-5 text-yellow-500" />,
     warningBoxClass: styles["warning-box-medium"],
-    buttonVariant: "secondary" as const,
-    confirmVariant: "primary" as const,
   },
   high: {
     icon: <CircleAlert className="w-5 h-5 text-orange-500" />,
     warningBoxClass: styles["warning-box-high"],
-    buttonVariant: "secondary" as const,
-    confirmVariant: "primary" as const,
   },
   critical: {
     icon: <TriangleAlert className="w-5 h-5 text-red-500" />,
     warningBoxClass: styles["warning-box-critical"],
-    buttonVariant: "secondary" as const,
-    confirmVariant: "danger" as const,
   },
 } as const;
 
@@ -247,7 +239,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
             <Button
               onClick={handleTrigger}
               disabled={disabled || isLoading}
-              variant={config.buttonVariant}
+              variant={severity === "low" ? undefined : "secondary"}
             >
               {labels.trigger}
             </Button>
@@ -272,7 +264,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                 </Button>
                 <Button
                   size="sm"
-                  variant={config.confirmVariant}
+                  variant={severity === "critical" ? "danger" : undefined}
                   onClick={handleConfirm}
                   disabled={!canConfirm || !confirmValid || isLoading}
                 >
@@ -353,7 +345,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
               <Button
                 onClick={handleTrigger}
                 disabled={disabled || isLoading}
-                variant={config.buttonVariant}
+                variant={severity === "low" ? undefined : "secondary"}
               >
                 {labels.trigger}
               </Button>
@@ -363,7 +355,7 @@ const Confirm = React.forwardRef<HTMLDivElement, ConfirmProps>(
                   {cancelLabel}
                 </Button>
                 <Button
-                  variant={config.confirmVariant}
+                  variant={severity === "critical" ? "danger" : undefined}
                   onClick={handleConfirm}
                   disabled={!canConfirm || !confirmValid || isLoading}
                 >

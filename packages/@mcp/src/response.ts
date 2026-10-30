@@ -31,7 +31,7 @@ export type ExactResponse<T extends object = object> = Base & {
 export interface MatchesResponse<T> extends Base {
   status: "matches";
   query: string;
-  total: number;
+  returned: number;
   matches: T[];
   note?: string;
   nextSteps: string[];
@@ -83,7 +83,7 @@ export function matches<T>(
   return {
     status: "matches",
     query,
-    total: items.length,
+    returned: items.length,
     matches: items,
     ...(note ? { note } : {}),
     nextSteps,

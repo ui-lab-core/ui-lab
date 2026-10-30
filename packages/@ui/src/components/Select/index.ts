@@ -103,6 +103,14 @@ export type {
   SelectListStylesProp,
 } from "./Select.Items";
 
+export { useCompletion } from "@/hooks/useCompletion";
+export type {
+  CompletionController,
+  CompletionMatch,
+  CompletionNavigator,
+  CompletionOrigin,
+  UseCompletionOptions,
+} from "@/hooks/useCompletion";
 export {
   Select,
   Searchable,

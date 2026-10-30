@@ -11,6 +11,8 @@ import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
 import { Scroll } from "@/components/Scroll";
+import type { TextareaVariantOverrides } from "../../theme-contract";
+import type { DefaultTextareaVariant } from "../../generated-theme-contract";
 import css from "./Textarea.module.css";
 
 /**
@@ -18,6 +20,12 @@ import css from "./Textarea.module.css";
  * @typeDoc TextAreaSize
  */
 export type TextAreaSize = "sm" | "md" | "lg";
+
+/**
+ * Visual treatment supplied by the installed theme.
+ * @typeDoc TextAreaVariant
+ */
+export type TextAreaVariant = DefaultTextareaVariant | keyof TextareaVariantOverrides | (string & {});
 
 /**
  * Axis the field can be dragged along with the custom resize handle.
@@ -98,6 +106,12 @@ export interface TextAreaProps extends Omit<ComponentPropsWithoutRef<"textarea">
    */
   size?: TextAreaSize;
   /**
+   * Controls the visual treatment of the field surface. When omitted, the active theme supplies the default.
+   * @category Core
+   * @typeDoc TextAreaVariant
+   */
+  variant?: TextAreaVariant;
+  /**
    * Applies error styling to the field without changing native validity. Exceeding maxCharacters applies the same styling.
    * @category Core
    * @default false
@@ -158,6 +172,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       className,
       style,
       size = "md",
+      variant,
       error = false,
       disabled,
       resize = "y",
@@ -215,6 +230,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       "data-error": hasError ? "true" : undefined,
       "data-focused": isFocused ? "true" : undefined,
       "data-focus-visible": isFocusVisible ? "true" : undefined,
+      "data-variant": variant,
     } as const;
 
     const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
@@ -367,7 +383,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
               data-textarea-focus-surface="true"
               {...stateAttributes}
             >
-              <Scroll maxHeight={effectiveMaxHeight} style={{ height: "auto" }}>
+              <Scroll max-height={effectiveMaxHeight} style={{ height: "auto" }}>
                 {field}
               </Scroll>
             </div>

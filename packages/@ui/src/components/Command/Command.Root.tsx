@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import type { CompletionController } from "@/hooks/useCompletion";
 import css from "./Command.module.css";
 import {
   CommandContext,
@@ -29,7 +30,7 @@ export interface CommandRootProps extends React.HTMLAttributes<HTMLDivElement> {
    * @category Items
    */
   filter?: (command: CommandItem, query: string) => boolean;
-  /** Notifies a parent-owned overlay with false after selection when closeOnSelect is enabled.
+  /** Notifies a parent-owned overlay with false after selection when close-on-select is enabled.
    * @category Events
    */
   onOpenChange?: (open: boolean) => void;
@@ -37,7 +38,14 @@ export interface CommandRootProps extends React.HTMLAttributes<HTMLDivElement> {
    * @category Core
    * @default false
    */
-  closeOnSelect?: boolean;
+  "close-on-select"?: boolean;
+  /** Drives the command list from a text field managed by useCompletion. The completion query
+   * becomes the search value, the first match is focused, and arrow/Enter keys come from the
+   * field. The root's own keyboard handling is disabled so the field keeps normal editing keys.
+   * @category Core
+   * @typeDoc CompletionController
+   */
+  completion?: CompletionController;
 }
 
 const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
@@ -57,7 +65,8 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
       items = EMPTY_COMMAND_ITEMS,
       filter,
       onOpenChange,
-      closeOnSelect = false,
+      "close-on-select": closeOnSelect = false,
+      completion,
       children,
       onKeyDown,
       onPointerDownCapture,
@@ -83,14 +92,36 @@ export const CommandRoot = React.forwardRef<HTMLDivElement, CommandRootProps>(
       runFocusedAction,
       searchValue,
       setSearchValue,
+      orderedKeys,
     } = engine;
     const mergedRef = useMergeRefs(surfaceRef, ref);
     const close = React.useCallback(() => {
       if (closeOnSelect) onOpenChange?.(false);
     }, [closeOnSelect, onOpenChange]);
+    const completionQuery = completion?.query;
+    React.useEffect(() => {
+      if (completionQuery !== undefined) setSearchValue(completionQuery);
+    }, [completionQuery, setSearchValue]);
+    // Runs after the engine's own focus reset, so completion always starts on the first match.
+    React.useEffect(() => {
+      if (completion?.open) setFocusedKey(orderedKeys[0] ?? null);
+    }, [completion?.open, orderedKeys, setFocusedKey]);
+    React.useEffect(() => {
+      if (!completion) return;
+      return completion.register({
+        move: (direction) => moveFocus(direction === 1 ? "down" : "up"),
+        confirm: () => {
+          const action = runFocusedAction();
+          if (!action) return false;
+          action();
+          close();
+          return true;
+        },
+      });
+    }, [completion?.register, moveFocus, runFocusedAction, close]);
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       onKeyDown?.(event);
-      if (event.defaultPrevented) return;
+      if (event.defaultPrevented || completion) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         moveFocus(event.key === "ArrowDown" ? "down" : "up");

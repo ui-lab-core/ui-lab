@@ -75,6 +75,14 @@
     /* Nested parts inset themselves from this radius via --inset-radius. */
     --radius: var(--background-radius);
 
+    @slot action {
+      /* Inset from the container edge by its border. */
+      --radius: max(
+        0px,
+        calc(var(--background-radius) - slot(border, width, var(--border-width-base, 1px)))
+      );
+    }
+
     display: flex;
     align-items: center;
     min-width: 0;
@@ -94,11 +102,6 @@
       background-color: var(--disabled-background, var(--background, transparent));
       cursor: not-allowed;
       opacity: 0.5;
-    }
-
-    &[data-variant="ghost"] {
-      background-color: transparent;
-      border-color: transparent;
     }
 
     &[data-focused="true"]:not([data-disabled]) {
@@ -142,30 +145,6 @@
     @apply flex items-center gap-0.5;
     padding-block: var(--action-inset);
     pointer-events: auto;
-  }
-
-  .action {
-    @apply flex items-center justify-center;
-    /* Inset from the container edge by its border. */
-    --inset-gap: slot(border, width, var(--border-width-base, 1px));
-    border-radius: var(--inset-radius);
-    background-color: var(--background, transparent);
-    color: var(--foreground, currentColor);
-    transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-  }
-
-  .action:global(.button):global(.icon) {
-    --size: calc(var(--spacing, 0.25rem) * 7);
-    --padding-block: calc(var(--spacing, 0.25rem) * 1.5);
-    --padding-inline: calc(var(--spacing, 0.25rem) * 1.5);
-  }
-
-  .action:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
   }
 
   .hint {

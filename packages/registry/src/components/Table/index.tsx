@@ -55,19 +55,23 @@ function CopyableColorValue({ value }: { value: string }) {
   );
 }
 
+// Column keys must be unique row fields, so the swatch shares the Color column
+// rather than a second "value" column.
 const colorColumns: Column<ColorData>[] = [
   {
-    key: "value",
-    header: <span className="sr-only">Preview</span>,
+    key: "name",
+    header: "Color",
     cell: ({ row }) => (
-      <span
-        aria-label={`${row.name} color preview`}
-        className="block size-8 rounded-xs border border-background-700"
-        style={{ backgroundColor: row.value }}
-      />
+      <span className="flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          className="block size-8 shrink-0 rounded-xs border border-background-700"
+          style={{ backgroundColor: row.value }}
+        />
+        {row.name}
+      </span>
     ),
   },
-  { key: "name", header: "Color" },
   {
     key: "value",
     header: "Value",
@@ -112,16 +116,15 @@ interface ColorRow {
 
 const columns: Column<ColorRow>[] = [
   {
-    key: "value",
-    header: <span className="sr-only">Preview</span>,
+    key: "name",
+    header: "Color",
     cell: ({ row }) => (
-      <span
-        aria-label={\`\${row.name} color preview\`}
-        style={{ backgroundColor: row.value }}
-      />
+      <span className="flex items-center gap-3">
+        <span aria-hidden="true" className="size-8" style={{ backgroundColor: row.value }} />
+        {row.name}
+      </span>
     ),
   },
-  { key: "name", header: "Color" },
   {
     key: "value",
     header: "Value",

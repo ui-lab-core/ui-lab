@@ -37,7 +37,10 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* The content clips on both inline edges, so the start edge needs its own
+     gutter or focus rings on flush children lose their outer edge. */
   .vertical[data-inline="true"] .content {
+    padding-inline-start: var(--scroll-gutter-inline-start, 2px);
     padding-inline-end: 16px;
   }
 

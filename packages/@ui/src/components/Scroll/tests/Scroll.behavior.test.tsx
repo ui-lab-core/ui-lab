@@ -25,7 +25,7 @@ describe("Scroll behavior", () => {
 
     expect(() =>
       render(
-        <Scroll inline maxHeight="12rem">
+        <Scroll inline max-height="12rem">
           <div>Content</div>
         </Scroll>,
       ),
@@ -34,7 +34,7 @@ describe("Scroll behavior", () => {
 
   it("keeps the custom scrollbar hidden when the viewport already fits the content", () => {
     const { container } = render(
-      <Scroll maxHeight="12rem" hide={false}>
+      <Scroll max-height="12rem" hide={false}>
         <div>Alpha</div>
         <div>Beta</div>
       </Scroll>,

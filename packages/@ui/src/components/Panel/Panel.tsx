@@ -134,6 +134,7 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
       onOpenChange,
       size = 240,
       collapsedSize = 0,
+      strategy = "pop-out",
       className,
       id: providedId,
       style,
@@ -196,6 +197,7 @@ const PanelSidebar = React.forwardRef<HTMLElement, PanelSidebarProps>(
         className={cn(styles.sidebar, className)}
         data-open={sidebarOpen}
         data-side={side}
+        data-strategy={strategy}
         aria-hidden={!sidebarOpen}
         style={customStyle}
         {...props}

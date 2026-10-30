@@ -48,6 +48,33 @@
       visibility 0s linear var(--panel-duration, 0.32s);
   }
 
+  /* Inset: siblings keep the full panel width and are pushed aside (clipped by the panel)
+     instead of compressing, while the sidebar's content slides in anchored to its far edge. */
+  .panel:has(> .sidebar[data-strategy="inset"]) {
+    overflow: hidden;
+  }
+
+  .panel:not([data-stacked="true"]):has(> .sidebar[data-strategy="inset"])
+    > :not(.sidebar, .resize) {
+    flex: 0 0 100%;
+  }
+
+  .panel > .sidebar[data-strategy="inset"] {
+    display: flex;
+  }
+
+  .panel > .sidebar[data-strategy="inset"][data-side="left"] {
+    justify-content: flex-end;
+  }
+
+  .sidebar[data-strategy="inset"] > .content {
+    flex-shrink: 0;
+  }
+
+  .sidebar[data-strategy="inset"][data-open="false"] > .content {
+    opacity: 1;
+  }
+
   .panel[data-stacked="true"] > .sidebar {
     width: 100%;
     max-width: 100%;
@@ -66,51 +93,29 @@
 
   .resize {
     @apply relative shrink-0;
-    width: 10px;
+    width: 1px;
     cursor: col-resize;
     touch-action: none;
     user-select: none;
-    background: transparent;
+    background: var(--background-700);
   }
 
   .resize::before {
     content: "";
     position: absolute;
     inset-block: 0;
-    left: 50%;
-    width: 1px;
-    background: var(--divider-color, #374151);
-    transform: translateX(-50%);
-    transition: width var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);
+    inset-inline: -4px;
   }
 
   .resize[data-orientation="vertical"] {
     width: auto;
-    height: 10px;
+    height: 1px;
     cursor: row-resize;
   }
 
   .resize[data-orientation="vertical"]::before {
-    inset-block: auto;
     inset-inline: 0;
-    top: 50%;
-    width: auto;
-    height: 1px;
-    transform: translateY(-50%);
-    transition: height var(--hover-leave-duration, 300ms) var(--ease-snappy-pop, ease-out);
-  }
-
-  .resize:hover::before,
-  .resize:focus-visible::before,
-  .resize[data-resizing="true"]::before {
-    width: 2px;
-  }
-
-  .resize[data-orientation="vertical"]:hover::before,
-  .resize[data-orientation="vertical"]:focus-visible::before,
-  .resize[data-orientation="vertical"][data-resizing="true"]::before {
-    width: auto;
-    height: 2px;
+    inset-block: -4px;
   }
 
   .spacingNone,

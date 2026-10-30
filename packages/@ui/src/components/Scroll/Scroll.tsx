@@ -30,15 +30,15 @@ export type ScrollStylesProp = StylesProp<ScrollStyleSlots>;
 
 export interface ScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  viewportRef?: React.Ref<HTMLDivElement>;
-  maxHeight?: string;
-  maxWidth?: string;
+  "viewport-ref"?: React.Ref<HTMLDivElement>;
+  "max-height"?: string;
+  "max-width"?: string;
   direction?: "vertical" | "horizontal";
-  paddingY?: string | number;
+  "padding-y"?: string | number;
   "fade-y"?: boolean;
   "fade-x"?: boolean;
-  fadeDistance?: number;
-  fadeSize?: number;
+  "fade-distance"?: number;
+  "fade-size"?: number;
   enabled?: boolean;
   hide?: boolean;
   inline?: boolean;
@@ -50,11 +50,11 @@ export interface ScrollProps extends React.HTMLAttributes<HTMLDivElement> {
    * - "programmatic": the viewport can still be changed through scrollTop /
    *   scrollLeft, but wheel/trackpad scrolling falls through to the document.
    */
-  scrollMode?: "native" | "programmatic";
+  "scroll-mode"?: "native" | "programmatic";
 
   presentational?: boolean;
   styles?: ScrollStylesProp;
-  storageKey?: string;
+  "storage-key"?: string;
 }
 
 const resolveScrollBaseStyles = createStylesResolver([
@@ -214,23 +214,23 @@ const ScrollRoot = React.forwardRef<HTMLDivElement, ScrollProps>(
   (
     {
       children,
-      viewportRef,
+      "viewport-ref": viewportRef,
       className,
-      maxHeight,
-      maxWidth,
+      "max-height": maxHeight,
+      "max-width": maxWidth,
       direction = "vertical",
-      paddingY = 4,
+      "padding-y": paddingY = 4,
       "fade-y": fadeY = false,
       "fade-x": fadeX = false,
-      fadeDistance = 5,
-      fadeSize = 4,
+      "fade-distance": fadeDistance = 5,
+      "fade-size": fadeSize = 4,
       enabled = true,
       hide = true,
       inline = false,
-      scrollMode = "native",
+      "scroll-mode": scrollMode = "native",
       presentational = false,
       styles,
-      storageKey,
+      "storage-key": storageKey,
       style: propsStyle,
       ...restProps
     },

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { Banner } from "../Banner";
 
@@ -18,5 +18,27 @@ describe("Banner", () => {
 
     expect(banner).toHaveClass("note");
     expect(banner).toHaveAttribute("data-variant", "note");
+  });
+
+  it("renders Banner.Body as a div that accepts block children", () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { container } = render(
+      <Banner variant="danger">
+        <Banner.Title>Build failed</Banner.Title>
+        <Banner.Body>
+          <pre>{"Error: module not found\n  at build.ts:12"}</pre>
+          <div>
+            <button type="button">Retry</button>
+            <button type="button">View logs</button>
+          </div>
+        </Banner.Body>
+      </Banner>,
+    );
+    const body = container.querySelector(".body");
+
+    expect(body?.tagName).toBe("DIV");
+    expect(body?.querySelector("pre")).not.toBeNull();
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 });

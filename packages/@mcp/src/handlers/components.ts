@@ -1,6 +1,6 @@
 import { publicWorkshopCatalog, type ComponentMetadata, type WorkshopCatalogEntry } from "ui-lab-registry";
 import { registryAdapter, type Component } from "../adapters/registry-adapter.js";
-import { componentRef, parseRef } from "../refs.js";
+import { componentRef, parseRef, isExplicitRef } from "../refs.js";
 import { exact, list, matches, notFound, LIST_CAP, type ToolResponse } from "../response.js";
 import { clampLimit } from "../search.js";
 
@@ -13,6 +13,8 @@ export interface GetComponentInput {
   query?: string;
   detail?: ComponentDetail;
   limit?: number;
+  parts?: string[];
+  props?: string[];
 }
 
 /**
@@ -35,12 +37,8 @@ function componentIndexEntry(component: AnyComponent) {
   return {
     ref: componentRef(component.id),
     name: component.name,
-    category: component.category,
     description: component.description,
     experimental: component.experimental === true,
-    ...(component.experimental === true
-      ? { experimentalNote: "API stability is not guaranteed. Fetch usage and API before use; do not substitute native HTML solely because this component is experimental." }
-      : {}),
   };
 }
 
@@ -49,10 +47,9 @@ function componentSummary(component: AnyComponent) {
     name: component.name,
     description: component.description,
     category: component.category,
-    tags: component.tags,
     experimental: component.experimental === true,
     ...(component.experimental === true
-      ? { experimentalNote: "API stability is not guaranteed. Review usage and API before use. Use the documented component unless its usage notes identify a concrete blocker; experimental does not mean unusable." }
+      ? { experimentalNote: "Experimental API; use documented props, not guessed substitutes." }
       : {}),
     // The import belongs in the default detail level: an agent that only asks
     // for a summary still has to write the import line.
@@ -80,8 +77,18 @@ function componentExamples(component: AnyComponent) {
     }));
 }
 
-function detailPayload(component: Component, detail: ComponentDetail) {
-  const summary = componentSummary(component);
+function detailPayload(component: Component, detail: ComponentDetail, limit: number, focused: boolean) {
+  const { description, category, ...identity } = componentSummary(component);
+  const summary = detail === "summary" || detail === "full"
+    ? { ...identity, description, category }
+    : identity;
+  const examples = componentExamples(component);
+  const exampleListing = {
+    exampleCount: examples.length,
+    ...(examples.length > limit ? { examplesShown: limit } : {}),
+    examples: examples.slice(0, limit),
+  };
+  const constraints = { accessibility: component.accessibility, reactAriaUrl: component.reactAriaUrl };
   const api = component.api;
   const props = api
     ? { props: api.props, subComponents: api.subComponents, customTypes: api.customTypes, styleableParts: api.styleableParts }
@@ -90,11 +97,11 @@ function detailPayload(component: Component, detail: ComponentDetail) {
     ? { styleableParts: api.styleableParts, stateAttributes: api.stateAttributes, styleTypes: api.styleTypes }
     : undefined;
 
-  if (detail === "api") return { ...summary, api: props };
+  if (detail === "api") return { ...summary, ...constraints, ...(focused ? { scope: "Selected API; required and accessibility props retained. Omit parts/props for complete API." } : {}), api: props };
   if (detail === "styling") return { ...summary, styling };
   if (detail === "usage")
-    return { ...summary, relatedComponents: component.relatedComponents, usage: component.usage };
-  if (detail === "examples") return { ...summary, examples: componentExamples(component) };
+    return { ...summary, ...constraints, relatedComponents: component.relatedComponents, usageAvailable: component.usage ? "available" : "none", usage: component.usage };
+  if (detail === "examples") return { ...summary, ...exampleListing };
   if (detail === "full")
     return {
       ...summary,
@@ -103,8 +110,9 @@ function detailPayload(component: Component, detail: ComponentDetail) {
       reactAriaUrl: component.reactAriaUrl,
       api: props,
       styling: styling ? { stateAttributes: styling.stateAttributes, styleTypes: styling.styleTypes } : undefined,
+      usageAvailable: component.usage ? "available" : "none",
       usage: component.usage,
-      examples: componentExamples(component),
+      ...exampleListing,
     };
 
   return summary;
@@ -113,11 +121,8 @@ function detailPayload(component: Component, detail: ComponentDetail) {
 function detailNextSteps(component: Component, detail: ComponentDetail): string[] {
   const ref = componentRef(component.id);
   if (detail === "summary") return [`get_component { query: "${ref}", detail: "api" }`];
-  if (detail === "examples") return ["get_component { query: <an example ref> } for its source."];
-  // `styleableParts` names every slot, so this is only worth calling when the
-  // slot interfaces themselves are needed.
-  if (detail === "api" && component.api?.styleTypes?.length)
-    return [`get_component { query: "${ref}", detail: "styling" } for the slot type definitions.`];
+  if (detail === "examples" && componentExamples(component).length)
+    return [`get_component { query: "${componentExamples(component)[0]!.ref}" } for source.`];
   return [];
 }
 
@@ -152,6 +157,7 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
   }
 
   const ref = parseRef(query);
+  if (!ref && isExplicitRef(query)) return notFound(query, "Invalid or unsupported reference.", [], []);
 
   if (ref?.kind === "example") {
     const example = getExample(ref.id, ref.exampleId!);
@@ -164,11 +170,11 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
         ? `Component "${ref.id}" has no example "${ref.exampleId}".`
         : `No UI Lab component "${ref.id}" exists.`,
       (component
-        ? componentExamples(component)
-        : registryAdapter.suggest(ref.id, limit).map(componentIndexEntry)) as unknown[],
-      component
+        ? componentExamples(component).slice(0, Math.min(limit, 3))
+        : []) as unknown[],
+      component && componentExamples(component).length
         ? [`get_component { query: "${componentRef(component.id)}", detail: "examples" }`]
-        : ["get_component {}"],
+        : [],
     );
   }
 
@@ -184,12 +190,31 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
   const component = registryAdapter.getComponent(id);
 
   if (component) {
+    const focused = input.parts !== undefined || input.props !== undefined;
+    if (focused && detail !== "api")
+      return notFound(query, "parts/props selectors apply only to detail api; omit them for full retrieval.", [], []);
+    const normalize = (name: string) => name.replace(`${component.source.exportName}.`, "");
+    const parts = input.parts?.map(normalize);
+    const props = input.props?.map(normalize);
+    const knownParts = Object.keys(component.api?.subComponents ?? {}).map(normalize);
+    const knownProps = [
+      ...(component.api?.props ?? []).map((prop) => prop.name),
+      ...Object.entries(component.api?.subComponents ?? {}).flatMap(([name, part]) =>
+        part.props.map((prop) => `${normalize(name)}.${prop.name}`)),
+    ];
+    const invalid = [...(parts ?? []).filter((name) => !knownParts.includes(name)),
+      ...(props ?? []).filter((name) => !knownProps.includes(name) ||
+        (name.includes(".") && parts && !parts.includes(name.split(".")[0]!)))];
+    if (invalid.length) return notFound(query, `Unknown or excluded API selector: ${invalid.join(", ")}.`, [], []);
+    const selected = focused ? registryAdapter.getComponent(id, { parts, props })! : component;
     return exact(
       componentRef(component.id),
-      detailPayload(component, detail),
+      detailPayload(selected, detail, clampLimit(input.limit, LIST_CAP, 200), focused),
       detailNextSteps(component, detail),
     );
   }
+
+  if (ref) return notFound(query, `No UI Lab component "${ref.id}" exists.`, [], []);
 
   const found = registryAdapter.search(query, limit);
   if (found.length > 0) {
@@ -205,6 +230,6 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
     query,
     `No UI Lab component matches "${query}".`,
     registryAdapter.suggest(query, limit).map(componentIndexEntry),
-    ["get_component {}", `search_workshop { query: "${query}" }`],
+    [],
   );
 }

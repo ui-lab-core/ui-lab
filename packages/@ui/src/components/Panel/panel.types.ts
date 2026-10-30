@@ -6,6 +6,7 @@ export type PanelSpacing = "none" | "sm" | "md" | "lg";
 export type PanelVariant = "default" | "compact";
 export type PanelSide = "left" | "right";
 export type PanelOrientation = "horizontal" | "vertical";
+export type PanelSidebarStrategy = "pop-out" | "inset";
 
 export interface PanelStyleSlots {
   root?: Style;
@@ -56,6 +57,11 @@ export interface PanelSidebarProps extends React.HTMLAttributes<HTMLElement> {
   size?: string | number;
   /** Sidebar size when closed. */
   collapsedSize?: string | number;
+  /**
+   * How opening affects sibling regions. "pop-out" shrinks them to make room; "inset"
+   * keeps them at full width and pushes them aside while the sidebar slides in from its edge.
+   */
+  strategy?: PanelSidebarStrategy;
 }
 
 export interface PanelToggleProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {

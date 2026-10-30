@@ -4,6 +4,13 @@
 
 @layer components.defaults {
   .root {
+    @slot action {
+      --radius: 0.25rem;
+      --padding-block: calc(var(--spacing, 0.25rem) * 2);
+      --padding-inline: calc(var(--spacing, 0.25rem) * 2);
+      --size: auto;
+    }
+
     --radius: var(--radius-sm, 0.375rem);
     --list-item-radius: initial;
 
@@ -200,25 +207,6 @@
   .item:hover .actions,
   .item:focus-within .actions {
     opacity: 1;
-  }
-
-  .action {
-    @apply flex items-center justify-center;
-    border-radius: 0.25rem;
-    background-color: slot(action, background, var(--background, transparent));
-    color: slot(action, foreground, var(--foreground, var(--foreground-100, currentColor)));
-    @apply p-2;
-    transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-  }
-
-  .action:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
-    background-color: slot(action, background-hover, slot(action, background, var(--background, transparent)));
-    color: slot(action, foreground-hover, slot(action, foreground, var(--foreground, var(--foreground-100, currentColor))));
   }
 
   .header,

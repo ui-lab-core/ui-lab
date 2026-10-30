@@ -13,8 +13,14 @@ import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Tooltip } from "@/components/Tooltip";
 import css from "./Anchor.module.css";
 
-/** Line treatment drawn beneath the Anchor label. */
-export type AnchorVariant = "solid" | "dashed" | "dotted";
+/** Line treatment drawn by an Anchor.Underline. */
+export type AnchorUnderlineVariant = "solid" | "dashed" | "dotted";
+
+/**
+ * Line treatment drawn beneath the Anchor label. `none` renders no underline,
+ * for anchors that wrap block content such as a card.
+ */
+export type AnchorVariant = AnchorUnderlineVariant | "none";
 
 /** Class-based slots for the Anchor preview overlay. */
 export interface AnchorPreviewStyleSlots {
@@ -56,14 +62,14 @@ const resolveAnchorStyles = createStylesResolver(ANCHOR_STYLE_SLOTS);
 
 // The underline is a 1px horizontal rule, so a single mask tile per variant
 // covers every rendered case. Tiles repeat along the inline axis.
-const UNDERLINE_MASK_TILES: Record<Exclude<AnchorVariant, "solid">, string> = {
+const UNDERLINE_MASK_TILES: Record<Exclude<AnchorUnderlineVariant, "solid">, string> = {
   dashed:
     "%3Csvg width='12' height='1' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='8' height='1' fill='%23ffffff'/%3E%3C/svg%3E",
   dotted:
     "%3Csvg width='3' height='1' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='0.5' cy='0.5' r='0.5' fill='%23ffffff'/%3E%3C/svg%3E",
 };
 
-function getUnderlineMaskStyle(variant: AnchorVariant): React.CSSProperties {
+function getUnderlineMaskStyle(variant: AnchorUnderlineVariant): React.CSSProperties {
   if (variant === "solid") return {};
 
   const maskImage = `url("data:image/svg+xml,${UNDERLINE_MASK_TILES[variant]}")`;
@@ -124,7 +130,7 @@ export interface AnchorUnderlineProps extends React.HTMLAttributes<HTMLSpanEleme
    * @category Core
    * @default solid
    */
-  variant?: AnchorVariant;
+  variant?: AnchorUnderlineVariant;
 }
 
 /**
@@ -167,7 +173,7 @@ export interface AnchorProps extends React.AnchorHTMLAttributes<HTMLAnchorElemen
    * @mdn https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#rel
    */
   rel?: string;
-  /** Line treatment drawn beneath the label. Applies to the generated underline; an explicit Anchor.Underline keeps its own variant.
+  /** Line treatment drawn beneath the label. Applies to the generated underline; an explicit Anchor.Underline keeps its own variant. `none` omits the generated underline.
    * @category Core
    * @default solid
    */
@@ -244,9 +250,13 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
       content.push(child);
     });
 
-    if (!hasUnderline) {
+    if (!hasUnderline && variant !== "none") {
       content.push(
-        <AnchorUnderline key="underline" className={resolved.underline} variant={variant} />,
+        <AnchorUnderline
+          key="underline"
+          className={resolved.underline}
+          variant={variant as AnchorUnderlineVariant}
+        />,
       );
     }
 

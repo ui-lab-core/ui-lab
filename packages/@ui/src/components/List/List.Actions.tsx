@@ -2,9 +2,9 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Tooltip } from "@/components/Tooltip";
+import { renderAction } from "@/lib/internal/Action";
 import { useListContext, useListItemContext } from "./list.context";
-import { ListActionsProps, ListActionDef } from "./list.types";
+import { ListActionsProps } from "./list.types";
 import css from "./List.module.css";
 import { markListItemSlot } from "./list.item-layout";
 
@@ -33,24 +33,12 @@ const Actions = React.forwardRef<HTMLDivElement, ListActionsProps>(
         data-actions
       >
         {children ??
-          actions?.map((action, i) => {
-            const key = React.isValidElement(action) ? i : (action as ListActionDef).title || i;
-            return React.isValidElement(action) ? (
-              <React.Fragment key={key}>{action}</React.Fragment>
-            ) : (
-              <Tooltip key={key} content={(action as ListActionDef).title} position="top">
-                <button
-                  type="button"
-                  className={cn(css.action, listStyles.item.action, itemStyles.action)}
-                  data-slot="item.action"
-                  aria-label={(action as ListActionDef).title}
-                  onClick={(action as ListActionDef).onClick}
-                >
-                  {(action as ListActionDef).icon}
-                </button>
-              </Tooltip>
-            );
-          })}
+          actions?.map((action, i) =>
+            renderAction(action, i, {
+              className: cn(listStyles.item.action, itemStyles.action),
+              "data-slot": "item.action",
+            } as React.ComponentProps<"button">),
+          )}
       </div>
     );
   },

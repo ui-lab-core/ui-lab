@@ -3,144 +3,143 @@
 @layer components.defaults {
   .button {
     @apply inline-flex items-center justify-center gap-2 select-none cursor-pointer whitespace-nowrap;
+
+    /* Public knobs */
     --padding-block: 0;
     --padding-inline: 0;
     --padding-inline-end: var(--padding-inline);
+
     /* Reset locally so an inherited --shadow/--background-image from an ancestor
        surface (Command, Toast) never paints a button. */
     --background-image: none;
     --shadow: none;
+
+    /* Private resolved values (inherited by ::before / ::after) */
+    --_border-width: slot(border, width, var(--border-width-base, 1px));
+    --_border-ring-color: slot(border, background, transparent);
+    --_hover-transition-duration: var(--hover-duration, var(--hover-leave-duration, 150ms));
+    --_hover-transition-timing-function: var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    --_press-transition-duration: var(--press-duration, 120ms);
+    --_press-transition-timing-function: var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
+
     position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
     min-width: 0;
     max-width: 100%;
-    box-sizing: border-box;
     padding-block: var(--padding-block);
     padding-inline: var(--padding-inline);
     padding-inline-end: var(--padding-inline-end);
-    color: var(--foreground);
-    border: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid) transparent;
+    border: var(--_border-width) slot(border, style, solid) transparent;
     border-radius: var(--radius-sm, 0.375rem);
-    isolation: isolate;
+    color: var(--foreground);
     font-family: var(--font-body, inherit);
     font-size: var(--text-sm-body);
     font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition-property: color, opacity;
-    transition-duration:
-      var(--hover-duration, var(--hover-leave-duration, 150ms)),
-      var(--hover-duration, var(--hover-leave-duration, 150ms));
-    transition-timing-function:
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition:
+      color var(--_hover-transition-duration) var(--_hover-transition-timing-function),
+      opacity var(--_hover-transition-duration) var(--_hover-transition-timing-function);
 
-    &::before {
-      content: "";
-      position: absolute;
-      inset: calc(slot(border, width, var(--border-width-base, 1px)) * -1);
-      z-index: -2;
-      pointer-events: none;
-      background-color: var(--background);
-      background-image: var(--background-image);
-      background-origin: border-box;
-      border: slot(border, width, var(--border-width-base, 1px)) solid transparent;
-      border-radius: inherit;
-      box-shadow: var(--shadow);
-      transition-property: background-color, border-color, box-shadow, transform;
-      transition-duration:
-        var(--hover-duration, var(--hover-leave-duration, 150ms)),
-        var(--hover-duration, var(--hover-leave-duration, 150ms)),
-        var(--hover-duration, var(--hover-leave-duration, 150ms)),
-        var(--press-duration, 120ms);
-      transition-timing-function:
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
-    }
+    /* ---- Surface layers ---- */
 
+    &::before,
     &::after {
       content: "";
       position: absolute;
-      inset: calc(slot(border, width, var(--border-width-base, 1px)) * -1);
-      z-index: -1;
-      pointer-events: none;
+      inset: calc(var(--_border-width) * -1);
       border-radius: inherit;
-      box-shadow: inset 0 0 0 slot(border, width, var(--border-width-base, 1px)) slot(border, background, transparent);
-      transition: box-shadow var(--hover-duration, var(--hover-leave-duration, 150ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-        transform var(--press-duration, 120ms) var(--press-ease, cubic-bezier(0.34, 1.56, 0.64, 1));
+      pointer-events: none;
     }
 
-    &[data-hovered="true"]:not([data-disabled="true"]) {
-      --hover-duration: var(--hover-enter-duration, 0ms);
-      color: var(--foreground);
+    &::before {
+      z-index: -2;
+      background-color: var(--background);
+      background-image: var(--background-image);
+      background-origin: border-box;
+      border: var(--_border-width) solid transparent;
+      box-shadow: var(--shadow);
+      transition:
+        background-color var(--_hover-transition-duration) var(--_hover-transition-timing-function),
+        border-color var(--_hover-transition-duration) var(--_hover-transition-timing-function),
+        box-shadow var(--_hover-transition-duration) var(--_hover-transition-timing-function),
+        transform var(--_press-transition-duration) var(--_press-transition-timing-function);
+    }
 
-      &::before {
-        background-color: var(--background);
+    &::after {
+      z-index: -1;
+      box-shadow: inset 0 0 0 var(--_border-width) var(--_border-ring-color);
+      transition:
+        box-shadow var(--_hover-transition-duration) var(--_hover-transition-timing-function),
+        transform var(--_press-transition-duration) var(--_press-transition-timing-function);
+    }
+
+    /* ---- Interaction states ---- */
+
+    &:not([data-disabled="true"]) {
+      &:is([data-hovered="true"], [data-pressed="true"]) {
+        color: var(--foreground);
+
+        &::before {
+          background-color: var(--background);
+        }
       }
 
-      &::after {
-        box-shadow: inset 0 0 0 slot(border, width, var(--border-width-base, 1px))
-          slot(border, background-hover, slot(border, background, transparent));
+      &[data-hovered="true"] {
+        --hover-duration: var(--hover-enter-duration, 0ms);
+        --_border-ring-color: slot(border, background-hover, slot(border, background, transparent));
+      }
+
+      &[data-pressed="true"] {
+        --_border-ring-color: slot(border, background-pressed, slot(border, background, transparent));
+
+        &::before,
+        &::after {
+          transform: var(--press-transform, scale(0.96));
+        }
+      }
+
+      &[data-selected="true"] {
+        --_border-ring-color: slot(border, background-selected, slot(border, background, transparent));
       }
     }
 
-    &[data-pressed="true"]:not([data-disabled="true"]) {
-      color: var(--foreground);
-
-      &::before {
-        background-color: var(--background);
-        transform: var(--press-transform, scale(0.96));
-      }
-
-      &::after {
-        box-shadow: inset 0 0 0 slot(border, width, var(--border-width-base, 1px))
-          slot(border, background-pressed, slot(border, background, transparent));
-        transform: var(--press-transform, scale(0.96));
-      }
+    &:focus-visible {
+      outline: none;
     }
 
-    &[data-selected="true"]:not([data-disabled="true"]) {
-      &::after {
-        box-shadow: inset 0 0 0 slot(border, width, var(--border-width-base, 1px))
-          slot(border, background-selected, slot(border, background, transparent));
-      }
+    &:disabled,
+    &[data-disabled="true"] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
     }
 
-    & > span > svg,
-    & > svg {
-      color: slot(icon, foreground, var(--icon-foreground, currentColor));
+    /* ---- Icons ---- */
+
+    & > svg,
+    & > span > svg {
+      flex-shrink: 0;
       width: slot(icon, size, 1em);
       height: slot(icon, size, 1em);
-      flex-shrink: 0;
+      color: slot(icon, foreground, var(--icon-foreground, currentColor));
     }
-  }
 
-  .button:not(.icon) {
-    min-height: calc(
-      1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2
-    );
-  }
+    /* ---- Sizing ---- */
 
-  .button:focus-visible {
-    outline: none;
-  }
+    &:not(.icon) {
+      min-height: calc(1lh + var(--padding-block) * 2 + var(--border-width-base, 1px) * 2);
+    }
 
-  .button:disabled,
-  .button[data-disabled="true"] {
-    opacity: 0.5;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
-  }
-
-  .button.icon {
-    aspect-ratio: 1;
-    width: var(--size, 2.25rem);
-    height: var(--size, 2.25rem);
-    max-width: none;
-    --padding-block: 0.25rem;
-    --padding-inline: 0.25rem;
+    &.icon {
+      --padding-block: 0.25rem;
+      --padding-inline: 0.25rem;
+      aspect-ratio: 1;
+      width: var(--size, 2.25rem);
+      height: var(--size, 2.25rem);
+      max-width: none;
+    }
   }
 
   .hint {

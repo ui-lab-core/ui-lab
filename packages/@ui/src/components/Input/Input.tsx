@@ -8,19 +8,20 @@ import { mergeProps } from "@react-aria/utils";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { Button } from "@/components/Button";
-import { Tooltip } from "@/components/Tooltip";
+import { type ActionDef, type ActionItem, renderAction } from "@/lib/internal/Action";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
 import { GroupContext } from "@/components/Group/Group.Context";
+import type { InputVariantOverrides } from "../../theme-contract";
+import type { DefaultInputVariant } from "../../generated-theme-contract";
 import css from "./Input.module.css";
 
 /**
- * Visual treatment applied to the input surface.
+ * Visual treatment supplied by the installed theme.
  * @typeDoc InputVariant
  */
-export type InputVariant = "default" | "ghost" | (string & {});
+export type InputVariant = DefaultInputVariant | keyof InputVariantOverrides | (string & {});
 
 /**
  * Styles for icons rendered at either edge of the input.
@@ -107,7 +108,7 @@ export interface InputState {
  * An inline action definition or custom action node.
  * @typeDoc InputAction
  */
-export type InputAction = InputActionDef | React.ReactNode;
+export type InputAction = ActionItem;
 /**
  * Icon content positioned before and/or after the input value.
  * @typeDoc InputIconSlots
@@ -123,14 +124,7 @@ export interface InputIconSlots {
  * Declarative inline action rendered as an icon button.
  * @typeDoc InputActionDef
  */
-export interface InputActionDef {
-  /** Icon content for the action button. */
-  icon: React.ReactNode;
-  /** Accessible name and tooltip content for the action button. */
-  title: string;
-  /** Invoked when the action button is pressed. */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-}
+export type InputActionDef = ActionDef;
 
 /**
  * Inline actions positioned at either edge of the input.
@@ -166,9 +160,8 @@ export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "siz
    */
   state?: InputState;
   /**
-   * Controls the visual treatment of the input surface.
+   * Controls the visual treatment of the input surface. When omitted, the active theme supplies the default.
    * @category Core
-   * @default "default"
    * @typeDoc InputVariant
   */
   variant?: InputVariant;
@@ -270,7 +263,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       className,
       style,
-      variant = "default",
+      variant,
       error = false,
       disabled,
       icon,
@@ -364,31 +357,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       ...(hasEndAdornment ? { paddingInlineEnd: adornmentPadding } : {}),
     };
 
-    const renderAction = (action: InputAction, index: number) => {
-      const key = React.isValidElement(action) ? index : (action as InputActionDef).title || index;
-
-      return React.isValidElement(action) ? (
-        <React.Fragment key={key}>{action}</React.Fragment>
-      ) : (
-        <Tooltip key={key} content={(action as InputActionDef).title} position="top">
-          <Button
-            variant="ghost"
-            size="icon"
-            type="button"
-            className={css.action}
-            aria-label={(action as InputActionDef).title}
-            onClick={(action as InputActionDef).onClick}
-            icon={(action as InputActionDef).icon}
-            disabled={disabled}
-          />
-        </Tooltip>
-      );
-    };
+    const renderInputAction = (action: InputAction, index: number) =>
+      renderAction(action, index, { disabled });
 
     const inputRoot = (
       <div
         ref={containerRef}
-        className={cn("input", variant, css.container, className, resolved.root)}
+        className={cn("input", css.container, className, resolved.root)}
         style={style}
         data-slot="root"
         data-input-focus-surface="true"
@@ -416,7 +391,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 className={cn("actions", "left", css.actions, resolved["actions.left"])}
                 data-slot="actions.left"
               >
-                {leftActions.map(renderAction)}
+                {leftActions.map(renderInputAction)}
               </div>
             )}
           </div>
@@ -487,7 +462,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 className={cn("actions", "right", css.actions, resolved["actions.right"])}
                 data-slot="actions.right"
               >
-                {rightActions.map(renderAction)}
+                {rightActions.map(renderInputAction)}
               </div>
             )}
             {hasHint && (

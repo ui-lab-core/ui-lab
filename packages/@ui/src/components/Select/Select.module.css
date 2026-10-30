@@ -18,9 +18,8 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     height: fit-content;
-    align-self: center;
 
-    @apply p-0 gap-0 w-max min-w-0 flex-none flex-row items-center;
+    @apply p-0 gap-0 min-w-0 flex-none flex-row items-center;
     position: relative;
     overflow: visible;
 
@@ -302,8 +301,15 @@
     @apply inline-flex items-center shrink-0;
   }
 
-  .select[data-mode="multiple"] .item {
+  .item.item-multiple {
+    padding-inline-start: calc(var(--row-padding-inline) / 2);
     gap: 0.5rem;
+  }
+
+  .item.item-multiple > [data-slot="item.control"] > :global(.checkbox) {
+    /* The option provides the label, so the checkbox needs no second column or gap. */
+    grid-template-columns: auto;
+    column-gap: 0;
   }
 
   .search-trigger {

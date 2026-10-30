@@ -1,9 +1,46 @@
 @reference "tailwindcss";
 
+/* Keep guide layout above consuming-app globals and outside the defaults layer. */
+.code .viewport :global(pre.shiki .line) {
+  position: relative;
+}
+
+.code .viewport :global(pre.shiki .indent) {
+  display: inline;
+  position: relative;
+  left: calc(var(--indent-offset, 0px) + 0.4rem);
+  height: auto;
+  vertical-align: baseline;
+}
+
+.code .viewport :global(pre.shiki .indent::before) {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1px;
+  height: 1lh;
+  transform: translateY(-50%);
+  background-color: currentColor;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.code .viewport :global(pre.shiki .indent:empty) {
+  position: absolute;
+  top: 50%;
+  /* The static inline position preserves any line-number gutter. */
+  left: auto;
+  margin-left: calc(var(--indent-offset, 0px) + 0.4rem);
+  width: 0;
+  height: 1lh;
+  transform: translateY(-50%);
+  vertical-align: baseline;
+}
+
 @layer components.defaults {
   .code {
     --header-bg: mix(var(--background-900) 90%, transparent);
-    --scroll-track-bg: mix(var(--background-950) 50%, transparent);
 
     max-height: 52.5rem;
     border-radius: var(--radius-sm);
@@ -32,7 +69,49 @@
   }
 
   .viewport {
-    @apply overflow-hidden;
+    @apply flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden;
+  }
+
+  .viewport > :first-child {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  .viewport > :first-child > .vertical-content {
+    flex: 1 1 auto;
+    height: auto;
+    padding-inline: 0;
+  }
+
+  .horizontal-scroll,
+  .horizontal-scroll > :first-child,
+  .code .horizontal-content {
+    height: auto;
+    min-width: 0;
+  }
+
+  .code .horizontal-content {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .code .scroll-track {
+    background-color: transparent;
+  }
+
+  .code .scroll-thumb {
+    background-color: var(--background-700);
+  }
+
+  .code .scroll-thumb:hover {
+    background-color: var(--background-600);
+  }
+
+  .code .horizontal-thumb {
+    margin-left: 0;
   }
 
   .viewport :global(pre) {
@@ -51,35 +130,8 @@
     white-space: pre;
   }
 
-  .viewport::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-
-  .viewport::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .viewport::-webkit-scrollbar-thumb {
-    background-color: var(--background-700);
-    border-radius: 9999px;
-    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
-  }
-
-  .viewport::-webkit-scrollbar-thumb:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
-    background-color: var(--background-600);
-  }
-
-  .scroll-track {
-    flex: none;
-    @apply w-full;
-    overflow-x: auto;
-    background-color: var(--scroll-track-bg);
-    backdrop-filter: blur(4px);
-  }
-
   .expand-button {
+    flex: none;
     @apply flex w-full items-center gap-3 px-4 py-2 cursor-pointer;
     color: var(--foreground-300);
     font-family: var(--font-body, inherit);
@@ -121,7 +173,7 @@
         var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
     background: transparent;
     border: none;
-    z-index: 1;
+    z-index: 11;
   }
 
   .copy-button:hover {

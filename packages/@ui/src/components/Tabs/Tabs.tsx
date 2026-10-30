@@ -103,11 +103,6 @@ interface IndicatorPosition {
   height: number;
 }
 
-interface ListDimensions {
-  width: number;
-  height: number;
-}
-
 interface TabsContextValue {
   selectedValue: string;
   setSelectedValue: (value: string) => void;
@@ -121,7 +116,6 @@ interface TabsContextValue {
 }
 
 const TabsContext = React.createContext<TabsContextValue | null>(null);
-const TABS_INDICATOR_INSET = 4;
 const TABS_UNDERLINE_THICKNESS = 2;
 const TABS_UNDERLINE_OFFSET = 2;
 const TABS_UNDERLINE_GUTTER = TABS_UNDERLINE_THICKNESS + TABS_UNDERLINE_OFFSET;
@@ -294,10 +288,6 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       width: 0,
       height: 0,
     });
-    const [listDimensions, setListDimensions] = React.useState<ListDimensions>({
-      width: 0,
-      height: 0,
-    });
 
     const indicatorClassName = React.useMemo(
       () => getTabsIndicatorClassName(resolved["indicator.root"], variant),
@@ -321,14 +311,6 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         width: element.offsetWidth,
         height: element.offsetHeight,
       };
-    }, []);
-
-    const measureList = React.useCallback(() => {
-      if (!listRef.current) return;
-      setListDimensions({
-        width: listRef.current.offsetWidth,
-        height: listRef.current.offsetHeight,
-      });
     }, []);
 
     const updateIndicator = React.useCallback(
@@ -360,9 +342,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     );
 
     React.useLayoutEffect(() => {
-      measureList();
       setIndicatorReady(updateIndicator(selectedValue));
-    }, [children, selectedValue, updateIndicator, measureList, setIndicatorReady]);
+    }, [children, selectedValue, updateIndicator, setIndicatorReady]);
 
     React.useEffect(() => {
       if (!listRef.current) return;
@@ -371,7 +352,6 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       const resizeObserver = new ResizeObserver(() => {
         if (frame !== undefined) cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
-          measureList();
           setIndicatorReady(updateIndicator(selectedValueRef.current));
         });
       });
@@ -381,19 +361,18 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         resizeObserver.disconnect();
         if (frame !== undefined) cancelAnimationFrame(frame);
       };
-    }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
+    }, [selectedValue, updateIndicator, setIndicatorReady]);
 
     React.useEffect(() => {
       const handleWindowResize = () => {
         requestAnimationFrame(() => {
-          measureList();
           setIndicatorReady(updateIndicator(selectedValueRef.current));
         });
       };
 
       window.addEventListener("resize", handleWindowResize);
       return () => window.removeEventListener("resize", handleWindowResize);
-    }, [selectedValue, updateIndicator, measureList, setIndicatorReady]);
+    }, [selectedValue, updateIndicator, setIndicatorReady]);
 
     const getIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = {
@@ -417,15 +396,6 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
             height: indicatorPosition.height,
           };
         }
-        const horizontalPadding = TABS_INDICATOR_INSET;
-        const adjustedWidth = Math.max(0, listDimensions.width - horizontalPadding * 2);
-        return {
-          ...baseStyle,
-          left: horizontalPadding,
-          top: indicatorPosition.top,
-          width: adjustedWidth,
-          height: indicatorPosition.height,
-        };
       }
 
       if (variant === "underline") {
@@ -445,7 +415,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         width: indicatorPosition.width,
         height: indicatorPosition.height,
       };
-    }, [indicatorPosition, listDimensions, variant, orientation]);
+    }, [indicatorPosition, variant, orientation]);
 
     const mergedRef = useMergeRefs(listRef, ref);
     const listContext = React.useMemo(() => ({ triggerStyle }), [triggerStyle]);
@@ -493,13 +463,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
                               width: TABS_UNDERLINE_THICKNESS,
                               margin: 0,
                             }
-                          : {
-                              top: 0,
-                              bottom: 0,
-                              left: TABS_INDICATOR_INSET,
-                              right: TABS_INDICATOR_INSET,
-                              margin: 0,
-                            }
+                          : { inset: 0, margin: 0 }
                         : variant === "underline"
                           ? {
                               left: 0,

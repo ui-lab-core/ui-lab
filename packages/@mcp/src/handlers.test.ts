@@ -30,7 +30,7 @@ test("omitting the query enumerates instead of forcing a guess", async () => {
 test("a miss is a result carrying suggestions, not a thrown error", async () => {
   const result = await handleGetComponent({ query: "zzzz-nonexistent" });
   assert.equal(result.status, "not_found");
-  assert.ok(result.status === "not_found" && result.nextSteps.length > 0);
+  assert.ok(result.status === "not_found" && result.nextSteps.length === 0);
 });
 
 test("natural-language queries rank instead of requiring every token", async () => {
@@ -237,4 +237,78 @@ test("every component id has a real subpath export to import from", async () => 
     .map((item) => item.ref.slice("component:".length))
     .filter((id) => !(`./${id}` in exports));
   assert.deepEqual(missing, []);
+});
+
+
+test("missing explicit refs never turn into broad discovery", async () => {
+  for (const [handler, query] of [
+    [handleGetComponent, "component:form"], [handleGetComponent, "example:select/missing"],
+    [handleSearchGuides, "guide:form"], [handleSearchWorkshop, "pattern:form"],
+    [handleGetComponent, "component:select/missing"],
+  ] as const) {
+    const result = await handler({ query });
+    assert.equal(result.status, "not_found");
+    assert.ok(result.status === "not_found" && result.suggestions.length <= 3);
+    assert.ok(result.status === "not_found" && !result.nextSteps.some((step) => step.includes("{}")));
+  }
+  const redirect = await handleSearchGuides({ query: "pattern:account-menu" });
+  assert.ok(redirect.status === "not_found" && redirect.nextSteps[0]?.startsWith("search_workshop"));
+});
+
+const SETTINGS_SELECT = {
+  query: "select", detail: "api" as const,
+  parts: ["Trigger", "Value", "Content", "Item"],
+  props: ["selectedKey", "onSelectionChange", "disabled", "label", "children",
+    "Trigger.children", "Value.placeholder", "Value.children", "Content.position", "Item.disabled"],
+};
+
+test("focused Select API retains authoritative contracts and transitive types", async () => {
+  const selected = payload(await handleGetComponent(SETTINGS_SELECT));
+  const api = selected.api as { props: Array<{name: string}>; subComponents: Record<string, {props: Array<{name: string}>}>; customTypes: Array<{name: string}> };
+  assert.deepEqual(Object.keys(api.subComponents).sort(), ["Select.Content", "Select.Item", "Select.Trigger", "Select.Value"]);
+  for (const name of ["selectedKey", "onSelectionChange", "disabled", "label"])
+    assert.ok(api.props.some((prop) => prop.name === name));
+  assert.ok(!api.props.some((prop) => prop.name === "selectedKeys" || prop.name === "styles"));
+  assert.ok(api.subComponents["Select.Trigger"]!.props.some((prop) => prop.name === "aria-labelledby"));
+  assert.ok(api.subComponents["Select.Item"]!.props.some((prop) => prop.name === "value"));
+  assert.ok(api.customTypes.some((type) => type.name === "SelectValueChildren"));
+  assert.ok(api.customTypes.some((type) => type.name === "SelectItemData"));
+  assert.ok(!api.customTypes.some((type) => type.name === "SelectState"));
+  assert.equal(selected.import, "import { Select } from 'ui-lab-components/select';");
+  assert.ok(selected.accessibility);
+  assert.match(String(selected.compound), /client component/);
+  assert.equal(selected.nextSteps, undefined);
+  const full = payload(await handleGetComponent({query: "select", detail: "full"}));
+  assert.ok(Object.keys((full.api as typeof api).subComponents).length > 4);
+  assert.equal((await handleGetComponent({ ...SETTINGS_SELECT, parts: ["Missing"] })).status, "not_found");
+});
+
+test("empty examples and usage are explicit without dead ends", async () => {
+  for (const query of ["select", "label"]) {
+    const examples = payload(await handleGetComponent({query, detail: "examples"}));
+    assert.equal(examples.exampleCount, 0);
+    assert.equal(examples.nextSteps, undefined);
+    const missing = await handleGetComponent({query: `example:${query}/missing`});
+    assert.ok(missing.status === "not_found" && missing.nextSteps.length === 0);
+    const usage = payload(await handleGetComponent({query, detail: "usage"}));
+    assert.equal(usage.usageAvailable, "none");
+    assert.equal(usage.nextSteps, undefined);
+  }
+  const button = payload(await handleGetComponent({query: "button", detail: "examples", limit: 1}));
+  assert.equal((button.examples as unknown[]).length, 1);
+  assert.ok(Number(button.exampleCount) > 1);
+  assert.equal(button.examplesShown, 1);
+});
+
+test("all listings honor limits and ranked counts describe returned rows only", async () => {
+  for (const handler of [handleGetComponent, handleSearchGuides, handleSearchWorkshop]) {
+    const result = await handler({limit: 1});
+    assert.ok(result.status === "list" && result.items.length === 1 && result.shown === 1);
+  }
+  const result = await handleGetComponent({query: "pick a date range", limit: 1});
+  assert.ok(result.status === "matches");
+  assert.equal(result.returned, 1);
+  assert.equal("total" in result, false);
+  const capped = await handleGetComponent({ query: "component input", limit: 200 });
+  assert.ok(capped.status === "matches" && capped.returned <= 25);
 });

@@ -22,6 +22,7 @@ declare const styles: {
   list: string;
   "list-padding": string;
   item: string;
+  "item-multiple": string;
   "item-icon": string;
   "item-indicator": string;
   "item-text": string;

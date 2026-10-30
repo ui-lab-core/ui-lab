@@ -25,6 +25,9 @@ import {
 const transitionDuration = 180;
 const EMPTY_COMMAND_ITEMS: CommandItem[] = [];
 
+/** Portal destination for a floating command palette, matching Toaster's container contract. */
+export type CommandPortalContainer = HTMLElement | null | (() => HTMLElement | null);
+
 /** Props for the floating or embedded command palette surface. */
 export interface CommandProps extends React.HTMLAttributes<HTMLDivElement> {
   /** External state controller. When provided, it takes precedence over open, defaultOpen, and onOpenChange.
@@ -50,6 +53,18 @@ export interface CommandProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default false
    */
   embedded?: boolean;
+  /** Element that receives the floating palette portal. Defaults to document.body.
+   * Accepts an element or a getter; null defers rendering until a target exists.
+   * Body/documentElement targets use a viewport overlay with modal dialog behavior.
+   * Other targets scope positioning and the backdrop to that container without
+   * locking document scrolling or trapping page focus. A custom container must
+   * establish a containing block (e.g. position: relative) and owns clipping.
+   * Ignored when embedded is true.
+   * @category Core
+   * @typeDoc CommandPortalContainer
+   * @default document.body
+   */
+  container?: CommandPortalContainer;
   /** Keyed styles for the command surface and its named compound parts.
    * @category Styling
    * @typeDoc CommandStyleSlots
@@ -144,6 +159,18 @@ export function useCommandState({
   );
 }
 
+const CommandDialogSurface = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof Card>
+>((props, ref) => {
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+  const mergedRef = useMergeRefs(dialogRef, ref);
+  const { dialogProps } = useDialog({ "aria-label": "Command palette" }, dialogRef);
+  return <Card {...filterDOMProps(dialogProps)} {...props} ref={mergedRef} />;
+});
+
+CommandDialogSurface.displayName = "Command.DialogSurface";
+
 /**
  * Floating command palette with dialog semantics, keyboard navigation, search
  * state, focus containment, and optional inline embedded rendering.
@@ -158,6 +185,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       state,
       onOpenChange,
       embedded = false,
+      container,
       className,
       styles: commandStyles,
       items = EMPTY_COMMAND_ITEMS,
@@ -170,6 +198,21 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     ref,
   ) => {
     const [mounted, setMounted] = React.useState(false);
+    const [portalTarget, setPortalTarget] = React.useState<HTMLElement | null>(null);
+    React.useLayoutEffect(() => {
+      if (embedded) return;
+      setPortalTarget(
+        container === undefined
+          ? document.body
+          : typeof container === "function" ? container() : container,
+      );
+    });
+    const isViewportTarget = Boolean(
+      portalTarget &&
+      (portalTarget === portalTarget.ownerDocument.body ||
+        portalTarget === portalTarget.ownerDocument.documentElement),
+    );
+    const isViewportOverlay = !embedded && isViewportTarget;
     const localState = useCommandState({ open, defaultOpen, onOpenChange });
     const commandState = state ?? localState;
     const overlayState = useOverlayTriggerState({
@@ -181,7 +224,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
     const scrollableRef = React.useRef<HTMLDivElement>(null);
     const pointerRef = React.useRef(false);
     const resolved = resolveCommandStyles(commandStyles);
-    useScrollLock(!embedded && overlayState.isOpen, scrollableRef.current);
+    useScrollLock(isViewportOverlay && overlayState.isOpen, scrollableRef.current);
     const engine = useCommandEngine({ items, filter });
     const {
       focusedKey,
@@ -210,7 +253,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       present,
       state: presenceState,
       finishExit,
-    } = usePresence(mounted && overlayState.isOpen, transitionDuration);
+    } = usePresence(mounted && (embedded || portalTarget !== null) && overlayState.isOpen, transitionDuration);
     const wasOpenRef = React.useRef(false);
     React.useEffect(() => {
       if (overlayState.isOpen) {
@@ -218,10 +261,10 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         return;
       }
       if (wasOpenRef.current && !present) {
-        commandState.triggerRef.current?.focus({ preventScroll: true });
+        if (isViewportOverlay) commandState.triggerRef.current?.focus({ preventScroll: true });
         wasOpenRef.current = false;
       }
-    }, [commandState, overlayState.isOpen, present]);
+    }, [commandState, isViewportOverlay, overlayState.isOpen, present]);
     React.useEffect(() => {
       if (!overlayState.isOpen && !present) setSearchValue("");
     }, [overlayState.isOpen, present, setSearchValue]);
@@ -252,11 +295,10 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
       },
       [overlayState],
     );
-    const { dialogProps } = useDialog({ "aria-label": "Command palette" }, modalRef);
-    if (!embedded && (!mounted || !present)) return null;
+    if (!embedded && (!mounted || !present || !portalTarget)) return null;
+    const Surface = isViewportOverlay ? CommandDialogSurface : Card;
     const content = (
-      <Card
-        {...(!embedded ? filterDOMProps(dialogProps) : {})}
+      <Surface
         ref={surfaceRef}
         {...props}
         onKeyDown={handleKeyDown}
@@ -279,7 +321,8 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         )}
         data-slot="root"
         role={embedded ? undefined : "dialog"}
-        aria-modal={embedded ? undefined : "true"}
+        aria-label={props["aria-label"] ?? "Command palette"}
+        aria-modal={isViewportOverlay ? "true" : undefined}
       >
         <CommandContext.Provider
           value={{
@@ -304,15 +347,16 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
         >
           {children}
         </CommandContext.Provider>
-      </Card>
+      </Surface>
     );
     if (embedded) return content;
     return createPortal(
-      <FocusScope contain restoreFocus>
+      <FocusScope contain={isViewportOverlay} restoreFocus={isViewportOverlay}>
         <div
           className={cn("command", css.overlay, resolved["overlay.root"])}
           onClick={handleOverlayClick}
           data-slot="overlay"
+          data-contained={!isViewportTarget ? "true" : undefined}
           data-state={presenceState}
           onTransitionEnd={(event) => {
             if (event.target === event.currentTarget && event.propertyName === "opacity")
@@ -322,7 +366,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(
           {content}
         </div>
       </FocusScope>,
-      document.body,
+      portalTarget!,
     );
   },
 );

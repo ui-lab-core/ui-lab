@@ -10,7 +10,7 @@ export const searchWorkshopTool: Tool = {
     properties: {
       query: {
         type: "string",
-        description: "A `pattern:`/`element:`/`section:`/`starter:`/`component:` ref, a bare id, or free text. Omit to list everything.",
+        description: "A `pattern:`/`element:`/`section:`/`starter:`/`artifact:`/`component:` ref, a bare id, or free text. Omit to list everything.",
       },
       kind: {
         type: "string",

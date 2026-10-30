@@ -52,6 +52,15 @@
     }
   }
 
+  /* Fields show the focus ring on any focus, not only keyboard focus.
+     Ghost fields keep the default keyboard-only ring. */
+  .input-scope:not(:has(> .input[data-variant="ghost"])) > [data-ring="true"][data-focused="true"],
+  .textarea:not([data-variant="ghost"]) > [data-ring="true"][data-focused="true"],
+  .select > [data-ring="true"][data-focused="true"],
+  .select:has(> :is(.trigger, .search-trigger)[data-open="true"]) > [data-ring="true"] {
+    opacity: 1;
+  }
+
   [data-highlight="true"] {
     @slot highlight {
       --background: var(--highlight-background);
@@ -62,92 +71,89 @@
   .button {
     --background: var(--background-800);
     --focus-visible: var(--accent-400);
+    --raised-shade: oklch(from var(--color) calc(l + 0.08 - 0.16 * clamp(0, (l - 0.5) * 1000, 1)) c h);
+    --raised-ring-tint: oklch(from var(--color) calc(l + 0.03 - 0.06 * clamp(0, (l - 0.5) * 1000, 1)) c h);
+    --raised-ring: var(--raised-ring-tint);
+    --raised-gloss: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 14%) 0%,
+      rgb(255 255 255 / 3%) 40%,
+      transparent 60%,
+      rgb(0 0 0 / 8%) 100%
+    );
+    --raised-shadow: 0 1px 2px rgb(0 0 0 / 16%);
+
     @slot icon {
       --foreground: var(--foreground-400);
       --size: 1.15em;
     }
-    --raised-shade: oklch(from var(--color) calc(l + 0.11 - 0.22 * clamp(0, (l - 0.5) * 1000, 1)) c h);
-    --raised-ring-tint: oklch(from var(--color) calc(l + 0.05 - 0.10 * clamp(0, (l - 0.5) * 1000, 1)) c h);
-    --raised-ring: var(--raised-ring-tint);
-    --raised-gloss: linear-gradient(
-      to bottom,
-      rgb(255 255 255 / 34%) 0%,
-      rgb(255 255 255 / 8%) 36%,
-      transparent 56%,
-      rgb(0 0 0 / 18%) 100%
-    );
-    --raised-shadow: 0 1px 2px rgb(0 0 0 / 20%), 0 4px 10px rgb(0 0 0 / 14%);
-    --sheen-tint: white;
-    --sheen-tint-alpha: 5%;
-    --sheen-shade: black;
-    --sheen-shade-alpha: 9%;
-    --sheen: radial-gradient(
-      130% 95% at 50% 0%,
-      color-mix(in srgb, var(--sheen-tint) var(--sheen-tint-alpha), transparent),
-      transparent 58%,
-      color-mix(in srgb, var(--sheen-shade) var(--sheen-shade-alpha), transparent)
-    );
-  }
 
-  .button:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));
-    @slot border {
-      --background-hover: var(--background-600);
-      --background-selected: var(--background-600);
+    /* ---- Interaction states ---- */
+    &:not([data-disabled]) {
+      &:is([data-hovered="true"], [data-selected="true"]) {
+        --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));
+        --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));
+        --raised-shadow: 0 1px 2px rgb(0 0 0 / 20%), 0 2px 6px rgb(0 0 0 / 10%);
+        @slot border {
+          --background-hover: var(--background-600);
+          --background-selected: var(--background-600);
+        }
+      }
+
+      &[data-pressed="true"] {
+        --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));
+        --raised-gloss: linear-gradient( to bottom, rgb(0 0 0 / 8%), transparent 60%, rgb(255 255 255 / 4%));
+        --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));
+        --raised-shadow: 0 1px 2px rgb(0 0 0 / 16%) inset;
+        @slot border {
+          --background-pressed: var(--background-600);
+        }
+      }
     }
 
-    --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));
-    --raised-shadow: 0 1px 2px rgb(0 0 0 / 24%), 0 5px 12px rgb(0 0 0 / 18%);
-  }
-
-  .button[data-pressed="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));
-    @slot border {
-      --background-pressed: var(--background-600);
+    /* ---- Sizes ---- */
+    &.sm {
+      --padding-inline: calc(var(--spacing) * 2.5);
+      --padding-block: calc(var(--spacing) * 1);
     }
 
-    --raised-gloss: linear-gradient( to bottom, rgb(0 0 0 / 14%), transparent 60%, rgb(255 255 255 / 8%));
-    --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));
-    --raised-shadow: 0 2px 4px rgb(0 0 0 / 24%) inset, 0 1px 2px rgb(0 0 0 / 16%);
-  }
+    &.md {
+      --padding-inline: calc(var(--spacing) * 4);
+      --padding-block: calc(var(--spacing) * 1.5);
+    }
 
-  .button.sm {
-    --padding-inline: calc(var(--spacing) * 2.5);
-    --padding-block: calc(var(--spacing) * 1);
-  }
-  .button.md {
-    --padding-inline: calc(var(--spacing) * 4);
-    --padding-block: calc(var(--spacing) * 1.5);
-  }
-  .button.lg {
-    --padding-inline: calc(var(--spacing) * 3.5);
-    --padding-block: calc(var(--spacing) * 2.5);
-  }
+    &.lg {
+      --padding-inline: calc(var(--spacing) * 3.5);
+      --padding-block: calc(var(--spacing) * 2.5);
+    }
 
-  .button.icon {
-    --size: calc(var(--spacing) * 8.5);
-    --padding-inline: calc(var(--spacing) * 0.30);
-    --padding-block: calc(var(--spacing) * 0.30);
-  }
+    &.icon {
+      --size: calc(var(--spacing) * 8.5);
+      --padding-inline: calc(var(--spacing) * 0.30);
+      --padding-block: calc(var(--spacing) * 0.30);
+    }
 
-  .button[data-hint="true"] {
-    --padding-inline-end: calc(var(--spacing) * 1);
+    &[data-hint="true"] {
+      --padding-inline-end: calc(var(--spacing) * 1);
+    }
   }
 
   .gallery > .item {
     --background: var(--background-950);
     --focus-visible: var(--accent-400);
-  }
 
-  .gallery > .item[data-hovered="true"]:not([data-disabled]) {
-    @slot border {
-      --background-hover: var(--background-600);
-    }
-  }
+    &:not([data-disabled]) {
+      &[data-hovered="true"] {
+        @slot border {
+          --background-hover: var(--background-600);
+        }
+      }
 
-  .gallery > .item[data-pressed="true"]:not([data-disabled]) {
-    @slot border {
-      --background-pressed: var(--accent-500);
+      &[data-pressed="true"] {
+        @slot border {
+          --background-pressed: var(--accent-500);
+        }
+      }
     }
   }
 
@@ -163,11 +169,10 @@
   .expand > .trigger {
     --background: transparent;
     --foreground: var(--foreground-50);
-  }
 
-  .expand > .trigger:hover:not([data-disabled]),
-  .expand > .trigger[data-hovered="true"]:not([data-disabled]) {
-    --background: var(--background-900);
+    &:is(:hover, [data-hovered="true"]):not([data-disabled]) {
+      --background: var(--background-900);
+    }
   }
 
   .expand > .content {
@@ -259,10 +264,10 @@
     @slot border {
       --background-focus: transparent
     }
-  }
 
-  .command.content {
-    backdrop-filter: var(--floating-blur);
+    &.content {
+      backdrop-filter: var(--floating-blur);
+    }
   }
 
   .command :where(.options, .group) > .item {
@@ -276,11 +281,10 @@
     .description {
       --foreground: var(--foreground-400);
     }
-  }
 
-  .command :where(.options, .group) > .item:hover:not([data-disabled]),
-  .command :where(.options, .group) > .item[data-highlighted="true"]:not([data-disabled]) {
-    --background: var(--background-800);
+    &:is(:hover, [data-highlighted="true"]):not([data-disabled]) {
+      --background: var(--background-800);
+    }
   }
 
   .command > .footer {
@@ -316,36 +320,36 @@
   .date > .day {
     --background: transparent;
     --foreground: var(--foreground-300);
-  }
 
-  .date > .day:is([data-selected="true"], [data-today="true"]) {
-    --background: var(--background-800);
-    --foreground: var(--foreground-200);
-  }
+    &:is([data-selected="true"], [data-today="true"]) {
+      --background: var(--background-800);
+      --foreground: var(--foreground-200);
+    }
 
-  .date > .day:where([data-in-range="true"]) {
-    --background: var(--background-700);
-  }
+    &:where([data-in-range="true"]) {
+      --background: var(--background-700);
+    }
 
-  .date > .day:is([data-range-start="true"], [data-range-end="true"]) {
-    --background: transparent;
-    --foreground: var(--background-950);
-  }
+    &:is([data-range-start="true"], [data-range-end="true"]) {
+      --background: transparent;
+      --foreground: var(--background-950);
+    }
 
-  .date > .day:where([data-range-start="true"], [data-range-end="true"])::before {
-    --background: var(--background-700);
-  }
+    &:where([data-range-start="true"], [data-range-end="true"])::before {
+      --background: var(--background-700);
+    }
 
-  .date > .day:where([data-range-start="true"], [data-range-end="true"])::after {
-    --background: var(--accent-500);
-  }
+    &:where([data-range-start="true"], [data-range-end="true"])::after {
+      --background: var(--accent-500);
+    }
 
-  .date > .day:is([data-disabled], [data-out-of-range="true"]) {
-    --foreground: var(--foreground-400);
-  }
+    &:is([data-disabled], [data-out-of-range="true"]) {
+      --foreground: var(--foreground-400);
+    }
 
-  .date > .day:is(:hover, [data-hovered="true"]):not(:is([data-disabled], [data-out-of-range="true"])) {
-    --background: var(--background-600);
+    &:is(:hover, [data-hovered="true"]):not(:is([data-disabled], [data-out-of-range="true"])) {
+      --background: var(--background-600);
+    }
   }
 
   .table {
@@ -382,29 +386,29 @@
     --background: var(--background-900);
     --helper-error-foreground: var(--danger-600);
     --helper-foreground: var(--foreground-400);
+
+    &:where([data-selected="true"], [data-indeterminate="true"]) {
+      --background: var(--background-500);
+      --foreground: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));
+      @slot border {
+        --background: var(--background-500);
+      }
+    }
+
+    &[data-disabled="true"]:where([data-selected="true"], [data-indeterminate="true"]) {
+      --background: var(--background-600);
+      @slot border {
+        --background: var(--background-600);
+      }
+    }
   }
 
   .checkbox .checkbox-input {
     border-radius: calc(var(--spacing-sm) * 0.35);
   }
 
-  .checkbox:where([data-selected="true"], [data-indeterminate="true"]) {
-    --background: var(--background-500);
-    --foreground: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));
-    @slot border {
-      --background: var(--background-500);
-    }
-  }
-
   .checkbox .checkbox-control > :where(.checkmark, .indeterminate) {
     --foreground: color-mix(in srgb, var(--foreground-100) 65%, var(--background-500));
-  }
-
-  .checkbox[data-disabled="true"]:where([data-selected="true"], [data-indeterminate="true"]) {
-    --background: var(--background-600);
-    @slot border {
-      --background: var(--background-600);
-    }
   }
 
   .checkbox[data-disabled="true"] .checkbox-control > :where(.checkmark, .indeterminate) {
@@ -453,19 +457,19 @@
   }
 
   .input {
-    --background: var(--background-950);
-    --disabled-background: var(--background-900);
+    --background: var(--background-900);
+    --disabled-background: color-mix(in srgb, var(--background-900) 50%, var(--background-950));
     --disabled-foreground: var(--foreground-400);
     --foreground: var(--foreground-300);
     --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
     @slot border {
       --background: var(--background-700);
     }
-  }
 
-  .input[data-error] {
-    @slot border {
-      --background-focus: var(--danger-600);
+    &[data-error] {
+      @slot border {
+        --background-focus: var(--danger-600);
+      }
     }
   }
 
@@ -479,17 +483,6 @@
     }
   }
 
-  .input[data-variant="ghost"] {
-    --background: transparent;
-    @slot border {
-      --background: transparent;
-    }
-  }
-
-  .input[data-variant="ghost"][data-focus-visible] {
-    box-shadow: none;
-  }
-
   .input > :where(.prefix, .suffix) > .icon {
     --foreground: var(--foreground-400);
   }
@@ -497,16 +490,18 @@
   .input > :where(.prefix, .suffix) > .actions > .button {
     --background: transparent;
     --foreground: var(--foreground-400);
-  }
 
-  .input > :where(.prefix, .suffix) > .actions > .button[data-hovered="true"]:not([data-disabled]) {
-    --background: var(--background-800);
-    --foreground: var(--foreground-400);
-  }
+    &:not([data-disabled]) {
+      &[data-hovered="true"] {
+        --background: var(--background-800);
+        --foreground: var(--foreground-400);
+      }
 
-  .input > :where(.prefix, .suffix) > .actions > .button[data-pressed="true"]:not([data-disabled]) {
-    --background: var(--background-700);
-    --foreground: var(--foreground-400);
+      &[data-pressed="true"] {
+        --background: var(--background-700);
+        --foreground: var(--foreground-400);
+      }
+    }
   }
 
   .input > .suffix > .controls > .stepper {
@@ -520,29 +515,29 @@
   .radio {
     --background: var(--background-900);
     --focus-visible: var(--ring-background);
-  }
 
-  .radio.outline {
-    --background: transparent;
-  }
+    &.outline {
+      --background: transparent;
+    }
 
-  .radio[data-selected="true"] {
-    --background: var(--background-500);
-    @slot border {
+    &[data-selected="true"] {
       --background: var(--background-500);
+      @slot border {
+        --background: var(--background-500);
+      }
     }
-  }
 
-  .radio[data-error="true"]:not([data-selected="true"]) {
-    @slot border {
-      --background-error: var(--danger-600);
+    &[data-error="true"]:not([data-selected="true"]) {
+      @slot border {
+        --background-error: var(--danger-600);
+      }
     }
-  }
 
-  .radio[data-disabled="true"][data-selected="true"] {
-    --background: var(--background-600);
-    @slot border {
+    &[data-disabled="true"][data-selected="true"] {
       --background: var(--background-600);
+      @slot border {
+        --background: var(--background-600);
+      }
     }
   }
 
@@ -576,30 +571,45 @@
   }
 
   .select {
-    --background: var(--background-950);
+    --background: var(--background-900);
     --focus-visible: var(--accent-400);
-    --focus-visible-background: var(--background-950);
+    --focus-visible-background: var(--background-900);
     --foreground: var(--foreground-300);
     --size: var(--text-sm-body);
     --icon-foreground: var(--foreground-400);
 
     @slot border {
       --background-focus: var(--background-700);
-    };
+    }
 
     @slot trigger {
       --padding-inline: calc(var(--spacing) * 2);
       --padding-block: calc(var(--spacing) * 1.5);
-      --background-hover: var(--background-900);
+      --background-hover: color-mix(in srgb, var(--background-800) 60%, var(--background-900));
     }
-  }
 
-  .select[data-pressed="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-600) 50%, transparent);
-  }
+    &[data-pressed="true"]:not([data-disabled]) {
+      --background: color-mix(in srgb, var(--background-600) 50%, transparent);
+    }
 
-  .select[data-open="true"] {
-    --background: var(--background-900);
+    &[data-open="true"] {
+      --background: color-mix(in srgb, var(--background-800) 60%, var(--background-900));
+    }
+
+    &.ghost {
+      --background: transparent;
+      @slot border {
+        --background: transparent;
+      }
+      @slot trigger {
+        --background-hover: var(--background-800);
+      }
+    }
+
+    &.ghost[data-pressed="true"]:not([data-disabled]),
+    &.ghost[data-open="true"] {
+      --background: color-mix(in srgb, var(--background-700) 50%, transparent);
+    }
   }
 
   .select > .search-trigger .input {
@@ -607,21 +617,6 @@
       --background: transparent;
       --background-focus: transparent;
     }
-  }
-
-  .select.ghost {
-    --background: transparent;
-    @slot border {
-      --background: transparent;
-    }
-    @slot trigger {
-      --background-hover: var(--background-800);
-    }
-  }
-
-  .select.ghost[data-pressed="true"]:not([data-disabled]),
-  .select.ghost[data-open="true"] {
-    --background: color-mix(in srgb, var(--background-700) 50%, transparent);
   }
 
   .select > :where(.content, .sub-content) {
@@ -722,15 +717,15 @@
       --size: slot(thumb, height);
       --radius: calc(slot(thumb, height) * var(--background-radius));
     }
-  }
 
-  .switch[data-size="sm"] {
-    --width: 1.75rem;
-    --height: 1.05rem;
+    &[data-size="sm"] {
+      --width: 1.75rem;
+      --height: 1.05rem;
+    }
   }
 
   .textarea {
-    --background: var(--background-950);
+    --background: var(--background-900);
     --disabled-opacity: 0.6;
     --foreground: var(--foreground-300);
     --placeholder: color-mix(in srgb, var(--foreground-400) 80%, transparent);
@@ -744,25 +739,25 @@
       --foreground: var(--foreground-400);
       --foreground-error: var(--danger-600);
     }
-  }
 
-  .textarea[data-disabled="true"] {
-    --background: var(--background-900);
-    --foreground: var(--foreground-400);
-  }
+    &[data-disabled="true"] {
+      --background: color-mix(in srgb, var(--background-900) 50%, var(--background-950));
+      --foreground: var(--foreground-400);
+    }
 
-  .textarea[data-error="true"] {
-    @slot border {
-      --background-error: var(--danger-600);
+    &[data-error="true"] {
+      @slot border {
+        --background-error: var(--danger-600);
+      }
     }
   }
 
   .banner {
     --background: var(--background-900);
+    --foreground: var(--info-50);
     @slot border {
       --background: var(--info-600);
     }
-    --foreground: var(--info-50);
   }
 
   .badge {
@@ -771,31 +766,33 @@
     @slot border {
       --background: var(--background-600);
     }
-  }
 
-  .badge.sm {
-    @apply px-1.5 py-0.5;
-  }
+    &.sm {
+      @apply px-1.5 py-0.5;
+    }
 
-  .badge.md {
-    @apply px-2 py-1.5;
-  }
+    &.md {
+      @apply px-2 py-1.5;
+    }
 
-  .badge.lg {
-    @apply px-3 py-1.5;
+    &.lg {
+      @apply px-3 py-1.5;
+    }
   }
 
   .badge > .dismiss {
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-400);
-  }
 
-  .badge > .dismiss[data-hovered="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--background-700) 80%, var(--background-900));
-  }
+    &:not([data-disabled]) {
+      &[data-hovered="true"] {
+        --background: color-mix(in srgb, var(--background-700) 80%, var(--background-900));
+      }
 
-  .badge > .dismiss[data-pressed="true"]:not([data-disabled]) {
-    --background: var(--background-700);
+      &[data-pressed="true"] {
+        --background: var(--background-700);
+      }
+    }
   }
 
   .popover {
@@ -892,14 +889,10 @@
     --background: transparent;
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-300);
-  }
 
-  .menu.trigger[data-hovered="true"]:not([data-disabled]) {
-    --background: var(--background-700);
-  }
-
-  .menu.trigger[data-pressed="true"]:not([data-disabled]) {
-    --background: var(--background-700);
+    &:is([data-hovered="true"], [data-pressed="true"]):not([data-disabled]) {
+      --background: var(--background-700);
+    }
   }
 
   .menu > :where(.content, .sub-content) [role^="menuitem"].item {
@@ -960,8 +953,7 @@
 
     @slot trigger {
       --background: transparent;
-      --foreground: var(--foreground-300);
-      --background-hover: var(--background-900);
+      --foreground: var(--foreground-400);
       --foreground-hover: var(--foreground-200);
       --background-pressed: var(--background-800);
       --foreground-pressed: var(--foreground-50);
@@ -975,11 +967,11 @@
     @slot list {
       --border: var(--background-700);
     }
-  }
 
-  .tabs[data-variant="underline"] {
-    @slot indicator {
-      --background: var(--accent-500);
+    &[data-variant="underline"] {
+      @slot indicator {
+        --background: var(--accent-500);
+      }
     }
   }
 
@@ -990,11 +982,11 @@
     @slot underline {
       --background: var(--background-600);
     }
-  }
 
-  .anchor[data-hovered="true"] {
-    @slot underline {
-      --background-hover: var(--background-500);
+    &[data-hovered="true"] {
+      @slot underline {
+        --background-hover: var(--background-500);
+      }
     }
   }
 
@@ -1011,10 +1003,10 @@
   .modal > .panel > .header > .close {
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-400);
-  }
 
-  .modal > .panel > .header > .close[data-hovered="true"]:not([data-disabled]) {
-    --foreground: var(--foreground-200);
+    &[data-hovered="true"]:not([data-disabled]) {
+      --foreground: var(--foreground-200);
+    }
   }
 
   .modal > .panel > .footer {
@@ -1036,27 +1028,26 @@
 
   .skeleton-text {
     --last-line-width: 70%;
-  }
 
-  .skeleton-text[data-size="body"] {
-    --row-height: 0.75rem;
-    --gap: 0.375rem;
-  }
+    &[data-size="body"] {
+      --row-height: 0.75rem;
+      --gap: 0.375rem;
+    }
 
-  .skeleton-text[data-size="heading"] {
-    --row-height: 1.25rem;
-    --gap: 0.5rem;
-  }
+    &[data-size="heading"] {
+      --row-height: 1.25rem;
+      --gap: 0.5rem;
+    }
 
-  .skeleton-text[data-size="display"] {
-    --row-height: 2rem;
-    --gap: 0.625rem;
+    &[data-size="display"] {
+      --row-height: 2rem;
+      --gap: 0.625rem;
+    }
   }
 
   .skeleton-image {
     --ratio: 16 / 9;
   }
-
 
   .scroll > .track {
     --background: transparent;
@@ -1064,10 +1055,10 @@
 
   .scroll > .track > .thumb {
     --background: var(--background-600);
-  }
 
-  .scroll > .track > .thumb:is(:hover, [data-hovered="true"]) {
-    --background: color-mix(in srgb, var(--background-500) 80%, transparent);
+    &:is(:hover, [data-hovered="true"]) {
+      --background: color-mix(in srgb, var(--background-500) 80%, transparent);
+    }
   }
 
   .scroll[data-pressed="true"] > .track > .thumb {
@@ -1083,20 +1074,42 @@
 
   @variant button secondary default {
     --background: var(--background-800);
-    --background-image: var(--sheen);
     --foreground: var(--foreground-300);
+    --shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 1px 1px rgb(0 0 0 / 16%);
     @slot border {
       --background: var(--background-700);
     }
+
+    &:not([data-disabled]) {
+      &:is([data-hovered="true"], [data-selected="true"]) {
+        --background: color-mix(in srgb, var(--background-800) 97%, var(--foreground-50));
+      }
+
+      &[data-pressed="true"] {
+        --background: color-mix(in srgb, var(--background-800) 85%, var(--background-950));
+        --shadow: inset 0 1px 1px rgb(0 0 0 / 14%);
+      }
+    }
   }
 
-  @variant button secondary {
-    &:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-      --background: color-mix(in srgb, var(--background-800) 97.5%, var(--foreground-50));
-      @slot border {
-        --background-hover: transparent;
-        --background-selected: transparent;
-        --background-pressed: transparent;
+  /* Default buttons share the Select trigger surface so mixed groups read as one control.
+     Lives in the utilities layer so it overrides the default variant above. */
+  :is(.group > .button, .group > .item > .button):is(:not([data-variant]), [data-variant="default"], [data-variant="secondary"]) {
+    --background: var(--background-900);
+    --shadow: none;
+
+    &:not([data-disabled]) {
+      &[data-hovered="true"] {
+        --background: color-mix(in srgb, var(--background-800) 60%, var(--background-900));
+      }
+
+      &[data-selected="true"] {
+        --background: var(--background-700);
+        --foreground: var(--foreground-50);
+      }
+
+      &[data-pressed="true"] {
+        --background: color-mix(in srgb, var(--background-600) 50%, transparent);
       }
     }
   }
@@ -1108,9 +1121,7 @@
     @slot border {
       --background: var(--background-700);
     }
-  }
 
-  @variant button outline {
     &:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
       --background: color-mix(in srgb, var(--background-800) 55%, transparent);
       @slot border {
@@ -1123,16 +1134,14 @@
 
   @variant button ghost {
     --background: transparent;
+    --backdrop: transparent;
+    --foreground: var(--foreground-300);
     @slot border {
       --background: transparent;
       --background-hover: transparent;
       --background-pressed: transparent;
     }
-    --backdrop: transparent;
-    --foreground: var(--foreground-300);
-  }
 
-  @variant button ghost {
     &:is([data-hovered="true"], [data-pressed="true"], [data-selected="true"]):not([data-disabled]) {
       --background: var(--hover-100);
     }
@@ -1140,34 +1149,32 @@
 
   @variant button danger {
     --foreground: var(--danger-500);
-    --background: color-mix(in srgb, var(--danger-600) 20%, var(--background-800));
-    --background-image: var(--sheen);
-    --sheen-tint: var(--danger-50);
-    --sheen-shade: var(--danger-500);
-    --sheen-shade-alpha: 10%;
+    --background: color-mix(in srgb, var(--danger-600) 16%, var(--background-800));
     --icon-foreground: var(--danger-500);
+    --shadow: 0 1px 1px rgb(0 0 0 / 16%);
+    --_border-color: color-mix(in srgb, var(--danger-600) 26%, var(--background-800));
+    --_border-hover-color: color-mix(in srgb, var(--danger-600) 34%, var(--background-800));
     @slot border {
-      --background: transparent
+      --background: var(--_border-color);
+      --background-hover: var(--_border-hover-color);
+      --background-selected: var(--_border-hover-color);
+      --background-pressed: var(--_border-color);
+    }
+
+    &:not([data-disabled]) {
+      &:is([data-hovered="true"], [data-selected="true"]) {
+        --background: color-mix(in srgb, var(--danger-600) 22%, var(--background-800));
+      }
+
+      &[data-pressed="true"] {
+        --background: color-mix(in srgb, var(--danger-600) 18%, var(--background-900));
+        --shadow: inset 0 1px 1px rgb(0 0 0 / 14%);
+      }
     }
   }
 
   .button:is([data-variant="primary"], [data-color]) {
     --background: var(--color);
-  }
-
-  .button:is([data-variant="primary"], [data-color]):is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-    --background: color-mix(in srgb, var(--color) 72%, var(--raised-shade));
-  }
-
-  .button:is([data-variant="primary"], [data-color])[data-pressed="true"]:not([data-disabled]) {
-    --background: color-mix(in srgb, var(--color) 58%, var(--raised-shade));
-  }
-
-  .button:is([data-variant="primary"], :not([data-variant])[data-color]) {
-    --background-image: var(--raised-gloss);
-  }
-
-  .button:is([data-variant="primary"], [data-color]) {
     --shadow: var(--raised-shadow);
 
     @slot icon {
@@ -1180,6 +1187,20 @@
       --background-selected: var(--raised-ring);
       --background-pressed: var(--raised-ring);
     }
+
+    &:not([data-disabled]) {
+      &:is([data-hovered="true"], [data-selected="true"]) {
+        --background: color-mix(in srgb, var(--color) 80%, var(--raised-shade));
+      }
+
+      &[data-pressed="true"] {
+        --background: color-mix(in srgb, var(--color) 68%, var(--raised-shade));
+      }
+    }
+  }
+
+  .button:is([data-variant="primary"], :not([data-variant])[data-color]) {
+    --background-image: var(--raised-gloss);
   }
 
   .button[data-color] {
@@ -1189,14 +1210,10 @@
   .danger {
     --foreground: var(--danger-500);
     --background: color-mix(in srgb, var(--danger-600) 20%, transparent);
-    --background-image: var(--sheen);
-    --sheen-tint: var(--danger-50);
-    --sheen-shade: var(--danger-500);
-    --sheen-shade-alpha: 10%;
     --icon-foreground: var(--danger-500);
     @slot border {
       --background: transparent
-    };
+    }
     @slot icon {
       --foreground: var(--danger-500)
     }
@@ -1225,12 +1242,14 @@
     --focus-visible: var(--accent-400);
     --foreground: var(--foreground-200);
 
-    &:is([data-hovered="true"], [data-selected="true"]):not([data-disabled]) {
-      --background: color-mix(in srgb, var(--background-500) 20%, var(--background-900));
-    }
+    &:not([data-disabled]) {
+      &:is([data-hovered="true"], [data-selected="true"]) {
+        --background: color-mix(in srgb, var(--background-500) 20%, var(--background-900));
+      }
 
-    &[data-pressed="true"]:not([data-disabled]) {
-      --background: color-mix(in srgb, var(--background-500) 30%, var(--background-900));
+      &[data-pressed="true"] {
+        --background: color-mix(in srgb, var(--background-500) 30%, var(--background-900));
+      }
     }
   }
 
@@ -1388,8 +1407,26 @@
     }
   }
 
-  .confirm .danger[data-hovered="true"]:not([data-disabled]),
-  .confirm .danger[data-pressed="true"]:not([data-disabled]) {
+  @variant input default default {}
+
+  @variant input ghost {
+    --background: transparent;
+    @slot border {
+      --background: transparent;
+      --background-focus: transparent;
+    }
+  }
+
+  @variant textarea default default {}
+
+  @variant textarea ghost {
+    --background: transparent;
+    @slot border {
+      --background: transparent;
+    }
+  }
+
+  .confirm .danger:is([data-hovered="true"], [data-pressed="true"]):not([data-disabled]) {
     --background: color-mix(in srgb, var(--danger-500) 20%, transparent);
     @slot border {
       --background-hover: transparent;

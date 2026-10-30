@@ -16,25 +16,25 @@ export interface CommandListProps extends React.HTMLAttributes<HTMLDivElement> {
    * @category Content
    * @default "No items found."
    */
-  emptyMessage?: string;
+  "empty-message"?: string;
   /** Maximum height applied to the list scroller in addition to the palette's available-height constraint.
    * @category Styling
    * @mdn https://developer.mozilla.org/en-US/docs/Web/CSS/max-height
    */
-  maxHeight?: string;
+  "max-height"?: string;
 }
 
 /** Scrollable listbox for command items, with an optional empty-state message. */
 export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(
-  ({ children, emptyMessage = "No items found.", className, maxHeight, ...props }, ref) => {
+  ({ children, "empty-message": emptyMessage = "No items found.", className, "max-height": maxHeight, ...props }, ref) => {
     const { scrollableRef, focusedKey, styles } = useCommandContext();
     return (
         <Frame {...props} edges="top" strokeAlign="outside" className={cn("options", css.inner, styles["inner.root"], className)} data-slot="inner">
         <Scroll
           ref={ref}
-          viewportRef={scrollableRef}
+          viewport-ref={scrollableRef}
           className={css.list}
-          maxHeight={maxHeight}
+          max-height={maxHeight}
           fade-y
         >
           <List
@@ -85,12 +85,14 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
     const { focusedKey, registerItem, unregisterItem, actionRef, close, styles } = useCommandContext();
     React.useEffect(() => {
       registerItem(value, textValue);
+      return () => unregisterItem(value);
+    }, [value, textValue, registerItem, unregisterItem]);
+    React.useEffect(() => {
       actionRef.current.set(value, action);
       return () => {
-        unregisterItem(value);
         actionRef.current.delete(value);
       };
-    }, [value, textValue, action, registerItem, unregisterItem, actionRef]);
+    }, [value, action, actionRef]);
     const isHighlighted = focusedKey === value;
     return (
       <div

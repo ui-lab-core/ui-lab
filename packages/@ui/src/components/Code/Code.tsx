@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 import { transformerRenderIndentGuides } from "@shikijs/transformers";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { cn, type Style } from "../../lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
+import { Scroll } from "../Scroll";
 import styles from "./Code.module.css";
 
 const escapeHtml = (s: string) =>
@@ -82,6 +83,8 @@ export interface CodeProps {
   filename?: string;
   /** Custom heading text displayed in the header bar instead of filename */
   heading?: string;
+  /** Enable the built-in collapse fade and expansion button. */
+  expandable?: boolean;
   /** Shiki theme name or separate light/dark theme names */
   theme?: string | { light: string; dark: string };
   /** Color scheme used for theme selection; 'system' follows the page data-theme attribute */
@@ -113,6 +116,7 @@ export function Code({
   className,
   filename,
   heading,
+  expandable = true,
   theme,
   colorScheme = "system",
   preHighlightedLight,
@@ -125,9 +129,6 @@ export function Code({
   const darkTheme = typeof theme === "string" ? theme : (theme?.dark ?? "github-dark");
   const activeTheme = mode === "light" ? lightTheme : darkTheme;
 
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const scrollTrackRef = useRef<HTMLDivElement>(null);
-
   const [highlightedCode, setHighlightedCode] = useState<string>(() => {
     if (mode === "light" && preHighlightedLight) return preHighlightedLight;
     if (mode === "dark" && preHighlightedDark) return preHighlightedDark;
@@ -135,32 +136,8 @@ export function Code({
     return generateFallbackHtml(children);
   });
 
-  const [contentScrollWidth, setContentScrollWidth] = useState(0);
-  const [viewportWidth, setViewportWidth] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [totalCodeLines, setTotalCodeLines] = useState(0);
-
-  const handleScrollTrack = useCallback(() => {
-    if (viewportRef.current && scrollTrackRef.current) {
-      viewportRef.current.scrollLeft = scrollTrackRef.current.scrollLeft;
-    }
-  }, []);
-
-  const handleScrollViewport = useCallback(() => {
-    if (viewportRef.current && scrollTrackRef.current) {
-      const diff = Math.abs(scrollTrackRef.current.scrollLeft - viewportRef.current.scrollLeft);
-      if (diff > 1) scrollTrackRef.current.scrollLeft = viewportRef.current.scrollLeft;
-    }
-  }, []);
-
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      if (viewportRef.current) {
-        viewportRef.current.scrollLeft += e.deltaX;
-        e.preventDefault();
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (mode === "light" && preHighlightedLight) {
@@ -191,19 +168,6 @@ export function Code({
   }, [children, language, mode, activeTheme, preHighlightedLight, preHighlightedDark]);
 
   useEffect(() => {
-    const measure = () => {
-      if (viewportRef.current) {
-        setContentScrollWidth(viewportRef.current.scrollWidth);
-        setViewportWidth(viewportRef.current.clientWidth);
-      }
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    if (viewportRef.current) observer.observe(viewportRef.current);
-    return () => observer.disconnect();
-  }, [highlightedCode]);
-
-  useEffect(() => {
     setTotalCodeLines(children.split("\n").length);
   }, [children]);
 
@@ -215,9 +179,9 @@ export function Code({
     }
   }, [totalCodeLines]);
 
-  const hasHorizontalOverflow = contentScrollWidth > viewportWidth;
   const hiddenCodeLines = totalCodeLines - MAX_HEIGHT_LINES;
-  const shouldShowExpandButton = totalCodeLines > MAX_HEIGHT_LINES && hiddenCodeLines >= 30;
+  const shouldShowExpandButton =
+    expandable && totalCodeLines > MAX_HEIGHT_LINES && hiddenCodeLines >= 30;
 
   const resolved = resolveCodeStyles(stylesProp);
 
@@ -232,30 +196,45 @@ export function Code({
 
       <div className={cn(styles.body, resolved.body)}>
         <CopyButton code={children} />
-        <div
-          ref={viewportRef}
-          onScroll={handleScrollViewport}
-          onWheel={handleWheel}
+        <Scroll
+          direction="vertical"
+          inline
+          hide={false}
           className={cn(styles.viewport, resolved.viewport)}
-          style={{
-            overflowY: isExpanded ? "auto" : "hidden",
-            maskImage:
-              !isExpanded && shouldShowExpandButton
-                ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
-                : "none",
-            WebkitMaskImage:
-              !isExpanded && shouldShowExpandButton
-                ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
-                : "none",
+          style={{ height: "auto" }}
+          styles={{
+            content: styles["vertical-content"],
+            track: styles["scroll-track"],
+            thumb: styles["scroll-thumb"],
           }}
-          dangerouslySetInnerHTML={{ __html: highlightedCode }}
-        />
-
-        {hasHorizontalOverflow && (
-          <div ref={scrollTrackRef} onScroll={handleScrollTrack} className={styles["scroll-track"]}>
-            <div style={{ width: contentScrollWidth, height: "12px" }} />
-          </div>
-        )}
+        >
+          <Scroll
+            direction="horizontal"
+            inline
+            hide={false}
+            className={styles["horizontal-scroll"]}
+            styles={{
+              content: styles["horizontal-content"],
+              track: styles["scroll-track"],
+              thumb: cn(styles["scroll-thumb"], styles["horizontal-thumb"]),
+            }}
+          >
+            <div
+              style={{
+                maskImage:
+                  !isExpanded && shouldShowExpandButton
+                    ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+                    : "none",
+                WebkitMaskImage:
+                  !isExpanded && shouldShowExpandButton
+                    ? "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)"
+                    : "none",
+              }}
+              dangerouslySetInnerHTML={{ __html: highlightedCode }}
+            />
+            <Scroll.Track style={{ position: "sticky", bottom: 0 }} />
+          </Scroll>
+        </Scroll>
 
         {shouldShowExpandButton && !isExpanded && (
           <button onClick={() => setIsExpanded(true)} className={styles["expand-button"]}>

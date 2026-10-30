@@ -210,6 +210,8 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 
     useEffect(() => {
       if (state.isOpen) {
+        clearSwapTimer();
+        clearUnmountTimer();
         wasOpenRef.current = true;
         const elapsed = Date.now() - lastCloseTime;
         const isSwap = lastCloseTime > 0 && elapsed < SWAP_WINDOW_MS;
@@ -249,18 +251,25 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       }
     }, [state.isOpen]);
 
-    useEffect(() => {
+    // Closing must cancel opening frames during the commit, not in a passive
+    // effect after a pending frame has had a chance to make the tooltip visible.
+    useLayoutEffect(() => {
       if (shouldRender && state.isOpen && isPositioned) {
         if (isInstant) {
           setIsVisible(true);
           const frame = requestAnimationFrame(() => setIsInstant(false));
           return () => cancelAnimationFrame(frame);
         } else {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
+          let secondFrame = 0;
+          const firstFrame = requestAnimationFrame(() => {
+            secondFrame = requestAnimationFrame(() => {
               setIsVisible(true);
             });
           });
+          return () => {
+            cancelAnimationFrame(firstFrame);
+            cancelAnimationFrame(secondFrame);
+          };
         }
       }
     }, [shouldRender, state.isOpen, isPositioned, isInstant]);

@@ -39,7 +39,7 @@ export const apiEnrichment = {
     ...api,
     subComponents: {
       "Banner.Title": { description: "Heading text for the banner message", props: [] },
-      "Banner.Body": { description: "Body text content of the banner", props: [] },
+      "Banner.Body": { description: "Body content of the banner. Renders a div, so it accepts block content such as pre, lists, Flex layouts and button rows.", props: [] },
     },
   }),
 } satisfies ComponentAPIEnrichment;

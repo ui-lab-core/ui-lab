@@ -344,6 +344,15 @@ export interface MenuItemProps
   onSelect?: () => void;
 
   /**
+   * Closes the Menu after the item is activated. Defaults to true, or false while the root
+   * selectionMode is multiple. With false, the item keeps focus and the Menu stays open until
+   * Escape, an outside click, or the trigger closes it.
+   * @category Selection
+   * @default true
+   */
+  closeOnSelect?: boolean;
+
+  /**
    * Supplies the text used for typeahead matching when the rendered children are not plain text.
    * @category Accessibility
    */
@@ -412,8 +421,8 @@ export interface MenuCheckboxItemProps
   checked?: boolean;
 
   /**
-   * Runs with the negated checked value when the item is activated, before onSelect and before the
-   * Menu closes.
+   * Runs with the negated checked value when the item is activated, before onSelect. The Menu
+   * stays open unless closeOnSelect is true.
    * @category Events
    */
   onCheckedChange?: (checked: boolean) => void;
@@ -427,10 +436,20 @@ export interface MenuCheckboxItemProps
   disabled?: boolean;
 
   /**
-   * Runs when the item is activated by click or Enter. It is not called while the item is disabled.
+   * Runs when the item is activated by click or Enter, after onCheckedChange. It is not called
+   * while the item is disabled.
    * @category Events
    */
   onSelect?: () => void;
+
+  /**
+   * Closes the Menu after the item is toggled. Defaults to false so several checkboxes can be
+   * toggled in one pass; the item keeps focus and the Menu stays open until Escape, an outside
+   * click, or the trigger closes it.
+   * @category Selection
+   * @default false
+   */
+  closeOnSelect?: boolean;
 
   /**
    * Supplies the text used for typeahead matching when the rendered children are not plain text.
@@ -528,6 +547,15 @@ export interface MenuRadioItemProps
    * @category Events
    */
   onSelect?: () => void;
+
+  /**
+   * Closes the Menu after the item is chosen. Defaults to false so the group can be changed
+   * without dismissing the Menu; the item keeps focus and the Menu stays open until Escape, an
+   * outside click, or the trigger closes it.
+   * @category Selection
+   * @default false
+   */
+  closeOnSelect?: boolean;
 
   /**
    * Supplies the text used for typeahead matching when the rendered children are not plain text.
