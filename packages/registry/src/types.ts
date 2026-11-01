@@ -22,6 +22,8 @@ export interface PropDefinition {
   required: boolean;
   defaultValue?: string;
   description?: string;
+  /** Generic inherited DOM prose can be omitted from compact agent responses. */
+  inherited?: boolean;
   enumValues?: string[];
   enumValueDetails?: APIEnumValue[];
   category?: string;
@@ -89,6 +91,11 @@ export interface ComponentAPI {
  * The generator merges it over what react-docgen-typescript extracts.
  */
 export interface ComponentAPIEnrichment {
+  /** Descriptions/defaults for real props; cannot create or change signatures. */
+  documentation?: {
+    props?: Record<string, Pick<PropDefinition, "description" | "defaultValue" | "category">>;
+    parts?: Record<string, Record<string, Pick<PropDefinition, "description" | "defaultValue" | "category">>>;
+  };
   /** Props documented by hand. Entries replace extracted props of the same name. */
   props?: PropDefinition[];
   subComponents?: {
@@ -116,6 +123,22 @@ export interface ComponentUsage {
   whenToUse?: string[];
   whenNotToUse?: string[];
   rules?: ComponentUsageRule[];
+}
+
+/** Authored behavior that cannot be recovered from TypeScript signatures. */
+export interface ComponentPartContract {
+  element: string;
+  nativeProps: string;
+  ref?: string;
+  layout?: string;
+  composition?: string;
+}
+
+export interface ComponentContract extends ComponentPartContract {
+  version: 1;
+  state: string;
+  accessibility: string;
+  parts?: Record<string, ComponentPartContract>;
 }
 
 export interface StyleVariable {
@@ -305,6 +328,7 @@ export interface ComponentMetadata {
   reactAriaUrl?: string;
   api?: ComponentAPI;
   usage?: ComponentUsage;
+  contract?: ComponentContract;
   styles?: ComponentStyles;
   examples?: ComponentExample[];
   example?: Example;
@@ -384,6 +408,15 @@ export interface ComponentDeps {
 
 export interface PackageMetadata {
   version: string;
+  registryVersion?: string;
+  schemaVersion?: number;
+  sourceHash?: string;
+}
+
+export interface ComponentImport {
+  statement: string;
+  namedParts: Record<string, string>;
+  serverCompound: boolean;
 }
 
 // UI Configurator Controls

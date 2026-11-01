@@ -18,12 +18,11 @@ export async function loadComponentEnrichment(
   const enrichmentPath = path.join(REGISTRY_COMPONENTS_DIR, componentDirName, "api.ts");
   if (!fs.existsSync(enrichmentPath)) return undefined;
 
-  try {
-    return (await import(pathToFileURL(enrichmentPath).href)).apiEnrichment;
-  } catch (e) {
-    console.warn(`Failed to load API enrichment for ${componentDirName}:`, e);
-    return undefined;
+  const { apiEnrichment } = await import(pathToFileURL(enrichmentPath).href);
+  if (!apiEnrichment || typeof apiEnrichment !== "object") {
+    throw new Error(`${enrichmentPath} must export apiEnrichment.`);
   }
+  return apiEnrichment;
 }
 
 /** Hand-authored props replace extracted props of the same name and keep their order. */
@@ -44,7 +43,7 @@ export function applyEnrichment(
             const authored = enrichment.subComponents?.props?.[name];
             return [
               name,
-              authored ? { ...component, props: mergeProps(component.props, authored) } : component,
+              { ...component, props: authored ? mergeProps(component.props, authored) : [...component.props] },
             ];
           }),
       )
@@ -58,6 +57,29 @@ export function applyEnrichment(
     stateAttributes: enrichment.stateAttributes ?? api.stateAttributes,
     customTypes: enrichment.customTypes ?? api.customTypes,
   };
+
+  const documentProps = (props: PropDefinition[], documentation: Record<string, Partial<PropDefinition>>, scope: string) => {
+    for (const name of Object.keys(documentation)) {
+      if (!props.some((prop) => prop.name === name)) throw new Error(`${scope}: documentation references unknown prop ${name}`);
+    }
+    return props.map((prop) => {
+      const doc = documentation[prop.name];
+      if (!doc) return prop;
+      // Whitelist prose fields even when JavaScript callers bypass types.
+      return { ...prop,
+        inherited: false,
+        description: doc.description ?? prop.description,
+        defaultValue: doc.defaultValue ?? prop.defaultValue,
+        category: doc.category ?? prop.category,
+      };
+    });
+  };
+  enriched.props = documentProps(enriched.props, enrichment.documentation?.props ?? {}, "root");
+  for (const [name, documentation] of Object.entries(enrichment.documentation?.parts ?? {})) {
+    const part = enriched.subComponents?.[name];
+    if (!part) throw new Error(`Documentation references unknown part ${name}`);
+    part.props = documentProps(part.props, documentation, name);
+  }
 
   return enrichment.refine ? enrichment.refine(enriched) : enriched;
 }

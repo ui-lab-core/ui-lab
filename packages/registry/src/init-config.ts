@@ -1,4 +1,6 @@
+export { typographyTemplate } from "./.generated/setup-template.js";
 import { decodeInitConfig as decodeV1, type LegacyInitConfig } from "./init-config-v1.js";
+export { generateStylesheetImports } from "./setup-contract.js";
 import type { SimpleThemeColors } from "./init-generation/constants/themes.js";
 import type { TypographyConfig } from "./init-generation/lib/typography-config.js";
 import { V2_DEFAULTS } from "./init-config-defaults.js";
@@ -70,7 +72,7 @@ export function defaultInitConfig(framework: InitFramework = "next", themeMode: 
 // Field order and defaults are immutable parts of the v2 wire schema.
 export interface NumericField { path: string; min: number; max: number; step: number; exact?: boolean; }
 export const INIT_NUMERIC_FIELDS: readonly NumericField[] = [
-  ...["headerScale", "bodyScale"].map(key => ({path:`typography.${key}`,min:.5,max:1,step:.01})),
+  ...["headerScale", "bodyScale"].map(key => ({path:`typography.${key}`,min:.5,max:1.5,step:.01})),
   ...["headerMinFontSizePx", "bodyMinFontSizePx", "monoMinFontSizePx"].map(key => ({path:`typography.${key}`,min:10,max:18,step:.05})),
   ...["monoFontSizeScale", "monoFontWeightScale"].map(key => ({path:`typography.${key}`,min:.8,max:1.2,step:.01})),
   {path:"typography.monoLetterSpacingScale",min:0,max:3.5,step:.05},

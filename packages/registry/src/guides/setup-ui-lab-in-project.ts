@@ -1,4 +1,5 @@
 import type { GuideMetadata } from "../types.js";
+import { generateStylesheetImports } from "../setup-contract.js";
 
 const setupUiLabInProjectGuide: GuideMetadata = {
   id: "setup-ui-lab-in-project",
@@ -74,12 +75,7 @@ ui-lab init --non-interactive --framework vite`,
         "Keep the order exactly: tailwind, Onyx base, fonts, local theme overrides, UI Lab components, then typography.",
         "Import this stylesheet exactly once, from the application entry point, before any app or component module. Loading it after another module that transitively imports ui-lab-components registers Tailwind's layers after UI Lab's component layers, letting Tailwind base styles override component styles.",
       ],
-      code: `@import "tailwindcss";
-@import "ui-lab-theme-onyx/styles.css";
-@import "./fonts.css";
-@import "./theme.css";
-@import "ui-lab-components/styles.css";
-@import "./typography.css";`,
+      code: generateStylesheetImports({ fontsImport: "./fonts.css" }).join("\n"),
       language: "css",
       path: "app/globals.css",
     },

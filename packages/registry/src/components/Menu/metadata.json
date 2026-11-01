@@ -1,7 +1,7 @@
 {
   "id": "menu",
   "name": "Menu",
-  "description": "Context menu or pop-over menu with items, checkbox and radio items, groups, and nested submenus.",
+  "description": "Context or dropdown menu with nested submenus.",
   "category": "action",
   "experimental": true,
   "source": {

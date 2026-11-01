@@ -47,7 +47,7 @@ test("decoded source produces exact shared files, imports, dependencies and opti
       assert.equal(plan.packages.includes("@fontsource-variable/jetbrains-mono"),config.customFont);
       assert.equal(!!file("components/theme-toggle.tsx"),config.themeToggle);
       if(config.customFont) assert.match(file("fonts.css")!,/Manrope/);
-      if(config.longFormTypography) assert.match(file("typography.css")!,/^@layer theme \{\n  :root \{/);
+      if(config.longFormTypography) assert.match(file("typography.css")!,/^@layer components\.defaults \{/);
     }
     const invalid=defaultInitConfig();invalid.typography.bodyScale=2;
     assert.throws(()=>buildInitPlan({root,stylesheet:"missing.css",typography:true,colorMode:"dark",sourceConfig:invalid}),/bodyScale/);

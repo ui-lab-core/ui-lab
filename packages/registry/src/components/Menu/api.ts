@@ -144,7 +144,7 @@ export const apiEnrichment = {
         {
           value: "single",
           description:
-            "Items render as role menuitemradio with a dot indicator, and activating one replaces the selected key set.",
+            "Items render as role menuitemradio with a selected row background instead of an indicator, and activating one replaces the selected key set.",
         },
         {
           value: "multiple",

@@ -6,6 +6,7 @@ import translateExistingUiToUiLabGuide from "./translate-existing-ui-to-ui-lab.j
 import themeSwitchingViteGuide from "./theme-switching-vite.js";
 import typographyGuide from "./typography.js";
 import buildChecklistGuide from "./build-checklist.js";
+import iconSetupGuide from "./icon-setup.js";
 
 export const guideRegistry: GuideRegistry = {
   [foundationGuide.id]: foundationGuide,
@@ -15,6 +16,7 @@ export const guideRegistry: GuideRegistry = {
   [themeSwitchingViteGuide.id]: themeSwitchingViteGuide,
   [typographyGuide.id]: typographyGuide,
   [buildChecklistGuide.id]: buildChecklistGuide,
+  [iconSetupGuide.id]: iconSetupGuide,
 };
 
 export function getGuideById(id: string): GuideMetadata | undefined {

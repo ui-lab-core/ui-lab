@@ -1,17 +1,47 @@
 {
   "id": "input",
   "name": "Input",
-  "description": "Text and number input field with adornments, inline actions, hints, and error states.",
+  "description": "Text or number field with adornments and error states.",
   "category": "input",
   "source": {
     "packageName": "ui-lab-components",
     "exportName": "Input",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["label", "form", "group"],
-  "tags": ["form", "text", "number", "user-input"],
+  "relatedComponents": [
+    "label",
+    "group"
+  ],
+  "tags": [
+    "form",
+    "text",
+    "number",
+    "user-input"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["Works with label elements", "Supports placeholder text", "Supports native input keyboard interaction"]
-  }
+    "notes": [
+      "Works with label elements",
+      "Supports placeholder text",
+      "Supports native input keyboard interaction"
+    ]
+  },
+  "contract": {
+    "version": 1,
+    "element": "Native input inside surface/focus wrappers; a custom content div when children are supplied",
+    "nativeProps": "In native mode, input attributes and events (id, min, step, onKeyDown, ARIA) reach the input. className and style target the surface, not the input.",
+    "ref": "HTMLInputElement in native mode. Children mode does not render a native input.",
+    "state": "value is controlled; state.value takes precedence. Use defaultValue for an uncontrolled initial value. onChange receives the native input event.",
+    "layout": "Use styles.input for field styling and className/styles.root for the surface. Icon/adornment/action slots are separate from input text.",
+    "composition": "Use Label htmlFor matching Input id. Children mode replaces the input; own your custom child control, ref, and keyboard behavior.",
+    "accessibility": "Put naming and description attributes on Input in native mode. A placeholder does not replace a visible/accessibility label."
+  },
+  "examples": [
+    {
+      "id": "labeled-number-field",
+      "name": "Labeled number input",
+      "description": "Native constraints and keyboard events belong on the field.",
+      "code": "\"use client\";\nimport { Input } from \"ui-lab-components/input\";\nimport { Label } from \"ui-lab-components/label\";\nexport function QuantityField() { return <div><Label htmlFor=\"quantity\">Quantity</Label><Input id=\"quantity\" type=\"number\" min={1} step={1} defaultValue=\"1\" aria-describedby=\"quantity-help\" /><p id=\"quantity-help\">Use a positive whole number.</p></div>; }\n"
+    }
+  ]
 }

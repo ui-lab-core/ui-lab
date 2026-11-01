@@ -6,13 +6,24 @@
   "experimental": true,
   "source": {
     "packageName": "ui-lab-components",
-    "exportName": "Toast",
+    "exportName": "Toaster",
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": ["notification", "feedback", "temporary"],
+  "tags": [
+    "notification",
+    "feedback",
+    "temporary"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
-    "notes": ["ARIA live regions", "Role=\"status\"", "Auto-dismiss support"]
+    "notes": [
+      "ARIA live regions",
+      "Role=\"status\"",
+      "Auto-dismiss support"
+    ]
+  },
+  "usage": {
+    "summary": "Mount Toaster once in a client application shell. Import the callable toast helper from ui-lab-components/toast to enqueue notifications; there is no Toast component export."
   }
 }

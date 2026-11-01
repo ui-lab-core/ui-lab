@@ -1,9 +1,11 @@
 // Registry
+export type { ComponentContract, ComponentPartContract } from "./types.js";
 export { componentRegistry, componentMetadata } from "./registry.js";
 
 // Generated data (auto-populated by scripts)
 export {
   generatedAPI,
+  generatedComponentImports,
   generatedStyles,
   reactAriaUrls,
   generatedComponentDependencies,

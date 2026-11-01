@@ -9,8 +9,17 @@
     "exportName": "List",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["card", "table"],
-  "tags": ["list", "items", "collections", "selection", "actions"],
+  "relatedComponents": [
+    "card",
+    "table"
+  ],
+  "tags": [
+    "list",
+    "items",
+    "collections",
+    "selection",
+    "actions"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
@@ -18,5 +27,31 @@
       "Supports interactive items with keyboard navigation",
       "Proper ARIA labels for selection states"
     ]
-  }
+  },
+  "contract": {
+    "version": 1,
+    "element": "div with default role=\"listbox\"",
+    "nativeProps": "Native div attributes and ARIA reach the root; role can override the default for presentational compositions.",
+    "ref": "HTMLDivElement augmented with List navigation methods.",
+    "state": "Selection is consumer-owned through Item selected and callbacks. Keyboard focus/highlight is distinct from selection. highlighted triggers scrolling to an item already marked data-highlighted; it is not a selection setter.",
+    "layout": "Use a single content wrapper for stacked Title and Desc. Media and Actions occupy separate row slots; resize media through Item styles.media.",
+    "composition": "Compose Item with leading Media, one stacked text region, and Actions. Do not put arbitrary direct text parts into separate columns when a stacked label is intended.",
+    "accessibility": "Name the listbox. Item defaults to role=\"option\" with aria-selected; Enter/Space activate eligible rows. Use role=\"presentation\" when a containing component already owns listbox semantics.",
+    "parts": {
+      "Item": {
+        "element": "div role=\"option\" by default",
+        "nativeProps": "Div attributes/events reach the row and are composed with keyboard/focus behavior.",
+        "ref": "HTMLDivElement.",
+        "composition": "Use onClick for row activation; events from nested controls keep their own interaction. selected sets aria-selected. focusable={false} disables row focus, useful for virtual-focus integrations."
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "stacked-row",
+      "name": "Stacked list row",
+      "description": "Title and description share one text column; selection is owned by the consumer.",
+      "code": "\"use client\";\nimport { useState } from \"react\";\nimport { List } from \"ui-lab-components/list\";\nexport function FileList() { const [selected, setSelected] = useState(false); return <List aria-label=\"Files\"><List.Item value=\"report\" selected={selected} onClick={() => setSelected(true)}><div><List.Title>Report</List.Title><List.Desc>Updated today</List.Desc></div></List.Item></List>; }\n"
+    }
+  ]
 }

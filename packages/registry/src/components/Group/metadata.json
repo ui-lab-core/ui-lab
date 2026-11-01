@@ -9,8 +9,20 @@
     "exportName": "Group",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["button", "input", "select", "expand", "divider"],
-  "tags": ["composition", "grouped", "compound", "form", "toolbar"],
+  "relatedComponents": [
+    "button",
+    "input",
+    "select",
+    "expand",
+    "divider"
+  ],
+  "tags": [
+    "composition",
+    "grouped",
+    "compound",
+    "form",
+    "toolbar"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
@@ -20,5 +32,57 @@
       "Composes with a consumer onKeyDown handler instead of replacing it",
       "Renders one shared focus ring that tracks the focused grouped surface"
     ]
-  }
+  },
+  "usage": {
+    "summary": "Compose related controls using Group.Button, Group.Input, and Group.Select. Use Group value/onChange with Group.Button value for controlled toggle groups.",
+    "rules": [
+      {
+        "type": "do",
+        "title": "Compose grouped selects",
+        "description": "Group.Select uses Select.Trigger and Select.Content containing Select.List and Select.Item children."
+      },
+      {
+        "type": "do",
+        "title": "Use the standalone divider",
+        "description": "Place Divider inside Group; there is no Group.Divider part."
+      }
+    ]
+  },
+  "contract": {
+    "version": 1,
+    "element": "div role=\"group\" inside a sizing/focus wrapper",
+    "nativeProps": "Div attributes and events go to the inner group. className styles that group; w-full/flex-1 also propagate to the outer sizing wrapper.",
+    "ref": "Inner HTMLDivElement.",
+    "state": "Group holds no selection state. Supply value and onChange; Group.Button value identifies each toggle. Group disabled applies unless a part explicitly overrides it.",
+    "layout": "Each direct child gets an item wrapper. orientation controls layout and arrow navigation; spacing=\"none\" joins surfaces.",
+    "composition": "Use Group.Button/Input/Select/Expand. Use standalone Divider, not Group.Divider. Tooltip can wrap Group.Button as one group child. Nested groups own their own controls.",
+    "accessibility": "Name the collection with aria-label/aria-labelledby. Toggle buttons expose aria-pressed when Group value is supplied. This is a group of toggle buttons, not a radio group.",
+    "parts": {
+      "Button": {
+        "element": "button (or Button link mode)",
+        "nativeProps": "Inherits Button native props, including aria-label and event handlers.",
+        "ref": "HTMLButtonElement in button mode."
+      },
+      "Input": {
+        "element": "Input inside a grouped div surface",
+        "nativeProps": "className goes to the grouped surface; other props follow Input forwarding. Native mode events reach the input, not the grouped wrapper.",
+        "ref": "HTMLInputElement in native input mode.",
+        "composition": "Children mode renders a custom Input shell; provide your own editable control and event handlers there."
+      },
+      "Select": {
+        "element": "Select root div",
+        "nativeProps": "Props follow Select. Accessibility labels/descriptions for the control belong on Select.Trigger.",
+        "ref": "HTMLDivElement.",
+        "composition": "Use Select.Trigger/Value and Select.Content/List/Item inside Group.Select. The panel anchors to this segment, not the entire Group."
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "01-basic-group",
+      "name": "Basic toggle group",
+      "description": "Controlled toggles with accessible selected state and a named collection.",
+      "code": "\"use client\";\nimport { useState } from \"react\";\nimport { Group } from \"ui-lab-components/group\";\nexport function ModeToggle() {\n  const [mode, setMode] = useState(\"edit\");\n  return <Group aria-label=\"Mode\" value={mode} onChange={setMode}><Group.Button value=\"edit\">Edit</Group.Button><Group.Button value=\"preview\">Preview</Group.Button></Group>;\n}\n"
+    }
+  ]
 }

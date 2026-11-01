@@ -3,9 +3,9 @@ const ROOT_FONT_SIZE_PX = 16;
 export const DEFAULT_FONT_SIZE_ROUNDING_STEP_PX = 0.5;
 
 export const TYPOGRAPHY_SCALE_MIN = 0.5;
-export const TYPOGRAPHY_SCALE_MAX = 1.0;
-export const DEFAULT_HEADER_SCALE = 0.75;
-export const DEFAULT_BODY_SCALE = 0.75;
+export const TYPOGRAPHY_SCALE_MAX = 1.5;
+export const DEFAULT_HEADER_SCALE = 1;
+export const DEFAULT_BODY_SCALE = 1;
 
 export const TYPOGRAPHY_LINE_HEIGHT_MIN = 1.0;
 export const TYPOGRAPHY_LINE_HEIGHT_MAX = 2.0;

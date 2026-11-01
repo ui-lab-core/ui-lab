@@ -96,7 +96,7 @@ function leanProp(prop: RawRecord): ApiProp {
     required: prop.required === true,
     default: text(prop.defaultValue),
     group: text(prop.category),
-    description: text(prop.description),
+    description: prop.inherited === true ? undefined : text(prop.description),
   };
 }
 
@@ -175,9 +175,8 @@ function subComponents(raw: unknown, exportName: string): Record<string, ApiPart
   return parts.length > 0 ? Object.fromEntries(parts) : undefined;
 }
 
-function buildApi(id: string, raw: unknown, exportName: string, selection?: ApiSelection): ComponentApi | undefined {
-  if (typeof raw !== "object" || raw === null) return undefined;
-  const api = { ...(raw as RawRecord) };
+function buildApi(id: string, raw: RawRecord, exportName: string, selection?: ApiSelection): ComponentApi {
+  const api = { ...raw };
   const partName = (name: string) => name.replace(new RegExp(`^${exportName}\\.?`), "");
   const selectProps = (props: unknown, prefix = "") => asArray<RawRecord>(props).filter((prop) =>
     !selection?.props || selection.props.includes(`${prefix}${prop.name}`) ||
@@ -248,22 +247,29 @@ function buildApi(id: string, raw: unknown, exportName: string, selection?: ApiS
 /**
  * A missing component and a broken registry are different outcomes: only the
  * first one is null. Swallowing load failures into "no match" makes an agent
- * hand-roll a component that already exists.
+ * hand-roll a component that already exists, and answering without the API
+ * presents an incomplete record as authoritative.
  */
 export interface Component extends Omit<ComponentMetadata, "api"> {
-  api?: ComponentApi;
+  api: ComponentApi;
 }
 
 function getComponent(id: string, selection?: ApiSelection): Component | null {
   const component = getRegistryComponent(id);
   if (!component) return null;
 
-  const apiAliases: Record<string, string> = { confirm: "confirmation" };
-  const apiId = apiAliases[id] ?? id;
-  const generated = generatedAPI[apiId as keyof typeof generatedAPI];
-  const source = generated ?? component.api;
+  // Generation fails for any registered component without an extracted API,
+  // so a missing record here is a stale or corrupted build, never a valid answer.
+  const raw: unknown = generatedAPI[id];
+  if (typeof raw !== "object" || raw === null || !Array.isArray((raw as RawRecord).props))
+    throw new Error(`Missing generated API record for ${id}; rebuild the registry.`);
 
-  return { ...component, api: buildApi(apiId, source, component.source.exportName, selection) };
+  const contract = component.contract && selection?.parts
+    ? { ...component.contract, parts: Object.fromEntries(
+        Object.entries(component.contract.parts ?? {}).filter(([name]) => selection.parts!.includes(name)),
+      ) }
+    : component.contract;
+  return { ...component, contract, api: buildApi(id, raw as RawRecord, component.source.exportName, selection) };
 }
 
 function all(): ComponentMetadata[] {

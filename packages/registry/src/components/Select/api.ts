@@ -5,6 +5,13 @@ import type { ComponentAPIEnrichment } from "../../types";
  * what react-docgen-typescript extracts from the component source.
  */
 export const apiEnrichment = {
+  documentation: {
+    props: {
+      value: { description: "Controlled key (single) or keys (multiple). null explicitly clears a single selection; undefined leaves selection uncontrolled unless selectedKey/selectedKeys is supplied. state.value takes precedence." },
+      selectedKey: { description: "Controlled single-selection key. null is an explicitly empty controlled selection. Use defaultSelectedKey only for an uncontrolled initial value." },
+      open: { description: "Legacy initial panel visibility. Prefer defaultOpen for initial visibility. For controlled visibility use state={{ open }} and onOpenChange." },
+    },
+  },
   customTypes: {
     Style: {
       name: "Style",
@@ -127,12 +134,12 @@ export const apiEnrichment = {
     SelectState: {
       name: "SelectState",
       summary: "Controlled selection and open state supplied to Select.",
-      type: "{ value?: Key | Key[]; open?: boolean }",
+      type: "{ value?: Key | Key[] | null; open?: boolean }",
       kind: "interface",
       members: [
         {
           name: "value",
-          type: "Key | Key[]",
+          type: "Key | Key[] | null",
           required: false,
           description: "Selected key in single mode or selected keys in multiple mode.",
         },

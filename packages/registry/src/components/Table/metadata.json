@@ -1,7 +1,7 @@
 {
   "id": "table",
   "name": "Table",
-  "description": "Expressive table component with consumer-defined headers and cell rendering logic.",
+  "description": "Data table with custom headers and cells.",
   "category": "display",
   "source": {
     "packageName": "ui-lab-components",

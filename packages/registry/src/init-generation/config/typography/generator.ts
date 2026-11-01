@@ -12,29 +12,29 @@ import { textSizeNames, type TextSizeName } from "./constants.js";
 type TypographyRole = "body" | "header";
 
 const BODY_BASELINE_REM: Record<TextSizeName, number> = {
-  xs: 0.8125,
-  sm: 0.85,
-  md: 0.9,
-  base: 0.9,
-  lg: 1.125,
-  xl: 1.25,
-  "2xl": 1.5,
-  "3xl": 1.75,
-  "4xl": 2.25,
-  "5xl": 2.75,
+  xs: 0.847,
+  sm: 0.8861,
+  md: 0.9382,
+  base: 0.9382,
+  lg: 1.1728,
+  xl: 1.3031,
+  "2xl": 1.5637,
+  "3xl": 1.8243,
+  "4xl": 2.3455,
+  "5xl": 2.8668,
 };
 
 const HEADER_BASELINE_REM: Record<TextSizeName, number> = {
-  xs: 0.75,
-  sm: 0.8225,
-  md: 0.9375,
-  base: 0.9375,
-  lg: 1.125,
-  xl: 1.25,
-  "2xl": 1.5,
-  "3xl": 1.75,
-  "4xl": 2.25,
-  "5xl": 2.75,
+  xs: 0.7818,
+  sm: 0.8574,
+  md: 0.9773,
+  base: 0.9773,
+  lg: 1.1728,
+  xl: 1.3031,
+  "2xl": 1.5637,
+  "3xl": 1.8243,
+  "4xl": 2.3455,
+  "5xl": 2.8668,
 };
 
 function formatCssNumber(value: number, precision: number = 6): string {

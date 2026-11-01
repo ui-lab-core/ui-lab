@@ -27,7 +27,7 @@ function runCommand(packageRoot, name) {
   });
 }
 
-async function getProjects(defaultRoot) {
+export async function getProjects(defaultRoot) {
   const packageDirectory = path.join(projectRoot, "packages");
   const entries = await readdir(packageDirectory, { withFileTypes: true });
   const roots = await Promise.all(entries.filter((entry) => entry.isDirectory()).map(async (entry) => {
@@ -50,11 +50,14 @@ function taskNames(manifest) {
   return Object.keys(manifest.scripts ?? {}).filter((name) => name !== "actions" && name !== "registry");
 }
 
-async function chooseAction(defaultRoot) {
-  const projects = await getProjects(defaultRoot);
+export async function chooseAction(defaultRoot, { projects: suppliedProjects } = {}) {
+  const projects = suppliedProjects ?? await getProjects(defaultRoot);
   let projectIndex = Math.max(0, projects.findIndex((project) => project.root === defaultRoot));
   let actionIndex = 0;
   let active = true;
+  let running = false;
+  let awaitingReturn = false;
+  let lastResult = "";
 
   const render = () => {
     const project = projects[projectIndex];
@@ -69,6 +72,7 @@ async function chooseAction(defaultRoot) {
     tasks.forEach((name, index) => output.write(index === actionIndex
       ? `${colors.cyan}›${colors.reset} ${colors.bold}${name}${colors.reset}\n`
       : `  ${name}\n`));
+    if (lastResult) output.write(`\n${lastResult}\n`);
     output.write(`\n${colors.dim}j/k navigate · Tab/Shift+Tab switch project · Enter run · q quit${colors.reset}`);
   };
 
@@ -77,35 +81,52 @@ async function chooseAction(defaultRoot) {
     input.setRawMode(true);
     input.resume();
     const onKeypress = async (_, key) => {
-      if (!active) return;
+      if (!active || running) return;
       const tasks = taskNames(projects[projectIndex].manifest);
       if (key.name === "q" || (key.ctrl && key.name === "c")) {
         active = false;
         input.setRawMode(false);
         input.off("keypress", onKeypress);
+        input.pause();
         resolve();
+      } else if (awaitingReturn) {
+        if (key.name === "return") {
+          awaitingReturn = false;
+          render();
+        }
       } else if (key.name === "tab") {
         projectIndex = (projectIndex + (key.shift ? -1 : 1) + projects.length) % projects.length;
         actionIndex = 0;
         render();
       } else if (key.name === "j" || key.name === "down") {
-        actionIndex = (actionIndex + 1) % tasks.length;
+        actionIndex = (actionIndex + 1) % Math.max(1, tasks.length);
         render();
       } else if (key.name === "k" || key.name === "up") {
-        actionIndex = (actionIndex - 1 + tasks.length) % tasks.length;
+        actionIndex = (actionIndex - 1 + tasks.length) % Math.max(1, tasks.length);
         render();
       } else if (key.name === "return" && tasks[actionIndex]) {
+        running = true;
+        const project = projects[projectIndex];
+        const task = tasks[actionIndex];
         input.setRawMode(false);
+        input.pause();
         output.write("\u001Bc");
         try {
           console.log(`\n${colors.cyan}◆${colors.reset} ${tasks[actionIndex]}`);
-          await runCommand(projects[projectIndex].root, tasks[actionIndex]);
+          if (project.run) await project.run(task);
+          else await runCommand(project.root, task);
+          lastResult = `${colors.green}Done: ${task}${colors.reset}${project.afterRun ? ` — ${project.afterRun}` : ""}`;
           console.log(`\n${colors.green}✓ Done${colors.reset}`);
         } catch (error) {
+          lastResult = `${colors.red}Stopped: ${error.message}${colors.reset}`;
           console.error(`\n${colors.red}✗ Stopped${colors.reset}: ${error.message}`);
+          awaitingReturn = true;
+          output.write("\nPress Enter to return to the menu.");
         }
         input.setRawMode(true);
-        render();
+        input.resume();
+        running = false;
+        if (!awaitingReturn) render();
       }
     };
     input.on("keypress", onKeypress);

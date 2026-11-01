@@ -13,8 +13,7 @@ export function updateManagedStylesheet(
   customFont = true,
   globalCss = ONYX_GLOBAL_CSS,
 ): string {
-  const managedImports = imports(typography, themeImport);
-  if (customFont) managedImports.splice(1, 0, `@import "${fontsImport}";`);
+  const managedImports = imports(typography, themeImport, customFont ? fontsImport : undefined);
   const block = `${IMPORT_START}\n${managedImports.join("\n")}\n${IMPORT_END}`;
   const hasStart = content.includes(IMPORT_START);
   const hasEnd = content.includes(IMPORT_END);

@@ -8,8 +8,16 @@
     "exportName": "Expand",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["card", "modal"],
-  "tags": ["disclosure", "accordion", "collapsible", "expandable"],
+  "relatedComponents": [
+    "card",
+    "modal"
+  ],
+  "tags": [
+    "disclosure",
+    "accordion",
+    "collapsible",
+    "expandable"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
@@ -17,5 +25,37 @@
       "Keyboard navigation with Tab and Enter/Space",
       "The content panel is aria-hidden while collapsed"
     ]
-  }
+  },
+  "contract": {
+    "version": 1,
+    "element": "div containing disclosure button and content panel",
+    "nativeProps": "Div attributes/events go to the root. Trigger props/events go to its native button; Content props go to the outer collapsing div.",
+    "ref": "Root HTMLDivElement.",
+    "state": "state.expanded is controlled; onExpandedChange reports toggles. expanded is the legacy uncontrolled initial value, not controlled. defaultExpanded and isExpanded remain compatibility aliases; do not use them as controlled props.",
+    "layout": "String trigger children/title receive built-in title/icon layout. Element children without title switch to consumer-owned trigger layout and padding. Vertical padding on content.inner prevents a full collapse; pad a child instead.",
+    "composition": "Preset mode uses title plus body children. Compound mode uses Trigger and Content; with custom element children include Expand.Icon explicitly. Put a navigation link beside an icon-only Trigger rather than nesting a link in a button.",
+    "accessibility": "Trigger publishes aria-expanded and aria-controls. Custom icon-only triggers need aria-label. Contained layout removes trigger radius; match enclosing inner corners deliberately if clipping a focus ring.",
+    "parts": {
+      "Trigger": {
+        "element": "button",
+        "nativeProps": "Button attributes/events are composed with disclosure press behavior.",
+        "ref": "HTMLButtonElement.",
+        "composition": "Element children own layout and must include Expand.Icon if wanted; plain text gets a generated icon."
+      },
+      "Content": {
+        "element": "div around an inner content wrapper",
+        "nativeProps": "Div attributes/events target the collapsing panel.",
+        "ref": "HTMLDivElement.",
+        "layout": "Keep the collapsing inner wrapper free of vertical padding; pad a child for spacing."
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "controlled-disclosure",
+      "name": "Controlled disclosure",
+      "description": "Keep expansion controlled and explicitly compose a custom trigger.",
+      "code": "\"use client\";\nimport { useState } from \"react\";\nimport { Expand } from \"ui-lab-components/expand\";\nexport function Details() { const [expanded, setExpanded] = useState(false); return <Expand state={{ expanded }} onExpandedChange={setExpanded}><Expand.Trigger><span>Details</span><Expand.Icon /></Expand.Trigger><Expand.Content><div>Additional information</div></Expand.Content></Expand>; }\n"
+    }
+  ]
 }

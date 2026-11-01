@@ -1,8 +1,9 @@
 import * as path from "path";
 import * as fs from "fs";
+import ts from "typescript";
 import { fileURLToPath } from "url";
 import { withCustomConfig, type ComponentDoc, type PropItem } from "react-docgen-typescript";
-import type { APITypeToken, PropDefinition, ComponentAPI } from "../src/types";
+import type { APITypeToken, PropDefinition, ComponentAPI, ComponentRegistry } from "../src/types";
 import { componentRegistry } from "../src/registry.js";
 import {
   loadApiCache,
@@ -18,12 +19,27 @@ const __dirname = path.dirname(__filename);
 
 const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
 
+// Keep everyday DOM/event props without emitting hundreds of obscure inherited
+// attributes for every component. Only publish them when the type declares them.
+const nativeProps = new Set([
+  "children", "id", "htmlFor", "className", "style", "role", "tabIndex", "title",
+  "name", "value", "defaultValue", "type", "disabled", "required", "readOnly",
+  "placeholder", "min", "max", "step", "minLength", "maxLength", "rows", "cols",
+  "autoComplete", "autoFocus", "onChange", "onInput", "onSelect", "onClick",
+  "onFocus", "onBlur", "onKeyDown", "onKeyUp", "ref",
+]);
+// Do not repeat the entire React ARIA dictionary on every compound part.
+// Explicit component-owned ARIA props still pass the declaration filter below.
+const commonAriaProps = new Set(["aria-label", "aria-labelledby", "aria-describedby", "aria-live", "aria-invalid", "aria-busy"]);
+const keepNativeProp = (name: string) => nativeProps.has(name) || commonAriaProps.has(name);
+
 const parser = withCustomConfig(path.resolve(__dirname, "../../@ui/tsconfig.json"), {
   savePropValueAsString: true,
   shouldIncludePropTagMap: true,
   shouldExtractLiteralValuesFromEnum: true,
   shouldRemoveUndefinedFromOptional: true,
   propFilter: (prop: PropItem) => {
+    if (keepNativeProp(prop.name)) return true;
     if (prop.declarations && prop.declarations.length > 0) {
       const hasPropAdditionalDescription = prop.declarations.find((declaration) => {
         return !declaration.fileName.includes("node_modules");
@@ -33,6 +49,72 @@ const parser = withCustomConfig(path.resolve(__dirname, "../../@ui/tsconfig.json
     return true;
   },
 });
+
+let typeProgram: ts.Program | undefined;
+
+/** Use declared public prop names, not destructuring aliases inferred by docgen.
+ * Also recovers compound parts hidden behind Object.assign/casts.
+ */
+function getTypeProgram(): ts.Program {
+  if (!typeProgram) {
+    const configPath = path.resolve(COMPONENTS_DIR, "../../tsconfig.json");
+    const config = ts.readConfigFile(configPath, ts.sys.readFile);
+    if (config.error) throw new Error(ts.flattenDiagnosticMessageText(config.error.messageText, "\n"));
+    const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, path.dirname(configPath));
+    typeProgram = ts.createProgram(parsed.fileNames, parsed.options);
+  }
+  return typeProgram;
+}
+
+/** Runtime export names, including re-exports, from the actual public source entry. */
+export function extractPublicExportNames(componentDirName: string): string[] {
+  const program = getTypeProgram();
+  const source = program.getSourceFile(path.join(COMPONENTS_DIR, componentDirName, "index.ts"));
+  if (!source) throw new Error(`Missing public entry for ${componentDirName}`);
+  const checker = program.getTypeChecker();
+  const module = checker.getSymbolAtLocation(source);
+  if (!module) throw new Error(`Invalid public entry for ${componentDirName}`);
+  return checker.getExportsOfModule(module).filter((symbol) => {
+    const resolved = symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
+    return (resolved.flags & ts.SymbolFlags.Value) !== 0;
+  }).map((symbol) => symbol.name).sort();
+}
+
+function declaredProps(componentDirName: string, interfaceName: string): PropDefinition[] | undefined {
+  const program = getTypeProgram();
+  const checker = program.getTypeChecker();
+  const directory = path.join(COMPONENTS_DIR, componentDirName) + path.sep;
+  for (const source of program.getSourceFiles()) {
+    if (!source.fileName.startsWith(directory)) continue;
+    const declaration = source.statements.find((node) =>
+      (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) && node.name.text === interfaceName,
+    );
+    if (!declaration) continue;
+    const type = checker.getTypeAtLocation(declaration);
+    return checker.getPropertiesOfType(type).flatMap((symbol) => {
+      const location = symbol.valueDeclaration ?? symbol.declarations?.[0];
+      if (!location) return [];
+      const inherited = symbol.declarations?.every((node) => node.getSourceFile().fileName.includes("node_modules"));
+      if (inherited && !keepNativeProp(symbol.name)) return [];
+      return [{
+        name: symbol.name,
+        type: checker.typeToString(checker.getTypeOfSymbolAtLocation(symbol, location), location, ts.TypeFormatFlags.NoTruncation),
+        required: !(symbol.flags & ts.SymbolFlags.Optional),
+        description: ts.displayPartsToString(symbol.getDocumentationComment(checker)) || undefined,
+        inherited: !!inherited,
+        category: symbol.name.startsWith("aria-") ? "Accessibility" : undefined,
+      }];
+    });
+  }
+  return undefined;
+}
+
+function reconcileProps(declared: PropDefinition[], extracted: PropDefinition[]): PropDefinition[] {
+  return declared.map((prop) => {
+    const existing = extracted.find((entry) => entry.name === prop.name);
+    return existing ? { ...prop, ...existing, category: existing.category ?? prop.category } : prop;
+  });
+}
 
 const TYPE_LINKS: Record<string, string> = {
   boolean:
@@ -261,7 +343,8 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
   }
 
   // Banner is documented by hand: its root cast leaves docgen with nothing.
-  if (allDocs.length === 0) {
+  const declaredRoot = declaredProps(componentDirName, `${componentDirName}Props`);
+  if (allDocs.length === 0 && !declaredRoot) {
     return componentDirName === "Banner" ? { props: [] } : null;
   }
 
@@ -291,8 +374,22 @@ function extractComponentAPI(componentDirName: string): ComponentAPI | null {
     }
   }
 
+  for (const file of files) {
+    const source = fs.readFileSync(file, "utf8");
+    for (const match of source.matchAll(/\.displayName\s*=\s*["']([^"']+)["']/g)) {
+      const name = match[1]!;
+      if (!name.startsWith(`${componentDirName}.`)) continue;
+      const declared = declaredProps(componentDirName, `${name.replace(/\./g, "")}Props`);
+      if (!declared) continue;
+      const flatName = name.replace(/\./g, "");
+      const existing = subComponents[name] ?? subComponents[flatName];
+      delete subComponents[flatName];
+      subComponents[name] = { ...existing, props: reconcileProps(declared, existing?.props ?? []) };
+    }
+  }
+
   const api: ComponentAPI = {
-    props: mainProps,
+    props: declaredRoot ? reconcileProps(declaredRoot, mainProps) : mainProps,
     subComponents: Object.keys(subComponents).length > 0 ? subComponents : undefined,
   };
 
@@ -316,6 +413,7 @@ async function enrichAPI(componentDirName: string, api: ComponentAPI): Promise<C
 
 export async function extractAllComponentAPIs(
   componentDirNames: string[],
+  registry: ComponentRegistry = componentRegistry,
 ): Promise<Record<string, ComponentAPI>> {
   const result: Record<string, ComponentAPI> = {};
   let cache = loadApiCache();
@@ -342,12 +440,15 @@ export async function extractAllComponentAPIs(
       if (extracted) parsedCount++;
     }
 
+    if (!extracted && registry[kebabId]) {
+      throw new Error(`Failed to extract the public API for ${kebabId}.`);
+    }
     if (extracted) {
       result[kebabId] = enrichTypeTokens(await enrichAPI(dirName, extracted));
     }
 
     // Add examples from registry metadata
-    const metadata = componentRegistry[kebabId];
+    const metadata = registry[kebabId];
     if (metadata?.examples && result[kebabId]) {
       result[kebabId].examples = metadata.examples;
     }

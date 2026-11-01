@@ -1,7 +1,7 @@
 {
   "id": "command",
   "name": "Command",
-  "description": "Searchable command palette with instance-scoped trigger and controller APIs.",
+  "description": "Searchable command palette for quick actions.",
   "category": "action",
   "experimental": true,
   "source": {

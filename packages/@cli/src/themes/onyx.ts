@@ -20,6 +20,7 @@ export const ONYX_DEFAULT_TYPOGRAPHY_FILE = "typography.css";
 export function imports(
   typography: boolean,
   themeImport = "./theme.css",
+  fontsImport?: string,
 ): string[] {
-  return onyxImports(typography, themeImport);
+  return onyxImports(typography, themeImport, fontsImport);
 }

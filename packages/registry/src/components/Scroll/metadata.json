@@ -9,9 +9,48 @@
     "packagePath": "dist/index.d.ts"
   },
   "relatedComponents": [],
-  "tags": ["scroll", "overflow", "layout", "scrollbar"],
+  "tags": [
+    "scroll",
+    "overflow",
+    "layout",
+    "scrollbar"
+  ],
   "accessibility": {
     "hasAriaSupport": false,
-    "notes": ["Custom scrollbar implementation for visual consistency"]
-  }
+    "notes": [
+      "Custom scrollbar implementation for visual consistency"
+    ]
+  },
+  "usage": {
+    "summary": "Scroll forwards native div attributes to its outer root. Use viewport-ref for the inner scrolling element. Prop names are kebab-case, not camelCase.",
+    "rules": [
+      {
+        "type": "do",
+        "title": "Constrain the parent",
+        "description": "Vertical Scroll fills parent height. Give the parent a definite height; use min-h-0 on shrinking grid/flex tracks. Example: <div className=\"h-64 min-h-0\"><Scroll inline>{content}</Scroll></div>."
+      },
+      {
+        "type": "prefer",
+        "title": "Reserve the scrollbar gutter",
+        "description": "Use inline when edge-aligned content must not sit beneath the scrollbar."
+      }
+    ]
+  },
+  "contract": {
+    "version": 1,
+    "element": "div wrapping a scrolling viewport; enabled={false} uses the non-scrolling path",
+    "nativeProps": "Div attributes/events go to the outer root. Use viewport-ref to access scrollTop/scrollLeft on the actual viewport.",
+    "state": "No controlled React scroll-position prop. Use viewport-ref for programmatic position and storage-key for session restoration.",
+    "layout": "Vertical Scroll needs a definite parent height and min-h-0 on shrinking flex/grid tracks. max-height/max-width cap the viewport; inline reserves a scrollbar gutter. Prop names are kebab-case.",
+    "composition": "Use Scroll directly as the constrained layout child; avoid stacking independent scroll owners. Optional Track/Thumb customize the scrollbar.",
+    "accessibility": "Name the scrolling region when needed using root ARIA attributes. presentational changes structural roles, not keyboard behavior. The native viewport remains the scrolling element."
+  },
+  "examples": [
+    {
+      "id": "fixed-height-sidebar",
+      "name": "Fixed-height scrolling region",
+      "description": "Constrain the parent and reserve a scrollbar gutter.",
+      "code": "\"use client\";\nimport { Scroll } from \"ui-lab-components/scroll\";\nexport function Activity() { return <div className=\"h-64 min-h-0\"><Scroll inline role=\"region\" aria-label=\"Activity\">{Array.from({ length: 30 }, (_, index) => <p key={index}>Activity {index + 1}</p>)}</Scroll></div>; }\n"
+    }
+  ]
 }

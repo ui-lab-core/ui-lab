@@ -1,8 +1,9 @@
-import { publicWorkshopCatalog, type ComponentMetadata, type WorkshopCatalogEntry } from "ui-lab-registry";
+import { publicWorkshopCatalog, generatedStyles, generatedComponentImports, packageMetadata, type ComponentMetadata, type WorkshopCatalogEntry } from "ui-lab-registry";
 import { registryAdapter, type Component } from "../adapters/registry-adapter.js";
 import { componentRef, parseRef, isExplicitRef } from "../refs.js";
 import { exact, list, matches, notFound, LIST_CAP, type ToolResponse } from "../response.js";
 import { clampLimit } from "../search.js";
+import { paginateComponentAPI } from "./component-pagination.js";
 
 /** Both the raw registry record and the adapter's leaned record satisfy this. */
 type AnyComponent = Omit<ComponentMetadata, "api"> & { api?: { subComponents?: unknown } };
@@ -15,6 +16,7 @@ export interface GetComponentInput {
   limit?: number;
   parts?: string[];
   props?: string[];
+  page?: number;
 }
 
 /**
@@ -29,7 +31,9 @@ export interface GetComponentInput {
  * being repeated as a `note` on every component.
  */
 function importStatement(component: AnyComponent): string {
-  return `import { ${component.source.exportName} } from '${component.source.packageName}/${component.id}';`;
+  const entry = generatedComponentImports[component.id];
+  if (!entry) throw new Error(`Missing generated import contract for ${component.id}; rebuild the registry.`);
+  return entry.statement;
 }
 
 /** The shape used wherever a component is a candidate rather than the answer. */
@@ -56,9 +60,11 @@ function componentSummary(component: AnyComponent) {
     import: importStatement(component),
     // Every dist entry is a client module, so a server component importing one
     // receives client references whose static properties are undefined.
-    ...(component.api?.subComponents
+    ...(component.api?.subComponents && !generatedComponentImports[component.id]?.serverCompound
       ? {
           compound: `${component.source.exportName}.* resolves only inside a client component; a server component rendering a compound part gets undefined.`,
+          namedParts: Object.fromEntries(Object.entries(generatedComponentImports[component.id]?.namedParts ?? {})
+            .filter(([name]) => Object.prototype.hasOwnProperty.call(component.api!.subComponents, name))),
         }
       : {}),
   };
@@ -89,15 +95,17 @@ function detailPayload(component: Component, detail: ComponentDetail, limit: num
     examples: examples.slice(0, limit),
   };
   const constraints = { accessibility: component.accessibility, reactAriaUrl: component.reactAriaUrl };
+  const contract = component.contract;
   const api = component.api;
   const props = api
     ? { props: api.props, subComponents: api.subComponents, customTypes: api.customTypes, styleableParts: api.styleableParts }
     : undefined;
   const styling = api
-    ? { styleableParts: api.styleableParts, stateAttributes: api.stateAttributes, styleTypes: api.styleTypes }
+    ? { styleableParts: api.styleableParts, stateAttributes: api.stateAttributes, styleTypes: api.styleTypes,
+        guidance: generatedStyles[component.id]?.documentation?.quickStart }
     : undefined;
 
-  if (detail === "api") return { ...summary, ...constraints, ...(focused ? { scope: "Selected API; required and accessibility props retained. Omit parts/props for complete API." } : {}), api: props };
+  if (detail === "api") return { ...summary, ...constraints, contract, guidance: contract ? undefined : component.usage, provenance: packageMetadata, ...(focused ? { scope: "Selected API; required and accessibility props retained. Omit parts/props for complete API." } : {}), api: props };
   if (detail === "styling") return { ...summary, styling };
   if (detail === "usage")
     return { ...summary, ...constraints, relatedComponents: component.relatedComponents, usageAvailable: component.usage ? "available" : "none", usage: component.usage };
@@ -108,8 +116,10 @@ function detailPayload(component: Component, detail: ComponentDetail, limit: num
       relatedComponents: component.relatedComponents,
       accessibility: component.accessibility,
       reactAriaUrl: component.reactAriaUrl,
+      contract,
+      provenance: packageMetadata,
       api: props,
-      styling: styling ? { stateAttributes: styling.stateAttributes, styleTypes: styling.styleTypes } : undefined,
+      styling: styling ? { stateAttributes: styling.stateAttributes, styleTypes: styling.styleTypes, guidance: styling.guidance } : undefined,
       usageAvailable: component.usage ? "available" : "none",
       usage: component.usage,
       ...exampleListing,
@@ -149,6 +159,8 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
   const query = input.query?.trim() ?? "";
   const limit = clampLimit(input.limit);
   const detail = input.detail ?? "summary";
+  if (input.page !== undefined && (!Number.isSafeInteger(input.page) || input.page < 0 || !["api", "full", "examples"].includes(detail)))
+    return notFound(query, "page must be a non-negative integer for api, full, or examples detail.", [], []);
 
   if (!query) {
     return list(registryAdapter.all().map(componentIndexEntry), ['get_component { query: "<ref>", detail: "api" }'], {
@@ -202,15 +214,42 @@ export async function handleGetComponent(input: GetComponentInput): Promise<Tool
       ...Object.entries(component.api?.subComponents ?? {}).flatMap(([name, part]) =>
         part.props.map((prop) => `${normalize(name)}.${prop.name}`)),
     ];
-    const invalid = [...(parts ?? []).filter((name) => !knownParts.includes(name)),
-      ...(props ?? []).filter((name) => !knownProps.includes(name) ||
-        (name.includes(".") && parts && !parts.includes(name.split(".")[0]!)))];
-    if (invalid.length) return notFound(query, `Unknown or excluded API selector: ${invalid.join(", ")}.`, [], []);
-    const selected = focused ? registryAdapter.getComponent(id, { parts, props })! : component;
+    const validParts = parts?.filter((name) => knownParts.includes(name));
+    const validProps = props?.filter((name) => knownProps.includes(name) &&
+      (!name.includes(".") || !validParts || validParts.includes(name.split(".")[0]!)));
+    const invalid = [...(parts ?? []).filter((name) => !validParts!.includes(name)),
+      ...(props ?? []).filter((name) => !validProps!.includes(name))];
+    if (invalid.length && !validParts?.length && !validProps?.length)
+      return notFound(query, `Unknown or excluded API selector: ${invalid.join(", ")}.`,
+        [{ parts: knownParts, props: knownProps }], []);
+    const selected = focused ? registryAdapter.getComponent(id, { parts: validParts, props: validProps })! : component;
+    const page = input.page ?? 0;
+    const pageLimit = clampLimit(input.limit, LIST_CAP, 200);
+    let payload: Record<string, unknown> = detailPayload(selected, detail, pageLimit, focused);
+    const nextSteps = detailNextSteps(component, detail);
+    if (detail === "api" || detail === "full") {
+      try {
+        const paged = paginateComponentAPI(payload, page);
+        payload = paged.payload;
+        if (page + 1 < paged.pageCount)
+          nextSteps.push(`get_component ${JSON.stringify({ ...input, query: componentRef(component.id), page: page + 1 })}`);
+      } catch (error) {
+        if (!(error instanceof RangeError)) throw error;
+        return notFound(query, error.message, [{ parts: knownParts, props: knownProps }], []);
+      }
+    } else if (detail === "examples") {
+      const examples = componentExamples(component);
+      const pageCount = Math.max(1, Math.ceil(examples.length / pageLimit));
+      if (page >= pageCount) return notFound(query, `Example page must be between 0 and ${pageCount - 1}.`, [], []);
+      payload.examples = examples.slice(page * pageLimit, (page + 1) * pageLimit);
+      if (pageCount > 1) payload.pagination = { page, pageCount };
+      if (page + 1 < pageCount)
+        nextSteps.push(`get_component ${JSON.stringify({ ...input, query: componentRef(component.id), page: page + 1 })}`);
+    }
     return exact(
       componentRef(component.id),
-      detailPayload(selected, detail, clampLimit(input.limit, LIST_CAP, 200), focused),
-      detailNextSteps(component, detail),
+      { ...payload, ...(invalid.length ? { warnings: [`Unknown or excluded API selectors ignored: ${invalid.join(", ")}.`] } : {}) },
+      nextSteps,
     );
   }
 

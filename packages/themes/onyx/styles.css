@@ -913,6 +913,11 @@
       --foreground-selected-hover: var(--foreground);
     }
 
+    &[data-selected="true"] {
+      --background: var(--background-700);
+      --foreground: var(--foreground-100);
+    }
+
     &:is([data-highlighted="true"], [data-focused="true"], [data-state="open"]) {
       --background: var(--background-600);
       --foreground: var(--foreground-100);
@@ -955,7 +960,6 @@
       --background: transparent;
       --foreground: var(--foreground-400);
       --foreground-hover: var(--foreground-200);
-      --background-pressed: var(--background-800);
       --foreground-pressed: var(--foreground-50);
       --foreground-selected: var(--foreground-50);
     }

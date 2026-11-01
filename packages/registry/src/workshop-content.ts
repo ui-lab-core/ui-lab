@@ -1,4 +1,5 @@
 import { generatedWorkshopContent } from "./.generated/workshop-content.js";
+import { componentRegistry } from "./registry.js";
 
 export type WorkshopContentKind = "component-example" | "pattern" | "element" | "section" | "starter";
 export type WorkshopVisibility = "public" | "internal" | "private" | "hidden";
@@ -55,7 +56,25 @@ export interface WorkshopContentResolver {
   resolve(ref: string, context: ContentEntitlementContext): Promise<WorkshopCatalogEntry | null>;
 }
 
-export const publicWorkshopCatalog: readonly WorkshopCatalogEntry[] = generatedWorkshopContent;
+// Basic public API examples live with the component contract. Workshop entries
+// retain ownership of their existing refs, including their entitlement policy.
+const workshopRefs = new Set<string>(generatedWorkshopContent.map((entry) => entry.ref));
+const contractExamples: WorkshopCatalogSource[] = Object.values(componentRegistry).flatMap((component) =>
+  (component.examples ?? []).flatMap((example) => {
+    if (!example.id) return [];
+    const ref = `example:${component.id}/${example.id}`;
+    if (workshopRefs.has(ref)) return [];
+    return [{
+      ref, kind: "component-example" as const, id: example.id,
+      componentId: component.id, name: example.name ?? example.title ?? example.id,
+      description: example.description, category: component.category,
+      visibility: "public" as const, access: "free" as const, locked: false as const,
+      code: example.code,
+    }];
+  }),
+);
+
+export const publicWorkshopCatalog: readonly WorkshopCatalogEntry[] = [...generatedWorkshopContent, ...contractExamples];
 
 export function createPublicWorkshopContentResolver(): WorkshopContentResolver {
   const byRef = new Map(publicWorkshopCatalog.map((entry) => [entry.ref.toLowerCase(), entry]));

@@ -8,8 +8,15 @@
     "exportName": "TextArea",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["input", "label", "form"],
-  "tags": ["form", "text", "multi-line"],
+  "relatedComponents": [
+    "input",
+    "label"
+  ],
+  "tags": [
+    "form",
+    "text",
+    "multi-line"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
@@ -18,5 +25,23 @@
       "Keyboard focus is indicated by the shared focus indicator, which tracks the field or the scroll surface when maxHeight is set",
       "The drag-to-resize handle is decorative, aria-hidden, and pointer-only; keyboard users are never required to use it"
     ]
-  }
+  },
+  "contract": {
+    "version": 1,
+    "element": "Native textarea inside root/surface wrappers and an optional scroll wrapper",
+    "nativeProps": "Textarea attributes and events, including id, aria-describedby and onKeyDown, reach the textarea. className and style target the outer root.",
+    "ref": "HTMLTextAreaElement.",
+    "state": "value is controlled; state.value takes precedence. defaultValue supplies an uncontrolled initial value; onChange receives a native textarea event.",
+    "layout": "size controls minimum height/density. maxHeight enables an internal scroll surface. Style the field with styles.field and the scroll region with styles.scroll.",
+    "composition": "For embedded composers, clear surface styles through the documented field/surface/scroll slots, rather than intercepting keyboard events on a wrapper.",
+    "accessibility": "Use Label htmlFor matching the textarea id. Keyboard shortcuts can be handled directly with onKeyDown; keep ordinary Enter available unless the product explicitly changes it."
+  },
+  "examples": [
+    {
+      "id": "keyboard-submit",
+      "name": "Textarea keyboard submission",
+      "description": "Handle Ctrl/Cmd+Enter directly on the native textarea.",
+      "code": "\"use client\";\nimport { TextArea } from \"ui-lab-components/textarea\";\nimport { Label } from \"ui-lab-components/label\";\nexport function MessageField({ onSubmit }: { onSubmit: () => void }) { return <div><Label htmlFor=\"message\">Message</Label><TextArea id=\"message\" onKeyDown={(event) => { if (event.key === \"Enter\" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); onSubmit(); } }} /></div>; }\n"
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "icon",
   "name": "Icon",
-  "description": "Framework-agnostic local SVG icon resolved by variant and filename.",
+  "description": "Local SVG icon resolved by variant and name.",
   "category": "media",
   "experimental": true,
   "source": {
@@ -9,13 +9,41 @@
     "exportName": "Icon",
     "packagePath": "dist/index.d.ts"
   },
-  "relatedComponents": ["button", "badge"],
-  "tags": ["icon", "svg", "mask", "asset"],
+  "relatedComponents": [
+    "button",
+    "badge"
+  ],
+  "tags": [
+    "icon",
+    "svg",
+    "mask",
+    "asset"
+  ],
   "accessibility": {
     "hasAriaSupport": true,
     "notes": [
       "Decorative by default with aria-hidden",
       "Meaningful icons support an accessible label"
+    ]
+  },
+  "usage": {
+    "summary": "Icon renders a span with an SVG CSS mask, not an inline svg. Assets are application-owned. Load guide:icon-setup for IconProvider, static assets and on-demand routes.",
+    "rules": [
+      {
+        "type": "do",
+        "title": "Configure the asset contract",
+        "description": "Serve {asset-url}/{variant}/{id}.svg. Default asset-url is /ui/icons; a variant prop or provider default-variant is required. Missing assets warn in development."
+      },
+      {
+        "type": "do",
+        "title": "Size icons through their slot",
+        "description": "Default size uses --icon-size with a 20px standalone fallback. Button/Select/Expand/Badge slots set this variable. An explicit size prop overrides it."
+      },
+      {
+        "type": "prefer",
+        "title": "Use explicit per-icon overrides",
+        "description": "An Icon asset-url overrides the provider resolver for that icon. Otherwise resolve-source wins over the provider base URL. Icon IDs come from the installed application collection, not a universal built-in set."
+      }
     ]
   }
 }

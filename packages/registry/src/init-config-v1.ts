@@ -108,7 +108,7 @@ function validate(config: LegacyInitConfig): LegacyInitConfig {
   if (!fonts.has(config.font)) fail("unknown font.");
   text(config.themeCss, "themeCss");
   const t = config.typography;
-  numberIn(t.headerScale,.5,1,"headerScale"); numberIn(t.bodyScale,.5,1,"bodyScale");
+  numberIn(t.headerScale,.5,1.5,"headerScale"); numberIn(t.bodyScale,.5,1.5,"bodyScale");
   numberIn(t.headerMinFontSizePx,10,18,"headerMinFontSizePx"); numberIn(t.bodyMinFontSizePx,10,18,"bodyMinFontSizePx");
   numberIn(t.monoFontSizeScale,.8,1.2,"monoFontSizeScale"); numberIn(t.monoFontWeightScale,.8,1.2,"monoFontWeightScale");
   numberIn(t.monoLetterSpacingScale,0,3.5,"monoLetterSpacingScale"); numberIn(t.monoLineHeight,1,2,"monoLineHeight");

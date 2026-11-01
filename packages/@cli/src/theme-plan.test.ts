@@ -174,7 +174,7 @@ test("applies shared configuration output, optional font, typography, and toggle
     assert.match(plan.writes.find((write) => write.path.endsWith("theme.css"))?.content ?? "", /accent-400: red/);
     assert.ok(plan.writes.some((write) => write.path === "components/theme-toggle.tsx"));
     const global = plan.writes.find((write) => write.path === "app/globals.css")?.content ?? "";
-    assert.match(global, /--radius-sm: 0\.600rem/);
+    assert.match(global, /--radius-ratio: 3;/);
     assert.doesNotMatch(global, /fonts\.css/);
   } finally { rmSync(root, { recursive:true, force:true }); }
 });

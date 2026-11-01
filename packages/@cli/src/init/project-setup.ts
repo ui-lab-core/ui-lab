@@ -57,13 +57,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 }
 `;
 
-const PAGE = `import { Badge, Button, Card } from "ui-lab-components";
+const PAGE = `import { Badge } from "ui-lab-components/badge";
+import { Button } from "ui-lab-components/button";
+import { Card, CardHeader, CardBody, CardFooter } from "ui-lab-components/card";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background-950 px-6 py-16 text-foreground-100">
       <Card className="w-full max-w-xl">
-        <Card.Header>
+        <CardHeader>
           <div className="flex items-center justify-between gap-4">
             <Badge variant="success" pill>
               Setup complete
@@ -73,8 +75,8 @@ export default function Home() {
           <h1 className="mb-0 mt-6 text-4xl font-semibold tracking-tight">
             Your UI Lab app is ready.
           </h1>
-        </Card.Header>
-        <Card.Body>
+        </CardHeader>
+        <CardBody>
           <p className="m-0 text-lg leading-8 text-foreground-300">
             If this card, badge, and button are styled, the component library,
             Onyx theme, Tailwind CSS, and App Router stylesheet are all connected.
@@ -84,12 +86,12 @@ export default function Home() {
             <div className="h-12 rounded-base bg-info-500" />
             <div className="h-12 rounded-base bg-success-500" />
           </div>
-        </Card.Body>
-        <Card.Footer>
+        </CardBody>
+        <CardFooter>
           <Button href="https://ui-lab.app" target="_blank" variant="primary" size="large">
             Explore the documentation
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
     </main>
   );
@@ -164,13 +166,15 @@ createRoot(document.getElementById("root")!).render(
 );
 `;
 
-const VITE_APP = `import { Badge, Button, Card } from "ui-lab-components";
+const VITE_APP = `import { Badge } from "ui-lab-components/badge";
+import { Button } from "ui-lab-components/button";
+import { Card, CardHeader, CardBody, CardFooter } from "ui-lab-components/card";
 
 export default function App() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background-950 px-6 py-16 text-foreground-100">
       <Card className="w-full max-w-xl">
-        <Card.Header>
+        <CardHeader>
           <div className="flex items-center justify-between gap-4">
             <Badge variant="success" pill>
               Setup complete
@@ -180,8 +184,8 @@ export default function App() {
           <h1 className="mb-0 mt-6 text-4xl font-semibold tracking-tight">
             Your UI Lab app is ready.
           </h1>
-        </Card.Header>
-        <Card.Body>
+        </CardHeader>
+        <CardBody>
           <p className="m-0 text-lg leading-8 text-foreground-300">
             If this card, badge, and button are styled, the component library,
             Onyx theme, Tailwind CSS, and Vite entry stylesheet are all connected.
@@ -191,12 +195,12 @@ export default function App() {
             <div className="h-12 rounded-base bg-info-500" />
             <div className="h-12 rounded-base bg-success-500" />
           </div>
-        </Card.Body>
-        <Card.Footer>
+        </CardBody>
+        <CardFooter>
           <Button href="https://ui-lab.app" target="_blank" variant="primary" size="large">
             Explore the documentation
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
     </main>
   );
@@ -676,7 +680,7 @@ export async function prepareProject(
   if (
     project.framework === "unknown" &&
     framework !== "vite" &&
-    (isEffectivelyEmpty(project.root) || hasNextFiles)
+    (framework === "next" || isEffectivelyEmpty(project.root) || hasNextFiles)
   ) {
     await completeNextProject(project.root, dryRun);
     if (dryRun) return undefined;

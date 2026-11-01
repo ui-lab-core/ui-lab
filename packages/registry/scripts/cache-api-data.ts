@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { createHash } from "node:crypto";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import type { ComponentAPI } from "../src/types";
@@ -8,11 +9,11 @@ const __dirname = path.dirname(__filename);
 
 const CACHE_DIR = path.resolve(__dirname, "../.cache");
 const CACHE_FILE = path.resolve(CACHE_DIR, "api-data.json");
-// 2.0.0 stores extracted docs only; enrichment is applied after every cache read.
-const CACHE_VERSION = "2.0.0";
+// Invalidate on shared source, tooling and configuration changes as well.
+const CACHE_VERSION = "3.0.0";
 
 interface CacheEntry {
-  mtime: number;
+  fingerprint: string;
   api: ComponentAPI | null;
 }
 
@@ -35,6 +36,7 @@ function ensureCacheDir(): void {
  * Loads the API cache from disk
  */
 export function loadApiCache(): ApiCache {
+  sourceFingerprint = undefined;
   try {
     if (!fs.existsSync(CACHE_FILE)) {
       return { timestamp: 0, version: CACHE_VERSION, files: {} };
@@ -66,30 +68,35 @@ export function saveApiCache(cache: ApiCache): void {
   }
 }
 
-/**
- * Gets the modification time of component files
- * Returns the most recent mtime across all component files
- */
-function getComponentsMtime(componentDirName: string, componentsDir: string): number {
-  const componentDir = path.join(componentsDir, componentDirName);
-  if (!fs.existsSync(componentDir)) return 0;
-
-  const files = fs.readdirSync(componentDir);
-  const tsxFiles = files.filter((f) => f.endsWith(".tsx") && !f.endsWith(".test.tsx"));
-
-  let maxMtime = 0;
-  for (const file of tsxFiles) {
-    const filePath = path.join(componentDir, file);
-    try {
-      const stat = fs.statSync(filePath);
-      maxMtime = Math.max(maxMtime, stat.mtimeMs);
-    } catch (error) {
-      // If file stat fails, invalidate cache
-      return Date.now();
+// One content fingerprint per extraction run. Conservative invalidation across
+// components is intentional: props can depend on types in other components.
+let sourceFingerprint: string | undefined;
+function getSourceFingerprint(componentsDir: string): string {
+  if (sourceFingerprint) return sourceFingerprint;
+  const hash = createHash("sha256");
+  const visit = (filename: string): void => {
+    if (!fs.existsSync(filename)) {
+      hash.update(`missing:${filename}`);
+      return;
     }
-  }
-
-  return maxMtime;
+    if (fs.statSync(filename).isDirectory()) {
+      for (const entry of fs.readdirSync(filename).sort()) {
+        if (["node_modules", "dist", "tests", "__tests__"].includes(entry) || /\.(test|spec)\.[cm]?[jt]sx?$/.test(entry)) continue;
+        visit(path.join(filename, entry));
+      }
+    } else {
+      hash.update(filename).update(fs.readFileSync(filename));
+    }
+  };
+  const uiRoot = path.resolve(componentsDir, "../..");
+  for (const filename of [
+    path.join(uiRoot, "src"), path.join(uiRoot, "tsconfig.json"),
+    path.join(uiRoot, "package.json"), path.join(__dirname, "generate-api-data.ts"),
+    path.join(__dirname, "cache-api-data.ts"),
+    path.resolve(uiRoot, "../../pnpm-lock.yaml"),
+  ]) visit(filename);
+  sourceFingerprint = hash.digest("hex");
+  return sourceFingerprint;
 }
 
 /**
@@ -101,8 +108,7 @@ function isCacheValid(componentDirName: string, cache: ApiCache, componentsDir: 
     return false;
   }
 
-  const currentMtime = getComponentsMtime(componentDirName, componentsDir);
-  return cacheEntry.mtime === currentMtime;
+  return cacheEntry.fingerprint === getSourceFingerprint(componentsDir);
 }
 
 /**
@@ -130,7 +136,7 @@ export function updateCacheEntry(
   api: ComponentAPI | null,
   componentsDir: string,
 ): ApiCache {
-  const mtime = getComponentsMtime(componentDirName, componentsDir);
+  const fingerprint = getSourceFingerprint(componentsDir);
 
   return {
     ...cache,
@@ -138,7 +144,7 @@ export function updateCacheEntry(
     files: {
       ...cache.files,
       [componentDirName]: {
-        mtime,
+        fingerprint,
         api,
       },
     },

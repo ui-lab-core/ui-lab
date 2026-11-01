@@ -5,6 +5,8 @@ import { handleGetComponent } from "./handlers/components.js";
 import { handleSearchGuides } from "./handlers/guides.js";
 import { handleSearchWorkshop } from "./handlers/workshop.js";
 import { countsByKind } from "./adapters/workshop-adapter.js";
+import { completeComponent } from "./test-utils.js";
+import { generatedAPI, publicWorkshopCatalog } from "ui-lab-registry";
 
 type Payload = Record<string, unknown>;
 
@@ -190,7 +192,7 @@ test("component responses carry the subpath import agents must write", async () 
 });
 
 test("API payloads carry no documentation-site rendering data", async () => {
-  const select = payload(await handleGetComponent({ query: "component:select", detail: "api" }));
+  const select = payload(await completeComponent({ query: "component:select", detail: "api" }));
   const serialized = JSON.stringify(select.api);
   for (const key of ["typeTokens", "tags", "links", "enumValueDetails", "propGroups", "developer.mozilla.org"])
     assert.equal(serialized.includes(key), false, `${key} survived into the API payload`);
@@ -278,18 +280,34 @@ test("focused Select API retains authoritative contracts and transitive types", 
   assert.ok(selected.accessibility);
   assert.match(String(selected.compound), /client component/);
   assert.equal(selected.nextSteps, undefined);
-  const full = payload(await handleGetComponent({query: "select", detail: "full"}));
+  const full = payload(await completeComponent({query: "select", detail: "full"}));
   assert.ok(Object.keys((full.api as typeof api).subComponents).length > 4);
-  assert.equal((await handleGetComponent({ ...SETTINGS_SELECT, parts: ["Missing"] })).status, "not_found");
+  const partial = payload(await handleGetComponent({ ...SETTINGS_SELECT, parts: ["Missing"] }));
+  assert.ok(Array.isArray(partial.warnings) && partial.warnings.length > 0);
+  assert.ok((partial.api as typeof api).props.some((prop) => prop.name === "selectedKey"));
+  const invalid = await handleGetComponent({ query: "select", detail: "api", parts: ["Missing"] });
+  assert.ok(invalid.status === "not_found" && invalid.suggestions.length > 0);
+});
+
+test("Select contract and public example resolve without library source access", async () => {
+  const result = payload(await handleGetComponent({ query: "select", detail: "api", parts: ["Trigger"] }));
+  const contract = result.contract as { state: string; parts: Record<string, unknown> };
+  assert.match(contract.state, /null/);
+  assert.deepEqual(Object.keys(contract.parts), ["Trigger"]);
+  assert.ok(result.provenance);
+  const example = payload(await handleGetComponent({ query: "example:select/labeled-controlled-field" }));
+  assert.match(String(example.code), /selectedKey=/);
+  assert.match(String(example.code), /aria-describedby=/);
 });
 
 test("empty examples and usage are explicit without dead ends", async () => {
-  for (const query of ["select", "label"]) {
+  for (const query of ["label"]) {
     const examples = payload(await handleGetComponent({query, detail: "examples"}));
-    assert.equal(examples.exampleCount, 0);
-    assert.equal(examples.nextSteps, undefined);
+    const count = publicWorkshopCatalog.filter((entry) => entry.kind === "component-example" && entry.componentId === query).length;
+    assert.equal(examples.exampleCount, count);
+    assert.equal(!!examples.nextSteps, count > 0);
     const missing = await handleGetComponent({query: `example:${query}/missing`});
-    assert.ok(missing.status === "not_found" && missing.nextSteps.length === 0);
+    assert.ok(missing.status === "not_found" && (missing.nextSteps.length > 0) === (count > 0));
     const usage = payload(await handleGetComponent({query, detail: "usage"}));
     assert.equal(usage.usageAvailable, "none");
     assert.equal(usage.nextSteps, undefined);
@@ -311,4 +329,24 @@ test("all listings honor limits and ranked counts describe returned rows only", 
   assert.equal("total" in result, false);
   const capped = await handleGetComponent({ query: "component input", limit: 200 });
   assert.ok(capped.status === "matches" && capped.returned <= 25);
+});
+
+test("a missing or malformed generated API record fails instead of answering without an API", async () => {
+  const original = generatedAPI.button!;
+  try {
+    for (const broken of [undefined, { ...original, props: undefined }]) {
+      if (broken === undefined) delete generatedAPI.button;
+      else generatedAPI.button = broken as unknown as typeof original;
+      for (const detail of ["summary", "api", "full"] as const)
+        await assert.rejects(handleGetComponent({ query: "component:button", detail }),
+          /Missing generated API record for button; rebuild the registry/);
+      await assert.rejects(handleGetComponent({ query: "component:button", detail: "api", props: ["disabled", "fake"] }),
+        /Missing generated API record for button/);
+    }
+  } finally {
+    generatedAPI.button = original;
+  }
+  const restored = payload(await handleGetComponent({ query: "component:button", detail: "api", props: ["disabled", "fake"] }));
+  assert.ok((restored.api as { props: Array<{ name: string }> }).props.some((prop) => prop.name === "disabled"));
+  assert.match(String((restored.warnings as string[])[0]), /fake/);
 });

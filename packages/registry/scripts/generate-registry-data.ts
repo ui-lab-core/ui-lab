@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { extractAllComponentAPIs } from "./generate-api-data";
+import { createHash } from "node:crypto";
+import { extractAllComponentAPIs, extractPublicExportNames } from "./generate-api-data";
 import { extractAllComponentStyles } from "./generate-styles-data";
 import { generatePublicArtifact } from "./generate-public-artifacts";
 import { publicArtifactDefinitions } from "./public-artifacts.config";
@@ -10,13 +11,17 @@ import {
   coreNpmDependencies,
   corePeerDependencies,
 } from "../src/component-dependencies";
-import { componentRegistry } from "../src/registry.js";
+import { loadComponentMetadata } from "./metadata-source";
+import { generateSetupTemplate } from "./generate-setup-template";
 import type {
   ComponentRegistry,
   ComponentAPI,
   ComponentStyles,
   ComponentDeps,
+  PackageMetadata,
+  ComponentImport,
 } from "../src/types";
+import { validateContracts } from "./validate-contracts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +31,7 @@ const GENERATED_DATA_PATH = path.resolve(__dirname, "../src/.generated/data.ts")
 const GENERATED_ARTIFACTS_PATH = path.resolve(__dirname, "../src/.generated/artifacts.ts");
 const COMPONENTS_DIR = path.resolve(__dirname, "../../@ui/src/components");
 const PACKAGE_JSON_PATH = path.resolve(__dirname, "../package.json");
+const componentRegistry = loadComponentMetadata();
 
 const REACT_ARIA_PLACEHOLDERS: Record<string, string> = {
   button: "https://react-spectrum.adobe.com/react-aria/useButton.html",
@@ -72,17 +78,29 @@ function getComponentIds(): string[] {
     .map((dirent) => dirent.name);
 }
 
-function getPackageMetadata(): { version: string } {
-  try {
-    if (!fs.existsSync(PACKAGE_JSON_PATH)) {
-      throw new Error("package.json not found");
+function getPackageMetadata(): PackageMetadata {
+  const uiRoot = path.resolve(COMPONENTS_DIR, "../..");
+  const uiPackage = JSON.parse(fs.readFileSync(path.join(uiRoot, "package.json"), "utf8"));
+  const registryPackage = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf8"));
+  const hash = createHash("sha256");
+  const visit = (filename: string) => {
+    if (fs.statSync(filename).isDirectory()) {
+      for (const entry of fs.readdirSync(filename).sort()) {
+        if (["tests", "__tests__"].includes(entry) || /\.(test|spec)\.[cm]?[jt]sx?$/.test(entry)) continue;
+        visit(path.join(filename, entry));
+      }
+    } else {
+      hash.update(path.relative(path.resolve(__dirname, "../.."), filename).replace(/\\/g, "/"));
+      hash.update("\0").update(fs.readFileSync(filename)).update("\0");
     }
-    const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf-8"));
-    return { version: packageJson.version || "0.0.0" };
-  } catch (error) {
-    console.error("Error reading package metadata:", error);
-    return { version: "0.0.0" };
-  }
+  };
+  for (const filename of [
+    path.join(uiRoot, "src"), path.join(uiRoot, "package.json"),
+    path.resolve(__dirname, "../src/components"), path.resolve(__dirname, "../src/types.ts"),
+    path.join(__dirname, "generate-api-data.ts"), path.join(__dirname, "generate-styles-data.ts"),
+    path.join(__dirname, "api-enrichment.ts"),
+  ]) visit(filename);
+  return { version: uiPackage.version, registryVersion: registryPackage.version, schemaVersion: 1, sourceHash: hash.digest("hex") };
 }
 
 function toKebabCase(pascalCase: string): string {
@@ -93,9 +111,31 @@ function generateDataFile(
   apiData: Record<string, ComponentAPI>,
   stylesData: Record<string, ComponentStyles>,
   reactAriaUrls: Record<string, string>,
-  packageMetadata: { version: string },
+  packageMetadata: PackageMetadata,
 ): void {
-  const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata } from '../types';
+  const uiPackage = JSON.parse(fs.readFileSync(path.resolve(COMPONENTS_DIR, "../../package.json"), "utf8"));
+  const imports: Record<string, ComponentImport> = {};
+  for (const directory of getComponentIds()) {
+    const id = toKebabCase(directory);
+    const component = componentRegistry[id];
+    if (!component) continue;
+    const entry = uiPackage.exports?.[`./${id}`];
+    if (!entry) throw new Error(`${id}: no package subpath export`);
+    const names = extractPublicExportNames(directory);
+    if (!names.includes(component.source.exportName)) throw new Error(`${id}: ${component.source.exportName} is not a public runtime export (available: ${names.join(", ")})`);
+    const namedParts = Object.fromEntries(Object.keys(apiData[id]?.subComponents ?? {}).flatMap((name) => {
+      const flat = name.replace(/\./g, "");
+      return names.includes(flat) ? [[name, flat]] : [];
+    }));
+    imports[id] = {
+      statement: `import { ${component.source.exportName} } from '${uiPackage.name}/${id}';`,
+      namedParts,
+      serverCompound: !!entry["react-server"],
+    };
+  }
+  const content = `import type { ComponentAPI, ComponentStyles, ComponentDeps, PackageMetadata, ComponentImport } from '../types';
+
+export const generatedComponentImports: Record<string, ComponentImport> = ${JSON.stringify(imports, null, 2)};
 
 export const generatedAPI: Record<string, ComponentAPI> = ${JSON.stringify(apiData, null, 2)};
 
@@ -114,6 +154,8 @@ export const packageMetadata: PackageMetadata = ${JSON.stringify(packageMetadata
 
   fs.mkdirSync(path.dirname(GENERATED_DATA_PATH), { recursive: true });
   fs.writeFileSync(GENERATED_DATA_PATH, content, "utf-8");
+  fs.writeFileSync(path.resolve(__dirname, "../src/.generated/component-metadata.ts"),
+    `import type { ComponentMetadata } from "../types.js";\n\n// Generated from components/*/metadata.json. Do not edit.\nexport const generatedComponentMetadata = ${JSON.stringify(Object.values(componentRegistry), null, 2)} as ComponentMetadata[];\n`, "utf8");
   console.log(`Generated data written to: ${GENERATED_DATA_PATH}`);
 }
 
@@ -134,13 +176,15 @@ function generateArtifactFile(): void {
 }
 
 async function main() {
+  generateSetupTemplate();
   console.log("Starting registry data extraction...\n");
 
   const componentIds = getComponentIds();
   console.log(`Found ${componentIds.length} components: ${componentIds.join(", ")}\n`);
 
   console.log("Extracting API documentation...");
-  const apiData = await extractAllComponentAPIs(componentIds);
+  const apiData = await extractAllComponentAPIs(componentIds, componentRegistry);
+  validateContracts(componentRegistry, apiData);
   console.log(`Extracted API for ${Object.keys(apiData).length} components\n`);
 
   console.log("Extracting styles data...");
@@ -178,4 +222,7 @@ async function main() {
   console.log("\nDone! Run `pnpm build` to rebuild the registry package.");
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
