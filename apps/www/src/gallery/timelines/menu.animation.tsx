@@ -1,638 +1,183 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import config from "./config.json";
-import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
+import type { CSSProperties } from "react";
+import { Cursor, CursorProvider, type CursorFrame } from "./cursor";
+import { Bar, Box, CX, CY, PreviewFrame, useTimeline, type Timeline } from "./preview-frame";
+import { motion, role, tone } from "./tokens";
 
-function DocTrigger({
-  docX,
-  docY,
-  docW,
-  docH,
-  docItem1Y,
-  docItem2Y,
-  docSepY,
-  docSubY,
-  docItem4Y,
-  padding,
-  itemH,
-  sepH,
-  isDocHighlighted,
-  transition,
-}: {
-  docX: number;
-  docY: number;
-  docW: number;
-  docH: number;
-  docItem1Y: number;
-  docItem2Y: number;
-  docSepY: number;
-  docSubY: number;
-  docItem4Y: number;
-  padding: number;
-  itemH: number;
-  sepH: number;
-  isDocHighlighted: boolean;
-  transition: string;
-}) {
-  return (
-    <>
-      <rect
-        x={docX}
-        y={docY}
-        width={docW}
-        height={docH}
-        rx={config.blockRx}
-        fill="var(--color-background-900)"
-        stroke="currentColor"
-        className={isDocHighlighted ? config.highlight.hoverClass : config.highlight.idleClass}
-        strokeWidth={config.strokeWidth}
-        style={{
-          fillOpacity: 1,
-          strokeOpacity: isDocHighlighted
-            ? config.highlight.hoverStrokeOpacity
-            : config.highlight.idleStrokeOpacity,
-          transition,
-        }}
-      />
-      <rect
-        x={docX + padding + 8}
-        y={docY + padding + 6}
-        width={28}
-        height={6}
-        rx={2}
-        fill="currentColor"
-        className={config.guidelines.colorClass}
-        style={{ opacity: 0.3 }}
-      />
-      <rect
-        x={docX + padding}
-        y={docItem1Y}
-        width={docW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: 0 }}
-      />
-      <rect
-        x={docX + padding + 8}
-        y={docItem1Y + 8}
-        width={34}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={config.highlight.idleClass}
-        style={{ opacity: 0.55 }}
-      />
-      <rect
-        x={docX + padding}
-        y={docItem2Y}
-        width={docW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: 0 }}
-      />
-      <rect
-        x={docX + padding + 8}
-        y={docItem2Y + 8}
-        width={28}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={config.highlight.idleClass}
-        style={{ opacity: 0.4 }}
-      />
-      <line
-        x1={docX + padding}
-        y1={docSepY + sepH / 2}
-        x2={docX + docW - padding}
-        y2={docSepY + sepH / 2}
-        stroke="currentColor"
-        className={config.guidelines.colorClass}
-        strokeWidth="1"
-        style={{ opacity: 0.2 }}
-      />
-      <rect
-        x={docX + padding}
-        y={docSubY}
-        width={docW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: isDocHighlighted ? 0.15 : 0, transition }}
-      />
-      <rect
-        x={docX + padding + 8}
-        y={docSubY + 8}
-        width={28}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={isDocHighlighted ? config.highlight.hoverClass : config.highlight.idleClass}
-        style={{ opacity: isDocHighlighted ? 0.8 : 0.45, transition }}
-      />
-      <path
-        d={`M ${docX + docW - padding - 14} ${docSubY + 8} L ${docX + docW - padding - 9} ${docSubY + 12} L ${docX + docW - padding - 14} ${docSubY + 16}`}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={isDocHighlighted ? config.highlight.hoverClass : config.highlight.idleClass}
-        style={{ opacity: isDocHighlighted ? 0.9 : 0.45, transition }}
-      />
-      <rect
-        x={docX + padding}
-        y={docItem4Y}
-        width={docW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: 0 }}
-      />
-      <rect
-        x={docX + padding + 8}
-        y={docItem4Y + 8}
-        width={22}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={config.highlight.idleClass}
-        style={{ opacity: 0.35 }}
-      />
-    </>
-  );
-}
+const PAD = 5;
+const LABEL_H = 18;
+const ITEM_H = 24;
+const SEP_H = 8;
+const DOC_W = 92;
+const MENU_W = 128;
+const SUB_W = 96;
+const DOC_GAP = 10;
+const MENU_GAP = 4;
+const MENU_X = DOC_W + DOC_GAP;
+const SUB_X = MENU_X + MENU_W + MENU_GAP;
 
-function ContextMenuGroup({
-  menuX,
-  menuY,
-  menuW,
-  menuH,
-  padding,
-  itemH,
-  sepH,
-  item1Y,
-  item2Y,
-  sep1Y,
-  subY,
-  isMenuOpen,
-  isHoveringSubTrigger,
-  transition,
-}: {
-  menuX: number;
-  menuY: number;
-  menuW: number;
-  menuH: number;
-  padding: number;
-  itemH: number;
-  sepH: number;
-  item1Y: number;
-  item2Y: number;
-  sep1Y: number;
-  subY: number;
-  isMenuOpen: boolean;
-  isHoveringSubTrigger: boolean;
-  transition: string;
-}) {
-  return (
-    <g
-      style={{
-        opacity: isMenuOpen ? 1 : 0,
-        transform: isMenuOpen ? "translateY(0)" : "translateY(-6px)",
-        transition,
-        pointerEvents: "none",
-      }}
-    >
-      <rect
-        x={menuX}
-        y={menuY}
-        width={menuW}
-        height={menuH}
-        rx={config.blockRx}
-        fill="var(--color-background-900)"
-        stroke="currentColor"
-        className={config.highlight.idleClass}
-        style={{ fillOpacity: 1, strokeOpacity: config.highlight.idleStrokeOpacity }}
-      />
-      <rect
-        x={menuX + padding + 8}
-        y={menuY + padding + 6}
-        width={34}
-        height={6}
-        rx={2}
-        fill="currentColor"
-        className={config.guidelines.colorClass}
-        style={{ opacity: 0.3 }}
-      />
-      <rect
-        x={menuX + padding}
-        y={item1Y}
-        width={menuW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: 0, transition }}
-      />
-      <rect
-        x={menuX + padding + 10}
-        y={item1Y + 8}
-        width={48}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={config.highlight.idleClass}
-        style={{ opacity: 0.55, transition }}
-      />
-      <rect
-        x={menuX + padding}
-        y={item2Y}
-        width={menuW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: 0, transition }}
-      />
-      <rect
-        x={menuX + padding + 10}
-        y={item2Y + 8}
-        width={40}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={config.highlight.idleClass}
-        style={{ opacity: 0.4, transition }}
-      />
-      <line
-        x1={menuX + padding}
-        y1={sep1Y + sepH / 2}
-        x2={menuX + menuW - padding}
-        y2={sep1Y + sepH / 2}
-        stroke="currentColor"
-        className={config.guidelines.colorClass}
-        strokeWidth="1"
-        style={{ opacity: 0.2 }}
-      />
-      <rect
-        x={menuX + padding}
-        y={subY}
-        width={menuW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: isHoveringSubTrigger ? 0.2 : 0, transition }}
-      />
-      <rect
-        x={menuX + padding + 10}
-        y={subY + 8}
-        width={36}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={isHoveringSubTrigger ? config.highlight.hoverClass : config.highlight.idleClass}
-        style={{ opacity: isHoveringSubTrigger ? 0.9 : 0.55, transition }}
-      />
-      <path
-        d={`M ${menuX + menuW - padding - 14} ${subY + 8} L ${menuX + menuW - padding - 9} ${subY + 12} L ${menuX + menuW - padding - 14} ${subY + 16}`}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={isHoveringSubTrigger ? config.highlight.hoverClass : config.highlight.idleClass}
-        style={{ opacity: isHoveringSubTrigger ? 1 : 0.45, transition }}
-      />
-    </g>
-  );
-}
+type Item = { w: number; hot?: true; chevron?: true } | "sep";
 
-function SubMenuPanel({
-  subMenuX,
-  subMenuY,
-  subMenuW,
-  subMenuH,
-  subItem1Y,
-  subItem2Y,
-  padding,
-  itemH,
-  isSubOpen,
-  isSelectingSubItem,
-  transition,
+const DOC_ITEMS: Item[] = [{ w: 34 }, { w: 28 }, "sep", { w: 28, hot: true, chevron: true }, { w: 22 }];
+const MENU_ITEMS: Item[] = [{ w: 48 }, { w: 40 }, "sep", { w: 36, hot: true, chevron: true }];
+const SUB_ITEMS: Item[] = [{ w: 44, hot: true }, { w: 36 }];
+
+const listHeight = (items: Item[], label: boolean) =>
+  PAD * 2 + (label ? LABEL_H : 0) + items.reduce((h, item) => h + (item === "sep" ? SEP_H : ITEM_H), 0);
+
+const DOC_H = listHeight(DOC_ITEMS, true);
+const MENU_H = listHeight(MENU_ITEMS, true);
+const DOC_Y = CY - DOC_H / 2;
+const MENU_Y = CY - MENU_H / 2;
+const DOC_SUB_Y = DOC_Y + PAD + LABEL_H + ITEM_H * 2 + SEP_H;
+const MENU_SUB_Y = MENU_Y + PAD + LABEL_H + ITEM_H * 2 + SEP_H;
+const SUB_Y = MENU_SUB_Y - 2;
+
+type Phase =
+  | "idle"
+  | "hover_doc"
+  | "right_click"
+  | "open"
+  | "hover_sub"
+  | "sub_open"
+  | "selecting"
+  | "selected";
+
+const TIMELINE: Timeline<Phase> = {
+  hover_doc: 0,
+  right_click: 500,
+  open: 800,
+  hover_sub: 1600,
+  sub_open: 2200,
+  selecting: 3000,
+  selected: 4600,
+};
+
+const MENU_PHASES: Phase[] = ["open", "hover_sub", "sub_open", "selecting"];
+const SUB_PHASES: Phase[] = ["sub_open", "selecting"];
+
+const offsetFor = (phase: Phase) => {
+  const w = SUB_PHASES.includes(phase)
+    ? SUB_X + SUB_W
+    : MENU_PHASES.includes(phase)
+      ? MENU_X + MENU_W
+      : DOC_W;
+  return CX - w / 2;
+};
+
+const at = (phase: Phase, x: number, y: number, scale?: number): CursorFrame => ({
+  target: { x: offsetFor(phase) + x, y: y + ITEM_H / 2 },
+  scale,
+});
+
+const cursorFrames = {
+  idle: { target: { x: 300, y: 250 }, opacity: 0 },
+  hover_doc: at("hover_doc", DOC_W / 2, DOC_SUB_Y),
+  right_click: at("right_click", DOC_W / 2, DOC_SUB_Y, 0.85),
+  open: at("open", DOC_W / 2, DOC_SUB_Y),
+  hover_sub: at("hover_sub", MENU_X + MENU_W / 2, MENU_SUB_Y),
+  sub_open: at("sub_open", MENU_X + MENU_W / 2, MENU_SUB_Y),
+  selecting: at("selecting", SUB_X + SUB_W / 2, SUB_Y + PAD, 0.9),
+  selected: { target: { x: 350, y: 300 }, opacity: 0 },
+} satisfies Record<Phase, CursorFrame>;
+
+function List({
+  x,
+  y,
+  w,
+  items,
+  label,
+  active,
+  highlight,
+  style,
 }: {
-  subMenuX: number;
-  subMenuY: number;
-  subMenuW: number;
-  subMenuH: number;
-  subItem1Y: number;
-  subItem2Y: number;
-  padding: number;
-  itemH: number;
-  isSubOpen: boolean;
-  isSelectingSubItem: boolean;
-  transition: string;
+  x: number;
+  y: number;
+  w: number;
+  items: Item[];
+  label?: number;
+  active?: boolean;
+  highlight: boolean;
+  style?: CSSProperties;
 }) {
+  let itemY = y + PAD + (label ? LABEL_H : 0);
+  const rows = items.map((item, i) => {
+    const rowY = itemY;
+    if (item === "sep") {
+      itemY += SEP_H;
+      return <Bar key={i} x={x + PAD} y={rowY + SEP_H / 2} w={w - PAD * 2} h={1} className={role.border} />;
+    }
+    itemY += ITEM_H;
+    const on = highlight && !!item.hot;
+    return (
+      <g key={i}>
+        <Bar x={x + PAD} y={rowY} w={w - PAD * 2} h={ITEM_H} className={role.tint} style={{ opacity: on ? 1 : 0 }} />
+        <Bar x={x + PAD + 8} y={rowY + 8} w={item.w} h={7} className={tone(on)} />
+        {item.chevron && (
+          <path
+            d={`M ${x + w - PAD - 14} ${rowY + 8} l 5 4 l -5 4`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={tone(on)}
+          />
+        )}
+      </g>
+    );
+  });
+
   return (
-    <g
-      style={{
-        opacity: isSubOpen ? 1 : 0,
-        transform: isSubOpen ? "translateX(0)" : "translateX(-8px)",
-        transition,
-        pointerEvents: "none",
-      }}
-    >
-      <rect
-        x={subMenuX}
-        y={subMenuY}
-        width={subMenuW}
-        height={subMenuH}
-        rx={config.blockRx}
-        fill="var(--color-background-900)"
-        stroke="currentColor"
-        className={config.highlight.idleClass}
-        style={{ fillOpacity: 1, strokeOpacity: config.highlight.idleStrokeOpacity }}
-      />
-      <rect
-        x={subMenuX + padding}
-        y={subItem1Y}
-        width={subMenuW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: isSelectingSubItem ? 0.2 : 0, transition }}
-      />
-      <rect
-        x={subMenuX + padding + 8}
-        y={subItem1Y + 8}
-        width={44}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={isSelectingSubItem ? config.highlight.hoverClass : config.highlight.idleClass}
-        style={{ opacity: isSelectingSubItem ? 0.9 : 0.55, transition }}
-      />
-      <rect
-        x={subMenuX + padding}
-        y={subItem2Y}
-        width={subMenuW - padding * 2}
-        height={itemH}
-        rx={config.barRx}
-        fill="currentColor"
-        className={config.highlight.hoverClass}
-        style={{ fillOpacity: 0, transition }}
-      />
-      <rect
-        x={subMenuX + padding + 8}
-        y={subItem2Y + 8}
-        width={36}
-        height={7}
-        rx={2}
-        fill="currentColor"
-        className={config.highlight.idleClass}
-        style={{ opacity: 0.4, transition }}
-      />
+    <g style={style}>
+      <Box x={x} y={y} w={w} h={itemY + PAD - y} stroke={tone(!!active, "border")} />
+      {label && <Bar x={x + PAD + 8} y={y + PAD + 6} w={label} h={6} />}
+      {rows}
     </g>
   );
 }
 
 export function MenuAnimation() {
-  const [stage, setStage] = useState<
-    | "idle"
-    | "hover_doc"
-    | "right_click"
-    | "open"
-    | "hover_sub"
-    | "sub_open"
-    | "selecting"
-    | "selected"
-  >("idle");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const handleEnter = useCallback(() => {
-    setStage("hover_doc");
-    timersRef.current.push(setTimeout(() => setStage("right_click"), 500));
-    timersRef.current.push(setTimeout(() => setStage("open"), 800));
-    timersRef.current.push(setTimeout(() => setStage("hover_sub"), 1600));
-    timersRef.current.push(setTimeout(() => setStage("sub_open"), 2200));
-    timersRef.current.push(setTimeout(() => setStage("selecting"), 3000));
-    timersRef.current.push(setTimeout(() => setStage("selected"), 4600));
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-    setStage("idle");
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const galleryItem = el.closest(".group") || el;
-    galleryItem.addEventListener("mouseenter", handleEnter);
-    galleryItem.addEventListener("mouseleave", handleLeave);
-    return () => {
-      timersRef.current.forEach(clearTimeout);
-      galleryItem.removeEventListener("mouseenter", handleEnter);
-      galleryItem.removeEventListener("mouseleave", handleLeave);
-    };
-  }, [handleEnter, handleLeave]);
-
-  const isMenuOpen = ["open", "hover_sub", "sub_open", "selecting"].includes(stage);
-  const isSubOpen = ["sub_open", "selecting"].includes(stage);
-  const isHoveringSubTrigger = ["hover_sub", "sub_open", "selecting"].includes(stage);
-  const isSelectingSubItem = stage === "selecting";
-  const isDocHighlighted = !["idle", "selected"].includes(stage);
-
-  // Fixed axes
-  const centerX = 200;
-  const centerY = 150;
-
-  // Menu
-  const menuW = 128;
-  const padding = 5;
-  const labelH = 18;
-  const itemH = 24;
-  const sepH = 8;
-  const menuH = padding + labelH + itemH + itemH + sepH + itemH + padding;
-  const menuY = centerY - menuH / 2;
-
-  // Doc
-  const docW = 92;
-  const docH = padding + labelH + itemH + itemH + sepH + itemH + itemH + padding;
-  const docY = centerY - docH / 2;
-  const docItem1Y = docY + padding + labelH;
-  const docItem2Y = docItem1Y + itemH;
-  const docSepY = docItem2Y + itemH;
-  const docSubY = docSepY + sepH;
-  const docItem4Y = docSubY + itemH;
-
-  // Gaps
-  const docGap = 10;
-  const menuGap = 4;
-
-  // Menu item Y
-  const item1Y = menuY + padding + labelH;
-  const item2Y = item1Y + itemH;
-  const sep1Y = item2Y + itemH;
-  const subY = sep1Y + sepH;
-
-  // Submenu
-  const subMenuW = 96;
-  const subMenuY = subY - 2;
-  const subItem1Y = subMenuY + padding;
-  const subItem2Y = subItem1Y + itemH;
-  const subMenuH = itemH * 2 + padding * 2;
-
-  // Composition widths
-  const noMenuW = docW;
-  const menuOpenW = docW + docGap + menuW;
-  const subOpenW = menuOpenW + menuGap + subMenuW;
-
-  // Relative X positions within the shifting group
-  const docX = 0;
-  const menuX = docW + docGap;
-  const subMenuX = menuX + menuW + menuGap;
-
-  // offsetX: left edge of the group, computed so composition stays centered
-  const groupW = isSubOpen ? subOpenW : isMenuOpen ? menuOpenW : noMenuW;
-  const offsetX = centerX - groupW / 2;
-
-  function offsetForStage(s: typeof stage) {
-    const mo = ["open", "hover_sub", "sub_open", "selecting"].includes(s);
-    const so = ["sub_open", "selecting"].includes(s);
-    const w = so ? subOpenW : mo ? menuOpenW : noMenuW;
-    return centerX - w / 2;
-  }
-
-  const cursorFrames = {
-    idle: { target: { x: 300, y: 250 }, opacity: 0 },
-    hover_doc: {
-      target: { x: offsetForStage("hover_doc") + docX + docW / 2, y: docSubY + itemH / 2 },
-      opacity: 1,
-    },
-    right_click: {
-      target: { x: offsetForStage("right_click") + docX + docW / 2, y: docSubY + itemH / 2 },
-      opacity: 1,
-      scale: 0.85,
-    },
-    open: {
-      target: { x: offsetForStage("open") + docX + docW / 2, y: docSubY + itemH / 2 },
-      opacity: 1,
-    },
-    hover_sub: {
-      target: { x: offsetForStage("hover_sub") + menuX + menuW / 2, y: subY + itemH / 2 },
-      opacity: 1,
-    },
-    sub_open: {
-      target: { x: offsetForStage("sub_open") + menuX + menuW / 2, y: subY + itemH / 2 },
-      opacity: 1,
-    },
-    selecting: {
-      target: {
-        x: offsetForStage("selecting") + subMenuX + subMenuW / 2,
-        y: subItem1Y + itemH / 2,
-      },
-      opacity: 1,
-      scale: 0.9,
-    },
-    selected: { target: { x: 350, y: 300 }, opacity: 0 },
-  } satisfies Record<typeof stage, CursorFrame>;
-
-  const transition = "all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)";
+  const { ref, phase } = useTimeline<Phase>(TIMELINE);
+  const menuOpen = MENU_PHASES.includes(phase);
+  const subOpen = SUB_PHASES.includes(phase);
+  const hoveringSub = ["hover_sub", "sub_open", "selecting"].includes(phase);
 
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center justify-center relative overflow-hidden font-sans"
-    >
-      <div className="relative w-full max-w-[400px]">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-auto relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          <defs>
-            <radialGradient id="menu-grid-fade" cx="50%" cy="50%" r="50%">
-              <stop offset="40%" stopColor="white" stopOpacity="1" />
-              <stop offset="100%" stopColor="white" stopOpacity="0" />
-            </radialGradient>
-            <mask id="menu-grid-mask">
-              <rect width="400" height="300" fill="url(#menu-grid-fade)" />
-            </mask>
-          </defs>
+    <PreviewFrame ref={ref}>
+      <g style={{ transform: `translateX(${offsetFor(phase)}px)`, transition: motion.spring }}>
+        <List
+          x={0}
+          y={DOC_Y}
+          w={DOC_W}
+          items={DOC_ITEMS}
+          label={28}
+          active={!["idle", "selected"].includes(phase)}
+          highlight={phase !== "idle" && phase !== "selected"}
+        />
+        <List
+          x={MENU_X}
+          y={MENU_Y}
+          w={MENU_W}
+          items={MENU_ITEMS}
+          label={34}
+          highlight={hoveringSub}
+          style={{ opacity: menuOpen ? 1 : 0, transform: `translateY(${menuOpen ? 0 : -6}px)` }}
+        />
+        <List
+          x={SUB_X}
+          y={SUB_Y}
+          w={SUB_W}
+          items={SUB_ITEMS}
+          highlight={phase === "selecting"}
+          style={{ opacity: subOpen ? 1 : 0, transform: `translateX(${subOpen ? 0 : -8}px)` }}
+        />
+      </g>
 
-          <g style={{ transform: `translateX(${offsetX}px)`, transition }}>
-            <DocTrigger
-              docX={docX}
-              docY={docY}
-              docW={docW}
-              docH={docH}
-              docItem1Y={docItem1Y}
-              docItem2Y={docItem2Y}
-              docSepY={docSepY}
-              docSubY={docSubY}
-              docItem4Y={docItem4Y}
-              padding={padding}
-              itemH={itemH}
-              sepH={sepH}
-              isDocHighlighted={isDocHighlighted}
-              transition={transition}
-            />
-            <ContextMenuGroup
-              menuX={menuX}
-              menuY={menuY}
-              menuW={menuW}
-              menuH={menuH}
-              padding={padding}
-              itemH={itemH}
-              sepH={sepH}
-              item1Y={item1Y}
-              item2Y={item2Y}
-              sep1Y={sep1Y}
-              subY={subY}
-              isMenuOpen={isMenuOpen}
-              isHoveringSubTrigger={isHoveringSubTrigger}
-              transition={transition}
-            />
-            <SubMenuPanel
-              subMenuX={subMenuX}
-              subMenuY={subMenuY}
-              subMenuW={subMenuW}
-              subMenuH={subMenuH}
-              subItem1Y={subItem1Y}
-              subItem2Y={subItem2Y}
-              padding={padding}
-              itemH={itemH}
-              isSubOpen={isSubOpen}
-              isSelectingSubItem={isSelectingSubItem}
-              transition={transition}
-            />
-          </g>
-
-          <CursorProvider
-            phase={stage}
-            frames={cursorFrames}
-            appearance={{
-              className: config.highlight.hoverClass,
-              motionTransition:
-                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-              shapeTransition:
-                "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-            }}
-          >
-            <Cursor />
-          </CursorProvider>
-        </svg>
-      </div>
-    </div>
+      <CursorProvider phase={phase} frames={cursorFrames}>
+        <Cursor />
+      </CursorProvider>
+    </PreviewFrame>
   );
 }

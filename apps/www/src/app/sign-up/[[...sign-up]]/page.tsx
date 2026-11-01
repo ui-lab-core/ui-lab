@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import { SignUpForm } from "@/features/account/components/sign-up-form";
 import { generateMetadata as buildMetadata } from "@/shared/lib/metadata";
@@ -8,6 +10,11 @@ export const metadata: Metadata = buildMetadata({
   description: "Create a UI Lab account to unlock the Supporter package.",
 });
 
+async function RequestForm() {
+  await connection();
+  return <SignUpForm />;
+}
+
 export default function SignUpPage() {
   return (
     <div className="relative isolate flex min-h-svh w-full items-center justify-center px-4 py-16">
@@ -16,7 +23,9 @@ export default function SignUpPage() {
         className="grid-paper pointer-events-none absolute! inset-x-0 bottom-0 -z-10 h-1/2!"
         style={{ maskImage: "linear-gradient(to top, black, transparent)" }}
       />
-      <SignUpForm />
+      <Suspense fallback={null}>
+        <RequestForm />
+      </Suspense>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export function ShowcaseToolbar({ value, onValueChange, onPreload }: ShowcaseToo
             <Tabs.Trigger
               key={value}
               value={value}
-              className="shrink-0 px-3.5 py-1.5 active:bg-background-700"
+              className="shrink-0 px-3.5 py-1.5 not-focus-visible:shadow-none not-focus-visible:after:hidden"
               onMouseEnter={() => onPreload?.(value)}
               onFocus={() => onPreload?.(value)}
             >

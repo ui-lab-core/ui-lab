@@ -95,7 +95,7 @@ export default function ComponentsPageClient() {
                                 <div className="flex items-center gap-1 w-full">
                                   <h4 className="text-base font-medium">{component.name}</h4>
                                 </div>
-                                <p className="font-medium text-md text-foreground-400">
+                                <p className="font-medium text-sm text-foreground-400">
                                   {component.description}
                                 </p>
                               </Gallery.Body>
@@ -120,14 +120,14 @@ export default function ComponentsPageClient() {
 
                             <Gallery.Body className="pt-4">
                               <div className="relative flex items-center gap-1 w-full">
-                                <h4>{component.name}</h4>
+                                <h4 className="text-base font-medium">{component.name}</h4>
                                 <div className="ml-auto">
                                   <span className="inline-block px-2 py-1 text-xs font-semibold bg-background-700 text-foreground-400 rounded-md">
                                     Soon
                                   </span>
                                 </div>
                               </div>
-                              <p className="font-medium text-md text-foreground-400">
+                              <p className="font-medium text-sm text-foreground-400">
                                 {component.description}
                               </p>
                             </Gallery.Body>

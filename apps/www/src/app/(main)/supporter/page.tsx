@@ -117,9 +117,7 @@ export default function SupporterPage() {
           <Flex layout="stack" gap={8} className="mx-auto w-full max-w-6xl">
             <Flex className="px-4" wrap align-end justify-between gap-x={6} gap-y={4}>
               <Flex className="mt-24" layout="stack" gap={4}>
-                <h1 className="text-2xl font-medium tracking-tight text-foreground-50 sm:text-3xl">
-                  Pricing
-                </h1>
+                <h1 className="text-xl font-medium text-foreground-50 sm:text-2xl">Pricing</h1>
                 <p className="max-w-[34ch] text-foreground-400">
                   Start free with the open-source library. Upgrade for the whole workshop.
                 </p>
@@ -147,7 +145,12 @@ export default function SupporterPage() {
                     qualifier="free forever"
                     note="Open source · MIT licensed"
                   />
-                  <Button size="lg" variant="secondary" className="w-full" href="/components">
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="rounded-full w-full"
+                    href="/components"
+                  >
                     Browse components
                   </Button>
                 </div>

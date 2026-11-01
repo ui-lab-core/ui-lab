@@ -1,215 +1,88 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import config from "./config.json";
+import { Bar, Box, PreviewFrame, useTimeline, type Timeline } from "./preview-frame";
+import { motion, role, tone } from "./tokens";
 
-type Stage = "idle" | "bars" | "line" | "done";
+const X = 86;
+const Y = 72;
+const CHART_W = 228;
+const CHART_H = 150;
+const PLOT_X = X + 28;
+const PLOT_Y = Y + 30;
+const PLOT_W = CHART_W - 48;
+const BASELINE = PLOT_Y + CHART_H - 54;
+const BAR_W = 16;
+const BAR_HEIGHTS = [42, 68, 54, 86, 62, 76];
+const LINE_HEIGHTS = [38, 58, 50, 78, 66, 84];
+const barX = (i: number) => PLOT_X + 18 + i * (BAR_W + 12);
+const POINTS = LINE_HEIGHTS.map((h, i) => `${barX(i) + BAR_W / 2},${BASELINE - h}`).join(" ");
+
+type Phase = "idle" | "bars" | "line" | "done";
+const TIMELINE: Timeline<Phase> = { bars: 0, line: 520, done: 1350 };
 
 export function ChartAnimation() {
-  const [stage, setStage] = useState<Stage>("idle");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const clearTimers = useCallback(() => {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-  }, []);
-
-  const handleEnter = useCallback(() => {
-    clearTimers();
-    setStage("bars");
-    timersRef.current.push(
-      setTimeout(() => setStage("line"), 520),
-      setTimeout(() => setStage("done"), 1350),
-    );
-  }, [clearTimers]);
-
-  const handleLeave = useCallback(() => {
-    clearTimers();
-    setStage("idle");
-  }, [clearTimers]);
-
-  useEffect(() => {
-    const element = containerRef.current;
-    if (!element) return;
-    const galleryItem = element.closest(".group") || element;
-    galleryItem.addEventListener("mouseenter", handleEnter);
-    galleryItem.addEventListener("mouseleave", handleLeave);
-    return () => {
-      clearTimers();
-      galleryItem.removeEventListener("mouseenter", handleEnter);
-      galleryItem.removeEventListener("mouseleave", handleLeave);
-    };
-  }, [clearTimers, handleEnter, handleLeave]);
-
-  const chartX = 86;
-  const chartY = 72;
-  const chartW = 228;
-  const chartH = 150;
-  const plotX = chartX + 28;
-  const plotY = chartY + 30;
-  const plotW = chartW - 48;
-  const plotH = chartH - 54;
-  const baselineY = plotY + plotH;
-  const barW = 16;
-  const barGap = 12;
-  const barHeights = [42, 68, 54, 86, 62, 76];
-  const lineHeights = [38, 58, 50, 78, 66, 84];
-  const active = stage !== "idle";
-  const lineVisible = stage === "line" || stage === "done";
-  const done = stage === "done";
-  const barX = (index: number) => plotX + 18 + index * (barW + barGap);
-  const barY = (height: number) => baselineY - height;
-  const points = lineHeights
-    .map((height, index) => `${barX(index) + barW / 2},${barY(height)}`)
-    .join(" ");
+  const { ref, phase } = useTimeline<Phase>(TIMELINE);
+  const on = phase !== "idle";
+  const line = phase === "line" || phase === "done";
+  const done = phase === "done";
 
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center justify-center relative overflow-hidden font-sans"
-    >
-      <div className="relative w-full">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-full relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          <rect
-            x={chartX}
-            y={chartY}
-            width={chartW}
-            height={chartH}
-            rx={config.blockRx}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={config.dim.fillOpacity}
-            stroke="currentColor"
-            strokeWidth={config.strokeWidth}
-            strokeOpacity={config.dim.strokeOpacity}
-          />
-
-          <rect
-            x={chartX + 18}
-            y={chartY + 16}
-            width={66}
-            height={6}
-            rx={3}
-            fill="currentColor"
-            className={active ? config.highlight.hoverClass : config.highlight.idleClass}
-            style={{
-              opacity: active ? 0.75 : 0.45,
-              transition: config.transition,
-            }}
-          />
-          <rect
-            x={chartX + chartW - 68}
-            y={chartY + 16}
-            width={18}
-            height={6}
-            rx={3}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={0.28}
-          />
-          <rect
-            x={chartX + chartW - 42}
-            y={chartY + 16}
-            width={20}
-            height={6}
-            rx={3}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={0.18}
-          />
-
-          {[0, 1, 2].map((line) => (
-            <line
-              key={line}
-              x1={plotX}
-              y1={plotY + line * 32}
-              x2={plotX + plotW}
-              y2={plotY + line * 32}
-              stroke="currentColor"
-              className={config.dim.class}
-              strokeWidth={1}
-              strokeOpacity={active ? 0.25 : 0.18}
-              strokeDasharray="4 6"
-              style={{ transition: config.transition }}
-            />
-          ))}
-
-          <line
-            x1={plotX}
-            y1={baselineY}
-            x2={plotX + plotW}
-            y2={baselineY}
-            stroke="currentColor"
-            className={config.dim.class}
-            strokeWidth={1.5}
-            strokeOpacity={0.3}
-          />
-          <line
-            x1={plotX}
-            y1={plotY}
-            x2={plotX}
-            y2={baselineY}
-            stroke="currentColor"
-            className={config.dim.class}
-            strokeWidth={1.5}
-            strokeOpacity={0.25}
-          />
-
-          {barHeights.map((height, index) => (
-            <rect
-              key={height}
-              x={barX(index)}
-              y={active ? barY(height) : baselineY}
-              width={barW}
-              height={active ? height : 0}
-              rx={config.barRx}
-              fill="currentColor"
-              className={active && index === 3 ? config.highlight.hoverClass : config.dim.class}
-              style={{
-                opacity: active ? (index === 3 ? 0.72 : 0.38) : 0.18,
-                transition: `height 0.65s cubic-bezier(0.25, 0, 0.25, 1) ${index * 55}ms, y 0.65s cubic-bezier(0.25, 0, 0.25, 1) ${index * 55}ms, opacity 0.4s ease, color 0.4s ease`,
-              }}
-            />
-          ))}
-
-          <polyline
-            points={points}
-            pathLength={1}
-            fill="none"
-            stroke="currentColor"
-            className={lineVisible ? config.highlight.hoverClass : config.highlight.idleClass}
-            strokeWidth={3}
-            strokeOpacity={lineVisible ? 0.72 : 0.28}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeDasharray={1}
-            strokeDashoffset={lineVisible ? 0 : 1}
-            style={{
-              transition:
-                "stroke-dashoffset 0.9s cubic-bezier(0.25, 0, 0.25, 1), opacity 0.4s ease, color 0.4s ease",
-            }}
-          />
-          {lineHeights.map((height, index) => (
-            <circle
-              key={index}
-              cx={barX(index) + barW / 2}
-              cy={barY(height)}
-              r={3}
-              fill="currentColor"
-              className={done ? config.highlight.hoverClass : config.highlight.idleClass}
-              style={{
-                opacity: done ? 0.85 : 0,
-                transition: `opacity 0.3s ease ${index * 45}ms, color 0.4s ease`,
-              }}
-            />
-          ))}
-        </svg>
-      </div>
-    </div>
+    <PreviewFrame ref={ref}>
+      <Box x={X} y={Y} w={CHART_W} h={CHART_H} />
+      <Bar x={X + 18} y={Y + 16} w={66} h={6} className={tone(on)} />
+      <Bar x={X + CHART_W - 68} y={Y + 16} w={18} h={6} />
+      <Bar x={X + CHART_W - 42} y={Y + 16} w={20} h={6} />
+      {[0, 1, 2].map((i) => (
+        <path
+          key={i}
+          d={`M ${PLOT_X} ${PLOT_Y + i * 32} h ${PLOT_W}`}
+          stroke="currentColor"
+          strokeDasharray="4 6"
+          className={role.border}
+        />
+      ))}
+      <path
+        d={`M ${PLOT_X} ${PLOT_Y} V ${BASELINE} h ${PLOT_W}`}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        className={role.border}
+      />
+      {BAR_HEIGHTS.map((h, i) => (
+        <Bar
+          key={h}
+          x={barX(i)}
+          y={on ? BASELINE - h : BASELINE}
+          w={BAR_W}
+          h={on ? h : 0}
+          rx={4}
+          className={tone(on && i === 3)}
+          style={{ transitionDelay: `${i * 55}ms` }}
+        />
+      ))}
+      <polyline
+        points={POINTS}
+        pathLength={1}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray={1}
+        className={tone(line)}
+        style={{ strokeDashoffset: line ? 0 : 1, transition: motion.slow }}
+      />
+      {LINE_HEIGHTS.map((h, i) => (
+        <circle
+          key={i}
+          cx={barX(i) + BAR_W / 2}
+          cy={BASELINE - h}
+          r={3}
+          className={role.active}
+          fill="currentColor"
+          style={{ opacity: done ? 1 : 0, transitionDelay: `${i * 45}ms` }}
+        />
+      ))}
+    </PreviewFrame>
   );
 }

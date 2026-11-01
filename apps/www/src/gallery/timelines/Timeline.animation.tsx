@@ -1,96 +1,28 @@
-"use client";
+import { Bar, PreviewFrame } from "./preview-frame";
+import { role, tone } from "./tokens";
 
-import config from "./config.json";
+const LINE_X = 140;
+const EVENTS = [
+  { y: 95, title: 80, sub: 60 },
+  { y: 150, title: 100, sub: 70 },
+  { y: 205, title: 60, sub: 45 },
+];
 
 export function TimelineAnimation() {
-  const cx = 200;
-  const lineX = cx - 60;
-  const events = [95, 150, 205];
-
   return (
-    <div className="flex items-center justify-center relative overflow-hidden font-sans">
-      <div className="relative w-full">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-full relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          {/* Vertical spine */}
-          <line
-            x1={lineX}
-            y1={events[0] - 20}
-            x2={lineX}
-            y2={events[events.length - 1] + 20}
-            stroke="currentColor"
-            className={config.dim.class}
-            strokeWidth={config.strokeWidth}
-            strokeOpacity={config.dim.strokeOpacity}
-          />
-
-          {/* Event nodes and content bars */}
-          {events.map((y, i) => {
-            const isHighlighted = i === 1;
-            const colorClass = isHighlighted ? config.highlight.idleClass : config.dim.class;
-            const fillOp = isHighlighted ? 0.55 : config.dim.fillOpacity * 3;
-            const strokeOp = isHighlighted ? 0.55 : config.dim.strokeOpacity;
-            const barW1 = [80, 100, 60][i];
-            const barW2 = [60, 70, 45][i];
-
-            return (
-              <g key={y}>
-                {/* Node circle */}
-                <circle
-                  cx={lineX}
-                  cy={y}
-                  r={5}
-                  fill="currentColor"
-                  className={colorClass}
-                  fillOpacity={fillOp}
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  strokeOpacity={strokeOp}
-                />
-
-                {/* Connector tick */}
-                <line
-                  x1={lineX + 5}
-                  y1={y}
-                  x2={lineX + 14}
-                  y2={y}
-                  stroke="currentColor"
-                  className={config.dim.class}
-                  strokeWidth={1}
-                  strokeOpacity={config.dim.strokeOpacity}
-                />
-
-                {/* Title bar */}
-                <rect
-                  x={lineX + 18}
-                  y={y - 8}
-                  width={barW1}
-                  height={5}
-                  rx={config.barRx}
-                  fill="currentColor"
-                  className={colorClass}
-                  fillOpacity={fillOp}
-                />
-
-                {/* Subtitle bar */}
-                <rect
-                  x={lineX + 18}
-                  y={y + 1}
-                  width={barW2}
-                  height={3}
-                  rx={config.barRx}
-                  fill="currentColor"
-                  className={config.dim.class}
-                  fillOpacity={config.dim.fillOpacity * 2.5}
-                />
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-    </div>
+    <PreviewFrame>
+      <Bar x={LINE_X - 1} y={75} w={2} h={150} rx={0} className={role.border} />
+      {EVENTS.map(({ y, title, sub }, i) => {
+        const on = i === 1;
+        return (
+          <g key={y}>
+            <circle cx={LINE_X} cy={y} r={5} className={tone(on, "border")} fill="currentColor" />
+            <Bar x={LINE_X + 5} y={y} w={9} h={1} rx={0} className={role.border} />
+            <Bar x={LINE_X + 18} y={y - 8} w={title} h={5} className={tone(on)} />
+            <Bar x={LINE_X + 18} y={y + 1} w={sub} h={3} />
+          </g>
+        );
+      })}
+    </PreviewFrame>
   );
 }

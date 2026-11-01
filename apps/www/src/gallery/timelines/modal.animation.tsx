@@ -1,536 +1,89 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import config from "./config.json";
-import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./cursor";
+import { Bar, Box, delay, H, PreviewFrame, useTimeline, W, type Timeline } from "./preview-frame";
+import { role, tone } from "./tokens";
 
-// Modal
-const MW = 220;
-const MH = 150;
-const MX = (400 - MW) / 2; // 90
-const MY = (300 - MH) / 2 - 18; // 57
-const MRX = 4;
-const HEADER_H = 26;
-const FOOTER_H = 32;
+const CARD_W = 200;
+const CARD_H = 126;
+const CARD_X = (W - CARD_W) / 2;
+const CARD_Y = (H - CARD_H) / 2 - 4;
+const CARD_HEADER = 36;
+const CARD_FOOTER = 34;
+const AVATAR_Y = CARD_Y + CARD_HEADER / 2;
+const BTN_W = 66;
+const BTN_H = 18;
+const BTN_X = CARD_X + CARD_W - BTN_W - 9;
+const BTN_Y = CARD_Y + CARD_H - CARD_FOOTER + (CARD_FOOTER - BTN_H) / 2;
 
-// Background card
-const CW = 176;
-const CH = 110;
-const CARD_X = (400 - CW) / 2; // 112
-const CARD_Y = (300 - CH) / 2 - 4; // 91
-const CARD_HEADER_H = 32;
-const CARD_FOOTER_H = 30;
+const MODAL_W = 252;
+const MODAL_H = 172;
+const MODAL_X = (W - MODAL_W) / 2;
+const MODAL_Y = (H - MODAL_H) / 2 - 20;
+const MODAL_HEADER = 30;
+const MODAL_FOOTER_Y = MODAL_Y + MODAL_H - 36;
 
-// Avatar icon in card header
-const AV_CX = CARD_X + 20;
-const AV_CY = CARD_Y + CARD_HEADER_H / 2;
-const AV_R = 9;
+type Phase = "idle" | "hovering" | "open";
+const TIMELINE: Timeline<Phase> = { hovering: 0, open: 500 };
 
-// Trigger button in card footer
-const BTN_W = 58;
-const BTN_H = 16;
-const BTN_X = CARD_X + CW - BTN_W - 8;
-const BTN_Y = CARD_Y + CH - CARD_FOOTER_H + (CARD_FOOTER_H - BTN_H) / 2;
-
-// Skeleton buttons in card footer
-const SKEL_BTN_W = 38;
-const SKEL_BTN_H = 14;
-const SKEL_BTN_Y = CARD_Y + CH - CARD_FOOTER_H + (CARD_FOOTER_H - SKEL_BTN_H) / 2;
-const SKEL_BTN1_X = CARD_X + 8;
-const SKEL_BTN2_X = CARD_X + 8 + SKEL_BTN_W + 6;
-
-const T = config.transition;
+const cursorFrames = {
+  idle: { target: { x: BTN_X + BTN_W + 44, y: BTN_Y + BTN_H + 32 }, opacity: 0 },
+  hovering: { target: { x: BTN_X + BTN_W / 2, y: BTN_Y + BTN_H / 2 } },
+  open: { target: { x: MODAL_X + MODAL_W - 16, y: MODAL_Y + MODAL_HEADER / 2 } },
+} satisfies Record<Phase, CursorFrame>;
 
 export function ModalAnimation() {
-  const [stage, setStage] = useState<"idle" | "hovering" | "open">("idle");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const handleEnter = useCallback(() => {
-    setStage("hovering");
-    timersRef.current.push(setTimeout(() => setStage("open"), 500));
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-    setStage("idle");
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const galleryItem = el.closest(".group") || el;
-    galleryItem.addEventListener("mouseenter", handleEnter);
-    galleryItem.addEventListener("mouseleave", handleLeave);
-    return () => {
-      timersRef.current.forEach(clearTimeout);
-      galleryItem.removeEventListener("mouseenter", handleEnter);
-      galleryItem.removeEventListener("mouseleave", handleLeave);
-    };
-  }, [handleEnter, handleLeave]);
-
-  const isActive = stage !== "idle";
-  const isOpen = stage === "open";
-
-  const cursorFrames = {
-    idle: {
-      target: { x: BTN_X + BTN_W + 44, y: BTN_Y + BTN_H + 32 },
-      opacity: 0,
-    },
-    hovering: {
-      target: { x: BTN_X + BTN_W / 2, y: BTN_Y + BTN_H / 2 },
-      opacity: 1,
-    },
-    open: {
-      target: { x: MX + MW - 14, y: MY + HEADER_H / 2 },
-      opacity: 1,
-    },
-  } satisfies Record<typeof stage, CursorFrame>;
-
-  const bodyLineY = CARD_Y + CARD_HEADER_H;
+  const { ref, phase } = useTimeline<Phase>(TIMELINE);
+  const on = phase !== "idle";
+  const open = phase === "open";
+  const reveal = (ms: number) => ({ opacity: open ? 1 : 0, ...delay(open ? ms : 0) });
 
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center justify-center relative overflow-hidden font-sans"
-    >
-      <div className="relative w-full max-w-[400px]">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-auto relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          <g transform="translate(200, 150) scale(1.15) translate(-200, -150)">
-            {/* ── Background card ── */}
+    <PreviewFrame ref={ref}>
+      <Box x={CARD_X} y={CARD_Y} w={CARD_W} h={CARD_H} rx={5} />
+      <Bar x={CARD_X} y={CARD_Y + CARD_HEADER} w={CARD_W} h={1} rx={0} className={role.border} />
+      <Bar x={CARD_X} y={CARD_Y + CARD_H - CARD_FOOTER} w={CARD_W} h={1} rx={0} className={role.border} />
+      <circle cx={CARD_X + 22} cy={AVATAR_Y} r={10} className={role.border} fill="currentColor" />
+      <Bar x={CARD_X + 41} y={AVATAR_Y - 7} w={76} h={7} />
+      <Bar x={CARD_X + 41} y={AVATAR_Y + 3} w={50} h={5} />
+      <Bar x={CARD_X + 14} y={CARD_Y + CARD_HEADER + 14} w={152} h={6} />
+      <Bar x={CARD_X + 14} y={CARD_Y + CARD_HEADER + 28} w={128} h={5} />
+      <Bar x={CARD_X + 14} y={CARD_Y + CARD_HEADER + 40} w={96} h={5} />
+      <Box x={CARD_X + 9} y={BTN_Y} w={44} h={BTN_H} rx={4} />
+      <Box x={CARD_X + 60} y={BTN_Y} w={44} h={BTN_H} rx={4} />
+      <Box x={BTN_X} y={BTN_Y} w={BTN_W} h={BTN_H} rx={4} stroke={tone(on, "border")} />
+      <Bar x={BTN_X + 13} y={BTN_Y + 6} w={40} h={6} className={tone(on)} />
 
-            {/* Card fill */}
-            <rect
-              x={CARD_X}
-              y={CARD_Y}
-              width={CW}
-              height={CH}
-              rx={4}
-              fill="currentColor"
-              className="text-background-900"
-            />
+      <rect width={W} height={H} className={role.surface} fill="currentColor" style={{ opacity: open ? 0.8 : 0 }} />
+      <g style={reveal(50)}>
+        <Box x={MODAL_X} y={MODAL_Y} w={MODAL_W} h={MODAL_H} rx={5} />
+        <Bar x={MODAL_X} y={MODAL_Y + MODAL_HEADER} w={MODAL_W} h={1} rx={0} className={role.border} />
+        <Bar x={MODAL_X} y={MODAL_FOOTER_Y} w={MODAL_W} h={1} rx={0} className={role.border} />
+        <Bar x={MODAL_X + 12} y={MODAL_Y + 11} w={66} h={8} className={role.text} style={reveal(180)} />
+        <path
+          d={`M ${MODAL_X + MODAL_W - 21} ${MODAL_Y + 10} l 10 10 m 0 -10 l -10 10`}
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          className={role.muted}
+          style={reveal(200)}
+        />
+        <Bar x={MODAL_X + 12} y={MODAL_Y + MODAL_HEADER + 16} w={162} h={8} style={reveal(260)} />
+        <Bar x={MODAL_X + 12} y={MODAL_Y + MODAL_HEADER + 30} w={196} h={6} style={reveal(310)} />
+        <Bar x={MODAL_X + 12} y={MODAL_Y + MODAL_HEADER + 42} w={134} h={6} style={reveal(350)} />
+        <g style={reveal(400)}>
+          <Box x={MODAL_X + MODAL_W - 134} y={MODAL_FOOTER_Y + 10} w={56} h={16} rx={4} />
+          <Bar x={MODAL_X + MODAL_W - 124} y={MODAL_FOOTER_Y + 15} w={36} h={6} />
+        </g>
+        <g style={reveal(440)}>
+          <Box x={MODAL_X + MODAL_W - 66} y={MODAL_FOOTER_Y + 10} w={54} h={16} rx={4} fill={role.tint} stroke={role.active} />
+          <Bar x={MODAL_X + MODAL_W - 55} y={MODAL_FOOTER_Y + 15} w={32} h={6} className={role.active} />
+        </g>
+      </g>
 
-            {/* Card border */}
-            <rect
-              x={CARD_X}
-              y={CARD_Y}
-              width={CW}
-              height={CH}
-              rx={4}
-              fill="none"
-              stroke="currentColor"
-              className="text-background-700"
-              strokeWidth={1}
-              style={{ opacity: 0.5 }}
-            />
-
-            {/* Header divider */}
-            <rect
-              x={CARD_X}
-              y={CARD_Y + CARD_HEADER_H}
-              width={CW}
-              height={1}
-              fill="currentColor"
-              className="text-background-700"
-              style={{ opacity: 0.45 }}
-            />
-
-            {/* Footer divider */}
-            <rect
-              x={CARD_X}
-              y={CARD_Y + CH - CARD_FOOTER_H}
-              width={CW}
-              height={1}
-              fill="currentColor"
-              className="text-background-700"
-              style={{ opacity: 0.45 }}
-            />
-
-            {/* Avatar circle */}
-            <circle
-              cx={AV_CX}
-              cy={AV_CY}
-              r={AV_R}
-              fill="currentColor"
-              className="text-background-600"
-              style={{ opacity: 0.35 }}
-            />
-
-            {/* Avatar title */}
-            <rect
-              x={CARD_X + 36}
-              y={AV_CY - 6}
-              width={66}
-              height={7}
-              rx={3.5}
-              fill="currentColor"
-              className="text-foreground-400"
-              style={{ opacity: 0.35 }}
-            />
-
-            {/* Avatar subtitle */}
-            <rect
-              x={CARD_X + 36}
-              y={AV_CY + 3}
-              width={44}
-              height={5}
-              rx={2.5}
-              fill="currentColor"
-              className="text-foreground-400"
-              style={{ opacity: 0.2 }}
-            />
-
-            {/* Body line 1 */}
-            <rect
-              x={CARD_X + 12}
-              y={bodyLineY + 12}
-              width={132}
-              height={6}
-              rx={3}
-              fill="currentColor"
-              className="text-foreground-400"
-              style={{ opacity: 0.2 }}
-            />
-
-            {/* Body line 2 */}
-            <rect
-              x={CARD_X + 12}
-              y={bodyLineY + 24}
-              width={112}
-              height={5}
-              rx={2.5}
-              fill="currentColor"
-              className="text-foreground-400"
-              style={{ opacity: 0.14 }}
-            />
-
-            {/* Body line 3 */}
-            <rect
-              x={CARD_X + 12}
-              y={bodyLineY + 35}
-              width={84}
-              height={5}
-              rx={2.5}
-              fill="currentColor"
-              className="text-foreground-400"
-              style={{ opacity: 0.1 }}
-            />
-
-            {/* Footer skeleton buttons */}
-            <rect
-              x={SKEL_BTN1_X}
-              y={SKEL_BTN_Y}
-              width={SKEL_BTN_W}
-              height={SKEL_BTN_H}
-              rx={2}
-              fill="currentColor"
-              className="text-background-800"
-              style={{ opacity: 0.6 }}
-            />
-            <rect
-              x={SKEL_BTN2_X}
-              y={SKEL_BTN_Y}
-              width={SKEL_BTN_W}
-              height={SKEL_BTN_H}
-              rx={2}
-              fill="currentColor"
-              className="text-background-800"
-              style={{ opacity: 0.4 }}
-            />
-
-            {/* Footer trigger button */}
-            <rect
-              x={BTN_X}
-              y={BTN_Y}
-              width={BTN_W}
-              height={BTN_H}
-              rx={2}
-              fill="currentColor"
-              className="text-background-800"
-            />
-            <rect
-              x={BTN_X}
-              y={BTN_Y}
-              width={BTN_W}
-              height={BTN_H}
-              rx={2}
-              fill="none"
-              stroke="currentColor"
-              className={isActive ? config.accentOutline.colorClass : "text-background-700"}
-              strokeWidth={1}
-              style={{ opacity: isActive ? 0.55 : 0.4, transition: T }}
-            />
-            <rect
-              x={BTN_X + 11}
-              y={BTN_Y + BTN_H / 2 - 3}
-              width={36}
-              height={5}
-              rx={2.5}
-              fill="currentColor"
-              className={isActive ? config.highlight.hoverClass : config.highlight.idleClass}
-              style={{ opacity: isActive ? 0.6 : 0.3, transition: T }}
-            />
-
-            {/* ── Backdrop ── */}
-            <rect
-              x={0}
-              y={0}
-              width={400}
-              height={300}
-              fill="currentColor"
-              className="text-background-950"
-              style={{ opacity: isOpen ? 0.82 : 0, transition: T }}
-            />
-
-            {/* ── Modal panel ── */}
-            <g
-              style={{
-                opacity: isOpen ? 1 : 0,
-                transition: T,
-                transitionDelay: isOpen ? "0.05s" : "0s",
-              }}
-            >
-              {/* Panel background */}
-              <rect
-                x={MX}
-                y={MY}
-                width={MW}
-                height={MH}
-                rx={MRX}
-                fill="currentColor"
-                className="text-background-900"
-              />
-
-              {/* Header divider */}
-              <rect
-                x={MX}
-                y={MY + HEADER_H}
-                width={MW}
-                height={1}
-                fill="currentColor"
-                className="text-background-700"
-                style={{ opacity: 0.55 }}
-              />
-
-              {/* Footer divider */}
-              <rect
-                x={MX}
-                y={MY + MH - FOOTER_H}
-                width={MW}
-                height={1}
-                fill="currentColor"
-                className="text-background-700"
-                style={{ opacity: 0.55 }}
-              />
-
-              {/* Panel border */}
-              <rect
-                x={MX}
-                y={MY}
-                width={MW}
-                height={MH}
-                rx={MRX}
-                fill="none"
-                stroke="currentColor"
-                className="text-background-700"
-                strokeWidth={1}
-                style={{ opacity: 0.5 }}
-              />
-
-              {/* Header title */}
-              <rect
-                x={MX + 10}
-                y={MY + HEADER_H / 2 - 3.5}
-                width={58}
-                height={7}
-                rx={3.5}
-                fill="currentColor"
-                className="text-foreground-400"
-                style={{
-                  opacity: isOpen ? 0.5 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.18s" : "0s",
-                }}
-              />
-
-              {/* Close X */}
-              <line
-                x1={MX + MW - 18}
-                y1={MY + HEADER_H / 2 - 4}
-                x2={MX + MW - 10}
-                y2={MY + HEADER_H / 2 + 4}
-                stroke="currentColor"
-                className="text-foreground-400"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                style={{
-                  opacity: isOpen ? 0.45 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.2s" : "0s",
-                }}
-              />
-              <line
-                x1={MX + MW - 10}
-                y1={MY + HEADER_H / 2 - 4}
-                x2={MX + MW - 18}
-                y2={MY + HEADER_H / 2 + 4}
-                stroke="currentColor"
-                className="text-foreground-400"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                style={{
-                  opacity: isOpen ? 0.45 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.2s" : "0s",
-                }}
-              />
-
-              {/* Body line 1 */}
-              <rect
-                x={MX + 10}
-                y={MY + HEADER_H + 14}
-                width={142}
-                height={7}
-                rx={3.5}
-                fill="currentColor"
-                className="text-foreground-400"
-                style={{
-                  opacity: isOpen ? 0.28 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.26s" : "0s",
-                }}
-              />
-
-              {/* Body line 2 */}
-              <rect
-                x={MX + 10}
-                y={MY + HEADER_H + 26}
-                width={172}
-                height={5}
-                rx={2.5}
-                fill="currentColor"
-                className="text-foreground-400"
-                style={{
-                  opacity: isOpen ? 0.17 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.31s" : "0s",
-                }}
-              />
-
-              {/* Body line 3 */}
-              <rect
-                x={MX + 10}
-                y={MY + HEADER_H + 36}
-                width={118}
-                height={5}
-                rx={2.5}
-                fill="currentColor"
-                className="text-foreground-400"
-                style={{
-                  opacity: isOpen ? 0.13 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.35s" : "0s",
-                }}
-              />
-
-              {/* Footer — cancel */}
-              <rect
-                x={MX + MW - 118}
-                y={MY + MH - FOOTER_H + 9}
-                width={50}
-                height={14}
-                rx={2}
-                fill="none"
-                stroke="currentColor"
-                className="text-background-600"
-                strokeWidth={1}
-                style={{
-                  opacity: isOpen ? 0.45 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.40s" : "0s",
-                }}
-              />
-              <rect
-                x={MX + MW - 118 + 9}
-                y={MY + MH - FOOTER_H + 9 + 4}
-                width={32}
-                height={5}
-                rx={2.5}
-                fill="currentColor"
-                className="text-foreground-400"
-                style={{
-                  opacity: isOpen ? 0.22 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.40s" : "0s",
-                }}
-              />
-
-              {/* Footer — confirm */}
-              <rect
-                x={MX + MW - 58}
-                y={MY + MH - FOOTER_H + 9}
-                width={48}
-                height={14}
-                rx={2}
-                fill="currentColor"
-                className="text-accent-500"
-                style={{
-                  opacity: isOpen ? 0.18 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.44s" : "0s",
-                }}
-              />
-              <rect
-                x={MX + MW - 58}
-                y={MY + MH - FOOTER_H + 9}
-                width={48}
-                height={14}
-                rx={2}
-                fill="none"
-                stroke="currentColor"
-                className="text-accent-500"
-                strokeWidth={1}
-                style={{
-                  opacity: isOpen ? 0.4 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.44s" : "0s",
-                }}
-              />
-              <rect
-                x={MX + MW - 58 + 10}
-                y={MY + MH - FOOTER_H + 9 + 4}
-                width={28}
-                height={5}
-                rx={2.5}
-                fill="currentColor"
-                className="text-accent-500"
-                style={{
-                  opacity: isOpen ? 0.7 : 0,
-                  transition: T,
-                  transitionDelay: isOpen ? "0.44s" : "0s",
-                }}
-              />
-            </g>
-
-            <CursorProvider
-              phase={stage}
-              frames={cursorFrames}
-              appearance={{
-                className: config.highlight.hoverClass,
-                motionTransition:
-                  "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-              }}
-            >
-              <Cursor />
-            </CursorProvider>
-          </g>
-        </svg>
-      </div>
-    </div>
+      <CursorProvider phase={phase} frames={cursorFrames}>
+        <Cursor />
+      </CursorProvider>
+    </PreviewFrame>
   );
 }

@@ -116,7 +116,7 @@ function SupporterCheckoutButton({
         size="lg"
         variant={featured ? "primary" : "secondary"}
         // color={featured ? "accent-600" : undefined}
-        className="w-full"
+        className="rounded-full w-full"
         disabled={isLeaving}
         icon={
           isLeaving ? (

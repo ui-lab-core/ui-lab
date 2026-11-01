@@ -199,10 +199,10 @@ export default function ConfigPage({ baseTypographyCss }: { baseTypographyCss: s
   return (
     <Page
       padding="none"
-      fullscreen
+      max-width="var(--page-width)"
       className="bg-background-100 text-foreground-100 min-h-[calc(100dvh-var(--header-height))] xl:h-[calc(100dvh-var(--header-height))] xl:min-h-0 xl:overflow-hidden"
     >
-      <Panel spacing="none" className="w-full border-l border-background-700 xl:h-full xl:min-h-0">
+      <Panel spacing="none" className="w-full border-x border-background-700 xl:h-full xl:min-h-0">
         <section className="flex flex-1 min-w-0 min-h-0 flex-col gap-3 pt-2 xl:overflow-hidden">
           <div className="sticky top-0 z-10 flex items-center justify-between px-2">
             <Tabs value={preview} onValueChange={setPreview} className="w-auto">

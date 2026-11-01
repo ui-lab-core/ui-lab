@@ -1,80 +1,63 @@
-"use client";
+import { Bar, Box, CX, PreviewFrame, W } from "./preview-frame";
+import { role, tone } from "./tokens";
 
-import { Mask } from "ui-lab-components";
-import config from "./config.json";
+const CARD_W = 120;
+const CARD_H = 110;
+const GAP = 12;
+const Y = 80;
+const VIEW_X = 44;
+const VIEW_W = W - VIEW_X * 2;
+const DOTS_Y = Y + CARD_H + 24;
 
-const Card = ({ active }: { active?: boolean }) => (
-  <div
-    className="flex-shrink-0 w-[112px] rounded-[8px] border flex flex-col gap-1.5 p-2"
-    style={{
-      borderColor: `color-mix(in srgb, currentColor ${active ? config.dim.strokeOpacity * 100 : config.dim.strokeOpacity * 50}%, transparent)`,
-      backgroundColor: `color-mix(in srgb, currentColor ${active ? config.dim.fillOpacity * 200 : config.dim.fillOpacity * 100}%, transparent)`,
-    }}
-  >
-    <div
-      className="w-full h-[44px] rounded-[5px]"
-      style={{ opacity: active ? 0.12 : 0.06, background: "currentColor" }}
-    />
-    <div className="flex flex-col gap-1">
-      <div
-        className="h-[4px] rounded-full w-[70%]"
-        style={{ opacity: active ? 0.35 : 0.18, background: "currentColor" }}
-      />
-      <div
-        className="h-[3px] rounded-full w-[50%]"
-        style={{ opacity: active ? 0.2 : 0.1, background: "currentColor" }}
-      />
-    </div>
-  </div>
-);
+function Card({ x, active = false }: { x: number; active?: boolean }) {
+  return (
+    <>
+      <Box x={x} y={Y} w={CARD_W} h={CARD_H} rx={8} stroke={tone(active, "border")} />
+      <Bar x={x + 8} y={Y + 8} w={CARD_W - 16} h={52} rx={5} className={tone(active, "border")} />
+      <Bar x={x + 8} y={Y + 70} w={74} h={8} className={tone(active)} />
+      <Bar x={x + 8} y={Y + 84} w={52} h={6} />
+    </>
+  );
+}
 
-const Chevron = ({ dir }: { dir: "left" | "right" }) => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <polyline
-      points={dir === "left" ? "10,3 5,8 10,13" : "6,3 11,8 6,13"}
+function Chevron({ x, dir }: { x: number; dir: 1 | -1 }) {
+  return (
+    <path
+      d={`M ${x + 5 * dir} ${Y + CARD_H / 2 - 10} l ${-10 * dir} 10 l ${10 * dir} 10`}
+      fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth={3}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={config.dim.class}
-      opacity={config.dim.strokeOpacity * 1.5}
+      className={role.muted}
     />
-  </svg>
-);
+  );
+}
 
 export function CarouselAnimation() {
   return (
-    <div className="flex items-center justify-center relative overflow-hidden font-sans w-full h-full">
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex flex-row items-center gap-1.5">
-          <Chevron dir="left" />
-          {/* Constrained width so outer cards overflow into the fade zone */}
-          <Mask className="w-[200px] overflow-hidden">
-            <Mask.Fade direction="left" intensity={1.5} />
-            <Mask.Fade direction="right" intensity={1.5} />
-            <div className="flex flex-row gap-2 items-center justify-center">
-              <Card />
-              <Card active />
-              <Card />
-            </div>
-          </Mask>
-          <Chevron dir="right" />
-        </div>
-        <div className="flex flex-row items-center gap-1.5">
-          {[-1, 0, 1].map((d) => (
-            <div
-              key={d}
-              className="rounded-full"
-              style={{
-                width: d === 0 ? 6 : 4,
-                height: d === 0 ? 6 : 4,
-                opacity: d === 0 ? 0.45 : 0.2,
-                background: "currentColor",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+    <PreviewFrame>
+      <defs>
+        <linearGradient id="carousel-fade">
+          <stop offset="0" stopColor="white" stopOpacity="0" />
+          <stop offset="0.25" stopColor="white" />
+          <stop offset="0.75" stopColor="white" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        <mask id="carousel-mask">
+          <rect x={VIEW_X} y={0} width={VIEW_W} height={300} fill="url(#carousel-fade)" />
+        </mask>
+      </defs>
+      <Chevron x={24} dir={1} />
+      <g mask="url(#carousel-mask)">
+        <Card x={CX - CARD_W * 1.5 - GAP} />
+        <Card x={CX - CARD_W / 2} active />
+        <Card x={CX + CARD_W / 2 + GAP} />
+      </g>
+      <Chevron x={W - 24} dir={-1} />
+      {[-1, 0, 1].map((d) => (
+        <circle key={d} cx={CX + d * 14} cy={DOTS_Y} r={d === 0 ? 4 : 3} className={tone(d === 0)} fill="currentColor" />
+      ))}
+    </PreviewFrame>
   );
 }

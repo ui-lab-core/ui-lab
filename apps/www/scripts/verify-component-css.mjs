@@ -14,7 +14,7 @@ const cases = {
 };
 
 for (const [page, assets] of Object.entries(cases)) {
-  const html = await readFile(path.join(next, `server/app/components/${page}.html`), "utf8");
+  const html = await readFile(path.join(next, `server/app/library/components/${page}.html`), "utf8");
   const hrefs = [...html.matchAll(/\/_next\/static\/css\/([a-z0-9]+\.css)/g)].map(
     (match) => match[1],
   );

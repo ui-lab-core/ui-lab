@@ -2,30 +2,170 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useMemo, memo, useEffect, type ComponentType } from "react";
+import { useState, useMemo, memo, useEffect, useRef, type ComponentType } from "react";
 import { Logo } from "@/features/layout/components/logo";
 import { Divider } from "ui-lab-components/divider";
 import { Tabs } from "ui-lab-components/tabs";
 import { Button } from "ui-lab-components/button";
 import { Tooltip } from "ui-lab-components/tooltip";
+import { Menu } from "ui-lab-components/menu";
 import { featureFlags } from "@/shared/config/feature-flags";
 import { useApp } from "@/features/theme/lib/app-context";
 import { cn } from "@/shared/lib/utils";
 import { Icon } from "ui-lab-components/icon";
 import { MobileMenu } from "./mobile-menu";
-import { headerTabs, getActiveHeaderTab, type HeaderTab } from "./data";
+import {
+  headerTabs,
+  libraryItems,
+  getActiveHeaderTab,
+  getActiveLibraryItem,
+  type HeaderTab,
+} from "./data";
 import { useSidebarToggle } from "@/features/layout/hooks/sidebar-context";
 import { HeaderAccountLink } from "@/features/account/components/header-account-link";
 
 const TabItem = memo(({ tab }: { tab: HeaderTab }) => {
   return (
-    <Tabs.Trigger value={tab.id} className="text-md leading-[20px] font-medium tracking-normal">
+    <Tabs.Trigger
+      value={tab.id}
+      className="leading-[20px] rounded-full font-medium tracking-normal"
+    >
       {tab.label}
     </Tabs.Trigger>
   );
 });
 
 TabItem.displayName = "TabItem";
+
+const HOVER_CLOSE_DELAY = 150;
+
+function LibraryTabMenu({ tab, pathname }: { tab: HeaderTab; pathname: string }) {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const pressedTriggerRef = useRef(false);
+  const activeItem = getActiveLibraryItem(pathname);
+
+  // A pointer press on the tab navigates to the library instead of toggling the
+  // menu. While open, Menu's backdrop sits over the tab, so hit-test by position.
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      const trigger = triggerRef.current?.getBoundingClientRect();
+      pressedTriggerRef.current =
+        !!trigger &&
+        event.clientX >= trigger.left &&
+        event.clientX <= trigger.right &&
+        event.clientY >= trigger.top &&
+        event.clientY <= trigger.bottom;
+    };
+    const resetPress = () => {
+      setTimeout(() => {
+        pressedTriggerRef.current = false;
+      });
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown, true);
+    document.addEventListener("click", resetPress);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown, true);
+      document.removeEventListener("click", resetPress);
+    };
+  }, []);
+
+  const handleOpenChange = (next: boolean) => {
+    if (pressedTriggerRef.current) {
+      pressedTriggerRef.current = false;
+      router.push(tab.path);
+      return;
+    }
+    setIsOpen(next);
+  };
+
+  const handlePointerEnter = (event: React.PointerEvent<HTMLElement>) => {
+    triggerRef.current = event.currentTarget;
+    if (event.pointerType !== "mouse") return;
+    setIsOpen(true);
+  };
+
+  // Menu.Content mounts a full-screen backdrop over the trigger once open, so
+  // enter/leave events can't track hover. Hit-test the pointer against the
+  // trigger + panel bounds instead.
+  useEffect(() => {
+    if (!isOpen) return;
+    let closeTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      const trigger = triggerRef.current?.getBoundingClientRect();
+      const content = contentRef.current?.getBoundingClientRect();
+      if (!trigger || !content) return;
+
+      const inside =
+        event.clientX >= Math.min(trigger.left, content.left) &&
+        event.clientX <= Math.max(trigger.right, content.right) &&
+        event.clientY >= Math.min(trigger.top, content.top) &&
+        event.clientY <= Math.max(trigger.bottom, content.bottom);
+
+      if (inside) {
+        if (closeTimer) clearTimeout(closeTimer);
+        closeTimer = null;
+      } else if (!closeTimer) {
+        closeTimer = setTimeout(() => setIsOpen(false), HOVER_CLOSE_DELAY);
+      }
+    };
+
+    document.addEventListener("pointermove", handlePointerMove);
+    return () => {
+      document.removeEventListener("pointermove", handlePointerMove);
+      if (closeTimer) clearTimeout(closeTimer);
+    };
+  }, [isOpen]);
+
+  return (
+    <Menu
+      type="pop-over"
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      selectionMode="single"
+      selectedKeys={new Set(activeItem ? [activeItem] : [])}
+    >
+      <Menu.Trigger as="child" onPointerEnter={handlePointerEnter}>
+        <Tabs.Trigger
+          value={tab.id}
+          className="leading-[20px] rounded-full font-medium tracking-normal data-[hovered=true]:not-data-[selected=true]:bg-background-700/50"
+          icon={{
+            right: (
+              <Icon
+                id="chev"
+                size={14}
+                className={cn(
+                  "text-foreground-400 transition-transform duration-200",
+                  isOpen && "rotate-180",
+                )}
+              />
+            ),
+          }}
+        >
+          {tab.label}
+        </Tabs.Trigger>
+      </Menu.Trigger>
+      <Menu.Content ref={contentRef} align="start" className="min-w-40">
+        {libraryItems.map((item) => (
+          <Menu.Item
+            key={item.id}
+            id={item.id}
+            textValue={item.label}
+            onSelect={() => router.push(item.path)}
+          >
+            <Icon id={item.icon} size={16} className="text-foreground-400" />
+            {item.label}
+          </Menu.Item>
+        ))}
+      </Menu.Content>
+    </Menu>
+  );
+}
 
 interface HeaderProps {
   pathname: string;
@@ -38,7 +178,6 @@ export default function Header({ pathname }: HeaderProps) {
   const [Palette, setPalette] = useState<ComponentType | null>(null);
   const { isOpen: isSidebarOpen, toggleSidebar } = useSidebarToggle();
   const isLandingPage = pathname === "/";
-  const isConfigPage = pathname === "/config";
   const isNavigationOpen = isLandingPage ? isMobileMenuOpen : isSidebarOpen;
 
   useEffect(() => {
@@ -64,7 +203,8 @@ export default function Header({ pathname }: HeaderProps) {
     const value = trigger?.getAttribute("data-tabs-value");
     const tab = headerTabs.find((item) => item.id === value);
 
-    if (tab) {
+    // The Library tab navigates through its menu trigger.
+    if (tab && tab.id !== "components") {
       router.push(tab.path);
     }
   };
@@ -75,7 +215,7 @@ export default function Header({ pathname }: HeaderProps) {
         <div
           className={cn(
             "relative h-full flex items-center justify-between pr-3 pl-8 w-full overflow-hidden transition-[margin] duration-300",
-            !isConfigPage && "max-w-(--page-width) mx-auto",
+            "max-w-(--page-width) mx-auto",
           )}
         >
           {/* LEFT SECTION: Logo & Tabs - Added shrink-0 to prevent it being crushed */}
@@ -103,18 +243,22 @@ export default function Header({ pathname }: HeaderProps) {
               )}
             </button>
 
-            <div className="h-full">
+            <div>
               <Tabs
                 // className="hidden h-full w-fit ml-8 md:flex [&_.indicator]:top-[calc(100%-2px)]!"
                 className="hidden h-full w-fit ml-8 md:flex"
                 value={activeTabId || ""}
                 // variant="underline"
               >
-                <div className="h-full" onClickCapture={handleTabsNavigation}>
-                  <Tabs.List className="h-full p-0!">
-                    {headerTabs.map((tab) => (
-                      <TabItem key={tab.id} tab={tab} />
-                    ))}
+                <div className="h-full items-center flex" onClickCapture={handleTabsNavigation}>
+                  <Tabs.List styles={{ indicator: "rounded-full" }} className="p-0!">
+                    {headerTabs.map((tab) =>
+                      tab.id === "components" ? (
+                        <LibraryTabMenu key={tab.id} tab={tab} pathname={pathname} />
+                      ) : (
+                        <TabItem key={tab.id} tab={tab} />
+                      ),
+                    )}
                   </Tabs.List>
                   {headerTabs.map((tab) => (
                     <div

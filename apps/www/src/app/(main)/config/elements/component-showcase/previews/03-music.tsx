@@ -47,7 +47,7 @@ export default function Music() {
           <span className="text-xs text-foreground-500 tabular-nums">{tracks.length}</span>
         </div>
         <Scroll className="min-h-0 flex-1 max-w-none" fade-y inline>
-          <List gap="xs" spacing="xs" className="max-w-none">
+          <List gap="xs" spacing="sm" className="max-w-none">
             {tracks.map((track, i) => {
               const active = i === current;
               return (

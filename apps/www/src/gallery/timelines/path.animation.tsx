@@ -1,235 +1,61 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { ChevronRight } from "lucide-react";
-import config from "./config.json";
+import { Bar, Box, CX, CY, PreviewFrame, Ring, useTimeline, type Timeline } from "./preview-frame";
+import { motion, role, tone } from "./tokens";
+
+const ITEM_H = 26;
+const Y = CY - ITEM_H / 2;
+const CHEVRON_W = 8;
+const GAP = 14;
+const SEGMENT = GAP * 2 + CHEVRON_W;
+const ITEM_W = [68, 80, 72];
+const TWO_W = ITEM_W[0] + SEGMENT + ITEM_W[1];
+const START_X = CX - (TWO_W + SEGMENT + ITEM_W[2]) / 2;
+const SHIFT = CX - TWO_W / 2 - START_X;
+const ITEM_X = [START_X, START_X + ITEM_W[0] + SEGMENT, START_X + TWO_W + SEGMENT];
+
+type Phase = "idle" | "hover";
+const TIMELINE: Timeline<Phase> = { hover: 0 };
+
+function Crumb({ i, active = false }: { i: number; active?: boolean }) {
+  return (
+    <>
+      <Box x={ITEM_X[i]} y={Y} w={ITEM_W[i]} h={ITEM_H} rx={4} fill={active ? role.tint : role.surface} stroke={tone(active, "border")} />
+      <Bar x={ITEM_X[i] + 8} y={CY - 3} w={ITEM_W[i] - 16} h={6} className={tone(active)} />
+    </>
+  );
+}
+
+function Chevron({ x, active = false }: { x: number; active?: boolean }) {
+  return (
+    <path
+      d={`M ${x} ${CY - 5} l 5 5 l -5 5`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={tone(active)}
+    />
+  );
+}
 
 export function PathAnimation() {
-  const [isHovered, setIsHovered] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const galleryItem = el.closest(".group") || el;
-    const handleEnter = () => setIsHovered(true);
-    const handleLeave = () => setIsHovered(false);
-    galleryItem.addEventListener("mouseenter", handleEnter);
-    galleryItem.addEventListener("mouseleave", handleLeave);
-    return () => {
-      galleryItem.removeEventListener("mouseenter", handleEnter);
-      galleryItem.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
-
-  const centerY = 150;
-  const itemH = 26;
-  const itemY = centerY - itemH / 2;
-  const itemRx = config.barRx;
-
-  const chevW = 8;
-  const gap = 14;
-
-  const item1W = 68;
-  const item2W = 80;
-  const item3W = 72;
-
-  // Anchor all positions from the 3-item centered start
-  const twoItemW = item1W + gap + chevW + gap + item2W;
-  const threeItemW = twoItemW + gap + chevW + gap + item3W;
-  const hoverStartX = (400 - threeItemW) / 2;
-  const idleStartX = (400 - twoItemW) / 2;
-  const shiftX = idleStartX - hoverStartX; // how much the 2-item group shifts left on hover
-
-  const item1X = hoverStartX;
-  const chev1X = item1X + item1W + gap;
-  const item2X = chev1X + chevW + gap;
-  const chev2X = item2X + item2W + gap;
-  const item3X = chev2X + chevW + gap;
+  const { ref, phase } = useTimeline<Phase>(TIMELINE);
+  const on = phase === "hover";
 
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center justify-center relative overflow-hidden font-sans"
-    >
-      <div className="relative w-full max-w-[400px]">
-        <svg viewBox="0 0 400 300" className="w-full h-auto relative z-10" aria-hidden="true">
-          <defs>
-            <radialGradient id="path-fade" cx="50%" cy="50%" r="50%">
-              <stop offset="40%" stopColor="white" stopOpacity="1" />
-              <stop offset="100%" stopColor="white" stopOpacity="0" />
-            </radialGradient>
-            <mask id="path-grid-mask">
-              <rect width="400" height="300" fill="url(#path-fade)" />
-            </mask>
-          </defs>
-
-          {/* Item 1 + Chevron + Item 2 — shift left on hover to make room */}
-          <g
-            style={{
-              transform: `translateX(${isHovered ? 0 : shiftX}px)`,
-              transition: `transform 0.45s cubic-bezier(0.2, 1, 0.4, 1)`,
-            }}
-          >
-            {/* Item 1 */}
-            <rect
-              x={item1X}
-              y={itemY}
-              width={item1W}
-              height={itemH}
-              rx={itemRx}
-              className="text-background-950"
-              fill="currentColor"
-            />
-            <rect
-              x={item1X}
-              y={itemY}
-              width={item1W}
-              height={itemH}
-              rx={itemRx}
-              className={config.highlight.idleClass}
-              fill="currentColor"
-              stroke="currentColor"
-              strokeWidth={config.strokeWidth}
-              style={{
-                fillOpacity: config.highlight.idleFillOpacity,
-                strokeOpacity: config.highlight.idleStrokeOpacity,
-              }}
-            />
-            <rect
-              x={item1X + 8}
-              y={centerY - 3}
-              width={item1W - 16}
-              height={6}
-              rx={config.barRx}
-              fill="currentColor"
-              className={config.highlight.idleClass}
-              style={{ opacity: 0.5 }}
-            />
-
-            {/* Chevron 1 */}
-            <g transform={`translate(${chev1X - 7}, ${centerY - 11})`}>
-              <ChevronRight
-                width={22}
-                height={22}
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={config.highlight.idleClass}
-                style={{ opacity: 0.3 }}
-              />
-            </g>
-
-            {/* Item 2 */}
-            <rect
-              x={item2X}
-              y={itemY}
-              width={item2W}
-              height={itemH}
-              rx={itemRx}
-              className="text-background-950"
-              fill="currentColor"
-            />
-            <rect
-              x={item2X}
-              y={itemY}
-              width={item2W}
-              height={itemH}
-              rx={itemRx}
-              className={config.highlight.idleClass}
-              fill="currentColor"
-              stroke="currentColor"
-              strokeWidth={config.strokeWidth}
-              style={{
-                fillOpacity: config.highlight.idleFillOpacity,
-                strokeOpacity: config.highlight.idleStrokeOpacity,
-              }}
-            />
-            <rect
-              x={item2X + 8}
-              y={centerY - 3}
-              width={item2W - 16}
-              height={6}
-              rx={config.barRx}
-              fill="currentColor"
-              className={config.highlight.idleClass}
-              style={{ opacity: 0.5 }}
-            />
-          </g>
-
-          {/* Chevron 2 + Item 3 (isCurrent) — slide in from right on hover */}
-          <g
-            style={{
-              transform: `translateX(${isHovered ? 0 : 20}px)`,
-              opacity: isHovered ? 1 : 0,
-              transition: `transform 0.45s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.35s ease`,
-            }}
-          >
-            <g transform={`translate(${chev2X - 8}, ${centerY - 11})`}>
-              <ChevronRight
-                width={22}
-                height={22}
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={config.highlight.hoverClass}
-                style={{ opacity: 0.4 }}
-              />
-            </g>
-
-            <rect
-              x={item3X - 8}
-              y={itemY - 8}
-              width={item3W + 16}
-              height={itemH + 16}
-              rx={itemRx + 4}
-              fill="none"
-              stroke="currentColor"
-              className={config.accentOutline.colorClass}
-              strokeWidth="1.5"
-              strokeDasharray="4 4"
-              style={{ opacity: 0.4 }}
-            />
-
-            <rect
-              x={item3X}
-              y={itemY}
-              width={item3W}
-              height={itemH}
-              rx={itemRx}
-              className="text-background-950"
-              fill="currentColor"
-            />
-            <rect
-              x={item3X}
-              y={itemY}
-              width={item3W}
-              height={itemH}
-              rx={itemRx}
-              className={config.highlight.hoverClass}
-              fill="currentColor"
-              stroke="currentColor"
-              strokeWidth={config.strokeWidth}
-              style={{
-                fillOpacity: config.highlight.hoverFillOpacity,
-                strokeOpacity: config.highlight.hoverStrokeOpacity,
-              }}
-            />
-            <rect
-              x={item3X + 8}
-              y={centerY - 3}
-              width={item3W - 16}
-              height={6}
-              rx={config.barRx}
-              fill="currentColor"
-              className={config.highlight.hoverClass}
-              style={{ opacity: config.bar.primaryOpacity }}
-            />
-          </g>
-        </svg>
-      </div>
-    </div>
+    <PreviewFrame ref={ref}>
+      <g style={{ transform: `translateX(${on ? 0 : SHIFT}px)`, transition: motion.spring }}>
+        <Crumb i={0} />
+        <Chevron x={ITEM_X[1] - GAP - CHEVRON_W / 2} />
+        <Crumb i={1} />
+      </g>
+      <g style={{ transform: `translateX(${on ? 0 : 20}px)`, opacity: on ? 1 : 0, transition: motion.spring }}>
+        <Chevron x={ITEM_X[2] - GAP - CHEVRON_W / 2} active />
+        <Ring x={ITEM_X[2]} y={Y} w={ITEM_W[2]} h={ITEM_H} rx={4} show />
+        <Crumb i={2} active />
+      </g>
+    </PreviewFrame>
   );
 }

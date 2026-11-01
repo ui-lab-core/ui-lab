@@ -1,219 +1,71 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import config from "./config.json";
-import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
 
-const TW = 256;
-const TH = 50;
-const CX = 200;
-const TX = CX - TW / 2;
-const T0_Y = 130;
-const RX = 6;
-const STEP = TH + 12;
-const HOVER_SHIFT = 57;
+import { Cursor, CursorProvider, type CursorFrame } from "./cursor";
+import { Bar, Box, CX, delay, PreviewFrame, Ring, useTimeline, type Timeline } from "./preview-frame";
+import { tone } from "./tokens";
 
-export function ToastAnimation() {
-  const [isHovered, setIsHovered] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+const TOAST_W = 256;
+const TOAST_H = 50;
+const X = CX - TOAST_W / 2;
+const Y = 130;
+const STEP = TOAST_H + 12;
+const SHIFT = 57;
+const ORIGIN = `${CX}px ${Y + TOAST_H / 2}px`;
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const galleryItem = el.closest(".group") || el;
-    const handleEnter = () => setIsHovered(true);
-    const handleLeave = () => setIsHovered(false);
-    galleryItem.addEventListener("mouseenter", handleEnter);
-    galleryItem.addEventListener("mouseleave", handleLeave);
-    return () => {
-      galleryItem.removeEventListener("mouseenter", handleEnter);
-      galleryItem.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
+type Phase = "idle" | "hover";
+const TIMELINE: Timeline<Phase> = { hover: 0 };
 
-  const cursorPhase = isHovered ? "hover" : "idle";
-  const cursorFrames = {
-    idle: {
-      target: { x: TX + TW + 32, y: T0_Y + TH + 32 },
-      opacity: 0,
-    },
-    hover: {
-      target: { x: TX + TW - 28, y: T0_Y + TH - 18 + HOVER_SHIFT },
-      opacity: 1,
-    },
-  } satisfies Record<typeof cursorPhase, CursorFrame>;
+const cursorFrames = {
+  idle: { target: { x: X + TOAST_W + 32, y: Y + TOAST_H + 32 }, opacity: 0 },
+  hover: { target: { x: X + TOAST_W - 28, y: Y + TOAST_H - 18 + SHIFT } },
+} satisfies Record<Phase, CursorFrame>;
 
-  const stackOrigin = `${CX}px ${T0_Y + TH / 2}px`;
-
+function Toast({ active }: { active: boolean }) {
+  const mid = Y + TOAST_H / 2;
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center justify-center relative overflow-hidden font-sans"
-    >
-      <div className="relative w-full max-w-[400px]">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-auto relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          <g
-            style={{
-              transform: isHovered ? `translateY(${HOVER_SHIFT}px)` : "translateY(0px)",
-              transition: config.transition,
-            }}
-          >
-            {/* Accent outline on front toast when hovered */}
-            <rect
-              x={TX - 10}
-              y={T0_Y - 10}
-              width={TW + 20}
-              height={TH + 20}
-              rx={RX + 5}
-              fill="none"
-              stroke="currentColor"
-              className={config.accentOutline.colorClass}
-              strokeWidth="1.5"
-              strokeDasharray="4 4"
-              style={{
-                opacity: isHovered ? 0.4 : 0,
-                transition: config.transition,
-              }}
-            />
-
-            {/* Toast 2 (furthest back) — rendered first, underneath */}
-            <g
-              style={{
-                transformOrigin: stackOrigin,
-                transform: isHovered
-                  ? `translateY(${-STEP * 2}px)`
-                  : `translateY(-10px) scaleX(0.82)`,
-                opacity: isHovered ? 1 : 0.28,
-                transition:
-                  "transform 0.45s cubic-bezier(0.25, 0, 0.25, 1) 0.08s, opacity 0.4s ease 0.08s",
-              }}
-            >
-              <ToastCard isActive={isHovered} />
-            </g>
-
-            {/* Toast 1 (middle) */}
-            <g
-              style={{
-                transformOrigin: stackOrigin,
-                transform: isHovered ? `translateY(${-STEP}px)` : `translateY(-5px) scaleX(0.91)`,
-                opacity: isHovered ? 1 : 0.52,
-                transition:
-                  "transform 0.45s cubic-bezier(0.25, 0, 0.25, 1) 0.04s, opacity 0.4s ease 0.04s",
-              }}
-            >
-              <ToastCard isActive={isHovered} />
-            </g>
-
-            {/* Toast 0 (front) — rendered last, always on top */}
-            <ToastCard isActive />
-          </g>
-
-          <CursorProvider
-            phase={cursorPhase}
-            frames={cursorFrames}
-            appearance={{
-              className: config.highlight.hoverClass,
-              motionTransition:
-                "transform 0.55s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-            }}
-          >
-            <Cursor />
-          </CursorProvider>
-        </svg>
-      </div>
-    </div>
+    <>
+      <Box x={X} y={Y} w={TOAST_W} h={TOAST_H} rx={6} />
+      <Bar x={X + 12} y={mid - 8} w={16} h={16} className={tone(active)} />
+      <Bar x={X + 36} y={mid - 7} w={92} h={7} className={tone(active)} />
+      <Bar x={X + 36} y={mid + 3} w={60} h={5} />
+      <path
+        d={`M ${X + TOAST_W - 18} ${Y + 12} l 6 6 m 0 -6 l -6 6`}
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        className={tone(active)}
+      />
+    </>
   );
 }
 
-function ToastCard({ isActive }: { isActive: boolean }) {
-  const iconClass = isActive ? config.highlight.hoverClass : config.highlight.idleClass;
+export function ToastAnimation() {
+  const { ref, phase } = useTimeline<Phase>(TIMELINE);
+  const on = phase === "hover";
 
   return (
-    <g>
-      <rect
-        x={TX}
-        y={T0_Y}
-        width={TW}
-        height={TH}
-        rx={RX}
-        className="text-background-900"
-        fill="currentColor"
-      />
-      <rect
-        x={TX}
-        y={T0_Y}
-        width={TW}
-        height={TH}
-        rx={RX}
-        fill="none"
-        stroke="currentColor"
-        className="text-background-500"
-        strokeWidth={1}
-        style={{ opacity: 0.35 }}
-      />
+    <PreviewFrame ref={ref}>
+      <g style={{ transform: `translateY(${on ? SHIFT : 0}px)` }}>
+        <Ring x={X} y={Y} w={TOAST_W} h={TOAST_H} rx={6} show={on} />
+        {[2, 1].map((depth) => (
+          <g
+            key={depth}
+            style={{
+              transformOrigin: ORIGIN,
+              transform: on ? `translateY(${-STEP * depth}px)` : `translateY(${-5 * depth}px) scaleX(${1 - 0.09 * depth})`,
+              opacity: on ? 1 : 1 - 0.24 * depth,
+              ...delay(40 * depth),
+            }}
+          >
+            <Toast active={on} />
+          </g>
+        ))}
+        <Toast active />
+      </g>
 
-      {/* Icon block */}
-      <rect
-        x={TX + 12}
-        y={T0_Y + TH / 2 - 8}
-        width={16}
-        height={16}
-        rx={3}
-        fill="currentColor"
-        className={iconClass}
-        style={{ opacity: isActive ? 0.75 : 0.45, transition: config.transition }}
-      />
-
-      {/* Title bar */}
-      <rect
-        x={TX + 36}
-        y={T0_Y + TH / 2 - 7}
-        width={92}
-        height={7}
-        rx={3.5}
-        fill="currentColor"
-        className="text-foreground-400"
-        style={{ opacity: isActive ? 0.6 : 0.3, transition: config.transition }}
-      />
-
-      {/* Subtitle bar */}
-      <rect
-        x={TX + 36}
-        y={T0_Y + TH / 2 + 3}
-        width={60}
-        height={5}
-        rx={2.5}
-        fill="currentColor"
-        className="text-foreground-400"
-        style={{ opacity: isActive ? 0.3 : 0.15, transition: config.transition }}
-      />
-
-      {/* Close X */}
-      <line
-        x1={TX + TW - 18}
-        y1={T0_Y + 12}
-        x2={TX + TW - 12}
-        y2={T0_Y + 18}
-        stroke="currentColor"
-        className="text-foreground-400"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        style={{ opacity: isActive ? 0.5 : 0.2, transition: config.transition }}
-      />
-      <line
-        x1={TX + TW - 12}
-        y1={T0_Y + 12}
-        x2={TX + TW - 18}
-        y2={T0_Y + 18}
-        stroke="currentColor"
-        className="text-foreground-400"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        style={{ opacity: isActive ? 0.5 : 0.2, transition: config.transition }}
-      />
-    </g>
+      <CursorProvider phase={phase} frames={cursorFrames}>
+        <Cursor />
+      </CursorProvider>
+    </PreviewFrame>
   );
 }

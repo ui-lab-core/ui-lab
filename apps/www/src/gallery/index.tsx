@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { Icon } from "ui-lab-components/icon";
+import type { ReactNode } from "react";
 import { CardAnimation } from "./timelines/card.animation";
 import { DividerAnimation } from "./timelines/divider.animation";
 import { ExpandAnimation } from "./timelines/expand.animation";
@@ -48,8 +47,12 @@ import { TableAnimation } from "./timelines/table.animation";
 import { ImageAnimation } from "./timelines/image.animation";
 import { VideoAnimation } from "./timelines/video.animation";
 import { VoiceAnimation } from "./timelines/voice.animation";
+import { MaskAnimation } from "./timelines/mask.animation";
+import { CodeAnimation } from "./timelines/code.animation";
+import { FrameAnimation } from "./timelines/frame.animation";
+import { IconAnimation } from "./timelines/icon.animation";
 
-export const previews: Record<string, React.ReactNode> = {
+export const previews: Record<string, ReactNode> = {
   anchor: <AnchorAnimation />,
   badge: <BadgeAnimation />,
   banner: <BannerAnimation />,
@@ -82,51 +85,13 @@ export const previews: Record<string, React.ReactNode> = {
   popover: <PopoverAnimation />,
   progress: <ProgressAnimation />,
   radio: <RadioAnimation />,
-  mask: (
-    <div className="w-80 aspect-square max-w-[120px] flex items-center justify-center relative overflow-hidden">
-      {/* The Divider Line */}
-      <div className="absolute my-4 inset-y-0 left-1/2 -ml-px w-px border-l border-dashed border-background-700 z-10"></div>
-
-      {/* The Element being 'Masked' (Gradient Circle) */}
-      <div className="flex border rounded-full overflow-hidden border-background-700">
-        <div className="w-6 h-12 bg-background-900"></div>
-        <div className="w-6 h-12 bg-background-700"></div>
-      </div>
-    </div>
-  ),
+  mask: <MaskAnimation />,
   modal: <ModalAnimation />,
-
   scroll: <ScrollAnimation />,
   table: <TableAnimation />,
   page: <PageAnimation />,
-
-  code: (
-    <div className="w-[85%] rounded-[3px] border border-background-700 overflow-hidden">
-      <div className="h-[22px] flex items-center justify-between px-2 bg-background-900 border-b border-background-700">
-        <div className="w-[40px] h-1.5 opacity-20 rounded bg-background-500" />
-        <div className="w-[20px] h-1.5 opacity-15 rounded bg-background-500" />
-      </div>
-      <div className="px-2 py-2 flex flex-col gap-[5px] bg-background-950">
-        <div className="flex gap-1.5">
-          <div className="w-[22px] h-1.5 opacity-30 rounded bg-accent-500" />
-          <div className="w-[28px] h-1.5 opacity-20 rounded bg-background-500" />
-          <div className="w-[16px] h-1.5 opacity-15 rounded bg-background-500" />
-        </div>
-        <div className="flex gap-1.5 ml-3">
-          <div className="w-[14px] h-1.5 opacity-20 rounded bg-background-500" />
-          <div className="w-[32px] h-1.5 opacity-30 rounded bg-accent-500" />
-        </div>
-        <div className="flex gap-1.5 ml-3">
-          <div className="w-[18px] h-1.5 opacity-20 rounded bg-background-500" />
-          <div className="w-[24px] h-1.5 opacity-15 rounded bg-background-500" />
-        </div>
-        <div className="w-[8px] h-1.5 opacity-20 rounded bg-background-500" />
-      </div>
-    </div>
-  ),
-  frame: (
-    <div className="w-[120px] h-[40px] flex bg-background-900 items-center justify-center border border-background-700 rounded-md"></div>
-  ),
+  code: <CodeAnimation />,
+  frame: <FrameAnimation />,
   toolbar: <ToolbarAnimation />,
   carousel: <CarouselAnimation />,
   timeline: <TimelineAnimation />,
@@ -135,29 +100,7 @@ export const previews: Record<string, React.ReactNode> = {
   alert: <AlertAnimation />,
   chart: <ChartAnimation />,
   image: <ImageAnimation />,
-  icon: (
-    <div className="grid grid-cols-3 gap-4 text-foreground-300">
-      {[
-        "folder",
-        "bell",
-        "search",
-        "agent",
-        "code",
-        "music",
-      ].map((id, index) => (
-        <div
-          key={id}
-          className={
-            index === 1
-              ? "flex size-12 items-center justify-center rounded-lg bg-accent-500/15 text-accent-500"
-              : "flex size-12 items-center justify-center rounded-lg bg-background-800"
-          }
-        >
-          <Icon id={id} size={24} />
-        </div>
-      ))}
-    </div>
-  ),
+  icon: <IconAnimation />,
   video: <VideoAnimation />,
   voice: <VoiceAnimation />,
 };

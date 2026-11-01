@@ -41,7 +41,7 @@ const SHAPE_MAX_HEIGHT = "80svh";
  * of anything beside the shaped area, like the controls.
  */
 export function previewShapeStyle(
-  aspectRatio: string,
+  aspectRatio: NonNullable<PreviewFrame["aspectRatio"]>,
   { fit = false, aside }: { fit?: boolean; aside?: string } = {},
 ): { host: CSSProperties; card?: CSSProperties } {
   return {

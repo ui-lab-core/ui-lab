@@ -1,55 +1,23 @@
-"use client";
+import { CX, CY, PreviewFrame } from "./preview-frame";
+import { role } from "./tokens";
 
-import config from "./config.json";
+const R = 36;
+const STROKE_W = 10;
+const SWEEP = 252;
+const END = ((-90 + SWEEP) * Math.PI) / 180;
 
 export function LoadingAnimation() {
-  const cx = 200;
-  const cy = 150;
-  const r = 36;
-  const strokeW = 10;
-
-  // 70% arc: starting at -90° (top), sweeping 252° clockwise
-  const startAngleDeg = -90;
-  const sweepDeg = 252;
-  const endAngleDeg = startAngleDeg + sweepDeg;
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const startX = cx + r * Math.cos(toRad(startAngleDeg));
-  const startY = cy + r * Math.sin(toRad(startAngleDeg));
-  const endX = cx + r * Math.cos(toRad(endAngleDeg));
-  const endY = cy + r * Math.sin(toRad(endAngleDeg));
-
   return (
-    <div className="flex items-center justify-center relative overflow-hidden font-sans">
-      <div className="relative w-full">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-full relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          {/* Full dim track ring */}
-          <circle
-            cx={cx}
-            cy={cy}
-            r={r}
-            fill="none"
-            stroke="currentColor"
-            className={config.dim.class}
-            strokeWidth={strokeW}
-            strokeOpacity={config.dim.strokeOpacity}
-          />
-
-          {/* Half arc — highlighted, rounded ends */}
-          <path
-            d={`M ${startX} ${startY} A ${r} ${r} 0 1 1 ${endX} ${endY}`}
-            fill="none"
-            stroke="currentColor"
-            className={config.highlight.idleClass}
-            strokeWidth={strokeW}
-            strokeOpacity={0.55}
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-    </div>
+    <PreviewFrame>
+      <circle cx={CX} cy={CY} r={R} fill="none" stroke="currentColor" strokeWidth={STROKE_W} className={role.border} />
+      <path
+        d={`M ${CX} ${CY - R} A ${R} ${R} 0 1 1 ${CX + R * Math.cos(END)} ${CY + R * Math.sin(END)}`}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={STROKE_W}
+        strokeLinecap="round"
+        className={role.active}
+      />
+    </PreviewFrame>
   );
 }

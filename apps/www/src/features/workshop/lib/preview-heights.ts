@@ -36,6 +36,14 @@ export function getPreviewMinHeight(category: WorkshopCategory): number {
  * this one number, so the box the server paints is the box the demo lands in.
  */
 export function reservedPreviewHeight(
+  category: WorkshopCategory,
+  previewHeight?: number,
+): number;
+export function reservedPreviewHeight(
+  category: WorkshopCategory | undefined,
+  previewHeight?: number,
+): number | undefined;
+export function reservedPreviewHeight(
   category: WorkshopCategory | undefined,
   previewHeight?: number,
 ): number | undefined {

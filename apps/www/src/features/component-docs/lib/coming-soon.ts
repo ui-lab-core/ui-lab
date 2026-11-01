@@ -27,13 +27,13 @@ export const comingSoonComponents: ComingSoonComponent[] = [
   {
     id: "voice",
     name: "Voice",
-    description: "Captures voice input with recording controls and audio visualization.",
+    description: "Voice input with recording controls.",
     category: "action",
   },
   {
     id: "carousel",
     name: "Carousel",
-    description: "Cycles through content slides with navigation controls for browsing.",
+    description: "Slides through content with navigation controls.",
     category: "navigation",
   },
   {
@@ -57,13 +57,13 @@ export const comingSoonComponents: ComingSoonComponent[] = [
   {
     id: "image",
     name: "Image",
-    description: "Displays responsive images with framing, loading, and presentation controls.",
+    description: "Responsive image with loading states.",
     category: "media",
   },
   {
     id: "video",
     name: "Video",
-    description: "Embeds video content with playback framing and responsive presentation.",
+    description: "Responsive embedded video player.",
     category: "media",
   },
 ];

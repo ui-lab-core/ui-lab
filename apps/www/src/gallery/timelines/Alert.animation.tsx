@@ -1,167 +1,34 @@
-"use client";
+import { Bar, Box, CX, CY, PreviewFrame } from "./preview-frame";
+import { role } from "./tokens";
 
-import config from "./config.json";
+const ALERT_W = 300;
+const ALERT_H = 72;
+const X = CX - ALERT_W / 2;
+const Y = CY - ALERT_H / 2;
+const ICON_X = X + 22;
+const ICON_Y = Y + 22;
+const BTN_W = 52;
+const BTN_H = 18;
+const BTN_Y = Y + ALERT_H - BTN_H - 10;
+const PRIMARY_X = X + ALERT_W - 12 - BTN_W;
+const SECONDARY_X = PRIMARY_X - 8 - BTN_W;
 
 export function AlertAnimation() {
-  const cx = 200;
-  const cy = 150;
-  const alertW = 300;
-  const alertH = 72;
-  const alertX = cx - alertW / 2;
-  const alertY = cy - alertH / 2;
-  const rx = config.blockRx;
-
-  const iconCx = alertX + 22;
-  const iconCy = alertY + 22;
-
-  // Action buttons bottom-right
-  const btnH = 18;
-  const btnY = alertY + alertH - btnH - 10;
-  const btnW = 52;
-  const btn2X = alertX + alertW - 12 - btnW;
-  const btn1X = btn2X - 8 - btnW;
-
   return (
-    <div className="flex items-center justify-center relative overflow-hidden font-sans">
-      <div className="relative w-full">
-        <svg
-          viewBox="0 0 400 300"
-          className="w-full h-full relative z-10 overflow-visible"
-          aria-hidden="true"
-        >
-          {/* Alert container */}
-          <rect
-            x={alertX}
-            y={alertY}
-            width={alertW}
-            height={alertH}
-            rx={rx}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={config.dim.fillOpacity}
-            stroke="currentColor"
-            strokeWidth={config.strokeWidth}
-            strokeOpacity={config.dim.strokeOpacity}
-          />
-
-          {/* Icon: circle with exclamation */}
-          <circle
-            cx={iconCx}
-            cy={iconCy}
-            r={9}
-            fill="none"
-            stroke="currentColor"
-            className={config.highlight.idleClass}
-            strokeWidth={1.5}
-            strokeOpacity={0.55}
-          />
-          {/* Exclamation dot */}
-          <circle
-            cx={iconCx}
-            cy={iconCy + 4}
-            r={1.5}
-            fill="currentColor"
-            className={config.highlight.idleClass}
-            fillOpacity={0.55}
-          />
-          {/* Exclamation bar */}
-          <line
-            x1={iconCx}
-            y1={iconCy - 4}
-            x2={iconCx}
-            y2={iconCy + 1}
-            stroke="currentColor"
-            className={config.highlight.idleClass}
-            strokeWidth={2}
-            strokeOpacity={0.55}
-            strokeLinecap="round"
-          />
-
-          {/* Title bar */}
-          <rect
-            x={alertX + 38}
-            y={alertY + 13}
-            width={90}
-            height={6}
-            rx={3}
-            fill="currentColor"
-            className={config.highlight.idleClass}
-            fillOpacity={0.4}
-          />
-
-          {/* Description lines */}
-          <rect
-            x={alertX + 38}
-            y={alertY + 26}
-            width={150}
-            height={4}
-            rx={2}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={0.35}
-          />
-          <rect
-            x={alertX + 38}
-            y={alertY + 34}
-            width={110}
-            height={4}
-            rx={2}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={0.25}
-          />
-
-          {/* Action button 1 — ghost/secondary */}
-          <rect
-            x={btn1X}
-            y={btnY}
-            width={btnW}
-            height={btnH}
-            rx={5}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={config.dim.fillOpacity}
-            stroke="currentColor"
-            strokeWidth={1}
-            strokeOpacity={config.dim.strokeOpacity}
-          />
-          <rect
-            x={btn1X + 10}
-            y={btnY + 7}
-            width={32}
-            height={4}
-            rx={2}
-            fill="currentColor"
-            className={config.dim.class}
-            fillOpacity={0.3}
-          />
-
-          {/* Action button 2 — primary */}
-          <rect
-            x={btn2X}
-            y={btnY}
-            width={btnW}
-            height={btnH}
-            rx={5}
-            fill="currentColor"
-            className={config.highlight.idleClass}
-            fillOpacity={0.18}
-            stroke="currentColor"
-            strokeWidth={1}
-            strokeOpacity={0.3}
-          />
-          <rect
-            x={btn2X + 10}
-            y={btnY + 7}
-            width={32}
-            height={4}
-            rx={2}
-            fill="currentColor"
-            className={config.highlight.idleClass}
-            fillOpacity={0.5}
-          />
-        </svg>
-      </div>
-    </div>
+    <PreviewFrame>
+      <Box x={X} y={Y} w={ALERT_W} h={ALERT_H} />
+      <g className={role.active}>
+        <circle cx={ICON_X} cy={ICON_Y} r={9} fill="none" stroke="currentColor" strokeWidth={1.5} />
+        <circle cx={ICON_X} cy={ICON_Y + 4} r={1.5} fill="currentColor" />
+        <path d={`M ${ICON_X} ${ICON_Y - 4} v 5`} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      </g>
+      <Bar x={X + 38} y={Y + 13} w={90} h={6} className={role.active} />
+      <Bar x={X + 38} y={Y + 26} w={150} h={4} />
+      <Bar x={X + 38} y={Y + 34} w={110} h={4} />
+      <Box x={SECONDARY_X} y={BTN_Y} w={BTN_W} h={BTN_H} rx={5} />
+      <Bar x={SECONDARY_X + 10} y={BTN_Y + 7} w={32} h={4} />
+      <Box x={PRIMARY_X} y={BTN_Y} w={BTN_W} h={BTN_H} rx={5} fill={role.tint} stroke={role.active} />
+      <Bar x={PRIMARY_X + 10} y={BTN_Y + 7} w={32} h={4} className={role.active} />
+    </PreviewFrame>
   );
 }

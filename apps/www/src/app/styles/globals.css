@@ -23,8 +23,8 @@
 :root {
   --font-interface: "Work Sans Variable", system-ui, sans-serif;
   --font-serif-family: "Fraunces Variable", ui-serif, Georgia, serif;
-  --header-scale: 0.75;
-  --body-scale: 0.8;
+  --header-scale: 1.0;
+  --body-scale: 1.013;
 
   /* One site-wide control for code and semantic mono text. Derived from the
      body role so code tracks --body-scale like every other size. */

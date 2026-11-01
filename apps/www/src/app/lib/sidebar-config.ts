@@ -1,12 +1,4 @@
-import {
-  FaCube,
-  FaRegWindowMaximize,
-  FaSwatchbook,
-  FaBook,
-  FaSeedling,
-  FaPuzzlePiece,
-  FaLayerGroup,
-} from "@/shared/icons/fa6";
+import { FaCube, FaSwatchbook, FaBook } from "@/shared/icons/fa6";
 
 type SidebarDomain =
   | "docs"

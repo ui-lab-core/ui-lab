@@ -1,146 +1,66 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import React from "react";
-import { Frame } from "ui-lab-components";
-import { FaQuestion } from "@/shared/icons/fa6";
-import config from "./config.json";
-import { Cursor, CursorProvider, type CursorFrame } from "./preview-cursor";
+import { Cursor, CursorProvider, type CursorFrame } from "./cursor";
+import { Bar, Box, CX, delay, PreviewFrame, useTimeline, type Timeline } from "./preview-frame";
+import { role, tone } from "./tokens";
 
-const TAIL_PATH =
-  "M 0.00 0.00 C 3.00 0.00 7.50 -6.00 9.00 -6.00 C 10.50 -6.00 13.50 0.00 18.00 0.00";
-const TAIL_WIDTH = 18;
-const T = "all 0.4s cubic-bezier(0.25, 0, 0.25, 1)";
+const TRIGGER = 48;
+const TRIGGER_X = CX - TRIGGER / 2;
+const TRIGGER_Y = 150;
+const TIP_W = 160;
+const TIP_H = 36;
+const TIP_X = CX - TIP_W / 2;
+const TIP_Y = TRIGGER_Y - 16 - TIP_H;
+const MID_Y = TRIGGER_Y + TRIGGER / 2;
+
+type Phase = "idle" | "hovering" | "shown";
+const TIMELINE: Timeline<Phase> = { hovering: 0, shown: 600 };
+
+const cursorFrames = {
+  idle: { target: { x: 228, y: 226 }, opacity: 0 },
+  hovering: { target: { x: CX + 8, y: MID_Y + 8 } },
+  shown: { target: { x: CX + 8, y: MID_Y + 8 } },
+} satisfies Record<Phase, CursorFrame>;
 
 export function TooltipAnimation() {
-  const [stage, setStage] = useState<"idle" | "hovering" | "shown">("idle");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const handleEnter = useCallback(() => {
-    setStage("hovering");
-    timersRef.current.push(setTimeout(() => setStage("shown"), 600));
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-    setStage("idle");
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const galleryItem = el.closest(".group") || el;
-    galleryItem.addEventListener("mouseenter", handleEnter);
-    galleryItem.addEventListener("mouseleave", handleLeave);
-    return () => {
-      timersRef.current.forEach(clearTimeout);
-      galleryItem.removeEventListener("mouseenter", handleEnter);
-      galleryItem.removeEventListener("mouseleave", handleLeave);
-    };
-  }, [handleEnter, handleLeave]);
-
-  const isActive = stage !== "idle";
-  const isShown = stage === "shown";
-  const cursorFrames = {
-    idle: {
-      target: { x: 228, y: 186 },
-      opacity: 0,
-    },
-    hovering: {
-      target: { x: 208, y: 166 },
-      opacity: 1,
-    },
-    shown: {
-      target: { x: 208, y: 166 },
-      opacity: 1,
-    },
-  } satisfies Record<typeof stage, CursorFrame>;
+  const { ref, phase } = useTimeline<Phase>(TIMELINE);
+  const on = phase !== "idle";
+  const shown = phase === "shown";
 
   return (
-    <div ref={containerRef} className="w-full h-full">
-      <div className="flex flex-col items-center justify-center gap-2 relative overflow-hidden w-full h-full">
-        {/* Tooltip */}
-        <div
-          style={{
-            opacity: isShown ? 1 : 0,
-            transform: isShown ? "translateY(0px)" : "translateY(8px)",
-            transition: T,
-            transitionDelay: isShown ? "0.25s" : "0s",
-            pointerEvents: "none",
-          }}
-        >
-          <Frame
-            side="bottom"
-            shapeMode="extend"
-            path={TAIL_PATH}
-            pathWidth={TAIL_WIDTH}
-            className="p-2"
-            style={
-              {
-                "--fill": "var(--color-background-900)",
-                "--frame-radius": "4px",
-              } as React.CSSProperties
-            }
-          >
-            <div className="flex items-center gap-2.5 px-0.5">
-              {/* Label skeleton */}
-              <div className="w-[66px] h-2 rounded bg-background-500 opacity-50" />
+    <PreviewFrame ref={ref}>
+      <g style={{ opacity: shown ? 1 : 0, transform: `translateY(${shown ? 0 : 8}px)`, ...delay(shown ? 250 : 0) }}>
+        <Box x={TIP_X} y={TIP_Y} w={TIP_W} h={TIP_H} rx={6} />
+        <path d={`M ${CX - 8} ${TIP_Y + TIP_H - 1} l 8 7 l 8 -7 Z`} className={role.surface} fill="currentColor" />
+        <path
+          d={`M ${CX - 8} ${TIP_Y + TIP_H} l 8 7 l 8 -7`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinejoin="round"
+          className={role.border}
+        />
+        <Bar x={TIP_X + 14} y={TIP_Y + 14} w={80} />
+        <g style={{ opacity: shown ? 1 : 0, ...delay(shown ? 450 : 0) }}>
+          <Box x={TIP_X + TIP_W - 54} y={TIP_Y + 9} w={40} h={18} rx={4} fill={role.tint} stroke={role.active} />
+          <Bar x={TIP_X + TIP_W - 46} y={TIP_Y + 15} w={24} h={6} className={role.active} />
+        </g>
+      </g>
+      <Box x={TRIGGER_X} y={TRIGGER_Y} w={TRIGGER} h={TRIGGER} rx={6} stroke={tone(on, "border")} />
+      <g className={tone(on)}>
+        <path
+          d={`M ${CX - 5} ${MID_Y - 5} a 5 5 0 1 1 5 5 v 3`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+        />
+        <circle cx={CX} cy={MID_Y + 9} r={1.5} fill="currentColor" />
+      </g>
 
-              {/* Hint badge */}
-              <div
-                className="flex items-center justify-center rounded px-1.5 py-0.5 bg-accent-500/15 border border-accent-500/30"
-                style={{
-                  opacity: isShown ? 1 : 0,
-                  transition: T,
-                  transitionDelay: isShown ? "0.45s" : "0s",
-                }}
-              >
-                <div className="w-5 h-1.5 rounded bg-accent-500 opacity-80" />
-              </div>
-            </div>
-          </Frame>
-        </div>
-
-        {/* Trigger button */}
-        <div
-          className="w-7 h-7 flex items-center px-2 rounded-[3px] border"
-          style={{
-            backgroundColor: "var(--color-background-900)",
-            borderColor: isActive
-              ? "color-mix(in srgb, var(--color-accent-500) 55%, var(--color-background-700))"
-              : "var(--color-background-700)",
-            transition: T,
-          }}
-        >
-          <FaQuestion
-            size={12}
-            style={{
-              color: isActive ? "var(--color-accent-500)" : "var(--color-background-500)",
-              transition: T,
-            }}
-          />
-        </div>
-      </div>
-
-      <svg
-        viewBox="0 0 400 300"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
-        aria-hidden="true"
-      >
-        <CursorProvider
-          phase={stage}
-          frames={cursorFrames}
-          appearance={{
-            className: config.highlight.hoverClass,
-            motionTransition: "transform 0.5s cubic-bezier(0.2, 1, 0.4, 1), opacity 0.25s ease-out",
-          }}
-        >
-          <Cursor />
-        </CursorProvider>
-      </svg>
-    </div>
+      <CursorProvider phase={phase} frames={cursorFrames}>
+        <Cursor />
+      </CursorProvider>
+    </PreviewFrame>
   );
 }

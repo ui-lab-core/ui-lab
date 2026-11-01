@@ -3,7 +3,10 @@ import { generateDocRouteMetadata, getDocRoutePage } from "@/features/docs/lib/d
 import { docsSource } from "@/features/docs/lib/docs-source";
 
 export function generateStaticParams() {
-  return docsSource.generateParams("design-system").map(({ slug }) => ({ slug: [slug] }));
+  return [
+    { slug: [] },
+    ...docsSource.generateParams("design-system").map(({ slug }) => ({ slug: [slug] })),
+  ];
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug?: string[] }> }) {

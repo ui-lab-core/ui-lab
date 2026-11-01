@@ -219,7 +219,7 @@ export function AccessCard({
             </div>
             <Button
               variant="primary"
-              className="text-white w-40"
+              className="rounded-full text-white w-40"
               color="accent-600"
               href={ROUTES.supporter}
             >

@@ -23,6 +23,7 @@ import { useDocsNavigationData } from "@/features/navigation/lib/docs-navigation
 import { Flex } from "ui-lab-components";
 import { Badge } from "ui-lab-components/badge";
 import { List } from "ui-lab-components/list";
+import { Icon } from "ui-lab-components/icon";
 import { getComponentCount } from "ui-lab-registry";
 import { lumenIcons } from "@ui-lab-core/library/icons";
 import { Logo } from "@/features/layout/components/logo";
@@ -34,6 +35,8 @@ type ElementsNavType = "packages" | "sections" | "starters" | "patterns";
 
 const componentCount = getComponentCount();
 const iconCount = lumenIcons.icons.length;
+
+const navIcons: Record<string, string> = { "components-core": "blocks", icons: "sparkle" };
 
 function getElementsNav(pathname: string): ElementsNavType {
   if (pathname.startsWith("/workshop/sections")) return "sections";
@@ -85,7 +88,7 @@ const SidebarItemLink = memo(function SidebarItemLink({
 
 function docsItemClassName(active: boolean) {
   return cn(
-    "block relative px-3 py-2.5 font-medium text-md leading-[20px] tracking-normal rounded-[6px] cursor-pointer",
+    "block relative px-3 py-2.5 font-medium text-sm leading-[20px] tracking-normal rounded-[6px] cursor-pointer",
     "transition-colors duration-300 ease-out",
     "hover:duration-0  hover:bg-background-800/50",
     active
@@ -293,6 +296,7 @@ export function Sidebar({
               <nav className="py-3 px-2 space-y-1">
                 {mainNavItems.map((navItem) => {
                   const isActive = activeNavItem === navItem.id;
+                  const iconId = navIcons[navItem.id];
 
                   return (
                     <Link
@@ -300,36 +304,22 @@ export function Sidebar({
                       href={navItem.href}
                       prefetch={false}
                       className={cn(
-                        "flex items-center gap-3 rounded-xs border px-4 py-3 text-md leading-[20px] font-medium tracking-normal",
+                        "flex items-center gap-3 rounded-sm px-4 py-3 text-sm leading-[20px] font-medium tracking-normal",
                         isActive
                           ? "border-background-700 text-foreground-50 bg-background-900"
                           : "border-transparent text-foreground-300 hover:text-foreground-200 hover:bg-background-800/60",
                       )}
                     >
-                      {/*
-                      {Icon && <div
-                        className={cn(
-                          '-ml-4 w-10 rounded-sm flex items-center justify-center',
-                          isActive ? 'bg-transparent text-foreground-300' : 'text-foreground-400 opacity-80'
-                        )}
-                      >
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      }
-                     */}
+                      {iconId && (
+                        <Icon
+                          id={iconId}
+                          size={20}
+                          className={
+                            isActive ? "text-foreground-300" : "text-foreground-400 opacity-80"
+                          }
+                        />
+                      )}
                       <span className="flex-1">{navItem.label}</span>
-                      {navItem.id === "components-core" && (
-                        <Badge
-                          count={componentCount}
-                          className="w-12 justify-center rounded-full border-none bg-transparent text-foreground-400"
-                        />
-                      )}
-                      {navItem.id === "icons" && (
-                        <Badge
-                          count={iconCount}
-                          className="w-12 justify-center rounded-full border-none bg-transparent text-foreground-400"
-                        />
-                      )}
                     </Link>
                   );
                 })}
@@ -362,7 +352,7 @@ export function Sidebar({
                         spacing="none"
                         className="absolute left-0.5 top-0 bottom-0 bg-foreground-400"
                       />
-                      <div className="pl-3 space-y-0.5">
+                      <div className="pl-3 space-y-0.5 *:text-sm">
                         {section.items.map((item) =>
                           item.children?.length ? (
                             <SidebarGroup

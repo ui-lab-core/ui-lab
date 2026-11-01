@@ -30,10 +30,8 @@
   .tile[data-grid-span="2"] { grid-column: span 2; }
 }
 
+/* Canvas is capped by --page-width: two columns beside the settings sidebar,
+   three when it is collapsed. */
 @container (min-width: 1000px) {
   .grid { --preview-columns: 3; }
-}
-
-@container (min-width: 1400px) {
-  .grid { --preview-columns: 4; }
 }
