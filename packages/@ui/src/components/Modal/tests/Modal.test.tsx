@@ -1,18 +1,24 @@
 import * as React from "react";
-import { afterEach, describe, it, expect, vi } from "vitest";
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { Modal } from "../Modal";
 import { Input } from "@/components/Input";
 import { TextArea } from "@/components/Textarea";
 import styles from "../Modal.module.css";
 
+beforeEach(() => {
+  vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => window.setTimeout(() => callback(performance.now()), 16));
+  vi.spyOn(window, "cancelAnimationFrame").mockImplementation((id) => window.clearTimeout(id));
+});
+
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.useRealTimers();
 });
 
 function advanceEntrance() {
   act(() => {
-    vi.advanceTimersByTime(32);
+    vi.advanceTimersByTime(40);
   });
 }
 
@@ -199,10 +205,12 @@ describe("Modal opening and backdrop", () => {
     expect(modal.querySelector(".backdrop")).toBeTruthy();
     expect(modal.querySelector(".panel")).toBeTruthy();
 
+    advanceEntrance();
     act(() => {
       vi.advanceTimersByTime(180);
     });
-
+    expect(modal).toHaveAttribute("data-state", "exited");
+    advanceEntrance();
     expect(document.querySelector(".modal")).toBeNull();
   });
 

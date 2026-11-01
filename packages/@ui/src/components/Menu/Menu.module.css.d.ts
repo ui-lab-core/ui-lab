@@ -8,6 +8,7 @@ declare const styles: {
   indicator: string;
   "indicator-check": string;
   "indicator-dot": string;
+  "indicator-trailing": string;
   "sub-trigger": string;
   chevron: string;
   label: string;

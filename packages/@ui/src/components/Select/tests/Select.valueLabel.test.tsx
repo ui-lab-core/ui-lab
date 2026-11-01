@@ -4,6 +4,7 @@ import { render as rtlRender, screen } from "@testing-library/react";
 import { renderSelectWithItems, getSelectTrigger } from "./Select.test-utils";
 import { createMockSelectItems, waitForCondition } from "@/tests/utils";
 import { Select } from "../";
+import css from "../Select.module.css";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -46,11 +47,11 @@ describe("Select.label", () => {
       </Select>,
     );
 
-    const value = screen.getByText("Merge").closest(".value")!;
+    const value = container.querySelector('.value[data-external="true"]')!;
 
     expect(screen.getByTestId("strategy-icon")).toBeInTheDocument();
     expect(value).toHaveAttribute("data-external", "true");
-    expect(value.parentElement).toHaveClass("select-split");
+    expect(value.parentElement).toHaveClass(css["select-split"]);
   });
 
   describe("initial render display", () => {

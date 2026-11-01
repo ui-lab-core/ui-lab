@@ -53,8 +53,8 @@ export type SelectMode = "single" | "multiple";
  * @typeDoc SelectState
  */
 export interface SelectState {
-  /** Selected key in single mode, or the selected keys in multiple mode. */
-  value?: Key | Key[];
+  /** Selected key in single mode, null for no selection, or the selected keys in multiple mode. */
+  value?: Key | Key[] | null;
 
   /** Whether the option panel is open. */
   open?: boolean;
@@ -169,15 +169,20 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   /**
    * Controls the selected key in single mode or the selected keys in multiple mode. It takes
    * precedence over selectedKey and selectedKeys, and state.value takes precedence over it.
+   * Pass null for an explicitly empty controlled single selection; undefined is uncontrolled.
    * @category Core
    */
-  value?: Key | Key[];
+  value?: Key | Key[] | null;
 
   /**
-   * Controls whether the option panel is open. state.open takes precedence over it.
+   * Initial panel visibility for backwards compatibility. Use defaultOpen for initial
+   * visibility in new code, or state.open with onOpenChange for controlled visibility.
    * @category Core
    */
   open?: boolean;
+
+  /** Initial panel visibility for uncontrolled usage. state.open takes precedence. */
+  defaultOpen?: boolean;
 
   /**
    * Chooses whether selecting an option replaces one key or toggles it in a set. Multiple mode
@@ -320,6 +325,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       state: controlledState,
       value,
       open,
+      defaultOpen,
       items: propItems = [],
       selectedKey: controlledSelectedKey,
       defaultSelectedKey,
@@ -365,7 +371,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
     // Open state
 
-    const [isOpen, setIsOpen] = useControlledState(controlledState?.open, open, false);
+    const [isOpen, setIsOpen] = useControlledState(controlledState?.open, defaultOpen ?? open, false);
     const [contentPlacement, setContentPlacement] = React.useState<ContentPlacement>("bottom");
 
     // Selection state
@@ -376,7 +382,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
         : undefined;
 
     const controlledSingleValue = !Array.isArray(value)
-      ? (value ?? controlledSelectedKey)
+      ? (value !== undefined ? value : controlledSelectedKey)
       : undefined;
 
     const controlledSingleKey =

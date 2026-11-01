@@ -9,6 +9,7 @@ declare const styles: {
   "search-content-input": string;
   "search-icon-section": string;
   "search-wrapper": string;
+  "search-mirrored-value": string;
   "empty-state": string;
   "value-section": string;
   "icon-section": string;

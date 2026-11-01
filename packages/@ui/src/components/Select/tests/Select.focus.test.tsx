@@ -172,11 +172,13 @@ describe("Select.focus", () => {
         (button) => button.textContent === "After",
       );
 
+      vi.spyOn(trigger, "getClientRects").mockReturnValue([new DOMRect(0, 0, 100, 30)] as unknown as DOMRectList);
+      vi.spyOn(afterButton!, "getClientRects").mockReturnValue([new DOMRect(0, 0, 100, 30)] as unknown as DOMRectList);
       await openSelect(trigger);
       await user.keyboard("{Tab}");
 
       expect(trigger).toHaveAttribute("aria-expanded", "false");
-      expect(document.activeElement).toBe(afterButton);
+      await waitForCondition(() => document.activeElement === afterButton);
     });
 
     it("Arrow navigation still works when the popup content itself owns focus", async () => {
@@ -287,13 +289,13 @@ describe("Select.focus", () => {
 
       await pressArrowUp(firstRow);
 
-      expect(document.activeElement).toBe(firstRow);
-      expect(firstRow).toHaveAttribute("data-highlighted", "true");
+      expect(document.activeElement).toBe(secondRow);
+      expect(secondRow).toHaveAttribute("data-highlighted", "true");
       expect(list).toHaveAttribute("data-focus-mode", "row");
 
-      await pressArrowDown(firstRow);
+      await pressArrowDown(secondRow);
 
-      expect(document.activeElement).toBe(secondRow);
+      expect(document.activeElement).toBe(firstRow);
     });
   });
 

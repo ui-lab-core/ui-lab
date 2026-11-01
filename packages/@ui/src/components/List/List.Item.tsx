@@ -243,8 +243,9 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         onFocusProp?.(event);
         if (event.defaultPrevented) return;
         if (!focusable || isDisabled) return;
-        const isRowReceivingFocus = event.target === event.currentTarget;
-        if (!isRowReceivingFocus && isFocusWithinRow(event.relatedTarget)) return;
+        // React focus events bubble through portals, so focus entering a
+        // descendant's portalled overlay (an inline Select's listbox) still
+        // belongs to this row even though the DOM blur saw an outside target.
         setFocusedItem(event.currentTarget, { enterFocusMode: true });
       },
       onBlur: (event: React.FocusEvent<HTMLDivElement>) => {

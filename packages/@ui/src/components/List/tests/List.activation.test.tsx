@@ -179,9 +179,18 @@ describe("List.activation", () => {
     const row = screen.getByRole("option");
     const trigger = screen.getByRole("button");
 
-    await user.click(trigger);
-
+    await act(async () => {
+      trigger.focus();
+    });
     expect(trigger).toHaveFocus();
+    expect(row).toHaveAttribute("data-highlighted", "true");
+
+    // Opening moves focus into the portalled listbox on the next frame; the row
+    // must stay highlighted once that has happened, not only before it.
+    await user.click(trigger);
+    const listbox = document.getElementById(trigger.getAttribute("aria-controls")!)!;
+    await waitForCondition(() => document.activeElement === listbox);
+    expect(listbox).toHaveFocus();
     expect(row).toHaveAttribute("data-highlighted", "true");
   });
 

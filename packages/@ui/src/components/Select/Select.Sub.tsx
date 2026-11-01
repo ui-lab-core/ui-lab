@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { FocusScope } from "@react-aria/focus";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
 import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
@@ -669,7 +670,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
     const resolved = resolveSelectSubContentStyles(stylesProp);
 
     return createPortal(
-      <>
+      <FocusScope>
         {(effectiveOpen || isExiting) && (
           <div
             ref={mergedFloatingRef}
@@ -723,7 +724,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
             </div>
           </div>
         )}
-      </>,
+      </FocusScope>,
       document.body,
     );
   },

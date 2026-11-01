@@ -25,6 +25,8 @@ vi.mock("../../../hooks/useFloat/react/useFloating", () => {
       x: 0,
       y: 0,
       placement: "top-start",
+      isPositioned: true,
+      update: vi.fn(),
     }),
   };
 });

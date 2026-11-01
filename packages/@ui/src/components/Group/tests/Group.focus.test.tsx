@@ -431,8 +431,10 @@ describe("Group arrow key navigation", () => {
     await user.keyboard("{ArrowRight}");
     expect(input).toHaveFocus();
 
-    // Navigate right to submit button
+    // Editable inputs own arrow keys; Tab moves to the next grouped control.
     await user.keyboard("{ArrowRight}");
+    expect(input).toHaveFocus();
+    await user.tab();
     expect(submitButton).toHaveFocus();
 
     // Navigate left back to input

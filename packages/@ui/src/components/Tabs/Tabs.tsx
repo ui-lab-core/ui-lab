@@ -357,11 +357,14 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       });
 
       resizeObserver.observe(listRef.current);
+      listRef.current.querySelectorAll<HTMLElement>("[data-tabs-value]").forEach((trigger) => {
+        resizeObserver.observe(trigger);
+      });
       return () => {
         resizeObserver.disconnect();
         if (frame !== undefined) cancelAnimationFrame(frame);
       };
-    }, [selectedValue, updateIndicator, setIndicatorReady]);
+    }, [children, updateIndicator, setIndicatorReady]);
 
     React.useEffect(() => {
       const handleWindowResize = () => {
@@ -377,6 +380,8 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     const getIndicatorStyle = React.useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = {
         position: "absolute",
+        left: 0,
+        top: 0,
         pointerEvents: "none",
         margin: 0,
         opacity: indicatorPosition.width === 0 && indicatorPosition.height === 0 ? 0 : 1,
@@ -390,8 +395,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         if (variant === "underline") {
           return {
             ...baseStyle,
-            left: indicatorPosition.left - TABS_UNDERLINE_GUTTER,
-            top: indicatorPosition.top,
+            transform: `translate3d(${indicatorPosition.left - TABS_UNDERLINE_GUTTER}px, ${indicatorPosition.top}px, 0)`,
             width: TABS_UNDERLINE_THICKNESS,
             height: indicatorPosition.height,
           };
@@ -401,8 +405,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       if (variant === "underline") {
         return {
           ...baseStyle,
-          left: indicatorPosition.left,
-          top: indicatorPosition.top + indicatorPosition.height + TABS_UNDERLINE_OFFSET,
+          transform: `translate3d(${indicatorPosition.left}px, ${indicatorPosition.top + indicatorPosition.height + TABS_UNDERLINE_OFFSET}px, 0)`,
           width: indicatorPosition.width,
           height: TABS_UNDERLINE_THICKNESS,
         };
@@ -410,8 +413,7 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 
       return {
         ...baseStyle,
-        left: indicatorPosition.left,
-        top: indicatorPosition.top,
+        transform: `translate3d(${indicatorPosition.left}px, ${indicatorPosition.top}px, 0)`,
         width: indicatorPosition.width,
         height: indicatorPosition.height,
       };
@@ -525,6 +527,10 @@ export interface TabsTriggerProps extends Omit<
    * @typeDoc TabsTriggerStyleSlots
    */
   styles?: TabsTriggerStylesProp;
+  /** Forces the visual hover state. Set by Menu.Trigger to keep the tab highlighted while its menu is open. This is an advanced visual-state escape hatch.
+   * @category Advanced
+   */
+  "data-hovered"?: "true" | "false";
 }
 
 const resolveTabsTriggerBaseStyles = createStylesResolver([
@@ -559,6 +565,7 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
       styles: stylesProp,
       children,
       type = "button",
+      "data-hovered": forcedHovered,
       ...rest
     },
     ref,
@@ -684,7 +691,11 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         data-slot="trigger"
         data-selected={isSelected ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
-        data-hovered={isHovered ? "true" : "false"}
+        data-hovered={
+          !disabled && (forcedHovered === "true" || (forcedHovered !== "false" && isHovered))
+            ? "true"
+            : "false"
+        }
         data-pressed={isPressed ? "true" : "false"}
         data-focused={isFocused ? "true" : "false"}
         data-focus-visible={showFocusVisible ? "true" : "false"}

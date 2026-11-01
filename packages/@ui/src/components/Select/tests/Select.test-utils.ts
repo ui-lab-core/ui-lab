@@ -128,17 +128,10 @@ export async function openSelect(trigger: HTMLElement): Promise<void> {
   await clickElement(trigger);
   // Wait for content to be in DOM and visible
   await waitForOpen(() => {
-    const contents = document.querySelectorAll('[role="listbox"], [role="list"]');
-    if (contents.length === 0) throw new Error("Dropdown content not found in DOM");
-    // Find the first visible content
-    for (const content of contents) {
-      const isHidden =
-        content.getAttribute("aria-hidden") === "true" ||
-        (content as HTMLElement).style.visibility === "hidden" ||
-        (content as HTMLElement).style.display === "none";
-      if (!isHidden) return content as HTMLElement;
-    }
-    throw new Error("No visible dropdown content found");
+    const id = trigger.getAttribute("aria-controls");
+    const content = id && document.getElementById(id);
+    if (!content) throw new Error("Dropdown content not found in DOM");
+    return content;
   });
 }
 

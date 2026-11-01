@@ -122,7 +122,7 @@ describe("Select.integration", () => {
             <Searchable.Content>
               <Select.List>
                 {items.map((item) => (
-                  <Select.Item key={item.key} label={item.key} textValue={item.label}>
+                  <Select.Item key={item.key} value={item.key} textValue={item.label}>
                     {item.label}
                   </Select.Item>
                 ))}

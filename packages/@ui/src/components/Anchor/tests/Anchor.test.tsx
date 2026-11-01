@@ -23,12 +23,12 @@ describe("Anchor", () => {
     expect(root).toHaveAttribute("data-slot", "root");
   });
 
-  it("defaults target to _blank and adds a safe rel", () => {
+  it("defaults to same-tab navigation", () => {
     render(<Anchor href="https://example.com">Example</Anchor>);
 
     const link = screen.getByRole("link", { name: "Example" });
-    expect(link).toHaveAttribute("target", "_blank");
-    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(link).toHaveAttribute("target", "_self");
+    expect(link).not.toHaveAttribute("rel");
   });
 
   it("keeps a consumer-supplied rel", () => {

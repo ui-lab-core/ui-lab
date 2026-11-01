@@ -47,7 +47,7 @@ describe("Select.openClose", () => {
 
       const option = getSelectItems()[1];
       fireEvent.mouseEnter(option);
-      fireEvent.mouseUp(option, { button: 0 });
+      fireEvent.mouseUp(option, { button: 0, clientY: 20 });
 
       expect(onSelectionChange).toHaveBeenCalledWith(items[1].key);
       expect(trigger).toHaveAttribute("aria-expanded", "false");

@@ -39,14 +39,11 @@ describe("Select.edgeCases", () => {
 
       const container = renderSelectWithItems(items, { onSelectionChange });
 
-      // Rapidly select different items
+      await openSelect(getSelectTrigger(container));
+      // Select different items without swallowing interaction failures.
       for (let i = 0; i < Math.min(3, items.length); i++) {
-        try {
-          await selectItem(container, items[i].label);
-          await openSelect(getSelectTrigger(container));
-        } catch (e) {
-          // Item might not be available
-        }
+        await selectItem(container, items[i].label);
+        if (i < Math.min(3, items.length) - 1) await openSelect(getSelectTrigger(container));
       }
 
       expect(onSelectionChange).toHaveBeenCalled();

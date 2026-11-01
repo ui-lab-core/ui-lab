@@ -66,46 +66,48 @@
 /*
  * Font size is a single knob per role. Set --header-scale / --body-scale to
  * shift a whole role; every --text-<size>-<role> below is derived from it as
- * 2^((scale - 0.75) * 2), clamped to a legible minimum. To pin one size,
+ * 2^((scale - 1) * 2), clamped to a legible minimum. To pin one size,
  * override that token directly, e.g. `--text-md-body: 1.2rem;`.
+ *
+ * The scales are app-owned and deliberately never declared here: this sheet
+ * can load again after the app's own CSS (component JS imports it), and a
+ * declaration here would silently reset the app's value. Unset, they fall
+ * back to 1 (multiplier 1) at the point of use.
  */
 :root {
-  --header-scale: 0.75;
-  --body-scale: 0.75;
-
   /* pow() is CSS Values 4. Where it is unsupported the declaration is invalid
      at computed-value time, which would poison every token derived from it, so
      the unscaled identity is declared first and pow() upgrades it. */
   --header-size-multiplier: 1;
   --body-size-multiplier: 1;
 
-  --text-xs-header: max(0.75rem * var(--header-size-multiplier), 0.75rem);
-  --text-sm-header: max(0.8225rem * var(--header-size-multiplier), 0.75rem);
-  --text-md-header: max(0.9375rem * var(--header-size-multiplier), 0.75rem);
-  --text-base-header: max(0.9375rem * var(--header-size-multiplier), 0.75rem);
-  --text-lg-header: max(1.125rem * var(--header-size-multiplier), 0.75rem);
-  --text-xl-header: max(1.25rem * var(--header-size-multiplier), 0.75rem);
-  --text-2xl-header: max(1.5rem * var(--header-size-multiplier), 0.75rem);
-  --text-3xl-header: max(1.75rem * var(--header-size-multiplier), 0.75rem);
-  --text-4xl-header: max(2.25rem * var(--header-size-multiplier), 0.75rem);
-  --text-5xl-header: max(2.75rem * var(--header-size-multiplier), 0.75rem);
+  --text-xs-header: max(0.7818rem * var(--header-size-multiplier), 0.75rem);
+  --text-sm-header: max(0.8574rem * var(--header-size-multiplier), 0.75rem);
+  --text-md-header: max(0.9773rem * var(--header-size-multiplier), 0.75rem);
+  --text-base-header: max(0.9773rem * var(--header-size-multiplier), 0.75rem);
+  --text-lg-header: max(1.1728rem * var(--header-size-multiplier), 0.75rem);
+  --text-xl-header: max(1.3031rem * var(--header-size-multiplier), 0.75rem);
+  --text-2xl-header: max(1.5637rem * var(--header-size-multiplier), 0.75rem);
+  --text-3xl-header: max(1.8243rem * var(--header-size-multiplier), 0.75rem);
+  --text-4xl-header: max(2.3455rem * var(--header-size-multiplier), 0.75rem);
+  --text-5xl-header: max(2.8668rem * var(--header-size-multiplier), 0.75rem);
 
-  --text-xs-body: max(0.8125rem * var(--body-size-multiplier), 0.84375rem);
-  --text-sm-body: max(0.85rem * var(--body-size-multiplier), 0.84375rem);
-  --text-md-body: max(0.9rem * var(--body-size-multiplier), 0.84375rem);
-  --text-base-body: max(0.9rem * var(--body-size-multiplier), 0.84375rem);
-  --text-lg-body: max(1.125rem * var(--body-size-multiplier), 0.84375rem);
-  --text-xl-body: max(1.25rem * var(--body-size-multiplier), 0.84375rem);
-  --text-2xl-body: max(1.5rem * var(--body-size-multiplier), 0.84375rem);
-  --text-3xl-body: max(1.75rem * var(--body-size-multiplier), 0.84375rem);
-  --text-4xl-body: max(2.25rem * var(--body-size-multiplier), 0.84375rem);
-  --text-5xl-body: max(2.75rem * var(--body-size-multiplier), 0.84375rem);
+  --text-xs-body: max(0.847rem * var(--body-size-multiplier), 0.84375rem);
+  --text-sm-body: max(0.8861rem * var(--body-size-multiplier), 0.84375rem);
+  --text-md-body: max(0.9382rem * var(--body-size-multiplier), 0.84375rem);
+  --text-base-body: max(0.9382rem * var(--body-size-multiplier), 0.84375rem);
+  --text-lg-body: max(1.1728rem * var(--body-size-multiplier), 0.84375rem);
+  --text-xl-body: max(1.3031rem * var(--body-size-multiplier), 0.84375rem);
+  --text-2xl-body: max(1.5637rem * var(--body-size-multiplier), 0.84375rem);
+  --text-3xl-body: max(1.8243rem * var(--body-size-multiplier), 0.84375rem);
+  --text-4xl-body: max(2.3455rem * var(--body-size-multiplier), 0.84375rem);
+  --text-5xl-body: max(2.8668rem * var(--body-size-multiplier), 0.84375rem);
 }
 
 @supports (width: calc(pow(2, 2) * 1px)) {
   :root {
-    --header-size-multiplier: pow(2, (var(--header-scale) - 0.75) * 2);
-    --body-size-multiplier: pow(2, (var(--body-scale) - 0.75) * 2);
+    --header-size-multiplier: pow(2, (var(--header-scale, 1) - 1) * 2);
+    --body-size-multiplier: pow(2, (var(--body-scale, 1) - 1) * 2);
   }
 }
 

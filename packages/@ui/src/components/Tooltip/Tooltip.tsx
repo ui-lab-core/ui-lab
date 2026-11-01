@@ -96,12 +96,24 @@ function resolveTooltipStyles(styles: TooltipStylesProp | undefined) {
 
 export interface TooltipProps {
   state?: TooltipState;
+  /**
+   * The trigger. A single element child is wrapped in a `<span>` with `display: contents`,
+   * so the child itself is the box the tooltip anchors to and listens on for hover and
+   * focus; size or place the child for layouts such as a full-width grid cell. Text, a
+   * fragment or several children are wrapped in an `inline-block` `<span>`, which becomes
+   * the anchor. Keyboard users need a focusable trigger.
+   */
   children: React.ReactNode;
   /** Content to display inside the tooltip */
   content: React.ReactNode;
   /** Preferred side of the trigger where the tooltip appears */
   position?: TooltipPosition;
-  /** Additional CSS class for the trigger wrapper */
+  /**
+   * Class for the trigger wrapper `<span>`, applied with `styles.trigger`. Around an
+   * element child the wrapper is `display: contents` and generates no box, so sizing,
+   * padding and margins here have no effect unless the class also sets `display`;
+   * style the child instead. Around text, a fragment or several children the wrapper is the `inline-block` box.
+   */
   className?: string;
   /** Milliseconds before the tooltip appears after hover */
   delay?: number;
@@ -274,18 +286,20 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       }
     }, [shouldRender, state.isOpen, isPositioned, isInstant]);
 
-    const mergedTriggerRef = useMergeRefs(triggerRef, refs.setReference);
-
     const mergedFloatingRef = useMergeRefs(tooltipRef, refs.setFloating, _ref);
+
+    const isElementChild = React.isValidElement(children) && children.type !== React.Fragment;
 
     useLayoutEffect(() => {
       const wrapper = triggerWrapperRef.current;
       const reference =
-        wrapper?.firstElementChild instanceof HTMLElement ? wrapper.firstElementChild : wrapper;
+        isElementChild && wrapper?.firstElementChild instanceof HTMLElement
+          ? wrapper.firstElementChild
+          : wrapper;
 
       (triggerRef as React.MutableRefObject<HTMLElement | null>).current = reference;
       refs.setReference(reference);
-    }, [children, refs]);
+    }, [children, isElementChild, refs]);
 
     useEffect(() => {
       const trigger = triggerRef.current;
@@ -337,10 +351,8 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 
     const trigger = triggerRef.current;
     const isTriggerVisible = !!(trigger && (trigger.offsetWidth > 0 || trigger.offsetHeight > 0));
-    const child = React.Children.only(children);
-
     const triggerElement =
-      React.isValidElement(child) && child.type !== React.Fragment ? (
+      isElementChild ? (
         <span
           ref={triggerWrapperRef}
           className={cn(css.trigger, className, resolved.trigger)}
@@ -349,11 +361,11 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
           data-focused={isFocused ? "true" : "false"}
           data-focus-visible={isFocusVisible ? "true" : "false"}
         >
-          {child}
+          {children}
         </span>
       ) : (
         <span
-          ref={mergedTriggerRef}
+          ref={triggerWrapperRef}
           className={cn(css.trigger, className, resolved.trigger)}
           style={{ display: "inline-block" }}
           data-disabled={disabled ? "true" : undefined}

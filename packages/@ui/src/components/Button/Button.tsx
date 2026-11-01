@@ -401,8 +401,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const resolvedColor = resolveButtonColor(color);
     const resolvedIcon = resolveButtonIcon(icon);
     const isIconOnly = isIconOnlyContent(resolvedIcon, children);
-    const actualSize = size ?? (isIconOnly ? "icon" : "md");
-    const isIconButton = isIconOnly || size === "icon";
+    const actualSize = size ?? (isIconOnly && !hasHint(hint) ? "icon" : "md");
+    const isIconButton = (isIconOnly && !hasHint(hint)) || size === "icon";
 
     const iconSlotClassName = isIconOnly ? "icon" : undefined;
     // An icon passed through `children` (rather than the `icon` prop) still

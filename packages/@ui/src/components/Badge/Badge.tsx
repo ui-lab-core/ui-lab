@@ -40,6 +40,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   icon?: React.ReactNode | BadgeIconSlots;
   /** Whether to show a dismiss button */
   dismissible?: boolean;
+  /** Accessible name for this badge's dismiss control. */
+  dismissLabel?: string;
   /** Called when the dismiss button is clicked */
   onDismiss?: () => void;
   /** Whether to render with a fully rounded pill shape */
@@ -51,17 +53,18 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 interface DismissButtonProps {
+  label: string;
   onDismiss?: () => void;
   variant: string;
   className?: Style;
 }
 
-function DismissButton({ onDismiss, variant, className }: DismissButtonProps) {
+function DismissButton({ onDismiss, variant, className, label }: DismissButtonProps) {
   const buttonRef = React.useRef<HTMLDivElement>(null);
 
   const { buttonProps, isPressed } = useButton(
     {
-      "aria-label": "Dismiss",
+      "aria-label": label,
       onPress: onDismiss,
     },
     buttonRef,
@@ -143,6 +146,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       variant = "default",
       icon,
       dismissible = false,
+      dismissLabel = "Dismiss",
       onDismiss,
       pill = false,
       count,
@@ -219,7 +223,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
           )}
         </span>
         {dismissible && (
-          <DismissButton onDismiss={onDismiss} variant={variant} className={resolved.dismiss} />
+          <DismissButton label={dismissLabel} onDismiss={onDismiss} variant={variant} className={resolved.dismiss} />
         )}
       </span>
     );

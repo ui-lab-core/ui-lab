@@ -101,6 +101,7 @@ const MaskRoot = React.forwardRef<HTMLDivElement, MaskProps>(
             className?: string;
             style?: React.CSSProperties;
             ref?: React.Ref<HTMLDivElement>;
+            "data-mask-cutout-except"?: string;
           }>)
         : null;
     const childRef = mergeRefs(ref, childTarget?.props.ref);

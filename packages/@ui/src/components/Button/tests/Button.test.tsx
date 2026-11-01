@@ -179,8 +179,8 @@ describe("Button - Component Specific", () => {
       </Button>,
     );
 
-    expect(screen.getByRole("button", { name: "Brush ⌘B" })).toHaveClass("md");
-    expect(screen.getByRole("button", { name: "Brush ⌘B" })).not.toHaveClass("icon", css.icon);
+    expect(screen.getByRole("button", { name: /Brush\s*⌘B/ })).toHaveClass("md");
+    expect(screen.getByRole("button", { name: /Brush\s*⌘B/ })).not.toHaveClass("icon", css.icon);
   });
 
   it("does not infer icon-only sizing for a skeleton label", () => {
@@ -197,18 +197,17 @@ describe("Button - Component Specific", () => {
   it("renders a hint as a secondary Badge", () => {
     render(<Button hint="⌘↵">Render</Button>);
 
-    const hint = screen.getByText("⌘↵");
+    const hint = screen.getByText("⌘↵").closest(".badge")!;
     expect(hint).toHaveClass("badge", "secondary");
   });
 
-  it("renders an element-list hint with + dividers between segments", () => {
+  it("renders each hint segment as a separate badge", () => {
     render(<Button hint={[<svg key="cmd" data-testid="hint-icon" />, "K"]}>Render</Button>);
 
-    const hint = screen.getByText("K");
-    expect(hint).toHaveClass("badge", "secondary");
+    const hint = screen.getByText("K").closest(".hint")!;
+    expect(hint.querySelectorAll(".badge.secondary")).toHaveLength(2);
     expect(screen.getByTestId("hint-icon")).toBeInTheDocument();
-    // one divider between the two segments, plus the user's icon
-    expect(hint.querySelectorAll("svg")).toHaveLength(2);
+    expect(hint.querySelectorAll("svg")).toHaveLength(1);
   });
 
   it("does not render a hint badge for an empty array", () => {
@@ -224,7 +223,7 @@ describe("Button - Component Specific", () => {
       </Button>,
     );
 
-    expect(screen.getByText("⌘↵")).toHaveClass("custom-hint");
+    expect(screen.getByText("⌘↵").closest(".hint")).toHaveClass("custom-hint");
   });
 
   it("renders an anchor target when href is provided", () => {

@@ -94,7 +94,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
         data-focused={isHighlighted ? "true" : "false"}
         data-disabled={disabled ? "true" : undefined}
         data-inset={inset ? "true" : undefined}
-        data-selected={isSelected ? "true" : undefined}
+        selected={isSelected}
         onMouseEnter={(event) => {
           onMouseEnter?.(event);
           if (!disabled) {
@@ -107,21 +107,18 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
           if (!event.defaultPrevented) handleSelectRef.current?.();
         }}
       >
-        {isSelectable && (
+        {children}
+        {/* Single selection is shown by the row's data-selected background; only multiple
+            selection needs a check. Trailing, like Select, so rows don't reserve a gutter. */}
+        {selectionMode === "multiple" && (
           <span
-            className={cn("indicator", css.indicator, resolved.indicator)}
+            className={cn("indicator", css.indicator, css["indicator-trailing"], resolved.indicator)}
             data-slot="indicator"
             aria-hidden="true"
           >
-            {isSelected &&
-              (selectionMode === "single" ? (
-                <Circle className={css["indicator-dot"]} />
-              ) : (
-                <Check className={css["indicator-check"]} />
-              ))}
+            {isSelected && <Check className={css["indicator-check"]} />}
           </span>
         )}
-        {children}
       </List.Item>
     );
   },

@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { useDialog } from "react-aria";
+import { useDialog, useOverlay, mergeProps } from "react-aria";
+import { FocusScope } from "@react-aria/focus";
 import { cn, type Style } from "@/lib/utils";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
@@ -14,37 +15,6 @@ import { usePresence } from "@/hooks/usePresence";
 import css from "./Modal.module.css";
 
 const transitionDuration = 180;
-
-const useModalKeyboard = (
-  element: HTMLDivElement | null,
-  isOpen: boolean,
-  isDismissable: boolean,
-  isKeyboardDismissDisabled: boolean,
-  onClose: () => void,
-) => {
-  const onCloseRef = React.useRef(onClose);
-  onCloseRef.current = onClose;
-
-  React.useEffect(() => {
-    if (!isOpen || !element) return;
-
-    if (!element.contains(element.ownerDocument.activeElement)) {
-      element.focus();
-    }
-
-    const ownerDocument = element.ownerDocument;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isDismissable && !isKeyboardDismissDisabled) {
-        e.preventDefault();
-        onCloseRef.current();
-      }
-    };
-
-    ownerDocument.addEventListener("keydown", handleKeyDown, { capture: true });
-    return () => ownerDocument.removeEventListener("keydown", handleKeyDown, { capture: true });
-  }, [element, isOpen, isDismissable, isKeyboardDismissDisabled]);
-};
 
 interface ModalStyleSlots {
   root?: Style;
@@ -94,7 +64,7 @@ function resolveModalStyles(styles: ModalStylesProp | undefined) {
 
 export interface ModalProps {
   state?: ModalState;
-  /** Initial open state. For controlled usage, pass `state={{ open }}`. */
+  /** Controlled open state. state.open takes precedence when supplied. */
   open?: boolean;
   /** Controlled state. */
   /** @deprecated Use `open`. */
@@ -105,6 +75,8 @@ export interface ModalProps {
   title?: React.ReactNode;
   /** Accessible name used when the modal has no visible title. */
   "aria-label"?: string;
+  /** References a visible title, including a custom title outside Modal.Header. */
+  "aria-labelledby"?: string;
   /** Modal body content */
   children: React.ReactNode;
   /** Optional footer content rendered below the body */
@@ -158,6 +130,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
       onOpenChange,
       title,
       "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
       children,
       footer,
       close = true,
@@ -208,11 +181,17 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
     // Use forwardRef callback to expose modalRef
     React.useImperativeHandle(ref, () => modalRef.current as HTMLDivElement);
 
-    // Handle keyboard events and auto-focus
-    useModalKeyboard(panelElement, isOpen, isDismissable, isKeyboardDismissDisabled, closeModal);
+    // Share overlay stacking/dismissal with nested React Aria overlays. Focus
+    // containment and restoration belong to FocusScope, not document listeners.
+    const { overlayProps } = useOverlay({
+      isOpen,
+      isDismissable: false, // The explicit backdrop owns pointer dismissal.
+      isKeyboardDismissDisabled: !isDismissable || isKeyboardDismissDisabled,
+      onClose: closeModal,
+    }, modalRef);
 
     // useDialog hook provides accessibility attributes and title handling
-    const { dialogProps, titleProps } = useDialog({ "aria-label": ariaLabel }, modalRef);
+    const { dialogProps, titleProps } = useDialog({ "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy }, modalRef);
 
     const handleClose = closeModal;
 
@@ -322,8 +301,9 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
         />
 
         {/* Modal content */}
+        <FocusScope contain={isOpen} restoreFocus autoFocus>
         <div
-          {...asElementProps<"div">(dialogProps)}
+          {...asElementProps<"div">(mergeProps(dialogProps, overlayProps))}
           aria-modal="true"
           ref={setPanelRef}
           className={cn("panel", css.panel, className, resolved.root)}
@@ -349,6 +329,7 @@ const ModalBase = React.forwardRef<HTMLDivElement, ModalProps>(
             <div className={cn("footer", css.footer, resolved.footer)}>{footer}</div>
           )}
         </div>
+        </FocusScope>
       </div>,
       document.body,
     );

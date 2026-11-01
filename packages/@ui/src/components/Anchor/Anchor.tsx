@@ -195,7 +195,7 @@ const AnchorRoot = React.forwardRef<HTMLAnchorElement | HTMLSpanElement, AnchorP
       className,
       children,
       href,
-      target = "_blank",
+      target = "_self",
       rel,
       variant = "solid",
       styles,

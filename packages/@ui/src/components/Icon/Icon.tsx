@@ -52,7 +52,7 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
     {
       id,
       variant,
-      size = 20,
+      size = "var(--icon-size, 20px)",
       label,
       "asset-url": assetUrl,
       className,
@@ -73,10 +73,20 @@ export const Icon = React.forwardRef<HTMLSpanElement, IconProps>(
     }
     const normalizedId = normalizeIconId(id);
     const icon = { id: normalizedId, variant: resolvedVariant };
-    const source = context.resolveSource
+    const source = assetUrl !== undefined
+      ? resolveIconSource(icon, assetUrl)
+      : context.resolveSource
       ? context.resolveSource(icon)
       : resolveIconSource(icon, assetUrl ?? context.assetBaseUrl);
     const accessibleLabel = label ?? ariaLabel;
+
+    React.useEffect(() => {
+      if (process.env.NODE_ENV === "production" || typeof Image === "undefined") return;
+      const probe = new Image();
+      probe.onerror = () => console.warn(`[UI Lab Icon] Failed to load ${source}`);
+      probe.src = source;
+      return () => { probe.onerror = null; };
+    }, [source]);
 
     return (
       <span

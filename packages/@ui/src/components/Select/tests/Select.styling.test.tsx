@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Select } from "..";
 import { openSelect } from "./Select.test-utils";
+import { readFileSync } from "node:fs";
 
 function getRoot() {
   return document.querySelector<HTMLElement>('.select[data-slot="root"]')!;
@@ -155,5 +156,14 @@ describe("Select.styling", () => {
     const options = document.querySelectorAll('[role="option"]');
     expect(options[0]).toHaveAttribute("data-highlighted", "true");
     expect(options[1]).toHaveAttribute("data-highlighted", "false");
+  });
+
+  it("gives every icon-bearing slot an --icon-size so Icon does not fall back to 20px", () => {
+    // Source guard only; computed sizing is verified in a real browser.
+    const source = readFileSync(`${process.cwd()}/src/components/Select/Select.module.css`, "utf8");
+    for (const slot of ["icon", "value-icon", "item-icon", "icon-prefix"]) {
+      const block = source.match(new RegExp(`\\.${slot} \\{([^}]*)\\}`))?.[1] ?? "";
+      expect(block, slot).toMatch(/--icon-size:/);
+    }
   });
 });

@@ -56,8 +56,14 @@
     z-index: 0;
     pointer-events: none;
     will-change: transform;
-    transition: all var(--hover-duration, var(--hover-leave-duration, 200ms))
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition-property: transform, width, height;
+    transition-duration: var(--tabs-indicator-duration, 280ms);
+    transition-timing-function: var(--tabs-indicator-easing, cubic-bezier(0.25, 1, 0.5, 1));
+
+    @media (prefers-reduced-motion: reduce) {
+      transition-duration: var(--tabs-indicator-duration, 120ms);
+      transition-timing-function: ease-out;
+    }
 
     &[data-animate="false"] {
       transition: none;
@@ -126,10 +132,9 @@
       );
     }
 
-    /* The indicator paints the selected surface, so the trigger stays transparent
-       unless a theme opts into a selected background of its own. */
+    /* The indicator paints the selected surface, so the trigger stays transparent. */
     &[data-selected="true"] {
-      background-color: slot(trigger, background-selected, transparent);
+      background-color: transparent;
       color: slot(
         trigger,
         foreground-selected,

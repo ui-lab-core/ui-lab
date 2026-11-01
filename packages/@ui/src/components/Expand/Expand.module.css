@@ -76,6 +76,7 @@
   }
 
   .icon {
+    --icon-size: 1em;
     @apply flex shrink-0 items-center justify-center;
 
     padding-block: slot(trigger, padding-block, 0.5rem);

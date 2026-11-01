@@ -118,6 +118,8 @@
 
     /* ---- Icons ---- */
 
+    --icon-size: slot(icon, size, 1em);
+
     & > svg,
     & > span > svg {
       flex-shrink: 0;

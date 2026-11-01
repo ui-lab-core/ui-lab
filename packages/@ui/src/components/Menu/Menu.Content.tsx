@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { mergeProps } from "react-aria";
+import { FocusScope } from "@react-aria/focus";
+import { mergeProps, useOverlay } from "react-aria";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
@@ -278,7 +279,24 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       itemSelector: '[data-focused="true"], [data-highlighted="true"]',
     });
 
-    const mergedRef = useMergeRefs<HTMLDivElement>(setFloatingElement, ref);
+    const overlayRef = React.useRef<HTMLDivElement | null>(null);
+    const mergedRef = useMergeRefs<HTMLDivElement>(setFloatingElement, overlayRef, ref);
+
+    // Join React Aria's overlay stack so an enclosing overlay (Modal, Popover)
+    // sees this menu as topmost and leaves Escape to it. Menu owns Escape; outside
+    // presses dismiss here rather than through a full-screen backdrop, so the trigger
+    // keeps its own hover, cursor, and pointer events while the menu is open.
+    useOverlay(
+      {
+        isOpen,
+        onClose: close,
+        isDismissable: true,
+        isKeyboardDismissDisabled: true,
+        shouldCloseOnInteractOutside: (element) =>
+          !triggerRef.current?.contains(element) && !element.closest(".menu[data-slot=\"overlay\"]"),
+      },
+      overlayRef,
+    );
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent) => {
@@ -330,12 +348,11 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
 
     if (!mounted || !portalContainer) return null;
 
+    // Mounting the scope only while open lets restoreFocus return focus to the
+    // element that opened the menu, so closing inside a Modal stays contained.
     return createPortal(
-      <>
-        {showContent && (
-          <div style={{ position: "fixed", inset: 0, zIndex: 49999 }} onClick={close} />
-        )}
-        {isOpen && (
+      isOpen ? (
+      <FocusScope restoreFocus>
           <div
             ref={refs.setFloating}
             className={cn("menu", css.overlay, resolved.overlay)}
@@ -372,8 +389,8 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
               </div>
             </div>
           </div>
-        )}
-      </>,
+      </FocusScope>
+      ) : null,
       portalContainer,
     );
   },

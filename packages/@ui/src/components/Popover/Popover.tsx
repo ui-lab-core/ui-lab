@@ -2,6 +2,7 @@
 
 import React from "react";
 import { createPortal } from "react-dom";
+import { FocusScope } from "@react-aria/focus";
 import { useOverlayTrigger, useOverlay, useDialog, mergeProps } from "react-aria";
 import { useOverlayTriggerState } from "react-stately";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
@@ -249,6 +250,7 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
         {triggerElement}
         {(state.isOpen || present) &&
           createPortal(
+            <FocusScope>
             <div
               ref={mergedContentRef}
               {...asElementProps<"div">(
@@ -300,7 +302,8 @@ const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(
                   />
                 )}
               </div>
-            </div>,
+            </div>
+            </FocusScope>,
             document.body,
           )}
       </>

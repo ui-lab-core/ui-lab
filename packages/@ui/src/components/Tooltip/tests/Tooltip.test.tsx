@@ -52,6 +52,32 @@ describe("Tooltip", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("wraps an element child in the trigger span and text children in an inline-block span", () => {
+    const onOpenChange = vi.fn();
+    const { container } = render(
+      <>
+        <Tooltip content="Element" className="element-wrapper">
+          <button type="button">Element</button>
+        </Tooltip>
+        <Tooltip content="Text" className="text-wrapper" delay={0} onOpenChange={onOpenChange}>
+          Plain text
+        </Tooltip>
+      </>,
+    );
+
+    const elementWrapper = container.querySelector(".element-wrapper")!;
+    expect(elementWrapper.tagName).toBe("SPAN");
+    expect(elementWrapper.firstElementChild?.tagName).toBe("BUTTON");
+    expect((elementWrapper as HTMLElement).style.display).toBe("");
+
+    const textWrapper = container.querySelector(".text-wrapper") as HTMLElement;
+    expect(textWrapper.tagName).toBe("SPAN");
+    expect(textWrapper.style.display).toBe("inline-block");
+    expect(textWrapper).toHaveTextContent("Plain text");
+    fireEvent.mouseEnter(textWrapper);
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+  });
+
   it("still opens for custom component children that do not forward arbitrary props", () => {
     const onOpenChange = vi.fn();
 

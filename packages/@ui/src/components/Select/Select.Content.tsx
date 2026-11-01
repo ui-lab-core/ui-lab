@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { FocusScope } from "@react-aria/focus";
+import { useOverlay } from "react-aria";
 import { useFloating } from "../../hooks/useFloat/react/useFloating";
 import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
 import { flip } from "../../hooks/useFloat/core/middleware/flip";
@@ -655,6 +657,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       restoreFocus();
     }, [restoreFocus, setIsOpen, setSearchValue]);
 
+    // Join React Aria's overlay stack so an enclosing overlay (Modal, Popover)
+    // sees this listbox as topmost and leaves Escape to it. Select still owns its
+    // Escape and outside-press handling, so only stack membership is used here.
+    useOverlay({ isOpen, onClose: closeContent, isKeyboardDismissDisabled: true }, contentRef);
+
     const handleTabNavigation = React.useCallback(
       (e: React.KeyboardEvent) => {
         e.preventDefault();
@@ -803,7 +810,6 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       : undefined;
     const hasResults = filteredItems.length > 0;
     const shouldShowEmptyState = (hasContentSearch || !!completion) && !hasResults;
-    const shouldHideEmptySearchTriggerContent = triggerType === "input" && !hasContentSearch;
 
     const listContent = (
       <div
@@ -907,7 +913,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       : [searchContent, emptyStateContent, bodyContent];
 
     return createPortal(
-      <>
+      <FocusScope>
         <div
           ref={mergedFloatingRef}
           className={cn("select", css["content-root"], resolved.overlay.className)}
@@ -924,7 +930,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
               : undefined),
             zIndex: 50000,
             visibility: showContent ? "visible" : "hidden",
-            display: isOpen && !shouldHideEmptySearchTriggerContent ? "block" : "none",
+            display: isOpen ? "block" : "none",
           }}
         >
           <div
@@ -953,7 +959,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
             {panelContent}
           </div>
         </div>
-      </>,
+      </FocusScope>,
       document.body,
     );
   },

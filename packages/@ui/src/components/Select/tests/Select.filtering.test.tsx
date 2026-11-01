@@ -148,7 +148,7 @@ describe("Select.filtering", () => {
       expect(getAllElementsByRole("option")).toHaveLength(0);
     });
 
-    it("hides search trigger content when no entries are found", async () => {
+    it("announces empty results for searchable triggers", async () => {
       const items = createMockSelectItems(3);
       renderSelectWithChildren([
         React.createElement(Searchable.Input, { key: "trigger", placeholder: "Search items..." }),
@@ -174,9 +174,10 @@ describe("Select.filtering", () => {
 
       const content = document.querySelector('[role="listbox"]');
       await waitFor(() => {
-        expect(content).not.toBeVisible();
+        expect(content).toBeVisible();
       });
-      expect(document.querySelector('[role="status"]')).not.toBeInTheDocument();
+      expect(document.querySelector('[role="status"]')).toHaveTextContent("No results found.");
+      expect(document.querySelector('[role="status"]')).toHaveAttribute("aria-live", "polite");
     });
   });
 });

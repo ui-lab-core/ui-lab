@@ -82,6 +82,10 @@
       color: slot(indicator, foreground, var(--indicator-foreground, var(--foreground)));
     }
 
+    .indicator-trailing {
+      margin-inline-start: auto;
+    }
+
     .indicator-check {
       block-size: 0.75rem;
       inline-size: 0.75rem;

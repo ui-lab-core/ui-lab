@@ -152,7 +152,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
 
     const handleGroupKeyDown = React.useCallback(
       (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.defaultPrevented || indicatorProps["data-visible"] !== "true") {
+        if (e.defaultPrevented) {
           return;
         }
 
@@ -227,7 +227,7 @@ const GroupRoot = React.forwardRef<HTMLDivElement, GroupProps>(
           }
         }
       },
-      [orientation, indicatorProps["data-visible"]],
+      [orientation],
     );
 
     const contextValue: GroupContextValue = {

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { FocusScope } from "@react-aria/focus";
 
 import { useFloating } from "@/hooks/useFloat/react/useFloating";
 import { useFloatAnimation } from "@/hooks/useFloat/react/useFloatAnimation";
@@ -434,7 +435,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
     const resolved = resolveMenuSubContentStyles(stylesProp);
 
     return createPortal(
-      <>
+      <FocusScope>
         {(showContent || isExiting) && (
           <div
             ref={refs.setFloating}
@@ -473,7 +474,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
             </div>
           </div>
         )}
-      </>,
+      </FocusScope>,
       portalContainer,
     );
   },

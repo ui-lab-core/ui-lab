@@ -103,6 +103,7 @@ const GroupButton = React.forwardRef<HTMLButtonElement, GroupButtonProps>(
         onMouseDown={handleMouseDown}
         variant={buttonVariant}
         disabled={isDisabled}
+        aria-pressed={restProps["aria-pressed"] ?? (context.groupValue !== undefined && value !== undefined ? !!isActive : undefined)}
         data-focus-surface="true"
         data-selected={isActive ? "true" : "false"}
         className={cn(css.button, className, context.groupStyles.button)}
