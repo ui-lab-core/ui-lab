@@ -18,11 +18,11 @@ test("Color API documents hierarchical anatomy and compound state", async () => 
     "recentColors",
     "input",
   ]);
-  assert.ok(api.customTypes?.ColorCanvasGradientStyleSlots.members?.length === 3);
+  assert.equal(api.customTypes?.ColorCanvasGradientStyleSlots, undefined);
   assert.ok(api.customTypes?.ColorSliderChannelStyleSlots.members?.length === 3);
   assert.equal(api.props.find(({ name }) => name === "styles")?.type, "ColorStylesProp");
   assert.equal(new Set(api.props.map(({ name }) => name)).size, api.props.length);
-  assert.ok(api.stateAttributes?.find(({ name }) => name === "data-slot")?.values?.includes("canvas.gradient.brightness"));
+  assert.ok(api.stateAttributes?.find(({ name }) => name === "data-slot")?.values?.includes("canvas.inner"));
 });
 
 test("Color styles preserve dotted anatomy and authored variable scopes", async () => {
@@ -31,7 +31,7 @@ test("Color styles preserve dotted anatomy and authored variable scopes", async 
 
   for (const slot of [
     "trigger.root",
-    "canvas.gradient.hue",
+    "canvas.inner",
     "slider.opacity.track",
     "recentColors.swatch",
     "input.previewSwatch",

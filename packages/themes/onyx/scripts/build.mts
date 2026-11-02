@@ -5,7 +5,7 @@ import { parseVariant } from "../../../../postcss/variant.mjs";
 import { createPostcssPlugins } from "../postcss.config.mts";
 
 const root = path.resolve(import.meta.dirname, "..");
-const uiContractPath = path.resolve(root, "../../@ui/src/generated-theme-contract.ts");
+const uiContractPath = path.resolve(root, "../../@ui/src/theme/generated/variants.ts");
 const source = await readFile(path.join(root, "styles.css"), "utf8");
 const sourceRoot = postcss.parse(source);
 const variants: Record<string, string[]> = {};

@@ -13,7 +13,7 @@ test("CLI dependency decodes configuration offline", async()=>{
   assert.deepEqual(await decodeInitConfig(await encodeInitConfig(config)),validateInitConfig(config));
 });
 test("CLI ships the exact typography template used by the website",()=>{
-  assert.equal(ONYX_TYPOGRAPHY_CSS,readFileSync(new URL("../../@ui/src/typography.css",import.meta.url),"utf8"));
+  assert.equal(ONYX_TYPOGRAPHY_CSS,readFileSync(new URL("../../@ui/src/styles/typography.css",import.meta.url),"utf8"));
 });
 test("actual CLI option merge honors explicit false, font, mode, framework, paths and theme",()=>{
   const config={...defaultInitConfig(),customFont:true,themeToggle:true};
