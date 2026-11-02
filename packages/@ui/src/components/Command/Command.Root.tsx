@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import type { CompletionController } from "@/hooks/useCompletion";
 import css from "./Command.module.css";

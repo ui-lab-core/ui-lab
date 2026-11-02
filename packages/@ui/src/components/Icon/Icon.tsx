@@ -2,12 +2,12 @@
 
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import css from "./Icon.module.css";
-import { DEFAULT_ICON_ASSET_BASE_URL, IconContext } from "./IconContext";
-import type { IconSource, IconVariant } from "./IconContext";
+import { DEFAULT_ICON_ASSET_BASE_URL, IconContext } from "./icon.context";
+import type { IconSource, IconVariant } from "./icon.context";
 
-export { DEFAULT_ICON_ASSET_BASE_URL } from "./IconContext";
+export { DEFAULT_ICON_ASSET_BASE_URL } from "./icon.context";
 
 const ICON_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 

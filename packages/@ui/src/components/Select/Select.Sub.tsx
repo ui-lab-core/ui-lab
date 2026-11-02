@@ -3,21 +3,21 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { FocusScope } from "@react-aria/focus";
-import { useFloating } from "../../hooks/useFloat/react/useFloating";
-import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
-import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
+import { useFloating } from "../../floating/react/useFloating";
+import { useFloatAnimation } from "../../floating/react/useFloatAnimation";
+import { autoUpdate } from "../../floating/dom/autoUpdate";
 import { useHover } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
 import { ChevronRight } from "lucide-react";
 import { useSelectContext, SelectContext, type SelectContextValue } from "./Select";
 import type { Key } from "@react-types/shared";
 import css from "./Select.module.css";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { useListNavigation, handleListKeyDown } from "./Select.shared";
-import * as positioning from "../../utils/submenu-positioning";
+import { useItemNavigation, handleItemKeyDown } from "./Select.shared";
+import * as positioning from "../../floating/submenu-positioning";
 import type { ItemData } from "./Select.shared";
 import { Scroll } from "../Scroll";
 import { List } from "../List";
@@ -223,7 +223,7 @@ const SelectSub = ({
   const isOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
 
   const rootSelectContext = useSelectContext();
-  const nav = useListNavigation({ isOpen });
+  const nav = useItemNavigation({ isOpen });
   const itemExtrasRef = React.useRef<
     Map<Key, { onSelect?: () => void; isSubmenuTrigger?: boolean }>
   >(new Map());
@@ -615,7 +615,7 @@ const SelectSubContent = React.forwardRef<HTMLDivElement, SelectSubContentProps>
 
         e.stopPropagation();
 
-        handleListKeyDown(e, {
+        handleItemKeyDown(e, {
           navigateNext: submenuContext.navigateToNextItem,
           navigatePrev: submenuContext.navigateToPrevItem,
           confirm: () => {

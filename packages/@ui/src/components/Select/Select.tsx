@@ -12,7 +12,7 @@ import { useControlledState } from "@/hooks/useControlledState";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 
 import css from "./Select.module.css";
 import {
@@ -23,9 +23,9 @@ import {
 } from "./Select.registry";
 import {
   focusAdjacentTabStop,
-  handleListKeyDown,
+  handleItemKeyDown,
   type ItemData,
-  useListNavigation,
+  useItemNavigation,
 } from "./Select.shared";
 
 /**
@@ -421,7 +421,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
     // Navigation
 
-    const nav = useListNavigation({
+    const nav = useItemNavigation({
       isOpen,
       externalItems: propItems.length ? propItems : undefined,
       filter: filter ? (item: any) => filter({ ...item, label: item.textValue } as any) : undefined,
@@ -643,7 +643,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
           markKeyboardNavigation();
         }
 
-        handleListKeyDown(event, {
+        handleItemKeyDown(event, {
           navigateNext: nav.navigateToNextItem,
           navigatePrev: nav.navigateToPrevItem,
           confirm: selectFocusedItem,

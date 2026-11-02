@@ -3,7 +3,7 @@
 import React from "react";
 import { Group } from "../Group";
 import { Select } from "../Select";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import css from "./Color.module.css";
 import { isValidColor } from "./color-utils";
 import { Divider } from "../Divider";

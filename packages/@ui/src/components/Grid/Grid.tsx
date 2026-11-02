@@ -1,10 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { resolveGapStep, type GapSize } from "@/lib/gap";
-import { resolveSizingStyles, type SizingValue } from "@/lib/sizing";
+import {
+  resolveGapStep,
+  resolveSizingStyles,
+  type GapSize,
+  type SizingValue,
+} from "@/lib/layout";
 import css from "./Grid.module.css";
 
 /** Style overrides for the Grid root element. */

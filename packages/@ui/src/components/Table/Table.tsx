@@ -7,7 +7,7 @@ import { mergeProps } from "@react-aria/utils";
 import { Input } from "@/components/Input";
 import { Scroll } from "@/components/Scroll";
 import { useHighlight } from "@/hooks/useHighlight";
-import { type Style, cn } from "@/lib/utils";
+import { type Style, cn } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 
 import css from "./Table.module.css";

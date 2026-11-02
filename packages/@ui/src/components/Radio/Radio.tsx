@@ -8,7 +8,7 @@ import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useRadioGroup, useRadio } from "@react-aria/radio";
 
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { asElementProps, resolveAccessibleLabel } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { type ColorToken, resolveColorToken } from "@/lib/color";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import css from "./Skeleton.module.css";
 
 export type SkeletonDimension = React.CSSProperties["width"];

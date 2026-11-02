@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import type { Key } from "react-aria";
-import { useListNavigation } from "../../utils/list-navigation";
+import { useItemNavigation } from "../../lib/item-navigation";
 import type {
   MenuContextValue,
   MenuSubmenuContextValue,
@@ -71,7 +71,7 @@ const Menu = ({
   );
   const [radioGroups, setRadioGroups] = React.useState<Map<string, Key | null>>(new Map());
 
-  const nav = useListNavigation({ isOpen });
+  const nav = useItemNavigation({ isOpen });
   const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map());
   const mouseMoveDetectedRef = React.useRef(true);
   const clickPositionRef = React.useRef({ x: 0, y: 0 });

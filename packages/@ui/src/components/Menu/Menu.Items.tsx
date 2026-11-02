@@ -9,7 +9,7 @@ import type {
   MenuRadioItemProps,
 } from "./menu.types";
 import css from "./Menu.module.css";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import {
   resolveMenuItemStyles,
   resolveMenuCheckboxItemStyles,

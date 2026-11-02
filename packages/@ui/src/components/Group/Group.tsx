@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import { mergeProps } from "@react-aria/utils";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { GroupContext, type GroupContextValue } from "./Group.Context";
+import { GroupContext, type GroupContextValue } from "./group.context";
 import { GroupButton, GroupExpand, GroupInput, GroupSelect } from "./Group.Controls";
 import { resolveGroupStyles } from "./group.styles";
 import type { GroupOrientation, GroupProps, GroupSpacing } from "./group.types";

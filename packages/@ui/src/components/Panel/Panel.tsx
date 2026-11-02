@@ -10,7 +10,7 @@ import {
   PanelSidebarRegistration,
 } from "./panel.types";
 import { PanelContext, usePanelContext } from "./panel.context";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/cn";
 import { createStylesResolver } from "../../lib/styles";
 import { useMergeRefs } from "../../hooks/useMergeRefs";
 import styles from "./Panel.module.css";

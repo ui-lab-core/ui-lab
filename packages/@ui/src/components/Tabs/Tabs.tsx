@@ -3,7 +3,7 @@
 import * as React from "react";
 import { mergeProps, useFocusRing, usePress } from "react-aria";
 import { useHover, useInteractionModality } from "@react-aria/interactions";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { asElementProps } from "@/lib/react-aria";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";

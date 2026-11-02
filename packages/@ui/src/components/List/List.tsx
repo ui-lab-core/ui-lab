@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { resolveGapStep } from "@/lib/gap";
+import { resolveGapStep } from "@/lib/layout";
 import { Divider as FoldDivider } from "@/components/Divider";
 import css from "./List.module.css";
 import { ListContext, useListContext } from "./list.context";
@@ -15,7 +15,7 @@ import {
   ListDividerProps,
   ListFooterProps,
 } from "./list.types";
-import { scrollItemIntoView } from "@/utils/list-navigation";
+import { scrollItemIntoView } from "@/lib/item-navigation";
 import { resolveListItemStyles, resolveListStyles } from "./list.styles";
 
 function resolveListGap(gap: NonNullable<ListProps["gap"]>) {

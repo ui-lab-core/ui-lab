@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import React, { useLayoutEffect, useRef, useState } from "react";
+import { cn } from "@/lib/cn";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
+import { useDocumentSelectionSuppression } from "@/hooks/useDocumentSelectionSuppression";
 import { hsvToRgb } from "./color-utils";
 import css from "./Color.module.css";
 
@@ -25,9 +26,6 @@ interface ColorCanvasProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   /** Additional CSS class names */
   className?: string;
   innerClassName?: string;
-  gradientHueClassName?: string;
-  gradientSaturationClassName?: string;
-  gradientBrightnessClassName?: string;
   pointerClassName?: string;
 }
 
@@ -43,9 +41,6 @@ export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
       size = "md",
       className,
       innerClassName,
-      gradientHueClassName,
-      gradientSaturationClassName,
-      gradientBrightnessClassName,
       pointerClassName,
       style,
       "aria-label": ariaLabel,
@@ -57,12 +52,18 @@ export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
     const containerRef = useRef<HTMLDivElement>(null);
     const pointerAreaRef = useRef<HTMLDivElement>(null);
     const pointerRef = useRef<HTMLDivElement>(null);
+    const fieldRef = useRef<HTMLCanvasElement>(null);
     const [isDragging, setIsDragging] = useState(false);
 
     const mergedRef = useMergeRefs(ref, containerRef);
+    const { suppressSelection, restoreSelection } = useDocumentSelectionSuppression();
 
     const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-      if (disabled) return;
+      if (disabled || e.button !== 0) return;
+      e.preventDefault();
+      e.currentTarget.focus();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      suppressSelection(e.currentTarget.ownerDocument);
       setIsDragging(true);
       updateColor(e);
     };
@@ -74,6 +75,7 @@ export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
 
     const handlePointerUp = () => {
       setIsDragging(false);
+      restoreSelection();
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -121,9 +123,40 @@ export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
 
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
 
-    const gradientStyle = {
-      backgroundColor: `hsl(${hue}, 100%, 50%)`,
-    };
+    // Paint the field as a single raster so the rounded clip softens its edge once.
+    // Stacked vector layers are clipped separately in some engines and the hue fringes through.
+    useLayoutEffect(() => {
+      const field = fieldRef.current;
+      const context = field?.getContext("2d");
+      if (!field || !context) return;
+
+      const paint = () => {
+        const scale = window.devicePixelRatio || 1;
+        const width = Math.max(1, Math.round(field.clientWidth * scale));
+        const height = Math.max(1, Math.round(field.clientHeight * scale));
+        if (field.width !== width) field.width = width;
+        if (field.height !== height) field.height = height;
+
+        context.fillStyle = `hsl(${hue}, 100%, 50%)`;
+        context.fillRect(0, 0, width, height);
+        const white = context.createLinearGradient(0, 0, width, 0);
+        white.addColorStop(0, "rgba(255, 255, 255, 1)");
+        white.addColorStop(1, "rgba(255, 255, 255, 0)");
+        context.fillStyle = white;
+        context.fillRect(0, 0, width, height);
+        const black = context.createLinearGradient(0, height, 0, 0);
+        black.addColorStop(0, "rgba(0, 0, 0, 1)");
+        black.addColorStop(1, "rgba(0, 0, 0, 0)");
+        context.fillStyle = black;
+        context.fillRect(0, 0, width, height);
+        field.parentElement?.setAttribute("data-painted", "");
+      };
+
+      paint();
+      const observer = new ResizeObserver(paint);
+      observer.observe(field);
+      return () => observer.disconnect();
+    }, [hue]);
 
     const { r, g, b } = hsvToRgb(hue, saturation, brightness);
     const pointerX = Math.max(0, Math.min(100, saturation));
@@ -143,7 +176,8 @@ export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
             onPointerDown: handlePointerDown,
             onPointerMove: handlePointerMove,
             onPointerUp: handlePointerUp,
-            onPointerLeave: handlePointerUp,
+            onPointerCancel: handlePointerUp,
+            onLostPointerCapture: handlePointerUp,
             onKeyDown: handleKeyDown,
           }),
         )}
@@ -165,38 +199,18 @@ export const ColorCanvas = React.forwardRef<HTMLDivElement, ColorCanvasProps>(
           `Saturation: ${saturation.toFixed(0)}%, Brightness: ${brightness.toFixed(0)}%`
         }
       >
-        <div className={cn("canvas-inner", css["canvas-inner"], innerClassName)} data-slot="canvas.inner">
-          <div
-            className={cn(
-              "canvas-gradient-hue",
-              css["canvas-gradient-hue"],
-              gradientHueClassName,
-            )}
-            data-slot="canvas.gradient.hue"
-            style={gradientStyle}
-          />
-          <div
-            className={cn(
-              "canvas-gradient-saturation",
-              css["canvas-gradient-saturation"],
-              gradientSaturationClassName,
-            )}
-            data-slot="canvas.gradient.saturation"
-          />
-          <div
-            className={cn(
-              "canvas-gradient-brightness",
-              css["canvas-gradient-brightness"],
-              gradientBrightnessClassName,
-            )}
-            data-slot="canvas.gradient.brightness"
-          />
+        <div
+          className={cn("canvas-inner", css["canvas-inner"], innerClassName)}
+          data-slot="canvas.inner"
+          style={{ "--canvas-hue": `hsl(${hue}, 100%, 50%)` } as React.CSSProperties}
+        >
+          <canvas ref={fieldRef} className={css["canvas-field"]} aria-hidden="true" />
         </div>
         <div
           ref={pointerAreaRef}
           style={{
             position: "absolute",
-            inset: "calc(var(--canvas-border-width) + var(--canvas-pointer-padding, 2px))",
+            inset: "var(--canvas-pointer-padding, 2px)",
             pointerEvents: "none",
           }}
         >

@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Button, type ButtonProps } from "../Button";
 import { Expand } from "../Expand";
 import { Input } from "../Input";
 import { Select } from "../Select";
-import { GroupContext } from "./Group.Context";
+import { GroupContext } from "./group.context";
 import type {
   GroupButtonProps,
   GroupExpandProps,

@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { createStylesResolver } from "@/lib/styles";
-import { resolveGapStep } from "@/lib/gap";
+import { resolveGapStep } from "@/lib/layout";
 import {
   PageProps,
   PagePadding,

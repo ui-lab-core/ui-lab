@@ -1,8 +1,8 @@
 import * as React from "react";
 import type { Key } from "react-aria";
 import { useHighlight } from "@/hooks/useHighlight";
-import { type HintValue, HintBadges } from "@/lib/hint";
-import { cn } from "@/lib/utils";
+import { type HintValue, HintBadges } from "@/components/internal/Hint/Hint";
+import { cn } from "@/lib/cn";
 import { Badge } from "../Badge";
 import { Frame } from "../Frame";
 import { List } from "../List";

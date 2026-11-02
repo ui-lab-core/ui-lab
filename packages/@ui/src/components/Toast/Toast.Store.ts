@@ -1,6 +1,6 @@
 // toast/store.ts
 import React from "react";
-import { type Style } from "@/lib/utils";
+import { type Style } from "@/lib/cn";
 import { type StylesProp } from "@/lib/styles";
 
 export type ToastVariant = "default" | "danger" | "success" | "info" | "warning";

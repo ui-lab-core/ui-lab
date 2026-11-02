@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { VirtualElement } from "./useFloat/dom";
+import type { VirtualElement } from "../floating/dom";
 
 type CompletionField = HTMLInputElement | HTMLTextAreaElement;
 

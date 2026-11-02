@@ -4,23 +4,23 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { FocusScope } from "@react-aria/focus";
 import { useOverlay } from "react-aria";
-import { useFloating } from "../../hooks/useFloat/react/useFloating";
-import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
-import { flip } from "../../hooks/useFloat/core/middleware/flip";
-import { shift } from "../../hooks/useFloat/core/middleware/shift";
-import { offset } from "../../hooks/useFloat/core/middleware/offset";
-import type { Middleware } from "../../hooks/useFloat/core/types";
-import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
-import { cn } from "@/lib/utils";
+import { useFloating } from "../../floating/react/useFloating";
+import { useFloatAnimation } from "../../floating/react/useFloatAnimation";
+import { flip } from "../../floating/core/middleware/flip";
+import { shift } from "../../floating/core/middleware/shift";
+import { offset } from "../../floating/core/middleware/offset";
+import type { Middleware } from "../../floating/core/types";
+import { autoUpdate } from "../../floating/dom/autoUpdate";
+import { cn } from "@/lib/cn";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import css from "./Select.module.css";
 import { useSelectContext } from "./Select";
-import { GroupContext } from "../Group/Group.Context";
+import { GroupContext } from "../Group/group.context";
 import { Scroll } from "../Scroll";
 import { Input } from "../Input";
 import { List } from "../List";
-import { handleListKeyDown, scrollItemIntoView, useListPointerModality } from "./Select.shared";
+import { handleItemKeyDown, scrollItemIntoView, useItemPointerModality } from "./Select.shared";
 import { useScrollLock } from "../../hooks/useScrollLock";
 import type { CompletionController } from "@/hooks/useCompletion";
 
@@ -597,7 +597,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
       };
     }, [completion, isOpen, hasContentSearch, contentElement, triggerRef, triggerType]);
 
-    useListPointerModality({
+    useItemPointerModality({
       isOpen,
       mouseMoveDetectedRef,
     });
@@ -686,7 +686,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           markKeyboardNavigation();
         }
 
-        const handled = handleListKeyDown(e, {
+        const handled = handleItemKeyDown(e, {
           navigateNext: navigateToNextItem,
           navigatePrev: navigateToPrevItem,
           confirm: selectFocusedItem,
@@ -737,7 +737,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
           markKeyboardNavigation();
         }
 
-        const handled = handleListKeyDown(e, {
+        const handled = handleItemKeyDown(e, {
           navigateNext: navigateToNextItem,
           navigatePrev: navigateToPrevItem,
           confirm: selectFocusedItem,

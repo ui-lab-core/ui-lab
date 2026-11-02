@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useHover, mergeProps } from "react-aria";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Banner.module.css";
 import { Info, CircleCheck, TriangleAlert, CircleAlert } from "lucide-react";

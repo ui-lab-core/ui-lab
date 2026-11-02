@@ -1,10 +1,10 @@
 export {
   scrollItemIntoView,
-  handleListKeyDown,
+  handleItemKeyDown,
   focusAdjacentTabStop,
-  useListNavigation,
-  useListPointerModality,
-  useListScrollIntoView,
-} from "../../utils/list-navigation";
+  useItemNavigation,
+  useItemPointerModality,
+  useItemScrollIntoView,
+} from "../../lib/item-navigation";
 
-export type { ItemData } from "../../utils/list-navigation";
+export type { ItemData } from "../../lib/item-navigation";

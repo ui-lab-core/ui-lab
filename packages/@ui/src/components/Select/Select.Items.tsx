@@ -3,7 +3,7 @@
 import * as React from "react";
 import { type Key } from "@react-types/shared";
 import { Check } from "lucide-react";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Select.module.css";
 import { useSelectContext, type SelectItemData } from "./Select";
@@ -314,7 +314,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     const hasDescription = !!description;
     const isHighlighted = focusedKey === value;
     const isSelected = mode === "multiple" ? !!selectedKeys?.has(value) : selectedKey === value;
-    // Items hide themselves instead of unmounting so they stay registered in useListNavigation.
+    // Items hide themselves instead of unmounting so they stay registered in useItemNavigation.
     // Unmounting via .filter() caused unregisterItem → items lost → backspace couldn't restore them.
     const isVisible = visibleKeys.has(value);
 

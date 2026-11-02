@@ -14,15 +14,15 @@ enableShadowDOM();
 
 import type { FocusableElement, PressEvent } from "@react-types/shared";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { type HintValue, HintBadges, hasHint } from "@/lib/hint";
+import { type HintValue, HintBadges, hasHint } from "@/components/internal/Hint/Hint";
 import { isSkeletonElement } from "../Skeleton";
 import type { ButtonVariantOverrides } from "../../theme-contract";
-import type { DefaultButtonVariant } from "../../generated-theme-contract";
-import { tailwindPalette } from "../../generated-tailwind-palette";
+import type { DefaultButtonVariant } from "../../theme/generated/variants";
+import { tailwindPalette } from "../../theme/generated/tailwind-palette";
 import css from "./Button.module.css";
 
 /** An open string type used to select a button size class. */

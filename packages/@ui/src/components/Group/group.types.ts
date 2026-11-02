@@ -1,5 +1,5 @@
 import type * as React from "react";
-import type { Style } from "@/lib/utils";
+import type { Style } from "@/lib/cn";
 import type { StylesProp } from "@/lib/styles";
 import type { ButtonProps } from "../Button";
 import type { ExpandProps } from "../Expand";

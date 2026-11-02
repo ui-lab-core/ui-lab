@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Input, type InputProps } from "../Input";
 import css from "./Command.module.css";

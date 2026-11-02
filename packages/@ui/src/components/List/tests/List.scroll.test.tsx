@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { renderListWithItems, getListItems } from "./List.test-utils";
 import { render as utilRender } from "@/tests/utils";
 import { List } from "../";
-import * as ListNavigation from "@/utils/list-navigation";
+import * as ItemNavigation from "@/lib/item-navigation";
 
 const mockItems = [
   { key: "1", label: "Item 1", value: "1" },
@@ -18,7 +18,7 @@ describe("List.scroll", () => {
   });
 
   it("scrolls the newly focused row into view on arrow navigation between rows", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const user = userEvent.setup();
     const container = renderListWithItems(mockItems);
     const listItems = getListItems(container);
@@ -42,7 +42,7 @@ describe("List.scroll", () => {
   });
 
   it("scrolls on Tab and Shift+Tab roving between rows", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const user = userEvent.setup();
     const container = renderListWithItems(mockItems);
     const listItems = getListItems(container);
@@ -61,7 +61,7 @@ describe("List.scroll", () => {
   });
 
   it("scrolls on Home and End boundary jumps", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const user = userEvent.setup();
     const container = renderListWithItems(mockItems);
     const listItems = getListItems(container);
@@ -79,7 +79,7 @@ describe("List.scroll", () => {
   });
 
   it("does not scroll when a row gains focus from a pointer click", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const user = userEvent.setup();
     const container = renderListWithItems(mockItems);
     const listItems = getListItems(container);
@@ -96,7 +96,7 @@ describe("List.scroll", () => {
   });
 
   it("scrolls the data-highlighted descendant when the highlighted prop changes", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const rows = (highlighted: string) => (
       <List highlighted={highlighted}>
         {mockItems.map((item) => (
@@ -122,7 +122,7 @@ describe("List.scroll", () => {
   });
 
   it("does not scroll when highlighted is null or matches no row", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const rows = (highlighted: string | null) => (
       <List highlighted={highlighted}>
         <div role="option" aria-selected="false" data-highlighted="false">

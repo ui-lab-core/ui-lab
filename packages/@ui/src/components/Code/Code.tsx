@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 import { transformerRenderIndentGuides } from "@shikijs/transformers";
 import { Copy, Check, ChevronDown } from "lucide-react";
-import { cn, type Style } from "../../lib/utils";
+import { cn, type Style } from "../../lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { Scroll } from "../Scroll";
 import styles from "./Code.module.css";

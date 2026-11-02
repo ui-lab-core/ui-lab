@@ -1,5 +1,5 @@
 import React from "react";
-import { Style } from "../../lib/utils";
+import { Style } from "../../lib/cn";
 import { StylesProp } from "../../lib/styles";
 
 export type PanelSpacing = "none" | "sm" | "md" | "lg";

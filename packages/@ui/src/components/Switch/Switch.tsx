@@ -8,7 +8,7 @@ import { useFocusRing } from "@react-aria/focus";
 import { useSwitch } from "@react-aria/switch";
 
 import { useToggleState } from "react-stately";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";

@@ -6,7 +6,7 @@ import { useDialog } from "@react-aria/dialog";
 import { FocusScope } from "@react-aria/focus";
 import { useOverlayTriggerState } from "@react-stately/overlays";
 import { filterDOMProps } from "@react-aria/utils";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useControlledState } from "@/hooks/useControlledState";
 import { useAnimatedSize } from "@/hooks/useAnimatedSize";
 import { useMergeRefs } from "@/hooks/useMergeRefs";

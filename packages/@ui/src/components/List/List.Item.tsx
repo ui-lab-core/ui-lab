@@ -3,12 +3,12 @@
 import React from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useListContext, ListItemContext } from "./list.context";
 import { ListItemProps } from "./list.types";
 import css from "./List.module.css";
-import { focusAdjacentTabStop } from "@/utils/list-navigation";
+import { focusAdjacentTabStop } from "@/lib/item-navigation";
 import { getListItemSlot } from "./list.item-layout";
 import { Actions } from "./List.Actions";
 import { resolveListItemStyles } from "./list.styles";

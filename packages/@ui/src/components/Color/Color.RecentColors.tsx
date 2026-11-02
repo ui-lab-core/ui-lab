@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { getRecentColors } from "./color-utils";
 import css from "./Color.module.css";
 

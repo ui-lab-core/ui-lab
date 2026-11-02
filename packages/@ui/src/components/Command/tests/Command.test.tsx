@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { useState } from "react";
 import { Command, useCommandState } from "..";
 import { Modal } from "../../Modal";
-import * as ListNavigation from "@/utils/list-navigation";
+import * as ItemNavigation from "@/lib/item-navigation";
 import styles from "../Command.module.css";
 import listStyles from "../../List/List.module.css";
 
@@ -543,7 +543,7 @@ describe("Command", () => {
     );
 
     it("scrolls the highlighted item into view as arrow keys move the highlight", async () => {
-      const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+      const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
       render(palette);
       await screen.findByRole("dialog");
       const options = screen.getAllByRole("option");
@@ -559,7 +559,7 @@ describe("Command", () => {
     });
 
     it("scrolls when the highlight wraps from the first to the last item", async () => {
-      const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+      const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
       render(palette);
       await screen.findByRole("dialog");
       const options = screen.getAllByRole("option");

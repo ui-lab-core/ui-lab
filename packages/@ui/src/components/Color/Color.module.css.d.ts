@@ -10,9 +10,7 @@ export interface Styles {
   format: string;
   canvas: string;
   "canvas-inner": string;
-  "canvas-gradient-hue": string;
-  "canvas-gradient-saturation": string;
-  "canvas-gradient-brightness": string;
+  "canvas-field": string;
   "canvas-pointer": string;
   "hue-slider": string;
   "hue-track": string;

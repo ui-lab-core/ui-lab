@@ -1,7 +1,7 @@
 import React from "react";
-import type { Style } from "../../lib/utils";
+import type { Style } from "../../lib/cn";
 import type { StylesProp } from "../../lib/styles";
-import type { GapSize } from "../../lib/gap";
+import type { GapSize } from "../../lib/layout";
 
 export type PagePadding = "none" | "sm" | "md" | "lg" | "xl";
 export type PageGap = GapSize | "none" | number;

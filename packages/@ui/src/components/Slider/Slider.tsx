@@ -6,7 +6,7 @@ import { useFocusRing } from "@react-aria/focus";
 import { useHover } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { asElementProps } from "@/lib/react-aria";
 import { useFocus } from "@/hooks/useFocus";

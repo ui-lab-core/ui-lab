@@ -1,6 +1,6 @@
-import "../base.css";
+import "../styles/base.css";
 import type * as React from "react";
-import { cn, type Style } from "./utils";
+import { cn, type Style } from "./cn";
 
 export type StylesProp<S extends { root?: Style }> = S;
 /**

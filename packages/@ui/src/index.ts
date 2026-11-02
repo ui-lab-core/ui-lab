@@ -409,37 +409,7 @@ export type {
   ListActionDef,
 } from "./components/List";
 
-export { ThemeProvider, useThemeVariables } from "./providers/ThemeProvider";
-export type { ThemeContextType, ThemeProviderProps } from "./providers/ThemeProvider";
-
-export { ThemeScriptInjector } from "./providers/ThemeScriptInjector";
-
-export { useTheme, useThemeMode } from "./providers/useTheme";
-
-export { useColorMode } from "./providers/useColorMode";
-export type { UseColorModeOptions, UseColorModeReturn } from "./providers/useColorMode";
-
-export {
-  normalizeThemeTokens,
-  applyThemeTokens,
-  createThemeStylesheet,
-} from "./providers/theme-contract";
-export type {
-  ThemeMode,
-  ThemeTokenBatch,
-  ThemeStylesheetOptions,
-} from "./providers/theme-contract";
-
-export {
-  extractThemeVariables,
-  applyThemeCSSVariables,
-  generateThemePalettes,
-  palettesToCssVariables,
-  hexToOklch,
-} from "./providers/extractThemeVars";
-
-export { generateThemeScript } from "./providers/themeScript";
-export { generateColorModeScript } from "./providers/themeScript";
+export * from "./theme";
 
 export { useFilter } from "./hooks/useFilter";
 export { useHighlight } from "./hooks/useHighlight";
@@ -456,5 +426,5 @@ export type {
   UseRegionResult,
 } from "./hooks/useRegionCoordinator";
 
-export type { Style } from "./lib/utils";
+export type { Style } from "./lib/cn";
 export { infer } from "./lib/infer";

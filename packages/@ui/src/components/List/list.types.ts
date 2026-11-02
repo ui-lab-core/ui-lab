@@ -1,9 +1,9 @@
-import type { ActionDef } from "@/lib/internal/Action";
+import type { ActionDef } from "@/components/internal/Action/Action";
 import React from "react";
 import { DividerProps } from "@/components/Divider";
-import { type Style } from "@/lib/utils";
+import { type Style } from "@/lib/cn";
 import { type StylesProp } from "@/lib/styles";
-import type { GapSize } from "@/lib/gap";
+import type { GapSize } from "@/lib/layout";
 import { Checkbox as UICheckbox } from "../Checkbox";
 import { Switch as UISwitch } from "../Switch";
 import { Input as UIInput } from "../Input";

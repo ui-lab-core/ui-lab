@@ -5,14 +5,14 @@ import React, { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
 import { Scroll } from "@/components/Scroll";
 import type { TextareaVariantOverrides } from "../../theme-contract";
-import type { DefaultTextareaVariant } from "../../generated-theme-contract";
+import type { DefaultTextareaVariant } from "../../theme/generated/variants";
 import css from "./Textarea.module.css";
 
 /**

@@ -6,20 +6,20 @@ import { FocusScope } from "@react-aria/focus";
 import { mergeProps, useOverlay } from "react-aria";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
-import { useFloating } from "../../hooks/useFloat/react/useFloating";
-import { useFloatAnimation } from "../../hooks/useFloat/react/useFloatAnimation";
-import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
-import * as positioning from "../../utils/submenu-positioning";
-import { cn } from "@/lib/utils";
+import { useFloating } from "../../floating/react/useFloating";
+import { useFloatAnimation } from "../../floating/react/useFloatAnimation";
+import { autoUpdate } from "../../floating/dom/autoUpdate";
+import * as positioning from "../../floating/submenu-positioning";
+import { cn } from "@/lib/cn";
 import css from "./Menu.module.css";
 import { useMenuContext, useMenuPortalContainer } from "./Menu";
 import type { MenuTriggerProps, MenuContentProps } from "./menu.types";
 import { resolveMenuTriggerStyles, resolveMenuContentStyles } from "./menu.styles";
 import {
-  handleListKeyDown,
-  useListPointerModality,
-  useListScrollIntoView,
-} from "../../utils/list-navigation";
+  handleItemKeyDown,
+  useItemPointerModality,
+  useItemScrollIntoView,
+} from "../../lib/item-navigation";
 import { useMergeRefs } from "../../hooks/useMergeRefs";
 import { List } from "../List";
 import { Button } from "../Button";
@@ -266,12 +266,12 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
       }
     }, [isOpen, floatingElement]);
 
-    useListPointerModality({
+    useItemPointerModality({
       isOpen,
       mouseMoveDetectedRef,
     });
 
-    useListScrollIntoView({
+    useItemScrollIntoView({
       activeKey: focusedKey,
       container: floatingElement,
       isOpen,
@@ -315,7 +315,7 @@ const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
           return;
         }
 
-        handleListKeyDown(e, {
+        handleItemKeyDown(e, {
           navigateNext: navigateToNextItem,
           navigatePrev: navigateToPrevItem,
           confirm: selectFocusedItem,

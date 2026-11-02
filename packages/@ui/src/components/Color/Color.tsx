@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef, useReducer } from "react";
 import { useControlledState } from "@/hooks/useControlledState";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Color.module.css";
 import {
@@ -20,28 +20,14 @@ import { ColorInput } from "./Color.Input";
 import { Popover, type PopoverProps } from "../Popover";
 import { Slider } from "../Slider";
 
-/** Class-based styles for the three layers that compose the Color.Canvas gradient.
- * @typeDoc ColorCanvasGradientStyleSlots
- */
-export interface ColorCanvasGradientStyleSlots {
-  /** The hue-tinted base layer. */
-  hue?: Style;
-  /** The horizontal white-to-transparent saturation layer. */
-  saturation?: Style;
-  /** The vertical transparent-to-black brightness layer. */
-  brightness?: Style;
-}
-
 /** Class-based styles for Color.Canvas anatomy.
  * @typeDoc ColorCanvasStyleSlots
  */
 export interface ColorCanvasStyleSlots {
   /** The focusable canvas interaction surface. */
   root?: Style;
-  /** The clipped gradient container. */
+  /** The clipped gradient field. */
   inner?: Style;
-  /** Shared or layer-specific gradient styles. */
-  gradient?: Style | ColorCanvasGradientStyleSlots;
   /** The current-color pointer. */
   pointer?: Style;
 }
@@ -142,9 +128,6 @@ const colorStyleSlotKeys = [
   "controls",
   "canvas.root",
   "canvas.inner",
-  "canvas.gradient.hue",
-  "canvas.gradient.saturation",
-  "canvas.gradient.brightness",
   "canvas.pointer",
   "slider.hue.root",
   "slider.hue.track",
@@ -179,25 +162,12 @@ function normalizeNestedStyle(value: unknown, keys: readonly string[]): unknown 
 function resolveColorStyles(styles: ColorStylesProp | undefined) {
   if (!styles) return resolveColorBaseStyles(styles);
 
-  const canvas = normalizeNestedStyle(styles.canvas, ["root", "inner", "gradient", "pointer"]);
-  const normalizedCanvas = isSharedStyle(canvas)
-    ? canvas
-    : canvas && typeof canvas === "object"
-      ? {
-          ...canvas,
-          gradient: normalizeNestedStyle((canvas as ColorCanvasStyleSlots).gradient, [
-            "hue",
-            "saturation",
-            "brightness",
-          ]),
-        }
-      : canvas;
   const normalizeChannel = (value: unknown) => normalizeNestedStyle(value, ["root", "track", "thumb"]);
 
   return resolveColorBaseStyles({
     ...styles,
     trigger: normalizeNestedStyle(styles.trigger, ["root", "swatch", "value"]),
-    canvas: normalizedCanvas,
+    canvas: normalizeNestedStyle(styles.canvas, ["root", "inner", "pointer"]),
     slider: styles.slider
       ? {
           hue: normalizeChannel(styles.slider.hue),
@@ -957,9 +927,6 @@ const ColorCanvasField = React.forwardRef<HTMLDivElement, ColorCanvasFieldProps>
         size={resolvedSize}
         className={cn(className, context?.resolved["canvas.root"])}
         innerClassName={context?.resolved["canvas.inner"]}
-        gradientHueClassName={context?.resolved["canvas.gradient.hue"]}
-        gradientSaturationClassName={context?.resolved["canvas.gradient.saturation"]}
-        gradientBrightnessClassName={context?.resolved["canvas.gradient.brightness"]}
         pointerClassName={context?.resolved["canvas.pointer"]}
         {...props}
       />

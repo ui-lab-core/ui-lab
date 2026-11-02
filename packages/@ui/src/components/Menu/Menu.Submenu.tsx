@@ -4,9 +4,9 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { FocusScope } from "@react-aria/focus";
 
-import { useFloating } from "@/hooks/useFloat/react/useFloating";
-import { useFloatAnimation } from "@/hooks/useFloat/react/useFloatAnimation";
-import { autoUpdate } from "@/hooks/useFloat/dom/autoUpdate";
+import { useFloating } from "@/floating/react/useFloating";
+import { useFloatAnimation } from "@/floating/react/useFloatAnimation";
+import { autoUpdate } from "@/floating/dom/autoUpdate";
 import { useHover } from "@react-aria/interactions";
 import { ChevronRight } from "lucide-react";
 
@@ -22,13 +22,13 @@ import type { Key } from "react-aria";
 
 import css from "./Menu.module.css";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { resolveMenuSubTriggerStyles, resolveMenuSubContentStyles } from "./menu.styles";
 import { asElementProps } from "@/lib/react-aria";
 import { mergeProps } from "@react-aria/utils";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { useListNavigation, handleListKeyDown } from "../../utils/list-navigation";
-import * as positioning from "../../utils/submenu-positioning";
+import { useItemNavigation, handleItemKeyDown } from "../../lib/item-navigation";
+import * as positioning from "../../floating/submenu-positioning";
 
 import type { MenuItemExtras } from "./menu.types";
 import { List } from "../List";
@@ -44,7 +44,7 @@ const MenuSub = ({
   const [triggerKey, setTriggerKey] = React.useState<Key | null>(null);
   const isOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
 
-  const nav = useListNavigation({ isOpen });
+  const nav = useItemNavigation({ isOpen });
   const itemExtrasRef = React.useRef<Map<Key, MenuItemExtras>>(new Map());
   const mouseMoveDetectedRef = React.useRef(true);
 
@@ -400,7 +400,7 @@ const MenuSubContent = React.forwardRef<HTMLDivElement, MenuSubContentProps>(
 
         e.stopPropagation();
 
-        handleListKeyDown(e, {
+        handleItemKeyDown(e, {
           navigateNext: submenuContext.navigateToNextItem,
           navigatePrev: submenuContext.navigateToPrevItem,
           confirm: () => {

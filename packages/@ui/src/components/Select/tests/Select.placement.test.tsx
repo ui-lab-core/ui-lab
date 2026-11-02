@@ -4,7 +4,7 @@ import { createMockSelectItems } from "@/tests/utils";
 import { Searchable, Select } from "..";
 import { getSelectTrigger, openSelect, renderSelectWithChildren } from "./Select.test-utils";
 
-vi.mock("../../../hooks/useFloat/react/useFloating", () => {
+vi.mock("../../../floating/react/useFloating", () => {
   const reference: { current: HTMLElement | null } = { current: null };
   const floating: { current: HTMLElement | null } = { current: null };
   const refs = {

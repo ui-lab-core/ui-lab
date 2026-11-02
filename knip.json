@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignore": [
-    "packages/@ui/src/postcss-ui-lab.ts",
+    "packages/@ui/src/styles/postcss-ui-lab.ts",
     "scripts/write-changeset.ts"
   ],
   "tags": ["-lintignore"],
@@ -25,13 +25,13 @@
     "packages/@ui": {
       "entry": [
         "src/index.ts",
-        "src/providers/index.ts",
-        "src/providers/themeScript.ts",
+        "src/theme/index.ts",
+        "src/theme/script.ts",
         "src/theme-server.ts",
         "src/scripts.ts",
         "src/components/*/index.{ts,tsx}",
-        "src/base.css",
-        "src/typography.css",
+        "src/styles/base.css",
+        "src/styles/typography.css",
         "src/tests/**/*.{ts,tsx}",
         "src/components/**/tests/**/*.{ts,tsx}"
       ]

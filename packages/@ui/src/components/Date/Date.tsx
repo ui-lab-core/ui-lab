@@ -8,7 +8,7 @@ import { useFocusRing } from "@react-aria/focus";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { type Style, cn } from "@/lib/utils";
+import { type Style, cn } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 import { asElementProps } from "@/lib/react-aria";

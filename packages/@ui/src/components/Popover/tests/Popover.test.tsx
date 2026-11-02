@@ -11,7 +11,7 @@ vi.mock("../../Frame", () => ({
   ),
 }));
 
-vi.mock("../../../hooks/useFloat/react/useFloating", () => {
+vi.mock("../../../floating/react/useFloating", () => {
   const refs = {
     reference: { current: null },
     floating: { current: null },

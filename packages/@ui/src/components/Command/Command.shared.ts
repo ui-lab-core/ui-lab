@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import type { Key } from "react-aria";
-import { type Style } from "@/lib/utils";
+import { type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useControlledState } from "@/hooks/useControlledState";
 

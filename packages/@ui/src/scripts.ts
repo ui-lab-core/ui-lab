@@ -1,1 +1,1 @@
-export { generateScrollRestoreScript } from "./components/Scroll/scripts/restore-scroll";
+export { generateScrollRestoreScript } from "./components/Scroll/Scroll.restore";

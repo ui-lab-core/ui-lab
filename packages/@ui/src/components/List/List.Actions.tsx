@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
-import { renderAction } from "@/lib/internal/Action";
+import { cn } from "@/lib/cn";
+import { renderAction } from "@/components/internal/Action/Action";
 import { useListContext, useListItemContext } from "./list.context";
 import { ListActionsProps } from "./list.types";
 import css from "./List.module.css";

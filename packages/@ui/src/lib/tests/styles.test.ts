@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createStylePropsResolver, createStylesResolver, type StylesProp } from "../styles";
-import type { Style } from "../utils";
+import type { Style } from "../cn";
 
 interface StyleSlots {
   root?: Style;

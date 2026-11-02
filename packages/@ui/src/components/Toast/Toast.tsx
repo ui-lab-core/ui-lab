@@ -6,7 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { mergeProps } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import css from "./Toast.module.css";
 import { ToastProps as ToastData, dispatch } from "./Toast.Store";

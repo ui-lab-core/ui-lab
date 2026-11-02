@@ -20,13 +20,7 @@
     "url": "https://github.com/ui-lab-core/ui-lab"
   },
   "files": [
-    "dist",
-    "src/index.react-server.js",
-    "src/index.react-server.d.ts",
-    "src/card.react-server.js",
-    "src/card.react-server.d.ts",
-    "src/skeleton.react-server.js",
-    "src/skeleton.react-server.d.ts"
+    "dist"
   ],
   "type": "module",
   "sideEffects": [
@@ -37,7 +31,6 @@
   "types": "./dist/ui-lab-ui.d.ts",
   "exports": {
     ".": {
-      "react-server": "./src/index.react-server.js",
       "import": "./dist/ui-lab-ui.es.js",
       "types": "./dist/ui-lab-ui.d.ts"
     },
@@ -62,10 +55,6 @@
       "types": "./dist/button.d.ts"
     },
     "./card": {
-      "react-server": {
-        "types": "./src/card.react-server.d.ts",
-        "default": "./src/card.react-server.js"
-      },
       "import": "./dist/card.es.js",
       "types": "./dist/card.d.ts"
     },
@@ -190,10 +179,6 @@
       "types": "./dist/scroll.d.ts"
     },
     "./skeleton": {
-      "react-server": {
-        "types": "./src/skeleton.react-server.d.ts",
-        "default": "./src/skeleton.react-server.js"
-      },
       "import": "./dist/skeleton.es.js",
       "types": "./dist/skeleton.d.ts"
     },
@@ -267,8 +252,8 @@
   },
   "scripts": {
     "build": "pnpm run type-check:build && pnpm run generate:palette && vite build && node scripts/prepare-css-output.mjs && pnpm run build:css && pnpm run verify:css && pnpm run build:postcss",
-    "build:css": "postcss src/base.css -o dist/base.css && postcss src/typography.css -o dist/typography.css && node scripts/build-aggregate-css.mjs",
-    "build:postcss": "cp src/postcss-ui-lab.ts dist/postcss-ui-lab.mjs",
+    "build:css": "postcss src/styles/base.css -o dist/base.css && postcss src/styles/typography.css -o dist/typography.css && node scripts/build-aggregate-css.mjs",
+    "build:postcss": "cp src/styles/postcss-ui-lab.ts dist/postcss-ui-lab.mjs",
     "verify:css": "node scripts/verify-css-output.mjs",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",

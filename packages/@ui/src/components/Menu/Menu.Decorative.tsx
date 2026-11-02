@@ -11,7 +11,7 @@ import type {
 } from "./menu.types";
 import type { Key } from "@react-types/shared";
 import css from "./Menu.module.css";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import {
   resolveMenuGroupStyles,
   resolveMenuRadioGroupStyles,

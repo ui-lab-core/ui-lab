@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { Checkbox as UICheckbox } from "../Checkbox";
 import { Switch as UISwitch } from "../Switch";
 import { Input as UIInput } from "../Input";

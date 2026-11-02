@@ -4,23 +4,23 @@ import React, { useRef, useState, useEffect, useCallback, useLayoutEffect } from
 
 import { createPortal } from "react-dom";
 import { useTooltip, mergeProps } from "react-aria";
-import { useFloating } from "../../hooks/useFloat/react/useFloating";
-import { flip } from "../../hooks/useFloat/core/middleware/flip";
-import { offset } from "../../hooks/useFloat/core/middleware/offset";
-import { shift } from "../../hooks/useFloat/core/middleware/shift";
-import { arrow } from "../../hooks/useFloat/core/middleware/arrow";
-import { autoUpdate } from "../../hooks/useFloat/dom/autoUpdate";
-import { cn } from "@/lib/utils";
+import { useFloating } from "../../floating/react/useFloating";
+import { flip } from "../../floating/core/middleware/flip";
+import { offset } from "../../floating/core/middleware/offset";
+import { shift } from "../../floating/core/middleware/shift";
+import { arrow } from "../../floating/core/middleware/arrow";
+import { autoUpdate } from "../../floating/dom/autoUpdate";
+import { cn } from "@/lib/cn";
 import { useTooltipTriggerState } from "react-stately";
 import { asElementProps } from "@/lib/react-aria";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
-import { type HintValue, HintBadges, hasHint } from "@/lib/hint";
+import { type HintValue, HintBadges, hasHint } from "@/components/internal/Hint/Hint";
 import { Frame } from "../Frame";
 import css from "./Tooltip.module.css";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { type Style } from "@/lib/utils";
+import { type Style } from "@/lib/cn";
 import { useControlledState } from "@/hooks/useControlledState";
-import { getArrowShapeOffset, getFrameSideFromPlacement } from "@/utils/arrow-positioning";
+import { getArrowShapeOffset, getFrameSideFromPlacement } from "@/floating/arrow-positioning";
 
 const ARROW_PATH = "M 0 0 C 3 0 4 -9 6 -9 C 8 -9 9 0 12 0";
 const ARROW_WIDTH = 12;

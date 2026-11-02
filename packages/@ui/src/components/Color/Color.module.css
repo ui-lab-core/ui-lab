@@ -169,7 +169,6 @@
 
   .canvas {
     --canvas-radius: var(--radius-xs, 5px);
-    --canvas-border-width: slot(border, width, var(--border-width-base, 1px));
     position: relative;
     width: 240px;
     height: 160px;
@@ -200,42 +199,25 @@
     position: relative;
     width: 100%;
     flex: 1;
-    overflow: hidden;
     border-radius: inherit;
-    isolation: isolate;
-    clip-path: inset(
-      var(--canvas-border-width)
-      round max(0px, calc(var(--canvas-radius) - var(--canvas-border-width)))
-    );
+    clip-path: inset(0 round var(--canvas-radius));
+    /* Server-rendered fallback until the canvas paints the field. */
+    background:
+      linear-gradient(to top, rgb(0, 0, 0), transparent),
+      linear-gradient(to right, rgb(255, 255, 255), transparent),
+      var(--canvas-hue);
   }
 
-  .canvas::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    box-sizing: border-box;
-    border-radius: inherit;
-    border: var(--canvas-border-width) slot(border, style, solid)
-      slot(border, background, var(--background-700));
-    pointer-events: none;
+  .canvas .canvas-inner[data-painted] {
+    background: none;
   }
 
-  .canvas .canvas-gradient-hue {
+  .canvas .canvas-field {
     position: absolute;
     inset: 0;
-    overflow: hidden;
-  }
-
-  .canvas .canvas-gradient-saturation {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, rgb(255, 255, 255), transparent);
-  }
-
-  .canvas .canvas-gradient-brightness {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgb(0, 0, 0), transparent);
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .canvas .canvas-pointer {
@@ -251,13 +233,12 @@
   }
 
   .hue-slider {
-    --size: calc(var(--spacing, 0.25rem) * 4);
-    --track-height: var(--size);
+    --track-height: calc(var(--spacing, 0.25rem) * 5);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
-    --side-padding: var(--inline-padding, 2px);
+    --side-padding: var(--inline-padding, calc((var(--track-height) - var(--thumb-width)) / 2));
     --padding-inline: var(--inline-padding, 0px);
-    --thumb-width: calc(var(--spacing, 0.25rem) * 2);
-    --thumb-height: calc(100% - (var(--side-padding) * 2));
+    --thumb-width: 12px;
+    --thumb-height: var(--thumb-width);
     --gradient-inset: 0;
     --track-background: linear-gradient(
       to right,
@@ -290,7 +271,7 @@
     width: 100%;
     height: var(--track-height);
     overflow: visible;
-    border-radius: 4px;
+    border-radius: 9999px;
     background: var(--track-background);
   }
 
@@ -313,20 +294,20 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    border-radius: 2px;
+    border-radius: 9999px;
     background: transparent;
     box-shadow: var(--thumb-shadow);
   }
 
   .opacity-slider {
-    --size: calc(var(--spacing, 0.25rem) * 4);
+    --track-height: calc(var(--spacing, 0.25rem) * 5);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
     --range-background: transparent;
-    --thumb-width: calc(var(--spacing, 0.25rem) * 2);
+    --thumb-width: 12px;
     --padding-inline: var(--inline-padding, 0px);
-    --hit-size: calc(var(--size) + (var(--padding-block) * 2));
-    --thumb-height: calc(100% - (var(--side-padding) * 2));
-    --side-padding: 2px;
+    --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));
+    --thumb-height: var(--thumb-width);
+    --side-padding: calc(((var(--track-height) - var(--thumb-width)) / 2) - var(--border-width-base, 1px));
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
     --thumb-background: slot(thumb, background, transparent);
     --thumb-border: 2px solid white;
@@ -354,9 +335,9 @@
   .opacity-slider .opacity-track {
     position: relative;
     width: 100%;
-    height: var(--size);
+    height: var(--track-height);
     overflow: visible;
-    border-radius: 4px;
+    border-radius: 9999px;
     background: var(--track-background);
   }
 
@@ -375,14 +356,9 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    border-radius: 2px;
+    border-radius: 9999px;
     background: transparent;
     box-shadow: var(--thumb-shadow);
-  }
-
-  .hue-slider .hue-thumb[data-focus-visible="true"] {
-    outline: 2px solid var(--focus-visible);
-    outline-offset: 2px;
   }
 
   .hue-slider .hue-thumb[data-hovered="true"] {
@@ -392,11 +368,6 @@
 
   .hue-slider .hue-thumb[data-pressed="true"] {
     box-shadow: var(--thumb-shadow-active, var(--thumb-shadow));
-  }
-
-  .opacity-slider .opacity-thumb[data-focus-visible="true"] {
-    outline: 2px solid var(--focus-visible);
-    outline-offset: 2px;
   }
 
   .opacity-slider .opacity-thumb[data-hovered="true"] {
@@ -409,14 +380,14 @@
   }
 
   .chroma-slider {
-    --size: calc(var(--spacing, 0.25rem) * 4);
+    --track-height: calc(var(--spacing, 0.25rem) * 5);
     --padding-block: var(--padding, calc(var(--spacing, 0.25rem) * 0.5));
     --range-background: transparent;
-    --thumb-width: calc(var(--spacing, 0.25rem) * 2);
+    --thumb-width: 12px;
     --padding-inline: var(--inline-padding, 0px);
-    --hit-size: calc(var(--size) + (var(--padding-block) * 2));
-    --thumb-height: calc(100% - (var(--side-padding) * 2));
-    --side-padding: 2px;
+    --hit-size: calc(var(--track-height) + (var(--padding-block) * 2));
+    --thumb-height: var(--thumb-width);
+    --side-padding: calc(((var(--track-height) - var(--thumb-width)) / 2) - var(--border-width-base, 1px));
     --thumb-inset: calc(var(--side-padding) + (var(--thumb-width) / 2));
     --thumb-background: slot(thumb, background, transparent);
     --thumb-border: 2px solid white;
@@ -434,16 +405,15 @@
   .chroma-slider .chroma-track {
     position: relative;
     width: 100%;
-    height: var(--size);
+    height: var(--track-height);
     overflow: visible;
-    border-radius: 4px;
+    border-radius: 9999px;
   }
 
   .chroma-slider .chroma-range {
     background: transparent;
   }
 
-  .hue-slider .hue-track,
   .opacity-slider .opacity-track,
   .chroma-slider .chroma-track {
     box-sizing: border-box;
@@ -469,14 +439,9 @@
     height: var(--thumb-height);
     transform: var(--transform);
     border: var(--thumb-border);
-    border-radius: 2px;
+    border-radius: 9999px;
     background: transparent;
     box-shadow: var(--thumb-shadow);
-  }
-
-  .chroma-slider .chroma-thumb[data-focus-visible="true"] {
-    outline: 2px solid var(--focus-visible);
-    outline-offset: 2px;
   }
 
   .chroma-slider .chroma-thumb[data-hovered="true"] {

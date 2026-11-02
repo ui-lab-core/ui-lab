@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useRef, useLayoutEffect, useState, useCallback } from "react";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { createComponentSlotResolver } from "@/lib/component-slots";
+import { createComponentSlotResolver } from "./scroll.slots";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Mask } from "../Mask";
 import css from "./Scroll.module.css";
@@ -17,7 +17,7 @@ import {
   getScrollRestoreMetrics,
   getScrollPositionProperty,
   recordScrollRestoreTrace,
-} from "./scripts/restore-scroll.constants";
+} from "./scroll.restore-constants";
 
 export interface ScrollStyleSlots {
   root?: Style;

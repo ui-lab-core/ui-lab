@@ -11,7 +11,6 @@ export { Color };
 export type {
   ColorAreaProps,
   ColorAreaVariant,
-  ColorCanvasGradientStyleSlots,
   ColorCanvasFieldProps,
   ColorCanvasStyleSlots,
   ColorInputStyleSlots,

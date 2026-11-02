@@ -2,16 +2,16 @@
 
 import * as React from "react";
 import { mergeProps } from "@react-aria/utils";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { Input, type InputProps } from "../Input";
 import { ChevronDown } from "lucide-react";
 import css from "./Select.module.css";
 import { useSelectContext } from "./Select";
-import { GroupContext } from "../Group/Group.Context";
+import { GroupContext } from "../Group/group.context";
 import groupCss from "../Group/Group.module.css";
-import { handleListKeyDown } from "./Select.shared";
+import { handleItemKeyDown } from "./Select.shared";
 import { infer } from "@/lib/infer";
 
 /**
@@ -339,7 +339,7 @@ const SearchableTrigger = React.forwardRef<HTMLInputElement, SearchableTriggerPr
       ) {
         markKeyboardNavigation();
       }
-      handleListKeyDown(e, {
+      handleItemKeyDown(e, {
         navigateNext: navigateToNextItem,
         navigatePrev: navigateToPrevItem,
         confirm: selectFocusedItem,

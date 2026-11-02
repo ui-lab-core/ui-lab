@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { type SlotStyle, createStylePropsResolver } from "@/lib/styles";
 import { getThumbPosition, getThumbTrackPercent, useThumbTrack } from "@/hooks/useThumbTrack";
 import css from "./Progress.module.css";

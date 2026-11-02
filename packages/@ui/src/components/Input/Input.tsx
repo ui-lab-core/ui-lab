@@ -6,15 +6,15 @@ import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { cn, type Style } from "@/lib/utils";
+import { cn, type Style } from "@/lib/cn";
 import { type StylesProp, createStylesResolver } from "@/lib/styles";
-import { type ActionDef, type ActionItem, renderAction } from "@/lib/internal/Action";
+import { type ActionDef, type ActionItem, renderAction } from "@/components/internal/Action/Action";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { useControlledState } from "@/hooks/useControlledState";
-import { GroupContext } from "@/components/Group/Group.Context";
+import { GroupContext } from "@/components/Group/group.context";
 import type { InputVariantOverrides } from "../../theme-contract";
-import type { DefaultInputVariant } from "../../generated-theme-contract";
+import type { DefaultInputVariant } from "../../theme/generated/variants";
 import css from "./Input.module.css";
 
 /**

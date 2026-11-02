@@ -4,9 +4,9 @@ export {
   normalizeIconId,
   resolveIconSource,
 } from "./Icon";
-export { IconProvider } from "./IconProvider";
+export { IconProvider } from "./Icon.Provider";
 export type {
   IconProps,
 } from "./Icon";
-export type { IconProviderProps } from "./IconProvider";
-export type { IconSource, IconSourceResolver, IconVariant } from "./IconContext";
+export type { IconProviderProps } from "./Icon.Provider";
+export type { IconSource, IconSourceResolver, IconVariant } from "./icon.context";

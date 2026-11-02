@@ -24,10 +24,10 @@ if (entries.length === 0) {
 const body = entries.map(([name, value]) => `  "${name}": "${value}",`).join("\n");
 
 await writeFile(
-  path.join(root, "src/generated-tailwind-palette.ts"),
+  path.join(root, "src/theme/generated/tailwind-palette.ts"),
   `// Generated from tailwindcss/theme.css. Do not edit directly.\n` +
     `export const tailwindPalette: Record<string, string> = {\n${body}\n};\n`,
   "utf8",
 );
 
-console.log(`Wrote ${entries.length} palette colours to src/generated-tailwind-palette.ts`);
+console.log(`Wrote ${entries.length} palette colours to src/theme/generated/tailwind-palette.ts`);

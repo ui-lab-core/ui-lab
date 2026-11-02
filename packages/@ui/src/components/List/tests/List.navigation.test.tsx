@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event";
 import { renderList } from "./List.test-utils";
 import { List } from "../";
 import { Select } from "../../Select";
-import * as ListNavigation from "@/utils/list-navigation";
+import * as ItemNavigation from "@/lib/item-navigation";
 import { render as utilRender } from "@/tests/utils";
 import { screen } from "@testing-library/react";
 import { waitForCondition } from "@/tests/utils";
@@ -242,7 +242,7 @@ describe("List.navigation", () => {
   });
 
   it("pointer hover does not scroll the list or enter row focus mode", async () => {
-    const scrollSpy = vi.spyOn(ListNavigation, "scrollItemIntoView");
+    const scrollSpy = vi.spyOn(ItemNavigation, "scrollItemIntoView");
     const user = userEvent.setup();
     const container = renderList(
       <div style={{ maxHeight: "80px", overflow: "auto" }}>
