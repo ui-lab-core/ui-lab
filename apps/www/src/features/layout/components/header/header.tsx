@@ -26,10 +26,7 @@ import { HeaderAccountLink } from "@/features/account/components/header-account-
 
 const TabItem = memo(({ tab }: { tab: HeaderTab }) => {
   return (
-    <Tabs.Trigger
-      value={tab.id}
-      className="leading-[20px] rounded-full font-medium tracking-normal"
-    >
+    <Tabs.Trigger value={tab.id} className="leading-[20px] font-medium tracking-normal">
       {tab.label}
     </Tabs.Trigger>
   );
@@ -133,7 +130,7 @@ function LibraryTabMenu({ tab, pathname }: { tab: HeaderTab; pathname: string })
       <Menu.Trigger as="child" onPointerEnter={handlePointerEnter}>
         <Tabs.Trigger
           value={tab.id}
-          className="leading-[20px] rounded-full font-medium tracking-normal data-[hovered=true]:not-data-[selected=true]:bg-background-700/50"
+          className="leading-[20px] font-medium tracking-normal data-[hovered=true]:not-data-[selected=true]:bg-background-700/50"
           icon={{
             right: (
               <Icon
@@ -251,7 +248,7 @@ export default function Header({ pathname }: HeaderProps) {
                 // variant="underline"
               >
                 <div className="h-full items-center flex" onClickCapture={handleTabsNavigation}>
-                  <Tabs.List styles={{ indicator: "rounded-full" }} className="p-0!">
+                  <Tabs.List className="p-0!">
                     {headerTabs.map((tab) =>
                       tab.id === "components" ? (
                         <LibraryTabMenu key={tab.id} tab={tab} pathname={pathname} />

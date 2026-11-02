@@ -1,9 +1,9 @@
 export const role = {
   surface: "text-background-900",
-  border: "text-background-700",
+  border: "text-background-600",
   muted: "text-background-600",
-  active: "text-accent-500",
-  tint: "text-accent-500/15",
+  active: "text-[color-mix(in_oklab,var(--accent-500)_70%,var(--background-900))]",
+  tint: "text-[color-mix(in_oklab,var(--accent-500)_15%,var(--background-900))]",
   text: "text-foreground-200",
 } as const;
 

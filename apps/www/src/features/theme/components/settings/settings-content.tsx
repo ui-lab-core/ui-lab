@@ -104,11 +104,13 @@ interface SettingsContentProps {
    * config route opts into typography and layout, scoped to its preview.
    */
   panels?: ConfigTab[];
+  hideScrollbar?: boolean;
 }
 
 export const SettingsContent = ({
   showFooterLink = true,
   panels = ["colors"],
+  hideScrollbar = false,
 }: SettingsContentProps) => {
   const {
     currentThemeColors,
@@ -255,16 +257,16 @@ export const SettingsContent = ({
       ) : null}
 
       <div className="flex-1 overflow-hidden">
-        <Scroll fade-y inline>
-          <Scroll.Track className="border-l w-3 border-background-700" />
-          <Scroll.Thumb className="-translate-x-[2px] border-background-700" />
+        <Scroll fade-y inline={!hideScrollbar}>
+          <Scroll.Track className={hideScrollbar ? "hidden" : "border-l w-3 border-background-700"} />
+          <Scroll.Thumb className={hideScrollbar ? "hidden" : "-translate-x-[2px] border-background-700"} />
           <Tabs
             value={activeTab}
             variant="underline"
             onValueChange={(value) => setActiveTab(value as ConfigTab)}
           >
             {panels.includes("colors") ? (
-              <Tabs.Content value="colors" className="py-[8px]">
+              <Tabs.Content value="colors" className="py-[4px]">
                 <ColorsPanel
                   localColors={localColors}
                   expandedColor={expandedColor}

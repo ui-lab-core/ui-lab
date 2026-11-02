@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import React, { createContext, startTransition, useContext, useEffect, useReducer } from "react";
 import { type SimpleThemeColors, DEFAULT_GLOBAL_ADJUSTMENTS } from "../constants/themes";
 import {
   getSourceConfig,
@@ -218,12 +218,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedPrefs = loadPreferencesFromStorage();
-    dispatch({
-      type: "merge",
-      value: {
-        ...(savedPrefs ?? {}),
-        isThemeInitialized: true,
-      },
+    // A transition lets server-rendered Suspense boundaries that are still
+    // hydrating keep their HTML; an urgent context change forces them to
+    // client-render, unmounting and remounting their content.
+    startTransition(() => {
+      dispatch({
+        type: "merge",
+        value: {
+          ...(savedPrefs ?? {}),
+          isThemeInitialized: true,
+        },
+      });
     });
   }, []);
 

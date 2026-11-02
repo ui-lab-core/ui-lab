@@ -1,8 +1,8 @@
 "use client";
 
-import { memo, useMemo, useCallback, useEffect, useState, type CSSProperties } from "react";
+import { memo, useMemo, useCallback, type CSSProperties } from "react";
 import { FaChevronDown, FaCheck, FaSun } from "@/shared/icons/fa6";
-import { type OklchColor, type HueRange, cssToOklch, oklchToCss } from "../../lib/color-utils";
+import { type OklchColor, type HueRange, oklchToCss } from "../../lib/color-utils";
 import { Slider, Divider, Label, Badge, Color, Input } from "ui-lab-components";
 import { useApp } from "../../lib/app-context";
 import {
@@ -94,18 +94,18 @@ SliderControl.displayName = "SliderControl";
 const GlobalSlider = memo(
   ({ label, value, min, max, step, formatValue, onChange }: GlobalSliderProps) => {
     return (
-      <div className="grid grid-cols-[1fr_240px] items-center gap-x-3 gap-y-1.5 group">
-        <span className="text-xs font-medium text-foreground-400">{label}</span>
-        <div className="flex min-w-0">
-          <span className="w-20 text-foreground-400 font-medium">{formatValue(value)}</span>
-          <Slider.Root
-            value={[value]}
-            onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
-            min={min}
-            max={max}
-            step={step}
-          />
-        </div>
+      <div className="grid grid-cols-[minmax(0,1fr)_120px_44px] items-center gap-x-2 group">
+        <span className="text-sm font-medium text-foreground-400">{label}</span>
+        <Slider.Root
+          value={[value]}
+          onValueChange={(val) => onChange(Array.isArray(val) ? val[0] : val)}
+          min={min}
+          max={max}
+          step={step}
+        />
+        <span className="text-right text-sm tabular-nums text-foreground-400">
+          {formatValue(value)}
+        </span>
       </div>
     );
   },
@@ -145,9 +145,7 @@ const getPreviewColor = (
 export const ColorRow = memo(
   ({ type, color, isExpanded, onToggle, onChange, hueRange }: ColorRowProps) => {
     const { currentThemeMode } = useApp();
-    const formattedColor = oklchToCss(color);
-    const [colorValue, setColorValue] = useState(formattedColor);
-    const [isEditingColor, setIsEditingColor] = useState(false);
+    const summary = color.c <= 0.005 ? "Neutral" : `${Math.round(color.h)}°`;
     const previewStyle = useMemo(() => {
       const previewColor = oklchToCss(getPreviewColor(type, color, currentThemeMode));
 
@@ -156,35 +154,20 @@ export const ColorRow = memo(
       } as CSSProperties;
     }, [type, color, currentThemeMode]);
 
-    useEffect(() => {
-      if (!isEditingColor) setColorValue(formattedColor);
-    }, [formattedColor, isEditingColor]);
-
-    const commitColorValue = () => {
-      const nextColor = cssToOklch(colorValue);
-      if (nextColor) {
-        onChange(nextColor);
-        setColorValue(oklchToCss(nextColor));
-      } else {
-        setColorValue(formattedColor);
-      }
-      setIsEditingColor(false);
-    };
-
     return (
       <div>
         <div
-          className={`mx-[6px] rounded-[7px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700"} mb-[8px] transition-all duration-300 overflow-hidden group`}
+          className={`mx-[4px] rounded-[6px] ${isExpanded ? "bg-background-900 border border-background-700" : "hover:bg-background-900 border border-transparent hover:border-background-700"} mb-[2px] transition-all duration-300 overflow-hidden group`}
         >
           <div
             onClick={onToggle}
-            className="cursor-pointer flex items-center gap-3 py-[10px] px-[10px]"
+            className="cursor-pointer flex items-center gap-2 py-[8px] px-[8px]"
           >
             <div
               className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none"
               aria-expanded={isExpanded}
             >
-              <div className="w-5 h-5 rounded-[5px]" style={previewStyle} />
+              <div className="w-4.5 h-4.5 rounded-[4px]" style={previewStyle} />
               <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <span className="text-xs font-medium text-foreground-200 capitalize group-hover:text-foreground-100 transition-colors">
                   {type}
@@ -192,24 +175,22 @@ export const ColorRow = memo(
               </div>
             </div>
 
-            <span className="w-47 text-foreground-400 text-xs flex items-center gap-3 relative">
-              {colorValue}
-            </span>
+            <span className="text-foreground-400 text-xs tabular-nums">{summary}</span>
 
             <div
               aria-label={`${isExpanded ? "Collapse" : "Expand"} ${type} color controls`}
-              className={`mr-2 text-foreground-400 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+              className={`mr-0.5 text-foreground-400 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
             >
-              <FaChevronDown size={11} />
+              <FaChevronDown size={9} />
             </div>
           </div>
 
           <div
             className={`transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden ${isExpanded ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"}`}
           >
-            <div className="pb-4 pt-0">
-              <div className="h-px w-full bg-background-700 mb-4" />
-              <div className="px-4">
+            <div className="pb-2 pt-0">
+              <div className="h-px w-full bg-background-700 mb-2" />
+              <div className="px-2.5">
                 {type === "background" || type === "accent" ? (
                   <CoreColorControls type={type} color={color} onChange={onChange} />
                 ) : (
@@ -236,34 +217,30 @@ const CoreColorControls = memo(({ color, onChange, type }: CoreColorControlsProp
   const { currentThemeMode } = useApp();
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2 group">
-        <Label styles={{ text: "text-xs font-medium" }}>Hue</Label>
-        <Color.Slider
-          type="hue"
-          aria-label={`${type} hue`}
-          value={color.c <= 0.005 ? 0 : color.h}
-          onChange={(hue) => onChange(colorFromHue(type, hue, color, currentThemeMode))}
-        />
-      </div>
-      <div className="space-y-2 group">
-        <Label styles={{ text: "text-xs font-medium" }}>Chroma</Label>
-        <Color.Slider
-          type="chroma"
-          aria-label={`${type} chroma`}
-          value={color.c}
-          color={oklchToCss(getPreviewColor(type, color, currentThemeMode))}
-          min={0}
-          max={getMaxChroma(type)}
-          previewMax={
-            type === "background"
-              ? getMaxChroma(type) * BACKGROUND_CHROMA_PREVIEW_MULTIPLIER
-              : undefined
-          }
-          step={0.001}
-          onChange={(chroma) => onChange(colorFromChroma(type, chroma, color))}
-        />
-      </div>
+    <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2.5 pr-1">
+      <Label styles={{ text: "text-sm font-medium" }}>Hue</Label>
+      <Color.Slider
+        type="hue"
+        aria-label={`${type} hue`}
+        value={color.c <= 0.005 ? 0 : color.h}
+        onChange={(hue) => onChange(colorFromHue(type, hue, color, currentThemeMode))}
+      />
+      <Label styles={{ text: "text-sm font-medium" }}>Chroma</Label>
+      <Color.Slider
+        type="chroma"
+        aria-label={`${type} chroma`}
+        value={color.c}
+        color={oklchToCss(getPreviewColor(type, color, currentThemeMode))}
+        min={0}
+        max={getMaxChroma(type)}
+        previewMax={
+          type === "background"
+            ? getMaxChroma(type) * BACKGROUND_CHROMA_PREVIEW_MULTIPLIER
+            : undefined
+        }
+        step={0.001}
+        onChange={(chroma) => onChange(colorFromChroma(type, chroma, color))}
+      />
     </div>
   );
 });
@@ -322,8 +299,8 @@ const SemanticColorPicker = memo(
     };
 
     return (
-      <div className="space-y-3">
-        <div className="grid grid-cols-4 gap-2">
+      <div className="space-y-2">
+        <div className="grid grid-cols-7 gap-1">
           {swatches.map((h) => {
             const isNeutral = h === null;
             const isSelected =
@@ -342,7 +319,7 @@ const SemanticColorPicker = memo(
                     onChange(colorFromHue(type, h, color, currentThemeMode));
                   }
                 }}
-                className="relative h-10 rounded-[4px] flex items-center justify-center"
+                className="relative h-6 rounded-[4px] flex items-center justify-center"
                 style={{ backgroundColor: displayColor }}
               >
                 {isSelected && (
@@ -350,7 +327,7 @@ const SemanticColorPicker = memo(
                     className={
                       getCheckmarkDark(isNeutral) ? "text-background-950" : "text-accent-50"
                     }
-                    size={14}
+                    size={10}
                   />
                 )}
               </button>
@@ -389,8 +366,8 @@ export const GlobalAdjustmentsPanel = memo(
     const formatChroma = useCallback((v: number) => `×${v.toFixed(2)}`, []);
 
     return (
-      <div className="mx-[6px] mb-2 p-3">
-        <div className="space-y-3">
+      <div className="mx-[4px] px-2.5 py-1.5">
+        <div className="space-y-1.5">
           <GlobalSlider
             label="Lightness"
             value={lightnessValue}

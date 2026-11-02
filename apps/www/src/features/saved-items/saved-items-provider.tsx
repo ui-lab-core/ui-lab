@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useDeferredValue, type ReactNode } from "react";
 import { useConvexAuth, usePaginatedQuery } from "convex/react";
 import { api } from "@ui-lab/backend/convex/_generated/api";
 
@@ -21,7 +21,12 @@ export function SavedItemsProvider({ children }: { children: ReactNode }) {
     { initialNumItems: 20 },
   );
 
-  return <SavedItemsContext value={savedItems}>{children}</SavedItemsContext>;
+  // Convex updates are urgent. Deferring the context value lets server-rendered
+  // Suspense boundaries that are still hydrating keep their HTML instead of
+  // being client-rendered when the first page of results arrives.
+  const deferredSavedItems = useDeferredValue(savedItems);
+
+  return <SavedItemsContext value={deferredSavedItems}>{children}</SavedItemsContext>;
 }
 
 export function useSavedItems() {

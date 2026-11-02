@@ -11,9 +11,9 @@ interface FloatingSettingsDialogProps {
   triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
-const DIALOG_WIDTH = 450;
-const DIALOG_HEIGHT = 550;
-const GAP = 12;
+const DIALOG_WIDTH = 300;
+const DIALOG_HEIGHT = 380;
+const GAP = 8;
 const EDGE_PADDING = 16;
 
 interface DialogState {
@@ -217,7 +217,7 @@ export const SettingsDialog = ({
           opacity: isReady ? 1 : 0,
           pointerEvents: isReady ? "auto" : "none",
         }}
-        className="fixed z-[9999] rounded-[14px] border border-background-600 bg-background-950 backdrop-blur-md flex flex-col overflow-hidden"
+        className="fixed z-[9999] rounded-[10px] border border-background-600 bg-background-950 backdrop-blur-md flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if (e.key === "Escape") onOpenChange(false);
@@ -225,7 +225,7 @@ export const SettingsDialog = ({
       >
         <div
           data-drag-handle
-          className="h-10 shrink-0 bg-background-900 border-b border-background-700 cursor-grab active:cursor-grabbing flex items-center justify-between pl-4 pr-2 select-none hover:bg-background-800/70 transition-colors"
+          className="h-8 shrink-0 bg-background-900 border-b border-background-700 cursor-grab active:cursor-grabbing flex items-center justify-between pl-3 pr-1 select-none hover:bg-background-800/70 transition-colors"
         >
           <span className="text-sm font-semibold text-foreground-400 pointer-events-none">
             Theme Settings
@@ -236,15 +236,15 @@ export const SettingsDialog = ({
               onOpenChange(false);
             }}
             onMouseDown={(e) => e.stopPropagation()}
-            className="text-foreground-400 hover:text-foreground-300 transition-colors flex items-center justify-center w-6 h-6 rounded hover:bg-background-700/50 cursor-pointer"
+            className="text-foreground-400 hover:text-foreground-300 transition-colors flex items-center justify-center w-5 h-5 rounded hover:bg-background-700/50 cursor-pointer"
             aria-label="Close settings"
           >
-            <HiX />
+            <HiX size={12} />
           </button>
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col">
-          <SettingsContent />
+          <SettingsContent hideScrollbar />
         </div>
       </div>
     </>,

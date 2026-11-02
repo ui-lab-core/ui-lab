@@ -82,7 +82,7 @@ export default function ComponentsPageClient() {
                                   </span>
                                 </Tooltip>
                               )}
-                              <Gallery.View className="w-full h-35 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-600 border-b border-background-700 shrink-0">
+                              <Gallery.View className="w-full h-35 duration-200 flex items-center justify-center bg-(--background-1000) group-hover:border-background-700 border-b border-background-700 shrink-0">
                                 <div className="max-w-50 gap-2 flex items-center justify-center">
                                   {previews[component.id] || <div />}
                                 </div>

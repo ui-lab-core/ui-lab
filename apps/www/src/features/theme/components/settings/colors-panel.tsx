@@ -38,7 +38,7 @@ export const ColorsPanel = memo(
     const { currentThemeMode } = useApp();
 
     return (
-      <div className="m-0 space-y-[8px]">
+      <div className="m-0 space-y-[4px]">
         <GlobalAdjustmentsPanel
           lightnessValue={localGlobalAdjustments.lightnessShift}
           chromaValue={localGlobalAdjustments.chromaBoost}
@@ -46,7 +46,7 @@ export const ColorsPanel = memo(
           onChromaChange={(v) => onGlobalAdjustmentChange("chromaBoost", v)}
         />
         <Divider />
-        <div className={`${MICRO_LABEL} px-2 pt-2 opacity-70`}>Core Colors</div>
+        <div className={`${MICRO_LABEL} px-2.5 pt-1 pb-1 opacity-70`}>Core Colors</div>
         {(["background", "accent"] as const).map((colorType) => (
           <ColorRow
             key={colorType}
@@ -58,9 +58,9 @@ export const ColorsPanel = memo(
           />
         ))}
 
-        <div className="pt-4 pb-2">
-          <div className={`${MICRO_LABEL} px-2 mb-2 opacity-70`}>Semantic Layer</div>
-          <div className="space-y-2">
+        <div className="pt-2 pb-1">
+          <div className={`${MICRO_LABEL} px-2.5 mb-1 opacity-70`}>Semantic Layer</div>
+          <div>
             {(["success", "danger", "warning", "info"] as const).map((colorType) => {
               const semanticColor = getSemanticColorSafely(
                 localColors.semantic,
@@ -88,11 +88,11 @@ export const ColorsPanel = memo(
           </div>
         </div>
         <div className="mx-[6px] flex  items-center justify-between mb-1 rounded-[7px]">
-          <div className={`${MICRO_LABEL} ml-3 block opacity-70`}>Code Theme</div>
+          <div className={`${MICRO_LABEL} ml-1 block opacity-70`}>Code Theme</div>
           <Select
             selectedKey={localColors.codeTheme ?? DEFAULT_CODE_THEME}
             defaultValue={localColors.codeTheme ?? DEFAULT_CODE_THEME}
-            className="w-full max-w-68"
+            className="w-full max-w-40"
             onSelectionChange={(key) => onCodeThemeChange(key as CodeThemeOptionId)}
           >
             <Select.Trigger className="w-full">

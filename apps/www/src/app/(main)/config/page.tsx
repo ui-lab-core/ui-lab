@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 function readTypographyCss(): string {
-  const workspaceTypographyCss = path.join(process.cwd(), "../../packages/@ui/src/typography.css");
+  const workspaceTypographyCss = path.join(process.cwd(), "../../packages/@ui/src/styles/typography.css");
 
   if (existsSync(workspaceTypographyCss)) {
     return readFileSync(workspaceTypographyCss, "utf8");
