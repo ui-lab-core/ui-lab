@@ -291,7 +291,7 @@ function ShowcaseAfter() {
                   className="min-w-0 flex-1 text-sm"
                 />
                 <Divider orientation="vertical" />
-                <Group.Select defaultSelectedKey="all" defaultValue="All activity" className="w-32">
+                <Group.Select selected="all" defaultValue="All activity" className="w-32">
                   <Select.Trigger aria-label="Activity type">
                     <Select.Value placeholder="Activity type" />
                   </Select.Trigger>

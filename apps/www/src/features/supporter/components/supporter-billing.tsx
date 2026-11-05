@@ -55,15 +55,10 @@ export function SupporterBillingToggle() {
       aria-label="Billing"
       spacing="xs"
       variant="ghost"
-      className="w-52 rounded-full"
+      className="w-52 gap-0.5"
     >
       {SUPPORTER_PLAN.billingOptions.map((entry) => (
-        <Group.Button
-          className="rounded-full flex-1"
-          key={entry.billing}
-          value={entry.billing}
-          size="sm"
-        >
+        <Group.Button className="flex-1" key={entry.billing} value={entry.billing} size="sm">
           {entry.label}
         </Group.Button>
       ))}
@@ -116,7 +111,7 @@ function SupporterCheckoutButton({
         size="lg"
         variant={featured ? "primary" : "secondary"}
         // color={featured ? "accent-600" : undefined}
-        className="rounded-full w-full"
+        className="w-full"
         disabled={isLeaving}
         icon={
           isLeaving ? (

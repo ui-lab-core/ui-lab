@@ -111,7 +111,7 @@ export function HeaderMenu({ profile, onProfileSelect, showLogin }: HeaderMenuPr
                 key="dark-mode"
                 aria-label="Dark mode"
                 className="theme-transition-exempt"
-                checked={isDark}
+                selected={isDark}
                 onChange={(checked) => setTheme(checked ? "dark" : "light")}
               />,
             ]}

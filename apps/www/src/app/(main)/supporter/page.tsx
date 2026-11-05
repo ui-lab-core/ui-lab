@@ -107,7 +107,7 @@ async function SupporterSignInLink() {
 export default function SupporterPage() {
   return (
     <div className="relative isolate min-h-screen overflow-hidden">
-      <Aura colorMode="accent" />
+      {/* <Aura colorMode="accent" /> */}
 
       <Flex
         layout="stack"
@@ -145,12 +145,7 @@ export default function SupporterPage() {
                     qualifier="free forever"
                     note="Open source · MIT licensed"
                   />
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="rounded-full w-full"
-                    href="/components"
-                  >
+                  <Button size="lg" variant="secondary" className="w-full" href="/components">
                     Browse components
                   </Button>
                 </div>

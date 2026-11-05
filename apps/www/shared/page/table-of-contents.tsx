@@ -347,16 +347,13 @@ export function TableOfContents({
           onClick={() => handleClick(item.id, closeDrawer)}
           className={cn(
             "block w-full my-0.25 text-left font-medium px-2 py-1.5 rounded-sm cursor-pointer overflow-hidden",
-            "transition-colors ease-out",
-            "hover:duration-0",
-
             item.level === 3 && "pl-6",
             item.level === 4 && "pl-10",
             item.level && item.level > 4 && "pl-14",
 
             activeId === item.id
-              ? "duration-0 text-foreground-50 bg-background-800"
-              : "duration-300 text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
+              ? "text-foreground-50 bg-background-800"
+              : "text-foreground-400 hover:text-foreground-300 hover:bg-background-800/50",
           )}
         >
           <span className="text-sm font-medium whitespace-nowrap block [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_100%)]">

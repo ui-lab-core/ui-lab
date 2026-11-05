@@ -25,7 +25,7 @@ interface ElementsSidebarContentProps {
 }
 
 const NAV_LINK_BASE =
-  "block px-3 py-1.5 text-foreground-300 text-sm font-medium rounded-sm cursor-pointer transition-colors duration-300 ease-out hover:duration-0";
+  "block px-3 py-1.5 text-foreground-300 text-sm font-medium rounded-sm cursor-pointer transition-colors";
 const LINK_ACTIVE = "text-foreground-200 bg-background-800 font-medium";
 const LINK_INACTIVE = "text-foreground-200 hover:text-foreground-200 hover:bg-background-800/50";
 
