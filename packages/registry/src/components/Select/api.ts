@@ -8,7 +8,7 @@ export const apiEnrichment = {
   documentation: {
     props: {
       value: { description: "Controlled key (single) or keys (multiple). null explicitly clears a single selection; undefined leaves selection uncontrolled unless selectedKey/selectedKeys is supplied. state.value takes precedence." },
-      selectedKey: { description: "Controlled single-selection key. null is an explicitly empty controlled selection. Use defaultSelectedKey only for an uncontrolled initial value." },
+      selectedKey: { description: "Controlled single-selection key. null is an explicitly empty controlled selection. Use selected only for an uncontrolled initial value." },
       open: { description: "Legacy initial panel visibility. Prefer defaultOpen for initial visibility. For controlled visibility use state={{ open }} and onOpenChange." },
     },
   },

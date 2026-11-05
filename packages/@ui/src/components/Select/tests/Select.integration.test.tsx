@@ -220,7 +220,7 @@ describe("Select.integration", () => {
   describe("context value updates", () => {
     it("context value updated correctly through full flow", async () => {
       const items = createMockSelectItems(3);
-      const container = renderSelectWithItems(items, { defaultSelectedKey: null });
+      const container = renderSelectWithItems(items, { selected: null });
       const trigger = getSelectTrigger(container);
 
       expect(getSelectedItems(container).length).toBe(0);
@@ -239,8 +239,8 @@ describe("Select.integration", () => {
       const items1 = createMockSelectItems(3);
       const items2 = createMockSelectItems(3);
 
-      const container1 = renderSelectWithItems(items1, { defaultSelectedKey: items1[0].key });
-      const container2 = renderSelectWithItems(items2, { defaultSelectedKey: items2[1].key });
+      const container1 = renderSelectWithItems(items1, { selected: items1[0].key });
+      const container2 = renderSelectWithItems(items2, { selected: items2[1].key });
 
       const trigger1 = getSelectTrigger(container1);
       const trigger2 = getSelectTrigger(container2);
@@ -288,7 +288,7 @@ describe("Select.integration", () => {
 
       const container = renderSelectWithItems(items, {
         mode: "single",
-        defaultSelectedKey: items[1].key,
+        selected: items[1].key,
         onSelectionChange: (value) => {
           selectedValue = value;
         },

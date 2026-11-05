@@ -40,7 +40,7 @@ describe("Select.single", () => {
 
     it("selecting new item deselects previous one", async () => {
       const items = createMockSelectItems(5);
-      const container = renderSelectWithItems(items, { defaultSelectedKey: items[0].key });
+      const container = renderSelectWithItems(items, { selected: items[0].key });
 
       let selectedItems = getSelectedItems(container);
       expect(selectedItems).toHaveLength(1);
@@ -69,7 +69,7 @@ describe("Select.single", () => {
   describe("focus behavior", () => {
     it("focused item starts at selectedKey on open (or first if nothing selected)", async () => {
       const items = createMockSelectItems(5);
-      const container = renderSelectWithItems(items, { defaultSelectedKey: items[2].key });
+      const container = renderSelectWithItems(items, { selected: items[2].key });
       const trigger = getSelectTrigger(container);
 
       await openSelect(trigger);

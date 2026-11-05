@@ -349,7 +349,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
           "item",
           css.item,
           mode === "multiple" && css["item-multiple"],
-          hasDescription && css["item-with-description"],
+          hasDescription && css["with-description"],
           className,
           resolved.root,
         )}

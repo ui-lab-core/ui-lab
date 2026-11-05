@@ -243,7 +243,7 @@ describe("Select.openClose", () => {
 
     try {
       const container = renderSelectWithItems(items, {
-        defaultSelectedKey: items[items.length - 1].key,
+        selected: items[items.length - 1].key,
         maxItems: 5,
       });
       const trigger = getSelectTrigger(container);

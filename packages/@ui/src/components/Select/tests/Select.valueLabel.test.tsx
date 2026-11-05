@@ -17,7 +17,7 @@ function renderWithValueLabel(
 ) {
   const element = React.createElement(
     Select,
-    { defaultSelectedKey: selectedKey, label, ...extra },
+    { selected: selectedKey, label, ...extra },
     React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
     React.createElement(
       Select.Content,
@@ -63,7 +63,7 @@ describe("Select.label", () => {
       expect(trigger.textContent).toContain(items[0].label);
     });
 
-    it("shows label with defaultSelectedKey", () => {
+    it("shows label with selected", () => {
       const items = createMockSelectItems(3);
       const container = renderWithValueLabel(items[1].label, items[1].key, items);
       const trigger = getSelectTrigger(container);
@@ -89,7 +89,7 @@ describe("Select.label", () => {
       expect(trigger.textContent).toContain(items[0].label);
     });
 
-    it("shows placeholder when neither label nor defaultSelectedKey provided", () => {
+    it("shows placeholder when neither label nor selected provided", () => {
       const items = createMockSelectItems(3);
       const container = renderSelectWithItems(items);
       const trigger = getSelectTrigger(container);
@@ -104,7 +104,7 @@ describe("Select.label", () => {
       // Use a key that doesn't exist in items
       const element = React.createElement(
         Select,
-        { defaultSelectedKey: "non-existent-key", label: "External Model" },
+        { selected: "non-existent-key", label: "External Model" },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -123,7 +123,7 @@ describe("Select.label", () => {
       const items = createMockSelectItems(3);
       const element = React.createElement(
         Select,
-        { defaultSelectedKey: "non-existent-key" },
+        { selected: "non-existent-key" },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,
@@ -219,7 +219,7 @@ describe("Select.label", () => {
       const items = createMockSelectItems(3);
       const element = React.createElement(
         Select,
-        { defaultSelectedKey: items[0].key, label: items[0].label },
+        { selected: items[0].key, label: items[0].label },
         React.createElement(Select.Trigger, null, React.createElement(Select.Value)),
         React.createElement(
           Select.Content,

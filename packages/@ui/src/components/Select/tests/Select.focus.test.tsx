@@ -91,7 +91,7 @@ describe("Select.focus", () => {
 
     it("opening dropdown focuses selected item (single)", async () => {
       const items = createMockSelectItems(5);
-      const container = renderSelectWithItems(items, { defaultSelectedKey: items[2].key });
+      const container = renderSelectWithItems(items, { selected: items[2].key });
       const trigger = getSelectTrigger(container);
 
       await openSelect(trigger);
@@ -107,7 +107,7 @@ describe("Select.focus", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, {
         mode: "multiple",
-        defaultSelectedKeys: [items[1].key, items[3].key],
+        selected: [items[1].key, items[3].key],
       });
       const trigger = getSelectTrigger(container);
 

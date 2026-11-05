@@ -175,6 +175,13 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   value?: Key | Key[] | null;
 
   /**
+   * Initial selected key in single mode or selected keys in multiple mode. Use state.value
+   * for controlled usage.
+   * @category Core
+   */
+  selected?: Key | Key[] | null;
+
+  /**
    * Initial panel visibility for backwards compatibility. Use defaultOpen for initial
    * visibility in new code, or state.open with onOpenChange for controlled visibility.
    * @category Core
@@ -207,25 +214,11 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
   selectedKey?: Key | null;
 
   /**
-   * Sets the initial selected key for uncontrolled single-select usage.
-   * @category Core
-   * @default null
-   */
-  defaultSelectedKey?: Key | null;
-
-  /**
    * Controls the selected keys in multiple mode when neither value nor state.value supplies an
    * array.
    * @category Core
    */
   selectedKeys?: Key[];
-
-  /**
-   * Sets the initial selected keys for uncontrolled multiple-select usage.
-   * @category Core
-   * @default []
-   */
-  defaultSelectedKeys?: Key[];
 
   /**
    * Provides fallback trigger text when the selected option has not registered yet and no option is
@@ -236,7 +229,7 @@ export interface SelectProps<T = any> extends React.HTMLAttributes<HTMLDivElemen
 
   /**
    * Provides the selected trigger text before options register, which avoids a server-rendered
-   * placeholder flash. Pair it with selectedKey or defaultSelectedKey.
+   * placeholder flash. Pair it with selected or a controlled selection.
    * @category Content
    */
   label?: string;
@@ -327,10 +320,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
       open,
       defaultOpen,
       items: propItems = [],
+      selected,
       selectedKey: controlledSelectedKey,
-      defaultSelectedKey,
       selectedKeys: controlledSelectedKeys,
-      defaultSelectedKeys = [],
       defaultValue,
       label,
       onSelectionChange,
@@ -392,8 +384,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
 
     const [selectedKey, setSelectedKey] = useControlledState(
       controlledSingleKey,
-      defaultSelectedKey,
-      defaultSelectedKey ?? null,
+      !Array.isArray(selected) ? selected : undefined,
+      null,
     );
 
     const controlledMultipleValues =
@@ -414,7 +406,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps<any>>(
     const [selectedKeys, setSelectedKeys] = useControlledState(
       controlledMultipleKeys,
       undefined,
-      new Set(defaultSelectedKeys),
+      new Set(Array.isArray(selected) ? selected : []),
     );
 
     const [selectedTextValue, setSelectedTextValue] = React.useState(label ?? defaultValue ?? "");

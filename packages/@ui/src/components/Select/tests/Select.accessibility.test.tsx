@@ -54,7 +54,7 @@ describe("Select.accessibility", () => {
   describe("selection state ARIA", () => {
     it('selected items have aria-selected="true"', async () => {
       const items = createMockSelectItems(5);
-      const container = renderSelectWithItems(items, { defaultSelectedKey: items[0].key });
+      const container = renderSelectWithItems(items, { selected: items[0].key });
       const trigger = getSelectTrigger(container);
 
       await openSelect(trigger);
@@ -69,7 +69,7 @@ describe("Select.accessibility", () => {
 
     it('unselected items have aria-selected="false"', async () => {
       const items = createMockSelectItems(5);
-      const container = renderSelectWithItems(items, { defaultSelectedKey: items[0].key });
+      const container = renderSelectWithItems(items, { selected: items[0].key });
       const trigger = getSelectTrigger(container);
 
       await openSelect(trigger);

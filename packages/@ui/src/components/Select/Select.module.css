@@ -199,9 +199,13 @@
     --inset-gap: slot(border, width, var(--border-width-base, 1px));
   }
 
-  .item,
-  .sub-trigger {
+  /* Scoped under the panel, like Menu's `.panel .item`: List's `.item` has the same
+     single-class specificity and is emitted later, so an unscoped rule loses to it. */
+  :is(.content, .sub-content) :is(.item, .sub-trigger) {
     @apply flex items-center gap-2 outline-none cursor-default select-none;
+    /* Rows are List items; drop List's control-sized minimum so the
+       padding and line box alone set the shared row height. */
+    min-block-size: 0;
     padding: var(--row-padding-block) var(--row-padding-inline);
     /* Restate the panel radius and gap on the row itself: List also paints
        these rows, so neither file may depend on stylesheet order. */
@@ -271,7 +275,7 @@
     }
   }
 
-  .item-with-description {
+  .item.with-description {
     @apply items-start py-2;
   }
   .item-icon-with-description {
@@ -308,8 +312,15 @@
   }
 
   .item.item-multiple {
-    padding-inline-start: calc(var(--row-padding-inline) / 2);
     gap: 0.5rem;
+  }
+
+  /* Top-aligned beside a title and description, the checkbox reads high against the
+     title. Offset it like .item-icon-with-description, by the same amount on the start
+     edge so its padding stays uniform. */
+  .item.item-multiple.with-description > [data-slot="item.control"] {
+    margin-block-start: calc(var(--spacing) * 0.5);
+    margin-inline-start: calc(var(--spacing) * 0.5);
   }
 
   .item.item-multiple > [data-slot="item.control"] > :global(.checkbox) {

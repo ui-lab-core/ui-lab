@@ -107,7 +107,7 @@ describe("Select.styling", () => {
 
   it("applies item anatomy slots and publishes selection state", async () => {
     render(
-      <Select defaultSelectedKey="a">
+      <Select selected="a">
         <Select.Trigger>Pick</Select.Trigger>
         <Select.Content>
           <Select.Item

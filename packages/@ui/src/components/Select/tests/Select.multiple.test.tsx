@@ -156,7 +156,7 @@ describe("Select.multiple", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, {
         mode: "multiple",
-        defaultSelectedKeys: [items[0].key, items[2].key],
+        selected: [items[0].key, items[2].key],
       });
 
       const selectedItems = getSelectedItems(container);
@@ -184,7 +184,7 @@ describe("Select.multiple", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, {
         mode: "multiple",
-        defaultSelectedKeys: [items[0].key, items[1].key, items[2].key],
+        selected: [items[0].key, items[1].key, items[2].key],
       });
 
       let selectedItems = getSelectedItems(container);
@@ -203,7 +203,7 @@ describe("Select.multiple", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, {
         mode: "multiple",
-        defaultSelectedKeys: [items[0].key, items[1].key],
+        selected: [items[0].key, items[1].key],
       });
 
       const selectedItems = getSelectedItems(container);
@@ -216,7 +216,7 @@ describe("Select.multiple", () => {
       const items = createMockSelectItems(5);
       const container = renderSelectWithItems(items, {
         mode: "multiple",
-        defaultSelectedKeys: [items[0].key],
+        selected: [items[0].key],
       });
 
       const allItems = getSelectItems(container);

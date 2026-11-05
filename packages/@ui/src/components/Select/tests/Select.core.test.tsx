@@ -59,9 +59,9 @@ describe("Select.core", () => {
       expect(selectedItems[0]).toHaveTextContent(items[0].label);
     });
 
-    it("uncontrolled: defaultSelectedKey sets initial selection", async () => {
+    it("uncontrolled: selected sets initial selection", async () => {
       const items = createMockSelectItems(3);
-      renderSelectWithItems(items, { defaultSelectedKey: items[1].key });
+      renderSelectWithItems(items, { selected: items[1].key });
 
       const selectedItems = getSelectedItems(screen.getByRole("button").parentElement!);
       expect(selectedItems).toHaveLength(1);
@@ -84,7 +84,7 @@ describe("Select.core", () => {
 
     it("selectedTextValue displays selected item text", async () => {
       const items = createMockSelectItems(3);
-      renderSelectWithItems(items, { defaultSelectedKey: items[2].key });
+      renderSelectWithItems(items, { selected: items[2].key });
 
       const trigger = screen.getByRole("button");
       expect(trigger).toHaveTextContent(items[2].label);
@@ -122,13 +122,13 @@ describe("Select.core", () => {
       expect(selectedItems).toHaveLength(2);
     });
 
-    it("uncontrolled: defaultSelectedKeys sets initial selections", async () => {
+    it("uncontrolled: selected sets initial selections", async () => {
       const items = createMockSelectItems(5);
       const selected = [items[1].key, items[3].key];
 
       const container = renderSelectWithItems(items, {
         mode: "multiple",
-        defaultSelectedKeys: selected,
+        selected: selected,
       });
 
       const selectedItems = getSelectedItems(container);

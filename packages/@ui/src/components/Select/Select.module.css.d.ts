@@ -29,7 +29,7 @@ declare const styles: {
   "item-text": string;
   "item-content": string;
   "item-description": string;
-  "item-with-description": string;
+  "with-description": string;
   "item-icon-with-description": string;
   "option-group-title": string;
   separator: string;
