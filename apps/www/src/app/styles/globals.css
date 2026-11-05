@@ -76,15 +76,7 @@
 
   --spacing: clamp(0.18rem, 2.25vw, 0.225rem);
 
-  --radius-xs: 0.425rem;
-  --radius-sm: 0.65rem;
-  --radius-base: 0.875rem;
-  --radius-md: 1.01rem;
-  --radius-lg: 1.091rem;
-  --radius-xl: 1.14rem;
-  --radius-2xl: 1.169rem;
-  --radius-full: 9999px;
-  --radius-ratio: 2.25;
+  --radius-ratio: 2.5;
 
   /* Border Width Scale */
   --border-width-none: 0;

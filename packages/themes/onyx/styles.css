@@ -3,7 +3,7 @@
 :root {
   --ease-decelerate: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --hover-enter-duration: 0ms;
-  --hover-leave-duration: 90ms;
+  --hover-leave-duration: 0ms;
   --hover-duration: var(--hover-leave-duration);
   --hover-transition-timing-function: var(--ease-snappy-pop, ease-out);
   --hover-100: color-mix(in srgb, var(--background-600) 60%, transparent);
