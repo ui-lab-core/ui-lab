@@ -35,13 +35,18 @@ Text is light-first: lower shade = stronger text.
 
 ### Accent
 
-`accent` is the single primary-emphasis color. Use it only for the main action in a local context, selected/active/current states, focus indication, and links that need emphasis. One accent focus per local context. Never use accent for decoration, headings, or icons that carry no state.
+`accent` is the single primary-emphasis color. Use it only for the main action in a local context, the current navigation location, and focus indication. One accent focus per local context. Never use accent for decoration, headings, or icons that carry no state.
 
-| Role                      | Use                                     |
-| ------------------------- | --------------------------------------- |
-| Primary action            | Component variant first (e.g. `Button` primary), else `bg-accent-500`/`-600` |
-| Selected / active item    | `text-accent-500` or a tinted `bg-accent-*` fill |
-| Accent text on dark       | `text-accent-400`/`-500`                |
+**Accent is a fill, never a foreground.** Do not apply `text-accent-*` or accent-colored icons to text, labels, counts, icons, or controls. Express active/selected/filtered state with neutral contrast instead — the component's own selected/variant state first, then a foreground or surface shift.
+
+| Role                                   | Use                                                                 |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| Primary action                         | Component variant first (e.g. `Button` primary), else `bg-accent-500`/`-600` |
+| Current navigation location            | Component selected state first, else a small `bg-accent-*` indicator |
+| Focus                                  | Component focus ring (do not restyle)                               |
+| Selected / active / filtered control   | Neutral: `text-foreground-50`–`200` vs. `300`–`400` resting, or `bg-background-700`/`600` fill. Never accent. |
+| Active-count readout (e.g. filters on) | Plain count in the control's own foreground. Never accent.          |
+| Accent text or icons                   | Not allowed                                                         |
 
 ### Semantic tokens
 

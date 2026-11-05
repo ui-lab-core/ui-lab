@@ -95,7 +95,8 @@ the design. Each color class gets one of two outcomes:
 
 Hex, `rgba()`, arbitrary values, Tailwind neutrals, and chromatic Tailwind standing
 in for state are also removed. Replace one with a token only when removing it would
-lose real meaning, such as a semantic state or the accent on a selected item.
+lose real meaning, such as a semantic state or the accent fill on a current
+navigation item.
 
 Valid ranges and the roles that justify a replacement, per
 `references/design-system.md`:
@@ -107,8 +108,10 @@ Valid ranges and the roles that justify a replacement, per
   (muted). There is no `foreground-500` or higher.
 - Borders: `border-background-*` (`700` default, `800` subtle, `600` emphasis).
 - Accent highlight: `accent-50` to `accent-600` for primary emphasis only:
-  the main action, selected or active state, focus, and current navigation item.
-  One accent focus per local context.
+  the main action, focus, and current navigation item. One accent focus per
+  local context. Accent is a fill, never a foreground: rewrite `text-accent-*`
+  and accent-colored icons/counts to neutral foreground, and express
+  active/filtered control states with neutral contrast, not accent.
 - Semantic highlights: `success`, `danger`, `warning`, `info` at `50` to `600`, only
   for actual feedback states. They replace any green/red/amber/yellow/blue
   standing in for state.

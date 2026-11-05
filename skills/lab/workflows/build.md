@@ -144,7 +144,10 @@ must never visually outrank a selected state.
 row, a decorative icon beside a heading, a gradient, a card inside a card, or a
 four-part empty state (icon + heading + subtext + CTA) because the layout looks
 sparse. Sparse is fine. Reach for `accent-*` only for primary actions, focus, or
-current location — it is load-bearing, not decoration.
+current location — it is load-bearing, not decoration. Accent is a fill, never a
+foreground: no `text-accent-*` and no accent-colored icons, counts, or labels.
+Active, selected, and filtered states on controls use neutral contrast
+(`text-foreground-*` shift or `bg-background-700`/`600`), not accent.
 
 ## Step 5 — Self-check before presenting
 

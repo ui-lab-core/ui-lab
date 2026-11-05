@@ -162,6 +162,7 @@ Compact token guide:
 Specific checks:
 
 - Flag `accent-*` backgrounds or borders on passive selected/filter surfaces, category rows, inactive toolbar controls, or generic selected pills unless the design clearly intends primary emphasis.
+- Flag any `text-accent-*` or accent-colored icon, count, or label. Accent is a fill, never a foreground; active/filtered control states use neutral contrast.
 - Flag `foreground-50` on compact controls, metadata, chips, secondary actions, and filter states when it makes those elements too bright for their role.
 - For passive selected filters/chips/categories, prefer neutral selected states: `bg-background-700/800`, `border-background-600/700`, `text-foreground-200/300`.
 - Hover states must not visually outrank active or selected states. If an inactive hover becomes brighter, stronger, or more colorful than the selected state, flag it.
@@ -172,6 +173,7 @@ Severity guidance:
 
 - `WARNING` for wrong token role that makes hierarchy or state misleading.
 - `WARNING` for `accent-*` used as a passive selection background or border.
+- `WARNING` for `accent-*` used as a foreground (text, icon, count, label).
 - `SUGGESTION` for foreground that is too bright or dim when hierarchy remains understandable.
 - `CRITICAL` only when token misuse breaks accessibility, theme compatibility, or state comprehension.
 

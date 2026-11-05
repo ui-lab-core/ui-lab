@@ -298,7 +298,7 @@ Only three tools exist: `get_component { query, detail, limit }`, `search_worksh
 - `references/design-system.md`, `references/slop-patterns.md`, and `references/craft.md` were read in full this session
 - Every styled native element or hand-rolled control in scope with a UI Lab equivalent was swapped, using APIs fetched via MCP
 - Obvious slop patterns were removed without changing behavior or meaning
-- Colors use only `bg-background-500`–`950`, `text-foreground-50`–`400`, `border-background-*`, `accent-*` for primary emphasis, and semantic tokens for feedback states. No hex, `rgba()`, Tailwind neutrals, shadows, gradients, or `dark:`
+- Colors use only `bg-background-500`–`950`, `text-foreground-50`–`400`, `border-background-*`, `accent-*` fills for primary emphasis (never `text-accent-*` or accent-colored icons), and semantic tokens for feedback states. No hex, `rgba()`, Tailwind neutrals, shadows, gradients, or `dark:`
 - Product logic is unchanged and a brief report lists swaps, removals, and anything left untouched
 
 **conform**: A conform pass is complete when:
