@@ -23,7 +23,7 @@ export default function Notifications() {
             <List.Title>
               <Label htmlFor={`${id}-${index}`}>{String(label)}</Label>
             </List.Title>
-            <List.Switch id={`${id}-${index}`} defaultSelected={Boolean(selected)} />
+            <List.Switch id={`${id}-${index}`} selected={Boolean(selected)} />
           </List.Item>
         ))}
       </List>
@@ -43,4 +43,3 @@ export default function Notifications() {
     </Surface>
   );
 }
-

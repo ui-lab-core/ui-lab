@@ -62,7 +62,7 @@ const Container = React.forwardRef<ListRef, ListProps>(
         (item) =>
           item.isConnected &&
           item.tabIndex >= 0 &&
-          item.getAttribute("aria-hidden") !== "true" &&
+          !item.closest('[aria-hidden="true"], [inert]') &&
           item.getAttribute("aria-disabled") !== "true" &&
           item.getAttribute("data-disabled") !== "true",
       );

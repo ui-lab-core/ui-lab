@@ -12,6 +12,8 @@ declare const styles: {
   readonly header: string;
   readonly footer: string;
   readonly divider: string;
+  readonly disclosure: string;
+  readonly meta: string;
 };
 
 export default styles;

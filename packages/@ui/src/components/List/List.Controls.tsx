@@ -75,7 +75,7 @@ markListItemSlot(CheckboxIndicator, () => "leading");
 
 /** Interactive switch inside a list item */
 const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchProps>(
-  ({ isSelected, disabled, className, ...props }, ref) => {
+  ({ selected, disabled, className, ...props }, ref) => {
     const { styles: listStyles } = useListContext();
     const { styles: itemStyles } = useListItemContext();
 
@@ -85,7 +85,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof UISwitch>, ListSwitchPro
         data-slot="item.control"
         data-list-primary-action="true"
       >
-        <UISwitch ref={ref} isSelected={isSelected} disabled={disabled} {...props} />
+        <UISwitch ref={ref} selected={selected} disabled={disabled} {...props} />
       </div>
     );
   },

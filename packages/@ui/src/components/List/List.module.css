@@ -42,7 +42,8 @@
     border-block-end-width: 0;
     border-radius: 0;
     background-color: slot(item, background, var(--background, var(--background-900, transparent)));
-    @apply px-5 py-4;
+    --item-inset: 1rem;
+    --item-padding-inline: 1.25rem;
   }
 
   .root[data-layout="bulky"] > .item:first-child {
@@ -61,13 +62,22 @@
   }
 
   .item {
+    --item-inset: 0.25rem;
+    --item-control-size: 2rem;
+    --item-padding-inline: 0.75rem;
+    --item-actions-reserve: 4rem;
+
+    position: relative;
     inline-size: 100%;
     min-inline-size: 0;
+    min-block-size: calc(var(--item-control-size) + var(--item-inset) * 2);
+    padding-block: var(--item-inset);
+    padding-inline: var(--item-padding-inline);
     box-sizing: border-box;
     /* Concentric with the list box: any padded or bordered surface around the
        rows sets --inset-gap, and the row shrinks its radius to match. */
     border-radius: var(--list-item-radius, slot(item, radius, var(--inset-radius)));
-    @apply flex items-center gap-3 px-3 py-1 cursor-pointer;
+    @apply flex items-center gap-3 cursor-pointer;
     background-color: slot(item, background, var(--background, transparent));
     color: slot(item, foreground, var(--foreground, var(--foreground-100, currentColor)));
     transition:
@@ -81,8 +91,27 @@
     display: grid;
   }
 
+  .item[data-has-actions="true"] {
+    /* Independent of row height, so wrapping cannot feed back into this space.
+       Increase the reservation for unusually tall content or multiple actions. */
+    padding-inline-end: max(var(--item-padding-inline), var(--item-actions-reserve));
+  }
+
   .item[data-list-layout="columns"] > * {
     min-width: 0;
+  }
+
+  .disclosure {
+    @apply flex items-center justify-center flex-shrink-0;
+  }
+
+  .disclosure > svg {
+    transform: rotate(-90deg);
+    transition: transform 200ms var(--ease-snappy-pop, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+
+  .disclosure[data-expanded="true"] > svg {
+    transform: rotate(0deg);
   }
 
   .item[data-focus-visible="true"] {
@@ -142,12 +171,10 @@
     --hover-duration: initial;
   }
 
-  .item[data-list-layout="columns"] .control,
-  .item[data-list-layout="columns"] .actions {
+  .item[data-list-layout="columns"] .control {
     margin-inline-start: 0;
     justify-self: end;
   }
-
   .control[data-placement="start"] {
     margin-inline-start: 0;
   }
@@ -159,8 +186,10 @@
   }
 
   .media {
-    block-size: 2rem;
-    inline-size: 2rem;
+    block-size: var(--media-size, 32px);
+    inline-size: var(--media-size, 32px);
+    flex-shrink: 0;
+    box-sizing: border-box;
   }
 
   .title {
@@ -181,6 +210,20 @@
     color: slot(item, desc-foreground, var(--desc-foreground, var(--foreground-300, currentColor)));
   }
 
+  .meta {
+    @apply flex items-center flex-shrink-0;
+    margin-inline-start: auto;
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm-body);
+    font-variant-numeric: tabular-nums;
+    color: var(--foreground-400, currentColor);
+  }
+
+  .item[data-list-layout="columns"] .meta {
+    margin-inline-start: 0;
+    justify-self: end;
+  }
+
   .action-group {
     @apply flex items-center;
     padding-inline: 0.25rem;
@@ -196,12 +239,59 @@
     justify-content: flex-end;
   }
 
+  /* Keep the row-height square for icon actions, but let wider controls grow
+     the container so they retain the same minimum end inset. */
   .actions {
+    --inset-gap: var(--item-inset);
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    block-size: 100%;
+    inline-size: auto;
+    min-inline-size: max-content;
+    aspect-ratio: 1;
+    box-sizing: border-box;
     align-items: center;
-    gap: 0.25rem;
-    margin-inline-start: auto;
+    justify-content: center;
+    gap: var(--item-inset);
+    pointer-events: none;
+    @apply flex p-0 opacity-70 transition-opacity;
+    padding-inline: var(--item-inset);
+  }
+
+  .actions > * {
     flex-shrink: 0;
-    @apply flex p-1.5 opacity-70 transition-opacity;
+    pointer-events: auto;
+  }
+
+  /* Controls are not square icon buttons. Size their action group from its
+     content and keep its end inset independent of the row's height. */
+  .actions:has(> .control) {
+    inline-size: max-content;
+    aspect-ratio: auto;
+    padding-inline: var(--item-padding-inline);
+  }
+
+  .actions > .control {
+    margin-inline-start: 0;
+  }
+
+  /* Navigation already exposes DOM focus or data-highlighted. Keep actions
+     available for both, and while an owned trigger's panel takes hover/focus.
+     Important intentionally overrides consumer visibility utilities, regardless
+     of whether the consumer scans component source for Tailwind classes. */
+  .item:focus-within > .actions,
+  .item[data-highlighted="true"] > .actions,
+  .actions:has([data-open="true"]) {
+    visibility: visible !important;
+  }
+
+  /* Themes size icon buttons through --size on the button itself, so the row
+     sizes the box directly instead of passing a size down. */
+  .item .actions > [data-icon-only="true"] {
+    block-size: var(--item-control-size);
+    inline-size: var(--item-control-size);
+    border-radius: var(--inset-radius);
   }
 
   .item:hover .actions,

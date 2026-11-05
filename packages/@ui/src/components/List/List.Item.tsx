@@ -9,9 +9,19 @@ import { useListContext, ListItemContext } from "./list.context";
 import { ListItemProps } from "./list.types";
 import css from "./List.module.css";
 import { focusAdjacentTabStop } from "@/lib/item-navigation";
-import { getListItemSlot } from "./list.item-layout";
+import { getListItemSlot, markListItemSlot } from "./list.item-layout";
 import { Actions } from "./List.Actions";
 import { resolveListItemStyles } from "./list.styles";
+import { ChevronDown } from "lucide-react";
+
+function Disclosure({ expanded }: { expanded: boolean }) {
+  return (
+    <span className={css.disclosure} data-expanded={expanded ? "true" : undefined} aria-hidden="true">
+      <ChevronDown size={16} />
+    </span>
+  );
+}
+markListItemSlot(Disclosure, () => "leading");
 
 type ListItemDOMProps = React.HTMLAttributes<HTMLDivElement> & {
   "data-disabled"?: boolean | "true" | "false";
@@ -140,6 +150,9 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       styles: stylesProp,
       actions,
       tabIndex: tabIndexProp,
+      depth = 0,
+      expanded,
+      onExpandedChange,
       onMouseEnter,
       ...props
     },
@@ -179,21 +192,29 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
       domProps["data-disabled"] === true ||
       domProps["data-disabled"] === "true";
     const tabIndex = tabIndexProp ?? (focusable ? (isDisabled ? -1 : 0) : undefined);
-    const hasRowClickAction = typeof onClickProp === "function";
-    const itemChildren = React.Children.toArray(children);
-    const childSlots = itemChildren.map(getListItemSlot);
+    const isDisclosure = expanded !== undefined;
+    const hasRowClickAction = typeof onClickProp === "function" || isDisclosure;
+    const itemChildren = React.Children.toArray(
+      isDisclosure ? [<Disclosure key="disclosure" expanded={expanded} />, children] : children,
+    );
+    // Actions are positioned independently of the content grid.
+    const gridChildren = itemChildren.filter(
+      (child) => !React.isValidElement(child) || child.type !== Actions,
+    );
+    const childSlots = gridChildren.map(getListItemSlot);
     const hasActionsChild = itemChildren.some(
       (child) => React.isValidElement(child) && child.type === Actions,
     );
     const shouldAppendActions = Boolean(actions?.length) && !hasActionsChild;
+    const hasActions = shouldAppendActions || hasActionsChild;
     const lastLeadingIndex = childSlots.lastIndexOf("leading");
     const firstTrailingIndex = childSlots.indexOf("trailing");
     const hasStructuralSlots =
-      lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || shouldAppendActions;
+      lastLeadingIndex >= 0 || firstTrailingIndex >= 0 || hasActions;
     const leadingCount = lastLeadingIndex + 1;
-    const trailingStart = firstTrailingIndex >= 0 ? firstTrailingIndex : itemChildren.length;
+    const trailingStart = firstTrailingIndex >= 0 ? firstTrailingIndex : gridChildren.length;
     const contentCount = Math.max(0, trailingStart - leadingCount);
-    const trailingCount = itemChildren.length - trailingStart + (shouldAppendActions ? 1 : 0);
+    const trailingCount = gridChildren.length - trailingStart;
     const hasTrailing = trailingCount > 0;
     const hasLeading = leadingCount > 0;
     const hasContent = contentCount > 0;
@@ -268,6 +289,7 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
         if (isDisabled) return;
         onClickProp?.(event);
         if (event.defaultPrevented) return;
+        if (isDisclosure) onExpandedChange?.(!expanded);
 
         if (!focusable || isDisabled || !itemRef.current) return;
         itemRef.current.focus({ preventScroll: true });
@@ -289,11 +311,21 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
             focusAdjacentItem(event.currentTarget, -1);
             return;
           case "ArrowRight":
+            if (isDisclosure && !expanded) {
+              event.preventDefault();
+              onExpandedChange?.(true);
+              return;
+            }
             if (orientation !== "horizontal") return;
             event.preventDefault();
             focusAdjacentItem(event.currentTarget, 1);
             return;
           case "ArrowLeft":
+            if (isDisclosure && expanded) {
+              event.preventDefault();
+              onExpandedChange?.(false);
+              return;
+            }
             if (orientation !== "horizontal") return;
             event.preventDefault();
             focusAdjacentItem(event.currentTarget, -1);
@@ -364,9 +396,10 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
           {...itemProps}
           role={role}
           aria-selected={role === "option" ? (selected ? "true" : "false") : undefined}
+          aria-expanded={isDisclosure ? expanded : undefined}
           tabIndex={tabIndex}
           className={cn(
-            "item",
+            "item group/item",
             css.item,
             listStyles.item.root,
             className,
@@ -380,13 +413,16 @@ const Item = React.forwardRef<HTMLDivElement, ListItemProps>(
           data-value={value}
           data-interactive={interactive ? "true" : undefined}
           data-selected={selected ? "true" : undefined}
+          data-disclosure={isDisclosure ? "true" : undefined}
           data-list-layout={hasStructuralSlots ? "columns" : undefined}
+          data-has-actions={hasActions ? "true" : undefined}
           style={{
             ...itemProps.style,
+            ...(depth > 0 && { paddingInlineStart: `calc(var(--item-padding-inline) + ${depth * 1.25}rem)` }),
             gridTemplateColumns: layoutColumns,
           }}
         >
-          {children}
+          {itemChildren}
           {shouldAppendActions && <Actions />}
         </div>
       </ListItemContext.Provider>

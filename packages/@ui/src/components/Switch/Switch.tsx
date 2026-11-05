@@ -57,36 +57,26 @@ export interface SwitchState {
 /** Native input props and controlled state accepted by Switch; root styling targets the outer surface. */
 export interface SwitchProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "type" | "size" | "onChange" | "checked"
+  "type" | "size" | "onChange" | "checked" | "defaultChecked"
 > {
   /**
-   * Controlled checked value. `state.checked` takes precedence when supplied.
+   * Initial selected value. Use state.checked for controlled usage.
    * @category Core
+   * @default false
    */
-  checked?: boolean;
+  selected?: boolean;
   /**
-   * Controlled switch state. Its `checked` value takes precedence over `checked`.
+   * Controlled switch state. Its checked value takes precedence over selected.
    * @category Core
    * @typeDoc SwitchState
    */
   state?: SwitchState;
-  /**
-   * Legacy controlled value used when both `state.checked` and `checked` are absent. Prefer `checked`.
-   * @category Advanced
-   */
-  isSelected?: boolean;
   /**
    * Receives the next checked value after keyboard, pointer, or drag-toggle interaction. Disabled and read-only switches do not call it.
    * @category Events
    * @see https://react-spectrum.adobe.com/react-aria/useSwitch.html
    */
   onChange?: (isSelected: boolean) => void;
-  /**
-   * Legacy initial checked value used when all controlled values and `defaultChecked` are absent. Prefer `defaultChecked`.
-   * @category Advanced
-   */
-  defaultSelected?: boolean;
-
   /**
    * Disables interaction and native focus while applying disabled styling.
    * @category Core
@@ -117,12 +107,9 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       styles: stylesProp,
       disabled = false,
       readOnly,
-      checked,
+      selected: initialSelected,
       state: controlledState,
-      isSelected: legacySelected,
       onChange,
-      defaultChecked,
-      defaultSelected,
       size = "default",
       ...props
     },
@@ -130,8 +117,8 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
   ) => {
     const [selected, setSelected] = useControlledState(
       controlledState?.checked,
-      checked ?? legacySelected,
-      defaultChecked ?? defaultSelected ?? false,
+      initialSelected,
+      false,
     );
     const toggleState = useToggleState({
       isSelected: selected,

@@ -11,6 +11,7 @@ import { Checkbox, CheckboxIndicator, Switch, Input, Select } from "./List.Contr
 import { Media } from "./List.Media";
 import { Title } from "./List.Title";
 import { Desc } from "./List.Desc";
+import { Meta } from "./List.Meta";
 
 const List = Object.assign(ListRoot, {
   Header: ListHeader,
@@ -24,6 +25,7 @@ const List = Object.assign(ListRoot, {
   Media,
   Title,
   Desc,
+  Meta,
   ActionGroup: ListActionGroup,
   Divider: ListDivider,
   Footer: ListFooter,
@@ -57,6 +59,7 @@ export type {
   ListMediaProps,
   ListTitleProps,
   ListDescProps,
+  ListMetaProps,
   ListActionGroupProps,
   ListDividerProps,
   ListFooterProps,

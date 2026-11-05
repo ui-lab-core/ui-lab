@@ -13,6 +13,8 @@ import { markListItemSlot } from "./list.item-layout";
  * to control where the actions render; when omitted, List.Item appends it after
  * the row content. Reads action definitions from the item's `actions` prop unless
  * `actions` or `children` are provided directly.
+ * Remains visible while its row is focused or highlighted, or an owned trigger
+ * is open, even when consumer visibility utilities hide idle actions.
  */
 const Actions = React.forwardRef<HTMLDivElement, ListActionsProps>(
   ({ actions: actionsProp, children, className, ...props }, ref) => {
@@ -27,7 +29,12 @@ const Actions = React.forwardRef<HTMLDivElement, ListActionsProps>(
     return (
       <div
         ref={ref}
-        className={cn(css.actions, listStyles.item.actions, itemStyles.actions, className)}
+        className={cn(
+          css.actions,
+          listStyles.item.actions,
+          itemStyles.actions,
+          className,
+        )}
         {...props}
         data-slot="item.actions"
         data-actions

@@ -196,6 +196,22 @@ export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   selected?: boolean;
   /**
+   * Nesting level. Indents the row's leading edge by 1.25rem per level.
+   * @category Layout
+   * @default 0
+   */
+  depth?: number;
+  /**
+   * Publishes the row as a disclosure: adds a leading chevron and aria-expanded, and toggles on click, Enter/Space, or ArrowRight/ArrowLeft. Controlled; pair with onExpandedChange.
+   * @category Core
+   */
+  expanded?: boolean;
+  /**
+   * Receives the requested expanded value when the row is toggled.
+   * @category Events
+   */
+  onExpandedChange?: (expanded: boolean) => void;
+  /**
    * Styles this row and its List-owned anatomy without changing sibling items.
    * @category Styling
    * @typeDoc ListItemStylesProp
@@ -209,6 +225,14 @@ export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   actions?: Array<ListActionDef | React.ReactNode>;
   /**
    * Content rendered in the option row.
+   * @category Content
+   */
+  children: React.ReactNode;
+}
+
+export interface ListMetaProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Decorative trailing text rendered at the end of the item, such as a count.
    * @category Content
    */
   children: React.ReactNode;
@@ -261,6 +285,13 @@ export type ListInputProps = React.ComponentPropsWithoutRef<typeof UIInput>;
 export type ListSelectProps = React.ComponentPropsWithoutRef<typeof UISelect>;
 
 export interface ListMediaProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Fixed width and height of the media box in pixels. Larger sizes grow the row.
+   * Does not resize or clip children; size child content to fit the box.
+   * @category Core
+   * @default 32
+   */
+  size?: number;
   /**
    * Content rendered in the leading media area.
    * @category Content

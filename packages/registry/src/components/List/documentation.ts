@@ -27,6 +27,19 @@ export const styleDocumentation = {
 </List>`,
       },
       {
+        title: "Size media thumbnails",
+        description:
+          "List.Media defaults to a fixed 32×32px box. Set size in pixels for larger thumbnails; the row grows to fit. Size child content to fill the box, and opt into clipping or image fitting as needed.",
+        code: `<List aria-label="Projects">
+  <List.Item value="mountains">
+    <List.Media size={64} className="overflow-hidden rounded-lg">
+      <img src="/mountains.jpg" alt="" className="h-full w-full object-cover" />
+    </List.Media>
+    <List.Title>Mountain retreat</List.Title>
+  </List.Item>
+</List>`,
+      },
+      {
         title: "Set the default gap",
         description: "Use the generic gap variable when the gap prop is not set.",
         code: `<List
