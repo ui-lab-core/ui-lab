@@ -3,7 +3,7 @@
 import React, { useId, createContext, useContext } from "react";
 import { useRadioGroupState } from "react-stately";
 
-import { mergeProps } from "@react-aria/utils";
+import { mergeProps, useLayoutEffect } from "@react-aria/utils";
 import { useHover } from "@react-aria/interactions";
 import { useFocusRing } from "@react-aria/focus";
 import { useRadioGroup, useRadio } from "@react-aria/radio";
@@ -69,10 +69,16 @@ function resolveRadioStyles(styles: RadioStylesProp | undefined) {
   return resolveRadioBaseStyles({ root, item, input, dot, label, description, helperText });
 }
 
+interface RadioGroupItem {
+  value: string;
+  disabled: boolean;
+}
+
 interface RadioGroupContextType {
   state?: ReturnType<typeof useRadioGroupState>;
   disabled?: boolean;
   size?: RadioSize;
+  registerItem: (item: RadioGroupItem) => () => void;
 }
 
 const RadioGroupContext = createContext<RadioGroupContextType | undefined>(undefined);
@@ -87,8 +93,12 @@ const useRadioGroupContext = () => {
  * @typeDoc RadioGroupState
  */
 export interface RadioGroupState {
-  /** Controlled selected value. Each render reflects this value until onValueChange requests a change. */
-  value?: string;
+  /**
+   * Controlled selected value. Each render reflects this value until onValueChange requests a change.
+   * Pass null for controlled with nothing selected; undefined leaves the group uncontrolled.
+   * A value matching no Radio.Item behaves like null.
+   */
+  value?: string | null;
 }
 
 /**
@@ -130,7 +140,7 @@ function resolveRadioGroupStyles(styles: RadioGroupStylesProp | undefined) {
 
 export interface RadioGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   /**
-   * Selected radio value. For controlled usage, pass state={{ value }} instead.
+   * Initial selected value for uncontrolled usage. Later changes are ignored; for controlled usage, pass state={{ value }} instead.
    * @category Core
    */
   value?: string;
@@ -206,20 +216,40 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
     },
     ref,
   ) => {
-    const [selectedValue, setSelectedValue] = useControlledState(
+    const [selectedValue, setSelectedValue, isControlled] = useControlledState<string | null>(
       controlledState?.value,
       value,
-      defaultValue,
+      defaultValue ?? null,
     );
+    const [items, setItems] = React.useState<readonly RadioGroupItem[] | null>(null);
+    const registerItem = React.useCallback((item: RadioGroupItem) => {
+      setItems((current) => [...(current ?? []), item]);
+      return () => setItems((current) => current && current.filter((other) => other !== item));
+    }, []);
+
+    // useRadio gives no item a tab stop when a non-null selection matches
+    // nothing, so a value without an item has to reach it as "no selection".
     const state = useRadioGroupState({
-      value: selectedValue,
-      defaultValue,
+      value: items && !items.some((item) => item.value === selectedValue) ? null : selectedValue,
       onChange: (next) => {
-        setSelectedValue(next);
+        if (!isControlled) setSelectedValue(next);
         onValueChange?.(next);
       },
       isDisabled: disabled,
     });
+
+    // With no selection, useRadio only gives the last focused item a tab stop,
+    // so that item has to be forgotten once it is removed or disabled.
+    const { lastFocusedValue, setLastFocusedValue } = state;
+    useLayoutEffect(() => {
+      if (
+        items &&
+        lastFocusedValue !== null &&
+        !items.some((item) => item.value === lastFocusedValue && !item.disabled)
+      ) {
+        setLastFocusedValue(null);
+      }
+    }, [items, lastFocusedValue, setLastFocusedValue]);
 
     const { radioGroupProps, labelProps, descriptionProps } = useRadioGroup(
       {
@@ -233,7 +263,7 @@ const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
     const resolved = resolveRadioGroupStyles(stylesProp);
 
     return (
-      <RadioGroupContext.Provider value={{ state, disabled, size }}>
+      <RadioGroupContext.Provider value={{ state, disabled, size, registerItem }}>
         <div
           {...mergeProps(radioGroupProps, props)}
           ref={ref}
@@ -524,10 +554,12 @@ const RadioItem = React.forwardRef<HTMLInputElement, RadioItemProps>(
       throw new Error("RadioItem must be used within a Radio.Group");
     }
 
-    const { state } = radioGroupContext;
+    const { state, registerItem } = radioGroupContext;
     const size = sizeProp || radioGroupContext?.size || "md";
     const disabled = disabledProp ?? radioGroupContext?.disabled ?? false;
     const isSelected = state.selectedValue === value;
+
+    useLayoutEffect(() => registerItem({ value, disabled }), [registerItem, value, disabled]);
 
     const inputRef = React.useRef<HTMLInputElement>(null);
     const rootRef = React.useRef<HTMLDivElement>(null);

@@ -210,7 +210,12 @@
       }
 
       .input {
-        --radius-sm: 0;
+        border-radius: slot(item, radius, 0);
+      }
+
+      .input > [data-input-focus-surface="true"] {
+        /* Flatten the surface without changing radius tokens used by nested actions. */
+        border-radius: 0;
       }
 
       .item:first-child {

@@ -50,9 +50,15 @@
     }
 
     .item {
+      --item-inset: var(--row-padding-block);
+      --item-padding-inline: var(--row-padding-inline);
+
       @apply flex min-w-0 items-center gap-2;
+      /* Rows are List items; drop List's control-sized minimum so the
+         padding and line box alone set the shared row height. */
+      min-block-size: 0;
       padding-block: var(--row-padding-block);
-      padding-inline: var(--row-padding-inline);
+      padding-inline: var(--item-padding-inline);
       /* Inside the panel border. */
       --inset-gap: slot(border, width, var(--border-width-base, 1px));
       border-radius: slot(item, radius, var(--inset-radius));
@@ -64,6 +70,10 @@
       font-weight: 500;
       letter-spacing: normal;
       line-height: var(--leading-sm, 1.25rem);
+    }
+
+    .item[data-has-actions="true"] {
+      padding-inline-end: max(var(--item-padding-inline), var(--item-actions-reserve));
     }
 
     .item[data-disabled="true"] {

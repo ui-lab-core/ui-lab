@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Group } from "../Group";
+import { Copy } from "../internal/icons/copy";
+import { Check } from "../internal/icons/check";
+import { Input } from "../Input";
 import { Select } from "../Select";
 import { cn } from "@/lib/cn";
 import css from "./Color.module.css";
 import { isValidColor } from "./color-utils";
-import { Divider } from "../Divider";
 
 interface ColorInputProps {
   value: string;
@@ -42,6 +43,33 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
     ref,
   ) => {
     const inputValue = value;
+    const copyIconSize = 14 * (size === "lg" ? 1 : size === "sm" ? 0.8 : 0.9);
+    const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "error">("idle");
+
+    React.useEffect(() => {
+      setCopyStatus("idle");
+    }, [value, format]);
+
+    React.useEffect(() => {
+      if (copyStatus !== "copied") return;
+      const timeout = setTimeout(() => setCopyStatus("idle"), 2000);
+      return () => clearTimeout(timeout);
+    }, [copyStatus]);
+
+    const handleCopy = async () => {
+      try {
+        await navigator.clipboard.writeText(inputValue);
+        setCopyStatus("copied");
+      } catch {
+        setCopyStatus("error");
+      }
+    };
+
+    const copyLabel = copyStatus === "copied"
+      ? "Copied to clipboard"
+      : copyStatus === "error"
+        ? "Copy failed. Try again"
+        : "Copy color value";
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -56,24 +84,14 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
     };
 
     return (
-      <Group
+      <div
         ref={ref}
-        disabled={disabled}
+        data-disabled={disabled || undefined}
         data-size={size}
         data-slot="input.group"
         className={cn("input-group", "w-full", css["input-group"], groupClassName)}
       >
-        <Group.Input
-          value={inputValue}
-          onChange={handleInputChange}
-          disabled={disabled}
-          placeholder={format === "hex" ? "#000000" : "rgb(0, 0, 0)"}
-          aria-label="Color input"
-          className={cn("input", css.input, inputClassName)}
-          data-slot="input.input"
-        />
-        <Divider />
-        <Group.Select
+        <Select
           selectedKey={format}
           defaultValue={format === "hex" ? "Hex" : "RGB"}
           onSelectionChange={(key: React.Key) => {
@@ -98,7 +116,7 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
               </Select.Item>
             </Select.List>
           </Select.Content>
-        </Group.Select>
+        </Select>
         {showPreview && (
           <div
             className={cn("swatch", css["preview-swatch"], previewClassName)}
@@ -113,7 +131,21 @@ export const ColorInput = React.forwardRef<HTMLDivElement, ColorInputProps>(
             aria-label={`Color preview: ${value}`}
           />
         )}
-      </Group>
+        <Input
+          value={inputValue}
+          onChange={handleInputChange}
+          disabled={disabled}
+          placeholder={format === "hex" ? "#000000" : "rgb(0, 0, 0)"}
+          aria-label="Color input"
+          className={cn("input", css.input, inputClassName)}
+          data-slot="input.input"
+          actions={[{
+            icon: copyStatus === "copied" ? <Check size={copyIconSize} /> : <Copy size={copyIconSize} />,
+            title: copyLabel,
+            onClick: handleCopy,
+          }]}
+        />
+      </div>
     );
   },
 );
