@@ -58,11 +58,8 @@ export function RedesignLanding() {
               </span>
             </div>
             <div className="flex w-full flex-col gap-2 sm:ml-auto sm:w-55">
-              <Button size="lg" variant="outline" href="/docs">
+              <Button className="rounded-full" size="lg" variant="outline" href="/docs">
                 Browse Library
-              </Button>
-              <Button size="lg" variant="primary" href="/docs">
-                Getting Started
               </Button>
             </div>
           </header>
@@ -97,7 +94,7 @@ export function RedesignLanding() {
           </section>
 
           <section className="my-12 sm:my-20" aria-labelledby="building-blocks-heading">
-            <h3 className="mb-16 text-xl sm:mb-32 sm:text-2xl font-medium leading-snug tracking-tight">
+            <h3 className="mb-16 text-xl sm:mb-32 sm:text-2xl font-medium leading-snug tracking-tight bg-linear-to-b from-foreground-200 to-foreground-400 bg-clip-text text-transparent">
               Workshop is an ever-growing index of elements, sections and starters that you and your
               agent can query.
             </h3>
@@ -132,7 +129,7 @@ export function RedesignLanding() {
           <section className="mt-24 sm:mt-32" aria-labelledby="design-language-heading">
             <h2
               id="design-language-heading"
-              className="text-xl font-medium leading-tight tracking-tight text-foreground-100"
+              className="text-xl font-medium leading-tight tracking-tight bg-linear-to-b from-foreground-200 to-foreground-400 bg-clip-text text-transparent"
             >
               Your style, one system.
             </h2>
