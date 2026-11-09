@@ -52,8 +52,8 @@
     border-radius: inherit;
     pointer-events: none;
     background: slot(range, background, var(--background));
-    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+      var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .thumb {
@@ -71,14 +71,14 @@
     border: slot(thumb, border, none);
     box-shadow: slot(thumb, shadow, none);
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      box-shadow var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      box-shadow var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--press-duration, var(--duration-fast, 100ms))
+        var(--press-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .slider[data-orientation="horizontal"] .range {
@@ -136,5 +136,15 @@
 
   .slider[data-orientation="vertical"] .thumb[data-pressed="true"] {
     transform: translate(-50%, 50%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .range,
+    .slider,
+    .surface,
+    .thumb,
+    .track {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

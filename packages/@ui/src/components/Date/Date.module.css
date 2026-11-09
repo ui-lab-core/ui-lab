@@ -46,12 +46,12 @@
       var(--font-body, inherit);
     letter-spacing: normal;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .nav-button:focus-visible {
@@ -59,7 +59,7 @@
   }
 
   .nav-button:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
   }
 
   .day-cell {
@@ -75,14 +75,14 @@
       var(--font-body, inherit);
     letter-spacing: normal;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      opacity var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .day-cell:focus-visible {
@@ -105,17 +105,17 @@
 
 /*
  * .day-cell's background-color/border-color/color transition is tuned for
- * single-cell hover affordance (instant on enter, a 300ms fade on leave, via
+ * single-cell hover affordance (100ms on enter, a 150ms fade on leave, via
  * --hover-duration). During range drag-preview, cells behind the cursor flip
  * their in-range state without being :hover themselves, so they'd inherit the
- * 300ms leave-fade and visibly trail the pointer. Range fill needs to track
+ * 150ms leave-fade and visibly trail the pointer. Range fill needs to track
  * the pointer exactly, so make those three instant in range mode only; opacity
  * (disabled/out-of-range dimming) keeps its normal duration. Positional
  * override of transition-duration against the base rule's
  * background-color/border-color/color/opacity transition-property order.
  */
 [data-mode="range"] .day-cell {
-  transition-duration: 0s, 0s, 0s, var(--hover-duration, var(--hover-leave-duration, 300ms));
+  transition-duration: 0s, 0s, 0s, var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)));
 }
 
 .day-cell[data-in-range="true"] {
@@ -200,7 +200,7 @@
 
 .day-cell[data-hovered="true"]:not([data-disabled="true"]):not([data-out-of-range="true"]),
 .day-cell:hover:not([data-disabled="true"]):not([data-out-of-range="true"]) {
-  --hover-duration: var(--hover-enter-duration, 0ms);
+  --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
 }
 
 .day-cell[data-today="true"] {
@@ -215,4 +215,18 @@
 .day-cell[data-disabled="true"] {
   cursor: not-allowed;
 }
+  @media (prefers-reduced-motion: reduce) {
+    .calendar,
+    .day-cell,
+    .day-header,
+    .day-headers,
+    .header,
+    .month-year,
+    .nav-button,
+    .week-header,
+    .week-number {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
+  }
 }

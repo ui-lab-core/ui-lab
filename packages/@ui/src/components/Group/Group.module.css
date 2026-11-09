@@ -156,7 +156,7 @@
 
   .select
     > :global(.value):has(> :global(.button[data-hovered="true"]:not([data-disabled="true"]))) {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     background-color: var(--background, transparent);
   }
 

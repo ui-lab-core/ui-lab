@@ -95,8 +95,8 @@
     border-radius: var(--background-radius);
     box-sizing: border-box;
     overflow: hidden;
-    transition: border-color var(--focus-transition-duration, 150ms)
-      var(--focus-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: border-color var(--focus-duration, var(--duration-normal, 150ms))
+      var(--focus-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &[data-disabled] {
       background-color: var(--disabled-background, var(--background, transparent));
@@ -186,10 +186,10 @@
     --active-background: var(--background-700);
     --active-color: var(--foreground-100);
     transition:
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     & + .stepper {
       border-top:
@@ -199,7 +199,7 @@
     }
 
     &:hover:not(:disabled) {
-      --hover-duration: var(--hover-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
       background-color: var(--hover-background, transparent);
       color: var(--hover-color, var(--foreground, currentColor));
     }
@@ -212,6 +212,23 @@
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .actions,
+    .container,
+    .content,
+    .controls,
+    .hint,
+    .icon,
+    .icon-wrapper,
+    .input,
+    .prefix,
+    .scope,
+    .stepper,
+    .suffix {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

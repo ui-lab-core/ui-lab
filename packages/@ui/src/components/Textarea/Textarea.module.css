@@ -31,12 +31,12 @@
     line-height: var(--leading-sm, 1.25rem);
     outline: none;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &::placeholder {
       color: var(--placeholder);
@@ -110,10 +110,10 @@
     border-radius: var(--radius-sm, 0.375rem);
     background-color: var(--background);
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &[data-disabled="true"] {
       opacity: var(--disabled-opacity);
@@ -136,13 +136,13 @@
       position: absolute;
       border-radius: var(--radius-full);
       background-color: slot(handle, background, var(--foreground, currentColor));
-      transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      transition: background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     }
 
     &:hover::before,
     &:hover::after {
-      --hover-duration: var(--hover-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
       background-color: slot(
         handle,
         background-hover,
@@ -227,11 +227,28 @@
     font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition: color var(--hover-duration, var(--hover-leave-duration, 300ms))
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+      var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .character-count[data-over-limit="true"] {
     color: slot(count, foreground-error, var(--foreground-error, inherit));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .character-count,
+    .field,
+    .resize-handle,
+    .resize-handle-both,
+    .resize-handle-x,
+    .resize-handle-y,
+    .root,
+    .scroll,
+    .size-lg,
+    .size-md,
+    .size-sm,
+    .surface {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

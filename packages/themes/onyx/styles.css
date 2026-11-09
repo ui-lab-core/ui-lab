@@ -1,11 +1,10 @@
 @reference "tailwindcss";
 
 :root {
-  --ease-decelerate: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --hover-enter-duration: 0ms;
-  --hover-leave-duration: 0ms;
+  --hover-enter-duration: var(--duration-fast, 100ms);
+  --hover-leave-duration: var(--duration-normal, 150ms);
   --hover-duration: var(--hover-leave-duration);
-  --hover-transition-timing-function: var(--ease-snappy-pop, ease-out);
+  --hover-easing: var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
   --hover-100: color-mix(in srgb, var(--background-600) 60%, transparent);
   --hover-200: color-mix(in srgb, var(--background-600) 35%, transparent);
   --ring-background: #0f74c5;
@@ -71,17 +70,6 @@
   .button {
     --background: var(--background-800);
     --focus-visible: var(--accent-400);
-    --raised-shade: oklch(from var(--color) calc(l + 0.08 - 0.16 * clamp(0, (l - 0.5) * 1000, 1)) c h);
-    --raised-ring-tint: oklch(from var(--color) calc(l + 0.03 - 0.06 * clamp(0, (l - 0.5) * 1000, 1)) c h);
-    --raised-ring: var(--raised-ring-tint);
-    --raised-gloss: linear-gradient(
-      to bottom,
-      rgb(255 255 255 / 14%) 0%,
-      rgb(255 255 255 / 3%) 40%,
-      transparent 60%,
-      rgb(0 0 0 / 8%) 100%
-    );
-    --raised-shadow: 0 1px 2px rgb(0 0 0 / 16%);
 
     @slot icon {
       --foreground: var(--foreground-400);
@@ -92,8 +80,6 @@
     &:not([data-disabled]) {
       &:is([data-hovered="true"], [data-selected="true"]) {
         --background: color-mix(in srgb, var(--background-600) 50%, var(--background-950));
-        --raised-ring: color-mix(in srgb, var(--background) 68%, var(--raised-ring-tint));
-        --raised-shadow: 0 1px 2px rgb(0 0 0 / 20%), 0 2px 6px rgb(0 0 0 / 10%);
         @slot border {
           --background-hover: var(--background-600);
           --background-selected: var(--background-600);
@@ -102,9 +88,6 @@
 
       &[data-pressed="true"] {
         --background: color-mix(in srgb, var(--background-600) 60%, var(--background-950));
-        --raised-gloss: linear-gradient( to bottom, rgb(0 0 0 / 8%), transparent 60%, rgb(255 255 255 / 4%));
-        --raised-ring: color-mix(in srgb, var(--background) 62%, var(--raised-ring-tint));
-        --raised-shadow: 0 1px 2px rgb(0 0 0 / 16%) inset;
         @slot border {
           --background-pressed: var(--background-600);
         }
@@ -177,9 +160,9 @@
 
   .expand > .content {
     --background: transparent;
-    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
+    --closed-animation: slide-out-to-top var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     --foreground: var(--foreground-300);
-    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
+    --open-animation: slide-in-from-top var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
   }
 
   .card {
@@ -622,10 +605,10 @@
   .select > :where(.content, .sub-content) {
     --background: color-mix(in srgb, var(--background-800) var(--floating-opacity), transparent);
     backdrop-filter: var(--floating-blur);
-    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
+    --closed-animation: slide-out-to-top var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
-    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
+    --open-animation: slide-in-from-top var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     @slot border {
       --background: var(--background-600);
     }
@@ -876,10 +859,10 @@
   .menu > :where(.content, .sub-content) {
     --background: color-mix(in srgb, var(--background-800) var(--floating-opacity), transparent);
     backdrop-filter: var(--floating-blur);
-    --closed-animation: slide-out-to-top 0.15s var(--ease-snappy-pop);
+    --closed-animation: slide-out-to-top var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     --foreground: var(--foreground-300);
     --foreground-muted: var(--foreground-400);
-    --open-animation: slide-in-from-top 0.15s var(--ease-snappy-pop);
+    --open-animation: slide-in-from-top var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     @slot border {
       --background: var(--background-600);
     }
@@ -1079,19 +1062,27 @@
   @variant button secondary default {
     --background: var(--background-800);
     --foreground: var(--foreground-300);
-    --shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 1px 1px rgb(0 0 0 / 16%);
+    --background-image: none;
+    --shadow: none;
+
+    @slot icon {
+      --foreground: currentColor;
+    }
+
     @slot border {
       --background: var(--background-700);
+      --background-hover: var(--background-700);
+      --background-selected: var(--background-700);
+      --background-pressed: var(--background-700);
     }
 
     &:not([data-disabled]) {
       &:is([data-hovered="true"], [data-selected="true"]) {
-        --background: color-mix(in srgb, var(--background-800) 97%, var(--foreground-50));
+        --background: color-mix(in srgb, var(--background-800) 94%, var(--foreground-50));
       }
 
       &[data-pressed="true"] {
-        --background: color-mix(in srgb, var(--background-800) 85%, var(--background-950));
-        --shadow: inset 0 1px 1px rgb(0 0 0 / 14%);
+        --background: color-mix(in srgb, var(--background-800) 90%, var(--foreground-50));
       }
     }
   }
@@ -1179,32 +1170,30 @@
 
   .button:is([data-variant="primary"], [data-color]) {
     --background: var(--color);
-    --shadow: var(--raised-shadow);
+    --background-image: none;
+    --shadow: none;
+    --button-shade: oklch(from var(--color) calc(l + 0.08 - 0.16 * clamp(0, (l - 0.5) * 1000, 1)) c h);
 
     @slot icon {
       --foreground: currentColor;
     }
 
     @slot border {
-      --background: var(--raised-ring);
-      --background-hover: var(--raised-ring);
-      --background-selected: var(--raised-ring);
-      --background-pressed: var(--raised-ring);
+      --background: transparent;
+      --background-hover: transparent;
+      --background-selected: transparent;
+      --background-pressed: transparent;
     }
 
     &:not([data-disabled]) {
       &:is([data-hovered="true"], [data-selected="true"]) {
-        --background: color-mix(in srgb, var(--color) 80%, var(--raised-shade));
+        --background: var(--button-shade);
       }
 
       &[data-pressed="true"] {
-        --background: color-mix(in srgb, var(--color) 68%, var(--raised-shade));
+        --background: oklch(from var(--button-shade) calc(l + 0.04 - 0.08 * clamp(0, (l - 0.5) * 1000, 1)) c h);
       }
     }
-  }
-
-  .button:is([data-variant="primary"], :not([data-variant])[data-color]) {
-    --background-image: var(--raised-gloss);
   }
 
   .button[data-color] {

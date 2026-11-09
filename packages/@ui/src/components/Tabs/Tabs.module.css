@@ -57,8 +57,8 @@
     pointer-events: none;
     will-change: transform;
     transition-property: transform, width, height;
-    transition-duration: var(--tabs-indicator-duration, 280ms);
-    transition-timing-function: var(--tabs-indicator-easing, cubic-bezier(0.25, 1, 0.5, 1));
+    transition-duration: var(--tabs-indicator-duration, var(--layout-duration, var(--duration-moderate, 200ms)));
+    transition-timing-function: var(--tabs-indicator-easing, var(--layout-easing, var(--ease-out-quint, ease-out)));
 
     @media (prefers-reduced-motion: reduce) {
       transition-duration: var(--tabs-indicator-duration, 120ms);
@@ -104,13 +104,13 @@
     outline: none;
     box-shadow: none;
     transition:
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &[data-hovered="true"]:not([data-disabled="true"]):not([data-selected="true"]) {
-      --hover-duration: var(--hover-enter-duration, 0ms);
+      --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
       background-color: slot(
         trigger,
         background-hover,
@@ -185,6 +185,20 @@
 
     .trigger {
       @apply px-1 py-1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content,
+    .icon,
+    .indicator,
+    .indicator-fallback,
+    .indicator-fallback-frame,
+    .indicator-underline,
+    .list,
+    .tabs,
+    .trigger {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

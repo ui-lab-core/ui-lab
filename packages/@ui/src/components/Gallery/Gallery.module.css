@@ -2,8 +2,8 @@
 
 @layer components.defaults {
   .item {
-    --transition: var(--hover-duration, var(--hover-leave-duration, 300ms))
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    --transition: var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+      var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     --view-width: 200px;
 
     @apply flex flex-col overflow-hidden no-underline cursor-pointer w-full h-full min-w-0;
@@ -31,7 +31,7 @@
   }
 
   .item[data-hovered="true"]:not([data-disabled="true"]) {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     background-color: slot(item, background-hover, slot(item, background, var(--background, transparent)));
     border-color: slot(border, background-hover, slot(border, background, transparent));
   }
@@ -86,5 +86,13 @@
     font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .body,
+    .item,
+    .view {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

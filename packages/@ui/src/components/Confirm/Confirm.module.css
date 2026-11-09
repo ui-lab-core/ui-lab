@@ -118,7 +118,9 @@
   }
 
   .input {
-    @apply w-full mt-2 rounded-sm transition-all duration-200;
+    @apply w-full mt-2 rounded-sm;
+    transition: background-color var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)),
+      border-color var(--duration-normal, 150ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
     --background: var(--input-background);
     @slot border {
       --background: var(--background-700);
@@ -128,5 +130,29 @@
 
   .actions {
     @apply flex items-center gap-2;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .actions,
+    .body,
+    .confirm,
+    .container,
+    .countdown-text,
+    .description,
+    .error-message,
+    .header,
+    .input,
+    .input-label,
+    .row,
+    .row-description,
+    .row-text,
+    .row-title,
+    .warning-box,
+    .warning-box-critical,
+    .warning-box-high,
+    .warning-box-low,
+    .warning-box-medium {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

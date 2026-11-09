@@ -67,12 +67,12 @@
     color: var(--foreground-400);
     border: none;
     transition:
-      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      transform var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      opacity var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     outline: none;
   }
 
@@ -87,7 +87,7 @@
   }
 
   .dismiss[data-hovered="true"] {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     background-color: var(--background, transparent);
   }
 
@@ -98,5 +98,16 @@
 
   .dismiss[data-focus-visible="true"] {
     box-shadow: 0 0 0 1.5px var(--focus-visible, var(--foreground));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .badge,
+    .content,
+    .dismiss,
+    .dismissible,
+    .icon,
+    .pill {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

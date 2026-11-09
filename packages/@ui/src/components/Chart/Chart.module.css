@@ -111,7 +111,7 @@
   .bar {
     fill: currentColor;
     stroke: none;
-    transition: opacity var(--chart-bar-highlight-duration, 160ms) ease-out;
+    transition: opacity var(--chart-bar-highlight-duration, var(--duration-normal, 150ms)) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
   }
 
   .bar[data-active="true"] {
@@ -197,8 +197,8 @@
     font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition: transform var(--chart-tooltip-move-duration, 200ms)
-      var(--chart-tooltip-move-easing, var(--ease-snappy-pop, ease-out));
+    transition: transform var(--chart-tooltip-move-duration, var(--duration-moderate, 200ms))
+      var(--chart-tooltip-move-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -342,7 +342,7 @@
     border: 0;
     border-radius: var(--grid-chart-radius);
     outline: none;
-    transition: filter 120ms ease-out, box-shadow 120ms ease-out;
+    transition: filter var(--duration-fast, 100ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)), box-shadow var(--duration-fast, 100ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
   }
 
   button.grid-chart-cell {
@@ -396,5 +396,51 @@
       var(--grid-chart-empty)
     );
     border-radius: var(--grid-chart-radius, 4px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .area,
+    .axis,
+    .bar,
+    .chart,
+    .column-highlight,
+    .cursor,
+    .cursor-line,
+    .dot-ring,
+    .frame,
+    .grid,
+    .grid-chart,
+    .grid-chart-cell,
+    .grid-chart-cell-empty,
+    .grid-chart-cells,
+    .grid-chart-layout,
+    .grid-chart-legend,
+    .grid-chart-legend-swatch,
+    .grid-chart-viewport,
+    .grid-chart-x-label,
+    .grid-chart-x-labels,
+    .grid-chart-y-label,
+    .grid-chart-y-labels,
+    .header,
+    .item,
+    .label,
+    .labels,
+    .legend,
+    .line,
+    .live-region,
+    .marker,
+    .name,
+    .plot,
+    .point,
+    .reference,
+    .row,
+    .rule,
+    .surface,
+    .swatch,
+    .tick,
+    .tooltip,
+    .value {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

@@ -91,12 +91,12 @@
   }
 
   .range[data-animated="true"] {
-    animation: pulse 2s var(--ease-gentle-ease, ease-in-out) infinite;
+    animation: pulse var(--duration-pulse, 2000ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
   }
 
   .range[data-indeterminate="true"] {
     width: 33.333%;
-    animation: progress-indeterminate 1.5s var(--ease-gentle-ease, ease-in-out) infinite;
+    animation: progress-indeterminate var(--duration-loop, 1500ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
   }
 
   .thumb {
@@ -139,6 +139,20 @@
     }
     100% {
       transform: translateX(400%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .label,
+    .label-row,
+    .progress,
+    .range,
+    .surface,
+    .thumb,
+    .track,
+    .value {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+      animation: none !important;
     }
   }
 }

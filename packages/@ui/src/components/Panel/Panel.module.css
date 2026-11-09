@@ -21,8 +21,8 @@
     @apply min-h-0 shrink-0 overflow-hidden;
     flex: 0 0 var(--size);
     transition:
-      flex-basis var(--panel-duration, 0.32s) var(--panel-ease, ease),
-      height var(--panel-duration, 0.32s) var(--panel-ease, ease);
+      flex-basis var(--panel-duration, var(--layout-duration, var(--duration-slow, 300ms))) var(--panel-easing, var(--layout-easing, var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1)))),
+      height var(--panel-duration, var(--layout-duration, var(--duration-slow, 300ms))) var(--panel-easing, var(--layout-easing, var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1))));
   }
 
   .sidebar[data-open="false"] {
@@ -36,7 +36,7 @@
     height: var(--content-height, 100%);
     opacity: 1;
     transition:
-      opacity var(--panel-duration, 0.32s) var(--panel-ease, ease),
+      opacity var(--panel-duration, var(--layout-duration, var(--duration-slow, 300ms))) var(--panel-easing, var(--layout-easing, var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1)))),
       visibility 0s;
   }
 
@@ -44,8 +44,8 @@
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity var(--panel-duration, 0.32s) var(--panel-ease, ease),
-      visibility 0s linear var(--panel-duration, 0.32s);
+      opacity var(--panel-duration, var(--layout-duration, var(--duration-slow, 300ms))) var(--panel-easing, var(--layout-easing, var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1)))),
+      visibility 0s linear var(--panel-duration, var(--layout-duration, var(--duration-slow, 300ms)));
   }
 
   /* Inset: siblings keep the full panel width and are pushed aside (clipped by the panel)
@@ -147,6 +147,23 @@
     .sidebar > .content,
     .sidebar[data-open="false"] > .content {
       transition: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .compact,
+    .panel,
+    .resize,
+    .sidebar,
+    .spacing-lg,
+    .spacing-md,
+    .spacing-none,
+    .spacing-sm,
+    .spacingLg,
+    .spacingMd,
+    .spacingNone,
+    .spacingSm {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

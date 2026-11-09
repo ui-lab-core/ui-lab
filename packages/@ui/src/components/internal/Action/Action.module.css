@@ -13,15 +13,15 @@
     color: slot(action, foreground, currentColor);
     cursor: pointer;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .action[data-hovered="true"],
   .action[data-focus-visible="true"] {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     background-color: slot(
       action,
       background-hover,
@@ -45,5 +45,12 @@
 
   .icon {
     @apply flex items-center justify-center;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .action,
+    .icon {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

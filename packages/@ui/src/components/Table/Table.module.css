@@ -154,10 +154,10 @@
   .row {
     display: table-row;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .row[data-interactive="true"] {
@@ -165,7 +165,7 @@
   }
 
   .row:hover:not([data-disabled="true"]) .cell {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
   }
 
   .row[data-disabled="true"] {
@@ -191,10 +191,10 @@
     border-bottom: slot(border, width, var(--border-width-base, 1px)) slot(border, style, solid)
       slot(border, background, transparent);
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
   }
 
   .row:last-child .cell {
@@ -281,5 +281,29 @@
   .root[data-bare="true"] .table .headerCell,
   .root[data-bare="true"] .table .cell {
     border-bottom: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .body,
+    .bodyScroller,
+    .container,
+    .emptyRow,
+    .emptyState,
+    .filterBar,
+    .filterField,
+    .filterGrid,
+    .filterInput,
+    .filterLabel,
+    .header,
+    .headerRow,
+    .interactive,
+    .root,
+    .row,
+    .scroller,
+    .scrollerThumb,
+    .scrollerTrack,
+    .table {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }

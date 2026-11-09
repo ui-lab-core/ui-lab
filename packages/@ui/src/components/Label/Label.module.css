@@ -25,7 +25,7 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     color: var(--foreground);
-    transition: color 150ms ease;
+    transition: color var(--focus-duration, var(--duration-normal, 150ms)) var(--focus-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &[data-disabled] {
       color: var(--disabled-foreground);
@@ -51,11 +51,20 @@
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
     margin-top: 0.25rem;
-    transition: color 150ms ease;
+    transition: color var(--focus-duration, var(--duration-normal, 150ms)) var(--focus-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     color: var(--helper-color);
 
     &[data-error] {
       color: var(--helper-error-color);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .helper-text,
+    .label,
+    .required-indicator,
+    .text {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

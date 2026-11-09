@@ -139,8 +139,8 @@
     font-weight: 500;
     letter-spacing: normal;
     line-height: var(--leading-sm, 1.25rem);
-    transition: background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-      var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+    transition: background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+      var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     border-top: slot(border, width, 1px) slot(border, style, solid)
       slot(border, background, var(--background-700));
     background: transparent;
@@ -150,7 +150,7 @@
   }
 
   .expand-button:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     background-color: var(--background-800);
   }
 
@@ -165,26 +165,39 @@
     color: var(--foreground-400);
     opacity: 0;
     transition:
-      opacity var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      opacity var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      background-color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      color var(--hover-duration, var(--hover-leave-duration, var(--duration-normal, 150ms)))
+        var(--hover-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     background: transparent;
     border: none;
     z-index: 11;
   }
 
   .copy-button:hover {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     background-color: var(--background-800);
     color: var(--foreground-300);
   }
 
   .copy-button:focus,
   .body:hover .copy-button {
-    --hover-duration: var(--hover-enter-duration, 0ms);
+    --hover-duration: var(--hover-enter-duration, var(--duration-fast, 100ms));
     opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .body,
+    .code,
+    .copy-button,
+    .expand-button,
+    .expand-icon,
+    .header,
+    .horizontal-scroll,
+    .viewport {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
   }
 }
