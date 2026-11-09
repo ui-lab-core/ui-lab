@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
+import { prefersReducedMotion, readMotion } from "@/lib/motion";
 
 export type AnimatedDimension = "width" | "height";
 
@@ -22,8 +23,8 @@ interface ElementSize {
  */
 export function useAnimatedSize<T extends HTMLElement = HTMLDivElement>({
   dimensions = ["width", "height"],
-  duration = 300,
-  easing = "cubic-bezier(0.22, 1, 0.36, 1)",
+  duration,
+  easing,
   trigger,
   disabled = false,
 }: UseAnimatedSizeOptions = {}) {
@@ -54,8 +55,10 @@ export function useAnimatedSize<T extends HTMLElement = HTMLDivElement>({
     const naturalSize = { width: naturalRect.width, height: naturalRect.height };
     previousSizeRef.current = naturalSize;
 
-    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (!renderedSize || disabled || reduceMotion || duration <= 0) return;
+    const reduceMotion = prefersReducedMotion();
+    const motion = readMotion(element, "layout");
+    const resolvedDuration = duration ?? motion.duration;
+    if (!renderedSize || disabled || reduceMotion || resolvedDuration <= 0) return;
 
     const changedDimensions = dimensionList.filter(
       (dimension) => Math.abs(renderedSize[dimension] - naturalSize[dimension]) >= 0.5,
@@ -78,7 +81,7 @@ export function useAnimatedSize<T extends HTMLElement = HTMLDivElement>({
     element.style.overflow = "hidden";
     element.style.willChange = changedDimensions.join(", ");
 
-    const animation = element.animate([from, to], { duration, easing });
+    const animation = element.animate([from, to], { duration: resolvedDuration, easing: easing ?? motion.easing });
     animationRef.current = animation;
 
     const restoreStyles = () => {

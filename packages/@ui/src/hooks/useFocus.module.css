@@ -24,12 +24,12 @@
     border: slot(ring, width, 0px) slot(ring-border, style, solid)
       slot(ring-border, background-visible, slot(ring-border, background, transparent));
     transition-property: opacity, border-radius;
-    transition-duration: var(--ring-fade-duration, 150ms), 0ms;
-    transition-timing-function: var(--ring-transition-timing-function, ease-out);
+    transition-duration: var(--ring-fade-duration, var(--duration-normal, 150ms)), 0ms;
+    transition-timing-function: var(--ring-easing, var(--focus-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))));
   }
 
   .focus-indicator[data-transition-radius="true"] {
-    transition-duration: var(--ring-fade-duration, 150ms), var(--ring-transition-duration, 200ms);
+    transition-duration: var(--ring-fade-duration, var(--duration-normal, 150ms)), var(--ring-transition-duration, var(--duration-moderate, 200ms));
   }
 
   .focus-indicator[data-visible="true"] {
@@ -60,6 +60,13 @@
     .focus-indicator,
     .focus-indicator[data-transition-radius="true"] {
       transition-duration: 0ms;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .focus-indicator,
+    .focus-scope {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

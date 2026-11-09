@@ -1,4 +1,5 @@
 import * as React from "react";
+import { transitionDuration } from "@/lib/motion";
 
 type PresenceState = "entering" | "entered" | "exiting" | "exited";
 
@@ -16,7 +17,7 @@ function isReducedMotion() {
 export function usePresence(
   open: boolean,
   duration: number,
-  { settleExit = false }: { settleExit?: boolean } = {},
+  { settleExit = false, elementRef }: { settleExit?: boolean; elementRef?: React.RefObject<HTMLElement | null> } = {},
 ) {
   const [present, setPresent] = React.useState(false);
   const [state, setState] = React.useState<PresenceState>("exiting");
@@ -32,6 +33,7 @@ export function usePresence(
     let firstFrame = 0;
     let secondFrame = 0;
     let timeout = 0;
+    const exitDuration = transitionDuration(elementRef?.current ?? null, duration);
 
     if (open) {
       if (!present) {
@@ -63,18 +65,18 @@ export function usePresence(
         });
       } else if (state !== "exiting") {
         setState("exiting");
-      } else if (isReducedMotion() || duration === 0) {
+      } else if (isReducedMotion() || exitDuration === 0) {
         completeExit();
       } else if (settleExit) {
         // Start the missing-event fallback only after the exit styles have had
         // a rendering opportunity, not before the CSS transition starts.
         firstFrame = window.requestAnimationFrame(() => {
           secondFrame = window.requestAnimationFrame(() => {
-            timeout = window.setTimeout(completeExit, duration);
+            timeout = window.setTimeout(completeExit, exitDuration);
           });
         });
       } else {
-        timeout = window.setTimeout(completeExit, duration);
+        timeout = window.setTimeout(completeExit, exitDuration);
       }
     }
 
@@ -83,7 +85,7 @@ export function usePresence(
       window.cancelAnimationFrame(secondFrame);
       window.clearTimeout(timeout);
     };
-  }, [completeExit, duration, open, present, settleExit, state]);
+  }, [completeExit, duration, elementRef, open, present, settleExit, state]);
 
   const finishExit = React.useCallback(() => {
     if (!open && state === "exiting") {

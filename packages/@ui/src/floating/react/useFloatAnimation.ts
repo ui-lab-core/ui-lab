@@ -1,4 +1,5 @@
 import * as React from "react";
+import { prefersReducedMotion, readMotion } from "@/lib/motion";
 
 const PLACEMENT_TRANSFORM_MAP: Record<string, string> = {
   top: "translateY(4px) scale(0.95)",
@@ -14,6 +15,7 @@ function getInitialTransform(placement: string): string {
 
 interface UseFloatAnimationOptions {
   open: boolean;
+  element?: HTMLElement | null;
   isPositioned: boolean;
   placement: string;
   /** Skips the exit transition entirely, unmounting the panel the instant `open` goes false. */
@@ -28,6 +30,7 @@ interface UseFloatAnimationReturn {
 
 export function useFloatAnimation({
   open,
+  element = null,
   isPositioned,
   placement,
   skipExitAnimation = false,
@@ -63,17 +66,23 @@ export function useFloatAnimation({
   React.useEffect(() => {
     if (open) return;
     const rafId = requestAnimationFrame(() => setIsAnimating(false));
-    const timer = setTimeout(() => setIsExiting(false), 200);
+    const timer = setTimeout(() => setIsExiting(false), readMotion(element, "exit").duration);
     return () => {
       cancelAnimationFrame(rafId);
       clearTimeout(timer);
     };
-  }, [open]);
+  }, [element, open]);
 
   const animationStyles = React.useMemo(
     (): React.CSSProperties => ({
+      transitionDuration: open
+        ? "var(--enter-duration, var(--duration-moderate, 200ms))"
+        : "var(--exit-duration, var(--duration-normal, 150ms))",
+      transitionTimingFunction: open
+        ? "var(--enter-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)))"
+        : "var(--exit-easing, var(--ease-in, cubic-bezier(0.4, 0, 1, 1)))",
       opacity: isAnimating ? 1 : 0,
-      transform: isAnimating ? "scale(1)" : getInitialTransform(placement),
+      transform: prefersReducedMotion() ? "none" : isAnimating ? "scale(1)" : getInitialTransform(placement),
       // Interactivity follows the open state, not the animation state. Otherwise
       // the deferred entrance (see above) would leave the menu pointer-events:none
       // for a frame, and a fast click could be swallowed. During exit `open` is
