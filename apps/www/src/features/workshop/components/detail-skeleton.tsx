@@ -1,4 +1,4 @@
-import { Skeleton } from "ui-lab-components";
+import { Skeleton, SkeletonText } from "ui-lab-components/skeleton";
 import { DetailPageShell } from "@/features/layout/components/detail-page-shell";
 import { PreviewSkeleton } from "./preview-skeleton";
 import {
@@ -88,9 +88,9 @@ function EntrySkeleton({
         className="p-4 mb-5 flex overflow-hidden items-start justify-between gap-4 border-b border-background-700 pb-5"
         style={{ height: ENTRY_HEADER_HEIGHT }}
       >
-        <Skeleton.Text size="heading" w={180} color="background-800" />
+        <SkeletonText size="heading" w={180} color="background-800" />
         {/* Two rows, because the descriptions this stands in for wrap to two. */}
-        <Skeleton.Text lines={2} w={320} lastLineWidth="70%" color="background-800" />
+        <SkeletonText lines={2} w={320} lastLineWidth="70%" color="background-800" />
       </div>
 
       {hidePreview ? (
