@@ -124,7 +124,7 @@ export function SignUpForm() {
             >
               Continue with Google
             </Button>
-            <Flex align="center" gap={3}>
+            <Flex align-center gap={3}>
               <Divider className="flex-1" />
               <span className="text-sm text-foreground-400">or</span>
               <Divider className="flex-1" />
