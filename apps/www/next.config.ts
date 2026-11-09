@@ -32,6 +32,8 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["beautiful-mermaid", "@ui-lab-core/library", "ui-lab-components"],
   experimental: {
+    cpus: 1,
+    useTypeScriptCli: false,
     externalDir: true,
     serverSourceMaps: false,
     turbopackFileSystemCacheForDev: false,
