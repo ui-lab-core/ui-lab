@@ -11,26 +11,6 @@ export const apiEnrichment = {
         "Array entries support conditional classes; false, null, and undefined entries are ignored.",
       ],
     },
-    CheckboxState: {
-      name: "CheckboxState",
-      summary: "Controlled state supplied to Checkbox.",
-      type: "{ checked?: boolean; indeterminate?: boolean }",
-      kind: "interface",
-      members: [
-        {
-          name: "checked",
-          type: "boolean",
-          required: false,
-          description: "Controlled checked value updated in response to onChange.",
-        },
-        {
-          name: "indeterminate",
-          type: "boolean",
-          required: false,
-          description: "Controlled partial-selection state displayed with the indeterminate mark.",
-        },
-      ],
-    },
     CheckboxIconStyles: {
       name: "CheckboxIconStyles",
       summary: "Class-based styling targets for Checkbox state icons.",
@@ -116,11 +96,11 @@ export const apiEnrichment = {
 
   props: [
     {
-      name: "defaultChecked",
+      name: "selected",
       type: "boolean",
       required: false,
       category: "Core",
-      description: "Initial checked value for uncontrolled usage when state.checked is absent.",
+      description: "Initial selected value. The component manages subsequent changes internally.",
       tags: {
         mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/checkbox#checked",
       },
@@ -139,11 +119,11 @@ export const apiEnrichment = {
     },
     {
       name: "onChange",
-      type: "React.ChangeEventHandler<HTMLInputElement>",
+      type: "(selected: boolean) => void",
       required: false,
       category: "Events",
       description:
-        "Runs after native pointer or keyboard toggling changes the checked value. Disabled checkboxes do not invoke it.",
+        "Receives the next selected value after pointer, keyboard, or drag-toggle interaction. Disabled and read-only checkboxes do not invoke it.",
       tags: { mdn: "https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event" },
     },
     {

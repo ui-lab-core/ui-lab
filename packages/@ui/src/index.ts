@@ -74,7 +74,7 @@ export { Card, CardHeader, CardBody, CardFooter } from "./components/Card";
 export type { CardProps, CardHeaderProps, CardBodyProps, CardFooterProps } from "./components/Card";
 
 export { Checkbox } from "./components/Checkbox";
-export type { CheckboxProps, CheckboxState } from "./components/Checkbox";
+export type { CheckboxProps } from "./components/Checkbox";
 
 export { Select, Searchable, Multi } from "./components/Select";
 export type {
@@ -221,7 +221,7 @@ export type {
 } from "./components/Menu";
 
 export { Switch } from "./components/Switch";
-export type { SwitchProps, SwitchState } from "./components/Switch";
+export type { SwitchProps } from "./components/Switch";
 
 export { Progress } from "./components/Progress";
 export type {

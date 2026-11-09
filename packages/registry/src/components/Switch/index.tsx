@@ -40,8 +40,8 @@ export const switchDetail: ComponentDetail = {
       id: "selected",
       name: "Selected",
       description: "Switch in the on/checked state.",
-      code: `<Switch defaultChecked aria-label="Notifications" />`,
-      preview: <Switch defaultChecked aria-label="Notifications" />,
+      code: `<Switch selected aria-label="Notifications" />`,
+      preview: <Switch selected aria-label="Notifications" />,
     },
   ],
 };

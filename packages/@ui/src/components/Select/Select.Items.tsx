@@ -390,7 +390,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
       >
         {mode === "multiple" && (
           <List.Checkbox
-            checked={isSelected}
+            selected={isSelected}
             placement="start"
             tabIndex={-1}
             aria-label={`${isSelected ? "Deselect" : "Select"} ${finalTextValue}`}

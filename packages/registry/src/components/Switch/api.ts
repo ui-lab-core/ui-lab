@@ -15,20 +15,6 @@ export const apiEnrichment = {
         "Array entries support conditional classes; false, null, and undefined entries are ignored.",
       ],
     },
-    SwitchState: {
-      name: "SwitchState",
-      summary: "Controlled state supplied to Switch.",
-      type: "{ checked?: boolean }",
-      kind: "interface",
-      members: [
-        {
-          name: "checked",
-          type: "boolean",
-          required: false,
-          description: "Controlled checked value.",
-        },
-      ],
-    },
     SwitchStyleSlots: {
       name: "SwitchStyleSlots",
       summary: "Named class-based styling targets for the Switch anatomy.",
@@ -120,12 +106,12 @@ export const apiEnrichment = {
     ),
 
     {
-      name: "defaultChecked",
+      name: "selected",
       type: "boolean",
       required: false,
       category: "Core",
       description:
-        "Initial checked value when state.checked, checked, and isSelected are absent; takes precedence over defaultSelected.",
+        "Initial selected value. The component manages subsequent changes internally.",
       tags: {
         mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/checkbox#checked",
       },

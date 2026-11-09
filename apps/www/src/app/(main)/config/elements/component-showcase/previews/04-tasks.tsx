@@ -34,9 +34,9 @@ export default function Tasks() {
             <div key={task.id} className="min-w-0 truncate py-0.5">
               <Checkbox
                 label={task.title}
-                state={{ checked: task.done }}
-                onChange={(event) => {
-                  const checked = event.target.checked;
+                selected={task.done}
+                onChange={(nextSelected) => {
+                  const checked = nextSelected;
                   setTasks((current) =>
                     current.map((item) =>
                       item.id === task.id ? { ...item, done: checked } : item,

@@ -38,8 +38,8 @@ export const checkboxDetail: ComponentDetail = {
       id: "checked",
       name: "Checked",
       description: "Checkbox in checked state.",
-      code: `<Checkbox label="Checked checkbox" defaultChecked />`,
-      preview: <Checkbox label="Checked checkbox" defaultChecked />,
+      code: `<Checkbox label="Checked checkbox" selected />`,
+      preview: <Checkbox label="Checked checkbox" selected />,
     },
   ],
 };

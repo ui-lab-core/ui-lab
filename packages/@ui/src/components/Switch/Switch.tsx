@@ -13,7 +13,6 @@ import { type StylesProp, createStylesResolver } from "@/lib/styles";
 import { useFocus } from "@/hooks/useFocus";
 import { useMergeRefs } from "@/hooks/useMergeRefs";
 import { resolveAccessibleLabel } from "@/lib/react-aria";
-import { useControlledState } from "@/hooks/useControlledState";
 import { useDragToggle } from "@/hooks/useDragToggle";
 
 import css from "./Switch.module.css";
@@ -45,32 +44,17 @@ const resolveSwitchStyles = createStylesResolver([
   "root", "track", "thumb", "input", "focusIndicator",
 ] as const);
 
-/**
- * Controlled state supplied to Switch.
- * @typeDoc SwitchState
- */
-export interface SwitchState {
-  /** Controlled checked value. */
-  checked?: boolean;
-}
-
-/** Native input props and controlled state accepted by Switch; root styling targets the outer surface. */
+/** Native input props and selection state accepted by Switch; root styling targets the outer surface. */
 export interface SwitchProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "type" | "size" | "onChange" | "checked" | "defaultChecked"
 > {
   /**
-   * Initial selected value. Use state.checked for controlled usage.
+   * Initial selected value. The component manages subsequent changes internally.
    * @category Core
    * @default false
    */
   selected?: boolean;
-  /**
-   * Controlled switch state. Its checked value takes precedence over selected.
-   * @category Core
-   * @typeDoc SwitchState
-   */
-  state?: SwitchState;
   /**
    * Receives the next checked value after keyboard, pointer, or drag-toggle interaction. Disabled and read-only switches do not call it.
    * @category Events
@@ -107,19 +91,14 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       styles: stylesProp,
       disabled = false,
       readOnly,
-      selected: initialSelected,
-      state: controlledState,
+      selected: initialSelected = false,
       onChange,
       size = "default",
       ...props
     },
     ref,
   ) => {
-    const [selected, setSelected] = useControlledState(
-      controlledState?.checked,
-      initialSelected,
-      false,
-    );
+    const [selected, setSelected] = React.useState(initialSelected);
     const toggleState = useToggleState({
       isSelected: selected,
       isDisabled: disabled,

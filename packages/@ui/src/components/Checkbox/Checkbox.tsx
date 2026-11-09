@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useId, useState } from "react";
+import React, { forwardRef, useId } from "react";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import { cn, type Style } from "@/lib/cn";
@@ -56,33 +56,21 @@ const resolveCheckboxBaseStyles = createStylesResolver([
   "helperText",
 ] as const);
 
-/**
- * Controlled state supplied to Checkbox.
- * @typeDoc CheckboxState
- */
-export interface CheckboxState {
-  /** Controlled checked value. The caller updates it in response to onChange. */
-  checked?: boolean;
-  /** Controlled partial-selection state displayed with the indeterminate mark. */
-  indeterminate?: boolean;
-}
-
 export interface CheckboxProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "type" | "checked"
+  "size" | "type" | "checked" | "defaultChecked" | "onChange"
 > {
   /**
-   * Initial checked value for this component's legacy uncontrolled state. Use state.checked for controlled usage.
+   * Initial selected value. The component manages subsequent changes internally.
    * @category Core
    * @default false
    */
-  checked?: boolean;
+  selected?: boolean;
   /**
-   * Controlled checkbox state. Each supplied key takes precedence over its uncontrolled equivalent.
-   * @category Core
-   * @typeDoc CheckboxState
+   * Receives the next selected value. Disabled and read-only checkboxes do not call it.
+   * @category Events
    */
-  state?: CheckboxState;
+  onChange?: (selected: boolean) => void;
   /**
    * Visible label rendered next to and associated with the native input.
    * @category Content
@@ -118,12 +106,6 @@ export interface CheckboxProps extends Omit<
    */
   isInvalid?: boolean;
   /**
-   * Legacy alias for indeterminate.
-   * @category Advanced
-   * @deprecated Use indeterminate.
-   */
-  isIndeterminate?: boolean;
-  /**
    * Displays a partial-selection mark and sets aria-checked to mixed.
    * @category Core
    * @default false
@@ -155,11 +137,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       isInvalid = false,
       id,
       disabled = false,
-      checked,
-      defaultChecked,
-      state,
+      selected: initialSelected = false,
+      readOnly,
       onChange,
-      isIndeterminate = false,
       indeterminate = false,
       inputRef: forwardedInputRef,
       styles,
@@ -173,10 +153,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const inputId = id ?? `checkbox-${generatedId}`;
     const helperId = `${inputId}-helper`;
     const resolvedHelper = helper ?? helperText;
-    const resolvedIndeterminate = state?.indeterminate ?? (indeterminate || isIndeterminate);
-    const [internalChecked, setInternalChecked] = useState(
-      () => state?.checked ?? checked ?? defaultChecked ?? false,
-    );
+    const [selected, setSelected] = React.useState(initialSelected);
     const { focusProps, isFocused, isFocusVisible } = useFocusRing();
     const [isPressed, setIsPressed] = React.useState(false);
     const { scopeProps, indicatorProps } = useFocus({
@@ -187,26 +164,23 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     });
 
     React.useEffect(() => {
-      if (state?.checked !== undefined) {
-        setInternalChecked(state.checked);
-      }
-    }, [state?.checked]);
-
-    React.useEffect(() => {
       if (inputRef.current) {
-        inputRef.current.indeterminate = resolvedIndeterminate;
+        inputRef.current.indeterminate = indeterminate;
       }
-    }, [resolvedIndeterminate]);
+    }, [indeterminate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      // Update internal state (needed for uncontrolled mode)
-      setInternalChecked(e.target.checked);
-      // Call parent handler if provided
-      onChange?.(e);
+      if (disabled || readOnly) return;
+      const next = e.target.checked;
+      setSelected(next);
+      onChange?.(next);
     };
 
     const inputProps = mergeProps(props, focusProps, {
       onChange: handleChange,
+      onClick: (event: React.MouseEvent<HTMLInputElement>) => {
+        if (readOnly) event.preventDefault();
+      },
     }) as React.InputHTMLAttributes<HTMLInputElement>;
 
     // Tracked on the root rather than the input: label clicks and
@@ -218,9 +192,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const handleMouseUp = () => setIsPressed(false);
     const handleMouseLeave = () => setIsPressed(false);
 
-    // Controlled only when the caller passes state.checked
-    const isControlled = state?.checked !== undefined;
-    const displayChecked = state?.checked ?? internalChecked;
     const propAriaInvalid = props["aria-invalid"];
     const resolvedInvalid =
       error ||
@@ -243,10 +214,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         ref={rootRef}
         className={cn(
           "checkbox",
-          displayChecked && "selected",
+          selected && "selected",
           disabled && "disabled",
           resolvedInvalid && "invalid",
-          resolvedIndeterminate && "indeterminate",
+          indeterminate && "indeterminate",
           scopeProps.className,
           css.checkbox,
           className,
@@ -256,8 +227,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         data-slot="root"
         data-disabled={disabled ? "true" : undefined}
         data-invalid={resolvedInvalid ? "true" : undefined}
-        data-indeterminate={resolvedIndeterminate ? "true" : undefined}
-        data-selected={displayChecked ? "true" : undefined}
+        data-indeterminate={indeterminate ? "true" : undefined}
+        data-selected={selected ? "true" : undefined}
         data-pressed={!disabled && isPressed ? "true" : "false"}
         data-focused={isFocused ? "true" : "false"}
         data-focus-visible={isFocusVisible ? "true" : "false"}
@@ -273,23 +244,23 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             type="checkbox"
             id={inputId}
             disabled={disabled}
-            {...(isControlled ? { checked: displayChecked } : { defaultChecked: internalChecked })}
+            checked={selected}
+            readOnly={readOnly}
             className={cn("checkbox-input", css.box, resolved.checkbox)}
             data-slot="checkbox"
-            data-selected={displayChecked ? "true" : undefined}
+            data-selected={selected ? "true" : undefined}
             data-disabled={disabled ? "true" : undefined}
             data-invalid={resolvedInvalid ? "true" : undefined}
             data-error={resolvedInvalid ? "true" : undefined}
-            data-indeterminate={resolvedIndeterminate ? "true" : undefined}
+            data-indeterminate={indeterminate ? "true" : undefined}
             data-pressed={!disabled && isPressed ? "true" : "false"}
             data-focused={isFocused ? "true" : "false"}
             data-focus-visible={isFocusVisible ? "true" : "false"}
             data-checkbox-focus-surface="true"
             aria-invalid={resolvedInvalid || undefined}
-            aria-checked={resolvedIndeterminate ? "mixed" : props["aria-checked"]}
+            aria-checked={indeterminate ? "mixed" : props["aria-checked"]}
             aria-describedby={describedBy}
           />
-          {displayChecked && !resolvedIndeterminate && (
             <svg
               className={cn("checkmark", css.checkmark, resolved["icon.checkmark"])}
               data-slot="icon.checkmark"
@@ -303,8 +274,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             >
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-          )}
-          {resolvedIndeterminate && (
             <svg
               className={cn("indeterminate", css.indeterminate, resolved["icon.indeterminate"])}
               data-slot="icon.indeterminate"
@@ -322,7 +291,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 strokeLinecap="round"
               />
             </svg>
-          )}
         </div>
         {label && (
           <label

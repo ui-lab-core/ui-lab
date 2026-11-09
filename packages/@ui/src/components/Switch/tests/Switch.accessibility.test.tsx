@@ -32,7 +32,7 @@ describe("Switch.accessibility", () => {
     const { container } = render(
       <Switch
         aria-label="Notifications"
-        defaultChecked
+        selected
         name="notifications"
         required
         className="custom-switch"
@@ -92,11 +92,11 @@ describe("Switch.accessibility", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("keeps state.checked authoritative over checked and composes focus handlers", async () => {
+  it("uses selected as the initial state and composes focus handlers", async () => {
     const user = userEvent.setup();
     const onFocus = vi.fn();
     const onChange = vi.fn();
-    render(<Switch aria-label="Notifications" checked={false} state={{ checked: true }} onFocus={onFocus} onChange={onChange} />);
+    render(<Switch aria-label="Notifications" selected={true} onFocus={onFocus} onChange={onChange} />);
     const input = screen.getByRole("switch");
     await user.tab();
     expect(onFocus).toHaveBeenCalledOnce();
@@ -104,6 +104,6 @@ describe("Switch.accessibility", () => {
     expect(input).toHaveAttribute("data-focus-visible", "true");
     await user.keyboard(" ");
     expect(onChange).toHaveBeenCalledWith(false);
-    expect(input).toBeChecked();
+    expect(input).not.toBeChecked();
   });
 });

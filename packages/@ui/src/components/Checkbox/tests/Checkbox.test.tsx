@@ -39,10 +39,10 @@ describe("Checkbox - Interactions", () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it("respects controlled state.checked", async () => {
+  it("uses selected only as the initial value", async () => {
     const onChange = vi.fn();
     const { rerender } = render(
-      <Checkbox state={{ checked: false }} onChange={onChange} aria-label="Controlled" />,
+      <Checkbox selected={false} onChange={onChange} aria-label="Initial value" />,
     );
 
     const checkbox = screen.getByRole("checkbox");
@@ -51,15 +51,15 @@ describe("Checkbox - Interactions", () => {
     const user = userEvent.setup();
     await user.click(checkbox);
     expect(onChange).toHaveBeenCalledOnce();
-    expect(checkbox).not.toBeChecked();
+    expect(checkbox).toBeChecked();
 
-    rerender(<Checkbox state={{ checked: true }} onChange={onChange} aria-label="Controlled" />);
+    rerender(<Checkbox selected={false} onChange={onChange} aria-label="Initial value" />);
     expect(checkbox).toBeChecked();
   });
 
-  it("treats bare checked as an initial value and stays self-toggling", async () => {
+  it("uses selected as an initial value and stays self-toggling", async () => {
     const user = userEvent.setup();
-    render(<Checkbox checked aria-label="Initial" />);
+    render(<Checkbox selected aria-label="Initial" />);
 
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).toBeChecked();
@@ -114,24 +114,24 @@ describe("Checkbox - Focus", () => {
   });
 
   it("supports indeterminate state", () => {
-    render(<Checkbox isIndeterminate aria-label="Indeterminate" />);
+    render(<Checkbox indeterminate aria-label="Indeterminate" />);
     const checkbox = screen.getByRole("checkbox") as HTMLInputElement;
     expect(checkbox).toHaveAttribute("data-indeterminate", "true");
     expect(checkbox.indeterminate).toBe(true);
     expect(checkbox).toHaveAttribute("aria-checked", "mixed");
   });
 
-  it("supports indeterminate alias", () => {
+  it("sets mixed ARIA state for indeterminate", () => {
     render(<Checkbox indeterminate aria-label="Indeterminate" />);
     const checkbox = screen.getByRole("checkbox") as HTMLInputElement;
     expect(checkbox.indeterminate).toBe(true);
     expect(checkbox).toHaveAttribute("aria-checked", "mixed");
   });
 
-  it("supports controlled state.indeterminate", () => {
+  it("updates indeterminate independently of selected", () => {
     const { rerender } = render(
       <Checkbox
-        state={{ checked: true, indeterminate: true }}
+        selected={true} indeterminate={true}
         onChange={() => {}}
         aria-label="Partial"
       />,
@@ -142,7 +142,7 @@ describe("Checkbox - Focus", () => {
 
     rerender(
       <Checkbox
-        state={{ checked: true, indeterminate: false }}
+        selected={true} indeterminate={false}
         onChange={() => {}}
         aria-label="Partial"
       />,
@@ -251,7 +251,7 @@ describe("Checkbox - Component Specific", () => {
           key="checked"
           name="feature"
           value="on"
-          checked
+          selected
           indeterminate
           onChange={() => {}}
           aria-label="Feature"
@@ -307,7 +307,7 @@ describe("Checkbox - Component Specific", () => {
       <Checkbox
         label="Styled slots"
         helper="Slot helper"
-        checked
+        selected
         styles={{
           root: "custom-root",
           control: "custom-control",

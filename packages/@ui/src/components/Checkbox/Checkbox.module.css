@@ -19,6 +19,9 @@
       slot(border, background, transparent);
     border-radius: var(--radius-xs, 0.25rem);
     outline: none;
+    transition:
+      background-color var(--toggle-duration, var(--duration-moderate, 200ms)) var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--toggle-duration, var(--duration-moderate, 200ms)) var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
 
     &[data-invalid="true"] {
       border-color: slot(border, background-error, var(--danger-600));
@@ -43,9 +46,19 @@
     inset: 50%;
     width: 65%;
     height: 65%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    transition:
+      opacity var(--toggle-duration, var(--duration-moderate, 200ms)) var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      transform var(--toggle-duration, var(--duration-moderate, 200ms)) var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     color: var(--foreground, currentColor);
     pointer-events: none;
+  }
+
+  .checkbox[data-selected="true"]:not([data-indeterminate="true"]) .checkmark,
+  .checkbox[data-indeterminate="true"] .indeterminate {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 
   .label {
@@ -75,6 +88,19 @@
 
     &[data-error="true"] {
       color: var(--helper-error-foreground, var(--foreground-error, var(--danger-600)));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .box,
+    .checkbox,
+    .checkmark,
+    .container,
+    .helper-text,
+    .indeterminate,
+    .label,
+    .label-md {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

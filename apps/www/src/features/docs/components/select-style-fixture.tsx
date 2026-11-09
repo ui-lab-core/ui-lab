@@ -199,7 +199,7 @@ export function SelectStyleFixture({ group: initialGroup, groups, themeCss = "",
   return (
     <div ref={surface} style={{ minHeight: anatomy ? 128 : "var(--style-preview-height, 128px)" }} className={`relative flex w-full shrink-0 flex-col items-center justify-center p-6 ${!group ? "pb-14" : ""}`}>
       {!group ? <label className="absolute bottom-3 left-4 flex items-center gap-2 text-xs text-foreground-400">
-        <Switch size="sm" checked={styled} onChange={setStyled} aria-label="Apply example styles" />
+        <Switch size="sm" selected={styled} onChange={setStyled} aria-label="Apply example styles" />
         Styled
       </label> : null}
       {css && styled ? <style>{css}</style> : null}

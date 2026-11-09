@@ -23,10 +23,10 @@
   .switch > .switch-track {
     @apply absolute inset-0;
     transition:
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      border-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      background-color var(--toggle-duration, var(--duration-moderate, 200ms))
+        var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      border-color var(--toggle-duration, var(--duration-moderate, 200ms))
+        var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     background-color: slot(track, background, var(--background, transparent));
     border: slot(track, width, var(--border-width-base, 1px)) slot(track, style, solid)
       slot(track, background-border, var(--background-border, transparent));
@@ -46,10 +46,10 @@
     inline-size: slot(thumb, width, slot(thumb, size, 1.05rem));
     block-size: slot(thumb, height, slot(thumb, size, 1.05rem));
     transition:
-      inset-inline-start var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out)),
-      background-color var(--hover-duration, var(--hover-leave-duration, 300ms))
-        var(--hover-transition-timing-function, var(--ease-snappy-pop, ease-out));
+      inset-inline-start var(--toggle-duration, var(--duration-moderate, 200ms))
+        var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1))),
+      background-color var(--toggle-duration, var(--duration-moderate, 200ms))
+        var(--toggle-easing, var(--ease-out, cubic-bezier(0, 0, 0.2, 1)));
     background-color: slot(thumb, background, var(--foreground, currentColor));
     border-radius: slot(thumb, radius, var(--inset-radius));
     border: slot(thumb, border, none);
@@ -81,6 +81,12 @@
       --width: 0.875rem;
       --height: 0.875rem;
       --offset: 0.125rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .switch {
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
     }
   }
 }

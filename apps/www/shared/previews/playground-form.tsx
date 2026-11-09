@@ -75,7 +75,7 @@ export function PlaygroundForm({
                       aria-label={control.label}
                       onChange={(checked) => onChange(control.name, checked)}
                       size="sm"
-                      state={{ checked: Boolean(values[control.name]) }}
+                      selected={Boolean(values[control.name])}
                     />
                   </span>
                 ) : control.type === "stepper" ? (
