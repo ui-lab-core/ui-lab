@@ -28,15 +28,18 @@ Act on it as follows:
    loading process.
 2. **`WEB PROJECT NOT CONFIRMED`** — stop. Say the target does not look like a
    web project, ask the user to confirm, and route nothing until they do.
-3. **`ui-lab-components NOT FOUND`** — the project is not wired yet. `build` and
-   `conform` must route through `setup` (install + token layer + import order)
-   before any edit. `audit` and `ideate` proceed normally.
-4. **`ui-lab CLI NOT FOUND`** — `setup` requires the CLI. Combined with the MCP
-   tool check (below), this is the tool gate: if either the CLI is missing or you
-   do not have `mcp__ui-lab__*` tools in this session, do not mutate the project.
-   Stop and tell the user it is not recommended to proceed without both tools,
-   name which is missing, and give the install path (see `workflows/setup.md`
-   Step 0). `audit` and `ideate` are read-only and may still proceed.
+3. **`MODE:`** — selects the system layer for every mode. `ui-lab` loads
+   `core/*` + `systems/ui-lab.md` and uses the MCP. `general` loads `core/*` +
+   `systems/project.md` and works with the project's own tokens and components;
+   it never installs UI Lab or requires the CLI. In ui-lab mode, if you do not
+   have `mcp__ui-lab__*` tools, drop to general mode and say so in one line.
+4. **`Project system:`** — in general mode, the files to read for the project's
+   tokens and components. Read those; do not search the repo for them.
+4a. **`Theme:`** — whether ui-lab-components has a token layer to consume.
+   `SET UP` needs nothing. `TOKENS MISSING` or `NOT INSTALLED` means components
+   will render unthemed: follow `systems/ui-lab.md` § Project readiness for what
+   to build and what to tell the user. `N/A` with `MODE: general` means
+   ui-lab-components is missing: follow `systems/project.md` § Missing UI Lab.
 5. **Modes available** — route only to a mode listed there.
 6. **No mode and no routable request** — a bare `$lab` activates UI Lab mode for
    the session. Acknowledge activation with the text in `<activation_response>`
@@ -52,7 +55,7 @@ available.
 </preflight>
 
 <objective>
-Route manually-invoked `/lab` web front-end UI design tasks. setup installs and wires UI Lab into a new or existing project — the CLI (`ui-lab init/add/status`) does the heavy lifting while the MCP setup guides define correct import order and the token layer; it runs inline and requires both the CLI and the MCP. build loads the UI Lab harness (pillars, design system, MCP usage) into this session and governs everything you write from then on — it runs inline, not as a subagent, and routes through setup first when UI Lab is not yet installed. ideate produces design briefs. audit validates visual/interface design against 6 core pillars (Design System Adherence, Layout & Spacing, Accessibility & Usability, Cognitive Load, Visual Consistency, Slop Avoidance) and produces star-rated reports (no code changes). quickfix runs inline with no plan or confirmation step: it swaps all applicable UI to UI Lab components, removes obvious slop patterns, and rewrites colors to UI Lab tokens. conform fixes what audit finds, or — without an audit in hand — finds and fixes the same adherence violations itself, replacing markup with field-tested UI Lab examples sourced via MCP while preserving product logic (no redesign).
+Route manually-invoked `$lab` web UI design tasks to a mode (setup, build, ideate, audit, quickfix, conform), and pick the system layer from the preflight `MODE:` line. Every mode shares `core/` (principles, pillars, slop patterns, craft). ui-lab mode adds `systems/ui-lab.md` and the MCP registry; general mode adds `systems/project.md` and follows the project's own design system. Each workflow file holds its own steps and `Done when` criteria.
 </objective>
 
 <quick_start>
@@ -167,14 +170,14 @@ When trigger words match `build` and anything else:
 When the request is about installing or wiring UI Lab itself (not building UI):
 
 - "Set up / install / initialize UI Lab", "add UI Lab to this project", "scaffold a UI Lab app" → `setup`
-- If the preflight reports `ui-lab-components NOT FOUND` and the user asks to `build` or `conform`, run `setup` first (in this session), then continue into the requested mode. Do not hand-wire the install yourself when the CLI is available.
+- Never route to `setup` implicitly. When UI Lab is not installed, `build`, `audit`, `ideate`, and `quickfix` run in general mode. `conform` is a UI Lab migration: in general mode, say it needs UI Lab and offer `setup` in one line.
 - If UI Lab is already installed (`ui-lab-components INSTALLED`) and the user asks to set it up again, confirm what they want re-run (theme, fonts, color mode) rather than re-scaffolding — `ui-lab init` is idempotent but ask before mutating a working setup.
 
 </routing>
 
 <agent id="setup">
 
-<trigger>User wants UI Lab installed and wired in a project: "set up UI Lab here", "install UI Lab", "initialize UI Lab", "add UI Lab to this project", "scaffold a UI Lab app". Also the required first step when `build` or `conform` is requested but the preflight reports `ui-lab-components NOT FOUND`. Requires both the ui-lab CLI and the MCP.</trigger>
+<trigger>User wants UI Lab installed and wired in a project: "set up UI Lab here", "install UI Lab", "initialize UI Lab", "add UI Lab to this project", "scaffold a UI Lab app". Only on explicit request. Requires both the ui-lab CLI and the MCP.</trigger>
 
 <spawn_prompt_file>workflows/setup.md</spawn_prompt_file>
 
@@ -232,84 +235,7 @@ When the request is about installing or wiring UI Lab itself (not building UI):
 
 **`setup`, `build`, and `quickfix` are the exceptions — never spawn them.** All three carry `<inline>true</inline>`: read the workflow file and follow it yourself, in this session. `setup` mutates the real project and runs the CLI, then hands off to `build` in the same session; `build` governs the UI *you* write, and a subagent's context dies with the subagent. Spawning either defeats the mode. Once `build` is loaded, its rules stand for the rest of the session, so later UI work does not re-read it.
 
-**MCP Usage:** All agents leverage ui-lab tools to query the registry:
-
-Only three tools exist: `get_component { query, detail, limit }`, `search_workshop { query, kind, detail, limit }`, and `search_guides { query, detail, limit }`. Omit `query` to list everything; pass free text to search; pass a ref (`component:<id>`, `pattern:<id>`, `element:<pkg>/<id>`, `section:<id>`, `starter:<id>`, `guide:<id>`) to fetch one item exactly. `detail` is `summary | api | styling | usage | examples | full` for `get_component` and `summary | full` for the other two.
-
-- **setup**: Fetches the setup guide, matching framework theme guide, and typography guide before mutation. The CLI owns installation and wiring, including Onyx, fonts, and typography. Never use the Next.js theme guide for Vite and never bypass a failed CLI with partial manual wiring.
-
-- **build**: Assembles top-down from the composition ladder — `search_guides { query: "foundation", detail: "full" }` once, then `search_workshop { kind: "starter" | "section" | "element", query }` for the closest whole-screen composition, then `{ kind: "pattern", query }` for recurring sub-blocks, descending to `get_component { query: "component:<id>", detail: "api" }` (plus `detail: "usage"` for nesting) only as the leaf step for the primitives a chosen block actually uses. Reuses existing compositions and descends only for gaps; prefers `detail: "examples"` / workshop `detail: "full"` source over hand-written JSX. Never emits a component whose API it did not fetch, and never infers one from memory.
-
-- **audit**: Validates components/props against registry via `get_component { query: "<name>" }` → `get_component { query: "component:<id>", detail: "api" }`; when a component's placement or nesting matters, also query `detail: "usage"`. Uses `search_guides { query: "theme" }` → `search_guides { query: "guide:<id>", detail: "full" }` for theme/color setup validation instead of hardcoded rules.
-- **ideate**: Discovers patterns/elements/sections via `search_workshop { kind, query }` and guides via `search_guides` before suggesting gaps. Queries component examples via `get_component { query: "component:<id>", detail: "examples" }` when needed and `detail: "usage"` when composition semantics matter.
-- **quickfix**: Fetches the foundation guide once, resolves each swap via `get_component { query: "<name>" }` → `detail: "api"`, and pulls `detail: "examples"` only for committed components. Checks `search_workshop { kind: "pattern" | "element" }` at summary for matching blocks.
-- **conform**: Uses `search_guides { query: "setup-ui-lab-in-project", detail: "full" }` before any fix if UI Lab is not already wired. Uses `get_component` at `detail: "api"` and `detail: "usage"`, plus `search_workshop { query: "component:<id>", detail: "full" }` for source, to perform safe 1:1 replacements and keep imports correct. Prefers `get_component { detail: "examples" }` for field-tested replacement markup over hand-written JSX, and uses `search_workshop { query: "pattern:<id>" | "element:<pkg>/<id>" | "section:<id>", detail: "full" }` for larger structural matches — only when it preserves the existing structure (no redesign).
+**MCP usage (ui-lab mode only):** three tools — `get_component { query, detail, limit }`, `search_workshop { query, kind, detail, limit }`, `search_guides { query, detail, limit }`. Omit `query` to list; pass free text to search; pass a ref (`component:<id>`, `pattern:<id>`, `element:<pkg>/<id>`, `section:<id>`, `starter:<id>`, `guide:<id>`) to fetch exactly. Each workflow specifies which calls it makes. In general mode, make no MCP calls.
 
 </orchestration>
 
-<success_criteria>
-
-**setup**: A setup pass is complete when:
-
-- The tool gate passed: both the `ui-lab` CLI and the `mcp__ui-lab__*` tools were confirmed present before any mutation; if either was missing, no project files were changed and the user was told what to install
-- The MCP setup guide was fetched (`search_guides { query: "setup-ui-lab-in-project", detail: "full" }`) and, when theme switching was in scope, the theme-switching guide — not derived from memory
-- Installation and wiring were performed by the CLI (`ui-lab init`, previewed with `--dry-run` first for anything non-trivial, run with `--non-interactive`), not hand-rolled, whenever the CLI was available
-- `ui-lab status` reports `ui-lab-components` installed and the stylesheet `configured: true`
-- Import order includes the Onyx base before app overrides, plus fonts and typography as specified by the framework guide; the global stylesheet is imported exactly once
-- One simple UI Lab component was rendered on an existing route to confirm tokens are active
-- The result was reported (installed/created/modified + verified order) and, if UI work was the goal, handed off to `build` in the same session
-
-**build**: A build is complete when:
-
-- `references/design-system.md`, `references/core-pillars.md`, `references/slop-patterns.md`, and `references/craft.md` have all been read in full this session
-- Every component used was resolved via `get_component { query: "<name>" }` → `get_component { query: "component:<id>", detail: "api" }` before being written — no API inferred from memory
-- Replacement markup started from `get_component { detail: "examples" }` or a `search_workshop { detail: "full" }` pattern/element/section result wherever one exists
-- A bill of materials was emitted before writing each screen, and full/examples detail fetched only for refs in the bill of materials, at most once each
-- The build checklist ran before JSX: form and layout patterns were searched, every needed control was resolved, and experimental notes were evaluated
-- Changed JSX contains no native interactive controls or styled native layout wrappers when a UI Lab equivalent exists
-- No hex, `rgba()`, Tailwind neutrals, chromatic Tailwind standing in for semantic tokens, `shadow-*`, gradients, or `dark:` prefixes
-- No styled native elements; compound sub-components used where available; React Aria props (`onPress`, `isOpen`)
-- Every interactive element has hover, active, disabled, and keyboard focus; every async surface has loading, empty, and error states
-- The six-pillar self-check ran and is reported as one line per pillar (not a star-rated audit report)
-- Nothing was added for visual bulk: no decorative badges, icons beside headings, gradients, nested cards, or four-part empty states
-
-**audit**: An audit is complete when:
-
-- Components validated against registry via `get_component { query: "<name>" }` → `get_component { query: "component:<id>", detail: "api" }`
-- Native HTML elements checked first (`<button>`, `<a>`, `<input>`, `<select>`, `<div className="...">`, etc.) — any found are CRITICAL violations in the Adherence pillar
-- Vibe-coded anti-patterns from `references/design-system.md` explicitly checked, including arbitrary typography utilities, over-specified text rhythm, and transition noise
-- Each of the 6 pillars has been independently evaluated
-- Star rating assigned based on violation severity and count (5 stars = no violations, 1 star = critical failures)
-- Violations listed with specific element/component reference and actionable recommendation
-- Summary provided with overall assessment and priority focus areas
-- Output follows star-rated format (no code generation)
-
-**ideate**: A brief is complete when:
-
-- Registry queried via appropriate search tools (`search_workshop { kind: "pattern" | "element" | "section" }`, `search_guides`)
-- Domain context, user mental model, and workflow reasoning documented (2–4 sentences)
-- Element inventory flat-listed with role, load-bearing status, and value rating
-- Gaps classified into CRITICAL, LAYOUT COHERENCE, PROGRESSIVE DISCLOSURE categories
-- Top 5 suggestions ranked by spatial coherence impact first, then functional criticality
-- No code written; focus purely on "what should exist"
-
-**quickfix**: A quickfix pass is complete when:
-
-- `references/design-system.md`, `references/slop-patterns.md`, and `references/craft.md` were read in full this session
-- Every styled native element or hand-rolled control in scope with a UI Lab equivalent was swapped, using APIs fetched via MCP
-- Obvious slop patterns were removed without changing behavior or meaning
-- Colors use only `bg-background-500`–`950`, `text-foreground-50`–`400`, `border-background-*`, `accent-*` fills for primary emphasis (never `text-accent-*` or accent-colored icons), and semantic tokens for feedback states. No hex, `rgba()`, Tailwind neutrals, shadows, gradients, or `dark:`
-- Product logic is unchanged and a brief report lists swaps, removals, and anything left untouched
-
-**conform**: A conform pass is complete when:
-
-- UI Lab is installed and styles/token layer are wired correctly (or it is explicitly confirmed already set up) using `search_guides { query: "setup-ui-lab-in-project", detail: "full" }`
-- A scoped plan + replacement report is presented and the user explicitly confirms before any conform changes are applied
-- Only the view layer changes: preserve state, events, data fetching, routing, domain models, copy, and analytics hooks unless the user explicitly asks otherwise
-- If working from an audit report: every violation in it is addressed or explicitly explained as unfixable
-- If working without an audit report: violations are found using the same adherence checks audit uses, and all eligible UI primitives/wrappers are swapped to UI Lab equivalents (components/patterns/elements/sections) where a clear match exists in the registry
-- Replacement markup is sourced from MCP field-tested examples (`get_component { detail: "examples" }`, or `search_workshop { query: "pattern:<id>" | "element:<pkg>/<id>" | "section:<id>", detail: "full" }`) rather than hand-written from scratch, wherever an example exists
-- No “design improvement” changes are introduced beyond what was flagged (no new flows, no layout invention, no new features); any optional improvements are listed separately and not included in the patch
-- A conform report is provided: what was fixed/swapped and its MCP source, what couldn’t be fixed/swapped (and why), and the highest-risk files/components
-
-</success_criteria>

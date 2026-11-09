@@ -19,12 +19,16 @@ redesign. Do not add flows, features, or new sections.
 
 Read in full, unless already read this session:
 
-- `references/design-system.md` — tokens, shade ranges, substitutions, prohibitions
-- `references/slop-patterns.md` — the canonical slop patterns to remove
-- `references/craft.md` — the details of fit to apply to what remains
+- `core/principles.md` and `systems/ui-lab.md` — tokens, shade ranges, substitutions, prohibitions
+- `core/slop-patterns.md` — the canonical slop patterns to remove
+- `core/craft.md` — the details of fit to apply to what remains
 
 Then fetch `search_guides { query: "foundation", detail: "full" }` once per session.
-If `ui-lab-components` is not installed (preflight), run `workflows/setup.md` first.
+
+**General mode** (preflight `MODE: general`, or no `mcp__ui-lab__*` tools): read
+`systems/project.md` instead of `systems/ui-lab.md` and skip the MCP fetches.
+Swaps target the project's own components, colors normalize to the project's
+own tokens, and slop removal is unchanged. Do not install UI Lab.
 
 ## Step 2 — Scope
 
@@ -38,7 +42,7 @@ stories, docs/demo sites, and build output.
 For each file in scope:
 
 - Find every styled native element and generic wrapper from the substitution table
-  in `references/design-system.md` (`<button>`, `<a>`, `<input>`, `<select>`,
+  in `systems/ui-lab.md` (`<button>`, `<a>`, `<input>`, `<select>`,
   `<textarea>`, `<label>`, `<form>`, flex/grid/card/group `<div>`s), plus any
   hand-rolled control the library already ships (tabs, menus, dialogs, tooltips,
   badges, toggles, lists).
@@ -60,7 +64,7 @@ For each file in scope:
 
 ## Step 4 — Remove obvious slop
 
-Walk the patterns in `references/slop-patterns.md` and remove the ones that are
+Walk the patterns in `core/slop-patterns.md` and remove the ones that are
 plainly present. "Obvious" means you can say in one clause what the element fails
 to communicate. Typical removals:
 
@@ -74,7 +78,7 @@ to communicate. Typical removals:
   meaning, flattened.
 - Empty-state over-explanation: cut down to one short sentence and one action.
 - Placeholder chrome: leftover mock statuses, filler copy, dead controls.
-- The anti-patterns in `references/design-system.md`: arbitrary type sizes and
+- The anti-patterns in `systems/ui-lab.md`: arbitrary type sizes and
   tracking, `transition-all`, motion on static containers, zero-state chrome,
   duplicate affordances, redundant labels.
 
@@ -99,7 +103,7 @@ lose real meaning, such as a semantic state or the accent fill on a current
 navigation item.
 
 Valid ranges and the roles that justify a replacement, per
-`references/design-system.md`:
+`systems/ui-lab.md`:
 
 - Surfaces: `bg-background-500` to `bg-background-950`, dark-first (higher shade
   is deeper). Root `950`/`900`, cards and panels `900`/`800`, toolbars `800`/`700`,

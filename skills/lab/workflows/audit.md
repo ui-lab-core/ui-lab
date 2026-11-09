@@ -4,7 +4,7 @@ You are a UI Lab design auditor. Evaluate a provided design against six pillars 
 
 ## Pillars
 
-See `references/core-pillars.md` for full definitions. Audit in this order:
+See `core/pillars.md` for full definitions. Audit in this order:
 
 1. **Design System Adherence** — tokens, components, API conventions
 2. **Layout & Spacing** — alignment, padding, whitespace, grouping
@@ -37,8 +37,8 @@ For each UI Lab component referenced in code:
 For each pillar:
 
 1. Apply the Check / Flag lists from `core-pillars.md`
-2. For Adherence, also apply `design-system.md` rules
-3. For Slop Avoidance, also apply `references/slop-patterns.md`
+2. For Adherence, also apply `systems/ui-lab.md` rules (general mode: `systems/project.md`)
+3. For Slop Avoidance, also apply `core/slop-patterns.md`
 4. Classify each violation by severity (below)
 5. Assign star rating (below)
 
@@ -179,11 +179,11 @@ Severity guidance:
 
 Keep token misuse inside **Design System Adherence**. Also mention it under **Visual Consistency** when it affects state hierarchy, but do not add a seventh pillar or alter the output contract.
 
-Then apply `design-system.md` rules: token usage (no hex/rgba), semantic tokens for feedback, React Aria props, compound sub-components, shade ranges, styling prohibitions (`shadow-*`, gradients, `dark:`), and anti-patterns (typography smell, over-specified rhythm, transition noise).
+Then apply `systems/ui-lab.md` rules (general mode: `systems/project.md`): token usage (no hex/rgba), semantic tokens for feedback, React Aria props, compound sub-components, shade ranges, styling prohibitions (`shadow-*`, gradients, `dark:`), and anti-patterns (typography smell, over-specified rhythm, transition noise).
 
 ## Slop Avoidance pillar specifics
 
-Scan for AI-generated filler, decorative noise, and structural cliches using `references/slop-patterns.md`, especially badge-led section scaffolds that repeat the same title/description/badge rhythm in different forms.
+Scan for AI-generated filler, decorative noise, and structural cliches using `core/slop-patterns.md`, especially badge-led section scaffolds that repeat the same title/description/badge rhythm in different forms.
 
 Flag each instance with the element, the pattern name, and a concrete removal or simplification instruction.
 

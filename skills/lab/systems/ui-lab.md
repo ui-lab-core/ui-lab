@@ -1,6 +1,23 @@
-# UI Lab Design System Reference
+# UI Lab System
 
-Canonical rules for validating adherence to UI Lab tokens, components, and patterns. Each section lists rules; violations are flaggable.
+Loaded in ui-lab mode only, on top of `core/principles.md`. Maps the principles to concrete UI Lab tokens, components, and props. Each section lists rules; violations are flaggable.
+
+## Project readiness
+
+Read the preflight `Theme:` line before building. UI Lab component CSS only consumes tokens (`--background-*`, `--foreground-*`, `--accent-*`, `--border-width-base`, spacing and type scales); the app supplies them through a token layer (`theme.css`), normally written by `ui-lab init`.
+
+**`SET UP`** — build normally.
+
+**`TOKENS MISSING` or `NOT INSTALLED`** — ui-lab-components is installed, but no stylesheet defines the tokens. Importing `ui-lab-theme-onyx` alone is not enough; it supplies component recipes, and the color tokens still come from the token layer.
+
+- Still build the design the correct way: UI Lab components, their props, and the token utilities in this file. The code should look right the moment a theme is added.
+- Do not compensate. No hex/rgb/Tailwind palette colors, no inline token definitions, no `:root` overrides inside the design, no restyling of component internals to "fix" the look.
+- Do not set up the theme yourself unless the user asked for setup or the change is in scope; if they ask, route to `setup`.
+- Tell the user, in the first lines of your final reply, before describing the design:
+  1. **What is missing:** `ui-lab-components` has no theme set up — name the preflight finding (no `ui-lab-theme-*` package, or Onyx installed without a token layer).
+  2. **What they will see until it is fixed:** the layout and structure are correct, but the styling falls back to browser defaults — near-black text on a plain white page, no surface colors (cards, panels and menus are transparent), missing borders and dividers, controls that look unstyled (switch and checkbox thumbs render as small black squares, selects and buttons as plain text), no accent color on primary actions, and default system type. This is expected without a theme, not a bug in the design.
+  3. **How to fix it:** run `npx ui-lab init` (non-interactive: `npx ui-lab init --non-interactive`; Vite: add `--framework vite --stylesheet src/index.css`), which installs Onyx and writes `theme.css`, fonts and the stylesheet imports. To do it by hand: install `ui-lab-theme-onyx`, add an app-owned `theme.css` token layer, and import `tailwindcss`, `ui-lab-theme-onyx/styles.css`, `./theme.css`, then `ui-lab-components/styles.css`, in that order.
+  4. **Docs:** [Installation](https://ui-lab.app/docs/installation) and [Theming](https://ui-lab.app/docs/customization-theming).
 
 ## Color tokens
 
@@ -143,48 +160,6 @@ Prefer compound forms over raw wrappers:
 - `<List.Item>` with `<List.Checkbox>` for selectable lists
 - `<Group.Select>` for grouped controls
 
-## Interactive states
-
-Every interactive element defines: hover, active/pressed, disabled (when applicable), focus (keyboard).
-
-## Affordance rules
-
-- **No zero-state chrome.** Hide counters/filters/results UI until count > 0 (`"0 items selected"`, `"No filters applied"`, `"0 results"` are violations).
-- **No duplicate affordances.** Same action on the same element twice (icon button + text link for delete) — pick one or differentiate hierarchy.
-- **No mode-leaking affordances.** In mutually exclusive modes (single vs. batch select), per-item actions hide in batch mode; batch actions hide in single mode.
-- **No redundant action surfaces.** Two surfaces with the same intent under the same conditions — one is redundant.
-
-## Anti-patterns
-
-Flag these; they indicate hand-tuned utilities substituting for system tokens.
-
-### Typography
-
-- Arbitrary sizes: `text-[11px]`, `text-[10px]`, etc.
-- Arbitrary tracking: `tracking-[0.22em]`, etc.
-- `uppercase tracking-wide` and similar micro-label combos without semantic need
-- `uppercase` used purely for visual flavor
-- Stacked overrides like `font-bold leading-snug` on labels, chips, buttons, supporting text
-- Manual line-height overrides without a real wrapping/density need
-
-Prefer component defaults and tokenized text styles.
-
-### Motion
-
-- `transition-all` (flag by default)
-- `transition-colors` on static containers, layout wrappers, non-interactive decoration
-- Decorative `delay-*` with no state-change signal
-
-Motion must be tied to state, feedback, or focus.
-
-### Copy
-
-- **Redundant labels.** Tooltip or aria-label identical to visible text (`<Button>Save</Button>` with `aria-label="Save"`).
-- **Parasitic instructions.** Help text that persists after the described action (e.g. "Enter your email" still showing post-submit).
-- **Heading/breadcrumb duplication.** Heading restates the last breadcrumb segment.
-- **Icon+label parity.** Decorative prefix icon that restates the label with no hierarchy or indicator value.
-- **Verbose empty states.** More than one short sentence + one CTA.
-
 ## Audit checklist
 
 1. Colors: neutral palette, semantic tokens, shade ranges
@@ -192,6 +167,4 @@ Motion must be tied to state, feedback, or focus.
 3. Component substitutions for styled native elements
 4. Imports from per-component `ui-lab-components/<id>` subpaths; theme from the MCP setup guide
 5. React Aria props; compound sub-components where available
-6. Interactive states present
-7. Affordance rules (zero-state, duplicates, mode-leaking, redundant surfaces)
-8. Anti-patterns (typography, motion, copy)
+6. Then the `core/principles.md` checklist (states, affordances, anti-patterns)

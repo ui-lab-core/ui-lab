@@ -6,26 +6,24 @@ Six orthogonal dimensions. Each pillar: what it measures, what to check, what to
 
 ## 1. Design System Adherence
 
-**Measures:** Use of UI Lab tokens, components, and patterns vs. raw HTML / custom styling.
+**Measures:** Use of the active system's tokens, components, and patterns vs. raw HTML / custom styling. The active system is UI Lab in ui-lab mode and the project's own system in general mode.
 
 **Check:**
 
-- Native HTML elements replaced with UI Lab equivalents (`<button>` → `<Button>`, `<a>` → `<Anchor>`, `<input>` → `<Input>`/`<Checkbox>`/`<Radio>`, `<div className="flex">` → `<Flex>`, styled `<div>` → `<Card>` / `<Group>`)
-- Tokens used for color (no hex, no rgba)
-- Semantic tokens for feedback states (success/danger/warning/info), not chromatic Tailwind
-- Component props (`disabled`, `onPress`, `isOpen`)
+- Styled native elements replaced with the system's components where one exists
+- Tokens used for color (no hex, no rgba the system already names)
+- Semantic tokens for feedback states (success/danger/warning/info), not raw chromatic color
+- Component APIs used as documented
 - Compound sub-components where available
-- Theme provider from the MCP setup guide (`search_guides { query: "setup-ui-lab-in-project", detail: "full" }`)
 
 **Flag:**
 
-- Any native HTML element with className or style
-- Styled `<div>` used as layout or container
+- Any native interactive element with className or style when a system component covers it
+- Styled `<div>` used as layout or container when the system has a primitive for it
 - Hex or rgba colors
-- `disabled`, `onClick`, `isVisible` on UI Lab components
-- Chromatic Tailwind (`green`, `red`, etc.) used for feedback intent
+- Raw chromatic color (`green`, `red`, etc.) used for feedback intent
 
-See `design-system.md` for the full component mapping table and token rules.
+See `core/principles.md` for the general rules, and `systems/ui-lab.md` (ui-lab mode) or `systems/project.md` (general mode) for the concrete mapping.
 
 ---
 
