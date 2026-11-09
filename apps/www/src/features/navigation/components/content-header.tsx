@@ -27,10 +27,10 @@ export function ContentHeader({ title, description, preview, tags, actions }: Co
         <div className="flex relative flex-col gap-3">
           <div className="flex flex-col pr-8 sm:flex-row items-start justify-start gap-4">
             <div className="space-y-2">
-              <h1 className="text-2xl sm:text-xl font-medium text-foreground-200 flex-1">
+              <h1 className="type-page text-foreground-100 flex-1">
                 {title}
               </h1>
-              <p className="text-foreground-400 max-w-[75ch] text-balance text-base flex-1">
+              <p className="type-lead text-foreground-400 max-w-[65ch] flex-1">
                 {description}
               </p>
             </div>

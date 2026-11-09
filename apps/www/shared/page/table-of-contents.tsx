@@ -373,7 +373,7 @@ export function TableOfContents({
         )}
       >
         <nav className="flex h-full min-h-0 flex-col pt-12">
-          <h3 className="flex items-center gap-3 text-md text-foreground-400">
+          <h3 className="flex items-center gap-3 text-sm text-foreground-400">
             <FaList aria-hidden="true" />
             <span className="min-[1050px]:hidden">Contents</span>
             <span className="hidden min-[1050px]:inline">Table of Contents</span>

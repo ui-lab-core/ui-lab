@@ -41,7 +41,7 @@ export function Playground({
       >
         {result?.preview ?? (Preview ? <Preview /> : <div className="min-h-80" />)}
       </PlaygroundCard>
-      <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700 bg-background-950/40">
+      <div className="overflow-hidden rounded-sm rounded-t-none border border-t-0 border-background-700">
         <Code
           entryRef={`example:${componentId}/${id.replace(`${componentId}-`, "")}`}
           entryTitle={`${componentId} / ${id}`}
