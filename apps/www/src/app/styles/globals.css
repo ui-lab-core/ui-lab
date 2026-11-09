@@ -14,7 +14,7 @@
 /* Work Sans handles reading and interface text; Space Grotesk owns headings. */
 @font-face {
   font-family: "Site Interface";
-  src: url("@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2") format("woff2");
+  src: url("../../../node_modules/@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -23,7 +23,7 @@
 /* Switch the header font independently by changing only src. */
 @font-face {
   font-family: "Site Header";
-  src: url("@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2") format("woff2");
+  src: url("../../../node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2") format("woff2");
   font-style: normal;
   font-weight: 300 700;
   font-display: swap;
