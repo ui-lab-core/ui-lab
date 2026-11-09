@@ -1,27 +1,30 @@
-/**
- * Micro interaction easing functions used by the showcase configurators.
- */
+/** Standard motion curves shared with the component CSS API. */
 export const EASING_FUNCTIONS = {
-  decelerate: {
-    name: "Decelerate",
-    bezier: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-    cssVar: "var(--ease-decelerate)",
-    description: "Gentle ease with subtle deceleration. Perfect for hovering and state changes.",
+  easeOut: {
+    name: "Ease Out",
+    bezier: "cubic-bezier(0, 0, 0.2, 1)",
+    cssVar: "var(--ease-out)",
+    description: "Responsive deceleration for controls and entering surfaces.",
   },
-  snappyPop: {
-    name: "Snappy Pop",
-    bezier: "cubic-bezier(0.34, 1.56, 0.64, 1.00)",
-    cssVar: "var(--ease-snappy-pop)",
-    description: "Bouncy easing with overshoot for tactile, responsive feedback on clicks.",
+  easeIn: {
+    name: "Ease In",
+    bezier: "cubic-bezier(0.4, 0, 1, 1)",
+    cssVar: "var(--ease-in)",
+    description: "Acceleration for surfaces leaving the interface.",
   },
-  gentleEase: {
-    name: "Gentle Ease",
-    bezier: "cubic-bezier(0.43, 0.13, 0.23, 0.96)",
-    cssVar: "var(--ease-gentle-ease)",
-    description: "Smooth ease-in-out perfect for focus transitions and subtle interactions.",
+  easeInOut: {
+    name: "Ease In Out",
+    bezier: "cubic-bezier(0.4, 0, 0.2, 1)",
+    cssVar: "var(--ease-in-out)",
+    description: "Smooth acceleration and deceleration for repeating state changes.",
+  },
+  easeOutQuint: {
+    name: "Ease Out Quint",
+    bezier: "cubic-bezier(0.22, 1, 0.36, 1)",
+    cssVar: "var(--ease-out-quint)",
+    description: "Quick response with a gradual settle for layout changes.",
   },
 } as const;
 
 export type EasingKey = keyof typeof EASING_FUNCTIONS;
-
 export const EASING_KEYS = Object.keys(EASING_FUNCTIONS) as EasingKey[];
