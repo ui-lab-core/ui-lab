@@ -7,6 +7,7 @@ import { themes } from "@/features/theme/constants/themes";
 import { useThemeStorage } from "@/features/theme/hooks/use-theme-storage";
 import { useApp } from "@/features/theme/lib/app-context";
 import { ROUTES } from "@/shared/lib/routes";
+import { authEnabled } from "./data";
 import { Icon } from "ui-lab-components/icon";
 import { Menu } from "ui-lab-components/menu";
 
@@ -80,7 +81,7 @@ export function HeaderMenu({ profile, onProfileSelect, showLogin }: HeaderMenuPr
               <Menu.Separator />
             </>
           ) : null}
-          {showLogin ? (
+          {showLogin && authEnabled ? (
             <>
               <Menu.Item onSelect={() => router.push(ROUTES.signIn)} textValue="Log in">
                 <Icon id="login" size={18} className="shrink-0 text-foreground-400" />

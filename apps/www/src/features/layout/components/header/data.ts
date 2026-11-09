@@ -21,11 +21,14 @@ export interface HeaderTab {
   path: string;
 }
 
+/** Client mirror of AUTH_ENABLED; inlined at build time. */
+export const authEnabled = process.env.NEXT_PUBLIC_AUTH_ENABLED === "true";
+
 export const headerTabs: HeaderTab[] = [
   { id: "documentation", label: "Documentation", path: "/docs" },
   { id: "components", label: "Library", path: "/library" },
   { id: "workshop", label: "Workshop", path: "/workshop/elements" },
-  { id: "pricing", label: "Pricing", path: "http://localhost:3000/supporter" },
+  ...(authEnabled ? [{ id: "pricing", label: "Pricing", path: "/supporter" }] : []),
 ];
 
 export const libraryItems = [

@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 /**
  * Routes that require a signed-in user at the edge. Premium *content* is not
@@ -7,7 +8,13 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
  */
 const isProtectedRoute = createRouteMatcher(["/accounts(.*)", "/supporter/success(.*)"]);
 
+/** Auth and billing pages stay unreachable until AUTH_ENABLED=true. */
+const isAuthRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)", "/accounts(.*)", "/supporter(.*)"]);
+
 export default clerkMiddleware(async (auth, req) => {
+  if (process.env.AUTH_ENABLED !== "true" && isAuthRoute(req)) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
