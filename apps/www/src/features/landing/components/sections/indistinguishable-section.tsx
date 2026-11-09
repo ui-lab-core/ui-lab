@@ -1,48 +1,23 @@
 "use client";
 
-/**
- * Design note — 01, the consistency claim.
- *
- * Claim: the same screen, built by an agent with and without the system, is the
- * difference between a lookalike and the product. A skeptic believes it by watching
- * one screen become the other, so the section is a demonstration, not a diagram.
- * Rejected the first idea (two screens side by side): halving the frame crops both
- * to their sidebars, and a fair comparison you cannot read proves nothing.
- * The visual idea is one large plate carrying a single screen, driven by a timeline
- * that plays the argument beside it — the progress rail is the only motion on the
- * page, and it is the mechanism, not decoration. The eye lands on the plate, the
- * rail tells it what changed, the pill lets it go back and check.
- * Cut: the Before/After toolbar above the frame — the control belongs on the plate.
- *
- * The plate is pinned while its scroll region passes: the story needs a beat to
- * read, and a section that scrolls off with the page never gives it one. Scroll
- * distance is the scrubber, not a click target — the rail is a readout, not a
- * player.
- */
-
 import dynamic from "next/dynamic";
+import { Check, ChevronRight, ChevronsLeftRight, Copy, Gauge, Timer } from "lucide-react";
 import {
-  useCallback,
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
+  type ComponentType,
+  type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { Tabs } from "ui-lab-components/tabs";
+import { Tabs } from "ui-lab-components";
+import { Anchor } from "ui-lab-components/anchor";
+import { Icon } from "ui-lab-components/icon";
 import { useNearViewport } from "@shared/lib/use-near-viewport";
-import { Section } from "./section";
-import { Button } from "ui-lab-components";
+import { Logo } from "@/features/layout/components/logo";
+import type { ShowcasePanelProps } from "../showcase/examples/types";
 
-// The explicit `loading` is load-bearing, not cosmetic: it is what makes
-// next/dynamic wrap each import in its own Suspense boundary (see
-// `hasSuspenseBoundary` in next's loadable.js, and the same note in
-// showcase/index.tsx). Without it these bare imports suspend up to the route
-// boundary they share with <Showcase>, so mounting them cold — the instant
-// `isNear` flips as this section scrolls in — tears the showcase off screen and
-// bounces its selected view back through the default. A null fallback is
-// enough: <Layer> already owns the crossfade, and the plate sits on its own
-// background until a screen fades in.
+// Separate loading boundaries keep these previews from suspending the page.
 const ShowcaseBefore = dynamic(
   () => import("../showcase-before").then((module) => module.ShowcaseBefore),
   { loading: () => null },
@@ -51,328 +26,444 @@ const ShowcaseAfter = dynamic(
   () => import("../showcase-after").then((module) => module.ShowcaseAfter),
   { loading: () => null },
 );
+const VibesApiKeys = dynamic(
+  () => import("../comparison-vibes").then((module) => module.VibesApiKeys),
+  { loading: () => null },
+);
+const VibesIntegrations = dynamic(
+  () => import("../comparison-vibes").then((module) => module.VibesIntegrations),
+  { loading: () => null },
+);
+const ApiKeysPanel = dynamic<ShowcasePanelProps>(
+  () => import("../showcase/examples/showcase/api-keys").then((module) => module.ApiKeysPanel),
+  { loading: () => null },
+);
+const IntegrationsPanel = dynamic<ShowcasePanelProps>(
+  () =>
+    import("../showcase/examples/showcase/integrations").then((module) => module.IntegrationsPanel),
+  { loading: () => null },
+);
 
-/** Scroll distance given to each step while the plate is pinned. */
-const VH_PER_STEP = 100;
-/** Keep a visible starting nub before the reader enters the pinned sequence. */
-const PILL_MIN_FILL = 0.05;
-/**
- * The pin only runs where the layout it needs already exists: the two-column grid
- * starts at lg, the sticky box has to hold the 38rem plate under the header
- * without clipping (overflow isn't cropped, and mobile viewport height is
- * unstable mid-scroll besides), and a reader who asked for less motion gets the
- * plain stacked section. Every clause here is mirrored by the
- * lg:motion-safe:[@media(min-height:720px)] class chain in the markup — CSS owns
- * the layout so it is right at first paint; this string only gates listeners.
- */
-const PIN_MEDIA =
-  "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)";
-
-type Step = { title: string; desc: string; clean: boolean };
-
-const steps: Step[] = [
-  {
-    title: "The agent improvises.",
-    desc: "Nothing to reach for, so it invents: new radii, a new palette, a new idea of a card on every screen.",
-    clean: false,
-  },
-  {
-    title: "It asks the system instead.",
-    desc: "UI Lab answers with the component that owns the pattern, and the tokens behind it.",
-    clean: true,
-  },
-  {
-    title: "It ships as the product.",
-    desc: "Same primitives, same scale, same rules as the screens your team wrote by hand.",
-    clean: true,
-  },
-];
-
-const firstSlop = steps.findIndex((step) => !step.clean);
-const firstClean = steps.findIndex((step) => step.clean);
-
-/**
- * The shot is oversized on purpose: the screen runs past the plate's right edge so
- * the frame reads as a crop of a real app rather than a diagram of one.
- */
-function Layer({ show, children }: { show: boolean; children: ReactNode }) {
+/** Full-page shots are authored at desktop width and scaled into the frame. */
+function PageLayer({ children }: { children: ReactNode }) {
   return (
     <div
       aria-hidden
-      className={`pointer-events-none absolute inset-0 select-none overflow-hidden transition-opacity duration-200 motion-reduce:transition-none ${
-        show ? "opacity-100" : "opacity-0"
-      }`}
+      inert
+      className="pointer-events-none absolute inset-0 select-none overflow-hidden"
     >
-      <div className="relative h-[263%] w-[263%] origin-top-left scale-[0.60] md:h-[161%] md:w-[161%] md:scale-[0.91]">
+      <div className="relative h-[166.667%] w-[166.667%] origin-top-left scale-[0.6] sm:h-[125%] sm:w-[125%] sm:scale-[0.8] [&>div]:!inset-0 [&>div]:!h-full [&>div]:!w-full [&>div>div]:!h-full [&>div>div]:!w-full">
         {children}
       </div>
     </div>
   );
 }
 
-export function IndistinguishableSection() {
-  // pinRef is the tall scroll region the pin plays against; contentRef is the
-  // sticky box actually holding the plate and step list — its height is what
-  // "spends" the pin's scroll distance, so progress is read from both
-  const pinRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  // pin geometry, measured off the scroll path. `top` is the region's absolute
-  // document offset, `scrollable` the distance the plate stays pinned for —
-  // both change only when layout changes, so we cache them and let scroll ticks
-  // do pure arithmetic instead of reading the DOM every frame
-  const geometryRef = useRef({ top: 0, scrollable: 0 });
-  // one pill exactly one phase tall, positioned and filled independently of
-  // the full-height background rail
-  const pillRef = useRef<HTMLSpanElement>(null);
-  const isNear = useNearViewport(pinRef, { once: false });
-  const [active, setActive] = useState(0);
-  // the only thing this decides is whether the scroll listeners run — it moves
-  // no DOM and swaps no subtree, so it is safe for it to resolve after mount.
-  // The layout itself is a media query, present and correct at first paint
-  const [pinned, setPinned] = useState(false);
-
-  useEffect(() => {
-    const query = window.matchMedia(PIN_MEDIA);
-    const sync = () => setPinned(query.matches);
-    sync();
-    query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
-  }, []);
-
-  // Position and fill are direct projections of progress through the active
-  // phase. Clip instead of scale so the pill's rounded ends remain crisp.
-  const applyPill = useCallback((position: number, fill: number) => {
-    const node = pillRef.current;
-    if (!node) return;
-    node.style.transform = `translateY(${position * 100}%)`;
-    const hidden = (1 - Math.max(PILL_MIN_FILL, fill)) * 100;
-    node.style.clipPath = `inset(0 0 ${hidden}% 0 round 999px)`;
-  }, []);
-
-  // the one place layout is read: caches the region's absolute top and the
-  // pinned scroll distance. Runs off the scroll path — at setup, on resize, and
-  // when a ResizeObserver reports the region or its sticky content changed
-  // height — so a rect read never lands inside a scroll frame
-  const measure = useCallback(() => {
-    const outer = pinRef.current;
-    const content = contentRef.current;
-    if (!outer || !content) return;
-    const outerRect = outer.getBoundingClientRect();
-    geometryRef.current = {
-      top: outerRect.top + window.scrollY,
-      scrollable: outerRect.height - content.getBoundingClientRect().height,
-    };
-  }, []);
-
-  // reads how far the page has scrolled through the pinned region — 0 the
-  // moment the plate sticks, 1 the moment it's about to release — so the
-  // timeline is a direct readout of scroll position, never a guess at dwell time
-  const computeProgress = useCallback(() => {
-    // pure math against cached geometry: no getBoundingClientRect here, so a
-    // scroll tick can't force a synchronous relayout of the oversized plate
-    const { top, scrollable } = geometryRef.current;
-    const progress =
-      scrollable > 0 ? Math.min(1, Math.max(0, (window.scrollY - top) / scrollable)) : 0;
-    const scaled = progress * steps.length;
-    const nextActive = Math.min(steps.length - 1, Math.floor(scaled));
-    const phaseProgress = Math.min(1, Math.max(0, scaled - nextActive));
-
-    // set imperatively so scroll ticks never wait on a React render — the
-    // one thing that would jank a scroll-linked animation
-    applyPill(nextActive, phaseProgress);
-    setActive((current) => (current === nextActive ? current : nextActive));
-  }, [applyPill]);
-
-  useEffect(() => {
-    if (!isNear || !pinned) return;
-    measure();
-    computeProgress();
-
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(() => {
-        computeProgress();
-        ticking = false;
-      });
-    };
-    // resizes remeasure first, then reproject the pill onto the new geometry
-    const onResize = () => {
-      measure();
-      computeProgress();
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
-
-    // fonts loading, dynamic panels resolving, header collapsing — anything that
-    // shifts the region's height invalidates the cache without a resize event
-    const observer = new ResizeObserver(onResize);
-    if (pinRef.current) observer.observe(pinRef.current);
-    if (contentRef.current) observer.observe(contentRef.current);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-      observer.disconnect();
-    };
-  }, [isNear, pinned, computeProgress, measure]);
-
-  // off the pin (reduced motion, or below lg where the pin doesn't run) the
-  // pill rests at the end of whichever step is active
-  useEffect(() => {
-    if (pinned) return;
-    applyPill(active, 1);
-  }, [pinned, active, applyPill]);
-
-  // moves the page's scroll position to the step, rather than faking one —
-  // the pin region stays the single source of truth for what's active
-  const goToStep = useCallback(
-    (index: number) => {
-      // a click is off the scroll path, so a fresh read here is free — measure,
-      // then aim the page at the step's midpoint through the pinned region
-      measure();
-      const { top, scrollable } = geometryRef.current;
-      if (!pinned || scrollable <= 0) {
-        setActive(index);
-        return;
-      }
-      const progress = (index + 0.5) / steps.length;
-      window.scrollTo({ top: top + progress * scrollable, behavior: "smooth" });
-    },
-    [pinned, measure],
-  );
-
-  const clean = steps[active].clean;
-
-  const plate = (
-    <div className="grid-paper relative min-h-[30dvh] max-h-[40rem] overflow-hidden rounded-sm border border-background-700 sm:h-[28rem] lg:h-[38rem]">
-      {isNear ? (
-        <>
-          <Layer show={!clean}>
-            <ShowcaseBefore />
-          </Layer>
-          <Layer show={clean}>
-            <ShowcaseAfter />
-          </Layer>
-        </>
-      ) : null}
-
-      <div className="absolute bottom-5 left-5 z-10 w-fit rounded-full border border-background-700 bg-background-900 px-1">
-        <Tabs
-          value={clean ? "after" : "before"}
-          onValueChange={(value) => goToStep(value === "before" ? firstSlop : firstClean)}
-        >
-          <Tabs.List aria-label="Screen state" styles={{ indicator: "rounded-full" }}>
-            <Tabs.Trigger value="before" className="px-3 text-sm">
-              Before
-            </Tabs.Trigger>
-            <Tabs.Trigger value="after" className="px-3 text-sm">
-              After
-            </Tabs.Trigger>
-          </Tabs.List>
-        </Tabs>
+/** Single panels sit centred on a quiet ground, the way they would ship. */
+function PanelLayer({ Panel }: { Panel: ComponentType<ShowcasePanelProps> }) {
+  return (
+    <div
+      aria-hidden
+      inert
+      className="pointer-events-none absolute inset-0 grid select-none place-items-center overflow-hidden bg-background-950 p-6 sm:p-10"
+    >
+      <div className="h-full max-h-[27rem] w-full max-w-[28rem]">
+        <Panel height="100%" />
       </div>
     </div>
   );
+}
 
-  const argument = (
-    <div className="flex flex-col justify-between gap-12">
-      <div>
-        <h2 className="max-w-[25ch] font-medium text-foreground-200 text-2xl">
-          Give your agents the tools they need to <span>build great interfaces</span>.
-        </h2>
-      </div>
-      <div className="grid grid-cols-[1px_minmax(0,1fr)] gap-x-5">
-        <div aria-hidden className="relative h-full">
-          <svg
-            className="block h-full w-px text-background-700"
-            viewBox="0 0 1 100"
-            preserveAspectRatio="none"
-          >
-            <line
-              x1="0.5"
-              y1="0"
-              x2="0.5"
-              y2="100"
-              stroke="currentColor"
-              strokeDasharray="8 4"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
-
-          <span
-            ref={pillRef}
-            className="absolute left-1/2 top-0 w-1 -translate-x-1/2 bg-foreground-200"
-            style={{
-              height: `calc(100% / ${steps.length})`,
-              clipPath: `inset(0 0 ${(1 - PILL_MIN_FILL) * 100}% 0 round 999px)`,
-              transform: "translateY(0%)",
-            }}
-          />
-        </div>
-
-        <ol className="flex flex-col">
-          {steps.map((step, index) => {
-            const current = index === active;
-            return (
-              <li key={step.title}>
-                <button
-                  type="button"
-                  onClick={() => goToStep(index)}
-                  aria-current={current ? "step" : undefined}
-                  className="group flex w-full flex-col gap-1.5 py-3.5 text-left"
-                >
-                  <span
-                    className={`text-md font-medium transition-colors duration-200 motion-reduce:transition-none ${
-                      current
-                        ? "text-foreground-50"
-                        : "text-foreground-400 group-hover:text-foreground-200"
-                    }`}
-                  >
-                    {step.title}
-                  </span>
-                  <span
-                    className={`text-sm leading-relaxed transition-colors duration-200 motion-reduce:transition-none ${
-                      current ? "text-foreground-300" : "text-foreground-400/70"
-                    }`}
-                  >
-                    {step.desc}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-
-      <p className="max-w-[42ch] text-md leading-relaxed text-foreground-400">
-        Left alone, an agent invents a visual language every time it renders a screen. UI Lab hands
-        it the one your team already designs with, so what ships is the product — not a lookalike.
-      </p>
+/** Vibe placeholders paint their own full-bleed ground. */
+function VibesLayer({ Vibes }: { Vibes: ComponentType }) {
+  return (
+    <div
+      aria-hidden
+      inert
+      className="pointer-events-none absolute inset-0 select-none overflow-hidden"
+    >
+      <Vibes />
     </div>
   );
+}
+
+type Comparison = {
+  value: string;
+  label: string;
+  prompt: string;
+  before: () => ReactNode;
+  after: () => ReactNode;
+};
+
+/** Each entry is one prompt run twice: once on vibes, once through UI Lab. */
+const comparisons: Comparison[] = [
+  {
+    value: "dashboard",
+    label: "Dashboard",
+    prompt:
+      "Build a payments dashboard with a sidebar, revenue metrics, a trend chart and a recent transactions table.",
+    before: () => (
+      <PageLayer>
+        <ShowcaseBefore />
+      </PageLayer>
+    ),
+    after: () => (
+      <PageLayer>
+        <ShowcaseAfter />
+      </PageLayer>
+    ),
+  },
+  {
+    value: "api-keys",
+    label: "API keys",
+    prompt:
+      "Build an API keys screen. Search, a list of keys with masked values, copy actions and a way to create a new key.",
+    before: () => <VibesLayer Vibes={VibesApiKeys} />,
+    after: () => <PanelLayer Panel={ApiKeysPanel} />,
+  },
+  {
+    value: "integrations",
+    label: "Integrations",
+    prompt:
+      "Build an integrations page listing connected services with a short description and a toggle to enable each one.",
+    before: () => <VibesLayer Vibes={VibesIntegrations} />,
+    after: () => <PanelLayer Panel={IntegrationsPanel} />,
+  },
+];
+
+type MarkProps = { className?: string };
+
+function AnthropicMark({ className }: MarkProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />
+    </svg>
+  );
+}
+
+function OpenAIMark({ className }: MarkProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+    </svg>
+  );
+}
+
+function GeminiMark({ className }: MarkProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
+    </svg>
+  );
+}
+
+type Model = {
+  value: string;
+  provider: string;
+  name: string;
+  Mark: ComponentType<MarkProps>;
+  /** Reasoning effort the run was recorded at. */
+  effort: string;
+  /** Wall-clock time of the recorded run. */
+  duration: string;
+};
+
+// Placeholder lineup; only the Sonnet runs are real today.
+const models: Model[] = [
+  {
+    value: "gpt",
+    provider: "OpenAI",
+    name: "GPT-5.5",
+    Mark: OpenAIMark,
+    effort: "High",
+    duration: "52s",
+  },
+  {
+    value: "sonnet",
+    provider: "Anthropic",
+    name: "Sonnet 5.5",
+    Mark: AnthropicMark,
+    effort: "High",
+    duration: "38s",
+  },
+  {
+    value: "gemini",
+    provider: "Google",
+    name: "Gemini 3 Pro",
+    Mark: GeminiMark,
+    effort: "High",
+    duration: "45s",
+  },
+];
+
+/** Segmented model switch: the selected provider unfolds to show its model name. */
+function ModelPicker({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    if (!step) return;
+    event.preventDefault();
+    const index = models.findIndex((model) => model.value === value);
+    const next = (index + step + models.length) % models.length;
+    onChange(models[next].value);
+    refs.current[next]?.focus();
+  };
 
   return (
-    <Section ground="1000" rhythm="none">
-      {/* one tree, always mounted: the tall scroll region and the sticky box are
-          media queries, so the pinned layout is whatever the viewport already
-          says it is — nothing swaps, nothing remounts, nothing resizes after
-          hydration */}
-      <div
-        ref={pinRef}
-        className="relative mt-12 lg:motion-safe:[@media(min-height:720px)]:h-(--pin-height)"
-        style={{ "--pin-height": `${steps.length * VH_PER_STEP}vh` } as CSSProperties}
-      >
-        <div
-          ref={contentRef}
-          className="grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-16 lg:motion-safe:[@media(min-height:720px)]:sticky lg:motion-safe:[@media(min-height:720px)]:top-(--header-height) lg:motion-safe:[@media(min-height:720px)]:h-[calc(100vh-var(--header-height))] lg:motion-safe:[@media(min-height:720px)]:items-center"
+    <div
+      role="radiogroup"
+      aria-label="Model"
+      onKeyDown={onKeyDown}
+      className="flex shrink-0 items-center gap-1 rounded-md border border-background-700 bg-background-900/85 p-1 shadow-sm backdrop-blur"
+    >
+      {models.map(({ value: modelValue, provider, name, Mark }, index) => {
+        const selected = modelValue === value;
+        return (
+          <button
+            key={modelValue}
+            ref={(node) => {
+              refs.current[index] = node;
+            }}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            aria-label={`${provider} ${name}`}
+            tabIndex={selected ? 0 : -1}
+            onClick={() => onChange(modelValue)}
+            className={`group/model flex h-8 items-center rounded-md border p-1 outline-none transition-[background-color,border-color,color] duration-200 focus-visible:ring-2 focus-visible:ring-foreground-400 ${
+              selected
+                ? "border-background-600 bg-background-800 text-foreground-100"
+                : "border-transparent text-foreground-500 hover:bg-background-900 hover:text-foreground-200"
+            }`}
+          >
+            <span
+              className={`grid size-6 shrink-0 place-items-center rounded-sm transition-colors duration-200 ${selected ? "bg-background-700" : ""}`}
+            >
+              <Mark className="size-3.5 transition-transform duration-200 group-active/model:scale-90" />
+            </span>
+            <span
+              className={`grid transition-[grid-template-columns,opacity] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] ${
+                selected ? "grid-cols-[1fr] opacity-100" : "grid-cols-[0fr] opacity-0"
+              }`}
+            >
+              <span className="overflow-hidden whitespace-nowrap">
+                <span className="block pl-2 pr-2 text-sm font-medium">{name}</span>
+              </span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** The recorded run: the prompt as sent, with the settings and time it took. */
+function PromptRun({ prompt, model }: { prompt: string; model: Model }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timeout = window.setTimeout(() => setCopied(false), 1600);
+    return () => window.clearTimeout(timeout);
+  }, [copied]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(prompt);
+      setCopied(true);
+    } catch {
+      // Clipboard can be unavailable (permissions, insecure context); stay quiet.
+    }
+  };
+
+  return (
+    <div className="group/prompt flex min-w-0 animate-[comparison-settle_320ms_cubic-bezier(0.2,0.7,0.2,1)_both] flex-col gap-2.5 motion-reduce:animate-none">
+      <p className="max-w-[56ch] text-sm leading-relaxed text-foreground-300">{prompt}</p>
+      <div className="flex h-6 items-center gap-3 text-xs text-foreground-400">
+        <span className="flex items-center gap-1.5">
+          <Gauge size={12} className="text-foreground-500" />
+          {model.effort} effort
+        </span>
+        <span className="flex items-center gap-1.5">
+          <Timer size={12} className="text-foreground-500" />
+          {model.duration}
+        </span>
+        <button
+          type="button"
+          onClick={copy}
+          aria-label={copied ? "Prompt copied" : "Copy prompt"}
+          data-copied={copied}
+          className="grid size-6 place-items-center rounded-sm text-foreground-500 opacity-0 outline-none transition-[opacity,color,background-color] duration-200 hover:bg-background-900 hover:text-foreground-200 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-foreground-400 group-hover/prompt:opacity-100 data-[copied=true]:opacity-100"
         >
-          {plate}
-          {argument}
-        </div>
+          {copied ? <Check size={12} /> : <Copy size={12} />}
+        </button>
+        <Anchor
+          href="/benchmark"
+          className="group/cta ml-auto mr-3 flex items-center gap-0.5 font-medium text-foreground-200"
+        >
+          Full Report
+          <ChevronRight
+            size={12}
+            className="transition-transform duration-200 group-hover/cta:translate-x-0.5"
+          />
+        </Anchor>
       </div>
-    </Section>
+    </div>
+  );
+}
+
+function SideLabel({
+  icon,
+  children,
+  side,
+  visible,
+}: {
+  icon: ReactNode;
+  children: ReactNode;
+  side: "left" | "right";
+  visible: boolean;
+}) {
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute top-3 z-10 flex items-center gap-2 rounded-md border border-background-700 bg-background-900/85 py-1 pl-1 pr-2.5 text-sm text-foreground-200 shadow-sm backdrop-blur transition-[opacity,transform] duration-200 ${
+        side === "left" ? "left-3" : "right-3"
+      } ${visible ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"}`}
+    >
+      <span className="grid size-6 place-items-center rounded-sm bg-background-800 text-foreground-300">
+        {icon}
+      </span>
+      {children}
+    </span>
+  );
+}
+
+export function IndistinguishableSection({
+  // Matches the showcase carousel's 72rem content column and 2rem gutters.
+  widthClassName = "w-[min(72rem,calc(100vw-4rem))]",
+}: {
+  widthClassName?: string;
+}) {
+  const previewRef = useRef<HTMLDivElement>(null);
+  const isNear = useNearViewport(previewRef, { once: true });
+  const [position, setPosition] = useState(50);
+  const [dragging, setDragging] = useState(false);
+  const [selected, setSelected] = useState(comparisons[0].value);
+  const [modelValue, setModelValue] = useState("sonnet");
+
+  const comparison = comparisons.find((item) => item.value === selected) ?? comparisons[0];
+  const model = models.find((item) => item.value === modelValue) ?? models[1];
+
+  const selectComparison = (value: string) => {
+    setSelected(value);
+    setPosition(50);
+  };
+
+  return (
+    <section className="mt-24 sm:mt-32" aria-labelledby="overhaul-heading">
+      <figure className={`relative left-1/2 min-w-0 ${widthClassName} -translate-x-1/2`}>
+        <div className="mb-4 flex flex-col gap-4 sm:mb-5 sm:flex-row sm:items-center sm:justify-between">
+          <h2
+            id="overhaul-heading"
+            className="max-w-[32ch] px-1 text-xl font-medium leading-snug tracking-tight text-foreground-400"
+          >
+            <span className="block text-foreground-100">See the results.</span>
+            Same prompt. Same model. Different tools.
+          </h2>
+          <div className="sm:ml-auto">
+            <Tabs
+              className="sm:-mb-7 sm:mr-4"
+              variant="underline"
+              value={selected}
+              onValueChange={selectComparison}
+            >
+              <Tabs.List styles={{ indicator: "bg-foreground-300" }} aria-label="Interfaces">
+                {comparisons.map(({ value, label }) => (
+                  <Tabs.Trigger
+                    key={value}
+                    value={value}
+                    className="shrink-0 px-3.5 py-1.5 not-focus-visible:shadow-none not-focus-visible:after:hidden"
+                  >
+                    {label}
+                  </Tabs.Trigger>
+                ))}
+              </Tabs.List>
+            </Tabs>
+          </div>
+        </div>
+
+        <div
+          ref={previewRef}
+          className="group/frame relative h-[28rem] overflow-hidden rounded-xl border border-background-700 bg-background-1000 focus-within:ring-2 focus-within:ring-inset focus-within:ring-foreground-400 sm:h-[40rem]"
+        >
+          {isNear ? (
+            <div
+              key={`${comparison.value}:${model.value}`}
+              className="absolute inset-0 animate-[comparison-settle_420ms_cubic-bezier(0.2,0.7,0.2,1)_both] motion-reduce:animate-none"
+            >
+              {comparison.after()}
+              <div
+                className="absolute inset-0"
+                style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+              >
+                {comparison.before()}
+              </div>
+            </div>
+          ) : null}
+
+          <SideLabel side="left" visible={position > 22} icon={<Icon id="sparkle" size={24} />}>
+            Vibes
+          </SideLabel>
+          <SideLabel side="right" visible={position < 78} icon={<Logo className="!size-6.5" />}>
+            Using /lab
+          </SideLabel>
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 z-10 w-0 border-l border-solid border-foreground-400/60"
+            style={{ left: `${position}%` }}
+          >
+            <span
+              className={`absolute left-1/2 top-1/2 grid size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-foreground-100 text-background-1000 shadow-md ring-4 ring-background-1000/40 transition-transform duration-200 ease-out ${
+                dragging ? "scale-90" : "group-hover/frame:scale-110"
+              }`}
+            >
+              <ChevronsLeftRight size={16} />
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            value={position}
+            onPointerDown={() => setDragging(true)}
+            onPointerUp={() => setDragging(false)}
+            onPointerCancel={() => setDragging(false)}
+            onDoubleClick={() => setPosition(50)}
+            onChange={(event) => setPosition(Number(event.target.value))}
+            aria-label="Compare the vibes result with the UI Lab result"
+            aria-describedby="comparison-prompt"
+            aria-valuetext={`${position}% vibes, ${100 - position}% with UI Lab`}
+            className="absolute inset-0 z-20 m-0 h-full w-full cursor-ew-resize touch-pan-y appearance-none opacity-0 [&::-moz-range-thumb]:h-full [&::-moz-range-thumb]:w-0 [&::-webkit-slider-thumb]:h-full [&::-webkit-slider-thumb]:w-0 [&::-webkit-slider-thumb]:appearance-none"
+          />
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 z-30 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div
+              id="comparison-prompt"
+              className="pointer-events-auto min-w-0 rounded-md border border-background-700 bg-background-900/85 px-3 py-2.5 shadow-sm backdrop-blur"
+            >
+              <PromptRun
+                key={`${comparison.value}:${model.value}`}
+                prompt={comparison.prompt}
+                model={model}
+              />
+            </div>
+            <div className="pointer-events-auto">
+              <ModelPicker value={modelValue} onChange={setModelValue} />
+            </div>
+          </div>
+        </div>
+      </figure>
+    </section>
   );
 }

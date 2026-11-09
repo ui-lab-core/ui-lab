@@ -10,8 +10,8 @@ type SectionHeadingProps = {
 };
 
 const headingSizes = {
-  default: "text-2xl sm:text-3xl",
-  small: "text-xl sm:text-2xl",
+  default: "type-section",
+  small: "type-page",
 } as const;
 
 export function SectionHeading({
@@ -27,7 +27,7 @@ export function SectionHeading({
       className={`flex flex-col pl-6 mt-8 gap-4 ${centered ? "items-center text-center" : ""} ${className}`}
     >
       <h2
-        className={`max-w-[28ch] text-balance ${headingSizes[size]} font-medium leading-tight tracking-normal text-foreground-100`}
+        className={`max-w-[28ch] text-balance ${headingSizes[size]} text-foreground-100`}
       >
         {title}
       </h2>
@@ -87,7 +87,7 @@ export function Page({ children, className = "" }: { children: ReactNode; classN
 /** One wide typographic line, used sparingly to break the section rhythm. */
 export function Statement({ children }: { children: ReactNode }) {
   return (
-    <p className="mx-auto max-w-[34ch] text-balance text-center text-xl font-medium leading-snug text-foreground-200 md:text-3xl">
+    <p className="mx-auto max-w-[34ch] type-section text-center text-foreground-200">
       {children}
     </p>
   );

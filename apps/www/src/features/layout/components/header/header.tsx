@@ -176,6 +176,14 @@ export default function Header({ pathname }: HeaderProps) {
   const { isOpen: isSidebarOpen, toggleSidebar } = useSidebarToggle();
   const isLandingPage = pathname === "/";
   const isNavigationOpen = isLandingPage ? isMobileMenuOpen : isSidebarOpen;
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isCommandPaletteOpen || Palette) return;
@@ -208,10 +216,15 @@ export default function Header({ pathname }: HeaderProps) {
 
   return (
     <>
-      <header className="fixed left-0 -mr-2 top-0 z-50 h-(--header-height) w-full border-b border-background-700 bg-background-950">
+      <header
+        className={cn(
+          "fixed left-0 -mr-2 top-0 z-50 h-(--header-height) w-full border-b bg-background-1000 transition-colors duration-300",
+          !isLandingPage || isScrolled ? "border-background-700" : "border-transparent",
+        )}
+      >
         <div
           className={cn(
-            "relative h-full flex items-center justify-between pr-3 pl-8 w-full overflow-hidden transition-[margin] duration-300",
+            "relative h-full flex items-center justify-between pl-4 pr-3 w-full overflow-hidden transition-[margin] duration-300",
             "max-w-(--page-width) mx-auto",
           )}
         >
@@ -221,11 +234,10 @@ export default function Header({ pathname }: HeaderProps) {
               href="/"
               prefetch={false}
               aria-label="UI Lab home"
-              className="hidden lg:flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0"
+              className="hidden text-sm font-semibold lg:flex items-center hover:opacity-80 transition-opacity shrink-0"
             >
-              <div className="scale-100">
-                <Logo />
-              </div>
+              <Logo className="size-8!" />
+              UI Lab
             </Link>
 
             <button
@@ -276,27 +288,34 @@ export default function Header({ pathname }: HeaderProps) {
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="hidden lg:flex items-center gap-2">
-              <Button variant="ghost" href="/config" icon={<Icon id="paperclip" size={20} />}>
+              <Button
+                size="sm"
+                variant="outline"
+                href="/config"
+                icon={<Icon id="paperclip" size={20} />}
+              >
                 New Project
               </Button>
               <Button
-                variant="ghost"
+                variant="outline"
+                size="sm"
                 href="https://github.com/ui-lab-core/ui-lab/issues"
                 icon={<Icon id="plus-circle" size={20} />}
               >
                 Submit Issue
               </Button>
-              <Button
-                variant="ghost"
-                aria-label="GitHub repository"
-                target="_blank"
-                href="https://github.com/ui-lab-core/ui-lab"
-                icon={<Icon id="github" size={20} />}
-              ></Button>
 
               <Divider size="auto" orientation="vertical" />
             </div>
 
+            <Button
+              variant="ghost"
+              aria-label="GitHub repository"
+              size="icon"
+              target="_blank"
+              href="https://github.com/ui-lab-core/ui-lab"
+              icon={<Icon id="github" size={20} />}
+            ></Button>
             {featureFlags.commandPalette ? (
               <Tooltip show-arrow content="Open Command Palette" position="bottom" hint="ctrl-k">
                 <Button
@@ -310,7 +329,6 @@ export default function Header({ pathname }: HeaderProps) {
                 </Button>
               </Tooltip>
             ) : null}
-
             <HeaderAccountLink />
           </div>
         </div>
