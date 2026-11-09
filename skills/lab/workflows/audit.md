@@ -376,3 +376,14 @@ No violations.
 - No code generation in the report.
 - No sections outside the Output Contract.
 - When in doubt on format, match Example 2 line for line.
+
+## Done when
+
+- Components validated against registry via `get_component { query: "<name>" }` → `get_component { query: "component:<id>", detail: "api" }`
+- Native HTML elements checked first (`<button>`, `<a>`, `<input>`, `<select>`, `<div className="...">`, etc.) — any found are CRITICAL violations in the Adherence pillar
+- Vibe-coded anti-patterns from `systems/ui-lab.md (general mode: core/principles.md + systems/project.md)` explicitly checked, including arbitrary typography utilities, over-specified text rhythm, and transition noise
+- Each of the 6 pillars has been independently evaluated
+- Star rating assigned based on violation severity and count (5 stars = no violations, 1 star = critical failures)
+- Violations listed with specific element/component reference and actionable recommendation
+- Summary provided with overall assessment and priority focus areas
+- Output follows star-rated format (no code generation)

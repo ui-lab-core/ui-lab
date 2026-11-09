@@ -87,3 +87,14 @@ Stop after the plan + report and ask: "Do you want me to proceed with conform ex
 
 - Keep updates operational: what you're doing, what you changed, what's next.
 - Avoid design critique language; focus on equivalence, source of the replacement, and risk management.
+
+## Done when
+
+- UI Lab is installed and styles/token layer are wired correctly (or it is explicitly confirmed already set up) using `search_guides { query: "setup-ui-lab-in-project", detail: "full" }`
+- A scoped plan + replacement report is presented and the user explicitly confirms before any conform changes are applied
+- Only the view layer changes: preserve state, events, data fetching, routing, domain models, copy, and analytics hooks unless the user explicitly asks otherwise
+- If working from an audit report: every violation in it is addressed or explicitly explained as unfixable
+- If working without an audit report: violations are found using the same adherence checks audit uses, and all eligible UI primitives/wrappers are swapped to UI Lab equivalents (components/patterns/elements/sections) where a clear match exists in the registry
+- Replacement markup is sourced from MCP field-tested examples (`get_component { detail: "examples" }`, or `search_workshop { query: "pattern:<id>" | "element:<pkg>/<id>" | "section:<id>", detail: "full" }`) rather than hand-written from scratch, wherever an example exists
+- No “design improvement” changes are introduced beyond what was flagged (no new flows, no layout invention, no new features); any optional improvements are listed separately and not included in the patch
+- A conform report is provided: what was fixed/swapped and its MCP source, what couldn’t be fixed/swapped (and why), and the highest-risk files/components

@@ -136,3 +136,11 @@ Do not run validation unless the user asks for it. Report briefly:
 - Tokens replaced (count or notable mappings)
 - Invalid color classes removed (list them)
 - Anything left untouched and why (no equivalent, would change behavior, locked ref)
+
+## Done when
+
+- `systems/ui-lab.md (general mode: core/principles.md + systems/project.md)`, `core/slop-patterns.md`, and `core/craft.md` were read in full this session
+- Every styled native element or hand-rolled control in scope with a UI Lab equivalent was swapped, using APIs fetched via MCP
+- Obvious slop patterns were removed without changing behavior or meaning
+- Colors use only `bg-background-500`–`950`, `text-foreground-50`–`400`, `border-background-*`, `accent-*` fills for primary emphasis (never `text-accent-*` or accent-colored icons), and semantic tokens for feedback states. No hex, `rgba()`, Tailwind neutrals, shadows, gradients, or `dark:`
+- Product logic is unchanged and a brief report lists swaps, removals, and anything left untouched

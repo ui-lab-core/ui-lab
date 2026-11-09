@@ -143,3 +143,12 @@ DOWNSTREAM ACTIONS
 
 Do not write code. Do not reference Tailwind classes or UI Lab APIs. Focus on what the interface should do, not how to build it.
 ```
+
+## Done when
+
+- Registry queried via appropriate search tools (`search_workshop { kind: "pattern" | "element" | "section" }`, `search_guides`)
+- Domain context, user mental model, and workflow reasoning documented (2–4 sentences)
+- Element inventory flat-listed with role, load-bearing status, and value rating
+- Gaps classified into CRITICAL, LAYOUT COHERENCE, PROGRESSIVE DISCLOSURE categories
+- Top 5 suggestions ranked by spatial coherence impact first, then functional criticality
+- No code written; focus purely on "what should exist"

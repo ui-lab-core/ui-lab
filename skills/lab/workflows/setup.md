@@ -139,3 +139,13 @@ the CLI. Do not bypass init or partially hand-wire the project.
 Report what the CLI installed/created/modified, the verified import order, and the
 `ui-lab status` result. If UI work was the user's actual goal, hand off to `build`
 in this same session — the harness is now in place, so building can proceed.
+
+## Done when
+
+- The tool gate passed: both the `ui-lab` CLI and the `mcp__ui-lab__*` tools were confirmed present before any mutation; if either was missing, no project files were changed and the user was told what to install
+- The MCP setup guide was fetched (`search_guides { query: "setup-ui-lab-in-project", detail: "full" }`) and, when theme switching was in scope, the theme-switching guide — not derived from memory
+- Installation and wiring were performed by the CLI (`ui-lab init`, previewed with `--dry-run` first for anything non-trivial, run with `--non-interactive`), not hand-rolled, whenever the CLI was available
+- `ui-lab status` reports `ui-lab-components` installed and the stylesheet `configured: true`
+- Import order includes the Onyx base before app overrides, plus fonts and typography as specified by the framework guide; the global stylesheet is imported exactly once
+- One simple UI Lab component was rendered on an existing route to confirm tokens are active
+- The result was reported (installed/created/modified + verified order) and, if UI work was the goal, handed off to `build` in the same session

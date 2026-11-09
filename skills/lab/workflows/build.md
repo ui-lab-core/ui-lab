@@ -186,3 +186,18 @@ These rules persist for the rest of the session. On any later UI work, apply the
 without being asked and without re-reading the references. If the user asks for
 something that violates them, build what they asked for and note the violation in
 one line — their call overrides the system, but they should know what it cost.
+
+## Done when
+
+- The harness for the active mode was read in full this session
+- The surroundings were read and the design decision stated before markup
+- ui-lab mode: every component's API was fetched via MCP before use; markup
+  started from `detail: "examples"` or workshop `detail: "full"` source where
+  one exists; a bill of materials preceded expensive fetches, each fetched once
+- general mode: the principles were mapped to the project's tokens and
+  components; no new tokens, dependencies, or libraries were added
+- Changed JSX has no styled native controls or wrappers with a system equivalent
+- Every interactive element has hover, active, disabled, and keyboard focus;
+  every async surface has loading, empty, and error states
+- The six-pillar self-check ran and is reported one line per pillar
+- Nothing was added for visual bulk
