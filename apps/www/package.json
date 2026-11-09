@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "([ -d ../../../private ] && pnpm --dir ../../../private --filter @ui-lab-core/library build || true) && pnpm --filter ui-lab-theme-onyx build && pnpm --filter ui-lab-components build && pnpm --filter ui-lab-registry build && npm run prepare:icons",
+    "build:dependencies": "pnpm --filter ui-lab-theme-onyx run build && pnpm --filter ui-lab-components run build && if [ -f ../../../private/packages/library/package.json ]; then pnpm --dir ../../../private --filter @ui-lab-core/library run build; fi && pnpm --filter ui-lab-registry run build",
     "predev": "pnpm --filter ui-lab-theme-onyx build",
     "dev": "npm run prepare:icons && npm run prepare:preview-fonts && npm run generate:docs && next dev",
-    "build": "npm run prepare:preview-fonts && npm run generate:docs && next build --webpack && npm run verify:component-css",
+    "build:site": "pnpm run build",
+    "build": "pnpm run prepare:icons && pnpm run prepare:preview-fonts && pnpm run generate:docs && next build --webpack && pnpm run verify:component-css",
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
