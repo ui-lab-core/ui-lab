@@ -2,6 +2,7 @@ import "@styles/globals.css";
 import "ui-lab-components/typography.css";
 
 import { Metadata } from "next";
+import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import { RootLayoutClient } from "./client";
@@ -18,17 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html data-font="work-sans" lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <script
+        <Script
           id="site-theme-script"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: getInitialThemeScript() }}
-          suppressHydrationWarning
         />
-        <script
+        <Script
           id="site-scroll-restore-script"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: generateScrollRestoreScript() }}
-          suppressHydrationWarning
         />
       </head>
       <body className="antialiased">

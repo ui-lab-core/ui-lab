@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource-variable/work-sans/wght.css";
 @import "@fontsource-variable/fraunces/opsz.css";
 /* Scan the installed package root, not its development-only `src` directory.
    Published packages contain compiled previews in `dist`, while workspace links
@@ -12,19 +11,39 @@
 @import "./theme.css";
 @import "ui-lab-components/styles.css";
 
-/* Font size is a single knob per role. --header-scale / --body-scale are the
-   only typography tokens defined here; every --text-<size>-<role> default is
-   derived from them in ui-lab-components' base.css, and any one size can be
-   pinned by overriding that token directly (e.g. --text-md-body: 1.2rem). Kept
-   OUT of @theme so these stay runtime custom properties without colliding with
-   Tailwind's own --text-xs..--text-5xl scale keys. The site never customizes
-   these at runtime (only colors are user-themable); the config route scopes its
-   own overrides to the preview. */
+/* Work Sans handles reading and interface text; Space Grotesk owns headings. */
+@font-face {
+  font-family: "Site Interface";
+  src: url("@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Switch the header font independently by changing only src. */
+@font-face {
+  font-family: "Site Header";
+  src: url("@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+
 :root {
-  --font-interface: "Work Sans Variable", system-ui, sans-serif;
+  --font-interface: "Site Interface", system-ui, sans-serif;
   --font-serif-family: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-header-family: "Site Header", system-ui, sans-serif;
   --header-scale: 1.0;
-  --body-scale: 1.013;
+  --body-scale: 1;
+
+  --text-base-body: max(calc(1rem * var(--body-size-multiplier)), 0.84375rem);
+  --text-md-body: var(--text-base-body);
+  --site-display-size: calc(clamp(2.25rem, 1.5rem + 3vw, 3.5rem) * var(--header-size-multiplier));
+  --site-section-size: calc(clamp(1.75rem, 1.5rem + 1vw, 2rem) * var(--header-size-multiplier));
+  --site-page-size: calc(clamp(1.75rem, 1.5rem + 1vw, 2.25rem) * var(--header-size-multiplier));
+  --site-heading-weight: 500;
+  --site-heading-tracking: -0.025em;
+  --site-copy-leading: 1.5;
 
   /* One site-wide control for code and semantic mono text. Derived from the
      body role so code tracks --body-scale like every other size. */
@@ -48,15 +67,12 @@
      translucency is intentional. */
   --background-1000: oklch(from var(--background-950) calc(l * 1.5 - 0.125) c h);
   --background-1050: oklch(from var(--background-950) calc(l * 1.5 - 0.150) c h);
-}
 
-:root[data-font="work-sans"] {
-  --font-interface: "Work Sans Variable", system-ui, sans-serif;
 }
 
 @theme {
   --font-body: var(--font-interface);
-  --font-heading: var(--font-interface);
+  --font-heading: var(--font-header-family);
   --font-serif: var(--font-serif-family);
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
 
@@ -87,10 +103,11 @@
   --border-width-8: 8px;
 
   --header-height: 3.5rem;
-  --page-width: 1350px;
+  --page-width: 1360px;
   --content-width: 850px;
   --logo-width: 250px;
   --banner-height: 52px;
+
   /* adjust to match your banner content */
   /* --indent-offset: 3px; */
 }
@@ -100,7 +117,7 @@ body {
   font-size: var(--text-base-body);
   font-weight: 500;
   letter-spacing: normal;
-  line-height: 1.64;
+  line-height: var(--site-copy-leading);
   background: var(--color-background-950);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -125,8 +142,8 @@ html.theme-transition *:not(.theme-transition-exempt, .theme-transition-exempt *
 pre {
   font-size: var(--text-code-size);
   line-height: var(--leading-code);
-  letter-spacing: 0.015em;
-  font-weight: 450;
+  letter-spacing: var(--letter-spacing-code);
+  font-weight: var(--font-weight-code);
 }
 
 .grid-paper {
@@ -159,11 +176,80 @@ html {
 body {
   background: var(--background-1000);
 }
-p {
-  font-weight: 500;
+@layer base {
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-heading);
+    font-weight: var(--site-heading-weight);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  :where(strong, b) {
+    font-weight: 500;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
 }
-strong {
+
+@utility type-display {
+  font-family: var(--font-heading);
+  font-size: var(--site-display-size);
+  font-weight: var(--site-heading-weight);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+@utility type-section {
+  font-family: var(--font-heading);
+  font-size: var(--site-section-size);
+  font-weight: var(--site-heading-weight);
+  letter-spacing: var(--site-heading-tracking);
+  line-height: 1.16;
+  text-wrap: balance;
+}
+
+@utility type-page {
+  font-family: var(--font-heading);
+  font-size: var(--site-page-size);
+  font-weight: var(--site-heading-weight);
+  letter-spacing: var(--site-heading-tracking);
+  line-height: 1.16;
+  text-wrap: balance;
+}
+
+@utility type-lead {
+  font-family: var(--font-body);
+  font-size: var(--text-md-body);
   font-weight: 500;
+  letter-spacing: normal;
+  line-height: var(--site-copy-leading);
+  text-wrap: pretty;
+}
+
+@layer components {
+  .typography {
+    line-height: 1.65;
+  }
+
+  .typography :where(h1, h2, h3, h4, h5, h6) {
+    font-weight: var(--site-heading-weight);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .typography :where(h1) {
+    letter-spacing: var(--site-heading-tracking);
+    line-height: 1.12;
+  }
+
+  .typography :where(h1, h2, h3, h4, h5, h6) + :where(p, ul, ol) {
+    margin-block-start: 0.875rem;
+  }
 }
 
 article {
@@ -179,4 +265,16 @@ article {
 ::selection {
   background: var(--ring-background);
   color: #fff;
+}
+
+/* Comparison section: previews and prompt settle on swap. */
+@keyframes comparison-settle {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }

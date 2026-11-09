@@ -1,14 +1,29 @@
 @reference "tailwindcss";
 
+/* Motion primitives. Interaction-specific tokens are resolved at the point of use
+   so component and subtree overrides remain independent of inherited hover state. */
+@theme static {
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-moderate: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --duration-pulse: 2000ms;
+  --duration-loop: 1500ms;
+}
+
 @theme {
   /* Component families are shared; .typography owns long-form document flow. */
   --font-body: ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-body);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --ease-snappy-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-gentle-ease: cubic-bezier(0.43, 0.13, 0.23, 0.96);
-  --ease-settle-in: cubic-bezier(0.22, 1, 0.36, 1);
 
   --border-width-base: 1px;
 

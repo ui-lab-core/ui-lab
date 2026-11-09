@@ -35,7 +35,7 @@ export const FONTS: FontOption[] = ALL_FONT_OPTIONS.filter((font) => !MONO_FONT_
 
 export const MONO_FONTS: FontOption[] = ALL_FONT_OPTIONS.filter((font) => MONO_FONT_IDS.has(font.id));
 
-export const DEFAULT_FONT_ID: FontId = "work-sans";
+export const DEFAULT_FONT_ID: FontId = "inter";
 export const DEFAULT_MONO_FONT_ID: FontId = "jetbrains-mono";
 
 export interface FontFamilyConfig {
